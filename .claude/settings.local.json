@@ -4,7 +4,17 @@
       "Bash(mv:*)",
       "Bash(python:*)",
       "Bash(python3:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(\"C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe\" -c \"import laspy; print\\('laspy', laspy.__version__\\)\")",
+      "Bash(\"C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe\" -c \"import whitebox; wbt = whitebox.WhiteboxTools\\(\\); print\\(wbt.version\\(\\)\\)\")",
+      "Bash(C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe -c ':*)",
+      "Bash(C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe:*)",
+      "Bash(PYTHONIOENCODING=utf-8 C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe:*)",
+      "Bash(\"C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe\" \"C:/Users/colto/Documents/GitHub/lidar_project/notebooks/_run_phase0_hand_buffered.py\")",
+      "Bash(\"C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe\" -m pip install scikit-image)",
+      "Bash(\"C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe\" \"C:/Users/colto/Documents/GitHub/lidar_project/notebooks/_run_phase0_slope_and_sanity.py\")",
+      "Bash(\"C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe\" \"C:/Users/colto/Documents/GitHub/lidar_project/notebooks/_run_feature_B_roads.py\")",
+      "Bash(\"C:/Users/colto/Documents/GitHub/lidar_project/.venv/Scripts/python.exe\" \"C:/Users/colto/Documents/GitHub/lidar_project/notebooks/_run_feature_A_pads.py\")"
     ]
   }
 }
