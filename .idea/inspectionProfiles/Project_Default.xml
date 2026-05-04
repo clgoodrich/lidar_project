@@ -1,0 +1,121 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="jupyter" />
+          <option value="python-docx" />
+          <option value="alphashape" />
+          <option value="appdirs" />
+          <option value="attrs" />
+          <option value="beautifulsoup4" />
+          <option value="certifi" />
+          <option value="cffi" />
+          <option value="charset-normalizer" />
+          <option value="click" />
+          <option value="click-log" />
+          <option value="click-plugins" />
+          <option value="cligj" />
+          <option value="colorama" />
+          <option value="contourpy" />
+          <option value="cryptography" />
+          <option value="cycler" />
+          <option value="Cython" />
+          <option value="dataclasses" />
+          <option value="et-xmlfile" />
+          <option value="fiona" />
+          <option value="flexcache" />
+          <option value="flexparser" />
+          <option value="fonttools" />
+          <option value="frozendict" />
+          <option value="geographiclib" />
+          <option value="geomag" />
+          <option value="geopandas" />
+          <option value="geopy" />
+          <option value="greenlet" />
+          <option value="html5lib" />
+          <option value="idna" />
+          <option value="joblib" />
+          <option value="kaleido" />
+          <option value="keyboard" />
+          <option value="kiwisolver" />
+          <option value="lxml" />
+          <option value="matplotlib" />
+          <option value="multitasking" />
+          <option value="networkx" />
+          <option value="nltk" />
+          <option value="numpy" />
+          <option value="opencv-python" />
+          <option value="openpyxl" />
+          <option value="packaging" />
+          <option value="pandas" />
+          <option value="patsy" />
+          <option value="pdfminer.six" />
+          <option value="pdfplumber" />
+          <option value="peewee" />
+          <option value="pillow" />
+          <option value="Pint" />
+          <option value="platformdirs" />
+          <option value="plotly" />
+          <option value="pycparser" />
+          <option value="pygeomag" />
+          <option value="Pygments" />
+          <option value="pyodbc" />
+          <option value="pyogrio" />
+          <option value="pyparsing" />
+          <option value="pypdfium2" />
+          <option value="pyproj" />
+          <option value="PyQt5" />
+          <option value="PyQt5-Qt5" />
+          <option value="PyQt5_sip" />
+          <option value="PyQtWebEngine" />
+          <option value="PyQtWebEngine-Qt5" />
+          <option value="pytesseract" />
+          <option value="python-dateutil" />
+          <option value="python-fcl" />
+          <option value="pytz" />
+          <option value="PyYAML" />
+          <option value="rdp" />
+          <option value="regex" />
+          <option value="requests" />
+          <option value="Rtree" />
+          <option value="scikit-learn" />
+          <option value="scipy" />
+          <option value="setuptools" />
+          <option value="shapely" />
+          <option value="six" />
+          <option value="soupsieve" />
+          <option value="SQLAlchemy" />
+          <option value="stateplane" />
+          <option value="statsmodels" />
+          <option value="tabulate" />
+          <option value="tenacity" />
+          <option value="threadpoolctl" />
+          <option value="tqdm" />
+          <option value="trimesh" />
+          <option value="typing_extensions" />
+          <option value="tzdata" />
+          <option value="urllib3" />
+          <option value="utm" />
+          <option value="vedo" />
+          <option value="vtk" />
+          <option value="webencodings" />
+          <option value="welleng" />
+          <option value="wellpathpy" />
+          <option value="welltrajconvert" />
+          <option value="yfinance" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyStubPackagesAdvertiser" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="scipy-stubs==1.16.1.1" />
+          <option value="pandas-stubs==2.3.2.250827" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

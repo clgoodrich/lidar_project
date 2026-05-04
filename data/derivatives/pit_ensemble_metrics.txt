@@ -1,0 +1,20 @@
+GBDT ensemble: XGB + LightGBM + HistGradientBoosting, averaged,
+with isotonic calibration for threshold semantics.
+features: 88   positives: 163
+
+XGB      ROC-AUC 0.9862   PR-AUC 0.7162
+LGBM     ROC-AUC 0.9858   PR-AUC 0.7124
+HGB      ROC-AUC 0.9595   PR-AUC 0.6080
+AVG      ROC-AUC 0.9866   PR-AUC 0.7218
+AVG+iso  ROC-AUC 0.9883   PR-AUC 0.7129
+
+Thresholds below are calibrated probability (after isotonic).
+
+  thr      n  hits10  pits_cov     fp    prec
+ 0.30    130      96        82     34  73.85%
+ 0.40    108      88        80     20  81.48%
+ 0.50    108      88        80     20  81.48%
+ 0.60     86      76        73     10  88.37%
+ 0.70     76      70        68      6  92.11%
+ 0.80     69      65        64      4  94.20%
+ 0.90     50      49        48      1  98.00%

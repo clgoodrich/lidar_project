@@ -1,0 +1,12 @@
+XGB-plus2 (XGB+2008+priors+morphology+multi-template)  GroupKFold OOF  features: 88
+ROC-AUC 0.9862
+PR-AUC  0.7162
+
+  thr      n  hits10  pits_cov     fp    prec
+ 0.30    189     112        83     77  59.26%
+ 0.40    169     104        82     65  61.54%
+ 0.50    150      98        81     52  65.33%
+ 0.60    139      95        80     44  68.35%
+ 0.70    123      90        79     33  73.17%
+ 0.80    114      87        79     27  76.32%
+ 0.90     98      83        77     15  84.69%

@@ -1,5 +1,47 @@
-/data/
+# Data files (too large for git)
+data/files/*.las
+data/files/*.laz
+data/files/*.copc.laz
+data/files/older_files/
+data/files/mcKean/
+data/files/seperate sections/
+data/derivatives/*.tif
+data/derivatives/*.png
+data/derivatives/9t/
+data/derivatives/model_archive/*.gpkg
+
+# Keep annotations and candidate GPKGs (small)
+!data/derivatives/annotations/
+
+# Land cover data
+nlcd_*/
+landcover_*/
+PA_LandCover/
+OilGasLocations_*/
+EnviroAtlas_*
+
+# Zips
+*.zip
+
+# Python
 .venv/
-.idea/
 __pycache__/
 *.pyc
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+*.code-workspace
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Large files (>100 MB) not covered by patterns above
+data/full_dem.tif
+data/derivatives/_output3_covar.las
+data/derivatives/pit_1m_candidates_ensemble.gpkg
+data/files/OilGasLocations/
+
+# Claude
+.claude/worktrees/

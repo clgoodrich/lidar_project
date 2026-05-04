@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<idinfo>
+		<citation>
+			<citeinfo>
+				<title>Historic Oil and Gas well locations from Bureau of Oil and Gas Planning and Program Management PADEP</title>
+				<origin>Pennsylvania Department of Environmental Protection, Bureau of District Mining Operations</origin><onlink>http://www.depweb.state.pa.us/portal/server.pt/community/bureau_of_district_mining_operations/20764</onlink><pubinfo><pubplace>Coal Center, PA</pubplace><publish>Pennsylvania Department of Environmental Protection, Bureau of District Mining Operations</publish></pubinfo><onlink>http://www.pasda.psu.edu/</onlink><pubdate>2013</pubdate></citeinfo>
+		</citation>
+		<spdom>
+			<bounding>
+				<westbc>-80.526526</westbc>
+				<eastbc>-74.6904</eastbc>
+				<northbc>42.26775</northbc>
+				<southbc>39.7014</southbc>
+			</bounding>
+		</spdom>
+		<accconst>None</accconst>
+		<useconst>The Originator, Publisher and Distributor exclude any and all implied warranties and make no warranty or representation with respect to the data files or accompanying documentation, including quality, performance, merchantability or fitness for a particular purpose. These data files and documentation are provided 'as is' and the User assumes the entire risk as to their quality and performance. 
+
+These data are not to be redistributed for commercial profit. Reproduction or redistribution of this digital data set without permission of the Originator/Publisher is expressly forbidden. The Originator and Publisher should be clearly cited in any product derived from this data. Any modifications to this data must be described in any digital or hardcopy product derived from this data.</useconst>
+		<native>Microsoft Windows 7 Version 6.1 (Build 7601) Service Pack 1; ESRI ArcGIS 10.0.4.4000</native>
+		<keywords><theme><themekey>mining</themekey><themekt>ISO 19115 Topic Categories</themekt><themekey>geoscientificInformation</themekey></theme></keywords><ptcontac><cntinfo><cntaddr><address>PADEP</address><addrtype>mailing and physical address</addrtype><city>Harrisburg</city><state>Pennsylvania</state><country>United States</country><postal>17105</postal></cntaddr><cntperp><cntper>Stewart Beattie</cntper><cntorg>Pennsylvania Department of Environmental Protection, GIS/Information Specialist for Bureau of Oil &amp; Gas PPM</cntorg></cntperp><cntvoice>(717)-783-9579</cntvoice><cntemail>stebeattie@pa.gov</cntemail></cntinfo></ptcontac><descript><abstract>In 1859, the United States’ first commercial oil well was drilled in Venango County, Pennsylvania. In the 150 years subsequent to this, an unknown number of oil and gas wells have been drilled in the state. A current estimate by the Independent Petroleum Association of America places that number at approximately 325,000. Of those 325,000 wells, over 200,000 are still unaccounted for. As these wells are found and verified, they are cataloged in the Department of Environmental Protection’s (DEP) Abandoned and Orphan Well database to facilitate plugging. There are currently over 8,200 wells listed in this database (2013). 
+
+With so many unknown oil and gas wells scattered across Pennsylvania and the environmental threats that they pose, identification remains a vital component of DEP’s Oil and Gas Program. Currently, the DEP, Office of Active and Abandoned Mine Operations is involved in many projects dealing with historic and active mine map restoration and geo-referencing. These maps, which vary in age, not only contain information on historic mine locations, but also oil and gas locations. Through collaboration between the Bureau of Mining Programs and the Bureau of Oil and Gas Planning and Program Management, potential oil and gas well locations were assembled using three mine map collections. These collections include the WPA mine map collection, KSheets collection, and the HSheets collection. From these sources, over 30,000 potential historic oil and gas well locations were derived.  
+
+The Bureau of Oil and Gas Planning and Program Management is constantly looking for historic sources to help locate oil and gas wells in the state that remain unaccounted for. This particular dataset was created using georeferenced mine maps of various/unknown accuracy and various/unknown coordinate systems to various base maps, including but not limited to USGS topographic maps and PAMAP aerial photography. The locations were then digitized using the georeferenced mine maps. These locations are provided for informational purposes only and should not be sole means of decision making and are in no way a substitute for actual field observations.
+</abstract><purpose>These well locations were derived from historical mine maps known as the WPA, KSheet, and HSheet collections. These locations are provided for informational purposes only and should not be sole means of decision making and are in no way a substitute for actual on the ground observation.</purpose><supplinf>This dataset was a collaboration between the Bureau of Oil and Gas Management and the Bureau of Mining Programs. </supplinf></descript><crossref><citeinfo><onlink>http://www.pasda.psu.edu/uci/MetadataDisplay.aspx?entry=PASDA&amp;file=MineMaps.xml&amp;dataset=1046</onlink><origin>Pennsylvania Department of Environmental Protection, Bureau of District Mining Operations</origin><title>Pennsylvania DEP Mine Maps</title><onlink>http://www.pasda.psu.edu/uci/MetadataDisplay.aspx?entry=PASDA&amp;file=WPAMineMaps.xml&amp;dataset=1560</onlink></citeinfo></crossref></idinfo>
+	<spdoinfo>
+		<ptvctinf>
+		</ptvctinf>
+	</spdoinfo>
+	<spref>
+		<horizsys>
+			<geograph>
+			</geograph>
+			<geodetic>
+				<horizdn>North American Datum of 1983</horizdn><ellips>Geodetic Reference System 80</ellips></geodetic>
+			<cordsysn><geogcsn>GCS_North_American_1983</geogcsn></cordsysn></horizsys>
+	</spref>
+	<eainfo>
+		<detailed>
+			<enttyp>
+				<enttypl>DEP Mine Map - Historic Oil and Gas well locations</enttypl>
+			</enttyp>
+		</detailed>
+	</eainfo>
+	<distinfo>
+		<distliab>Not for commercial use or resale. The User shall save the Commonwealth harmless from any suits, claims or actions arising out of the use of the data files or accompanying documentation, or arising out of any defect in the data files or accompanying documentation. The Commonwealth excludes any and all implied warranties and makes no warranty or representation with respect to the data files or accompanying documentation, including quality, performance, merchantability, or fitness for a particular purpose. These data files and documentation are provided AS IS and the User assumes the entire risk as to their quality and performance
+
+Those parties involved with the development and distribution of this data will not be liable for any direct, indirect, special, incidental, or consequential damages arising out of the use or inability to use the FILES or any accompanying documentation.
+
+The USER shall indemnify, save harmless, and, if requested, defend those parties involved with the development and distribution of this data, their officers, agents, and employees from and against any suits, claims, or actions for injury, death, or property damage arising out of the use of or any defect in the FILES or any accompanying documentation. Those parties involved with the development and distribution excluded any and all implied warranties, including warranties or merchantability and fitness for a particular purpose and makes no warranty or representation, either express or implied, with respect to the FILES or accompanying documentation, including its quality, performance, merchantability, or fitness for a particular purpose. The FILES and documentation are provided "as is" and the USER assumes the entire risk as to its quality and performance. Those parties involved with the development and distribution of this data will not be liable for any direct, indirect, special, incidental, or consequential damages arising out of the use or inability to use the FILES or any accompanying documentation.</distliab>
+		<distrib><cntinfo><cntaddr><addrtype>mailing and physical address</addrtype><address>115 Land and Water Building</address><city>University Park</city><state>Pennsylvania</state><postal>16802</postal><country>United States</country></cntaddr><cntvoice>814-865-8792</cntvoice><cntemail>pasda@psu.edu</cntemail><cntorgp><cntorg>Pennsylvania Spatial Data Access (PASDA)</cntorg></cntorgp></cntinfo></distrib></distinfo>
+	<metainfo>
+		<metd>2013</metd>
+		<metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+		<metstdv>FGDC-STD-001-1998</metstdv>
+		<mettc>local time</mettc>
+		<metc><cntinfo><cntorgp><cntorg>Pennsylvania Spatial Data Access (PASDA)</cntorg></cntorgp><cntaddr><addrtype>mailing and physical address</addrtype><address>115 Land and Water building</address><city>University Park</city><state>Pennsylvania</state><postal>16802</postal><country>United States</country></cntaddr><cntvoice>814-865-8792</cntvoice><cntemail>pasda@psu.edu</cntemail></cntinfo></metc></metainfo>
+	<dataqual><attracc/><posacc><horizpa><horizpar>This dataset was created by georeferenced mine maps of various/unknown accuracy and various/unknown coordinate systems to various base maps, including but not limited to USGS topographic maps and PAMAP aerial photography. The locations were then digitized from those georeferenced mine maps. </horizpar></horizpa></posacc></dataqual><Esri><CreaDate>20130529</CreaDate><CreaTime>14075800</CreaTime><ArcGISstyle>FGDC CSDGM Metadata</ArcGISstyle><SyncOnce>TRUE</SyncOnce><DataProperties><itemProps><itemLocation><linkage Sync="TRUE">file://\\ALCES\D$\DATA\BureauOilGasPlanningProgramManagement\CDO_MineMaps</linkage><protocol Sync="TRUE">Local Area Network</protocol></itemLocation></itemProps><copyHistory><copy source="D:\DATA\MINE_MAPS\CDO_MineMaps" dest="\\ALCES\D$\DATA\BureauOilGasPlanningProgramManagement\CDO_MineMaps" date="20130529" time="14075800"></copy></copyHistory></DataProperties></Esri></metadata>

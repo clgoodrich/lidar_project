@@ -1,0 +1,13 @@
+Cross-tile: trained on output3, applied to sep (6x6 km)
+Train: (13196, 85)  pos=136
+Test: (182046, 85)
+
+  thr      n
+ 0.20    443
+ 0.30    313
+ 0.40    310
+ 0.50    101
+ 0.60     99
+ 0.70     66
+ 0.80     66
+ 0.90     44
