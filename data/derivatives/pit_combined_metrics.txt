@@ -1,0 +1,17 @@
+Combined U-Net + XGBoost pipeline
+U-Net candidate threshold: 0.2
+Ensemble OOF ROC-AUC: 0.8082
+Ensemble OOF PR-AUC:  0.7223
+
+  thr       n  hits10  pits_cov      fp    prec
+ 0.30    1561     888       725     673  56.89%
+ 0.40    1099     716       608     383  65.15%
+ 0.50     690     523       475     167  75.80%
+ 0.60     690     523       475     167  75.80%
+ 0.70     401     343       331      58  85.54%
+ 0.80     326     286       280      40  87.73%
+ 0.90      91      88        87       3  96.70%
+
+Comparison:
+  XGBoost-only @0.80:   95 pits, 93.6% precision, 7 FP
+  U-Net-only @0.80:    792 pits, 43.2% precision, 1331 FP

@@ -43,5 +43,33 @@ data/derivatives/_output3_covar.las
 data/derivatives/pit_1m_candidates_ensemble.gpkg
 data/files/OilGasLocations/
 
+# LAZ/LAS point clouds anywhere (always large)
+*.las
+*.laz
+*.copc.laz
+
+# External data downloads (NAIP chips, USGS 3DEP tiles, paper bundles)
+data/external/ramachandran_2024/naip_chips/
+data/external/ramachandran_2024/naip_chips_pilot/
+data/external/ramachandran_2024/permian_denver_data.zip
+data/external/usgs_3dep_permian_tx/laz_pilot_A/
+data/external/usgs_3dep_permian_tx/tile_inventory.parquet
+data/external/usgs_3dep_permian_tx/tiles_intersecting_pads.parquet
+
+# Ramachandran verifier training outputs (model weights, prob arrays)
+data/derivatives/ramachandran_verifier/verifier_best.pt
+data/derivatives/ramachandran_verifier/verifier_last.pt
+data/derivatives/ramachandran_verifier/index.csv
+data/derivatives/ramachandran_verifier/*_probs*.npz
+
+# Pilot A LiDAR derivatives (1m rasters per tile)
+data/derivatives/pilot_A/*.tif
+
+# Statewide ancillary at repo root
+/OilGasLocations_ConventionalUnconventional2026_04/
+
 # Claude
 .claude/worktrees/
+
+# Office lock files
+~$*

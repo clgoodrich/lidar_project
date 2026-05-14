@@ -1,0 +1,8 @@
+U-Net pit detector results
+Channels: ['lrm_5', 'lrm_11', 'tpi_05', 'tpi_15', 'openness_neg', 'slope', 'hillshade', 'geomorphon_enc_5', 'geomorphon_enc_8', 'geomorphon_enc_12']
+Patch size: 128, Pit radius: 4
+Best epoch: 46, val_loss: 0.4184
+
+  9t: 540 pits, mean_prob=0.924, median_prob=0.999, recall@0.3=513/540, recall@0.5=507/540
+  mk5: 294 pits, mean_prob=0.856, median_prob=0.999, recall@0.3=231/262, recall@0.5=228/262
+  mkf: 317 pits, mean_prob=0.839, median_prob=0.999, recall@0.3=279/317, recall@0.5=268/317

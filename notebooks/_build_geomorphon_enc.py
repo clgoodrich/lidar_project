@@ -33,7 +33,7 @@ DIRECTIONS = [
 ]
 
 LOOKUP_DISTANCES = [5, 8, 12]
-FLATNESS_DEG = 1.5  # degrees
+FLATNESS_DEG = 1.0  # degrees (Jasiewicz & Stepinski 2013 default)
 FLATNESS_RAD = np.radians(FLATNESS_DEG)
 
 TILES = {
@@ -124,9 +124,16 @@ def process_tile(tag, suffix):
             dem = np.where(dem == nd, np.nan, dem)
         profile = ds.profile.copy()
 
-    # Replace NaN with local mean for edge handling (geomorphons need continuous surface)
-    # Use the DEM median as fill for NaN cells
-    dem_filled = np.where(np.isnan(dem), np.nanmedian(dem), dem)
+    # Fill NaN with nearest valid elevation so rays crossing data gaps
+    # see "flat" terrain rather than a jump to the global median.
+    from scipy.ndimage import distance_transform_edt
+    nan_mask = np.isnan(dem)
+    if nan_mask.any():
+        _, nearest_idx = distance_transform_edt(nan_mask, return_distances=True, return_indices=True)
+        dem_filled = dem.copy()
+        dem_filled[nan_mask] = dem[tuple(nearest_idx[:, nan_mask])]
+    else:
+        dem_filled = dem
 
     H, W = dem.shape
     print(f'    Shape: {H}x{W}, NaN: {np.isnan(dem).sum()} cells')

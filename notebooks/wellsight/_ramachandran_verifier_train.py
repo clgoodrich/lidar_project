@@ -134,36 +134,48 @@ def build_model():
 
 
 # ----------------------- train ------------------------------------------
-def run_epoch(model, loader, loss_fn, optim, training):
+def run_epoch(model, loader, loss_fn, optim, training, scaler=None, log_every=50):
     model.train(training)
     total, n_correct, n = 0.0, 0, 0
     all_p, all_y = [], []
-    for x, y in loader:
+    t0 = time.time()
+    use_amp = scaler is not None
+    for i, (x, y) in enumerate(loader):
         x, y = x.to(DEVICE, non_blocking=True), y.to(DEVICE, non_blocking=True)
         with torch.set_grad_enabled(training):
-            logits = model(x).squeeze(1)
-            loss = loss_fn(logits, y)
+            with torch.amp.autocast("cuda", enabled=use_amp):
+                logits = model(x).squeeze(1)
+                loss = loss_fn(logits, y)
             if training:
                 optim.zero_grad()
-                loss.backward()
-                optim.step()
-        prob = torch.sigmoid(logits)
+                if use_amp:
+                    scaler.scale(loss).backward()
+                    scaler.step(optim)
+                    scaler.update()
+                else:
+                    loss.backward()
+                    optim.step()
+        prob = torch.sigmoid(logits.float())
         pred = (prob > 0.5).long()
         total += loss.item() * x.size(0)
         n_correct += (pred == y).sum().item()
         n += x.size(0)
         all_p.append(prob.detach().cpu().numpy())
         all_y.append(y.cpu().numpy())
+        if training and (i + 1) % log_every == 0:
+            rate = n / (time.time() - t0)
+            print(f"  batch {i+1}/{len(loader)}  loss={total/n:.4f}  acc={n_correct/n:.3f}  {rate:.1f} img/s", flush=True)
     return total / n, n_correct / n, np.concatenate(all_p), np.concatenate(all_y)
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--epochs", type=int, default=8)
+    ap.add_argument("--epochs", type=int, default=3)
     ap.add_argument("--batch", type=int, default=48)
     ap.add_argument("--lr", type=float, default=1e-6)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--limit-train", type=int, default=0, help="0 = all")
+    ap.add_argument("--amp", action="store_true", default=True, help="mixed precision")
     args = ap.parse_args()
 
     print(f"Device: {DEVICE}")
@@ -186,13 +198,15 @@ def main():
     model = build_model()
     optim = torch.optim.Adam(model.parameters(), lr=args.lr)
     loss_fn = FocalLoss(0.25, 2.0)
+    scaler = torch.amp.GradScaler("cuda") if args.amp else None
+    print(f"AMP: {args.amp}, epochs: {args.epochs}, batch: {args.batch}", flush=True)
 
     history = []
     best_val = float("inf")
     has_val = len(valid_df) > 0
     for ep in range(1, args.epochs + 1):
         t0 = time.time()
-        tr_loss, tr_acc, _, _ = run_epoch(model, train_dl, loss_fn, optim, True)
+        tr_loss, tr_acc, _, _ = run_epoch(model, train_dl, loss_fn, optim, True, scaler=scaler)
         if has_val:
             va_loss, va_acc, vp, vy = run_epoch(model, valid_dl, loss_fn, optim, False)
         else:

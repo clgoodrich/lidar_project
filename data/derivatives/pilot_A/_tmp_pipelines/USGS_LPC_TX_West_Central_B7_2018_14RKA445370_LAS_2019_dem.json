@@ -1,0 +1,22 @@
+{
+  "pipeline": [
+    {
+      "type": "readers.las",
+      "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\external\\usgs_3dep_permian_tx\\laz_pilot_A\\USGS_LPC_TX_West_Central_B7_2018_14RKA445370_LAS_2019.laz"
+    },
+    {
+      "type": "filters.range",
+      "limits": "Classification[2:2]"
+    },
+    {
+      "type": "writers.gdal",
+      "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\pilot_A\\USGS_LPC_TX_West_Central_B7_2018_14RKA445370_LAS_2019_dem_1m.tif",
+      "resolution": 1.0,
+      "output_type": "idw",
+      "window_size": 3,
+      "nodata": -9999,
+      "data_type": "float32",
+      "override_srs": "EPSG:6343"
+    }
+  ]
+}
