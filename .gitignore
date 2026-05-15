@@ -55,6 +55,7 @@ data/external/ramachandran_2024/permian_denver_data.zip
 data/external/usgs_3dep_permian_tx/laz_pilot_A/
 data/external/usgs_3dep_permian_tx/tile_inventory.parquet
 data/external/usgs_3dep_permian_tx/tiles_intersecting_pads.parquet
+data/external/usgs_3dep_pa_lidar/
 
 # Ramachandran verifier training outputs (model weights, prob arrays)
 data/derivatives/ramachandran_verifier/verifier_best.pt
@@ -64,6 +65,15 @@ data/derivatives/ramachandran_verifier/*_probs*.npz
 
 # Pilot A LiDAR derivatives (1m rasters per tile)
 data/derivatives/pilot_A/*.tif
+
+# Road-extract pipeline rasters (score/mask, ~100-200 MB each at 10k x 10k)
+data/derivatives/roads/*.tif
+
+# Beck replication rasters (rl, canopy_class, etc. — can hit 100MB at 10k)
+data/derivatives/beck_*/*.tif
+
+# Per-tile temp intensity rasters (PDAL outputs during build)
+data/derivatives/_tmp_intensity_tiles_*/
 
 # Statewide ancillary at repo root
 /OilGasLocations_ConventionalUnconventional2026_04/

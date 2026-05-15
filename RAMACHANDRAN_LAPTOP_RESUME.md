@@ -1,16 +1,23 @@
-# Ramachandran Verifier — Laptop Resume Guide
+# Ramachandran Verifier — Full Replication Guide (laptop handoff)
 
-Self-contained instructions to finish training + eval on a different machine.
+Self-contained instructions to run the **full 8-epoch paper-faithful training** + eval on a different machine.
 
 ## Status at handoff
 - 87,467 / 88,044 NAIP chips downloaded (test split is 100% complete)
-- Verifier trained through epoch 2 / 3 → `verifier_best.pt`, **val_acc = 91.0%**
-- Eval has not been run yet
+- Proof-of-concept 3-epoch run reached **val_acc = 91.0% at epoch 2** → `verifier_best.pt` exists but can be ignored for the full replication
+- No eval has been run yet
 
-You have **three options**, in increasing effort:
-- **(A) Run only the eval** against the existing checkpoint — fastest, no GPU needed (CPU is fine for 9K test samples)
-- **(B) Train 1 more epoch + eval** — restarts training from scratch (no optimizer state saved), but a single epoch on a modern GPU is ~30–60 min
-- **(C) Full 3-epoch retrain + eval** — clean replication, ~3–8 hours depending on GPU
+## Goal of this run
+
+Match the paper's training recipe **exactly** to see how well the verifier replicates against NAIP imagery:
+
+- EfficientNet-B3, ImageNet pretrained, single-logit head
+- Input 300×300 RGB
+- **Adam, LR 1e-6** (paper)
+- **Focal loss α=0.25, γ=2.0** (paper)
+- Positives: GT bbox crops from labeled tiles (with 10% padding); Negatives: random 128–256 px crops from no-pad tiles
+- **8 epochs** (paper) — vs. the cut-down 3 we did for the PoC
+- Mixed-precision (AMP fp16) — speedup only matters on Tensor-Core GPUs (RTX 20-series and up); functionally a no-op on older cards
 
 ---
 
@@ -20,16 +27,16 @@ Total: **~5.2 GB**
 
 | Source path (this machine) | Destination on laptop | Size |
 |---|---|---|
-| `notebooks/wellsight/_ramachandran_verifier_train.py` | same relative path | 7 KB |
+| `notebooks/wellsight/_ramachandran_verifier_train.py` | same relative path | 8 KB |
 | `notebooks/wellsight/_ramachandran_verifier_eval.py` | same relative path | 3 KB |
 | `data/external/ramachandran_2024/permian_denver_data/training/well-pad_dataset.csv` | same relative path | 50 MB |
 | `data/external/ramachandran_2024/naip_chips/` (whole tree) | same relative path | 5.1 GB |
-| `data/derivatives/ramachandran_verifier/verifier_best.pt` | same relative path | 43 MB |
-| `data/derivatives/ramachandran_verifier/index.csv` | same relative path | 11 MB |
 
-The script uses hardcoded Windows-style paths (`C:\Users\colto\Documents\GitHub\lidar_project`). On the laptop, **either**:
-- Put the project at the same `C:\Users\colto\Documents\GitHub\lidar_project` path, OR
-- Edit the `ROOT` constant at the top of `_ramachandran_verifier_train.py` and `_ramachandran_verifier_eval.py` to wherever you put it.
+You **do not** need to copy `verifier_best.pt` — the full run trains from scratch (paper recipe = ImageNet init, no warm start).
+
+The scripts use hardcoded Windows paths (`C:\Users\colto\Documents\GitHub\lidar_project`). On the laptop, **either**:
+- Place the project at that same path, OR
+- Edit the `ROOT = Path(...)` constant at the top of both scripts.
 
 ## 2. Python environment
 
@@ -40,73 +47,95 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 pip install timm pandas numpy pillow scikit-learn
 ```
 
-Verify CUDA is visible:
+Verify CUDA is visible (training on CPU is not feasible for 8 epochs):
+
 ```bash
 python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU only')"
 ```
 
-## 3A. Eval-only (recommended if you just want results)
+## 3. Run training (full 8 epochs)
 
 ```bash
 cd <project_root>
-python -u notebooks/wellsight/_ramachandran_verifier_eval.py
+python -u notebooks/wellsight/_ramachandran_verifier_train.py --epochs 8 --batch 48 --workers 4
 ```
 
-Runs in ~5–15 min on CPU, faster on GPU. Outputs to `data/derivatives/ramachandran_verifier/`:
-- `verifier_test_metrics.csv` — precision, recall, F1, AP, threshold at 99% precision
-- `test_probs.npz` — per-sample predictions for further analysis
+This produces:
+- `data/derivatives/ramachandran_verifier/verifier_best.pt` — best val-loss checkpoint
+- `data/derivatives/ramachandran_verifier/valid_probs_best.npz` — val predictions at best epoch
+- `data/derivatives/ramachandran_verifier/train_history.csv` — per-epoch loss/acc
 
-## 3B. 1 more epoch + eval
+### Time estimates
 
-The training script doesn't save optimizer state, so this **restarts from ImageNet weights**, not from the epoch-2 checkpoint. Easiest workflow:
+Per-epoch time scales linearly with batches × img/s. Train set is 1,399 batches per epoch.
+
+| GPU class | img/s (est) | Per-epoch | Full 8 epochs |
+|---|---|---|---|
+| RTX 4080/4090 mobile | 80–120 | ~10–15 min | **1.5–2 hr** |
+| RTX 3070/3080 mobile | 40–60 | ~20–30 min | **3–4 hr** |
+| RTX 30/40-series w/ Tensor Cores | 30–80 | varies | **2–6 hr** |
+| GTX 1660 / RTX 2060 mobile | 10–20 | ~60–90 min | **8–12 hr** |
+| GTX 1070 Ti (desktop, baseline) | ~7 | ~2.5 hr | **~21 hr** |
+| CPU only | <1 | hours | not viable |
+
+### VRAM tuning
+
+Batch size 48 uses ~8 GB VRAM. If your laptop GPU has less:
+
+| VRAM | `--batch` |
+|---|---|
+| 16 GB+ | 48 (default) — or 64 for faster epochs |
+| 8 GB | 48 |
+| 6 GB | 24 |
+| 4 GB | 16 |
+
+Halving batch size doubles batch count per epoch but per-batch wall time is roughly halved, so total time is similar. (Loss curves may differ slightly — the paper used 48.)
+
+## 4. Run eval
+
+After training completes:
 
 ```bash
-cd <project_root>
-python -u notebooks/wellsight/_ramachandran_verifier_train.py --epochs 1 --batch 48 --workers 4
 python -u notebooks/wellsight/_ramachandran_verifier_eval.py
 ```
 
-If you want to **continue from the existing checkpoint** (skip re-doing epoch 1), add this snippet at the top of `main()` in `_ramachandran_verifier_train.py` immediately after `model = build_model()`:
+Runs in ~5–15 min. Outputs:
+- `data/derivatives/ramachandran_verifier/verifier_test_metrics.csv` — precision, recall, F1, AP, threshold at 99% precision
+- `data/derivatives/ramachandran_verifier/test_probs.npz` — per-sample predictions for further analysis
 
-```python
-ckpt = OUT / "verifier_best.pt"
-if ckpt.exists():
-    state = torch.load(ckpt, map_location=DEVICE)
-    model.load_state_dict(state["model"])
-    print(f"Resumed from {ckpt}", flush=True)
-```
+## 5. What to look for in training output
 
-Then run with `--epochs 1` and it will continue training from val_acc 91.0% and likely push to 92–93%.
-
-## 3C. Full retrain + eval
-
-```bash
-cd <project_root>
-python -u notebooks/wellsight/_ramachandran_verifier_train.py --epochs 3 --batch 48 --workers 4
-python -u notebooks/wellsight/_ramachandran_verifier_eval.py
-```
-
-Time depends on your GPU:
-- RTX 30/40-series laptop GPU with Tensor Cores: ~1.5–3 hr (AMP gives real speedup)
-- GTX 16-series / older: ~6–10 hr
-- CPU only: don't try; will take days
-
-If laptop VRAM < 8 GB, drop `--batch` to 24 or 16.
-
-## 4. What to look for in training output
-
-Each epoch prints a summary line. Targets:
+Each epoch ends with a one-line summary:
 
 ```
-ep1/3 ... va_acc=0.85   # what we got on the desktop
-ep2/3 ... va_acc=0.91   # what's saved in verifier_best.pt now
-ep3/3 ... va_acc=0.92+  # what one more epoch should give
+ep1/8 tr_loss=... tr_acc=... va_loss=... va_acc=...
+...
+ep8/8 tr_loss=... tr_acc=... va_loss=... va_acc=...
+Best valid loss: X -> .../verifier_best.pt
 ```
 
-Loss values (`va_loss` ~1.4) look high because of focal loss accounting, not the model being bad. Use `va_acc` as the real signal.
+Mid-epoch prints fire every 50 batches with running loss / accuracy / img/s — these tell you whether throughput is stable.
 
-## 5. What the verifier does (for context)
+**Expected trajectory** (extrapolating from the 3-epoch PoC):
+```
+ep1 ~ va_acc 0.85       baseline
+ep2 ~ va_acc 0.91       fast climb
+ep3-4 ~ va_acc 0.92-0.93  plateau begins
+ep5-8 ~ va_acc 0.93-0.95  fine convergence
+```
 
-Binary classifier on 300×300 aerial chips: "is there a well pad in this image?" Trained on 8,949 positive + 58,220 negative crops from NAIP 60 cm imagery, replicating Ramachandran et al. 2024 (Nature Communications, 15:7036). Their paper used Google Earth tiles which can't be redistributed; NAIP is the closest public substitute.
+The paper-reported verifier operating point is **99% precision at ~90% recall** on test. The eval script reports both.
 
-The eval picks a probability threshold on the validation set that achieves 99% precision, then reports recall at that threshold on the held-out test set (9,193 samples). The paper's reported verifier precision is ~99%; matching their recall validates the methodology transfer to NAIP.
+`va_loss` numbers will look high (~1.0–1.5) because of focal-loss accounting — use `va_acc` and the eval-script outputs as the real signal.
+
+## 6. What the verifier does (for context)
+
+Binary classifier on 300×300 aerial chips: "is there a well pad in this image?" Trained on 8,949 positive + 58,220 negative crops from NAIP 60 cm imagery, replicating Ramachandran et al. 2024 (*Nature Communications* 15:7036). The paper used Google Earth tiles which can't be redistributed; NAIP is the closest public substitute.
+
+In the paper's deployment pipeline, the verifier is the second stage of a two-model setup:
+1. **Detector** (RetinaNet+ResNet-50) draws candidate boxes around possible pads
+2. **Verifier** (EfficientNet-B3, this model) re-classifies each cropped detection at high precision
+
+Training only the verifier still proves out the methodology — the paper's training code for the detector wasn't released, but the verifier is fully specified.
+
+The eval script picks a probability threshold on the validation set that hits 99% precision, then reports recall at that threshold on the held-out test set (9,193 samples). Matching the paper's ~90% recall at 99% precision validates that the methodology transfers from Google Earth to NAIP.
