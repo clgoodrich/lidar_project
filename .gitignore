@@ -48,6 +48,10 @@ data/files/OilGasLocations/
 *.laz
 *.copc.laz
 
+# ...except small synthetic test fixtures (a few KB each)
+!tests/fixtures/*.laz
+!tests/fixtures/*.las
+
 # External data downloads (NAIP chips, USGS 3DEP tiles, paper bundles)
 data/external/ramachandran_2024/naip_chips/
 data/external/ramachandran_2024/naip_chips_pilot/
@@ -75,8 +79,11 @@ data/derivatives/beck_*/*.tif
 # Per-tile temp intensity rasters (PDAL outputs during build)
 data/derivatives/_tmp_intensity_tiles_*/
 
-# Statewide ancillary at repo root
-/OilGasLocations_ConventionalUnconventional2026_04/
+# Statewide ancillary (PA O&G locations shapefile, PA land cover)
+# Patterns above (OilGasLocations_*/ and PA_LandCover/) already cover new
+# data/external/ locations since they have no anchor.
+# Legacy archived data dumps
+data/external/legacy_data/
 
 # Claude
 .claude/worktrees/

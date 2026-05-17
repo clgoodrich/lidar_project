@@ -268,13 +268,78 @@ for tag, suffix in TILES.items():
         })
 
 cand_df = pd.DataFrame(all_candidates)
-cand_gdf = gpd.GeoDataFrame(
+cand_gdf_template = gpd.GeoDataFrame(
     cand_df.drop(columns=['x', 'y']),
     geometry=[Point(x, y) for x, y in zip(cand_df['x'], cand_df['y'])],
     crs=CRS
 )
+print(f'\nTemplate candidates: {len(cand_gdf_template)}')
+
+# ---- STAGE 1b: Geomorphon-based candidate generation ----
+# Add any cell with enclosure >= 6 at lookup=8 that isn't already near a template candidate
+print('\nStage 1b: Geomorphon enclosure candidates (enc_8 >= 6)...')
+from scipy.spatial import cKDTree as cKDTree_stage1
+
+template_xy = np.c_[cand_gdf_template.geometry.x, cand_gdf_template.geometry.y]
+template_tree = cKDTree_stage1(template_xy)
+
+geo_candidates = []
+for tag, suffix in TILES.items():
+    enc_path = DERIV / f'geomorphon_enc_8{suffix}'
+    if not enc_path.exists():
+        continue
+    bounds, shape = get_tile_meta(suffix)
+    H, W = shape
+    X0g, Y0g, X1g, Y1g = bounds.left, bounds.bottom, bounds.right, bounds.top
+
+    with rasterio.open(enc_path) as ds:
+        enc = ds.read(1)
+
+    # Find cells with enclosure >= 6
+    high_enc = np.argwhere((enc >= 6) & (enc != 255))
+    print(f'  {tag}: {len(high_enc)} cells with enc>=6')
+
+    # Subsample with minimum spacing (same as template: 5m)
+    if len(high_enc) > 0:
+        # Use peak_local_max on enclosure to get spaced-out peaks
+        enc_float = enc.astype(np.float32)
+        enc_float[enc == 255] = 0
+        geo_peaks = peak_local_max(enc_float, min_distance=MIN_DIST_PEAKS,
+                                   threshold_abs=6, exclude_border=HALF)
+        print(f'    After spacing: {len(geo_peaks)} peaks')
+
+        for (r, c) in geo_peaks:
+            x = X0g + (c + 0.5) * RES
+            y = Y1g - (r + 0.5) * RES
+            # Check if already near a template candidate (within 3m)
+            dist, _ = template_tree.query([x, y], k=1)
+            if dist > 3.0:
+                geo_candidates.append({
+                    'x': x, 'y': y,
+                    'score': 0.0,  # no template score
+                    'multi_score': 0.0,
+                    'tile': tag,
+                })
+
+print(f'  New geomorphon-only candidates: {len(geo_candidates)}')
+
+# Merge template + geomorphon candidates
+if geo_candidates:
+    geo_df = pd.DataFrame(geo_candidates)
+    geo_gdf = gpd.GeoDataFrame(
+        geo_df.drop(columns=['x', 'y']),
+        geometry=[Point(x, y) for x, y in zip(geo_df['x'], geo_df['y'])],
+        crs=CRS
+    )
+    cand_gdf = gpd.GeoDataFrame(
+        pd.concat([cand_gdf_template, geo_gdf], ignore_index=True),
+        crs=CRS
+    )
+else:
+    cand_gdf = cand_gdf_template
+
 cand_gdf.to_file(DERIV / 'pit_1m_candidates_template.gpkg', driver='GPKG')
-print(f'\nTotal template candidates: {len(cand_gdf)}')
+print(f'Total merged candidates: {len(cand_gdf)}')
 
 # ============================================================
 # STAGE 2: Feature extraction
@@ -360,6 +425,17 @@ def extract_features_for_tile(tag, suffix, candidates_in_tile):
     else:
         rasters['match_score'] = np.zeros(shape, dtype=np.float32)
 
+    # Geomorphon enclosure counts at 3 scales
+    for lookup in [5, 8, 12]:
+        enc_path = DERIV / f'geomorphon_enc_{lookup}{suffix}'
+        if enc_path.exists():
+            with rasterio.open(enc_path) as ds:
+                enc = ds.read(1).astype(np.float32)
+                enc[enc == 255] = np.nan
+                rasters[f'enc_{lookup}'] = enc
+        else:
+            rasters[f'enc_{lookup}'] = np.full(shape, np.nan, dtype=np.float32)
+
     feat_list = []
     for idx, row in candidates_in_tile.iterrows():
         x, y = row.geometry.x, row.geometry.y
@@ -403,6 +479,15 @@ def extract_features_for_tile(tag, suffix, candidates_in_tile):
 
         # Match score at center
         out['match_score_center'] = float(rasters['match_score'][r, c])
+
+        # Geomorphon enclosure counts (point sample + local stats)
+        for lookup in [5, 8, 12]:
+            enc_r = rasters[f'enc_{lookup}']
+            out[f'enc_{lookup}_center'] = float(enc_r[r, c]) if np.isfinite(enc_r[r, c]) else np.nan
+            # Mean enclosure in inner ring (is the whole pit area enclosed?)
+            enc_win = enc_r[r1:r2, c1:c2]
+            enc_inner = enc_win[inner_mask]
+            out[f'enc_{lookup}_inner_mean'] = float(np.nanmean(enc_inner)) if np.isfinite(enc_inner).any() else np.nan
 
         # Morphology features from LRM_5
         lrm5_w = rasters['lrm_5'][r1:r2, c1:c2]
