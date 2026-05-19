@@ -1,0 +1,28 @@
+{
+  "mean_ensemble": {
+    "pixel_iou": {
+      "bg": 0.9952856294296,
+      "floor": 0.4391334250343879,
+      "wall": 0.512694019973529
+    },
+    "n_test_pits": 20,
+    "n_detected_any": 20,
+    "n_solid_iou_gt_0.3": 18,
+    "mean_pit_iou_local": 0.6685789339384957,
+    "median_pit_iou_local": 0.726112999616207,
+    "mean_recall_any_pit": 0.797089500227985
+  },
+  "maxpit_ensemble": {
+    "pixel_iou": {
+      "bg": 0.9934838318958702,
+      "floor": 0.42176,
+      "wall": 0.45790513833992097
+    },
+    "n_test_pits": 20,
+    "n_detected_any": 20,
+    "n_solid_iou_gt_0.3": 18,
+    "mean_pit_iou_local": 0.6771568342662755,
+    "median_pit_iou_local": 0.7152278480585976,
+    "mean_recall_any_pit": 0.8582354325366424
+  }
+}

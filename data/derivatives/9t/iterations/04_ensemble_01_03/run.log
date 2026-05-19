@@ -1,0 +1,22 @@
+Device: cuda
+[iter 01] loaded ep 20 miou=0.594 channels=7
+[iter 03] loaded ep 26 miou=0.639 channels=11
+Inference grid: 47 x 47 = 2209 patches (TTA 8x each, both models)
+  ensemble inference done in 820.0s
+  wrote 6 rasters to C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\04_ensemble_01_03
+
+[mean] TEST pixel IoU: bg=0.995  floor=0.439  wall=0.513
+[mean] Per-pit (20 pits):
+  mean local IoU:   0.669
+  median local IoU: 0.726
+  detected (>=10%): 20/20
+  local IoU > 0.3:  18/20
+
+[maxpit] TEST pixel IoU: bg=0.993  floor=0.422  wall=0.458
+[maxpit] Per-pit (20 pits):
+  mean local IoU:   0.677
+  median local IoU: 0.715
+  detected (>=10%): 20/20
+  local IoU > 0.3:  18/20
+
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\04_ensemble_01_03
