@@ -10,11 +10,29 @@ data/external/lidar/**/*.laz
 data/external/lidar/**/*.las
 data/derivatives/*.tif
 data/derivatives/*.png
-data/derivatives/9t/
+data/derivatives/9t/*.tif
+data/derivatives/9t/*.png
+data/derivatives/9t/*.gpkg
+data/derivatives/9t/*.pt
+data/derivatives/9t/*.csv
+data/derivatives/9t/*.json
+data/derivatives/9t/*.las
+data/derivatives/9t/*.laz
+data/derivatives/9t/pit_unet_v2/
+data/derivatives/9t/plat_unet/
+data/derivatives/9t/road_classifier/
+data/derivatives/9t/road_unet/
 data/derivatives/model_archive/*.gpkg
 
 # Keep annotations and candidate GPKGs (small)
 !data/derivatives/annotations/
+
+# Keep iteration metrics + train logs + run logs (small; large rasters/checkpoints excluded below)
+!data/derivatives/9t/iterations/
+!data/derivatives/9t/iterations/**/
+data/derivatives/9t/iterations/**/*.pt
+data/derivatives/9t/iterations/**/*.tif
+data/derivatives/9t/iterations/**/*.png
 
 # Land cover data
 nlcd_*/
