@@ -1,0 +1,68 @@
+Device: cuda
+train pits=74 tiles_per_epoch=148
+val   pits=16 tiles_per_epoch=32
+Building SMP U-Net (encoder=resnet34, ImageNet weights, in_ch=11, classes=3)
+SMP UNet params: 24.46 M
+ep   1/40  tr_loss=0.0155 va_loss=0.0483  va_iou bg=0.476 floor=0.000 wall=0.009  miou(pit)=0.004  9.7s
+    -> new best miou(pit)=0.004, saved
+ep   2/40  tr_loss=0.0042 va_loss=0.0160  va_iou bg=0.952 floor=0.005 wall=0.025  miou(pit)=0.015  4.8s
+    -> new best miou(pit)=0.015, saved
+ep   3/40  tr_loss=0.0029 va_loss=0.0052  va_iou bg=0.892 floor=0.027 wall=0.086  miou(pit)=0.057  4.7s
+    -> new best miou(pit)=0.057, saved
+ep   4/40  tr_loss=0.0019 va_loss=0.0015  va_iou bg=0.984 floor=0.468 wall=0.332  miou(pit)=0.400  4.4s
+    -> new best miou(pit)=0.400, saved
+ep   5/40  tr_loss=0.0016 va_loss=0.0019  va_iou bg=0.983 floor=0.284 wall=0.295  miou(pit)=0.289  4.4s
+ep   6/40  tr_loss=0.0013 va_loss=0.0009  va_iou bg=0.993 floor=0.500 wall=0.475  miou(pit)=0.488  4.4s
+    -> new best miou(pit)=0.488, saved
+ep   7/40  tr_loss=0.0012 va_loss=0.0009  va_iou bg=0.991 floor=0.400 wall=0.410  miou(pit)=0.405  4.4s
+ep   8/40  tr_loss=0.0012 va_loss=0.0009  va_iou bg=0.991 floor=0.380 wall=0.367  miou(pit)=0.373  4.3s
+ep   9/40  tr_loss=0.0012 va_loss=0.0012  va_iou bg=0.988 floor=0.315 wall=0.368  miou(pit)=0.342  4.4s
+ep  10/40  tr_loss=0.0013 va_loss=0.0010  va_iou bg=0.994 floor=0.583 wall=0.549  miou(pit)=0.566  4.4s
+    -> new best miou(pit)=0.566, saved
+ep  11/40  tr_loss=0.0011 va_loss=0.0008  va_iou bg=0.990 floor=0.487 wall=0.440  miou(pit)=0.463  4.3s
+ep  12/40  tr_loss=0.0010 va_loss=0.0008  va_iou bg=0.994 floor=0.553 wall=0.532  miou(pit)=0.542  4.3s
+ep  13/40  tr_loss=0.0009 va_loss=0.0008  va_iou bg=0.992 floor=0.513 wall=0.483  miou(pit)=0.498  4.3s
+ep  14/40  tr_loss=0.0008 va_loss=0.0006  va_iou bg=0.993 floor=0.557 wall=0.481  miou(pit)=0.519  4.3s
+ep  15/40  tr_loss=0.0009 va_loss=0.0006  va_iou bg=0.994 floor=0.586 wall=0.522  miou(pit)=0.554  4.3s
+ep  16/40  tr_loss=0.0009 va_loss=0.0006  va_iou bg=0.992 floor=0.643 wall=0.475  miou(pit)=0.559  4.3s
+ep  17/40  tr_loss=0.0009 va_loss=0.0008  va_iou bg=0.991 floor=0.536 wall=0.445  miou(pit)=0.491  4.4s
+ep  18/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.989 floor=0.496 wall=0.432  miou(pit)=0.464  4.3s
+ep  19/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.992 floor=0.513 wall=0.479  miou(pit)=0.496  4.3s
+ep  20/40  tr_loss=0.0009 va_loss=0.0008  va_iou bg=0.990 floor=0.561 wall=0.451  miou(pit)=0.506  4.3s
+ep  21/40  tr_loss=0.0008 va_loss=0.0006  va_iou bg=0.995 floor=0.644 wall=0.562  miou(pit)=0.603  4.3s
+    -> new best miou(pit)=0.603, saved
+ep  22/40  tr_loss=0.0008 va_loss=0.0006  va_iou bg=0.995 floor=0.678 wall=0.580  miou(pit)=0.629  4.3s
+    -> new best miou(pit)=0.629, saved
+ep  23/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.992 floor=0.609 wall=0.469  miou(pit)=0.539  4.3s
+ep  24/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.991 floor=0.473 wall=0.432  miou(pit)=0.453  4.3s
+ep  25/40  tr_loss=0.0007 va_loss=0.0006  va_iou bg=0.992 floor=0.613 wall=0.486  miou(pit)=0.550  4.3s
+ep  26/40  tr_loss=0.0007 va_loss=0.0006  va_iou bg=0.995 floor=0.693 wall=0.586  miou(pit)=0.639  4.3s
+    -> new best miou(pit)=0.639, saved
+ep  27/40  tr_loss=0.0007 va_loss=0.0006  va_iou bg=0.994 floor=0.606 wall=0.543  miou(pit)=0.575  4.3s
+ep  28/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.991 floor=0.570 wall=0.441  miou(pit)=0.505  4.3s
+ep  29/40  tr_loss=0.0008 va_loss=0.0006  va_iou bg=0.993 floor=0.568 wall=0.488  miou(pit)=0.528  4.3s
+ep  30/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.993 floor=0.550 wall=0.512  miou(pit)=0.531  4.3s
+ep  31/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.991 floor=0.577 wall=0.497  miou(pit)=0.537  4.3s
+ep  32/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.994 floor=0.614 wall=0.518  miou(pit)=0.566  4.3s
+ep  33/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.993 floor=0.623 wall=0.523  miou(pit)=0.573  4.3s
+ep  34/40  tr_loss=0.0007 va_loss=0.0006  va_iou bg=0.995 floor=0.635 wall=0.565  miou(pit)=0.600  4.3s
+ep  35/40  tr_loss=0.0007 va_loss=0.0006  va_iou bg=0.994 floor=0.608 wall=0.538  miou(pit)=0.573  4.3s
+ep  36/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.993 floor=0.584 wall=0.507  miou(pit)=0.546  4.3s
+ep  37/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.994 floor=0.630 wall=0.545  miou(pit)=0.588  4.3s
+ep  38/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.992 floor=0.587 wall=0.515  miou(pit)=0.551  4.3s
+ep  39/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.994 floor=0.649 wall=0.571  miou(pit)=0.610  4.3s
+ep  40/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.993 floor=0.621 wall=0.509  miou(pit)=0.565  4.2s
+
+Best val miou(pit): 0.639
+
+Loaded best from ep 26 (miou=0.639). Running TTA inference...
+Inference grid: 47x47 = 2209 patches (TTA 8x)
+  TTA inference done in 137.8s
+
+TEST pixel IoU: bg=0.995  floor=0.456  wall=0.505
+Per-pit (20 pits):
+  mean local IoU:   0.648
+  median local IoU: 0.726
+  detected (>=10%): 18/20
+  local IoU > 0.3:  17/20
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\03_multiscale_feats

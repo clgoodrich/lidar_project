@@ -1,0 +1,13 @@
+{
+  "pixel_iou": {
+    "bg": 0.9948420185501222,
+    "floor": 0.45646349631614197,
+    "wall": 0.504952749629967
+  },
+  "n_test_pits": 20,
+  "n_detected_any": 18,
+  "n_solid_iou_gt_0.3": 17,
+  "mean_pit_iou_local": 0.6476356458940532,
+  "median_pit_iou_local": 0.7260944121305102,
+  "mean_recall_any_pit": 0.8023907365055181
+}
