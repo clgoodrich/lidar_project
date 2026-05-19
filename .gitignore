@@ -5,6 +5,9 @@ data/files/*.copc.laz
 data/files/older_files/
 data/files/mcKean/
 data/files/seperate sections/
+data/external/lidar/*/laz/
+data/external/lidar/**/*.laz
+data/external/lidar/**/*.las
 data/derivatives/*.tif
 data/derivatives/*.png
 data/derivatives/9t/
