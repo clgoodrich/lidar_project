@@ -1,0 +1,151 @@
+{
+  "baseline": {
+    "floor_pixel_iou": 0.42176,
+    "wall_pixel_iou": 0.45790513833992097,
+    "mean_pit_iou": 0.6771568342662755,
+    "median_pit_iou": 0.7152278480585976,
+    "detected_ge_10pct": 20,
+    "iou_gt_0.3": 18,
+    "n_test_pits": 20
+  },
+  "configs": {
+    "v2_safe_buf3": {
+      "cfg": {
+        "buffer_m": 3.0,
+        "elong_t": 3.0,
+        "road_max_t": 0.5,
+        "road_mean_t": 0.3,
+        "long_area_t": 60.0,
+        "elong_big_t": 4.0,
+        "on_road_t": 0.5,
+        "vec_elong_t": 1.5,
+        "on_road_high_t": 0.9
+      },
+      "n_dropped": 63,
+      "metrics": {
+        "floor_pixel_iou": 0.4284785435630689,
+        "wall_pixel_iou": 0.4703852205247932,
+        "mean_pit_iou": 0.6771568342662755,
+        "median_pit_iou": 0.7152278480585976,
+        "detected_ge_10pct": 20,
+        "iou_gt_0.3": 18,
+        "n_test_pits": 20
+      }
+    },
+    "v2_safe_buf5": {
+      "cfg": {
+        "buffer_m": 5.0,
+        "elong_t": 3.0,
+        "road_max_t": 0.5,
+        "road_mean_t": 0.3,
+        "long_area_t": 60.0,
+        "elong_big_t": 4.0,
+        "on_road_t": 0.5,
+        "vec_elong_t": 1.5,
+        "on_road_high_t": 0.9
+      },
+      "n_dropped": 74,
+      "metrics": {
+        "floor_pixel_iou": 0.43441001977587346,
+        "wall_pixel_iou": 0.4766263821033685,
+        "mean_pit_iou": 0.6771568342662755,
+        "median_pit_iou": 0.7152278480585976,
+        "detected_ge_10pct": 20,
+        "iou_gt_0.3": 18,
+        "n_test_pits": 20
+      }
+    },
+    "v2_moderate_buf3": {
+      "cfg": {
+        "buffer_m": 3.0,
+        "elong_t": 2.5,
+        "road_max_t": 0.4,
+        "road_mean_t": 0.25,
+        "long_area_t": 40.0,
+        "elong_big_t": 3.0,
+        "on_road_t": 0.4,
+        "vec_elong_t": 1.4,
+        "on_road_high_t": 0.8
+      },
+      "n_dropped": 132,
+      "metrics": {
+        "floor_pixel_iou": 0.4284785435630689,
+        "wall_pixel_iou": 0.4741149989768774,
+        "mean_pit_iou": 0.6771568342662755,
+        "median_pit_iou": 0.7152278480585976,
+        "detected_ge_10pct": 20,
+        "iou_gt_0.3": 18,
+        "n_test_pits": 20
+      }
+    },
+    "v2_moderate_buf5": {
+      "cfg": {
+        "buffer_m": 5.0,
+        "elong_t": 2.5,
+        "road_max_t": 0.4,
+        "road_mean_t": 0.25,
+        "long_area_t": 40.0,
+        "elong_big_t": 3.0,
+        "on_road_t": 0.4,
+        "vec_elong_t": 1.4,
+        "on_road_high_t": 0.8
+      },
+      "n_dropped": 140,
+      "metrics": {
+        "floor_pixel_iou": 0.43441001977587346,
+        "wall_pixel_iou": 0.47990886495443247,
+        "mean_pit_iou": 0.6771568342662755,
+        "median_pit_iou": 0.7152278480585976,
+        "detected_ge_10pct": 20,
+        "iou_gt_0.3": 18,
+        "n_test_pits": 20
+      }
+    },
+    "v2_aggressive_buf5": {
+      "cfg": {
+        "buffer_m": 5.0,
+        "elong_t": 2.0,
+        "road_max_t": 0.3,
+        "road_mean_t": 0.2,
+        "long_area_t": 25.0,
+        "elong_big_t": 2.5,
+        "on_road_t": 0.3,
+        "vec_elong_t": 1.3,
+        "on_road_high_t": 0.7
+      },
+      "n_dropped": 237,
+      "metrics": {
+        "floor_pixel_iou": 0.41853562005277045,
+        "wall_pixel_iou": 0.46555981715967004,
+        "mean_pit_iou": 0.6346721716895884,
+        "median_pit_iou": 0.6891741321978578,
+        "detected_ge_10pct": 19,
+        "iou_gt_0.3": 17,
+        "n_test_pits": 20
+      }
+    },
+    "v2_aggressive_buf8": {
+      "cfg": {
+        "buffer_m": 8.0,
+        "elong_t": 2.0,
+        "road_max_t": 0.3,
+        "road_mean_t": 0.2,
+        "long_area_t": 25.0,
+        "elong_big_t": 2.5,
+        "on_road_t": 0.3,
+        "vec_elong_t": 1.3,
+        "on_road_high_t": 0.7
+      },
+      "n_dropped": 246,
+      "metrics": {
+        "floor_pixel_iou": 0.41853562005277045,
+        "wall_pixel_iou": 0.468068247847446,
+        "mean_pit_iou": 0.6346721716895884,
+        "median_pit_iou": 0.6891741321978578,
+        "detected_ge_10pct": 19,
+        "iou_gt_0.3": 17,
+        "n_test_pits": 20
+      }
+    }
+  }
+}

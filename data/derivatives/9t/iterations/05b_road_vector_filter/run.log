@@ -1,0 +1,88 @@
+Loading rasters...
+Building road-line buffer masks for sweep widths...
+  buffer 3.0 m -> mask sum=596,951 px (149,238 m^2); labeled pits with centroid inside buffer: 1/110
+  buffer 5.0 m -> mask sum=992,800 px (248,200 m^2); labeled pits with centroid inside buffer: 2/110
+  buffer 8.0 m -> mask sum=1,578,571 px (394,643 m^2); labeled pits with centroid inside buffer: 7/110
+
+Baseline (no filter):
+  floor_pixel_iou        0.42176
+  wall_pixel_iou         0.45790513833992097
+  mean_pit_iou           0.6771568342662755
+  median_pit_iou         0.7152278480585976
+  detected_ge_10pct      20
+  iou_gt_0.3             18
+  n_test_pits            20
+
+Config 'v2_safe_buf3': {'buffer_m': 3.0, 'elong_t': 3.0, 'road_max_t': 0.5, 'road_mean_t': 0.3, 'long_area_t': 60.0, 'elong_big_t': 4.0, 'on_road_t': 0.5, 'vec_elong_t': 1.5, 'on_road_high_t': 0.9}
+  components: 1481
+  drop 63 components, keep 1157
+  metrics after filter:
+    floor_pixel_iou        0.4284785435630689
+    wall_pixel_iou         0.4703852205247932
+    mean_pit_iou           0.6771568342662755
+    median_pit_iou         0.7152278480585976
+    detected_ge_10pct      20
+    iou_gt_0.3             18
+    n_test_pits            20
+
+Config 'v2_safe_buf5': {'buffer_m': 5.0, 'elong_t': 3.0, 'road_max_t': 0.5, 'road_mean_t': 0.3, 'long_area_t': 60.0, 'elong_big_t': 4.0, 'on_road_t': 0.5, 'vec_elong_t': 1.5, 'on_road_high_t': 0.9}
+  components: 1481
+  drop 74 components, keep 1146
+  metrics after filter:
+    floor_pixel_iou        0.43441001977587346
+    wall_pixel_iou         0.4766263821033685
+    mean_pit_iou           0.6771568342662755
+    median_pit_iou         0.7152278480585976
+    detected_ge_10pct      20
+    iou_gt_0.3             18
+    n_test_pits            20
+
+Config 'v2_moderate_buf3': {'buffer_m': 3.0, 'elong_t': 2.5, 'road_max_t': 0.4, 'road_mean_t': 0.25, 'long_area_t': 40.0, 'elong_big_t': 3.0, 'on_road_t': 0.4, 'vec_elong_t': 1.4, 'on_road_high_t': 0.8}
+  components: 1481
+  drop 132 components, keep 1088
+  metrics after filter:
+    floor_pixel_iou        0.4284785435630689
+    wall_pixel_iou         0.4741149989768774
+    mean_pit_iou           0.6771568342662755
+    median_pit_iou         0.7152278480585976
+    detected_ge_10pct      20
+    iou_gt_0.3             18
+    n_test_pits            20
+
+Config 'v2_moderate_buf5': {'buffer_m': 5.0, 'elong_t': 2.5, 'road_max_t': 0.4, 'road_mean_t': 0.25, 'long_area_t': 40.0, 'elong_big_t': 3.0, 'on_road_t': 0.4, 'vec_elong_t': 1.4, 'on_road_high_t': 0.8}
+  components: 1481
+  drop 140 components, keep 1080
+  metrics after filter:
+    floor_pixel_iou        0.43441001977587346
+    wall_pixel_iou         0.47990886495443247
+    mean_pit_iou           0.6771568342662755
+    median_pit_iou         0.7152278480585976
+    detected_ge_10pct      20
+    iou_gt_0.3             18
+    n_test_pits            20
+
+Config 'v2_aggressive_buf5': {'buffer_m': 5.0, 'elong_t': 2.0, 'road_max_t': 0.3, 'road_mean_t': 0.2, 'long_area_t': 25.0, 'elong_big_t': 2.5, 'on_road_t': 0.3, 'vec_elong_t': 1.3, 'on_road_high_t': 0.7}
+  components: 1481
+  drop 237 components, keep 983
+  metrics after filter:
+    floor_pixel_iou        0.41853562005277045
+    wall_pixel_iou         0.46555981715967004
+    mean_pit_iou           0.6346721716895884
+    median_pit_iou         0.6891741321978578
+    detected_ge_10pct      19
+    iou_gt_0.3             17
+    n_test_pits            20
+
+Config 'v2_aggressive_buf8': {'buffer_m': 8.0, 'elong_t': 2.0, 'road_max_t': 0.3, 'road_mean_t': 0.2, 'long_area_t': 25.0, 'elong_big_t': 2.5, 'on_road_t': 0.3, 'vec_elong_t': 1.3, 'on_road_high_t': 0.7}
+  components: 1481
+  drop 246 components, keep 974
+  metrics after filter:
+    floor_pixel_iou        0.41853562005277045
+    wall_pixel_iou         0.468068247847446
+    mean_pit_iou           0.6346721716895884
+    median_pit_iou         0.6891741321978578
+    detected_ge_10pct      19
+    iou_gt_0.3             17
+    n_test_pits            20
+
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\05b_road_vector_filter

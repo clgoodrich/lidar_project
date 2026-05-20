@@ -19,6 +19,7 @@ All numbers are on the 9t tile at 0.5 m/px, evaluated with 8-fold TTA. Training 
 | [iter 05](iter_05_road_postfilter.md) — road-aware post-filter (safe) on maxpit | `iter-05-road-postfilter` | n/a | 0.422 | 0.466 | **0.677** | 0.715 | **20/20** | **18/20** |
 | [iter 05](iter_05_road_postfilter.md) — road-aware post-filter (moderate) on maxpit | `iter-05-road-postfilter` | n/a | 0.422 | 0.469 | **0.677** | 0.715 | **20/20** | **18/20** |
 | [iter 05](iter_05_road_postfilter.md) **aggressive** — road-aware post-filter on maxpit | `iter-05-road-postfilter` | n/a | 0.422 | 0.471 | **0.677** | 0.715 | **20/20** | **18/20** |
+| [iter 05b](iter_05b_road_vector_filter.md) **moderate_buf5** — adds hand-drawn road buffer signal | `iter-05b-road-vector-filter` | n/a | **0.434** | **0.480** | **0.677** | 0.715 | **20/20** | **18/20** |
 
 Bold = column leader. Bolds split across rows are deliberate — multiple iterations now share the top of the detection-rate / solid-hit columns.
 
@@ -42,11 +43,14 @@ Per-pixel max of pit-class probs from both models, then re-normalized. Highest m
 **Iter 05 road-aware post-filter — kills road FPs with zero test-recall cost.**
 Component-wise filter on top of maxpit: drops any connected component that is BOTH elongated (PCA major/minor ratio above threshold) AND road-tagged (mean / max road_unet probability above threshold). Three threshold configs (safe / moderate / aggressive) all preserve 20/20 detection and 0.677 mean per-pit IoU; aggressive drops 225 false-positive components and lifts wall pixel IoU to 0.471. Operational layer recommendation upgrades from "iter 04 mean" to "iter 05 aggressive".
 
+**Iter 05b road-vector + prob filter — uses hand-drawn road lines as a second signal.**
+Iter 05 relied only on the road U-Net's probability raster, which has gaps. iter 05b also rasterizes a buffered union of all hand-drawn roads + not_roads (134 lines total) and drops components that overlap that buffer heavily AND show any elongation. Sweep of (buffer width × aggressiveness) found `moderate_buf5` (5 m buffer, on_road_frac ≥ 0.4, vec_elong ≥ 1.4) is the new operational champion — moves floor pixel IoU 0.422 → 0.434 and wall pixel IoU 0.471 → 0.480 with no test-recall cost. Aggressive configs break 20/20 safety; moderate is the operational pick.
+
 ## What this implies
 
 - The ensemble is approximately the **ceiling of what's reachable with current labels**. Two complementary models can be averaged; that's the end of the "free gains" road.
 - To meaningfully beat iter 04, we need more labels (110 → 300+) or an architectural change targeted at preserving spatial detail (HRNet, dilated-stem ResNet, no-downsample input branch). Both are real next moves; more labels has higher expected leverage.
-- For operational deployment (candidate generation in QGIS, field review): **use `iter 05 aggressive` (filtered_argmax_aggressive.tif)** as the canonical layer. It carries iter 04 maxpit's strong detection but without the 200+ road-shoulder false positives. `iter 04 mean` remains a strong default when the road model isn't available. Iter 03 remains the single-model champion when a one-network deployment is needed.
+- For operational deployment (candidate generation in QGIS, field review): **use `iter 05b moderate_buf5` (filtered_argmax_v2_moderate_buf5.tif)** as the canonical layer. Best of both filter approaches: hand-drawn road buffer catches FPs the road U-Net missed, but conservative-enough thresholds preserve 20/20 detection. `iter 04 mean` remains a strong default when the road model is not available. Iter 03 remains the single-model champion when a one-network deployment is needed.
 
 ## Metric definitions
 
