@@ -1,0 +1,5 @@
+{
+  "pixel_iou_road_test": 0.2877707445684218,
+  "line_average_precision_test": 0.9378123798539023,
+  "n_test_lines_evaluated": 19
+}

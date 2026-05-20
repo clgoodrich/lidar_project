@@ -1,0 +1,62 @@
+Device: cuda
+train roads=63 not_roads=32 tiles/ep=189
+val   roads=17 not_roads=3 tiles/ep=51
+ep   1/40  tr_loss=0.0149 va_loss=0.0136  va_iou bg=0.935 road=0.101  7.9s
+    -> new best, saved
+ep   2/40  tr_loss=0.0102 va_loss=0.0102  va_iou bg=0.935 road=0.153  4.5s
+    -> new best, saved
+ep   3/40  tr_loss=0.0096 va_loss=0.0102  va_iou bg=0.862 road=0.106  4.1s
+ep   4/40  tr_loss=0.0096 va_loss=0.0086  va_iou bg=0.892 road=0.126  4.0s
+ep   5/40  tr_loss=0.0091 va_loss=0.0091  va_iou bg=0.915 road=0.155  4.1s
+    -> new best, saved
+ep   6/40  tr_loss=0.0091 va_loss=0.0084  va_iou bg=0.854 road=0.126  4.1s
+ep   7/40  tr_loss=0.0086 va_loss=0.0071  va_iou bg=0.951 road=0.172  4.0s
+    -> new best, saved
+ep   8/40  tr_loss=0.0082 va_loss=0.0108  va_iou bg=0.867 road=0.121  4.1s
+ep   9/40  tr_loss=0.0078 va_loss=0.0068  va_iou bg=0.954 road=0.263  4.0s
+    -> new best, saved
+ep  10/40  tr_loss=0.0080 va_loss=0.0077  va_iou bg=0.951 road=0.233  4.1s
+ep  11/40  tr_loss=0.0081 va_loss=0.0086  va_iou bg=0.933 road=0.191  4.0s
+ep  12/40  tr_loss=0.0070 va_loss=0.0124  va_iou bg=0.771 road=0.085  4.0s
+ep  13/40  tr_loss=0.0075 va_loss=0.0095  va_iou bg=0.944 road=0.227  4.0s
+ep  14/40  tr_loss=0.0076 va_loss=0.0058  va_iou bg=0.954 road=0.225  4.0s
+ep  15/40  tr_loss=0.0075 va_loss=0.0060  va_iou bg=0.952 road=0.220  4.0s
+ep  16/40  tr_loss=0.0068 va_loss=0.0060  va_iou bg=0.964 road=0.244  4.1s
+ep  17/40  tr_loss=0.0072 va_loss=0.0054  va_iou bg=0.958 road=0.245  4.0s
+ep  18/40  tr_loss=0.0066 va_loss=0.0064  va_iou bg=0.928 road=0.214  4.0s
+ep  19/40  tr_loss=0.0068 va_loss=0.0073  va_iou bg=0.941 road=0.194  4.1s
+ep  20/40  tr_loss=0.0067 va_loss=0.0060  va_iou bg=0.960 road=0.255  4.0s
+ep  21/40  tr_loss=0.0066 va_loss=0.0059  va_iou bg=0.940 road=0.213  4.0s
+ep  22/40  tr_loss=0.0059 va_loss=0.0059  va_iou bg=0.948 road=0.234  4.0s
+ep  23/40  tr_loss=0.0067 va_loss=0.0066  va_iou bg=0.950 road=0.264  4.0s
+    -> new best, saved
+ep  24/40  tr_loss=0.0060 va_loss=0.0086  va_iou bg=0.968 road=0.290  4.1s
+    -> new best, saved
+ep  25/40  tr_loss=0.0066 va_loss=0.0053  va_iou bg=0.960 road=0.274  4.0s
+ep  26/40  tr_loss=0.0058 va_loss=0.0057  va_iou bg=0.941 road=0.230  4.0s
+ep  27/40  tr_loss=0.0059 va_loss=0.0059  va_iou bg=0.957 road=0.263  4.0s
+ep  28/40  tr_loss=0.0061 va_loss=0.0056  va_iou bg=0.942 road=0.223  4.1s
+ep  29/40  tr_loss=0.0061 va_loss=0.0054  va_iou bg=0.949 road=0.251  4.0s
+ep  30/40  tr_loss=0.0059 va_loss=0.0064  va_iou bg=0.939 road=0.223  4.0s
+ep  31/40  tr_loss=0.0062 va_loss=0.0062  va_iou bg=0.957 road=0.256  4.0s
+ep  32/40  tr_loss=0.0059 va_loss=0.0054  va_iou bg=0.938 road=0.234  4.0s
+ep  33/40  tr_loss=0.0057 va_loss=0.0064  va_iou bg=0.961 road=0.281  4.1s
+ep  34/40  tr_loss=0.0059 va_loss=0.0057  va_iou bg=0.943 road=0.236  4.0s
+ep  35/40  tr_loss=0.0055 va_loss=0.0076  va_iou bg=0.947 road=0.245  4.1s
+ep  36/40  tr_loss=0.0053 va_loss=0.0050  va_iou bg=0.952 road=0.273  4.0s
+ep  37/40  tr_loss=0.0063 va_loss=0.0065  va_iou bg=0.957 road=0.272  4.0s
+ep  38/40  tr_loss=0.0055 va_loss=0.0054  va_iou bg=0.955 road=0.271  4.0s
+ep  39/40  tr_loss=0.0057 va_loss=0.0071  va_iou bg=0.940 road=0.243  4.0s
+ep  40/40  tr_loss=0.0057 va_loss=0.0071  va_iou bg=0.936 road=0.224  4.0s
+
+Best val road IoU: 0.290
+
+Loaded best ep 24 (road IoU=0.290). TTA inference...
+Inference grid: 47x47 = 2209 patches (TTA 8x)
+  TTA inference done in 108.5s
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\iter_01_tta_miou\train.py:137: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  ap = float(np.trapz(prec, rec))
+
+TEST pixel IoU (road): 0.288
+Per-line AP on test:   0.9378123798539023
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\road_01_tta_miou
