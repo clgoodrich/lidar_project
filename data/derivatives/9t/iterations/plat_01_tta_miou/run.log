@@ -1,0 +1,71 @@
+Device: cuda
+train plats=51 tiles_per_epoch=102
+val   plats=16 tiles_per_epoch=32
+ep   1/40  tr_loss=0.0330 va_loss=0.0318  va_iou bg=0.768 plat=0.160  10.2s
+    -> new best, saved
+ep   2/40  tr_loss=0.0215 va_loss=0.0248  va_iou bg=0.831 plat=0.175  6.2s
+    -> new best, saved
+ep   3/40  tr_loss=0.0221 va_loss=0.0202  va_iou bg=0.857 plat=0.162  5.8s
+ep   4/40  tr_loss=0.0192 va_loss=0.0222  va_iou bg=0.831 plat=0.188  5.8s
+    -> new best, saved
+ep   5/40  tr_loss=0.0189 va_loss=0.0185  va_iou bg=0.802 plat=0.162  5.7s
+ep   6/40  tr_loss=0.0181 va_loss=0.0198  va_iou bg=0.715 plat=0.143  5.6s
+ep   7/40  tr_loss=0.0178 va_loss=0.0223  va_iou bg=0.701 plat=0.178  5.4s
+ep   8/40  tr_loss=0.0164 va_loss=0.0404  va_iou bg=0.556 plat=0.127  5.4s
+ep   9/40  tr_loss=0.0157 va_loss=0.0291  va_iou bg=0.693 plat=0.159  5.5s
+ep  10/40  tr_loss=0.0162 va_loss=0.0186  va_iou bg=0.806 plat=0.183  5.4s
+ep  11/40  tr_loss=0.0154 va_loss=0.0150  va_iou bg=0.890 plat=0.236  5.4s
+    -> new best, saved
+ep  12/40  tr_loss=0.0142 va_loss=0.0165  va_iou bg=0.877 plat=0.244  5.5s
+    -> new best, saved
+ep  13/40  tr_loss=0.0143 va_loss=0.0154  va_iou bg=0.932 plat=0.318  5.4s
+    -> new best, saved
+ep  14/40  tr_loss=0.0134 va_loss=0.0252  va_iou bg=0.948 plat=0.237  5.4s
+ep  15/40  tr_loss=0.0136 va_loss=0.0152  va_iou bg=0.871 plat=0.271  5.5s
+ep  16/40  tr_loss=0.0132 va_loss=0.0207  va_iou bg=0.937 plat=0.290  5.5s
+ep  17/40  tr_loss=0.0138 va_loss=0.0220  va_iou bg=0.939 plat=0.249  5.4s
+ep  18/40  tr_loss=0.0135 va_loss=0.0132  va_iou bg=0.897 plat=0.298  5.5s
+ep  19/40  tr_loss=0.0122 va_loss=0.0183  va_iou bg=0.947 plat=0.273  5.5s
+ep  20/40  tr_loss=0.0125 va_loss=0.0127  va_iou bg=0.909 plat=0.337  5.5s
+    -> new best, saved
+ep  21/40  tr_loss=0.0124 va_loss=0.0118  va_iou bg=0.919 plat=0.280  5.4s
+ep  22/40  tr_loss=0.0115 va_loss=0.0160  va_iou bg=0.928 plat=0.353  5.4s
+    -> new best, saved
+ep  23/40  tr_loss=0.0121 va_loss=0.0133  va_iou bg=0.929 plat=0.339  5.4s
+ep  24/40  tr_loss=0.0110 va_loss=0.0150  va_iou bg=0.927 plat=0.357  5.4s
+    -> new best, saved
+ep  25/40  tr_loss=0.0115 va_loss=0.0167  va_iou bg=0.945 plat=0.347  5.5s
+ep  26/40  tr_loss=0.0115 va_loss=0.0132  va_iou bg=0.924 plat=0.363  5.3s
+    -> new best, saved
+ep  27/40  tr_loss=0.0111 va_loss=0.0157  va_iou bg=0.923 plat=0.343  5.1s
+ep  28/40  tr_loss=0.0110 va_loss=0.0151  va_iou bg=0.943 plat=0.350  5.1s
+ep  29/40  tr_loss=0.0110 va_loss=0.0176  va_iou bg=0.938 plat=0.322  5.1s
+ep  30/40  tr_loss=0.0114 va_loss=0.0123  va_iou bg=0.925 plat=0.368  5.1s
+    -> new best, saved
+ep  31/40  tr_loss=0.0100 va_loss=0.0143  va_iou bg=0.942 plat=0.328  5.3s
+ep  32/40  tr_loss=0.0110 va_loss=0.0151  va_iou bg=0.933 plat=0.353  5.1s
+ep  33/40  tr_loss=0.0104 va_loss=0.0153  va_iou bg=0.933 plat=0.394  5.1s
+    -> new best, saved
+ep  34/40  tr_loss=0.0105 va_loss=0.0161  va_iou bg=0.939 plat=0.385  5.1s
+ep  35/40  tr_loss=0.0100 va_loss=0.0150  va_iou bg=0.942 plat=0.395  5.1s
+    -> new best, saved
+ep  36/40  tr_loss=0.0106 va_loss=0.0162  va_iou bg=0.948 plat=0.366  5.1s
+ep  37/40  tr_loss=0.0101 va_loss=0.0206  va_iou bg=0.932 plat=0.365  5.1s
+ep  38/40  tr_loss=0.0108 va_loss=0.0158  va_iou bg=0.939 plat=0.398  5.1s
+    -> new best, saved
+ep  39/40  tr_loss=0.0101 va_loss=0.0151  va_iou bg=0.928 plat=0.356  5.1s
+ep  40/40  tr_loss=0.0108 va_loss=0.0197  va_iou bg=0.929 plat=0.391  5.1s
+
+Best val plat IoU: 0.398
+
+Loaded best from ep 38 (plat IoU=0.398). Running TTA inference...
+Inference grid: 31x31 = 961 patches (TTA 8x)
+  TTA inference done in 109.3s
+
+TEST pixel IoU: 0.208
+Per-plat (9 plats):
+  mean local IoU:   0.496
+  median local IoU: 0.633
+  detected (>=10%): 9/9
+  local IoU > 0.3:  7/9
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\plat_01_tta_miou
