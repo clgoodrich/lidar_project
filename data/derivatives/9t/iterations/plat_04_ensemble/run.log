@@ -1,0 +1,13 @@
+Device: cuda
+[plat 01] loaded ep 38 plat IoU=0.398
+[plat 02] loaded ep 30 plat IoU=0.500
+Inference grid: 31x31 = 961 patches (TTA 8x, both models)
+  ensemble inference done in 175.0s
+
+TEST pixel IoU: 0.318
+Per-plat (9 plats):
+  mean local IoU:   0.501
+  median local IoU: 0.541
+  detected (>=10%): 8/9
+  local IoU > 0.3:  8/9
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\plat_04_ensemble
