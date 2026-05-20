@@ -1,0 +1,66 @@
+Device: cuda
+train plats=51 tiles_per_epoch=102
+val   plats=16 tiles_per_epoch=32
+Building SMP U-Net (encoder=resnet34, ImageNet, in_ch=7, classes=2)
+SMP UNet params: 24.45 M
+ep   1/40  tr_loss=0.0536 va_loss=0.1349  va_iou bg=0.601 plat=0.111  8.4s
+    -> new best, saved
+ep   2/40  tr_loss=0.0226 va_loss=0.7973  va_iou bg=0.591 plat=0.116  4.7s
+    -> new best, saved
+ep   3/40  tr_loss=0.0178 va_loss=0.0164  va_iou bg=0.934 plat=0.401  4.4s
+    -> new best, saved
+ep   4/40  tr_loss=0.0136 va_loss=0.0174  va_iou bg=0.859 plat=0.261  4.5s
+ep   5/40  tr_loss=0.0140 va_loss=0.0116  va_iou bg=0.954 plat=0.459  4.3s
+    -> new best, saved
+ep   6/40  tr_loss=0.0124 va_loss=0.0114  va_iou bg=0.949 plat=0.480  4.3s
+    -> new best, saved
+ep   7/40  tr_loss=0.0134 va_loss=0.0141  va_iou bg=0.866 plat=0.300  4.3s
+ep   8/40  tr_loss=0.0107 va_loss=0.0208  va_iou bg=0.947 plat=0.307  4.4s
+ep   9/40  tr_loss=0.0101 va_loss=0.0137  va_iou bg=0.936 plat=0.412  4.3s
+ep  10/40  tr_loss=0.0104 va_loss=0.0153  va_iou bg=0.931 plat=0.361  4.2s
+ep  11/40  tr_loss=0.0101 va_loss=0.0100  va_iou bg=0.939 plat=0.410  4.2s
+ep  12/40  tr_loss=0.0097 va_loss=0.0122  va_iou bg=0.939 plat=0.422  4.3s
+ep  13/40  tr_loss=0.0102 va_loss=0.0128  va_iou bg=0.953 plat=0.431  4.2s
+ep  14/40  tr_loss=0.0105 va_loss=0.0117  va_iou bg=0.933 plat=0.384  4.3s
+ep  15/40  tr_loss=0.0093 va_loss=0.0099  va_iou bg=0.949 plat=0.451  4.2s
+ep  16/40  tr_loss=0.0093 va_loss=0.0141  va_iou bg=0.951 plat=0.428  4.3s
+ep  17/40  tr_loss=0.0080 va_loss=0.0114  va_iou bg=0.951 plat=0.427  4.2s
+ep  18/40  tr_loss=0.0091 va_loss=0.0144  va_iou bg=0.950 plat=0.435  4.3s
+ep  19/40  tr_loss=0.0079 va_loss=0.0117  va_iou bg=0.953 plat=0.426  4.3s
+ep  20/40  tr_loss=0.0080 va_loss=0.0124  va_iou bg=0.919 plat=0.398  4.3s
+ep  21/40  tr_loss=0.0071 va_loss=0.0107  va_iou bg=0.953 plat=0.463  4.3s
+ep  22/40  tr_loss=0.0075 va_loss=0.0115  va_iou bg=0.953 plat=0.437  4.3s
+ep  23/40  tr_loss=0.0072 va_loss=0.0112  va_iou bg=0.932 plat=0.460  4.3s
+ep  24/40  tr_loss=0.0073 va_loss=0.0111  va_iou bg=0.958 plat=0.443  4.3s
+ep  25/40  tr_loss=0.0070 va_loss=0.0117  va_iou bg=0.945 plat=0.444  4.3s
+ep  26/40  tr_loss=0.0069 va_loss=0.0117  va_iou bg=0.943 plat=0.444  4.3s
+ep  27/40  tr_loss=0.0067 va_loss=0.0139  va_iou bg=0.945 plat=0.390  4.3s
+ep  28/40  tr_loss=0.0062 va_loss=0.0094  va_iou bg=0.947 plat=0.473  4.3s
+ep  29/40  tr_loss=0.0071 va_loss=0.0089  va_iou bg=0.957 plat=0.485  4.3s
+    -> new best, saved
+ep  30/40  tr_loss=0.0059 va_loss=0.0118  va_iou bg=0.947 plat=0.500  4.3s
+    -> new best, saved
+ep  31/40  tr_loss=0.0065 va_loss=0.0135  va_iou bg=0.949 plat=0.445  4.2s
+ep  32/40  tr_loss=0.0056 va_loss=0.0140  va_iou bg=0.954 plat=0.415  4.3s
+ep  33/40  tr_loss=0.0056 va_loss=0.0098  va_iou bg=0.957 plat=0.429  4.3s
+ep  34/40  tr_loss=0.0057 va_loss=0.0140  va_iou bg=0.948 plat=0.413  4.3s
+ep  35/40  tr_loss=0.0059 va_loss=0.0118  va_iou bg=0.949 plat=0.462  4.2s
+ep  36/40  tr_loss=0.0056 va_loss=0.0124  va_iou bg=0.949 plat=0.482  4.2s
+ep  37/40  tr_loss=0.0055 va_loss=0.0131  va_iou bg=0.951 plat=0.453  4.3s
+ep  38/40  tr_loss=0.0049 va_loss=0.0119  va_iou bg=0.952 plat=0.437  4.3s
+ep  39/40  tr_loss=0.0056 va_loss=0.0126  va_iou bg=0.952 plat=0.477  4.3s
+ep  40/40  tr_loss=0.0059 va_loss=0.0125  va_iou bg=0.944 plat=0.497  4.3s
+
+Best val plat IoU: 0.500
+
+Loaded best ep 30 (plat IoU=0.500). TTA inference...
+Inference grid: 31x31 = 961 patches (TTA 8x)
+  TTA inference done in 85.4s
+
+TEST pixel IoU: 0.330
+Per-plat (9 plats):
+  mean local IoU:   0.459
+  median local IoU: 0.521
+  detected (>=10%): 7/9
+  local IoU > 0.3:  7/9
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\plat_02_smp_pretrained
