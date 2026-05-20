@@ -1,0 +1,48 @@
+Loading rasters...
+Baseline (no filter):
+  floor_pixel_iou        0.42176
+  wall_pixel_iou         0.45790513833992097
+  mean_pit_iou           0.6771568342662755
+  median_pit_iou         0.7152278480585976
+  detected_ge_10pct      20
+  iou_gt_0.3             18
+  n_test_pits            20
+
+Labeling components + computing stats once (reused across configs)...
+  components: 1481
+  components with area >= 4.0 m^2: 1220
+
+Config 'safe': {'elong_t': 3.0, 'road_max_t': 0.5, 'road_mean_t': 0.3, 'long_area_t': 60.0, 'elong_big_t': 4.0}
+  drop 59 components, keep 1161
+  metrics after filter:
+    floor_pixel_iou        0.42176
+    wall_pixel_iou         0.4663379289524001
+    mean_pit_iou           0.6771568342662755
+    median_pit_iou         0.7152278480585976
+    detected_ge_10pct      20
+    iou_gt_0.3             18
+    n_test_pits            20
+
+Config 'moderate': {'elong_t': 2.5, 'road_max_t': 0.4, 'road_mean_t': 0.25, 'long_area_t': 40.0, 'elong_big_t': 3.0}
+  drop 127 components, keep 1093
+  metrics after filter:
+    floor_pixel_iou        0.42176
+    wall_pixel_iou         0.46902834008097166
+    mean_pit_iou           0.6771568342662755
+    median_pit_iou         0.7152278480585976
+    detected_ge_10pct      20
+    iou_gt_0.3             18
+    n_test_pits            20
+
+Config 'aggressive': {'elong_t': 2.0, 'road_max_t': 0.3, 'road_mean_t': 0.2, 'long_area_t': 25.0, 'elong_big_t': 2.5}
+  drop 225 components, keep 995
+  metrics after filter:
+    floor_pixel_iou        0.42176
+    wall_pixel_iou         0.47129417747266716
+    mean_pit_iou           0.6771568342662755
+    median_pit_iou         0.7152278480585976
+    detected_ge_10pct      20
+    iou_gt_0.3             18
+    n_test_pits            20
+
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\05_road_postfilter
