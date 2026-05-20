@@ -1,0 +1,9 @@
+{
+  "pixel_iou_test": 0.24560908600304174,
+  "n_test_plats": 9,
+  "n_detected_any_10pct": 7,
+  "n_iou_gt_0.3": 5,
+  "mean_local_iou": 0.37747202474017666,
+  "median_local_iou": 0.48521449396084965,
+  "mean_recall": 0.4627374060423809
+}
