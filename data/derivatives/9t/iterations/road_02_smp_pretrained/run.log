@@ -1,0 +1,71 @@
+Device: cuda
+train roads=63 not_roads=32 tiles/ep=189
+val   roads=17 not_roads=3 tiles/ep=51
+Building SMP U-Net (encoder=resnet34, ImageNet, in_ch=7, classes=2)
+SMP UNet params: 24.45 M
+ep   1/40  tr_loss=0.0237 va_loss=1.6211  va_iou bg=0.978 road=0.001  7.1s
+    -> new best, saved
+ep   2/40  tr_loss=0.0098 va_loss=0.6258  va_iou bg=0.924 road=0.043  3.8s
+    -> new best, saved
+ep   3/40  tr_loss=0.0088 va_loss=0.0066  va_iou bg=0.918 road=0.154  3.8s
+    -> new best, saved
+ep   4/40  tr_loss=0.0080 va_loss=0.0070  va_iou bg=0.968 road=0.300  3.7s
+    -> new best, saved
+ep   5/40  tr_loss=0.0072 va_loss=0.0064  va_iou bg=0.955 road=0.251  3.9s
+ep   6/40  tr_loss=0.0061 va_loss=0.0061  va_iou bg=0.938 road=0.242  3.7s
+ep   7/40  tr_loss=0.0067 va_loss=0.0075  va_iou bg=0.963 road=0.261  3.7s
+ep   8/40  tr_loss=0.0062 va_loss=0.0062  va_iou bg=0.928 road=0.224  3.8s
+ep   9/40  tr_loss=0.0058 va_loss=0.0043  va_iou bg=0.950 road=0.260  3.7s
+ep  10/40  tr_loss=0.0061 va_loss=0.0053  va_iou bg=0.925 road=0.188  3.6s
+ep  11/40  tr_loss=0.0059 va_loss=0.0050  va_iou bg=0.961 road=0.301  3.6s
+    -> new best, saved
+ep  12/40  tr_loss=0.0058 va_loss=0.0052  va_iou bg=0.952 road=0.284  3.6s
+ep  13/40  tr_loss=0.0055 va_loss=0.0053  va_iou bg=0.964 road=0.316  3.5s
+    -> new best, saved
+ep  14/40  tr_loss=0.0053 va_loss=0.0039  va_iou bg=0.962 road=0.293  3.5s
+ep  15/40  tr_loss=0.0054 va_loss=0.0047  va_iou bg=0.932 road=0.201  3.5s
+ep  16/40  tr_loss=0.0052 va_loss=0.0046  va_iou bg=0.961 road=0.322  3.7s
+    -> new best, saved
+ep  17/40  tr_loss=0.0050 va_loss=0.0051  va_iou bg=0.918 road=0.214  3.7s
+ep  18/40  tr_loss=0.0049 va_loss=0.0049  va_iou bg=0.960 road=0.300  3.7s
+ep  19/40  tr_loss=0.0045 va_loss=0.0044  va_iou bg=0.958 road=0.303  3.7s
+ep  20/40  tr_loss=0.0044 va_loss=0.0040  va_iou bg=0.970 road=0.322  3.7s
+ep  21/40  tr_loss=0.0051 va_loss=0.0048  va_iou bg=0.957 road=0.303  3.8s
+ep  22/40  tr_loss=0.0047 va_loss=0.0042  va_iou bg=0.957 road=0.307  3.9s
+ep  23/40  tr_loss=0.0048 va_loss=0.0046  va_iou bg=0.954 road=0.328  3.7s
+    -> new best, saved
+ep  24/40  tr_loss=0.0044 va_loss=0.0039  va_iou bg=0.956 road=0.281  3.7s
+ep  25/40  tr_loss=0.0048 va_loss=0.0046  va_iou bg=0.960 road=0.310  3.6s
+ep  26/40  tr_loss=0.0047 va_loss=0.0035  va_iou bg=0.963 road=0.329  3.5s
+    -> new best, saved
+ep  27/40  tr_loss=0.0043 va_loss=0.0035  va_iou bg=0.961 road=0.294  3.6s
+ep  28/40  tr_loss=0.0047 va_loss=0.0040  va_iou bg=0.958 road=0.310  3.6s
+ep  29/40  tr_loss=0.0042 va_loss=0.0038  va_iou bg=0.954 road=0.315  3.8s
+ep  30/40  tr_loss=0.0045 va_loss=0.0032  va_iou bg=0.965 road=0.311  3.8s
+ep  31/40  tr_loss=0.0042 va_loss=0.0037  va_iou bg=0.960 road=0.314  3.8s
+ep  32/40  tr_loss=0.0043 va_loss=0.0041  va_iou bg=0.963 road=0.342  3.8s
+    -> new best, saved
+ep  33/40  tr_loss=0.0044 va_loss=0.0040  va_iou bg=0.958 road=0.341  3.8s
+ep  34/40  tr_loss=0.0040 va_loss=0.0038  va_iou bg=0.962 road=0.347  3.7s
+    -> new best, saved
+ep  35/40  tr_loss=0.0039 va_loss=0.0032  va_iou bg=0.967 road=0.347  3.5s
+    -> new best, saved
+ep  36/40  tr_loss=0.0039 va_loss=0.0042  va_iou bg=0.962 road=0.321  3.5s
+ep  37/40  tr_loss=0.0040 va_loss=0.0042  va_iou bg=0.967 road=0.363  3.7s
+    -> new best, saved
+ep  38/40  tr_loss=0.0040 va_loss=0.0048  va_iou bg=0.956 road=0.361  3.6s
+ep  39/40  tr_loss=0.0042 va_loss=0.0040  va_iou bg=0.962 road=0.372  3.6s
+    -> new best, saved
+ep  40/40  tr_loss=0.0041 va_loss=0.0041  va_iou bg=0.955 road=0.330  3.5s
+
+Best val road IoU: 0.372
+
+Loaded best ep 39 (road IoU=0.372). TTA inference...
+Inference grid: 47x47 = 2209 patches (TTA 8x)
+  TTA inference done in 88.6s
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\iter_02_smp_pretrained\train.py:133: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  ap = float(np.trapz(prec, rec))
+
+TEST pixel IoU (road): 0.332
+Per-line AP on test:   0.9411764705882353
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\road_02_smp_pretrained
