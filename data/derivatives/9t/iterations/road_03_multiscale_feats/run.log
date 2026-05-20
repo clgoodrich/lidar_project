@@ -1,0 +1,66 @@
+Device: cuda
+train roads=63 not_roads=32 tiles/ep=189
+val   roads=17 not_roads=3 tiles/ep=51
+Building SMP U-Net (encoder=resnet34, ImageNet, in_ch=11, classes=2)
+SMP UNet params: 24.46 M
+ep   1/40  tr_loss=0.0155 va_loss=4.4791  va_iou bg=0.978 road=0.003  9.2s
+    -> new best, saved
+ep   2/40  tr_loss=0.0089 va_loss=0.1511  va_iou bg=0.965 road=0.105  4.7s
+    -> new best, saved
+ep   3/40  tr_loss=0.0078 va_loss=0.0138  va_iou bg=0.863 road=0.131  4.4s
+    -> new best, saved
+ep   4/40  tr_loss=0.0068 va_loss=0.0051  va_iou bg=0.940 road=0.245  4.2s
+    -> new best, saved
+ep   5/40  tr_loss=0.0064 va_loss=0.0052  va_iou bg=0.958 road=0.301  4.2s
+    -> new best, saved
+ep   6/40  tr_loss=0.0060 va_loss=0.0055  va_iou bg=0.960 road=0.309  4.2s
+    -> new best, saved
+ep   7/40  tr_loss=0.0060 va_loss=0.0052  va_iou bg=0.927 road=0.195  4.3s
+ep   8/40  tr_loss=0.0061 va_loss=0.0053  va_iou bg=0.940 road=0.260  4.3s
+ep   9/40  tr_loss=0.0062 va_loss=0.0051  va_iou bg=0.951 road=0.273  4.0s
+ep  10/40  tr_loss=0.0056 va_loss=0.0065  va_iou bg=0.963 road=0.328  4.2s
+    -> new best, saved
+ep  11/40  tr_loss=0.0049 va_loss=0.0067  va_iou bg=0.970 road=0.311  4.4s
+ep  12/40  tr_loss=0.0050 va_loss=0.0042  va_iou bg=0.949 road=0.284  4.4s
+ep  13/40  tr_loss=0.0051 va_loss=0.0088  va_iou bg=0.965 road=0.306  4.7s
+ep  14/40  tr_loss=0.0055 va_loss=0.0054  va_iou bg=0.948 road=0.271  4.4s
+ep  15/40  tr_loss=0.0050 va_loss=0.0056  va_iou bg=0.934 road=0.223  4.2s
+ep  16/40  tr_loss=0.0053 va_loss=0.0047  va_iou bg=0.959 road=0.296  4.3s
+ep  17/40  tr_loss=0.0048 va_loss=0.0041  va_iou bg=0.954 road=0.293  4.1s
+ep  18/40  tr_loss=0.0052 va_loss=0.0047  va_iou bg=0.960 road=0.291  4.5s
+ep  19/40  tr_loss=0.0047 va_loss=0.0047  va_iou bg=0.949 road=0.252  4.2s
+ep  20/40  tr_loss=0.0048 va_loss=0.0056  va_iou bg=0.919 road=0.216  4.4s
+ep  21/40  tr_loss=0.0048 va_loss=0.0041  va_iou bg=0.971 road=0.363  4.3s
+    -> new best, saved
+ep  22/40  tr_loss=0.0046 va_loss=0.0038  va_iou bg=0.968 road=0.353  4.3s
+ep  23/40  tr_loss=0.0046 va_loss=0.0047  va_iou bg=0.959 road=0.348  4.3s
+ep  24/40  tr_loss=0.0046 va_loss=0.0037  va_iou bg=0.962 road=0.323  4.2s
+ep  25/40  tr_loss=0.0043 va_loss=0.0048  va_iou bg=0.971 road=0.334  4.3s
+ep  26/40  tr_loss=0.0044 va_loss=0.0046  va_iou bg=0.947 road=0.282  4.2s
+ep  27/40  tr_loss=0.0037 va_loss=0.0044  va_iou bg=0.963 road=0.352  4.2s
+ep  28/40  tr_loss=0.0042 va_loss=0.0049  va_iou bg=0.955 road=0.324  4.3s
+ep  29/40  tr_loss=0.0041 va_loss=0.0043  va_iou bg=0.957 road=0.312  4.4s
+ep  30/40  tr_loss=0.0039 va_loss=0.0041  va_iou bg=0.963 road=0.332  4.3s
+ep  31/40  tr_loss=0.0039 va_loss=0.0056  va_iou bg=0.964 road=0.353  4.2s
+ep  32/40  tr_loss=0.0040 va_loss=0.0047  va_iou bg=0.958 road=0.357  4.2s
+ep  33/40  tr_loss=0.0039 va_loss=0.0039  va_iou bg=0.958 road=0.298  4.1s
+ep  34/40  tr_loss=0.0039 va_loss=0.0039  va_iou bg=0.957 road=0.333  4.0s
+ep  35/40  tr_loss=0.0040 va_loss=0.0042  va_iou bg=0.958 road=0.321  4.2s
+ep  36/40  tr_loss=0.0041 va_loss=0.0034  va_iou bg=0.966 road=0.345  4.5s
+ep  37/40  tr_loss=0.0035 va_loss=0.0042  va_iou bg=0.962 road=0.339  4.2s
+ep  38/40  tr_loss=0.0037 va_loss=0.0042  va_iou bg=0.958 road=0.320  4.3s
+ep  39/40  tr_loss=0.0036 va_loss=0.0037  va_iou bg=0.964 road=0.341  3.9s
+ep  40/40  tr_loss=0.0038 va_loss=0.0038  va_iou bg=0.961 road=0.365  4.0s
+    -> new best, saved
+
+Best val road IoU: 0.365
+
+Loaded best ep 40 (road IoU=0.365). TTA inference...
+Inference grid: 47x47 = 2209 patches (TTA 8x)
+  TTA inference done in 101.8s
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\iter_03_multiscale_feats\train.py:204: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  ap = float(np.trapz(prec, rec))
+
+TEST pixel IoU (road): 0.339
+Per-line AP on test:   0.9411764705882353
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\road_03_multiscale_feats
