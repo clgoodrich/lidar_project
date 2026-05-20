@@ -1,0 +1,11 @@
+Device: cuda
+[road 01] loaded ep 24 road IoU=0.290
+[road 03] loaded ep 40 road IoU=0.365
+Inference grid: 47x47 = 2209 patches (TTA 8x, both models)
+  ensemble inference done in 213.8s
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\iter_04_ensemble\infer.py:166: DeprecationWarning: `trapz` is deprecated. Use `trapezoid` instead, or one of the numerical integration functions in `scipy.integrate`.
+  ap = float(np.trapz(prec, rec))
+
+TEST pixel IoU (road): 0.337
+Per-line AP on test:   0.9411764705882353
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\road_04_ensemble
