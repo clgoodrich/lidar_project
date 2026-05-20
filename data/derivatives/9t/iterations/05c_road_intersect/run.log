@@ -1,0 +1,67 @@
+Loading rasters...
+Road lines: 97 road + 37 not_road = 134 total
+  labeled pits with ANY line passing through their polygon: 1/110
+
+Computing per-component stats (this includes line-intersect; takes ~30s)...
+  components: 1481
+  candidate components (area >= 4.0 m^2): 1220
+  wrote all_components.gpkg (1220 polygons with attrs)
+
+Line-intersect stats:
+  components with ANY line crossing: 14
+  intersect_len_m percentiles: 50%=0.00m  90%=0.00m  max=32.87m
+
+Baseline (no filter):
+  floor_pixel_iou        0.42176
+  wall_pixel_iou         0.45790513833992097
+  mean_pit_iou           0.6771568342662755
+  median_pit_iou         0.7152278480585976
+  detected_ge_10pct      20
+  iou_gt_0.3             18
+  n_test_pits            20
+
+Config 'v3_safe': {'elong_t': 3.0, 'road_max_t': 0.5, 'road_mean_t': 0.3, 'long_area_t': 60.0, 'elong_big_t': 4.0, 'min_through_m': 2.0, 'cross_frac_t': 0.8}
+  drop 72 components, keep 1148
+  metrics after filter:
+    floor_pixel_iou        0.38288874430709174
+    wall_pixel_iou         0.4318728432500261
+    mean_pit_iou           0.5996114807465445
+    median_pit_iou         0.6764858830545004
+    detected_ge_10pct      18
+    iou_gt_0.3             16
+    n_test_pits            20
+
+Config 'v3_moderate': {'elong_t': 2.5, 'road_max_t': 0.4, 'road_mean_t': 0.25, 'long_area_t': 40.0, 'elong_big_t': 3.0, 'min_through_m': 1.0, 'cross_frac_t': 0.6}
+  drop 138 components, keep 1082
+  metrics after filter:
+    floor_pixel_iou        0.38288874430709174
+    wall_pixel_iou         0.43446244477172313
+    mean_pit_iou           0.5996114807465445
+    median_pit_iou         0.6764858830545004
+    detected_ge_10pct      18
+    iou_gt_0.3             16
+    n_test_pits            20
+
+Config 'v3_aggressive': {'elong_t': 2.0, 'road_max_t': 0.3, 'road_mean_t': 0.2, 'long_area_t': 25.0, 'elong_big_t': 2.5, 'min_through_m': 0.5, 'cross_frac_t': 0.4}
+  drop 237 components, keep 983
+  metrics after filter:
+    floor_pixel_iou        0.38288874430709174
+    wall_pixel_iou         0.43664428820637524
+    mean_pit_iou           0.5996114807465445
+    median_pit_iou         0.6764858830545004
+    detected_ge_10pct      18
+    iou_gt_0.3             16
+    n_test_pits            20
+
+Config 'v3_line_only': {'elong_t': 99, 'road_max_t': 1.01, 'road_mean_t': 1.01, 'long_area_t': 1000000000.0, 'elong_big_t': 99, 'min_through_m': 1.0, 'cross_frac_t': 0.6}
+  drop 13 components, keep 1207
+  metrics after filter:
+    floor_pixel_iou        0.38288874430709174
+    wall_pixel_iou         0.42376359532115737
+    mean_pit_iou           0.5996114807465445
+    median_pit_iou         0.6764858830545004
+    detected_ge_10pct      18
+    iou_gt_0.3             16
+    n_test_pits            20
+
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\05c_road_intersect
