@@ -1,0 +1,60 @@
+Device: cuda
+train pits=74 tiles_per_epoch=148
+val   pits=16 tiles_per_epoch=32
+UNet(in_ch=1, n_classes=3, base=32): 7.76 M params
+ep   1/40  tr_loss=0.0166 va_loss=0.0200  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  3.7s
+    -> new best iter 06 DEM-only miou=0.000, saved
+ep   2/40  tr_loss=0.0103 va_loss=0.0091  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.7s
+ep   3/40  tr_loss=0.0089 va_loss=0.0090  va_iou c0=0.989  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep   4/40  tr_loss=0.0092 va_loss=0.0071  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep   5/40  tr_loss=0.0085 va_loss=0.0073  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep   6/40  tr_loss=0.0089 va_loss=0.0071  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep   7/40  tr_loss=0.0073 va_loss=0.0077  va_iou c0=0.989  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep   8/40  tr_loss=0.0082 va_loss=0.0068  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep   9/40  tr_loss=0.0075 va_loss=0.0064  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  10/40  tr_loss=0.0075 va_loss=0.0071  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  11/40  tr_loss=0.0080 va_loss=0.0069  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  12/40  tr_loss=0.0074 va_loss=0.0075  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  13/40  tr_loss=0.0074 va_loss=0.0069  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  14/40  tr_loss=0.0071 va_loss=0.0071  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  15/40  tr_loss=0.0077 va_loss=0.0076  va_iou c0=0.989  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  16/40  tr_loss=0.0075 va_loss=0.0061  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  17/40  tr_loss=0.0069 va_loss=0.0064  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  18/40  tr_loss=0.0075 va_loss=0.0058  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  19/40  tr_loss=0.0072 va_loss=0.0062  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  20/40  tr_loss=0.0072 va_loss=0.0072  va_iou c0=0.989  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  21/40  tr_loss=0.0072 va_loss=0.0060  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  22/40  tr_loss=0.0069 va_loss=0.0063  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  23/40  tr_loss=0.0077 va_loss=0.0061  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  24/40  tr_loss=0.0069 va_loss=0.0064  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  25/40  tr_loss=0.0074 va_loss=0.0069  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  26/40  tr_loss=0.0069 va_loss=0.0059  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  27/40  tr_loss=0.0065 va_loss=0.0058  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  28/40  tr_loss=0.0067 va_loss=0.0062  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  29/40  tr_loss=0.0077 va_loss=0.0067  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  30/40  tr_loss=0.0073 va_loss=0.0068  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  31/40  tr_loss=0.0075 va_loss=0.0066  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  32/40  tr_loss=0.0072 va_loss=0.0061  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  33/40  tr_loss=0.0070 va_loss=0.0066  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  34/40  tr_loss=0.0065 va_loss=0.0063  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  35/40  tr_loss=0.0073 va_loss=0.0070  va_iou c0=0.989  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  36/40  tr_loss=0.0070 va_loss=0.0061  va_iou c0=0.991  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  37/40  tr_loss=0.0075 va_loss=0.0059  va_iou c0=0.992  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  38/40  tr_loss=0.0072 va_loss=0.0065  va_iou c0=0.990  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  39/40  tr_loss=0.0071 va_loss=0.0074  va_iou c0=0.989  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+ep  40/40  tr_loss=0.0067 va_loss=0.0071  va_iou c0=0.989  c1=0.000  c2=0.000  miou_pos=0.000  2.6s
+
+Best val miou (iter 06 DEM-only): 0.000
+
+Loaded best from ep 1. Running TTA inference...
+Inference grid: 47x47 = 2209 patches (TTA 8x)
+  inference done in 90.3s
+
+TEST pixel IoU: bg=0.992  floor=0.000  wall=0.000
+Per-pit (20 pits):
+  mean local IoU:   0.000
+  median local IoU: 0.000
+  detected (>=10%): 0/20
+  local IoU > 0.3:  0/20
+
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\iterations\06_dem_only
