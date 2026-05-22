@@ -9,6 +9,14 @@ lidar_project/
 ├── STRUCTURE.md                 This file
 ├── .gitignore                   See policy: all >=100 MB outputs covered
 │
+├── archive/                     Inactive/superseded files (see archive/README.md)
+│   ├── notebooks_legacy/        Pre-reorg wellsight scripts (was notebooks/archive/)
+│   ├── notebooks_root/          Early exploratory notebooks from notebooks/
+│   ├── wellsight/pits/          _pit_unet.py v1, _pit_rim_polygons_spoke_v1.py
+│   ├── docs/                    Old paper_versions/ and presentations/ archives
+│   └── derivatives/             legacy_tiles, res_05, mk_legacy, old_experiments,
+│                                old_pit_models, temp_pipeline, unscoped_rasters
+│
 ├── data/
 │   ├── derivatives/             Built rasters/vectors (DEMs, LRM, road/Beck outputs, etc.)
 │   │   ├── beck_<tile>/         Beck 2015 replication outputs (rl, canopy, centerlines)

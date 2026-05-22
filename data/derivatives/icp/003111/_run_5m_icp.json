@@ -1,0 +1,7 @@
+{
+  "pipeline": [
+    {"type": "readers.las", "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\icp\\003111\\newer_ground_utm.las"},
+    {"type": "filters.voxelcenternearestneighbor", "cell": 5.0},
+    {"type": "writers.las", "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\icp\\003111\\newer_ground_5m.las", "minor_version": 4, "dataformat_id": 6, "a_srs": "EPSG:6346"}
+  ]
+}

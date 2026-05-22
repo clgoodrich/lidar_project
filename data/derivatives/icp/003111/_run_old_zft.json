@@ -1,0 +1,10 @@
+{
+  "pipeline": [
+    {"type": "readers.las", "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\older_files\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003111.laz"},
+    {"type": "filters.range", "limits": "Classification[2:2]"},
+    {"type": "filters.reprojection", "in_srs": "EPSG:2271", "out_srs": "EPSG:6346"},
+    {"type": "filters.assign", "value": "Z = Z * 0.3048"},
+    {"type": "filters.voxelcenternearestneighbor", "cell": 5.0},
+    {"type": "writers.las", "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\icp\\003111\\older_ground_5m_zm.las", "minor_version": 4, "dataformat_id": 6, "a_srs": "EPSG:6346"}
+  ]
+}

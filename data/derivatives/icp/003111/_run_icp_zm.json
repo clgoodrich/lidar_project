@@ -1,0 +1,8 @@
+{
+  "pipeline": [
+    {"type": "readers.las", "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\icp\\003111\\newer_ground_5m.las", "tag": "fixed"},
+    {"type": "readers.las", "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\icp\\003111\\older_ground_5m_zm.las", "tag": "moving"},
+    {"type": "filters.icp", "inputs": ["fixed", "moving"]},
+    {"type": "writers.las", "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\icp\\003111\\older_aligned_zm.las", "minor_version": 4, "dataformat_id": 6, "a_srs": "EPSG:6346"}
+  ]
+}
