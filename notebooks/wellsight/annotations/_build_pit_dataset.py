@@ -10,19 +10,22 @@ Outputs (under data/derivatives/9t/):
     pit_blocks_9t.gpkg         spatial-block grid with split assignments
     pit_dataset_manifest.csv   per-pit table: pit_id, plat_id, block_id, split, centroid_x/y
 """
+import sys
 from pathlib import Path
+
+import geopandas as gpd
 import numpy as np
+import pandas as pd
 import rasterio
 from rasterio.features import rasterize
-from rasterio import windows
-import geopandas as gpd
 from shapely.geometry import box
-import pandas as pd
 
-ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-REF = ROOT / "data" / "derivatives" / "9t" / "dem_9t_05.tif"
-ANN = ROOT / "data" / "derivatives" / "annotations" / "annotations_proj.gpkg"
-OUT = ROOT / "data" / "derivatives" / "9t"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import DERIV, DERIV_9T
+
+REF = DERIV_9T / "dem_9t_05.tif"
+ANN = DERIV / "annotations" / "annotations_proj.gpkg"
+OUT = DERIV_9T
 
 # Spatial-block grid: 12 x 12 = 144 cells over the 4.5 km tile (each 375 m).
 # Finer grid -> more blocks contain pits -> better-balanced splits.

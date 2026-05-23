@@ -5,13 +5,17 @@ file. Does NOT download LAZ payloads. Use _filter_3dep_tiles_to_well_pads.py nex
 to subset to tiles intersecting Ramachandran well-pad polygons.
 """
 import json
+import sys
 import time
 import urllib.request
 from pathlib import Path
 
 import pandas as pd
 
-OUT_DIR = Path(r"C:\Users\colto\Documents\GitHub\lidar_project\data\external\usgs_3dep_permian_tx")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import ROOT
+
+OUT_DIR = ROOT / "data" / "external" / "usgs_3dep_permian_tx"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Permian TX bbox from Ramachandran deployment detections

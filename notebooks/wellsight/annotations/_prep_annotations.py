@@ -7,15 +7,17 @@ Output: data/derivatives/annotations/annotations_proj.gpkg with layers:
     plat, pit_inside, pit_outside, pit_wall, roads, not_roads
 All reprojected to EPSG:6346 (project CRS), with plat_id joined onto every feature.
 """
+import sys
 from pathlib import Path
+
 import geopandas as gpd
 import pandas as pd
-from shapely.ops import unary_union
 
-ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-SRC = ROOT / "data" / "derivatives" / "annotations"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import DERIV, DST_CRS as TARGET_CRS
+
+SRC = DERIV / "annotations"
 OUT = SRC / "annotations_proj.gpkg"
-TARGET_CRS = "EPSG:6346"
 
 
 def load(name: str) -> gpd.GeoDataFrame:

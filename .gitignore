@@ -82,6 +82,25 @@ data/derivatives/beck_*/*.tif
 # Per-tile temp intensity rasters (PDAL outputs during build)
 data/derivatives/_tmp_intensity_tiles_*/
 
+# Build pipeline temp JSON + logs (regenerable, sometimes left on hard crash)
+data/derivatives/_build_*.log
+data/derivatives/_tmp_*.json
+data/derivatives/inference_*/_tmp_*.json
+
+# 3x3 mosaic build outputs — heavy DEM/hillshade rasters regenerable from LAZ
+# + notebooks/wellsight/build/_build_3x3_hillshades*.py. Track no contents
+# below the block-id subdirs.
+data/derivatives/mosaic_3x3/*/
+data/derivatives/mosaic_3x3_mckean/*/
+
+# Inference outputs — heavy intermediates (feature stacks + prob rasters)
+# regenerable from best.pt + _build_derivatives.py + _predict_on_tile.py.
+# Track only the small overlay PNGs.
+data/derivatives/mck_inference/*.tif
+data/derivatives/mck_inference/*.tif.aux.xml
+data/derivatives/inference_*/*.tif
+data/derivatives/inference_*/*.tif.aux.xml
+
 # Statewide ancillary (PA O&G locations shapefile, PA land cover)
 # Patterns above (OilGasLocations_*/ and PA_LandCover/) already cover new
 # data/external/ locations since they have no anchor.

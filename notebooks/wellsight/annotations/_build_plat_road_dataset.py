@@ -7,17 +7,20 @@ Outputs (under data/derivatives/9t/):
     road_dataset_manifest.csv    one row per road LINE: road_id, kind, block_id, split, mid_x/y
     road_classifier_samples.csv  one row per sample POINT along lines (for the classifier)
 """
+import sys
 from pathlib import Path
+
+import geopandas as gpd
 import numpy as np
 import pandas as pd
 import rasterio
 from rasterio.features import rasterize
-import geopandas as gpd
-from shapely.geometry import LineString, Point
+from shapely.geometry import LineString
 
-ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-D = ROOT / "data" / "derivatives" / "9t"
-ANN = ROOT / "data" / "derivatives" / "annotations" / "annotations_proj.gpkg"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import DERIV, DERIV_9T as D
+
+ANN = DERIV / "annotations" / "annotations_proj.gpkg"
 REF = D / "dem_9t_05.tif"
 BLOCKS = D / "pit_blocks_9t.gpkg"
 

@@ -13,11 +13,14 @@ import argparse
 import concurrent.futures as cf
 import json
 import re
+import sys
 import time
 import urllib.request
 from pathlib import Path
 
-ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import ROOT
+
 OUT_BASE = ROOT / "data" / "external" / "usgs_3dep_pa_lidar" / "laz"
 OUT_BASE.mkdir(parents=True, exist_ok=True)
 

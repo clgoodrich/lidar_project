@@ -12,7 +12,11 @@ lidar_project/
 ├── archive/                     Inactive/superseded files (see archive/README.md)
 │   ├── notebooks_legacy/        Pre-reorg wellsight scripts (was notebooks/archive/)
 │   ├── notebooks_root/          Early exploratory notebooks from notebooks/
-│   ├── wellsight/pits/          _pit_unet.py v1, _pit_rim_polygons_spoke_v1.py
+│   ├── wellsight/               2026-05-22 mass archive: wsight pkg (dead refactor),
+│   │                            pit XGB ensemble + morphology + rim polygons,
+│   │                            road baselines (Beck, classifier, multi-channel),
+│   │                            paper/ figure generators, pilotA, ramachandran,
+│   │                            runs/ orchestrators, per-area build scripts
 │   ├── docs/                    Old paper_versions/ and presentations/ archives
 │   └── derivatives/             legacy_tiles, res_05, mk_legacy, old_experiments,
 │                                old_pit_models, temp_pipeline, unscoped_rasters
@@ -55,18 +59,24 @@ lidar_project/
 │   └── related/                 Adjacent work docs (SAOCOM InSAR, Urban LiDAR)
 │
 ├── notebooks/
-│   ├── *.ipynb                  Curated Jupyter notebooks
-│   ├── wellsight/               Active scripts (organized by workflow stage)
-│   │   ├── fetch/               Data acquisition (USGS 3DEP API, PA LAZ download)
-│   │   ├── build/               Raster derivative builds from LAZ
-│   │   ├── pits/                Pit-detection pipeline (template+XGB, U-Net, rim polygons)
-│   │   ├── roads/               Road extraction (v3 multi-channel + Beck 2015 replication)
-│   │   ├── pilotA/              TX/Permian LiDAR bridge experiment
-│   │   ├── ramachandran/        Ramachandran 2024 verifier replication
-│   │   ├── paper/               Paper/presentation generators
-│   │   ├── runs/                Orchestration scripts (hotspots, retrain, etc.)
-│   │   └── archive/             Superseded earlier versions
-│   └── archive/                 Earlier root-level wellsight scripts (kept for reference)
+│   ├── *.ipynb                  Curated end-to-end pipeline notebooks (01..05)
+│   └── wellsight/               Active scripts only (~4k LOC, 23 files)
+│       ├── _common.py           SHARED infra: ROOT/DERIV/CRS, run_pdal, read_tif/write_tif
+│       ├── _dl.py               SHARED DL: UNet, FocalCE, CenteredPatchSampler,
+│       │                        train_loop, predict_full_tile, normalize, random_d4
+│       ├── annotations/         Hand-label -> training-manifest builders
+│       ├── build/               LAZ -> raster derivatives
+│       │                        * _build_derivatives.py — generic, parameterized
+│       │                        * _build_3x3_hillshades*.py — 3x3 mosaic discovery
+│       │                        * _icp_old_vs_new.py, _icp_change_map.py
+│       ├── fetch/               Data acquisition (USGS 3DEP, PA LAZ)
+│       ├── pits/                _pit_unet_v2.py + _v2_infer.py + _stack_features.py
+│       ├── roads/               _road_unet.py + _road_postfilter.py
+│       ├── plats/               _plat_unet.py
+│       └── preprocessing/       Cornrow filter + DEM IDW builder
+│
+│       All task scripts insert their parent on sys.path and import from
+│       _common / _dl rather than re-implementing helpers locally.
 │
 ├── .claude/                     Claude Code config / scheduled tasks / memory
 ├── .venv/                       Python virtual environment

@@ -3,16 +3,18 @@
 Picks 4 pits from each split (train/val/test), shows hillshade + label mask side-by-side.
 Output: data/derivatives/9t/sanity_pit_labels.png
 """
+import sys
 from pathlib import Path
-import numpy as np
-import rasterio
-from rasterio.windows import from_bounds
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 
-ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-D = ROOT / "data" / "derivatives" / "9t"
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import rasterio
+from matplotlib.colors import ListedColormap
+from rasterio.windows import from_bounds
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import DERIV_9T as D
 HS = D / "hillshade_9t_05.tif"
 LRM = D / "lrm_25_9t_05.tif"
 LBL = D / "labels_pit_9t_05.tif"

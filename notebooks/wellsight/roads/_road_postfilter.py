@@ -7,6 +7,7 @@
 Also re-renders the overlay PNG with the cleaned set.
 """
 import argparse
+import sys
 from pathlib import Path
 
 import geopandas as gpd
@@ -16,9 +17,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import rasterio
 from matplotlib.lines import Line2D
-from rasterio import features
+from scipy import ndimage as ndi
 
-DERIV = Path(r"C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import DERIV
+
 OUT_DIR = DERIV / "roads"
 
 COLORS = {
@@ -62,7 +65,6 @@ def main():
         H, W = a.shape
 
     # Distance (in pixels) from invalid → valid pixels = how far inside valid
-    from scipy import ndimage as ndi
     dist_in = ndi.distance_transform_edt(valid).astype(np.float32)
 
     def endpoint_dist_m(geom):

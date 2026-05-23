@@ -6,15 +6,17 @@ Channels (in order):
   5 openness_pos 6 openness_neg  7 roughness_11
 Also writes feature_stats.json with per-channel mean/std computed over TRAIN blocks only.
 """
-from pathlib import Path
 import json
+import sys
+from pathlib import Path
+
+import geopandas as gpd
 import numpy as np
 import rasterio
-import geopandas as gpd
 from rasterio.features import rasterize
 
-ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-D = ROOT / "data" / "derivatives" / "9t"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import DERIV_9T as D
 
 CHANNELS = [
     ("lrm_25",       "lrm_25_9t_05.tif"),

@@ -1,104 +1,89 @@
-"""Run ICP to align 2006-2008 PA Statewide N LiDAR (data/older_files/) onto the
-2019 USGS 3DEP WesternPA D20 LiDAR (data/files/).
+"""Align 2006-2008 PA Statewide N LiDAR onto 2019 USGS 3DEP WesternPA D20 via ICP.
 
-Older data is EPSG:2271 (NAD83 / PA State Plane North, US survey feet).
-Current data is EPSG:6346 (NAD83(2011) / UTM 17N, metres).
+Older data is **EPSG:2271** (NAD83 / PA State Plane North, US survey feet) — Z
+also in feet. Current data is **EPSG:6346** (NAD83(2011) / UTM 17N, metres).
+``filters.reprojection`` handles horizontal only; we scale Z by 0.3048 inline.
 
-Pilot pair (best overlap, ~2.9 km x 3.3 km in UTM):
-  older  = USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003111.laz
-  newer  = 17TPF{619,621} x {594,596,597} (6 tiles from data/files/)
-
-Pipeline per pair:
-  1. Reproject older LAZ to EPSG:6346, keep Classification=2 (ground), write LAS.
-  2. Build a ground-only LAS from the matching current tiles, cropped to the
-     older tile's reprojected bbox.
-  3. Voxel-downsample both to ~1 m grid for ICP stability.
-  4. PDAL filters.icp with fixed=newer, moving=older. Write aligned LAS and a
-     JSON report containing the 4x4 transform and MSE.
+Per older tile:
+  1. Reproject + ground-only filter + Z * 0.3048 + voxel sample -> LAS.
+  2. Merge + ground-only + crop + voxel sample on overlapping 2019 tiles -> LAS.
+  3. PDAL filters.icp (fixed=newer, moving=older) -> aligned LAS + meta JSON.
 
 CLI:
   python notebooks/wellsight/build/_icp_old_vs_new.py --pilot
-  python notebooks/wellsight/build/_icp_old_vs_new.py             # all overlapping older tiles
+  python notebooks/wellsight/build/_icp_old_vs_new.py
+  python notebooks/wellsight/build/_icp_old_vs_new.py --only 003111,002958
 """
 from __future__ import annotations
-import argparse, json, shutil, subprocess, sys, time
+
+import argparse
+import json
+import subprocess
+import sys
 from pathlib import Path
+
 from pyproj import Transformer
 
-ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import DST_CRS, PDAL_EXE, ROOT, run_pdal
+
 OLDER_DIR = ROOT / "data" / "older_files"
 NEW_DIR = ROOT / "data" / "files"
 OUT_ROOT = ROOT / "data" / "derivatives" / "icp"
-PDAL_EXE = shutil.which("pdal") or "pdal"
 
 OLD_CRS = "EPSG:2271"
-NEW_CRS = "EPSG:6346"
-VOXEL = 5.0  # 5 m voxel downsample before ICP (~400k pts/cloud; ICP runs in seconds)
-# Older PA Statewide N tiles store Z in US survey feet. filters.reprojection
-# only converts horizontal, so we scale Z explicitly to metres.
+VOXEL = 5.0  # ~400k pts/cloud at 5 m; ICP runs in seconds
 Z_FT_TO_M = 0.3048
 
-# Older tiles -> approximate PA SP North bbox (feet) inferred from the file
-# name index. The 6-digit tile id splits as <x_lo><y_lo> where _57_=block 57
-# along X (X starts at 1460000+ (57-?)) etc. We just read the actual bbox via
-# pdal info at runtime; this mapping is only used to find candidate older tiles.
-
 OLDER_TILES = [
-    "USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002957.laz",
-    "USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002958.laz",
-    "USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002959.laz",
-    "USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003110.laz",
-    "USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003111.laz",
-    "USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003112.laz",
+    f"USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_{tile}.laz"
+    for tile in ("002957", "002958", "002959", "003110", "003111", "003112")
 ]
 
-# Current tiles tessellate the 18x18 km area built in _build_3x3_hillshades.py.
-# Tile naming: 17TPF<E><N> where E,N are 3-digit codes and the tile is 1500 m
-# wide with its lower-left at (utm_x_for_code, utm_y_for_code). Use the
-# calibration from _build_3x3_hillshades.py.
-
-E_CODES = ["604","606","607","609","610","612","613","615","616","618","619","621","622","624"]
-NF_CODES = ["590","591","593","594","596","597","599"]
-NG_CODES = ["600","602","603","605","606","608"]
+# Current 17TPF/17TPG tile grid (calibrated against the 9t mosaic; matches
+# build/_build_3x3_hillshades.py).
+E_CODES  = ("604","606","607","609","610","612","613","615","616","618",
+            "619","621","622","624")
+NF_CODES = ("590","591","593","594","596","597","599")
+NG_CODES = ("600","602","603","605","606","608")
 TILE_M = 1500.0
-E_ORIGIN = 619500.0 - E_CODES.index("619") * TILE_M
+E_ORIGIN  = 619500.0 - E_CODES.index("619") * TILE_M
 N_ORIGIN_F = 4593000.0 - NF_CODES.index("593") * TILE_M
 N_ORIGIN_G = N_ORIGIN_F + len(NF_CODES) * TILE_M
 
 
-def utm_for_e(code):
+def _utm_e(code: str) -> float:
     return E_ORIGIN + E_CODES.index(code) * TILE_M
 
 
-def utm_for_n(band, code):
-    if band == "F":
-        return N_ORIGIN_F + NF_CODES.index(code) * TILE_M
-    return N_ORIGIN_G + NG_CODES.index(code) * TILE_M
+def _utm_n(band: str, code: str) -> float:
+    return (N_ORIGIN_F if band == "F" else N_ORIGIN_G) + \
+        (NF_CODES if band == "F" else NG_CODES).index(code) * TILE_M
 
 
-def laz_bbox_utm(older_path):
+def older_bbox_utm(older_path: Path) -> tuple[float, float, float, float]:
     """Reproject the older LAZ bbox (PA SP North ft) to UTM 17N (m)."""
     r = subprocess.run([PDAL_EXE, "info", "--metadata", str(older_path)],
                        capture_output=True, text=True, check=True)
     meta = json.loads(r.stdout)["metadata"]
-    xs = (meta["minx"], meta["maxx"])
-    ys = (meta["miny"], meta["maxy"])
-    t = Transformer.from_crs(OLD_CRS, NEW_CRS, always_xy=True)
-    corners = [t.transform(x, y) for x in xs for y in ys]
-    xs_u = [c[0] for c in corners]; ys_u = [c[1] for c in corners]
-    return (min(xs_u), min(ys_u), max(xs_u), max(ys_u))
+    t = Transformer.from_crs(OLD_CRS, DST_CRS, always_xy=True)
+    corners = [t.transform(x, y)
+               for x in (meta["minx"], meta["maxx"])
+               for y in (meta["miny"], meta["maxy"])]
+    xs = [c[0] for c in corners]; ys = [c[1] for c in corners]
+    return min(xs), min(ys), max(xs), max(ys)
 
 
-def find_new_tiles_intersecting(x0, y0, x1, y1):
-    """Return list of 17TPF/17TPG LAZ paths whose 1500 m footprint overlaps the box."""
-    out = []
+def find_new_tiles(x0: float, y0: float, x1: float, y1: float) -> list[Path]:
+    """All 17TPF/G LAZs whose 1500 m footprint intersects the bbox."""
+    out: list[Path] = []
     for e in E_CODES:
-        ux = utm_for_e(e)
+        ux = _utm_e(e)
         if ux + TILE_M <= x0 or ux >= x1:
             continue
         for band, ncodes in (("F", NF_CODES), ("G", NG_CODES)):
             for n in ncodes:
-                uy = utm_for_n(band, n)
+                uy = _utm_n(band, n)
                 if uy + TILE_M <= y0 or uy >= y1:
                     continue
                 p = NEW_DIR / f"USGS_LPC_PA_WesternPA_2019_D20_17TP{band}{e}{n}.laz"
@@ -107,30 +92,15 @@ def find_new_tiles_intersecting(x0, y0, x1, y1):
     return out
 
 
-def run_pipeline(pipeline, label, out_dir, timeout=3600):
-    tmp = out_dir / f"_tmp_{label}.json"
-    tmp.write_text(json.dumps(pipeline, indent=2))
-    t0 = time.time()
-    r = subprocess.run([PDAL_EXE, "pipeline", "--metadata", str(out_dir / f"_meta_{label}.json"),
-                        str(tmp)], capture_output=True, text=True, timeout=timeout)
-    dt = time.time() - t0
-    print(f"  [{label}] rc={r.returncode} in {dt:.1f}s")
-    if r.returncode != 0:
-        print(r.stderr[-2000:])
-        raise RuntimeError(label)
-    tmp.unlink(missing_ok=True)
-
-
-def process_pair(older_path: Path, out_dir: Path):
+def process_pair(older_path: Path, out_dir: Path) -> dict | None:
     out_dir.mkdir(parents=True, exist_ok=True)
-
     print(f"[{older_path.name}] reading bbox")
-    bx0, by0, bx1, by1 = laz_bbox_utm(older_path)
+    bx0, by0, bx1, by1 = older_bbox_utm(older_path)
     print(f"  UTM bbox: X[{bx0:.0f}..{bx1:.0f}] Y[{by0:.0f}..{by1:.0f}]")
 
-    new_inputs = find_new_tiles_intersecting(bx0, by0, bx1, by1)
+    new_inputs = find_new_tiles(bx0, by0, bx1, by1)
     if not new_inputs:
-        print("  no overlapping 2019 tiles found -> skip")
+        print("  no overlapping 2019 tiles -> skip")
         return None
     print(f"  matched {len(new_inputs)} new tile(s)")
 
@@ -138,90 +108,78 @@ def process_pair(older_path: Path, out_dir: Path):
     newer_out = out_dir / "newer_ground_utm.las"
     aligned_out = out_dir / "older_aligned.las"
 
-    # 1. Reproject + ground filter + voxel sample on older
-    run_pipeline({"pipeline": [
+    # 1) older: reproj + ground + Z scale + voxel.
+    run_pdal([
         {"type": "readers.las", "filename": str(older_path)},
         {"type": "filters.range", "limits": "Classification[2:2]"},
-        {"type": "filters.reprojection", "in_srs": OLD_CRS, "out_srs": NEW_CRS},
+        {"type": "filters.reprojection", "in_srs": OLD_CRS, "out_srs": DST_CRS},
         {"type": "filters.assign", "value": f"Z = Z * {Z_FT_TO_M}"},
         {"type": "filters.voxelcenternearestneighbor", "cell": VOXEL},
         {"type": "writers.las", "filename": str(older_out),
-         "minor_version": 4, "dataformat_id": 6, "a_srs": NEW_CRS},
-    ]}, "older_prep", out_dir)
+         "minor_version": 4, "dataformat_id": 6, "a_srs": DST_CRS},
+    ], label="older_prep", tmp_dir=out_dir)
 
-    # 2. Merge + ground filter + crop + voxel sample on newer
-    run_pipeline({"pipeline": [
+    # 2) newer: merge + ground + crop + voxel.
+    run_pdal([
         *[str(p) for p in new_inputs],
         {"type": "filters.merge"},
         {"type": "filters.range", "limits": "Classification[2:2]"},
         {"type": "filters.crop", "bounds": f"([{bx0},{bx1}],[{by0},{by1}])"},
         {"type": "filters.voxelcenternearestneighbor", "cell": VOXEL},
         {"type": "writers.las", "filename": str(newer_out),
-         "minor_version": 4, "dataformat_id": 6, "a_srs": NEW_CRS},
-    ]}, "newer_prep", out_dir)
+         "minor_version": 4, "dataformat_id": 6, "a_srs": DST_CRS},
+    ], label="newer_prep", tmp_dir=out_dir)
 
-    # 3. ICP: fixed=newer, moving=older
-    icp_meta = out_dir / "icp_meta.json"
-    run_pipeline({"pipeline": [
+    # 3) ICP, capturing metadata.
+    meta_path = run_pdal([
         {"type": "readers.las", "filename": str(newer_out), "tag": "fixed"},
         {"type": "readers.las", "filename": str(older_out), "tag": "moving"},
         {"type": "filters.icp", "inputs": ["fixed", "moving"]},
         {"type": "writers.las", "filename": str(aligned_out),
-         "minor_version": 4, "dataformat_id": 6, "a_srs": NEW_CRS},
-    ]}, "icp", out_dir, timeout=7200)
+         "minor_version": 4, "dataformat_id": 6, "a_srs": DST_CRS},
+    ], label="icp", tmp_dir=out_dir, capture_meta=True, timeout=7200)
 
-    # Read ICP metadata from the auto-generated _meta_icp.json
-    meta_path = out_dir / "_meta_icp.json"
-    if meta_path.exists():
-        meta = json.loads(meta_path.read_text())
-        try:
-            icp = meta["stages"]["filters.icp"]
-        except Exception:
-            icp = meta
-        summary = {
-            "older_tile": older_path.name,
-            "newer_tiles": [p.name for p in new_inputs],
-            "overlap_bbox_utm": [bx0, by0, bx1, by1],
-            "voxel_cell_m": VOXEL,
-            "icp": icp,
-        }
-        (out_dir / "icp_summary.json").write_text(json.dumps(summary, indent=2))
-        # Pretty-print the key parts
-        t = icp.get("transform") or icp.get("composed")
-        conv = icp.get("converged")
-        fit = icp.get("fitness") or icp.get("fitness_score")
-        mse = icp.get("mse")
-        print(f"  converged={conv}  fitness={fit}  mse={mse}")
-        print(f"  transform: {t}")
-        return summary
-    print("  WARNING: no _meta_icp.json found")
-    return None
+    if meta_path is None or not meta_path.exists():
+        print("  WARNING: no ICP metadata produced")
+        return None
+    meta = json.loads(meta_path.read_text())
+    icp = meta.get("stages", {}).get("filters.icp", meta)
+    summary = {
+        "older_tile": older_path.name,
+        "newer_tiles": [p.name for p in new_inputs],
+        "overlap_bbox_utm": [bx0, by0, bx1, by1],
+        "voxel_cell_m": VOXEL,
+        "icp": icp,
+    }
+    (out_dir / "icp_summary.json").write_text(json.dumps(summary, indent=2))
+    print(f"  converged={icp.get('converged')}  fitness={icp.get('fitness')}")
+    print(f"  transform: {icp.get('transform') or icp.get('composed')}")
+    return summary
 
 
-def main():
+def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pilot", action="store_true",
                     help="only the 003111 <-> block 618594 pair")
-    ap.add_argument("--only", help="comma-separated older tile basenames (no .laz)")
+    ap.add_argument("--only", help="comma-separated tile-IDs (e.g. 003111,002958)")
     args = ap.parse_args()
-
     OUT_ROOT.mkdir(parents=True, exist_ok=True)
 
     if args.pilot:
-        targets = ["USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003111.laz"]
+        targets = [f"USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003111.laz"]
     elif args.only:
         keep = set(args.only.split(","))
-        targets = [t for t in OLDER_TILES if Path(t).stem in keep]
+        targets = [t for t in OLDER_TILES if t.split("_")[-1].split(".")[0] in keep]
     else:
         targets = OLDER_TILES
 
-    results = []
+    results: list[dict] = []
     for name in targets:
         older_path = OLDER_DIR / name
         if not older_path.exists():
             print(f"missing: {older_path}")
             continue
-        out_dir = OUT_ROOT / older_path.stem.split("_")[-1]  # e.g. "003111"
+        out_dir = OUT_ROOT / older_path.stem.split("_")[-1]  # "003111"
         try:
             res = process_pair(older_path, out_dir)
         except Exception as e:
@@ -233,7 +191,8 @@ def main():
     if results:
         (OUT_ROOT / "icp_all_summary.json").write_text(json.dumps(results, indent=2))
     print("DONE.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
