@@ -102,8 +102,10 @@ def enumerate_blocks(tiles):
 def build_block(b, *, skip_existing: bool) -> None:
     import whitebox
     out_dir = OUT_ROOT / b["key"]
-    dem_tif = out_dir / "dem_1m.tif"
-    hs_tif = out_dir / "hillshade_1m.tif"
+    dem_name = f"dem_{b['key']}_1m.tif"
+    hs_name = f"hillshade_{b['key']}_1m.tif"
+    dem_tif = out_dir / dem_name
+    hs_tif = out_dir / hs_name
     if skip_existing and dem_tif.exists() and hs_tif.exists():
         print(f"[{b['key']}] skip (outputs exist)")
         return
@@ -128,7 +130,7 @@ def build_block(b, *, skip_existing: bool) -> None:
     wbt = whitebox.WhiteboxTools()
     wbt.set_working_dir(str(out_dir.resolve()))
     wbt.set_verbose_mode(False)
-    rc = wbt.hillshade(dem="dem_1m.tif", output="hillshade_1m.tif",
+    rc = wbt.hillshade(dem=dem_name, output=hs_name,
                        azimuth=315.0, altitude=45.0)
     if rc != 0:
         print(f"[{b['key']}] WBT hillshade FAILED rc={rc}")

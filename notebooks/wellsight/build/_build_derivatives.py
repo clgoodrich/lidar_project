@@ -5,7 +5,8 @@ target bbox, classifies ground points, and writes the full WellSight
 derivative stack at the chosen resolution. Single entry point that replaced
 the older per-area builders (now in ``archive/wellsight/build/``).
 
-Outputs (in ``data/derivatives/``, named with ``--suffix``):
+Outputs land under ``data/derivatives/<sfx>/`` with the suffix kept in every
+filename so individual files remain self-describing if pulled out:
     dem_<sfx>.tif                 ground DEM      (PDAL delaunay -> faceraster)
     dsm_<sfx>.tif                 DSM             (PDAL writers.gdal max, return 1)
     chm_<sfx>.tif                 CHM = DSM - DEM
@@ -140,7 +141,14 @@ def build(
     W = int(round((x1 - x0) / res))
     H = int(round((y1 - y0) / res))
     transform = from_origin(x0, y1, res, res)
+    out_dir = DERIV / sfx
+    out_dir.mkdir(parents=True, exist_ok=True)
+    # Files inside the suffix subdir keep the full suffix in their name so they
+    # remain self-describing if pulled out of the directory.
+    def out(stem: str, ext: str = "tif") -> Path:
+        return out_dir / f"{stem}_{sfx}.{ext}"
     print(f"\n=== {sfx} ===  grid {W}x{H} @ {res} m  CRS={dst_crs}  tiles={len(tiles)}")
+    print(f"  output dir: {out_dir.relative_to(ROOT)}")
 
     # 0) Merge (and optionally reproject + crop) if multiple inputs or reproj needed.
     if len(tiles) == 1 and src_crs is None:
@@ -165,7 +173,7 @@ def build(
         las_path = merge_path
 
     # 1) DEM
-    dem_path = DERIV / f"dem_{sfx}.tif"
+    dem_path = out("dem")
     if not (dem_path.exists() and skip_existing):
         run_pdal([
             {"type": "readers.las", "filename": str(las_path)},
@@ -182,7 +190,7 @@ def build(
           f"z={np.nanmin(dem):.1f}..{np.nanmax(dem):.1f} m")
 
     # 2) DSM + CHM
-    dsm_path = DERIV / f"dsm_{sfx}.tif"
+    dsm_path = out("dsm")
     if not (dsm_path.exists() and skip_existing):
         run_pdal([
             {"type": "readers.las", "filename": str(las_path)},
@@ -195,7 +203,7 @@ def build(
     dsm = read_tif(dsm_path)
     chm = np.where(np.isnan(dsm) | np.isnan(dem), np.nan,
                    np.maximum(dsm - dem, 0)).astype(np.float32)
-    write_tif(DERIV / f"chm_{sfx}.tif", chm, transform=transform, crs=dst_crs)
+    write_tif(out("chm"), chm, transform=transform, crs=dst_crs)
 
     # 3) Density + intensity (single laspy pass).
     print("  reading LAS for density + intensity...")
@@ -209,7 +217,7 @@ def build(
     ok = (col >= 0) & (col < W) & (row >= 0) & (row < H)
     fi = row[ok] * W + col[ok]
     density = np.bincount(fi, minlength=H * W).reshape(H, W).astype(np.uint16)
-    write_tif(DERIV / f"ground_density_{sfx}.tif", density,
+    write_tif(out("ground_density"), density,
               transform=transform, crs=dst_crs, dtype="uint16", nodata=0)
 
     iv = inten[gm][ok]
@@ -218,14 +226,14 @@ def build(
     mean_i = np.full(H * W, np.nan, dtype=np.float32)
     with np.errstate(invalid="ignore"):
         np.divide(sum_i, cnt, out=mean_i, where=cnt > 0)
-    write_tif(DERIV / f"intensity_ground_{sfx}.tif", mean_i.reshape(H, W),
+    write_tif(out("intensity_ground"), mean_i.reshape(H, W),
               transform=transform, crs=dst_crs)
     del las, xs, ys, cls, inten, iv, sum_i, cnt, mean_i, density
 
     # 4) WBT hillshade + slope
     import whitebox
     wbt = whitebox.WhiteboxTools()
-    wbt.set_working_dir(str(DERIV.resolve()))
+    wbt.set_working_dir(str(out_dir.resolve()))
     wbt.set_verbose_mode(False)
     wbt.hillshade(dem=f"dem_{sfx}.tif", output=f"hillshade_{sfx}.tif",
                   azimuth=315.0, altitude=45.0)
@@ -244,11 +252,11 @@ def build(
     var = np.where(n > 1, (s2 - s * s / np.maximum(n, 1)) / np.maximum(n - 1, 1), np.nan)
     rough = np.sqrt(np.clip(var, 0, None)).astype(np.float32)
     rough[n < WIN * WIN] = np.nan
-    write_tif(DERIV / f"roughness_5_{sfx}.tif", rough, transform=transform, crs=dst_crs)
+    write_tif(out("roughness_5"), rough, transform=transform, crs=dst_crs)
 
     rk = disk_kernel(10 / res)
     lr = (_nanmax_disk(dem, rk) - _nanmin_disk(dem, rk)).astype(np.float32)
-    write_tif(DERIV / f"local_relief_10_{sfx}.tif", lr, transform=transform, crs=dst_crs)
+    write_tif(out("local_relief_10"), lr, transform=transform, crs=dst_crs)
 
     for size in (3, 5, 11, 25):
         valid = np.isfinite(dem).astype(np.float32)
@@ -257,45 +265,45 @@ def build(
         sc = uniform_filter(valid, size=size, mode="nearest")
         smooth = np.where(sc > 0, sm / sc, np.nan)
         lrm = (dem - smooth).astype(np.float32)
-        write_tif(DERIV / f"lrm_{size}_{sfx}.tif", lrm, transform=transform, crs=dst_crs)
+        write_tif(out(f"lrm_{size}"), lrm, transform=transform, crs=dst_crs)
 
     def tpi(z: np.ndarray, r_m: float) -> np.ndarray:
         return (z - nanmean_filter(z, disk_kernel(r_m / res))).astype(np.float32)
 
-    write_tif(DERIV / f"tpi_05_{sfx}.tif", tpi(dem, 5.0),  transform=transform, crs=dst_crs)
+    write_tif(out("tpi_05"), tpi(dem, 5.0),  transform=transform, crs=dst_crs)
     t15 = tpi(dem, 15.0)
-    write_tif(DERIV / f"tpi_15_{sfx}.tif", t15,            transform=transform, crs=dst_crs)
-    write_tif(DERIV / f"tpi_25_{sfx}.tif", tpi(dem, 25.0), transform=transform, crs=dst_crs)
+    write_tif(out("tpi_15"), t15,            transform=transform, crs=dst_crs)
+    write_tif(out("tpi_25"), tpi(dem, 25.0), transform=transform, crs=dst_crs)
     gy, gx = np.gradient(t15, res)
-    write_tif(DERIV / f"tpi_grad_mag_{sfx}.tif", np.hypot(gx, gy).astype(np.float32),
+    write_tif(out("tpi_grad_mag"), np.hypot(gx, gy).astype(np.float32),
               transform=transform, crs=dst_crs)
-    write_tif(DERIV / f"tpi_grad_dir_{sfx}.tif",
+    write_tif(out("tpi_grad_dir"),
               (np.degrees(np.arctan2(gx, -gy)) % 360).astype(np.float32),
               transform=transform, crs=dst_crs)
 
     print("  openness ...")
     op_pos, op_neg = openness(dem, L_cells=int(25 / res), cellsize=res)
-    write_tif(DERIV / f"openness_pos_{sfx}.tif", op_pos, transform=transform, crs=dst_crs)
-    write_tif(DERIV / f"openness_neg_{sfx}.tif", op_neg, transform=transform, crs=dst_crs)
+    write_tif(out("openness_pos"), op_pos, transform=transform, crs=dst_crs)
+    write_tif(out("openness_neg"), op_neg, transform=transform, crs=dst_crs)
 
-    # 6) Overview PNG
+    # 6) Overview PNG — stems are looked up via out() which adds the suffix.
     panels = [
-        (f"hillshade_{sfx}.tif",        "hillshade",           "gray",   (None, None)),
-        (f"dem_{sfx}.tif",              "DEM (m)",             "terrain",(None, None)),
-        (f"slope_{sfx}.tif",            "slope (deg)",         "magma",  (0, 30)),
-        (f"intensity_ground_{sfx}.tif", "ground intensity",    "cividis",(None, None)),
-        (f"ground_density_{sfx}.tif",   "ground density",      "viridis",(0, 8)),
-        (f"chm_{sfx}.tif",              "CHM (m)",             "Greens", (0, 30)),
-        (f"lrm_5_{sfx}.tif",            "LRM 5",               "RdBu_r", (-0.6, 0.6)),
-        (f"lrm_11_{sfx}.tif",           "LRM 11",              "RdBu_r", (-0.8, 0.8)),
-        (f"tpi_15_{sfx}.tif",           "TPI 15 m",            "RdBu_r", (-0.5, 0.5)),
-        (f"openness_pos_{sfx}.tif",     "openness_pos",        "viridis",(None, None)),
-        (f"openness_neg_{sfx}.tif",     "openness_neg",        "viridis",(None, None)),
-        (f"local_relief_10_{sfx}.tif",  "local relief (10 m)", "magma",  (0, 3)),
+        ("hillshade",        "hillshade",           "gray",   (None, None)),
+        ("dem",              "DEM (m)",             "terrain",(None, None)),
+        ("slope",            "slope (deg)",         "magma",  (0, 30)),
+        ("intensity_ground", "ground intensity",    "cividis",(None, None)),
+        ("ground_density",   "ground density",      "viridis",(0, 8)),
+        ("chm",              "CHM (m)",             "Greens", (0, 30)),
+        ("lrm_5",            "LRM 5",               "RdBu_r", (-0.6, 0.6)),
+        ("lrm_11",           "LRM 11",              "RdBu_r", (-0.8, 0.8)),
+        ("tpi_15",           "TPI 15 m",            "RdBu_r", (-0.5, 0.5)),
+        ("openness_pos",     "openness_pos",        "viridis",(None, None)),
+        ("openness_neg",     "openness_neg",        "viridis",(None, None)),
+        ("local_relief_10",  "local relief (10 m)", "magma",  (0, 3)),
     ]
     fig, axes = plt.subplots(3, 4, figsize=(20, 18))
-    for ax, (fname, title, cmap, lim) in zip(axes.ravel(), panels):
-        a = read_tif(DERIV / fname)
+    for ax, (stem, title, cmap, lim) in zip(axes.ravel(), panels):
+        a = read_tif(out(stem))
         kw = {"cmap": cmap, "extent": [x0, x1, y0, y1]}
         if lim[0] is not None:
             kw["vmin"], kw["vmax"] = lim
@@ -303,9 +311,9 @@ def build(
         ax.set_title(title, fontsize=10)
         ax.set_xticks([]); ax.set_yticks([])
         plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    fig.suptitle(f"{sfx} — 1 m derivative stack", fontsize=14)
+    fig.suptitle(f"{sfx} — {res:g} m derivative stack", fontsize=14)
     fig.tight_layout(rect=[0, 0, 1, 0.98])
-    fig.savefig(DERIV / f"tile_overview_{sfx}.png", dpi=120, bbox_inches="tight")
+    fig.savefig(out("tile_overview", "png"), dpi=120, bbox_inches="tight")
     plt.close(fig)
     print(f"  wrote tile_overview_{sfx}.png")
     print(f"=== {sfx} DONE ===\n")

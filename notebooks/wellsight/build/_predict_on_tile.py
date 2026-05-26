@@ -54,16 +54,29 @@ TASKS = [
 
 
 def find_channel_files(sfx: str) -> list[tuple[str, Path]]:
-    """Resolve the 7 training-channel files for a tile suffix."""
+    """Resolve the 7 training-channel files for a tile suffix.
+
+    Tries the new layout first
+    (``data/derivatives/<sfx>/<channel>_<sfx>.tif``), then falls back to the
+    legacy flat layout (``data/derivatives/<channel>_<sfx>.tif``).
+    """
     # 0.5 m derivatives use roughness_11; 1 m derivatives use roughness_5.
     rough_band = "roughness_11" if sfx.endswith("_05") else "roughness_5"
     files: list[tuple[str, Path]] = []
     for name in TRAINING_CHANNELS:
         on_disk = rough_band if name == "roughness_11" else name
-        p = DERIV / f"{on_disk}_{sfx}.tif"
-        if not p.exists():
-            raise FileNotFoundError(f"channel {name} missing: {p}")
-        files.append((name, p))
+        candidates = [
+            DERIV / sfx / f"{on_disk}_{sfx}.tif",   # new layout (subdir + descriptive name)
+            DERIV / f"{on_disk}_{sfx}.tif",          # legacy flat
+        ]
+        for p in candidates:
+            if p.exists():
+                files.append((name, p))
+                break
+        else:
+            raise FileNotFoundError(
+                f"channel {name} missing: tried {candidates[0]} and {candidates[1]}"
+            )
     return files
 
 
