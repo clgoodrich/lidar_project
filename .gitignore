@@ -142,10 +142,13 @@ data/external/legacy_data/
 data/derivatives/9t/diagnostics/
 
 # Oil Creek 0.5 m derivative stack (~10 GB of DEM/slope/lrm/tpi/openness rasters,
-# regenerable from _build_derivatives.py --suffix oilcreek_22tile_05). The bare
-# `data/derivatives/*.tif` rule only matches the top level, not this subdir.
-# NOTE: there is intentionally NO blanket `data/derivatives/**/*.tif` rule —
-# several subdirs (data_3x3, icp, nec_marcellus_1m, roads, sw/wc_*_1m) are
-# deliberately version-tracked. New heavy per-region subdirs must be added here
-# explicitly; the ≥100 MB audit in CLAUDE.md is what catches them each pass.
+# regenerable from _build_derivatives.py --suffix oilcreek_22tile_05).
 data/derivatives/oilcreek_22tile_05/
+
+# Blanket: ALL derivative rasters are heavy and regenerable — never track them.
+# (Replaces the old per-subdir approach; data_3x3 / icp / *_marcellus_1m /
+# wc_coaloil_1m / roads tifs that were previously committed have been untracked
+# via `git rm --cached`. Files stay on disk; just not in git.)
+data/derivatives/**/*.tif
+data/derivatives/**/*.tif.aux.xml
+data/derivatives/*.tif.aux.xml
