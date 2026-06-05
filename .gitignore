@@ -100,6 +100,31 @@ data/derivatives/mck_inference/*.tif
 data/derivatives/mck_inference/*.tif.aux.xml
 data/derivatives/inference_*/*.tif
 data/derivatives/inference_*/*.tif.aux.xml
+data/derivatives/oilcreek_inference/*.tif
+data/derivatives/oilcreek_inference/*.tif.aux.xml
+data/derivatives/extras/*/*.tif
+data/derivatives/extras/*/*.tif.aux.xml
+
+# Instance-segmentation experiments (Mask R-CNN, YOLO) on 9t.
+# Heavy: torchvision Mask R-CNN best.pt is ~180 MB; YOLO datasets are 100s of PNG patches.
+# Regenerable from _pit_maskrcnn.py / _pit_yolo.py / etc.
+data/derivatives/9t/rgb3_9t_05.tif
+data/derivatives/9t/iterations/pit_07_maskrcnn/best.pt
+data/derivatives/9t/iterations/pit_07_maskrcnn/*.tif
+data/derivatives/9t/iterations/pit_07_maskrcnn/*.tif.aux.xml
+data/derivatives/9t/iterations/pit_08_yolo/best.pt
+data/derivatives/9t/iterations/pit_08_yolo/*.tif
+data/derivatives/9t/iterations/pit_08_yolo/*.tif.aux.xml
+data/derivatives/9t/iterations/pit_08_yolo/dataset/
+data/derivatives/9t/iterations/pit_08_yolo/run/
+data/derivatives/9t/iterations/pad_05_maskrcnn/best.pt
+data/derivatives/9t/iterations/pad_05_maskrcnn/*.tif
+data/derivatives/9t/iterations/pad_05_maskrcnn/*.tif.aux.xml
+data/derivatives/9t/iterations/pad_06_yolo/best.pt
+data/derivatives/9t/iterations/pad_06_yolo/*.tif
+data/derivatives/9t/iterations/pad_06_yolo/*.tif.aux.xml
+data/derivatives/9t/iterations/pad_06_yolo/dataset/
+data/derivatives/9t/iterations/pad_06_yolo/run/
 
 # Statewide ancillary (PA O&G locations shapefile, PA land cover)
 # Patterns above (OilGasLocations_*/ and PA_LandCover/) already cover new
@@ -112,3 +137,15 @@ data/external/legacy_data/
 
 # Office lock files
 ~$*
+
+# 9t diagnostic derivatives (curvature/hydrology/texture, ~1GB, regenerable)
+data/derivatives/9t/diagnostics/
+
+# Oil Creek 0.5 m derivative stack (~10 GB of DEM/slope/lrm/tpi/openness rasters,
+# regenerable from _build_derivatives.py --suffix oilcreek_22tile_05). The bare
+# `data/derivatives/*.tif` rule only matches the top level, not this subdir.
+# NOTE: there is intentionally NO blanket `data/derivatives/**/*.tif` rule —
+# several subdirs (data_3x3, icp, nec_marcellus_1m, roads, sw/wc_*_1m) are
+# deliberately version-tracked. New heavy per-region subdirs must be added here
+# explicitly; the ≥100 MB audit in CLAUDE.md is what catches them each pass.
+data/derivatives/oilcreek_22tile_05/

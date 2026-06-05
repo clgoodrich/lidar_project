@@ -5,6 +5,97 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-03 — Diagnostic derivative sweep on 9t (curvature/hydrology/texture)
+
+Built 13 new geomorphometric layers from `dem_9t_1m.tif` via WhiteboxTools
+(`_build_diagnostics_9t.py`): depth-in-sink, TWI, 5 curvatures, geomorphons,
+multidirectional hillshade, spherical-stddev-of-normals, TRI, surface-area-ratio,
+downslope index. All 16 ops OK in ~45 s. Diagnostic-only (not in any model);
+outputs git-ignored under `9t/diagnostics/`. Full detail + validation table in
+`iterations/diagnostics_9t.md`.
+
+**Headline validation vs 110 pit annotations:** `depth_in_sink` median 0.36 m at
+pit centroids with 90% sitting in a closed depression, vs 1% at random points —
+the strongest single hand-crafted pit signal measured. `geomorphons` puts 106/110
+pits in concave classes (depression/valley/hollow). Both added to BACKLOG as
+feature-stack promotion candidates (pending 0.5 m recompute + full-tile FP rate).
+
+---
+
+## 2026-06-03 — CATCH-UP: instance-segmentation era (May → Jun) + 7-band rebuild
+
+> Backfill entry. The running log lapsed after 2026-04-30; this block records the
+> major work since, chronologically within. Per-iteration detail lives in
+> `docs/iterations/*.md` and `LEADERBOARD.md`; this is the narrative thread.
+
+### Direction change — from heuristic detectors to learned instance segmentation
+The Apr pipeline (blob+RF pits, ridge-filter roads, gated pads) was superseded by
+learned models on the **9t** tile. Two families now run side by side:
+- **Semantic (UNet):** best for linear features (roads/streams); paints pixels.
+- **Instance (Mask R-CNN, YOLOv8s-seg):** emits one detection per object, so pits
+  and pads can be counted/ranked individually.
+
+### Iterations completed (9t, see LEADERBOARD)
+- `pit_07_maskrcnn`, `pit_08_yolo`, `pad_05_maskrcnn`, `pad_06_yolo` — all trained
+  + inferred. Consistent finding: **best checkpoint is epoch 0–1, then overfits**
+  (74 train pits / 51 train pads vs a 45.9 M-param backbone). Recall is high,
+  precision poor (heavy over-prediction). Apples-to-apples instance metric
+  (`_instance_common.per_instance_metrics`) added so UNet and detectors compare
+  fairly; UNet collapses under the instance metric on pits (recall@0.5 ≈ 0).
+- Cross-referenced all models vs the **full PA DEP catalog (1069 wells in-tile)** —
+  well_recall 0.22–0.42. Read as a *lower bound* (catalog includes plugged/
+  canopy/no-surface-expression wells), and as the strongest argument that the
+  **110/79 annotation set is the bottleneck**, not the architecture.
+
+### Engineering fixes logged
+- **YOLO BGR gotcha:** PIL writes PNGs RGB, ultralytics' cv2 reads BGR → channels
+  0/2 swapped, zero recall. Fixed with `img8[..., ::-1]` at inference. (memory saved)
+- **MaskRCNNPredictor** TypeError (positional hidden-layer arg); **cp1252**
+  UnicodeEncodeError on `→` (write utf-8); YOLO mask coord mismatch (use
+  `masks.xy` polys, not model-res masks with orig-res boxes).
+- **In-RAM feature caching:** 7-band per-patch file reads were 163 ms each;
+  cache the full stack once (`load_feature_array`/`slice_feat_patch`) → ~0.5 ms.
+
+### 7-band UNet-feature rebuild (the headline change)
+Per user direction ("use all the UNet params again… Stop and rebuild"), the
+detectors moved off the 3-band composite `(hillshade, slope, lrm_25)` onto the
+**full 7-band UNet stack** `(lrm_25, lrm_5, slope, tpi_05, openness_pos,
+openness_neg, roughness_11)`, z-scored. Implemented via **conv1 widening**: copy
+COCO RGB weights into the first 3 input slots, warm-start the extra 4 from the RGB
+mean, identity input transform (patches pre-normalized). CHM deliberately
+excluded — canopy/overgrowth is inconsistent pad-to-pad. Pits also gained a
+**wall class** (`pit_outside` rim) → 3-class (bg/floor/wall).
+
+### 2026-06-03 inference results (7-band)
+- **pit_07 v2:** floor recall@0.5 **0.85 → 0.95**, mean IoU 0.632 → 0.664;
+  2027 dets (947 floor + 1080 wall). Clear win.
+- **pad_05 v2:** dets **3250 → 2546** (−22% FP) but recall flat (0.889) and mean
+  IoU slipped 0.688 → 0.631. **7-band did NOT solve pad over-prediction** —
+  revised diagnosis: data quantity + permissive 0.3 score threshold, not features.
+- Process note: first pad v2 inference crashed `KeyError: 'mu'` — `best.pt` was
+  still the v1 3-band ckpt (the 7-band rebuild had only finished for pits). Pad
+  retrained 6 ep on the 7-band stack (best=ep0) then re-inferred OK.
+
+### Streams ported to 9t (2026-06-02) — see `iterations/streams_9t_t5000.md`
+D8 flow-accum on breached DEM, `extract_streams` threshold **t5000** → 2693 lines
+/274.5 km. Cross-section concavity road filter (`--chunk 25 --perp 5 --drop 0.30`,
+on RAW DEM) → per-line kept 1497 lines/97.9 km, per-chunk kept 4973/88.8 km.
+Provenance Q answered: Oil Creek LAZ was hydro-flattened (water class 9/20),
+McKean/9t surveys were not — different surveys, not a processing error.
+
+### Oil Creek derivatives (2026-06-03) — see `iterations/oilcreek_derivatives_05.md`
+Full 0.5 m derivative stack built for the 22-tile mosaic. **Blocker:** build emits
+`roughness_5`, models need `roughness_11`; must generate it + assemble the 7-band
+stack before Oil Creek inference can run.
+
+### Docs status
+This catch-up restored the lapsed log; `BACKLOG.md` recreated; pit_07/pad_05 docs
+refreshed with v2 numbers + fixed stale script names; LEADERBOARD updated;
+`HOW_IT_WORKS.md` (plain-English overview) added. Documentation-maintenance rule
+added to CLAUDE.md.
+
+---
+
 ## 2026-04-29 — Literature-grounded parameter adjustments (v0.6)
 
 Four parameter changes based on published literature review:

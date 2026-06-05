@@ -1,0 +1,3 @@
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003252.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/PA_WesternPA_2019_D20/PA_WesternPA_4_2019/LAZ/USGS_LPC_PA_WesternPA_2019_D20_17TPF610597.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/PA_WesternPA_2019_D20/PA_WesternPA_4_2019/LAZ/USGS_LPC_PA_WesternPA_2019_D20_17TPF610599.laz

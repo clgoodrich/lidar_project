@@ -137,11 +137,13 @@ def build(
     src_crs: str | None = None,
     merge_path: Path | None = None,
     skip_existing: bool = True,
+    out_dir: Path | None = None,
 ) -> None:
     W = int(round((x1 - x0) / res))
     H = int(round((y1 - y0) / res))
     transform = from_origin(x0, y1, res, res)
-    out_dir = DERIV / sfx
+    if out_dir is None:
+        out_dir = DERIV / sfx
     out_dir.mkdir(parents=True, exist_ok=True)
     # Files inside the suffix subdir keep the full suffix in their name so they
     # remain self-describing if pulled out of the directory.
@@ -333,6 +335,8 @@ def main() -> int:
                     help="Optional path for the intermediate merged LAS")
     ap.add_argument("--overwrite", action="store_true",
                     help="Rebuild outputs that already exist")
+    ap.add_argument("--out-dir", default=None,
+                    help="Explicit output directory (default: data/derivatives/<suffix>/)")
     args = ap.parse_args()
 
     tiles = resolve_tiles(args.tiles)
@@ -344,7 +348,8 @@ def main() -> int:
     build(tiles, x0=x0, y0=y0, x1=x1, y1=y1,
           res=args.res, sfx=args.suffix, dst_crs=args.crs,
           src_crs=args.src_crs, merge_path=merge,
-          skip_existing=(not args.overwrite))
+          skip_existing=(not args.overwrite),
+          out_dir=Path(args.out_dir) if args.out_dir else None)
     return 0
 
 
