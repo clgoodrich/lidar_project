@@ -45,18 +45,22 @@ def build_cells() -> list:
         "`notebooks/wellsight/_instance_common.py`, so what you see here is exactly "
         "what the training script does — just unpacked and visualised.\n"
         "\n"
-        "**The flow**\n"
-        "0. **Inputs** — the 7-band feature stack + the hand-drawn pit polygons.\n"
-        "1. **Peek at one labelled example** — patch + its floor/wall masks.\n"
-        "2. **Build the patch dataset** — jittered training patches + targets.\n"
-        "3. **Build the model** — COCO-pretrained Mask R-CNN, widened to 7 bands.\n"
-        "4. **Train** (a short smoke run) — watch the loss fall.\n"
-        "5. **Run the trained model** on a held-out patch.\n"
+        "**Two paths.** Training is *not* bit-for-bit reproducible — shuffled batch "
+        "order, random head initialisation, and cuDNN nondeterminism mean even the "
+        "real script gives slightly different weights each run, so we can't re-train "
+        "our way back to the exact `best.pt` on disk. So this notebook has two parts:\n"
         "\n"
-        "> ⚠️ This runs a **smoke training** (1–2 epochs, a couple of patches per pit) "
-        "so it finishes in a few minutes. The real run is "
-        "`python notebooks/wellsight/pits/_pit_maskrcnn.py --epochs 30`, which saves "
-        "`best.pt`. Don't judge accuracy from this notebook's tiny run."
+        "* **Path A — how training works** (cells 0–5): the real method, run as a short "
+        "seeded *smoke* run so you can watch the loss fall. Illustrative; not the "
+        "shipped model.\n"
+        "* **Path B — the real model, reproduced exactly** (cell 6): load the committed "
+        "`best.pt` and run the real inference pipeline. Its outputs are **identical to "
+        "what we made before** — we check them live against the saved "
+        "`test_metrics.json`.\n"
+        "\n"
+        "Everything imports the real production pieces from "
+        "`notebooks/wellsight/pits/` and `_instance_common.py`, so what you see is "
+        "exactly what the scripts do — just unpacked and visualised."
     ))
 
     # ---- 0. INPUTS -------------------------------------------------------
@@ -244,14 +248,26 @@ print("box predictor classes:", model.roi_heads.box_predictor.cls_score.out_feat
         "saves the best-val checkpoint to `best.pt`.)"
     ))
     cells.append(code(r'''
+import random
 from torch.utils.data import DataLoader
+
+# Seed everything so THIS smoke run is reproducible from run to run on this
+# machine. (This still won't reproduce the committed best.pt, which was trained
+# without pinned seeds — that's what Path B in cell 6 is for.)
+SEED = 0
+random.seed(SEED); np.random.seed(SEED); torch.manual_seed(SEED)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(SEED)
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+g = torch.Generator(); g.manual_seed(SEED)
 
 EPOCHS = 2          # smoke; production uses ~30
 BATCH  = 2
 LR     = 5e-4
 
 train_loader = DataLoader(train_ds, batch_size=BATCH, shuffle=True,
-                          num_workers=0, collate_fn=collate)
+                          num_workers=0, collate_fn=collate, generator=g)
 val_loader   = DataLoader(val_ds,   batch_size=BATCH, shuffle=False,
                           num_workers=0, collate_fn=collate)
 optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad],
@@ -290,14 +306,13 @@ plt.title("smoke training loss (2 epochs)"); plt.grid(alpha=0.3); plt.show()
 
     # ---- 5. INFERENCE ON A PATCH ----------------------------------------
     cells.append(md(
-        "## 5. Run the trained model on a held-out patch\n"
+        "## 5. Run the *smoke* model on a held-out patch (Path A result)\n"
         "\n"
-        "Finally, put the model in eval mode and run it on a patch centred on a "
-        "**test** pit it never saw during training. The model returns boxes, masks, "
-        "and confidence scores; we keep detections above score 0.3 and draw their "
-        "masks. (With only 2 epochs the masks will be rough — the point is to see the "
-        "input → prediction path. The full pipeline does this with a sliding window "
-        "over the entire tile in `_pit_maskrcnn_infer.py`.)"
+        "Put the smoke model in eval mode and run it on a patch centred on a **test** "
+        "pit it never saw. It returns boxes, masks, and confidence scores; we keep "
+        "detections above score 0.3 and draw their masks. **With only 2 epochs the "
+        "masks are rough** — this just shows the input → prediction path. For the real, "
+        "accurate result, see cell 6 below."
     ))
     cells.append(code(r'''
 model.eval()
@@ -328,6 +343,85 @@ ax.set_xticks([]); ax.set_yticks([])
 plt.show()
 ''' ))
 
+    # ---- 6. PATH B: REPRODUCE THE REAL MODEL EXACTLY --------------------
+    cells.append(md(
+        "## 6. Path B — reproduce the production model *exactly*\n"
+        "\n"
+        "This is the part that is **identical to what we made before**. Instead of "
+        "training (which can't land on the exact saved weights), we **load the "
+        "committed `best.pt`** and run the genuine full-tile inference pipeline from "
+        "`_pit_maskrcnn_infer.py`:\n"
+        "\n"
+        "1. slide a 256×256 window over the whole feature tile,\n"
+        "2. keep detections with score ≥ 0.3,\n"
+        "3. de-duplicate with per-class non-maximum suppression,\n"
+        "4. score per-instance recall/IoU against the held-out test pits.\n"
+        "\n"
+        "Eval-mode inference is deterministic, so the numbers below should match the "
+        "saved `test_metrics.json` **to the last digit**. We assert it at the end.\n"
+        "\n"
+        "*(This is the heavy cell — it runs ~2,200 windows over the full tile, a few "
+        "minutes on the GPU. The per-window progress is printed every 50 windows.)*"
+    ))
+    cells.append(code(r'''
+import json
+import geopandas as gpd
+from _pit_maskrcnn_infer import run_inference, global_nms, OVERLAP, SCORE_THRESH, NMS_IOU
+
+# free the smoke model from the GPU first — this is an 8 GB card and we're about
+# to load a second 45.9 M-param model for full-tile inference.
+for _name in ("model", "optimizer"):
+    if _name in dir():
+        del globals()[_name]
+torch.cuda.empty_cache()
+
+ITER_DIR = ROOT / "data/derivatives/9t/iterations/pit_07_maskrcnn"
+
+# --- load the REAL trained weights (not the smoke model) --------------------
+ck = torch.load(ITER_DIR / "best.pt", map_location=DEVICE, weights_only=False)
+real_model = build_model(num_classes=ck["num_classes"],
+                         in_channels=ck["in_channels"]).to(DEVICE)
+real_model.load_state_dict(ck["state_dict"])
+mu_r = np.asarray(ck["mu"], np.float32); sd_r = np.asarray(ck["sd"], np.float32)
+print(f"loaded best.pt  (epoch {ck['epoch']}, val_loss {ck['val_loss']:.3f})")
+
+# --- the genuine full-tile inference pipeline -------------------------------
+dets = run_inference(real_model, mu_r, sd_r, PATCH, OVERLAP)   # ~2,200 windows
+for x in dets:
+    x["cls"] = {1: "floor", 2: "wall"}.get(x["cls_id"], "floor")
+dets = global_nms(dets, NMS_IOU)
+n_floor = sum(x["cls"] == "floor" for x in dets)
+n_wall  = sum(x["cls"] == "wall"  for x in dets)
+
+# --- polygonise + score against the test split (writes to the demo folder) --
+ref = ic.reference_profile()
+demo_dir = ROOT / "data/derivatives/_notebook_demo"
+demo_dir.mkdir(parents=True, exist_ok=True)
+repro_gpkg = demo_dir / "_repro_instances.gpkg"
+repro_gpkg.unlink(missing_ok=True)
+ic.detections_to_gpkg(dets, ref, repro_gpkg, layer="pits", score_thresh=SCORE_THRESH)
+pred = gpd.read_file(repro_gpkg, layer="pits")
+pred_floor = pred[pred.cls == "floor"]
+_, metrics = ic.per_instance_metrics(pred_floor, ic.load_pit_set(with_walls=False),
+                                     split="test")
+metrics["n_detections_after_nms"] = len(dets)
+metrics["n_floor"] = n_floor; metrics["n_wall"] = n_wall
+
+# --- compare to what we saved before ----------------------------------------
+committed = json.loads((ITER_DIR / "test_metrics.json").read_text())
+keys = ["recall_at_iou_0.1", "recall_at_iou_0.3", "recall_at_iou_0.5",
+        "mean_best_iou", "n_detections_after_nms", "n_floor", "n_wall"]
+print(f"\n{'metric':24s} {'reproduced':>20s} {'committed':>20s}  match")
+all_match = True
+for k in keys:
+    a, b = metrics.get(k), committed.get(k)
+    ok = (a == b)
+    all_match &= ok
+    print(f"  {k:22s} {str(a):>20s} {str(b):>20s}  {'OK' if ok else 'DIFF'}")
+assert all_match, "Reproduced metrics do not match the committed run!"
+print("\nIDENTICAL to the committed production run.")
+''' ))
+
     # ---- RECAP -----------------------------------------------------------
     cells.append(md(
         "## Recap — how this maps to the real pipeline\n"
@@ -338,7 +432,14 @@ plt.show()
         "| Patch dataset + jitter | `_pit_maskrcnn.PitPatchDataset` |\n"
         "| Build model (conv1 widening) | `_pit_maskrcnn.build_model` |\n"
         "| Train loop + val loss | `_pit_maskrcnn.train_one_epoch` / `val_loss` → saves `best.pt` |\n"
-        "| Per-patch inference | scaled up to a sliding window in `_pit_maskrcnn_infer.py` |\n"
+        "| Per-patch inference (Path A) | scaled up to a sliding window in `_pit_maskrcnn_infer.py` |\n"
+        "| **Reproduce real model (Path B)** | `_pit_maskrcnn_infer.run_inference` + `global_nms` on `best.pt` → matches `test_metrics.json` |\n"
+        "\n"
+        "**On reproducibility:** the *derivatives* are deterministic, so that notebook "
+        "reproduces our rasters bit-for-bit. *Training* is stochastic, so Path A is "
+        "only reproducible run-to-run (seeded); to get outputs identical to what we "
+        "shipped, Path B loads the committed `best.pt` and re-runs the deterministic "
+        "inference — which it verifies against the saved metrics.\n"
         "\n"
         "**To train for real** (saves `best.pt`, logs per-epoch metrics):\n"
         "```\n"
