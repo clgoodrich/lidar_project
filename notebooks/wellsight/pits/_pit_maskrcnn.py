@@ -169,6 +169,9 @@ def main() -> int:
     ap.add_argument("--batch", type=int, default=4)
     ap.add_argument("--lr", type=float, default=5e-4)
     ap.add_argument("--workers", type=int, default=0)
+    ap.add_argument("--seed", type=int, default=0,
+                    help="global RNG seed; fixes head init + batch order (GPU "
+                         "training is still not bit-exact — roi_align backward)")
     ap.add_argument("--smoke", action="store_true",
                     help="1 epoch, 2 patches/pit - sanity check the pipeline")
     args = ap.parse_args()
@@ -177,8 +180,12 @@ def main() -> int:
         global PATCHES_PER_INST
         PATCHES_PER_INST = 2
 
+    # Pin RNGs (head init + batch order). NB: GPU Mask R-CNN is still not
+    # bit-exact run to run — roi_align backward has no deterministic kernel.
+    ic.set_determinism(args.seed)
+
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    print(f"Device: {DEVICE}")
+    print(f"Device: {DEVICE}  seed: {args.seed}")
     # Full 7-band UNet feature stack (lrm_25/lrm_5/slope/tpi_05/openness±/roughness_11).
     mu, sd = ic.load_feature_stats()
     n_ch = len(mu)
@@ -193,9 +200,12 @@ def main() -> int:
     print(f"train patches: {len(train_ds)}  val patches: {len(val_ds)}")
 
     train_loader = DataLoader(train_ds, batch_size=args.batch, shuffle=True,
-                              num_workers=args.workers, collate_fn=collate)
+                              num_workers=args.workers, collate_fn=collate,
+                              generator=ic.make_loader_generator(args.seed),
+                              worker_init_fn=ic.seed_worker)
     val_loader = DataLoader(val_ds, batch_size=args.batch, shuffle=False,
-                            num_workers=args.workers, collate_fn=collate)
+                            num_workers=args.workers, collate_fn=collate,
+                            worker_init_fn=ic.seed_worker)
 
     model = build_model(num_classes=3, in_channels=n_ch).to(DEVICE)
     n_params = sum(p.numel() for p in model.parameters()) / 1e6
@@ -233,6 +243,7 @@ def main() -> int:
                 "mu": mu, "sd": sd,
                 "val_loss": va_loss,
                 "arch": "maskrcnn_resnet50_fpn_v2",
+                "seed": args.seed,
             }, OUTDIR / "best.pt")
             print(f"    saved best.pt (val={va_loss:.3f})")
     return 0

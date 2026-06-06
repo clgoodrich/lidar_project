@@ -71,13 +71,20 @@ def main() -> int:
     ap.add_argument("--batch", type=int, default=2)  # larger patch -> smaller batch
     ap.add_argument("--lr", type=float, default=5e-4)
     ap.add_argument("--workers", type=int, default=0)
+    ap.add_argument("--seed", type=int, default=0,
+                    help="global RNG seed; fixes head init + batch order (GPU "
+                         "training is still not bit-exact — roi_align backward)")
     ap.add_argument("--smoke", action="store_true")
     args = ap.parse_args()
     if args.smoke:
         args.epochs = 1
 
+    # Pin RNGs (head init + batch order). NB: GPU Mask R-CNN is still not
+    # bit-exact run to run — roi_align backward has no deterministic kernel.
+    ic.set_determinism(args.seed)
+
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    print(f"Device: {DEVICE}")
+    print(f"Device: {DEVICE}  seed: {args.seed}")
     mu, sd = ic.load_feature_stats()
     n_ch = len(mu)
     print(f"feature channels ({n_ch}): {ic.FEATURE_CHANNELS}")
@@ -89,9 +96,12 @@ def main() -> int:
     print(f"train patches: {len(train_ds)}  val patches: {len(val_ds)}")
 
     train_loader = DataLoader(train_ds, batch_size=args.batch, shuffle=True,
-                              num_workers=args.workers, collate_fn=collate)
+                              num_workers=args.workers, collate_fn=collate,
+                              generator=ic.make_loader_generator(args.seed),
+                              worker_init_fn=ic.seed_worker)
     val_loader = DataLoader(val_ds, batch_size=args.batch, shuffle=False,
-                            num_workers=args.workers, collate_fn=collate)
+                            num_workers=args.workers, collate_fn=collate,
+                            worker_init_fn=ic.seed_worker)
 
     model = build_model(num_classes=2, in_channels=n_ch).to(DEVICE)
     print(f"Mask R-CNN params: {sum(p.numel() for p in model.parameters())/1e6:.1f} M")
@@ -121,6 +131,7 @@ def main() -> int:
                 "in_channels": n_ch, "channels": list(ic.FEATURE_CHANNELS),
                 "mu": mu, "sd": sd, "val_loss": va,
                 "arch": "maskrcnn_resnet50_fpn_v2",
+                "seed": args.seed,
             }, OUTDIR / "best.pt")
             print(f"    saved best.pt (val={va:.3f})")
     return 0

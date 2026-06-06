@@ -5,6 +5,28 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-06 — Training determinism: seeded, but GPU Mask R-CNN is NOT bit-exact
+
+Added `ic.set_determinism(seed)` + seeded DataLoader generator/`worker_init_fn`
+and a `--seed` arg (saved into `best.pt`) to `_pit_maskrcnn.py` and
+`_pad_maskrcnn.py`. This pins head init + batch order.
+
+**Finding (verified):** two `--smoke --seed 0` pit runs still diverged
+(tr 0.739/va 0.559 vs tr 0.742/va 0.529). Strict
+`torch.use_deterministic_algorithms(True)` pinpoints the cause:
+`roi_align_backward_kernel does not have a deterministic implementation`
+(atomic adds on CUDA). So GPU Mask R-CNN training cannot be made bit-for-bit
+reproducible with this stack; we use `warn_only=True` so it still runs. Seeding
+makes runs *close*, not identical. Bit-exactness would need CPU training
+(impractically slow for 30 epochs).
+
+**Takeaway:** reproducibility of a *model's outputs* comes from saving `best.pt`
+and re-running deterministic *inference* (proven bit-identical in
+`training_walkthrough.ipynb` Path B), not from re-training. Derivatives remain
+fully deterministic (proven bit-identical in `derivatives_walkthrough.ipynb`).
+The real `pit_07`/`pad_05` `best.pt` were backed up + restored during the test;
+they predate seeding and are not recreatable.
+
 ## 2026-06-03 — Diagnostic derivative sweep on 9t (curvature/hydrology/texture)
 
 Built 13 new geomorphometric layers from `dem_9t_1m.tif` via WhiteboxTools

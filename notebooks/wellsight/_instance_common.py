@@ -36,6 +36,68 @@ from shapely.geometry import Polygon, box, shape
 from _common import DERIV_9T, DST_CRS, make_profile, write_tif
 
 # ---------------------------------------------------------------------------
+# Reproducibility
+# ---------------------------------------------------------------------------
+
+def set_determinism(seed: int = 0) -> None:
+    """Pin every RNG and request deterministic kernels (best effort).
+
+    Seeds the Python / NumPy / torch RNGs (so the random init of the new
+    detection heads and every draw is fixed) and forces deterministic cuDNN.
+    This removes the *avoidable* sources of run-to-run variance — head init and
+    (with a seeded DataLoader generator) batch order.
+
+    IMPORTANT — GPU Mask R-CNN training is NOT bit-for-bit reproducible, even
+    with this. ``roi_align``'s backward pass has no deterministic CUDA kernel
+    (it uses atomic adds), so ``use_deterministic_algorithms(True)`` would hard
+    error; we set ``warn_only=True`` so training still runs. The result is
+    *close* run to run, not identical. True bit-exactness would require CPU
+    training (deterministic roi_align there), which is impractically slow for a
+    full run.
+
+    The reliable way to reproduce a *model's outputs* is therefore not to
+    re-train but to load the saved ``best.pt`` and run inference, which IS
+    deterministic. This also cannot recreate a checkpoint trained before
+    determinism was wired in (the current ``best.pt`` used an unseeded RNG).
+    """
+    import os
+    import random
+
+    # must be set before the CUDA context is created for deterministic cuBLAS
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+    random.seed(seed)
+    np.random.seed(seed)
+
+    import torch
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    try:
+        torch.use_deterministic_algorithms(True, warn_only=True)
+    except Exception:
+        pass
+
+
+def seed_worker(worker_id: int) -> None:  # noqa: ARG001
+    """DataLoader ``worker_init_fn`` — re-seed each worker deterministically."""
+    import random
+
+    import torch
+    s = torch.initial_seed() % (2 ** 32)
+    np.random.seed(s)
+    random.seed(s)
+
+
+def make_loader_generator(seed: int = 0):
+    """A seeded ``torch.Generator`` for DataLoader shuffle reproducibility."""
+    import torch
+    g = torch.Generator()
+    g.manual_seed(seed)
+    return g
+
+
+# ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
 
