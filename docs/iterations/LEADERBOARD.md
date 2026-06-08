@@ -35,6 +35,17 @@ For semantic UNet iterations the comparable quantity is **per-instance recall on
 
 †/‡ same metric definitions as the Pits table above. Full threshold sweep in `iterations/unet_instance_eval/SUMMARY.md`.
 
+## Roads (semantic — line-level metric on 9t test split)
+
+Roads are a binary segmentation task, scored by **per-line average precision** (mean P(road) along each test line, ranked vs `not_road` decoys) and pixel IoU. Not comparable to the instance tables above. Test split per `road_dataset_manifest.csv`.
+
+| Iteration | Approach | Res | Pixel IoU (road) | Line AP | P(road) road / drainage | Notes |
+|---|---|---|---|---|---|---|
+| road_unet | UNet binary, FocalCE | 0.5 m | 0.343 | 0.963 | 0.565 / — | Retrained 2026-06-07 on latest roads (171 in-tile lines). Over-fires on 1 m blocks (33% px). |
+| road_unet_1m (2-class) | UNet binary, FocalCE, roughness_5 | 1 m | 0.379 | 0.962 | 0.654 / — | Matches the 1 m blocks but fires on drainage; needed an aggressive post-filter. |
+| road_unet_1m (3-class) | UNet bg/road/drainage | 1 m | 0.527 | 0.963 | 0.676 / 0.005 | Drainage as a trained class (from `drainage.shp`) → P(road) on channels →0.005. |
+| **road_unet_1m (3-class + chunked)** | UNet bg/road/drainage, roads chunked ~40 m | 1 m | **0.581** | **0.992** | **0.757 / 0.006** | Current. Roads chunked so every ~40 m is a patch center; eval over 168 chunks (was 27 lopsided lines). Drainage handled in-model — no post-filter needed. See [[road_unet_1m]]. |
+
 ## Cross-reference vs PA DEP known wells (full catalog)
 
 Beyond the hand-annotated test split, each model's detections were scored against the **full PA DEP Oil & Gas locations catalog** clipped to the 9t extent — **1069 catalogued wells** (vs only 110 hand-annotated pits / 79 plats). A well counts as "matched" if any detection centroid lands within 25 m. Outputs in `data/derivatives/9t/iterations/known_well_validation/`.

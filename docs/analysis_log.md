@@ -5,6 +5,108 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-07 — Fix drainage FPs at the source: 3-class road model + road chunking
+
+User pushback: the post-hoc drainage filter was too aggressive, and "are we
+priming the model on drainage?" Investigation: (1) hand-drawn roads are NOT
+contaminated (only 0.7% run on a mapped stream); (2) the model was *set up* to
+confuse roads/drainage — the U-Net label was binary road/bg with NO drainage
+negatives (the 112-line `not_roads` layer was only used by the side classifier,
+not the U-Net), and all 7 feature bands are generic concavity so nothing told it
+"water flows here". Conclusion: fix it in **training**, not with a filter.
+
+**Fix 1 — drainage as a trained class.** User pointed to `drainage.shp` in the
+annotations folder (1791 channel segments from the cross-section filter,
+`klass='stream'`, EPSG:6346, no .prj). Wired it through: `_prep_annotations.py`
+adds a `drainage` gpkg layer (stamps EPSG:6346); `_prep_road_1m.py` rasterizes it
+as class 2 (buffered 2 m, road painted on top) → `labels_road_9t_1m.tif` is now
+0=bg/1=road/2=drainage; `_road_unet_1m.py` → `N_CLASSES=3`, FocalCE alpha
+(0.10,0.60,0.30), drainage sampling policy; `_infer_roads_data_3x3.py` →
+`N_CLASSES=3`, writes `drainage_prob` + 2-colour overlay. Result: P(road) on
+drainage test lines = **0.005**, road IoU 0.379→0.527.
+
+**Fix 2 — chunk the roads (user caught this).** Roads = few long polylines (171,
+median 126 m, max 921 m); drainage = pre-chunked (~21 m). The sampler centers ONE
+patch per line midpoint, so long roads were massively under-sampled (most of their
+length never seen) and the 27-line eval was meaningless. `_build_plat_road_dataset.py`
+now chunks roads/not_roads to ~40 m → `road_chunks_9t.gpkg` + chunk-level manifest
+(8385 road chunks, 635/95/130 train/val/test); eval rewritten per-chunk. Restored
+road focal weight to 0.60. Result (168-chunk test): **road IoU 0.581, line AP
+0.992, P(road) road/drainage 0.757/0.006**. Pilots: 604603 road 0.98%/drain
+1.36%; 609590 road 2.87%/drain 1.19% — clean separation, no post-filter needed.
+Backups: `best.pt.2class.BAK`, `best.pt.3class_nochunk.BAK`. Full writeup
+[[road_unet_1m]] §v2. **Open:** re-infer the other 23 blocks with the 3-class
+model; decide post-filter's residual role (connectivity/vectorization only).
+
+---
+
+## 2026-06-07 — Refine road rasters → clean, connected centerlines (drainage filter + gap-bridging)
+
+User feedback on the per-block road predictions: good, but (a) picking up drainage/
+waterways and (b) roads that should connect are fragmented. Built
+`_refine_roads_data_3x3.py` to post-process each block's `road_prob` raster into
+vector centerlines, reusing the project's validated cross-section concavity test
+`_xdrop` (from `_filter_streams_xsec_9t.py`).
+
+**Pipeline:** binarize(0.5) → remove_small_objects(250) → close(3px) → skeletonize
+→ `skan` trace to LineStrings → bearing-aware endpoint gap-bridge (≤25 m, tangents
+within 35°) → linemerge → drainage filter → drop <35 m stubs → re-rasterize +
+gpkg + overlay.
+
+**Connectivity (problem b):** morphological close for hairline gaps + endpoint
+snapping for medium gaps (247 bridges on the steep pilot). User opted to KEEP all
+>35 m fragments (no network-island filter).
+
+**Drainage (problem a) — the methodology finding.** A single global `xdrop`
+threshold does NOT generalize across terrain (drainage km dropped per pilot):
+`xdrop≥0.30` flat 19.7 / steep 52.0 (eats roads); `xdrop≥0.60` flat 6.7 / steep
+15.7 (steep channels leak); naive hydrology flat 23.7 / steep 42.5 (D8 routes down
+road **ditches** on flat terrain → eats grid roads). **Adopted rule combines
+both:** drainage if (coincides ≥50% with a mapped D8 stream [flow-accum ≥4000
+cells, dilated 3px] AND `xdrop≥0.35`) OR (`xdrop≥0.60` alone). The concavity gate
+on the hydrology catch rejects flat road ditches (flat-bottomed → low `xdrop`).
+Pilots with adopted rule: flat 604603 roads 45.7 km / drainage 12.0 km; steep
+609590 roads 130.3 km / drainage 23.8 km — both visually correct (grid roads kept
+on flat; dendritic channels caught on steep). Per-block D8 streams built with WBT
+(breach→d8→accum→extract_streams), cached as `stream_seed_t4000_<key>_1m.tif`;
+heavy breach/accum intermediates deleted. **Rollout complete: all 25 blocks in
+16.7 min — 1727.9 km roads kept / 346.7 km drainage dropped (16.7%) / 2413
+bridges.** Outputs per block: `roads_<key>_1m.gpkg` (layers roads+drainage,
+tracked), `road_clean_<key>_1m.tif`, `road_clean_overlay_<key>_1m.png`. ≥100 MB
+gitignore audit clean. Full writeup: [[road_refine]].
+
+---
+
+## 2026-06-07 — Group ALL WesternPA tiles; retrain roads on latest annotations; 0.5 m→1 m road fix
+
+**1. Grouped every WesternPA 2019 D20 tile into a block.** The old 3×3 builder only
+emitted blocks where all 9 tiles of a non-overlapping 3×3 were present → 50 of 176
+tiles dropped. New `_build_data_3x3_partial_westernpa.py` uses the same stride-3 grid
+(so the 14 existing full blocks are reused untouched) but emits a block per non-empty
+cell with partial member lists (1–9 tiles) and a tight bbox. Result: **25 blocks,
+176/176 tiles covered, zero overlap.** Built the 11 new partial edge blocks (48 min).
+
+**2. Retrained roads on the latest hand-drawn `roads.shp`.** The downstream training
+data was stale (annotations_proj.gpkg from 2026-05-19) while `roads.shp` had grown
+to today. Rebuilt `annotations_proj.gpkg` (`_prep_annotations.py`): roads **97 → 1725**
+features. Fixed a null/empty-geometry crash in `_build_plat_road_dataset.py` (exposed
+by the bigger set; guards preserve positional `line_id` alignment used by eval).
+Rebuilt road labels + manifest: **171 road lines** inside the 9t blocks (train 123 /
+val 21 / test 27). Backed up old `annotations_proj.gpkg` + `road_unet/best.pt` (.BAK).
+
+**3. Resolution mismatch found + fixed.** Piloting the 0.5 m road model on a 1 m block
+gave **33% "road"** — false positives smeared over terrain. Cause: only `roughness`
+was physically matched across resolutions; `lrm_25`/`tpi_05`/`openness` feed the model
+at ~2× their trained window on 1 m data. Chose (over regenerating 25 blocks at 0.5 m)
+to **retrain the road U-Net at 1 m** ([[road_unet_1m]]): built `9t_1m` stack with the
+same `_build_derivatives` code as the blocks, `_prep_road_1m.py` (features_pit_9t_1m +
+feature_stats_1m + labels_road_9t_1m, roughness_5), `_road_unet_1m.py`. 1 m test
+metrics ≥ 0.5 m (pixel IoU 0.379 vs 0.343; line AP 0.962; P(road) road/not_road
+0.654/0.133). Pilot 604590: **33.2% → 4.06%** road px, coherent road lines.
+Inference on all 25 blocks via `_infer_roads_data_3x3.py` (→ per-block
+`road_prob/argmax/overlay_<key>_1m`). Residual FPs on steep incised slopes →
+cross-section concavity filter ([[BACKLOG]]).
+
 ## 2026-06-06 — Training determinism: seeded, but GPU Mask R-CNN is NOT bit-exact
 
 Added `ic.set_determinism(seed)` + seeded DataLoader generator/`worker_init_fn`

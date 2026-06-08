@@ -1,0 +1,179 @@
+25 block(s) in westernpa_d20: 604590, 604594, 604599, 604603, 604608, 609590, 609594, 609599, 609603, 609608, 613590, 613594, 613599, 613603, 613608, 618591, 618594, 618599, 618603, 618608, 622591, 622594, 622599, 622603, 622608
+road ckpt ep=38  channels=['lrm_25', 'lrm_5', 'slope', 'tpi_05', 'openness_pos', 'openness_neg', 'roughness_5']
+
+=== 604590 ===
+  reusing features_604590_1m.tif
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.2s
+  [604590] road px=822547 (4.06%)  13.5s
+
+=== 604594 ===
+  stacking 7 bands -> features_604594_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.2s
+  [604594] road px=701957 (3.47%)  13.4s
+
+=== 604599 ===
+  stacking 7 bands -> features_604599_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.2s
+  [604599] road px=503707 (2.49%)  13.3s
+
+=== 604603 ===
+  stacking 7 bands -> features_604603_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.1s
+  [604603] road px=451543 (2.23%)  13.1s
+
+=== 604608 ===
+  stacking 7 bands -> features_604608_1m.tif (4500x1500)
+Inference grid: 8 x 24 = 192 patches
+  inference done in 2.3s
+  [604608] road px=161900 (2.40%)  4.4s
+
+=== 609590 ===
+  stacking 7 bands -> features_609590_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.0s
+  [609590] road px=1145437 (5.66%)  13.3s
+
+=== 609594 ===
+  stacking 7 bands -> features_609594_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.0s
+  [609594] road px=827302 (4.09%)  13.2s
+
+=== 609599 ===
+  stacking 7 bands -> features_609599_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.1s
+  [609599] road px=573154 (2.83%)  13.2s
+
+=== 609603 ===
+  stacking 7 bands -> features_609603_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.0s
+  [609603] road px=503385 (2.49%)  13.1s
+
+=== 609608 ===
+  stacking 7 bands -> features_609608_1m.tif (4500x1500)
+Inference grid: 8 x 24 = 192 patches
+  inference done in 2.3s
+  [609608] road px=295172 (4.37%)  4.4s
+
+=== 613590 ===
+  stacking 7 bands -> features_613590_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 6.9s
+  [613590] road px=1145141 (5.66%)  13.0s
+
+=== 613594 ===
+  stacking 7 bands -> features_613594_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.0s
+  [613594] road px=952555 (4.70%)  13.2s
+
+=== 613599 ===
+  stacking 7 bands -> features_613599_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.0s
+  [613599] road px=644802 (3.18%)  13.2s
+
+=== 613603 ===
+  stacking 7 bands -> features_613603_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.0s
+  [613603] road px=511091 (2.52%)  13.1s
+
+=== 613608 ===
+  stacking 7 bands -> features_613608_1m.tif (4500x1500)
+Inference grid: 8 x 24 = 192 patches
+  inference done in 2.3s
+  [613608] road px=197357 (2.92%)  4.3s
+
+=== 618591 ===
+  stacking 7 bands -> features_618591_1m.tif (4500x3000)
+Inference grid: 16 x 24 = 384 patches
+  inference done in 4.7s
+  [618591] road px=837975 (6.21%)  8.7s
+
+=== 618594 ===
+  stacking 7 bands -> features_618594_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.2s
+  [618594] road px=1115769 (5.51%)  13.5s
+
+=== 618599 ===
+  stacking 7 bands -> features_618599_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.0s
+  [618599] road px=869716 (4.29%)  13.2s
+
+=== 618603 ===
+  stacking 7 bands -> features_618603_1m.tif (4500x4500)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.0s
+  [618603] road px=537517 (2.65%)  13.1s
+
+=== 618608 ===
+  stacking 7 bands -> features_618608_1m.tif (4500x1500)
+Inference grid: 8 x 24 = 192 patches
+  inference done in 2.3s
+  [618608] road px=146564 (2.17%)  4.3s
+
+=== 622591 ===
+  stacking 7 bands -> features_622591_1m.tif (3000x3000)
+Inference grid: 16 x 16 = 256 patches
+  inference done in 3.1s
+  [622591] road px=365589 (4.06%)  6.0s
+
+=== 622594 ===
+  stacking 7 bands -> features_622594_1m.tif (3000x4500)
+Inference grid: 24 x 16 = 384 patches
+  inference done in 4.6s
+  [622594] road px=715874 (5.30%)  8.7s
+
+=== 622599 ===
+  stacking 7 bands -> features_622599_1m.tif (3000x4500)
+Inference grid: 24 x 16 = 384 patches
+  inference done in 4.7s
+  [622599] road px=698801 (5.18%)  8.9s
+
+=== 622603 ===
+  stacking 7 bands -> features_622603_1m.tif (3000x4500)
+Inference grid: 24 x 16 = 384 patches
+  inference done in 4.6s
+  [622603] road px=466465 (3.46%)  8.7s
+
+=== 622608 ===
+  stacking 7 bands -> features_622608_1m.tif (3000x1500)
+Inference grid: 8 x 16 = 128 patches
+  inference done in 1.6s
+  [622608] road px=106369 (2.36%)  3.1s
+
+DONE 25/25 in 17.6 min
+   618591  road=6.21%  (837975 px)
+   609590  road=5.66%  (1145437 px)
+   613590  road=5.66%  (1145141 px)
+   618594  road=5.51%  (1115769 px)
+   622594  road=5.30%  (715874 px)
+   622599  road=5.18%  (698801 px)
+   613594  road=4.70%  (952555 px)
+   609608  road=4.37%  (295172 px)
+   618599  road=4.29%  (869716 px)
+   609594  road=4.09%  (827302 px)
+   622591  road=4.06%  (365589 px)
+   604590  road=4.06%  (822547 px)
+   604594  road=3.47%  (701957 px)
+   622603  road=3.46%  (466465 px)
+   613599  road=3.18%  (644802 px)
+   613608  road=2.92%  (197357 px)
+   609599  road=2.83%  (573154 px)
+   618603  road=2.65%  (537517 px)
+   613603  road=2.52%  (511091 px)
+   604599  road=2.49%  (503707 px)
+   609603  road=2.49%  (503385 px)
+   604608  road=2.40%  (161900 px)
+   622608  road=2.36%  (106369 px)
+   604603  road=2.23%  (451543 px)
+   618608  road=2.17%  (146564 px)

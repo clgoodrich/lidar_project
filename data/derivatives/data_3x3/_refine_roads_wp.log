@@ -1,0 +1,154 @@
+refine: thr=0.5 min_area=250 close=3px gap=25.0m ang=35.0 | drainage: streams(t4000,cover>=0.5) or xdrop>=0.6m on 25 block(s)
+=== 604590 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [604590] raw 822,581px -> clean 317,193px | roads 102.4km (929) | drainage dropped 12.9km (613) | 132 bridges
+=== 604594 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [604594] raw 701,987px -> clean 244,669px | roads 78.8km (778) | drainage dropped 14.2km (665) | 118 bridges
+=== 604599 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [604599] raw 503,737px -> clean 174,178px | roads 56.2km (502) | drainage dropped 9.3km (429) | 56 bridges
+=== 604603 ===
+  [604603] raw 451,570px -> clean 141,032px | roads 45.7km (387) | drainage dropped 12.0km (556) | 58 bridges
+=== 604608 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [604608] raw 161,914px -> clean 57,109px | roads 18.5km (185) | drainage dropped 2.3km (112) | 28 bridges
+=== 609590 ===
+  [609590] raw 1,145,482px -> clean 405,007px | roads 130.3km (1346) | drainage dropped 23.8km (1136) | 247 bridges
+=== 609594 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [609594] raw 827,345px -> clean 305,548px | roads 98.5km (929) | drainage dropped 14.7km (684) | 151 bridges
+=== 609599 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [609599] raw 573,185px -> clean 209,647px | roads 67.6km (617) | drainage dropped 9.4km (441) | 80 bridges
+=== 609603 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [609603] raw 503,420px -> clean 183,818px | roads 59.2km (545) | drainage dropped 8.3km (387) | 53 bridges
+=== 609608 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [609608] raw 295,195px -> clean 96,422px | roads 31.1km (325) | drainage dropped 3.5km (171) | 53 bridges
+=== 613590 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [613590] raw 1,145,187px -> clean 424,177px | roads 135.1km (1172) | drainage dropped 27.9km (1318) | 187 bridges
+=== 613594 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [613594] raw 952,608px -> clean 342,390px | roads 110.5km (1054) | drainage dropped 22.4km (1078) | 144 bridges
+=== 613599 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [613599] raw 644,836px -> clean 229,586px | roads 74.1km (688) | drainage dropped 13.1km (614) | 115 bridges
+=== 613603 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [613603] raw 511,129px -> clean 166,824px | roads 53.7km (501) | drainage dropped 10.4km (485) | 59 bridges
+=== 613608 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [613608] raw 197,362px -> clean 69,920px | roads 22.4km (200) | drainage dropped 3.5km (166) | 28 bridges
+=== 618591 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [618591] raw 838,008px -> clean 279,396px | roads 89.7km (937) | drainage dropped 27.7km (1334) | 133 bridges
+=== 618594 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [618594] raw 1,115,808px -> clean 352,274px | roads 113.3km (1245) | drainage dropped 43.4km (2077) | 162 bridges
+=== 618599 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [618599] raw 869,747px -> clean 303,452px | roads 98.0km (999) | drainage dropped 18.4km (877) | 145 bridges
+=== 618603 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [618603] raw 537,546px -> clean 178,215px | roads 57.4km (583) | drainage dropped 11.3km (519) | 74 bridges
+=== 618608 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [618608] raw 146,574px -> clean 50,185px | roads 16.2km (141) | drainage dropped 3.5km (159) | 18 bridges
+=== 622591 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [622591] raw 365,600px -> clean 146,453px | roads 47.5km (414) | drainage dropped 5.3km (248) | 52 bridges
+=== 622594 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [622594] raw 715,906px -> clean 250,607px | roads 81.0km (790) | drainage dropped 19.9km (958) | 102 bridges
+=== 622599 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [622599] raw 698,824px -> clean 247,480px | roads 79.6km (860) | drainage dropped 15.8km (768) | 130 bridges
+=== 622603 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [622603] raw 466,487px -> clean 151,747px | roads 49.1km (490) | drainage dropped 11.6km (556) | 68 bridges
+=== 622608 ===
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:309: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
+  mask = remove_small_objects(mask, min_size=args.min_area)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_refine_roads_data_3x3.py:311: FutureWarning: `binary_closing` is deprecated since version 0.26 and will be removed in version 0.28. Use `skimage.morphology.closing` instead.
+  mask = binary_closing(mask, disk(args.close_px))
+  [622608] raw 106,377px -> clean 36,582px | roads 11.9km (121) | drainage dropped 2.1km (95) | 20 bridges
+
+DONE 25/25 in 16.7 min
+  totals: roads 1727.9 km | drainage dropped 346.7 km | 2413 bridges

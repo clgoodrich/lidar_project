@@ -20,8 +20,16 @@ SRC = DERIV / "annotations"
 OUT = SRC / "annotations_proj.gpkg"
 
 
-def load(name: str) -> gpd.GeoDataFrame:
-    g = gpd.read_file(SRC / f"{name}.shp").to_crs(TARGET_CRS)
+def load(name: str, *, assume_epsg: int | None = None) -> gpd.GeoDataFrame:
+    g = gpd.read_file(SRC / f"{name}.shp")
+    # drainage.shp ships without a .prj but is already in EPSG:6346 (UTM 17N
+    # metres). Stamp the CRS before reprojecting so to_crs doesn't choke on a
+    # naive geometry.
+    if g.crs is None and assume_epsg is not None:
+        print(f"  {name}: no CRS on file; assuming EPSG:{assume_epsg}")
+        g = g.set_crs(epsg=assume_epsg)
+    g = g.to_crs(TARGET_CRS)
+    g = g[~g.geometry.isna() & ~g.geometry.is_empty].copy()
     g["valid"] = g.geometry.is_valid
     bad = (~g["valid"]).sum()
     if bad:
@@ -53,6 +61,8 @@ def main():
     pit_out = load("pit_outside")
     roads = load("roads")
     not_roads = load("not_roads")
+    drainage = load("drainage", assume_epsg=6346)  # hand/filter-derived channels
+    print(f"  drainage: {len(drainage)} channel segments")
 
     # Stable plat_id
     plat = plat.reset_index(drop=True)
@@ -102,6 +112,7 @@ def main():
     pit_wall = assign_plat_id(pit_wall, plat, "polygon")
     roads = assign_plat_id(roads, plat, "line")
     not_roads = assign_plat_id(not_roads, plat, "line")
+    drainage = assign_plat_id(drainage, plat, "line")
 
     # Stats
     def coverage(name, gdf):
@@ -142,7 +153,8 @@ def main():
     pit_wall.to_file(OUT, layer="pit_wall", driver="GPKG")
     roads.to_file(OUT, layer="roads", driver="GPKG")
     not_roads.to_file(OUT, layer="not_roads", driver="GPKG")
-    print(f"\nWrote {OUT}")
+    drainage.to_file(OUT, layer="drainage", driver="GPKG")
+    print(f"\nWrote {OUT}  (+ drainage layer, {len(drainage)} segments)")
 
 
 if __name__ == "__main__":
