@@ -84,6 +84,7 @@ data/derivatives/_tmp_intensity_tiles_*/
 
 # Build pipeline temp JSON + logs (regenerable, sometimes left on hard crash)
 data/derivatives/_build_*.log
+backup_to_E_last_run.log
 data/derivatives/_tmp_*.json
 data/derivatives/inference_*/_tmp_*.json
 
