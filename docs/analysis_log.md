@@ -5,6 +5,79 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-09 — Permian QL1 sample render + early-well parameter mining
+
+**(1) Density ceiling check.** Ranked the full cached Permian inventory (104,396
+tiles) by LAZ-bytes/m² (calibrated to a measured tile, ~3.46 B/pt). Over the actual
+well hotspots, **~15 pts/m² (QL1) is the ceiling** — confirmed by reading the densest
+in-hotspot tile header (`TX West Central B4 2018 13SGR110655`: 33.8 M pts in a
+1500×1500 m tile = 15.0 pts/m²). Denser projects exist (`TX_Lower_CO_San_Bernard`
+p90 ~22) but lie outside the well clusters. CO/DJ-Basin coverage is QL2 (~2 pts/m²),
+so Permian is the higher-quality region. ~15 pts/m² ≈ 7× the western-PA D20 QL2 data.
+
+**(2) Eyeball sample.** Built a 0.5 m bare-earth DEM (PDAL ground-class IDW) from the
+best on-disk B4 tile `13RGR500055` (16 pads, 33.3 M pts), hillshaded it, overlaid the
+15 Ramachandran pad detections in-tile → `data/derivatives/permian_sample/`
+(`dem_..._05m.tif` 72 MB gitignored by blanket; `hillshade_..._pads.png` tracked).
+CRS verified from file: **NAD83(2011)/UTM 13N + NAVD88, EPSG:6342**. Observation: flat
+West-TX rangeland — roads/tracks and some square pad scars read crisply, but graded
+pads have low vertical relief (the optical detector keys on dirt color, not relief).
+This is the inverse of forested PA, where the terrain scar IS the signal under canopy.
+
+**(3) Book parameter mining** (user-supplied PDFs in `docs/papers/`). Williamson &
+Daum *Age of Illumination* (888 pp OCR) + Ross *Allegheny Oil* (69 pp image scan, on
+our exact PA region) mined for measurable detection priors → `docs/articles/
+early_well_parameters.md`. Headline priors: earthen catch-pit depth **~0.6–1.5 m**
+(only explicit pit dimension; argues for 0.5 m DEM in PA), well spacing **~20–45 m**
+(clustering prior), tank-ring dia **~9 m** (Hough-circle prior, r≈4.5 m), derrick pad
+**~4 m** square. Explicit gaps flagged (slush-pit L×W×D, house footprints) — to be
+sourced from PA DEP standards, not fabricated.
+
+---
+
+## 2026-06-08 — Scout high-quality 3DEP LiDAR over dense abandoned-well clusters (Permian + DJ Basin)
+
+Goal: find good high-density-well sample areas with high-quality public LiDAR, in
+the two Ramachandran 2024 optical-imagery regions (Permian TX/NM, Denver/DJ CO).
+
+**Well-density proxy:** Ramachandran deployment well-pad detections — 194,973 Permian
+(score med 0.93) + 36,591 Denver. Gridded at 0.1° (~10 km cells).
+
+- **Permian hotspots** (densest ~10 km cells, 1100–1670 pads each): Midland/Martin/
+  Andrews Co. core `-102.5…-102.85, 32.0…33.1` and Eddy/Lea Co. NM `-103.15, 32.45`.
+- **DJ Basin hotspots:** tightly clustered in Weld Co., CO `-104.5…-105.0, 40.0…40.4`
+  (Greeley), 350–490 pads/cell.
+
+**LiDAR coverage × measured quality** (density read from actual LAZ headers via laspy,
+2.25 km² USGS tiles):
+- **TX West Central 2018** covers most Permian hotspots; blocks **B4/B8 measure
+  ~13–15 pts/m² (QL1-grade)**, but B7 only ~4 pts/m² — density varies by sub-block.
+- **NM_SouthEast 2018 D19** (~6 pts/m²) covers the NM hotspot `-103.15, 32.45`.
+- **TX_Pecos_Dallas 2018** covers `-102.35, 31.45`.
+- **CO_EasternColorado 2018** (project path tags it `..._B2_QL2_North_2018`) is the
+  workhorse over Weld Co.; **CO_DRCOG 2020** (QL2, newer) overlaps too. (One edge
+  tile read 0.2 pts/m² — a sliver tile, not representative; QL2 spec is ≥2 pts/m².)
+
+Inventory source: USGS TNM `products` API (`Lidar Point Cloud (LPC)`), Permian
+inventory already cached (`data/external/usgs_3dep_permian_tx/tile_inventory.parquet`,
+104,396 tiles); Weld Co. queried live (5,728 LPC products in the hotspot bbox).
+No bulk download done — characterization only. Reproduce: density grids from the
+deployment `*_well_pads.csv`; coverage via the cached parquet / TNM bbox query.
+
+---
+
+## 2026-06-08 — 2 m elevation contours on every data_3x3 block DEM
+
+New `_build_contours_data_3x3.py` runs `gdal_contour -a elev -i 2 -snodata -9999`
+on each `dem_<key>_1m.tif` (EPSG:6346, metres → 2 m interval) → `contours_2m_<key>_1m.gpkg`
+(layer `contours`, attr `elev`, all multiples of 2). Built for all 25 WesternPA D20
+blocks (~547 MB total, 18–41 MB each; ~0.6 min). Heavy regenerable vectors, so added
+gitignore rule `data/derivatives/data_3x3/**/contours_*.gpkg` in the same change;
+≥100 MB audit clean. Reproduce: `python notebooks/wellsight/build/_build_contours_data_3x3.py`
+(`--interval N`, `--only <key>`).
+
+---
+
 ## 2026-06-07 — Fix drainage FPs at the source: 3-class road model + road chunking
 
 User pushback: the post-hoc drainage filter was too aggressive, and "are we
