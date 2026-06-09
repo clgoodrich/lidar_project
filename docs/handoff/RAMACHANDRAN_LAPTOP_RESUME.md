@@ -61,9 +61,9 @@ python -u notebooks/wellsight/_ramachandran_verifier_train.py --epochs 8 --batch
 ```
 
 This produces:
-- `data/derivatives/ramachandran_verifier/verifier_best.pt` — best val-loss checkpoint
-- `data/derivatives/ramachandran_verifier/valid_probs_best.npz` — val predictions at best epoch
-- `data/derivatives/ramachandran_verifier/train_history.csv` — per-epoch loss/acc
+- `data/derivatives/experiments/ramachandran_verifier/verifier_best.pt` — best val-loss checkpoint
+- `data/derivatives/experiments/ramachandran_verifier/valid_probs_best.npz` — val predictions at best epoch
+- `data/derivatives/experiments/ramachandran_verifier/train_history.csv` — per-epoch loss/acc
 
 ### Time estimates
 
@@ -100,8 +100,8 @@ python -u notebooks/wellsight/_ramachandran_verifier_eval.py
 ```
 
 Runs in ~5–15 min. Outputs:
-- `data/derivatives/ramachandran_verifier/verifier_test_metrics.csv` — precision, recall, F1, AP, threshold at 99% precision
-- `data/derivatives/ramachandran_verifier/test_probs.npz` — per-sample predictions for further analysis
+- `data/derivatives/experiments/ramachandran_verifier/verifier_test_metrics.csv` — precision, recall, F1, AP, threshold at 99% precision
+- `data/derivatives/experiments/ramachandran_verifier/test_probs.npz` — per-sample predictions for further analysis
 
 ## 5. What to look for in training output
 

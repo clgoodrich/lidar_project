@@ -50,7 +50,7 @@ def find_dry_blocks() -> list[tuple[str, Path, Path]]:
     out = []
     # data_3x3
     for region in ("westernpa_d20", "northcentral_b19"):
-        parent = DERIV / "data_3x3" / region
+        parent = DERIV / "tiles" / "data_3x3" / region
         if not parent.exists(): continue
         for sub in sorted(p for p in parent.iterdir() if p.is_dir()):
             key = sub.name
@@ -64,7 +64,7 @@ def find_dry_blocks() -> list[tuple[str, Path, Path]]:
             out.append((f"data_3x3/{region}/{key}", sub, dem))
     # regions
     for region in ("sw_marcellus_1m", "wc_coaloil_1m", "nec_marcellus_1m"):
-        sub = DERIV / region
+        sub = DERIV / "tiles" / region
         dem = sub / f"dem_{region}.tif"
         if not dem.exists(): continue
         class9_banks = sub / f"water_banks_{region}.tif"

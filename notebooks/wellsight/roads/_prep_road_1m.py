@@ -1,12 +1,12 @@
 """Prep the 1 m road-training inputs from the 9t_1m derivative stack.
 
 Mirrors pits/_stack_features.py but at 1 m and with roughness_5 (the native 1 m
-roughness kernel) in place of roughness_11. Produces, under data/derivatives/9t/:
+roughness kernel) in place of roughness_11. Produces, under data/derivatives/tiles/9t/:
     features_pit_9t_1m.tif   7-band float32 stack (same channel order as 0.5 m)
     feature_stats_1m.json    per-channel mean/std over TRAIN blocks only
     labels_road_9t_1m.tif    uint8 0=bg 1=road (roads buffered 1.5 m), 1 m grid
 
-The 1 m grid is taken from data/derivatives/9t_1m/dem_9t_1m.tif, which was built
+The 1 m grid is taken from data/derivatives/tiles/9t_1m/dem_9t_1m.tif, which was built
 by _build_derivatives over the exact 9t bbox -> aligns with pit_blocks_9t.gpkg.
 """
 import json
@@ -21,7 +21,7 @@ from rasterio.features import rasterize
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV, DERIV_9T as D
 
-SRC_1M = DERIV / "9t_1m"
+SRC_1M = DERIV / "tiles" / "9t_1m"
 ANN = DERIV / "annotations" / "annotations_proj.gpkg"
 ROAD_BUFFER_M = 1.5
 DRAIN_BUFFER_M = 2.0  # channels are a touch wider than the 1.5 m road half-width

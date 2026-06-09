@@ -32,7 +32,7 @@ from _common import DERIV, make_profile
 
 KEY = "oilcreek_22tile"
 RES = 1.0
-OUT_DIR = DERIV / "extras" / KEY
+OUT_DIR = DERIV / "tiles" / "extras" / KEY
 
 
 def disk_struct(r_m: float, res: float = 1.0) -> np.ndarray:

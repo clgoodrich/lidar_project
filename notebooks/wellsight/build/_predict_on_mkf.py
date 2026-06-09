@@ -5,7 +5,7 @@ Caveats (explicit, see chat thread): models were trained at 0.5 m; mkf is at
 1 m. Feature semantics shift -> outputs are approximate. ``roughness_5_mkf_1m``
 is substituted for the ``roughness_11`` channel (similar physical kernel).
 
-Outputs land under data/derivatives/mck_inference/:
+Outputs land under data/derivatives/inference/mck/:
     features_mkf_1m.tif         (7 bands, float32, NaN nodata) - reusable stack
     pit_argmax_mkf_1m.tif       uint8 0=bg 1=floor 2=wall
     pit_prob_floor_mkf_1m.tif   float32 prob of class 1
@@ -35,7 +35,7 @@ from _dl import DEVICE, UNet, predict_full_tile
 # Configuration
 # ---------------------------------------------------------------------------
 
-OUT_DIR = DERIV / "mck_inference"
+OUT_DIR = DERIV / "inference" / "mck"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Channel order MUST match what was saved in best.pt['channels']:
@@ -56,9 +56,9 @@ HILLSHADE = DERIV / "hillshade_mkf_1m.tif"
 
 TASKS = [
     # name,  checkpoint,                                    n_cls, patch, overlap
-    ("pit",  DERIV / "9t" / "pit_unet_v2" / "best.pt",          3,   256,   64),
-    ("road", DERIV / "9t" / "road_unet"   / "best.pt",          2,   256,   64),
-    ("plat", DERIV / "9t" / "plat_unet"   / "best.pt",          2,   384,   96),
+    ("pit",  DERIV / "tiles" / "9t" / "pit_unet_v2" / "best.pt",          3,   256,   64),
+    ("road", DERIV / "tiles" / "9t" / "road_unet"   / "best.pt",          2,   256,   64),
+    ("plat", DERIV / "tiles" / "9t" / "plat_unet"   / "best.pt",          2,   384,   96),
 ]
 
 

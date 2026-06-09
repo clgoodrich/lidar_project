@@ -36,7 +36,7 @@ from _build_3x3_hillshades import (  # type: ignore
 
 RES = 1.0
 NC_RE = re.compile(r"^e(\d{4})n(\d{4})$")
-NC_SRC_DIR = ROOT / "data" / "mckean"
+NC_SRC_DIR = ROOT / "data" / "source_laz" / "mckean"
 NC_SRC_CRS = "EPSG:6350"
 
 REGION_PROJ_DIR = {
@@ -87,7 +87,7 @@ def collect_jobs(only_keys, only_kind):
         wp_tiles = discover_wp_tiles()
         wp_blocks = enumerate_wp_blocks(wp_tiles)
         wp_lookup = {b["key"]: list(b["members"]) for b in wp_blocks}
-        parent = DERIV / "data_3x3" / "westernpa_d20"
+        parent = DERIV / "tiles" / "data_3x3" / "westernpa_d20"
         if parent.exists():
             for sub in sorted(p for p in parent.iterdir() if p.is_dir()):
                 key = sub.name
@@ -100,7 +100,7 @@ def collect_jobs(only_keys, only_kind):
 
     # data_3x3 / northcentral_b19
     if only_kind in (None, "nc"):
-        parent = DERIV / "data_3x3" / "northcentral_b19"
+        parent = DERIV / "tiles" / "data_3x3" / "northcentral_b19"
         if parent.exists():
             for sub in sorted(p for p in parent.iterdir() if p.is_dir()):
                 key = sub.name
@@ -119,7 +119,7 @@ def collect_jobs(only_keys, only_kind):
     if only_kind in (None, "region"):
         for region_dir, proj_dir in REGION_PROJ_DIR.items():
             if only_keys and region_dir not in only_keys: continue
-            sub = DERIV / region_dir
+            sub = DERIV / "tiles" / region_dir
             dem = sub / f"dem_{region_dir}.tif"
             if not dem.exists() or not proj_dir.exists(): continue
             with rasterio.open(dem) as r:

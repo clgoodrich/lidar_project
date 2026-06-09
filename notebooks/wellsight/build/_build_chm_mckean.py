@@ -2,7 +2,7 @@
 
 CHM = DSM(first-return max-Z) - DEM, clamped at 0. Uses the existing per-block
 DEM as the grid template, and rasterises the DSM from the same 9 source LAZ
-tiles in data/mckean/ (NAD83(2011) Conus Albers -> UTM 17N inside PDAL).
+tiles in data/source_laz/mckean/ (NAD83(2011) Conus Albers -> UTM 17N inside PDAL).
 
 CLI:
   python notebooks/wellsight/build/_build_chm_mckean.py           # all 4 blocks
@@ -23,8 +23,8 @@ from _common import DERIV, DST_CRS, ROOT, make_profile, run_pdal
 
 RES = 1.0
 SRC_CRS = "EPSG:6350"
-ROOT_OUT = DERIV / "mosaic_3x3_mckean"
-SRC_DIR = ROOT / "data" / "mckean"
+ROOT_OUT = DERIV / "tiles" / "mosaic_3x3_mckean"
+SRC_DIR = ROOT / "data" / "source_laz" / "mckean"
 KEY_RE = re.compile(r"^e(\d{4})n(\d{4})$")
 
 

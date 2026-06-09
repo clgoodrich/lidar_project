@@ -1,15 +1,15 @@
 """2006-2008 -> 2019 surface-change map over the area where the older PA
 Statewide N tiles overlap the 2019 D20 mosaic, using ICP composed transforms
-from data/derivatives/icp/<id>/_meta_icp*.json.
+from data/derivatives/experiments/icp/<id>/_meta_icp*.json.
 
 Pipeline per older tile:
   read LAZ -> ground -> reproject EPSG:2271 -> EPSG:6346 -> Z * 0.3048 ->
   filters.transformation(composed) -> delaunay -> faceraster -> DEM @ 2 m.
 
-Newer DEMs: reuse the existing 1 m DEMs from data/derivatives/mosaic_3x3/
+Newer DEMs: reuse the existing 1 m DEMs from data/derivatives/tiles/mosaic_3x3/
 {613594,618594,613599,618599}/dem_1m.tif, resampled to the same 2 m grid.
 
-Outputs (data/derivatives/icp/change_map/):
+Outputs (data/derivatives/experiments/icp/change_map/):
   dem_old_aligned_2m.tif      mosaicked aligned older DEM
   dem_new_2m.tif              resampled newer DEM
   dem_diff_2m.tif             new - old (m)
@@ -34,8 +34,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV, DST_CRS, PDAL_EXE, ROOT, run_pdal, write_tif
 
 OLDER_DIR = ROOT / "data" / "older_files"
-ICP_ROOT = DERIV / "icp"
-MOSAIC_DIR = DERIV / "mosaic_3x3"
+ICP_ROOT = DERIV / "experiments" / "icp"
+MOSAIC_DIR = DERIV / "tiles" / "mosaic_3x3"
 OUT_DIR = ICP_ROOT / "change_map"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 RES = 2.0

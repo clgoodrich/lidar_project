@@ -28,7 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DST_CRS, PDAL_EXE, ROOT, run_pdal
 
 OLDER_DIR = ROOT / "data" / "older_files"
-NEW_DIR = ROOT / "data" / "files"
+NEW_DIR = ROOT / "data" / "source_laz" / "westernpa"
 OUT_ROOT = ROOT / "data" / "derivatives" / "icp"
 
 OLD_CRS = "EPSG:2271"

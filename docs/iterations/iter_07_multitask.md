@@ -4,7 +4,7 @@
 **Date:** 2026-05-28
 **Status:** Scaffolded, not yet trained
 **Code:** `notebooks/wellsight/multitask/_multitask_unet.py`
-**Outputs (planned):** `data/derivatives/9t/multitask_unet/`
+**Outputs (planned):** `data/derivatives/tiles/9t/multitask_unet/`
 
 ## Goal / Hypothesis
 
@@ -104,7 +104,7 @@ usefulness at eval.
 
 ## Outputs
 
-Under `data/derivatives/9t/multitask_unet/`:
+Under `data/derivatives/tiles/9t/multitask_unet/`:
 
 - `best.pt` — checkpoint (state_dict + mu/sd + cfg + head_classes)
 - `train_log.csv` — per-epoch losses (all + per-head) and per-class IoUs

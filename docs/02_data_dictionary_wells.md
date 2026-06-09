@@ -1,6 +1,6 @@
 # 02 — Data Dictionary: `output_wells.csv`
 
-**File:** `data/files/output_wells.csv` · **Treat as read-only ground truth** · **Date inspected:** 2026-04-13
+**File:** `data/source_laz/westernpa/output_wells.csv` · **Treat as read-only ground truth** · **Date inspected:** 2026-04-13
 
 ## Overview
 

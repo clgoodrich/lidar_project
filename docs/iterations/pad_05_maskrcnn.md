@@ -30,7 +30,7 @@
 
 **Inference.** Sliding window 384 / overlap 96 over 9000x9000 tile, score >= 0.3, NMS IoU 0.4.
 
-**Outputs (`data/derivatives/9t/iterations/pad_05_maskrcnn/`).**
+**Outputs (`data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/`).**
 - `best.pt`, `train_log.csv`, `pad_prob.tif`, `instances.gpkg::plats`, `test_per_plat.csv`, `test_metrics.json`.
 
 **Reproduce.**

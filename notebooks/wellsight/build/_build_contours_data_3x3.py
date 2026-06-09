@@ -7,7 +7,7 @@ attribute `elev`) alongside it.
 DEMs are EPSG:6346 (UTM 17N, metres), so --interval is in metres.
 
 Outputs are heavy regenerable vectors (~37 MB/block at 2 m) -> gitignored via
-`data/derivatives/data_3x3/**/contours_*.gpkg` (added with this script).
+`data/derivatives/tiles/data_3x3/**/contours_*.gpkg` (added with this script).
 
 CLI:
   python notebooks/wellsight/build/_build_contours_data_3x3.py                 # all blocks, 2 m
@@ -33,7 +33,7 @@ GDAL_CONTOUR = shutil.which("gdal_contour") or "gdal_contour"
 
 
 def block_dems(region: str):
-    root = DERIV / "data_3x3" / region
+    root = DERIV / "tiles" / "data_3x3" / region
     out = []
     for d in sorted(p for p in root.iterdir() if p.is_dir()):
         dem = d / f"dem_{d.name}_1m.tif"

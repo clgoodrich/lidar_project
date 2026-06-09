@@ -46,7 +46,7 @@ from shapely.geometry import LineString
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV
 
-REGION = DERIV / "data_3x3" / "northcentral_b19"
+REGION = DERIV / "tiles" / "data_3x3" / "northcentral_b19"
 THRESHOLD = 5000
 SAMPLE_STEP_M = 5.0
 MIN_LEN_M = 30.0

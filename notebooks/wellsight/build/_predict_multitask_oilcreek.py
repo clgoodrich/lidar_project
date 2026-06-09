@@ -16,7 +16,7 @@ openness L=25 cells, roughness -> 5x5 stdev (the "roughness_11" channel
 name in the checkpoint is the 0.5 m-era label for what is physically a
 ~5 m kernel).
 
-Outputs under data/derivatives/oilcreek_inference/:
+Outputs under data/derivatives/inference/oilcreek/:
   features_oilcreek_22tile_1m.tif
   pit_argmax_oilcreek_22tile_1m.tif         uint8 0=bg 1=floor 2=wall
   pit_prob_floor_oilcreek_22tile_1m.tif     float32
@@ -48,13 +48,13 @@ from build._build_derivatives import (disk_kernel, nanmean_filter, openness)  # 
 from multitask._multitask_unet import MultiHeadUNet  # type: ignore
 
 # ---------------------------------------------------------------------------
-SRC_DIR = DERIV / "extras" / "oilcreek_22tile"
-OUT_DIR = DERIV / "oilcreek_inference"
+SRC_DIR = DERIV / "tiles" / "extras" / "oilcreek_22tile"
+OUT_DIR = DERIV / "inference" / "oilcreek"
 DEM_PATH = SRC_DIR / "dem_oilcreek_22tile_1m.tif"
 HILLSHADE = SRC_DIR / "hillshade_az315_alt25_oilcreek_22tile_1m.tif"
 FEATURES_OUT = OUT_DIR / "features_oilcreek_22tile_1m.tif"
 
-CKPT = DERIV / "9t" / "multitask_unet" / "best.pt"
+CKPT = DERIV / "tiles" / "9t" / "multitask_unet" / "best.pt"
 SFX = "oilcreek_22tile_1m"
 RES = 1.0
 PATCH = 384

@@ -39,7 +39,7 @@ from _common import DERIV, make_profile
 
 KEY = "oilcreek_22tile"
 RES = 1.0
-OUT_DIR = DERIV / "extras" / KEY
+OUT_DIR = DERIV / "tiles" / "extras" / KEY
 
 
 def main() -> int:

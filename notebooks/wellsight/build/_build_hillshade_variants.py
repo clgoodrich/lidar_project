@@ -1,5 +1,5 @@
 """Build the multi-angle / multi-altitude hillshade family across every 3x3
-block in ``data/derivatives/data_3x3/``.
+block in ``data/derivatives/tiles/data_3x3/``.
 
 Existing baseline (already on disk):
   hillshade_<key>_1m.tif              az=315 alt=45  (the default render)
@@ -28,7 +28,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV
 
-ROOT_3X3 = DERIV / "data_3x3"
+ROOT_3X3 = DERIV / "tiles" / "data_3x3"
 KEY_RE_WP = re.compile(r"^\d{6}$")
 KEY_RE_NC = re.compile(r"^e\d{4}n\d{4}$")
 

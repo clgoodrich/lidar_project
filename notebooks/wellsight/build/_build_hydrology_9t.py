@@ -1,6 +1,6 @@
 """Build a full hydrology / drainage stack for the 9t (Venango) mosaic.
 
-Outputs land in data/derivatives/9t/ alongside the DEMs:
+Outputs land in data/derivatives/tiles/9t/ alongside the DEMs:
 
   dem_breached_9t_1m.tif      hydrologically conditioned DEM
                               (depressions breached / filled)
@@ -34,7 +34,7 @@ import rasterio
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV, make_profile
 
-OUT_DIR = DERIV / "9t"
+OUT_DIR = DERIV / "tiles" / "9t"
 # 1m DEM lives flat in data/derivatives/, not in 9t/ subdir; copy is via WBT
 # working-dir mechanics so we point WBT at the parent and write outputs into
 # 9t/ explicitly.

@@ -90,7 +90,7 @@ Single notebook `notebooks/03_pad_detector.ipynb`. Implements the stages in
 5. Apply shape + position + size gates.
 6. Compute confidence score (§5 of design spec).
 7. Compute nearest-well distance via `gpd.sjoin_nearest`.
-8. Export `data/derivatives/candidates/candidates_pads.gpkg` + Parquet.
+8. Export `data/derivatives/experiments/candidates/candidates_pads.gpkg` + Parquet.
 
 **Bootstrap gate.** Before the full-tile run, the notebook runs the detector
 on 3–5 well-window sub-extracts (§8 of design spec). Tile-wide execution is

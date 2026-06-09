@@ -12,7 +12,7 @@ and the on-pad disk was too large. v2 changes:
    intact canopy that happens to be inside the disk.
 3. Deficit = baseline_p75 - on_pad_min.
 
-Outputs: data/derivatives/chm_age_proxy/mckean_chm_zonal_v2.csv plus a v2
+Outputs: data/derivatives/experiments/chm_age_proxy/mckean_chm_zonal_v2.csv plus a v2
 scatter PNG.
 """
 from __future__ import annotations
@@ -32,9 +32,9 @@ from shapely.geometry import box
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV
 
-CHM_DIR = DERIV / "mosaic_3x3_mckean"
+CHM_DIR = DERIV / "tiles" / "mosaic_3x3_mckean"
 WELLS_GPKG = DERIV / "annotations" / "oil_gas_locations.gpkg"
-OUT_DIR = DERIV / "chm_age_proxy"
+OUT_DIR = DERIV / "experiments" / "chm_age_proxy"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 

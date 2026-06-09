@@ -37,7 +37,7 @@ __all__ = [
 
 ROOT: Path = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 DERIV: Path = ROOT / "data" / "derivatives"
-DERIV_9T: Path = DERIV / "9t"
+DERIV_9T: Path = DERIV / "tiles" / "9t"
 DST_CRS: str = "EPSG:6346"  # NAD83(2011) / UTM 17N — project canonical CRS
 PDAL_EXE: str = shutil.which("pdal") or "pdal"
 

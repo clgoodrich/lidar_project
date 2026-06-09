@@ -1,6 +1,6 @@
 """Stack the per-pixel input features into a single multi-band float32 GeoTIFF.
 
-Output: data/derivatives/9t/features_pit_9t_05.tif (7 bands, float32, tiled, deflate)
+Output: data/derivatives/tiles/9t/features_pit_9t_05.tif (7 bands, float32, tiled, deflate)
 Channels (in order):
   1 lrm_25       2 lrm_5      3 slope        4 tpi_05
   5 openness_pos 6 openness_neg  7 roughness_11

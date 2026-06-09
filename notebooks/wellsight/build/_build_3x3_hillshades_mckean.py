@@ -1,4 +1,4 @@
-"""Build 1 m DEM + hillshade for non-overlapping 3x3 mosaics in data/mckean/.
+"""Build 1 m DEM + hillshade for non-overlapping 3x3 mosaics in data/source_laz/mckean/.
 
 Source: ``USGS_LPC_PA_Northcentral_2019_B19`` (EPSG:6350, NAD83(2011) Conus
 Albers, metres). Tile naming ``..._e<E>n<N>.laz`` with the SW corner at
@@ -9,7 +9,7 @@ as the existing mkf/mk5/9t derivatives.
 Block selection: enumerate every complete 3x3 sliding window, then greedy
 non-overlapping pick (SW-first).
 
-Outputs go to ``data/derivatives/mosaic_3x3_mckean/<key>/`` where ``<key>`` is
+Outputs go to ``data/derivatives/tiles/mosaic_3x3_mckean/<key>/`` where ``<key>`` is
 the SW tile code (e.g. ``e1423n2235``).
 """
 from __future__ import annotations
@@ -25,7 +25,7 @@ from pyproj import Transformer
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DST_CRS, ROOT, run_pdal
 
-SRC_DIR = ROOT / "data" / "mckean"
+SRC_DIR = ROOT / "data" / "source_laz" / "mckean"
 OUT_ROOT = ROOT / "data" / "derivatives" / "mosaic_3x3_mckean"
 RES = 1.0
 TILE_M = 1000.0
@@ -121,7 +121,7 @@ def main() -> int:
 
     tiles = discover_tiles()
     if not tiles:
-        print("no PA Northcentral LAZ tiles in data/mckean/", file=sys.stderr)
+        print("no PA Northcentral LAZ tiles in data/source_laz/mckean/", file=sys.stderr)
         return 1
     print(f"discovered {len(tiles)} PA Northcentral LAZ tiles")
 

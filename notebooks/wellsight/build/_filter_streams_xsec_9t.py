@@ -34,7 +34,7 @@ from shapely.geometry import LineString
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV  # noqa: E402
 
-OUT_DIR = DERIV / "9t"
+OUT_DIR = DERIV / "tiles" / "9t"
 THRESHOLD = 5000
 DEM_PATH = DERIV / "dem_9t_1m.tif"                       # raw DEM (not breached)
 STREAMS = OUT_DIR / f"streams_t{THRESHOLD}_9t_1m.shp"

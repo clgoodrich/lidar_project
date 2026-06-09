@@ -5,6 +5,97 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-09 — Project reorg: full data-tree restructure + root cleanup (paths maintained)
+
+Reworked the repo layout for findability; **all code paths maintained** (verified, no
+dangling refs). Mechanical path rewrite via a one-off mapping script (literal +
+`Path`-constructor + runtime `DERIV/sfx` forms + the QGIS `.qgz` internal absolute
+paths, both separators), then grep-verified + AST-parsed (78 files, 0 errors) +
+`_common` import-tested.
+
+**data/derivatives/** flat 25-dir dump → bucketed:
+- `tiles/` (per-area stacks: 9t, 9t_1m, data_3x3, oilcreek_22tile_05, *_marcellus_1m,
+  wc_coaloil_1m, extras, mosaic_3x3*) · `inference/` (mck, oilcreek) ·
+  `experiments/` (chm_age_proxy, icp, pilot_A, ramachandran_verifier, roads,
+  candidates, notebook_demo, permian_sample) · kept `annotations/`, `validation/`.
+- `DERIV_9T` now `…/tiles/9t`; runtime stack builders write to `DERIV/"tiles"/<key>`.
+
+**data/** source LAZ: `FILES`→`source_laz/westernpa`, `mckean`→`source_laz/mckean`;
+deleted empty `dem_tiles`, `older_files` and temp `_tmp_intensity_tiles_mkf`.
+
+**Archived (old >2 wk AND unused):** `beck_9t`, `beck_mkf`,
+`inference_mck_e1423n2238_05`, `model_archive` → `archive/derivatives/` (heavy
+rasters gitignored there; small metric/VERSION records kept tracked).
+
+**Root cleanup:** resume→`personal/`, `road error.jpg`→`docs/figures/debug/`,
+kang PDF→`docs/papers/`, downloadlist→`data/external/usgs_3dep_pa_lidar/`, YOLO
+weights→`models/pretrained/` (CLI defaults updated), `qgis_lidar class.qgz`→
+`qgis/wellsight.qgz` (space removed; layer paths inside repointed to new buckets).
+
+**docs/** consolidated: `paper_versions/`+`presentations/`+methodology docx →
+`publication/`; single-file `pipelines/`+`preprocessing/` folded into `articles/`.
+`STRUCTURE.md` fully regenerated.
+
+## 2026-06-09 — Back to PA: orphan catalog × our LiDAR coverage (Oil Creek), + pit-annotation validation
+
+Pivoted the orphan-detection work back to Pennsylvania (the two historical books are
+PA-focused; PA is where we have ground truth + forested terrain where earthworks show).
+
+**The "US" orphan catalog is all Venango Co., PA** (4,786 wells, Oil Creek/Oil City
+corridor; densest ~166/2 km cell at -79.55,41.49). Cross-referenced against our PA
+DEM coverage — strong overlap:
+- `9t` tile: **624 orphans** (0.5 m DEM `dem_9t_05.tif`; also has our hand pit/pad
+  annotations) — best combined target.
+- `oilcreek_22tile_05`: **468 orphans** at **0.5 m** — matches the historical pit-depth
+  prior (0.6–1.5 m); literal birthplace of the industry.
+- `westernpa_d20` (25 blocks): **3,125 orphans**; densest block 618594 = 552.
+
+**Validation (orphans × hand pit annotations, within the annotated area, 318 orphans
+/ 113 pits):**
+- **60% of hand-annotated pits have a documented orphan within 30 m (64% @50 m)** →
+  the pit features we detect in LiDAR are largely real orphan cellars (mutual
+  validation of both datasets).
+- Only **~22% of orphans have an annotated pit within 30 m** → we've labeled a small
+  fraction of what's present (113 pits vs 318+ orphans in that area alone).
+
+**Implication:** directly enables BACKLOG #1 (grow labels). The orphan catalog can
+seed semi-automated pit annotation: snap each catalogued orphan to nearest LiDAR
+depression within a sanity radius → human-confirm → grow labels ~5–10×. Caveat: PA
+DEP coords are not survey-grade (median nearest-pit dist 245 m because orphans span
+the whole tile while pits were annotated in a cluster); needs radius + human QC.
+Eyeball overlay: `data/derivatives/pa_9t_orphans_overlay.png`.
+
+---
+
+## 2026-06-09 — Confirmed Permian ground truth: TX RRC orphan wells (+ optical cross-ref)
+
+Established that we had NO confirmed-well ground truth for the Permian:
+`data/external/legacy_data/US_Documented_Orphan_Wells.csv` is mislabeled — it's
+**4,786 wells, 100% Pennsylvania** (PA DEP, Status=Orphan); 0 in TX/NM. So the
+194,973 optical pad detections were unvalidatable.
+
+**Fetched authoritative TX ground truth** from the RRC ArcGIS REST service
+(`gis.rrc.texas.gov/server/rest/services/rrc_public/RRC_Public_Viewer_Srvs/MapServer`,
+**layer 2 = "Orphan Wells"**, fields OBJECTID/API/SHAPE). Queried the Permian bbox
+(paginated, maxRec 1000) → **3,328 confirmed orphan wells** →
+`data/derivatives/experiments/permian_sample/rrc_orphan_wells_permian.gpkg`
+(layer `rrc_orphan_permian`, `status=orphan_confirmed`, API + point, EPSG:4326, 0.6 MB).
+
+**Cross-reference (UTM 13N metres):**
+- Sample tile 13RGR500055: **0** confirmed orphans (it's modern active pads — wrong
+  place to look for orphan signatures).
+- Only **34.6%** of RRC orphans have an optical pad within 100 m → optical detection
+  misses ~⅔ of confirmed orphans (old wells, no visible graded pad) — the case FOR
+  the LiDAR approach. (Only ~0.6% of optical pads sit near an orphan; the optical set
+  is overwhelmingly active wells.)
+- Caveat: RRC historical coordinates are coarse — some misses are location error.
+
+**Best orphan-cluster target for QL1 eyeballing:** (-102.825, 31.225) — **136
+orphans/5 km cell**, covered by `TX_WestTexas_2018` (~12–13 pts/m², QL1). Next step:
+pull a tile there and check whether confirmed orphans show terrain signatures.
+
+---
+
 ## 2026-06-09 — Permian QL1 sample render + early-well parameter mining
 
 **(1) Density ceiling check.** Ranked the full cached Permian inventory (104,396
@@ -17,7 +108,7 @@ so Permian is the higher-quality region. ~15 pts/m² ≈ 7× the western-PA D20 
 
 **(2) Eyeball sample.** Built a 0.5 m bare-earth DEM (PDAL ground-class IDW) from the
 best on-disk B4 tile `13RGR500055` (16 pads, 33.3 M pts), hillshaded it, overlaid the
-15 Ramachandran pad detections in-tile → `data/derivatives/permian_sample/`
+15 Ramachandran pad detections in-tile → `data/derivatives/experiments/permian_sample/`
 (`dem_..._05m.tif` 72 MB gitignored by blanket; `hillshade_..._pads.png` tracked).
 CRS verified from file: **NAD83(2011)/UTM 13N + NAVD88, EPSG:6342**. Observation: flat
 West-TX rangeland — roads/tracks and some square pad scars read crisply, but graded
@@ -72,7 +163,7 @@ New `_build_contours_data_3x3.py` runs `gdal_contour -a elev -i 2 -snodata -9999
 on each `dem_<key>_1m.tif` (EPSG:6346, metres → 2 m interval) → `contours_2m_<key>_1m.gpkg`
 (layer `contours`, attr `elev`, all multiples of 2). Built for all 25 WesternPA D20
 blocks (~547 MB total, 18–41 MB each; ~0.6 min). Heavy regenerable vectors, so added
-gitignore rule `data/derivatives/data_3x3/**/contours_*.gpkg` in the same change;
+gitignore rule `data/derivatives/tiles/data_3x3/**/contours_*.gpkg` in the same change;
 ≥100 MB audit clean. Reproduce: `python notebooks/wellsight/build/_build_contours_data_3x3.py`
 (`--interval N`, `--only <key>`).
 

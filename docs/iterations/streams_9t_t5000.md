@@ -17,7 +17,7 @@ Pipeline:
 
 **Result:** `streams_t5000_9t_1m` = **2693 lines, 274.5 km** total.
 
-Outputs in `data/derivatives/9t/`: `stream_seed_t5000_9t_1m.tif`, `streams_t5000_9t_1m.{shp,gpkg,prj,dbf,shx,cpg}`.
+Outputs in `data/derivatives/tiles/9t/`: `stream_seed_t5000_9t_1m.tif`, `streams_t5000_9t_1m.{shp,gpkg,prj,dbf,shx,cpg}`.
 
 Reproduce: `python notebooks/wellsight/build/_build_streams_9t.py --threshold 5000`
 

@@ -25,12 +25,12 @@ filename so individual files remain self-describing if pulled out:
 CLI examples:
   # Venango 9-tile (already in UTM 17N, no reprojection needed)
   python notebooks/wellsight/build/_build_derivatives.py \\
-      --tiles "data/files/USGS_LPC_PA_WesternPA_2019_D20_17TPF619*.laz" \\
+      --tiles "data/source_laz/westernpa/USGS_LPC_PA_WesternPA_2019_D20_17TPF619*.laz" \\
       --bbox 619500,4593000,624000,4597500 --suffix 9t_1m
 
   # Full McKean (source in Albers, reproject on the fly)
   python notebooks/wellsight/build/_build_derivatives.py \\
-      --tiles "data/mckean/USGS_LPC_PA_Northcentral_2019_B19_*.laz" \\
+      --tiles "data/source_laz/mckean/USGS_LPC_PA_Northcentral_2019_B19_*.laz" \\
       --bbox 696000,4645000,706000,4655000 --suffix mkf_1m \\
       --src-crs EPSG:6350
 """
@@ -143,7 +143,7 @@ def build(
     H = int(round((y1 - y0) / res))
     transform = from_origin(x0, y1, res, res)
     if out_dir is None:
-        out_dir = DERIV / sfx
+        out_dir = DERIV / "tiles" / sfx
     out_dir.mkdir(parents=True, exist_ok=True)
     # Files inside the suffix subdir keep the full suffix in their name so they
     # remain self-describing if pulled out of the directory.
@@ -157,7 +157,7 @@ def build(
         las_path = tiles[0]
     else:
         if merge_path is None:
-            merge_path = ROOT / "data" / "files" / f"_merged_{sfx}.las"
+            merge_path = ROOT / "data" / "source_laz" / "westernpa" / f"_merged_{sfx}.las"
         if merge_path.exists() and skip_existing:
             print(f"  merge: reusing existing {merge_path.name}")
         else:

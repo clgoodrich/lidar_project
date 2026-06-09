@@ -25,7 +25,7 @@
 
 **Inference.** Sliding window 384 / overlap 96, conf 0.3, NMS IoU 0.4.
 
-**Outputs (`data/derivatives/9t/iterations/pad_06_yolo/`).**
+**Outputs (`data/derivatives/tiles/9t/iterations/pad_06_yolo/`).**
 - `best.pt`, `train_log.csv`, `plat_prob.tif`, `instances.gpkg::plats`, `test_per_plat.csv`, `test_metrics.json`.
 
 **Reproduce.**

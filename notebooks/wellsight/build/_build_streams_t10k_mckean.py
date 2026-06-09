@@ -1,7 +1,7 @@
 """Build t=10000 stream seeds (raster + shapefile linestrings) for the four
 McKean 3x3 blocks.
 
-For each block under data/derivatives/data_3x3/northcentral_b19/<key>/:
+For each block under data/derivatives/tiles/data_3x3/northcentral_b19/<key>/:
   1. WBT BreachDepressionsLeastCost on dem_<key>_1m.tif
   2. WBT D8Pointer + D8FlowAccumulation (cells, no log)
   3. WBT ExtractStreams threshold=10000
@@ -30,7 +30,7 @@ import rasterio
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV
 
-REGION = DERIV / "data_3x3" / "northcentral_b19"
+REGION = DERIV / "tiles" / "data_3x3" / "northcentral_b19"
 DEFAULT_THRESHOLD = 10_000
 CRS_EPSG = 6346  # UTM 17N (m) — matches DST_CRS used throughout
 

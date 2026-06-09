@@ -5,7 +5,7 @@ Single foreground class ("plat") trained on 79 hand-annotated pad polygons
 pads are typically 30-80 m across and need surrounding context for the model
 to distinguish a pad scar from natural clearings.
 
-Outputs under data/derivatives/9t/iterations/pad_05_maskrcnn/:
+Outputs under data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/:
     best.pt         best-val checkpoint
     train_log.csv   per-epoch metrics
 """

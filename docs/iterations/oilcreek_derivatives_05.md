@@ -4,7 +4,7 @@
 
 **Goal.** Generate the same family of DEM derivatives used on 9t for the Oil Creek study area, so the trained Mask R-CNN / YOLO models can be run there.
 
-**Source / params.** `_build_derivatives.py` over the Oil Creek tile set, `--suffix oilcreek_22tile_05`, `--res 0.5`, `--crs EPSG:6346`. Output dir: `data/derivatives/oilcreek_22tile_05/`.
+**Source / params.** `_build_derivatives.py` over the Oil Creek tile set, `--suffix oilcreek_22tile_05`, `--res 0.5`, `--crs EPSG:6346`. Output dir: `data/derivatives/tiles/oilcreek_22tile_05/`.
 
 **Derivatives produced (each as a single mosaic GeoTIFF, `*_oilcreek_22tile_05.tif`):**
 - Elevation: `dem`, `dsm`, `chm`

@@ -34,7 +34,7 @@ EXISTING = {
     "USGS_LPC_PA_WesternPA_2019_D20_17TPF610597.laz",
     "USGS_LPC_PA_WesternPA_2019_D20_17TPF610599.laz",
 }
-DEST = ROOT / "data" / "files"
+DEST = ROOT / "data" / "source_laz" / "westernpa"
 
 
 def tnm_list_d20() -> list[dict]:

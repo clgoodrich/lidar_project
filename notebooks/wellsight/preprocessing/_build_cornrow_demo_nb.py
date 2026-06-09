@@ -22,7 +22,7 @@ md("""# Cornrow Artifact Mitigation — Demo
 Runnable demonstration of `filter_cornrow_artifacts()` on the merged 9t tile.
 
 Pipeline:
-1. Filter `data/files/9t_merged.las` (Withheld + |ScanAngle|>15° dropped).
+1. Filter `data/source_laz/westernpa/9t_merged.las` (Withheld + |ScanAngle|>15° dropped).
 2. Build a 1 m DEM over a 500×500 m demo window from both the **unfiltered**
    and **filtered** point clouds via the canonical PDAL TIN + faceraster
    pipeline used elsewhere in WellSight (see `_build_9tile_1m.py`).
@@ -37,7 +37,7 @@ ROOT          = Path.cwd()
 while not (ROOT / "CLAUDE.md").exists() and ROOT.parent != ROOT:
     ROOT = ROOT.parent
 
-INPUT_LAS     = ROOT / "data" / "files" / "9t_merged.las"
+INPUT_LAS     = ROOT / "data" / "source_laz" / "westernpa" / "9t_merged.las"
 FILTERED_LAS  = ROOT / "data" / "derivatives" / "9t_filtered.las"
 DEM_UNFILT    = ROOT / "data" / "derivatives" / "dem_demo_unfiltered.tif"
 DEM_FILT      = ROOT / "data" / "derivatives" / "dem_demo_filtered.tif"

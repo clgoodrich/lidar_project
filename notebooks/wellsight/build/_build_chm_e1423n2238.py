@@ -21,8 +21,8 @@ from _common import DERIV, DST_CRS, ROOT, make_profile, run_pdal
 KEY = "e1423n2238"
 RES = 1.0
 SRC_CRS = "EPSG:6350"  # NAD83(2011) Conus Albers (m), matches the LAZ
-WORK = DERIV / "mosaic_3x3_mckean" / KEY
-SRC_DIR = ROOT / "data" / "mckean"
+WORK = DERIV / "tiles" / "mosaic_3x3_mckean" / KEY
+SRC_DIR = ROOT / "data" / "source_laz" / "mckean"
 
 DEM_PATH = WORK / f"dem_{KEY}_1m.tif"
 DSM_PATH = WORK / f"dsm_{KEY}_1m.tif"

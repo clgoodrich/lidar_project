@@ -8,7 +8,7 @@ tile extent. For each model's predicted instances, report:
 
 This is the CLAUDE.md "validate detection algorithms against known well coordinate
 data" step. Writes a markdown summary + per-model CSVs under
-data/derivatives/9t/iterations/known_well_validation/.
+data/derivatives/tiles/9t/iterations/known_well_validation/.
 """
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Build 1 m DEM + hillshade for every non-overlapping 3x3 mosaic in data/files/.
+"""Build 1 m DEM + hillshade for every non-overlapping 3x3 mosaic in data/source_laz/westernpa/.
 
 Source: ``USGS_LPC_PA_WesternPA_2019_D20`` (EPSG:6346, UTM 17N). Each LAZ tile
 is 1500 m on a side and named ``..._17TP<F|G><E><N>.laz`` where ``E``/``N`` are
@@ -10,7 +10,7 @@ discovered grid, one PDAL pipeline reads 9 LAZs -> merges -> keeps
 Classification=2 (ground) -> delaunay -> faceraster (DEM). WhiteboxTools then
 renders the hillshade.
 
-Outputs go to ``data/derivatives/mosaic_3x3/<key>/`` where ``<key>`` is the SW
+Outputs go to ``data/derivatives/tiles/mosaic_3x3/<key>/`` where ``<key>`` is the SW
 tile code (e.g. 604590). Files: ``dem_1m.tif``, ``hillshade_1m.tif``.
 
 CLI:
@@ -27,7 +27,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DST_CRS, ROOT, run_pdal
 
-SRC_DIR = ROOT / "data" / "files"
+SRC_DIR = ROOT / "data" / "source_laz" / "westernpa"
 OUT_ROOT = ROOT / "data" / "derivatives" / "mosaic_3x3"
 RES = 1.0
 TILE_M = 1500.0
@@ -148,7 +148,7 @@ def main() -> int:
 
     tiles = discover_tiles()
     if not tiles:
-        print("no LAZ tiles in data/files/", file=sys.stderr)
+        print("no LAZ tiles in data/source_laz/westernpa/", file=sys.stderr)
         return 1
     print(f"discovered {len(tiles)} LAZ tiles")
 

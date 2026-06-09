@@ -66,7 +66,7 @@ def find_channel_files(sfx: str) -> list[tuple[str, Path]]:
     for name in TRAINING_CHANNELS:
         on_disk = rough_band if name == "roughness_11" else name
         candidates = [
-            DERIV / sfx / f"{on_disk}_{sfx}.tif",   # new layout (subdir + descriptive name)
+            DERIV / "tiles" / sfx / f"{on_disk}_{sfx}.tif",   # new layout (subdir + descriptive name)
             DERIV / f"{on_disk}_{sfx}.tif",          # legacy flat
         ]
         for p in candidates:
@@ -189,7 +189,7 @@ def main() -> int:
 
     argmaps: dict[str, np.ndarray] = {}
     for name, sub, n_cls, patch, overlap in TASKS:
-        ckpt = DERIV / "9t" / sub / "best.pt"
+        ckpt = DERIV / "tiles" / "9t" / sub / "best.pt"
         argmaps[name] = infer_one(name, ckpt, n_cls, patch, overlap,
                                   features, out_dir, args.suffix)
     render_overlay(argmaps, args.suffix, out_dir)

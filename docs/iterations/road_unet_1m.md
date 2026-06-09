@@ -95,8 +95,8 @@ Identical to [[road_unet]]: `UNet(in_ch=7, n_classes=2, base=32)`, FocalCE(alpha
 The 1 m model is marginally better on its own test set and, crucially, generalizes correctly to the 1 m blocks: pilot block 604590 went from **33.2% → 4.06%** road pixels, with predictions tracing coherent road lines instead of terrain. Minor residual firing remains on the steepest incised slopes (candidate for the cross-section concavity filter, see [[BACKLOG]]).
 
 ## Outputs
-- `data/derivatives/9t/road_unet_1m/`: `best.pt`, `train_log.csv`, `road_prob.tif`, `road_argmax.tif`, `test_metrics.json`, `test_per_line.csv`.
-- Per-block inference (`_infer_roads_data_3x3.py`): `road_prob_<key>_1m.tif`, `road_argmax_<key>_1m.tif`, `road_overlay_<key>_1m.png`, `features_<key>_1m.tif` in each `data/derivatives/data_3x3/westernpa_d20/<key>/`.
+- `data/derivatives/tiles/9t/road_unet_1m/`: `best.pt`, `train_log.csv`, `road_prob.tif`, `road_argmax.tif`, `test_metrics.json`, `test_per_line.csv`.
+- Per-block inference (`_infer_roads_data_3x3.py`): `road_prob_<key>_1m.tif`, `road_argmax_<key>_1m.tif`, `road_overlay_<key>_1m.png`, `features_<key>_1m.tif` in each `data/derivatives/tiles/data_3x3/westernpa_d20/<key>/`.
 
 ## Reproduce
 ```

@@ -16,7 +16,7 @@ Sampling policies (cycled per __getitem__, +1 random-background slot):
 A single shared encoder + bottleneck feeds three parallel decoder/output
 heads. Each head's FocalCE loss is weighted, summed, and backpropped.
 
-Outputs under ``data/derivatives/9t/multitask_unet/``:
+Outputs under ``data/derivatives/tiles/9t/multitask_unet/``:
     best.pt              best-val checkpoint (state_dict + cfg + norm stats)
     train_log.csv        per-epoch metrics with one IoU column per head class
     pit_prob.tif, pit_argmax.tif, road_prob.tif, road_argmax.tif,

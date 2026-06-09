@@ -16,7 +16,7 @@ at its most favourable operating point (fair, not cherry-picked against it).
 Pit prob = max(floor_prob, wall_prob)  (pit_unet_v2 emits two class bands).
 Plat prob = plat_prob.tif single band.
 
-Writes data/derivatives/9t/iterations/unet_instance_eval/SUMMARY.md + CSVs.
+Writes data/derivatives/tiles/9t/iterations/unet_instance_eval/SUMMARY.md + CSVs.
 """
 from __future__ import annotations
 

@@ -22,7 +22,7 @@ from scipy import ndimage as ndi
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV
 
-OUT_DIR = DERIV / "roads"
+OUT_DIR = DERIV / "experiments" / "roads"
 
 COLORS = {
     "lrm5_dark":     "#e41a1c",

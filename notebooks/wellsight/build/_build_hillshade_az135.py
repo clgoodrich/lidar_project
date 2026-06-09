@@ -6,9 +6,9 @@ edges that face away from NW (and disappear in the standard render) become
 visible. Altitude stays at 45 to match the existing convention.
 
 Targets (auto-discovered, but constrained to DEMs we built ourselves):
-  - data/derivatives/mosaic_3x3/<key>/dem_1m.tif
+  - data/derivatives/tiles/mosaic_3x3/<key>/dem_1m.tif
         -> hillshade_az135_1m.tif
-  - data/derivatives/mosaic_3x3_mckean/<key>/dem_1m.tif
+  - data/derivatives/tiles/mosaic_3x3_mckean/<key>/dem_1m.tif
         -> hillshade_az135_1m.tif
   - data/derivatives/<sfx>/dem_<sfx>.tif   (sw_marcellus_1m, nec_marcellus_1m, wc_coaloil_1m)
         -> hillshade_az135_<sfx>.tif
@@ -37,7 +37,7 @@ def discover_targets() -> list[tuple[str, Path, str, str]]:
     """Return (key, working_dir, dem_name, hs_name) tuples for each DEM."""
     targets: list[tuple[str, Path, str, str]] = []
 
-    for parent in (DERIV / "mosaic_3x3", DERIV / "mosaic_3x3_mckean"):
+    for parent in (DERIV / "tiles" / "mosaic_3x3", DERIV / "tiles" / "mosaic_3x3_mckean"):
         if not parent.exists():
             continue
         for sub in sorted(p for p in parent.iterdir() if p.is_dir()):
@@ -52,7 +52,7 @@ def discover_targets() -> list[tuple[str, Path, str, str]]:
                     break
 
     for sfx in REGION_DIRS:
-        sub = DERIV / sfx
+        sub = DERIV / "tiles" / sfx
         dem = sub / f"dem_{sfx}.tif"
         if dem.exists():
             targets.append((sfx, sub, f"dem_{sfx}.tif", f"hillshade_az135_{sfx}.tif"))

@@ -2,7 +2,7 @@
 
 Mirrors _pit_yolo.py: patch=384, jitter=40 m, class "pad".
 
-Outputs under data/derivatives/9t/iterations/pad_06_yolo/.
+Outputs under data/derivatives/tiles/9t/iterations/pad_06_yolo/.
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def main() -> int:
     ap.add_argument("--epochs", type=int, default=100)
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--imgsz", type=int, default=640)
-    ap.add_argument("--model", type=str, default="yolov8s-seg.pt")
+    ap.add_argument("--model", type=str, default="models/pretrained/yolov8s-seg.pt")
     ap.add_argument("--smoke", action="store_true")
     args = ap.parse_args()
     if args.smoke:

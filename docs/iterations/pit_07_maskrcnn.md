@@ -18,7 +18,7 @@
 
 **Inference.** Sliding window with overlap 64 over the 9000x9000 tile (~2200 windows). Per-window detections with `score >= 0.3` collected in tile-pixel coordinates, then global NMS at IoU 0.4.
 
-**Outputs (`data/derivatives/9t/iterations/pit_07_maskrcnn/`).**
+**Outputs (`data/derivatives/tiles/9t/iterations/pit_07_maskrcnn/`).**
 - `best.pt` — checkpoint with `state_dict, epoch, patch, num_classes, rgb_path, val_loss, arch`.
 - `train_log.csv` — `epoch, tr_loss, va_loss, lr, sec`.
 - `pit_prob.tif` — max instance-score raster (analog of `pit_unet_v2/pit_prob_floor.tif`).

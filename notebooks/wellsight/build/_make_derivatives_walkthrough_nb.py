@@ -79,12 +79,12 @@ sys.path.insert(0, str(ROOT / "notebooks" / "wellsight"))
 from _common import read_tif, write_tif, DST_CRS   # noqa: E402
 
 # --- INPUT: the bare-earth DEM (change this to use a different tile) ---------
-DEM_PATH = ROOT / "data/derivatives/data_3x3/northcentral_b19/e1423n2235/dem_e1423n2235_1m.tif"
+DEM_PATH = ROOT / "data/derivatives/tiles/data_3x3/northcentral_b19/e1423n2235/dem_e1423n2235_1m.tif"
 if not DEM_PATH.exists():
     DEM_PATH = ROOT / "data/derivatives/dem_9t_1m.tif"   # fallback
 
 # --- where this notebook writes its demo outputs (kept separate from real data)
-OUT_DIR = ROOT / "data/derivatives/_notebook_demo"
+OUT_DIR = ROOT / "data/derivatives/experiments/notebook_demo"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # --- read the DEM + its geospatial info -------------------------------------
@@ -378,7 +378,7 @@ plt.tight_layout(); plt.show()
         "\n"
         "Hillshade and local-relief are diagnostic / visual layers, not model inputs.\n"
         "\n"
-        "Demo outputs were written to `data/derivatives/_notebook_demo/` (git-ignored "
+        "Demo outputs were written to `data/derivatives/experiments/notebook_demo/` (git-ignored "
         "by the `data/derivatives/**/*.tif` rule)."
     ))
     return cells

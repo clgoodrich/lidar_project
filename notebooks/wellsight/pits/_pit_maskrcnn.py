@@ -4,11 +4,11 @@ Single foreground class ("pit") trained on the 110 hand-annotated pit_inside
 polygons (74 train / 16 val / 20 test, per pit_dataset_manifest.csv).
 
 Inputs:
-    data/derivatives/9t/rgb3_9t_05.tif      (3-band float32 composite, auto-built)
+    data/derivatives/tiles/9t/rgb3_9t_05.tif      (3-band float32 composite, auto-built)
     data/derivatives/annotations/annotations_proj.gpkg (pit_inside layer)
-    data/derivatives/9t/pit_dataset_manifest.csv       (split assignments)
+    data/derivatives/tiles/9t/pit_dataset_manifest.csv       (split assignments)
 
-Outputs under data/derivatives/9t/iterations/pit_07_maskrcnn/:
+Outputs under data/derivatives/tiles/9t/iterations/pit_07_maskrcnn/:
     best.pt         best-val checkpoint
     train_log.csv   per-epoch metrics
 

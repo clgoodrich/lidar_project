@@ -5,7 +5,7 @@ Models the McKean per-block builder (_build_streams_t10k_mckean.py) but targets
 the single 9t tile and reuses the already-conditioned breached DEM
 (dem_breached_9t_1m.tif) so the slow BreachDepressionsLeastCost step is skipped.
 
-Outputs in data/derivatives/9t/:
+Outputs in data/derivatives/tiles/9t/:
   stream_seed_t<th>_9t_1m.tif    uint8 0/1 stream raster
   streams_t<th>_9t_1m.shp        linestrings (+ .prj/.shx/.dbf/.cpg)
   streams_t<th>_9t_1m.gpkg       same, GeoPackage (matches t10000 convention)
@@ -26,7 +26,7 @@ import rasterio
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV  # noqa: E402
 
-OUT_DIR = DERIV / "9t"
+OUT_DIR = DERIV / "tiles" / "9t"
 SFX = "9t_1m"
 CRS_EPSG = 6346
 BREACHED = OUT_DIR / f"dem_breached_{SFX}.tif"   # reuse existing conditioned DEM

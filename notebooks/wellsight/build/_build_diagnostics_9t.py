@@ -8,7 +8,7 @@ trained models. If one earns a slot, recompute it at 0.5 m to match the feature
 stack.
 
 Input : data/derivatives/dem_9t_1m.tif   (1 m bare-earth DEM, EPSG:6346)
-Output: data/derivatives/9t/diagnostics/<name>_9t_1m.tif
+Output: data/derivatives/tiles/9t/diagnostics/<name>_9t_1m.tif
 
 Run:
   python notebooks/wellsight/build/_build_diagnostics_9t.py
@@ -28,7 +28,7 @@ from _common import DERIV  # noqa: E402
 
 SFX = "9t_1m"
 DEM_SRC = DERIV / "dem_9t_1m.tif"
-OUT_DIR = DERIV / "9t" / "diagnostics"
+OUT_DIR = DERIV / "tiles" / "9t" / "diagnostics"
 
 
 def _subtract_to_depth(filled: Path, dem: Path, out_path: Path) -> None:

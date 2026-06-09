@@ -3,7 +3,7 @@
 Exports the same train/val pit patches used by pit_maskrcnn as PNG + YOLO-seg
 .txt labels, then fine-tunes a COCO-pretrained YOLOv8s-seg checkpoint.
 
-Outputs under data/derivatives/9t/iterations/pit_08_yolo/:
+Outputs under data/derivatives/tiles/9t/iterations/pit_08_yolo/:
     best.pt              copy of ultralytics best.pt
     train_log.csv        per-epoch metrics (mirrored from ultralytics results.csv)
     dataset/             materialised images + labels + data.yaml
@@ -35,7 +35,7 @@ def main() -> int:
     ap.add_argument("--epochs", type=int, default=100)
     ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--imgsz", type=int, default=640)
-    ap.add_argument("--model", type=str, default="yolov8s-seg.pt")
+    ap.add_argument("--model", type=str, default="models/pretrained/yolov8s-seg.pt")
     ap.add_argument("--smoke", action="store_true")
     args = ap.parse_args()
     if args.smoke:

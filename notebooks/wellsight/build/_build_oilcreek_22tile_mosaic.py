@@ -1,11 +1,11 @@
 """Build a 1 m DEM + hillshade mosaic for the 22-tile contiguous patch over
 Oil Creek State Park.
 
-Inputs are the two seed WesternPA D20 tiles already in data/files (610597 +
+Inputs are the two seed WesternPA D20 tiles already in data/source_laz/westernpa (610597 +
 610599) plus the 20 tiles enumerated in
 data/external/oil_creek/contiguous_20_plan.txt.
 
-Outputs go to data/derivatives/extras/oilcreek_22tile/:
+Outputs go to data/derivatives/tiles/extras/oilcreek_22tile/:
   dem_oilcreek_22tile_1m.tif
   hillshade_oilcreek_22tile_1m.tif         az=315 alt=45
   hillshade_az135_oilcreek_22tile_1m.tif   az=135 alt=45
@@ -23,8 +23,8 @@ from _common import DERIV, DST_CRS, ROOT, run_pdal
 
 RES = 1.0
 KEY = "oilcreek_22tile"
-OUT_DIR = DERIV / "extras" / KEY
-SRC_DIR = ROOT / "data" / "files"
+OUT_DIR = DERIV / "tiles" / "extras" / KEY
+SRC_DIR = ROOT / "data" / "source_laz" / "westernpa"
 PLAN = ROOT / "data" / "external" / "oil_creek" / "contiguous_20_plan.txt"
 
 SEED = [

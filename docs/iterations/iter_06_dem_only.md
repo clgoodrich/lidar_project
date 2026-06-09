@@ -3,7 +3,7 @@
 **Branch:** `pit-iter-06-dem-only`
 **Date:** 2026-05-20
 **Status:** Complete; **rejected** — model never escaped all-background minimum
-**Outputs:** `data/derivatives/9t/iterations/06_dem_only/`
+**Outputs:** `data/derivatives/tiles/9t/iterations/06_dem_only/`
 **Code:** `notebooks/wellsight/pits/iter_06_dem_only/`
 
 ## Goal / Hypothesis

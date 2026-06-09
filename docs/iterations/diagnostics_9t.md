@@ -4,7 +4,7 @@
 
 **Input.** `data/derivatives/dem_9t_1m.tif` (1 m bare-earth DEM, EPSG:6346). Built at 1 m (not 0.5 m): faster, cleaner for curvature/geomorphons on multi-meter features. If a layer is promoted to the model stack, recompute at 0.5 m to match `features_pit_9t_05.tif`.
 
-**Builder.** `notebooks/wellsight/build/_build_diagnostics_9t.py` (WhiteboxTools v2.4.0). All 16 ops succeeded in ~45 s total (geomorphons dominates at ~25 s). Outputs in `data/derivatives/9t/diagnostics/` (git-ignored, ~regenerable).
+**Builder.** `notebooks/wellsight/build/_build_diagnostics_9t.py` (WhiteboxTools v2.4.0). All 16 ops succeeded in ~45 s total (geomorphons dominates at ~25 s). Outputs in `data/derivatives/tiles/9t/diagnostics/` (git-ignored, ~regenerable).
 
 ## Layers produced
 

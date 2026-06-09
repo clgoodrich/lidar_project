@@ -1,17 +1,29 @@
 # Data files (too large for git)
-data/files/*.las
-data/files/*.laz
-data/files/*.copc.laz
-data/files/older_files/
-data/files/mcKean/
-data/files/seperate sections/
+data/source_laz/westernpa/*.las
+data/source_laz/westernpa/*.laz
+data/source_laz/westernpa/*.copc.laz
+data/source_laz/westernpa/older_files/
+data/source_laz/westernpa/mcKean/
+data/source_laz/westernpa/seperate sections/
 data/external/lidar/*/laz/
 data/external/lidar/**/*.laz
 data/external/lidar/**/*.las
 data/derivatives/*.tif
 data/derivatives/*.png
-data/derivatives/9t/
-data/derivatives/model_archive/*.gpkg
+data/derivatives/tiles/9t/
+
+# Archived dead/superseded derivative DATA (moved out of the active tree to
+# archive/derivatives/, kept on disk + E: backup). Ignore the heavy regenerable
+# types; small records (*.txt / *.md / *.json / *.csv / *.png) stay tracked.
+archive/derivatives/**/*.tif
+archive/derivatives/**/*.tif.aux.xml
+archive/derivatives/**/*.tif.ovr
+archive/derivatives/**/*.tif.ovr.aux.xml
+archive/derivatives/**/*.gpkg
+archive/derivatives/**/*.las
+archive/derivatives/**/*.laz
+archive/derivatives/**/*.npz
+archive/derivatives/**/*.pt
 
 # Keep annotations and candidate GPKGs (small)
 !data/derivatives/annotations/
@@ -44,7 +56,7 @@ Thumbs.db
 data/full_dem.tif
 data/derivatives/_output3_covar.las
 data/derivatives/pit_1m_candidates_ensemble.gpkg
-data/files/OilGasLocations/
+data/source_laz/westernpa/OilGasLocations/
 
 # LAZ/LAS point clouds anywhere (always large)
 *.las
@@ -63,21 +75,21 @@ data/external/usgs_3dep_permian_tx/laz_pilot_A/
 data/external/usgs_3dep_permian_tx/tile_inventory.parquet
 data/external/usgs_3dep_permian_tx/tiles_intersecting_pads.parquet
 data/external/usgs_3dep_pa_lidar/
+data/external/well-pad-denver-permian/
 
 # Ramachandran verifier training outputs (model weights, prob arrays)
-data/derivatives/ramachandran_verifier/verifier_best.pt
-data/derivatives/ramachandran_verifier/verifier_last.pt
-data/derivatives/ramachandran_verifier/index.csv
-data/derivatives/ramachandran_verifier/*_probs*.npz
+data/derivatives/experiments/ramachandran_verifier/verifier_best.pt
+data/derivatives/experiments/ramachandran_verifier/verifier_last.pt
+data/derivatives/experiments/ramachandran_verifier/index.csv
+data/derivatives/experiments/ramachandran_verifier/*_probs*.npz
 
 # Pilot A LiDAR derivatives (1m rasters per tile)
-data/derivatives/pilot_A/*.tif
+data/derivatives/experiments/pilot_A/*.tif
 
 # Road-extract pipeline rasters (score/mask, ~100-200 MB each at 10k x 10k)
-data/derivatives/roads/*.tif
+data/derivatives/experiments/roads/*.tif
 
-# Beck replication rasters (rl, canopy_class, etc. — can hit 100MB at 10k)
-data/derivatives/beck_*/*.tif
+# (Beck replication outputs archived to archive/derivatives/ — see archive rules above.)
 
 # Per-tile temp intensity rasters (PDAL outputs during build)
 data/derivatives/_tmp_intensity_tiles_*/
@@ -91,41 +103,40 @@ data/derivatives/inference_*/_tmp_*.json
 # 3x3 mosaic build outputs — heavy DEM/hillshade rasters regenerable from LAZ
 # + notebooks/wellsight/build/_build_3x3_hillshades*.py. Track no contents
 # below the block-id subdirs.
-data/derivatives/mosaic_3x3/*/
-data/derivatives/mosaic_3x3_mckean/*/
+data/derivatives/tiles/mosaic_3x3/*/
+data/derivatives/tiles/mosaic_3x3_mckean/*/
 
 # Inference outputs — heavy intermediates (feature stacks + prob rasters)
 # regenerable from best.pt + _build_derivatives.py + _predict_on_tile.py.
 # Track only the small overlay PNGs.
-data/derivatives/mck_inference/*.tif
-data/derivatives/mck_inference/*.tif.aux.xml
-data/derivatives/inference_*/*.tif
-data/derivatives/inference_*/*.tif.aux.xml
-data/derivatives/oilcreek_inference/*.tif
-data/derivatives/oilcreek_inference/*.tif.aux.xml
-data/derivatives/extras/*/*.tif
-data/derivatives/extras/*/*.tif.aux.xml
+data/derivatives/inference/mck/*.tif
+data/derivatives/inference/mck/*.tif.aux.xml
+data/derivatives/inference/oilcreek/*.tif
+data/derivatives/inference/oilcreek/*.tif.aux.xml
+data/derivatives/tiles/extras/*/*.tif
+# (legacy inference_* one-off archived; new inference/ tifs covered by the blanket below)
+data/derivatives/tiles/extras/*/*.tif.aux.xml
 
 # Instance-segmentation experiments (Mask R-CNN, YOLO) on 9t.
 # Heavy: torchvision Mask R-CNN best.pt is ~180 MB; YOLO datasets are 100s of PNG patches.
 # Regenerable from _pit_maskrcnn.py / _pit_yolo.py / etc.
-data/derivatives/9t/rgb3_9t_05.tif
-data/derivatives/9t/iterations/pit_07_maskrcnn/best.pt
-data/derivatives/9t/iterations/pit_07_maskrcnn/*.tif
-data/derivatives/9t/iterations/pit_07_maskrcnn/*.tif.aux.xml
-data/derivatives/9t/iterations/pit_08_yolo/best.pt
-data/derivatives/9t/iterations/pit_08_yolo/*.tif
-data/derivatives/9t/iterations/pit_08_yolo/*.tif.aux.xml
-data/derivatives/9t/iterations/pit_08_yolo/dataset/
-data/derivatives/9t/iterations/pit_08_yolo/run/
-data/derivatives/9t/iterations/pad_05_maskrcnn/best.pt
-data/derivatives/9t/iterations/pad_05_maskrcnn/*.tif
-data/derivatives/9t/iterations/pad_05_maskrcnn/*.tif.aux.xml
-data/derivatives/9t/iterations/pad_06_yolo/best.pt
-data/derivatives/9t/iterations/pad_06_yolo/*.tif
-data/derivatives/9t/iterations/pad_06_yolo/*.tif.aux.xml
-data/derivatives/9t/iterations/pad_06_yolo/dataset/
-data/derivatives/9t/iterations/pad_06_yolo/run/
+data/derivatives/tiles/9t/rgb3_9t_05.tif
+data/derivatives/tiles/9t/iterations/pit_07_maskrcnn/best.pt
+data/derivatives/tiles/9t/iterations/pit_07_maskrcnn/*.tif
+data/derivatives/tiles/9t/iterations/pit_07_maskrcnn/*.tif.aux.xml
+data/derivatives/tiles/9t/iterations/pit_08_yolo/best.pt
+data/derivatives/tiles/9t/iterations/pit_08_yolo/*.tif
+data/derivatives/tiles/9t/iterations/pit_08_yolo/*.tif.aux.xml
+data/derivatives/tiles/9t/iterations/pit_08_yolo/dataset/
+data/derivatives/tiles/9t/iterations/pit_08_yolo/run/
+data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/best.pt
+data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/*.tif
+data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/*.tif.aux.xml
+data/derivatives/tiles/9t/iterations/pad_06_yolo/best.pt
+data/derivatives/tiles/9t/iterations/pad_06_yolo/*.tif
+data/derivatives/tiles/9t/iterations/pad_06_yolo/*.tif.aux.xml
+data/derivatives/tiles/9t/iterations/pad_06_yolo/dataset/
+data/derivatives/tiles/9t/iterations/pad_06_yolo/run/
 
 # Statewide ancillary (PA O&G locations shapefile, PA land cover)
 # Patterns above (OilGasLocations_*/ and PA_LandCover/) already cover new
@@ -140,11 +151,11 @@ data/external/legacy_data/
 ~$*
 
 # 9t diagnostic derivatives (curvature/hydrology/texture, ~1GB, regenerable)
-data/derivatives/9t/diagnostics/
+data/derivatives/tiles/9t/diagnostics/
 
 # Oil Creek 0.5 m derivative stack (~10 GB of DEM/slope/lrm/tpi/openness rasters,
 # regenerable from _build_derivatives.py --suffix oilcreek_22tile_05).
-data/derivatives/oilcreek_22tile_05/
+data/derivatives/tiles/oilcreek_22tile_05/
 
 # Blanket: ALL derivative rasters are heavy and regenerable — never track them.
 # (Replaces the old per-subdir approach; data_3x3 / icp / *_marcellus_1m /
@@ -156,7 +167,7 @@ data/derivatives/*.tif.aux.xml
 
 # Per-block contour vectors (gdal_contour from each DEM, ~37 MB each at 2 m).
 # Regenerable via _build_contours_data_3x3.py; heavy, so not tracked.
-data/derivatives/data_3x3/**/contours_*.gpkg
+data/derivatives/tiles/data_3x3/**/contours_*.gpkg
 
 # Large scanned-book source PDFs (~120 MB combined) — kept locally as reference
 # material, not committed (re-downloadable; would bloat history). Small papers in

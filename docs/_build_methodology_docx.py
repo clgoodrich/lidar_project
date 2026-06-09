@@ -1,4 +1,4 @@
-"""Generate docs/WellSight_Methodology.docx — the detailed-but-plain methodology
+"""Generate docs/publication/WellSight_Methodology.docx — the detailed-but-plain methodology
 write-up (process names + parameters), formatted as a Word document.
 
 This is the technical companion to docs/HOW_IT_WORKS.md: same story, but with the
@@ -15,7 +15,7 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt, RGBColor, Inches
 
-OUT = Path(__file__).resolve().parent / "WellSight_Methodology.docx"
+OUT = Path(__file__).resolve().parent / "publication" / "WellSight_Methodology.docx"
 
 ACCENT = RGBColor(0x1F, 0x49, 0x6E)   # deep blue
 MONO_BG = RGBColor(0x33, 0x33, 0x33)

@@ -1,6 +1,6 @@
 """Build labels and manifests for plat segmentation, road segmentation, and road classification.
 
-Outputs (under data/derivatives/9t/):
+Outputs (under data/derivatives/tiles/9t/):
     labels_plat_9t_05.tif        uint8  0=bg, 1=plat
     labels_road_9t_05.tif        uint8  0=bg, 1=road  (roads buffered 1.5 m)
     plat_dataset_manifest.csv    one row per plat: plat_id, block_id, split, centroid_x/y

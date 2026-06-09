@@ -23,7 +23,7 @@
 
 **Inference.** Sliding window 256 / overlap 64. Per-window YOLO predict with `conf=0.3` → tile-coord detections → global NMS at IoU 0.4.
 
-**Outputs (`data/derivatives/9t/iterations/pit_08_yolo/`).**
+**Outputs (`data/derivatives/tiles/9t/iterations/pit_08_yolo/`).**
 - `best.pt` — Ultralytics checkpoint (copied from `run/weights/best.pt`).
 - `train_log.csv` — Ultralytics `results.csv` (per-epoch losses + mAP).
 - `pit_prob.tif` — max instance-score raster.

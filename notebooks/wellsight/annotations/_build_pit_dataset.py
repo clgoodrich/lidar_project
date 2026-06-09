@@ -1,10 +1,10 @@
 """Build labeled raster + spatial-block train/val/test split for the pit segmentation task.
 
 Inputs:
-    data/derivatives/9t/dem_9t_05.tif                  (reference grid)
+    data/derivatives/tiles/9t/dem_9t_05.tif                  (reference grid)
     data/derivatives/annotations/annotations_proj.gpkg (pit_inside, pit_wall, plat)
 
-Outputs (under data/derivatives/9t/):
+Outputs (under data/derivatives/tiles/9t/):
     labels_pit_9t_05.tif       uint8 raster: 0=bg, 1=pit_floor, 2=pit_wall
     mask_plat_9t_05.tif        uint8 raster: 0/1 plat mask
     pit_blocks_9t.gpkg         spatial-block grid with split assignments

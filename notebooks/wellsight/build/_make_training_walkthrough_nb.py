@@ -375,7 +375,7 @@ for _name in ("model", "optimizer"):
         del globals()[_name]
 torch.cuda.empty_cache()
 
-ITER_DIR = ROOT / "data/derivatives/9t/iterations/pit_07_maskrcnn"
+ITER_DIR = ROOT / "data/derivatives/tiles/9t/iterations/pit_07_maskrcnn"
 
 # --- load the REAL trained weights (not the smoke model) --------------------
 ck = torch.load(ITER_DIR / "best.pt", map_location=DEVICE, weights_only=False)
@@ -395,7 +395,7 @@ n_wall  = sum(x["cls"] == "wall"  for x in dets)
 
 # --- polygonise + score against the test split (writes to the demo folder) --
 ref = ic.reference_profile()
-demo_dir = ROOT / "data/derivatives/_notebook_demo"
+demo_dir = ROOT / "data/derivatives/experiments/notebook_demo"
 demo_dir.mkdir(parents=True, exist_ok=True)
 repro_gpkg = demo_dir / "_repro_instances.gpkg"
 repro_gpkg.unlink(missing_ok=True)

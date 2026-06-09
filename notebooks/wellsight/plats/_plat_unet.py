@@ -1,6 +1,6 @@
 """Binary plat segmentation U-Net (plat / background) at 0.5 m.
 
-Outputs (under data/derivatives/9t/plat_unet/):
+Outputs (under data/derivatives/tiles/9t/plat_unet/):
     best.pt              best-val checkpoint
     train_log.csv        per-epoch metrics
     plat_prob.tif        full-tile probability

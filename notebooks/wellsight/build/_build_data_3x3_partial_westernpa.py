@@ -5,7 +5,7 @@ only emits a block when all 9 tiles of a non-overlapping 3x3 are present, which
 drops the ~50 tiles on the right/top edges of the discovered grid.
 
 This script uses the SAME stride-3 grid (so the 14 existing full blocks under
-data/derivatives/data_3x3/westernpa_d20/ are reused untouched) but emits a block
+data/derivatives/tiles/data_3x3/westernpa_d20/ are reused untouched) but emits a block
 for EVERY non-empty partition cell, with whatever members are present (1-9).
 Each tile lands in exactly one block -> full coverage, no overlap.
 
@@ -32,7 +32,7 @@ from _build_3x3_hillshades import (  # type: ignore
     TILE_M, discover_tiles, build_indices, axis_origins,
 )
 
-OUT_REGION = DERIV / "data_3x3" / "westernpa_d20"
+OUT_REGION = DERIV / "tiles" / "data_3x3" / "westernpa_d20"
 STRIDE = 3
 
 
@@ -115,7 +115,7 @@ def main() -> int:
         key = b["key"]
         sfx = f"{key}_1m"
         out_dir = OUT_REGION / key
-        merge_path = ROOT / "data" / "files" / f"_merged_westernpa_d20_{sfx}.las"
+        merge_path = ROOT / "data" / "source_laz" / "westernpa" / f"_merged_westernpa_d20_{sfx}.las"
         print(f"\n========== westernpa_d20/{key} ({b['n_tiles']} tiles) ==========")
         print(f"  bbox: {b['x0']:.0f},{b['y0']:.0f},{b['x1']:.0f},{b['y1']:.0f}  "
               f"({b['x1']-b['x0']:.0f}x{b['y1']-b['y0']:.0f} m)")

@@ -1,11 +1,12 @@
-"""One-off hillshade builder for the three LAZ tiles in downloadlist(7).txt.
+"""One-off hillshade builder for the three LAZ tiles in
+data/external/usgs_3dep_pa_lidar/downloadlist_7.txt.
 
 Two 2019 WesternPA D20 tiles (UTM 17N, m, contiguous N-S strip) get merged
 into one DEM + hillshade for visual continuity. The 2006-2008 PA Statewide
 North tile (PA SP N, US ft, Z in US ft) is reprojected to UTM 17N with a
 Z*0.3048 conversion to metres, matching project canonical units.
 
-Outputs land under data/derivatives/extras/<key>/ with the standard pair:
+Outputs land under data/derivatives/tiles/extras/<key>/ with the standard pair:
   dem_<key>_1m.tif
   hillshade_<key>_1m.tif           az=315 alt=45
   hillshade_az135_<key>_1m.tif     az=135 alt=45
@@ -22,10 +23,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV, DST_CRS, ROOT, run_pdal
 
 RES = 1.0
-OUT_BASE = DERIV / "extras"
+OUT_BASE = DERIV / "tiles" / "extras"
 
-WP_DIR = ROOT / "data" / "files"
-OLD_DIR = ROOT / "data" / "files" / "older_files"
+WP_DIR = ROOT / "data" / "source_laz" / "westernpa"
+OLD_DIR = ROOT / "data" / "source_laz" / "westernpa" / "older_files"
 
 JOBS = [
     {

@@ -8,7 +8,7 @@ Per block:
   chm_<key>_1m.tif   max(dsm - dem, 0)
 
 Source LAZ:
-  data/files/USGS_LPC_PA_WesternPA_2019_D20_17T<band><e><n>.laz
+  data/source_laz/westernpa/USGS_LPC_PA_WesternPA_2019_D20_17T<band><e><n>.laz
   (member-tile discovery delegated to _build_3x3_hillshades.enumerate_blocks)
 
 CLI:
@@ -30,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _common import DERIV, ROOT, make_profile, run_pdal
 from _build_3x3_hillshades import discover_tiles, enumerate_blocks  # type: ignore
 
-ROOT_3X3 = DERIV / "data_3x3" / "westernpa_d20"
+ROOT_3X3 = DERIV / "tiles" / "data_3x3" / "westernpa_d20"
 RES = 1.0
 
 

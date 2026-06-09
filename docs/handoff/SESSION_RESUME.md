@@ -51,7 +51,7 @@
 
 ### 5. Misc
 - Added `.gitignore` entries for large files in `lidar_project` repo
-- Confirmed `data/files/` can be moved to free space — only build scripts reference it, all derivatives already computed
+- Confirmed `data/source_laz/westernpa/` can be moved to free space — only build scripts reference it, all derivatives already computed
 - Presentation prep: discussed how XGBoost works, ROC/AUC/PR metrics, template mean vs median, geomorphon enclosure, LiDAR return characteristics for pits
 
 ## Current file locations (lidar_project)
@@ -106,7 +106,7 @@
 - Filtered to 37K tiles intersecting Ramachandran pads: `_filter_3dep_tiles_to_well_pads.py`
 - Picked Pilot A: 8 LAZ tiles, 574 MB total (NM_SouthEast UTM13N + TX_West_Central_B4/B7/B8 UTM13/14N)
 - `_pilotA_build_dem_hillshade.py` → 8 DEM/hillshade/slope rasters (1m, native UTM per tile)
-- `_pilotA_overlay_pads.py` → 8 PNG overlays in `data/derivatives/pilot_A/overlays/`
+- `_pilotA_overlay_pads.py` → 8 PNG overlays in `data/derivatives/experiments/pilot_A/overlays/`
 - `_pilotA_terrain_stats.py` → 99 pads vs 288 controls, Welch t-tests
 - `_pilotA_summary_figure.py` → `pilot_A_summary.png`
 - **Result**: Pads have significant LiDAR signature
@@ -163,7 +163,7 @@
   Largest single feature 2.6 km. Visible coverage matches hillshade
   road traces well except inside dense terraced/orchard areas
   (which the canopy_gap channel over-fires on).
-- Outputs: `data/derivatives/roads/roads_mkf_clean.gpkg`,
+- Outputs: `data/derivatives/experiments/roads/roads_mkf_clean.gpkg`,
   `road_score_mkf.tif`, `road_mask_mkf.tif`,
   `roads_overlay_mkf_clean.png`
 

@@ -96,7 +96,7 @@ def filter_cornrow_artifacts(
     Example:
         >>> from notebooks.wellsight.preprocessing import filter_cornrow_artifacts
         >>> stats = filter_cornrow_artifacts(
-        ...     "data/files/9t_merged.las",
+        ...     "data/source_laz/westernpa/9t_merged.las",
         ...     "data/derivatives/9t_filtered.laz",
         ...     scan_angle_limit=15,
         ... )

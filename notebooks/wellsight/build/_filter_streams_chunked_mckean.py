@@ -43,7 +43,7 @@ from shapely.geometry import LineString
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV
 
-REGION = DERIV / "data_3x3" / "northcentral_b19"
+REGION = DERIV / "tiles" / "data_3x3" / "northcentral_b19"
 THRESHOLD = 5000
 SAMPLE_STEP_M = 2.5  # perpendicular samples this densely within a chunk
 MIN_LEN_M = 15.0     # below this a chunk is "short" (not classified)

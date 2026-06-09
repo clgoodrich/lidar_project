@@ -136,7 +136,7 @@ def _norm_lrm(x: np.ndarray) -> np.ndarray:
 def build_rgb3_stack(*, force: bool = False) -> Path:
     """Compose (hillshade, slope, lrm_25) into a single 3-band float32 GeoTIFF.
 
-    Cached at data/derivatives/9t/rgb3_9t_05.tif.
+    Cached at data/derivatives/tiles/9t/rgb3_9t_05.tif.
     """
     if RGB3_PATH.exists() and not force:
         return RGB3_PATH

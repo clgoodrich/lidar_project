@@ -1,6 +1,6 @@
 """Geometric road filter for the t=5000 stream linestrings on McKean.
 
-For each block under data/derivatives/data_3x3/northcentral_b19/<key>/,
+For each block under data/derivatives/tiles/data_3x3/northcentral_b19/<key>/,
 loads streams_t5000_<key>_1m.shp and computes two per-line metrics from the
 DEM alone:
 
@@ -40,7 +40,7 @@ from shapely.geometry import LineString
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV
 
-REGION = DERIV / "data_3x3" / "northcentral_b19"
+REGION = DERIV / "tiles" / "data_3x3" / "northcentral_b19"
 THRESHOLD = 5000
 SAMPLE_STEP_M = 5.0  # resample centerline this densely before computing slope
 MIN_LEN_M = 30.0     # below this, line is too short to classify reliably

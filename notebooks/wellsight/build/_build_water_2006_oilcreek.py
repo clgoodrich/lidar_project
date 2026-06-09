@@ -33,8 +33,8 @@ from _common import DERIV, DST_CRS, ROOT, make_profile, run_pdal
 KEY = "oilcreek_22tile"
 TAG = "2006"
 RES = 1.0
-OUT_DIR = DERIV / "extras" / KEY
-SRC_DIR = ROOT / "data" / "files" / "older_files"
+OUT_DIR = DERIV / "tiles" / "extras" / KEY
+SRC_DIR = ROOT / "data" / "source_laz" / "westernpa" / "older_files"
 PLAN = ROOT / "data" / "external" / "oil_creek" / "statewide_2006_plan.txt"
 
 

@@ -1,13 +1,13 @@
 """Pit semantic segmentation v2: 3-class (bg / floor / wall) at 0.5 m.
 
 Inputs:
-    data/derivatives/9t/features_pit_9t_05.tif    (7 bands, float32, NaN nodata)
-    data/derivatives/9t/labels_pit_9t_05.tif      (uint8: 0=bg, 1=floor, 2=wall)
-    data/derivatives/9t/feature_stats.json
-    data/derivatives/9t/pit_blocks_9t.gpkg
-    data/derivatives/9t/pit_dataset_manifest.csv
+    data/derivatives/tiles/9t/features_pit_9t_05.tif    (7 bands, float32, NaN nodata)
+    data/derivatives/tiles/9t/labels_pit_9t_05.tif      (uint8: 0=bg, 1=floor, 2=wall)
+    data/derivatives/tiles/9t/feature_stats.json
+    data/derivatives/tiles/9t/pit_blocks_9t.gpkg
+    data/derivatives/tiles/9t/pit_dataset_manifest.csv
 
-Outputs under data/derivatives/9t/pit_unet_v2/:
+Outputs under data/derivatives/tiles/9t/pit_unet_v2/:
     best.pt              best-val checkpoint (state_dict + cfg + norm stats)
     train_log.csv        per-epoch metrics
 

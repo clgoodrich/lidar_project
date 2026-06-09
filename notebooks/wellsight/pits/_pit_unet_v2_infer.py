@@ -1,7 +1,7 @@
 """Full-tile inference + test-set eval for pit_unet_v2.
 
 Writes pit_prob_floor.tif, pit_prob_wall.tif, pit_argmax.tif, test_metrics.json,
-test_per_pit.csv, test_preds.png under data/derivatives/9t/pit_unet_v2/.
+test_per_pit.csv, test_preds.png under data/derivatives/tiles/9t/pit_unet_v2/.
 """
 from __future__ import annotations
 

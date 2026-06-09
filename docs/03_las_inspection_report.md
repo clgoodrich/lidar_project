@@ -1,6 +1,6 @@
 # 03 — LAS Inspection Report: `output2.las`
 
-**File:** `data/files/output2.las` · **Inspected:** 2026-04-13 · **Tooling:** PDAL 2.10.0 CLI + `laspy` 2.7.0
+**File:** `data/source_laz/westernpa/output2.las` · **Inspected:** 2026-04-13 · **Tooling:** PDAL 2.10.0 CLI + `laspy` 2.7.0
 
 ## Header summary
 

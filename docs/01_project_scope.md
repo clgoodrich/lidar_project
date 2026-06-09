@@ -14,7 +14,7 @@ The system is called **WellSight**. Candidates are always reported as
 
 ## 2. Study area (current pilot)
 
-- **Tile:** `data/files/output2.las`
+- **Tile:** `data/source_laz/westernpa/output2.las`
 - **Spatial extent:** 622 500 – 624 000 E, 4 594 500 – 4 596 000 N (UTM 17N, NAD83(2011))
 - **Size:** 1.5 × 1.5 km = 2.25 km²
 - **Location:** Venango County, PA (President Twp predominantly,
@@ -24,11 +24,11 @@ The system is called **WellSight**. Candidates are always reported as
   deciduous forest, deeply incised drainages, ≥150 yr industrial activity.
 
 A wider area (50+ adjacent `.laz` tiles covering ~75 km²) is available in
-`data/files/` for scale-up after the pilot validates.
+`data/source_laz/westernpa/` for scale-up after the pilot validates.
 
 ## 3. Ground truth
 
-- **Source:** `data/files/output_wells.csv`
+- **Source:** `data/source_laz/westernpa/output_wells.csv`
 - **Records inside the tile:** 84 wells, all `Status = "Orphan"`, all
   originating from the PA DEP 5/9/2022 release.
 - **Coordinate provenance:** `Latitude` / `Longitude` (EPSG:4326). No GPS-quality

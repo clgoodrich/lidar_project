@@ -21,8 +21,8 @@ from _common import DERIV, DST_CRS, ROOT, make_profile, run_pdal
 
 KEY = "oilcreek_22tile"
 RES = 1.0
-OUT_DIR = DERIV / "extras" / KEY
-SRC_DIR = ROOT / "data" / "files"
+OUT_DIR = DERIV / "tiles" / "extras" / KEY
+SRC_DIR = ROOT / "data" / "source_laz" / "westernpa"
 PLAN = ROOT / "data" / "external" / "oil_creek" / "contiguous_20_plan.txt"
 
 SEED = [

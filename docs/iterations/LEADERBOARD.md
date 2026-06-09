@@ -48,7 +48,7 @@ Roads are a binary segmentation task, scored by **per-line average precision** (
 
 ## Cross-reference vs PA DEP known wells (full catalog)
 
-Beyond the hand-annotated test split, each model's detections were scored against the **full PA DEP Oil & Gas locations catalog** clipped to the 9t extent — **1069 catalogued wells** (vs only 110 hand-annotated pits / 79 plats). A well counts as "matched" if any detection centroid lands within 25 m. Outputs in `data/derivatives/9t/iterations/known_well_validation/`.
+Beyond the hand-annotated test split, each model's detections were scored against the **full PA DEP Oil & Gas locations catalog** clipped to the 9t extent — **1069 catalogued wells** (vs only 110 hand-annotated pits / 79 plats). A well counts as "matched" if any detection centroid lands within 25 m. Outputs in `data/derivatives/tiles/9t/iterations/known_well_validation/`.
 
 | Model | Detections | Wells matched (/1069) | Well recall | Median nearest (m) |
 |---|---|---|---|---|
@@ -64,7 +64,7 @@ Beyond the hand-annotated test split, each model's detections were scored agains
 
 ## Sources
 
-- Per-iteration `test_metrics.json` lives in `data/derivatives/9t/iterations/<iter>/test_metrics.json`.
+- Per-iteration `test_metrics.json` lives in `data/derivatives/tiles/9t/iterations/<iter>/test_metrics.json`.
 - Per-instance breakdowns in `test_per_pit.csv` / `test_per_plat.csv`.
 - Iteration writeups in `docs/iterations/<iter>.md`.
 

@@ -1,7 +1,7 @@
 """Render a grid of sample pits with label overlay for visual QC.
 
 Picks 4 pits from each split (train/val/test), shows hillshade + label mask side-by-side.
-Output: data/derivatives/9t/sanity_pit_labels.png
+Output: data/derivatives/tiles/9t/sanity_pit_labels.png
 """
 import sys
 from pathlib import Path
