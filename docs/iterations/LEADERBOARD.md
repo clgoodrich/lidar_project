@@ -44,7 +44,9 @@ Roads are a binary segmentation task, scored by **per-line average precision** (
 | road_unet | UNet binary, FocalCE | 0.5 m | 0.343 | 0.963 | 0.565 / — | Retrained 2026-06-07 on latest roads (171 in-tile lines). Over-fires on 1 m blocks (33% px). |
 | road_unet_1m (2-class) | UNet binary, FocalCE, roughness_5 | 1 m | 0.379 | 0.962 | 0.654 / — | Matches the 1 m blocks but fires on drainage; needed an aggressive post-filter. |
 | road_unet_1m (3-class) | UNet bg/road/drainage | 1 m | 0.527 | 0.963 | 0.676 / 0.005 | Drainage as a trained class (from `drainage.shp`) → P(road) on channels →0.005. |
-| **road_unet_1m (3-class + chunked)** | UNet bg/road/drainage, roads chunked ~40 m | 1 m | **0.581** | **0.992** | **0.757 / 0.006** | Current. Roads chunked so every ~40 m is a patch center; eval over 168 chunks (was 27 lopsided lines). Drainage handled in-model — no post-filter needed. See [[road_unet_1m]]. |
+| road_unet_1m (3-class + chunked) | UNet bg/road/drainage, roads chunked ~40 m | 1 m | 0.581 | 0.992 | 0.757 / 0.006 | Roads chunked so every ~40 m is a patch center; eval over 168 chunks (was 27 lopsided lines). Drainage handled in-model — no post-filter needed. See [[road_unet_1m]]. |
+| road_unet_mb (3-class, 6 blocks) | UNet bg/road/drainage, 191 km multi-block | 1 m | 0.223‖ | 0.997 | 0.508 / 0.011 | **Rejected.** Trained across 6 data_3x3 blocks to add data. Overfit (best val ep7; 618594 = 84% of road) and came out *under-confident* on out-of-domain 613590 (P 0.46). Diluting the dense 9t core hurt. ‖IoU is on held-out block 622594, not 9t. |
+| **road_unet_1m_recall (3-class, α0.72)** | UNet bg/road/drainage, road focal-α 0.60→0.72, wd 2e-4 | 1 m | **0.581** | **0.999** | **0.778 / 0.004** | **Current.** Same clean 9t data; in-domain ≈ chunked row, but the point is *out-of-domain recall*: on 613590 mean P(road) 0.57→0.66, road≥0.5 px ~1.7×, cleaned network 155→**169 km**, TIGER recall 0.501→**0.523**. Fixed gappy roads via class weighting, not more data. See [[road_unet_1m_recall]]. |
 
 ## Cross-reference vs PA DEP known wells (full catalog)
 

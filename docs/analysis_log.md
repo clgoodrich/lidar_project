@@ -5,6 +5,40 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-14 — Road recall fix: focal-α bump (NOT more data); multi-block rejected
+
+**Problem.** Deployed `road_unet_1m` (3-class) gave gappy roads on out-of-domain block
+613590: it detected roads in the right places but under-confidently (P(road) ≈ 0.5 on
+real roads), so segments dropped below the 0.5 threshold. (Also confirmed the earlier
+`road_prob_613590_05` the user saw was the legacy **2-class 0.5 m** model with no drainage
+class — a separate, worse model.)
+
+**False alarm corrected.** The suspected "roughness channel bug" is not real: at 1 m,
+`features_<key>_1m.tif` band 7 is *labeled* `roughness_11` but is byte-identical to
+`roughness_5`. Model trained on roughness_5, infers on roughness_5 → matched.
+
+**Rejected: multi-block training** (`_road_unet_multiblock.py`, `road_unet_mb`). Built a
+6-block dataset (`_build_road_multiblock_dataset.py`, 191 km road across 618594/622591/
+613603/613608/618591/622594; train-block norm recomputed). Overfit (best val ep7; 618594
+= 84% of road) and came out *under-confident* on 613590 (mean P 0.508 < deployed). Adding
+outside-9t data diluted the dense 9t core — data was not the bottleneck.
+
+**Adopted: recall-focused retrain** (`_road_unet_1m_recall.py`, `road_unet_1m_recall`).
+Same clean 9t data, road focal-α 0.60→0.72, drainage 0.30→0.25, wd 1e-4→2e-4. Best ep38,
+val road IoU 0.643. 9t test: pixel IoU 0.581 (=deployed), AP road-vs-drainage 0.999,
+P(road) road/drain 0.778/0.004. **On 613590: mean P(road) 0.57→0.66, road≥0.5 px ~1.7×.**
+
+**Cleaned vector network** (validated `roads_opt` cleaner fed the recall prob via new
+`--prob`/`--drain` overrides in `_road_optimize.py`): clean network 155.2→**169.3 km**
+(1252 segs, 129 bridges), TIGER recall 0.501→**0.523**, novel 123.5→136.2 km. Deployed
+network backed up to `roads_opt_613590_1m_deployed.gpkg`.
+
+`road_unet_1m_recall/best.pt` is now the current road model for data_3x3 blocks (not yet
+re-inferred across all 25). `road_multiblock/` gitignored (regenerable dead-end). Docs:
+`docs/iterations/road_unet_1m_recall.md`, LEADERBOARD roads table updated.
+
+---
+
 ## 2026-06-09 — Project reorg: full data-tree restructure + root cleanup (paths maintained)
 
 Reworked the repo layout for findability; **all code paths maintained** (verified, no

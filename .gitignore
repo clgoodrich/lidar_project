@@ -174,3 +174,6 @@ data/derivatives/tiles/data_3x3/**/contours_*.gpkg
 # docs/papers/ stay tracked.
 docs/papers/Allegheny-Oil.pdf
 docs/papers/annas-arch-784c7616f171.pdf
+
+# multi-block road experiment (regenerable dataset + model; dead-end, kept local)
+data/derivatives/tiles/road_multiblock/
