@@ -30,6 +30,15 @@ geopackages (WPA: pit_inside/pit_outside; Permian: pads). Scripts: `_build_label
 - Large-file rule: `label_grids/**/*.tif|las|laz|png` gitignored (same change); empty
   .gpkg templates stay tracked.
 
+**Build complete (all 8 grids).** 4 WPA + 4 Permian, each 20 derivative TIFs incl.
+hillshade + empty annotation gpkgs. Two 3DEP-specific bugs fixed mid-build:
+(1) `writers.las` int32 overflow — some TX zone-14 tiles ship offset 0, so the large
+UTM northing overflowed; fixed with `offset:auto` + scale 0.01 in `_build_derivatives`.
+(2) Raw 3DEP tiles carry no CRS → DEM had none → WBT hillshade silently no-op'd; fixed
+by letting `build_derivatives` own the DEM (built from the merged LAS tagged `a_srs`)
+plus a `stamp_crs()` safety net. WPA dems/permian_04 read as compound CRS (to_epsg None
+but valid); permian_01/02/03 are clean EPSG 6342/6343. ~1.7 GB Permian LAZ downloaded.
+
 ## 2026-06-16 — Port the road post-proc pattern to pits: `_pit_optimize.py`
 
 **Goal.** Reuse the proven road pipeline shape for pits. Roads = 1-D (skeleton →

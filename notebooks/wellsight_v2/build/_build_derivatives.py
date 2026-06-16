@@ -167,9 +167,15 @@ def build(
                                "in_srs": src_crs, "out_srs": dst_crs})
             stages.append({"type": "filters.crop",
                            "bounds": f"([{x0},{x1}],[{y0},{y1}])"})
+            # offset:auto recomputes header offset from the data so large UTM
+            # coords don't overflow int32 when the source offset is 0 (seen on
+            # some 3DEP tiles, e.g. TX zone-14 northings ~3.3e6). scale 0.01 (1 cm)
+            # keeps scaled values well inside int32 for any 3 km block.
             stages.append({"type": "writers.las", "filename": str(merge_path),
                            "minor_version": 4, "dataformat_id": 7, "a_srs": dst_crs,
-                           "compression": "false", "forward": "all"})
+                           "compression": "false", "forward": "all",
+                           "offset_x": "auto", "offset_y": "auto", "offset_z": "auto",
+                           "scale_x": 0.01, "scale_y": 0.01, "scale_z": 0.01})
             run_pdal(stages, label=f"merge_{sfx}")
             print(f"  merged: {merge_path.stat().st_size/1e9:.2f} GB")
         las_path = merge_path

@@ -118,6 +118,19 @@ def build_dem_hillshade(members, x0, y0, x1, y1, sfx, out_dir):
     dem_name = f"dem_{sfx}.tif"; hs_name = f"hillshade_{sfx}.tif"
     dem_tif = out_dir / dem_name
     W = int(round((x1 - x0) / RES)); H = int(round((y1 - y0) / RES))
+    if dem_tif.exists():
+        print(f"  DEM exists, skipping rebuild -> {dem_name}")
+    else:
+        _build_dem(members, x0, y0, W, H, sfx, dem_tif, out_dir)
+    import whitebox
+    wbt = whitebox.WhiteboxTools()
+    wbt.set_working_dir(str(out_dir.resolve())); wbt.set_verbose_mode(False)
+    rc = wbt.hillshade(dem=dem_name, output=hs_name, azimuth=315.0, altitude=45.0)
+    print(f"  hillshade {'ok' if rc == 0 else 'FAILED rc=%d' % rc} -> {hs_name}")
+    return dem_tif
+
+
+def _build_dem(members, x0, y0, W, H, sfx, dem_tif, out_dir):
     stages = [
         *[str(p) for p in members],
         {"type": "filters.merge"},
@@ -129,11 +142,20 @@ def build_dem_hillshade(members, x0, y0, x1, y1, sfx, out_dir):
     ]
     print(f"  DEM ({W}x{H}) from {len(members)} tiles ...")
     run_pdal(stages, label=f"dem_{sfx}", tmp_dir=out_dir, timeout=3600)
-    wbt = whitebox.WhiteboxTools()
-    wbt.set_working_dir(str(out_dir.resolve())); wbt.set_verbose_mode(False)
-    rc = wbt.hillshade(dem=dem_name, output=hs_name, azimuth=315.0, altitude=45.0)
-    print(f"  hillshade {'ok' if rc == 0 else 'FAILED rc=%d' % rc} -> {hs_name}")
-    return dem_tif
+
+
+def stamp_crs(out_dir: Path, crs):
+    """Ensure every .tif in out_dir has a CRS (3DEP tiles can lack one)."""
+    import rasterio
+    from rasterio.crs import CRS
+    target = CRS.from_user_input(crs)
+    for tif in out_dir.glob("*.tif"):
+        with rasterio.open(tif) as r:
+            has = r.crs is not None
+        if not has:
+            with rasterio.open(tif, "r+") as r:
+                r.crs = target
+            print(f"  stamped CRS on {tif.name}")
 
 
 def write_empty(path: Path, geom_type: str, cols: dict, crs):
@@ -248,16 +270,19 @@ def build_permian(args):
         print(f"\n========== {name}  ({len(laz)} tiles, {dst}) ==========")
         print(f"  bbox {x0:.0f},{y0:.0f}..{x1:.0f},{y1:.0f}")
         t0 = time.time(); merge = gdir / f"_merged_{sfx}.las"
+        # build_derivatives owns dem+hillshade+slope+stack; it builds the DEM from
+        # the merged LAS (tagged a_srs=dst), so the DEM gets a CRS even though the
+        # raw 3DEP tiles carry none. skip_existing=False to overwrite stale outputs.
         try:
-            build_dem_hillshade(laz, x0, y0, x1, y1, sfx, out_dir)
             build_derivatives(laz, x0=x0, y0=y0, x1=x1, y1=y1, res=RES, sfx=sfx,
-                              dst_crs=dst, merge_path=merge, skip_existing=True, out_dir=out_dir)
+                              dst_crs=dst, merge_path=merge, skip_existing=False, out_dir=out_dir)
         except Exception as e:  # noqa: BLE001
             print(f"  [{name}] FAILED: {e}"); continue
         finally:
             if merge.exists():
                 try: merge.unlink()
                 except OSError: pass
+        stamp_crs(out_dir, dst)
         write_empty(out_dir / "pads.gpkg", "Polygon",
                     {"pad_id": "int64", "note": "object"}, dst)
         print(f"  [{name}] done in {time.time()-t0:.0f}s (+ empty pads gpkg)")
