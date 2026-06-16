@@ -5,6 +5,32 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-16 — Port the road post-proc pattern to pits: `_pit_optimize.py`
+
+**Goal.** Reuse the proven road pipeline shape for pits. Roads = 1-D (skeleton →
+centerlines); pits = 2-D blobs, so the new middle stage is threshold → connected
+components → shape filter → polygon → centroid (candidate well point). Stage 1
+(derivatives) and Stage 2 (`_pit_unet_v2` floor prob) already existed; the new piece
+is `notebooks/wellsight_v2/build/_pit_optimize.py`, the polygon analog of
+`_road_optimize.py` (same `optimize`/`apply-block` CLI, object-level F1 harness).
+
+**Setup.** GT = `pit_inside` floors (65 in the 9t test region). Detection = floor-prob
+blobs; match = greedy nearest centroid within TOL=6 m. Coordinate-ascent over
+{enhance, thresh, floor_gate, t, area_min/max, circ_min, ecc_max, min_px}, 2 passes.
+
+**Result (9t test, all blobs, no conf gate).** BEST F1 **0.195** — recall **0.85**,
+precision **0.11** (500 candidates for 65 GT). Best cfg: gauss + hysteresis(0.4/0.6),
+floor_gate off, area 9–1500 m², circ≥0.45, ecc≤0.88. Saved to
+`pit_unet_v2/pit_postproc_best.json`.
+
+**Interpretation.** The extractor works end-to-end, but raw precision is low — the
+floor prob is leaky and over-detects. This is the *expected* shape and the argument FOR
+the active-learning loop: high-recall candidates + human reject-in-QGIS → hard negatives
+→ retrain. The `apply` confidence gate (0.6·mean_pfloor + 0.4·shape) recovers precision
+before review. Candidates carry confidence + nearest-known-well distance per QC rule.
+Next: pit review-package + corrections-diff (polygon analogs of the road scripts), then
+retrain `_pit_unet_v2` on corrections. See [[project_road_active_learning_loop]].
+
 ## 2026-06-14 — Road recall fix: focal-α bump (NOT more data); multi-block rejected
 
 **Problem.** Deployed `road_unet_1m` (3-class) gave gappy roads on out-of-domain block
