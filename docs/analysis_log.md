@@ -5,6 +5,31 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-16 — Drainage U-Net + annotation label grids (WPA build + Permian fetch)
+
+**Drainage U-Net.** Built `_drainage_unet_1m.py` (in `wellsight_v2/drainage/`) as the
+symmetric twin of the road recall model — same 9t data/channels/3-class labels, focal
+alpha flipped to (0.10, 0.25, 0.72) so drainage is the positive and road the confuser.
+40 ep, GTX 1070 Ti. **9t test: drainage IoU 0.532, AP drainage-vs-road 0.990,
+mean P(drain) 0.696 on drainage vs 0.0016 on road.** Roads essentially never fire as
+drainage. Doc: `iterations/drainage_unet_1m.md`.
+
+**Label grids (annotation areas).** New `label_grids/` off repo root with 4 WPA + 4
+Permian 2×2 (1 m) grids over the most well-dense areas, each with empty annotation
+geopackages (WPA: pit_inside/pit_outside; Permian: pads). Scripts: `_build_label_grids.py`
+(select by orphan-well density + build DEM/hillshade/derivative stack) and
+`_fetch_permian_grids.py` (pull 3DEP LPC 2×2 tiles via TNM API).
+- WPA wells = `data/external/legacy_data/US_Documented_Orphan_Wells.csv` (PA-only, 4786).
+  Densest grids overlapped the 9t training core → **excluded the 9t bbox** per user; final
+  grids 258/193/174/163 wells, EPSG:6346, built from local LAZ.
+- Permian wells = `rrc_orphan_wells_permian.gpkg` (3328). All 4 densest 3 km clusters have
+  3DEP LPC coverage (TX_Lower_CO_San_Bernard_2017, TX_WestTexas_2018, TX West Central 2018);
+  zones 13R/14R/14S. **Data-quality note:** permian_01 (lon −100.59) and _04 sit on/east of
+  the geologic Permian Basin edge — densest RRC orphans, not all "basin" proper. Downloading
+  QL "any 3DEP" per user; build in native UTM (EPSG:6342/6343).
+- Large-file rule: `label_grids/**/*.tif|las|laz|png` gitignored (same change); empty
+  .gpkg templates stay tracked.
+
 ## 2026-06-16 — Port the road post-proc pattern to pits: `_pit_optimize.py`
 
 **Goal.** Reuse the proven road pipeline shape for pits. Roads = 1-D (skeleton →

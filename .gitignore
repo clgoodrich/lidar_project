@@ -177,3 +177,10 @@ docs/papers/annas-arch-784c7616f171.pdf
 
 # multi-block road experiment (regenerable dataset + model; dead-end, kept local)
 data/derivatives/tiles/road_multiblock/
+
+# label_grids: heavy regenerable rasters/point-clouds (keep .gpkg annotation templates tracked)
+label_grids/**/*.tif
+label_grids/**/*.tif.aux.xml
+label_grids/**/*.las
+label_grids/**/*.laz
+label_grids/**/*.png
