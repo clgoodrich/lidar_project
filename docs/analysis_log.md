@@ -5,6 +5,27 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-17 — Annotation aids: cross-region pad transfer + 3× exaggerated derivatives
+
+**PA pad U-Net → permian_01 (transfer experiment, no retrain).** New reusable
+`plats/_pad_unet_infer_grid.py` stacks a grid's existing derivatives into the 7-band
+DEFAULT_CHANNELS order (mapping 9t `roughness_11` → grid `roughness_5`), normalizes
+with 9t stats, and runs `plat_unet/best.pt` via `predict_full_tile`. On permian_01 (1 m):
+**78 candidate pads, precision 60/78 = 77% within 60 m of a ramachandran pad point, but
+recall only 68/467 = 15%.** Transfers in precision, recall-limited — chiefly the 0.5 m→1 m
+scale mismatch (model trained at 0.5 m). ~4.1k px (0.02%) returned fp16 NaN → written as
+nodata. Outputs in `label_grids/permian_01/pad_unet_xfer/`.
+
+**3× vertically-exaggerated openness + slope (manual-picking aid).** New
+`build/_build_exag_derivatives.py`. Rationale: openness/slope are atan-nonlinear in
+elevation, so vertical exaggeration sharpens incised roads/drainage for the eye; LRM/TPI
+are linear (exaggeration cancels under any color stretch) so they are deliberately NOT
+produced. Each tile processed at its OWN cell size with a fixed 25 m openness radius:
+**9t at 0.5 m** (L=50) → `tiles/9t/exag3x/`; **permian_01–04 at 1 m** (L=25) →
+`label_grids/permian_NN/exag3x/`. Heavy tifs gitignored (regenerable).
+
+---
+
 ## 2026-06-17 — Label grids rework: new Permian 3×3 centers, WPA manual placements
 
 **Permian re-placed + upsized 2×2 → 3×3.** Prior density-auto Permian centers were
