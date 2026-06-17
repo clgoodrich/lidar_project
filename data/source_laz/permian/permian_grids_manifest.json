@@ -1,0 +1,28 @@
+{
+  "permian_04": {
+    "project": "USGS Lidar Point Cloud TX_WestTexas_2018_D19",
+    "utm_zone": "14",
+    "tiles": [
+      "14RKU925870",
+      "14RKU925885",
+      "14RKU925900",
+      "14RKU940870",
+      "14RKU940885",
+      "14RKU940900",
+      "14RKU955870",
+      "14RKU955885",
+      "14RKU955900"
+    ],
+    "urls": [
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU925870.laz",
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU925885.laz",
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU925900.laz",
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU940870.laz",
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU940885.laz",
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU940900.laz",
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU955870.laz",
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU955885.laz",
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/TX_WestTexas_2018_D19/TX_WestTexas_B6_2018/LAZ/USGS_LPC_TX_WestTexas_2018_D19_14RKU955900.laz"
+    ]
+  }
+}

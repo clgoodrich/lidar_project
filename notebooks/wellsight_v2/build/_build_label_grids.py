@@ -159,11 +159,14 @@ def stamp_crs(out_dir: Path, crs):
 
 
 def write_empty(path: Path, geom_type: str, cols: dict, crs):
+    # an empty gpkg has no geometry -> it is location-independent; never clobber an
+    # existing one (the user may have it open in QGIS, which locks the file on Windows)
+    if path.exists():
+        print(f"  gpkg exists, keeping -> {path.name}")
+        return
     import pyogrio
     data = {c: gpd.pd.Series([], dtype=t) for c, t in cols.items()}
     gdf = gpd.GeoDataFrame(data, geometry=gpd.GeoSeries([], crs=crs))
-    if path.exists():
-        path.unlink()
     pyogrio.write_dataframe(gdf, path, layer=path.stem, geometry_type=geom_type)
 
 
@@ -199,12 +202,85 @@ def build_wpa(args):
             if merge.exists():
                 try: merge.unlink()
                 except OSError: pass
-        write_empty(out_dir / "pit_inside.gpkg", "MultiPolygon",
+        write_empty(out_dir / f"{name}_pit_inside.gpkg", "MultiPolygon",
                     {"pit_id": "int64", "plat_id": "int64"}, DST_CRS)
-        write_empty(out_dir / "pit_outside.gpkg", "Polygon",
+        write_empty(out_dir / f"{name}_pit_outside.gpkg", "Polygon",
                     {"pit_id": "int64", "plat_id": "int64"}, DST_CRS)
-        print(f"  [{name}] done in {time.time()-t0:.0f}s (+ empty pit_inside/pit_outside gpkgs)")
+        print(f"  [{name}] done in {time.time()-t0:.0f}s "
+              f"(+ empty {name}_pit_inside/{name}_pit_outside gpkgs)")
     print(f"\nWPA grids in {LABEL_GRIDS}")
+
+
+# ===========================================================================
+# WPA manual placement: explicit 2x2 sub-block of a named 3x3 section
+# ===========================================================================
+# corner -> (de set, dn set) of the 2x2 within the section's 3x3 (de=E, dn=N)
+_CORNER = {"NE": ((1, 2), (1, 2)), "NW": ((0, 1), (1, 2)),
+           "SE": ((1, 2), (0, 1)), "SW": ((0, 1), (0, 1))}
+MANUAL_WPA = {
+    "westernpa_03": ("613590", "NE"),  # NE 2x2 of 613590 section
+    "westernpa_04": ("622599", "NW"),  # NW 2x2 of 622599 section
+}
+
+
+def _resolve_2x2(section_key: str, corner: str):
+    """Return (members[4], x0, y0, x1, y1) for a 2x2 corner of a 3x3 section."""
+    tiles = discover_tiles()
+    e_idx, n_idx = build_indices(tiles)
+    e_org, n_org = axis_origins(e_idx, n_idx)
+    grid = {(e_idx[e], n_idx[(b, n)]): p for (b, e, n), p in tiles.items()}
+    ec, nc = section_key[:3], section_key[3:]
+    sw = next(((b, e, n) for (b, e, n) in tiles if e == ec and n == nc), None)
+    if sw is None:
+        raise SystemExit(f"section {section_key} SW tile not found")
+    ei0, ni0 = e_idx[sw[1]], n_idx[(sw[0], sw[2])]
+    des, dns = _CORNER[corner]
+    cells = [(ei0 + de, ni0 + dn) for de in des for dn in dns]
+    members = [grid.get(c) for c in cells]
+    if any(m is None for m in members):
+        miss = [c for c, m in zip(cells, members) if m is None]
+        raise SystemExit(f"section {section_key} {corner} 2x2 missing tiles at idx {miss}")
+    ei_sw, ni_sw = min(des), min(dns)
+    x0 = e_org + (ei0 + ei_sw) * TILE_M
+    y0 = n_org + (ni0 + ni_sw) * TILE_M
+    return members, x0, y0, x0 + 2 * TILE_M, y0 + 2 * TILE_M
+
+
+def build_wpa_manual(args):
+    names = args.only.split(",") if args.only else list(MANUAL_WPA)
+    for name in names:
+        section, corner = MANUAL_WPA[name]
+        members, x0, y0, x1, y1 = _resolve_2x2(section, corner)
+        sfx = f"{name}_1m"; out_dir = LABEL_GRIDS / name
+        print(f"\n========== {name}  ({corner} 2x2 of {section}) ==========")
+        print(f"  x={x0:.0f}..{x1:.0f} y={y0:.0f}..{y1:.0f}  "
+              f"tiles={[p.name.split('D20_')[1][:9] for p in members]}")
+        if args.dry_run:
+            continue
+        # remove stale derivatives from the old density-picked location
+        for old in out_dir.glob("*.tif"):
+            old.unlink()
+        for old in out_dir.glob("*.tif.aux.xml"):
+            old.unlink()
+        t0 = time.time()
+        merge = ROOT / "data" / "source_laz" / "westernpa" / f"_merged_{sfx}.las"
+        try:
+            build_dem_hillshade(members, x0, y0, x1, y1, sfx, out_dir)
+            build_derivatives(members, x0=x0, y0=y0, x1=x1, y1=y1, res=RES, sfx=sfx,
+                              dst_crs=DST_CRS, merge_path=merge, skip_existing=False,
+                              out_dir=out_dir)
+        except Exception as e:  # noqa: BLE001
+            print(f"  [{name}] FAILED: {e}"); continue
+        finally:
+            if merge.exists():
+                try: merge.unlink()
+                except OSError: pass
+        write_empty(out_dir / f"{name}_pit_inside.gpkg", "MultiPolygon",
+                    {"pit_id": "int64", "plat_id": "int64"}, DST_CRS)
+        write_empty(out_dir / f"{name}_pit_outside.gpkg", "Polygon",
+                    {"pit_id": "int64", "plat_id": "int64"}, DST_CRS)
+        print(f"  [{name}] done in {time.time()-t0:.0f}s")
+    print(f"\nWPA manual grids in {LABEL_GRIDS}")
 
 
 # ===========================================================================
@@ -240,7 +316,10 @@ def select_permian(args):
 
 
 def build_permian(args):
-    """Mosaic each downloaded 2x2 (native UTM) -> DEM+hillshade+stack + empty pads gpkg."""
+    """Mosaic each downloaded grid (native UTM) -> DEM+hillshade+stack + empty pads gpkg.
+
+    Tile count per grid is whatever was downloaded (now 3x3 = 9 tiles); this globs
+    *.laz so it is agnostic to grid size."""
     import json
     import laspy
     src = ROOT / "data" / "source_laz" / "permian"
@@ -270,12 +349,20 @@ def build_permian(args):
         print(f"\n========== {name}  ({len(laz)} tiles, {dst}) ==========")
         print(f"  bbox {x0:.0f},{y0:.0f}..{x1:.0f},{y1:.0f}")
         t0 = time.time(); merge = gdir / f"_merged_{sfx}.las"
+        # clear stale derivatives from any prior (different-location) build
+        for old in out_dir.glob("*.tif"):
+            old.unlink()
+        for old in out_dir.glob("*.tif.aux.xml"):
+            old.unlink()
         # build_derivatives owns dem+hillshade+slope+stack; it builds the DEM from
         # the merged LAS (tagged a_srs=dst), so the DEM gets a CRS even though the
         # raw 3DEP tiles carry none. skip_existing=False to overwrite stale outputs.
+        # dem_method="gdal": dense QL1 3x3 mosaics OOM the delaunay TIN -> use IDW.
         try:
             build_derivatives(laz, x0=x0, y0=y0, x1=x1, y1=y1, res=RES, sfx=sfx,
-                              dst_crs=dst, merge_path=merge, skip_existing=False, out_dir=out_dir)
+                              dst_crs=dst, merge_path=merge, skip_existing=False,
+                              out_dir=out_dir, dem_method="gdal",
+                              openness_only=args.openness_only)
         except Exception as e:  # noqa: BLE001
             print(f"  [{name}] FAILED: {e}"); continue
         finally:
@@ -283,9 +370,9 @@ def build_permian(args):
                 try: merge.unlink()
                 except OSError: pass
         stamp_crs(out_dir, dst)
-        write_empty(out_dir / "pads.gpkg", "Polygon",
+        write_empty(out_dir / f"{name}_pads.gpkg", "Polygon",
                     {"pad_id": "int64", "note": "object"}, dst)
-        print(f"  [{name}] done in {time.time()-t0:.0f}s (+ empty pads gpkg)")
+        print(f"  [{name}] done in {time.time()-t0:.0f}s (+ empty {name}_pads gpkg)")
     print(f"\nPermian grids in {LABEL_GRIDS}")
 
 
@@ -296,10 +383,16 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true", help="select + report, do not build")
     ap.add_argument("--build-permian", action="store_true",
                     help="build from downloaded data/source_laz/permian/<grid>/ tiles")
+    ap.add_argument("--manual", action="store_true",
+                    help="WPA: build explicit MANUAL_WPA 2x2 placements instead of density pick")
+    ap.add_argument("--openness-only", action="store_true",
+                    help="permian: emit only DEM + openness_pos/neg (skip full stack)")
     ap.add_argument("--only", help="comma-separated grid names")
     args = ap.parse_args()
     LABEL_GRIDS.mkdir(exist_ok=True)
-    if args.region == "westernpa":
+    if args.region == "westernpa" and args.manual:
+        build_wpa_manual(args)
+    elif args.region == "westernpa":
         build_wpa(args)
     elif args.build_permian:
         build_permian(args)

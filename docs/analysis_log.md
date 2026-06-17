@@ -5,6 +5,43 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-17 — Label grids rework: new Permian 3×3 centers, WPA manual placements
+
+**Permian re-placed + upsized 2×2 → 3×3.** Prior density-auto Permian centers were
+not well-dense enough; user supplied 4 explicit centers and asked for **3×3** (4.5 km,
+9 tiles) each: p01 (32.2805,-101.1629) z14, p02 (32.2225,-102.2139) z13, p03
+(31.66615,-103.02572) z13, p04 (30.6161,-101.1393) z14. Reworked `_fetch_permian_grids.py`
+to a **geometry-based tile picker** (snap to seed±pitch from bbox centers) so it works
+for both 6-digit (`14SKA940715`) and 4-digit (`13RFR8603`, TX_Pecos_Dallas) USGS tile
+codes; added retry/backoff for flaky TNM JSON. Verified all 4 are gapless 3×3 lattices
+(cells (0,0)..(2,2)) before download.
+
+**openness-only for p02–p04.** Per user, the extra Permian grids need only openness;
+added `openness_only` to `_build_derivatives.build()` (DEM → openness_pos/neg, skip the
+rest). p01 kept as the full-stack reference; p03 (built full before the request) pruned
+to dem+openness. CRS: 6343/6342/6342/6343.
+
+**Two robustness fixes for dense 3DEP.** (1) Delaunay TIN OOMs on dense QL1 3×3 mosaics
+(~200 M ground pts, 3–10 GB merge) → added `dem_method="gdal"` (writers.gdal IDW,
+streaming, window_size 3); permian build uses it. (2) Density/intensity pass switched
+from `laspy.read()` (whole file) to chunked `chunk_iterator` to bound RAM.
+
+**Root cause of p02 fail + p04 NaN was DISK FULL (3.8 GB free), not code.** p02's 9.7 GB
+merge was truncated → "VLR size too large" on re-read; p04's 9th tile download died with
+`No space left on device` → 11% NaN DEM. Freed 29 GB of stale `_merged_*.las` scratch in
+`source_laz/westernpa/`; re-fetched the missing p04 tile; both rebuilt clean (p02 nan
+0.12%, p04 nan 0.00%). Also dropped `forward:"all"` from the merge writer (unneeded;
+CRS/scale/offset set explicitly).
+
+**WPA #3/#4 manual placements.** westernpa_03 → **NE 2×2 of 613590** (tiles
+615591/615593/616591/616593); westernpa_04 → **NW 2×2 of 622599** (622600/622602/
+624600/624602). Added `--manual` mode + `MANUAL_WPA` to `_build_label_grids.py`. Both
+clear of the 9t core. `write_empty` now skips existing gpkgs (QGIS file-lock safe;
+empty gpkgs are location-independent so annotation files are never clobbered). Per-grid
+gpkg naming `westernpa_NN_*` / `permian_NN_pads` (user-confirmed).
+
+---
+
 ## 2026-06-16 — Drainage U-Net + annotation label grids (WPA build + Permian fetch)
 
 **Drainage U-Net.** Built `_drainage_unet_1m.py` (in `wellsight_v2/drainage/`) as the

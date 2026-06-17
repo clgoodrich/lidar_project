@@ -138,6 +138,8 @@ def build(
     merge_path: Path | None = None,
     skip_existing: bool = True,
     out_dir: Path | None = None,
+    dem_method: str = "delaunay",
+    openness_only: bool = False,
 ) -> None:
     W = int(round((x1 - x0) / res))
     H = int(round((y1 - y0) / res))
@@ -171,9 +173,14 @@ def build(
             # coords don't overflow int32 when the source offset is 0 (seen on
             # some 3DEP tiles, e.g. TX zone-14 northings ~3.3e6). scale 0.01 (1 cm)
             # keeps scaled values well inside int32 for any 3 km block.
+            # NOTE: do NOT forward source VLRs ("forward":"all"). Some 3DEP tiles
+            # (e.g. TX West Central B4) carry a malformed vendor VLR that, once
+            # copied into the merged LAS, makes PDAL reject the re-read with
+            # "VLR size too large -- flows into point data". We set CRS (a_srs),
+            # scale, offset, and format explicitly, so forwarding is unnecessary.
             stages.append({"type": "writers.las", "filename": str(merge_path),
                            "minor_version": 4, "dataformat_id": 7, "a_srs": dst_crs,
-                           "compression": "false", "forward": "all",
+                           "compression": "false",
                            "offset_x": "auto", "offset_y": "auto", "offset_z": "auto",
                            "scale_x": 0.01, "scale_y": 0.01, "scale_z": 0.01})
             run_pdal(stages, label=f"merge_{sfx}")
@@ -181,21 +188,46 @@ def build(
         las_path = merge_path
 
     # 1) DEM
+    #   delaunay -> faceraster gives a gap-free TIN DEM but holds the whole
+    #   triangulation in RAM; on dense QL1 3DEP 3x3 mosaics (~200M ground pts,
+    #   multi-GB) it dies with "bad allocation". For those, dem_method="gdal"
+    #   uses writers.gdal IDW, which streams points into cells (low memory) and
+    #   fills small gaps via window_size.
     dem_path = out("dem")
     if not (dem_path.exists() and skip_existing):
-        run_pdal([
+        ground = [
             {"type": "readers.las", "filename": str(las_path)},
             {"type": "filters.range", "limits": "Classification[2:2]"},
-            {"type": "filters.delaunay"},
-            {"type": "filters.faceraster",
-             "resolution": res, "origin_x": x0, "origin_y": y0,
-             "width": W, "height": H},
-            {"type": "writers.raster", "filename": str(dem_path),
-             "data_type": "float32"},
-        ], label=f"dem_{sfx}")
+        ]
+        if dem_method == "gdal":
+            stages = ground + [
+                {"type": "writers.gdal", "filename": str(dem_path),
+                 "output_type": "idw", "resolution": res,
+                 "origin_x": x0, "origin_y": y0, "width": W, "height": H,
+                 "window_size": 3, "data_type": "float32"},
+            ]
+        else:
+            stages = ground + [
+                {"type": "filters.delaunay"},
+                {"type": "filters.faceraster",
+                 "resolution": res, "origin_x": x0, "origin_y": y0,
+                 "width": W, "height": H},
+                {"type": "writers.raster", "filename": str(dem_path),
+                 "data_type": "float32"},
+            ]
+        run_pdal(stages, label=f"dem_{sfx}")
     dem = read_tif(dem_path)
     print(f"  DEM: nan={100*np.isnan(dem).mean():.2f}%  "
           f"z={np.nanmin(dem):.1f}..{np.nanmax(dem):.1f} m")
+
+    # openness_only: skip the full analytical stack; emit just openness pos/neg
+    # (Yokoyama) from the DEM. Used for the lean Permian annotation grids.
+    if openness_only:
+        op_pos, op_neg = openness(dem, L_cells=int(25 / res), cellsize=res)
+        write_tif(out("openness_pos"), op_pos, transform=transform, crs=dst_crs)
+        write_tif(out("openness_neg"), op_neg, transform=transform, crs=dst_crs)
+        print(f"  openness_only: wrote openness_pos + openness_neg for {sfx}")
+        return
 
     # 2) DSM + CHM
     dsm_path = out("dsm")
@@ -213,30 +245,36 @@ def build(
                    np.maximum(dsm - dem, 0)).astype(np.float32)
     write_tif(out("chm"), chm, transform=transform, crs=dst_crs)
 
-    # 3) Density + intensity (single laspy pass).
+    # 3) Density + intensity (chunked laspy pass -> bounded RAM on multi-GB merges;
+    #    laspy.read() would pull all ~200M pts of a dense QL1 3x3 into memory at once).
     print("  reading LAS for density + intensity...")
-    las = laspy.read(str(las_path))
-    xs = np.asarray(las.x); ys = np.asarray(las.y)
-    cls = np.asarray(las.classification)
-    inten = np.asarray(las.intensity).astype(np.float64)
-    gm = cls == 2
-    col = np.floor((xs[gm] - x0) / res).astype(np.int64)
-    row = np.floor((y1 - ys[gm]) / res).astype(np.int64)
-    ok = (col >= 0) & (col < W) & (row >= 0) & (row < H)
-    fi = row[ok] * W + col[ok]
-    density = np.bincount(fi, minlength=H * W).reshape(H, W).astype(np.uint16)
+    density_flat = np.zeros(H * W, dtype=np.int64)
+    sum_i = np.zeros(H * W, dtype=np.float64)
+    cnt = np.zeros(H * W, dtype=np.float64)
+    with laspy.open(str(las_path)) as lf:
+        for pts in lf.chunk_iterator(5_000_000):
+            cls = np.asarray(pts.classification)
+            gm = cls == 2
+            if not gm.any():
+                continue
+            xs = np.asarray(pts.x)[gm]; ys = np.asarray(pts.y)[gm]
+            iv = np.asarray(pts.intensity).astype(np.float64)[gm]
+            col = np.floor((xs - x0) / res).astype(np.int64)
+            row = np.floor((y1 - ys) / res).astype(np.int64)
+            ok = (col >= 0) & (col < W) & (row >= 0) & (row < H)
+            fi = row[ok] * W + col[ok]
+            density_flat += np.bincount(fi, minlength=H * W)
+            sum_i += np.bincount(fi, weights=iv[ok], minlength=H * W)
+            cnt += np.bincount(fi, minlength=H * W)
+    density = density_flat.reshape(H, W).astype(np.uint16)
     write_tif(out("ground_density"), density,
               transform=transform, crs=dst_crs, dtype="uint16", nodata=0)
-
-    iv = inten[gm][ok]
-    sum_i = np.bincount(fi, weights=iv, minlength=H * W)
-    cnt = np.bincount(fi, minlength=H * W).astype(np.float64)
     mean_i = np.full(H * W, np.nan, dtype=np.float32)
     with np.errstate(invalid="ignore"):
         np.divide(sum_i, cnt, out=mean_i, where=cnt > 0)
     write_tif(out("intensity_ground"), mean_i.reshape(H, W),
               transform=transform, crs=dst_crs)
-    del las, xs, ys, cls, inten, iv, sum_i, cnt, mean_i, density
+    del density_flat, sum_i, cnt, mean_i, density
 
     # 4) WBT hillshade + slope
     import whitebox
