@@ -184,3 +184,7 @@ label_grids/**/*.tif.aux.xml
 label_grids/**/*.las
 label_grids/**/*.laz
 label_grids/**/*.png
+
+# NISAR L-band granules (large .h5, regenerable via _fetch_nisar_9t.py)
+data/external/nisar/
+*.h5
