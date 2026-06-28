@@ -16,6 +16,12 @@ force-push. Data triage produced: ~105 GB regenerable (.tif 93 GB + .laz 10 GB) 
 vital (hand annotations + ground truth) + ~2 GB checkpoints; label .gpkg are interleaved
 with rasters in tile folders, so any cleanup must be by file pattern not folder.
 
+- **NISAR InSAR over PA is SEASONAL, not impossible (correction).** Re-tested after
+  pushback: fall pair 2025-10-28→11-09 coherence **0.50** (94% >0.3) vs winter
+  2026-01-08→01-20 **0.14**. The winter decorrelation was snow/freeze-thaw, not forest
+  (perp baseline only -35 m). GUNW InSAR subsidence is VIABLE over forested PA with
+  snow-free (late-fall/early-spring) pairs. Proposal updated.
+
 **NISAR reconnaissance (real granules over 9t).** Earthdata auth set up (`~/_netrc`),
 `_fetch_nisar_9t.py` (CMR query + ASF download, `--max`/`--min-free-gb` guards).
 Downloaded + clipped to 9t: 1 GCOV beta + 1 GUNW beta.
