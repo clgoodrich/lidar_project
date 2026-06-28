@@ -31,16 +31,29 @@ findings below are measured, not assumed.
 | Product | Resolution | State over 9t | Verdict |
 |---|---|---|---|
 | **GCOV** (geocoded polarimetric backscatter, HH+HV, RTC gamma-0) | **10 m**, EPSG:32617 | 100% valid; HH mean −8.2 dB, HV −16.3 dB, HH−HV 8.1 dB — physically sound forest signature with bright infrastructure spikes (+7 dB) | **Usable now** |
-| **GUNW** (geocoded unwrapped interferogram + coherence) | **80 m** | **Coherence mean 0.14, 0% of pixels > 0.3** → fully decorrelated; deformation phase is noise | **Not usable over forested 9t** |
+| **GUNW** (geocoded unwrapped interferogram + coherence) | **80 m** | Valid-pixel coherence **mean 0.16, median 0.13, 9% > 0.3, 1.5% > 0.5** → too low to unwrap reliably *in this pair* | **Inconclusive — this beta pair decorrelated; not yet a fair test** |
 
 Clipped GeoTIFFs (QGIS-ready, UTM 17N) written to `data/external/nisar/9t/clip_9t/`:
 `gcov_HH_db`, `gcov_HV_db`, `gcov_HHminusHV_db`, `gunw_coherence`, `gunw_los_disp_mm`.
 
-**The InSAR result is the most important finding.** The intuitive use of NISAR —
-detecting subsidence over old workings/wells — **does not work over our PA study area**
-because dense deciduous canopy decorrelates the L-band signal even at 12-day repeat. It
-is likely viable over the **Permian desert** (sparse vegetation → high coherence), which
-reframes InSAR as a *Permian* tool, not a PA one.
+**The InSAR result needs care — do not over-read it.** Backscatter and interferometric
+coherence are *different* properties: L-band's vegetation strength (canopy penetration,
+volume scattering) is in **backscatter**, which our GCOV recon confirmed works well.
+**Coherence** measures phase stability between two passes, and the one pair we checked
+(2026-01-08 → 2026-01-20) came back at 0.16. But that pair is **not a clean test**:
+
+- It is **BETA pre-calibration** data — NISAR's interferometric processing is explicitly
+  not validated yet; beta coherence/phase is known to be unreliable.
+- It is a **mid-winter pair** in NW PA: snow cover + freeze/thaw + wet-snow change between
+  passes is a *strong* L-band decorrelator (often worse than summer canopy).
+- Geometry is **not** the culprit — the perpendicular baseline is only **−34.9 m**
+  (negligible geometric decorrelation), so this is temporal/volume + processing, not orbit.
+
+So the correct conclusion is **"InSAR over forested PA is unproven, not impossible."**
+L-band is the *best-case* wavelength for forest InSAR, and a validated, snow-free,
+short-baseline pair (or a longer multi-pass time series) may well reach usable coherence.
+It is also likely **easier over the Permian desert** (sparse vegetation). Verdict: retest
+before relying on — or writing off — InSAR for either region.
 
 ---
 
@@ -75,11 +88,14 @@ the 2019 LiDAR. Use it as a **landscape-scale trigger**: NISAR says "something c
 this 100 m cell," then the high-res LiDAR/optical workflow zooms in. NISAR becomes the
 wide-area tripwire; LiDAR the magnifier.
 
-### 4.3 InSAR subsidence — **Permian only, not PA**
-Over 9t, coherence (0.14) kills it. Over the Permian grids (desert, sparse veg), L-band
-coherence should be high enough for GUNW time-series subsidence — directly relevant to
-**plugged/orphaned wellbore integrity and sinkhole risk**. Recommend a coherence test on
-one Permian GUNW granule before investing.
+### 4.3 InSAR subsidence — **unproven over PA, test both regions**
+The one beta winter pair over 9t decorrelated (coherence 0.16), but that is not a fair
+test (beta processing + snow; baseline was fine at −35 m). Before any verdict: (a) retest
+PA with a **validated, snow-free, leaf-off** pair and/or a multi-pass coherence stack, and
+(b) test a **Permian** GUNW pair, where sparse desert vegetation should hold coherence
+better. If coherence clears ~0.4 in either, GUNW time-series subsidence becomes viable —
+directly relevant to **plugged/orphaned wellbore integrity and sinkhole risk**. Cheap to
+check; don't write it off on one beta winter scene.
 
 ### 4.4 FINESST driver layers (both regions) — **strategic**
 For the Barlow/MDV "couple geomorphic change to physical & climate drivers" thread, NISAR
@@ -126,10 +142,12 @@ fit to the dissertation framing.
 NISAR will not find a single new pit or road — wrong resolution. But as a **repeating,
 moisture/structure-sensitive, canopy-penetrating covariate and change-trigger**, it
 plausibly improves **pad/disturbance** detection and adds the **time axis and driver
-layers** our single-epoch LiDAR fundamentally lacks. The one idea that *sounds* best —
-InSAR subsidence — is **dead over forested PA** (measured coherence 0.14) but **promising
-over the Permian**. Start with the GCOV covariate + change-tripwire pilots on 9t and a
-coherence test in the Permian; spend real effort only after the validated July-2026 release.
+layers** our single-epoch LiDAR fundamentally lacks. The InSAR-subsidence idea is **not
+yet proven** over forested PA — one beta *winter* pair decorrelated (coherence 0.16), but
+that is confounded by beta processing and snow, not bad geometry, so it warrants a retest
+(validated, snow-free pair) rather than dismissal; it is likely easier over the Permian.
+Start with the GCOV covariate + change-tripwire pilots on 9t and coherence tests (PA
+snow-free + Permian); spend real effort only after the validated July-2026 release.
 
 *Reconnaissance basis:* `NISAR_L2_GCOV_BETA_V1` granule `...010_162_A_023...20260120` and
 `NISAR_L2_GUNW_BETA_V1` granule `...009_162_A_023_010...20260108`, both clipped to the 9t
