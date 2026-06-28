@@ -5,6 +5,18 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-28 — Barlow/FINESST data acquisition to J:arlow_data
+
+Downloaded the public datasets behind the MDV dissertation / FINESST expansion.
+**REMA v2.0 mosaic** (satellite DEM epoch) over the MDV — supertiles 17_34/17_35/
+18_34/18_35 at **2 m (~11 GB) + 10 m (~1 GB)** from AWS Open Data `pgc-opendata-dems`
+(anonymous); MDV tiles calibrated from real tile bounds (grid: left=CC*100k-3.1M,
+top=RR*100k-3.0M). **MCM-LTER met** (Lake Bonney + Fryxell, daily/hourly/15-min) via
+EDI `knb-lter-mcm.7003.22`. Blocked (need creds/correct IDs): MDV airborne lidar
+(OpenTopography API key), LTER stream discharge (wrong EDI id), ERA5 (CDS account).
+Tooling: `_fetch_barlow_data.py` (--rema/--lter). Manifest:
+`docs/barlow_data_manifest.md`. Storage on J: (off-repo), 156 GB free.
+
 ## 2026-06-27 — NISAR recon over 9t + supplement proposal; .git/disk cleanup
 
 **Disk/git.** C: had dropped to <250 MB. `.git` was 25 GB (mostly dangling loose objects
