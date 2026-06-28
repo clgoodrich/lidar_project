@@ -84,10 +84,18 @@ def download(url: str, dest: Path) -> bool:
         return False
 
 
+def _free_gb(path: Path) -> float:
+    import shutil
+    return shutil.disk_usage(str(path)).free / 1e9
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--collections", help="comma list (default GCOV+GUNW beta)")
     ap.add_argument("--list", action="store_true", help="plan only, no download")
+    ap.add_argument("--max", type=int, default=0, help="max granules per collection (0=all)")
+    ap.add_argument("--min-free-gb", type=float, default=8.0,
+                    help="stop before a download if free space would drop below this")
     args = ap.parse_args()
     cols = args.collections.split(",") if args.collections else DEFAULT_COLLECTIONS
     DST.mkdir(parents=True, exist_ok=True)
@@ -99,8 +107,14 @@ def main() -> int:
             print(f"   {g['date']}  {g['id']}")
         if args.list:
             continue
+        if args.max:
+            gran = gran[:args.max]
         gdir = DST / sn; gdir.mkdir(parents=True, exist_ok=True)
         for g in gran:
+            free = _free_gb(DST)
+            if free < args.min_free_gb:
+                print(f"  STOP: only {free:.1f} GB free (< {args.min_free_gb}); skipping rest")
+                break
             if download(g["url"], gdir / f"{g['id']}.h5"):
                 total += 1
     print(f"\n{'planned' if args.list else 'downloaded'} {total} granules -> {DST}")

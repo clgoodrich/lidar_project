@@ -5,6 +5,31 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-27 — NISAR recon over 9t + supplement proposal; .git/disk cleanup
+
+**Disk/git.** C: had dropped to <250 MB. `.git` was 25 GB (mostly dangling loose objects
+from rebases). A `git gc` first FAILED (no scratch space) — recovered with
+`git prune --expire=now` (reclaimed ~20 GB, no history touched), then a clean `git gc`:
+**.git 25 GB → 4.8 GB, C: free → 23 GB.** No force-push, history intact. Deeper history
+rewrite (regenerable rasters still in reachable history, ~3–4 GB more) deferred — needs
+force-push. Data triage produced: ~105 GB regenerable (.tif 93 GB + .laz 10 GB) vs ~0.6 GB
+vital (hand annotations + ground truth) + ~2 GB checkpoints; label .gpkg are interleaved
+with rasters in tile folders, so any cleanup must be by file pattern not folder.
+
+**NISAR reconnaissance (real granules over 9t).** Earthdata auth set up (`~/_netrc`),
+`_fetch_nisar_9t.py` (CMR query + ASF download, `--max`/`--min-free-gb` guards).
+Downloaded + clipped to 9t: 1 GCOV beta + 1 GUNW beta.
+- **GCOV usable:** 10 m, RTC gamma-0 HH+HV, EPSG:32617, 100% valid; HH −8.2, HV −16.3,
+  HH−HV 8.1 dB (sound forest signature).
+- **GUNW NOT usable over 9t:** 80 m, **coherence 0.14 (0% >0.3)** — dense PA canopy
+  decorrelates L-band even at 12-day repeat. InSAR subsidence is a *Permian* tool, not PA.
+Clips in `data/external/nisar/9t/clip_9t/` (gitignored). Proposal:
+`docs/nisar_lidar_supplement_proposal.md` — NISAR = 10–80 m context/covariate/time-axis
+(pad covariate, change tripwire, FINESST driver layers), NOT a fine detector; everything
+is BETA until validated CONUS release ~July 2026.
+
+---
+
 ## 2026-06-17 — Annotation aids: cross-region pad transfer + 3× exaggerated derivatives
 
 **PA pad U-Net → permian_01 (transfer experiment, no retrain).** New reusable
