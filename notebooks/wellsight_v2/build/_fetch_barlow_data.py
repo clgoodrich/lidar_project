@@ -202,6 +202,57 @@ def setup_cds(token: str):
     print(f"wrote {dest} (url + key, {len(token.strip())}-char token)")
 
 
+# --- AMPS (Antarctic Mesoscale Prediction System) ---------------------------
+# WRF forecast output over Antarctica; d3 = 2.67 km Ross Sea domain that COVERS the
+# MDV (~10x finer than ERA5 there). Full GRIB files are ~240 MB (whole continent), but
+# NCSS subsetting on GDEX THREDDS returns the MDV box at ~140 KB/timestep. Anonymous.
+# Long GRIB archive = GDEX dataset d473002, WRF24 era (Oct 2017-present). Earlier eras
+# (WRF30/45/60, MM5/MM560) use different domain numbering/encoding — not wired here.
+AMPS_NCSS = ("https://tds.gdex.ucar.edu/thredds/ncss/grid/files/d473002/grib/WRF24/"
+             "{yyyy}/{mm}/{dd}/{yyyy}{mm}{dd}{hh}_WRF_d{g}_f{fff}.grb")
+AMPS_VARS = [
+    "Temperature_height_above_ground",
+    "U-component_of_horizontal_wind_height_above_ground",
+    "V-component_of_horizontal_wind_height_above_ground",
+    "Pressure_surface", "Sensible_heat_flux_surface", "Latent_heat_flux_surface",
+    "Albedo_surface", "Geopotential_height_surface",
+]   # surface / 2m / 10m drivers; d3 NCSS exposes these as CF grid names
+
+
+def fetch_amps(dates, inits=("00", "12"), fhours=("000",), domain="3",
+               area=None, list_only=False):
+    """Pull AMPS d3 drivers over the MDV box via NCSS (tiny per-timestep subsets).
+
+    dates: iterable of 'YYYYMMDD'. inits: forecast cycles (00/12 UTC). fhours: lead
+    hours ('000'=analysis). Writes one small netCDF per (date,init,fhour) to amps/.
+    """
+    import urllib.parse, urllib.request, urllib.error
+    area = area or {"north": -77.0, "south": -78.5, "west": 160.0, "east": 164.5}
+    out = DST / "amps" / "mdv"; out.mkdir(parents=True, exist_ok=True)
+    got = 0
+    for ymd in dates:
+        yyyy, mm, dd = ymd[:4], ymd[4:6], ymd[6:8]
+        for hh in inits:
+            for fff in fhours:
+                url = AMPS_NCSS.format(yyyy=yyyy, mm=mm, dd=dd, hh=hh, g=domain, fff=fff)
+                q = ([("var", v) for v in AMPS_VARS]
+                     + [("north", area["north"]), ("south", area["south"]),
+                        ("west", area["west"]), ("east", area["east"]),
+                        ("accept", "netcdf")])
+                full = url + "?" + urllib.parse.urlencode(q)
+                dest = out / f"amps_d{domain}_mdv_{ymd}{hh}_f{fff}.nc"
+                if list_only:
+                    print(f"   PLAN {dest.name}"); continue
+                if dest.exists():
+                    print(f"   skip {dest.name}"); got += 1; continue
+                try:
+                    urllib.request.urlretrieve(full, dest)
+                    print(f"   ok {dest.name} ({dest.stat().st_size/1024:.0f} KB)"); got += 1
+                except urllib.error.HTTPError as e:
+                    print(f"   miss {dest.name}: HTTP {e.code}")
+    print(f"\nAMPS {'planned' if list_only else 'downloaded'}: {got} timesteps -> {out}")
+
+
 def _postprocess_era5(raw: Path, target: Path):
     """The new CDS wraps netCDF in a .zip and splits vars by stepType (avgua T00 vs
     avgad T06). Extract, align the month axis, merge to one clean netCDF."""
@@ -276,6 +327,10 @@ def main() -> int:
     ap.add_argument("--lidar", action="store_true", help="fetch MDV_2014 NCALM bare-earth 1m DEMs (OpenTopography)")
     ap.add_argument("--pc", action="store_true", help="with --lidar: fetch point-cloud .laz instead of DEMs")
     ap.add_argument("--regions", help="comma list of MDV regions (default: all, valleys first)")
+    ap.add_argument("--amps", action="store_true", help="fetch AMPS d3 MDV drivers via NCSS (anonymous)")
+    ap.add_argument("--amps-start", help="AMPS start date YYYYMMDD")
+    ap.add_argument("--amps-end", help="AMPS end date YYYYMMDD (inclusive)")
+    ap.add_argument("--amps-fhours", default="000", help="AMPS forecast lead hours, comma (e.g. 000,012)")
     ap.add_argument("--era5", action="store_true", help="fetch ERA5 MDV drivers (needs ~/.cdsapirc)")
     ap.add_argument("--era5-hourly", action="store_true", help="with --era5: hourly (large) instead of monthly")
     ap.add_argument("--setup-cds", metavar="TOKEN", help="write ~/.cdsapirc with your CDS Personal Access Token")
@@ -292,10 +347,19 @@ def main() -> int:
     if args.lidar:
         regions = args.regions.split(",") if args.regions else None
         fetch_opentopo(regions=regions, list_only=args.list, point_cloud=args.pc)
+    if args.amps:
+        import datetime as _dt
+        if not (args.amps_start and args.amps_end):
+            print("--amps needs --amps-start and --amps-end (YYYYMMDD)"); return 2
+        d0 = _dt.datetime.strptime(args.amps_start, "%Y%m%d").date()
+        d1 = _dt.datetime.strptime(args.amps_end, "%Y%m%d").date()
+        dates = [(d0 + _dt.timedelta(days=i)).strftime("%Y%m%d")
+                 for i in range((d1 - d0).days + 1)]
+        fetch_amps(dates, fhours=tuple(args.amps_fhours.split(",")), list_only=args.list)
     if args.era5:
         fetch_era5(monthly=not args.era5_hourly, list_only=args.list)
-    if not (args.rema or args.lter or args.lidar or args.era5):
-        print("nothing selected; use --rema / --lter / --lidar / --era5 (add --list to plan)")
+    if not (args.rema or args.lter or args.lidar or args.era5 or args.amps):
+        print("nothing selected; use --rema / --lter / --lidar / --era5 / --amps (add --list to plan)")
     return 0
 
 

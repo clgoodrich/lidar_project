@@ -5,6 +5,27 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — AMPS made practical via THREDDS NCSS (the optional driver, unblocked)
+
+Tried the last optional Barlow dataset, **AMPS** (Antarctic Mesoscale Prediction System,
+WRF). Old `tds.ucar.edu` server is retired → now **gdex.ucar.edu** (THREDDS at
+`tds.gdex.ucar.edu`, anonymous). Long GRIB archive = dataset **d473002** (WRF24 era
+Oct-2017+; structure `grib/<model>/YYYY/MM/DD/<init>_WRF_d<G>_f<FFF>.grb`). The MDV-relevant
+domain is **d3 = 2.67 km Ross Sea** (covers the Dry Valleys; ~10× finer than ERA5 there),
+21 GRIB fields incl. 2m T, 10m wind, RH, precip, surface pressure, sensible/latent heat
+flux, albedo. **Catch: full d3 files are ~240 MB** (whole continent) and the polar-
+stereographic grid is **mis-georeferenced by eccodes AND cfgrib** (both returned a degenerate
+lat/lon band) — so raw-GRIB coverage checks were unreliable. **Fix:** THREDDS exposes
+**NetcdfSubset (NCSS)** + OPeNDAP — NCSS does the projection server-side and returns the MDV
+bbox as plain netCDF at **~140 KB/timestep (1760× smaller)**, confirming coverage (72×57 @
+2.557 km, T2m −46…−20 °C). Built `fetch_amps()` (NCSS, `--amps --amps-start/--amps-end
+[--amps-fhours]`) and pulled a **5-day sample** (2026-05-27→31, 00+12 UTC, f000 → 10×136 KB)
+to `J:/barlow_data/amps/mdv/`. Installed `cfgrib`+`eccodes 2.47` (only needed for raw GRIB).
+**Decision deferred to user:** which period/cadence for a full AMPS series (WRF24 only;
+earlier eras need extra wiring). All 4 foundational datasets + an AMPS path now in hand.
+
+---
+
 ## 2026-06-29 — Barlow ERA5 drivers in: all 4 foundational datasets now downloaded
 
 Closed the last credential gap. **ERA5** via Copernicus CDS (new system): wrote
