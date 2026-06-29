@@ -26,6 +26,17 @@ DST = Path("J:/barlow_data")
 REMA_BUCKET = "pgc-opendata-dems"
 REMA_TILES = ["17_34", "17_35", "18_34", "18_35"]   # MDV supertiles (calibrated from tile bounds)
 
+# --- OpenTopography MDV airborne lidar (NCALM 2014-15) -----------------------
+# Dataset MDV_2014 / OTLAS.112016.3294.1 / DOI 10.5069/G9D50JX3, CRS EPSG:3294.
+# Hosted on OpenTopography's public Ceph S3 (anonymous; the API key is only needed
+# for the *portal* download path, NOT this bulk S3). Bare-earth 1 m DEMs are the
+# product directly comparable to REMA for change detection; point clouds in pc-bulk.
+OT_ENDPOINT = "https://opentopography.s3.sdsc.edu"
+OT_RASTER_BUCKET = "raster"
+OT_PC_BUCKET = "pc-bulk"
+# regions ordered so those matching met/REMA we already have land first
+OT_BE_REGIONS = ["Taylor_Valley", "North", "Garwood", "Beacon", "Capes_MCMD_Pegasus"]
+
 
 def _s3():
     import boto3
@@ -61,10 +72,27 @@ def fetch_rema(resolutions, list_only=False, dem_only=True):
 
 # MCM-LTER EDI packages (scope.identifier.revision). Daily aggregates = drivers for
 # the geomorphic-change coupling; high-freq 15-min also available per station/stream.
+# Revision = None -> auto-resolve newest via PASTA (avoids the stale-rev 0-entities bug).
+# Stream discharge is per-gauge; the 9100-series are the "Daily summarized" products
+# (clean daily drivers for the geomorphic-change coupling). All MDV gauges included.
+_MCM_DAILY_DISCHARGE = ["9102", "9103", "9107", "9109", "9110", "9111", "9113",
+                        "9114", "9115", "9116", "9117", "9118", "9119", "9120",
+                        "9121", "9122", "9123", "9124", "9127", "9128", "9129"]
 LTER_PACKAGES = {
-    "lter_climate": [("knb-lter-mcm", "7003", "22")],   # meteorology network
-    "lter_streams": [("knb-lter-mcm", "9128", "11")],   # stream gauge discharge (flow seasons)
+    "lter_climate": [("knb-lter-mcm", "7003", None)],   # meteorology network
+    "lter_streams": [("knb-lter-mcm", g, None) for g in _MCM_DAILY_DISCHARGE],
 }
+
+
+def _latest_rev(scope: str, ident: str) -> str | None:
+    """Newest revision number for an EDI package, via PASTA."""
+    import urllib.request
+    url = f"https://pasta.lternet.edu/package/eml/{scope}/{ident}"
+    try:
+        revs = urllib.request.urlopen(url, timeout=30).read().decode().split()
+        return max(revs, key=int) if revs else None
+    except Exception as e:  # noqa: BLE001
+        print(f"  rev lookup err {scope}.{ident}: {e}"); return None
 
 
 def fetch_edi(list_only=False):
@@ -72,6 +100,10 @@ def fetch_edi(list_only=False):
     for sub, pkgs in LTER_PACKAGES.items():
         out = DST / sub; out.mkdir(parents=True, exist_ok=True)
         for scope, ident, rev in pkgs:
+            if rev is None:
+                rev = _latest_rev(scope, ident)
+                if rev is None:
+                    print(f"  {sub} {scope}.{ident}: no revision found, skip"); continue
             base = f"https://pasta.lternet.edu/package/data/eml/{scope}/{ident}/{rev}"
             try:
                 ids = urllib.request.urlopen(base, timeout=30).read().decode().split()
@@ -103,10 +135,59 @@ def fetch_edi(list_only=False):
                     print(f"     FAIL {eid}")
 
 
+def _ot_s3():
+    import boto3
+    from botocore import UNSIGNED
+    from botocore.config import Config
+    return boto3.client("s3", endpoint_url=OT_ENDPOINT, config=Config(signature_version=UNSIGNED))
+
+
+def fetch_opentopo(regions=None, list_only=False, point_cloud=False, min_free_gb=10.0):
+    """Pull MDV_2014 NCALM lidar from OpenTopography S3 (anonymous).
+
+    Bare-earth 1 m DEMs by default (REMA-comparable). --pc adds point-cloud .laz tiles.
+    """
+    import shutil
+    s3 = _ot_s3()
+    pag = s3.get_paginator("list_objects_v2")
+    regions = regions or OT_BE_REGIONS
+    bucket = OT_PC_BUCKET if point_cloud else OT_RASTER_BUCKET
+    out = DST / "mdv_lidar" / ("pc" if point_cloud else "be_dem_1m")
+    out.mkdir(parents=True, exist_ok=True)
+    grand = 0
+    for reg in regions:
+        pref = (f"MDV_2014/{reg}_Tiles/" if point_cloud
+                else f"MDV_2014/MDV_2014_be/{reg}/")
+        ext = ".laz" if point_cloud else ".tif"
+        for pg in pag.paginate(Bucket=bucket, Prefix=pref):
+            for o in pg.get("Contents", []):
+                key = o["Key"]
+                if not key.endswith(ext):
+                    continue
+                dest = out / reg / Path(key).name
+                grand += o["Size"]
+                if list_only:
+                    print(f"   [{reg}] {o['Size']/1e6:8.0f} MB  {Path(key).name}")
+                    continue
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                if dest.exists() and dest.stat().st_size == o["Size"]:
+                    print(f"   skip {reg}/{dest.name}"); continue
+                free = shutil.disk_usage(str(DST)).free / 1e9
+                if free < min_free_gb:
+                    print(f"  STOP: only {free:.1f} GB free (< {min_free_gb})"); return
+                print(f"   get  [{reg}] {o['Size']/1e6:.0f} MB  {dest.name}")
+                s3.download_file(bucket, key, str(dest))
+    print(f"\nMDV lidar {'planned' if list_only else 'downloaded'}: "
+          f"{grand/1e9:.1f} GB -> {out}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--rema", action="store_true", help="fetch REMA MDV mosaic tiles")
     ap.add_argument("--lter", action="store_true", help="fetch MCM-LTER EDI met+stream packages")
+    ap.add_argument("--lidar", action="store_true", help="fetch MDV_2014 NCALM bare-earth 1m DEMs (OpenTopography)")
+    ap.add_argument("--pc", action="store_true", help="with --lidar: fetch point-cloud .laz instead of DEMs")
+    ap.add_argument("--regions", help="comma list of MDV regions (default: all, valleys first)")
     ap.add_argument("--res", default="2m,10m", help="REMA resolutions (comma): 2m,10m,32m")
     ap.add_argument("--list", action="store_true", help="plan only")
     args = ap.parse_args()
@@ -115,8 +196,11 @@ def main() -> int:
         fetch_rema(args.res.split(","), list_only=args.list)
     if args.lter:
         fetch_edi(list_only=args.list)
-    if not (args.rema or args.lter):
-        print("nothing selected; use --rema and/or --lter (add --list to plan)")
+    if args.lidar:
+        regions = args.regions.split(",") if args.regions else None
+        fetch_opentopo(regions=regions, list_only=args.list, point_cloud=args.pc)
+    if not (args.rema or args.lter or args.lidar):
+        print("nothing selected; use --rema / --lter / --lidar (add --list to plan)")
     return 0
 
 

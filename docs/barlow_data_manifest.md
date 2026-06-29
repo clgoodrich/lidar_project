@@ -12,13 +12,15 @@ The datasets behind Barlow's MDV stream-boundary dissertation and our FINESST
 
 | Dataset | Path | Size | Source / access |
 |---|---|---|---|
+| **MDV airborne lidar 2014-15 — bare-earth 1 m DEMs** (NCALM) | `mdv_lidar/be_dem_1m/` (Taylor_Valley, North, Garwood, Beacon, Capes) | ~26 GB | OpenTopography S3 `opentopography.s3.sdsc.edu` bucket `raster/MDV_2014/MDV_2014_be/`, **anonymous** (API key not needed for bulk S3). Dataset `OTLAS.112016.3294.1`, DOI 10.5069/G9D50JX3. CRS **EPSG:3294** (Transantarctic Mtns proj) |
 | **REMA v2.0 mosaic, 2 m** (satellite DEM epoch) | `rema/2m/` (15 subtiles) | ~11 GB | AWS Open Data `pgc-opendata-dems`, anonymous; MDV supertiles 17_34/17_35/18_34/18_35 |
 | **REMA v2.0 mosaic, 10 m** (overview) | `rema/10m/` (4 tiles) | ~1 GB | same |
-| **MCM-LTER met — Lake Bonney (BOYM)** daily/hourly/15-min | `lter_climate/` | ~196 MB | EDI `knb-lter-mcm.7003.22` (air T, RH, shortwave radiation, wind) |
-| **MCM-LTER met — Lake Fryxell (FRLM)** daily | `lter_streams/`* | ~4 MB | EDI (daily AIRT/RADN/RH/SOILT/SURF/WSPD) |
+| **MCM-LTER met — Lake Bonney (BOYM)** daily/hourly/15-min | `lter_climate/` | ~48 MB | EDI `knb-lter-mcm.7003.25` (air T, RH, shortwave radiation, wind; rev auto-resolved) |
+| **MCM-LTER stream discharge — all 21 MDV gauges (daily)** | `lter_streams/` (21 CSVs) | ~3 MB | EDI 9100-series (`9102`–`9129`), daily summarized discharge/temp/conductivity. Streams: Canada, Commonwealth, Lost Seal, Von Guerard, Onyx@Vanda, Onyx-Lower-Wright, Miers, Adams, Huey, Lawson, Green, Delta, Crescent, House, Bohner, Priscu, Santa Fe, Aiken, Andersen, Harnish(×2) |
 
-\* the FRLM daily files landed in `lter_streams/` from an earlier package-ID pass; they are
-met, not discharge — move if tidying.
+\* the fetcher now **auto-resolves the newest EDI revision** (`_latest_rev`) — the earlier
+0-entities failure was a hardcoded stale revision (`9128.11` vs current `9128.3`), not a wrong package.
+\* an older Fryxell (FRLM) daily-met file may still sit in `lter_streams/` from a prior pass; it is met, not discharge — move if tidying.
 
 ## ⛔ Not downloaded — needs credentials or a corrected ID
 

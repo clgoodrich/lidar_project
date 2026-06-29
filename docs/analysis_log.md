@@ -5,6 +5,26 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-28 — Barlow data: unblocked MDV lidar + LTER discharge (2 of 4 gaps closed)
+
+Closed the two non-credential blockers from the prior pass.
+**MDV airborne lidar (NCALM 2014-15)** = dataset `MDV_2014`/`OTLAS.112016.3294.1`
+(DOI 10.5069/G9D50JX3). Found the data on OpenTopography's public Ceph S3
+(`opentopography.s3.sdsc.edu`, bucket `raster/MDV_2014/MDV_2014_be/`) — **fully
+anonymous; the API key is only for the portal path, NOT the bulk S3**. Pulling the
+**bare-earth 1 m DEMs (~26 GB)**, valleys first (Taylor_Valley 6.2 → North 9.3 →
+Garwood 4.9 → Beacon 3.6 → Capes 2.0) to `J:/barlow_data/mdv_lidar/be_dem_1m/`. CRS
+**EPSG:3294** (Transantarctic Mtns proj) — reproject before differencing vs REMA.
+**LTER stream discharge**: the earlier "wrong id" was actually a **stale revision**
+(`9128.11` requested, current is `9128.3`). Rewrote `fetch_edi` to **auto-resolve the
+newest revision** (`_latest_rev` via PASTA) and queued **all 21 daily-discharge gauges**
+(9100-series 9102–9129): Canada, Commonwealth, Lost Seal, Von Guerard, Onyx, Miers,
+etc. Met package also auto-bumped 7003.22→.25. Tooling: `_fetch_barlow_data.py`
+(--lidar [--pc] / --lter / --rema). **Still blocked (accounts only):** ERA5 (CDS), AMPS.
+Snag mid-run: J: got unmounted (escalated, user reconnected) — all barlow_data lives on J:.
+
+---
+
 ## 2026-06-28 — Barlow/FINESST data acquisition to J:arlow_data
 
 Downloaded the public datasets behind the MDV dissertation / FINESST expansion.
