@@ -5,6 +5,28 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — Identified the actual Barlow paper + fetched its exact inputs
+
+Pinned down what "the Barlow paper" is and what it uses, rather than inferring from
+neighbouring work. It's **Barlow, Zhu & Glennie (2022)**, *"Stream Boundary Detection of
+a Hyper-Arid, Polar Region Using a U-Net Architecture: Taylor Valley, Antarctica"*,
+Remote Sensing 14(1):234, doi:10.3390/rs14010234. (MDPI is Cloudflare-blocked to bots;
+got authors/methods via search + citation metadata.) Inputs = **2014-15 NCALM lidar over
+Taylor Valley** → four U-Net rasters: **elevation, slope, lidar intensity, flow
+accumulation**, + **217 hand-labeled stream-boundary tiles**. Notably it uses **lidar
+only** — no ERA5/AMPS/REMA/discharge (those are our FINESST expansion, not Barlow's paper).
+Actions: (1) we already have the Taylor Valley bare-earth DEM (elevation/slope/flow-accum
+source); (2) **intensity needs the point cloud** → pulling `pc-bulk/MDV_2014/Taylor_adj47`
+(944 .laz, ~9.6 GB) to `mdv_lidar/pc/Taylor_Valley/` (added irregular PC-prefix map
+`OT_PC_PREFIX` to `fetch_opentopo`); (3) Barlow's 217 labels are **not public** → grabbed
+the published MCM-LTER **stream-channel shapefiles** `knb-lter-mcm.6007` (12 Taylor Valley
+channels + watersheds + glaciers, 0.4 MB) + relict-channel locations `knb-lter-mcm.26` to
+`labels/gis/` as the public label stand-in. Searched OT + literature for a ~2007 lidar
+epoch: **none exists** — MDV repeat-lidar is only 2001-02 (NASA ATM, ~2 m, not on OT) and
+2014-15 (NCALM). Remaining build step: derive the 4 input rasters over Taylor Valley.
+
+---
+
 ## 2026-06-29 — AMPS made practical via THREDDS NCSS (the optional driver, unblocked)
 
 Tried the last optional Barlow dataset, **AMPS** (Antarctic Mesoscale Prediction System,

@@ -36,6 +36,14 @@ OT_RASTER_BUCKET = "raster"
 OT_PC_BUCKET = "pc-bulk"
 # regions ordered so those matching met/REMA we already have land first
 OT_BE_REGIONS = ["Taylor_Valley", "North", "Garwood", "Beacon", "Capes_MCMD_Pegasus"]
+# point-cloud (pc-bulk) folder names are irregular — map region -> actual prefix.
+# Taylor Valley PC carries the lidar INTENSITY returns that Barlow et al. (2022) use as
+# a U-Net input (elevation/slope/flow-accum come from the bare-earth DEM; intensity needs
+# the point cloud). doi:10.3390/rs14010234.
+OT_PC_PREFIX = {
+    "Taylor_Valley": "Taylor_adj47",
+    "North": "Tiles_North", "Garwood": "Tiles_GAR", "Beacon": "Beacon_Tiles",
+}
 
 
 def _s3():
@@ -156,8 +164,13 @@ def fetch_opentopo(regions=None, list_only=False, point_cloud=False, min_free_gb
     out.mkdir(parents=True, exist_ok=True)
     grand = 0
     for reg in regions:
-        pref = (f"MDV_2014/{reg}_Tiles/" if point_cloud
-                else f"MDV_2014/MDV_2014_be/{reg}/")
+        if point_cloud:
+            sub = OT_PC_PREFIX.get(reg)
+            if not sub:
+                print(f"  no PC prefix mapped for {reg}; skip"); continue
+            pref = f"MDV_2014/{sub}/"
+        else:
+            pref = f"MDV_2014/MDV_2014_be/{reg}/"
         ext = ".laz" if point_cloud else ".tif"
         for pg in pag.paginate(Bucket=bucket, Prefix=pref):
             for o in pg.get("Contents", []):
