@@ -60,6 +60,38 @@ change detection (ICP, Laplacian/NMAD, LOD95). Data requirements (from the FINES
 | **AMPS — full MDV time series** | only a 5-day sample pulled so far; scope (period + cadence) is a user decision | `--amps --amps-start YYYYMMDD --amps-end YYYYMMDD [--amps-fhours 000,012]`. WRF24 era only (Oct 2017→present); earlier eras (WRF30/45/60, MM5) need separate path/var wiring. ~140 KB per timestep via NCSS. |
 | **WorldView/Maxar imagery, geology maps** | PGC imagery is NGA-licensed (restricted); geology via GNS/USGS | For label QC only; lower priority. |
 
+## Reproduce everything from scratch
+
+Two committed scripts regenerate the entire dataset + derivatives. All sources are
+free/public; the only manual prerequisites are the ERA5 CDS token + a one-time licence
+click (everything else is anonymous). Run from the repo root:
+
+```bash
+F=notebooks/wellsight_v2/build/_fetch_barlow_data.py
+# --- elevation epochs ---
+python $F --atm2001                                   # 2001 ATM 2m DEMs (ScienceBase, 2.5 GB)
+python $F --lidar                                     # 2014 bare-earth 1m DEMs (26 GB)
+python $F --lidar --pc --regions Taylor_Valley        # 2014 Taylor point cloud / intensity (9.6 GB)
+python $F --rema                                      # REMA 2m+10m mosaic (12 GB)
+# --- labels + drivers (small CSV/zip; auto newest EDI rev; skips existing) ---
+python $F --lter                                      # met, 21 discharge gauges, glacier, soil, LABELS
+#   then unzip labels/mcmlter-gis-watershed_shapefiles-*.zip -> labels/gis/
+# --- climate reanalysis ---
+python $F --setup-cds <YOUR_CDS_TOKEN>                # writes ~/.cdsapirc (one time)
+#   accept ERA5 licence once at cds.climate.copernicus.eu, then:
+python $F --era5                                      # ERA5 monthly drivers 1993-2024
+python $F --amps --amps-start 20260527 --amps-end 20260531   # AMPS d3 MDV sample (NCSS)
+# --- derived U-Net input rasters (no download; needs DEM+PC above) ---
+B=notebooks/wellsight_v2/build/_build_barlow_inputs.py
+python $B --bbox 26000 37000 33000 44000             # validated pilot stack
+# python $B                                           # full Taylor Valley (~11 GB/raster)
+```
+
+**Not script-reproducible (genuinely unavailable):** Barlow's own 217 hand-drawn label
+tiles (author-only — LTER `6007` channels are the public stand-in). **Optional / parked:**
+REMA time-stamped strips (potentially tens of GB), ArcticDEM, WorldView/Maxar (restricted).
+Add `--list` to any fetch to preview without downloading.
+
 ## Notes
 - REMA 2 m matches the airborne-lidar scale needed for Barlow's cm-to-m change detection;
   the lidar–REMA pair is the core validation once the OpenTopography lidar is in hand.

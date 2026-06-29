@@ -92,6 +92,10 @@ LTER_PACKAGES = {
     "lter_streams": [("knb-lter-mcm", g, None) for g in _MCM_DAILY_DISCHARGE],
     "lter_glacier": [("knb-lter-mcm", "2006", None)],   # snow/ice/total glacier mass balance
     "lter_soil": [("knb-lter-mcm", s, None) for s in _MCM_SOIL],  # active-layer/permafrost
+    # label source: GIS stream-channel/watershed/glacier shapefiles (public stand-in for
+    # Barlow's author-only 217 tiles) + relict-channel locations. Unzip the shapefile zip
+    # under labels/ before use (the .zip lands in labels/, extract to labels/gis/).
+    "labels": [("knb-lter-mcm", "6007", None), ("knb-lter-mcm", "26", None)],
 }
 
 
