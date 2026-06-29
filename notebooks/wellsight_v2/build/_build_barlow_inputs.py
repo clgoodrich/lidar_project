@@ -2,13 +2,17 @@
 
 Barlow, M.C., Zhu, X. & Glennie, C.L. (2022), "Stream Boundary Detection of a
 Hyper-Arid, Polar Region Using a U-Net Architecture: Taylor Valley, Antarctica",
-Remote Sensing 14(1):234, doi:10.3390/rs14010234. The U-Net is trained on FOUR
-rasters derived from the 2014-15 NCALM lidar:
+Remote Sensing 14(1):234, doi:10.3390/rs14010234. The U-Net is trained on terrain
+rasters derived from the lidar. The dissertation (Ch6) uses elevation, slope, aspect,
+curvature, intensity, and flow accumulation:
 
-    1. elevation        - the bare-earth DEM (have it)
-    2. slope            - WBT slope on the DEM (degrees)
-    3. flow accumulation- WBT breach-depressions -> D8 accumulation (log1p)
-    4. lidar intensity  - mean Intensity rasterized from the point cloud (PDAL)
+    1. elevation        - the bare-earth DEM
+    2. slope            - WBT slope (degrees)
+    3. aspect           - WBT aspect (slope direction)
+    4. curvature        - WBT total curvature (convex+/concave-)
+    5. flow accumulation- WBT breach -> FD8 *multi-flow-direction* accumulation (log1p);
+                          Barlow used ArcGIS MFD, FD8 is the WBT MFD equivalent (NOT D8)
+    6. lidar intensity  - mean Intensity rasterized from the point cloud (PDAL)
 
 All at 1 m, EPSG:3294 (Transantarctic Mtns proj), aligned to the DEM grid.
 Source data lives off-repo on J:\\barlow_data (DEM tiles + Taylor Valley .laz).
@@ -63,19 +67,28 @@ def build_elevation(bbox, out):
     return elev
 
 
-def build_slope_flowacc(elev, out):
-    """WBT slope + (breach -> D8 flow accumulation, log1p) from the DEM crop."""
+def build_terrain_derivs(elev, out):
+    """The DEM-derived Barlow inputs: slope, aspect, curvature, and MFD flow
+    accumulation. Barlow uses slope/aspect/curvature (Ch6) + a *multi-flow-direction*
+    (MFD) accumulation (Ch4 used ArcGIS MFD) -> WBT FD8 is the MFD equivalent.
+    """
     import whitebox
     wbt = whitebox.WhiteboxTools()
     wbt.set_verbose_mode(False)
     a = lambda p: str(Path(p).resolve())
     slope = out / "slope.tif"
     wbt.slope(a(elev), a(slope), units="degrees")
+    aspect = out / "aspect.tif"
+    wbt.aspect(a(elev), a(aspect))
+    curv = out / "curvature.tif"
+    # profile curvature is SIGNED (concave-/convex+) along the slope — captures the
+    # channel concavity Barlow needs; WBT total_curvature returns magnitude only (>=0).
+    wbt.profile_curvature(a(elev), a(curv))
     breached = out / "_breached.tif"
     wbt.breach_depressions_least_cost(a(elev), a(breached), dist=100)
     facc = out / "_flowacc_cells.tif"
-    wbt.d8_flow_accumulation(a(breached), a(facc), out_type="cells")
-    # log1p compress the heavy-tailed accumulation (as Barlow-style input)
+    wbt.fd8_flow_accumulation(a(breached), a(facc), out_type="cells")  # MFD, not D8
+    # log1p compress the heavy-tailed accumulation (Barlow-style input)
     import rasterio
     import numpy as np
     with rasterio.open(facc) as ds:
@@ -87,7 +100,7 @@ def build_slope_flowacc(elev, out):
         ds.write(arr, 1)
     for tmp in (breached, facc):
         Path(tmp).unlink(missing_ok=True)
-    return slope, out / "flowacc_log.tif"
+    return slope, aspect, curv, out / "flowacc_log.tif"
 
 
 def _select_pc_tiles(bbox, pad=1200):
@@ -141,8 +154,8 @@ def main() -> int:
     print(f"== Barlow inputs -> {OUT} (bbox={bbox or 'FULL'}) ==")
     elev = build_elevation(bbox, OUT)
     print("  elevation ok")
-    slope, facc = build_slope_flowacc(elev, OUT)
-    print("  slope + flowacc ok")
+    build_terrain_derivs(elev, OUT)
+    print("  slope + aspect + curvature + MFD flowacc ok")
     if not args.skip_intensity:
         build_intensity(bbox, elev, OUT)
         print("  intensity ok")

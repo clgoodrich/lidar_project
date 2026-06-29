@@ -5,6 +5,21 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — Barlow builder matched to dissertation: +aspect +curvature, D8→MFD
+
+Extended `_build_barlow_inputs.py` to the full Ch6 feature set (no new downloads — pure
+compute on local DEMs). Added **aspect** (WBT) and **curvature**, and swapped flow
+accumulation **D8 → FD8 (multi-flow-direction)** to match Barlow's ArcGIS MFD. QC on the
+Taylor pilot: MFD flowacc mean 2.13→3.68 (MFD diffuses flow, as expected); aspect 0–360
+(95% valid). **Curvature gotcha:** first used WBT `total_curvature` — it returns *magnitude*
+(100% ≥0), so it can't tell concave channels from convex ridges (the whole point). Switched
+to **`profile_curvature`** (signed): now 52.7% concave / 47.3% convex, symmetric about 0 →
+channels read as concave. Full 6-layer stack (elevation, slope, aspect, curvature, flowacc
+MFD, intensity) now matches the dissertation. Remaining (parked): REMA time-stamped strips
+(potentially large — hold for OK), LTER glacier mass-balance + permafrost/active-layer.
+
+---
+
 ## 2026-06-29 — Corrected target to the DISSERTATION; fetched the 2001 lidar epoch
 
 User flagged that the "Barlow paper" is actually her **2026 PhD dissertation**
