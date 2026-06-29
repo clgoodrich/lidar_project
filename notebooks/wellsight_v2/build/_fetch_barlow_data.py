@@ -86,9 +86,12 @@ def fetch_rema(resolutions, list_only=False, dem_only=True):
 _MCM_DAILY_DISCHARGE = ["9102", "9103", "9107", "9109", "9110", "9111", "9113",
                         "9114", "9115", "9116", "9117", "9118", "9119", "9120",
                         "9121", "9122", "9123", "9124", "9127", "9128", "9129"]
+_MCM_SOIL = ["4020", "4021", "4022", "4023", "4024"]   # continuous soil T / active layer
 LTER_PACKAGES = {
     "lter_climate": [("knb-lter-mcm", "7003", None)],   # meteorology network
     "lter_streams": [("knb-lter-mcm", g, None) for g in _MCM_DAILY_DISCHARGE],
+    "lter_glacier": [("knb-lter-mcm", "2006", None)],   # snow/ice/total glacier mass balance
+    "lter_soil": [("knb-lter-mcm", s, None) for s in _MCM_SOIL],  # active-layer/permafrost
 }
 
 
@@ -128,6 +131,8 @@ def fetch_edi(list_only=False):
                             cd = r.headers.get("Content-Disposition", "")
                             fn = cd.split("filename=")[-1].strip('"') if "filename=" in cd else f"{eid}.csv"
                             dest = out / fn; tmp = dest.with_suffix(dest.suffix + ".part")
+                            if dest.exists() and dest.stat().st_size > 0:
+                                print(f"     skip {fn}"); ok = True; break
                             n = 0
                             with open(tmp, "wb") as f:
                                 while True:

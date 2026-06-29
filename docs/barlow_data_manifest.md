@@ -26,7 +26,7 @@ change detection (ICP, Laplacian/NMAD, LOD95). Data requirements (from the FINES
 | Derived per epoch: elev, slope, **aspect, curvature**, intensity, **MFD** flow-accum | `_build_barlow_inputs.py` builds elev/slope/intensity + **D8** flow-accum | ⚙️ add aspect+curvature; she used **MFD** not D8 |
 | Labels: Barlow's 217 + multi-valley polygons | author-gated → MCM-LTER stream channels `6007` (aux/QC) | ✅ stand-in |
 | LTER met / discharge | both | ✅ |
-| **Glacier mass-balance/melt, permafrost/active-layer** | LTER (not yet fetched) | ❌ |
+| **Glacier mass-balance**, **permafrost/active-layer** | LTER `2006` (glacier mass change, 7 glaciers) + `4020-4024` (continuous soil T/EC/VWC, active layer) | ✅ |
 | Reanalysis ERA5 / AMPS (attribution) | both | ✅ |
 | ArcticDEM, WorldView/Maxar | PGC | optional |
 
@@ -43,6 +43,8 @@ change detection (ICP, Laplacian/NMAD, LOD95). Data requirements (from the FINES
 | **MCM-LTER met — Lake Bonney (BOYM)** daily/hourly/15-min | `lter_climate/` | ~48 MB | EDI `knb-lter-mcm.7003.25` (air T, RH, shortwave radiation, wind; rev auto-resolved) |
 | **MCM-LTER stream discharge — all 21 MDV gauges (daily)** | `lter_streams/` (21 CSVs) | ~3 MB | EDI 9100-series (`9102`–`9129`), daily summarized discharge/temp/conductivity. Streams: Canada, Commonwealth, Lost Seal, Von Guerard, Onyx@Vanda, Onyx-Lower-Wright, Miers, Adams, Huey, Lawson, Green, Delta, Crescent, House, Bohner, Priscu, Santa Fe, Aiken, Andersen, Harnish(×2) |
 | **ERA5 reanalysis — MDV monthly drivers 1993-2024** | `era5/era5_mdv_monthly_1993-2024.nc` | 0.7 MB | Copernicus CDS `reanalysis-era5-single-levels-monthly-means`, box `[-77,160,-78.5,164.5]`, 384 months, 9 vars: t2m, skt, ssrd, ssr, tp, smlt, sd, u10, v10 (melt/energy-balance drivers) |
+| **LTER glacier mass balance** | `lter_glacier/` (7 glaciers) | 0.6 MB | EDI `knb-lter-mcm.2006` snow/ice/total mass change (Taylor, Canada, Commonwealth, Howard, Adams, Hugh, Sues) — melt/ablation driver |
+| **LTER soil / active-layer** | `lter_soil/` (5 stations × T/EC/VWC) | 285 MB | EDI `knb-lter-mcm.4020-4024` continuous soil temperature, EC, volumetric water content — permafrost/active-layer driver |
 | **AMPS d3 — MDV high-res drivers (sample)** | `amps/mdv/` (10 timesteps, 2026-05-27→31) | 1.4 MB | GDEX THREDDS **NCSS** subset of dataset `d473002` (AMPS WRF24, d3 = **2.67 km** Ross Sea grid covering MDV, ~10× finer than ERA5). 8 vars: 2m T, 10m wind u/v, surface pressure, sensible+latent heat flux, albedo, geopotential. **Anonymous.** f000 analysis, 00+12 UTC |
 
 \* the fetcher now **auto-resolves the newest EDI revision** (`_latest_rev`) — the earlier

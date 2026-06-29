@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — LTER glacier mass-balance + soil/active-layer drivers (attribution set)
+
+Closed the last small driver gap (no huge downloads). Added to `LTER_PACKAGES` + a
+skip-existing guard in `fetch_edi` (so re-running `--lter` no longer refetches met + the 21
+gauges). **Glacier mass balance** `knb-lter-mcm.2006` — 7 glaciers (Taylor, Canada,
+Commonwealth, Howard, Adams, Hugh, Sues), 0.6 MB → `lter_glacier/`. **Soil/active-layer**
+`knb-lter-mcm.4020-4024` — 5 stations (F6, WHC, VG, GC, WTB) × soil temperature / EC /
+volumetric-water-content, 285 MB → `lter_soil/` (continuous high-freq; the permafrost/
+active-layer attribution driver). With this, every FINESST data requirement is satisfied
+except optional REMA time-stamped strips (parked — potentially large, awaiting OK).
+
+---
+
 ## 2026-06-29 — Barlow builder matched to dissertation: +aspect +curvature, D8→MFD
 
 Extended `_build_barlow_inputs.py` to the full Ch6 feature set (no new downloads — pure
