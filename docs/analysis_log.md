@@ -18,9 +18,12 @@ the DEM's EPSG:3294 — must reproject to align) sit on higher flow-accum **insi
 than outside (2.13)** → derivation + cross-projection alignment correct. Contrast is modest
 because the LTER channel polygons are broad (dilutes the thin-thalweg signal). Nodata
 −9999 appears off the lidar footprint (normal). Fixes during build: tiled GeoTIFF needs
-256-block sizes; clear corrupt partial outputs before rewrite. Intensity deferred until the
-944-tile point cloud finishes downloading (~28% at log time). Next: intensity on the pilot,
-then drop --bbox for full Taylor Valley (~11 GB/raster, on J:).
+256-block sizes; clear corrupt partial outputs before rewrite. **Intensity completed** once
+the 944-tile PC finished (9.58 GB): PDAL crop+`writers.gdal` mean-Intensity from 91 pilot PC
+tiles (323 s). **Full 4-layer pilot QC (nodata-masked):** elevation −39→866 m (mean 153),
+slope 0→85° (mean 8.9), flowacc_log 0→17.5, intensity 1→2759 (mean 23, inside-channel 26 >
+outside 23). All 95-100% valid, EPSG:3294, 1 m, grid-aligned — matches Barlow (2022)'s exact
+U-Net inputs. Next (on user OK): drop --bbox for full Taylor Valley (~11 GB/raster, on J:).
 
 ---
 
