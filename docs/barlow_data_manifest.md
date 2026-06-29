@@ -17,18 +17,18 @@ The datasets behind Barlow's MDV stream-boundary dissertation and our FINESST
 | **REMA v2.0 mosaic, 10 m** (overview) | `rema/10m/` (4 tiles) | ~1 GB | same |
 | **MCM-LTER met — Lake Bonney (BOYM)** daily/hourly/15-min | `lter_climate/` | ~48 MB | EDI `knb-lter-mcm.7003.25` (air T, RH, shortwave radiation, wind; rev auto-resolved) |
 | **MCM-LTER stream discharge — all 21 MDV gauges (daily)** | `lter_streams/` (21 CSVs) | ~3 MB | EDI 9100-series (`9102`–`9129`), daily summarized discharge/temp/conductivity. Streams: Canada, Commonwealth, Lost Seal, Von Guerard, Onyx@Vanda, Onyx-Lower-Wright, Miers, Adams, Huey, Lawson, Green, Delta, Crescent, House, Bohner, Priscu, Santa Fe, Aiken, Andersen, Harnish(×2) |
+| **ERA5 reanalysis — MDV monthly drivers 1993-2024** | `era5/era5_mdv_monthly_1993-2024.nc` | 0.7 MB | Copernicus CDS `reanalysis-era5-single-levels-monthly-means`, box `[-77,160,-78.5,164.5]`, 384 months, 9 vars: t2m, skt, ssrd, ssr, tp, smlt, sd, u10, v10 (melt/energy-balance drivers) |
 
 \* the fetcher now **auto-resolves the newest EDI revision** (`_latest_rev`) — the earlier
 0-entities failure was a hardcoded stale revision (`9128.11` vs current `9128.3`), not a wrong package.
 \* an older Fryxell (FRLM) daily-met file may still sit in `lter_streams/` from a prior pass; it is met, not discharge — move if tidying.
 
-## ⛔ Not downloaded — needs credentials or a corrected ID
+## ⛔ Not downloaded — optional / lower priority
 
 | Dataset | Why blocked | How to get it |
 |---|---|---|
-| **MDV airborne lidar 2001 & 2014** (NCALM) — Barlow's training base + lidar change epochs | OpenTopography S3 (`opentopography.s3.sdsc.edu /raster/MDV_2014`) blocks anonymous listing | Free **OpenTopography API key** → portal bulk download, or `aws s3 --no-sign-request` if their bucket policy allows. ~tens of GB. |
-| **MCM-LTER stream discharge** (17 gauges, melt-season flow) | EDI package id `9128` guess returned 0 entities | Find correct package on the [MCM data catalog](https://mcm.lternet.edu/data); add to `LTER_PACKAGES` and re-run `--lter`. |
-| **ERA5 reanalysis** (spatial gap-fill for drivers) | Copernicus CDS needs an account + `~/.cdsapirc` | Register at CDS, install `cdsapi`, then a small request script for the MDV box. |
+| **MDV airborne lidar 2001** (earlier NCALM epoch) | The 2014-15 epoch is in (above); a separate ~2001 survey would give a second lidar epoch for change detection if one exists on OT | Search OpenTopography catalog for an MDV 2001 collection; add region/bucket to `fetch_opentopo`. |
+| **ERA5 hourly** (melt-season detail) | Monthly is in (above); hourly is larger and only needed for sub-monthly melt dynamics | `_fetch_barlow_data.py --era5 --era5-hourly` (per-year files; accept hourly dataset licence first). |
 | **AMPS** (Antarctic Mesoscale Prediction System) | NCAR archive | Optional alternative/complement to ERA5. |
 | **WorldView/Maxar imagery, geology maps** | PGC imagery is NGA-licensed (restricted); geology via GNS/USGS | For label QC only; lower priority. |
 
@@ -37,5 +37,11 @@ The datasets behind Barlow's MDV stream-boundary dissertation and our FINESST
   the lidar–REMA pair is the core validation once the OpenTopography lidar is in hand.
 - Everything downloaded is **free/public**; the blocked items are credential- or
   catalog-ID-gated, not paywalled.
-- To extend: `python notebooks/wellsight_v2/build/_fetch_barlow_data.py --rema --lter`
+- To extend: `python notebooks/wellsight_v2/build/_fetch_barlow_data.py --rema --lter --lidar --era5`
   (add `--list` to preview). REMA tiles are calibrated to the MDV in the script.
+- **ERA5 / CDS:** auth is `~/.cdsapirc` (single Personal Access Token on the new CDS);
+  set it with `--setup-cds <TOKEN>`. The dataset licence must be accepted once on the CDS
+  website. The new CDS returns a **.zip of two stepType-split netCDFs** (avgua T00 /
+  avgad T06); `_postprocess_era5` extracts, snaps the month axis, and merges to one clean file.
+- **CRS note:** MDV lidar is **EPSG:3294**, REMA is polar-stereographic (EPSG:3031) —
+  reproject to a common grid before any DEM-of-difference change detection.

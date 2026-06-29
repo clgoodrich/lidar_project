@@ -181,6 +181,94 @@ def fetch_opentopo(regions=None, list_only=False, point_cloud=False, min_free_gb
           f"{grand/1e9:.1f} GB -> {out}")
 
 
+# --- ERA5 reanalysis (Copernicus CDS) ---------------------------------------
+# Climate drivers for the FINESST "geomorphic change vs. physical/climate drivers"
+# coupling. Needs a (free) CDS account + ~/.cdsapirc (see setup_cds()). MDV box.
+ERA5_AREA = [-77.0, 160.0, -78.5, 164.5]   # N, W, S, E (Taylor/Wright/Victoria/Garwood)
+ERA5_VARS = [
+    "2m_temperature", "skin_temperature",
+    "10m_u_component_of_wind", "10m_v_component_of_wind",
+    "surface_solar_radiation_downwards", "surface_net_solar_radiation",
+    "total_precipitation", "snowmelt", "snow_depth",
+]   # melt / surface-energy-balance drivers of MDV streamflow + geomorphic change
+
+
+def setup_cds(token: str):
+    """Write ~/.cdsapirc for the NEW CDS (single Personal Access Token)."""
+    import os
+    home = Path(os.path.expanduser("~"))
+    dest = home / ".cdsapirc"
+    dest.write_text(f"url: https://cds.climate.copernicus.eu/api\nkey: {token.strip()}\n")
+    print(f"wrote {dest} (url + key, {len(token.strip())}-char token)")
+
+
+def _postprocess_era5(raw: Path, target: Path):
+    """The new CDS wraps netCDF in a .zip and splits vars by stepType (avgua T00 vs
+    avgad T06). Extract, align the month axis, merge to one clean netCDF."""
+    import zipfile
+    if not zipfile.is_zipfile(raw):   # already a plain .nc
+        raw.replace(target); print(f"  ok {target.name} (plain nc)"); return
+    import xarray as xr
+    ex = raw.parent / "_extract"; ex.mkdir(exist_ok=True)
+    zipfile.ZipFile(raw).extractall(ex)
+    dsl = []
+    for f in sorted(ex.glob("*.nc")):
+        ds = xr.open_dataset(f)
+        if "valid_time" in ds:   # snap to month start so step-types align exactly
+            vt = ds["valid_time"].values.astype("datetime64[M]").astype("datetime64[ns]")
+            ds = ds.assign_coords(valid_time=vt)
+        dsl.append(ds)
+    merged = xr.merge(dsl, join="exact", compat="override")
+    merged.to_netcdf(target)
+    for ds in dsl:
+        ds.close()
+    print(f"  ok {target.name} ({target.stat().st_size/1e6:.1f} MB, "
+          f"{len(merged.data_vars)} vars, {merged.sizes.get('valid_time')} months)")
+
+
+def fetch_era5(years=None, monthly=True, area=None, list_only=False):
+    """ERA5 single-level drivers over the MDV box via cdsapi.
+
+    monthly=True -> reanalysis-era5-single-levels-monthly-means (tiny; whole record).
+    monthly=False -> hourly reanalysis-era5-single-levels (large; per-year files).
+    Requires ~/.cdsapirc (run setup_cds first). Accept the dataset Terms of Use on the
+    CDS website once before this will succeed.
+    """
+    import cdsapi
+    area = area or ERA5_AREA
+    years = years or [str(y) for y in range(1993, 2025)]   # spans LTER + lidar epochs
+    out = DST / "era5"; out.mkdir(parents=True, exist_ok=True)
+    months = [f"{m:02d}" for m in range(1, 13)]
+    if monthly:
+        ds = "reanalysis-era5-single-levels-monthly-means"
+        req = {"product_type": "monthly_averaged_reanalysis", "variable": ERA5_VARS,
+               "year": years, "month": months, "time": "00:00",
+               "area": area, "data_format": "netcdf"}
+        target = out / "era5_mdv_monthly_1993-2024.nc"
+        print(f"  {'PLAN' if list_only else 'GET '} {ds} -> {target.name} "
+              f"({len(ERA5_VARS)} vars, {len(years)} yr, area {area})")
+        if list_only:
+            return
+        raw = out / "_era5_monthly_raw.nc"
+        cdsapi.Client().retrieve(ds, req, str(raw))
+        _postprocess_era5(raw, target)
+        return
+    ds = "reanalysis-era5-single-levels"
+    for yr in years:
+        target = out / f"era5_mdv_hourly_{yr}.nc"
+        if target.exists():
+            print(f"  skip {target.name}"); continue
+        req = {"product_type": "reanalysis", "variable": ERA5_VARS, "year": yr,
+               "month": months, "day": [f"{d:02d}" for d in range(1, 32)],
+               "time": [f"{h:02d}:00" for h in range(24)],
+               "area": area, "data_format": "netcdf"}
+        print(f"  {'PLAN' if list_only else 'GET '} {ds} {yr} -> {target.name}")
+        if list_only:
+            continue
+        cdsapi.Client().retrieve(ds, req, str(target))
+        print(f"  ok {target.name} ({target.stat().st_size/1e6:.1f} MB)")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--rema", action="store_true", help="fetch REMA MDV mosaic tiles")
@@ -188,9 +276,14 @@ def main() -> int:
     ap.add_argument("--lidar", action="store_true", help="fetch MDV_2014 NCALM bare-earth 1m DEMs (OpenTopography)")
     ap.add_argument("--pc", action="store_true", help="with --lidar: fetch point-cloud .laz instead of DEMs")
     ap.add_argument("--regions", help="comma list of MDV regions (default: all, valleys first)")
+    ap.add_argument("--era5", action="store_true", help="fetch ERA5 MDV drivers (needs ~/.cdsapirc)")
+    ap.add_argument("--era5-hourly", action="store_true", help="with --era5: hourly (large) instead of monthly")
+    ap.add_argument("--setup-cds", metavar="TOKEN", help="write ~/.cdsapirc with your CDS Personal Access Token")
     ap.add_argument("--res", default="2m,10m", help="REMA resolutions (comma): 2m,10m,32m")
     ap.add_argument("--list", action="store_true", help="plan only")
     args = ap.parse_args()
+    if args.setup_cds:
+        setup_cds(args.setup_cds); return 0
     DST.mkdir(parents=True, exist_ok=True)
     if args.rema:
         fetch_rema(args.res.split(","), list_only=args.list)
@@ -199,8 +292,10 @@ def main() -> int:
     if args.lidar:
         regions = args.regions.split(",") if args.regions else None
         fetch_opentopo(regions=regions, list_only=args.list, point_cloud=args.pc)
-    if not (args.rema or args.lter or args.lidar):
-        print("nothing selected; use --rema / --lter / --lidar (add --list to plan)")
+    if args.era5:
+        fetch_era5(monthly=not args.era5_hourly, list_only=args.list)
+    if not (args.rema or args.lter or args.lidar or args.era5):
+        print("nothing selected; use --rema / --lter / --lidar / --era5 (add --list to plan)")
     return 0
 
 

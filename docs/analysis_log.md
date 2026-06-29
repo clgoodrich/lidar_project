@@ -5,6 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — Barlow ERA5 drivers in: all 4 foundational datasets now downloaded
+
+Closed the last credential gap. **ERA5** via Copernicus CDS (new system): wrote
+`~/.cdsapirc` with the user's Personal Access Token (single-token format; written without
+echoing the value), user accepted the dataset licence, then pulled
+`reanalysis-era5-single-levels-monthly-means` over the MDV box `[-77,160,-78.5,164.5]`,
+**1993–2024 (384 months), 9 melt/energy-balance vars** (t2m, skt, ssrd, ssr, tp, smlt,
+sd, u10, v10) → `J:/barlow_data/era5/era5_mdv_monthly_1993-2024.nc` (0.7 MB).
+**Gotcha handled:** the new CDS returns a **.zip of two stepType-split netCDFs**
+(avgua stamped T00, avgad T06) — added `_postprocess_era5` to extract, snap both to the
+month axis, and merge with `join='exact'` into one clean file (was getting 768 interleaved
+months before alignment; now 384, 0 NaN, physically sane: t2m≈247 K). Installed
+`cdsapi 0.7.7` + `netCDF4`/`h5netcdf` backends. Tooling: `_fetch_barlow_data.py --era5`
+(`--era5-hourly` for sub-monthly; `--setup-cds <TOKEN>`). **Barlow data now complete**
+except optional AMPS and a possible 2001 lidar epoch.
+
+---
+
 ## 2026-06-28 — Barlow data: unblocked MDV lidar + LTER discharge (2 of 4 gaps closed)
 
 Closed the two non-credential blockers from the prior pass.
