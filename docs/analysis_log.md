@@ -5,6 +5,25 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — Reconstruct Barlow (2022) U-Net input rasters over Taylor Valley (pilot)
+
+Built `_build_barlow_inputs.py` to regenerate Mary Barlow's four U-Net inputs from the
+2014-15 NCALM Taylor Valley lidar: **elevation** (bare-earth DEM mosaic), **slope** (WBT,
+deg), **flow accumulation** (WBT breach-least-cost → D8, log1p), and **intensity** (mean
+Intensity rasterized from the point cloud via PDAL). All 1 m, EPSG:3294, aligned to the
+DEM grid. Per CLAUDE.md bootstrap rule, ran a **pilot** over the Von Guerard/Crescent
+cluster (bbox 26000 37000 33000 44000, 7×7 km). **QC passed:** reprojected MCM-LTER
+stream-channel polygons (their CRS = WGS84 polar-stereographic lat₀−71, *different* from
+the DEM's EPSG:3294 — must reproject to align) sit on higher flow-accum **inside (2.32)
+than outside (2.13)** → derivation + cross-projection alignment correct. Contrast is modest
+because the LTER channel polygons are broad (dilutes the thin-thalweg signal). Nodata
+−9999 appears off the lidar footprint (normal). Fixes during build: tiled GeoTIFF needs
+256-block sizes; clear corrupt partial outputs before rewrite. Intensity deferred until the
+944-tile point cloud finishes downloading (~28% at log time). Next: intensity on the pilot,
+then drop --bbox for full Taylor Valley (~11 GB/raster, on J:).
+
+---
+
 ## 2026-06-29 — Identified the actual Barlow paper + fetched its exact inputs
 
 Pinned down what "the Barlow paper" is and what it uses, rather than inferring from
