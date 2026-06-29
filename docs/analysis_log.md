@@ -5,6 +5,26 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — Corrected target to the DISSERTATION; fetched the 2001 lidar epoch
+
+User flagged that the "Barlow paper" is actually her **2026 PhD dissertation**
+(`docs/articles/barlow_dissertation_explained.md`), not the 2022 RS paper (which is just
+Ch4). Re-read it + the FINESST brief (`docs/finesst/FINESST_Barlow_Expansion_Concept.pdf`)
+and reconciled data needs: dissertation = 4 valleys × **3 epochs (2001 lidar / 2014 lidar /
+2021-23 REMA)** + DoD/ICP/NMAD change detection. Most prior fetches were on-target (2014
+lidar, REMA, LTER met+discharge, ERA5, AMPS all required). **Key gap closed: the 2001
+epoch** — it's NASA **ATM** (Dec 2001), 2 m DEMs, *not* on OpenTopography (only 2014 is) but
+free/anonymous on **USGS ScienceBase** (parent `5d0d1d81e4b0941bde52a1a1`, 18 MDV sites,
+2.51 GB). Added `fetch_atm2001()` + `--atm2001`, pulled all 18 sites (Taylor, Wright,
+Victoria, Barwick, Denton Hills + more) to `mdv_lidar_2001/`. **QC:** Taylor 2001 tile is
+EPSG:3294 @ 2 m, bounds [19999,34999,50007,56005] — same CRS & overlapping the 2014 DEM
+[22998,33998,45002,57002], elev −57→768 m → directly co-registerable for DoD. No ~2007
+epoch exists (only 2001 + 2014). **Remaining cleanup:** builder add aspect+curvature & swap
+D8→MFD flow-accum (match her method); REMA time-stamped strips for the true 2021-23 epoch;
+LTER glacier mass-balance + permafrost/active-layer drivers.
+
+---
+
 ## 2026-06-29 — Reconstruct Barlow (2022) U-Net input rasters over Taylor Valley (pilot)
 
 Built `_build_barlow_inputs.py` to regenerate Mary Barlow's four U-Net inputs from the

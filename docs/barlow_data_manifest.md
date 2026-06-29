@@ -8,22 +8,27 @@
 The datasets behind Barlow's MDV stream-boundary dissertation and our FINESST
 "couple geomorphic change to physical/climate drivers" expansion. Status below.
 
-## What the Barlow paper actually uses (the precise target)
+## The real target = the DISSERTATION (not the 2022 paper)
 
-**Barlow, M.C., Zhu, X. & Glennie, C.L. (2022)** — *"Stream Boundary Detection of a
-Hyper-Arid, Polar Region Using a U-Net Architecture: Taylor Valley, Antarctica"*,
-Remote Sensing 14(1):234, **doi:10.3390/rs14010234**. Inputs:
+The actual parent work is **Barlow, M.C. (2026)**, *"A Comprehensive Spatial Analysis of
+Stream Boundary and Geomorphological Change Detection: McMurdo Dry Valleys, Antarctica"*,
+PhD dissertation, Univ. Houston (chair Glennie). See `docs/articles/barlow_dissertation_explained.md`
+and `docs/finesst/FINESST_Barlow_Expansion_Concept.pdf`. The 2022 *Remote Sensing* paper
+(doi:10.3390/rs14010234) is only **Chapter 4** (Taylor Valley U-Net proof-of-concept). The
+dissertation spans **4 valleys × 3 epochs (2001 lidar, 2014 lidar, 2021-23 REMA)** + DoD
+change detection (ICP, Laplacian/NMAD, LOD95). Data requirements (from the FINESST brief):
 
-| Barlow input | Our source | Status |
+| Requirement | Our source | Status |
 |---|---|---|
-| **Elevation** (1 m) | `MDV_2014` bare-earth DEM, Taylor_Valley | ✅ have |
-| **Slope** | derived from the DEM | ⚙️ derivable |
-| **Flow accumulation** | derived from the DEM (WhiteboxTools) | ⚙️ derivable |
-| **Lidar intensity returns** | **point cloud** `pc-bulk/MDV_2014/Taylor_adj47` (DEM has no intensity) | ⏳ downloading |
-| **217 manual stream-boundary label tiles** (300×300 m) | **not public** (authors only) → use MCM-LTER stream-channel shapefiles `knb-lter-mcm.6007` as the public stand-in | ✅ stand-in in hand |
-
-Study area = Taylor Valley (~770 km²), 2014-15 NCALM lidar, ~2.7 pts/m². The paper uses
-**only lidar** — no ERA5/AMPS/REMA/discharge (those are our FINESST expansion, not Barlow).
+| MDV lidar **2014** (DEM + intensity) | `MDV_2014` DEM (all valleys) + Taylor PC | ✅ |
+| MDV lidar **2001** (2 m DEMs, the 2nd change epoch) | **USGS ScienceBase** (NASA ATM; NOT OpenTopography) parent `5d0d1d81...`, 18 sites 2.5 GB; same EPSG:3294 + overlapping extent as 2014 | ✅ |
+| **REMA 2021-23** (satellite epoch) | PGC `pgc-opendata-dems` v2.0 mosaic (have) — may want time-stamped strips for true 2021-23 epoch | ⚠️ mosaic only |
+| Derived per epoch: elev, slope, **aspect, curvature**, intensity, **MFD** flow-accum | `_build_barlow_inputs.py` builds elev/slope/intensity + **D8** flow-accum | ⚙️ add aspect+curvature; she used **MFD** not D8 |
+| Labels: Barlow's 217 + multi-valley polygons | author-gated → MCM-LTER stream channels `6007` (aux/QC) | ✅ stand-in |
+| LTER met / discharge | both | ✅ |
+| **Glacier mass-balance/melt, permafrost/active-layer** | LTER (not yet fetched) | ❌ |
+| Reanalysis ERA5 / AMPS (attribution) | both | ✅ |
+| ArcticDEM, WorldView/Maxar | PGC | optional |
 
 ## ✅ Downloaded
 
@@ -31,6 +36,7 @@ Study area = Taylor Valley (~770 km²), 2014-15 NCALM lidar, ~2.7 pts/m². The p
 |---|---|---|---|
 | **MDV airborne lidar 2014-15 — bare-earth 1 m DEMs** (NCALM) | `mdv_lidar/be_dem_1m/` (Taylor_Valley, North, Garwood, Beacon, Capes) | ~26 GB | OpenTopography S3 `opentopography.s3.sdsc.edu` bucket `raster/MDV_2014/MDV_2014_be/`, **anonymous** (API key not needed for bulk S3). Dataset `OTLAS.112016.3294.1`, DOI 10.5069/G9D50JX3. CRS **EPSG:3294** (Transantarctic Mtns proj) |
 | **MDV lidar 2014-15 — Taylor Valley point cloud** (for intensity) | `mdv_lidar/pc/Taylor_Valley/` (944 .laz) | ~9.6 GB | OpenTopography `pc-bulk/MDV_2014/Taylor_adj47`, anonymous. Carries the **intensity** returns Barlow uses (DEM does not). `--lidar --pc --regions Taylor_Valley` |
+| **MDV lidar 2001 — ATM 2 m DEMs (all 18 sites)** | `mdv_lidar_2001/` (18 sites, .zip tiff/tfw) | 2.5 GB | USGS ScienceBase parent `5d0d1d81e4b0941bde52a1a1` (NASA ATM Dec-2001, UB-processed). EPSG:3294, 2 m. The **2nd change-detection epoch**; overlaps & co-registers with 2014. `--atm2001` |
 | **MCM-LTER GIS — stream-channel / watershed / glacier shapefiles** (label source) | `labels/gis/` (12 stream channels + watersheds + glaciers) | 0.4 MB | EDI `knb-lter-mcm.6007`; public stand-in for Barlow's non-public 217 label tiles. Plus relict-channel locations `knb-lter-mcm.26` |
 | **REMA v2.0 mosaic, 2 m** (satellite DEM epoch) | `rema/2m/` (15 subtiles) | ~11 GB | AWS Open Data `pgc-opendata-dems`, anonymous; MDV supertiles 17_34/17_35/18_34/18_35 |
 | **REMA v2.0 mosaic, 10 m** (overview) | `rema/10m/` (4 tiles) | ~1 GB | same |

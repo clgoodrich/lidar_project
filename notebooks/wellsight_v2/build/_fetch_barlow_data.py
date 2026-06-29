@@ -143,6 +143,45 @@ def fetch_edi(list_only=False):
                     print(f"     FAIL {eid}")
 
 
+# --- 2001 ATM lidar (the OTHER change-detection epoch) ----------------------
+# Barlow's 2001 epoch is NASA ATM (Dec 2001 campaign), processed to 2 m DEMs by
+# UB/Csatho-Schenk, distributed FREE/anonymous on USGS ScienceBase (NOT OpenTopography,
+# which only has 2014). 18 MDV sites under one parent collection; ~2.5 GB total.
+SB_PARENT_2001 = "5d0d1d81e4b0941bde52a1a1"
+SB_ITEM = "https://www.sciencebase.gov/catalog/item/{iid}?format=json"
+SB_CHILDREN = ("https://www.sciencebase.gov/catalog/items?parentId={pid}"
+               "&format=json&max=100&fields=title,files")
+
+
+def fetch_atm2001(list_only=False, min_free_gb=5.0):
+    """Download the 2001 ATM MDV 2 m DEMs (all 18 sites) from USGS ScienceBase."""
+    import shutil
+    import urllib.request
+    import json as _json
+    req = lambda u: urllib.request.urlopen(
+        urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"}), timeout=60)
+    out = DST / "mdv_lidar_2001"; out.mkdir(parents=True, exist_ok=True)
+    kids = _json.load(req(SB_CHILDREN.format(pid=SB_PARENT_2001))).get("items", [])
+    grand = 0
+    for it in sorted(kids, key=lambda x: x.get("title", "")):
+        site = it["title"].split(" Digital")[0].replace(" ", "_")
+        zips = [f for f in it.get("files", []) if f.get("name", "").endswith(".zip")]
+        for f in zips:
+            url = f.get("url") or f.get("downloadUri")
+            dest = out / site / f["name"]
+            grand += f.get("size", 0)
+            if list_only:
+                print(f"   [{site}] {f.get('size',0)/1e6:6.0f} MB {f['name']}"); continue
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            if dest.exists() and dest.stat().st_size == f.get("size", 0):
+                print(f"   skip {site}/{dest.name}"); continue
+            if shutil.disk_usage(str(DST)).free / 1e9 < min_free_gb:
+                print("   STOP: low disk"); return
+            print(f"   get  [{site}] {f.get('size',0)/1e6:.0f} MB {dest.name}")
+            urllib.request.urlretrieve(url, dest)
+    print(f"\nATM2001 {'planned' if list_only else 'downloaded'}: {grand/1e9:.2f} GB -> {out}")
+
+
 def _ot_s3():
     import boto3
     from botocore import UNSIGNED
@@ -338,6 +377,7 @@ def main() -> int:
     ap.add_argument("--rema", action="store_true", help="fetch REMA MDV mosaic tiles")
     ap.add_argument("--lter", action="store_true", help="fetch MCM-LTER EDI met+stream packages")
     ap.add_argument("--lidar", action="store_true", help="fetch MDV_2014 NCALM bare-earth 1m DEMs (OpenTopography)")
+    ap.add_argument("--atm2001", action="store_true", help="fetch 2001 ATM MDV 2m DEMs (USGS ScienceBase)")
     ap.add_argument("--pc", action="store_true", help="with --lidar: fetch point-cloud .laz instead of DEMs")
     ap.add_argument("--regions", help="comma list of MDV regions (default: all, valleys first)")
     ap.add_argument("--amps", action="store_true", help="fetch AMPS d3 MDV drivers via NCSS (anonymous)")
@@ -360,6 +400,8 @@ def main() -> int:
     if args.lidar:
         regions = args.regions.split(",") if args.regions else None
         fetch_opentopo(regions=regions, list_only=args.list, point_cloud=args.pc)
+    if args.atm2001:
+        fetch_atm2001(list_only=args.list)
     if args.amps:
         import datetime as _dt
         if not (args.amps_start and args.amps_end):
@@ -371,8 +413,8 @@ def main() -> int:
         fetch_amps(dates, fhours=tuple(args.amps_fhours.split(",")), list_only=args.list)
     if args.era5:
         fetch_era5(monthly=not args.era5_hourly, list_only=args.list)
-    if not (args.rema or args.lter or args.lidar or args.era5 or args.amps):
-        print("nothing selected; use --rema / --lter / --lidar / --era5 / --amps (add --list to plan)")
+    if not (args.rema or args.lter or args.lidar or args.atm2001 or args.era5 or args.amps):
+        print("nothing selected; use --rema / --lter / --lidar / --atm2001 / --era5 / --amps (add --list to plan)")
     return 0
 
 
