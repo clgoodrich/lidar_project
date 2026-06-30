@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-30 — Plain proposal: de-em-dashed + tone fixed
+
+Revised `finesst_proposal_plain.md` per user: removed all em-dashes (en-dashes kept only in
+numeric ranges), and rewrote the descriptions to drop the over-basic/condescending phrasing
+(e.g. cut "looks like Mars", "the brains of the project", "first whiff", "the scary question")
+in favor of a direct, peer-level voice that still glosses the lingo concisely. Regenerated PDF;
+DOCX pending (file was open in Word during the run).
+
+---
+
 ## 2026-06-30 — Plain-language FINESST proposal variant
 
 Added `barlow/docs/finesst_proposal_plain.md` — same science, same real numbers/figures, written
