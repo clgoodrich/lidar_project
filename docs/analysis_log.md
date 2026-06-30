@@ -5,6 +5,26 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — Per-stream masking + 2014→REMA epoch + ICP-fitness clarified ("the rest")
+
+Generalized `_change_detection.py`: `--old/--new` epoch pair over {2001, 2014, rema},
+`--streams` per-stream masking, `--icp`. REMA (EPSG:3031) auto-reprojects to 3294 in warp.
+**Per-stream rates** (LTER channels reprojected from WGS84 polar-stereo → 3294, rasterized
+to the DoD grid, ero/dep/net + rate/yr written to CSV). Runs:
+- **2001→2014 (13 yr), Von Guerard window:** 6 streams; busiest Aiken 3,890 m³/yr gross
+  (+3,672 net). Small vs Barlow's Denton Hills hotspot — expected for Taylor floor.
+- **2014→REMA (7 yr):** NMAD **0.227 m / LOD95 0.444 m** — in Barlow's published 2014-REMA
+  range (NMAD 0.19-0.53); 95% valid (REMA full coverage vs sparse 2001); bias −0.317 m
+  (lidar↔satellite offset, removed). Per-stream: Harnish 9,335 + Von Guerard 9,150 m³/yr gross.
+**ICP `fitness` explained** (was printed unexplained): it's the PDAL/PCL registration score
+= mean squared distance between corresponding points after alignment (m², lower=better) —
+measures cloud-match quality, NOT whether DoD improved (that's the before/after NMAD).
+Consistent with earlier runs: high-relief window fitness 0.95 (helped), flat floor 1.47 (hurt).
+All three epochs + per-stream now reproducible. Remaining optional: REMA dated strips, ICP-
+on-relief for the REMA epoch, full-valley run.
+
+---
+
 ## 2026-06-29 — ICP confirmed: helps on relief, hurts on flat floor (relief is the key)
 
 Followed up the worse-on-flat-floor ICP result by scanning the 2001 taylore DEM for
