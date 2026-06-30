@@ -42,11 +42,11 @@ def add_runs(par, text, base_size=None, base_color=None):
         if m.start() > pos:
             _run(par, text[pos:m.start()], base_size, base_color)
         if m.group("bi") is not None:
-            _run(par, m.group("bi"), base_size, base_color, bold=True, italic=True)
+            _run(par, m.group("bi"), base_size, base_color, italic=True)  # no bold
         elif m.group("code") is not None:
             _run(par, m.group("code"), base_size, base_color, mono=True)
         elif m.group("bold") is not None:
-            _run(par, m.group("bold"), base_size, base_color, bold=True)
+            _run(par, m.group("bold"), base_size, base_color)  # bold dropped -> plain
         elif m.group("ltext") is not None:
             _run(par, m.group("ltext"), base_size, base_color)  # link -> text
         elif m.group("ital") is not None:
@@ -138,7 +138,7 @@ def build(md_path: Path):
             lvl, txt = len(m.group(1)), m.group(2)
             if lvl == 1 and first_h1:
                 p = doc.add_paragraph(); p.space_after = Pt(8)
-                add_runs(p, txt, base_size=18, base_color=NAVY)
+                add_runs(p, txt, base_size=18)
                 for r in p.runs:
                     r.bold = True
                 first_h1 = False
@@ -147,8 +147,7 @@ def build(md_path: Path):
                 p.paragraph_format.space_before = Pt(10 if lvl == 1 else 7)
                 p.paragraph_format.space_after = Pt(3)
                 size = {1: 14, 2: 12, 3: 10.5}[lvl]
-                col = NAVY if lvl == 1 else (ACCENT if lvl == 2 else None)
-                add_runs(p, txt, base_size=size, base_color=col)
+                add_runs(p, txt, base_size=size)
                 for r in p.runs:
                     r.bold = True
             i += 1
@@ -163,7 +162,7 @@ def build(md_path: Path):
             p = doc.add_paragraph()
             p.paragraph_format.left_indent = Inches(0.25)
             p.paragraph_format.space_after = Pt(8)
-            add_runs(p, " ".join(buf), base_size=10, base_color=GREY)
+            add_runs(p, " ".join(buf), base_size=10)
             continue
 
         # table
@@ -190,13 +189,11 @@ def build(md_path: Path):
                     par.paragraph_format.space_after = Pt(1)
                     txt = row[ci] if ci < len(row) else ""
                     if ri == 0:
-                        _shade(cell, "1F3864")
-                        add_runs(par, txt, base_size=9, base_color=WHITE)
+                        _shade(cell, "E8E8E8")
+                        add_runs(par, txt, base_size=9)
                         for rr in par.runs:
                             rr.bold = True
                     else:
-                        if ri % 2 == 0:
-                            _shade(cell, "EEF2F8")
                         add_runs(par, txt, base_size=9)
             doc.add_paragraph().paragraph_format.space_after = Pt(2)
             continue

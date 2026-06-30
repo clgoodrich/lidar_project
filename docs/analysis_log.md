@@ -5,6 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-30 — Renderers: drop inline bold + colored text (cleaner look)
+
+Per user ("get rid of the random bolds, the color changed in text"), simplified both renderers
+(`_md_to_pdf.py`, `_md_to_docx.py`): inline `**bold**`/`***bolditalic***` now render as normal
+weight (italic kept for bolditalic); all text is black; headings are black + bold (hierarchy via
+size only); blockquote/captions black (italic kept); tables get a light-grey header with black
+bold text and no zebra striping (grid only). Regenerated all four outputs (formal + plain ×
+pdf/docx). Only remaining color is inside Fig. 1 (an actual diagram image, not text).
+
+---
+
 ## 2026-06-30 — Plain proposal: de-em-dashed + tone fixed
 
 Revised `finesst_proposal_plain.md` per user: removed all em-dashes (en-dashes kept only in

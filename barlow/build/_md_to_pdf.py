@@ -53,48 +53,49 @@ except Exception as e:  # fall back to Helvetica (some glyphs may drop)
 
 
 def _styles():
-    base = dict(fontName=FONT, fontSize=9.5, leading=13, alignment=TA_LEFT)
+    # uniform black text; hierarchy via size + bold on headings only (no color,
+    # no inline bold in body — see inline()).
+    base = dict(fontName=FONT, fontSize=9.5, leading=13, alignment=TA_LEFT,
+                textColor=colors.black)
     out = {
         "title": ParagraphStyle("title", **{**base, "fontName": FONT_B,
-                                            "fontSize": 16, "leading": 20,
-                                            "textColor": NAVY, "spaceAfter": 10}),
+                                            "fontSize": 16, "leading": 20, "spaceAfter": 10}),
         "h1": ParagraphStyle("h1", **{**base, "fontName": FONT_B,
-                                      "fontSize": 13, "leading": 16, "textColor": NAVY,
+                                      "fontSize": 13, "leading": 16,
                                       "spaceBefore": 12, "spaceAfter": 5}),
         "h2": ParagraphStyle("h2", **{**base, "fontName": FONT_B,
-                                      "fontSize": 11, "leading": 14, "textColor": ACCENT,
+                                      "fontSize": 11, "leading": 14,
                                       "spaceBefore": 9, "spaceAfter": 4}),
         "h3": ParagraphStyle("h3", **{**base, "fontName": FONT_B,
                                       "fontSize": 10, "leading": 13, "spaceBefore": 6,
                                       "spaceAfter": 3}),
         "body": ParagraphStyle("body", **{**base, "spaceAfter": 6}),
         "quote": ParagraphStyle("quote", **{**base, "fontSize": 9, "leading": 12,
-                                            "textColor": GREY, "leftIndent": 12,
-                                            "borderPadding": 4, "spaceAfter": 6,
-                                            "fontName": FONT_I}),
+                                            "leftIndent": 12, "borderPadding": 4,
+                                            "spaceAfter": 6, "fontName": FONT_I}),
         "cap": ParagraphStyle("cap", **{**base, "fontSize": 8.3, "leading": 11,
-                                        "textColor": GREY, "spaceAfter": 8,
-                                        "alignment": TA_LEFT}),
+                                        "spaceAfter": 8, "fontName": FONT_I}),
         "cell": ParagraphStyle("cell", **{**base, "fontSize": 8.2, "leading": 10}),
         "cellh": ParagraphStyle("cellh", **{**base, "fontSize": 8.2, "leading": 10,
-                                            "fontName": FONT_B,
-                                            "textColor": colors.white}),
+                                            "fontName": FONT_B}),
         "li": ParagraphStyle("li", **{**base, "spaceAfter": 2}),
     }
     return out
 
 
 def inline(md: str) -> str:
-    """Markdown inline -> reportlab mini-HTML."""
+    """Markdown inline -> reportlab mini-HTML. Bold is dropped (no inline bolding);
+    italic and code are kept."""
     # map emoji (not in DejaVu) to safe glyphs; strip variation selectors
     md = (md.replace("️", "").replace("✅", "✓").replace("⚠", "▲")
             .replace("⛔", "✗").replace("⚙", "•"))
     md = escape(md, quote=False)
+    md = re.sub(r"\*\*\*([^*]+)\*\*\*", r"<i>\1</i>", md)  # bolditalic -> italic
     md = re.sub(r"`([^`]+)`", rf'<font face="{FONT_MONO}" size="8.5">\1</font>', md)
-    md = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", md)
+    md = re.sub(r"\*\*([^*]+)\*\*", r"\1", md)             # bold -> plain text
     md = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", md)
-    md = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", md)  # links -> text
-    return md  # DejaVu has full Unicode → no entity substitution needed
+    md = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", md)     # links -> text
+    return md
 
 
 def build(md_path: Path):
@@ -183,8 +184,8 @@ def build(md_path: Path):
                     r.append(Paragraph("", st["cell"]))
             tbl = Table(cells, colWidths=[page_w / ncol] * ncol, repeatRows=1)
             tbl.setStyle(TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), NAVY),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#eef2f8")]),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8e8e8")),
+                ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#999999")),
                 ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#cccccc")),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 4),
