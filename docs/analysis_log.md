@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-30 — Plain-language FINESST proposal variant
+
+Added `barlow/docs/finesst_proposal_plain.md` — same science, same real numbers/figures, written
+for a new-grad audience (keeps the lingo: U-Net, NMAD, ICP, DoD, LOD95, PDD — but glosses each
+inline). Its own source of truth (not auto-derived from the formal version). Rendered to
+`finesst_proposal_plain.pdf` (7 pp) + `.docx` via the existing `_md_to_pdf.py` / `_md_to_docx.py`.
+
+---
+
 ## 2026-06-30 — FINESST proposal reframed to proposal-voice + PDF/DOCX renderers
 
 Reframed `finesst_proposal.md` so it reads as a *proposal* (proposed/future work), not as a

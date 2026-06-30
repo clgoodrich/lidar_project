@@ -18,9 +18,10 @@ barlow/
     _md_to_docx.py           # render finesst_proposal.md -> .docx (python-docx)
   docs/
     finesst_proposal.md              # full ~6-page NASA FINESST S/T/M section (SOURCE OF TRUTH)
-    finesst_proposal.pdf             # rendered PDF (regenerate via _md_to_pdf.py)
-    finesst_proposal.docx            # rendered Word doc (regenerate via _md_to_docx.py)
-    finesst_figures/                 # fig1-5 PNGs used by the proposal (committed, small)
+    finesst_proposal.pdf/.docx       # rendered (regenerate via _md_to_pdf.py / _md_to_docx.py)
+    finesst_proposal_plain.md        # same proposal, plain-language voice (own SOURCE OF TRUTH)
+    finesst_proposal_plain.pdf/.docx # rendered plain version
+    finesst_figures/                 # fig1-5 PNGs shared by both versions (committed, small)
     barlow_data_manifest.md          # dataset inventory + "reproduce everything" recipe
     barlow_dissertation_explained.md # plain-language walkthrough of the dissertation
     FINESST_Barlow_Expansion_Concept.pdf  # earlier planning brief (superseded by finesst_proposal.md)
