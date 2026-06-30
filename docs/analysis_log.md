@@ -5,6 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — Change detection WORKS: 2001→2014 DoD pilot validates vs dissertation
+
+Proved we can do change comparisons with current data. Wrote `_change_detection.py`
+(DoD: warp both epochs to a common grid → difference → robust median/NMAD → LOD95 =
+1.96·NMAD → erosion/deposition volumes). Pilot 2001(ATM 2 m) vs 2014(NCALM) over the Von
+Guerard window (bbox 26000 37000 33000 44000). **Bug caught by QC** (first run: NMAD 2.7 m,
+2×10¹¹ m³ deposition — obviously wrong): the 2001 DEM fills with −9999 but declares
+`nodata=None`, so gdalwarp bilinear-interpolated the fill across nodata edges, injecting
+−9998.99/−5000 garbage that an exact `!=-9999` mask passed. Fixed with `-srcnodata -9999`
+on the 2001 warp + a plausible-elevation guard (−500<z<4000). **After fix:** vertical bias
+−0.04 m (epochs already co-registered), **NMAD 0.211 m → LOD95 0.414 m** — squarely in
+Barlow's published 2001-14 range (NMAD 0.07-0.46, LOD95 0.15-0.92). 23.8% of cells exceed
+LOD; net +8.0×10⁶ m³ (window-wide, incl. glacier/snow — not yet masked to channels).
+Caveats: vertical-bias co-reg only (no ICP x/y yet); no stream-channel mask (would give
+per-stream rates like Ch7); 51% valid (2001 only covered the valley floor in this window).
+
+---
+
 ## 2026-06-29 — LTER glacier mass-balance + soil/active-layer drivers (attribution set)
 
 Closed the last small driver gap (no huge downloads). Added to `LTER_PACKAGES` + a
