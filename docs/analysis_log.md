@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — ICP confirmed: helps on relief, hurts on flat floor (relief is the key)
+
+Followed up the worse-on-flat-floor ICP result by scanning the 2001 taylore DEM for
+high-relief, well-covered windows (1.5 km blocks, ≥85% cover, ≥60 m relief) → top hit
+651 m relief at x[24.5-26.0k] y[44.0-45.5k] (a valley wall). Re-ran `--icp` on a 2.5 km
+window there (bbox 24000 43500 26500 46000). **ICP HELPED:** NMAD 0.277→**0.226 m** (~18%
+lower), vertical bias +0.176→+0.003 m, ICP fitness 0.95 (vs 0.21→0.57 m and fitness 1.47 on
+the flat-floor Von Guerard window). Confirms: point-to-point ICP needs 3-D relief to
+constrain x/y — use it on windows with valley-wall/flank terrain; on flat floor stick with
+vertical-bias co-reg. Both now reproducible via `--icp`; pick the window by relief.
+
+---
+
 ## 2026-06-29 — ICP co-registration added (reuses WellSight filters.icp) — honest result
 
 Added `--icp` to `barlow/build/_change_detection.py`, reusing WellSight's PDAL `filters.icp`
