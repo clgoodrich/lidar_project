@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-30 — Removed em-dashes across the formal proposal + figures + footers
+
+De-em-dashed `finesst_proposal.md` (43 → 0): bold label lead-ins / table cells became colons,
+the rest became commas (plain version was already clean). Also removed the em-dashes baked into
+figure text (`_finesst_figures.py`: DoD colorbar label, error-model title) and the page-footer /
+PDF-title strings in both renderers. Regenerated the 5 figures and all four docs (formal + plain ×
+pdf/docx). En-dashes in numeric ranges (e.g. 2021–23, O1–O3) kept as correct typography.
+
+---
+
 ## 2026-06-30 — Renderers: drop inline bold + colored text (cleaner look)
 
 Per user ("get rid of the random bolds, the color changed in text"), simplified both renderers

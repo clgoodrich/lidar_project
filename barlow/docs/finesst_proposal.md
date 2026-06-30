@@ -1,13 +1,13 @@
 # From Detection to Attribution: Physically-Coupled, Cross-Domain Monitoring of Ephemeral-Channel Geomorphic Change from Terrain Alone
 
-**NASA ROSES-2025 F.5 — Future Investigators in NASA Earth and Space Science and Technology (FINESST)**
-**Target division:** Earth Science Division (EARTH25) — Antarctic cryosphere / climate
+**NASA ROSES-2025 F.5: Future Investigators in NASA Earth and Space Science and Technology (FINESST)**
+**Target division:** Earth Science Division (EARTH25), Antarctic cryosphere / climate
 **Proposal deadline:** 14 July 2026 (11:59 PM EDT)
 **Structure:** Graduate student = Future Investigator (FI), primary author and intellectual lead; faculty advisor = PI of record. Award up to ~$50,000/yr for up to 3 years.
 
 > **Summary.** This project will transform an existing Antarctic stream-change *monitor* into an
-> *explanatory and predictive* tool. Building on Barlow (2026) — which mapped two decades of
-> ephemeral-channel geomorphic change across the McMurdo Dry Valleys — the proposed work will
+> *explanatory and predictive* tool. Building on Barlow (2026), which mapped two decades of
+> ephemeral-channel geomorphic change across the McMurdo Dry Valleys, the proposed work will
 > **(O1)** attribute that change to its physical/climate drivers, **(O2)** generalize the
 > terrain-only detector across sensors and valleys, and **(O3)** deliver calibrated per-pixel
 > uncertainty. Preliminary studies by the Future Investigator (§4) have reproduced and validated
@@ -23,22 +23,22 @@ century, were considered the planet's most geomorphologically stable landscape. 
 is breaking down: in an energy-limited system, small increases in solar absorption and
 permafrost degradation translate directly into **ephemeral summer streams** that flow for a few
 weeks each year, move sediment, and reshape channels. These streams are the most sensitive
-measurable indicator of climate change in the most stable place on Earth — a continental-scale
+measurable indicator of climate change in the most stable place on Earth, a continental-scale
 "climate canary."
 
 **Barlow (2026)** [1] established the measurement foundation in three transferable pillars:
 
-1. **Terrain-only semantic segmentation** — a U-Net delineates stream boundaries from DEM
+1. **Terrain-only semantic segmentation:** a U-Net delineates stream boundaries from DEM
    derivatives alone (elevation, slope, aspect most informative; no water/color signal),
    so it works in channels that are dry 11 months a year.
-2. **Satellite-DEM validation** — point-to-plane ICP alignment, **Laplacian** error modeling,
+2. **Satellite-DEM validation:** point-to-plane ICP alignment, **Laplacian** error modeling,
    and outlier-robust **NMAD** uncertainty prove free REMA satellite DEMs are accurate enough
    for centimeter-to-meter stream-corridor change detection.
-3. **Multi-epoch change detection** — DEM-of-Difference (DoD) inside segmented stream masks,
+3. **Multi-epoch change detection:** DEM-of-Difference (DoD) inside segmented stream masks,
    level-of-detection thresholds (LOD95 = 1.96 × NMAD), and per-stream erosion/deposition and
    acceleration rates across four valleys and three epochs (2001 & 2014 lidar, 2021–23 REMA).
 
-**The gap.** Barlow's dissertation ends at *description* — it maps **where** change is happening
+**The gap.** Barlow's dissertation ends at *description*: it maps **where** change is happening
 (Denton Hills is the erosion hotspot; parts of Taylor Valley are accelerating) but explicitly
 defers two threads to future work: **(a) coupling geomorphic change to physical/climate drivers**,
 and **(b) generalizing the model beyond the MDVs.** A Future Investigator project lives precisely
@@ -47,7 +47,7 @@ genuine scientific increment, not a replication.
 
 ![Fig 1](finesst_figures/fig5_workflow.png)
 ***Figure 1.*** *From detection (Barlow 2026; the first four stages, reproduced by the FI in
-preliminary work — §4) to the proposed attribution and prediction science (last two stages,
+preliminary work, §4) to the proposed attribution and prediction science (last two stages,
 the new contribution of this project).*
 
 ---
@@ -56,55 +56,55 @@ the new contribution of this project).*
 
 | # | Objective | Hypothesis | Increment over Barlow |
 |---|---|---|---|
-| **O1** | **Attribution (headline science).** Pair per-stream gross/net/acceleration rates with energy-balance drivers — air/ground temperature, insolation, **positive-degree-days (PDD)**, melt-season discharge, glacier mass balance, active-layer depth — from MDV-LTER + ERA5/AMPS reanalysis. | **H1:** Geomorphic flux is governed by *cumulative melt energy*, not raw water volume; a PDD/insolation-based energy model predicts per-stream gross rate better than discharge alone (and explains the residual scatter in Fig. 4). | Listed verbatim as Barlow future work; never quantified. |
+| **O1** | **Attribution (headline science).** Pair per-stream gross/net/acceleration rates with energy-balance drivers, air/ground temperature, insolation, **positive-degree-days (PDD)**, melt-season discharge, glacier mass balance, active-layer depth, from MDV-LTER + ERA5/AMPS reanalysis. | **H1:** Geomorphic flux is governed by *cumulative melt energy*, not raw water volume; a PDD/insolation-based energy model predicts per-stream gross rate better than discharge alone (and explains the residual scatter in Fig. 4). | Listed verbatim as Barlow future work; never quantified. |
 | **O2** | **Cross-sensor & cross-valley generalization.** Make the terrain-only segmenter robust across sensors (lidar 2001/2014 ↔ REMA) and all four valleys; quantify and **correct the lidar→satellite domain shift** that limits the satellite epoch. | **H2:** A sensor-aware normalization (per-pixel slope/aspect-conditioned bias correction) closes most of the lidar–REMA F1 gap, recovering near-lidar segmentation on REMA. | Barlow flags sensor generalization as future work. |
-| **O3** | **Calibrated uncertainty.** Extend the Laplacian/NMAD/LOD framework into a **per-pixel, sensor-aware confidence layer** so every change map ships with calibrated uncertainty. | **H3:** Conditioning NMAD on slope, aspect, and sensor yields LOD maps whose empirical exceedance matches the nominal 95% — a trustworthy-EO product. | Barlow uses a single global NMAD per epoch-pair. |
+| **O3** | **Calibrated uncertainty.** Extend the Laplacian/NMAD/LOD framework into a **per-pixel, sensor-aware confidence layer** so every change map ships with calibrated uncertainty. | **H3:** Conditioning NMAD on slope, aspect, and sensor yields LOD maps whose empirical exceedance matches the nominal 95%, a trustworthy-EO product. | Barlow uses a single global NMAD per epoch-pair. |
 
 **Predictive payoff (ties O1–O3 together):** a model that, given a driver field, predicts *where
-acceleration migrates next* — the actionable form of the "climate canary."
+acceleration migrates next*, the actionable form of the "climate canary."
 
 ---
 
 ## 3. Methodology
 
-**Data (free/public; assembled in preliminary work — see §6).** Elevation backbone: MDV airborne
+**Data (free/public; assembled in preliminary work, see §6).** Elevation backbone: MDV airborne
 lidar 2001 (NASA ATM, 2 m) + 2014 (NCALM, 1 m), and REMA v2.0 (2 m, 2021–23). Per-epoch
-derivatives — elevation, slope, aspect, **profile curvature** (signed), **MFD flow accumulation**,
+derivatives, elevation, slope, aspect, **profile curvature** (signed), **MFD flow accumulation**,
 lidar intensity. Drivers: MDV-LTER meteorology (Lake Bonney), **21 stream-discharge gauges**,
 glacier mass balance (7 glaciers), continuous soil T/EC/VWC (active-layer proxy); ERA5 monthly
 1993–2024 and AMPS 2.67-km for spatial gap-fill. Labels: MCM-LTER stream centerlines (public
-stand-in for Barlow's access-gated 217 hand-digitized tiles — see §7 risk).
+stand-in for Barlow's access-gated 217 hand-digitized tiles, see §7 risk).
 
-**O1 — Attribution.** For each gauged stream and epoch, the proposed work will (i) compute
+**O1, Attribution.** For each gauged stream and epoch, the proposed work will (i) compute
 gross/net geomorphic rate by DoD inside the channel mask (method demonstrated in preliminary work,
-Fig. 2); (ii) build a per-stream **energy time series** — melt-season PDD and incoming shortwave
+Fig. 2); (ii) build a per-stream **energy time series**, melt-season PDD and incoming shortwave
 from LTER + ERA5/AMPS, cumulative discharge, and active-layer depth; (iii) fit hierarchical
 regression / random-forest models of rate vs. drivers, with leave-one-stream-out cross-validation;
 and (iv) test H1 by comparing an energy-balance predictor against discharge-only (Fig. 5 is the
 preliminary seed: the raw-discharge relationship is real but incomplete). Acceleration (3-epoch
 Taylor streams) will be regressed against driver *trends*.
 
-**O2 — Generalization.** The work will quantify the lidar→REMA domain shift over stable terrain as
+**O2, Generalization.** The work will quantify the lidar→REMA domain shift over stable terrain as
 a function of slope/aspect, learn a correction, retrain/fine-tune the segmenter with sensor
 augmentation, and evaluate F1 across all four valleys and both sensor regimes. The WellSight
 feasibility anchor (§5) already demonstrates the identical architecture transferring across biomes.
 
-**O3 — Calibrated uncertainty.** The work will replace the single global NMAD with NMAD conditioned
+**O3, Calibrated uncertainty.** The work will replace the single global NMAD with NMAD conditioned
 on (slope, aspect, sensor), emit a per-pixel LOD raster, and validate calibration by checking that
 observed sub-LOD residual fractions match nominal confidence on held-out stable terrain
-(Fig. 4 shows the global version demonstrated in preliminary work — Laplacian fits the residuals
+(Fig. 4 shows the global version demonstrated in preliminary work, Laplacian fits the residuals
 far better than Gaussian).
 
-**Reproducibility/QC.** The pipeline is fully scripted — input data and all derivatives regenerate
-from source — with robust statistics and CRS checks enforced at every step (e.g., a preliminary QC
-catch — a 2001 nodata bug inflating NMAD to 2.7 m — was identified and fixed).
+**Reproducibility/QC.** The pipeline is fully scripted, input data and all derivatives regenerate
+from source, with robust statistics and CRS checks enforced at every step (e.g., a preliminary QC
+catch, a 2001 nodata bug inflating NMAD to 2.7 m, was identified and fixed).
 
 ---
 
 ## 4. Preliminary Studies and Feasibility
 
 To establish feasibility, the FI conducted preliminary studies that reproduce the pipeline
-underpinning the proposed work. These are feasibility demonstrations — not funded-project
+underpinning the proposed work. These are feasibility demonstrations, not funded-project
 deliverables; the proposed research (§2–3) extends them. The FI independently reproduced Barlow's
 Pillar-3 change detection on Taylor Valley, obtaining results that fall **inside her published
 ranges**, and took an exploratory first step into the O1 attribution science.
@@ -122,47 +122,47 @@ patterns emerge above the noise floor; REMA auto-reprojected from EPSG:3031 to t
 | 2014→2021-23 (lidar–REMA) | 0.23 m | 0.44 m | NMAD 0.19–0.53 / LOD95 0.37–1.04 | ✅ |
 
 Point-to-point **ICP** converged with fitness 0.95 m² (mean-squared correspondence distance) and
-improved DoD NMAD on high-relief windows; on the flat valley floor it correctly added no benefit —
+improved DoD NMAD on high-relief windows; on the flat valley floor it correctly added no benefit,
 exactly the relief-dependence Barlow's point-to-plane ICP exhibits.
 
-**(b) Per-stream rates (Fig. 3) — the masked products the proposed O1 will consume.**
+**(b) Per-stream rates (Fig. 3), the masked products the proposed O1 will consume.**
 
 ![Fig 3](finesst_figures/fig2_per_stream_rates.png)
 ***Figure 3.*** *Per-stream gross (busyness) and net (erosion–deposition) sediment-flux rates for
 six gauged Taylor Valley streams, both epochs, channels masked to MCM-LTER centerlines.*
 
-**(c) Robust error model (Fig. 4) — the basis for the proposed O3.**
+**(c) Robust error model (Fig. 4), the basis for the proposed O3.**
 
 ![Fig 4](finesst_figures/fig3_error_model.png)
-***Figure 4.*** *Stable-terrain DoD residuals are sharply **Laplacian**, not Gaussian — the fat
+***Figure 4.*** *Stable-terrain DoD residuals are sharply **Laplacian**, not Gaussian, the fat
 tails would inflate a σ-based LOD. This reproduces Barlow's NMAD/Laplacian finding and is the
 launch point for the proposed per-pixel calibrated-uncertainty layer (O3).*
 
-**(d) An exploratory attribution signal (Fig. 5) — evidence O1 is tractable.**
+**(d) An exploratory attribution signal (Fig. 5), evidence O1 is tractable.**
 
 ![Fig 5](finesst_figures/fig4_attribution.png)
 ***Figure 5.*** *Per-stream gross geomorphic rate vs. cumulative gauged melt discharge. The
-**lidar–lidar epoch shows a strong positive relationship (r = +0.89)** — busier streams move more
+**lidar–lidar epoch shows a strong positive relationship (r = +0.89)**, busier streams move more
 sediment, as expected. The REMA epoch is noisier (r = +0.43; sparse post-2014 gauge coverage and
 larger satellite LOD). This motivates O1: raw discharge explains the first-order signal but leaves
 structured residuals, so the proposed work will develop a **melt-energy** (PDD/insolation/
 active-layer) model to close the gap and turn correlation into attribution.*
 
 **Feasibility summary.** These preliminary studies retire the principal execution risk in any
-FINESST proposal — whether the applicant can run the full pipeline end to end. The proposed
+FINESST proposal, whether the applicant can run the full pipeline end to end. The proposed
 research (O1–O3) builds new science on this demonstrated foundation.
 
 ---
 
 ## 5. Feasibility Anchor (FI Qualifications)
 
-The FI independently operates an end-to-end pipeline — **"WellSight"** — that runs the *identical
+The FI independently operates an end-to-end pipeline, **"WellSight"**, that runs the *identical
 architecture* on a completely different landscape: U-Net semantic segmentation on lidar-derived
 terrain rasters (DEM, slope, local relief, openness), ICP co-registration, and DEM-of-Difference
 change analysis, applied to Appalachian Plateau channels, roads, and abandoned-well pad scars
 detected from elevation alone. This independently demonstrates that the method generalizes across
 sensors and biomes (directly de-risking the proposed **O2**) and that the FI already commands the
-full toolchain — a concrete readiness anchor most FI applicants lack. The MDV preliminary studies
+full toolchain, a concrete readiness anchor most FI applicants lack. The MDV preliminary studies
 in §4 extend that same toolchain to this project's target system.
 
 ---
@@ -176,14 +176,14 @@ labels (mitigated below and in §7).
 
 | Category | Source | Availability |
 |---|---|---|
-| **A. Terrain** — MDV lidar 2001 (ATM/ScienceBase) + 2014 (NCALM/OpenTopography); REMA 2021-23 (PGC) | free/public | ✅ in hand |
+| **A. Terrain:** MDV lidar 2001 (ATM/ScienceBase) + 2014 (NCALM/OpenTopography); REMA 2021-23 (PGC) | free/public | ✅ in hand |
 | Per-epoch derivatives (elev/slope/aspect/curv/MFD-flow/intensity) | scripted from terrain | ✅ demonstrated (Taylor pilot) |
-| **B. Labels** — MCM-LTER stream centerlines (QC) | EDI `knb-lter-mcm.6007` | ✅ in hand |
+| **B. Labels:** MCM-LTER stream centerlines (QC) | EDI `knb-lter-mcm.6007` | ✅ in hand |
 | Barlow's 217 hand-digitized tiles | author-gated | ⚠️ **lone access-gated dependency** (see §7) |
-| **C. Drivers** — LTER met, 21 discharge gauges, glacier mass balance, soil/active-layer | EDI | ✅ in hand |
-| Reanalysis — ERA5 monthly 1993-2024; AMPS 2.67 km | CDS; GDEX | ✅ in hand |
-| **D. Cross-valley** — all four valleys, both lidar + REMA | OpenTopography/PGC | ✅ DEMs in hand; per-valley stacks to build |
-| **E. Validation** — WorldView/Maxar (label QC); published rates | PGC (restricted); literature | optional / cross-check vs Barlow |
+| **C. Drivers:** LTER met, 21 discharge gauges, glacier mass balance, soil/active-layer | EDI | ✅ in hand |
+| Reanalysis: ERA5 monthly 1993-2024; AMPS 2.67 km | CDS; GDEX | ✅ in hand |
+| **D. Cross-valley:** all four valleys, both lidar + REMA | OpenTopography/PGC | ✅ DEMs in hand; per-valley stacks to build |
+| **E. Validation:** WorldView/Maxar (label QC); published rates | PGC (restricted); literature | optional / cross-check vs Barlow |
 
 ---
 
@@ -210,8 +210,8 @@ other valleys as 2-epoch. (3) *Discharge gauge gaps* → ERA5/AMPS energy reanal
 holes (a core reason O1 uses melt energy, not just gauges).
 
 **Data Management Plan.** All input data are free/public (NASA ATM, NCALM/OpenTopography, PGC REMA,
-MCM-LTER/EDI, Copernicus ERA5, AMPS/GDEX), cited per source. Derived products — change-detection
-rasters, per-stream rate tables, calibrated-uncertainty layers, and stream-boundary polygons — will
+MCM-LTER/EDI, Copernicus ERA5, AMPS/GDEX), cited per source. Derived products, change-detection
+rasters, per-stream rate tables, calibrated-uncertainty layers, and stream-boundary polygons, will
 be released open-access (DoIs via Zenodo / EDI) with the processing code (PDAL/WhiteboxTools/GDAL +
 Python). Heavy regenerable rasters are excluded from version control; lightweight scripts, figures,
 and tables are tracked. Outputs follow ASPRS/OGC standards and carry explicit CRS, method, and
@@ -227,7 +227,7 @@ Engineering, University of Houston (chair: C. L. Glennie). 240 pp.
 
 [2] Barlow, M. C., Zhu, X., & Glennie, C. L. (2022). Stream Boundary Detection of a Hyper-Arid, Polar
 Region Using a U-Net Architecture: Taylor Valley, Antarctica. *Remote Sensing* 14(1):234.
-doi:10.3390/rs14010234. *(Dissertation Chapter 4 — proof of concept.)*
+doi:10.3390/rs14010234. *(Dissertation Chapter 4, proof of concept.)*
 
 [3] Höhle, J., & Höhle, M. (2009). Accuracy assessment of digital elevation models by means of robust
 statistical methods. *ISPRS J. Photogramm. Remote Sens.* 64(4):398–406. *(NMAD / robust DEM error.)*

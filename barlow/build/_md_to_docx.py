@@ -233,7 +233,7 @@ def build(md_path: Path):
     # footer with page numbers
     footer = doc.sections[0].footer
     fp = footer.paragraphs[0]
-    fp.text = "FINESST S/T/M — MDV ephemeral-channel attribution (draft)\t\t"
+    fp.text = "FINESST S/T/M: MDV ephemeral-channel attribution (draft)\t\t"
     fp.alignment = WD_ALIGN_PARAGRAPH.LEFT
     run = fp.add_run()
     fld1 = OxmlElement("w:fldSimple"); fld1.set(qn("w:instr"), "PAGE")

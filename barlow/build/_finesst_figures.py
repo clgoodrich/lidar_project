@@ -1,6 +1,6 @@
 """Generate the figure set for the FINESST proposal (barlow/docs/finesst_proposal.md).
 
-Every figure is built from REAL pipeline outputs already on J:\\barlow_data — no
+Every figure is built from REAL pipeline outputs already on J:\\barlow_data, no
 mock data. Sources:
   - DoD rasters .............. change_detection/taylor_2001_2014/dod_2001_2014_icp.tif
                               change_detection/taylor_2014_rema/dod_2014_rema.tif
@@ -82,7 +82,7 @@ def fig_dod_maps():
         ax.set_ylabel("Northing (m)")
         ax.ticklabel_format(style="plain")
         cb = fig.colorbar(im, ax=ax, shrink=0.85, extend="both")
-        cb.set_label("Elevation change (m)  —  erosion < 0 < deposition")
+        cb.set_label("Elevation change (m):  erosion < 0 < deposition")
         ax.text(0.02, 0.02, f"NMAD {NMAD[key]:.2f} m   LOD95 {LOD95[key]:.2f} m",
                 transform=ax.transAxes, fontsize=8, va="bottom",
                 bbox=dict(boxstyle="round", fc="white", alpha=0.8))
@@ -157,7 +157,7 @@ def fig_error_model():
     ax.text(lod, ax.get_ylim()[1]*0.92, f" LOD95 = ±{lod:.2f} m", fontsize=9)
     ax.set_xlabel("Elevation difference (m)")
     ax.set_ylabel("Probability density")
-    ax.set_title(f"Robust error model — Laplacian beats Gaussian\n"
+    ax.set_title(f"Robust error model, Laplacian beats Gaussian\n"
                  f"ICP fitness {ICP_FITNESS:.2f} m² (mean sq corr. dist; lower=better)")
     ax.legend(frameon=False, fontsize=9)
     fig.savefig(OUT / "fig3_error_model.png", bbox_inches="tight")
@@ -178,7 +178,7 @@ def _cum_discharge(glob_pat, t0, t1):
 
 
 def fig_attribution():
-    """Fig 4: preliminary attribution — gross geomorphic rate vs cumulative melt
+    """Fig 4: preliminary attribution, gross geomorphic rate vs cumulative melt
     discharge per stream (the FINESST core science, on real data)."""
     a, b = _load_rates()
     rows = []
@@ -205,7 +205,7 @@ def fig_attribution():
             ax.annotate(r["stream"], (r["cum_L"]/1e9, r["gross"]),
                         textcoords="offset points", xytext=(6, 3), fontsize=8)
         # per-epoch log-log trend (the lidar–lidar epoch has the cleaner signal;
-        # the REMA epoch is noisier — sparse post-2014 gauge coverage)
+        # the REMA epoch is noisier, sparse post-2014 gauge coverage)
         lx = np.log10(sub["cum_L"].values/1e9); ly = np.log10(sub["gross"].values)
         ok = np.isfinite(lx) & np.isfinite(ly)
         if ok.sum() >= 3:

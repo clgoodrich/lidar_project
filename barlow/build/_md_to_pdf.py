@@ -54,7 +54,7 @@ except Exception as e:  # fall back to Helvetica (some glyphs may drop)
 
 def _styles():
     # uniform black text; hierarchy via size + bold on headings only (no color,
-    # no inline bold in body — see inline()).
+    # no inline bold in body, see inline()).
     base = dict(fontName=FONT, fontSize=9.5, leading=13, alignment=TA_LEFT,
                 textColor=colors.black)
     out = {
@@ -232,7 +232,7 @@ def build(md_path: Path):
         canvas.setFont(FONT, 7.5)
         canvas.setFillColor(GREY)
         canvas.drawString(0.65 * inch, 0.45 * inch,
-                          "FINESST S/T/M — MDV ephemeral-channel attribution (draft)")
+                          "FINESST S/T/M: MDV ephemeral-channel attribution (draft)")
         canvas.drawRightString(letter[0] - 0.65 * inch, 0.45 * inch,
                                f"p. {doc.page}")
         canvas.restoreState()
@@ -240,7 +240,7 @@ def build(md_path: Path):
     doc = SimpleDocTemplate(str(out_pdf), pagesize=letter,
                             leftMargin=0.65 * inch, rightMargin=0.65 * inch,
                             topMargin=0.6 * inch, bottomMargin=0.65 * inch,
-                            title="FINESST Proposal — MDV ephemeral-channel attribution")
+                            title="FINESST Proposal: MDV ephemeral-channel attribution")
     doc.build(story, onFirstPage=_footer, onLaterPages=_footer)
     print(f"wrote {out_pdf}  ({out_pdf.stat().st_size/1024:.0f} KB, {doc.page} pages)")
 
