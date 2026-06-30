@@ -5,6 +5,26 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-30 — FINESST proposal (full S/T/M section) + figure set from real outputs
+
+Drafted the actual ~6-page NASA FINESST Scientific/Technical/Management section
+(`barlow/docs/finesst_proposal.md`), superseding the planning brief
+(`FINESST_Barlow_Expansion_Concept.pdf`). Key upgrade over the brief: it now rests on
+**reproduced + validated preliminary results** (the brief said "no data held yet"). New
+script `barlow/build/_finesst_figures.py` builds 5 figures from pipeline outputs on J:
+(no mock data): (1) DoD change maps both epochs, |Δz|>LOD95; (2) per-stream gross/net rates;
+(3) Laplacian-vs-Gaussian error model + ICP fitness; (4) detection→attribution concept;
+(5) **preliminary attribution** — per-stream gross rate vs cumulative LTER melt discharge.
+**New result:** lidar epoch (2001–14) gross rate vs cumulative discharge **r = +0.89**
+(strong positive); REMA epoch r = +0.43 (noisier — sparse post-2014 gauge coverage + larger
+satellite LOD). Framed as motivation for O1 (raw discharge → first-order signal; FI develops
+PDD/insolation/active-layer energy model to close the residual). Proposal lays out O1 attribution
+/ O2 cross-sensor generalization / O3 calibrated per-pixel uncertainty, 3-yr timeline, risks
+(Barlow's label tiles = lone access-gated dependency), and DMP. Figures are small PNGs (≤282 KB),
+committed (not gitignored); large-file audit clean.
+
+---
+
 ## 2026-06-29 — Per-stream masking + 2014→REMA epoch + ICP-fitness clarified ("the rest")
 
 Generalized `_change_detection.py`: `--old/--new` epoch pair over {2001, 2014, rema},
