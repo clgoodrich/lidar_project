@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-28
 **Storage:** `J:\barlow_data\` (off-repo; 156 GB free remaining)
-**Fetch tooling:** `notebooks/wellsight_v2/build/_fetch_barlow_data.py`
+**Fetch tooling:** `barlow/build/_fetch_barlow_data.py`
 **Region:** McMurdo Dry Valleys, Antarctica (Taylor / Wright / Victoria-Barwick / Denton Hills)
 
 The datasets behind Barlow's MDV stream-boundary dissertation and our FINESST
@@ -67,7 +67,7 @@ free/public; the only manual prerequisites are the ERA5 CDS token + a one-time l
 click (everything else is anonymous). Run from the repo root:
 
 ```bash
-F=notebooks/wellsight_v2/build/_fetch_barlow_data.py
+F=barlow/build/_fetch_barlow_data.py
 # --- elevation epochs ---
 python $F --atm2001                                   # 2001 ATM 2m DEMs (ScienceBase, 2.5 GB)
 python $F --lidar                                     # 2014 bare-earth 1m DEMs (26 GB)
@@ -82,7 +82,7 @@ python $F --setup-cds <YOUR_CDS_TOKEN>                # writes ~/.cdsapirc (one 
 python $F --era5                                      # ERA5 monthly drivers 1993-2024
 python $F --amps --amps-start 20260527 --amps-end 20260531   # AMPS d3 MDV sample (NCSS)
 # --- derived U-Net input rasters (no download; needs DEM+PC above) ---
-B=notebooks/wellsight_v2/build/_build_barlow_inputs.py
+B=barlow/build/_build_barlow_inputs.py
 python $B --bbox 26000 37000 33000 44000             # validated pilot stack
 # python $B                                           # full Taylor Valley (~11 GB/raster)
 ```
@@ -97,7 +97,7 @@ Add `--list` to any fetch to preview without downloading.
   the lidar–REMA pair is the core validation once the OpenTopography lidar is in hand.
 - Everything downloaded is **free/public**; the blocked items are credential- or
   catalog-ID-gated, not paywalled.
-- To extend: `python notebooks/wellsight_v2/build/_fetch_barlow_data.py --rema --lter --lidar --era5`
+- To extend: `python barlow/build/_fetch_barlow_data.py --rema --lter --lidar --era5`
   (add `--list` to preview). REMA tiles are calibrated to the MDV in the script.
 - **AMPS via NCSS:** the full GRIB files are ~240 MB (whole Antarctica, polar-stereographic
   that eccodes/cfgrib mis-georeferences); GDEX THREDDS **NetcdfSubset** returns the MDV box

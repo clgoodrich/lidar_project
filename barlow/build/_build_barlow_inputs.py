@@ -33,7 +33,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "notebooks" / "wellsight_v2"))
 from _common import run_pdal  # noqa: E402
 
 BARLOW = Path("J:/barlow_data")

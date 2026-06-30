@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — Consolidated all Barlow work into a `barlow/` subfolder
+
+Moved the Barlow/FINESST subproject out of the WellSight tree into a dedicated top-level
+`barlow/` (git mv, history preserved): `barlow/build/` (`_fetch_barlow_data.py`,
+`_build_barlow_inputs.py`, `_change_detection.py`) + `barlow/docs/` (manifest,
+dissertation explainer, FINESST concept) + `barlow/README.md`. Fixed
+`_build_barlow_inputs.py`'s `_common` import to reach `notebooks/wellsight_v2` from the new
+depth; updated the reproduce-recipe paths in the manifest. All three scripts verified to run
+from the new location. Data stays off-repo on `J:\barlow_data`. (This is the WellSight
+analysis log; Barlow-specific details live in `barlow/docs/barlow_data_manifest.md`.)
+
+---
+
 ## 2026-06-29 — Change detection WORKS: 2001→2014 DoD pilot validates vs dissertation
 
 Proved we can do change comparisons with current data. Wrote `_change_detection.py`
