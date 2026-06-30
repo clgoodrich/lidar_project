@@ -5,6 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-29 — ICP co-registration added (reuses WellSight filters.icp) — honest result
+
+Added `--icp` to `barlow/build/_change_detection.py`, reusing WellSight's PDAL `filters.icp`
+approach (`notebooks/wellsight/build/_icp_old_vs_new.py`): rasterize both DEMs to points
+(`readers.gdal`, header=Z), drop nodata, voxel 6 m, ICP fixed=2014/moving=2001 → transform,
+then `filters.transformation` on the full-res 2001 DEM + re-grid to the 2014 grid → re-DoD.
+**Result (Von Guerard pilot): ICP converged but NMAD got WORSE — 0.211 → 0.567 m** (sig
+23.8%→3.9%). Cause: in this window the 2001 ATM only covers the low valley floor (≤210 m,
+little relief), so point-to-point ICP is horizontally under-constrained and drifts, smearing
+z on channel banks. **Conclusion: for these low-relief MDV floor pairs, vertical-bias
+co-registration (NMAD 0.21 m, already in Barlow's range) is preferable; ICP needs terrain
+relief to help.** Options to make ICP earn its place: (a) run over a higher-relief window
+where 2001 has sloped data, or (b) switch to **Nuth & Kääb (2011)** slope/aspect DEM
+co-registration (the DEM-differencing standard, more robust than point-to-point ICP on DEMs).
+Note: Barlow uses point-to-*plane* ICP; PDAL's is point-to-point.
+
+---
+
 ## 2026-06-29 — Consolidated all Barlow work into a `barlow/` subfolder
 
 Moved the Barlow/FINESST subproject out of the WellSight tree into a dedicated top-level
