@@ -14,8 +14,12 @@ barlow/
     _build_barlow_inputs.py  # 6-layer U-Net derivative stack (elev/slope/aspect/curv/MFD-flowacc/intensity)
     _change_detection.py     # multi-epoch DEM-of-Difference (median/NMAD/LOD95, ICP, per-stream rates)
     _finesst_figures.py      # builds the proposal figure set from real pipeline outputs
+    _md_to_pdf.py            # render finesst_proposal.md -> .pdf (reportlab; DejaVu Unicode)
+    _md_to_docx.py           # render finesst_proposal.md -> .docx (python-docx)
   docs/
-    finesst_proposal.md              # full ~6-page NASA FINESST S/T/M section (current deliverable)
+    finesst_proposal.md              # full ~6-page NASA FINESST S/T/M section (SOURCE OF TRUTH)
+    finesst_proposal.pdf             # rendered PDF (regenerate via _md_to_pdf.py)
+    finesst_proposal.docx            # rendered Word doc (regenerate via _md_to_docx.py)
     finesst_figures/                 # fig1-5 PNGs used by the proposal (committed, small)
     barlow_data_manifest.md          # dataset inventory + "reproduce everything" recipe
     barlow_dissertation_explained.md # plain-language walkthrough of the dissertation

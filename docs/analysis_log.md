@@ -5,6 +5,21 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-06-30 — FINESST proposal reframed to proposal-voice + PDF/DOCX renderers
+
+Reframed `finesst_proposal.md` so it reads as a *proposal* (proposed/future work), not as a
+project already underway: added a proposal **Summary** abstract; §4 retitled "Preliminary Studies
+and Feasibility" with explicit "feasibility demonstrations, not funded-project deliverables"
+framing; methodology O1–O3 switched to future tense ("the proposed work will…"); §6 retitled
+"Data Requirements and Availability" (in-hand framing, dropped planning-brief comparisons). Added
+two markdown→doc renderers keeping the .md as single source of truth: `_md_to_pdf.py` (reportlab,
+registers matplotlib DejaVu for full Unicode →/m²/Δz, emoji→safe glyphs) and `_md_to_docx.py`
+(python-docx; headings/tables/images/blockquotes/captions). Outputs: `finesst_proposal.pdf`
+(7 pp, 707 KB) + `finesst_proposal.docx` (567 KB, 4 tables / 5 images). Regenerate:
+`python barlow/build/_md_to_pdf.py barlow/docs/finesst_proposal.md` (and `_md_to_docx.py`).
+
+---
+
 ## 2026-06-30 — FINESST proposal (full S/T/M section) + figure set from real outputs
 
 Drafted the actual ~6-page NASA FINESST Scientific/Technical/Management section
