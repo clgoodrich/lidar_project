@@ -82,14 +82,14 @@ stand-in for Barlow's private hand-drawn training tiles (the one access constrai
 DoD inside the channel (already operational, Fig. 2); **(ii)** assemble a per-stream **energy time
 series** (PDD, insolation, discharge, thaw depth); **(iii)** fit rate-vs-driver models
 (hierarchical regression and random forest) with leave-one-stream-out validation; and **(iv)** test
-H1 directly: energy-based model against discharge-only. Fig. 5 is the preliminary version of this;
-the discharge relationship is real but leaves structured residuals, which is exactly what an
-energy model should resolve. For streams with three time points, I'll regress *acceleration*
+H1 directly: energy-based model against discharge-only. The discharge relationship in Fig. 5 is
+real but leaves structured residuals, which is exactly what an energy model should resolve. For
+streams with three time points, I'll regress *acceleration*
 against *driver trends*.
 
 **O2, generalization.** Quantify the lidar-vs-REMA difference over stable ground as a function of
 slope and aspect, learn a correction, retrain the U-Net with both sensors represented, and evaluate
-F1 across all four valleys and both sensors. My WellSight work (§5) already shows this architecture
+F1 across all four valleys and both sensors. My prior work (§5) already shows this architecture
 holding up on an entirely different landscape, so the risk here is bounded.
 
 **O3, uncertainty.** Replace the global NMAD with one conditioned on (slope, aspect, sensor),
@@ -103,12 +103,11 @@ trusted.)
 
 ---
 
-## 4. Evidence this is feasible (preliminary work)
+## 4. Preliminary results
 
-This is what makes the proposal concrete rather than aspirational: **I've already rebuilt Barlow's
-change-detection pipeline and reproduced results that fall inside her published ranges**, then taken
-a first exploratory step into the O1 science. This is feasibility work to demonstrate readiness, not
-the funded project itself.
+The change-detection foundation this project builds on already works. Rebuilding Barlow's pipeline
+on Taylor Valley reproduces results **inside her published ranges** (below), and a first driver
+analysis surfaces the attribution signal that O1 develops.
 
 **(a) Change detection across all three epochs (Fig. 2).**
 
@@ -139,7 +138,7 @@ rather than the usual bell curve. Assuming a bell curve (and using σ) would let
 the noise estimate, which is why NMAD is the right choice and the starting point for the per-pixel
 uncertainty layer in O3.*
 
-**(d) A first attribution signal (Fig. 5), evidence O1 is tractable.**
+**(d) A first attribution signal (Fig. 5).**
 
 ![Fig 5](finesst_figures/fig4_attribution.png)
 ***Figure 5.*** *Each stream's gross rate against its cumulative melt discharge. In the lidar epoch
@@ -149,20 +148,14 @@ noise floor). That contrast is the case for O1: discharge captures the first-ord
 real scatter, so the proposed work brings in **melt energy** (PDD / insolation / thaw) to resolve
 the why.*
 
-**Feasibility takeaway:** the central execution risk in any FINESST proposal, whether the applicant
-can run the full pipeline, is already addressed. The new science (O1–O3) builds on a foundation
-I've tested.
-
 ---
 
 ## 5. Why I'm positioned to do this
 
-I already run an end-to-end pipeline, **WellSight**, that uses the same machinery (U-Net
-segmentation on terrain layers, ICP alignment, DoD change detection) on a very different landscape:
-detecting channels, roads, and abandoned well-pad scars in the Appalachian Plateau from elevation
-alone. That demonstrates the approach transfers across sensors and biomes, which is precisely O2's
-risk, and that I can operate the full toolchain. The Antarctic preliminary work in §4 applies that
-same toolchain to this project's target system.
+I've built and run this exact machinery (U-Net segmentation on terrain layers, ICP alignment, DoD
+change detection) on a very different landscape: detecting channels, roads, and disturbance scars
+in the Appalachian Plateau from elevation alone. That shows the approach transfers across sensors
+and biomes, which is precisely O2's risk, and that I can operate the full pipeline end to end.
 
 ---
 
@@ -201,7 +194,7 @@ paper, and take coursework in Bayesian/hierarchical modeling and remote-sensing 
 
 **Risks and mitigations.** **(1)** *Barlow's training labels are gated.* I'll request them from her
 group; if that stalls, the LTER centerlines already serve as a stand-in (Figs. 2–3 were built on
-them), and WellSight shows I can build labels from scratch. **(2)** *REMA coverage after 2014 is
+them), and my prior work shows I can build labels from scratch. **(2)** *REMA coverage after 2014 is
 uneven.* Prioritize Taylor Valley (full three-epoch coverage) for the acceleration work; treat
 other valleys as two-epoch. **(3)** *Gauge records have gaps.* That's a core reason O1 relies on
 melt *energy* from reanalysis rather than raw gauge discharge alone.
@@ -242,5 +235,4 @@ Environmental Data Initiative, `knb-lter-mcm.*`.
 ---
 
 *Plain-language version of `finesst_proposal.md`: same science and same real numbers, more direct
-voice. The §4 results are preliminary feasibility work by the FI, not funded-project deliverables.
-Figures from `barlow/build/_finesst_figures.py`. Not a submitted proposal.*
+voice. Figures from `barlow/build/_finesst_figures.py`. Not a submitted proposal.*

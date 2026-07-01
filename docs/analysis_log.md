@@ -5,6 +5,18 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-01 — Proposal: drop "WellSight" name + trim preliminary-work framing
+
+Per user (reviewers don't know/care about WellSight; don't over-talk preliminary work), edited both
+proposal md files: removed every "WellSight" mention (§5 now a brief generic "FI Qualifications"
+describing the same toolchain applied to an unrelated landscape, no project name); cut the
+repetitive preliminary/feasibility framing (§4 retitled "Preliminary Results" and trimmed to intro
++ figures; deleted the "feasibility summary/takeaway" paragraphs; softened Summary abstract, Fig. 1
+caption, §3, §6, footer). "Preliminary" now only appears as the §4 section title. Regenerated all
+four docs (formal + plain × pdf/docx); figures unchanged.
+
+---
+
 ## 2026-06-30 — Removed em-dashes across the formal proposal + figures + footers
 
 De-em-dashed `finesst_proposal.md` (43 → 0): bold label lead-ins / table cells became colons,
