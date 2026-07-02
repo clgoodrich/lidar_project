@@ -5,6 +5,51 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-01 — Methodology evaluation: both projects audited (3 parallel reviews)
+
+Per user request, an adversarial methodology audit of everything expanded recently: WellSight
+iteration docs + leaderboard, WellSight training/eval code, and the Barlow fetch/build scripts
+(change-detection + figures were already hand-audited earlier today). Findings recorded in
+`docs/iterations/BACKLOG.md` (new "Methodology-audit findings" section, ranked). Headlines:
+
+**WellSight — three mechanisms inflate reported metrics.** (1) Post-processing knobs
+(`_road_optimize.py`, `_pit_optimize.py`) and the U-Net instance-row thresholds are tuned by
+maximizing F1 **on the test blocks**, and that same F1 is the reported number. (2) Spatial-block
+splits leak at boundaries: patches read a global (un-split-masked) label raster, Mask R-CNN/YOLO
+deliberately paint off-split (incl. test) instances into training targets, and ~40 m road chunks
+are split by midpoint so one physical road straddles train/test. (3) Instance metrics are
+recall-only with no 1:1 matching (one prediction may match many GT, floor IoU 0.1, score thresh
+0.05), per-object IoU is computed in GT-local windows (FPs elsewhere invisible), and "Line AP"
+samples only along GT lines (separability, not detection AP). Compounding: 20-pit/9-pad test
+sets reported to 3 decimals with no CIs; U-Net trainers unseeded; YOLO(3-band) vs
+Mask R-CNN(7-band) presented head-to-head; DEP-well 0.42 recall cited without a random-match
+null. **What's solid:** train-only normalization stats reused correctly end-to-end; spatial
+blocking exists and is balanced; best-checkpoint by val (not test); overlap-averaged sliding
+window inference; YOLO BGR bug properly fixed; Mask R-CNN nondeterminism honestly documented.
+The docs themselves flag overfitting and metric non-comparability, so the culture is honest —
+the arithmetic just needs to catch up before any number is published.
+
+**Barlow — pipeline sound after this morning's fixes; three build/fetch issues remain.**
+(1) EDI fetch auto-resolves "newest revision" → silent provenance drift vs the manifest's
+pinned revisions; make revisions pinnable. (2) Flow-accumulation build clips nodata to 0
+(log1p(0)=0 looks like "no upstream flow") — contaminates one of six U-Net inputs at edges.
+(3) Vertical datum across epochs (ATM/NCALM/REMA) is assumed ellipsoidal-consistent but never
+stated; note that the DoD median-bias correction absorbs any constant offset (and ICP the rest),
+so the risk is documentation, not results — but document it. Minor: WBT profile-curvature is a
+deliberate deviation from Barlow's ArcGIS standard curvature (justified in-code; keep, flag in
+manifest); manifest understates the builder (says D8, code is FD8/MFD).
+
+**NISAR** framing as covariate/context/time-axis (not a detector) is well-grounded; the
+"InSAR subsidence proven viable over PA" phrasing overshoots one beta-grade fall pair (n=1,
+coherence 0.50) — keep as hypothesis until the validated CONUS release (~Jul 2026) and a
+multi-pair coherence stack.
+
+No code changed in this pass (assessment only, per request). Fix list is in BACKLOG, ranked;
+the two highest-leverage items are val-based tuning + split-masked labels, which together
+require only a re-eval, not retraining.
+
+---
+
 ## 2026-07-01 — Proposal: approachable restructure around the datasets
 
 Per user ("here is what we need to do; here are the datasets, what each will do, where it's

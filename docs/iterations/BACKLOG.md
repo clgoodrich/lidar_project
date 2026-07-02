@@ -2,6 +2,20 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## Methodology-audit findings (2026-07-01) — fix before trusting/publishing metrics
+
+Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation entry). Ranked:
+
+- **Post-proc tuning happens ON the test blocks.** `_road_optimize.py` / `_pit_optimize.py` coordinate-ascend F1 against `split=='test'` GT and report that same F1. Also the U-Net LEADERBOARD instance rows are "best of a {0.3,0.5,0.7} threshold sweep" on test. Fix: tune on val, freeze, report test once.
+- **Split leakage at block boundaries.** Patches (128–256 m + jitter) read a global label raster, so train patches overlapping test blocks see test labels; Mask R-CNN/YOLO explicitly paint off-split instances into targets (`_pit_maskrcnn.py` "Full polygon set (not just split)"); road ~40 m chunks are split by midpoint so adjacent chunks of the same road straddle train/test. Fix: split-mask the label rasters or erode a patch-radius buffer at block edges; build instance targets from the split subset.
+- **Instance metrics have no precision column and no 1:1 matching** (`per_instance_metrics`: best-IoU per GT, one prediction can match many GT, floor 0.1 IoU). With SCORE_THRESH 0.05 and 2–3k detections vs 79–110 GT, recall headlines are near-free. Fix: greedy 1:1 matching + precision/AP; run the long-promised score-threshold sweep.
+- **GT-local eval windows hide FPs**: per-object IoU computed inside GT bbox ±6/±15 m; "Line AP" samples probs only along GT lines (it's class separability, not detection AP). Relabel and add full-region numbers.
+- **U-Net trainers unseeded** (only samplers take seeds; no `set_determinism`, no loader generator) → reported numbers not reproducible run-to-run. Val patches are also re-jittered every epoch, so best-epoch selection is noisy.
+- **Test n is tiny** (20 pits / 9 pads): report binomial CIs alongside recall; treat single-model deltas <2 test items as noise.
+- **DEP-well 0.42 recall lacks a null model**: compute random-point matching rate at 25 m before citing it.
+- **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
+- **Barlow builder**: pin EDI package revisions at fetch time (currently auto-newest → provenance drift); fix flow-accum nodata→0 leak (`np.clip` turns nodata into log1p(0)=0 valid values); document the vertical-datum assumption (all three epochs ellipsoidal — constant offsets are absorbed by the DoD median-bias correction, but say so); curvature is profile (WBT) vs Barlow's ArcGIS standard curvature — a deliberate, documented deviation to keep.
+
 ## High priority — directly limits current results
 
 - **Grow the training label set (the #1 bottleneck).** 110 pit / 79 pad hand annotations is too thin for a 45.9 M-param Mask R-CNN — every run overfits by epoch 0–1. The PA DEP catalog has **1069 wells in the 9t tile alone** (<11% annotated). Seed semi-automated annotation: snap a candidate to the nearest LiDAR depression, human-confirm, to grow labels ~10×. Strongest lever on both recall and precision.
