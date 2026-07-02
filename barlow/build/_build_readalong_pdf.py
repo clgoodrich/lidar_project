@@ -26,8 +26,8 @@ SRC = ROOT / "docs" / "BARLOW-DISSERTATION-2026.pdf"
 GUIDE = ROOT / "docs" / "barlow_dissertation_readalong.md"
 OUT = ROOT / "docs" / "BARLOW-DISSERTATION-2026_sidebyside.pdf"
 
-NOTES_W = 560.0  # right-pane width (pt)
-MARGIN = 14.0
+NOTES_W = 640.0  # right-pane width (pt)
+MARGIN = 26.0
 RANGE_RE = re.compile(r"\(PDF pp?\.\s*~?(\d+)\s*[–\-]\s*~?(\d+)\)|\(pp?\.\s*~?(\d+)\s*[–\-]\s*~?(\d+)\)|\(pp?\.\s*~?(\d+)\)")
 
 
@@ -126,13 +126,15 @@ def block_for_page(blocks: list[dict], page: int) -> dict | None:
 
 CSS = """
 * { font-family: sans-serif; }
-body { font-size: 10.5px; line-height: 1.35; }
-h1 { font-size: 15px; margin: 0 0 4px 0; }
-h2 { font-size: 12px; color: #444; margin: 0 0 10px 0; font-weight: normal; }
-p { margin: 0 0 6px 0; }
-ul { margin: 0 0 6px 16px; padding: 0; }
-li { margin: 0 0 3px 0; }
-tt { font-size: 9.5px; }
+body { font-size: 12.5px; line-height: 1.55; color: #1a1a1a; }
+h1 { font-size: 17px; margin: 0 0 6px 0; color: #123c5a; }
+h2 { font-size: 12px; color: #666; margin: 0 0 14px 0; font-weight: normal; }
+p { margin: 0 0 11px 0; }
+ul { margin: 2px 0 11px 20px; padding: 0; }
+li { margin: 0 0 6px 0; }
+b { color: #123c5a; }
+i { color: #333; }
+tt { font-size: 11px; }
 """
 
 

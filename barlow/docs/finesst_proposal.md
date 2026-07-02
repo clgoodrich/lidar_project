@@ -30,12 +30,18 @@ measurable indicator of climate change in the most stable place on Earth, a cont
 1. **Terrain-only semantic segmentation:** a U-Net delineates stream boundaries from DEM
    derivatives alone (elevation, slope, aspect most informative; no water/color signal),
    so it works in channels that are dry 11 months a year.
-2. **Satellite-DEM validation:** point-to-plane ICP alignment, **Laplacian** error modeling,
-   and outlier-robust **NMAD** uncertainty prove free REMA satellite DEMs are accurate enough
-   for centimeter-to-meter stream-corridor change detection.
-3. **Multi-epoch change detection:** DEM-of-Difference (DoD) inside segmented stream masks,
-   level-of-detection thresholds (LOD95 = 1.96 × NMAD), and per-stream erosion/deposition and
-   acceleration rates across four valleys and three epochs (2001 & 2014 lidar, 2021–23 REMA).
+2. **Satellite-DEM validation:** free REMA satellite DEMs are proven accurate enough for
+   centimeter-to-meter stream-corridor change detection, using **ICP** (iterative closest
+   point — sliding one 3-D surface onto another until they match) for alignment and **NMAD**
+   (normalized median absolute deviation — a standard deviation that ignores outliers) for
+   honest error bars; the errors follow a **Laplacian** (sharp-peaked, heavy-tailed)
+   distribution rather than a Gaussian, which is why the robust statistic is required.
+3. **Multi-epoch change detection:** subtract one epoch's DEM from another
+   (**DEM-of-Difference, DoD**) inside the segmented stream masks, and count only elevation
+   changes exceeding the **level of detection** (LOD95 = 1.96 × NMAD — the smallest change
+   distinguishable from measurement noise at 95% confidence). This yields per-stream
+   erosion/deposition and acceleration rates across four valleys and three epochs
+   (2001 & 2014 lidar, 2021–23 REMA).
 
 **The gap.** Barlow's dissertation ends at *description*: it maps **where** change is happening
 (Denton Hills is the erosion hotspot; parts of Taylor Valley are accelerating) but explicitly
@@ -107,49 +113,57 @@ of Barlow's change detection on Taylor Valley falls **inside her published uncer
 **(a) Change detection across all three epochs (Fig. 2).**
 
 ![Fig 2](finesst_figures/fig1_dod_maps.png)
-***Figure 2.*** *DEM-of-Difference over the same Taylor Valley stream-corridor window, only
-|Δz| > LOD95 shown. (a) 2001→2014 lidar–lidar; (b) 2014→2021-23 lidar–REMA. Coherent
-erosion/deposition patterns emerge above the noise floor; REMA auto-reprojected from EPSG:3031
-to the lidar grid. The large flat signal in (a) is Lake Fryxell's ~1.5 m level rise, detected
-and excluded from all stream rates by an automated standing-water screen.*
+***Figure 2.*** *Elevation change over the same Taylor Valley stream-corridor window in two
+periods: (a) 2001→2014, comparing two lidar surveys; (b) 2014→2021-23, comparing lidar against
+the REMA satellite DEM. Red = surface lowered (erosion), blue = surface raised (deposition).
+Pixels are drawn only where the change exceeds the detection floor (LOD95) — i.e., is too large
+to be measurement noise — and coherent erosion/deposition patterns emerge above that floor.
+The broad flat patch in (a) is not sediment at all: Lake Fryxell rose ~1.5 m between surveys,
+and an automated standing-water screen detects such flat water surfaces and excludes them from
+every stream-rate statistic.*
 
 | Epoch pair | NMAD | LOD95 | Barlow's published range | In range? |
 |---|---|---|---|---|
 | 2001→2014 (lidar–lidar) | 0.21 m | 0.41 m | NMAD 0.07–0.46 / LOD95 0.15–0.92 | ✅ |
 | 2014→2021-23 (lidar–REMA) | 0.23 m | 0.44 m | NMAD 0.19–0.53 / LOD95 0.37–1.04 | ✅ |
 
-Point-to-point **ICP** converged with fitness 0.95 m² (mean-squared correspondence distance) and
-improved DoD NMAD on high-relief windows; on the flat valley floor it correctly added no benefit,
-exactly the relief-dependence Barlow's point-to-plane ICP exhibits.
+ICP alignment behaved exactly as Barlow's published version does: it tightened the error budget
+on steep, high-relief windows and correctly added no benefit on the flat valley floor (alignment
+needs terrain shape to grip onto). Convergence fitness was 0.95 m² mean-squared point distance.
 
 **(b) Per-stream rates (Fig. 3), the masked products O1 consumes.**
 
 ![Fig 3](finesst_figures/fig2_per_stream_rates.png)
-***Figure 3.*** *Per-stream **specific** (area-normalized, mm/yr) gross and net sediment-flux
-rates for six gauged Taylor Valley streams, both epochs, channels masked to MCM-LTER centerlines.
-Specific rates are used because the valid-data footprint differs between epochs (the 2001 ATM
-lidar swath is narrower than REMA coverage), so raw m³/yr totals would confound real change
-with coverage.*
+***Figure 3.*** *How much sediment each of six gauged Taylor Valley streams moved, per year, in
+each period. Rates are reported per square meter of channel (mm/yr of surface change) rather
+than as raw m³/yr totals: the surveys do not all cover the same footprint (the 2001 lidar swath
+is narrower than the satellite coverage), and a per-area rate cannot be inflated simply because
+one survey saw more ground.*
 
 **(c) Robust error model (Fig. 4), the basis for O3.**
 
 ![Fig 4](finesst_figures/fig3_error_model.png)
-***Figure 4.*** *Stable-terrain DoD residuals are sharply **Laplacian**, not Gaussian, the fat
-tails would inflate a σ-based LOD. This reproduces Barlow's NMAD/Laplacian finding and is the
-launch point for the proposed per-pixel calibrated-uncertainty layer (O3).*
+***Figure 4.*** *The measurement noise, profiled on ground that should not have changed at all.
+The error histogram is sharply peaked with heavy tails (a **Laplacian** shape), not the familiar
+bell curve: a handful of large outliers would wildly inflate a naive standard-deviation-based
+detection threshold, which is why the outlier-resistant NMAD is used instead. This reproduces
+Barlow's error-model finding and is the launch point for the proposed per-pixel
+calibrated-uncertainty layer (O3).*
 
 **(d) A first attribution signal (Fig. 5).**
 
 ![Fig 5](finesst_figures/fig4_attribution.png)
-***Figure 5.*** *Per-stream geomorphic rate vs. mean gauged melt discharge (log-log; lake-level
-signal screened out). In the lidar–lidar epoch the **specific (area-normalized) rate scales
-strongly with discharge: Pearson r = +0.95 (p = 0.004), Spearman ρ = +0.94 (p = 0.005)**, and
-the relationship survives leaving out any single stream. The REMA epoch shows no coherent
-relation under sparse post-2015 gauge coverage (48–362 gauged days per stream) and is plotted
-without a fit. This motivates O1 directly: where gauges are dense the melt–sediment link is
-strong, so the proposed work will replace patchy gauging with **modeled melt energy**
-(PDD/insolation/active-layer) to extend attribution across epochs and valleys, turning
-correlation into attribution.*
+***Figure 5.*** *The first attribution signal: each stream's sediment-movement rate plotted
+against how much meltwater it carried (mean gauged discharge; both axes logarithmic; the lake
+signal from Fig. 2 screened out). In the 2001→2014 period the relationship is strong —
+correlation **r = +0.95 (p = 0.004)**, rank correlation **ρ = +0.94 (p = 0.005)** — and it
+survives dropping any single stream, so it is not driven by one outlier. The satellite period
+shows no coherent relation, but for an instructive reason: after 2015 the stream gauges ran
+only sporadically (48–362 recorded days per stream), so the water axis itself is unreliable
+there, and no trend line is fit. That is precisely the motivation for O1: where gauge data are
+dense the melt–sediment link is strong, so the proposed work replaces patchy gauging with
+**modeled melt energy** (degree-days, sunlight, thaw depth) to extend the analysis across all
+epochs and valleys.*
 
 ---
 
