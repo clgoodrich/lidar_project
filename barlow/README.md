@@ -26,6 +26,8 @@ barlow/
     barlow_dissertation_explained.md # plain-language walkthrough of the dissertation
     barlow_dissertation_readalong.md # page-keyed read-along companion (open next to the PDF)
     BARLOW-DISSERTATION-2026.pdf     # the dissertation itself (413 MB, gitignored)
+    BARLOW-DISSERTATION-2026_sidebyside.pdf          # dissertation page + guide notes per sheet (gitignored;
+    BARLOW-DISSERTATION-2026_sidebyside_compact.pdf  #  regenerate: python barlow/build/_build_readalong_pdf.py [--raster])
     FINESST_Barlow_Expansion_Concept.pdf  # earlier planning brief (superseded by finesst_proposal.md)
 ```
 

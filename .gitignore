@@ -199,3 +199,4 @@ yolo26n.pt
 # ramachandran pad points: 28MB derived from tracked permian_well_pads.csv, copied per-grid for QGIS
 ramachandran_permian_pads_pts.gpkg
 barlow/docs/BARLOW-DISSERTATION-2026.pdf
+barlow/docs/BARLOW-DISSERTATION-2026_sidebyside*.pdf
