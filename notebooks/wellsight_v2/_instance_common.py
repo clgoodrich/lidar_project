@@ -503,44 +503,79 @@ def detections_to_gpkg(detections: Sequence[dict], ref_profile: dict, out_path: 
 
 def per_instance_metrics(pred_gdf: gpd.GeoDataFrame, gt: InstanceSet,
                          split: str = "test") -> tuple[pd.DataFrame, dict]:
-    """For each ground-truth instance in `split`, compute best-match IoU + recall."""
+    """Instance detection metrics for `split` GT.
+
+    Two matching regimes are reported side by side:
+      * recall_loose_at_iou_T  — legacy semantics: per-GT best-IoU, a single
+        prediction may "cover" any number of GT. Kept for continuity with
+        pre-2026-07 numbers, which used this definition exclusively.
+      * recall/precision/f1_at_iou_T — greedy 1:1 matching (predictions sorted
+        by score, each matched to at most one GT and vice versa), the standard
+        detection protocol. Precision penalizes over-prediction, which the
+        loose recall by construction cannot.
+    """
     gt_split = gt.for_split(split)
-    if pred_gdf is None or pred_gdf.empty:
-        rows = [{"inst_id": int(r.inst_id), "best_iou": 0.0, "recall": 0.0,
-                 "matched": False} for r in gt_split.itertuples()]
-        df = pd.DataFrame(rows)
-    else:
-        # Build sindex on predictions once.
+    n_gt = len(gt_split)
+    n_pred = 0 if pred_gdf is None or pred_gdf.empty else len(pred_gdf)
+    taus = (0.1, 0.3, 0.5)
+
+    # sparse IoU pairs (gt_i, pred_j, iou, score) via prediction sindex
+    pairs = []
+    rows = []
+    if n_pred:
         sidx = pred_gdf.sindex
-        rows = []
-        for r in gt_split.itertuples():
+        scores = (pred_gdf["score"].astype(float).values
+                  if "score" in pred_gdf.columns else np.zeros(n_pred))
+        for gi, r in enumerate(gt_split.itertuples()):
             g = r.geometry
-            cand_ix = list(sidx.intersection(g.bounds))
-            best_iou = 0.0
-            best_score = 0.0
-            for ix in cand_ix:
-                p = pred_gdf.geometry.iloc[ix]
+            best_iou, best_score = 0.0, 0.0
+            for pj in sidx.intersection(g.bounds):
+                p = pred_gdf.geometry.iloc[pj]
                 inter = g.intersection(p).area
                 if inter <= 0:
                     continue
                 union = g.union(p).area
                 iou = inter / union if union > 0 else 0.0
+                if iou > 0:
+                    pairs.append((gi, int(pj), iou, float(scores[pj])))
                 if iou > best_iou:
-                    best_iou = iou
-                    best_score = float(pred_gdf.iloc[ix].get("score", 0.0))
+                    best_iou, best_score = iou, float(scores[pj])
             rows.append({"inst_id": int(r.inst_id), "best_iou": float(best_iou),
                          "best_pred_score": best_score,
                          "matched": best_iou >= 0.1})
-        df = pd.DataFrame(rows)
+    else:
+        rows = [{"inst_id": int(r.inst_id), "best_iou": 0.0,
+                 "best_pred_score": 0.0, "matched": False}
+                for r in gt_split.itertuples()]
+    df = pd.DataFrame(rows)
+
+    def greedy_1to1(tau):
+        """# of 1:1 matches at IoU>=tau: predictions by score desc, best free GT."""
+        cand = sorted((p for p in pairs if p[2] >= tau), key=lambda p: -p[3])
+        used_gt, used_pred = set(), set()
+        for gi, pj, iou, s in cand:
+            if gi in used_gt or pj in used_pred:
+                continue
+            used_gt.add(gi); used_pred.add(pj)
+        return len(used_gt)
 
     metrics = {
-        "n_test_instances": int(len(df)),
-        "recall_at_iou_0.1": float((df.best_iou >= 0.1).mean()) if len(df) else 0.0,
-        "recall_at_iou_0.3": float((df.best_iou >= 0.3).mean()) if len(df) else 0.0,
-        "recall_at_iou_0.5": float((df.best_iou >= 0.5).mean()) if len(df) else 0.0,
-        "mean_best_iou": float(df.best_iou.mean()) if len(df) else 0.0,
-        "median_best_iou": float(df.best_iou.median()) if len(df) else 0.0,
+        "n_test_instances": int(n_gt),
+        "n_detections": int(n_pred),
+        "mean_best_iou": float(df.best_iou.mean()) if n_gt else 0.0,
+        "median_best_iou": float(df.best_iou.median()) if n_gt else 0.0,
     }
+    for tau in taus:
+        key = f"{tau:.1f}".replace("0.", "0.")
+        loose = float((df.best_iou >= tau).mean()) if n_gt else 0.0
+        tp = greedy_1to1(tau)
+        rec = tp / n_gt if n_gt else 0.0
+        prec = tp / n_pred if n_pred else 0.0
+        f1 = 2 * prec * rec / (prec + rec) if (prec + rec) else 0.0
+        metrics[f"recall_loose_at_iou_{key}"] = loose
+        metrics[f"recall_at_iou_{key}"] = rec
+        metrics[f"precision_at_iou_{key}"] = prec
+        metrics[f"f1_at_iou_{key}"] = f1
     return df, metrics
 
 

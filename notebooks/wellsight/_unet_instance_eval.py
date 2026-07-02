@@ -10,8 +10,10 @@ only emits a per-pixel probability raster, so to compare fairly we:
   3. attach a score = mean prob inside the blob,
   4. run the IDENTICAL per_instance_metrics on the resulting GeoDataFrame.
 
-We sweep a few thresholds and keep the best recall@0.3 row, so UNet is judged
-at its most favourable operating point (fair, not cherry-picked against it).
+The threshold is selected on the VAL split (best F1@0.3), then the frozen
+threshold is scored ONCE on test — the reported test numbers are never used
+for selection. (Pre-2026-07 runs selected the threshold on test itself, which
+optimistically biased the reported recall.)
 
 Pit prob = max(floor_prob, wall_prob)  (pit_unet_v2 emits two class bands).
 Plat prob = plat_prob.tif single band.
@@ -85,25 +87,34 @@ def read_plat_prob() -> tuple[np.ndarray, object, object]:
     return arr, tf, crs
 
 
-def sweep(name: str, prob, tf, crs, gt: ic.InstanceSet) -> tuple[dict, pd.DataFrame]:
-    best = None
-    best_df = None
-    rows = []
+def sweep(name: str, prob, tf, crs, gt: ic.InstanceSet) -> tuple[dict, pd.DataFrame, pd.DataFrame]:
+    """Select threshold on VAL (F1@0.3, mean-IoU tiebreak); score it once on test."""
+    best_th, best_key = None, None
+    val_rows = []
+    preds = {}
     for th in THRESHOLDS:
         pred = polygonize_prob(prob, tf, crs, th)
-        df, metrics = ic.per_instance_metrics(pred if len(pred) else None, gt, "test")
-        metrics["threshold"] = th
-        metrics["n_pred_instances"] = int(len(pred))
-        rows.append(metrics)
-        print(f"  {name} thr={th}: n_pred={len(pred):5d}  "
-              f"R@0.3={metrics['recall_at_iou_0.3']:.2f}  "
-              f"R@0.5={metrics['recall_at_iou_0.5']:.2f}  "
-              f"meanIoU={metrics['mean_best_iou']:.3f}")
-        key = (metrics["recall_at_iou_0.3"], metrics["mean_best_iou"])
-        if best is None or key > (best["recall_at_iou_0.3"], best["mean_best_iou"]):
-            best = metrics
-            best_df = df
-    return best, best_df, pd.DataFrame(rows)
+        preds[th] = pred
+        _, vm = ic.per_instance_metrics(pred if len(pred) else None, gt, "val")
+        vm["threshold"] = th
+        vm["n_pred_instances"] = int(len(pred))
+        val_rows.append(vm)
+        print(f"  {name} thr={th} [val]: n_pred={len(pred):5d}  "
+              f"F1@0.3={vm['f1_at_iou_0.3']:.3f}  R@0.3={vm['recall_at_iou_0.3']:.2f}  "
+              f"P@0.3={vm['precision_at_iou_0.3']:.3f}")
+        key = (vm["f1_at_iou_0.3"], vm["mean_best_iou"])
+        if best_key is None or key > best_key:
+            best_key, best_th = key, th
+    df, metrics = ic.per_instance_metrics(
+        preds[best_th] if len(preds[best_th]) else None, gt, "test")
+    metrics["threshold"] = best_th
+    metrics["n_pred_instances"] = int(len(preds[best_th]))
+    print(f"  {name} FROZEN thr={best_th} [test]: "
+          f"R@0.3={metrics['recall_at_iou_0.3']:.2f}  "
+          f"P@0.3={metrics['precision_at_iou_0.3']:.3f}  "
+          f"F1@0.3={metrics['f1_at_iou_0.3']:.3f}  "
+          f"meanIoU={metrics['mean_best_iou']:.3f}")
+    return metrics, df, pd.DataFrame(val_rows)
 
 
 def main() -> int:
@@ -123,34 +134,37 @@ def main() -> int:
     plat_sweep.to_csv(OUTDIR / "plat_unet_sweep.csv", index=False)
     plat_df.to_csv(OUTDIR / "plat_unet_best_per_inst.csv", index=False)
 
+    def block(title, val_sweep, best):
+        out = [f"\n## {title} ({best['n_test_instances']} test instances)\n",
+               "Threshold selected on VAL (F1@0.3); test scored once at the frozen threshold.\n",
+               "| Threshold (val sweep) | # pred | val F1@0.3 | val R@0.3 | val P@0.3 |",
+               "|---|---|---|---|---|"]
+        for _, r in val_sweep.iterrows():
+            star = " **(chosen)**" if r["threshold"] == best["threshold"] else ""
+            out.append(f"| {r['threshold']}{star} | {int(r['n_pred_instances'])} | "
+                       f"{r['f1_at_iou_0.3']:.3f} | {r['recall_at_iou_0.3']:.2f} | "
+                       f"{r['precision_at_iou_0.3']:.3f} |")
+        out += ["",
+                f"**Test @ thr={best['threshold']}** (1:1 matching): "
+                f"R@0.3 = {best['recall_at_iou_0.3']:.2f}, "
+                f"P@0.3 = {best['precision_at_iou_0.3']:.3f}, "
+                f"F1@0.3 = {best['f1_at_iou_0.3']:.3f}, "
+                f"R@0.5 = {best['recall_at_iou_0.5']:.2f}, "
+                f"mean best IoU = {best['mean_best_iou']:.3f}, "
+                f"loose R@0.3 = {best['recall_loose_at_iou_0.3']:.2f} "
+                f"(legacy definition), n_pred = {best['n_pred_instances']}."]
+        return out
+
     md = [
         "# UNet scored with the instance-model metric (apples-to-apples)\n",
         "Semantic UNet prob rasters thresholded -> connected components -> "
-        "polygons -> identical `per_instance_metrics`. Best-of-sweep threshold "
-        "shown (UNet judged at its most favourable operating point).\n",
-        "## Pits (20 test instances)\n",
-        "| Threshold | # pred instances | R@0.3 | R@0.5 | Mean IoU |",
-        "|---|---|---|---|---|",
+        "polygons -> identical `per_instance_metrics` (greedy 1:1 matching + "
+        "precision as of 2026-07-02).\n",
     ]
-    for _, r in pit_sweep.iterrows():
-        star = " **(best)**" if r["threshold"] == pit_best["threshold"] else ""
-        md.append(f"| {r['threshold']}{star} | {int(r['n_pred_instances'])} | "
-                  f"{r['recall_at_iou_0.3']:.2f} | {r['recall_at_iou_0.5']:.2f} | "
-                  f"{r['mean_best_iou']:.3f} |")
-    md += ["\n## Plats (9 test instances)\n",
-           "| Threshold | # pred instances | R@0.3 | R@0.5 | Mean IoU |",
-           "|---|---|---|---|---|"]
-    for _, r in plat_sweep.iterrows():
-        star = " **(best)**" if r["threshold"] == plat_best["threshold"] else ""
-        md.append(f"| {r['threshold']}{star} | {int(r['n_pred_instances'])} | "
-                  f"{r['recall_at_iou_0.3']:.2f} | {r['recall_at_iou_0.5']:.2f} | "
-                  f"{r['mean_best_iou']:.3f} |")
+    md += block("Pits", pit_sweep, pit_best)
+    md += block("Pads", plat_sweep, plat_best)
     (OUTDIR / "SUMMARY.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print(f"\nWrote {OUTDIR / 'SUMMARY.md'}")
-    print(f"PIT  best: thr={pit_best['threshold']} R@0.3={pit_best['recall_at_iou_0.3']:.2f} "
-          f"meanIoU={pit_best['mean_best_iou']:.3f}")
-    print(f"PLAT best: thr={plat_best['threshold']} R@0.3={plat_best['recall_at_iou_0.3']:.2f} "
-          f"meanIoU={plat_best['mean_best_iou']:.3f}")
     return 0
 
 

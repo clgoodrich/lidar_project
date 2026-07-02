@@ -49,12 +49,18 @@ TOL = 8.0          # buffer match tolerance (m)
 # ===========================================================================
 # data
 # ===========================================================================
-def load_9t():
+MODEL_DIR_NAME = "road_unet_1m_recall"  # current deployed road model (was road_unet_1m)
+
+
+def load_9t(split: str = "test"):
+    """Tuning MUST use split='val'; 'test' is reserved for the frozen evaluation
+    (pre-2026-07 runs tuned on test). Reads probs from MODEL_DIR_NAME, the
+    deployed model — the old hardcode read the superseded road_unet_1m."""
     import geopandas as gpd
-    with rasterio.open(R9 / "road_unet_1m" / "road_prob.tif") as r:
+    with rasterio.open(R9 / MODEL_DIR_NAME / "road_prob.tif") as r:
         prob = r.read(1).astype(np.float32); tf = r.transform; crs = r.crs; res = r.res[0]
     arg = None
-    ap = R9 / "road_unet_1m" / "road_argmax.tif"
+    ap = R9 / MODEL_DIR_NAME / "road_argmax.tif"
     if ap.exists():
         with rasterio.open(ap) as r:
             arg = r.read(1)
@@ -65,7 +71,7 @@ def load_9t():
         with rasterio.open(sp) as r:
             sl = r.read(1).astype(np.float32)
     blocks = gpd.read_file(R9 / "pit_blocks_9t.gpkg")
-    test = blocks[blocks.split == "test"]
+    test = blocks[blocks.split == split]
     from shapely.ops import unary_union
     region = unary_union(test.geometry.values)
     gt = gpd.read_file(DERIV / "annotations" / "annotations_proj.gpkg", layer="roads")
@@ -368,10 +374,18 @@ def optimize(D):
                 print(f"  p{passnum} {param}={v}: f1={s['f1']} comp={s['comp']} "
                       f"corr={s['corr']} km={s['km']} n={s['n']}{tag}")
         print(f"-- pass {passnum} best f1={best['f1']} cfg={ {k:best_cfg[k] for k in ['enhance','thresh','pathopen','slope_max','skel','reconnect','island']} }")
-    print(f"\nOPTIMIZE done in {time.time()-t0:.0f}s. BEST f1={best['f1']}: {best_cfg}")
-    (R9 / "road_unet_1m" / "road_postproc_best.json").write_text(
-        json.dumps({"metrics": best, "config": best_cfg}, indent=2))
-    return best_cfg, best, log
+    print(f"\nOPTIMIZE done in {time.time()-t0:.0f}s. BEST val f1={best['f1']}: {best_cfg}")
+    # frozen-config test evaluation: the only number that may be REPORTED
+    Dtest = load_9t("test")
+    test = score(Dtest, run_pipeline(Dtest, best_cfg))
+    print(f"FROZEN cfg on TEST: f1={test['f1']} comp={test['comp']} corr={test['corr']} "
+          f"km={test['km']} n={test['n']}")
+    (R9 / MODEL_DIR_NAME / "road_postproc_best.json").write_text(
+        json.dumps({"metrics_val_selection": best, "metrics_test_frozen": test,
+                    "config": best_cfg,
+                    "note": "config selected on val blocks; test scored once frozen"},
+                   indent=2))
+    return best_cfg, test, log
 
 
 def load_block(block, key, prob_path=None, drain_path=None):
@@ -507,7 +521,7 @@ def main():
     ap.add_argument("--drain", default=None,
                     help="drainage_prob path; used to derive the argmax drainage gate")
     args = ap.parse_args()
-    best_path = R9 / "road_unet_1m" / "road_postproc_best.json"
+    best_path = R9 / MODEL_DIR_NAME / "road_postproc_best.json"
     if args.apply_block:
         cfg = json.loads(best_path.read_text())["config"]
         if args.slope_gate:
@@ -516,8 +530,8 @@ def main():
                        prob_path=args.prob, drain_path=args.drain)
         apply_best(D, cfg)
         return 0
-    D = load_9t()
-    print(f"GT roads in 9t test region: {len(D['gt'])} lines, "
+    D = load_9t("val")
+    print(f"GT roads in 9t VAL region (tuning): {len(D['gt'])} lines, "
           f"{sum(g.length for g in D['gt'].geometry)/1000:.2f} km")
     optimize(D)
     return 0
