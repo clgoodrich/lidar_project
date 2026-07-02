@@ -35,9 +35,9 @@ OUTDIR = DERIV_9T / "plat_unet"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 LABELS = DERIV_9T / "labels_plat_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"
-BLOCKS = DERIV_9T / "pit_blocks_9t.gpkg"
+BLOCKS = DERIV_9T / "plat_blocks_9t.gpkg"  # pad-aware split (all in-tile pads; see _build_plat_split.py)
 MANIFEST = DERIV_9T / "plat_dataset_manifest.csv"
-ANN = DERIV_9T.parent / "annotations" / "annotations_proj.gpkg"
+ANN = DERIV_9T.parent.parent / "annotations" / "annotations_proj.gpkg"  # = data/derivatives/annotations
 
 PATCH = 384  # plats are bigger than pits -> larger context window
 OVERLAP = 96
@@ -105,7 +105,7 @@ def evaluate_test(argmax: np.ndarray) -> tuple[pd.DataFrame, dict]:
             "plat_id": pid,
             "recall":     float((sl & sp).sum() / max(sl.sum(), 1)),
             "local_iou":  inter2 / union2 if union2 else None,
-            "area_m2":    float(row.area_m2),
+            "area_m2":    float(g.area),
         })
     df = pd.DataFrame(rows)
     metrics = {
@@ -167,37 +167,41 @@ def main() -> int:
     ap.add_argument("--epochs", type=int, default=40)
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--lr", type=float, default=1e-3)
+    ap.add_argument("--eval-only", action="store_true",
+                    help="skip training; load existing best.pt and re-run inference + test eval")
     args = ap.parse_args()
 
-    manifest = pd.read_csv(MANIFEST)
-    blocks = gpd.read_file(BLOCKS, layer="blocks")
     mu, sd = load_stats(STATS, DEFAULT_CHANNELS)
     with rasterio.open(FEATURES) as r:
         tf = r.transform
 
-    train_ds = build_dataset("train", manifest, blocks, tf, mu, sd, augment=True,  seed=42)
-    val_ds   = build_dataset("val",   manifest, blocks, tf, mu, sd, augment=False, seed=43)
-    print(f"train plats={len(train_ds.policies[0][1])} tiles/ep={len(train_ds)}")
-    print(f"val   plats={len(val_ds.policies[0][1])} tiles/ep={len(val_ds)}")
+    if not args.eval_only:
+        manifest = pd.read_csv(MANIFEST)
+        blocks = gpd.read_file(BLOCKS, layer="blocks")
+        train_ds = build_dataset("train", manifest, blocks, tf, mu, sd, augment=True,  seed=42)
+        val_ds   = build_dataset("val",   manifest, blocks, tf, mu, sd, augment=False, seed=43)
+        print(f"train plats={len(train_ds.policies[0][1])} tiles/ep={len(train_ds)}")
+        print(f"val   plats={len(val_ds.policies[0][1])} tiles/ep={len(val_ds)}")
 
-    train_loader = DataLoader(train_ds, batch_size=args.batch, shuffle=True,
-                              num_workers=0, pin_memory=True)
-    val_loader   = DataLoader(val_ds,   batch_size=args.batch, shuffle=False,
-                              num_workers=0, pin_memory=True)
+        train_loader = DataLoader(train_ds, batch_size=args.batch, shuffle=True,
+                                  num_workers=0, pin_memory=True)
+        val_loader   = DataLoader(val_ds,   batch_size=args.batch, shuffle=False,
+                                  num_workers=0, pin_memory=True)
+
+        model = UNet(in_ch=len(DEFAULT_CHANNELS), n_classes=N_CLASSES, base=32)
+        loss_fn = FocalCE(alpha=FOCAL_ALPHA, gamma=FOCAL_GAMMA)
+
+        train_loop(
+            model=model, train_loader=train_loader, val_loader=val_loader,
+            loss_fn=loss_fn, epochs=args.epochs, lr=args.lr, n_classes=N_CLASSES,
+            out_dir=OUTDIR,
+            checkpoint_extra={"mu": mu, "sd": sd,
+                              "channels": list(DEFAULT_CHANNELS), "patch": PATCH},
+            score=lambda iou: float(iou[1]),
+            extra_iou_names=("bg", "plat"),
+        )
 
     model = UNet(in_ch=len(DEFAULT_CHANNELS), n_classes=N_CLASSES, base=32)
-    loss_fn = FocalCE(alpha=FOCAL_ALPHA, gamma=FOCAL_GAMMA)
-
-    train_loop(
-        model=model, train_loader=train_loader, val_loader=val_loader,
-        loss_fn=loss_fn, epochs=args.epochs, lr=args.lr, n_classes=N_CLASSES,
-        out_dir=OUTDIR,
-        checkpoint_extra={"mu": mu, "sd": sd,
-                          "channels": list(DEFAULT_CHANNELS), "patch": PATCH},
-        score=lambda iou: float(iou[1]),
-        extra_iou_names=("bg", "plat"),
-    )
-
     ck = torch.load(OUTDIR / "best.pt", map_location=DEVICE, weights_only=False)
     model.to(DEVICE).load_state_dict(ck["state_dict"])
     print(f"\nLoaded best (ep {ck['epoch']}). Inference + test eval...")

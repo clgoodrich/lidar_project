@@ -101,7 +101,7 @@ def make_loader_generator(seed: int = 0):
 # Paths
 # ---------------------------------------------------------------------------
 
-ANN_GPKG = DERIV_9T.parent / "annotations" / "annotations_proj.gpkg"
+ANN_GPKG = DERIV_9T.parent.parent / "annotations" / "annotations_proj.gpkg"  # = data/derivatives/annotations
 PIT_MANIFEST = DERIV_9T / "pit_dataset_manifest.csv"
 PAD_MANIFEST = DERIV_9T / "plat_dataset_manifest.csv"  # legacy on-disk name
 PLAT_MANIFEST = PAD_MANIFEST  # back-compat alias

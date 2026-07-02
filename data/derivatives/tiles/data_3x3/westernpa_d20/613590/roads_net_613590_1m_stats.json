@@ -1,0 +1,33 @@
+{
+  "key": "613590",
+  "resolution_m": 1.0,
+  "network_km": 151.37,
+  "network_segments": 1064,
+  "clean_km": 132.07,
+  "clean_segments": 866,
+  "conf_min": 0.6,
+  "km_by_conf": {
+    "0.5": 137.4,
+    "0.6": 132.07,
+    "0.7": 126.5,
+    "0.8": 109.6
+  },
+  "island_dropped_km": 15.61,
+  "bridges": 68,
+  "bridge_km": 1.11,
+  "params": {
+    "block": "data/derivatives/tiles/data_3x3/westernpa_d20/613590",
+    "key": "613590",
+    "seed_hi": 0.6,
+    "seed_lo": 0.4,
+    "vessel_thr": 0.5,
+    "spur_len": 20.0,
+    "max_gap": 35.0,
+    "max_ang": 40.0,
+    "cost_gate": 3.0,
+    "min_comp_len": 120.0,
+    "tiger_buf": 30.0,
+    "conf_min": 0.6
+  },
+  "novel_km_far_from_tiger": 132.07
+}

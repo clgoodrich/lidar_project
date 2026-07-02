@@ -57,6 +57,7 @@ def main() -> int:
         data=str(data_yaml), epochs=args.epochs, imgsz=args.imgsz,
         batch=args.batch, project=str(OUTDIR), name="run",
         exist_ok=True, plots=True, verbose=True,
+        workers=2,  # Windows: 8 default workers + crashed-run zombies -> RAM OOM
     )
     run_dir = OUTDIR / "run"
     best_src = run_dir / "weights" / "best.pt"

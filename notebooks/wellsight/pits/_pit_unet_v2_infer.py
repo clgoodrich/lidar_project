@@ -29,7 +29,7 @@ LABELS = DERIV_9T / "labels_pit_9t_05.tif"
 BLOCKS = DERIV_9T / "pit_blocks_9t.gpkg"
 MANIFEST = DERIV_9T / "pit_dataset_manifest.csv"
 CKPT = OUTDIR / "best.pt"
-ANN = DERIV_9T.parent / "annotations" / "annotations_proj.gpkg"
+ANN = DERIV_9T.parent.parent / "annotations" / "annotations_proj.gpkg"  # = data/derivatives/annotations
 
 PATCH = 256
 OVERLAP = 64

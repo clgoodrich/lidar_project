@@ -1,0 +1,25 @@
+{
+  "key": "613590",
+  "network_km": 179.52,
+  "clean_km": 174.47,
+  "n_clean": 1316,
+  "bridges": 136,
+  "config": {
+    "enhance": "sato",
+    "thresh": "otsu",
+    "hi": 0.6,
+    "lo": 0.4,
+    "t": 0.5,
+    "pathopen": false,
+    "po_len": 14,
+    "slope_max": null,
+    "skel": "lee",
+    "spur": 20,
+    "reconnect": "lcp",
+    "island": 80,
+    "min_px": 40
+  },
+  "tiger_km_in_block": 52.33,
+  "tiger_recall": 0.578,
+  "novel_km": 138.96
+}

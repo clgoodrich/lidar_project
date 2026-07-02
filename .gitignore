@@ -188,3 +188,13 @@ label_grids/**/*.png
 # NISAR L-band granules (large .h5, regenerable via _fetch_nisar_9t.py)
 data/external/nisar/
 *.h5
+
+# 613590 0.5m phase-3 stack + inference (heavy, regenerable; 2026-07-01)
+data/derivatives/tiles/613590_05/
+data/derivatives/inference_613590_05/
+# permian pad-transfer experiment rasters (regenerable)
+label_grids/permian_01/pad_unet_xfer/
+# pretrained YOLO weights (downloaded, regenerable)
+yolo26n.pt
+# ramachandran pad points: 28MB derived from tracked permian_well_pads.csv, copied per-grid for QGIS
+ramachandran_permian_pads_pts.gpkg

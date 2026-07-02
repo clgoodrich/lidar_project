@@ -34,7 +34,7 @@ STATS = DERIV_9T / "feature_stats_1m.json"
 BLOCKS = DERIV_9T / "pit_blocks_9t.gpkg"
 MANIFEST = DERIV_9T / "road_dataset_manifest.csv"
 CHUNKS = DERIV_9T / "road_chunks_9t.gpkg"  # per-chunk geometries for eval
-ANN = DERIV_9T.parent / "annotations" / "annotations_proj.gpkg"
+ANN = DERIV_9T.parent.parent / "annotations" / "annotations_proj.gpkg"  # = data/derivatives/annotations
 
 # 1 m channel order: roughness_5 replaces roughness_11.
 CHANNELS_1M = ("lrm_25", "lrm_5", "slope", "tpi_05",

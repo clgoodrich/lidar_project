@@ -55,10 +55,13 @@ LBL_PIT = DERIV_9T / "labels_pit_9t_05.tif"
 LBL_ROAD = DERIV_9T / "labels_road_9t_05.tif"
 LBL_PLAT = DERIV_9T / "labels_plat_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"
-BLOCKS = DERIV_9T / "pit_blocks_9t.gpkg"
-MAN_PIT = DERIV_9T / "pit_dataset_manifest.csv"
-MAN_ROAD = DERIV_9T / "road_dataset_manifest.csv"
-MAN_PLAT = DERIV_9T / "plat_dataset_manifest.csv"
+# Unified "any-feature" split so all three heads share ONE consistent split
+# (no cross-head leakage; uses all in-tile pits/pads/roads). See
+# _build_unified_split.py. Standalone trainers keep their own per-feature splits.
+BLOCKS = DERIV_9T / "blocks_unified_9t.gpkg"
+MAN_PIT = DERIV_9T / "pit_dataset_manifest_unified.csv"
+MAN_ROAD = DERIV_9T / "road_dataset_manifest_unified.csv"
+MAN_PLAT = DERIV_9T / "plat_dataset_manifest_unified.csv"
 
 # 384 px = 192 m at 0.5 m/px. Multiple of 16 (4-level encoder), and matches the
 # plat trainer's window so well pads fit with context. Pits/roads centered in

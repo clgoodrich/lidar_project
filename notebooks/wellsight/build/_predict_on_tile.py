@@ -144,7 +144,9 @@ def infer_one(name: str, ckpt: Path, n_classes: int, patch: int, overlap: int,
 
 
 def render_overlay(argmaps: dict[str, np.ndarray], sfx: str, out_dir: Path) -> None:
-    hs_path = DERIV / f"hillshade_{sfx}.tif"
+    hs_path = DERIV / "tiles" / sfx / f"hillshade_{sfx}.tif"   # new layout
+    if not hs_path.exists():
+        hs_path = DERIV / f"hillshade_{sfx}.tif"               # legacy flat fallback
     with rasterio.open(hs_path) as r:
         hs = r.read(1); b = r.bounds
     extent = [b.left, b.right, b.bottom, b.top]
