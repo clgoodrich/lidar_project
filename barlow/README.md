@@ -29,6 +29,8 @@ barlow/
     BARLOW-DISSERTATION-2026.pdf     # the dissertation itself (413 MB, gitignored)
     BARLOW-DISSERTATION-2026_sidebyside.pdf          # dissertation page + guide notes per sheet (gitignored;
     BARLOW-DISSERTATION-2026_sidebyside_compact.pdf  #  regenerate: python barlow/build/_build_readalong_pdf.py [--raster])
+    BARLOW-DISSERTATION-2026_readalong.epub          # e-reader version: page image then its note, alternating
+                                                     #  (gitignored; regenerate: python barlow/build/_build_readalong_epub.py)
     FINESST_Barlow_Expansion_Concept.pdf  # earlier planning brief (superseded by finesst_proposal.md)
 ```
 
