@@ -1,6 +1,6 @@
 # Iteration: `_pit_optimize.py` — pit candidate extraction (road pattern → pits)
 
-**Date:** 2026-06-16
+**Date:** 2026-06-16 (re-run 2026-07-02 with val-based selection)
 **Script:** `notebooks/wellsight_v2/build/_pit_optimize.py`
 **Status:** working end-to-end on 9t; precision low (expected) → feeds active-learning loop
 
@@ -27,17 +27,31 @@ the centroid is a candidate well location. Same CLI/harness shape as the road sc
 - **Optimize:** coordinate-ascent, 2 passes over
   {enhance, thresh, floor_gate, t, area_min, area_max, circ_min, ecc_max, min_px}.
 
-## Results (9t test region, all blobs, no confidence gate)
+## Results
+
+**2026-07-02 honest protocol** — config selected on the **val** blocks only, then the
+frozen config scored **once** on test (`pit_postproc_best.json` keeps both):
+
+| split | precision | recall | F1 | tp/fp/fn | candidates |
+|---|---|---|---|---|---|
+| val (selection) | 0.126 | 0.698 | **0.214** | 44/305/19 | 349 |
+| **test (frozen)** | **0.092** | **0.492** | **0.155** | 32/317/33 | 349 |
+
+Frozen config: `enhance=none, thresh=hysteresis(0.4/0.6), floor_gate=on,
+area 9–1500 m², circ≥0.55, ecc≤0.88, min_px=12`.
+
+<details><summary>Superseded 2026-06-16 result (tuned directly on test — optimistically biased)</summary>
+
 | metric | value |
 |---|---|
-| **F1** | **0.195** |
+| F1 | 0.195 |
 | recall | 0.85 |
 | precision | 0.11 |
 | candidates | ~500 (vs 65 GT) |
 
-Best config: `enhance=gauss, thresh=hysteresis(0.4/0.6), floor_gate=off,
-area 9–1500 m², circ≥0.45, ecc≤0.88, min_px=12` →
-`pit_unet_v2/pit_postproc_best.json`.
+Config: `enhance=gauss, thresh=hysteresis(0.4/0.6), floor_gate=off, circ≥0.45`.
+The 0.195→0.155 F1 drop is the size of the selection-on-test bias plus config shift.
+</details>
 
 ## Interpretation
 The extractor is correct and runs clean; raw **precision is low because the floor prob

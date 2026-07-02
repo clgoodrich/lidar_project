@@ -5,6 +5,37 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-02 — Honest re-eval complete: all four instance models on the 65/93 split, single era
+
+Closes the dataset-era-mixing + no-precision findings from the 07-01 audit. Sequence:
+pad Mask R-CNN retrained on the 650-pad dataset (the 07-01 attempt died at epoch 0 to
+the WoW VRAM spill; relaunched on the freed GPU — best = **ep 3**, val 0.787, then val
+climbed 0.870/0.878 and the 30-epoch no-early-stop run was cut at ep 5), then all four
+infer/eval scripts re-run with the new greedy-1:1 + precision metrics, then
+`_compare_known_wells.py` re-run on the fresh detections (after fixing a stale
+`data/derivatives/external/` path → `data/external/`).
+
+**Test results (greedy 1:1, R/P/F1 @ IoU 0.3):**
+
+| model | R | P | F1 | R@0.5 | mIoU | #det |
+|---|---|---|---|---|---|---|
+| pit_07_maskrcnn (06-11 ckpt) | 0.97 | 0.053 | 0.100 | 0.85 | 0.631 | 2978 |
+| pit_08_yolo (06-11 ckpt, conf .05) | 0.92 | 0.054 | 0.102 | 0.69 | 0.572 | 3631 |
+| pad_05_maskrcnn (07-02 ckpt ep3) | 0.98 | 0.029 | 0.057 | 0.90 | 0.690 | 3075 |
+| pad_06_yolo (06-11 ckpt) | 0.88 | 0.064 | 0.118 | 0.83 | 0.661 | 1255 |
+
+Headline: recall survives the honest protocol; **precision is 3–6% everywhere** — the
+over-detection the loose metric hid. 9× more pad training data did NOT move pad
+precision (0.029). Known-well cross-ref (1,069 DEP wells, 25 m): pit_07 373, pit_08
+397, pad_05 **521**, pad_06 337 matched. LEADERBOARD rewritten single-era (legacy
+110/79-era numbers quarantined in a collapsed block); pit_07/pit_08/pad_05/pad_06
+iteration docs got current-headline sections; pit_optimize + road_unet_1m_recall docs
+carry the val-tuned/test-frozen post-proc numbers (pit F1 0.155; road extraction F1
+0.754). BACKLOG: 3 audit items closed, next lever recorded — **val-selected score
+threshold sweep** (re-threshold saved instances.gpkg, no GPU needed).
+
+---
+
 ## 2026-07-02 — Storage migration: heavy datasets moved to E: (C: was at 98%)
 
 C: had 21 GB free of 931 GB. Per user request, moved big datasets to the Samsung T7

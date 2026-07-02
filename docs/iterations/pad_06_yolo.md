@@ -1,6 +1,13 @@
 # pad_06_yolo
 
-**Status:** trained + inference complete
+**Status:** checkpoint retrained 2026-06-11 on the rebuilt 650-pad dataset;
+re-evaluated 2026-07-02 on the current test split with 1:1 metrics.
+
+**Current headline (2026-07-02 re-eval — 93 test plats, greedy 1:1 matching).**
+- R@0.3 **0.88**, P@0.3 **0.064**, F1@0.3 **0.118**; R@0.5 0.83; mean best IoU 0.661.
+- 1,255 detections after NMS at conf 0.3 — best F1 of the four instance models:
+  2.5× fewer detections than pad_05_maskrcnn for −10 pts recall.
+- Results below this line are the older 79-pad era (n_test 9, loose recall).
 
 **Final result (100 ep YOLOv8s-seg, val Mask mAP50 = 0.467).**
 - Recall@IoU 0.1 / 0.3 / 0.5: **0.778 / 0.778 / 0.667** on 9 test plats.

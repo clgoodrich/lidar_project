@@ -1,6 +1,14 @@
 # pit_08_yolo
 
-**Status:** trained + inference complete (after BGR-channel bug fix)
+**Status:** checkpoint retrained 2026-06-11 on the rebuilt 426-pit dataset;
+re-evaluated 2026-07-02 on the current test split with 1:1 metrics.
+
+**Current headline (2026-07-02 re-eval — 65 test pits, greedy 1:1 matching).**
+- R@0.3 **0.92**, P@0.3 0.054, F1@0.3 **0.102**; R@0.5 0.69; mean best IoU 0.572.
+- 3,631 detections after per-class NMS (1,184 floor / 2,447 wall) at conf **0.05** —
+  the low conf inflates detection volume; a val-selected threshold sweep is the obvious
+  next lever. Edges Mask R-CNN on F1, trails badly on IoU/R@0.5.
+- Results below this line are the older 110-pit era (n_test 20, loose recall).
 
 **Final result (100 ep YOLOv8s-seg, val Mask mAP50 = 0.765).**
 - Recall@IoU 0.1 / 0.3 / 0.5: **0.90 / 0.85 / 0.75** on 20 test pits.

@@ -1,6 +1,18 @@
 # pad_05_maskrcnn
 
-**Status:** v2 (7-band) trained + inference complete 2026-06-03 — best ckpt = epoch 0. Same overfitting pattern as pit_07.
+**Status:** v2 (7-band) **retrained 2026-07-02** on the rebuilt 650-pad dataset
+(456/101/93 split; 1,824 train patches/epoch) — best ckpt = **epoch 3** (val 0.787,
+then val climbed 0.870/0.878; run cut at ep 5 of 30, no early stopping in script).
+Same overfit-fast pattern as every Mask R-CNN run here, just 2 epochs later with 9×
+the data. (A first retrain attempt on 07-01 died at epoch 0 — an 8 GB-VRAM
+oversubscription: World of Warcraft + training → driver sysmem spill, 10–100× slowdown.)
+
+**Current headline (2026-07-02 eval — ep-3 checkpoint, 93 test plats, greedy 1:1 matching).**
+- R@0.3 **0.98**, P@0.3 0.029, F1@0.3 0.057; R@0.5 **0.90**; mean best IoU **0.690**.
+- 3,075 detections after NMS at score ≥ 0.3 (vs 93 GT — 33× over-detection; worst
+  precision of the four instance models, best recall/IoU).
+- Results below this line are the older 79-pad era (n_test 9, loose recall) — kept for
+  architecture/history; numbers not comparable.
 
 **v1 result (3-band composite, 30 ep, best ckpt = ep 1).**
 - Recall@IoU 0.1 / 0.3 / 0.5: 1.00 / 1.00 / 0.889 on 9 test plats. Mean IoU 0.688.

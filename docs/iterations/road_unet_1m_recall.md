@@ -77,6 +77,23 @@ python notebooks/wellsight/build/_road_optimize.py --apply-block <613590 dir> \
 (`--prob`/`--drain` overrides added so the cleaner can run on any prob raster and derive
 the drainage gate from a drainage prob when no argmax raster exists.)
 
+## Post-processing extraction on 9t (added 2026-07-02, honest protocol)
+
+`_road_optimize.py` was re-pointed at this model's probs (it had been reading the
+superseded `road_unet_1m`) and re-tuned with **val-based selection**: the cleaning
+config is optimized on the val blocks only, then frozen and scored **once** on the
+test blocks (`road_unet_1m_recall/road_postproc_best.json` keeps both):
+
+| split | completeness | correctness | F1 | GT km |
+|---|---|---|---|---|
+| val (selection) | 0.474 | 0.614 | 0.535 | 12.5 |
+| **test (frozen)** | **0.695** | **0.824** | **0.754** | 22.5 |
+
+Frozen config: `enhance=sato, thresh=otsu, skel=lee, spur=20, reconnect=lcp,
+island=80, min_px=40`. Test > val here is not leakage — the val region simply has
+about half the ground-truth road density (12.5 vs 22.5 km against the same 1,019
+segment set), making it the harder region; selection never saw test.
+
 ## Footnote — "roughness channel bug" was a false alarm
 
 At 1 m, `features_<key>_1m.tif` band 7 is *labeled* `roughness_11` but the data is

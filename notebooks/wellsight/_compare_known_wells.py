@@ -24,7 +24,7 @@ from shapely.geometry import box
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _common import DERIV_9T, DST_CRS  # noqa: E402
 
-OG_SHP = (DERIV_9T.parent.parent / "external" /
+OG_SHP = (DERIV_9T.parent.parent.parent / "external" /
           "OilGasLocations_ConventionalUnconventional2026_04" /
           "OilGasLocations_ConventionalUnconventional2026_04.shp")
 DEM_REF = DERIV_9T / "dem_9t_05.tif"

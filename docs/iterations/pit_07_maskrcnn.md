@@ -1,6 +1,15 @@
 # pit_07_maskrcnn
 
-**Status:** v2 (7-band, floor+wall) trained + inference complete 2026-06-03 — best ckpt = epoch 1. Overfits aggressively after ep 1.
+**Status:** v2 (7-band, floor+wall); checkpoint retrained 2026-06-11 on the rebuilt
+426-pit dataset; re-evaluated 2026-07-02 on the current test split with 1:1 metrics.
+
+**Current headline (2026-07-02 re-eval — 06-11 checkpoint, 65 test pits, greedy 1:1 matching).**
+- R@0.3 **0.97**, P@0.3 0.053, F1@0.3 0.100; R@0.5 **0.85**; mean best IoU **0.631**.
+- 2,978 detections after per-class NMS (1,190 floor / 1,788 wall) at score ≥ 0.3.
+- Best pit recall + IoU of any model, but precision ~5% — over-detection is the open
+  problem (score threshold never tuned; see LEADERBOARD "Reading the tables").
+- Results below this line are the older 110-pit era (n_test 20, loose recall) —
+  kept for the architecture/bug history; numbers not comparable.
 
 **Goal.** First instance-segmentation baseline for pits on the 9t tile. UNet pipelines (`pit_unet_v2`, `multitask_unet`) treat pits as semantic classes and post-hoc clump pixels; this iteration asks the model to emit one detection per pit natively so we can rank candidates by per-instance score instead of by pixel cluster size.
 
