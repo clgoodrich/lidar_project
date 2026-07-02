@@ -129,20 +129,55 @@ def icp_coregister(d_old, d_new, out_dir, voxel=6.0):
     return out_tif, icp
 
 
-def per_stream(dod_c, valid, ref_tif, lod, years, out_csv):
+def water_mask(z_old, z_new, dod_c, valid, min_px=20000, tol=0.75):
+    """Standing-water screen: lake/pond level change masquerades as huge coherent
+    erosion/deposition in the DoD (e.g. Lake Fryxell rose ~1.5 m over 2001-2014 and
+    78% of Aiken's apparent 'deposition' volume was lake rise). Water surfaces are
+    dead flat, so they show up as strong modes in the 0.1 m elevation histogram of
+    large-|dz| pixels; min_px=20000 (8 ha within one 0.1 m bin at 2 m res) cannot be
+    a sloping fluvial surface. Pixels within +-tol of a detected level in EITHER
+    epoch's DEM are flagged."""
+    big = valid & (np.abs(dod_c) > 1.0)
+    water = np.zeros(valid.shape, bool)
+    if big.sum() == 0:
+        return water
+    for z in (z_old, z_new):
+        zz = z[big]
+        hist, edges = np.histogram(zz, bins=np.arange(np.floor(zz.min()),
+                                                      np.ceil(zz.max()) + 0.1, 0.1))
+        for i in np.where(hist > min_px)[0]:
+            lo, hi = edges[i], edges[i + 1]
+            water |= (z > lo - tol) & (z < hi + tol)
+            print(f"  water level detected: {lo:.1f}-{hi:.1f} m "
+                  f"({hist[i]:,} px in bin) -> masked +-{tol} m")
+    return water
+
+
+def per_stream(dod_c, valid, z_old, z_new, ref_tif, lod, years, out_csv):
     """Per-stream erosion/deposition/net rates inside the LTER channel polygons.
-    Channels are WGS84 polar-stereographic (lat0 -71) -> reproject to EPSG:3294."""
+    Channels are WGS84 polar-stereographic (lat0 -71) -> reproject to EPSG:3294.
+
+    Rates come in two forms: total m^3/yr (scales with masked channel area — the
+    valid-data footprint differs per epoch because the 2001 ATM swath is narrower)
+    and area-normalized mm/yr (specific rate; comparable across streams + epochs).
+    Standing-water pixels (lake/pond level change, see water_mask) are excluded and
+    reported as water_pct. Also reports NMAD recomputed OUTSIDE the channel mask,
+    so the "stable terrain" uncertainty claim is actually channel-free."""
     import geopandas as gpd
     from rasterio.features import rasterize
     with rasterio.open(ref_tif) as r:
         transform, shape = r.transform, (r.height, r.width)
     cell = RES * RES
+    water = water_mask(z_old, z_new, dod_c, valid)
     rows = []
+    chan_union = np.zeros(shape, dtype=bool)
     for shp in sorted(STREAM_DIR.glob("*_channel.shp")):
         name = shp.stem.replace("_stream_channel", "").replace("_channel", "")
         g = gpd.read_file(shp).to_crs(CRS)
-        m = rasterize([(geom, 1) for geom in g.geometry], out_shape=shape,
-                      transform=transform, fill=0).astype(bool) & valid
+        m0 = rasterize([(geom, 1) for geom in g.geometry], out_shape=shape,
+                       transform=transform, fill=0).astype(bool) & valid
+        chan_union |= m0
+        m = m0 & ~water
         if m.sum() == 0:
             continue
         dc = dod_c[m]
@@ -150,18 +185,27 @@ def per_stream(dod_c, valid, ref_tif, lod, years, out_csv):
         dep = dc[dc > lod].sum() * cell
         area = m.sum() * cell
         rows.append({"stream": name, "area_m2": round(area),
+                     "water_pct": round(100 * (m0 & water).sum() / m0.sum(), 1),
                      "erosion_m3": round(ero), "deposition_m3": round(dep),
                      "net_m3": round(dep - ero), "gross_m3": round(ero + dep),
                      "net_rate_m3_yr": round((dep - ero) / years, 1),
-                     "gross_rate_m3_yr": round((ero + dep) / years, 1)})
+                     "gross_rate_m3_yr": round((ero + dep) / years, 1),
+                     "gross_mm_yr": round(1000 * (ero + dep) / (area * years), 2),
+                     "net_mm_yr": round(1000 * (dep - ero) / (area * years), 2)})
     if not rows:
         print("  no stream channels intersect this window"); return
+    stab = dod_c[valid & ~chan_union]
+    nmad_stable = 1.4826 * np.median(np.abs(stab - np.median(stab)))
+    print(f"  stable-terrain NMAD (channels excluded, {100*chan_union[valid].mean():.1f}% "
+          f"of valid px are channel): {nmad_stable:.3f} m")
     rows.sort(key=lambda r: -r["gross_m3"])
-    print(f"  per-stream ({years:.0f} yr, inside LTER channels):")
-    print(f"    {'stream':16s} {'area_m2':>9s} {'gross/yr':>10s} {'net/yr':>10s}")
+    print(f"  per-stream ({years:.0f} yr, inside LTER channels, water-screened):")
+    print(f"    {'stream':16s} {'area_m2':>9s} {'water%':>6s} {'gross/yr':>10s} "
+          f"{'net/yr':>10s} {'gross mm/yr':>12s}")
     for r in rows:
-        print(f"    {r['stream']:16s} {r['area_m2']:>9,} {r['gross_rate_m3_yr']:>10,.0f} "
-              f"{r['net_rate_m3_yr']:>+10,.0f}")
+        print(f"    {r['stream']:16s} {r['area_m2']:>9,} {r['water_pct']:>6.1f} "
+              f"{r['gross_rate_m3_yr']:>10,.0f} {r['net_rate_m3_yr']:>+10,.0f} "
+              f"{r['gross_mm_yr']:>12.2f}")
     with open(out_csv, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
     print(f"  wrote {out_csv}")
@@ -205,7 +249,9 @@ def main() -> int:
         stats = s2; out_dod = OUT / f"dod_{args.old}_{args.new}_icp.tif"
 
     if args.streams:
-        per_stream(dod_c, valid, d_new, stats["lod"], years,
+        z_old_arr = rasterio.open(
+            OUT / "dem_old_icp_2m.tif" if args.icp else d_old).read(1).astype("float64")
+        per_stream(dod_c, valid, z_old_arr, z_new, d_new, stats["lod"], years,
                    OUT / f"per_stream_{args.old}_{args.new}.csv")
 
     prof = rasterio.open(d_new).profile

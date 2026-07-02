@@ -31,12 +31,22 @@ STRM = BARLOW / "lter_streams"
 OUT = Path(__file__).resolve().parents[1] / "docs" / "finesst_figures"
 OUT.mkdir(parents=True, exist_ok=True)
 
-# robust uncertainty stats measured earlier (stable-terrain DoD); kept here so the
-# error-model figure is self-contained and labelled with the validated numbers.
-NMAD = {"2001_2014": 0.21, "2014_rema": 0.227}
-LOD95 = {"2001_2014": 0.41, "2014_rema": 0.444}
 ICP_FITNESS = json.loads((CD / "taylor_2001_2014" / "_meta_barlow_icp.json").read_text()
                          )["stages"]["filters.icp"]["fitness"]
+
+# DoD acquisition windows (decimal-year DEM dates -> discharge integration windows).
+# 2001 ATM flown Nov-Dec 2001; 2014/15 NCALM austral summer; REMA strips 2021-23 (~2022).
+EPOCH_WIN = {"2001_2014": ("2001-11-01", "2015-01-01"),
+             "2014_rema": ("2015-01-01", "2022-01-01")}
+
+
+def _nmad_lod(path):
+    """NMAD / LOD95 computed live from the (bias-corrected) DoD raster, no hardcoding."""
+    with rasterio.open(path) as ds:
+        a = ds.read(1)
+        d = a[a != -9999]
+    nmad = 1.4826 * np.median(np.abs(d - np.median(d)))
+    return nmad, 1.96 * nmad
 
 # stream key in per_stream csv  ->  (pretty label, LTER discharge csv glob)
 STREAMS = {
@@ -63,15 +73,18 @@ def _read_dod(path):
 
 
 def fig_dod_maps():
-    """Fig 1: the two DEM-of-Difference change maps (erosion-/deposition+)."""
+    """Fig 1: the two DEM-of-Difference change maps (erosion-/deposition+).
+    Both panels are the SAME stream-corridor window (bias-only co-registration;
+    ICP is validated separately on a high-relief pilot, see fig3), so the epochs
+    are spatially comparable. NMAD/LOD annotated live from each raster."""
     fig, axes = plt.subplots(1, 2, figsize=(11, 5.0), constrained_layout=True)
-    panels = [("taylor_2001_2014/dod_2001_2014_icp.tif",
-               "(a) 2001 → 2014  (lidar – lidar, ICP-aligned)", "2001_2014"),
+    panels = [("taylor_2001_2014/dod_2001_2014.tif",
+               "(a) 2001 → 2014  (lidar – lidar)", "2001_2014"),
               ("taylor_2014_rema/dod_2014_rema.tif",
                "(b) 2014 → 2021–23  (lidar – REMA satellite)", "2014_rema")]
     for ax, (rel, title, key) in zip(axes, panels):
+        nmad, lod = _nmad_lod(CD / rel)
         arr, ext = _read_dod(CD / rel)
-        lod = LOD95[key]
         # null out sub-LOD noise so only detectable change shows
         shown = np.ma.masked_inside(arr, -lod, lod)
         norm = TwoSlopeNorm(vmin=-2.0, vcenter=0.0, vmax=2.0)
@@ -83,10 +96,10 @@ def fig_dod_maps():
         ax.ticklabel_format(style="plain")
         cb = fig.colorbar(im, ax=ax, shrink=0.85, extend="both")
         cb.set_label("Elevation change (m):  erosion < 0 < deposition")
-        ax.text(0.02, 0.02, f"NMAD {NMAD[key]:.2f} m   LOD95 {LOD95[key]:.2f} m",
+        ax.text(0.02, 0.02, f"NMAD {nmad:.2f} m   LOD95 {lod:.2f} m",
                 transform=ax.transAxes, fontsize=8, va="bottom",
                 bbox=dict(boxstyle="round", fc="white", alpha=0.8))
-    fig.suptitle("DEM-of-Difference, Taylor Valley stream corridors "
+    fig.suptitle("DEM-of-Difference, Taylor Valley stream corridors, same window "
                  "(only |Δz| > LOD95 shown)", fontweight="bold")
     fig.savefig(OUT / "fig1_dod_maps.png", bbox_inches="tight")
     plt.close(fig)
@@ -102,7 +115,11 @@ def _load_rates():
 
 
 def fig_per_stream():
-    """Fig 2: per-stream gross & net sediment-flux rates, both epochs."""
+    """Fig 2: per-stream specific (area-normalized) sediment-flux rates, both epochs.
+    Specific rates (mm/yr = m³/yr per m² of masked channel) are the comparable
+    quantity: the valid-data footprint differs between epochs (the 2001 ATM lidar
+    swath is narrower than REMA coverage), so raw m³/yr totals would confound
+    real change with coverage."""
     a, b = _load_rates()
     order = ["Harnish", "Von Guerard", "Delta", "Crescent", "Aiken", "Huey"]
     a = a.set_index("label").reindex(order)
@@ -110,21 +127,21 @@ def fig_per_stream():
     x = np.arange(len(order)); w = 0.38
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.6), constrained_layout=True)
 
-    ax1.bar(x - w/2, a["gross_rate_m3_yr"], w, label="2001–14", color="#4C72B0")
-    ax1.bar(x + w/2, b["gross_rate_m3_yr"], w, label="2014–21/23", color="#DD8452")
-    ax1.set_title("(a) Gross sediment flux  (erosion + deposition)")
-    ax1.set_ylabel("Gross rate (m³ yr⁻¹)")
+    ax1.bar(x - w/2, a["gross_mm_yr"], w, label="2001–14", color="#4C72B0")
+    ax1.bar(x + w/2, b["gross_mm_yr"], w, label="2014–21/23", color="#DD8452")
+    ax1.set_title("(a) Specific gross flux  (erosion + deposition)")
+    ax1.set_ylabel("Gross rate (mm yr⁻¹ over channel area)")
 
-    ax2.bar(x - w/2, a["net_rate_m3_yr"], w, label="2001–14", color="#4C72B0")
-    ax2.bar(x + w/2, b["net_rate_m3_yr"], w, label="2014–21/23", color="#DD8452")
+    ax2.bar(x - w/2, a["net_mm_yr"], w, label="2001–14", color="#4C72B0")
+    ax2.bar(x + w/2, b["net_mm_yr"], w, label="2014–21/23", color="#DD8452")
     ax2.axhline(0, color="k", lw=0.8)
-    ax2.set_title("(b) Net rate  (+ deposition / – erosion)")
-    ax2.set_ylabel("Net rate (m³ yr⁻¹)")
+    ax2.set_title("(b) Specific net rate  (+ deposition / – erosion)")
+    ax2.set_ylabel("Net rate (mm yr⁻¹ over channel area)")
 
     for ax in (ax1, ax2):
         ax.set_xticks(x); ax.set_xticklabels(order, rotation=20, ha="right")
         ax.legend(frameon=False, fontsize=9)
-    fig.suptitle("Per-stream geomorphic rates, Taylor Valley "
+    fig.suptitle("Per-stream specific geomorphic rates, Taylor Valley "
                  "(channels masked to MCM-LTER centerlines)", fontweight="bold")
     fig.savefig(OUT / "fig2_per_stream_rates.png", bbox_inches="tight")
     plt.close(fig)
@@ -132,7 +149,10 @@ def fig_per_stream():
 
 
 def fig_error_model():
-    """Fig 3: stable-terrain DoD error distribution, Gaussian vs Laplacian, LOD95."""
+    """Fig 3: DoD error distribution, Gaussian vs Laplacian, LOD95. Built from the
+    high-relief ICP pilot window (where ICP matters); channel pixels are a
+    negligible share, so residuals approximate stable terrain (verified: excluding
+    channels shifts NMAD by <0.01 m on the stream-corridor window)."""
     arr, _ = _read_dod(CD / "taylor_2001_2014" / "dod_2001_2014_icp.tif")
     d = arr.compressed()
     d = d[np.isfinite(d)]
@@ -157,7 +177,7 @@ def fig_error_model():
     ax.text(lod, ax.get_ylim()[1]*0.92, f" LOD95 = ±{lod:.2f} m", fontsize=9)
     ax.set_xlabel("Elevation difference (m)")
     ax.set_ylabel("Probability density")
-    ax.set_title(f"Robust error model, Laplacian beats Gaussian\n"
+    ax.set_title(f"Robust error model, Laplacian beats Gaussian (high-relief ICP pilot)\n"
                  f"ICP fitness {ICP_FITNESS:.2f} m² (mean sq corr. dist; lower=better)")
     ax.legend(frameon=False, fontsize=9)
     fig.savefig(OUT / "fig3_error_model.png", bbox_inches="tight")
@@ -165,65 +185,93 @@ def fig_error_model():
     print("  fig3_error_model.png")
 
 
-def _cum_discharge(glob_pat, t0, t1):
-    """Sum tdaily_discharge (daily total) over [t0, t1) for a gauge CSV."""
+def _mean_discharge(glob_pat, t0, t1):
+    """Mean tdaily_discharge (L/day) per GAUGED day over [t0, t1). Mean-per-gauged-day
+    (not the cumulative sum) because gauge coverage is unequal across streams and
+    epochs (257-716 gauged days in 2001-14; 48-362 post-2015) — cumulative sums
+    would bias poorly-gauged streams low. Returns (mean_L_day, n_gauged_days)."""
     hits = list(STRM.glob(glob_pat))
     if not hits:
-        return np.nan
+        return np.nan, 0
     df = pd.read_csv(hits[0], low_memory=False)
     df["d"] = pd.to_datetime(df["date_time"], errors="coerce", format="mixed")
     q = pd.to_numeric(df["tdaily_discharge"], errors="coerce")
-    m = (df["d"] >= t0) & (df["d"] < t1)
-    return float(np.nansum(q[m]))
+    m = (df["d"] >= t0) & (df["d"] < t1) & q.notna()
+    if m.sum() == 0:
+        return np.nan, 0
+    return float(q[m].mean()), int(m.sum())
 
 
 def fig_attribution():
-    """Fig 4: preliminary attribution, gross geomorphic rate vs cumulative melt
-    discharge per stream (the FINESST core science, on real data)."""
+    """Fig 4: preliminary attribution, per-stream geomorphic rate vs mean gauged melt
+    discharge (the FINESST core science, on real data). Two panels: (a) total gross
+    flux (m³/yr) — scales with channel size, the first-order 'bigger streams move
+    more' relation; (b) specific rate (mm/yr, area-normalized) — the melt-INTENSITY
+    signal O1 targets. Lidar epoch is fit per panel; the REMA epoch shows no coherent
+    relation under sparse post-2015 gauging and is plotted unfit, which motivates
+    modeled (gauge-independent) melt-energy drivers."""
+    from scipy import stats as sstats
     a, b = _load_rates()
     rows = []
-    windows = [("2001_2014", a, "2001-01-01", "2014-12-31", "#4C72B0", "o"),
-               ("2014_rema", b, "2014-01-01", "2023-12-31", "#DD8452", "s")]
-    for key, df, s0, s1, color, mk in windows:
-        t0, t1 = pd.Timestamp(s0), pd.Timestamp(s1)
+    for key, df, color, mk in [("2001_2014", a, "#4C72B0", "o"),
+                               ("2014_rema", b, "#DD8452", "s")]:
+        t0, t1 = (pd.Timestamp(s) for s in EPOCH_WIN[key])
         for _, r in df.iterrows():
             meta = STREAMS.get(r["stream"])
             if not meta:
                 continue
             lbl, glob_pat = meta
-            cum = _cum_discharge(glob_pat, t0, t1)
+            mq, nd = _mean_discharge(glob_pat, t0, t1)
             rows.append(dict(epoch=key, stream=lbl, color=color, mk=mk,
-                             gross=r["gross_rate_m3_yr"], cum_L=cum))
-    R = pd.DataFrame(rows).dropna(subset=["cum_L"])
-    R = R[R["cum_L"] > 0]
-    fig, ax = plt.subplots(figsize=(7.2, 5.0), constrained_layout=True)
-    for key, sub in R.groupby("epoch"):
-        lab = "2001–14" if key == "2001_2014" else "2014–21/23"
-        ax.scatter(sub["cum_L"]/1e9, sub["gross"], s=70, c=sub["color"].iloc[0],
-                   marker=sub["mk"].iloc[0], edgecolor="k", lw=0.5, label=lab, zorder=3)
-        for _, r in sub.iterrows():
-            ax.annotate(r["stream"], (r["cum_L"]/1e9, r["gross"]),
-                        textcoords="offset points", xytext=(6, 3), fontsize=8)
-        # per-epoch log-log trend (the lidar–lidar epoch has the cleaner signal;
-        # the REMA epoch is noisier, sparse post-2014 gauge coverage)
-        lx = np.log10(sub["cum_L"].values/1e9); ly = np.log10(sub["gross"].values)
-        ok = np.isfinite(lx) & np.isfinite(ly)
-        if ok.sum() >= 3:
-            m, c = np.polyfit(lx[ok], ly[ok], 1)
-            rho = np.corrcoef(lx[ok], ly[ok])[0, 1]
-            xr = np.linspace(lx[ok].min(), lx[ok].max(), 50)
-            ls = "--" if key == "2001_2014" else ":"
-            ax.plot(10**xr, 10**(m*xr + c), ls=ls, lw=1.4, color=sub["color"].iloc[0],
-                    label=f"{lab} fit (r={rho:.2f})")
-    ax.set_xscale("log"); ax.set_yscale("log")
-    ax.set_xlabel("Cumulative gauged discharge over epoch (10⁹ L)")
-    ax.set_ylabel("Gross geomorphic rate (m³ yr⁻¹)")
-    ax.set_title("Preliminary attribution: sediment flux vs melt discharge\n"
-                 "(lidar epoch r=+0.89; REMA epoch noisier → FI energy-balance model)")
-    ax.legend(frameon=False, fontsize=9)
+                             gross=r["gross_rate_m3_yr"], spec=r["gross_mm_yr"],
+                             meanq=mq, gauge_days=nd))
+    R = pd.DataFrame(rows).dropna(subset=["meanq"])
+    R = R[R["meanq"] > 0]
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.8), constrained_layout=True)
+    panels = [("gross", "Gross geomorphic rate (m³ yr⁻¹)",
+               "(a) Total flux (confounded by channel size / coverage)"),
+              ("spec", "Specific gross rate (mm yr⁻¹)",
+               "(b) Specific (per-area) rate: the melt-intensity signal")]
+    stats_txt = {}
+    for ax, (ycol, ylab, title) in zip(axes, panels):
+        for key, sub in R.groupby("epoch"):
+            lab = "2001–14" if key == "2001_2014" else "2014–21/23"
+            filled = key == "2001_2014"
+            ax.scatter(sub["meanq"]/1e6, sub[ycol], s=70,
+                       c=sub["color"].iloc[0] if filled else "none",
+                       edgecolor="k" if filled else sub["color"].iloc[0],
+                       marker=sub["mk"].iloc[0], lw=0.5 if filled else 1.4,
+                       label=lab if filled else f"{lab} (sparse gauging; no fit)",
+                       zorder=3)
+            for _, r in sub.iterrows():
+                ax.annotate(r["stream"], (r["meanq"]/1e6, r[ycol]),
+                            textcoords="offset points", xytext=(6, 3), fontsize=8)
+            if not filled:
+                continue  # REMA epoch: no coherent relation -> honest, no fit line
+            lx = np.log10(sub["meanq"].values/1e6)
+            ly = np.log10(sub[ycol].values)
+            m, c = np.polyfit(lx, ly, 1)
+            pr, pp = sstats.pearsonr(lx, ly)
+            sr, sp = sstats.spearmanr(lx, ly)
+            stats_txt[ycol] = (pr, pp, sr, sp)
+            xr = np.linspace(lx.min(), lx.max(), 50)
+            ax.plot(10**xr, 10**(m*xr + c), "--", lw=1.4, color=sub["color"].iloc[0],
+                    label=f"{lab} fit  r={pr:+.2f} (p={pp:.3f}),  ρ={sr:+.2f} (p={sp:.3f})")
+        ax.set_xscale("log"); ax.set_yscale("log")
+        ax.set_xlabel("Mean gauged discharge over epoch (10⁶ L day⁻¹)")
+        ax.set_ylabel(ylab)
+        ax.set_title(title, fontsize=10)
+        ax.legend(frameon=False, fontsize=8, loc="lower right")
+    fig.suptitle("Preliminary attribution: sediment flux vs melt discharge, "
+                 "n = 6 gauged streams per epoch (lake-level rise screened)",
+                 fontweight="bold")
     fig.savefig(OUT / "fig4_attribution.png", bbox_inches="tight")
     plt.close(fig)
     print("  fig4_attribution.png")
+    for ycol, (pr, pp, sr, sp) in stats_txt.items():
+        print(f"    lidar-epoch {ycol}: Pearson r={pr:+.2f} (p={pp:.3f})  "
+              f"Spearman rho={sr:+.2f} (p={sp:.3f})")
     return R
 
 
@@ -270,7 +318,7 @@ def main():
     fig_error_model()
     R = fig_attribution()
     print("\nattribution table (gross rate vs cumulative discharge):")
-    print(R[["epoch", "stream", "gross", "cum_L"]].to_string(index=False))
+    print(R[["epoch", "stream", "gross", "spec", "meanq", "gauge_days"]].to_string(index=False))
 
 
 if __name__ == "__main__":

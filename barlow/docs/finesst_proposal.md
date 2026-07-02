@@ -107,9 +107,11 @@ of Barlow's change detection on Taylor Valley falls **inside her published uncer
 **(a) Change detection across all three epochs (Fig. 2).**
 
 ![Fig 2](finesst_figures/fig1_dod_maps.png)
-***Figure 2.*** *DEM-of-Difference, Taylor Valley stream corridors, only |Δz| > LOD95 shown.
-(a) 2001→2014 lidar–lidar, ICP-aligned; (b) 2014→2021-23 lidar–REMA. Coherent erosion/deposition
-patterns emerge above the noise floor; REMA auto-reprojected from EPSG:3031 to the lidar grid.*
+***Figure 2.*** *DEM-of-Difference over the same Taylor Valley stream-corridor window, only
+|Δz| > LOD95 shown. (a) 2001→2014 lidar–lidar; (b) 2014→2021-23 lidar–REMA. Coherent
+erosion/deposition patterns emerge above the noise floor; REMA auto-reprojected from EPSG:3031
+to the lidar grid. The large flat signal in (a) is Lake Fryxell's ~1.5 m level rise, detected
+and excluded from all stream rates by an automated standing-water screen.*
 
 | Epoch pair | NMAD | LOD95 | Barlow's published range | In range? |
 |---|---|---|---|---|
@@ -123,8 +125,11 @@ exactly the relief-dependence Barlow's point-to-plane ICP exhibits.
 **(b) Per-stream rates (Fig. 3), the masked products O1 consumes.**
 
 ![Fig 3](finesst_figures/fig2_per_stream_rates.png)
-***Figure 3.*** *Per-stream gross (busyness) and net (erosion–deposition) sediment-flux rates for
-six gauged Taylor Valley streams, both epochs, channels masked to MCM-LTER centerlines.*
+***Figure 3.*** *Per-stream **specific** (area-normalized, mm/yr) gross and net sediment-flux
+rates for six gauged Taylor Valley streams, both epochs, channels masked to MCM-LTER centerlines.
+Specific rates are used because the valid-data footprint differs between epochs (the 2001 ATM
+lidar swath is narrower than REMA coverage), so raw m³/yr totals would confound real change
+with coverage.*
 
 **(c) Robust error model (Fig. 4), the basis for O3.**
 
@@ -136,12 +141,15 @@ launch point for the proposed per-pixel calibrated-uncertainty layer (O3).*
 **(d) A first attribution signal (Fig. 5).**
 
 ![Fig 5](finesst_figures/fig4_attribution.png)
-***Figure 5.*** *Per-stream gross geomorphic rate vs. cumulative gauged melt discharge. The
-**lidar–lidar epoch shows a strong positive relationship (r = +0.89)**, busier streams move more
-sediment, as expected. The REMA epoch is noisier (r = +0.43; sparse post-2014 gauge coverage and
-larger satellite LOD). This motivates O1: raw discharge explains the first-order signal but leaves
-structured residuals, so the proposed work will develop a **melt-energy** (PDD/insolation/
-active-layer) model to close the gap and turn correlation into attribution.*
+***Figure 5.*** *Per-stream geomorphic rate vs. mean gauged melt discharge (log-log; lake-level
+signal screened out). In the lidar–lidar epoch the **specific (area-normalized) rate scales
+strongly with discharge: Pearson r = +0.95 (p = 0.004), Spearman ρ = +0.94 (p = 0.005)**, and
+the relationship survives leaving out any single stream. The REMA epoch shows no coherent
+relation under sparse post-2015 gauge coverage (48–362 gauged days per stream) and is plotted
+without a fit. This motivates O1 directly: where gauges are dense the melt–sediment link is
+strong, so the proposed work will replace patchy gauging with **modeled melt energy**
+(PDD/insolation/active-layer) to extend attribution across epochs and valleys, turning
+correlation into attribution.*
 
 ---
 

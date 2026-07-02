@@ -112,9 +112,11 @@ analysis surfaces the attribution signal that O1 develops.
 **(a) Change detection across all three epochs (Fig. 2).**
 
 ![Fig 2](finesst_figures/fig1_dod_maps.png)
-***Figure 2.*** *DoD maps for Taylor Valley stream corridors, showing only changes above the noise
-floor. Left: 2001→2014 (lidar vs lidar). Right: 2014→2021-23 (lidar vs REMA). Red is erosion, blue
-is deposition. Coherent patterns emerge well above the noise.*
+***Figure 2.*** *DoD maps over the same Taylor Valley stream-corridor window, showing only changes
+above the noise floor. Left: 2001→2014 (lidar vs lidar). Right: 2014→2021-23 (lidar vs REMA). Red
+is erosion, blue is deposition. The big flat patch on the left is Lake Fryxell rising ~1.5 m, real
+change, but water, so an automated screen detects flat water surfaces and drops them from every
+stream rate.*
 
 | Epoch | NMAD (noise) | LOD95 (detection floor) | Barlow's range | Match |
 |---|---|---|---|---|
@@ -127,8 +129,11 @@ nothing on the flat valley floor, where there's no 3D structure for it to lock o
 **(b) Per-stream rates (Fig. 3), the direct input for O1.**
 
 ![Fig 3](finesst_figures/fig2_per_stream_rates.png)
-***Figure 3.*** *Per-stream rates for six gauged Taylor Valley streams. Gross is total activity
-(erosion plus deposition); net is the balance (positive = building up, negative = wearing down).*
+***Figure 3.*** *Per-stream rates for six gauged Taylor Valley streams, reported as mm/yr over the
+channel area rather than raw volume. Gross is total activity (erosion plus deposition); net is the
+balance (positive = building up, negative = wearing down). Area-normalizing matters because the
+two epochs don't cover identical footprints (the 2001 lidar swath is narrower), so raw volumes
+would mix real change with coverage differences.*
 
 **(c) The noise is Laplacian, not Gaussian (Fig. 4), the basis for O3.**
 
@@ -141,12 +146,13 @@ uncertainty layer in O3.*
 **(d) A first attribution signal (Fig. 5).**
 
 ![Fig 5](finesst_figures/fig4_attribution.png)
-***Figure 5.*** *Each stream's gross rate against its cumulative melt discharge. In the lidar epoch
-the relationship is strongly positive (**r = +0.89**): more active streams move more sediment. In
-the satellite epoch it's noisier (r = +0.43; fewer post-2014 gauge records and a higher satellite
-noise floor). That contrast is the case for O1: discharge captures the first-order signal but leaves
-real scatter, so the proposed work brings in **melt energy** (PDD / insolation / thaw) to resolve
-the why.*
+***Figure 5.*** *Each stream's rate against its mean gauged melt discharge (lake signal screened
+out). In the lidar epoch the per-area rate scales strongly with discharge, **r = +0.95
+(p = 0.004), Spearman ρ = +0.94 (p = 0.005)**, and dropping any single stream doesn't break it.
+In the satellite epoch there's no coherent relation, because post-2015 gauge records are thin
+(as few as 48 gauged days for one stream), so no fit is drawn. That contrast is the case for O1:
+where gauges are dense the melt–sediment link is strong, so the project swaps patchy gauge data
+for **modeled melt energy** (PDD / insolation / thaw) that exists everywhere, every year.*
 
 ---
 

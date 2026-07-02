@@ -5,6 +5,50 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-01 — Barlow reevaluation: attribution stats stress-tested, 3 defects found + fixed
+
+Full audit of the Barlow/FINESST analysis chain (user request: "reevaluate, refine for
+efficiency and accuracy"). Three real defects found; all root-caused and fixed in the pipeline
+(not post-hoc), then propagated through figures → proposals → rendered docs.
+
+**Defect 1 — lake-level contamination.** 78% of Aiken's 2001–14 "deposition" volume (and ~45%
+of Huey's) was Lake Fryxell's ~1.5 m level rise, not fluvial sediment: dep>1 m pixels sat at
+two dead-flat elevations (≈ −36 m in 2014, ≈ −37.4 m in 2001). Fix: `water_mask()` in
+`_change_detection.py`, detects standing-water levels as >20k-px modes in the 0.1 m elevation
+histogram of large-|dz| pixels (8 ha of flat surface in one bin can't be fluvial), masks ±0.75 m
+in either epoch's DEM. Per-stream CSVs now carry `water_pct`; Aiken 2001–14 gross 3,890→2,866
+m³/yr, Huey 662→117 m³/yr (was 48% lake).
+
+**Defect 2 — raw m³/yr rates confounded by area/coverage.** The 2001 ATM swath is narrower than
+REMA coverage, so the same stream has ~2× different masked area across epochs; cross-epoch rate
+"acceleration" and the fig4 correlation partly reflected footprint, not geomorphology. Fix:
+per-stream output + figures now use **specific rates (mm/yr = m³/yr per m² of channel)**;
+`gross_mm_yr`/`net_mm_yr` columns added.
+
+**Defect 3 — headline r = +0.89 was the wrong statistic.** It was raw gross volume vs
+*cumulative* discharge: (a) cumulative sums are biased by unequal gauge coverage (257–716
+gauged days across streams); (b) raw volume vs total discharge partly measures "bigger stream
+is bigger" (area vs discharge alone: r = +0.44); (c) Spearman was only +0.49 (p = 0.33) —
+the Pearson leaned on Aiken, the very stream most lake-contaminated. Fix: use **mean discharge
+per gauged day** and the **specific rate**. Corrected headline (lidar epoch, water-screened):
+**Pearson r = +0.95 (p = 0.004), Spearman ρ = +0.94 (p = 0.005)**, leave-one-out stable
+(worst drop-one: r = +0.83). REMA epoch: no coherent relation under sparse post-2015 gauging
+(48–362 days), now plotted honestly with **no fit line** (previous r = +0.43 claim removed,
+it was not distinguishable from noise, p = 0.39).
+
+Also: fig1 now compares both epochs on the SAME window (was: ICP pilot vs stream corridor,
+different bboxes presented as a pair); NMAD/LOD annotations computed live from the rasters
+(hardcoded constants removed); stable-terrain NMAD now verified channel-free (excluding
+channels shifts it <0.01 m, 5.8% of valid px are channel, claim holds); discharge windows
+aligned to actual DEM acquisition dates (2001-11→2015-01, 2015-01→2022-01). Both DoD runs +
+figures regenerated; both proposal variants (formal + plain) updated with the corrected
+Figs. 2/3/5 captions; all four rendered docs regenerated. Verdict on the rest of the chain:
+warp/nodata handling, PDAL ICP, per-stream rasterization, LTER `tdaily_discharge` usage all
+check out. The corrected result is *stronger* than the one it replaces and no longer has a
+single point of failure.
+
+---
+
 ## 2026-07-01 — Proposal: drop "WellSight" name + trim preliminary-work framing
 
 Per user (reviewers don't know/care about WellSight; don't over-talk preliminary work), edited both
