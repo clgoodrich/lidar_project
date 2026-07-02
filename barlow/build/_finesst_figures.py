@@ -1,6 +1,6 @@
 """Generate the figure set for the FINESST proposal (barlow/docs/finesst_proposal.md).
 
-Every figure is built from REAL pipeline outputs already on J:\\barlow_data, no
+Every figure is built from REAL pipeline outputs already on E:\\barlow_data_DO_NOT_DELETE, no
 mock data. Sources:
   - DoD rasters .............. change_detection/taylor_2001_2014/dod_2001_2014_icp.tif
                               change_detection/taylor_2014_rema/dod_2014_rema.tif
@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import TwoSlopeNorm
 import rasterio
 
-BARLOW = Path("J:/barlow_data")
+BARLOW = Path("E:/barlow_data_DO_NOT_DELETE")
 CD = BARLOW / "change_detection"
 STRM = BARLOW / "lter_streams"
 OUT = Path(__file__).resolve().parents[1] / "docs" / "finesst_figures"

@@ -28,7 +28,7 @@ barlow/
 ```
 
 ## Data location
-All heavy data is **off-repo on `J:\barlow_data\`** (regenerable; not committed per the
+All heavy data is **off-repo on `E:\barlow_data_DO_NOT_DELETE\`** (regenerable; not committed per the
 large-file rule). The scripts + docs here are the reproducible record. See
 `docs/barlow_data_manifest.md` for the full command recipe and per-dataset status.
 

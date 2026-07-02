@@ -29,7 +29,11 @@ echo to:
 echo   %DST%
 echo.
 
-robocopy "%SRC%" "%DST%" /E /XO /FFT /R:2 /W:5 /MT:8 /NP /TEE /LOG:"%SRC%\backup_to_E_last_run.log"
+REM /XJ: do NOT traverse junctions - several data dirs (source_laz, external,
+REM tiles\data_3x3, tiles\613590_05, tiles\mkf_1m, inference_613590_05,
+REM experiments) are junctions pointing at E:\lidar_project_data_DO_NOT_DELETE,
+REM which already lives on E: - following them would duplicate ~60 GB onto E:.
+robocopy "%SRC%" "%DST%" /E /XO /XJ /FFT /R:2 /W:5 /MT:8 /NP /TEE /LOG:"%SRC%\backup_to_E_last_run.log"
 
 REM robocopy exit codes 0-7 are success (0 = nothing to copy, 1 = files copied)
 if %ERRORLEVEL% GEQ 8 (

@@ -5,6 +5,48 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-02 — Storage migration: heavy datasets moved to E: (C: was at 98%)
+
+C: had 21 GB free of 931 GB. Per user request, moved big datasets to the Samsung T7
+(E:, USB SSD) with destination names carrying **DO_NOT_DELETE**:
+
+- **Barlow:** `J:\barlow_data` (51 GB) → `E:\barlow_data_DO_NOT_DELETE`. Path constant
+  updated in all four build scripts (`_fetch_barlow_data.py`, `_build_barlow_inputs.py`,
+  `_change_detection.py`, `_finesst_figures.py`) + `barlow/README.md` +
+  `barlow_data_manifest.md`. All 1,385 files / 53.8 GB verified byte-equal on E: (first
+  robocopy pass dropped 25 files to a transient J: read error; incremental retry completed
+  clean). J: source renamed `_barlow_data_MOVED_TO_E__SAFE_TO_DELETE` — deletion of
+  drive-top-level paths is guard-railed, so the user deletes it manually.
+  Older log entries below still reference `J:/barlow_data` — historical record, not live paths.
+- **J: strays claimed too:** the 22 unique USGS LAZ tiles in `J:\seperate sections`
+  (2006–08 Statewide-S + 2019 D20; 1.0 GB — nowhere else on disk) were copied into
+  `data/source_laz/westernpa/seperate sections/` (the path `.gitignore` already expected;
+  physically on E: via the junction), and the three landcover source archives
+  (EnviroAtlas, landcover_2013 CHB/DRB, NLCD 2021; 7.3 GB of ≥100 MB zips) went to
+  `E:\lidar_project_data_DO_NOT_DELETE\source_archives\`. J: originals renamed
+  `_MOVED_TO_E__SAFE_TO_DELETE…` pending the user's manual delete.
+- **WellSight repo data:** five heavy dirs (~54 GB) moved to
+  `E:\lidar_project_data_DO_NOT_DELETE\` mirroring repo layout, each replaced in-repo by an
+  NTFS junction so every relative path, `.gitignore` rule, and git-tracked file keeps
+  working unchanged: `data/source_laz` (all .laz), `data/derivatives/tiles/{data_3x3,
+  613590_05, mkf_1m}`, `data/derivatives/inference_613590_05` (all ≥100 MB-raster
+  dominated, zero-to-few small tag-alongs). Verified per dir: robocopy exit < 8, file
+  count + total bytes equal, `git status --porcelain` empty through the junction, then
+  old copy deleted.
+- **Selection rule (user, 2026-07-02): only files ≥100 MB or .las/.laz are stored off;
+  anything GitHub-pushable stays on C:.** Consequently `data/external` (87k small files —
+  NAIP chips, shapefiles, docs; 39 tracked) and `data/derivatives/experiments` (158 small
+  files, 83 tracked) were kept on / restored to C: after initially being staged to E:.
+  data_3x3's 387 tracked small files ride along on E: through the junction — they remain
+  committed and pushed to GitHub, so they are recoverable via `git checkout` even if E:
+  is lost; file-level splitting was impossible without admin symlink privilege.
+- **`tiles/9t` (24 GB) deliberately stays on C:** — it is the active training/eval working
+  set (pad Mask R-CNN retrain reading it at time of migration) and benefits from NVMe speed.
+- `backup_to_E.bat` gained `/XJ` so the incremental repo backup does not traverse the new
+  junctions and duplicate ~60 GB back onto E:.
+
+---
+
 ## 2026-07-01 — Correction: label counts were stale; datasets/models partly already caught up
 
 User challenged the audit's "110 pit / 79 pad" figure — correctly. Ground truth on disk:

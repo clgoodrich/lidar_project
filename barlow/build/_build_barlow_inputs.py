@@ -15,7 +15,7 @@ curvature, intensity, and flow accumulation:
     6. lidar intensity  - mean Intensity rasterized from the point cloud (PDAL)
 
 All at 1 m, EPSG:3294 (Transantarctic Mtns proj), aligned to the DEM grid.
-Source data lives off-repo on J:\\barlow_data (DEM tiles + Taylor Valley .laz).
+Source data lives off-repo on E:\\barlow_data_DO_NOT_DELETE (DEM tiles + Taylor Valley .laz).
 
 Bootstrap (per CLAUDE.md): run a bounded --bbox pilot first, eyeball it against the
 MCM-LTER stream-channel labels, THEN drop --bbox to build the full valley.
@@ -36,7 +36,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "notebooks" / "wellsight_v2"))
 from _common import run_pdal  # noqa: E402
 
-BARLOW = Path("J:/barlow_data")
+BARLOW = Path("E:/barlow_data_DO_NOT_DELETE")
 DEM_DIR = BARLOW / "mdv_lidar" / "be_dem_1m" / "Taylor_Valley"
 PC_DIR = BARLOW / "mdv_lidar" / "pc" / "Taylor_Valley"
 OUT = BARLOW / "barlow_inputs" / "taylor_valley"
