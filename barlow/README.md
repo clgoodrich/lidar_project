@@ -24,7 +24,8 @@ barlow/
     finesst_figures/                 # fig1-5 PNGs shared by both versions (committed, small)
     barlow_data_manifest.md          # dataset inventory + "reproduce everything" recipe
     barlow_dissertation_explained.md # plain-language walkthrough of the dissertation
-    barlow_dissertation_readalong.md # page-keyed read-along companion (open next to the PDF)
+    barlow_dissertation_readalong.md # section-level read-along companion (open next to the PDF)
+    barlow_dissertation_pagenotes.md # per-page notes (drives the side-by-side PDF's right pane)
     BARLOW-DISSERTATION-2026.pdf     # the dissertation itself (413 MB, gitignored)
     BARLOW-DISSERTATION-2026_sidebyside.pdf          # dissertation page + guide notes per sheet (gitignored;
     BARLOW-DISSERTATION-2026_sidebyside_compact.pdf  #  regenerate: python barlow/build/_build_readalong_pdf.py [--raster])

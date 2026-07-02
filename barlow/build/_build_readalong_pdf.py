@@ -23,12 +23,15 @@ import fitz
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "docs" / "BARLOW-DISSERTATION-2026.pdf"
-GUIDE = ROOT / "docs" / "barlow_dissertation_readalong.md"
+# Per-page notes drive the right pane; falls back to the section-level
+# readalong guide for any page without its own note.
+GUIDE = ROOT / "docs" / "barlow_dissertation_pagenotes.md"
 OUT = ROOT / "docs" / "BARLOW-DISSERTATION-2026_sidebyside.pdf"
 
 NOTES_W = 640.0  # right-pane width (pt)
 MARGIN = 26.0
 RANGE_RE = re.compile(r"\(PDF pp?\.\s*~?(\d+)\s*[–\-]\s*~?(\d+)\)|\(pp?\.\s*~?(\d+)\s*[–\-]\s*~?(\d+)\)|\(pp?\.\s*~?(\d+)\)")
+PAGE_RE = re.compile(r"^Pages?\s+(\d+)(?:\s*[–\-]\s*(\d+))?\s*(?:—.*)?$")
 
 
 def md_to_html(md: str) -> str:
@@ -90,12 +93,17 @@ def parse_guide() -> tuple[list[dict], str]:
     for line in lines:
         m = re.match(r"^(#{2,4})\s+(.*)$", line)
         rm = RANGE_RE.search(m.group(2)) if m else None
-        if m and rm:
+        pm = PAGE_RE.match(m.group(2).strip()) if m else None
+        if m and (rm or pm):
             title = m.group(2).strip()
             if cur:
                 blocks.append(cur)
-            nums = [g for g in rm.groups() if g]
-            a, b = (int(nums[0]), int(nums[-1])) if len(nums) > 1 else (int(nums[0]),) * 2
+            if pm:
+                a = int(pm.group(1))
+                b = int(pm.group(2)) if pm.group(2) else a
+            else:
+                nums = [g for g in rm.groups() if g]
+                a, b = (int(nums[0]), int(nums[-1])) if len(nums) > 1 else (int(nums[0]),) * 2
             cur = {"level": len(m.group(1)), "title": title, "a": a, "b": b, "body": []}
             continue
         # unranged headings and ordinary lines: front matter until the first
@@ -172,10 +180,12 @@ def main() -> int:
         rect = fitz.Rect(srect.width + MARGIN, MARGIN,
                          srect.width + NOTES_W - MARGIN, srect.height - MARGIN)
         if b:
-            hdr = f"<h1>{b['title']}</h1>"
+            hdr = ""
             if b["chapter"] and b["chapter"] != b["title"]:
-                hdr = f"<h2>{b['chapter']}</h2>" + hdr
-            hdr += f"<h2>you are on PDF page {pno} (section spans pp. {b['a']}–{b['b']})</h2>"
+                hdr += f"<h2>{b['chapter']}</h2>"
+            hdr += f"<h1>{b['title']}</h1>"
+            if b["a"] != b["b"] and not b["title"].startswith("Page"):
+                hdr += f"<h2>you are on PDF page {pno} (this note covers pp. {b['a']}–{b['b']})</h2>"
             html = hdr + md_to_html("\n".join(b["body"]))
         else:
             html = f"<h1>PDF page {pno}</h1><p>No guide notes for this page (references/appendix lookup material).</p>"

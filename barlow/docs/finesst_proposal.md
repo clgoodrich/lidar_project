@@ -1,17 +1,18 @@
-# From Detection to Attribution: Physically-Coupled, Cross-Domain Monitoring of Ephemeral-Channel Geomorphic Change from Terrain Alone
+# From Detection to Attribution: Linking Two Decades of Antarctic Stream-Channel Change to Its Climate Drivers, from Terrain Data Alone
 
 **NASA ROSES-2025 F.5: Future Investigators in NASA Earth and Space Science and Technology (FINESST)**
 **Target division:** Earth Science Division (EARTH25), Antarctic cryosphere / climate
 **Proposal deadline:** 14 July 2026 (11:59 PM EDT)
 **Structure:** Graduate student = Future Investigator (FI), primary author and intellectual lead; faculty advisor = PI of record. Award up to ~$50,000/yr for up to 3 years.
 
-> **Summary.** This project will transform an existing Antarctic stream-change *monitor* into an
-> *explanatory and predictive* tool. Building on Barlow (2026), which mapped two decades of
-> ephemeral-channel geomorphic change across the McMurdo Dry Valleys, the proposed work will
-> **(O1)** attribute that change to its physical/climate drivers, **(O2)** generalize the
-> terrain-only detector across sensors and valleys, and **(O3)** deliver calibrated per-pixel
-> uncertainty. The change-detection foundation is already operational and validated against
-> Barlow's published uncertainty ranges, with an initial driver signal shown in §4.
+> **Summary.** This project turns an existing Antarctic stream-change *monitor* into a tool
+> that *explains and predicts* change. Barlow (2026) mapped two decades of stream-channel
+> change across the McMurdo Dry Valleys; the proposed work asks the next questions.
+> **(O1)** Which climate drivers control that change? **(O2)** Can the terrain-only detector
+> work as well on free satellite data as it does on airborne lidar, across all four valleys?
+> **(O3)** Can every change map carry an honest, per-pixel error bar? The measurement
+> foundation is already running and reproduces Barlow's published uncertainty ranges, and a
+> first driver signal is shown in §4.
 
 ---
 
@@ -19,9 +20,10 @@
 
 The **McMurdo Dry Valleys (MDVs)** are Earth's largest ice-free Antarctic desert and, for a
 century, were considered the planet's most geomorphologically stable landscape. That assumption
-is breaking down: in an energy-limited system, small increases in solar absorption and
-permafrost degradation translate directly into **ephemeral summer streams** that flow for a few
-weeks each year, move sediment, and reshape channels. These streams are the most sensitive
+is breaking down. The system is **energy-limited** — there is plenty of frozen water but barely
+enough heat to melt it — so even small increases in absorbed sunlight, together with thawing
+permafrost, translate directly into **ephemeral summer streams**: channels that flow for only a
+few weeks each year, move sediment while they do, and reshape themselves in the process. These streams are the most sensitive
 measurable indicator of climate change in the most stable place on Earth, a continental-scale
 "climate canary."
 
@@ -60,9 +62,9 @@ and prediction science (last two stages, the new contribution of this project).*
 
 | # | Objective | Hypothesis | Increment over Barlow |
 |---|---|---|---|
-| **O1** | **Attribution (headline science).** Pair per-stream gross/net/acceleration rates with energy-balance drivers, air/ground temperature, insolation, **positive-degree-days (PDD)**, melt-season discharge, glacier mass balance, active-layer depth, from MDV-LTER + ERA5/AMPS reanalysis. | **H1:** Geomorphic flux is governed by *cumulative melt energy*, not raw water volume; a PDD/insolation-based energy model predicts per-stream gross rate better than discharge alone (and explains the residual scatter in Fig. 4). | Listed verbatim as Barlow future work; never quantified. |
-| **O2** | **Cross-sensor & cross-valley generalization.** Make the terrain-only segmenter robust across sensors (lidar 2001/2014 ↔ REMA) and all four valleys; quantify and **correct the lidar→satellite domain shift** that limits the satellite epoch. | **H2:** A sensor-aware normalization (per-pixel slope/aspect-conditioned bias correction) closes most of the lidar–REMA F1 gap, recovering near-lidar segmentation on REMA. | Barlow flags sensor generalization as future work. |
-| **O3** | **Calibrated uncertainty.** Extend the Laplacian/NMAD/LOD framework into a **per-pixel, sensor-aware confidence layer** so every change map ships with calibrated uncertainty. | **H3:** Conditioning NMAD on slope, aspect, and sensor yields LOD maps whose empirical exceedance matches the nominal 95%, a trustworthy-EO product. | Barlow uses a single global NMAD per epoch-pair. |
+| **O1** | **Attribution (headline science).** Match each stream's measured change rate against the factors that could be driving it: air and ground temperature, sunshine, **positive degree-days (PDD** — a running total of how much warm weather the season delivered**)**, melt-season water flow, glacier mass balance, and summer thaw depth. All driver data come from the MDV-LTER station network plus the ERA5/AMPS weather models. | **H1:** What controls how much sediment a stream moves is *cumulative melt energy* — the total melting heat the season delivered — not simply how much water passed through. A heat-based model should predict each stream's rate better than water volume alone, and explain the scatter that water volume leaves behind. | Listed verbatim as Barlow future work; never quantified. |
+| **O2** | **Cross-sensor & cross-valley generalization.** The detector works best on airborne lidar. Measure exactly how the satellite DEMs disagree with lidar (the **domain shift**), correct for it, and show the detector performs nearly as well on satellite data — across all four valleys, not just Taylor. | **H2:** Most of the lidar-vs-satellite performance gap is predictable, terrain-dependent measurement bias. Correcting that bias per pixel (using slope and aspect) recovers near-lidar accuracy on REMA. | Barlow flags sensor generalization as future work. |
+| **O3** | **Calibrated uncertainty.** Replace the single valley-wide noise estimate with a per-pixel one that accounts for slope, aspect, and sensor — so every change map ships with an error bar you can defend. | **H3:** A 95%-confidence detection threshold built this way actually behaves like one: on ground that did not change, only ~5% of pixels exceed it. | Barlow uses a single global NMAD per epoch-pair. |
 
 **Predictive payoff (ties O1–O3 together):** a model that, given a driver field, predicts *where
 acceleration migrates next*, the actionable form of the "climate canary."
@@ -71,32 +73,37 @@ acceleration migrates next*, the actionable form of the "climate canary."
 
 ## 3. Methodology
 
-**Data (free/public; see §6).** Elevation backbone: MDV airborne
-lidar 2001 (NASA ATM, 2 m) + 2014 (NCALM, 1 m), and REMA v2.0 (2 m, 2021–23). Per-epoch
-derivatives, elevation, slope, aspect, **profile curvature** (signed), **MFD flow accumulation**,
-lidar intensity. Drivers: MDV-LTER meteorology (Lake Bonney), **21 stream-discharge gauges**,
-glacier mass balance (7 glaciers), continuous soil T/EC/VWC (active-layer proxy); ERA5 monthly
-1993–2024 and AMPS 2.67-km for spatial gap-fill. Labels: MCM-LTER stream centerlines (public
-stand-in for Barlow's access-gated 217 hand-digitized tiles, see §7 risk).
+**Data (all free/public; see §6).** Three elevation snapshots form the backbone: 2001 airborne
+lidar (NASA ATM, 2 m), 2014 airborne lidar (NCALM, 1 m), and the REMA satellite DEM (2 m,
+2021–23). From each snapshot the pipeline derives the terrain layers the detector reads:
+elevation, slope, aspect, curvature, flow accumulation (a "where water would go" map), and
+lidar intensity. Driver data come from the MDV-LTER station network — meteorology, 21
+stream-discharge gauges, mass balance for 7 glaciers, and soil temperature/moisture (a proxy
+for summer thaw depth) — with the ERA5 and AMPS weather models filling the gaps between
+stations. Training labels: the public MCM-LTER stream centerlines, standing in for Barlow's
+access-gated 217 hand-digitized tiles (§7 risk).
 
-**O1, Attribution.** For each gauged stream and epoch, the proposed work will (i) compute
-gross/net geomorphic rate by DoD inside the channel mask (operational, Fig. 2); (ii) build a
-per-stream **energy time series**, melt-season PDD and incoming shortwave
-from LTER + ERA5/AMPS, cumulative discharge, and active-layer depth; (iii) fit hierarchical
-regression / random-forest models of rate vs. drivers, with leave-one-stream-out cross-validation;
-and (iv) test H1 by comparing an energy-balance predictor against discharge-only (the raw-discharge
-relationship in Fig. 5 is real but incomplete). Acceleration (3-epoch
-Taylor streams) will be regressed against driver *trends*.
+**O1, Attribution.** For each gauged stream and epoch, the proposed work will (i) measure the
+stream's change rate — the DoD inside its channel mask (already operational, Fig. 2); (ii) build
+that stream's **energy history**: how much warm weather (PDD), sunlight, water flow, and thaw
+depth it experienced, from the LTER stations plus ERA5/AMPS; (iii) fit statistical models
+(hierarchical regression and random forests) relating rate to drivers, always testing each model
+on streams it never saw during fitting; and (iv) test H1 head-to-head — does melt energy predict
+the rates better than water volume alone? (The water-only relationship in Fig. 5 is real but
+incomplete.) For the Taylor streams with all three epochs, the *change* in rate (acceleration)
+will be compared against the *trend* in each driver.
 
-**O2, Generalization.** The work will quantify the lidar→REMA domain shift over stable terrain as
-a function of slope/aspect, learn a correction, retrain/fine-tune the segmenter with sensor
-augmentation, and evaluate F1 across all four valleys and both sensor regimes. The FI's prior work
-applying this architecture to a different landscape (§5) shows it transfers across sensors and biomes.
+**O2, Generalization.** The work will first measure how the satellite and lidar elevations
+disagree over ground that has not changed, and how that disagreement depends on slope and
+aspect. It will then learn a correction for the disagreement, retrain the segmenter with both
+sensors represented in its training data, and score accuracy (F1) across all four valleys and
+both sensor types. The FI's prior work applying this same architecture to a completely
+different landscape (§5) shows it transfers across sensors and biomes.
 
-**O3, Calibrated uncertainty.** The work will replace the single global NMAD with NMAD conditioned
-on (slope, aspect, sensor), emit a per-pixel LOD raster, and validate calibration by checking that
-observed sub-LOD residual fractions match nominal confidence on held-out stable terrain
-(Fig. 4 shows the global version; Laplacian fits the residuals far better than Gaussian).
+**O3, Calibrated uncertainty.** The work will replace the single global noise estimate with one
+that varies by slope, aspect, and sensor, and publish it as a per-pixel detection-threshold map.
+Calibration will be verified the honest way: on held-out ground that did not change, a 95%
+threshold should be exceeded by only ~5% of pixels. (Fig. 4 shows today's valley-wide version.)
 
 **Reproducibility/QC.** The pipeline is fully scripted, input data and all derivatives regenerate
 from source, with robust statistics and CRS checks enforced at every step (e.g., an early QC
