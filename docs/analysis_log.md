@@ -5,6 +5,32 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-01 — Correction: label counts were stale; datasets/models partly already caught up
+
+User challenged the audit's "110 pit / 79 pad" figure — correctly. Ground truth on disk:
+**426 pit_inside / 1,053 plat** (plus 609 pit_outside, 425 pit_wall, 1,809 roads, 1,791
+drainage, 95 new existing_roads). The 110/79 line dated from the 2026-06-03 BACKLOG and was
+never updated after the user's annotation push. Verified state:
+
+- **2026-06-10 dataset rebuild** ingested all 426 pits + the 650 pads inside 9t
+  (pit manifest 298/63/65 train/val/test; plat 456/101/93). `pit_unet_v2` (06-10 15:30),
+  `plat_unet` (06-10 16:26), multitask (06-11) and their test_metrics were retrained/re-run
+  on this split — those numbers reflect the new data.
+- **Instance models: checkpoints retrained 06-11 but evals never re-run.** All four
+  `iterations/{pit_07,pit_08,pad_05,pad_06}*/test_metrics.json` are dated 06-01/02 with
+  n_test = 20 pits / 9 pads — the LEADERBOARD instance rows are old-era numbers sitting
+  next to new-era U-Net rows. (pad_05 best.pt is still dated 06-02; whether the pad
+  Mask R-CNN retrain saved a new best is unconfirmed.)
+- **403 pads lie outside 9t** (other regions; annotated via the label-grid/aids workflow)
+  and are in NO training dataset — they need per-region feature stacks. **~58 newest pads**
+  postdate the last `annotations_proj.gpkg` regen (plat.shp 1053 vs gpkg 995).
+
+BACKLOG corrected (label-set item rewritten; audit test-n item corrected to "dataset-era
+mixing"). The audit's code-level findings (test-set tuning, boundary leakage, recall-only
+metrics, unseeded trainers) are unaffected by this correction.
+
+---
+
 ## 2026-07-01 — Methodology evaluation: both projects audited (3 parallel reviews)
 
 Per user request, an adversarial methodology audit of everything expanded recently: WellSight
