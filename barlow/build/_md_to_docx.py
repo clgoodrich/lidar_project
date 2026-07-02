@@ -7,6 +7,7 @@ and *figure captions*. The .md stays the single source of truth.
 
 Run:  python barlow/build/_md_to_docx.py barlow/docs/finesst_proposal.md
       (output -> same name with .docx)
+      --bold  keep **bold** as real bold runs (proposal default strips it)
 """
 from __future__ import annotations
 
@@ -26,6 +27,8 @@ ACCENT = RGBColor(0x2E, 0x54, 0x96)
 GREY = RGBColor(0x66, 0x66, 0x66)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 
+KEEP_BOLD = False  # --bold flag: render **bold** as bold instead of stripping it
+
 # bolditalic | code | bold | link | italic   (order = precedence)
 TOKEN = re.compile(
     r"\*\*\*(?P<bi>[^*]+)\*\*\*"
@@ -42,11 +45,11 @@ def add_runs(par, text, base_size=None, base_color=None):
         if m.start() > pos:
             _run(par, text[pos:m.start()], base_size, base_color)
         if m.group("bi") is not None:
-            _run(par, m.group("bi"), base_size, base_color, italic=True)  # no bold
+            _run(par, m.group("bi"), base_size, base_color, bold=KEEP_BOLD, italic=True)
         elif m.group("code") is not None:
             _run(par, m.group("code"), base_size, base_color, mono=True)
         elif m.group("bold") is not None:
-            _run(par, m.group("bold"), base_size, base_color)  # bold dropped -> plain
+            _run(par, m.group("bold"), base_size, base_color, bold=KEEP_BOLD)
         elif m.group("ltext") is not None:
             _run(par, m.group("ltext"), base_size, base_color)  # link -> text
         elif m.group("ital") is not None:
@@ -98,6 +101,7 @@ def build(md_path: Path):
 
     i, n = 0, len(lines)
     first_h1 = True
+    doc_title = None
     while i < n:
         ln = lines[i]
         s = ln.strip()
@@ -142,6 +146,7 @@ def build(md_path: Path):
                 for r in p.runs:
                     r.bold = True
                 first_h1 = False
+                doc_title = TOKEN.sub(lambda m: next(g for g in m.groups() if g), txt)
             else:
                 p = doc.add_paragraph()
                 p.paragraph_format.space_before = Pt(10 if lvl == 1 else 7)
@@ -233,7 +238,7 @@ def build(md_path: Path):
     # footer with page numbers
     footer = doc.sections[0].footer
     fp = footer.paragraphs[0]
-    fp.text = "FINESST S/T/M: MDV ephemeral-channel attribution (draft)\t\t"
+    fp.text = (doc_title or "FINESST S/T/M: MDV ephemeral-channel attribution (draft)") + "\t\t"
     fp.alignment = WD_ALIGN_PARAGRAPH.LEFT
     run = fp.add_run()
     fld1 = OxmlElement("w:fldSimple"); fld1.set(qn("w:instr"), "PAGE")
@@ -247,6 +252,8 @@ def build(md_path: Path):
 
 
 if __name__ == "__main__":
-    p = Path(sys.argv[1]) if len(sys.argv) > 1 else \
+    argv = [a for a in sys.argv[1:] if a != "--bold"]
+    KEEP_BOLD = "--bold" in sys.argv[1:]
+    p = Path(argv[0]) if argv else \
         Path(__file__).resolve().parents[1] / "docs" / "finesst_proposal.md"
     build(p)

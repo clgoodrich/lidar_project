@@ -22,7 +22,8 @@ barlow/
     finesst_proposal_plain.md        # same proposal, plain-language voice (own SOURCE OF TRUTH)
     finesst_proposal_plain.pdf/.docx # rendered plain version
     finesst_figures/                 # fig1-5 PNGs shared by both versions (committed, small)
-    finesst_talking_points.md        # personal crib sheet: pitches, numbers, Q&A, glossary
+    finesst_reference.md             # personal lookup doc: facts, key numbers, Q&A, glossary
+    finesst_reference.docx           # rendered (regenerate: _md_to_docx.py <md> --bold)
     barlow_data_manifest.md          # dataset inventory + "reproduce everything" recipe
     barlow_dissertation_explained.md # plain-language walkthrough of the dissertation
     barlow_dissertation_readalong.md # section-level read-along companion (open next to the PDF)
