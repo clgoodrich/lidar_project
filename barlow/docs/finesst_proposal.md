@@ -169,16 +169,21 @@ Every dataset required for the proposed work is **free/public** and already in h
 from source via scripted pipelines), so data availability poses no schedule risk. The single
 access-gated dependency is Barlow's training labels (mitigated below and in §7).
 
-| Category | Source | Availability |
-|---|---|---|
-| **A. Terrain:** MDV lidar 2001 (ATM/ScienceBase) + 2014 (NCALM/OpenTopography); REMA 2021-23 (PGC) | free/public | ✅ in hand |
-| Per-epoch derivatives (elev/slope/aspect/curv/MFD-flow/intensity) | scripted from terrain | ✅ demonstrated (Taylor pilot) |
-| **B. Labels:** MCM-LTER stream centerlines (QC) | EDI `knb-lter-mcm.6007` | ✅ in hand |
-| Barlow's 217 hand-digitized tiles | author-gated | ⚠️ **lone access-gated dependency** (see §7) |
-| **C. Drivers:** LTER met, 21 discharge gauges, glacier mass balance, soil/active-layer | EDI | ✅ in hand |
-| Reanalysis: ERA5 monthly 1993-2024; AMPS 2.67 km | CDS; GDEX | ✅ in hand |
-| **D. Cross-valley:** all four valleys, both lidar + REMA | OpenTopography/PGC | ✅ DEMs in hand; per-valley stacks to build |
-| **E. Validation:** WorldView/Maxar (label QC); published rates | PGC (restricted); literature | optional / cross-check vs Barlow |
+| Dataset (source) | What it shows | Role in the proposed work | Status |
+|---|---|---|---|
+| **2001 airborne lidar**, 2 m (NASA ATM, via USGS) | Valley-floor surface in 2001 | Baseline epoch for all change detection | ✅ in hand |
+| **2014 airborne lidar**, 1 m (NCALM, via OpenTopography) | Same terrain 13 yr later at benchmark accuracy | Reference epoch; anchors the error model | ✅ in hand |
+| **REMA satellite DEM**, 2 m, 2021-23 (PGC/Maxar stereo) | Most recent surface, continent-wide | Extends the record past the last lidar flight; the sensor O2 must generalize to | ✅ in hand |
+| Per-epoch terrain derivatives (slope/aspect/curvature/MFD-flow/intensity) | Channel-diagnostic terrain form | Input features the U-Net segmenter reads | ✅ scripted; demonstrated (Taylor pilot) |
+| **LTER stream gauges**, 21 streams, daily, 1990s-present (EDI) | Meltwater each stream carried | Direct discharge driver for O1 (source of the Fig. 5 signal) | ✅ in hand |
+| **LTER meteorology** (EDI) | Air temperature, radiation, wind | PDD + insolation melt-energy drivers (O1/H1) | ✅ in hand |
+| **LTER glacier mass balance**, 7 glaciers (EDI) | Seasonal ice gain/loss per glacier | Links stream water supply to its source | ✅ in hand |
+| **LTER soil temperature/moisture** (EDI) | Summer thaw depth | Active-layer driver (O1/H1) | ✅ in hand |
+| **ERA5** monthly 1993-2024 (Copernicus CDS); **AMPS** 2.67 km (NCAR GDEX) | Continuous modeled atmosphere | Gap-fills drivers between stations and to ungauged streams; AMPS cross-checks ERA5 | ✅ in hand |
+| **MCM-LTER stream channel polygons** (EDI `knb-lter-mcm.6007`) | Mapped channel of every named stream | Per-stream rate masks (used in Figs. 3/5) + label stand-in | ✅ in hand |
+| **Barlow's 217 hand-digitized tiles** (author-gated) | Expert-traced channel boundaries | Gold-standard U-Net training labels | ⚠️ **lone access-gated dependency** (see §7) |
+| **Cross-valley DEMs**, all four valleys (OpenTopography/PGC) | Terrain beyond Taylor Valley | O2 generalization test bed | ✅ DEMs in hand; per-valley stacks to build |
+| WorldView/Maxar imagery; published rates (PGC restricted; literature) | Visual ground truth; independent rates | Optional label QC / cross-check vs Barlow | optional |
 
 ---
 

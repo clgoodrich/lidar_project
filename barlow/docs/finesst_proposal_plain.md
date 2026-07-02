@@ -55,7 +55,11 @@ and predict): the new work proposed here.*
 
 ---
 
-## 2. What I'll do (objectives and hypotheses)
+## 2. What we need to do
+
+In one sentence: measure how fast each Antarctic stream is reshaping its channel, then explain
+that rate with heat and melt, so the map stops just *describing* change and starts *predicting*
+it. That breaks into three concrete objectives:
 
 | # | Objective | Hypothesis | Why it's new |
 |---|---|---|---|
@@ -68,15 +72,50 @@ migrates next**, which is the operationally useful form of the climate-indicator
 
 ---
 
-## 3. Approach
+## 3. The data: what we'll use, where it's from, what it shows
 
-**Data (all free/public, already pulled; see §6).** Elevation: MDV lidar 2001 (2 m) and 2014 (1 m),
-plus REMA satellite (2 m, 2021–23). From each I build the standard terrain layers: elevation,
-slope, aspect, **profile curvature** (signed, so it distinguishes concave channels from convex
-ridges), **MFD flow accumulation**, and lidar intensity. Drivers: LTER meteorology, **21 stream
-gauges**, glacier melt for 7 glaciers, and continuous soil temperature/moisture as an active-layer
-proxy; ERA5 and AMPS reanalysis fill spatial gaps. Labels: LTER stream centerlines, a public
-stand-in for Barlow's private hand-drawn training tiles (the one access constraint; see §7).
+Everything below is free and public, and already downloaded and organized (the one exception is
+flagged). The datasets fall into three jobs: **snapshots of the ground** (to measure change),
+**drivers** (to explain it), and **labels** (to know where the streams are).
+
+**Three snapshots of the ground.** Change detection needs the same terrain measured at different
+times. We have three epochs:
+
+| Dataset | Where it's from | What it shows | What it does for us |
+|---|---|---|---|
+| **2001 airborne lidar** (2 m) | NASA Airborne Topographic Mapper survey (via USGS) | The valley floors as they were in 2001 | The baseline: every change is measured against this starting surface |
+| **2014 airborne lidar** (1 m) | NCALM flight campaign (via OpenTopography) | The same terrain 13 years later, at the highest accuracy available | The benchmark epoch: sharpest data, anchors the noise model, midpoint of the record |
+| **REMA satellite DEM** (2 m, 2021–23) | Polar Geospatial Center, built from Maxar stereo imagery | The most recent surface, covering all of Antarctica | Extends the record past the last lidar flight; since no new lidar is planned, this is the future of monitoring, which is why O2 (making it interchangeable with lidar) matters |
+
+From each snapshot we compute the terrain layers the detector reads: slope, aspect, **profile
+curvature** (signed, so concave channels separate from convex ridges), **MFD flow accumulation**
+(where water would collect), and lidar intensity.
+
+**Drivers: the "why" variables.** O1 tests whether melt energy explains the measured change, so we
+need the energy and water records:
+
+| Dataset | Where it's from | What it shows | What it does for us |
+|---|---|---|---|
+| **Stream gauges** (21 streams, daily, 1990s–present) | McMurdo LTER field network (via EDI) | How much meltwater each stream actually carried, day by day | The direct water driver; already produced the Fig. 5 signal |
+| **Meteorology stations** | McMurdo LTER (via EDI) | Air temperature, solar radiation, wind on the valley floors | Builds the melt-energy drivers: positive-degree-days and insolation |
+| **Glacier mass balance** (7 glaciers) | McMurdo LTER (via EDI) | How much ice each glacier gained or lost per season | Ties each stream's water supply to its source glacier |
+| **Soil temperature and moisture** | McMurdo LTER (via EDI) | How deep the ground thaws each summer | The active-layer driver: thawed banks erode more easily |
+| **ERA5 reanalysis** | ECMWF Copernicus Climate Data Store | Continuous modeled weather for every point, 1993–present | Fills the gaps between stations, and between gauged and ungauged streams |
+| **AMPS forecasts** (2.67 km) | NCAR (via GDEX) | Antarctic-specific high-resolution atmosphere | Cross-checks ERA5 in the valleys' complicated terrain |
+
+**Labels: where the streams are.**
+
+| Dataset | Where it's from | What it shows | What it does for us |
+|---|---|---|---|
+| **Stream channel polygons** | McMurdo LTER GIS (EDI `knb-lter-mcm.6007`) | The mapped channel of every named stream | Masks the change maps to actual channels (used in every per-stream number here) and stands in as training labels |
+| **Barlow's 217 hand-drawn tiles** | Her research group (not public) | Expert-traced channel boundaries used to train her U-Net | The gold-standard training set, **the one access-gated item**; §7 covers the fallback |
+| **High-res satellite imagery** (optional) | Polar Geospatial Center | Visual ground truth | Spot-checking labels and odd change patches |
+
+---
+
+## 4. How we'll do it
+
+The data above feed three work packages, one per objective.
 
 **O1, attribution.** For each gauged stream and epoch I'll: **(i)** take the change rate from the
 DoD inside the channel (already operational, Fig. 2); **(ii)** assemble a per-stream **energy time
@@ -89,7 +128,7 @@ against *driver trends*.
 
 **O2, generalization.** Quantify the lidar-vs-REMA difference over stable ground as a function of
 slope and aspect, learn a correction, retrain the U-Net with both sensors represented, and evaluate
-F1 across all four valleys and both sensors. My prior work (§5) already shows this architecture
+F1 across all four valleys and both sensors. My prior work (§6) already shows this architecture
 holding up on an entirely different landscape, so the risk here is bounded.
 
 **O3, uncertainty.** Replace the global NMAD with one conditioned on (slope, aspect, sensor),
@@ -103,7 +142,7 @@ trusted.)
 
 ---
 
-## 4. Preliminary results
+## 5. Preliminary results
 
 The change-detection foundation this project builds on already works. Rebuilding Barlow's pipeline
 on Taylor Valley reproduces results **inside her published ranges** (below), and a first driver
@@ -156,31 +195,12 @@ for **modeled melt energy** (PDD / insolation / thaw) that exists everywhere, ev
 
 ---
 
-## 5. Why I'm positioned to do this
+## 6. Why I'm positioned to do this
 
 I've built and run this exact machinery (U-Net segmentation on terrain layers, ICP alignment, DoD
 change detection) on a very different landscape: detecting channels, roads, and disturbance scars
 in the Appalachian Plateau from elevation alone. That shows the approach transfers across sensors
 and biomes, which is precisely O2's risk, and that I can operate the full pipeline end to end.
-
----
-
-## 6. Data: requirements and availability
-
-Every dataset the project needs is **free/public**, and I've already assembled the full stack
-(scripted, so it regenerates from source). Data availability isn't a schedule risk. The only
-access-gated item is Barlow's training labels (addressed in §7).
-
-| Category | Source | Status |
-|---|---|---|
-| **A. Terrain:** MDV lidar 2001 + 2014; REMA 2021-23 | free/public | ✅ in hand |
-| Per-epoch terrain layers (slope/aspect/curvature/flow/intensity) | scripted from terrain | ✅ shown on Taylor pilot |
-| **B. Labels:** LTER stream centerlines (QC) | EDI `knb-lter-mcm.6007` | ✅ in hand |
-| Barlow's hand-drawn training tiles | author-gated | ⚠️ **the one access constraint** (see §7) |
-| **C. Drivers:** LTER meteorology, 21 gauges, glacier melt, soil/thaw | EDI | ✅ in hand |
-| Reanalysis: ERA5, AMPS | CDS; GDEX | ✅ in hand |
-| **D. Cross-valley:** all four valleys, lidar + REMA | OpenTopography/PGC | ✅ DEMs in hand; per-valley layers to build |
-| **E. Validation:** high-res imagery; published rates | PGC (restricted); literature | optional / cross-check |
 
 ---
 

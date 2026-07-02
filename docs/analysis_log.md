@@ -5,6 +5,23 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-01 — Proposal: approachable restructure around the datasets
+
+Per user ("here is what we need to do; here are the datasets, what each will do, where it's
+from, what it shows"): restructured the plain proposal so the data story is front and center.
+§2 retitled "What we need to do" with a one-sentence mission lead-in; new §3 "The data: what
+we'll use, where it's from, what it shows" moved up before the methods, replacing the old terse
+§6 status table with three grouped four-column tables (Dataset | Where it's from | What it
+shows | What it does for us): three ground snapshots (2001 ATM lidar, 2014 NCALM lidar, REMA),
+six driver datasets (gauges, met, glacier mass balance, soil/thaw, ERA5, AMPS), three label
+datasets (LTER channel polygons, Barlow tiles, optional imagery). Approach renumbered to §4
+("How we'll do it"), prelim §5, positioning §6; cross-refs fixed. Formal proposal kept its
+NASA-standard section order but its §6 table upgraded to the same per-dataset format
+(Dataset (source) | What it shows | Role | Status, 13 rows). All four rendered docs
+regenerated (plain now 8 pp); table rendering visually verified in both PDFs.
+
+---
+
 ## 2026-07-01 — Barlow reevaluation: attribution stats stress-tested, 3 defects found + fixed
 
 Full audit of the Barlow/FINESST analysis chain (user request: "reevaluate, refine for
