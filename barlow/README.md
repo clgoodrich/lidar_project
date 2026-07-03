@@ -26,6 +26,8 @@ barlow/
     finesst_reference.docx           # rendered (regenerate: _md_to_docx.py <md> --bold)
     barlow_data_manifest.md          # dataset inventory + "reproduce everything" recipe
     barlow_dissertation_explained.md # plain-language walkthrough of the dissertation
+    barlow_dissertation_summary.md   # 2-page digest of the whole dissertation
+    barlow_dissertation_summary.pdf  # rendered (regenerate: _md_to_pdf.py <md>)
     barlow_dissertation_readalong.md # section-level read-along companion (open next to the PDF)
     barlow_dissertation_pagenotes.md # per-page notes (drives the side-by-side PDF's right pane)
     BARLOW-DISSERTATION-2026.pdf     # the dissertation itself (413 MB, gitignored)

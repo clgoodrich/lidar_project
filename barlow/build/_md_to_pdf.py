@@ -107,6 +107,7 @@ def build(md_path: Path):
 
     i, n = 0, len(lines)
     first_h1 = True
+    doc_title = None
     while i < n:
         ln = lines[i]
         s = ln.strip()
@@ -150,6 +151,7 @@ def build(md_path: Path):
             if level == 1 and first_h1:
                 story.append(Paragraph(txt, st["title"]))
                 first_h1 = False
+                doc_title = re.sub(r"<[^>]+>", "", txt)
             else:
                 story.append(Paragraph(txt, st[f"h{level}"]))
             i += 1
@@ -232,7 +234,7 @@ def build(md_path: Path):
         canvas.setFont(FONT, 7.5)
         canvas.setFillColor(GREY)
         canvas.drawString(0.65 * inch, 0.45 * inch,
-                          "FINESST S/T/M: MDV ephemeral-channel attribution (draft)")
+                          doc_title or "FINESST S/T/M: MDV ephemeral-channel attribution (draft)")
         canvas.drawRightString(letter[0] - 0.65 * inch, 0.45 * inch,
                                f"p. {doc.page}")
         canvas.restoreState()
@@ -240,7 +242,7 @@ def build(md_path: Path):
     doc = SimpleDocTemplate(str(out_pdf), pagesize=letter,
                             leftMargin=0.65 * inch, rightMargin=0.65 * inch,
                             topMargin=0.6 * inch, bottomMargin=0.65 * inch,
-                            title="FINESST Proposal: MDV ephemeral-channel attribution")
+                            title=doc_title or "FINESST Proposal: MDV ephemeral-channel attribution")
     doc.build(story, onFirstPage=_footer, onLaterPages=_footer)
     print(f"wrote {out_pdf}  ({out_pdf.stat().st_size/1024:.0f} KB, {doc.page} pages)")
 
