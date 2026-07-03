@@ -87,11 +87,36 @@ _MCM_DAILY_DISCHARGE = ["9102", "9103", "9107", "9109", "9110", "9111", "9113",
                         "9114", "9115", "9116", "9117", "9118", "9119", "9120",
                         "9121", "9122", "9123", "9124", "9127", "9128", "9129"]
 _MCM_SOIL = ["4020", "4021", "4022", "4023", "4024"]   # continuous soil T / active layer
+# Full MDV meteorology network (7000-series high-freq/hourly/daily). 7003 (Bonney) was
+# the original pull; the rest give per-basin air-T / radiation / wind so every stream can
+# be tied to its nearest station instead of extrapolating from one lake basin.
+_MCM_MET = {
+    "7003": "Bonney", "7005": "Brownworth", "7006": "Canada", "7007": "Commonwealth",
+    "7008": "ExplorersCove", "7010": "Fryxell", "7011": "Hoare", "7012": "Howard",
+    "7013": "Taylor", "7014": "UpperHoward", "7015": "Vanda", "7016": "Vida",
+    "7017": "FriisHills", "7018": "MountFleming", "7020": "Miers", "7021": "Garwood",
+    "7019": "GarwoodIceCliff", "7002": "Beacon", "7030": "station_locations",
+}
+# Pre-modeled glacier-melt energy-balance inputs (8000-series, 1996-2011): shortwave,
+# longwave, air T, RH, wind speed/direction + reader. Ready-made O1 driver-energy terms.
+_MCM_MELT = ["8005", "8007", "8008", "8009", "8011", "8012", "8010"]
 LTER_PACKAGES = {
-    "lter_climate": [("knb-lter-mcm", "7003", None)],   # meteorology network
+    "lter_climate": [("knb-lter-mcm", "7003", None)],   # Bonney (kept for back-compat)
+    "lter_met_network": [("knb-lter-mcm", m, None) for m in _MCM_MET],  # full met network
     "lter_streams": [("knb-lter-mcm", g, None) for g in _MCM_DAILY_DISCHARGE],
     "lter_glacier": [("knb-lter-mcm", "2006", None)],   # snow/ice/total glacier mass balance
+    "lter_melt_model": [("knb-lter-mcm", p, None) for p in _MCM_MELT],  # energy-balance drivers
     "lter_soil": [("knb-lter-mcm", s, None) for s in _MCM_SOIL],  # active-layer/permafrost
+    # Ground-ice / permafrost proxies: deep ground-temperature profiles (DVDP borehole 11)
+    # + the SLIME moat stations that instrument the soil<->lake ice-cementation boundary.
+    "lter_groundice": [("knb-lter-mcm", "501", None),
+                       ("knb-lter-mcm", "5100", None), ("knb-lter-mcm", "5101", None),
+                       ("knb-lter-mcm", "5102", None), ("knb-lter-mcm", "5103", None)],
+    # Lake level + ice thickness: independent check on the standing-water screen (the
+    # Fryxell ~1.5 m rise) and a base-level control on stream long profiles.
+    "lter_lakelevel": [("knb-lter-mcm", "68", None),    # lake level surveys 1968-2026
+                       ("knb-lter-mcm", "67", None),    # lake ice thickness/density
+                       ("knb-lter-mcm", "3104", None)], # continuous 1-min stage
     # label source: GIS stream-channel/watershed/glacier shapefiles (public stand-in for
     # Barlow's author-only 217 tiles) + relict-channel locations. Unzip the shapefile zip
     # under labels/ before use (the .zip lands in labels/, extract to labels/gis/).

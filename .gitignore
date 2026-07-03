@@ -201,3 +201,6 @@ ramachandran_permian_pads_pts.gpkg
 barlow/docs/BARLOW-DISSERTATION-2026.pdf
 barlow/docs/BARLOW-DISSERTATION-2026_sidebyside*.pdf
 barlow/docs/BARLOW-DISSERTATION-2026_readalong.epub
+# Cami Barlow's privately shared GIS data (author-provided, not ours to publish)
+barlow/Shapefiles/
+barlow/MDV_Resources.docx

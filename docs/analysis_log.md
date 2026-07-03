@@ -5,6 +5,45 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-03 — Barlow: rates re-run inside Cami's own detected channel masks — attribution signal invariant
+
+Cami Barlow shared her working GIS data (dropped into `barlow/Shapefiles/`, gitignored —
+author-private; inventory in `barlow_data_manifest.md` 🎁 section). Headline item:
+`Streams_Final_052026.zip` = her **final U-Net-detected channel polygons per epoch**
+(NASA_2002 34,807 / NCALM_15 15,204 / REMA_15 906 polys; `Class==1` = channel). Extracted
+to `E:\barlow_data_DO_NOT_DELETE\labels\Streams_Final_052026\`.
+
+Added `--channels {lter,cami}` to `barlow/build/_change_detection.py`: per-stream masks
+become LTER manual corridor ∩ (union of the two epochs' Cami polygons — union, because a
+channel present in only one epoch is exactly where change happened). New `cami_pct` CSV
+column = share of each LTER corridor her detector retains (27–89%). Also prints
+whole-window totals inside her full detected mask.
+
+**Runs** (bbox 26000 37000 33000 44000, water-screened, bias-corrected):
+- 2001→2014: NMAD 0.211 m unchanged; window totals inside her channels: ero 57,311 /
+  dep 91,391 m³ over 5.04 km². CSV: `per_stream_2001_2014_cami.csv`.
+- 2014→REMA: NMAD 0.227 m unchanged; ero 115,665 / dep 175,030 m³ over 6.56 km². CSV:
+  `per_stream_2014_rema_cami.csv`.
+
+**Attribution pilot re-test** (log-log specific gross rate vs mean gauged discharge, n=6,
+matching fig4's statistic): lidar epoch **r = +0.95 (p = 0.003), ρ = +0.94 (p = 0.005)** —
+identical to the LTER-only baseline (+0.95 / +0.94), and leave-one-out worst-case
+*improves* (+0.82 → +0.87). REMA epoch stays null under both masks (r ≈ −0.2, ns), as
+expected under sparse post-2015 gauging. **Interpretation: the pilot signal is invariant
+to whose channel masks are used — LTER manual corridors or the author's own detected
+outlines — removing "you used different channels than she did" as an attack line.**
+Per-stream specific rates shift only modestly (e.g. Aiken 14.18→13.32, Delta 5.33→6.30
+mm/yr); rank order preserved.
+
+Also in this pass: `.gitignore` + `barlow/Shapefiles/` rule (only the zip was covered
+before, via `*.zip`); fetcher `LTER_PACKAGES` expanded with `lter_met_network` (19 met
+stations), `lter_melt_model` (8000-series energy-balance I/O), `lter_groundice`
+(DVDP-11 + SLIME), `lter_lakelevel` (68/67/3104) — documented in the manifest, not yet
+fetched. NZ (USDA-NRCS/Landcare) soil-climate network recorded as the manual-acquisition
+fix for the ground-ice driver gap.
+
+---
+
 ## 2026-07-02 — Honest re-eval complete: all four instance models on the 65/93 split, single era
 
 Closes the dataset-era-mixing + no-precision findings from the 07-01 audit. Sequence:

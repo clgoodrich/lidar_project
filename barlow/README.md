@@ -56,3 +56,9 @@ no relation under sparse post-2015 gauging (motivates the O1 modeled-melt-energy
 Remaining/optional: per-valley stacks for O2, REMA time-stamped strips, full driver-energy
 (PDD/insolation) model for O1. `_build_barlow_inputs.py` imports `run_pdal` from
 `notebooks/wellsight_v2/_common.py` (shared PDAL helper).
+
+**Update (2026-07-03):** Cami shared her working GIS data (`barlow/Shapefiles/`, gitignored —
+author-private; see manifest 🎁 section), incl. her **final detected channel polygons per
+epoch**. `_change_detection.py --channels cami` recomputes rates inside her exact masks:
+attribution signal unchanged (r = +0.95, p = 0.003), leave-one-out worst case improves
+(+0.82 → +0.87). Only her training tiles remain author-gated.

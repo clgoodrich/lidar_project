@@ -12,6 +12,8 @@ PDAL point-cloud ICP (helps where there is 3-D relief; on flat floor stick with 
   python _change_detection.py --bbox 24000 43500 26500 46000 --icp        # 2001->2014, ICP
   python _change_detection.py --old 2014 --new rema --bbox 26000 37000 33000 44000
   python _change_detection.py --bbox 26000 37000 33000 44000 --streams     # per-stream rates
+  python _change_detection.py --bbox 26000 37000 33000 44000 --streams --channels cami
+                                        # rates inside Cami's detected channel outlines
 """
 from __future__ import annotations
 
@@ -34,6 +36,10 @@ DEM2001_ZIP = BARLOW / "mdv_lidar_2001" / "Taylor_Glacier" / "taylore.zip"
 DEM2014_DIR = BARLOW / "mdv_lidar" / "be_dem_1m" / "Taylor_Valley"
 REMA_DIR = BARLOW / "rema" / "2m"
 STREAM_DIR = BARLOW / "labels" / "gis" / "mcmlter-gis-watershed-shapefiles" / "MDV_streams"
+# Cami Barlow's final U-Net-detected channel polygons (author-provided 2026-05, one shapefile
+# per epoch; Class==1 = channel). Extracted from barlow/Shapefiles/Streams_Final_052026.zip.
+CAMI_DIR = BARLOW / "labels" / "Streams_Final_052026"
+EPOCH_CAMI = {"2001": "NASA_2002.shp", "2014": "NCALM_15.shp", "rema": "REMA_15.shp"}
 CRS = "EPSG:3294"
 RES = 2.0
 # representative acquisition year per epoch (for converting volumes to rates)
@@ -153,9 +159,37 @@ def water_mask(z_old, z_new, dod_c, valid, min_px=20000, tol=0.75):
     return water
 
 
-def per_stream(dod_c, valid, z_old, z_new, ref_tif, lod, years, out_csv):
+def cami_mask(epochs, transform, shape, bbox):
+    """Boolean raster of Cami's detected channels (Class==1), union across the given
+    epochs. Union (not intersection): a channel present in only one epoch is exactly
+    where erosion/deposition happened, so it must stay in the mask."""
+    import geopandas as gpd
+    from rasterio.features import rasterize
+    mask = np.zeros(shape, dtype=bool)
+    for ep in epochs:
+        shp = CAMI_DIR / EPOCH_CAMI[ep]
+        g = gpd.read_file(shp, bbox=tuple(bbox)).to_crs(CRS)
+        g = g[g["Class"] == 1]
+        if len(g) == 0:
+            print(f"  [cami] {shp.name}: no Class-1 polygons in window")
+            continue
+        m = rasterize([(geom, 1) for geom in g.geometry], out_shape=shape,
+                      transform=transform, fill=0).astype(bool)
+        print(f"  [cami] {shp.name}: {len(g)} polys -> {m.sum() * RES * RES / 1e6:.2f} "
+              f"km^2 in window")
+        mask |= m
+    return mask
+
+
+def per_stream(dod_c, valid, z_old, z_new, ref_tif, lod, years, out_csv,
+               channels="lter", epochs=(), bbox=None):
     """Per-stream erosion/deposition/net rates inside the LTER channel polygons.
     Channels are WGS84 polar-stereographic (lat0 -71) -> reproject to EPSG:3294.
+
+    channels="cami" further intersects each LTER corridor with Cami's U-Net-detected
+    channel polygons (union of the two epochs), so rates are computed only where her
+    detector called channel — the Ch. 7 masking approach with her actual outlines.
+    cami_pct reports how much of each LTER corridor her mask retains.
 
     Rates come in two forms: total m^3/yr (scales with masked channel area — the
     valid-data footprint differs per epoch because the 2001 ATM swath is narrower)
@@ -169,6 +203,16 @@ def per_stream(dod_c, valid, z_old, z_new, ref_tif, lod, years, out_csv):
         transform, shape = r.transform, (r.height, r.width)
     cell = RES * RES
     water = water_mask(z_old, z_new, dod_c, valid)
+    cmask = None
+    if channels == "cami":
+        cmask = cami_mask(epochs, transform, shape, bbox)
+        # whole-window totals inside her full detected mask (not just named streams)
+        mw = cmask & valid & ~water
+        dw = dod_c[mw]
+        print(f"  [cami] window totals inside detected channels "
+              f"({mw.sum() * cell / 1e6:.2f} km^2 valid): "
+              f"ero {-dw[dw < -lod].sum() * cell:,.0f}  "
+              f"dep {dw[dw > lod].sum() * cell:,.0f} m^3")
     rows = []
     chan_union = np.zeros(shape, dtype=bool)
     for shp in sorted(STREAM_DIR.glob("*_channel.shp")):
@@ -177,6 +221,9 @@ def per_stream(dod_c, valid, z_old, z_new, ref_tif, lod, years, out_csv):
         m0 = rasterize([(geom, 1) for geom in g.geometry], out_shape=shape,
                        transform=transform, fill=0).astype(bool) & valid
         chan_union |= m0
+        lter_px = m0.sum()
+        if cmask is not None:
+            m0 = m0 & cmask
         m = m0 & ~water
         if m.sum() == 0:
             continue
@@ -184,7 +231,9 @@ def per_stream(dod_c, valid, z_old, z_new, ref_tif, lod, years, out_csv):
         ero = -dc[dc < -lod].sum() * cell
         dep = dc[dc > lod].sum() * cell
         area = m.sum() * cell
-        rows.append({"stream": name, "area_m2": round(area),
+        row_extra = ({"cami_pct": round(100 * m0.sum() / lter_px, 1)}
+                     if cmask is not None else {})
+        rows.append({"stream": name, "area_m2": round(area), **row_extra,
                      "water_pct": round(100 * (m0 & water).sum() / m0.sum(), 1),
                      "erosion_m3": round(ero), "deposition_m3": round(dep),
                      "net_m3": round(dep - ero), "gross_m3": round(ero + dep),
@@ -199,11 +248,14 @@ def per_stream(dod_c, valid, z_old, z_new, ref_tif, lod, years, out_csv):
     print(f"  stable-terrain NMAD (channels excluded, {100*chan_union[valid].mean():.1f}% "
           f"of valid px are channel): {nmad_stable:.3f} m")
     rows.sort(key=lambda r: -r["gross_m3"])
-    print(f"  per-stream ({years:.0f} yr, inside LTER channels, water-screened):")
-    print(f"    {'stream':16s} {'area_m2':>9s} {'water%':>6s} {'gross/yr':>10s} "
+    src = "LTER & Cami channels" if cmask is not None else "LTER channels"
+    print(f"  per-stream ({years:.0f} yr, inside {src}, water-screened):")
+    cami_h = f" {'cami%':>6s}" if cmask is not None else ""
+    print(f"    {'stream':16s} {'area_m2':>9s}{cami_h} {'water%':>6s} {'gross/yr':>10s} "
           f"{'net/yr':>10s} {'gross mm/yr':>12s}")
     for r in rows:
-        print(f"    {r['stream']:16s} {r['area_m2']:>9,} {r['water_pct']:>6.1f} "
+        cami_c = f" {r['cami_pct']:>6.1f}" if cmask is not None else ""
+        print(f"    {r['stream']:16s} {r['area_m2']:>9,}{cami_c} {r['water_pct']:>6.1f} "
               f"{r['gross_rate_m3_yr']:>10,.0f} {r['net_rate_m3_yr']:>+10,.0f} "
               f"{r['gross_mm_yr']:>12.2f}")
     with open(out_csv, "w", newline="") as f:
@@ -219,6 +271,9 @@ def main() -> int:
     ap.add_argument("--new", default="2014", choices=["2001", "2014", "rema"])
     ap.add_argument("--icp", action="store_true", help="add PDAL point-cloud ICP co-registration")
     ap.add_argument("--streams", action="store_true", help="per-stream rates inside LTER channels")
+    ap.add_argument("--channels", default="lter", choices=["lter", "cami"],
+                    help="channel masks for --streams: LTER manual polygons, or those "
+                         "intersected with Cami's detected channel outlines")
     args = ap.parse_args()
     OUT = BARLOW / "change_detection" / f"taylor_{args.old}_{args.new}"
     OUT.mkdir(parents=True, exist_ok=True)
@@ -251,8 +306,10 @@ def main() -> int:
     if args.streams:
         z_old_arr = rasterio.open(
             OUT / "dem_old_icp_2m.tif" if args.icp else d_old).read(1).astype("float64")
+        suffix = "_cami" if args.channels == "cami" else ""
         per_stream(dod_c, valid, z_old_arr, z_new, d_new, stats["lod"], years,
-                   OUT / f"per_stream_{args.old}_{args.new}.csv")
+                   OUT / f"per_stream_{args.old}_{args.new}{suffix}.csv",
+                   channels=args.channels, epochs=(args.old, args.new), bbox=args.bbox)
 
     prof = rasterio.open(d_new).profile
     prof.update(dtype="float32", count=1, nodata=-9999, compress="lzw",

@@ -80,6 +80,7 @@ Companions: `finesst_proposal.md` (formal), `finesst_proposal_plain.md` (plain-l
 | My ICP behaves like hers | Improves steep terrain, no effect on flat floor — same pattern she reports |
 | The attribution signal is real but preliminary | r = +0.95 survives leave-one-out (drop any stream, correlation holds); still only n = 6, one epoch |
 | The REMA-epoch gap is understood, not hidden | Post-2015 gauge coverage collapses to 48–362 days/stream, so no fit is drawn — this *motivates* O1 |
+| The signal doesn't depend on my channel choice | Re-ran rates inside **Cami's own detected channel outlines** (author-provided, May 2026): r = +0.95 either way; leave-one-out worst case *improves* (+0.82 → +0.87) |
 
 ---
 
@@ -135,7 +136,9 @@ not.
 Ch. 6 set is 1,274 tiles at 616 locations — that's the real ask.)
 Two exits: the public LTER stream centerlines already work as a stand-in (current
 figures use them), and worst case I re-digitize a comparable set — hand-labeling terrain
-features is what I do in my other project.
+features is what I do in my other project. Update: she has already shared her final
+*detected* channel outlines (May 2026) — I've verified my rates inside her exact masks;
+only the training tiles remain author-gated.
 
 **Why REMA instead of flying lidar again?**
 Cost and cadence. Antarctic lidar campaigns are rare one-offs (2001 and 2014 are what

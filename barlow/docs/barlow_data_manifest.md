@@ -51,6 +51,23 @@ change detection (ICP, Laplacian/NMAD, LOD95). Data requirements (from the FINES
 0-entities failure was a hardcoded stale revision (`9128.11` vs current `9128.3`), not a wrong package.
 \* an older Fryxell (FRLM) daily-met file may still sit in `lter_streams/` from a prior pass; it is met, not discharge — move if tidying.
 
+## 🎁 Author-provided (Cami Barlow, received 2026-07-03)
+
+Cami's own working GIS data, in-repo at `barlow/Shapefiles/` (**gitignored — hers, not
+ours to publish**; the `.lock` files carry her machine name). Heavy extraction on E:.
+
+| Item | What it is | Why it matters |
+|---|---|---|
+| `Streams_Final_052026.zip` → extracted to `labels/Streams_Final_052026/` on E: | **Her final U-Net-detected channel polygons, one shp per epoch**: `NASA_2002` (34,807 polys, whole MDV), `NCALM_15` (15,204, whole MDV), `REMA_15` (906, Fryxell window only). Fields: `Class` (1 = channel), `Sure` (spot-review flag, mostly 0/NaN — not a usable filter) | The Ch. 7 masking geometry. `_change_detection.py --channels cami` computes per-stream rates inside LTER ∩ these. Attribution pilot is invariant to mask choice (r = +0.95 both ways) |
+| `MCMLTER_GIS_Export_Layers/LTER_ManualSegmentation/MDV_streams/` | 11 hand-segmented channel polygons (c1 Commonwealth + f1–f10 Fryxell streams) + merged `LTER_seg_streams.shp` | Same manual channels as our EDI `6007` download — provenance cross-check |
+| `Microclimate_Zones.gdb` | Coastal Thaw / Inland Mixing / Upper Stable zone polygons (EPSG:3294) | Ready-made **O1 categorical driver** (zone → expected melt regime) |
+| `MCMLTER_GIS_Export_Layers/USGS_Map_1970/` | Digitized 1970 USGS map: 58 monitored streams (with gauge IDs), unmonitored streams, glaciers, lakes, topo | Potential **1970 baseline epoch** — extends the change narrative to ~50 yr |
+| `MCMLTER_GIS_Export_Layers/LTER/` | Gauge / met-station / glacier-stake / camp location shapefiles | Cross-check for the EDI-fetched station registries |
+| `OutcropGeology/` (+ `Dikes_Sills_Lineaments.gdb`) | Southern Victoria Land geology: units, faults, dikes, folds (svl_* shps; gdb in EPSG:4326) | Lithology as candidate **erodibility driver** for O1 |
+| `MDV_Shapefiles.gdb` | NASA_Bound / NCALM_Bound lidar footprint polygons | Exact epoch coverage masks |
+| `ValleyName.shp`, `mdv_pt_name.*` | Valley + place-name label layers | Map annotation |
+| `barlow/MDV_Resources.docx` (untracked) | Her link list: MCM-LTER node 4736, EDI knb-lter-mcm search, **LINZ Antarctica data portal** `data.linz.govt.nz/data/?geotag=global/antarctica` ("shapefile database"), LINZ gazetteer `gazetteer.linz.govt.nz` ("detailed map") | **LINZ is the "New Zealand resource"** from the Cami conversation — Antarctic topo/shapefiles + official place names |
+
 ## ⛔ Not downloaded — optional / lower priority
 
 | Dataset | Why blocked | How to get it |
@@ -58,7 +75,9 @@ change detection (ICP, Laplacian/NMAD, LOD95). Data requirements (from the FINES
 | **MDV airborne lidar 2001** (earlier NCALM epoch) | The 2014-15 epoch is in (above); a separate ~2001 survey would give a second lidar epoch for change detection if one exists on OT | Search OpenTopography catalog for an MDV 2001 collection; add region/bucket to `fetch_opentopo`. |
 | **ERA5 hourly** (melt-season detail) | Monthly is in (above); hourly is larger and only needed for sub-monthly melt dynamics | `_fetch_barlow_data.py --era5 --era5-hourly` (per-year files; accept hourly dataset licence first). |
 | **AMPS — full MDV time series** | only a 5-day sample pulled so far; scope (period + cadence) is a user decision | `--amps --amps-start YYYYMMDD --amps-end YYYYMMDD [--amps-fhours 000,012]`. WRF24 era only (Oct 2017→present); earlier eras (WRF30/45/60, MM5) need separate path/var wiring. ~140 KB per timestep via NCSS. |
-| **WorldView/Maxar imagery, geology maps** | PGC imagery is NGA-licensed (restricted); geology via GNS/USGS | For label QC only; lower priority. |
+| **WorldView/Maxar imagery, geology maps** | PGC imagery is NGA-licensed (restricted); geology via GNS/USGS | For label QC only; lower priority. Geology partly covered by Cami's OutcropGeology drop (above). |
+| **LTER driver expansion (wired, not yet fetched)** | fetcher subs added 2026-07-03, awaiting a run | `--lter` now also pulls: `lter_met_network` (19 met stations, 7002–7030), `lter_melt_model` (8005–8012 melt/energy-balance model I/O), `lter_groundice` (501 DVDP-11 borehole + 5100–5103 SLIME ground ice), `lter_lakelevel` (68 lake levels, 67 ice thickness, 3104 continuous stage). |
+| **NZ soil-climate network (ground-ice / active-layer fix)** | no verified API endpoint; manual acquisition | USDA-NRCS / Landcare Research (Manaaki Whenua) Dry Valleys soil-climate + CALM stations (Bull Pass, Marble Point, Victoria Valley): soil-T profiles to ~1 m + active-layer depth. Request/download manually. |
 
 ## Reproduce everything from scratch
 
@@ -91,7 +110,9 @@ python $B --bbox 26000 37000 33000 44000             # validated pilot stack
 (author-only — LTER `6007` channels are the public stand-in). Two sets exist: 217 tiles
 in the Ch. 4 / 2022 Taylor Valley proof of concept, and the Ch. 6 multi-valley set of
 **1,274 tiles at 616 unique locations** (601 × 2014 lidar, 528 × 2001 lidar, 145 × REMA)
-— the Ch. 6 set is the one to request. **Optional / parked:**
+— the Ch. 6 set is the one to request. **Update 2026-07-03:** she has now shared her
+final *detected* channel outlines (see 🎁 section) — the training tiles remain the only
+outstanding author ask, and their urgency is reduced. **Optional / parked:**
 REMA time-stamped strips (potentially tens of GB), ArcticDEM, WorldView/Maxar (restricted).
 Add `--list` to any fetch to preview without downloading.
 
