@@ -24,7 +24,7 @@ change detection (ICP, Laplacian/NMAD, LOD95). Data requirements (from the FINES
 | MDV lidar **2001** (2 m DEMs, the 2nd change epoch) | **USGS ScienceBase** (NASA ATM; NOT OpenTopography) parent `5d0d1d81...`, 18 sites 2.5 GB; same EPSG:3294 + overlapping extent as 2014 | ✅ |
 | **REMA 2021-23** (satellite epoch) | PGC `pgc-opendata-dems` v2.0 mosaic (have) — may want time-stamped strips for true 2021-23 epoch | ⚠️ mosaic only |
 | Derived per epoch: elev, slope, **aspect, curvature**, intensity, **MFD** flow-accum | `_build_barlow_inputs.py` builds elev/slope/intensity + **D8** flow-accum | ⚙️ add aspect+curvature; she used **MFD** not D8 |
-| Labels: Barlow's 217 + multi-valley polygons | author-gated → MCM-LTER stream channels `6007` (aux/QC) | ✅ stand-in |
+| Labels: Barlow's 217 (Ch. 4) / 1,274 (Ch. 6) + multi-valley polygons | author-gated → MCM-LTER stream channels `6007` (aux/QC) | ✅ stand-in |
 | LTER met / discharge | both | ✅ |
 | **Glacier mass-balance**, **permafrost/active-layer** | LTER `2006` (glacier mass change, 7 glaciers) + `4020-4024` (continuous soil T/EC/VWC, active layer) | ✅ |
 | Reanalysis ERA5 / AMPS (attribution) | both | ✅ |
@@ -87,8 +87,11 @@ python $B --bbox 26000 37000 33000 44000             # validated pilot stack
 # python $B                                           # full Taylor Valley (~11 GB/raster)
 ```
 
-**Not script-reproducible (genuinely unavailable):** Barlow's own 217 hand-drawn label
-tiles (author-only — LTER `6007` channels are the public stand-in). **Optional / parked:**
+**Not script-reproducible (genuinely unavailable):** Barlow's own hand-drawn label tiles
+(author-only — LTER `6007` channels are the public stand-in). Two sets exist: 217 tiles
+in the Ch. 4 / 2022 Taylor Valley proof of concept, and the Ch. 6 multi-valley set of
+**1,274 tiles at 616 unique locations** (601 × 2014 lidar, 528 × 2001 lidar, 145 × REMA)
+— the Ch. 6 set is the one to request. **Optional / parked:**
 REMA time-stamped strips (potentially tens of GB), ArcticDEM, WorldView/Maxar (restricted).
 Add `--list` to any fetch to preview without downloading.
 

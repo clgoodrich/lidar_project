@@ -29,7 +29,8 @@ Companions: `finesst_proposal.md` (formal), `finesst_proposal_plain.md` (plain-l
 |---|---|---|
 | **2001, 2014, 2021–23** | The three elevation snapshots (epochs) | NASA ATM lidar / NCALM lidar / REMA satellite |
 | **2 m / 1 m / 2 m** | Pixel size of each epoch, in the same order | Barlow Ch. 3 |
-| **217** | Hand-labeled 300 × 300 m training tiles (~1% of study area) | Barlow Ch. 4 |
+| **217** | Hand-labeled 300 × 300 m tiles in the original Taylor Valley proof of concept (~1% of the valley) | Barlow Ch. 4 / 2022 paper |
+| **1,274** | Training tiles in the scaled-up multi-valley model: 601 from 2014 lidar + 528 from 2001 lidar + 145 from REMA, drawn at 616 unique locations | Barlow Ch. 6 |
 | **~0.94** | F1 score of her Taylor Valley channel detector | Barlow 2022, *Remote Sensing* |
 | **0.21 m** | My NMAD (noise level) for 2001→2014 lidar–lidar differencing | My reproduction; her range 0.07–0.46 |
 | **0.23 m** | My NMAD for 2014→REMA lidar–satellite differencing | My reproduction; her range 0.19–0.53 |
@@ -130,7 +131,8 @@ at n = 6; the rank correlation is equally strong (not one outlier); it survives
 leave-one-out. The proposal grows the n — modeled energy covers every stream, gauged or
 not.
 
-**What if you can't get her 217 training labels?**
+**What if you can't get her training labels?** (217 tiles in the 2022 paper; the full
+Ch. 6 set is 1,274 tiles at 616 locations — that's the real ask.)
 Two exits: the public LTER stream centerlines already work as a stand-in (current
 figures use them), and worst case I re-digitize a comparable set — hand-labeling terrain
 features is what I do in my other project.
@@ -189,7 +191,7 @@ Three known risks, all mitigated — see §9.
 
 | Risk | Mitigation |
 |---|---|
-| Barlow's 217 label tiles are author-gated | LTER centerlines already work as stand-in; plan C = re-digitize myself |
+| Barlow's label tiles are author-gated (217 in Ch. 4; 1,274 in Ch. 6) | LTER centerlines already work as stand-in; plan C = re-digitize myself |
 | REMA coverage uneven after 2014 | Taylor Valley has full three-epoch coverage — acceleration analysis anchors there |
 | Gauge record gaps | Not a bug: replacing gauges with modeled energy is the point of O1 |
 
