@@ -21,6 +21,8 @@ barlow/
     finesst_proposal.pdf/.docx       # rendered (regenerate via _md_to_pdf.py / _md_to_docx.py)
     finesst_proposal_plain.md        # same proposal, plain-language voice (own SOURCE OF TRUTH)
     finesst_proposal_plain.pdf/.docx # rendered plain version
+    finesst_proposal_basic.md        # plan-only variant: NO preliminary results/figures; honest
+    finesst_proposal_basic.pdf/.docx #  needs/risks framing (own SOURCE OF TRUTH; 4 pp rendered)
     finesst_figures/                 # fig1-5 PNGs shared by both versions (committed, small)
     finesst_reference.md             # personal lookup doc: facts, key numbers, Q&A, glossary
     finesst_reference.docx           # rendered (regenerate: _md_to_docx.py <md> --bold)

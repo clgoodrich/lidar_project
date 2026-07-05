@@ -5,6 +5,18 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-05 — FINESST: "basic" proposal variant (plan-only, no preliminary work)
+
+Per user: a third proposal variant that presents the project as a pure plan.
+`barlow/docs/finesst_proposal_basic.md` (+ rendered .pdf 4 pp / .docx): no preliminary
+results, no figures, no "already operational" claims — §4 replaced by "What the project
+needs" (data table incl. the author-gated labels, computing, skills gaps stated as gaps)
+and §5 "Honest assessment" (five failure modes with what-happens-then, incl. weak-signal
+→ publishable null; explicit "what this proposal does not claim" block). Existing formal
++ plain variants unchanged; README doc list updated.
+
+---
+
 ## 2026-07-03 — Barlow: rates re-run inside Cami's own detected channel masks — attribution signal invariant
 
 Cami Barlow shared her working GIS data (dropped into `barlow/Shapefiles/`, gitignored —
