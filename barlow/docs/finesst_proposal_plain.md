@@ -2,9 +2,9 @@
 
 > **Summary.** A tool exists that *finds* where Antarctic streams are reshaping the land, but it
 > stops at location: it says where, never why. This project starts at that line. The work will
-> connect the measured change to the processes driving it (heat, melt, thawing ground), make the
-> detector work across different sensors and all four valleys, and attach a real uncertainty
-> value to every pixel.
+> connect the measured change to the processes driving it (heat, melt, thawing ground), widen
+> the view from the stream channels to everything changing on the valley floors, and attach a
+> real uncertainty value to every pixel.
 
 ---
 
@@ -36,11 +36,12 @@ naming:
    (**LOD95 = 1.96 × NMAD**) count. Summed per stream, that yields erosion/deposition rates and
    even acceleration.
 
-**The gap.** Barlow's work ends at *description*. It maps **where** change happens (Denton Hills
-erodes hardest; parts of Taylor Valley are accelerating) but explicitly leaves two things for
-future work: **(a)** linking the change to its physical and climate **drivers**, and **(b)**
-making the model work **beyond the MDVs**. That's the natural space for a Future Investigator
-project: moving from a tool that *watches* to one that *explains and predicts*.
+**The gap.** Barlow's work ends at *description*, and at the channel edge. It maps **where**
+in-channel change happens (Denton Hills erodes hardest; parts of Taylor Valley are accelerating)
+but leaves the **drivers** for future work — and everything the elevation differencing measures
+*outside* the channels (thawing ground, slopes, fans, lake edges) gets thrown away by the
+channel mask. That's the natural space for a Future Investigator project: explain the change,
+and stop discarding most of the measurement.
 
 ---
 
@@ -53,7 +54,7 @@ it. That breaks into three concrete objectives:
 | # | Objective | Hypothesis | Why it's new |
 |---|---|---|---|
 | **O1** | **Attribution (the headline).** Relate each stream's change rate to its drivers: temperature, insolation, **positive-degree-days (PDD)** (cumulative above-freezing heat), melt-season discharge, glacier melt, and active-layer (thaw) depth, drawn from the LTER field network plus ERA5/AMPS reanalysis. | **H1:** Change is governed by *cumulative melt energy*, not raw water volume. An energy-based model outperforms a discharge-only model and explains the scatter discharge leaves behind. | Barlow lists this as future work; it hasn't been quantified. |
-| **O2** | **Generalization.** Make the terrain-only detector work across both lidar (2001/2014) and REMA, and across all four valleys. The obstacle is **domain shift**: lidar and satellite represent the surface differently, which degrades the satellite epoch. | **H2:** A sensor-aware correction (conditioned on slope/aspect, per pixel) closes most of the lidar-vs-REMA gap. | Barlow flags sensor generalization as future work. |
+| **O2** | **Whole-landscape change.** Run the change detection over the entire valley floor, not just inside the channel outlines, and sort each patch of significant change by the process behind it: channel shift, ground-ice thaw (**thermokarst**), slope movement, fan growth, lake-edge change. Then test each kind against its own drivers. | **H2:** Different kinds of change answer to different drivers — channels follow melt energy and water; thaw-driven sinking follows how deep the ground thaws each summer. | Barlow's analysis keeps only what's inside the channel masks; the rest of the measurement is discarded. |
 | **O3** | **Calibrated uncertainty.** Replace the single global noise value with a **per-pixel, sensor-aware** one, so every change map carries a defensible confidence layer. | **H3:** Conditioning NMAD on slope, aspect, and sensor produces a 95% bound that actually holds 95% of the time. | Barlow uses one global value per epoch pair. |
 
 **The unifying payoff:** a model that takes a driver field and predicts **where acceleration
@@ -74,7 +75,7 @@ times. We have three epochs:
 |---|---|---|---|
 | **2001 airborne lidar** (2 m) | NASA Airborne Topographic Mapper survey (via USGS) | The valley floors as they were in 2001 | The baseline: every change is measured against this starting surface |
 | **2014 airborne lidar** (1 m) | NCALM flight campaign (via OpenTopography) | The same terrain 13 years later, at the highest accuracy available | The benchmark epoch: sharpest data, anchors the noise model, midpoint of the record |
-| **REMA satellite DEM** (2 m, 2021–23) | Polar Geospatial Center, built from Maxar stereo imagery | The most recent surface, covering all of Antarctica | Extends the record past the last lidar flight; since no new lidar is planned, this is the future of monitoring, which is why O2 (making it interchangeable with lidar) matters |
+| **REMA satellite DEM** (2 m, 2021–23) | Polar Geospatial Center, built from Maxar stereo imagery | The most recent surface, covering all of Antarctica | Extends the record past the last lidar flight; since no new lidar is planned, this is the future of monitoring — which is why the lidar-vs-REMA correction in §4 matters |
 
 From each snapshot we compute the terrain layers the detector reads: slope, aspect, **profile
 curvature** (signed, so concave channels separate from convex ridges), **MFD flow accumulation**
@@ -113,10 +114,17 @@ series** (PDD, insolation, discharge, thaw depth); **(iii)** fit rate-vs-driver 
 H1 directly: energy-based model against discharge-only. For
 streams with three time points, regress *acceleration* against *driver trends*.
 
-**O2, generalization.** Quantify the lidar-vs-REMA difference over stable ground as a function of
-slope and aspect, learn a correction, retrain the U-Net with both sensors represented, and evaluate
-F1 across all four valleys and both sensors. Prior work (§5) shows this architecture
-holding up on an entirely different landscape, which bounds the risk.
+**O2, whole-landscape change.** The DoD already measures the whole surface; the channel mask
+throws most of it away. Apply the O3 per-pixel thresholds to the full valley floor, pull out
+the patches of change that clear them, and classify each patch by process type from its shape
+and setting (on a slope? next to a lake? ice-cored ground?). Each type's rates then get their
+own driver test in O1. Prior work (§5) classifying terrain disturbance by type on a different
+landscape shows this move is in hand.
+
+**Sensor continuity (a method, not an objective).** The record only continues past 2014 on
+REMA, and satellite elevations disagree with lidar in terrain-dependent ways. Measure that
+disagreement over stable ground (by slope and aspect) and correct it before any differencing
+that mixes sensors. Expand beyond Taylor Valley where REMA quality allows.
 
 **O3, uncertainty.** Replace the global NMAD with one conditioned on (slope, aspect, sensor),
 output it as a per-pixel layer, and verify calibration by confirming the 95% bound is exceeded
@@ -132,8 +140,8 @@ robust statistics and CRS checks enforced throughout.
 The FI has built and run this same class of machinery (U-Net segmentation on terrain layers, ICP
 alignment, DoD change detection) on a very different landscape: detecting channels, roads, and
 disturbance scars in the Appalachian Plateau from elevation alone. That shows the approach
-transfers across sensors and biomes, which is precisely O2's risk, and that the FI can operate
-the full pipeline end to end.
+transfers across sensors and biomes, that sorting disturbance features by type (O2's core move)
+is demonstrated, and that the FI can operate the full pipeline end to end.
 
 ---
 
@@ -148,18 +156,21 @@ paper, and take coursework in Bayesian/hierarchical modeling and remote-sensing 
 | Year | Deliverables |
 |---|---|
 | **Yr 1** | Build the change-detection chain from public data; build the per-stream driver time series; first O1 attribution model on Taylor Valley; prototype the per-pixel uncertainty layer (O3). Output: attribution paper drafted. |
-| **Yr 2** | Correct the lidar↔REMA domain shift and generalize the detector to all four valleys (O2); run attribution basin-wide; AGU talk. Output: O2 paper. |
-| **Yr 3** | Predict where acceleration migrates next; full three-epoch acceleration attribution; release the uncertainty product (O3). Output: synthesis/prediction paper plus public datasets. |
+| **Yr 2** | Whole-landscape change detection and process classification on Taylor Valley (O2), gated by the O3 thresholds; driver tests per change type; AGU talk. Output: O2 paper. |
+| **Yr 3** | Predict where acceleration migrates next; full three-epoch acceleration attribution; extend beyond Taylor Valley where REMA supports it; release the uncertainty product (O3). Output: synthesis/prediction paper plus public datasets. |
 
 **Risks and mitigations.** **(1)** *Barlow's training labels are gated.* Request them from her
 group; if that stalls, the public LTER centerlines serve as a stand-in, and the
 FI's prior work shows label-building from scratch is in hand. **(2)** *REMA coverage after 2014 is
 uneven.* Prioritize Taylor Valley (full three-epoch coverage) for the acceleration work; treat
 other valleys as two-epoch. **(3)** *Gauge records have gaps.* That's a core reason O1 relies on
-melt *energy* from reanalysis rather than raw gauge discharge alone.
+melt *energy* from reanalysis rather than raw gauge discharge alone. **(4)** *Outside the
+channels, change may be too small to clear the detection threshold.* Then O2 narrows back to
+in-channel change and the whole-landscape result is reported as a calibrated null — which is
+itself a statement about how confined active change currently is.
 
-**Data sharing.** All inputs are free/public and cited. My outputs (change maps, per-stream rate
-tables, uncertainty layers, stream-boundary polygons) will be released open-access (DOIs via
+**Data sharing.** All inputs are free/public and cited. My outputs (change maps classified by
+process type, per-stream rate tables, uncertainty layers, stream-boundary polygons) will be released open-access (DOIs via
 Zenodo/EDI) alongside the code. Heavy regenerable rasters stay out of version control; scripts,
 figures, and tables are tracked. Everything carries explicit CRS, method, and uncertainty metadata,
 consistent with NASA's open-science requirements.

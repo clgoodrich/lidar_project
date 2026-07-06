@@ -38,7 +38,7 @@ reproduce any result.
 | Elevation-change (DoD) rasters, all epoch pairs | Cloud-Optimized GeoTIFF, explicit CRS (EPSG:3294), nodata and units in metadata | Zenodo (DOI per release) |
 | Per-stream erosion/deposition rate tables | CSV with data dictionary | Zenodo; offered to EDI for co-listing with the LTER stream data they derive from |
 | Per-pixel calibrated detection-threshold layers (O3) | Cloud-Optimized GeoTIFF | Zenodo |
-| Stream-channel outlines detected by the retrained model (O2) | GeoPackage (OGC) | Zenodo |
+| Stream-channel outlines + process-classified geomorphic-change maps (O2) | GeoPackage (OGC) / Cloud-Optimized GeoTIFF | Zenodo |
 | Training labels (if self-digitized) | GeoPackage + tile rasters | Zenodo — closing the label-access gap this field currently has |
 | Trained model weights | PyTorch checkpoint + ONNX export, with training configuration | Zenodo |
 | Processing code (full pipeline: fetch → derivatives → detection → change → attribution) | Python, version-controlled public repository, OSI-approved license (Apache-2.0) | Public repository, archived to Zenodo (DOI) at each release |

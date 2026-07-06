@@ -5,7 +5,27 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-06 — FINESST: ALL variants now plan-only — preliminary results + figures removed entirely
+## 2026-07-06 — FINESST: O2 rescoped — generalization OUT, landscape-wide geomorphic change IN
+
+User clarified the actual project scope (from their conversations with Cami): the focus is
+(1) climate drivers of the change and (2) geomorphological change broadly — NOT expanding
+the detector to all valleys/sensors as a headline objective. Restructure applied to all
+three variants + OSDMP + reference doc:
+- **O1 (attribution)** unchanged — still the headline.
+- **O2 is now "landscape-wide geomorphic change":** apply the O3 per-pixel thresholds to
+  the FULL valley-floor surface (the DoD measures everything; Barlow's channel mask
+  discards most of it), classify significant-change patches by process type (channel
+  shift, thermokarst, slope movement, fan growth, lake-margin change), and test each type
+  against its own drivers. New H2: distinct driver fingerprints per process type
+  (channels → melt energy/water; thermokarst → thaw depth).
+- **Cross-sensor/cross-valley work demoted to supporting method** ("sensor continuity"):
+  lidar–REMA disagreement measured/corrected as a prerequisite, extension beyond Taylor
+  Valley "where REMA quality allows" — a means, not a promise.
+- New risk in all variants: outside-channel change may sit below the detection threshold →
+  O2 falls back to in-channel change; the landscape-wide calibrated null is itself a
+  result. Timelines rewritten (Yr 2 = classification paper). Gap statements now name BOTH
+  gaps: drivers deferred + everything outside the channel masks discarded unexamined.
+- Renders: formal 5 pp, plain 5 pp, basic 5 pp, OSDMP 2 pp; reference docx regenerated.
 
 User clarified unambiguously: "for the purposes of this proposal assume we have done no
 preliminary work... don't include any graphics from the preliminary work." The earlier

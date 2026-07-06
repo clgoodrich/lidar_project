@@ -3,10 +3,10 @@
 > **Summary.** The McMurdo Dry Valleys hold the only streams in Antarctica that flow over
 > open ground. They flow for a few weeks each summer, and they are changing. A 2026
 > dissertation (Barlow) mapped two decades of that change but stopped short of explaining
-> it. This project proposes to (1) identify which climate drivers control the change,
-> (2) make the detection method work on free satellite elevation data so monitoring can
-> continue without new airborne surveys, and (3) attach an honest, per-pixel error bar to
-> every change map. This document is a plan. No results are claimed here; the sections
+> it — and measured it only inside the stream channels. This project proposes to
+> (1) identify which climate drivers control the change, (2) measure geomorphic change
+> across the whole valley-floor landscape, not just in the channels, and sort it by the
+> process responsible, and (3) attach an honest, per-pixel error bar to every change map. This document is a plan. No results are claimed here; the sections
 > below state plainly what exists, what does not, what the work needs, and what could
 > go wrong.
 
@@ -31,10 +31,12 @@ season) carry more water, move more sediment, and reshape their own beds.
 - Maps of elevation change (erosion and deposition) across four valleys and three survey
   epochs: 2001 airborne lidar, 2014 airborne lidar, and 2021–23 satellite data.
 
-**What does not exist.** The dissertation is descriptive. It shows *where* change happened.
-It does not test *why* — which climate variables drive the change — and it does not
-demonstrate that the detector works well on satellite data across all valleys. Both are
-named in the dissertation as future work. This proposal is that future work.
+**What does not exist.** The dissertation is descriptive, and it stops at the channel edge.
+It shows *where* in-channel change happened. It does not test *why* — which climate variables
+drive the change (named in the dissertation as future work) — and its analysis is masked to
+the stream channels, so everything the elevation differencing measures *outside* them
+(thawing ground, slopes, fans, lake margins) was discarded unexamined. This proposal is
+that unfinished work.
 
 **Relevance to NASA.** The 2001 baseline is NASA data — an ATM airborne lidar campaign —
 that has never been fully exploited for surface change. This project converts that NASA
@@ -62,11 +64,17 @@ balance, and summer soil-thaw depth.
 alone.* This is testable and falsifiable — if discharge alone predicts just as well, the
 hypothesis fails and that is a publishable answer too.
 
-**O2 — Generalization to satellite data.** Measure exactly how satellite elevation data
-disagree with airborne lidar over unchanged ground (the **domain shift**), correct for it,
-and retrain the detector so it performs comparably on both. The stakes are practical: no
-further airborne lidar campaigns are scheduled for the MDVs. If monitoring is to continue,
-it must run on satellite data.
+**O2 — Landscape-wide geomorphic change.** Extend the change measurement from inside the
+stream channels to the whole valley-floor surface, and classify each patch of significant
+change by the process responsible: channel shift, thaw-driven subsidence (**thermokarst**),
+slope movement, fan growth, lake-margin change.
+*Hypothesis: different process types answer to different drivers — channels to melt energy
+and water, thermokarst to summer thaw depth.* If the types turn out to share one driver,
+that is also an answer.
+
+One practical note on satellite data: the record only continues past 2014 on the free REMA
+satellite DEM, and satellite elevations disagree with lidar in terrain-dependent ways.
+Measuring and correcting that disagreement is part of the method (§3), not an objective.
 
 **O3 — Calibrated uncertainty.** Replace the single valley-wide noise estimate used today
 with a per-pixel detection threshold that accounts for slope, aspect, and sensor. The test
@@ -93,10 +101,16 @@ monitoring capability with an explanatory model behind it.
 4. Test the melt-energy hypothesis directly against the water-volume alternative.
 
 **O2 (Year 2).**
-1. Quantify satellite-vs-lidar elevation disagreement over stable ground, broken down by
-   slope and aspect.
-2. Apply the learned correction, retrain the detector with both sensors represented in
-   its training data, and score accuracy on all four valleys, both sensors.
+1. Apply the O3 per-pixel thresholds to the full valley-floor surface and extract every
+   patch of change that clears them.
+2. Classify each patch by process type from its shape and setting (slope position,
+   distance to channels and lakes, ice-cored terrain).
+3. Run each type's rates through the O1 driver models separately and compare the driver
+   fingerprints.
+
+**Sensor continuity (method, Years 1–2).** Quantify satellite-vs-lidar disagreement over
+stable ground by slope and aspect; correct it before any differencing that mixes sensors.
+Extend beyond Taylor Valley where REMA quality allows.
 
 **O3 (Years 1–3, alongside).**
 1. Model the measurement noise as a function of slope, aspect, and sensor instead of one
@@ -165,10 +179,11 @@ proceed from public data alone.
    other valleys may support only two epochs. Conclusions will be scoped accordingly.
 4. **The label request may be declined.** Mitigation is above (re-digitize). This adds
    Year-1 labor but does not block the science.
-5. **The detector may not close the sensor gap (O2).** If accuracy on satellite data
-   stays meaningfully below lidar after bias correction and retraining, that result is
-   reported with the measured gap — a negative result here is a real contribution,
-   because it tells the community what satellite-only monitoring can and cannot see.
+5. **Outside the channels, change may be too small to detect (O2).** The valley floors
+   beyond the streams change slowly; much of the surface may sit below the detection
+   threshold even with per-pixel calibration. If so, O2 narrows back to in-channel change
+   and the landscape-wide result is reported as a calibrated null — which is itself a
+   quantitative statement about how spatially confined active change currently is.
 
 **What this proposal does not claim.** No preliminary results are presented. The
 dissertation being extended is the prior work; the FI's contribution begins at award.
@@ -189,8 +204,8 @@ graduate project.
 | Period | Work | Deliverable |
 |---|---|---|
 | **Yr 1** | Rebuild the change-detection chain from public data; harmonize driver records per stream; secure or rebuild training labels; first attribution model (Taylor Valley) | Attribution manuscript drafted; labeled training set archived |
-| **Yr 2** | Sensor domain-shift measurement + correction; detector retrained and scored across all four valleys and both sensors; attribution extended basin-wide | Generalization paper; AGU presentation |
-| **Yr 3** | Per-pixel calibrated-uncertainty product; three-epoch acceleration analysis; synthesis | Synthesis paper; public data products with DOIs |
+| **Yr 2** | Landscape-wide change detection + process-type classification (O2), gated by the O3 thresholds; driver tests per change type; sensor-disagreement correction | Process-classification paper; AGU presentation |
+| **Yr 3** | Per-pixel calibrated-uncertainty product; three-epoch acceleration analysis; extension beyond Taylor Valley where REMA supports it; synthesis | Synthesis paper; public data products with DOIs |
 
 ---
 

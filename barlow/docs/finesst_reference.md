@@ -15,7 +15,7 @@ Companions: `finesst_proposal.md` (formal), `finesst_proposal_plain.md` (plain-l
 | Foundation | Mary C. Barlow, PhD dissertation, Univ. Houston, 2026 (advisor: Craig Glennie) |
 | What Barlow did | Detected stream channels from terrain shape alone (U-Net) and measured elevation change 2001 → 2014 → 2021–23 |
 | What Barlow did NOT do | Explain *why* change happens (drivers), or make the detector work on satellite DEMs — both listed by her as future work |
-| My proposal, in three words | Attribution, generalization, uncertainty |
+| My proposal, in three words | Attribution, landscape-wide change, uncertainty |
 | Program | NASA ROSES-2025 F.5 FINESST (Future Investigators in NASA Earth and Space Science and Technology), Earth Science Division |
 | Deadline | **14 July 2026**, 11:59 PM EDT |
 | Funding | Up to ~$50,000/year, up to 3 years (stipend + tuition + research allowance) |
@@ -96,12 +96,15 @@ held-out streams. Why not just discharge: gauges are the weak link after 2015;
 weather-model energy (ERA5, AMPS) is continuous everywhere, so it extends attribution
 to ungauged streams.
 
-**O2 — Generalization.**
-The detector was trained on lidar; satellite DEMs look subtly different (a *domain
-shift*). Step 1: measure exactly how REMA disagrees with lidar over unchanged ground,
-by slope and aspect. Step 2: correct the bias and retrain with both sensors in the
-training data. Success = near-lidar accuracy on satellite data in all four valleys.
-Stakes: no more lidar flights are coming — REMA updates are how the record continues.
+**O2 — Landscape-wide geomorphic change.** *(Rescoped 2026-07-06: was "generalization.")*
+The DoD measures the whole valley floor; Barlow's analysis keeps only what's inside the
+channel outlines. O2 applies the O3 per-pixel thresholds to the full surface, classifies
+each significant patch by process (channel shift, thermokarst, slope movement, fans,
+lake margins), and tests each type against its own drivers — H2 predicts distinct driver
+fingerprints (channels → melt energy/water; thermokarst → thaw depth). The lidar→REMA
+domain-shift correction is retained as *supporting method* (no more lidar flights are
+coming, so the record continues on REMA) — a means, not an objective. Cross-valley
+expansion happens where REMA quality allows, not as a promise.
 
 **O3 — Calibrated uncertainty.**
 Replace the single per-map noise number with a per-pixel threshold that knows about
@@ -117,9 +120,12 @@ where acceleration migrates next.
 ## 7. Stock answers to likely questions
 
 **What's new vs the dissertation?**
-She ends at description — *where* change happened. Driver attribution and sensor
-generalization are both on her future-work list. I start where she stopped, with her
-measurement engine already rebuilt and verified.
+She ends at description — *where* in-channel change happened. Driver attribution is on
+her future-work list, and her change analysis stops at the channel mask: everything the
+DoD measures outside the channels is discarded. I attribute the drivers AND analyze the
+whole valley floor, classified by process type. (Her measurement engine is independently
+rebuilt and verified — but per the plan-only rule, that appears in conversation, never in
+the proposal documents.)
 
 **How do you know changes are real, not noise?**
 Everything is thresholded at LOD95, and the noise level is measured on terrain that
