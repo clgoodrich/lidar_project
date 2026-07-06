@@ -5,7 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-06 — FINESST: line-by-line rationale companion for the basic proposal
+## 2026-07-06 — FINESST: mentoring plan + remaining ancillary drafts (package now fully drafted)
+
+User (rightly) asked why the mentoring plan wasn't drafted when the RRS was — the
+"only the advisor can commit" reasoning should have produced a bracketed draft, same as
+the RRS. Fixed: **`finesst_mentoring_plan.md`** (renders exactly 2 pp, anonymized):
+roles, weekly cadence + semester milestone reviews keyed to the proposal's risk
+fallbacks, the two named skill gaps with closing mechanisms and success criteria,
+professional development (AGU/SCAR, 3 first-author papers, follow-on proposal drafting,
+open-science practice), IDP, feedback/escalation/availability safeguards, annual review
+of the plan itself. Also **`finesst_ancillary_docs.md`** (2 pp): facilities statement
+(no field work, single-GPU workstation, all-open-source), 150-word acknowledgements
+draft **including the required AI-use disclosure** (~120 words, room to add names), and
+a budget-justification skeleton (stipend/tuition/travel/publication/storage rows with
+grants-office notes; no PI salary, no logistics). Package state: every draftable
+document now exists — remaining blockers are purely human: RRS personal facts +
+graduation date (determines award duration, still unknown), advisor review of the
+mentoring plan, institutional budget rates, biosketches/C&P (NASA forms), NSPIRES
+shell + internal routing. Deadline 2026-07-14.
 
 `finesst_proposal_basic_rationale.md` (+ pdf/docx, 5 pp): for every block of the basic
 variant, a **Why** (what the line does to the reviewer / guards against) and **How**

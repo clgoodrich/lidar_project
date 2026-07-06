@@ -29,6 +29,10 @@ barlow/
     finesst_osdmp.md/.pdf/.docx      # Open Science & Data Management Plan (2 pp, anonymized)
     finesst_readiness_statement.md/  # Research Readiness Statement skeleton (1 p, NOT anonymized;
       .pdf/.docx                     #  [bracketed] placeholders for the FI to fill in)
+    finesst_mentoring_plan.md/.pdf/  # Mentoring Plan draft (2 pp, anonymized; [brackets] =
+      .docx                          #  advisor-confirmed specifics — review WITH the PI)
+    finesst_ancillary_docs.md/.pdf/  # Facilities statement + 150-word acknowledgements (incl.
+      .docx                          #  AI disclosure) + budget-justification skeleton
     finesst_figures/                 # fig1-5 PNGs from the pipeline (committed, small). NOT
                                      #  referenced by any proposal variant (plan-only rule);
                                      #  kept for internal reference / talks
