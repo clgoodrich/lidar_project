@@ -5,7 +5,22 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-06 — FINESST: front-matter stripped from all 3 variants + formal trim pass (8→7 pp)
+## 2026-07-06 — FINESST: preliminary-work bravado scrubbed from formal + plain variants
+
+User flagged the plain variant's summary ("I've already rebuilt and verified the existing
+pipeline myself... not a proposal resting on untested machinery") — the 07-01 "don't
+over-talk preliminary work" instruction had only ever been applied to the FORMAL variant;
+the plain variant's summary and body kept the bravado. Scrub applied to both (basic was
+already clean): summaries now carry a neutral factual pointer ("§4/§5 presents a
+reproduction... from public data") instead of "already running/rebuilt myself"; every
+"already operational/works/in hand/commands" softened to plain statements; plain §6
+retitled "FI qualifications" and moved from "I've built... myself" to "The FI has built...";
+QC-anecdote parenthetical cut from plain (already cut from formal). Factual §4/§5
+preliminary-results sections KEPT in formal + plain per their role (basic remains the
+plan-only variant). Rationale beyond the instruction: "myself" overclaims AI-assisted work
+(FINESST requires an AI-use acknowledgement; the FI must own every claim in an interview),
+and first-person swagger reads badly under dual-anonymous review. All four renders
+regenerated (formal docx lock had cleared).
 
 Per user (after calling out unneeded content in the documents): submission docs should
 carry only what NSPIRES receives. (1) Removed the program/division/deadline/roles/award

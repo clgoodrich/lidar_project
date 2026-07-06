@@ -5,9 +5,9 @@
 > change across the McMurdo Dry Valleys; the proposed work asks the next questions.
 > **(O1)** Which climate drivers control that change? **(O2)** Can the terrain-only detector
 > work as well on free satellite data as it does on airborne lidar, across all four valleys?
-> **(O3)** Can every change map carry an honest, per-pixel error bar? The measurement
-> foundation is already running and reproduces Barlow's published uncertainty ranges, and a
-> first driver signal is shown in §4.
+> **(O3)** Can every change map carry an honest, per-pixel error bar? §4 presents a
+> reproduction of the measurement foundation from public data, with uncertainty inside
+> Barlow's published ranges, and a first driver signal.
 
 ---
 
@@ -91,7 +91,7 @@ stations. Training labels: the public MCM-LTER stream centerlines, standing in f
 access-gated 217 hand-digitized tiles (§7 risk).
 
 **O1, Attribution.** For each gauged stream and epoch: (i) measure the change rate — the DoD
-inside its channel mask (already operational, Fig. 2); (ii) build the stream's **energy
+inside its channel mask (demonstrated in §4, Fig. 2); (ii) build the stream's **energy
 history** (PDD, sunlight, discharge, thaw depth) from LTER stations plus ERA5/AMPS; (iii) fit
 hierarchical regression and random-forest models relating rate to drivers, always validating on
 streams held out of fitting; (iv) test H1 head-to-head — does melt energy predict rates better
@@ -117,9 +117,9 @@ regenerate from source, with robust statistics and CRS checks enforced at every 
 
 ## 4. Preliminary Results
 
-The change-detection foundation the proposed work builds on is already operational. A reproduction
-of Barlow's change detection on Taylor Valley falls **inside her published uncertainty ranges**
-(below), and an initial driver analysis surfaces the first attribution signal that O1 will develop.
+A reproduction of Barlow's change detection on Taylor Valley, built from public data, falls
+**inside her published uncertainty ranges** (below), and an initial driver analysis surfaces the
+first attribution signal that O1 will develop.
 
 **(a) Change detection across all three epochs (Fig. 2).**
 
@@ -170,14 +170,14 @@ The FI has independently built and operated this exact toolchain, U-Net semantic
 lidar-derived terrain rasters, ICP co-registration, and DEM-of-Difference change analysis, on an
 unrelated landscape (channels, roads, and disturbance scars detected from elevation alone in the
 Appalachian Plateau). That prior work shows the architecture transfers across sensors and biomes,
-directly de-risking **O2**, and that the FI already commands the full pipeline end to end.
+directly de-risking **O2**, and that the FI commands the full pipeline end to end.
 
 ---
 
 ## 6. Data Requirements and Availability
 
-Every dataset required for the proposed work is **free/public** and already in hand (regenerable
-from source via scripted pipelines), so data availability poses no schedule risk. The single
+Every dataset required for the proposed work is **free/public** (regenerable from source via
+scripted pipelines), so data availability poses no schedule risk. The single
 access-gated dependency is Barlow's training labels (mitigated below and in §7).
 
 | Dataset (source) | What it shows | Role in the proposed work | Status |
@@ -214,7 +214,7 @@ coursework in Bayesian/hierarchical modeling and remote-sensing uncertainty.
 | **Yr 3** | Predictive model (where acceleration migrates next); 3-epoch acceleration attribution; calibrated-uncertainty product release (O3). **Deliverable:** synthesis/prediction paper + public data products. |
 
 **Risks & mitigations.** (1) *Barlow's label tiles are access-gated* → mitigation: LTER centerlines
-already work as a QC stand-in (Fig. 2–3 built on them); plan to request the tiles and, failing that,
+work as a QC stand-in (Fig. 2–3 use them); plan to request the tiles and, failing that,
 re-digitize a comparable training set (the FI's prior work shows label generation is in hand). (2) *REMA's
 uneven post-2014 coverage* → prioritize Taylor Valley (full 3-epoch coverage) for acceleration; treat
 other valleys as 2-epoch. (3) *Discharge gauge gaps* → ERA5/AMPS energy reanalysis fills spatial/temporal

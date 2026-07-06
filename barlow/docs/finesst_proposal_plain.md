@@ -1,12 +1,11 @@
 # From Detection to Attribution: Tracking and Explaining Stream Change in Antarctica from Terrain Alone
 
-> **Summary.** A working tool already *finds* where Antarctic streams are reshaping the land, but it
-> stops at location: it says where, never why. This project starts at that line. I'll connect the
-> measured change to the processes driving it (heat, melt, thawing ground), make the detector work
-> across different sensors and all four valleys, and attach a real uncertainty value to every
-> pixel. I've already rebuilt and verified the existing pipeline myself and recovered the first
-> driver signal, so this is a concrete next step I'm ready to run, not a proposal resting on
-> untested machinery.
+> **Summary.** A tool exists that *finds* where Antarctic streams are reshaping the land, but it
+> stops at location: it says where, never why. This project starts at that line. The work will
+> connect the measured change to the processes driving it (heat, melt, thawing ground), make the
+> detector work across different sensors and all four valleys, and attach a real uncertainty
+> value to every pixel. §5 shows a reproduction of the measurement foundation from public data,
+> with a first driver signal.
 
 ---
 
@@ -45,7 +44,7 @@ making the model work **beyond the MDVs**. That's the natural space for a Future
 project: moving from a tool that *watches* to one that *explains and predicts* (Fig. 1).
 
 ![Fig 1](finesst_figures/fig5_workflow.png)
-***Figure 1.*** *Left (detect): Barlow's pipeline, which I've rebuilt and verified. Right (explain
+***Figure 1.*** *Left (detect): Barlow's pipeline (reproduction shown in §5). Right (explain
 and predict): the new work proposed here.*
 
 ---
@@ -69,7 +68,7 @@ migrates next**, which is the operationally useful form of the climate-indicator
 
 ## 3. The data: what we'll use, where it's from, what it shows
 
-Everything below is free and public, and already downloaded and organized (the one exception is
+Everything below is free and public (the one exception is
 flagged). The datasets fall into three jobs: **snapshots of the ground** (to measure change),
 **drivers** (to explain it), and **labels** (to know where the streams are).
 
@@ -91,7 +90,7 @@ need the energy and water records:
 
 | Dataset | Where it's from | What it shows | What it does for us |
 |---|---|---|---|
-| **Stream gauges** (21 streams, daily, 1990s–present) | McMurdo LTER field network (via EDI) | How much meltwater each stream actually carried, day by day | The direct water driver; already produced the Fig. 5 signal |
+| **Stream gauges** (21 streams, daily, 1990s–present) | McMurdo LTER field network (via EDI) | How much meltwater each stream actually carried, day by day | The direct water driver; source of the Fig. 5 signal |
 | **Meteorology stations** | McMurdo LTER (via EDI) | Air temperature, solar radiation, wind on the valley floors | Builds the melt-energy drivers: positive-degree-days and insolation |
 | **Glacier mass balance** (7 glaciers) | McMurdo LTER (via EDI) | How much ice each glacier gained or lost per season | Ties each stream's water supply to its source glacier |
 | **Soil temperature and moisture** | McMurdo LTER (via EDI) | How deep the ground thaws each summer | The active-layer driver: thawed banks erode more easily |
@@ -112,36 +111,33 @@ need the energy and water records:
 
 The data above feed three work packages, one per objective.
 
-**O1, attribution.** For each gauged stream and epoch I'll: **(i)** take the change rate from the
-DoD inside the channel (already operational, Fig. 2); **(ii)** assemble a per-stream **energy time
+**O1, attribution.** For each gauged stream and epoch: **(i)** take the change rate from the
+DoD inside the channel (demonstrated in §5, Fig. 2); **(ii)** assemble a per-stream **energy time
 series** (PDD, insolation, discharge, thaw depth); **(iii)** fit rate-vs-driver models
 (hierarchical regression and random forest) with leave-one-stream-out validation; and **(iv)** test
 H1 directly: energy-based model against discharge-only. The discharge relationship in Fig. 5 is
 real but leaves structured residuals, which is exactly what an energy model should resolve. For
-streams with three time points, I'll regress *acceleration*
-against *driver trends*.
+streams with three time points, regress *acceleration* against *driver trends*.
 
 **O2, generalization.** Quantify the lidar-vs-REMA difference over stable ground as a function of
 slope and aspect, learn a correction, retrain the U-Net with both sensors represented, and evaluate
-F1 across all four valleys and both sensors. My prior work (§6) already shows this architecture
-holding up on an entirely different landscape, so the risk here is bounded.
+F1 across all four valleys and both sensors. Prior work (§6) shows this architecture
+holding up on an entirely different landscape, which bounds the risk.
 
 **O3, uncertainty.** Replace the global NMAD with one conditioned on (slope, aspect, sensor),
 output it as a per-pixel layer, and verify calibration by confirming the 95% bound is exceeded
 about 5% of the time on stable ground. Fig. 4 is the global version of this result.
 
 **Reproducibility.** The pipeline is fully scripted: re-run from source and the outputs match, with
-robust statistics and CRS checks enforced throughout. (One catch that validated the QC: an early
-nodata bug inflated the noise estimate to 2.7 m; it was caught and fixed before any result was
-trusted.)
+robust statistics and CRS checks enforced throughout.
 
 ---
 
 ## 5. Preliminary results
 
-The change-detection foundation this project builds on already works. Rebuilding Barlow's pipeline
-on Taylor Valley reproduces results **inside her published ranges** (below), and a first driver
-analysis surfaces the attribution signal that O1 develops.
+Rebuilding Barlow's pipeline on Taylor Valley from public data reproduces results **inside her
+published ranges** (below), and a first driver analysis surfaces the attribution signal that O1
+develops.
 
 **(a) Change detection across all three epochs (Fig. 2).**
 
@@ -190,12 +186,13 @@ for **modeled melt energy** (PDD / insolation / thaw) that exists everywhere, ev
 
 ---
 
-## 6. Why I'm positioned to do this
+## 6. FI qualifications
 
-I've built and run this exact machinery (U-Net segmentation on terrain layers, ICP alignment, DoD
-change detection) on a very different landscape: detecting channels, roads, and disturbance scars
-in the Appalachian Plateau from elevation alone. That shows the approach transfers across sensors
-and biomes, which is precisely O2's risk, and that I can operate the full pipeline end to end.
+The FI has built and run this same class of machinery (U-Net segmentation on terrain layers, ICP
+alignment, DoD change detection) on a very different landscape: detecting channels, roads, and
+disturbance scars in the Appalachian Plateau from elevation alone. That shows the approach
+transfers across sensors and biomes, which is precisely O2's risk, and that the FI can operate
+the full pipeline end to end.
 
 ---
 
@@ -213,9 +210,9 @@ paper, and take coursework in Bayesian/hierarchical modeling and remote-sensing 
 | **Yr 2** | Correct the lidar↔REMA domain shift and generalize the detector to all four valleys (O2); run attribution basin-wide; AGU talk. Output: O2 paper. |
 | **Yr 3** | Predict where acceleration migrates next; full three-epoch acceleration attribution; release the uncertainty product (O3). Output: synthesis/prediction paper plus public datasets. |
 
-**Risks and mitigations.** **(1)** *Barlow's training labels are gated.* I'll request them from her
-group; if that stalls, the LTER centerlines already serve as a stand-in (Figs. 2–3 were built on
-them), and my prior work shows I can build labels from scratch. **(2)** *REMA coverage after 2014 is
+**Risks and mitigations.** **(1)** *Barlow's training labels are gated.* Request them from her
+group; if that stalls, the LTER centerlines serve as a stand-in (Figs. 2–3 use them), and the
+FI's prior work shows label-building from scratch is in hand. **(2)** *REMA coverage after 2014 is
 uneven.* Prioritize Taylor Valley (full three-epoch coverage) for the acceleration work; treat
 other valleys as two-epoch. **(3)** *Gauge records have gaps.* That's a core reason O1 relies on
 melt *energy* from reanalysis rather than raw gauge discharge alone.
