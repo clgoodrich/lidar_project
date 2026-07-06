@@ -5,7 +5,21 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-06 — FINESST: O2 rescoped — generalization OUT, landscape-wide geomorphic change IN
+## 2026-07-06 — FINESST: line-by-line rationale companion for the basic proposal
+
+`finesst_proposal_basic_rationale.md` (+ pdf/docx, 5 pp): for every block of the basic
+variant, a **Why** (what the line does to the reviewer / guards against) and **How**
+(mechanism or evidence). Covers title, each summary sentence, both §1 gaps, all three
+objectives incl. falsifiability lines and the sensor-demotion note, each §3 step (both
+model families, held-out validation, NMAD), §4 needs framing (availability-not-status
+column, labels fallback sizing, "not load-bearing" contact), all five §5 risks (each =
+failure mode → consequence → what ships anyway), timeline dependency logic, §7 vs the
+OSDMP, and why each of the 7 references is load-bearing. Maintenance rule embedded in
+the doc: proposal line changes → rationale entry changes in the same pass. Also this
+session: audit pass across all 3 variants (titles matched to geomorphic scope, refs
+[2]–[7] re-anchored in formal text, DMP grammar, stale "sensor bridge" line) — adopted
+standing practice: full-document self-audit after every substantive edit, before
+handing docs back.
 
 User clarified the actual project scope (from their conversations with Cami): the focus is
 (1) climate drivers of the change and (2) geomorphological change broadly — NOT expanding

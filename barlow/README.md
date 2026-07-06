@@ -23,7 +23,9 @@ barlow/
     finesst_proposal_plain.md        # same plan, plain-language voice (own SOURCE OF TRUTH; 4 pp)
     finesst_proposal_plain.pdf/.docx # rendered plain version
     finesst_proposal_basic.md        # stripped-down variant: shortest, needs/risks-first framing
-    finesst_proposal_basic.pdf/.docx #  (own SOURCE OF TRUTH; 4 pp rendered)
+    finesst_proposal_basic.pdf/.docx #  (own SOURCE OF TRUTH; 5 pp rendered)
+    finesst_proposal_basic_rationale.md   # line-by-line why/how companion to the basic variant
+    finesst_proposal_basic_rationale.pdf/.docx  # (internal; update in the same pass as the proposal)
     finesst_osdmp.md/.pdf/.docx      # Open Science & Data Management Plan (2 pp, anonymized)
     finesst_readiness_statement.md/  # Research Readiness Statement skeleton (1 p, NOT anonymized;
       .pdf/.docx                     #  [bracketed] placeholders for the FI to fill in)
