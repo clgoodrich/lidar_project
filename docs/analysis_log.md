@@ -5,7 +5,21 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-06 — FINESST: preliminary-work bravado scrubbed from formal + plain variants
+## 2026-07-06 — FINESST: ALL variants now plan-only — preliminary results + figures removed entirely
+
+User clarified unambiguously: "for the purposes of this proposal assume we have done no
+preliminary work... don't include any graphics from the preliminary work." The earlier
+bravado scrub (same day, below) was insufficient — the standing rule is now: **no
+preliminary-results sections, no pipeline figures, no reproduction claims, in ANY proposal
+variant.** Applied: formal §4 (Preliminary Results, Figs. 2–5 + NMAD table) deleted and
+§§5–7 renumbered to 4–6; plain §5 (Figs. 2–5) deleted, §§6–7 → 5–6; workflow Fig. 1
+removed from both; every figure cross-reference in summaries/methodology/data tables/
+timelines/risks removed; formal §5 data-table "Status: ✅ in hand" column → "Availability:
+public, free" (matching the basic variant); Yr-1 timeline now includes building the
+change-detection chain (since nothing is presumed built). Rendered: formal **5 pp**,
+plain 4 pp, basic 4 pp — all comfortably under the 6-pp cap. `finesst_figures/` kept
+in-repo for internal use but no proposal references it; README updated to record the
+plan-only rule.
 
 User flagged the plain variant's summary ("I've already rebuilt and verified the existing
 pipeline myself... not a proposal resting on untested machinery") — the 07-01 "don't

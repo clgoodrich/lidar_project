@@ -17,16 +17,19 @@ barlow/
     _md_to_pdf.py            # render finesst_proposal.md -> .pdf (reportlab; DejaVu Unicode)
     _md_to_docx.py           # render finesst_proposal.md -> .docx (python-docx)
   docs/
-    finesst_proposal.md              # full ~6-page NASA FINESST S/T/M section (SOURCE OF TRUTH)
-    finesst_proposal.pdf/.docx       # rendered (regenerate via _md_to_pdf.py / _md_to_docx.py)
-    finesst_proposal_plain.md        # same proposal, plain-language voice (own SOURCE OF TRUTH)
+    finesst_proposal.md              # NASA FINESST S/T/M, formal voice (SOURCE OF TRUTH).
+    finesst_proposal.pdf/.docx       #  PLAN-ONLY per user 2026-07-06: no preliminary results,
+                                     #  no figures, anywhere. 5 pp rendered.
+    finesst_proposal_plain.md        # same plan, plain-language voice (own SOURCE OF TRUTH; 4 pp)
     finesst_proposal_plain.pdf/.docx # rendered plain version
-    finesst_proposal_basic.md        # plan-only variant: NO preliminary results/figures; honest
-    finesst_proposal_basic.pdf/.docx #  needs/risks framing (own SOURCE OF TRUTH; 4 pp rendered)
+    finesst_proposal_basic.md        # stripped-down variant: shortest, needs/risks-first framing
+    finesst_proposal_basic.pdf/.docx #  (own SOURCE OF TRUTH; 4 pp rendered)
     finesst_osdmp.md/.pdf/.docx      # Open Science & Data Management Plan (2 pp, anonymized)
     finesst_readiness_statement.md/  # Research Readiness Statement skeleton (1 p, NOT anonymized;
       .pdf/.docx                     #  [bracketed] placeholders for the FI to fill in)
-    finesst_figures/                 # fig1-5 PNGs shared by both versions (committed, small)
+    finesst_figures/                 # fig1-5 PNGs from the pipeline (committed, small). NOT
+                                     #  referenced by any proposal variant (plan-only rule);
+                                     #  kept for internal reference / talks
     finesst_reference.md             # personal lookup doc: facts, key numbers, Q&A, glossary
     finesst_reference.docx           # rendered (regenerate: _md_to_docx.py <md> --bold)
     barlow_data_manifest.md          # dataset inventory + "reproduce everything" recipe

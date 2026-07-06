@@ -4,8 +4,7 @@
 > stops at location: it says where, never why. This project starts at that line. The work will
 > connect the measured change to the processes driving it (heat, melt, thawing ground), make the
 > detector work across different sensors and all four valleys, and attach a real uncertainty
-> value to every pixel. §5 shows a reproduction of the measurement foundation from public data,
-> with a first driver signal.
+> value to every pixel.
 
 ---
 
@@ -41,11 +40,7 @@ naming:
 erodes hardest; parts of Taylor Valley are accelerating) but explicitly leaves two things for
 future work: **(a)** linking the change to its physical and climate **drivers**, and **(b)**
 making the model work **beyond the MDVs**. That's the natural space for a Future Investigator
-project: moving from a tool that *watches* to one that *explains and predicts* (Fig. 1).
-
-![Fig 1](finesst_figures/fig5_workflow.png)
-***Figure 1.*** *Left (detect): Barlow's pipeline (reproduction shown in §5). Right (explain
-and predict): the new work proposed here.*
+project: moving from a tool that *watches* to one that *explains and predicts*.
 
 ---
 
@@ -57,7 +52,7 @@ it. That breaks into three concrete objectives:
 
 | # | Objective | Hypothesis | Why it's new |
 |---|---|---|---|
-| **O1** | **Attribution (the headline).** Relate each stream's change rate to its drivers: temperature, insolation, **positive-degree-days (PDD)** (cumulative above-freezing heat), melt-season discharge, glacier melt, and active-layer (thaw) depth, drawn from the LTER field network plus ERA5/AMPS reanalysis. | **H1:** Change is governed by *cumulative melt energy*, not raw water volume. An energy-based model outperforms a discharge-only model and explains the residual scatter in Fig. 5. | Barlow lists this as future work; it hasn't been quantified. |
+| **O1** | **Attribution (the headline).** Relate each stream's change rate to its drivers: temperature, insolation, **positive-degree-days (PDD)** (cumulative above-freezing heat), melt-season discharge, glacier melt, and active-layer (thaw) depth, drawn from the LTER field network plus ERA5/AMPS reanalysis. | **H1:** Change is governed by *cumulative melt energy*, not raw water volume. An energy-based model outperforms a discharge-only model and explains the scatter discharge leaves behind. | Barlow lists this as future work; it hasn't been quantified. |
 | **O2** | **Generalization.** Make the terrain-only detector work across both lidar (2001/2014) and REMA, and across all four valleys. The obstacle is **domain shift**: lidar and satellite represent the surface differently, which degrades the satellite epoch. | **H2:** A sensor-aware correction (conditioned on slope/aspect, per pixel) closes most of the lidar-vs-REMA gap. | Barlow flags sensor generalization as future work. |
 | **O3** | **Calibrated uncertainty.** Replace the single global noise value with a **per-pixel, sensor-aware** one, so every change map carries a defensible confidence layer. | **H3:** Conditioning NMAD on slope, aspect, and sensor produces a 95% bound that actually holds 95% of the time. | Barlow uses one global value per epoch pair. |
 
@@ -90,7 +85,7 @@ need the energy and water records:
 
 | Dataset | Where it's from | What it shows | What it does for us |
 |---|---|---|---|
-| **Stream gauges** (21 streams, daily, 1990s–present) | McMurdo LTER field network (via EDI) | How much meltwater each stream actually carried, day by day | The direct water driver; source of the Fig. 5 signal |
+| **Stream gauges** (21 streams, daily, 1990s–present) | McMurdo LTER field network (via EDI) | How much meltwater each stream actually carried, day by day | The direct water driver for O1 |
 | **Meteorology stations** | McMurdo LTER (via EDI) | Air temperature, solar radiation, wind on the valley floors | Builds the melt-energy drivers: positive-degree-days and insolation |
 | **Glacier mass balance** (7 glaciers) | McMurdo LTER (via EDI) | How much ice each glacier gained or lost per season | Ties each stream's water supply to its source glacier |
 | **Soil temperature and moisture** | McMurdo LTER (via EDI) | How deep the ground thaws each summer | The active-layer driver: thawed banks erode more easily |
@@ -101,8 +96,8 @@ need the energy and water records:
 
 | Dataset | Where it's from | What it shows | What it does for us |
 |---|---|---|---|
-| **Stream channel polygons** | McMurdo LTER GIS (EDI `knb-lter-mcm.6007`) | The mapped channel of every named stream | Masks the change maps to actual channels (used in every per-stream number here) and stands in as training labels |
-| **Barlow's 217 hand-drawn tiles** | Her research group (not public) | Expert-traced channel boundaries used to train her U-Net | The gold-standard training set, **the one access-gated item**; §7 covers the fallback |
+| **Stream channel polygons** | McMurdo LTER GIS (EDI `knb-lter-mcm.6007`) | The mapped channel of every named stream | Masks the change maps to actual channels and stands in as training labels |
+| **Barlow's 217 hand-drawn tiles** | Her research group (not public) | Expert-traced channel boundaries used to train her U-Net | The gold-standard training set, **the one access-gated item**; §6 covers the fallback |
 | **High-res satellite imagery** (optional) | Polar Geospatial Center | Visual ground truth | Spot-checking labels and odd change patches |
 
 ---
@@ -112,81 +107,27 @@ need the energy and water records:
 The data above feed three work packages, one per objective.
 
 **O1, attribution.** For each gauged stream and epoch: **(i)** take the change rate from the
-DoD inside the channel (demonstrated in §5, Fig. 2); **(ii)** assemble a per-stream **energy time
+DoD inside the channel; **(ii)** assemble a per-stream **energy time
 series** (PDD, insolation, discharge, thaw depth); **(iii)** fit rate-vs-driver models
 (hierarchical regression and random forest) with leave-one-stream-out validation; and **(iv)** test
-H1 directly: energy-based model against discharge-only. The discharge relationship in Fig. 5 is
-real but leaves structured residuals, which is exactly what an energy model should resolve. For
+H1 directly: energy-based model against discharge-only. For
 streams with three time points, regress *acceleration* against *driver trends*.
 
 **O2, generalization.** Quantify the lidar-vs-REMA difference over stable ground as a function of
 slope and aspect, learn a correction, retrain the U-Net with both sensors represented, and evaluate
-F1 across all four valleys and both sensors. Prior work (§6) shows this architecture
+F1 across all four valleys and both sensors. Prior work (§5) shows this architecture
 holding up on an entirely different landscape, which bounds the risk.
 
 **O3, uncertainty.** Replace the global NMAD with one conditioned on (slope, aspect, sensor),
 output it as a per-pixel layer, and verify calibration by confirming the 95% bound is exceeded
-about 5% of the time on stable ground. Fig. 4 is the global version of this result.
+about 5% of the time on stable ground.
 
 **Reproducibility.** The pipeline is fully scripted: re-run from source and the outputs match, with
 robust statistics and CRS checks enforced throughout.
 
 ---
 
-## 5. Preliminary results
-
-Rebuilding Barlow's pipeline on Taylor Valley from public data reproduces results **inside her
-published ranges** (below), and a first driver analysis surfaces the attribution signal that O1
-develops.
-
-**(a) Change detection across all three epochs (Fig. 2).**
-
-![Fig 2](finesst_figures/fig1_dod_maps.png)
-***Figure 2.*** *DoD maps over the same Taylor Valley stream-corridor window, showing only changes
-above the noise floor. Left: 2001→2014 (lidar vs lidar). Right: 2014→2021-23 (lidar vs REMA). Red
-is erosion, blue is deposition. The big flat patch on the left is Lake Fryxell rising ~1.5 m, real
-change, but water, so an automated screen detects flat water surfaces and drops them from every
-stream rate.*
-
-| Epoch | NMAD (noise) | LOD95 (detection floor) | Barlow's range | Match |
-|---|---|---|---|---|
-| 2001→2014 (lidar–lidar) | 0.21 m | 0.41 m | NMAD 0.07–0.46 / LOD95 0.15–0.92 | ✅ |
-| 2014→2021-23 (lidar–REMA) | 0.23 m | 0.44 m | NMAD 0.19–0.53 / LOD95 0.37–1.04 | ✅ |
-
-**ICP** behaved as expected: it improved alignment on terrain with relief and correctly added
-nothing on the flat valley floor, where there's no 3D structure for it to lock onto.
-
-**(b) Per-stream rates (Fig. 3), the direct input for O1.**
-
-![Fig 3](finesst_figures/fig2_per_stream_rates.png)
-***Figure 3.*** *Per-stream rates for six gauged Taylor Valley streams, reported as mm/yr over the
-channel area rather than raw volume. Gross is total activity (erosion plus deposition); net is the
-balance (positive = building up, negative = wearing down). Area-normalizing matters because the
-two epochs don't cover identical footprints (the 2001 lidar swath is narrower), so raw volumes
-would mix real change with coverage differences.*
-
-**(c) The noise is Laplacian, not Gaussian (Fig. 4), the basis for O3.**
-
-![Fig 4](finesst_figures/fig3_error_model.png)
-***Figure 4.*** *Residuals on stable ground are sharply peaked with heavy tails, i.e. **Laplacian**
-rather than the usual bell curve. Assuming a bell curve (and using σ) would let the tails inflate
-the noise estimate, which is why NMAD is the right choice and the starting point for the per-pixel
-uncertainty layer in O3.*
-
-**(d) A first attribution signal (Fig. 5).**
-
-![Fig 5](finesst_figures/fig4_attribution.png)
-***Figure 5.*** *Each stream's rate against its mean gauged melt discharge (lake signal screened
-out). In the lidar epoch the per-area rate scales strongly with discharge, **r = +0.95
-(p = 0.004), Spearman ρ = +0.94 (p = 0.005)**, and dropping any single stream doesn't break it.
-In the satellite epoch there's no coherent relation, because post-2015 gauge records are thin
-(as few as 48 gauged days for one stream), so no fit is drawn. That contrast is the case for O1:
-where gauges are dense the melt–sediment link is strong, so the project swaps patchy gauge data
-for **modeled melt energy** (PDD / insolation / thaw) that exists everywhere, every year.*
-
----
-
-## 6. FI qualifications
+## 5. FI qualifications
 
 The FI has built and run this same class of machinery (U-Net segmentation on terrain layers, ICP
 alignment, DoD change detection) on a very different landscape: detecting channels, roads, and
@@ -196,7 +137,7 @@ the full pipeline end to end.
 
 ---
 
-## 7. Plan, timeline, risks, and data sharing
+## 6. Plan, timeline, risks, and data sharing
 
 **My role and development.** I'm the lead and main author; my advisor mentors and is PI of record.
 I'll present at AGU and a SCAR/ISAES Antarctic venue, publish the O1 attribution result as its own
@@ -206,12 +147,12 @@ paper, and take coursework in Bayesian/hierarchical modeling and remote-sensing 
 
 | Year | Deliverables |
 |---|---|
-| **Yr 1** | Build the per-stream driver time series; first O1 attribution model on Taylor Valley (extending Fig. 5); prototype the per-pixel uncertainty layer (O3). Output: attribution paper drafted. |
+| **Yr 1** | Build the change-detection chain from public data; build the per-stream driver time series; first O1 attribution model on Taylor Valley; prototype the per-pixel uncertainty layer (O3). Output: attribution paper drafted. |
 | **Yr 2** | Correct the lidar↔REMA domain shift and generalize the detector to all four valleys (O2); run attribution basin-wide; AGU talk. Output: O2 paper. |
 | **Yr 3** | Predict where acceleration migrates next; full three-epoch acceleration attribution; release the uncertainty product (O3). Output: synthesis/prediction paper plus public datasets. |
 
 **Risks and mitigations.** **(1)** *Barlow's training labels are gated.* Request them from her
-group; if that stalls, the LTER centerlines serve as a stand-in (Figs. 2–3 use them), and the
+group; if that stalls, the public LTER centerlines serve as a stand-in, and the
 FI's prior work shows label-building from scratch is in hand. **(2)** *REMA coverage after 2014 is
 uneven.* Prioritize Taylor Valley (full three-epoch coverage) for the acceleration work; treat
 other valleys as two-epoch. **(3)** *Gauge records have gaps.* That's a core reason O1 relies on
@@ -252,5 +193,5 @@ Environmental Data Initiative, `knb-lter-mcm.*`.
 
 ---
 
-*Plain-language version of `finesst_proposal.md`: same science and same real numbers, more direct
-voice. Figures from `barlow/build/_finesst_figures.py`. Not a submitted proposal.*
+*Plain-language version of `finesst_proposal.md`: same plan, more direct voice. Written as a
+plan only (no preliminary work presented). Not a submitted proposal.*

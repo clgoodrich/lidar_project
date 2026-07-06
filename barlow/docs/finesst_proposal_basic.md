@@ -233,5 +233,5 @@ Environmental Data Initiative (EDI), `knb-lter-mcm.*`.
 ---
 
 *Plan-only draft ("basic" variant): no preliminary results, no figures. Companion
-variants with preliminary work: `finesst_proposal.md` (formal) and
+variants of the same plan: `finesst_proposal.md` (formal) and
 `finesst_proposal_plain.md` (plain language). Not a submitted proposal.*

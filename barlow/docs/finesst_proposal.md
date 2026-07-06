@@ -5,9 +5,7 @@
 > change across the McMurdo Dry Valleys; the proposed work asks the next questions.
 > **(O1)** Which climate drivers control that change? **(O2)** Can the terrain-only detector
 > work as well on free satellite data as it does on airborne lidar, across all four valleys?
-> **(O3)** Can every change map carry an honest, per-pixel error bar? §4 presents a
-> reproduction of the measurement foundation from public data, with uncertainty inside
-> Barlow's published ranges, and a first driver signal.
+> **(O3)** Can every change map carry an honest, per-pixel error bar?
 
 ---
 
@@ -44,12 +42,8 @@ measurable indicator of climate change in the most stable place on Earth, a cont
 (Denton Hills is the erosion hotspot; parts of Taylor Valley are accelerating) but explicitly
 defers two threads to future work: **(a) coupling geomorphic change to physical/climate drivers**,
 and **(b) generalizing the model beyond the MDVs.** A Future Investigator project lives precisely
-in that gap: turning a *monitor* into an *explanatory and predictive* tool (Fig. 1). This is a
+in that gap: turning a *monitor* into an *explanatory and predictive* tool. This is a
 genuine scientific increment, not a replication.
-
-![Fig 1](finesst_figures/fig5_workflow.png)
-***Figure 1.*** *From detection (Barlow 2026; the first four stages) to the proposed attribution
-and prediction science (last two stages, the new contribution of this project).*
 
 **Relevance to NASA.** The 2001 baseline epoch is NASA data — an ATM airborne lidar campaign —
 that has never been fully exploited for surface change. The proposed work converts that NASA
@@ -80,7 +74,7 @@ acceleration migrates next*, the actionable form of the "climate canary."
 
 ## 3. Methodology
 
-**Data (all free/public; see §6).** Three elevation snapshots form the backbone: 2001 airborne
+**Data (all free/public; see §5).** Three elevation snapshots form the backbone: 2001 airborne
 lidar (NASA ATM, 2 m), 2014 airborne lidar (NCALM, 1 m), and the REMA satellite DEM (2 m,
 2021–23). From each snapshot the pipeline derives the terrain layers the detector reads:
 elevation, slope, aspect, curvature, flow accumulation (a "where water would go" map), and
@@ -88,10 +82,10 @@ lidar intensity. Driver data come from the MDV-LTER station network — meteorol
 stream-discharge gauges, mass balance for 7 glaciers, and soil temperature/moisture (a proxy
 for summer thaw depth) — with the ERA5 and AMPS weather models filling the gaps between
 stations. Training labels: the public MCM-LTER stream centerlines, standing in for Barlow's
-access-gated 217 hand-digitized tiles (§7 risk).
+access-gated 217 hand-digitized tiles (§6 risk).
 
 **O1, Attribution.** For each gauged stream and epoch: (i) measure the change rate — the DoD
-inside its channel mask (demonstrated in §4, Fig. 2); (ii) build the stream's **energy
+inside its channel mask; (ii) build the stream's **energy
 history** (PDD, sunlight, discharge, thaw depth) from LTER stations plus ERA5/AMPS; (iii) fit
 hierarchical regression and random-forest models relating rate to drivers, always validating on
 streams held out of fitting; (iv) test H1 head-to-head — does melt energy predict rates better
@@ -103,68 +97,19 @@ disagree over ground that has not changed, and how that disagreement depends on 
 aspect. It will then learn a correction for the disagreement, retrain the segmenter with both
 sensors represented in its training data, and score accuracy (F1) across all four valleys and
 both sensor types. The FI's prior work applying this same architecture to a completely
-different landscape (§5) shows it transfers across sensors and biomes.
+different landscape (§4) shows it transfers across sensors and biomes.
 
 **O3, Calibrated uncertainty.** The work will replace the single global noise estimate with one
 that varies by slope, aspect, and sensor, and publish it as a per-pixel detection-threshold map.
 Calibration will be verified the honest way: on held-out ground that did not change, a 95%
-threshold should be exceeded by only ~5% of pixels. (Fig. 4 shows today's valley-wide version.)
+threshold should be exceeded by only ~5% of pixels.
 
 **Reproducibility/QC.** The pipeline is fully scripted; input data and all derivatives
 regenerate from source, with robust statistics and CRS checks enforced at every step.
 
 ---
 
-## 4. Preliminary Results
-
-A reproduction of Barlow's change detection on Taylor Valley, built from public data, falls
-**inside her published uncertainty ranges** (below), and an initial driver analysis surfaces the
-first attribution signal that O1 will develop.
-
-**(a) Change detection across all three epochs (Fig. 2).**
-
-![Fig 2](finesst_figures/fig1_dod_maps.png)
-***Figure 2.*** *Elevation change over the same Taylor Valley window: (a) 2001→2014
-(lidar–lidar); (b) 2014→2021-23 (lidar–REMA). Red = erosion, blue = deposition; only changes
-exceeding LOD95 are drawn. The flat patch in (a) is Lake Fryxell's ~1.5 m rise — an automated
-standing-water screen detects and excludes such surfaces from every stream-rate statistic.*
-
-| Epoch pair | NMAD | LOD95 | Barlow's published range | In range? |
-|---|---|---|---|---|
-| 2001→2014 (lidar–lidar) | 0.21 m | 0.41 m | NMAD 0.07–0.46 / LOD95 0.15–0.92 | ✅ |
-| 2014→2021-23 (lidar–REMA) | 0.23 m | 0.44 m | NMAD 0.19–0.53 / LOD95 0.37–1.04 | ✅ |
-
-ICP alignment behaved exactly as Barlow's published version does: it tightened the error budget
-on steep windows and correctly added no benefit on the flat valley floor.
-
-**(b) Per-stream rates (Fig. 3), the masked products O1 consumes.**
-
-![Fig 3](finesst_figures/fig2_per_stream_rates.png)
-***Figure 3.*** *Per-stream sediment rates for six gauged Taylor Valley streams, reported per
-square meter of channel (mm/yr): the survey footprints differ across epochs, and a per-area
-rate cannot be inflated simply because one survey saw more ground.*
-
-**(c) Robust error model (Fig. 4), the basis for O3.**
-
-![Fig 4](finesst_figures/fig3_error_model.png)
-***Figure 4.*** *Measurement noise profiled on unchanged ground: sharply peaked with heavy
-tails (**Laplacian**), not Gaussian — outliers would inflate a naive standard-deviation
-threshold, hence NMAD. Reproduces Barlow's error-model finding; launch point for O3.*
-
-**(d) A first attribution signal (Fig. 5).**
-
-![Fig 5](finesst_figures/fig4_attribution.png)
-***Figure 5.*** *The first attribution signal: per-stream sediment rate vs mean gauged
-discharge (log-log; lake signal screened). In 2001→2014 the relationship is strong —
-**r = +0.95 (p = 0.004)**, **ρ = +0.94 (p = 0.005)** — and survives dropping any single
-stream. The satellite period shows no coherent relation for an instructive reason: post-2015
-gauging is sparse (48–362 recorded days per stream), so no fit is drawn. That is the O1
-motivation — replace patchy gauging with **modeled melt energy** to extend attribution across
-all epochs and valleys.*
-
----
-
-## 5. FI Qualifications
+## 4. FI Qualifications
 
 The FI has independently built and operated this exact toolchain, U-Net semantic segmentation on
 lidar-derived terrain rasters, ICP co-registration, and DEM-of-Difference change analysis, on an
@@ -174,31 +119,31 @@ directly de-risking **O2**, and that the FI commands the full pipeline end to en
 
 ---
 
-## 6. Data Requirements and Availability
+## 5. Data Requirements and Availability
 
-Every dataset required for the proposed work is **free/public** (regenerable from source via
-scripted pipelines), so data availability poses no schedule risk. The single
-access-gated dependency is Barlow's training labels (mitigated below and in §7).
+Every dataset required for the proposed work is **free/public**, so data availability poses no
+schedule risk. The single access-gated dependency is Barlow's training labels (mitigated below
+and in §6).
 
-| Dataset (source) | What it shows | Role in the proposed work | Status |
+| Dataset (source) | What it shows | Role in the proposed work | Availability |
 |---|---|---|---|
-| **2001 airborne lidar**, 2 m (NASA ATM, via USGS) | Valley-floor surface in 2001 | Baseline epoch for all change detection | ✅ in hand |
-| **2014 airborne lidar**, 1 m (NCALM, via OpenTopography) | Same terrain 13 yr later at benchmark accuracy | Reference epoch; anchors the error model | ✅ in hand |
-| **REMA satellite DEM**, 2 m, 2021-23 (PGC/Maxar stereo) | Most recent surface, continent-wide | Extends the record past the last lidar flight; the sensor O2 must generalize to | ✅ in hand |
-| Per-epoch terrain derivatives (slope/aspect/curvature/MFD-flow/intensity) | Channel-diagnostic terrain form | Input features the U-Net segmenter reads | ✅ scripted; demonstrated (Taylor pilot) |
-| **LTER stream gauges**, 21 streams, daily, 1990s-present (EDI) | Meltwater each stream carried | Direct discharge driver for O1 (source of the Fig. 5 signal) | ✅ in hand |
-| **LTER meteorology** (EDI) | Air temperature, radiation, wind | PDD + insolation melt-energy drivers (O1/H1) | ✅ in hand |
-| **LTER glacier mass balance**, 7 glaciers (EDI) | Seasonal ice gain/loss per glacier | Links stream water supply to its source | ✅ in hand |
-| **LTER soil temperature/moisture** (EDI) | Summer thaw depth | Active-layer driver (O1/H1) | ✅ in hand |
-| **ERA5** monthly 1993-2024 (Copernicus CDS); **AMPS** 2.67 km (NCAR GDEX) | Continuous modeled atmosphere | Gap-fills drivers between stations and to ungauged streams; AMPS cross-checks ERA5 | ✅ in hand |
-| **MCM-LTER stream channel polygons** (EDI `knb-lter-mcm.6007`) | Mapped channel of every named stream | Per-stream rate masks (used in Figs. 3/5) + label stand-in | ✅ in hand |
-| **Barlow's 217 hand-digitized tiles** (author-gated) | Expert-traced channel boundaries | Gold-standard U-Net training labels | ⚠️ **lone access-gated dependency** (see §7) |
-| **Cross-valley DEMs**, all four valleys (OpenTopography/PGC) | Terrain beyond Taylor Valley | O2 generalization test bed | ✅ DEMs in hand; per-valley stacks to build |
+| **2001 airborne lidar**, 2 m (NASA ATM, via USGS) | Valley-floor surface in 2001 | Baseline epoch for all change detection | public, free |
+| **2014 airborne lidar**, 1 m (NCALM, via OpenTopography) | Same terrain 13 yr later at benchmark accuracy | Reference epoch; anchors the error model | public, free |
+| **REMA satellite DEM**, 2 m, 2021-23 (PGC/Maxar stereo) | Most recent surface, continent-wide | Extends the record past the last lidar flight; the sensor O2 must generalize to | public, free |
+| Per-epoch terrain derivatives (slope/aspect/curvature/MFD-flow/intensity) | Channel-diagnostic terrain form | Input features the U-Net segmenter reads | computed from the DEMs |
+| **LTER stream gauges**, 21 streams, daily, 1990s-present (EDI) | Meltwater each stream carried | Direct discharge driver for O1 | public, free |
+| **LTER meteorology** (EDI) | Air temperature, radiation, wind | PDD + insolation melt-energy drivers (O1/H1) | public, free |
+| **LTER glacier mass balance**, 7 glaciers (EDI) | Seasonal ice gain/loss per glacier | Links stream water supply to its source | public, free |
+| **LTER soil temperature/moisture** (EDI) | Summer thaw depth | Active-layer driver (O1/H1) | public, free |
+| **ERA5** monthly (Copernicus CDS); **AMPS** 2.67 km (NCAR GDEX) | Continuous modeled atmosphere | Gap-fills drivers between stations and to ungauged streams; AMPS cross-checks ERA5 | public, free |
+| **MCM-LTER stream channel polygons** (EDI `knb-lter-mcm.6007`) | Mapped channel of every named stream | Per-stream rate masks + label stand-in | public, free |
+| **Barlow's 217 hand-digitized tiles** (author-gated) | Expert-traced channel boundaries | Gold-standard U-Net training labels | ⚠️ **lone access-gated dependency** (see §6) |
+| **Cross-valley DEMs**, all four valleys (OpenTopography/PGC) | Terrain beyond Taylor Valley | O2 generalization test bed | public, free |
 | WorldView/Maxar imagery; published rates (PGC restricted; literature) | Visual ground truth; independent rates | Optional label QC / cross-check vs Barlow | optional |
 
 ---
 
-## 7. Management, Timeline, Risks, and Data Management Plan
+## 6. Management, Timeline, Risks, and Data Management Plan
 
 **FI role & development.** The FI is intellectual lead and primary author; the advisor (PI of
 record) provides domain mentorship. Development plan: present at AGU (cryosphere) and an ISAES/SCAR
@@ -209,12 +154,12 @@ coursework in Bayesian/hierarchical modeling and remote-sensing uncertainty.
 
 | Period | Milestones |
 |---|---|
-| **Yr 1** | Full driver harmonization (PDD/insolation/active-layer series per gauged stream); O1 attribution model on Taylor Valley (extending the Fig. 5 signal); calibrated-uncertainty prototype (O3). **Deliverable:** attribution manuscript drafted. |
+| **Yr 1** | Change-detection chain built from public data; full driver harmonization (PDD/insolation/active-layer series per gauged stream); O1 attribution model on Taylor Valley; calibrated-uncertainty prototype (O3). **Deliverable:** attribution manuscript drafted. |
 | **Yr 2** | Cross-sensor domain-shift correction + segmenter generalization across all four valleys (O2); apply attribution model basin-wide; AGU presentation. **Deliverable:** O2 paper. |
 | **Yr 3** | Predictive model (where acceleration migrates next); 3-epoch acceleration attribution; calibrated-uncertainty product release (O3). **Deliverable:** synthesis/prediction paper + public data products. |
 
-**Risks & mitigations.** (1) *Barlow's label tiles are access-gated* → mitigation: LTER centerlines
-work as a QC stand-in (Fig. 2–3 use them); plan to request the tiles and, failing that,
+**Risks & mitigations.** (1) *Barlow's label tiles are access-gated* → mitigation: the public LTER
+centerlines serve as a stand-in; plan to request the tiles and, failing that,
 re-digitize a comparable training set (the FI's prior work shows label generation is in hand). (2) *REMA's
 uneven post-2014 coverage* → prioritize Taylor Valley (full 3-epoch coverage) for acceleration; treat
 other valleys as 2-epoch. (3) *Discharge gauge gaps* → ERA5/AMPS energy reanalysis fills spatial/temporal
@@ -256,5 +201,5 @@ Environmental Data Initiative (EDI), `knb-lter-mcm.*`.
 
 ---
 
-*Draft S/T/M section. Figures generated by `barlow/build/_finesst_figures.py`. Not a submitted
+*Draft S/T/M section, written as a plan only (no preliminary work presented). Not a submitted
 proposal.*
