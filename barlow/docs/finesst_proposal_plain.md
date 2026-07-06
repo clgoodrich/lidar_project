@@ -1,10 +1,5 @@
 # From Detection to Attribution: Tracking and Explaining Stream Change in Antarctica from Terrain Alone
 
-**NASA ROSES-2025 F.5: Future Investigators in NASA Earth and Space Science and Technology (FINESST)**
-**Division:** Earth Science (EARTH25), Antarctic cryosphere / climate
-**Deadline:** 14 July 2026 (11:59 PM EDT)
-**Roles:** Grad student is the Future Investigator (FI), lead and main author; advisor is PI on record. Up to ~$50k/yr for up to 3 years.
-
 > **Summary.** A working tool already *finds* where Antarctic streams are reshaping the land, but it
 > stops at location: it says where, never why. This project starts at that line. I'll connect the
 > measured change to the processes driving it (heat, melt, thawing ground), make the detector work

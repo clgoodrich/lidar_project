@@ -1,9 +1,5 @@
 # Measuring and Explaining Stream-Channel Change in the McMurdo Dry Valleys, Antarctica
 
-**NASA ROSES F.5: Future Investigators in NASA Earth and Space Science and Technology (FINESST)**
-**Target division:** Earth Science Division — Antarctic cryosphere / climate
-**Structure:** Graduate student = Future Investigator (FI), intellectual lead and primary author; faculty advisor = PI of record. Award up to ~$50,000/yr for up to 3 years.
-
 > **Summary.** The McMurdo Dry Valleys hold the only streams in Antarctica that flow over
 > open ground. They flow for a few weeks each summer, and they are changing. A 2026
 > dissertation (Barlow) mapped two decades of that change but stopped short of explaining

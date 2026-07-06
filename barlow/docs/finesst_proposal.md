@@ -1,10 +1,5 @@
 # From Detection to Attribution: Linking Two Decades of Antarctic Stream-Channel Change to Its Climate Drivers, from Terrain Data Alone
 
-**NASA ROSES-2025 F.5: Future Investigators in NASA Earth and Space Science and Technology (FINESST)**
-**Target division:** Earth Science Division (EARTH25), Antarctic cryosphere / climate
-**Proposal deadline:** 14 July 2026 (11:59 PM EDT)
-**Structure:** Graduate student = Future Investigator (FI), primary author and intellectual lead; faculty advisor = PI of record. Award up to ~$50,000/yr for up to 3 years.
-
 > **Summary.** This project turns an existing Antarctic stream-change *monitor* into a tool
 > that *explains and predicts* change. Barlow (2026) mapped two decades of stream-channel
 > change across the McMurdo Dry Valleys; the proposed work asks the next questions.
@@ -74,9 +69,9 @@ machine learning on remote sensing, and honest uncertainty quantification.
 
 | # | Objective | Hypothesis | Increment over Barlow |
 |---|---|---|---|
-| **O1** | **Attribution (headline science).** Match each stream's measured change rate against the factors that could be driving it: air and ground temperature, sunshine, **positive degree-days (PDD** — a running total of how much warm weather the season delivered**)**, melt-season water flow, glacier mass balance, and summer thaw depth. All driver data come from the MDV-LTER station network plus the ERA5/AMPS weather models. | **H1:** What controls how much sediment a stream moves is *cumulative melt energy* — the total melting heat the season delivered — not simply how much water passed through. A heat-based model should predict each stream's rate better than water volume alone, and explain the scatter that water volume leaves behind. | Listed verbatim as Barlow future work; never quantified. |
-| **O2** | **Cross-sensor & cross-valley generalization.** The detector works best on airborne lidar. Measure exactly how the satellite DEMs disagree with lidar (the **domain shift**), correct for it, and show the detector performs nearly as well on satellite data — across all four valleys, not just Taylor. | **H2:** Most of the lidar-vs-satellite performance gap is predictable, terrain-dependent measurement bias. Correcting that bias per pixel (using slope and aspect) recovers near-lidar accuracy on REMA. | Barlow flags sensor generalization as future work. |
-| **O3** | **Calibrated uncertainty.** Replace the single valley-wide noise estimate with a per-pixel one that accounts for slope, aspect, and sensor — so every change map ships with an error bar you can defend. | **H3:** A 95%-confidence detection threshold built this way actually behaves like one: on ground that did not change, only ~5% of pixels exceed it. | Barlow uses a single global NMAD per epoch-pair. |
+| **O1** | **Attribution (headline science).** Match each stream's measured change rate against candidate drivers — temperature (as **positive degree-days, PDD**: a running total of melting weather), sunlight, discharge, glacier mass balance, thaw depth — from the MDV-LTER network plus ERA5/AMPS. | **H1:** *cumulative melt energy*, not water volume alone, controls sediment movement — a heat-based model predicts each stream's rate better than discharge and explains the scatter discharge leaves behind. | Listed verbatim as Barlow future work; never quantified. |
+| **O2** | **Cross-sensor & cross-valley generalization.** Measure exactly how satellite DEMs disagree with lidar (the **domain shift**), correct it, and show near-lidar detector performance on satellite data across all four valleys. | **H2:** most of the sensor gap is predictable, terrain-dependent bias; correcting it per pixel (slope, aspect) recovers near-lidar accuracy on REMA. | Barlow flags sensor generalization as future work. |
+| **O3** | **Calibrated uncertainty.** Replace the single valley-wide noise estimate with a per-pixel threshold that accounts for slope, aspect, and sensor. | **H3:** a 95% threshold built this way behaves like one — on unchanged ground, only ~5% of pixels exceed it. | Barlow uses a single global NMAD per epoch-pair. |
 
 **Predictive payoff (ties O1–O3 together):** a model that, given a driver field, predicts *where
 acceleration migrates next*, the actionable form of the "climate canary."
@@ -95,15 +90,13 @@ for summer thaw depth) — with the ERA5 and AMPS weather models filling the gap
 stations. Training labels: the public MCM-LTER stream centerlines, standing in for Barlow's
 access-gated 217 hand-digitized tiles (§7 risk).
 
-**O1, Attribution.** For each gauged stream and epoch, the proposed work will (i) measure the
-stream's change rate — the DoD inside its channel mask (already operational, Fig. 2); (ii) build
-that stream's **energy history**: how much warm weather (PDD), sunlight, water flow, and thaw
-depth it experienced, from the LTER stations plus ERA5/AMPS; (iii) fit statistical models
-(hierarchical regression and random forests) relating rate to drivers, always testing each model
-on streams it never saw during fitting; and (iv) test H1 head-to-head — does melt energy predict
-the rates better than water volume alone? (The water-only relationship in Fig. 5 is real but
-incomplete.) For the Taylor streams with all three epochs, the *change* in rate (acceleration)
-will be compared against the *trend* in each driver.
+**O1, Attribution.** For each gauged stream and epoch: (i) measure the change rate — the DoD
+inside its channel mask (already operational, Fig. 2); (ii) build the stream's **energy
+history** (PDD, sunlight, discharge, thaw depth) from LTER stations plus ERA5/AMPS; (iii) fit
+hierarchical regression and random-forest models relating rate to drivers, always validating on
+streams held out of fitting; (iv) test H1 head-to-head — does melt energy predict rates better
+than water volume alone? For the Taylor streams with all three epochs, the *change* in rate
+(acceleration) is compared against the *trend* in each driver.
 
 **O2, Generalization.** The work will first measure how the satellite and lidar elevations
 disagree over ground that has not changed, and how that disagreement depends on slope and
@@ -117,9 +110,8 @@ that varies by slope, aspect, and sensor, and publish it as a per-pixel detectio
 Calibration will be verified the honest way: on held-out ground that did not change, a 95%
 threshold should be exceeded by only ~5% of pixels. (Fig. 4 shows today's valley-wide version.)
 
-**Reproducibility/QC.** The pipeline is fully scripted, input data and all derivatives regenerate
-from source, with robust statistics and CRS checks enforced at every step (e.g., an early QC
-catch, a 2001 nodata bug inflating NMAD to 2.7 m, was identified and fixed).
+**Reproducibility/QC.** The pipeline is fully scripted; input data and all derivatives
+regenerate from source, with robust statistics and CRS checks enforced at every step.
 
 ---
 
@@ -132,14 +124,10 @@ of Barlow's change detection on Taylor Valley falls **inside her published uncer
 **(a) Change detection across all three epochs (Fig. 2).**
 
 ![Fig 2](finesst_figures/fig1_dod_maps.png)
-***Figure 2.*** *Elevation change over the same Taylor Valley stream-corridor window in two
-periods: (a) 2001→2014, comparing two lidar surveys; (b) 2014→2021-23, comparing lidar against
-the REMA satellite DEM. Red = surface lowered (erosion), blue = surface raised (deposition).
-Pixels are drawn only where the change exceeds the detection floor (LOD95) — i.e., is too large
-to be measurement noise — and coherent erosion/deposition patterns emerge above that floor.
-The broad flat patch in (a) is not sediment at all: Lake Fryxell rose ~1.5 m between surveys,
-and an automated standing-water screen detects such flat water surfaces and excludes them from
-every stream-rate statistic.*
+***Figure 2.*** *Elevation change over the same Taylor Valley window: (a) 2001→2014
+(lidar–lidar); (b) 2014→2021-23 (lidar–REMA). Red = erosion, blue = deposition; only changes
+exceeding LOD95 are drawn. The flat patch in (a) is Lake Fryxell's ~1.5 m rise — an automated
+standing-water screen detects and excludes such surfaces from every stream-rate statistic.*
 
 | Epoch pair | NMAD | LOD95 | Barlow's published range | In range? |
 |---|---|---|---|---|
@@ -147,42 +135,32 @@ every stream-rate statistic.*
 | 2014→2021-23 (lidar–REMA) | 0.23 m | 0.44 m | NMAD 0.19–0.53 / LOD95 0.37–1.04 | ✅ |
 
 ICP alignment behaved exactly as Barlow's published version does: it tightened the error budget
-on steep, high-relief windows and correctly added no benefit on the flat valley floor (alignment
-needs terrain shape to grip onto). Convergence fitness was 0.95 m² mean-squared point distance.
+on steep windows and correctly added no benefit on the flat valley floor.
 
 **(b) Per-stream rates (Fig. 3), the masked products O1 consumes.**
 
 ![Fig 3](finesst_figures/fig2_per_stream_rates.png)
-***Figure 3.*** *How much sediment each of six gauged Taylor Valley streams moved, per year, in
-each period. Rates are reported per square meter of channel (mm/yr of surface change) rather
-than as raw m³/yr totals: the surveys do not all cover the same footprint (the 2001 lidar swath
-is narrower than the satellite coverage), and a per-area rate cannot be inflated simply because
-one survey saw more ground.*
+***Figure 3.*** *Per-stream sediment rates for six gauged Taylor Valley streams, reported per
+square meter of channel (mm/yr): the survey footprints differ across epochs, and a per-area
+rate cannot be inflated simply because one survey saw more ground.*
 
 **(c) Robust error model (Fig. 4), the basis for O3.**
 
 ![Fig 4](finesst_figures/fig3_error_model.png)
-***Figure 4.*** *The measurement noise, profiled on ground that should not have changed at all.
-The error histogram is sharply peaked with heavy tails (a **Laplacian** shape), not the familiar
-bell curve: a handful of large outliers would wildly inflate a naive standard-deviation-based
-detection threshold, which is why the outlier-resistant NMAD is used instead. This reproduces
-Barlow's error-model finding and is the launch point for the proposed per-pixel
-calibrated-uncertainty layer (O3).*
+***Figure 4.*** *Measurement noise profiled on unchanged ground: sharply peaked with heavy
+tails (**Laplacian**), not Gaussian — outliers would inflate a naive standard-deviation
+threshold, hence NMAD. Reproduces Barlow's error-model finding; launch point for O3.*
 
 **(d) A first attribution signal (Fig. 5).**
 
 ![Fig 5](finesst_figures/fig4_attribution.png)
-***Figure 5.*** *The first attribution signal: each stream's sediment-movement rate plotted
-against how much meltwater it carried (mean gauged discharge; both axes logarithmic; the lake
-signal from Fig. 2 screened out). In the 2001→2014 period the relationship is strong —
-correlation **r = +0.95 (p = 0.004)**, rank correlation **ρ = +0.94 (p = 0.005)** — and it
-survives dropping any single stream, so it is not driven by one outlier. The satellite period
-shows no coherent relation, but for an instructive reason: after 2015 the stream gauges ran
-only sporadically (48–362 recorded days per stream), so the water axis itself is unreliable
-there, and no trend line is fit. That is precisely the motivation for O1: where gauge data are
-dense the melt–sediment link is strong, so the proposed work replaces patchy gauging with
-**modeled melt energy** (degree-days, sunlight, thaw depth) to extend the analysis across all
-epochs and valleys.*
+***Figure 5.*** *The first attribution signal: per-stream sediment rate vs mean gauged
+discharge (log-log; lake signal screened). In 2001→2014 the relationship is strong —
+**r = +0.95 (p = 0.004)**, **ρ = +0.94 (p = 0.005)** — and survives dropping any single
+stream. The satellite period shows no coherent relation for an instructive reason: post-2015
+gauging is sparse (48–362 recorded days per stream), so no fit is drawn. That is the O1
+motivation — replace patchy gauging with **modeled melt energy** to extend attribution across
+all epochs and valleys.*
 
 ---
 

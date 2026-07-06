@@ -5,7 +5,20 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-06 — FINESST package: NASA-relevance blocks + OSDMP + Research Readiness Statement
+## 2026-07-06 — FINESST: front-matter stripped from all 3 variants + formal trim pass (8→7 pp)
+
+Per user (after calling out unneeded content in the documents): submission docs should
+carry only what NSPIRES receives. (1) Removed the program/division/deadline/roles/award
+header block from formal, plain, and basic variants — that metadata now lives ONLY in
+`barlow/README.md` ("FINESST program facts" section: cover-page items, 6-pp cap,
+dual-anonymous criteria, abstract-box note). (2) Trim pass on the formal variant: §2
+objective/hypothesis table cells compressed, all four §4 figure captions cut ~50%
+(kept the numbers: r=+0.95/ρ=+0.94, LOD95, Fryxell screen, 48–362 gauge days), §3 O1
+steps tightened, ICP-fitness + QC-anecdote sentences dropped. 8 pp → **7 pp rendered**
+(~1 pp of that is references, which don't count toward the cap → content ≈ at the 6-pp
+limit; true fit must be re-measured in the NASA submission template). Plain + basic
+re-rendered (7 pp / 4 pp). `finesst_proposal.docx` NOT re-rendered — file locked (open
+in Word); re-render pending.
 
 Closing the compliance gaps found in the 07-05 requirements check (dual-anonymous review;
 scored criteria = Scientific Merit / Relevance to SMD / Research Readiness). (1) Labeled

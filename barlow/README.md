@@ -43,6 +43,18 @@ barlow/
     FINESST_Barlow_Expansion_Concept.pdf  # earlier planning brief (superseded by finesst_proposal.md)
 ```
 
+## FINESST program facts (kept HERE, not in the submission documents)
+
+- **Program:** NASA ROSES F.5 FINESST; **division designation** (Earth Science) is set on
+  the NSPIRES cover page, not written in the S/T/M.
+- **Deadline:** 14 July 2026, 11:59 PM EDT (university internal routing runs days earlier).
+- **Roles:** grad student = Future Investigator (FI), primary author/intellectual lead;
+  advisor = PI of record (declared on the cover page).
+- **Award:** up to ~$50,000/yr, up to 3 years.
+- **Review:** dual-anonymous; scored on Scientific Merit, Relevance to SMD, Research Readiness.
+- **S/T/M cap:** 6 pages (references/ToC excluded). Proposal abstract is typed into a
+  separate NSPIRES box — reuse the summary paragraph minus any section cross-references.
+
 ## Data location
 All heavy data is **off-repo on `E:\barlow_data_DO_NOT_DELETE\`** (regenerable; not committed per the
 large-file rule). The scripts + docs here are the reproducible record. See
