@@ -1,4 +1,4 @@
-# From Detection to Attribution: Tracking and Explaining Stream Change in Antarctica from Terrain Alone
+# From Detection to Attribution: Tracking and Explaining Landscape Change in Antarctica's Dry Valleys from Terrain Alone
 
 > **Summary.** A tool exists that *finds* where Antarctic streams are reshaping the land, but it
 > stops at location: it says where, never why. This project starts at that line. The work will
@@ -47,9 +47,10 @@ and stop discarding most of the measurement.
 
 ## 2. What we need to do
 
-In one sentence: measure how fast each Antarctic stream is reshaping its channel, then explain
-that rate with heat and melt, so the map stops just *describing* change and starts *predicting*
-it. That breaks into three concrete objectives:
+In one sentence: measure how fast the Dry Valleys' surfaces are changing — the stream channels
+first, and the whole valley floor with them — then explain those rates with heat and melt, so
+the map stops just *describing* change and starts *predicting* it. That breaks into three
+concrete objectives:
 
 | # | Objective | Hypothesis | Why it's new |
 |---|---|---|---|

@@ -1,4 +1,4 @@
-# From Detection to Attribution: Linking Two Decades of Antarctic Stream-Channel Change to Its Climate Drivers, from Terrain Data Alone
+# From Detection to Attribution: Linking Two Decades of Geomorphic Change in the McMurdo Dry Valleys to Its Climate Drivers, from Terrain Data Alone
 
 > **Summary.** This project turns an existing Antarctic stream-change *monitor* into a tool
 > that *explains* change. Barlow (2026) mapped two decades of stream-channel change across
@@ -22,14 +22,14 @@ measurable indicator of climate change in the most stable place on Earth, a cont
 
 **Barlow (2026)** [1] established the measurement foundation in three transferable pillars:
 
-1. **Terrain-only semantic segmentation:** a U-Net delineates stream boundaries from DEM
+1. **Terrain-only semantic segmentation:** a U-Net [5] delineates stream boundaries from DEM
    derivatives alone (elevation, slope, aspect most informative; no water/color signal),
-   so it works in channels that are dry 11 months a year.
-2. **Satellite-DEM validation:** free REMA satellite DEMs are proven accurate enough for
+   so it works in channels that are dry 11 months a year [2].
+2. **Satellite-DEM validation:** free REMA satellite DEMs [4] are proven accurate enough for
    centimeter-to-meter stream-corridor change detection, using **ICP** (iterative closest
    point — sliding one 3-D surface onto another until they match) for alignment and **NMAD**
    (normalized median absolute deviation — a standard deviation that ignores outliers) for
-   honest error bars; the errors follow a **Laplacian** (sharp-peaked, heavy-tailed)
+   honest error bars [3]; the errors follow a **Laplacian** (sharp-peaked, heavy-tailed)
    distribution rather than a Gaussian, which is why the robust statistic is required.
 3. **Multi-epoch change detection:** subtract one epoch's DEM from another
    (**DEM-of-Difference, DoD**) inside the segmented stream masks, and count only elevation
@@ -80,9 +80,9 @@ acceleration migrates next*, the actionable form of the "climate canary."
 lidar (NASA ATM, 2 m), 2014 airborne lidar (NCALM, 1 m), and the REMA satellite DEM (2 m,
 2021–23). From each snapshot the pipeline derives the terrain layers the detector reads:
 elevation, slope, aspect, curvature, flow accumulation (a "where water would go" map), and
-lidar intensity. Driver data come from the MDV-LTER station network — meteorology, 21
+lidar intensity. Driver data come from the MDV-LTER station network [6] — meteorology, 21
 stream-discharge gauges, mass balance for 7 glaciers, and soil temperature/moisture (a proxy
-for summer thaw depth) — with the ERA5 and AMPS weather models filling the gaps between
+for summer thaw depth) — with the ERA5 [7] and AMPS weather models filling the gaps between
 stations. Training labels: the public MCM-LTER stream centerlines, standing in for Barlow's
 access-gated 217 hand-digitized tiles (§6 risk).
 
@@ -180,10 +180,10 @@ landscape-wide result is reported as a calibrated null — itself a quantitative
 how spatially confined active change currently is.
 
 **Data Management Plan.** All input data are free/public (NASA ATM, NCALM/OpenTopography, PGC REMA,
-MCM-LTER/EDI, Copernicus ERA5, AMPS/GDEX), cited per source. Derived products, change-detection
+MCM-LTER/EDI, Copernicus ERA5, AMPS/GDEX), cited per source. Derived products — change-detection
 rasters, per-stream rate tables, process-classified change maps, calibrated-uncertainty layers,
-and stream-boundary polygons, will
-be released open-access (DoIs via Zenodo / EDI) with the processing code (PDAL/WhiteboxTools/GDAL +
+and stream-boundary polygons — will
+be released open-access (DOIs via Zenodo / EDI) with the processing code (PDAL/WhiteboxTools/GDAL +
 Python). Heavy regenerable rasters are excluded from version control; lightweight scripts, figures,
 and tables are tracked. Outputs follow ASPRS/OGC standards and carry explicit CRS, method, and
 uncertainty metadata (per NASA open-science/trustworthy-EO guidance).

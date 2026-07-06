@@ -1,4 +1,4 @@
-# Measuring and Explaining Stream-Channel Change in the McMurdo Dry Valleys, Antarctica
+# Measuring and Explaining Geomorphic Change in the McMurdo Dry Valleys, Antarctica
 
 > **Summary.** The McMurdo Dry Valleys hold the only streams in Antarctica that flow over
 > open ground. They flow for a few weeks each summer, and they are changing. A 2026
@@ -194,8 +194,8 @@ defensible, publishable answer whether its hypothesis survives or not.
 measurable climate response in the most stable landscape on Earth, and the data to study
 them — two lidar epochs, a growing satellite record, and 30 years of LTER station
 records — already exist and are free. The missing ingredients are the driver analysis,
-the sensor bridge, and the error bars. Those are exactly the size of a three-year
-graduate project.
+the whole-landscape picture, and the error bars. Those are exactly the size of a
+three-year graduate project.
 
 ---
 
@@ -213,7 +213,8 @@ graduate project.
 
 All inputs are public and cited to source (NASA ATM, NCALM/OpenTopography, PGC REMA,
 MCM-LTER/EDI, Copernicus ERA5, AMPS/GDEX). All derived products — change rasters,
-per-stream rate tables, uncertainty layers, channel outlines, and processing code — will
+process-classified change maps, per-stream rate tables, uncertainty layers, channel
+outlines, and processing code — will
 be released open-access with DOIs (Zenodo / EDI). Heavy regenerable rasters stay out of
 version control; scripts, tables, and figures are tracked. Products carry explicit
 coordinate-system, method, and uncertainty metadata.
