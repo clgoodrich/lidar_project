@@ -203,14 +203,36 @@ def build(md_path: Path):
             doc.add_paragraph().paragraph_format.space_after = Pt(2)
             continue
 
-        # bullet list
+        # bullet list (items may wrap onto indented continuation lines)
         if re.match(r"[-*]\s+", s):
             while i < n and re.match(r"\s*[-*]\s+", lines[i]):
-                txt = re.sub(r"^\s*[-*]\s+", "", lines[i])
+                buf = [re.sub(r"^\s*[-*]\s+", "", lines[i])]
+                i += 1
+                while (i < n and lines[i].strip() and re.match(r"\s+\S", lines[i])
+                       and not re.match(r"\s*([-*]|\d+\.)\s+", lines[i])):
+                    buf.append(lines[i].strip())
+                    i += 1
                 p = doc.add_paragraph(style="List Bullet")
                 p.paragraph_format.space_after = Pt(1)
-                add_runs(p, txt)
+                add_runs(p, " ".join(buf))
+            continue
+
+        # ordered list (1. 2. 3. — literal numbers kept, hanging indent; avoids
+        # Word's List Number style, which continues numbering across separate lists)
+        if re.match(r"\d+\.\s+", s):
+            while i < n and re.match(r"\s*\d+\.\s+", lines[i]):
+                mnum = re.match(r"\s*(\d+)\.\s+(.*)", lines[i])
+                buf = [mnum.group(2)]
                 i += 1
+                while (i < n and lines[i].strip() and re.match(r"\s+\S", lines[i])
+                       and not re.match(r"\s*([-*]|\d+\.)\s+", lines[i])):
+                    buf.append(lines[i].strip())
+                    i += 1
+                p = doc.add_paragraph()
+                p.paragraph_format.space_after = Pt(1)
+                p.paragraph_format.left_indent = Inches(0.25)
+                p.paragraph_format.first_line_indent = Inches(-0.25)
+                add_runs(p, f"{mnum.group(1)}. " + " ".join(buf))
             continue
 
         # figure caption: whole line wrapped in * ... *
@@ -228,7 +250,7 @@ def build(md_path: Path):
         buf = [ln]
         i += 1
         while i < n and lines[i].strip() and not re.match(
-                r"(#{1,3}\s|[-*]\s|>|\||!\[|-{3,}$)", lines[i].strip()):
+                r"(#{1,3}\s|[-*]\s|\d+\.\s|>|\||!\[|-{3,}$)", lines[i].strip()):
             buf.append(lines[i])
             i += 1
         p = doc.add_paragraph()

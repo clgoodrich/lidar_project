@@ -79,6 +79,8 @@ def _styles():
         "cellh": ParagraphStyle("cellh", **{**base, "fontSize": 8.2, "leading": 10,
                                             "fontName": FONT_B}),
         "li": ParagraphStyle("li", **{**base, "spaceAfter": 2}),
+        "oli": ParagraphStyle("oli", **{**base, "spaceAfter": 2,
+                                        "leftIndent": 16, "firstLineIndent": -16}),
     }
     return out
 
@@ -200,15 +202,35 @@ def build(md_path: Path):
             story.append(Spacer(1, 6))
             continue
 
-        # bullet list block
+        # bullet list block (items may wrap onto indented continuation lines)
         if re.match(r"[-*]\s+", s):
             items = []
             while i < n and re.match(r"\s*[-*]\s+", lines[i]):
-                txt = re.sub(r"^\s*[-*]\s+", "", lines[i])
-                items.append(ListItem(Paragraph(inline(txt), st["li"]), leftIndent=12))
+                buf = [re.sub(r"^\s*[-*]\s+", "", lines[i])]
                 i += 1
+                while (i < n and lines[i].strip() and re.match(r"\s+\S", lines[i])
+                       and not re.match(r"\s*([-*]|\d+\.)\s+", lines[i])):
+                    buf.append(lines[i].strip())
+                    i += 1
+                items.append(ListItem(Paragraph(inline(" ".join(buf)), st["li"]),
+                                      leftIndent=12))
             story.append(ListFlowable(items, bulletType="bullet", start="•",
                                       leftIndent=14, bulletFontSize=7))
+            story.append(Spacer(1, 4))
+            continue
+
+        # ordered list block (1. 2. 3. — literal numbers kept, hanging indent)
+        if re.match(r"\d+\.\s+", s):
+            while i < n and re.match(r"\s*\d+\.\s+", lines[i]):
+                mnum = re.match(r"\s*(\d+)\.\s+(.*)", lines[i])
+                buf = [mnum.group(2)]
+                i += 1
+                while (i < n and lines[i].strip() and re.match(r"\s+\S", lines[i])
+                       and not re.match(r"\s*([-*]|\d+\.)\s+", lines[i])):
+                    buf.append(lines[i].strip())
+                    i += 1
+                story.append(Paragraph(f"{mnum.group(1)}. {inline(' '.join(buf))}",
+                                       st["oli"]))
             story.append(Spacer(1, 4))
             continue
 
@@ -222,7 +244,7 @@ def build(md_path: Path):
         buf = [ln]
         i += 1
         while i < n and lines[i].strip() and not re.match(
-                r"(#{1,3}\s|[-*]\s|>|\||!\[|-{3,}$)", lines[i].strip()):
+                r"(#{1,3}\s|[-*]\s|\d+\.\s|>|\||!\[|-{3,}$)", lines[i].strip()):
             buf.append(lines[i])
             i += 1
         story.append(Paragraph(inline(" ".join(b.strip() for b in buf)), st["body"]))
