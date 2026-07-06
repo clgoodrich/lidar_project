@@ -50,7 +50,7 @@ scientific increment, not a replication.
 **Relevance to NASA.** The 2001 baseline epoch is NASA data — an ATM airborne lidar campaign —
 that has never been fully exploited for surface change. The proposed work converts that NASA
 archive, the free REMA satellite record, and reanalysis into a continuing, uncertainty-calibrated
-measurement of climate-driven surface change in Earth's largest ice-free Antarctic region,
+measurement of climate-driven surface change in the Dry Valleys,
 serving the Earth Science Division's cryosphere and Earth-surface-change focus areas. The
 methodological deliverables generalize: terrain-only feature detection and calibrated
 per-pixel change thresholds (O3) apply to any elevation-differencing record, including those

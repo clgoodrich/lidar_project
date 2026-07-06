@@ -41,9 +41,9 @@ that unfinished work.
 **Relevance to NASA.** The 2001 baseline is NASA data — an ATM airborne lidar campaign —
 that has never been fully exploited for surface change. This project converts that NASA
 archive, together with free satellite elevation models and reanalysis, into a continuing,
-uncertainty-calibrated record of climate-driven surface change in Earth's largest
-ice-free Antarctic region: a direct contribution to the Earth Science Division's
-cryosphere and Earth-surface-change focus areas. The methods deliverables travel beyond
+uncertainty-calibrated record of climate-driven surface change in the Dry Valleys: a
+direct contribution to the Earth Science Division's cryosphere and Earth-surface-change
+focus areas. The methods deliverables travel beyond
 the study site — terrain-only feature detection and per-pixel change thresholds apply to
 any elevation-differencing problem, including the surface-change records NASA missions
 such as ICESat-2 and NISAR produce. The Dry Valleys are also the canonical terrestrial
