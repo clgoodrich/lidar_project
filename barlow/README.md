@@ -23,6 +23,9 @@ barlow/
     finesst_proposal_plain.pdf/.docx # rendered plain version
     finesst_proposal_basic.md        # plan-only variant: NO preliminary results/figures; honest
     finesst_proposal_basic.pdf/.docx #  needs/risks framing (own SOURCE OF TRUTH; 4 pp rendered)
+    finesst_osdmp.md/.pdf/.docx      # Open Science & Data Management Plan (2 pp, anonymized)
+    finesst_readiness_statement.md/  # Research Readiness Statement skeleton (1 p, NOT anonymized;
+      .pdf/.docx                     #  [bracketed] placeholders for the FI to fill in)
     finesst_figures/                 # fig1-5 PNGs shared by both versions (committed, small)
     finesst_reference.md             # personal lookup doc: facts, key numbers, Q&A, glossary
     finesst_reference.docx           # rendered (regenerate: _md_to_docx.py <md> --bold)

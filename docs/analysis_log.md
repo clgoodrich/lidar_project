@@ -5,7 +5,23 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-05 — FINESST: "basic" proposal variant (plan-only, no preliminary work)
+## 2026-07-06 — FINESST package: NASA-relevance blocks + OSDMP + Research Readiness Statement
+
+Closing the compliance gaps found in the 07-05 requirements check (dual-anonymous review;
+scored criteria = Scientific Merit / Relevance to SMD / Research Readiness). (1) Labeled
+**"Relevance to NASA"** block added to both the formal and basic S/T/M variants (ATM
+archive exploitation, ICESat-2/NISAR method transfer, planetary-analog investment, FI
+development); basic §4 skills para trimmed — substance moved to the RRS where FINESST
+wants it. (2) **`finesst_osdmp.md`** drafted (renders exactly 2 pp): inputs table,
+products table w/ formats+archives (Zenodo/EDI, COG/GeoPackage, Apache-2.0/CC-BY),
+release timing, the author-gated-labels handling (no redistribution; self-digitized
+replacement set WILL be published), roles, reproducibility commitment. (3)
+**`finesst_readiness_statement.md`** skeleton (renders 1 p, non-anonymized, [bracketed]
+placeholders + grad-study-timeline table). All rendered pdf+docx. **Flag: formal
+proposal now renders 8 pp — over the 6-pp S/T/M cap even allowing for references;
+needs a trim pass before submission.** Still missing (user/PI side): mentoring plan,
+budget, biosketches, C&P, facilities, 150-word acknowledgements w/ AI disclosure,
+NSPIRES shell + internal routing.
 
 Per user: a third proposal variant that presents the project as a pure plan.
 `barlow/docs/finesst_proposal_basic.md` (+ rendered .pdf 4 pp / .docx): no preliminary

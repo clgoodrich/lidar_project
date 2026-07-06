@@ -40,6 +40,20 @@ It does not test *why* — which climate variables drive the change — and it d
 demonstrate that the detector works well on satellite data across all valleys. Both are
 named in the dissertation as future work. This proposal is that future work.
 
+**Relevance to NASA.** The 2001 baseline is NASA data — an ATM airborne lidar campaign —
+that has never been fully exploited for surface change. This project converts that NASA
+archive, together with free satellite elevation models and reanalysis, into a continuing,
+uncertainty-calibrated record of climate-driven surface change in Earth's largest
+ice-free Antarctic region: a direct contribution to the Earth Science Division's
+cryosphere and Earth-surface-change focus areas. The methods deliverables travel beyond
+the study site — terrain-only feature detection and per-pixel change thresholds apply to
+any elevation-differencing problem, including the surface-change records NASA missions
+such as ICESat-2 and NISAR produce. The Dry Valleys are also the canonical terrestrial
+analog for cold-desert planetary surfaces, which is why NASA has repeatedly funded work
+there. Finally, the project develops a Future Investigator in exactly the skills — open
+geospatial data, machine learning on remote sensing, honest uncertainty — that the
+Division's open-science strategy calls for.
+
 ---
 
 ## 2. Objectives
@@ -128,9 +142,8 @@ specialized infrastructure.
 
 **Skills and mentoring.** The FI has built terrain-segmentation and change-detection
 pipelines on non-Antarctic data but is new to Antarctic hydrology and to hierarchical
-statistical modeling. The plan includes graduate coursework in Bayesian/hierarchical
-methods and mentorship from the advisor on polar geomorphology. This is a genuine gap,
-stated as one; closing it is part of what a FINESST award is for.
+statistical modeling — a genuine gap, stated as one. How coursework and PI mentorship
+close it is detailed in the Research Readiness Statement and Mentoring Plan.
 
 **Community contact.** The dissertation author has been contacted and is responsive.
 Continued cooperation is helpful but not load-bearing: every analysis in this plan can

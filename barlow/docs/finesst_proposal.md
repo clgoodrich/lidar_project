@@ -56,6 +56,18 @@ genuine scientific increment, not a replication.
 ***Figure 1.*** *From detection (Barlow 2026; the first four stages) to the proposed attribution
 and prediction science (last two stages, the new contribution of this project).*
 
+**Relevance to NASA.** The 2001 baseline epoch is NASA data — an ATM airborne lidar campaign —
+that has never been fully exploited for surface change. The proposed work converts that NASA
+archive, the free REMA satellite record, and reanalysis into a continuing, uncertainty-calibrated
+measurement of climate-driven surface change in Earth's largest ice-free Antarctic region,
+serving the Earth Science Division's cryosphere and Earth-surface-change focus areas. The
+methodological deliverables generalize: terrain-only feature detection (O2) and calibrated
+per-pixel change thresholds (O3) apply to any elevation-differencing record, including those
+produced by ICESat-2 and NISAR. The MDVs are also the canonical terrestrial analog for
+cold-desert planetary surfaces — a long-standing NASA investment this project extends with
+open, reusable tools. The FI development itself is Division-aligned: open geospatial data,
+machine learning on remote sensing, and honest uncertainty quantification.
+
 ---
 
 ## 2. Objectives and Hypotheses
