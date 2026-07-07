@@ -30,6 +30,18 @@ common-CRS reprojection to EPSG:3294 + resample of the 2 m/1 m epochs to a share
 size, minimum-mapping-unit patch filtering, and the standing-water screen (lake-level
 rise ≠ ground change). De-duplicated the LOD95 clause in the docx methods note.
 
+## 2026-07-07 — FINESST proposal v5.docx: concision pass (~1 page reclaimed)
+
+User's hand-tweaked v4 (section-title font/size changes) ran just onto a 7th page. Forked
+**v4 → v5** (own-version-per-change discipline) and ran a concision pass on wordy BODY
+paragraphs only — no headings touched (his font tweaks preserved), no meaning changed,
+edits kept inside run[0] so formatting survived. 29 paragraphs tightened; 1,336 → 1,083
+words in the edited paragraphs (253 saved, ~19%, roughly a page at ~250-300 wpp). Killed a
+literal duplication ("cold desert planetary surfaces … cold desert planetary surfaces"),
+collapsed 3-word phrasings to 1 ("is capable of finding"→"finds", "utilizing"→"with",
+"our main objectives are three fold"→"Three objectives:", etc.). Figures + 2 images intact.
+User to verify final page count in Word.
+
 ## 2026-07-07 — FINESST proposals: two illustrative figures (plan-only, anonymous)
 
 User asked what graphics could be incorporated; agreed on conceptual/illustrative only
