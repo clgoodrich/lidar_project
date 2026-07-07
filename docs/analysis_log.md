@@ -5,7 +5,25 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-06 — FINESST: mentoring plan + remaining ancillary drafts (package now fully drafted)
+## 2026-07-06 — Roadmaps: barlow/docs/ROADMAP.md + docs/ROADMAP.md (WellSight)
+
+Two dependency-ordered programming+generation outlines, per user request.
+**Barlow:** Phase 0 submission critical path (NSPIRES/internal deadline/duration
+decision/advisor items; tiles-propagation stays PARKED) → 1 data completion (run the
+wired `--lter` expansion; stage tiles when unparked; NZ/LINZ manual; geology staging) →
+2 driver engineering (`_build_driver_series.py`: PDD/insolation/discharge+gauged_days/
+thaw/lake/zone per stream-season) → 3 whole-landscape O2 (valley-floor mask → whole-
+surface DoD patches → rules-first classifier → per-class rates → attribution hook) →
+4 O3 conditioned error model + calibration check (re-gates Phase 3) → 5 O1 modeling
+(hierarchical + RF twins, LOSO CV, H1 head-to-head, acceleration, H2 fingerprints;
+analysis plan written before fitting) → 6 generation. **WellSight:** A cheap/no-GPU
+(val-selected threshold sweep on saved gpkgs; FP taxonomy in QGIS; duplicate audit) →
+B precision-in-training (hard negatives from the taxonomy; retrain pad→pit Mask R-CNN;
+BACKLOG architecture items gated on B.2) → C road active-learning loop (blocked on user
+QGIS corrections) → D deployment chain (explicitly PAUSED) → E Permian transfer
+(zero-shot → RRC/Ramachandran eval → fine-tune gate) → F infra debt (STRUCTURE.md
+stale, log hygiene, metric-code regression tests, publication thread). Both docs carry
+the standing rules (plan-only, 100 MB, fork-user-files, val-tuned/test-frozen).
 
 User (rightly) asked why the mentoring plan wasn't drafted when the RRS was — the
 "only the advisor can commit" reasoning should have produced a bracketed draft, same as
