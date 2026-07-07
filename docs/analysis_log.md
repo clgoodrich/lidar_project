@@ -5,6 +5,21 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-07 — Figure 1: annotate incised valley-floor channels (Obj. 1 target)
+
+Per user, added callout boxes isolating the incised valley-floor channels on Panel B. Box
+placement is data-driven, not eyeballed: `_find_channel_boxes.py` thresholds the
+flow-accumulation raster (`flowacc_log.tif`, p96), closes/dilates, labels connected
+corridors, and returns their km-space bboxes. Picked the two clearest, best-separated
+corridors (dendritic network center-right; single incised channel center) and hardcoded
+them into `_make_realmap.py` as `CHAN_BOXES`, drawn as red rectangles with a shared
+"incised valley-floor channels" label + thin leaders. Stays plan-only: annotation of the
+input terrain (the measurement target), not a detection/change result. Regenerated
+`fig_location.png`, swapped into `finesst_proposal_v5.docx` in place (blob replace, aspect
++ caption unchanged).
+
+---
+
 ## 2026-07-07 — Figure 1 hillshade: crisp grayscale (vert_exag 4×)
 
 Per user ("hard to see details"), the fix was **vertical exaggeration, not color**. Rendered
