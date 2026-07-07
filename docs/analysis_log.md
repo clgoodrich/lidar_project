@@ -24,6 +24,12 @@ specifics into both, each in its own voice:
 Formal + plain .md variants NOT touched this pass (would diverge from basic) — flagged to
 user for a follow-up if they want parity.
 
+Second pass (same request, "a little more") added to both v3.docx + basic.md: DoD
+uncertainty propagation in quadrature (differencing floor = 1.96×√(NMAD₁²+NMAD₂²)),
+common-CRS reprojection to EPSG:3294 + resample of the 2 m/1 m epochs to a shared cell
+size, minimum-mapping-unit patch filtering, and the standing-water screen (lake-level
+rise ≠ ground change). De-duplicated the LOD95 clause in the docx methods note.
+
 ## 2026-07-06 — Roadmaps: barlow/docs/ROADMAP.md + docs/ROADMAP.md (WellSight)
 
 Two dependency-ordered programming+generation outlines, per user request.

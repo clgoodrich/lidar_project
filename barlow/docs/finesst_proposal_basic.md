@@ -111,6 +111,10 @@ monitoring capability with an explanatory model behind it.
 **O2 (Year 2).**
 1. Apply the O3 per-pixel thresholds to the full valley-floor surface and extract every
    patch of change that clears them, as connected components of super-threshold pixels.
+   Drop patches below a minimum mapping unit (a few pixels) to suppress isolated-pixel
+   noise, and screen out near-level standing-water surfaces, whose apparent elevation
+   change is lake-level rise rather than ground change — those feed the lake-margin class
+   and the lake-level driver instead.
 2. Describe each patch by its attributes — area, mean and signed elevation change, local
    slope and aspect, distance to the nearest channel and lake — and classify it by process
    type from that signature (channel shift, thaw-driven subsidence, slope movement, fan
@@ -136,9 +140,13 @@ differencing that mixes sensors. Extend beyond Taylor Valley where REMA quality 
 **Methods note.** All elevation differencing uses robust statistics because elevation
 errors in this terrain are heavy-tailed; a naive standard deviation would be inflated by a
 handful of blunders. The noise scale is the **NMAD** (normalized median absolute
-deviation, 1.4826 × the median absolute deviation from the median), and the detection
-floor throughout is **LOD95 = 1.96 × NMAD** — the change magnitude that pure noise clears
-only 5% of the time.
+deviation, 1.4826 × the median absolute deviation from the median). For a single surface
+the detection floor is **LOD95 = 1.96 × NMAD**; because a DEM-of-Difference subtracts two
+noisy surfaces, their NMADs combine in quadrature, so the differencing floor is
+1.96 × √(NMAD₁² + NMAD₂²) — the change magnitude that pure noise clears only 5% of the
+time. All layers (DEMs, channel outlines, driver fields) are reprojected to one common
+Antarctic polar-stereographic grid (EPSG:3294) before any spatial operation, and the two
+lidar epochs (2 m and 1 m native) are resampled to a shared cell size before differencing.
 
 ---
 
