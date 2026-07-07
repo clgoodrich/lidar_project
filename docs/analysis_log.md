@@ -5,6 +5,26 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-07 — WellSight: Red Relief Image Map (RRIM) visualization
+
+Added an RRIM terrain-visualization component (new `notebooks/wellsight/build/_make_rrim.py`).
+RRIM (Chiba et al. 2008; papers dropped in repo root) fuses slope + ridge/valley position
+into one direction-independent composite — better than a single hillshade for subtle
+micro-relief (pit depressions, pad cut-and-fill, road benches). Classic mode uses
+differential openness `DO=(op−on)/2` as the base (teal valleys / gray flats / yellow ridges)
+with a white→red slope overlay multiplied on top; `--simple` mode swaps the base for LRM-11
+(Auld-Thomas 2022, patent-free). Reuses existing derivatives — no recompute. Palette
+self-scales per tile from p98 of |base| (WPA far gentler than the Maya-karst stops the
+recipe was tuned on); slope_hi=40° (tile slope p98≈35°). Generated both variants for 9t
+block 613590 (4500×4500, 1 m, EPSG:6346): `rrim_openness_*` (DO ±5.15°) and `rrim_simple_*`.
+Classic = deeper valley contrast; simple = flatter, crisper on fine linears. Full-res tifs
+(~44 MB) gitignored as regenerable viewing products; preview PNGs tracked. Not a model input
+(derived from existing bands). Doc: `docs/iterations/rrim_visualization.md`. Was never a prior
+decision — only cited as background in the abandoned-roads article + openness computed in
+`02_derivatives.ipynb`; no RRIM composite existed before.
+
+---
+
 ## 2026-07-07 — Figure 1: zoom Panel B to the channel corridors
 
 Per user, cropped Panel B tight to the incised channels. `_make_realmap.py` now windows the

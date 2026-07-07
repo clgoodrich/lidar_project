@@ -169,6 +169,10 @@ data/derivatives/*.tif.aux.xml
 # Regenerable via _build_contours_data_3x3.py; heavy, so not tracked.
 data/derivatives/tiles/data_3x3/**/contours_*.gpkg
 
+# RRIM full-res GeoTIFFs are regenerable viewing products (via _make_rrim.py),
+# not pipeline inputs; only the small preview PNGs are tracked.
+data/derivatives/tiles/data_3x3/**/rrim_*_1m.tif
+
 # Large scanned-book source PDFs (~120 MB combined) — kept locally as reference
 # material, not committed (re-downloadable; would bloat history). Small papers in
 # docs/papers/ stay tracked.
