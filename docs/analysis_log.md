@@ -5,17 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
-## 2026-07-07 — Figure 1 hillshade: color-blend for legibility
+## 2026-07-07 — Figure 1 hillshade: crisp grayscale (vert_exag 4×)
 
-Per user ("less monochromatic, hard to see details"), Panel B of `fig_location.png`
-changed from a flat grayscale hillshade to a `viridis` elevation ramp draped over the
-hillshade (`LightSource.shade`, soft blend, vert_exag 2.0). Tried `terrain` (high ground
-read as blue → water) and `gist_earth` (black low-elevation patch read as a data void),
-rejected both; `viridis` is perceptually uniform, colorblind-safe, and carries no
-water/void connotation. Incised valley-floor channels now legible via the shaded texture.
-Swapped the recolored PNG into `finesst_proposal_v5.docx` in place (Figure-1 blob replace,
-aspect unchanged so no resize); caption unchanged. Script: `_make_realmap.py` (cmap line)
-+ `_swap_fig1_color.py`. Stays plan-only (input-terrain basemap, not a result).
+Per user ("hard to see details"), the fix was **vertical exaggeration, not color**. Rendered
+a 6-way comparison of Panel B (`_hs_compare.py`: viridis/terrain/gist_earth/cividis color
+drapes + crisp grayscale, soft vs overlay blends) — the original looked flat because it used
+a gentle vert_exag 2.0 *soft* blend. User picked the crisp grayscale (vert_exag 4.0)
+`LightSource.hillshade`. Channel network, lake margin, and alluvial fans now legible.
+Colored drapes rejected (viridis/terrain both explored; user prefers monochrome relief).
+`fig_location.png` regenerated, swapped into `finesst_proposal_v5.docx` in place (Figure-1
+blob replace, aspect unchanged, caption unchanged). Scripts: `_make_realmap.py` (vert_exag
+2→4, grayscale) + `_swap_fig1_color.py`. Stays plan-only (input-terrain basemap, not a result).
 
 ---
 
