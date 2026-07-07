@@ -23,9 +23,9 @@ season) carry more water, move more sediment, and reshape their own beds (Figure
 
 ![Study-area orientation](figures/fig_location.png)
 
-*Figure 1. Study-area orientation (schematic): the McMurdo Dry Valleys within Antarctica
-(A) and the Taylor Valley stream–lake system that anchors the analysis (B). For
-orientation only — not to scale, no data shown.*
+*Figure 1. Study area. (A) The McMurdo Dry Valleys within Antarctica (coastline: Natural
+Earth). (B) Hillshade of the study-area lidar DEM (1 m), showing the incised valley-floor
+channels this project measures; 1 km scale bar, north up.*
 
 **What already exists.** Barlow (2026) built the measurement foundation:
 

@@ -30,6 +30,21 @@ common-CRS reprojection to EPSG:3294 + resample of the 2 m/1 m epochs to a share
 size, minimum-mapping-unit patch filtering, and the standing-water screen (lake-level
 rise ≠ ground change). De-duplicated the LOD95 clause in the docx methods note.
 
+## 2026-07-07 — FINESST Figure 1: schematic → real map of the study area
+
+User: the schematic Fig 1 "isn't really gonna cut it," wanted an actual map. Rebuilt
+`fig_location.png` as a real two-panel figure (`_make_realmap.py`): (A) Antarctic index
+from cartopy + Natural Earth coastline (downloaded live) with the Dry Valleys located; (B)
+grayscale hillshade of the ACTUAL study-area lidar DEM
+(`E:/…/barlow_inputs/taylor_valley/elevation.tif`, 7×7 km, 1 m, EPSG:3294, LightSource
+az315/alt45, 1%–99% stretch), with 1 km scale bar + north arrow — the incised valley-floor
+channels are clearly visible. Anonymous (no name/institution); a hillshade basemap is
+input terrain, not an analysis result, so it stays plan-only-consistent. Swapped the blob
+into v5.docx in place (`_swap_fig1.py`: matched the old schematic bytes, replaced the image
+part, fixed inline-shape aspect to 6.0×3.21", rewrote the caption) so the concision edits
++ user font tweaks survived; basic.md caption updated too. Source DEM stays on E:
+(gitignored); only the small PNG is tracked. v3/v4 keep the schematic (own embedded copy).
+
 ## 2026-07-07 — FINESST proposal v5.docx: concision pass (~1 page reclaimed)
 
 User's hand-tweaked v4 (section-title font/size changes) ran just onto a 7th page. Forked
