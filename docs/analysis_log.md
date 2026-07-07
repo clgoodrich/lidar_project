@@ -5,6 +5,25 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-07 — FINESST proposals: added method-level technical detail (plan-only)
+
+Per user, added "a little more technical detail" to two proposal variants — the
+approach/methods only, staying plan-only (future tense, no results, no figures). Same
+specifics into both, each in its own voice:
+- **`barlow/docs/finesst_proposal_v3.docx`** (forked from v2; v1/v2 untouched per the
+  never-edit-user-drafts-in-place rule): 7 Approach/Methods paragraphs augmented in the
+  author's first-person voice — co-registration (median vertical-bias removal + optional
+  ICP), resample-to-common-grid + DoD, per-pixel LOD95 detection floor, specific rate in
+  mm/yr, positive-degree-day melt proxy, leave-one-stream-out CV, connected-component
+  patch extraction with per-patch attributes (area/mean dz/slope/aspect/dist-to-
+  channel+lake), rules-first patch classifier, REMA−lidar bias stratified by slope/aspect,
+  binned-NMAD per-pixel noise surface, and the NMAD (=1.4826×MAD) / LOD95 (=1.96×NMAD)
+  definitions. Text-only run edits (body stayed non-bold).
+- **`barlow/docs/finesst_proposal_basic.md`**: same detail in the formal plan-only voice
+  (§3 O1/O2/O3 + Methods note).
+Formal + plain .md variants NOT touched this pass (would diverge from basic) — flagged to
+user for a follow-up if they want parity.
+
 ## 2026-07-06 — Roadmaps: barlow/docs/ROADMAP.md + docs/ROADMAP.md (WellSight)
 
 Two dependency-ordered programming+generation outlines, per user request.

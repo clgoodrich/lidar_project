@@ -89,38 +89,56 @@ monitoring capability with an explanatory model behind it.
 ## 3. Planned approach
 
 **O1 (Years 1–2).**
-1. Compute each gauged stream's change rate: difference two elevation epochs
-   (**DEM-of-Difference**), keep only changes larger than the detection floor, sum inside
-   the stream's channel outline, normalize by channel area and by years elapsed.
+1. Compute each gauged stream's change rate. Co-register the two elevation epochs (remove
+   the median vertical offset over stable ground, then optionally refine with a rigid ICP
+   alignment), resample both to a common grid, and difference them
+   (**DEM-of-Difference**). Keep only pixels whose change exceeds the detection floor (the
+   per-pixel LOD95 threshold defined under O3), sum the surviving change inside the
+   stream's channel outline, and normalize by channel area and by years elapsed to a
+   specific rate in millimeters per year.
 2. Build each stream's driver history from the MDV-LTER station records (meteorology,
    21 stream gauges, 7 glacier mass-balance series, soil temperature) and from the ERA5
-   and AMPS weather models where station coverage has gaps.
-3. Fit two model families — hierarchical regression (interpretable) and random forest
-   (flexible) — relating rate to drivers. Validate only on streams held out of fitting.
-   Agreement between the two families is the sanity check.
-4. Test the melt-energy hypothesis directly against the water-volume alternative.
+   and AMPS weather models where station coverage has gaps. Air temperature enters as
+   **positive degree-days** (a running sum of above-freezing daily temperature, the
+   standard melt proxy).
+3. Fit two model families — hierarchical regression (interpretable, with stream-level
+   grouping) and random forest (flexible) — relating rate to drivers. Validate by
+   leave-one-stream-out cross-validation, so every reported score comes from a stream
+   held out of the fit. Agreement between the two families is the sanity check.
+4. Test the melt-energy hypothesis directly against the water-volume alternative,
+   comparing out-of-sample error between an energy-driven model and a discharge-only one.
 
 **O2 (Year 2).**
 1. Apply the O3 per-pixel thresholds to the full valley-floor surface and extract every
-   patch of change that clears them.
-2. Classify each patch by process type from its shape and setting (slope position,
-   distance to channels and lakes, ice-cored terrain).
+   patch of change that clears them, as connected components of super-threshold pixels.
+2. Describe each patch by its attributes — area, mean and signed elevation change, local
+   slope and aspect, distance to the nearest channel and lake — and classify it by process
+   type from that signature (channel shift, thaw-driven subsidence, slope movement, fan
+   growth, lake-margin change). Rules on the attributes come first; a learned classifier
+   is a fallback only if the rules underperform.
 3. Run each type's rates through the O1 driver models separately and compare the driver
    fingerprints.
 
-**Sensor continuity (method, Years 1–2).** Quantify satellite-vs-lidar disagreement over
-stable ground by slope and aspect; correct it before any differencing that mixes sensors.
-Extend beyond Taylor Valley where REMA quality allows.
+**Sensor continuity (method, Years 1–2).** Measure the REMA-minus-lidar elevation
+difference over stable ground, stratify it by slope and aspect (the terrain properties
+that drive satellite-DEM error), fit a correction surface, and remove it before any
+differencing that mixes sensors. Extend beyond Taylor Valley where REMA quality allows.
 
 **O3 (Years 1–3, alongside).**
-1. Model the measurement noise as a function of slope, aspect, and sensor instead of one
-   global number.
+1. Model the measurement noise as a function of slope, aspect, and sensor pair rather than
+   one global number: bin the stable-terrain differences on those variables, estimate the
+   NMAD in each bin, and fit a smooth surface through the bins so every pixel carries its
+   own noise estimate and its own LOD95 = 1.96 × NMAD detection threshold.
 2. Publish the result as a per-pixel threshold map and verify the 5%-on-stable-ground
-   property on held-out terrain.
+   property — the exceedance rate of the 95% threshold on ground that did not change — on
+   held-out terrain.
 
-**Methods note.** All elevation differencing uses robust statistics (**NMAD**, an
-outlier-resistant standard deviation) because elevation errors in this terrain are known
-to be heavy-tailed; a naive standard deviation would be inflated by a handful of blunders.
+**Methods note.** All elevation differencing uses robust statistics because elevation
+errors in this terrain are heavy-tailed; a naive standard deviation would be inflated by a
+handful of blunders. The noise scale is the **NMAD** (normalized median absolute
+deviation, 1.4826 × the median absolute deviation from the median), and the detection
+floor throughout is **LOD95 = 1.96 × NMAD** — the change magnitude that pure noise clears
+only 5% of the time.
 
 ---
 
