@@ -5,6 +5,20 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-07 — Figure 1 hillshade: color-blend for legibility
+
+Per user ("less monochromatic, hard to see details"), Panel B of `fig_location.png`
+changed from a flat grayscale hillshade to a `viridis` elevation ramp draped over the
+hillshade (`LightSource.shade`, soft blend, vert_exag 2.0). Tried `terrain` (high ground
+read as blue → water) and `gist_earth` (black low-elevation patch read as a data void),
+rejected both; `viridis` is perceptually uniform, colorblind-safe, and carries no
+water/void connotation. Incised valley-floor channels now legible via the shaded texture.
+Swapped the recolored PNG into `finesst_proposal_v5.docx` in place (Figure-1 blob replace,
+aspect unchanged so no resize); caption unchanged. Script: `_make_realmap.py` (cmap line)
++ `_swap_fig1_color.py`. Stays plan-only (input-terrain basemap, not a result).
+
+---
+
 ## 2026-07-07 — FINESST proposals: added method-level technical detail (plan-only)
 
 Per user, added "a little more technical detail" to two proposal variants — the
