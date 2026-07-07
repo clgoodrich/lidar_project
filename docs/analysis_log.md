@@ -30,6 +30,24 @@ common-CRS reprojection to EPSG:3294 + resample of the 2 m/1 m epochs to a share
 size, minimum-mapping-unit patch filtering, and the standing-water screen (lake-level
 rise ≠ ground change). De-duplicated the LOD95 clause in the docx methods note.
 
+## 2026-07-07 — FINESST proposals: two illustrative figures (plan-only, anonymous)
+
+User asked what graphics could be incorporated; agreed on conceptual/illustrative only
+(the plan-only rule bars any preliminary-results graphic — no change maps, hillshades, or
+the r=0.95 plot). Built two anonymous, results-free schematics with matplotlib
+(`_make_figs.py`), 300-dpi PNG, muted palette that reads in grayscale, no name/institution
+for dual-anonymous review:
+- **`barlow/docs/figures/fig_workflow.png`** — detection-to-attribution method schematic:
+  3 DEM epochs → co-register/reproject(EPSG:3294)/resample → DoD → per-pixel LOD95 floor
+  (with O3 uncertainty feeder) → O1 channel branch (rate→driver table→hierarchical+RF) and
+  O2 valley-floor branch (patches→process classifier→per-class fingerprints).
+- **`barlow/docs/figures/fig_location.png`** — study-area orientation: (A) Antarctic
+  index with Dry Valleys star, (B) Taylor Valley schematic (Taylor Glacier W, Ross Sea E,
+  Bonney→Hoare→Fryxell lakes, streams+gauges), labelled "not to scale".
+Embedded both into **v3.docx** (Fig 1 in Setup, Fig 2 in Approach; 6.0" wide, italic 9-pt
+captions) and **basic.md** (relative `figures/` refs + captions). Small PNGs, tracked
+normally (well under 100 MB). Formal/plain .md variants still not touched.
+
 ## 2026-07-06 — Roadmaps: barlow/docs/ROADMAP.md + docs/ROADMAP.md (WellSight)
 
 Two dependency-ordered programming+generation outlines, per user request.

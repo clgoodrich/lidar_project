@@ -19,7 +19,13 @@ of a century they were treated as the most stable landscape on Earth. That view 
 question. The valleys are **energy-limited**: frozen water is everywhere, but there is
 barely enough summer heat to melt any of it. A small warming therefore produces a direct,
 measurable response — **ephemeral streams** (channels that flow only during the brief melt
-season) carry more water, move more sediment, and reshape their own beds.
+season) carry more water, move more sediment, and reshape their own beds (Figure 1).
+
+![Study-area orientation](figures/fig_location.png)
+
+*Figure 1. Study-area orientation (schematic): the McMurdo Dry Valleys within Antarctica
+(A) and the Taylor Valley stream–lake system that anchors the analysis (B). For
+orientation only — not to scale, no data shown.*
 
 **What already exists.** Barlow (2026) built the measurement foundation:
 
@@ -87,6 +93,15 @@ monitoring capability with an explanatory model behind it.
 ---
 
 ## 3. Planned approach
+
+Figure 2 lays out the full chain, from the three elevation epochs through per-pixel change
+detection to the three objectives.
+
+![Detection-to-attribution workflow](figures/fig_workflow.png)
+
+*Figure 2. Planned detection-to-attribution workflow: three DEM epochs → co-registration
+→ DEM-of-Difference → per-pixel detection floor → the O1 (channel), O2 (valley-floor), and
+O3 (uncertainty) objectives. Method schematic; no results shown.*
 
 **O1 (Years 1–2).**
 1. Compute each gauged stream's change rate. Co-register the two elevation epochs (remove
