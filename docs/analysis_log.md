@@ -44,9 +44,15 @@ for dual-anonymous review:
 - **`barlow/docs/figures/fig_location.png`** — study-area orientation: (A) Antarctic
   index with Dry Valleys star, (B) Taylor Valley schematic (Taylor Glacier W, Ross Sea E,
   Bonney→Hoare→Fryxell lakes, streams+gauges), labelled "not to scale".
-Embedded both into **v3.docx** (Fig 1 in Setup, Fig 2 in Approach; 6.0" wide, italic 9-pt
-captions) and **basic.md** (relative `figures/` refs + captions). Small PNGs, tracked
-normally (well under 100 MB). Formal/plain .md variants still not touched.
+Embedded both into the docx and **basic.md** (relative `figures/` refs + captions). Small
+PNGs, tracked normally (well under 100 MB). Formal/plain .md variants still not touched.
+
+**Versioning correction (same day):** figures were first stacked onto v3.docx — wrong;
+each distinct request should be its own version. Re-split: **v3.docx** = the technical-
+detail request (restored to pre-figures state from commit 0056824, 0 images); **v4.docx**
+= the figures request (technical detail + Fig 1 in Setup, Fig 2 in Approach, 6.0" wide,
+italic 9-pt captions). basic.md keeps both since it is the working variant, not the
+user-draft lineage.
 
 ## 2026-07-06 — Roadmaps: barlow/docs/ROADMAP.md + docs/ROADMAP.md (WellSight)
 
