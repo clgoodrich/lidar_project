@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-07 — Figure 1: zoom Panel B to the channel corridors
+
+Per user, cropped Panel B tight to the incised channels. `_make_realmap.py` now windows the
+DEM read (`rasterio.windows.from_bounds`) to `CROP_KM = (1.85, 1.30, 6.90, 5.45)` — the
+combined channel-box bbox + a small margin — so the frame is ~5.0×4.2 km instead of the full
+7×7 km tile. Channel boxes shifted into the crop's local frame; scale bar / north arrow /
+label reposition off `w_km`/`h_km` fractions automatically. New crop changed the image aspect
+(1.87→2.03), so `_swap_fig1_color.py` now resizes the Figure-1 shape to the actual image
+aspect (6.0 × 2.96 in) to avoid distortion. `fig_location.png` regenerated, swapped into
+`finesst_proposal_v5.docx`. Caption unchanged; stays plan-only.
+
+---
+
 ## 2026-07-07 — Figure 1: annotate incised valley-floor channels (Obj. 1 target)
 
 Per user, added callout boxes isolating the incised valley-floor channels on Panel B. Box
