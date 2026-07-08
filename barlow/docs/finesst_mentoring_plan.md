@@ -14,8 +14,8 @@ The FI is the intellectual lead of the proposed research: the FI designed the pr
 authored this proposal, and will execute the analyses, write the papers as first author,
 and release the data products. The PI serves as research mentor and PI of record:
 scientific guidance, domain expertise, institutional accountability, and career
-development. This plan states how that relationship will operate for the duration of
-the award, so that the mentoring is a designed structure rather than an assumption.
+development. This plan states how that relationship operates for the award's duration —
+a designed structure, not an assumption.
 
 ## 2. Mentoring structure and cadence
 
@@ -44,9 +44,8 @@ they close.
 background is strong but was built on temperate-landscape problems. The PI will direct
 a structured reading program in cold-desert process geomorphology (energy-limited melt,
 permafrost/active-layer dynamics, closed-basin lake behavior), [and/or supervise a
-directed-reading course in term X]. Success looks like: by the end of Year 1, the FI
-can defend the physical interpretation of every driver in the O1 models to a polar
-audience, not just the statistics.
+directed-reading course in term X]. By the end of Year 1, the FI can defend the physical
+interpretation of every O1 driver to a polar audience, not just the statistics.
 
 **Statistical methodology — hierarchical modeling.** The FI will complete graduate
 coursework in Bayesian/hierarchical statistical modeling ([course number/term to
@@ -102,6 +101,5 @@ prevents mistakes instead of discovering them.
 ## 7. Assessment of the mentoring itself
 
 Once per year, FI and PI explicitly review this plan — what mentoring worked, what was
-missing, what the coming year's emphasis should be (Year 1: domain + statistics;
-Year 2: publication and community; Year 3: independence and career transition) — and
-revise it. The plan is a working document, and treating it as one is the commitment.
+missing, what the coming year's emphasis should be — and revise it. The plan is a
+working document, treated as one.

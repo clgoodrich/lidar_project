@@ -94,8 +94,9 @@ def build(md_path: Path):
     st.font.name = "Calibri"
     st.font.size = Pt(10.5)
     for sec in doc.sections:
-        sec.top_margin = sec.bottom_margin = Inches(0.7)
-        sec.left_margin = sec.right_margin = Inches(0.9)
+        # FINESST/DAPR requires >= 1-inch margins on all sides (F.5 sec. 5).
+        sec.top_margin = sec.bottom_margin = Inches(1.0)
+        sec.left_margin = sec.right_margin = Inches(1.0)
     usable_in = (doc.sections[0].page_width - doc.sections[0].left_margin
                  - doc.sections[0].right_margin) / 914400  # EMU -> inches
 

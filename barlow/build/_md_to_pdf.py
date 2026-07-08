@@ -105,7 +105,7 @@ def build(md_path: Path):
     lines = src.split("\n")
     st = _styles()
     story = []
-    page_w = letter[0] - 1.3 * inch  # usable width given margins below
+    page_w = letter[0] - 2.0 * inch  # usable width given 1-inch margins below
 
     i, n = 0, len(lines)
     first_h1 = True
@@ -255,15 +255,16 @@ def build(md_path: Path):
         canvas.saveState()
         canvas.setFont(FONT, 7.5)
         canvas.setFillColor(GREY)
-        canvas.drawString(0.65 * inch, 0.45 * inch,
+        canvas.drawString(1.0 * inch, 0.5 * inch,
                           doc_title or "FINESST S/T/M: MDV ephemeral-channel attribution (draft)")
-        canvas.drawRightString(letter[0] - 0.65 * inch, 0.45 * inch,
+        canvas.drawRightString(letter[0] - 1.0 * inch, 0.5 * inch,
                                f"p. {doc.page}")
         canvas.restoreState()
 
+    # FINESST/DAPR requires >= 1-inch margins on all sides (F.5 sec. 5).
     doc = SimpleDocTemplate(str(out_pdf), pagesize=letter,
-                            leftMargin=0.65 * inch, rightMargin=0.65 * inch,
-                            topMargin=0.6 * inch, bottomMargin=0.65 * inch,
+                            leftMargin=1.0 * inch, rightMargin=1.0 * inch,
+                            topMargin=1.0 * inch, bottomMargin=1.0 * inch,
                             title=doc_title or "FINESST Proposal: MDV ephemeral-channel attribution")
     doc.build(story, onFirstPage=_footer, onLaterPages=_footer)
     print(f"wrote {out_pdf}  ({out_pdf.stat().st_size/1024:.0f} KB, {doc.page} pages)")
