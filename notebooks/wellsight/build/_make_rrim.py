@@ -47,20 +47,22 @@ def _diverge(t, neg_color, pos_color, mid_color):
 
 
 def build_rrim(tile_dir, tile, simple=False, slope_hi=40.0, do_pct=98.0,
-               base_brightness=18.0):
-    slope, prof = _read(os.path.join(tile_dir, f"slope_{tile}_1m.tif"))
+               base_brightness=18.0, suffix="1m"):
+    # Input filenames are `<name>_<tile>_<suffix>.tif` — suffix is "1m" for the
+    # data_3x3 build, "05" for the native 0.5 m 9t stack (slope_9t_05.tif, etc.).
+    slope, prof = _read(os.path.join(tile_dir, f"slope_{tile}_{suffix}.tif"))
     valid = np.isfinite(slope)
 
     if simple:
         # Local Relief Model base (Simple Red Relief). Prefer the 11-cell LRM.
-        lrm_path = os.path.join(tile_dir, f"lrm_11_{tile}_1m.tif")
+        lrm_path = os.path.join(tile_dir, f"lrm_11_{tile}_{suffix}.tif")
         base_raw, _ = _read(lrm_path)
         dlim = np.nanpercentile(np.abs(base_raw), do_pct)
         t = np.clip(base_raw / dlim, -1, 1)
         base_label = "LRM-11 (Simple Red Relief)"
     else:
-        op, _ = _read(os.path.join(tile_dir, f"openness_pos_{tile}_1m.tif"))
-        on, _ = _read(os.path.join(tile_dir, f"openness_neg_{tile}_1m.tif"))
+        op, _ = _read(os.path.join(tile_dir, f"openness_pos_{tile}_{suffix}.tif"))
+        on, _ = _read(os.path.join(tile_dir, f"openness_neg_{tile}_{suffix}.tif"))
         do = (op - on) / 2.0                    # differential openness (deg)
         valid &= np.isfinite(op) & np.isfinite(on)
         dlim = np.nanpercentile(np.abs(do[np.isfinite(do)]), do_pct)
@@ -87,15 +89,18 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tile", default="613590")
     ap.add_argument("--dir", default="data/derivatives/tiles/data_3x3/westernpa_d20/613590")
+    ap.add_argument("--suffix", default="1m",
+                    help="input resolution suffix, e.g. '1m' (data_3x3) or '05' (9t 0.5 m)")
     ap.add_argument("--simple", action="store_true", help="LRM base (Simple Red Relief)")
     ap.add_argument("--slope-hi", type=float, default=40.0)
     args = ap.parse_args()
 
     rrim, prof, base_label, dlim, shi = build_rrim(
-        args.dir, args.tile, simple=args.simple, slope_hi=args.slope_hi)
+        args.dir, args.tile, simple=args.simple, slope_hi=args.slope_hi,
+        suffix=args.suffix)
     H, W, _ = rrim.shape
-    suffix = "simple" if args.simple else "openness"
-    out_tif = os.path.join(args.dir, f"rrim_{suffix}_{args.tile}_1m.tif")
+    base = "simple" if args.simple else "openness"
+    out_tif = os.path.join(args.dir, f"rrim_{base}_{args.tile}_{args.suffix}.tif")
 
     prof.update(count=3, dtype="uint8", nodata=None, compress="deflate",
                 predictor=2, tiled=True, blockxsize=512, blockysize=512, photometric="RGB")
@@ -115,8 +120,8 @@ def main():
         fig, ax = plt.subplots(figsize=(9, 9))
         ax.imshow(prev)
         ax.set_xticks([]); ax.set_yticks([])
-        ax.set_title(f"RRIM · {args.tile} (1 m) · {base_label}", fontsize=11)
-        out_png = os.path.join(args.dir, f"rrim_{suffix}_{args.tile}_1m_preview.png")
+        ax.set_title(f"RRIM · {args.tile} ({args.suffix}) · {base_label}", fontsize=11)
+        out_png = os.path.join(args.dir, f"rrim_{base}_{args.tile}_{args.suffix}_preview.png")
         fig.savefig(out_png, dpi=130, bbox_inches="tight")
         plt.close(fig)
         print(f"wrote {out_png}  ({prev.shape[1]}x{prev.shape[0]})")

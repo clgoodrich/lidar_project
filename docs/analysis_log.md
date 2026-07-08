@@ -5,6 +5,18 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-08 — WellSight: RRIM regenerated at native 0.5 m into canonical 9t dir
+
+The first RRIM pass wrote into the 1 m `data_3x3/westernpa_d20/613590/` build; the canonical
+9t stack lives at `data/derivatives/tiles/9t/` with inputs at native 0.5 m. Generalized
+`_make_rrim.py` with a `--suffix` arg (filenames `<name>_<tile>_<suffix>.tif`; `1m` for
+data_3x3, `05` for the 9t stack) and regenerated both variants into `tiles/9t/`:
+`rrim_openness_9t_05.tif` (176 MB, 9000×9000, DO ±4.50°) and `rrim_simple_9t_05.tif` (174 MB).
+0.5 m resolves dendritic drainage, road benches, and small depressions the 1 m build blurred —
+adopted as the working RRIM. Tifs gitignored (whole `tiles/9t/` dir ignored); no >100 MB leak.
+
+---
+
 ## 2026-07-07 — WellSight: Red Relief Image Map (RRIM) visualization
 
 Added an RRIM terrain-visualization component (new `notebooks/wellsight/build/_make_rrim.py`).

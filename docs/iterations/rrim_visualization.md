@@ -38,20 +38,40 @@ Papers: `papers/` → *2008 RedReliefImageMap.pdf*, *2022 A Recipe for Simple Re
 
 ## Results
 
+Two builds of the same block (613590):
+
+**1 m (`data_3x3/westernpa_d20/613590/`):**
 - `rrim_openness_613590_1m.tif` (44 MB) — classic; differential openness ±5.15°.
 - `rrim_simple_613590_1m.tif` (43 MB) — LRM base.
-- `rrim_*_preview.png` (2250 px) — committed as the visual record.
+- `rrim_*_1m_preview.png` (2250 px) — committed as the visual record.
 
-Classic gives deeper valley contrast; simple/LRM is flatter but crisper on fine linear
-features. Both cleanly resolve the river corridor, drainage network, and slope benches.
-The full-tile GeoTIFFs are regenerable and gitignored; only the previews are tracked.
+**0.5 m native (`data/derivatives/tiles/9t/`, the canonical 9t stack):**
+- `rrim_openness_9t_05.tif` (176 MB, 9000×9000) — differential openness ±4.50°.
+- `rrim_simple_9t_05.tif` (174 MB) — LRM base.
+- `rrim_*_05_preview.png` (1800 px).
+
+The 0.5 m version is the working product going forward — 4× the pixels resolves the
+dendritic drainage as crisp teal threads, road benches as fine linears, and small
+depressions that the 1 m build blurred. Classic gives deeper valley contrast; simple/LRM
+is flatter but crisper on fine linear features. The full-tile GeoTIFFs are regenerable and
+gitignored (the whole `tiles/9t/` dir is ignored); only the 1 m previews are tracked.
 
 ## Reproduce
 
 ```bash
+# 1 m block build (data_3x3)
 python notebooks/wellsight/build/_make_rrim.py --tile 613590            # classic
 python notebooks/wellsight/build/_make_rrim.py --tile 613590 --simple   # LRM base
+
+# 0.5 m native (canonical 9t stack) — inputs are slope_9t_05.tif etc.
+python notebooks/wellsight/build/_make_rrim.py --tile 9t --suffix 05 \
+    --dir data/derivatives/tiles/9t                # classic
+python notebooks/wellsight/build/_make_rrim.py --tile 9t --suffix 05 \
+    --dir data/derivatives/tiles/9t --simple       # LRM base
 ```
+
+`--suffix` selects the input resolution token (`1m` for the data_3x3 build, `05` for the
+0.5 m 9t stack); filenames are `<name>_<tile>_<suffix>.tif`.
 
 ## Next
 
