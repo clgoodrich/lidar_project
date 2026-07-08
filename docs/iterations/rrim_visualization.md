@@ -50,6 +50,16 @@ Two builds of the same block (613590):
 - `rrim_simple_9t_05.tif` (174 MB) — LRM base.
 - `rrim_*_05_preview.png` (1800 px).
 
+**All study blocks (`label_grids/<block>/`, 1 m):** classic RRIM generated for all 8
+blocks (4 permian + 4 westernpa); Simple/LRM variant where an `lrm_11` raster exists
+(permian_01 + all 4 westernpa). permian_02/03/04 had openness but no slope raster —
+slope derived from their DEM with `gdaldem slope -compute_edges`, then classic RRIM built.
+The palette self-scales per block: flat Permian desert lands at DO ±1.5° (well pads read
+as sharp rectangular platforms, lease-road grid crisp), WPA at ±4–5° (incised stream
+valleys in vivid red/teal, full drainage network). Outputs are `rrim_{openness,simple}_
+<block>_1m.tif` (~20 MB at 3000², ~41 MB at 4500²) + previews. All gitignored under
+`label_grids/**` (tifs and pngs), regenerable.
+
 The 0.5 m version is the working product going forward — 4× the pixels resolves the
 dendritic drainage as crisp teal threads, road benches as fine linears, and small
 depressions that the 1 m build blurred. Classic gives deeper valley contrast; simple/LRM

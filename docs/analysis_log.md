@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-08 — WellSight: RRIM generated for all 8 study blocks
+
+Extended RRIM to every study block: `label_grids/{permian_01..04, westernpa_01..04}` (1 m).
+Classic (openness) RRIM for all 8; Simple/LRM variant for the 5 with an `lrm_11` raster
+(permian_01 + westernpa_01..04). permian_02/03/04 lacked a slope raster (openness only) —
+derived slope from their `dem_*_1m.tif` via `gdaldem slope -compute_edges`, then built classic
+RRIM. Palette self-scales per block: flat Permian at DO ±1.5° (pads read as sharp rectangular
+platforms, lease-road grid crisp — useful for the pad-transfer work), WPA at ±4–5° (incised
+valleys red/teal, drainage network resolved). Outputs `rrim_{openness,simple}_<block>_1m.tif`
+(~20 MB / 3000², ~41 MB / 4500²) + previews, all gitignored under `label_grids/**`. Audit clean.
+
+---
+
 ## 2026-07-08 — WellSight: RRIM regenerated at native 0.5 m into canonical 9t dir
 
 The first RRIM pass wrote into the 1 m `data_3x3/westernpa_d20/613590/` build; the canonical
