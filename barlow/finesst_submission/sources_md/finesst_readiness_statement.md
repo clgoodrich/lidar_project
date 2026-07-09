@@ -1,46 +1,35 @@
 # Research Readiness Statement
 
-*FINESST companion document (1-page limit). NOT anonymized. Red [brackets] are the few
-items still to confirm.*
+*FINESST §5.1.2.1. NOT anonymized. Up to one page. Authored by the FI.*
 
 ---
 
-**Degree program.** Colton Goodrich is a PhD student in Geosensing Systems Engineering &
-Sciences at the University of Houston (enrolled August 2025; expected graduation August
-2029). Craig L. Glennie (Professor) is the proposal PI.
+**a. Degree program and mentor preparation.** Colton Goodrich is a PhD student in Geosensing
+Systems Engineering & Sciences at the University of Houston, advised by the proposal PI,
+Craig L. Glennie. Graduate coursework in remote sensing and geosensing, together with prior
+degrees in Geology (M.S. and B.S., Brigham Young University) and a Geospatial Analysis
+certificate (Weber State University), provide a foundational understanding of terrain
+analysis, digital elevation models, and remote sensing relevant to the proposed research.
+The proposed project requires the Python scientific stack (NumPy, GDAL, Rasterio, PyTorch),
+PDAL, WhiteboxTools, and QGIS, together with DEM differencing, co-registration (ICP), and
+robust statistics; the FI is already proficient in each of these tools and methods. Two
+areas require further preparation — hierarchical/Bayesian statistical modeling and
+cold-regions (Antarctic) process geomorphology; the FI will address them through graduate
+coursework [course numbers/terms to confirm] and directed study with the PI before the
+analyses that depend on them.
 
-**Research experience.** The FI independently designed and built an end-to-end
-airborne-lidar terrain-analysis pipeline on the Appalachian Plateau (detecting historical
-disturbance features — excavated pits, access roads, and cleared pads): PDAL point-cloud
-processing, GDAL/WhiteboxTools bare-earth derivatives, hand-labeled training sets in QGIS,
-U-Net and instance-segmentation training with honest per-instance evaluation (PyTorch), and
-DEM-of-Difference change analysis with ICP co-registration and robust (NMAD-based)
-uncertainty. This is the exact method stack the proposed project uses — every tool named in
-the S/T/M methodology is one the FI already operates end to end. The FI has additionally applied
-InSAR-based DEM generation and accuracy assessment against lidar references in support of
-NASA Surface Topography and Vegetation (STV) objectives — further reinforcing the
-differencing and uncertainty methods central to this proposal.
+**b. Graduate study timeline.** Degree type: PhD. Subject area: Geosensing Systems
+Engineering & Sciences. Enrollment: enrolled since August 2025 (approximately one year at
+the proposal due date). Estimated graduation: August 2029.
 
-**Coursework.** *Completed:* graduate remote-sensing/geosensing coursework at UH
-(2025–present) [add course numbers/grades from transcript]; Geospatial Analysis certificate
-(Weber State, 2019); M.S./B.S. Geology (Brigham Young University). *Planned:*
-[Bayesian/hierarchical statistical modeling course, term] and [cold-regions geomorphology or
-hydrology course, or directed reading with the PI, term] — closing the two skill gaps:
-hierarchical driver modeling (O1) and Antarctic process knowledge.
-
-**Skills.** Python (NumPy, Pandas, GDAL, Rasterio, geopandas, PyTorch, ArcPy), SQL, MATLAB;
-PDAL, WhiteboxTools, ArcGIS Pro, QGIS, ENVI; SAR/InSAR, DEM differencing, NMAD/RMSE accuracy
-assessment; version-controlled, documentation-first practice (public repositories,
-per-experiment write-ups, analysis logs). Five years as an Environmental Scientist (Utah
-Division of Oil, Gas & Mining) in geospatial automation and technical presentation.
-
-**Why ready now.** The work begins with public-archive data acquisition and pipeline
-construction — the FI's demonstrated strength across both the STV DEM research and the
-Appalachian project. The new elements (Antarctic hydrology, hierarchical modeling) are
-scheduled as Year-1 coursework and PI mentorship, before the analyses that need them.
-
-**Graduate study timeline.** PhD, Geosensing Systems Engineering & Sciences; enrolled August
-2025; qualifying/candidacy exam [completed date / planned term]; proposed FINESST period
-01/2027–12/2029 (start + 3 years); expected graduation August 2029 [confirm — a full 3-year
-award through 12/2029 needs graduation ≥ 12/2029]. Milestones: Yr 1 coursework + attribution
-manuscript; Yr 2 generalization paper + AGU; Yr 3 synthesis + defense.
+**c. Other relevant experience.** The FI independently designed and built an end-to-end
+airborne-lidar terrain-analysis pipeline on the Appalachian Plateau — point-cloud processing
+(PDAL), bare-earth derivative generation (GDAL/WhiteboxTools), hand-labeled training-set
+construction (QGIS), U-Net and instance-segmentation model training (PyTorch), and
+DEM-of-Difference change analysis with ICP co-registration and NMAD-based uncertainty — an
+independent research project that exercises the methods used in the proposed work. Additional
+relevant experience includes InSAR-based DEM generation and accuracy assessment against lidar
+references; five years as an Environmental Scientist at the Utah Division of Oil, Gas & Mining
+(geospatial data analysis and Python automation); prior work as an Earth Scientist at
+Chevron; a graduate teaching assistantship at Brigham Young University; and a Python
+Programming course (The Tech Academy, 2024).
