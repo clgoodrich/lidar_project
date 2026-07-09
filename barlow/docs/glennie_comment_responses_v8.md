@@ -50,11 +50,23 @@ sees them; accept-all still equals v9):
   — metadata only, content untouched). Package PDF author field is clean
   ("Microsoft account").
 
-**Still open — font density.** Body text (11-pt Calibri) measures ~16.5–17 characters
-per horizontal inch; figure captions ~20 cpi. The solicitation caps body text *and
-captions* at 15 cpi ("typical of 12-point Times New Roman") and says non-compliant
-formatting "may be returned without review." Strict fix = 12-pt Times New Roman, which
-costs ~10% length and forces trimming to stay ≤ 6 pages. User's call.
+**Font density — RESOLVED (2026-07-09, same day).** v9 and v9_tracked converted from
+11-pt Calibri (~16.5–17 chars/inch; captions ~20) to **12-pt Times New Roman** — the
+solicitation's own compliance benchmark ("typical of 12-point Times New Roman").
+Captions are now 12-pt italic TNR; tables stay 9-pt (the rule covers body text and
+captions). The growth was absorbed without cutting any text: exact single line spacing
+(was 1.08×), paragraph space-after 8 pt → 6 pt, both figures scaled to 85%. Result:
+**v9 is now 6 pages total including references** (was 6 + refs spilling to p7); a
+trailing blank page was removed. No content changed except one repair: the LiDAR→lidar
+normalization had accidentally hit the verbatim title of ref [8] (Schenk et al.,
+"…Antarctic LiDAR data") — restored in both docs.
+
+⚠️ The same 15-cpi font rule applies to the **other proposal components** still in
+11-pt Calibri: the OSDMP (user's edited copy — not touched), the Mentoring Plan, and
+the Research Readiness Statement (1-page limit — converting may overflow it). These
+need the same conversion before PDF assembly. The package copies
+(`proposal_STM_v7` / `A1_proposal_STM`) also still carry the old font; they get
+replaced wholesale when Glennie accepts v9.
 
 ## Where each fix lives
 - The **stream-corridor figure** (Fig 2, `_fig_workflow.png`) is embedded in **v8, v9, and both `_tracked` docs** — the versions whose text already says "stream corridor."
