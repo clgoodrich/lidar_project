@@ -39,7 +39,7 @@ Real names/institutions here.
 | 3 | **Biosketch — PI (Glennie)** | none | ❌ TODO — use blank template |
 | 4 | `current_pending_FI_goodrichV2.docx` (**your** edited copy) | none | ✏️ yours; fill red brackets + sign. (Say the word and I'll strip its notes into a V3.) |
 | 5 | **Current & Pending — PI (Glennie)** | none | ❌ TODO — use blank template |
-| 6 | `facilities_acknowledgements_budget_v4.docx` | budget ~2 pp | ✅ notes stripped; F&E/acknowledgements/budget done. Fill remaining `[brackets]` (GPU/VRAM, fees, F&A treatment). |
+| 6 | `facilities_acknowledgements_budget_v4.docx` | budget ~2 pp | ✅ built from **your** v3 (GPU/NCALM filled, notes gone). ⚠️ budget Amount column is blank; "GPU" lists a CPU (Ryzen 7 5800X) — see notes |
 
 Older versions of each file are kept in-folder as history (nothing overwritten).
 
