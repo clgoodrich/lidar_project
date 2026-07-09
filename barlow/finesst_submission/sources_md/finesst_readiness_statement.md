@@ -1,52 +1,43 @@
 # Research Readiness Statement
 
-*FINESST companion document (1-page limit + graduate study timeline). This section is
-NOT anonymized — it names the FI and institution. Items in [brackets] are placeholders
-the FI must fill in personally; do not submit with brackets remaining.*
+*FINESST companion document (1-page limit). NOT anonymized. Red [brackets] are the few
+items still to confirm.*
 
 ---
 
-## Preparation
+**Degree program.** Colton Goodrich is a PhD student in Geosensing Systems Engineering &
+Sciences at the University of Houston (enrolled August 2025; expected graduation August
+2029). Craig L. Glennie (Professor) is the proposal PI.
 
-**Degree program.** [FI name] is a [PhD/MS] student in [department], [university],
-enrolled since [term/year], expected graduation [term/year]. [Advisor name] ([title])
-is the proposal PI.
+**Research experience.** The FI's doctoral research applies L-band SAR interferometry
+(SAOCOM-1A/1B, P-SBAS) to DEM generation and validation for NASA's Surface Topography and
+Vegetation (STV) Decadal Survey — DEM differencing and accuracy assessment against airborne
+lidar and Copernicus GLO-30 using robust statistics. The FI also independently built an
+end-to-end airborne-lidar terrain-analysis pipeline on the Appalachian Plateau: PDAL
+point-cloud processing, GDAL/WhiteboxTools derivatives, QGIS labeling, U-Net and
+instance-segmentation training in PyTorch, and DEM-of-Difference change analysis with ICP
+co-registration and NMAD-based uncertainty — the exact method stack this project uses.
 
-**Research experience.** The FI independently designed and built an end-to-end
-terrain-analysis pipeline on airborne lidar for an unrelated landscape (detecting
-historical disturbance features — excavated pits, access roads, and cleared pads —
-across the Appalachian Plateau): raw point-cloud processing (PDAL), bare-earth
-derivative generation (GDAL/WhiteboxTools), hand-labeled training-set construction in
-QGIS, U-Net and instance-segmentation model training and honest per-instance evaluation
-(PyTorch), and DEM-of-Difference change analysis with ICP co-registration and robust
-(NMAD-based) uncertainty. This is the same method stack the proposed project uses:
-every tool named in the S/T/M methodology is one the FI already operates end to end.
+**Coursework.** *Completed:* graduate remote-sensing/geosensing coursework at UH
+(2025–present) [add course numbers/grades from transcript]; Geospatial Analysis certificate
+(Weber State, 2019); M.S./B.S. Geology (Brigham Young University). *Planned:*
+[Bayesian/hierarchical statistical modeling course, term] and [cold-regions geomorphology or
+hydrology course, or directed reading with the PI, term] — closing the two skill gaps:
+hierarchical driver modeling (O1) and Antarctic process knowledge.
 
-**Coursework completed.** [List: e.g., remote sensing, GIS, statistics/ML courses with
-numbers and grades — pull from transcript.]
+**Skills.** Python (NumPy, Pandas, GDAL, Rasterio, geopandas, PyTorch, ArcPy), SQL, MATLAB;
+PDAL, WhiteboxTools, ArcGIS Pro, QGIS, ENVI; SAR/InSAR, DEM differencing, NMAD/RMSE accuracy
+assessment; version-controlled, documentation-first practice (public repositories,
+per-experiment write-ups, analysis logs). Five years as an Environmental Scientist (Utah
+Division of Oil, Gas & Mining) in geospatial automation and technical presentation.
 
-**Coursework planned.** [Bayesian / hierarchical statistical modeling course, term];
-[polar/cold-regions geomorphology or hydrology course or directed reading with the PI,
-term]. These directly close the two stated skill gaps: hierarchical driver modeling
-(O1) and Antarctic process knowledge.
+**Why ready now.** The work begins with public-archive data acquisition and pipeline
+construction — the FI's demonstrated strength across both the STV DEM research and the
+Appalachian project. The new elements (Antarctic hydrology, hierarchical modeling) are
+scheduled as Year-1 coursework and PI mentorship, before the analyses that need them.
 
-**Skills inventory.** Python scientific stack, PDAL/GDAL/WhiteboxTools, PyTorch,
-QGIS; version-controlled, documentation-first research practice (public repository,
-per-experiment write-ups, append-only analysis log). [Add: any field experience,
-presentations, publications, teaching.]
-
-**Why ready now.** The proposed work begins with data acquisition and pipeline
-construction from public archives — the exact activity the FI's prior project consisted
-of. The new elements (Antarctic hydrology context, hierarchical modeling) are scheduled
-as Year-1 coursework and PI mentorship, before the analyses that need them.
-
-## Graduate study timeline
-
-| Item | Detail |
-|---|---|
-| Degree sought | [PhD/MS], [subject area] |
-| Enrolled since | [term, year] |
-| Qualifying/candidacy exam | [completed date / planned term] |
-| Proposed FINESST period | Award start + 3 years |
-| Expected graduation | [term, year — must accommodate the 3-year award] |
-| Milestones during award | Yr 1: coursework + attribution manuscript; Yr 2: generalization paper + AGU; Yr 3: synthesis + defense |
+**Graduate study timeline.** PhD, Geosensing Systems Engineering & Sciences; enrolled August
+2025; qualifying/candidacy exam [completed date / planned term]; proposed FINESST period
+01/2027–12/2029 (start + 3 years); expected graduation August 2029 [confirm — a full 3-year
+award through 12/2029 needs graduation ≥ 12/2029]. Milestones: Yr 1 coursework + attribution
+manuscript; Yr 2 generalization paper + AGU; Yr 3 synthesis + defense.

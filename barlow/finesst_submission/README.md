@@ -34,7 +34,7 @@ Real names/institutions here.
 
 | Order | File | Limit | Status |
 |---|---|---|---|
-| 1 | `research_readiness_statement.docx` | ≤1 pp | ⚠️ fill `[brackets]` (coursework, dates) |
+| 1 | `research_readiness_statement.docx` | ≤1 pp | ✅ filled from CV; 2 small brackets left (transcript courses, exam date) |
 | 2 | `biosketch_FI_goodrich.docx` | none | ✅ built; sign + date |
 | 3 | **Biosketch — PI (Glennie)** | none | ❌ TODO — use blank template |
 | 4 | `current_pending_FI_goodrich.docx` | none | ⚠️ drafted; fill red brackets + sign |
@@ -67,8 +67,17 @@ margin rule; everything else uses ≥1-inch margins.
 2. **Current & Pending — PI (Glennie)** — his content into the blank template.
    (FI Current & Pending is drafted — just fill the red brackets: tuition-waiver
    value, appointment length, person-months, period of performance.)
-3. **Fill `[bracketed]` placeholders** — readiness statement (name, program dates,
-   coursework) and ancillary (GPU model/VRAM, budget dollar amounts).
+3. **Fill remaining `[bracketed]` placeholders** — readiness statement (transcript
+   course numbers/grades, qualifying-exam date), C&P (tuition/fees confirm, funding
+   source), and ancillary (GPU model/VRAM, budget dollar amounts).
+
+### ⚠️ Two timing decisions (affect proposal, C&P, RRS, budget)
+- **FINESST start must fall Jan–Jul 2027** (no earlier than Jan 2027; no later than one
+  year after the 14 Jul 2026 due date). August 2026 and August 2027 are both invalid.
+  Docs currently use **01/2027**.
+- **A full 3-year award runs to ~12/2029**, but your stated **graduation is 08/2029**.
+  Either extend expected graduation to ≥12/2029, or shorten the award to end at graduation.
+  Docs currently show 01/2027–12/2029 with this flagged.
 4. **Sign + date** the FI biosketch.
 5. **Verify** reference `[9]` (Fountain et al. 1999) matches the source the PI intended.
 6. **Assemble** the two PDFs in the order above and upload to NSPIRES with the
