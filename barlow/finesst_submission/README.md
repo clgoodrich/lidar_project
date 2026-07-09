@@ -39,7 +39,7 @@ Real names/institutions here.
 | 3 | **Biosketch — PI (Glennie)** | none | ❌ TODO — use blank template |
 | 4 | `current_pending_FI_goodrich.docx` | none | ⚠️ drafted; fill red brackets + sign |
 | 5 | **Current & Pending — PI (Glennie)** | none | ❌ TODO — use blank template |
-| 6 | `facilities_acknowledgements_budget_v2.docx` | budget ~2 pp | ⚠️ F&E tightened to §5.1.2.4; fill `[brackets]` (GPU, $ amounts). (v1 is stale — was locked in Word) |
+| 6 | `facilities_acknowledgements_budget_v3.docx` | budget ~2 pp | ✅ F&E tightened; acknowledgements (Glennie + Barlow, 119 words); budget filled with stipend/tuition. Fill remaining `[brackets]` (GPU/VRAM, fees, F&A treatment). (v1/v2 kept as history) |
 
 Note: NASA Biosketch and Current & Pending templates are **exempt** from the 1-inch
 margin rule; everything else uses ≥1-inch margins.
