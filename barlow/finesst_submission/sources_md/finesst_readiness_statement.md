@@ -9,14 +9,17 @@ items still to confirm.*
 Sciences at the University of Houston (enrolled August 2025; expected graduation August
 2029). Craig L. Glennie (Professor) is the proposal PI.
 
-**Research experience.** The FI's doctoral research applies L-band SAR interferometry
-(SAOCOM-1A/1B, P-SBAS) to DEM generation and validation for NASA's Surface Topography and
-Vegetation (STV) Decadal Survey — DEM differencing and accuracy assessment against airborne
-lidar and Copernicus GLO-30 using robust statistics. The FI also independently built an
-end-to-end airborne-lidar terrain-analysis pipeline on the Appalachian Plateau: PDAL
-point-cloud processing, GDAL/WhiteboxTools derivatives, QGIS labeling, U-Net and
-instance-segmentation training in PyTorch, and DEM-of-Difference change analysis with ICP
-co-registration and NMAD-based uncertainty — the exact method stack this project uses.
+**Research experience.** The FI independently designed and built an end-to-end
+airborne-lidar terrain-analysis pipeline on the Appalachian Plateau (detecting historical
+disturbance features — excavated pits, access roads, and cleared pads): PDAL point-cloud
+processing, GDAL/WhiteboxTools bare-earth derivatives, hand-labeled training sets in QGIS,
+U-Net and instance-segmentation training with honest per-instance evaluation (PyTorch), and
+DEM-of-Difference change analysis with ICP co-registration and robust (NMAD-based)
+uncertainty. This is the exact method stack the proposed project uses — every tool named in
+the S/T/M methodology is one the FI already operates end to end. The FI has additionally applied
+InSAR-based DEM generation and accuracy assessment against lidar references in support of
+NASA Surface Topography and Vegetation (STV) objectives — further reinforcing the
+differencing and uncertainty methods central to this proposal.
 
 **Coursework.** *Completed:* graduate remote-sensing/geosensing coursework at UH
 (2025–present) [add course numbers/grades from transcript]; Geospatial Analysis certificate
