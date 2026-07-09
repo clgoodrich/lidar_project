@@ -7,25 +7,20 @@ submission time per the solicitation's upload structure. [Brackets] = facts to c
 
 ## A. Facilities, Equipment, and Resources Statement
 
-*(No page limit; half a page is typical. Non-anonymized is acceptable here — confirm
-against the final F.5 text.)*
-
 The proposed work requires modest, already-available resources; no facility development
-or shared-instrument time is needed.
+or shared-instrument time is needed. The proposing team has regular access to all
+resources below, so no resource-support letter is required.
 
 **Computing.** A workstation with a single consumer GPU ([model], [VRAM] GB) and [N] TB
 of local storage, owned by [the research group / the FI], is sufficient for all model
 training and elevation processing in the proposal. The institution provides
 [institutional HPC name, if any] as surplus capacity; the project does not depend on it.
 
+**Workspace.** The FI has [office/lab space] in [department], with institutional backup
+storage for working data.
+
 **Software.** The full processing stack is open source (Python scientific stack, PDAL,
 GDAL/OGR, WhiteboxTools, PyTorch, QGIS). No commercial licenses are required.
-
-**Data.** All required datasets are free and public (proposal §4 table); the single
-author-gated item (training labels) has a budgeted fallback. No data purchases.
-
-**Workspace.** The FI has [office/lab space] in [department], with institutional backup
-storage for working data and the public archives (Zenodo, EDI) for released products.
 
 **Field work.** None proposed. The project is entirely archival-data-based; no Antarctic
 deployment, logistics support, or permitting is required.
