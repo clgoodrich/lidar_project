@@ -8,17 +8,17 @@ Consolidated proposal materials for the FINESST graduate research proposal
 - **Division/program:** NASA Earth Science Division (see proposal "NASA Relevance")
 - **Due:** 14 July 2026, 11:59 pm ET, via NSPIRES
 
-This folder is a **snapshot** of the current deliverables. The live editing copies
-stay in `barlow/docs/` (built from the `.md` sources via `barlow/build/_md_to_*.py`);
-re-copy into this folder after any edit. Source `.md` files are mirrored in `sources_md/`.
+This folder contains **only** files that are part of the submission. Editing sources,
+the solicitation, blank templates, and other reference material live elsewhere under
+`barlow/` and `barlow/docs/`, not here. When a deliverable is updated it is synced into
+this folder in the same step, so the package always reflects what will be uploaded.
 
 ---
 
 ## How this maps to the NSPIRES upload
 
 FINESST is submitted as **two PDFs** (plus optional HEC), each assembled by
-concatenating the components below in order. See `reference/FINESST-25_solicitation.pdf`
-§5.1.
+concatenating the components below in order (solicitation §5.1).
 
 ### PDF 1 — Anonymized Technical Proposal  (`1_anonymized_technical/`)
 Dual-anonymous: no names, no institutions, numerical `[n]` citations only.
@@ -46,25 +46,22 @@ margin rule; everything else uses ≥1-inch margins.
 
 ---
 
-## Folder contents
+## Folder contents (submission files only)
 
 - `1_anonymized_technical/` — the 3 anonymized components (.docx + .pdf each)
 - `2_expertise_resources_NOT_anonymized/` — the non-anonymized components present so far
-- `templates_blank/` — blank NASA forms for the 3 missing items:
-  - `biosketch-form.docx` (for Glennie)
-  - `current-and-pending-support-cps-form.docx` (for both FI and PI)
-- `reference/`
-  - `FINESST-25_solicitation.pdf` — the corrected F.5 call
-  - `PI_edits_v5_cgedits.docx` — Glennie's tracked-changes edits (provenance for v7)
-  - `figures/fig_location.png` — Figure 1 source (already embedded in the proposal)
-- `sources_md/` — editable Markdown sources for the built components
+
+Kept **outside** this folder (needed to build, but not submitted):
+- Blank NASA forms → `barlow/docs/finesst_templates_blank/` (for Glennie's biosketch + C&P)
+- Editable `.md` sources → `barlow/docs/` (built via `barlow/build/_md_to_*.py`)
+- Solicitation, PI edits, figure sources → `barlow/` and `barlow/docs/`
 
 ---
 
 ## Outstanding before submission
 
-1. **Glennie biosketch** — his content into `templates_blank/biosketch-form.docx`.
-2. **Current & Pending — PI (Glennie)** — his content into the blank template.
+1. **Glennie biosketch** — his content into `barlow/docs/finesst_templates_blank/biosketch-form.docx`.
+2. **Current & Pending — PI (Glennie)** — his content into the blank C&P template.
    (FI Current & Pending is drafted — just fill the red brackets: tuition-waiver
    value, appointment length, person-months, period of performance.)
 3. **Fill remaining `[bracketed]` placeholders** — readiness statement (transcript
