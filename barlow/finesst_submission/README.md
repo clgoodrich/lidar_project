@@ -37,7 +37,7 @@ Real names/institutions here.
 | 1 | `research_readiness_statement.docx` | ≤1 pp | ⚠️ fill `[brackets]` (coursework, dates) |
 | 2 | `biosketch_FI_goodrich.docx` | none | ✅ built; sign + date |
 | 3 | **Biosketch — PI (Glennie)** | none | ❌ TODO — use blank template |
-| 4 | **Current & Pending — FI (Goodrich)** | none | ❌ TODO — use blank template |
+| 4 | `current_pending_FI_goodrich.docx` | none | ⚠️ drafted; fill red brackets + sign |
 | 5 | **Current & Pending — PI (Glennie)** | none | ❌ TODO — use blank template |
 | 6 | `facilities_acknowledgements_budget.docx` | budget ~2 pp | ⚠️ fill `[brackets]` (GPU, $ amounts) |
 
@@ -64,7 +64,9 @@ margin rule; everything else uses ≥1-inch margins.
 ## Outstanding before submission
 
 1. **Glennie biosketch** — his content into `templates_blank/biosketch-form.docx`.
-2. **Current & Pending** for both FI and PI (required even if nothing to report).
+2. **Current & Pending — PI (Glennie)** — his content into the blank template.
+   (FI Current & Pending is drafted — just fill the red brackets: tuition-waiver
+   value, appointment length, person-months, period of performance.)
 3. **Fill `[bracketed]` placeholders** — readiness statement (name, program dates,
    coursework) and ancillary (GPU model/VRAM, budget dollar amounts).
 4. **Sign + date** the FI biosketch.
