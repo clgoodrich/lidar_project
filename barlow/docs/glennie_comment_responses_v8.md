@@ -68,6 +68,29 @@ need the same conversion before PDF assembly. The package copies
 (`proposal_STM_v7` / `A1_proposal_STM`) also still carry the old font; they get
 replaced wholesale when Glennie accepts v9.
 
+## v10 — three ideas adopted from the PI's NSF 25-526 project description (2026-07-09)
+
+Glennie shared his pending NSF proposal (same MDV program, written with Levy and
+Fountain) "to help formulate the hypotheses and testing a little bit better." Rather
+than reformulating the hypotheses (kept as-is), v10 adopts the three genuinely
+strong *procedures* from it, as tracked insertions in **v10_tracked** (forked from
+v9/v9_tracked; accept-all == v10 verified):
+
+1. **Same-epoch zero-change validation** (O3 approach): difference a 2014 REMA DEM
+   against the 2014 lidar DEM — same year, so true change is zero and every residual
+   is sensor error. Calibrates the noise model with no stable-ground assumption.
+2. **Insolation→discharge proxy for ungauged streams** (O1 approach + Assessment):
+   regress measured discharge on source-glacier summer insolation over the gauged
+   streams, apply to ungauged ones — extends the sample beyond 21 streams and fills
+   the post-2015 gauge gap the Assessment previously conceded without mitigation.
+3. **Operational stable-ground definition** (O2 approach): stable ground = areas the
+   channel detector classifies as non-stream in every epoch — computed, not assumed.
+
+No preliminary results or unpublished numbers were imported (FINESST plan-only,
+DAPR-clean). Deliberately NOT adopted: MDV-wide expansion (the NSF award's lane),
+Levy's substrate datasets (collaborator's workstream), and their H1 framing.
+Pagination: S/T/M still ends on p6; references spill to p7 (excluded from the limit).
+
 ## Where each fix lives
 - The **stream-corridor figure** (Fig 2, `_fig_workflow.png`) is embedded in **v8, v9, and both `_tracked` docs** — the versions whose text already says "stream corridor."
 - **v7** and the package copies (`finesst_final/A1_proposal_STM`, `finesst_submission/.../proposal_STM_v7`) keep the **original "valley floor" figure**, because their text still says valley floor. Figure and text stay consistent within each version. When Glennie accepts the v9 tracked changes, the accepted result (v9 text + new figure) replaces v7 as the package base.
