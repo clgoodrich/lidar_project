@@ -26,20 +26,22 @@ Dual-anonymous: no names, no institutions, numerical `[n]` citations only.
 | Order | File | Limit | Status |
 |---|---|---|---|
 | 1 | `proposal_STM_v7.docx` (Science/Technical/Management + References) | ≤6 pp excl. refs | ✅ 6 pp; DAPR-clean |
-| 2 | `osdmp.docx` (Open Science & Data Management Plan) | ≤2 pp | ✅ 2 pp |
-| 3 | `mentoring_plan.docx` (unsigned) | ≤2 pp | ✅ 2 pp |
+| 2 | `osdmp_v2.docx` (**your** edited copy — the one to submit) | ≤2 pp | ✏️ yours; clear its own notes |
+| 3 | `mentoring_plan_v2.docx` (unsigned; notes stripped) | ≤2 pp | ✅ 2 pp |
 
 ### PDF 2 — Expertise & Resources, NOT anonymized  (`2_expertise_resources_NOT_anonymized/`)
 Real names/institutions here.
 
 | Order | File | Limit | Status |
 |---|---|---|---|
-| 1 | `research_readiness_statement.docx` | ≤1 pp | ✅ filled from CV; 2 small brackets left (transcript courses, exam date) |
-| 2 | `biosketch_FI_goodrich.docx` | none | ✅ built; sign + date |
+| 1 | `research_readiness_statement_v3.docx` | ≤1 pp | ✅ notes stripped; 2 small brackets left (transcript courses, exam date) |
+| 2 | `biosketch_FI_goodrich_v2.docx` | none | ✅ notes stripped; sign + date |
 | 3 | **Biosketch — PI (Glennie)** | none | ❌ TODO — use blank template |
-| 4 | `current_pending_FI_goodrich.docx` | none | ⚠️ drafted; fill red brackets + sign |
+| 4 | `current_pending_FI_goodrichV2.docx` (**your** edited copy) | none | ✏️ yours; fill red brackets + sign. (Say the word and I'll strip its notes into a V3.) |
 | 5 | **Current & Pending — PI (Glennie)** | none | ❌ TODO — use blank template |
-| 6 | `facilities_acknowledgements_budget_v3.docx` | budget ~2 pp | ✅ F&E tightened; acknowledgements (Glennie + Barlow, 119 words); budget filled with stipend/tuition. Fill remaining `[brackets]` (GPU/VRAM, fees, F&A treatment). (v1/v2 kept as history) |
+| 6 | `facilities_acknowledgements_budget_v4.docx` | budget ~2 pp | ✅ notes stripped; F&E/acknowledgements/budget done. Fill remaining `[brackets]` (GPU/VRAM, fees, F&A treatment). |
+
+Older versions of each file are kept in-folder as history (nothing overwritten).
 
 Note: NASA Biosketch and Current & Pending templates are **exempt** from the 1-inch
 margin rule; everything else uses ≥1-inch margins.
