@@ -20,6 +20,42 @@ names stay out (see #8).
 - **#1** is a real scope decision — v8/v9 narrow to the corridor per his steer; confirm that's the intended call (vs. defending the whole-valley scope). This is the only one of the nine that is a judgment call rather than a mechanical fix.
 - Length holds: S/T/M = 6 pages (references [1]–[9] spill to p7, which don't count).
 
+## Proofread + solicitation-compliance pass (2026-07-09)
+
+A line-by-line proofread of v9 against the F.05 FINESST solicitation (corrected 4/15/26)
+produced these fixes, applied to **v9 and v9_tracked** (as tracked changes, so Glennie
+sees them; accept-all still equals v9):
+
+- **Division/program named** (required element, §5.1.1.1): NASA Relevance now opens with
+  *"…relevant to NASA's Earth Science Division — most directly the Cryospheric Sciences
+  and Terrestrial Hydrology programs…"* Swap the program names if Glennie prefers others.
+- **Figure 1 caption** no longer ends mid-sentence ("…measures; " → "…measures.").
+- **NASA Relevance** editing artifact removed ("— reference for this as well [8]" →
+  "[8]"), and the stray comma before "into a continuing" dropped.
+- **Hypothesis fixes**: "sediment movement" → "channel change" (now matches the O1
+  approach), and the falsification test now reads "if discharge alone predicts channel
+  migration as well as or better than melt energy" (before, *any* discharge correlation
+  failed the hypothesis).
+- **Uncited references fixed**: [5] (U-Net) now cited at the Present Data bullet, [3]
+  (NMAD robust stats) at the robust-statistics note.
+- **Numbers reconciled**: "roughly 20 gauged streams" → "21" (matches the table).
+- **Garbled sentence** repaired: "repeat acquisition and valley wide REMA" →
+  "repeat-acquisition airborne lidar and valley-wide REMA".
+- Consistency: "LiDAR" → "lidar" (5×), "high resolution" → "high-resolution" (2×),
+  "Objective 3" heading gets its colon, ref [9] en-dash, comma before "or has been
+  given" dropped.
+- **DAPR metadata scrub** (§5.2 "document properties…properly anonymized"):
+  `lastModifiedBy: Craig Glennie` blanked in v9, v9_tracked, and the package copies
+  (`finesst_submission/.../proposal_STM_v7.docx`, `finesst_final/A1_proposal_STM.docx`
+  — metadata only, content untouched). Package PDF author field is clean
+  ("Microsoft account").
+
+**Still open — font density.** Body text (11-pt Calibri) measures ~16.5–17 characters
+per horizontal inch; figure captions ~20 cpi. The solicitation caps body text *and
+captions* at 15 cpi ("typical of 12-point Times New Roman") and says non-compliant
+formatting "may be returned without review." Strict fix = 12-pt Times New Roman, which
+costs ~10% length and forces trimming to stay ≤ 6 pages. User's call.
+
 ## Where each fix lives
 - The **stream-corridor figure** (Fig 2, `_fig_workflow.png`) is embedded in **v8, v9, and both `_tracked` docs** — the versions whose text already says "stream corridor."
 - **v7** and the package copies (`finesst_final/A1_proposal_STM`, `finesst_submission/.../proposal_STM_v7`) keep the **original "valley floor" figure**, because their text still says valley floor. Figure and text stay consistent within each version. When Glennie accepts the v9 tracked changes, the accepted result (v9 text + new figure) replaces v7 as the package base.
