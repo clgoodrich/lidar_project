@@ -43,70 +43,70 @@ def arrow(x0, y0, x1, y1, style="-|>", lw=1.6, ls="-", color=EDGE):
 
 
 # ---- title ---------------------------------------------------------------
-ax.text(50, 97.5, "Detection-to-attribution workflow (planned)",
+ax.text(50, 96.5, "Detection-to-attribution workflow (planned)",
         ha="center", va="center", fontsize=19)
 
-# ---- top: three DEM epochs ----------------------------------------------
-box(31, 83, 21, 8, "2001 lidar DEM\nNASA ATM  ·  2 m", BLUE)
-box(52, 83, 21, 8, "2014 lidar DEM\nNCALM  ·  1 m", BLUE)
-box(73, 83, 21, 8, "2021–23 REMA\nsatellite  ·  2 m", BLUE)
+# ---- top: three DEM epochs (w=19 at 22-unit pitch -> ~3-unit gaps) --------
+box(30, 86, 19, 8, "2001 lidar DEM\nNASA ATM · 2 m", BLUE, fs=12)
+box(52, 86, 19, 8, "2014 lidar DEM\nNCALM · 1 m", BLUE, fs=12)
+box(74, 86, 19, 8, "2021–23 REMA\nsatellite · 2 m", BLUE, fs=12)
 
 # ---- ICESat-2 external control (NASA instrument) -------------------------
 # Glennie #5: show a current NASA instrument used as external control.
-box(11.5, 68, 19, 9, "ICESat-2 control\nNASA · ATL06/08\nexternal elevation\ntie-point",
-    CTRL, fs=11)
+box(11, 69, 18, 10, "ICESat-2 control\nNASA · ATL06/08\nexternal elevation\ntie-point",
+    CTRL, fs=10.5)
 
 # ---- co-register bar -----------------------------------------------------
-box(52, 68, 54, 8,
+box(53, 69, 52, 8,
     "Co-register to airborne lidar + ICESat-2 control\n"
-    "median bias → optional ICP  ·  reproject EPSG:3294  ·  common grid",
+    "median bias → optional ICP · reproject EPSG:3294 · common grid",
     GRAY, fs=11)
 
-for x in (31, 52, 73):
-    arrow(x, 79, x, 72.2)          # epochs -> co-register bar
-arrow(21.2, 68, 24.8, 68)          # ICESat-2 -> co-register bar
+for x in (30, 52, 74):
+    arrow(x, 81.6, x, 73.2)        # epochs -> co-register bar
+arrow(20.4, 69, 26.6, 69)          # ICESat-2 -> co-register bar
 
 # ---- DEM-of-Difference ---------------------------------------------------
-box(46, 58, 40, 6.4, "DEM-of-Difference (DoD)", GRAY, fs=14)
-arrow(48, 63.8, 46, 61.3)
+box(48, 58.5, 36, 6.4, "DEM-of-Difference (DoD)", GRAY, fs=13)
+arrow(51, 64.6, 49, 61.9)
 
 # ---- per-pixel detection floor ------------------------------------------
-box(43, 47.5, 58, 6.6,
+box(38, 48, 54, 6.6,
     "Per-pixel detection floor:  LOD95 = 1.96·√(NMAD₁² + NMAD₂²)",
-    GRAY, fs=13)
-arrow(46, 54.8, 44, 50.8)
+    GRAY, fs=12)
+arrow(46, 55.1, 42, 51.5)
 
 # ---- O3 uncertainty (feeds the floor) -----------------------------------
-box(84, 47.5, 28, 11,
+box(83, 48, 27, 11,
     "O3 · uncertainty\nNMAD(slope, aspect, sensor)\n→ per-pixel threshold\n"
-    "5% stable-ground check", PURPLE, fs=11.5)
-arrow(69.8, 47.5, 72.2, 47.5)
+    "5% stable-ground check", PURPLE, fs=10.5)
+arrow(69.1, 48, 65.4, 48)
 
 # ---- O1 branch (green) ---------------------------------------------------
-box(24, 33.5, 30, 8.4,
-    "O1 · channels\nsum change in outline → rate (mm/yr)", GREEN, fs=12)
-box(24, 21, 30, 8.4,
-    "Driver table: PDD, insolation,\ndischarge, thaw, lake, glacier", GREEN, fs=12)
-box(24, 8.5, 30, 8.4,
-    "Attribution: hierarchical + RF\n(leave-one-stream-out CV)", GREEN, fs=12)
+box(23, 33.5, 32, 8.4,
+    "O1 · channels\nsum change in outline → rate (mm/yr)", GREEN, fs=11.5)
+box(23, 21, 32, 8.4,
+    "Driver table: PDD, insolation,\ndischarge, thaw, lake, glacier", GREEN, fs=11.5)
+box(23, 8.5, 32, 8.4,
+    "Attribution: hierarchical + RF\n(leave-one-stream-out CV)", GREEN, fs=11.5)
 
 # ---- O2 branch (orange) --  Glennie #1/#5: valley floor -> stream corridor
-box(66, 33.5, 30, 8.4,
-    "O2 · stream corridor\nchange patches + attributes", ORANGE, fs=12)
-box(66, 21, 30, 8.4,
+box(67, 33.5, 32, 8.4,
+    "O2 · stream corridor\nchange patches + attributes", ORANGE, fs=11.5)
+box(67, 21, 32, 8.4,
     "Process classifier: channel /\nthermokarst / slope / fan / lake-margin",
-    ORANGE, fs=12)
-box(66, 8.5, 30, 8.4,
-    "Per-class rates →\ndriver fingerprints (H2)", ORANGE, fs=12)
+    ORANGE, fs=11.5)
+box(67, 8.5, 32, 8.4,
+    "Per-class rates →\ndriver fingerprints (H2)", ORANGE, fs=11.5)
 
 # floor -> O1 and O2
-arrow(35, 44.2, 26, 37.7)
-arrow(52, 44.2, 63, 37.7)
+arrow(30, 44.4, 25, 38.1)
+arrow(48, 44.4, 63, 38.1)
 # vertical chains
-arrow(24, 29.3, 24, 25.2); arrow(24, 16.8, 24, 12.7)
-arrow(66, 29.3, 66, 25.2); arrow(66, 16.8, 66, 12.7)
+arrow(23, 28.9, 23, 25.6); arrow(23, 16.4, 23, 13.1)
+arrow(67, 28.9, 67, 25.6); arrow(67, 16.4, 67, 13.1)
 # O1 attribution -> O2 per-class (dashed cross-link)
-arrow(39, 8.5, 51, 8.5, ls="--", lw=1.5)
+arrow(39.4, 8.5, 50.6, 8.5, ls="--", lw=1.5)
 
 fig.savefig(OUT, dpi=200, bbox_inches="tight", facecolor="white")
 plt.close(fig)
