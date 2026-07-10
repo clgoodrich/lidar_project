@@ -96,6 +96,16 @@ sentence, the falsification clause, and the four v10 additions) were rewritten t
 match the FI's v1 voice — short declarative sentences, plain verbs, first person,
 no colon-chains or em-dash asides. Content unchanged; accept-all == v10 re-verified.
 
+**Comment #6 completion (same day):** an audit against "reformulate… ideally as
+hypotheses" found O1 compliant (v8 fix) but **O2 still task-framed**, and Figure 2's
+"driver fingerprints (H2)" box referenced an H2 the text never stated. Added to O2:
+*"We expect each process type to carry its own driver fingerprint. Bank thaw should
+track summer thaw, channel shift should track peak discharge, and fan growth should
+follow both (H2). If every process type responds to the drivers the same way, the
+fingerprint idea fails and the classification carries no explanatory weight."* Also
+tagged O1's hypothesis "(H1)" so the numbering is coherent. O3 left method-framed on
+purpose — its falsifiable 5% success test plus the zero-change check carry it.
+
 ## Where each fix lives
 - The **stream-corridor figure** (Fig 2, `_fig_workflow.png`) is embedded in **v8, v9, and both `_tracked` docs** — the versions whose text already says "stream corridor."
 - **v7** and the package copies (`finesst_final/A1_proposal_STM`, `finesst_submission/.../proposal_STM_v7`) keep the **original "valley floor" figure**, because their text still says valley floor. Figure and text stay consistent within each version. When Glennie accepts the v9 tracked changes, the accepted result (v9 text + new figure) replaces v7 as the package base.
