@@ -39,7 +39,7 @@ Real names/institutions here.
 | 3 | **Biosketch — PI (Glennie)** | none | ❌ TODO — use blank template |
 | 4 | `current_pending_FI_goodrichV3.docx` (your V2 + scope fix: "valley-floor" → "stream-corridor" to match the narrowed O2) | none | ✏️ fill red brackets + sign; V2 kept as your edited source. ⚠️ if the PI's NSF 25-526 proposal would fund your RA-ship, list it as pending here |
 | 5 | **Current & Pending — PI (Glennie)** | none | ❌ TODO — must list his pending NSF 25-526 proposal (overlapping MDV work) |
-| 6 | `facilities_acknowledgements_budget_v4.docx` (12-pt TNR) | budget ~2 pp | ✅ 2 pp. ⚠️ budget Amount column is blank; "GPU" lists a CPU (Ryzen 7 5800X) — see notes |
+| 6 | `facilities_acknowledgements_budget_v4.docx` (12-pt TNR) | budget ~2 pp | ✅ 2 pp; GPU corrected to NVIDIA GeForce GTX 1070 Ti (8 GB). ⚠️ budget Amount column is blank |
 
 Older versions of each file are kept in-folder as history (nothing overwritten).
 

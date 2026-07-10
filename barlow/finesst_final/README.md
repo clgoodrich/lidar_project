@@ -21,8 +21,8 @@ Assemble into the two NSPIRES upload PDFs in this order:
   pending NSF 25-526 proposal (overlapping MDV work).
 - **Sign + date** B2 (FI biosketch) and B4 (FI C&P).
 - **Budget amounts** in B6 (Amount column is blank).
-- **B6 "GPU"** currently lists a CPU (Ryzen 7 5800X) — name the actual GPU.
 - A few small brackets in B1 (transcript courses, exam date) and B4.
+  (B6 GPU is now correct: NVIDIA GeForce GTX 1070 Ti, 8 GB.)
 
 Status 2026-07-09: A1 is the **accepted v10** S/T/M (Glennie comments #1–#9
 resolved; H1/H2 stated; 12-pt TNR). A2/A3/B1/B6 converted to 12-pt TNR,
