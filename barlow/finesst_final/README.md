@@ -21,8 +21,10 @@ Assemble into the two NSPIRES upload PDFs in this order:
   pending NSF 25-526 proposal (overlapping MDV work).
 - **Sign + date** B2 (FI biosketch) and B4 (FI C&P).
 - **Budget amounts** in B6 (Amount column is blank).
-- A few small brackets in B1 (transcript courses, exam date) and B4.
-  (B6 GPU is now correct: NVIDIA GeForce GTX 1070 Ti, 8 GB.)
+- **Timing mismatch**: B2 says graduation 08/2029, B4's FINESST entry ends 12/2029 —
+  align one of them.
+  (B1 brackets are filled — v4 from the FI's edited source; B4 has no brackets;
+  B6 GPU is correct: NVIDIA GeForce GTX 1070 Ti, 8 GB; FI ORCID is on file.)
 
 Status 2026-07-09: A1 is the **accepted v10** S/T/M (Glennie comments #1–#9
 resolved; H1/H2 stated; 12-pt TNR). A2/A3/B1/B6 converted to 12-pt TNR,

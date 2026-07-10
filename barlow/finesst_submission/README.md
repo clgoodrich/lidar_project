@@ -34,10 +34,10 @@ Real names/institutions here.
 
 | Order | File | Limit | Status |
 |---|---|---|---|
-| 1 | `research_readiness_statement_v3.docx` (12-pt TNR) | ≤1 pp | ✅ 1 pp; 2 small brackets left (transcript courses, exam date) |
+| 1 | `research_readiness_statement_v4.docx` (your edited source w/ courses filled + 12-pt TNR) | ≤1 pp | ✅ 1 pp; no brackets left |
 | 2 | `biosketch_FI_goodrich_v2.docx` | none | ✅ notes stripped; sign + date (NASA template — formatting left as-is) |
 | 3 | **Biosketch — PI (Glennie)** | none | ❌ TODO — use blank template |
-| 4 | `current_pending_FI_goodrichV3.docx` (your V2 + scope fix: "valley-floor" → "stream-corridor" to match the narrowed O2) | none | ✏️ fill red brackets + sign; V2 kept as your edited source. ⚠️ if the PI's NSF 25-526 proposal would fund your RA-ship, list it as pending here |
+| 4 | `current_pending_FI_goodrichV3.docx` (your V2 + scope fix: "valley-floor" → "stream-corridor" to match the narrowed O2) | none | ✅ no brackets; just **sign**; V2 kept as your edited source. ⚠️ if the PI's NSF 25-526 proposal would fund your RA-ship, list it as pending here |
 | 5 | **Current & Pending — PI (Glennie)** | none | ❌ TODO — must list his pending NSF 25-526 proposal (overlapping MDV work) |
 | 6 | `facilities_acknowledgements_budget_v4.docx` (12-pt TNR) | budget ~2 pp | ✅ 2 pp; GPU corrected to NVIDIA GeForce GTX 1070 Ti (8 GB). ⚠️ budget Amount column is blank |
 
@@ -63,26 +63,24 @@ Kept **outside** this folder (needed to build, but not submitted):
 ## Outstanding before submission
 
 1. **Glennie biosketch** — his content into `barlow/docs/finesst_templates_blank/biosketch-form.docx`.
-2. **Current & Pending — PI (Glennie)** — his content into the blank C&P template.
-   (FI Current & Pending is drafted — just fill the red brackets: tuition-waiver
-   value, appointment length, person-months, period of performance.)
-3. **Fill remaining `[bracketed]` placeholders** — readiness statement (transcript
-   course numbers/grades, qualifying-exam date), C&P (tuition/fees confirm, funding
-   source), and ancillary (GPU model/VRAM, budget dollar amounts).
+2. **Current & Pending — PI (Glennie)** — his content into the blank C&P template;
+   must list his pending NSF 25-526 proposal (overlapping MDV work).
+3. **Budget dollar amounts** in the B6 Amount column (all other placeholders are
+   now filled — RRS courses, C&P values, GPU).
 
-### ⚠️ Two timing decisions (affect proposal, C&P, RRS, budget)
-- **FINESST start must fall Jan–Jul 2027** (no earlier than Jan 2027; no later than one
-  year after the 14 Jul 2026 due date). August 2026 and August 2027 are both invalid.
-  Docs currently use **01/2027**.
-- **A full 3-year award runs to ~12/2029**, but your stated **graduation is 08/2029**.
-  Either extend expected graduation to ≥12/2029, or shorten the award to end at graduation.
-  Docs currently show 01/2027–12/2029 with this flagged.
-4. **Sign + date** the FI biosketch.
+### ⚠️ One timing mismatch (biosketch vs C&P)
+- **B2 biosketch** says expected graduation **08/2029**; **B4 C&P** shows the
+  FINESST entry running **01/2027–12/2029** — four months past graduation, and the
+  FI must be a graduate student for the award period. Either state expected
+  graduation ≥12/2029, or shorten the award entry to end 08/2029.
+  (Start date 01/2027 is valid — must fall Jan–Jul 2027.)
+4. **Sign + date** the FI biosketch (B2) and C&P (B4).
 5. **Verify** reference `[9]` (Fountain et al. 1999) matches the source the PI intended.
 6. **Assemble** the two PDFs in the order above and upload to NSPIRES with the
    anonymized Project Summary on the cover page — draft ready at
    `barlow/docs/finesst_project_summary.md` (paste into NSPIRES Section VII).
-7. **ORCID** on file for both FI and PI in NSPIRES (funding-eligibility requirement).
+7. **ORCID** — FI's is on file (0009-0006-5237-2836, in B2 + B4 and NSPIRES);
+   confirm the **PI's** is in his NSPIRES profile.
 
 Formatting note: all non-template components are now **12-pt Times New Roman,
 single-spaced** (the solicitation's 15-chars-per-inch benchmark). NASA Biosketch and
