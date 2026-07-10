@@ -91,6 +91,11 @@ DAPR-clean). Deliberately NOT adopted: MDV-wide expansion (the NSF award's lane)
 Levy's substrate datasets (collaborator's workstream), and their H1 framing.
 Pagination: S/T/M still ends on p6; references spill to p7 (excluded from the limit).
 
+**Voice pass (same day):** all six assistant-authored insertions (the division
+sentence, the falsification clause, and the four v10 additions) were rewritten to
+match the FI's v1 voice — short declarative sentences, plain verbs, first person,
+no colon-chains or em-dash asides. Content unchanged; accept-all == v10 re-verified.
+
 ## Where each fix lives
 - The **stream-corridor figure** (Fig 2, `_fig_workflow.png`) is embedded in **v8, v9, and both `_tracked` docs** — the versions whose text already says "stream corridor."
 - **v7** and the package copies (`finesst_final/A1_proposal_STM`, `finesst_submission/.../proposal_STM_v7`) keep the **original "valley floor" figure**, because their text still says valley floor. Figure and text stay consistent within each version. When Glennie accepts the v9 tracked changes, the accepted result (v9 text + new figure) replaces v7 as the package base.
