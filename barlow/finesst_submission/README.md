@@ -25,21 +25,21 @@ Dual-anonymous: no names, no institutions, numerical `[n]` citations only.
 
 | Order | File | Limit | Status |
 |---|---|---|---|
-| 1 | `proposal_STM_v7.docx` (Science/Technical/Management + References) | ≤6 pp excl. refs | ✅ 6 pp; DAPR-clean |
-| 2 | `osdmp_v2.docx` (**your** edited copy — the one to submit) | ≤2 pp | ✏️ yours; clear its own notes |
-| 3 | `mentoring_plan_v2.docx` (unsigned; notes stripped) | ≤2 pp | ✅ 2 pp |
+| 1 | `proposal_STM_v10.docx` (Science/Technical/Management + References) | ≤6 pp excl. refs | ✅ 6 pp + refs on p7; DAPR-clean; 12-pt TNR; PI comments #1–#9 resolved (accepted v10) |
+| 2 | `osdmp_v3.docx` (your v2 + 12-pt TNR conversion; content unchanged) | ≤2 pp | ✅ 2 pp; `osdmp_v2.docx` kept as your edited source |
+| 3 | `mentoring_plan_v2.docx` (unsigned; notes stripped; 12-pt TNR) | ≤2 pp | ✅ 2 pp |
 
 ### PDF 2 — Expertise & Resources, NOT anonymized  (`2_expertise_resources_NOT_anonymized/`)
 Real names/institutions here.
 
 | Order | File | Limit | Status |
 |---|---|---|---|
-| 1 | `research_readiness_statement_v3.docx` | ≤1 pp | ✅ notes stripped; 2 small brackets left (transcript courses, exam date) |
-| 2 | `biosketch_FI_goodrich_v2.docx` | none | ✅ notes stripped; sign + date |
+| 1 | `research_readiness_statement_v3.docx` (12-pt TNR) | ≤1 pp | ✅ 1 pp; 2 small brackets left (transcript courses, exam date) |
+| 2 | `biosketch_FI_goodrich_v2.docx` | none | ✅ notes stripped; sign + date (NASA template — formatting left as-is) |
 | 3 | **Biosketch — PI (Glennie)** | none | ❌ TODO — use blank template |
-| 4 | `current_pending_FI_goodrichV2.docx` (**your** edited copy) | none | ✏️ yours; fill red brackets + sign. (Say the word and I'll strip its notes into a V3.) |
-| 5 | **Current & Pending — PI (Glennie)** | none | ❌ TODO — use blank template |
-| 6 | `facilities_acknowledgements_budget_v4.docx` | budget ~2 pp | ✅ built from **your** v3 (GPU/NCALM filled, notes gone). ⚠️ budget Amount column is blank; "GPU" lists a CPU (Ryzen 7 5800X) — see notes |
+| 4 | `current_pending_FI_goodrichV3.docx` (your V2 + scope fix: "valley-floor" → "stream-corridor" to match the narrowed O2) | none | ✏️ fill red brackets + sign; V2 kept as your edited source. ⚠️ if the PI's NSF 25-526 proposal would fund your RA-ship, list it as pending here |
+| 5 | **Current & Pending — PI (Glennie)** | none | ❌ TODO — must list his pending NSF 25-526 proposal (overlapping MDV work) |
+| 6 | `facilities_acknowledgements_budget_v4.docx` (12-pt TNR) | budget ~2 pp | ✅ 2 pp. ⚠️ budget Amount column is blank; "GPU" lists a CPU (Ryzen 7 5800X) — see notes |
 
 Older versions of each file are kept in-folder as history (nothing overwritten).
 
@@ -80,5 +80,11 @@ Kept **outside** this folder (needed to build, but not submitted):
 4. **Sign + date** the FI biosketch.
 5. **Verify** reference `[9]` (Fountain et al. 1999) matches the source the PI intended.
 6. **Assemble** the two PDFs in the order above and upload to NSPIRES with the
-   anonymized Project Summary on the cover page.
+   anonymized Project Summary on the cover page — draft ready at
+   `barlow/docs/finesst_project_summary.md` (paste into NSPIRES Section VII).
 7. **ORCID** on file for both FI and PI in NSPIRES (funding-eligibility requirement).
+
+Formatting note: all non-template components are now **12-pt Times New Roman,
+single-spaced** (the solicitation's 15-chars-per-inch benchmark). NASA Biosketch and
+C&P templates keep their own formatting (exempt). Every component re-rendered and
+page-limit-verified 2026-07-09.

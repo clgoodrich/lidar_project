@@ -107,5 +107,13 @@ tagged O1's hypothesis "(H1)" so the numbering is coherent. O3 left method-frame
 purpose — its falsifiable 5% success test plus the zero-change check carry it.
 
 ## Where each fix lives
-- The **stream-corridor figure** (Fig 2, `_fig_workflow.png`) is embedded in **v8, v9, and both `_tracked` docs** — the versions whose text already says "stream corridor."
-- **v7** and the package copies (`finesst_final/A1_proposal_STM`, `finesst_submission/.../proposal_STM_v7`) keep the **original "valley floor" figure**, because their text still says valley floor. Figure and text stay consistent within each version. When Glennie accepts the v9 tracked changes, the accepted result (v9 text + new figure) replaces v7 as the package base.
+- ~~The stream-corridor figure is embedded in v8/v9/tracked only; v7 and the package
+  keep the valley-floor figure~~ **Superseded 2026-07-09: PI signed off on
+  everything.** The accepted **v10** (text + figure + 12-pt TNR) is now the package
+  base: `finesst_submission/.../proposal_STM_v10.docx` and
+  `finesst_final/A1_proposal_STM.docx` (+ fresh PDFs). `proposal_STM_v7` stays
+  in-folder as history. The rest of the package was brought along in the same pass:
+  OSDMP forked to `osdmp_v3` (12-pt TNR), mentoring plan / RRS / B6 converted to
+  12-pt TNR, FI C&P forked to V3 with the "valley-floor" → "stream-corridor" scope
+  fix, all page limits re-verified, and a Project Summary drafted
+  (`barlow/docs/finesst_project_summary.md`).
