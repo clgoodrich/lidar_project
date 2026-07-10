@@ -5,6 +5,35 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-09 — WellSight: RRIM completed for every remaining stack (repo-wide sweep)
+
+Closed the "run RRIM on everything" gap: every raster stack with (or derivable) inputs now
+has a Red Relief Image Map. Same recipe/script as before (`_make_rrim.py`, classic +
+`--simple` where `lrm_11` exists, palette self-scaled at p98, slope_hi 40°).
+
+**C:-hosted (top-level `data/derivatives/`):** `9t_1m` (DO ±4.72°), `mk5_1m` (±5.54°),
+`mck_e1423n2238_05` (McKean 0.5 m, ±5.13°), and singles `607594/610594/610605/616593`
+(±3.6–5.8°). The 4 singles had no `openness_pos` — computed from each DEM with the
+production `openness()` (Yokoyama 1998, L=25 m) and written alongside (means ≈87–88°,
+consistent with the existing `openness_neg` era). Classic+simple everywhere (14 products).
+
+**E:-hosted (after the Samsung T7 remounted; junctions had gone dark mid-evening when the
+drive disconnected — no data loss):** all 24 remaining `data_3x3/westernpa_d20` blocks
+(classic+simple, 48 products, 0 failures); `northcentral_b19` e1423n2235 + e1423n2238
+(classic+simple; e1423n2238's missing openness pair computed from DEM), e1426n2236 +
+e1426n2239 (DEM-only blocks: slope via `gdaldem slope -compute_edges` + openness computed,
+classic only — no `lrm_11`, same precedent as permian_02/03/04); and `mkf_1m` — the full
+McKean county 1 m stack, 10000² (classic 122 MB + simple 119 MB, DO ±6.29°).
+
+**Skipped:** `tiles/613590_05` (no slope/openness/lrm inputs; canonical `tiles/9t` 0.5 m
+RRIM already covers the identical footprint). All full-res tifs fall under the existing
+`data/derivatives/**/*.tif` ignore rule (mkf's two >100 MB products included); preview
+PNGs (~1.9 MB each) committed as the visual record per the data_3x3 convention.
+Driver scripts: session scratchpad `rrim_everything_else.py` + `rrim_e_drive.py`
+(3 parallel chunks); doc updated: `docs/iterations/rrim_visualization.md`.
+
+---
+
 ## 2026-07-08 — WellSight: RRIM generated for all 8 study blocks
 
 Extended RRIM to every study block: `label_grids/{permian_01..04, westernpa_01..04}` (1 m).

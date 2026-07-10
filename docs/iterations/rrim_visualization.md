@@ -60,6 +60,29 @@ valleys in vivid red/teal, full drainage network). Outputs are `rrim_{openness,s
 <block>_1m.tif` (~20 MB at 3000², ~41 MB at 4500²) + previews. All gitignored under
 `label_grids/**` (tifs and pngs), regenerable.
 
+**Remaining reachable stacks (2026-07-09):** classic + simple built for the top-level
+`data/derivatives/` stacks — `9t_1m` (DO ±4.72°), `mk5_1m` (±5.54°),
+`mck_e1423n2238_05` (McKean 0.5 m, ±5.13°) — and the four single validation tiles
+`607594` / `610594` / `610605` / `616593` (1500², DO ±3.6–5.8°). The singles had no
+`openness_pos` raster; it was computed from each tile's DEM with the production
+`openness()` (Yokoyama 1998, L = 25 m) from `_build_derivatives.py` and written as
+`openness_pos_<tile>_1m.tif` (means ≈ 87–88°, consistent with the existing
+`openness_neg` era). All outputs land at the top level (`rrim_{openness,simple}_
+<tile>_<sfx>.tif` + previews) and are gitignored there (`data/derivatives/*.tif`,
+`*.png`), regenerable.
+
+**E:-hosted stacks (2026-07-09, after the T7 remounted):** classic + simple for all 24
+remaining `data_3x3/westernpa_d20` blocks (48 products, 0 failures) and
+`northcentral_b19` e1423n2235/e1423n2238 (e1423n2238's missing openness pair computed
+from its DEM); classic only for the DEM-only blocks e1426n2236/e1426n2239 (slope via
+`gdaldem slope -compute_edges` + openness computed; no `lrm_11`, same precedent as
+permian_02–04); and `tiles/mkf_1m` — the full McKean county 1 m stack, 10000²
+(classic 122 MB / simple 119 MB, DO ±6.29°; both under the `data/derivatives/**/*.tif`
+ignore rule). Preview PNGs (~1.9 MB) tracked as the visual record. **Skipped:**
+`tiles/613590_05` — no slope/openness/lrm inputs and the canonical `tiles/9t` 0.5 m
+RRIM covers the identical footprint. With this, every stack in the repo that has (or
+can derive) inputs now carries an RRIM.
+
 The 0.5 m version is the working product going forward — 4× the pixels resolves the
 dendritic drainage as crisp teal threads, road benches as fine linears, and small
 depressions that the 1 m build blurred. Classic gives deeper valley contrast; simple/LRM
