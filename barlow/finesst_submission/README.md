@@ -68,12 +68,11 @@ Kept **outside** this folder (needed to build, but not submitted):
 3. **Budget dollar amounts** in the B6 Amount column (all other placeholders are
    now filled — RRS courses, C&P values, GPU).
 
-### ⚠️ One timing mismatch (biosketch vs C&P)
-- **B2 biosketch** says expected graduation **08/2029**; **B4 C&P** shows the
-  FINESST entry running **01/2027–12/2029** — four months past graduation, and the
-  FI must be a graduate student for the award period. Either state expected
-  graduation ≥12/2029, or shorten the award entry to end 08/2029.
-  (Start date 01/2027 is valid — must fall Jan–Jul 2027.)
+### ✅ Timing resolved (2026-07-09)
+- Everything now ends at the FI's **08/2029 graduation**: C&P FINESST entry is
+  01/2027–08/2029 (2 years, 8 months; up to $133,000), B6 budget note matches,
+  and B2/B1 already said August 2029. Start date 01/2027 is valid (Jan–Jul 2027
+  window).
 4. **Sign + date** the FI biosketch (B2) and C&P (B4).
 5. **Verify** reference `[9]` (Fountain et al. 1999) matches the source the PI intended.
 6. **Assemble** the two PDFs in the order above and upload to NSPIRES with the
