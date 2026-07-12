@@ -72,3 +72,13 @@ same layout as the accepted baseline.
 ## Voice restyle pass (2026-07-12)
 
 All Claude-authored spans were rewritten to the FI's register. No colons, semicolons, or em dashes remain in any inserted prose (the pre-existing approved text and citation volume:page formats are untouched). Body still ends on page 6.
+
+## Final formatting pass (2026-07-12)
+
+- LiDAR casing standardized: 15 lowercase "lidar" in the proposal, 2 in the OSDMP, and
+  2 in the research readiness statement are now "LiDAR". The Schenk et al. 2004
+  reference title already used "LiDAR" (published casing, untouched). Biosketch and
+  current & pending were not modified per FI instruction.
+- Review bolding removed after FI sign-off: `finesst_proposal_v10_changes_bolded.docx`
+  is now an exact (byte-identical) copy of `finesst_proposal_v10_working.docx`.
+- Page budget re-verified after both changes: body ends page 6, References open page 7.
