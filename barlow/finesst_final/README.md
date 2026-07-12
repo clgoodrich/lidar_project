@@ -25,7 +25,14 @@ Assemble into the two NSPIRES upload PDFs in this order:
   01/2027–08/2029, up to $133,000. B1 brackets filled; B4 has no brackets;
   B6 GPU correct: NVIDIA GeForce GTX 1070 Ti, 8 GB; FI ORCID on file.)
 
-Status 2026-07-09: A1 is the **accepted v10** S/T/M (Glennie comments #1–#9
-resolved; H1/H2 stated; 12-pt TNR). A2/A3/B1/B6 converted to 12-pt TNR,
-page-limits verified. B4 carries the stream-corridor scope fix. Project Summary
-draft for the NSPIRES cover page: `barlow/docs/finesst_project_summary.md`.
+Status 2026-07-12: full promotion from `finesst_final_v2/`. A1 is the final v10
+S/T/M — all 11 Glennie comments from the 2026-07-11 round resolved (forcing ×
+substrate framing in Objective 1, NISAR answered in-text, display equation,
+references [1]–[12] renumbered by first appearance), FI voice throughout,
+Objective 1/2/3 spelled out, LiDAR casing standardized, 6-page body + references
+on page 7. A2 adds ICESat-2 and substrate-map input rows. B6 is the reconciled
+facilities/acknowledgements/budget (FI wording, Glennie's A/B/C layout). Every
+file verified zero tracked changes / zero comments before promotion; anonymized
+copies in `finesst_submission/` refreshed from the same sources. Response memo:
+`barlow/docs/glennie_comment_responses_v10_final.md`. Project Summary draft for
+the NSPIRES cover page: `barlow/docs/finesst_project_summary.md`.
