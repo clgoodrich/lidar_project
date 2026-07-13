@@ -2,7 +2,7 @@
 
 *This is the anonymized Project Summary pasted into the NSPIRES web form, not an
 uploaded file. DAPR rules apply to this field: no names, no institutions. Drafted
-from the v10 S/T/M Summary — keep the two in sync if either changes.*
+from the v11 S/T/M Summary — keep the two in sync if either changes.*
 
 ---
 
@@ -15,18 +15,21 @@ airborne lidar and ICESat-2 control. Differencing them shows where the land move
 The project then asks what moved it.
 
 Objective 1 tests whether melt energy predicts a stream's rate of channel change
-better than water volume alone (H1). If discharge alone predicts channel migration
-as well as melt energy does, the hypothesis fails. Objective 2 classifies change
-patches along the stream corridor by process type and tests whether each process
-carries its own driver fingerprint (H2). Bank thaw should track summer thaw and
-channel shift should track peak discharge. Objective 3 replaces the single
-valley-wide noise value with a calibrated per-pixel detection threshold built from
-slope, aspect, and sensor pair, verified on ground that did not change.
+better than water volume alone after controlling for substrate (H1). The hypothesis
+fails if discharge alone predicts channel migration as well as melt energy does, or
+if substrate class alone absorbs the explanatory power. Objective 2 classifies
+change patches along the stream corridor by process type and tests whether each
+process carries its own driver fingerprint (H2). Bank thaw should track summer thaw
+and ground-ice class, and channel shift should track peak discharge. Objective 3
+replaces the single valley-wide noise value with a calibrated per-pixel detection
+threshold built from slope, aspect, and sensor pair, verified on ground that did
+not change.
 
-All inputs are public. All products — change rasters, process-classified maps,
-per-stream rate tables, uncertainty layers, and code — will be released open-access
-with DOIs. The work is relevant to NASA's Earth Science Division, most directly the
-Cryospheric Sciences and Terrestrial Hydrology programs.
+All inputs are public. All products, including change rasters, process-classified
+maps, per-stream rate tables, uncertainty layers, and code, will be released
+open-access with DOIs. The work is relevant to NASA's Earth Science Division and
+spans three of its research spheres, the Cryosphere, the Hydrosphere, and the
+Geosphere.
 
 ---
 
