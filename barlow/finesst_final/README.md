@@ -25,15 +25,16 @@ Assemble into the two NSPIRES upload PDFs in this order:
   01/2027–08/2029, up to $133,000. Readiness brackets filled; C&P has no brackets;
   GPU correct: NVIDIA GeForce GTX 1070 Ti, 8 GB; FI ORCID on file.)
 
-Status 2026-07-12: full promotion from `finesst_final_v2/`, lettered A/B prefixes
-dropped from filenames. proposal_STM is the final v10 S/T/M — all 11 Glennie
-comments from the 2026-07-11 round resolved (forcing × substrate framing in
-Objective 1, NISAR answered in-text, display equation, references [1]–[12]
-renumbered by first appearance), FI voice throughout, Objective 1/2/3 spelled
-out, LiDAR casing standardized, 6-page body + references on page 7. OSDMP adds
-ICESat-2 and substrate-map input rows. facilities_acknowledgements_budget is the
+Status 2026-07-13: proposal_STM is the final v11 S/T/M — all 11 Glennie comments
+from the 2026-07-13 round resolved (why-it-matters + forecasting sentences,
+lowercase "lidar" per community convention, LTER/ERA5/AMPS/ICP/LOD95/NMAD
+spelled out at first use, cm/yr instead of mm/yr, dissertation cited in Project
+Needs), 6-page body + references on page 7. Lowercase lidar cascaded to OSDMP,
+research readiness statement, and current & pending (Schenk 2004 reference title
+keeps its published "LiDAR"). facilities_acknowledgements_budget is the
 reconciled version (FI wording, Glennie's A/B/C layout). Every file verified
-zero tracked changes / zero comments before promotion; anonymized copies in
-`finesst_submission/` refreshed from the same sources. Response memo:
-`barlow/docs/glennie_comment_responses_v10_final.md`. Project Summary draft for
-the NSPIRES cover page: `barlow/docs/finesst_project_summary.md`.
+zero tracked changes / zero comments before promotion; copies in
+`finesst_submission/` refreshed from the same sources. Response memos:
+`barlow/docs/glennie_comment_responses_v11.md` (this round) and
+`_v10_final.md` (previous). Project Summary draft for the NSPIRES cover page:
+`barlow/docs/finesst_project_summary.md`.
