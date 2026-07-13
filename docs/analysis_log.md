@@ -5,6 +5,37 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-13 — Data repatriation: external-drive data back on C: (project self-contained)
+
+The 2026-07-02 migration put heavy data on the external SSD (then `E:`, since
+re-lettered to `F:`), leaving the repo's five junctions dangling and the project
+split across two drives — which blocked copying `lidar_project` to the new
+external as one unit. Reversed it:
+
+- **Junctions → real dirs (56.5 GB):** removed the five dangling junctions and
+  robocopied their targets from `F:\lidar_project_data_DO_NOT_DELETE\` back into
+  the repo: `data/source_laz` (239 files, 11.2 GB), `data/derivatives/
+  inference_613590_05` (2.2 GB), `tiles/613590_05` (4.1 GB), `tiles/data_3x3`
+  (1,513 files, 37.6 GB), `tiles/mkf_1m` (1.3 GB). Byte + file counts verified
+  MATCH on all five; the git `D` entries for tracked data_3x3 files resolved.
+- **barlow_data (50.2 GB, 1,411 files):** `F:\barlow_data_DO_NOT_DELETE` →
+  `<repo>\barlow_data\`, gitignored (`/barlow_data/` rule added same-change).
+  The four build scripts (`_fetch_barlow_data`, `_build_barlow_inputs`,
+  `_change_detection`, `_finesst_figures`) now resolve it repo-relative via
+  `Path(__file__).resolve().parents[2] / "barlow_data"`, so the tree survives
+  future drive moves. READMEs / ROADMAP / data manifest updated to match.
+- **≥100 MB audit:** clean — zero unignored files over 100 MB after the copy.
+- **Left on F: (not project-linked, user's call):** `F:\lidar_project` (304 GB,
+  old full mirror from `backup_to_E.bat`), root-level `label_grids`/`annotations`/
+  `derivatives` copies, and the two now-redundant `*_DO_NOT_DELETE` source trees.
+  `backup_to_E.bat` still targets `E:\lidar_project`, which now points at the new
+  external — usable as-is for the fresh mirror.
+
+C: free space after: ~44 GB. Reproduce: junctions were removal-only (`rmdir`);
+copy via `robocopy <src> <dst> /E /COPY:DAT /R:2 /W:5 /MT:16`.
+
+---
+
 ## 2026-07-09 — WellSight: RRIM completed for every remaining stack (repo-wide sweep)
 
 Closed the "run RRIM on everything" gap: every raster stack with (or derivable) inputs now

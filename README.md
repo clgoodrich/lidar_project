@@ -107,8 +107,9 @@ for the Antarctic work. Always verify CRS from source headers before spatial ops
 
 - **No file ≥ 100 MB enters git history.** Every heavy output gets a `.gitignore`
   rule in the same change that creates it (audit script in `STRUCTURE.md`).
-- Heavy regenerable data lives off-repo on `E:\` (`backup_to_E.bat` mirrors the
-  working tree; Barlow data under `E:\barlow_data_DO_NOT_DELETE\`).
+- Heavy regenerable data lives **in-repo but gitignored** (moved back from the
+  external drive 2026-07-13 so the project is self-contained on `C:`): Barlow
+  data in `barlow_data/`, LiDAR tiles/derivatives under `data/`.
 - `output_wells.csv` (DEP ground truth) is **read-only** — work from copies.
 - Author-private data (e.g. `barlow/Shapefiles/`, shared by the dissertation author)
   is gitignored and must never be pushed.

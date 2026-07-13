@@ -1,6 +1,6 @@
 """Fetch the public datasets behind the Barlow MDV dissertation / FINESST expansion.
 
-Targets E:\\barlow_data_DO_NOT_DELETE (large; off the repo). Datasets and access status:
+Targets <repo>/barlow_data (large; gitignored). Datasets and access status:
 
   [AUTO]  REMA v2.0 mosaic (PGC) — satellite DEM epoch, 2m + 10m, MDV supertiles
           17_34/17_35/18_34/18_35. Public AWS Open Data bucket pgc-opendata-dems
@@ -22,7 +22,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-DST = Path("E:/barlow_data_DO_NOT_DELETE")
+DST = Path(__file__).resolve().parents[2] / "barlow_data"
 REMA_BUCKET = "pgc-opendata-dems"
 REMA_TILES = ["17_34", "17_35", "18_34", "18_35"]   # MDV supertiles (calibrated from tile bounds)
 

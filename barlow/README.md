@@ -65,8 +65,8 @@ barlow/
   separate NSPIRES box — reuse the summary paragraph minus any section cross-references.
 
 ## Data location
-All heavy data is **off-repo on `E:\barlow_data_DO_NOT_DELETE\`** (regenerable; not committed per the
-large-file rule). The scripts + docs here are the reproducible record. See
+All heavy data is in **`<repo>\barlow_data\`** (gitignored; regenerable; not committed per the
+large-file rule; moved back on-repo from the external drive 2026-07-13). The scripts + docs here are the reproducible record. See
 `docs/barlow_data_manifest.md` for the full command recipe and per-dataset status.
 
 ## Status (2026-07-01)

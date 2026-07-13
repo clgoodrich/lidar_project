@@ -31,7 +31,7 @@ import rasterio
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "notebooks" / "wellsight_v2"))
 from _common import run_pdal  # noqa: E402  (shared PDAL CLI helper, used for filters.icp)
 
-BARLOW = Path("E:/barlow_data_DO_NOT_DELETE")
+BARLOW = Path(__file__).resolve().parents[2] / "barlow_data"
 DEM2001_ZIP = BARLOW / "mdv_lidar_2001" / "Taylor_Glacier" / "taylore.zip"
 DEM2014_DIR = BARLOW / "mdv_lidar" / "be_dem_1m" / "Taylor_Valley"
 REMA_DIR = BARLOW / "rema" / "2m"

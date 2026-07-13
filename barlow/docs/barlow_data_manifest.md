@@ -1,7 +1,7 @@
 # Barlow / FINESST Data — Acquisition Manifest
 
 **Date:** 2026-06-28
-**Storage:** `E:\barlow_data_DO_NOT_DELETE\` (off-repo; moved from `J:\barlow_data\` 2026-07-02)
+**Storage:** `<repo>\barlow_data\` (gitignored; `J:\barlow_data\` → `E:\barlow_data_DO_NOT_DELETE\` 2026-07-02 → back in-repo on `C:` 2026-07-13)
 **Fetch tooling:** `barlow/build/_fetch_barlow_data.py`
 **Region:** McMurdo Dry Valleys, Antarctica (Taylor / Wright / Victoria-Barwick / Denton Hills)
 

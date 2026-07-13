@@ -8,8 +8,9 @@ documents/figures/data products; "Programming" = code. Existing scripts live in
 
 **Standing rules that bind everything below:** proposal documents stay plan-only (no
 preliminary results/figures); Cami's data is never committed/pushed; every ≥100 MB
-output gets a same-change `.gitignore` rule; heavy products live on
-`E:\barlow_data_DO_NOT_DELETE\`; user-authored files are forked (`_vN`) before editing.
+output gets a same-change `.gitignore` rule; heavy products live in
+`<repo>\barlow_data\` (gitignored; moved back from the external drive 2026-07-13);
+user-authored files are forked (`_vN`) before editing.
 
 ---
 
@@ -44,7 +45,7 @@ energy-balance model I/O), `lter_groundice` (501 DVDP-11 + 5100–5103 SLIME),
 *Acceptance:* file counts per sub-dir logged; manifest 🎁/⛔ rows flipped to ✅ with
 sizes; analysis_log entry.
 
-**1.2 Stage Cami's training tiles** (when unparked): inventory → `E:\...\labels\`,
+**1.2 Stage Cami's training tiles** (when unparked): inventory → `barlow_data\labels\`,
 CRS/format check, tile count vs the Ch. 6 claim (1,274 at 616 locations), never
 committed. *Acceptance:* manifest row with counts + a `_tiles_inventory.py` report.
 

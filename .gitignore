@@ -208,3 +208,8 @@ barlow/docs/BARLOW-DISSERTATION-2026_readalong.epub
 # Cami Barlow's privately shared GIS data (author-provided, not ours to publish)
 barlow/Shapefiles/
 barlow/MDV_Resources.docx
+
+# Barlow MDV datasets (~50 GB: REMA, MDV lidar 2001/2014, LTER, ERA5) — moved
+# back in-repo from the external drive 2026-07-13 so the project is
+# self-contained on C:. Regenerable via barlow/build/_fetch_barlow_data.py.
+/barlow_data/
