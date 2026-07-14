@@ -10,14 +10,18 @@ zero tracked changes / zero comments. Due on NSPIRES **July 14, 2026**.
   mentoring plan 2). DAPR-verified page by page: no team names outside the
   published-work reference list; metadata scrubbed; mentoring plan unsigned and
   anonymized (interim mentor now a role, not a name). **READY TO UPLOAD.**
-- `FINESST_PDF2_expertise_resources.pdf` — 18 pp in solicitation a–f order:
+- `FINESST_PDF2_expertise_resources.pdf` — 19 pp in solicitation a–f order:
   readiness (1) → FI biosketch signed (2–4) → PI biosketch SciENcv-certified
   (5–6) → FI C&P signed (7–8) → PI C&P SciENcv-certified, lists his pending NSF
-  MDV proposal (9–16) → facilities + acknowledgements + budget (17–18).
-  SciENcv forms are valid: NASA accepts them as of 2026-06-25 (either format
-  allowed until 2026-08-31). **One gap: the budget Amount column is blank** —
-  fill it, re-render facilities, and rebuild this PDF before upload.
+  MDV proposal (9–16) → FI's facilities + acknowledgements (17) → UH budget
+  narrative + summary table (18–19). SciENcv forms are valid: NASA accepts them
+  as of 2026-06-25. Budget: participant support costs, $48,456 / $49,956 /
+  $49,956 by year ($148,368 total, all years under the $50,000 cap), no
+  indirects; cover-page letter E subcategories per §5.1.2.6. **READY TO UPLOAD.**
 - PI source files: `cv-2930026.pdf`, `cpos-2930017.pdf` (NSPIRES/SciENcv exports).
+  Budget sources: `Budget_narrative_FINESST26.docx` (UH narrative, forked to
+  `budget_and_narrative_final.docx` + summary table + participant-cost
+  statement), `FY26 UH Budget Template.xlsx` (dollar source of truth).
 
 ## Assemble two upload PDFs in this order
 
