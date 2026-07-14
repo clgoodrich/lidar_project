@@ -4,6 +4,16 @@ The complete submission package, frozen after the v11 comment round, the
 proofread pass, and the cross-document consistency sweep. Every docx verified
 zero tracked changes / zero comments. Due on NSPIRES **July 14, 2026**.
 
+## Assembled upload PDFs (2026-07-14)
+
+- `FINESST_PDF1_anonymized_technical.pdf` — 11 pp (proposal 7 + OSDMP 2 +
+  mentoring plan 2). Metadata scrubbed (no author). **READY TO UPLOAD.**
+- `FINESST_PDF2_expertise_resources_AWAITING_PI_DOCS.pdf` — 8 pp (readiness 1 +
+  FI biosketch 3 signed + FI C&P 2 signed + facilities 2). **NOT final:** the
+  PI's biosketch goes after the FI biosketch (after p. 4) and the PI's C&P
+  after the FI C&P (after p. 6). Rebuild when his files arrive; budget Amount
+  column also still blank in facilities.
+
 ## Assemble two upload PDFs in this order
 
 **PDF 1 — Anonymized Technical Proposal**
