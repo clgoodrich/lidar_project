@@ -4,15 +4,20 @@ The complete submission package, frozen after the v11 comment round, the
 proofread pass, and the cross-document consistency sweep. Every docx verified
 zero tracked changes / zero comments. Due on NSPIRES **July 14, 2026**.
 
-## Assembled upload PDFs (2026-07-14)
+## Assembled upload PDFs (2026-07-14, final)
 
-- `FINESST_PDF1_anonymized_technical.pdf` — 11 pp (proposal 7 + OSDMP 2 +
-  mentoring plan 2). Metadata scrubbed (no author). **READY TO UPLOAD.**
-- `FINESST_PDF2_expertise_resources_AWAITING_PI_DOCS.pdf` — 8 pp (readiness 1 +
-  FI biosketch 3 signed + FI C&P 2 signed + facilities 2). **NOT final:** the
-  PI's biosketch goes after the FI biosketch (after p. 4) and the PI's C&P
-  after the FI C&P (after p. 6). Rebuild when his files arrive; budget Amount
-  column also still blank in facilities.
+- `FINESST_PDF1_anonymized_technical.pdf` — 11 pp (S/T/M 6 + refs 1 + OSDMP 2 +
+  mentoring plan 2). DAPR-verified page by page: no team names outside the
+  published-work reference list; metadata scrubbed; mentoring plan unsigned and
+  anonymized (interim mentor now a role, not a name). **READY TO UPLOAD.**
+- `FINESST_PDF2_expertise_resources.pdf` — 18 pp in solicitation a–f order:
+  readiness (1) → FI biosketch signed (2–4) → PI biosketch SciENcv-certified
+  (5–6) → FI C&P signed (7–8) → PI C&P SciENcv-certified, lists his pending NSF
+  MDV proposal (9–16) → facilities + acknowledgements + budget (17–18).
+  SciENcv forms are valid: NASA accepts them as of 2026-06-25 (either format
+  allowed until 2026-08-31). **One gap: the budget Amount column is blank** —
+  fill it, re-render facilities, and rebuild this PDF before upload.
+- PI source files: `cv-2930026.pdf`, `cpos-2930017.pdf` (NSPIRES/SciENcv exports).
 
 ## Assemble two upload PDFs in this order
 
