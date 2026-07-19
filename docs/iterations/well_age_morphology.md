@@ -85,8 +85,27 @@ overlaps the annotated area.
   status taxonomy + sentinel flag is already 100% "accurate" by construction —
   morphology only needs to resolve *within* pre-1956, which requires the above.
 
+## QGIS deliverable (added 2026-07-19)
+
+`data/derivatives/experiments/well_age_morphology/well_age_morphology.gpkg`
+(EPSG:6346, default styles embedded in `layer_styles` — drag into QGIS and it
+renders colored). Built by
+`notebooks/wellsight_v2/analysis/_export_well_age_qgis.py`. Layers:
+
+- `wells_annotated_area` — 1,176 catalog wells near annotations, colored by
+  era (orange 1956–79, green 1980–99, blue 2000+, red historic-undated,
+  gray no-date).
+- `pads_age` — 995 pads colored by matched-well age class (`age_class`);
+  508 are "no catalog well within 50 m" — mostly pads in survey blocks
+  outside Venango County (plat.shp is repo-wide, the catalog is county-only).
+- `wells_venango_all` — full 20,108-well catalog by date class; shows the
+  historic (sentinel) wells clustering SW of the 9t footprint.
+
+Static preview: `fig_map_context.png` (county overview + 9t era map).
+
 ## Reproduce
 
 ```bash
 python notebooks/wellsight_v2/analysis/_well_age_morphology.py
+python notebooks/wellsight_v2/analysis/_export_well_age_qgis.py
 ```
