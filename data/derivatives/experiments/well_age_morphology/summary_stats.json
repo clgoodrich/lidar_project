@@ -1,0 +1,120 @@
+{
+  "n_wells_in_area": 1176,
+  "match_radius_m": 50.0,
+  "counts_by_class": {
+    "real": 1118,
+    "sentinel_1800": 46,
+    "missing": 12
+  },
+  "spearman_vs_spud_year": {
+    "area_m2c": {
+      "rho": -0.203,
+      "p": 3.7425241083689117e-07,
+      "n": 615
+    },
+    "perim_m": {
+      "rho": -0.273,
+      "p": 6.1746975977296976e-12,
+      "n": 615
+    },
+    "compactness": {
+      "rho": 0.232,
+      "p": 5.561785480951329e-09,
+      "n": 615
+    },
+    "elongation": {
+      "rho": 0.05,
+      "p": 0.21812494369988752,
+      "n": 615
+    },
+    "wells_on_pad": {
+      "rho": -0.258,
+      "p": 7.725883019866206e-11,
+      "n": 615
+    }
+  },
+  "kruskal_by_era": {
+    "area_m2c": {
+      "H": 11.26,
+      "p": 0.003595873725593526
+    },
+    "perim_m": {
+      "H": 25.48,
+      "p": 2.93482406761123e-06
+    },
+    "compactness": {
+      "H": 30.4,
+      "p": 2.5005307427205785e-07
+    },
+    "elongation": {
+      "H": 0.86,
+      "p": 0.6497907355410049
+    },
+    "wells_on_pad": {
+      "H": 12.79,
+      "p": 0.0016668939189635346
+    }
+  },
+  "era_n": {
+    "1956-1979": 407,
+    "1980-1999": 195,
+    "2000+": 13
+  },
+  "modern_vs_sentinel": {
+    "n_modern": 615,
+    "n_sentinel": 20,
+    "area_m2c": {
+      "median_modern": 1695.909,
+      "median_sentinel": 1765.812,
+      "p": 0.647210260434793
+    },
+    "perim_m": {
+      "median_modern": 179.152,
+      "median_sentinel": 178.096,
+      "p": 0.29730372853815845
+    },
+    "compactness": {
+      "median_modern": 0.669,
+      "median_sentinel": 0.685,
+      "p": 0.3869721605627555
+    },
+    "elongation": {
+      "median_modern": 0.52,
+      "median_sentinel": 0.559,
+      "p": 0.7366717343704131
+    },
+    "wells_on_pad": {
+      "median_modern": 1.0,
+      "median_sentinel": 1.0,
+      "p": 0.9185840646010568
+    },
+    "has_pad": {
+      "rate_modern": 0.55,
+      "rate_sentinel": 0.435,
+      "p": 0.13276691675426727
+    },
+    "has_pit": {
+      "rate_modern": 0.263,
+      "rate_sentinel": 0.196,
+      "p": 0.39167712125566156
+    }
+  },
+  "era_classifier_1956_79_vs_1980_99": {
+    "n": 602,
+    "class_balance": {
+      "1956-1979": 407,
+      "1980-1999": 195
+    },
+    "balanced_accuracy_cv5": 0.609,
+    "balanced_accuracy_std": 0.038,
+    "roc_auc_cv5": 0.66,
+    "feature_importances": {
+      "area_m2c": 0.173,
+      "perim_m": 0.214,
+      "compactness": 0.294,
+      "elongation": 0.219,
+      "wells_on_pad": 0.055,
+      "has_pit_f": 0.044
+    }
+  }
+}

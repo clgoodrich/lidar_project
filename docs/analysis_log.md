@@ -5,6 +5,38 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-19 — Well age vs morphology: weak era signal, coded dates confirmed sparse for orphans
+
+Question from user: are well ages coded in anywhere, or must we bin by shape?
+Answered both halves (script `notebooks/wellsight_v2/analysis/_well_age_morphology.py`,
+outputs `data/derivatives/experiments/well_age_morphology/`, writeup
+`docs/iterations/well_age_morphology.md`):
+
+- **Coded ages:** `venango_wells_all.gpkg` has `SPUD_DATE` (92.3% populated but
+  8,054/18,555 are the `1800-01-01` "unknown historic" sentinel), `PERMIT_DAT`
+  (86.1%), `DATE_PLUGG` (35.6%). Coverage collapses on the orphan population:
+  DEP Orphan List = 82 real dates vs 997 sentinel (7.6%). Structural — PA
+  permitting began 1956. `output_wells.csv` has no date fields at all
+  (documented since 2026-04-13, data dictionary note 1).
+- **Morphology test:** 1,176 catalog wells within 200 m of hand annotations;
+  615 dated wells matched to a pad within 50 m. Spearman vs spud year:
+  perimeter −0.273, wells_on_pad −0.258, compactness +0.232, area −0.203 (all
+  p < 4e-7); newer = smaller/rounder/less-shared pads. CV random forest
+  1956–79 vs 1980–99: balanced acc 0.609, AUC 0.660 — real signal, not
+  decision-grade. Historic-vs-modern contrast underpowered (only 46
+  sentinel-1800 wells, 20 pad-matched, in the annotated footprint).
+- **Decision:** use coded dates + status taxonomy for era where present;
+  morphology as prior only. Deferred to BACKLOG: DEM-derived per-well features
+  (pit depth, cut/fill volume), annotating a sentinel-dense block.
+- Incidental but important: `plat.shp` contains **58 rows with null geometry**
+  (1,053 total → 995 with geometry; 15 others invalid but repairable). This
+  resolves the BACKLOG item claiming "~58 newest pads postdate the
+  annotations_proj.gpkg regen": the gpkg's 995 = every pad that has geometry.
+  The gpkg is NOT stale — the shapefile carries 58 empty rows (likely QGIS
+  delete artifacts). True pad count is 995. BACKLOG item corrected.
+
+---
+
 ## 2026-07-13 — Data repatriation: external-drive data back on C: (project self-contained)
 
 The 2026-07-02 migration put heavy data on the external SSD (then `E:`, since

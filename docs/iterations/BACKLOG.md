@@ -18,7 +18,7 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 
 ## High priority — directly limits current results
 
-- **~~Grow the training label set~~ → USE the grown label set (updated 2026-07-01).** The old "110 pit / 79 pad" figure is stale: annotations now total **426 pits / 1,053 pads** (user annotation push). The 2026-06-10 dataset rebuild picked up all 426 pits + the 650 pads inside 9t (test split now 65 pits / 93 pads), and the U-Nets were retrained on it. Still outstanding: (a) **403 pads lie outside 9t** and are in NO dataset — they need per-region feature stacks; (b) **~58 newest pads** postdate the last `annotations_proj.gpkg` regen (plat.shp 1053 vs gpkg 995) — re-run `_prep_annotations` + dataset rebuild; (c) ~~the instance models' saved test metrics are stale~~ — DONE 2026-07-02, all four re-run on the 65/93 split (see LEADERBOARD).
+- **~~Grow the training label set~~ → USE the grown label set (updated 2026-07-01).** The old "110 pit / 79 pad" figure is stale: annotations now total **426 pits / 1,053 pads** (user annotation push). The 2026-06-10 dataset rebuild picked up all 426 pits + the 650 pads inside 9t (test split now 65 pits / 93 pads), and the U-Nets were retrained on it. Still outstanding: (a) **403 pads lie outside 9t** and are in NO dataset — they need per-region feature stacks; (b) ~~**~58 newest pads** postdate the last `annotations_proj.gpkg` regen (plat.shp 1053 vs gpkg 995) — re-run `_prep_annotations` + dataset rebuild~~ **RESOLVED 2026-07-19 (misdiagnosis):** the 58 are null-geometry rows in `plat.shp` (QGIS delete artifacts), not new pads — gpkg 995 = every pad with geometry, nothing stale. Optionally purge the null rows from the shapefile; (c) ~~the instance models' saved test metrics are stale~~ — DONE 2026-07-02, all four re-run on the 65/93 split (see LEADERBOARD).
 - **Pad over-prediction is unsolved — and now quantified.** The 2026-07-02 re-eval puts pad_05 at P@0.3 = 0.029 (3,075 detections / 93 GT); pit models sit at ~5%. Next: (a) **score-threshold sweep selected on val** (re-threshold saved `instances.gpkg` — no GPU), (b) active-learning hard negatives. Feature richness was NOT the fix; more data alone wasn't either (9× pads did not move precision).
 - **Oil Creek inference — blocked on `roughness_11`.** Derivatives built at 0.5 m but only `roughness_5` exists; need `roughness_11` → assemble `features_oilcreek_22tile_05.tif` (7 bands, canonical order) → run pit/pad inference. Also decide whether 9t-derived `mu`/`sd` transfer or must be recomputed per region. See [[oilcreek_derivatives_05]].
 
@@ -30,6 +30,12 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **Vectorize per-block road rasters → line features (deferred).** `_refine_roads_data_3x3.py` can do this (skeletonize + `skan` + gap-bridging) but is retired for now; current pipeline uses the 3-class raster outputs (`road_prob`/`drainage_prob`/`road_argmax`) directly. Revisit when line features are needed for well cross-referencing. The stale `roads_<key>_1m.gpkg`/`road_clean_*` from the 2-class rollout are obsolete and can be deleted.
 - **Cross-reference refined roads against well candidates.** Now that roads are vector lines, use proximity-to-road-remnant as a well-access signal in candidate scoring.
 - **Per-region road model + refine check** — the 1 m road model and the drainage-refine params (`xdrop`/stream thresholds) were tuned on the 9t / Venango-area WesternPA D20 blocks. Spot-check a northcentral_b19 (mckean) block before trusting roads or the refine rule there.
+
+## Well-age binning follow-ups (from [[well_age_morphology]], 2026-07-19)
+
+- **DEM-derived per-well era features** — pit depth (depth_in_sink at well point), pad cut/fill volume, road width at nearest road. 2-D outlines gave AUC 0.66 (1956–79 vs 1980–99); 3-D relief may carry more of the era signal.
+- **Annotate a sentinel-1800-dense block** to power the historic-vs-modern morphology contrast — the annotated 9t footprint holds only 46 sentinel wells (20 pad-matched), all tests ns.
+- **Purge the 58 null-geometry rows from `plat.shp`** next annotation pass.
 
 ## Model / architecture ideas (deferred)
 
