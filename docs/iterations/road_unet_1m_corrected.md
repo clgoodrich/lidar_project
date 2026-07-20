@@ -103,8 +103,14 @@ the model dir is the new deployable raster.
   positives would show the precision lever more clearly.
 - Not yet run through vector extraction — the honest APLS/topology gain (vs
   the [[road_unet_1m_recall]] 0.754 extraction F1) is the next measurement.
-- Deploy decision: swap 613590's road raster to the corrected one before the
-  next extraction pass.
+- **Deployed 2026-07-20:** the corrected `road_prob` / `drainage_prob` /
+  `road_argmax` are now the live rasters in the 613590 block dir
+  (`road_prob_613590_1m.tif`, mean P 0.056); the champion recall versions are
+  preserved alongside as `*_recall.tif` (mean P 0.047). Rasters are gitignored
+  (regenerable). **Consequence:** the existing extracted vector network
+  (`roads_opt_613590_1m.gpkg`, `roads_net_613590_1m.gpkg`) is now STALE — it
+  was cleaned from the champion prob. Re-run `_road_optimize.py` on the
+  deployed corrected prob to refresh the vector product before using it.
 
 ## Reproduce
 
