@@ -5,6 +5,28 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-19 — Pad morphology bins: unsupervised k=4 archetypes on 9t (no age target)
+
+User pivot from age-binning to pure categorization. 650 9t pads × 20 features
+(shape + composition + terrain context + CHM), scaler → PCA(0.9) → KMeans,
+silhouette-selected **k=4** (0.156 — soft bins). Script
+`notebooks/wellsight_v2/analysis/_pad_morphology_bins.py`, writeup
+`docs/iterations/pad_morphology_bins.md`, outputs + styled `pad_bins.gpkg` in
+`data/derivatives/experiments/pad_morphology_bins/`.
+
+- bin 0 (45): **canopy-gap sites** — chm_deficit 7.3 m vs ≈0 elsewhere;
+  clearest recency proxy in the whole feature set.
+- bin 1 (150): sprawling irregular lease clusters (biggest perimeter, lowest
+  solidity, no pits).
+- bin 2 (240): flat compact pads on gentle terrain.
+- bin 3 (215): pit-bearing benched sites on steep hillsides (edge slope 12°,
+  slope_ratio 1.10, smallest areas).
+- Decisions: CHM/edge-slope/slope_ratio did the separating (the features the
+  2-D-only pass lacked); hillshade-chip montage confirms visual coherence;
+  dated-well overlay deliberately deferred so bins stay label-free.
+
+---
+
 ## 2026-07-19 — Well age vs morphology: weak era signal, coded dates confirmed sparse for orphans
 
 Question from user: are well ages coded in anywhere, or must we bin by shape?
