@@ -1,0 +1,14 @@
+{
+  "region": "mckean",
+  "new_export": "OilGasLocations 2026-04",
+  "old_snapshot_date": null,
+  "temporal_diff": false,
+  "n_total": 38110,
+  "n_operator_permitted": 33528,
+  "n_dep_found": 4582,
+  "n_fed_plugging_program": 70,
+  "n_dep_found_in_block": 1433,
+  "n_dep_found_near_block_2km": 1912,
+  "block": "mkf",
+  "note": "no 2022 McKean orphan baseline on disk (the US_Documented file is Venango-only) -> bounty-era temporal proxy not computable; status-based flags only. Provide a dated McKean orphan snapshot to enable the diff."
+}

@@ -31,6 +31,15 @@ Built proxies instead (script
 - **Actionable:** 6 newly-documented wells fall inside the 9t tile, 71 within
   2 km — candidates to check against our pit/pad detections (recent field
   reports on ground we've already inferred).
+- **McKean added (same day):** generalized the builder to regions; clipped the
+  statewide 2026-04 export to McKean (COUNTY_ID 42, 38,110 wells). 4,582
+  dep_found, 70 fed-plugging, and **1,433 dep_found wells INSIDE the mkf block**
+  (1,912 within 2 km) — 7× the 9t density, consistent with McKean being PA's
+  densest orphan county (Bradford field). **No bounty-era diff for McKean**:
+  the only 2022 orphan baseline on disk is Venango-only, so the temporal proxy
+  isn't computable there — status-based flags (dep_found / fed_plugging) only
+  until a dated McKean orphan snapshot is obtained. Outputs now
+  `well_provenance_{venango,mckean}.gpkg` (unsuffixed superseded, git-removed).
 
 ---
 
