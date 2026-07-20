@@ -5,6 +5,31 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-20 — Ground-photo web sweep, georeferenced (photo_sources + VPASEC layer)
+
+User asked for ground photos of our pits/pads/roads, referenced to location.
+Web sweep + KML extraction (script
+`notebooks/wellsight_v2/analysis/_photo_source_locations.py`; source list in
+`docs/articles/well_photo_sources_2026-07.md`; layer
+`data/derivatives/experiments/well_photo_locations/well_photo_locations.gpkg`).
+
+- Extracted the public VPASEC found-wells Google map → **1,926 GPS'd wells**
+  (841 Oil Creek SP, 76 SGL 253, 46 SGL 39, 43 SGL 45, 920 DEP-plugged);
+  KML archived at `data/external/vpasec/vpasec_wells_venango.kml`. **Zero
+  inside 9t**; nearest DEP-plugged well 0.56 km from the tile edge, 26
+  within 3 km (Pithole-side APIs 121-42xxx).
+- 10 photo locations georeferenced with a `precision` flag: Pithole site
+  0.75 km from 9t NW corner; **Derrick City 1930 oil-field photos inside the
+  mkf block**; StateImpact McKean stream casing ~1.2 km from block.
+- Best photo set of our morphologies: VPASEC 50-photo album (wood casing in
+  depression, open hole in pit, bare-ground depressions) — album not
+  per-photo georefed, folder-level only.
+- Leads logged: Drake Well Museum Mather archive (President Twp river
+  wells); EDF/DEP drone survey of President + Victory Twp planned spring
+  2026 (in-tile magnetometer confirmations when published).
+
+---
+
 ## 2026-07-19 — Pad bins v2: joint 9t + McKean, broad k — region IS the morphology split
 
 User asked for broader bins and to bring in the McKean pads. Script made
