@@ -1,0 +1,43 @@
+{
+  "built": "2026-07-20",
+  "source_review_edited": "2026-06-17",
+  "n_kept": 15410,
+  "km_kept": 141.79,
+  "n_rejected": 1585,
+  "km_rejected": 14.34,
+  "n_rejected_model_confident": 912,
+  "n_added_lines": 102,
+  "km_added": 7.49,
+  "n_added_chunks": 247,
+  "label_px": {
+    "road": 456559,
+    "bg": 794845,
+    "ignore": 18998596
+  },
+  "buffers_m": {
+    "road": 1.5,
+    "reject": 2.0,
+    "margin": 4.0
+  },
+  "split": {
+    "grid": 4,
+    "seed": 0,
+    "erode_m": 158.0,
+    "cells": {
+      "test": 3,
+      "train": 10,
+      "val": 3
+    }
+  },
+  "centers": {
+    "test_added": 46,
+    "test_kept": 3318,
+    "test_reject": 344,
+    "train_added": 93,
+    "train_kept": 4465,
+    "train_reject": 498,
+    "val_added": 47,
+    "val_kept": 3298,
+    "val_reject": 288
+  }
+}

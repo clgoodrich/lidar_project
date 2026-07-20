@@ -111,6 +111,10 @@ class FocalCE(nn.Module):
         focal = (1 - p) ** self.gamma
         a = self.alpha.view(1, -1, 1, 1)
         loss = -(oh * a * focal * log_p).sum(1)
+        if not bool(valid.any()):
+            # All-ignore patch (possible with corridor-supervised blocks):
+            # return a graph-connected zero instead of NaN from empty mean().
+            return (logits * 0.0).sum()
         return loss[valid].mean()
 
 
