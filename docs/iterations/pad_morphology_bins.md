@@ -1,6 +1,11 @@
-# pad_morphology_bins — unsupervised pad archetypes on 9t
+# pad_morphology_bins — unsupervised pad archetypes (9t + McKean)
 
 **Date:** 2026-07-19 · **Script:** `notebooks/wellsight_v2/analysis/_pad_morphology_bins.py` · **Outputs:** `data/derivatives/experiments/pad_morphology_bins/`
+
+> **v2 (same day):** script is now region-aware (joint 9t + McKean run, broad-k
+> support). The v1 9t-only sections below still describe the k=4 run; the joint
+> results are in the "v2 — joint 9t + McKean" section at the end. v1 script in
+> git history at `880e7b6`.
 
 ## Goal
 
@@ -74,8 +79,51 @@ attribute table for Identify/filtering. `pad_features.csv` +
 - Extend to pits (pit-only sites are not represented — this run bins pads).
 - Same pipeline on 613590/other blocks once their CHM exists.
 
+## v2 — joint 9t + McKean (2026-07-19, user request: broader bins + McKean)
+
+All 995 pads: 650 in 9t (Venango) + 345 in the mkf/McKean footprint
+(696–706k E, 4645–4655k N). McKean features from `mkf_1m` (slope, lrm_11) and
+`northcentral_b19` blocks e1423n2235/n2238 (+e1426\*) for tpi_15, CHM,
+hillshade — best-covering source picked per pad. Composition features
+(n_pits, road distance, well counts) are 9t-only annotations, so joint
+clustering uses the 17 shape + terrain + canopy features only.
+
+**Resolution caveat:** McKean rasters are 1 m vs 9t 0.5 m. Zonal medians are
+fairly robust, but slope magnitudes read slightly lower at 1 m — which works
+*against* the observed McKean-steeper result, so that contrast is conservative.
+
+Silhouettes: **k=2 0.332** (best by far), k=3 0.216, k=4 0.187. The broad
+structure is essentially binary, and it splits by region:
+
+| k=2 bin | n | 9t / McKean | Median profile | Read |
+|---|---|---|---|---|
+| 0 | 603 | 593 / 10 | 1,692 m², edge 7.2°, slope_ratio 1.35, chm_deficit ≈0 | **Valley-field pads on gentle ground** (the 9t style) |
+| 1 | 392 | 57 / 335 | 836 m², edge **18.3°**, slope_ratio 0.92, chm_deficit 1.6 m | **Small bench pads cut into steep hillsides** (the McKean style) |
+
+k=3 (forced, for a middle grade) refines this: bin 0 = 376 gentle 9t pads;
+bin 1 = 296 steep benches (292 McKean); bin 2 = 323 intermediate (270 9t +
+53 McKean). Montage `fig_cluster_montage_joint_k3.png` (chips region-labeled)
+makes the contrast unmistakable — McKean bench pads sit on contour roads in
+steep dissected terrain, interiors flatter than surroundings (slope_ratio
+< 1 = engineered bench), with a real 1.6–2 m canopy deficit (younger regrowth).
+
+Interpretation: **region ≈ morphology regime.** The two fields were developed
+differently — Venango 9t: larger irregular pads on rolling uplands; McKean:
+small engineered benches on steep slopes. 57 9t pads land in the "bench" bin
+and 10+53 McKean pads in the gentle/intermediate bins — cross-regime pads
+worth eyeballing in QGIS. Any model trained on 9t pads alone has never seen
+the dominant McKean archetype (consistent with the multi-block road-model
+transfer lessons).
+
+Outputs: `pad_bins_joint_k2.gpkg`, `pad_bins_joint_k3.gpkg` (styled, with
+`region` + all features), `cluster_summary_joint_k{2,3}.csv`,
+`summary_joint_k{2,3}.json` (incl. region×bin), profile + montage figures,
+feature cache `pad_features_joint.csv`.
+
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/analysis/_pad_morphology_bins.py
+python notebooks/wellsight_v2/analysis/_pad_morphology_bins.py --k 2   # broad
+python notebooks/wellsight_v2/analysis/_pad_morphology_bins.py --k 3
+python notebooks/wellsight_v2/analysis/_pad_morphology_bins.py         # silhouette k
 ```

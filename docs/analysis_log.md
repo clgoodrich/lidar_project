@@ -5,6 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-19 — Pad bins v2: joint 9t + McKean, broad k — region IS the morphology split
+
+User asked for broader bins and to bring in the McKean pads. Script made
+region-aware (v1 in git at 880e7b6): all 995 pads, McKean terrain/CHM from
+mkf_1m + northcentral_b19 blocks (per-pad best-covering source), composition
+features dropped (9t-only annotations). Broad structure is binary — silhouette
+k=2 0.332 vs k=3 0.216, k=4 0.187 — and it splits by region: bin 0 (603;
+593 9t) large gentle-ground pads, edge 7°; bin 1 (392; 335 McKean) small
+bench pads on steep slopes, edge 18°, slope_ratio 0.92, chm_deficit 1.6 m.
+1-m-vs-0.5-m resolution works against the McKean-steeper reading, so the
+contrast is conservative. Implication: 9t-trained pad models have never seen
+the dominant McKean archetype. Fix applied mid-pass: NC hillshades are int16
+~0–32k, montage now percentile-scales per chip. Outputs
+`pad_bins_joint_k{2,3}.gpkg` (styled) + summaries/figures; writeup
+`docs/iterations/pad_morphology_bins.md` §v2.
+
+---
+
 ## 2026-07-19 — Pad morphology bins: unsupervised k=4 archetypes on 9t (no age target)
 
 User pivot from age-binning to pure categorization. 650 9t pads × 20 features
