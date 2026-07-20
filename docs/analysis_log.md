@@ -5,6 +5,36 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-20 — Road active-learning loop CLOSED: human corrections → measurable out-of-domain gain
+
+Turned the user's 2026-06-17 QGIS review of 613590 (1,585 rejected segs /
+14.3 km, 102 added roads / 7.5 km, 15,410 kept) into a corrected training block
+and fine-tuned the champion recall model on it. Scripts
+`_build_road_corrections_613590.py` + `_road_unet_1m_corrected.py` +
+`_compare_corrected_613590.py`; writeup `docs/iterations/road_unet_1m_corrected.md`;
+model `data/derivatives/tiles/9t/road_unet_1m_corrected/`.
+
+- **Corridor supervision:** label raster is 255=ignore for 93.8% of the block
+  (only human-adjudicated pixels get a loss), so unlabelled real roads are
+  never taught as bg. FocalCE skips ignore (added an all-ignore-patch guard).
+- **Honest split:** 4×4 cells assigned by seeded search so added+rejected km
+  balance across train/val/test (additions cluster NW — naive split held out
+  zero); train centers eroded 158 m from cell edges (no patch overlaps
+  held-out cells); "before" raster verified byte-identical to what the user
+  reviewed.
+- **Result (best ep 15, 9t val road IoU 0.636):** in-domain 9t test flat
+  (pixel IoU 0.581→0.573, drainage still 0.005). On 613590 **held-out**
+  corrections: added-road P(road) 0.72→0.76 (val) / 0.74→0.78 (test),
+  frac≥0.5 0.85→0.94 / 0.89→0.96; reject P(road) 0.34→0.26 (val, flat on test
+  which had no headroom); kept held ~0.85; added-vs-reject AP 0.245→0.443
+  (val). Recall up, precision up, no forgetting, zero in-domain cost.
+- Decision: fix-in-training (rejects as hard negatives) beat any post-filter;
+  loop is reusable for another round or a fresh block. Next: vector extraction
+  → APLS vs the recall model's 0.754 F1; swap 613590 deploy raster to the
+  corrected one. Task #36 done.
+
+---
+
 ## 2026-07-20 — Ground-photo web sweep, georeferenced (photo_sources + VPASEC layer)
 
 User asked for ground photos of our pits/pads/roads, referenced to location.

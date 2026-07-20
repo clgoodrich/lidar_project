@@ -58,6 +58,10 @@ def panel(ax, hs, hs_ext, prob, prob_ext, title, added, rejected):
         rejected.plot(ax=ax, color="#e31a1c", linewidth=1.1)
     if len(added):
         added.plot(ax=ax, color="#33ff66", linewidth=1.4)
+    # clamp to the raster window: plotting the full-block correction lines
+    # otherwise auto-expands the axes and shrinks the hillshade.
+    ax.set_xlim(prob_ext[0], prob_ext[1])
+    ax.set_ylim(prob_ext[2], prob_ext[3])
     ax.set_title(title, fontsize=11)
     ax.set_xticks([]); ax.set_yticks([])
 
