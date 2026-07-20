@@ -5,6 +5,35 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-20 — Well reporting-provenance flags (bounty-era proxy via 2022→2026 diff)
+
+User asked how to identify bounty-reported wells in `venango_wells_all`. The
+DEP export has **no source/date-entered field**, so no direct flag exists.
+Built proxies instead (script
+`notebooks/wellsight_v2/analysis/_well_provenance_flags.py`, layer
+`data/derivatives/experiments/well_provenance/well_provenance.gpkg`):
+
+- Established the two snapshots: NEW = `venango_wells_all.gpkg` from
+  **OilGasLocations 2026-04** (20,108 all-status Venango wells, PERMIT_NUM
+  "121-27187"); OLD = `US_Documented_Orphan_Wells.csv`, **Data file date
+  2022-05-09** (4,786 Venango orphans, Well_ident "API:37121000860000").
+  Both key on (county, permit_int); all 4,786 old keys resolve into NEW.
+- Flags: `provenance` (operator_permitted 15,353 / dep_found 4,755),
+  `in_2022_orphan_list`, **`newly_documented`** (dep_found AND not in 2022
+  list = **1,316** wells that entered the abandoned/orphan inventory
+  2022-05→2026-04; 937 DEP Abandoned List, 353 Abandoned, 8 Orphan List, …),
+  `fed_plugging_program` (51, IIJA/MERP site names).
+- **Caveat recorded in the layer:** `newly_documented` is the bounty-era
+  proxy but the window is 4 years (June-2025 bounty sits inside it, not
+  alone) and it catches active/plugged→abandoned reclassifications, not only
+  new field locations. A true bounty flag needs dated DEP snapshots diffed at
+  <1 yr granularity.
+- **Actionable:** 6 newly-documented wells fall inside the 9t tile, 71 within
+  2 km — candidates to check against our pit/pad detections (recent field
+  reports on ground we've already inferred).
+
+---
+
 ## 2026-07-20 — Road active-learning loop CLOSED: human corrections → measurable out-of-domain gain
 
 Turned the user's 2026-06-17 QGIS review of 613590 (1,585 rejected segs /

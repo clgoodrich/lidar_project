@@ -1,0 +1,18 @@
+{
+  "new_export": "OilGasLocations 2026-04",
+  "old_snapshot_date": "2022-05-09",
+  "n_total": 20108,
+  "n_operator_permitted": 15353,
+  "n_dep_found": 4755,
+  "n_in_2022_orphan_list": 4786,
+  "n_newly_documented": 1316,
+  "newly_documented_by_status": {
+    "DEP Abandoned List": 937,
+    "Abandoned": 353,
+    "Plugged Unverified": 17,
+    "DEP Orphan List": 8,
+    "Cannot Be Located": 1
+  },
+  "n_fed_plugging_program": 51,
+  "caveat": "newly_documented is the bounty-era proxy; window is 2022-05 .. 2026-04 (4 yr, not bounty-only) and includes status reclassifications, not just new field locations."
+}
