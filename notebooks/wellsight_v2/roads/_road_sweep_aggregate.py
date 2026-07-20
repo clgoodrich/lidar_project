@@ -89,7 +89,7 @@ def main():
               "added_P_after", "added_frac05_after", "reject_P_after",
               "added_vs_reject_AP"]:
         if c in disp:
-            disp[c] = disp[c].map(lambda x: f"{x:.3f}" if pd.notna(x) else "—")
+            disp[c] = disp[c].map(lambda x: f"{x:.3f}" if pd.notna(x) else "-")
     cols = ["model", "res", "val_road_iou", "pix_iou", "ap_vs_drainage",
             "P_road", "P_drain", "added_P_after", "added_frac05_after",
             "reject_P_after", "added_vs_reject_AP"]
@@ -97,14 +97,14 @@ def main():
     hdr = {"val_road_iou": "9t val IoU", "pix_iou": "9t test pixIoU",
            "ap_vs_drainage": "AP vs drain", "P_road": "P(road)",
            "P_drain": "P(drain)", "added_P_after": "613590 added P",
-           "added_frac05_after": "added≥0.5", "reject_P_after": "reject P",
+           "added_frac05_after": "added>=0.5", "reject_P_after": "reject P",
            "added_vs_reject_AP": "add-v-rej AP"}
     md = ["| " + " | ".join(hdr.get(c, c) for c in cols) + " |",
           "|" + "|".join("---" for _ in cols) + "|"]
     for _, r in disp.iterrows():
         md.append("| " + " | ".join(str(r[c]) for c in cols) + " |")
     md_txt = "\n".join(md)
-    (SWEEP / "leaderboard.md").write_text(md_txt + "\n")
+    (SWEEP / "leaderboard.md").write_text(md_txt + "\n", encoding="utf-8")
     print(md_txt)
 
     # figure: val IoU (all) + 613590 added/reject P after (1m variants)
