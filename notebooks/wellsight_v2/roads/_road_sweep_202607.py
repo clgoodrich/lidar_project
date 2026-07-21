@@ -464,15 +464,16 @@ def run_variant(name, epochs_override=None, eval_only=False):
         train_ds, val_ds, dual, tsets = build_datasets(cfg, mu, sd)
         print(f"[{name}] train tiles/ep="
               f"{sum(len(t) for t in tsets)} dual={dual}", flush=True)
-        alpha = cfg["alpha"]
+        alpha = tuple(cfg["alpha"])
         if cfg["loss"] == "cldice":
-            loss_fn = ClDiceFocal(alpha=alpha)
+            loss_fn = ClDiceFocal(alpha=alpha, w=cfg.get("cldice_w", 0.3),
+                                  iters=int(cfg.get("cldice_iters", 6)))
         elif cfg["loss"] == "boundary":
-            loss_fn = BoundaryFocal(alpha=alpha)
+            loss_fn = BoundaryFocal(alpha=alpha, edge_w=cfg.get("edge_w", 3.0))
         else:
-            loss_fn = FocalCE(alpha=alpha, gamma=GAMMA)
+            loss_fn = FocalCE(alpha=alpha, gamma=cfg.get("gamma", GAMMA))
         best = train_variant(model, train_ds, val_ds, loss_fn, cfg,
-                             out_dir, dual)
+                             out_dir, dual, ori_w=cfg.get("ori_w", 0.3))
         print(f"[{name}] best val road IoU {best:.4f}", flush=True)
 
     ck = torch.load(out_dir / "best.pt", map_location=DEVICE, weights_only=False)
@@ -520,13 +521,37 @@ def run_variant(name, epochs_override=None, eval_only=False):
     print(f"[{name}] DONE -> {out_dir}", flush=True)
 
 
+def register_config(cfg: dict) -> str:
+    """Register a custom variant from a config dict (from Model Lab) and return
+    its name. `base` (optional) names a preset to inherit defaults from; every
+    other key overrides. Requires a unique `name`."""
+    name = cfg.get("name") or cfg.get("_name")
+    if not name:
+        raise SystemExit("custom config needs a 'name'")
+    base = dict(VARIANTS.get(cfg.get("base", ""), VARIANTS["cldice"]))
+    base.update({k: v for k, v in cfg.items()
+                 if k not in ("name", "base")})
+    VARIANTS[name] = base
+    return name
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--variant", required=True, choices=list(VARIANTS))
+    ap.add_argument("--variant", choices=list(VARIANTS),
+                    help="run a built-in preset")
+    ap.add_argument("--config", type=str, default=None,
+                    help="path to a custom variant JSON (from Model Lab)")
     ap.add_argument("--epochs", type=int, default=None)
     ap.add_argument("--eval-only", action="store_true")
     a = ap.parse_args()
-    run_variant(a.variant, a.epochs, a.eval_only)
+    if a.config:
+        cfg = json.loads(Path(a.config).read_text())
+        name = register_config(cfg)
+        run_variant(name, a.epochs, a.eval_only)
+    elif a.variant:
+        run_variant(a.variant, a.epochs, a.eval_only)
+    else:
+        ap.error("give --variant NAME or --config PATH")
 
 
 if __name__ == "__main__":
