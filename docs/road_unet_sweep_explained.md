@@ -1,8 +1,9 @@
 # The Road U-Net, in plain terms
 
 A quick, non-jargon explainer of what our road model does, what we feed it, and
-how the five sweep variants differ. Written 2026-07-20 alongside the
-`road_sweep_202607` run.
+how the five sweep variants differ — followed by a technical section on exactly
+which code each variant changes. Written 2026-07-20 alongside the
+`road_sweep_202607` run; code-level section + Model Lab hook added 2026-07-21.
 
 ## What the U-Net is actually doing
 
@@ -94,6 +95,104 @@ old models tended to leave gaps in real roads.
    4× more pixels, so roads are physically bigger in the image. Trained on the
    9t area only (the other block has no half-meter data yet).
 
+## In the code: exactly what each variant changes
+
+Everything below is in `notebooks/wellsight_v2/roads/_road_sweep_202607.py`
+unless noted. The point of the sweep is that **only one thing moves per
+variant** — so here is the single dispatch point and then the one delta each
+variant makes.
+
+### The one dispatch point — the `VARIANTS` registry
+
+Every variant is a row in the `VARIANTS` dict. `run_variant(name)` reads that
+row and wires up the run from it. The fields:
+
+| Field | What it controls in code |
+|---|---|
+| `res` | `"1m"` or `"05"`. Selects the input raster set: `build_datasets` picks `(F1,L1)` vs `(F05,L05)`, and `run_variant` picks the matching normalization stats + channel list `(S1,CH1)`/`(S05,CH05)`. |
+| `init` | `"corrected"` → load the champion checkpoint (`CORRECTED`) with `load_state_dict(..., strict=False)` and fine-tune. `"scratch"` → random init. |
+| `loss` | Which loss object gets built — `focal` / `cldice` / `boundary` / `orient` (see below). |
+| `model` | `"unet"` → `UNet`; `"orient"` → `UNetOrient` (adds a second output head). |
+| `ep`, `lr` | Epoch count and AdamW learning rate for the cosine schedule. |
+| `corr` | Whether to append the 613590 correction dataset to the training set (`build_datasets` concatenates it). |
+| `alpha` | The 3-tuple of focal class weights `(bg, road, drainage)`. |
+
+### Shared scaffolding (identical across all five — this is what makes it fair)
+
+- **`seed_all()`** seeds `random` / `numpy` / `torch` / CUDA and turns on
+  deterministic algorithms, so two runs with the same config are bit-comparable.
+- **`build_datasets(cfg, mu, sd)`** builds the training sampler(s) from
+  *centered-patch policies* (`nine_t_policies` for 9t, `corr_policies` for the
+  613590 corrections). Each policy says "sample patches centered on these
+  labeled points (road / drainage / added / reject / kept) with ±jitter." The
+  val sampler is always single-head, `augment=False`, fixed seed.
+- **`train_variant(...)`** is the one training loop: AdamW + `CosineAnnealingLR`,
+  mixed-precision (`GradScaler`/`autocast`), batch 16. After each epoch it calls
+  **`road_iou_val`** and keeps the checkpoint with the best **road-class IoU**.
+  Crucially `road_iou_val` resets the val sampler's RNG (`val_ds._rng = None`)
+  every call, so the model is always judged on the *same frozen* val patches —
+  that removes the re-jitter noise the methodology audit caught.
+
+### The per-variant deltas
+
+**`alpha078` — one number.** The only change from the champion recipe is
+`alpha=(0.10, 0.78, 0.25)` instead of `0.72`. Loss is still plain `FocalCE`.
+`FocalCE` is focal cross-entropy: `-alpha_c * (1-p)^gamma * log(p)` per pixel,
+`ignore_index=255`. Raising the road weight tells the optimizer a missed-road
+pixel costs more, i.e. trade precision for recall. Nothing else differs.
+
+**`cldice` — swap the loss object to `ClDiceFocal`.** `run_variant` builds
+`ClDiceFocal(alpha, w, iters)` instead of `FocalCE`. It returns
+`focal_loss + w * (1 - soft_clDice)`. The clDice term grades **connectivity**,
+computed differentiably:
+- `_soft_skel(x, iters)` approximates a morphological skeleton (centerline)
+  using `_soft_erode` (a 3×3 **min**-pool) and `_soft_dilate` (a 3×3 **max**-pool)
+  — the standard soft-skeleton of Shit et al. 2021. `iters` = how many
+  erode/dilate rounds (thinner skeleton with more).
+- `tprec = |skel(pred) ∩ true| / |skel(pred)|` (topology precision) and
+  `tsens = |skel(true) ∩ pred| / |skel(true)|` (topology sensitivity); soft
+  clDice is their harmonic mean. A broken road drops the intersection sharply,
+  so gaps are penalized directly — which a per-pixel loss barely notices.
+  It is ignore-safe (masks out 255 before skeletonizing). Knobs: `w` (how much
+  the connectivity term counts) and `iters`.
+
+**`boundary` — swap the loss object to `BoundaryFocal`.** Same focal per-pixel
+loss, but multiplied by a spatial weight map: `edge = _soft_dilate(road) - road`
+is the 1-pixel ring just outside each road-class region, and pixels on that ring
+get weight `edge_w` (default 3×) while everything else gets 1×. This forces the
+model to get the road **width/edge** right instead of producing a fat fuzzy
+blob. Knob: `edge_w`.
+
+**`orient` — change the model *and* the sampler *and* add a loss term.**
+- Model: `UNetOrient` subclasses `UNet` and adds `self.ori = Conv2d(base, N_ORI)`
+  hanging off the last decoder feature `u1`. In `training` mode `forward`
+  returns `(seg_logits, orient_logits)`; in eval it returns `seg` only, so the
+  downstream `predict_full_tile` is unchanged.
+- Labels: `OrientSampler` reads a **third** raster — per-pixel road-direction
+  bins (`N_ORI=8` bins over 0–180°) built offline by
+  `notebooks/wellsight_v2/roads/_build_orient_labels.py`.
+- Loss: the train loop adds `ori_w * CrossEntropyLoss(orient_logits, ori_target)`
+  to the segmentation loss. Predicting direction is a known trick for keeping
+  roads continuous. Because of the extra head it trains from `scratch`. Knob:
+  `ori_w`.
+
+**`res05` — pure data/resolution swap, no loss or architecture change.**
+`res="05"` flips `build_datasets` and `run_variant` to the 0.5 m feature/label/
+stats/channel set; `corr=False` (no half-meter corrections exist yet) so it's
+9t-only; `scratch` init. Same `UNet`, same `FocalCE`. It isolates the effect of
+resolution alone.
+
+### Where the Model Lab plugs in
+
+The `--config PATH` CLI path (used by Roads Studio's Model Lab) calls
+`register_config(cfg)`, which merges a custom dict **over a named base preset**
+and injects it into `VARIANTS` under a new name — so a Lab run is just a
+programmatically-created row. The loss **sub-knobs** are threaded from that row:
+`run_variant` now reads `cfg.get("cldice_w"/"cldice_iters"/"edge_w"/"gamma")`
+into the loss constructors and passes `ori_w=cfg.get("ori_w")` into
+`train_variant`. That is why the Lab can vary clDice weight, boundary edge
+weight, focal γ, etc. — those were hard-coded defaults before this change.
+
 ## How we judge them (fairly)
 
 Every variant is scored on ground it never trained on:
@@ -111,6 +210,14 @@ footing, not luck. The winner earns a deeper look — and possibly the full-deta
 ## Reproduce / where things live
 
 - Driver: `notebooks/wellsight_v2/roads/_road_sweep_202607.py`
-- Outputs: `data/derivatives/tiles/9t/road_sweep_202607/<variant>/road_prob.tif`
-- Leaderboard (built when all finish): same folder, `leaderboard.md`
+  - Built-in preset: `... --variant cldice [--epochs N]`
+  - Custom (Model Lab): `... --config runs/<name>.config.json`
+- Outputs: `data/derivatives/tiles/9t/road_sweep_202607/<variant>/`
+  (`best.pt`, `road_prob.tif`, `road_prob_613590_1m.tif`,
+  `drainage_prob_613590_1m.tif`, `train_log.csv`, `test_metrics.json`)
+- Orientation-label prereq: `notebooks/wellsight_v2/roads/_build_orient_labels.py`
+- Leaderboard: `docs/iterations/road_sweep_202607.md` (aggregated by
+  `_road_sweep_aggregate.py`)
+- Interactive front-end: Roads Studio → **Model Lab** tab
+  (`roads_studio/train.py` builds the config and launches the driver)
 - Full technical spec: `docs/handoff/ROAD_SWEEP_HANDOFF.md`
