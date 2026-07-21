@@ -68,6 +68,20 @@ to the instance tables above. Test split per `road_dataset_manifest.csv`.
 | **road_unet_1m_recall (3-class, α0.72)** | UNet bg/road/drainage, road focal-α 0.60→0.72, wd 2e-4 | 1 m | **0.581** | **0.999** | **0.778 / 0.004** | Same clean 9t data; in-domain ≈ chunked row, but the point is *out-of-domain recall*: on 613590 mean P(road) 0.57→0.66, road≥0.5 px ~1.7×, cleaned network 155→**169 km**, TIGER recall 0.501→**0.523**. Fixed gappy roads via class weighting, not more data. See [[road_unet_1m_recall]]. |
 | road_unet_1m_corrected (α0.72 + 613590 human corrections) | Fine-tune of recall model on 9t + corridor-supervised 613590 review diff | 1 m | 0.573 | 0.999 | 0.784 / 0.005 | **Active-learning loop closed (2026-07-20).** In-domain 9t held flat (IoU −0.008, noise). The gain is on **613590 held-out corrections**: mean P(road) on human-added missed roads 0.72→**0.76** (val), 0.74→**0.78** (test), frac≥0.5 up 0.85→0.94 / 0.89→0.96; false-positive rejects 0.34→**0.26** (val); added-vs-reject AP 0.245→**0.443** (val). 22 km of human edits → out-of-domain recall up, precision up, zero in-domain cost. See [[road_unet_1m_corrected]]. |
 
+### Sweep road_sweep_202607 (2026-07-21) — 5 one-change variants vs corrected, seeded/frozen-val
+
+Same 9t+corrections recipe, one knob each. Two poles emerged — no runaway winner. Full table + interpretation in [[road_sweep_202607]]. Held-out cols are 613590 val+test correction cells.
+
+| Variant | Change | 9t val IoU | 9t pixIoU | P(road) / P(drain) | 613590 added≥0.5 / add-v-rej AP | Verdict |
+|---|---|---|---|---|---|---|
+| cldice | +soft-clDice topology loss | 0.593 | 0.558 | **0.885** / 0.006 | **0.957** / 0.470 | **Connectivity pole** — best gap-filling & missed-road recovery; low pixIoU is a metric artifact (topology≠pixels). Front-runner pending APLS. |
+| boundary | 3× road-edge weight | **0.668** | **0.601** | 0.742 / **0.004** | 0.913 / 0.530 | **Precision pole** — best pixIoU & cleanest drainage, but fills less. |
+| alpha078 | road α 0.72→0.78 | 0.639 | 0.580 | 0.790 / 0.005 | 0.935 / 0.553 | ≈ no-op; α headroom already spent. |
+| orient | +orientation aux head (scratch) | 0.636 | 0.577 | 0.739 / **0.030** | 0.826 / **0.660** | Best add-v-rej separation but **drainage bled 6×**; deploy-disqualifying as-is. |
+| res05 | 0.5 m (9t-only, scratch) | 0.502‖ | 0.486‖ | 0.707 / 0.027 | — | Inconclusive; ‖0.5 m grid not pixIoU-comparable, likely undertrained. Re-run w/ road-physics channels. |
+
+**Decision:** run cldice + boundary through `_road_optimize.py` → compare APLS/completeness vs the 0.754 F1; promote the winner then. clDice+boundary combined is the natural full-10 first entry.
+
 **Vector extraction (2026-07-02, honest protocol):** `_road_optimize.py` cleaning
 config tuned on **val** blocks only (best val F1 0.535), frozen, then scored once on
 test: **F1 0.754** (completeness 0.695 / correctness 0.824, 22.5 km GT). Test > val

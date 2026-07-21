@@ -43,6 +43,35 @@ Built proxies instead (script
 
 ---
 
+## 2026-07-21 — Road U-Net top-5 sweep complete: two poles, clDice front-runner pending APLS
+
+All 5 variants trained + evaluated (driver `_road_sweep_202607.py`, seeded +
+frozen-val; writeup `docs/iterations/road_sweep_202607.md`; leaderboard +
+fig in `data/derivatives/tiles/9t/road_sweep_202607/`). No single winner —
+a precision/recall split:
+
+- **cldice** (soft-clDice topology loss): best connectivity — P(road) on real
+  9t roads 0.784→**0.885**, 613590 held-out missed-road P 0.780→**0.889**. Low
+  pixIoU (0.558) is a metric artifact (clDice optimizes centerline, not
+  pixels). add-v-rej AP dropped 0.541→0.470. **Front-runner for the gap goal.**
+- **boundary** (3× road-edge weight): best val IoU 0.668 + pixIoU 0.601,
+  cleanest drainage 0.004, but fills less (added≥0.5 0.913). Precision pole.
+- **alpha078**: ≈ no-op (val IoU +0.003) — α headroom already spent at 0.72.
+- **orient** (aux direction head, scratch): best add-v-rej AP 0.660 but
+  **drainage bled to 0.030 (6×)** — deploy-disqualifying as-is.
+- **res05** (0.5 m, 9t-only scratch): inconclusive — grid not pixIoU-
+  comparable, likely undertrained, drainage bled. Re-run with road-physics
+  channels before judging 0.5 m.
+
+Decisions: honest arbiter is vector extraction/APLS (matches the goal, and is
+exactly where clDice's topology objective vs boundary's precision objective
+diverge) — next step is to run cldice+boundary through `_road_optimize.py` vs
+the 0.754 F1 and promote the winner. clDice+boundary combined = natural full-10
+first entry. Method note: fully seeded + val-patch RNG reset each epoch fixed
+the audit's re-jitter noise, so the ranking is real not luck. Task #56 done.
+
+---
+
 ## 2026-07-20 — Road active-learning loop CLOSED: human corrections → measurable out-of-domain gain
 
 Turned the user's 2026-06-17 QGIS review of 613590 (1,585 rejected segs /
