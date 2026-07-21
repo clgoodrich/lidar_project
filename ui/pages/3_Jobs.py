@@ -1,4 +1,4 @@
-"""Jobs page: queue table, live log viewer, progress, cancel/re-run."""
+"""Jobs page: queue list, live log viewer, progress, cancel."""
 from __future__ import annotations
 
 import sys
@@ -10,54 +10,55 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import streamlit as st
 
 from state import get_manager
+from style import header, inject, status_chip
 from widgets import progress_from_log
 
 st.set_page_config(page_title="Jobs · WellSight", page_icon="📋", layout="wide")
+inject()
 mgr = get_manager()
 
-st.title("📋 Jobs")
-top = st.columns([1, 1, 4])
-if top[0].button("🔄 Refresh"):
+header("Jobs", "queue · logs · progress")
+
+bar = st.columns([1, 1.4, 5])
+if bar[0].button("🔄 Refresh", use_container_width=True):
     st.rerun()
-auto = top[1].toggle("Auto-refresh (2s)", value=False)
+auto = bar[1].toggle("Auto-refresh 2s", value=False)
 
 snap = mgr.snapshot()
 if not snap:
-    st.caption("No jobs yet.")
+    st.info("No jobs yet. Run something from **Roads** or **Analysis**.")
     st.stop()
 
-STATUS_ICON = {"running": "🟢", "queued": "⏳", "done": "✅", "failed": "❌",
-               "cancelled": "⛔", "orphaned": "⚠️"}
+left, right = st.columns([1, 1.6])
 
-rows = [{"": STATUS_ICON.get(j.status, "•"), "id": j.id, "task": j.label,
-         "status": j.status, "gpu": "🎛️" if j.gpu else "⚙️",
-         "elapsed": f"{j.elapsed:.0f}s" if j.started else "-",
-         "commit": j.git_commit} for j in snap]
-st.dataframe(rows, use_container_width=True, hide_index=True)
+with left:
+    st.markdown("##### Queue")
+    for j in snap[:20]:
+        with st.container(border=True):
+            r = st.columns([3, 1.4])
+            r[0].write(f"**{j.label}**")
+            r[0].caption(f"`{j.id}` · {'GPU' if j.gpu else 'CPU'} · "
+                         f"{j.elapsed:.0f}s" if j.started else f"`{j.id}`")
+            r[1].markdown(status_chip(j.status), unsafe_allow_html=True)
+            if j.status in ("running", "queued"):
+                if r[1].button("Cancel", key=f"c:{j.id}"):
+                    mgr.cancel(j.id)
+                    st.rerun()
 
-st.subheader("Inspect / control")
-ids = [j.id for j in snap]
-sel = st.selectbox("Job", ids, format_func=lambda i: f"{i} — "
-                   f"{mgr.get(i).label} [{mgr.get(i).status}]")
-job = mgr.get(sel)
-if job:
-    c = st.columns(4)
-    c[0].write(f"**Status:** {job.status}")
-    c[1].write(f"**GPU:** {'yes' if job.gpu else 'no'}")
-    c[2].write(f"**Elapsed:** {job.elapsed:.0f}s")
-    c[3].write(f"**rc:** {job.returncode}")
-    if job.status in ("running", "queued"):
-        if st.button("⛔ Cancel", type="secondary"):
-            mgr.cancel(sel)
-            st.rerun()
-    with st.expander("Command", expanded=False):
-        st.code(" ".join(job.cmd), language="bash")
-
-    log = mgr.tail(sel, n=400)
-    prog = progress_from_log(log)
-    if prog:
-        st.progress(prog[0], text=prog[1])
-    st.text_area("Log (tail)", log, height=420, key=f"log:{sel}")
+with right:
+    st.markdown("##### Log")
+    ids = [j.id for j in snap]
+    default = st.session_state.get("_last_job", ids[0])
+    sel = st.selectbox("Job", ids, index=ids.index(default) if default in ids
+                       else 0, format_func=lambda i:
+                       f"{mgr.get(i).label} · {mgr.get(i).status}")
+    job = mgr.get(sel)
+    if job:
+        log = mgr.tail(sel, n=400)
+        prog = progress_from_log(log)
+        if prog:
+            st.progress(prog[0], text=prog[1])
+        st.code(log or "(no output yet)", language="log", height=460)
 
 if auto:
     time.sleep(2)

@@ -7,7 +7,6 @@ from __future__ import annotations
 import shutil
 import subprocess
 import sys
-import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -16,87 +15,93 @@ import streamlit as st
 
 from paths import ROOT, SWEEP
 from state import get_manager
+from style import header, inject, status_chip
 
 st.set_page_config(page_title="WellSight Control Panel", page_icon="🛢️",
                    layout="wide")
+inject()
 
 
-def gpu_status() -> str:
+def gpu_status():
     try:
         out = subprocess.run(
             ["nvidia-smi", "--query-gpu=utilization.gpu,memory.used,"
              "memory.total", "--format=csv,noheader,nounits"],
             capture_output=True, text=True, timeout=5).stdout.strip()
         util, used, total = [x.strip() for x in out.split(",")]
-        return f"{util}% · {int(used)/1024:.1f}/{int(total)/1024:.1f} GB"
+        return f"{util}%", f"{int(used)/1024:.1f}/{int(total)/1024:.1f} GB"
     except Exception:
-        return "n/a"
+        return "n/a", ""
 
 
-def git_line() -> str:
+def git_line():
     try:
         br = subprocess.run(["git", "branch", "--show-current"], cwd=ROOT,
                             capture_output=True, text=True).stdout.strip()
         dirty = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT,
                                capture_output=True, text=True).stdout.strip()
         n = len(dirty.splitlines()) if dirty else 0
-        return f"{br} ({n} uncommitted)" if n else f"{br} (clean)"
+        return f"{br} · {n} uncommitted" if n else f"{br} · clean"
     except Exception:
         return "n/a"
 
 
 mgr = get_manager()
+snap = mgr.snapshot()
+running = [j for j in snap if j.status == "running"]
+queued = [j for j in snap if j.status == "queued"]
+free = shutil.disk_usage(ROOT).free / 1e9
+util, vram = gpu_status()
 
-# ---- sidebar ----
 with st.sidebar:
-    st.header("🛢️ WellSight")
-    st.metric("GPU", gpu_status())
-    free = shutil.disk_usage(ROOT).free / 1e9
-    st.metric("Disk free (C:)", f"{free:.0f} GB",
-              delta="low" if free < 50 else None,
-              delta_color="inverse")
-    running = [j for j in mgr.snapshot() if j.status == "running"]
-    queued = [j for j in mgr.snapshot() if j.status == "queued"]
-    st.metric("Jobs", f"{len(running)} running · {len(queued)} queued")
+    st.markdown("### 🛢️ WellSight")
+    st.caption("LiDAR orphaned-well control panel")
+    st.divider()
+    st.metric("GPU", util, vram or None)
+    st.metric("Disk free", f"{free:.0f} GB",
+              "low" if free < 50 else None, delta_color="inverse")
+    st.metric("Jobs", f"{len(running)} running",
+              f"{len(queued)} queued" if queued else None)
     st.caption(f"git: {git_line()}")
-    if st.button("🔄 Refresh"):
+    if st.button("🔄 Refresh", use_container_width=True):
         st.rerun()
 
-# ---- main ----
-st.title("Dashboard")
+header("Dashboard", "at-a-glance status")
 
-col1, col2, col3 = st.columns(3)
-col1.metric("GPU", gpu_status())
-col2.metric("Disk free", f"{free:.0f} GB")
-col3.metric("Active jobs", len(running))
+c = st.columns(4)
+c[0].metric("GPU utilization", util)
+c[1].metric("VRAM", vram or "—")
+c[2].metric("Disk free (C:)", f"{free:.0f} GB")
+c[3].metric("Active jobs", f"{len(running)}")
 if free < 50:
     st.warning(f"Low disk: {free:.0f} GB free. Heavy rasters are gitignored "
-               "but still fill the drive.")
+               "but still consume the drive.")
 
-# sweep panel
 if SWEEP.exists():
-    st.subheader("Road sweep (road_sweep_202607)")
-    variants = ["cldice", "alpha078", "boundary", "orient", "res05"]
-    cols = st.columns(len(variants))
-    for c, v in zip(cols, variants):
-        done = (SWEEP / v / "test_metrics.json").exists()
-        c.metric(v, "✅ done" if done else "⏳ pending")
-    lb = SWEEP / "leaderboard.md"
-    if lb.exists():
-        with st.expander("Leaderboard", expanded=True):
+    st.markdown("#### Road sweep")
+    with st.container(border=True):
+        variants = ["cldice", "alpha078", "boundary", "orient", "res05"]
+        cols = st.columns(len(variants))
+        for col, v in zip(cols, variants):
+            done = (SWEEP / v / "test_metrics.json").exists()
+            col.markdown(f"**{v}**")
+            col.markdown(status_chip("done" if done else "running"),
+                         unsafe_allow_html=True)
+        lb = SWEEP / "leaderboard.md"
+        if lb.exists():
             st.markdown(lb.read_text(encoding="utf-8"))
 
-# recent jobs
-st.subheader("Recent jobs")
-snap = mgr.snapshot()[:10]
+st.markdown("#### Recent jobs")
 if not snap:
-    st.caption("No jobs yet. Go to **Roads** or **Analysis** to run something.")
+    st.caption("No jobs yet — open **Roads** or **Analysis** in the left nav.")
 else:
-    rows = [{"id": j.id, "task": j.label, "status": j.status,
-             "elapsed": f"{j.elapsed:.0f}s" if j.started else "-",
-             "gpu": "🎛️" if j.gpu else "⚙️"} for j in snap]
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+    with st.container(border=True):
+        for j in snap[:8]:
+            row = st.columns([3, 1.2, 1, 1])
+            row[0].write(j.label)
+            row[1].markdown(status_chip(j.status), unsafe_allow_html=True)
+            row[2].caption("GPU" if j.gpu else "CPU")
+            row[3].caption(f"{j.elapsed:.0f}s" if j.started else "—")
 
-st.caption(f"Refreshed {time.strftime('%H:%M:%S')} · "
-           "pages in the left nav · this window must stay open to watch "
-           "progress (jobs keep running regardless).")
+st.caption("This window must stay open to watch progress — jobs run detached "
+           "and survive a restart.")

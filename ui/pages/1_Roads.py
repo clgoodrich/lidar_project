@@ -9,13 +9,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import streamlit as st
 
 from registry import by_group
+from style import header, inject
 from widgets import render_task
 
 st.set_page_config(page_title="Roads · WellSight", page_icon="🛣️",
                    layout="wide")
-st.title("🛣️ Roads")
-st.caption("Run road models, train sweep variants, aggregate results. GPU jobs "
-           "queue one at a time; watch them on the Jobs page.")
+inject()
+header("Roads", "run models · train variants · aggregate results")
 
 for task in by_group("Roads"):
     render_task(task)
