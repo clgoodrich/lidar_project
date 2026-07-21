@@ -1,0 +1,6 @@
+# Transient job state — local only, never committed
+runs/
+jobs.jsonl
+settings.json
+__pycache__/
+*.pyc
