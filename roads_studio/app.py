@@ -62,7 +62,8 @@ class Studio:
             slope_max=(v["slope_deg"] if v["slope_gate"] else None),
             pathopen=v["pathopen"], po_len_m=v["po_len_m"],
             min_area_m2=v["min_area_m2"], skel=v["skel"], spur=v["spur"],
-            reconnect=v["reconnect"], island=v["island"],
+            reconnect=v["reconnect"],
+            min_comp_len=v["min_comp_len"], keep_prob=v["keep_prob"],
             simplify_m=v["simplify_m"], smooth=v["smooth"],
         )
 
@@ -208,10 +209,12 @@ def build_extract_tab(s: Studio):
                 _slider(c, "spur", "Prune spurs shorter than (m)", 0, 60, 2, 6)
                 c["reconnect"] = ui.select(["none", "lcp", "mst"], value="none",
                     label="Reconnect gaps").props("dense outlined").classes("w-full")
-                # island=0 by default: keep every road, don't delete short networks
-                # (island-80 was silently dropping real roads); raise it only to
-                # de-noise. reconnect stays 'none' to avoid runaway bridges.
-                _slider(c, "island", "Drop networks shorter than (m)", 0, 400, 10, 0)
+                # Smart noise filter (connectivity + evidence): a segment is
+                # dropped only if its whole network is BOTH short and faint.
+                # 0 = off (keep everything). Raise to clean speckle without
+                # deleting real short/bright spurs.
+                _slider(c, "min_comp_len", "Filter: drop networks shorter than (m)", 0, 200, 5, 30)
+                _slider(c, "keep_prob", "…unless mean road-prob ≥", 0.3, 0.9, 0.05, 0.55)
 
             with ui.card().classes("w-full"):
                 ui.label("Polyline geometry").classes("text-sm font-bold text-gray-600")

@@ -201,7 +201,14 @@ def to_pipeline_cfg(ucfg: dict, res: float) -> dict:
         hi=ucfg.get("hi", 0.6),
         skel=ucfg["skel"],
         spur=ucfg.get("spur", 20),          # meters (map units) — as-is
-        island=ucfg.get("island", 120),      # meters — as-is
+        # fill only small pinholes (<=64 px); full fill_holes solidifies road-
+        # enclosed polygons and the skeleton then loses the perimeter roads
+        fill_holes=ucfg.get("fill_holes", 64),
+        island=0,                            # legacy blunt filter OFF (deleted real roads)
+        # smart noise filter: drop a segment only if its whole component is
+        # short AND faint — keeps real short/bright spurs (see smart_island_filter)
+        min_comp_len=ucfg.get("min_comp_len", 0.0),  # meters
+        keep_prob=ucfg.get("keep_prob", 0.55),
         reconnect=ucfg.get("reconnect", "none"),
         min_px=max(1, int(round(ucfg.get("min_area_m2", 40) / (res * res)))),
         simplify_m=ucfg.get("simplify_m", 0.0),   # map units — Douglas-Peucker tol

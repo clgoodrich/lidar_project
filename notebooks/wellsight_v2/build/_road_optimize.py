@@ -137,7 +137,17 @@ def to_mask(E, prob, arg, slope, cfg):
     if cfg.get("slope_max") and slope is not None:
         m &= np.nan_to_num(slope, nan=90) <= cfg["slope_max"]
     m = ndi.binary_closing(m, np.ones((3, 3)))
-    m = ndi.binary_fill_holes(m)
+    # Hole-filling: `binary_fill_holes` fills EVERY enclosed region, so on a road
+    # network it solidifies the polygons the roads enclose and the skeleton then
+    # collapses them (losing the perimeter roads). Default keeps legacy behaviour
+    # for the optimizer; faithful extraction passes fill_holes=False, or an int
+    # area cap to fill only small pinholes (skimage.remove_small_holes).
+    fh = cfg.get("fill_holes", True)
+    if fh is True:
+        m = ndi.binary_fill_holes(m)
+    elif fh:  # numeric area threshold in px -> fill only small pinholes
+        from skimage.morphology import remove_small_holes
+        m = remove_small_holes(m, area_threshold=int(fh))
     if cfg.get("pathopen"):
         m = path_open(m, length=cfg.get("po_len", 14))
     from skimage.morphology import remove_small_objects
@@ -312,6 +322,39 @@ def simplify_smooth(segs, simplify_m=0.0, smooth=0):
     return out
 
 
+def smart_island_filter(segs, prob, tf, min_comp_len=0.0, keep_prob=0.55, step=3.0):
+    """Drop tiny noise segments without deleting good short roads.
+
+    A segment is removed ONLY if its whole connected component is BOTH short
+    (total length < ``min_comp_len``) AND faint (mean road-prob along it
+    < ``keep_prob``). So:
+      * any segment in a real network (component >= min_comp_len) is kept,
+        regardless of prob;
+      * a short *isolated* spur is kept if it is bright (real road);
+      * only short + isolated + faint flecks (the speckle) are dropped.
+    No-op when ``min_comp_len<=0`` so the optimizer/scoring path is unchanged."""
+    if not segs or min_comp_len <= 0:
+        return segs
+    import networkx as nx
+    G = nx.Graph()
+    for i, s in enumerate(segs):
+        G.add_edge(_key(s.coords[0]), _key(s.coords[-1]), idx=i, length=s.length)
+    mp = [_sample(prob, s, tf, step) for s in segs]
+    keep = [False] * len(segs)
+    for comp in nx.connected_components(G):
+        sub = G.subgraph(comp)
+        idxs = [d["idx"] for *_x, d in sub.edges(data=True)]
+        clen = sum(d["length"] for *_x, d in sub.edges(data=True))
+        if clen >= min_comp_len:
+            for i in idxs:
+                keep[i] = True
+        else:
+            for i in idxs:
+                if np.isfinite(mp[i]) and mp[i] >= keep_prob:
+                    keep[i] = True
+    return [segs[i] for i in range(len(segs)) if keep[i]]
+
+
 def island_filter(segs, min_len):
     import networkx as nx
     G = nx.Graph()
@@ -341,6 +384,8 @@ def run_pipeline(D, cfg):
     segs, _ = reconnect(segs, D["prob"], D["tf"], D["res"], cfg.get("reconnect", "none"))
     segs = prune_merge(segs, 0.1)
     segs = island_filter(segs, cfg.get("island", 120))
+    segs = smart_island_filter(segs, D["prob"], D["tf"],
+                               cfg.get("min_comp_len", 0.0), cfg.get("keep_prob", 0.55))
     segs = simplify_smooth(segs, cfg.get("simplify_m", 0.0), cfg.get("smooth", 0))
     return gpd.GeoDataFrame(geometry=segs, crs=DST_CRS)
 
@@ -477,6 +522,8 @@ def apply_best(D, cfg, conf_min=0.6):
     segs, bridges = reconnect(segs, D["prob"], D["tf"], D["res"], cfg.get("reconnect", "lcp"))
     segs = prune_merge(segs, 0.1)
     segs = island_filter(segs, cfg.get("island", 80))
+    segs = smart_island_filter(segs, D["prob"], D["tf"],
+                               cfg.get("min_comp_len", 0.0), cfg.get("keep_prob", 0.55))
     segs = simplify_smooth(segs, cfg.get("simplify_m", 0.0), cfg.get("smooth", 0))
     rows = []
     for s in segs:
