@@ -211,10 +211,11 @@ def build_extract_tab(s: Studio):
                     label="Reconnect gaps").props("dense outlined").classes("w-full")
                 # Smart noise filter (connectivity + evidence): a segment is
                 # dropped only if its whole network is BOTH short and faint.
-                # 0 = off (keep everything). Raise to clean speckle without
-                # deleting real short/bright spurs.
-                _slider(c, "min_comp_len", "Filter: drop networks shorter than (m)", 0, 200, 5, 30)
-                _slider(c, "keep_prob", "…unless mean road-prob ≥", 0.3, 0.9, 0.05, 0.55)
+                # DEFAULT 0 = OFF (keep every road — matches the raw faithful
+                # trace). Slide up ONLY to clean speckle; keep_prob is the
+                # brightness escape hatch so real faint roads aren't cut.
+                _slider(c, "min_comp_len", "Filter: drop networks shorter than (m)", 0, 200, 5, 0)
+                _slider(c, "keep_prob", "…unless mean road-prob ≥", 0.3, 0.9, 0.05, 0.45)
 
             with ui.card().classes("w-full"):
                 ui.label("Polyline geometry").classes("text-sm font-bold text-gray-600")

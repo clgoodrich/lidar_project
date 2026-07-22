@@ -201,9 +201,10 @@ def to_pipeline_cfg(ucfg: dict, res: float) -> dict:
         hi=ucfg.get("hi", 0.6),
         skel=ucfg["skel"],
         spur=ucfg.get("spur", 20),          # meters (map units) — as-is
-        # fill only small pinholes (<=64 px); full fill_holes solidifies road-
-        # enclosed polygons and the skeleton then loses the perimeter roads
-        fill_holes=ucfg.get("fill_holes", 64),
+        # NO hole-filling: even a small area cap fills the triangles roads
+        # enclose at junctions, and skeletonizing those collapses the roads into
+        # a merged spider (deletes real roads + makes weird junctions).
+        fill_holes=ucfg.get("fill_holes", False),
         island=0,                            # legacy blunt filter OFF (deleted real roads)
         # smart noise filter: drop a segment only if its whole component is
         # short AND faint — keeps real short/bright spurs (see smart_island_filter)
