@@ -184,7 +184,7 @@ def build_extract_tab(s: Studio):
                     label="Threshold mode").props("dense outlined").classes("w-full")
                 glob_box = ui.column().classes("w-full gap-0")
                 with glob_box:
-                    _slider(c, "t", "Threshold", 0.05, 0.95, 0.05, 0.50)
+                    _slider(c, "t", "Threshold (strip black below)", 0.05, 0.95, 0.05, 0.30)
                 hyst_box = ui.column().classes("w-full gap-0")
                 with hyst_box:
                     _slider(c, "lo", "Hysteresis low", 0.05, 0.9, 0.05, 0.30)
@@ -202,13 +202,16 @@ def build_extract_tab(s: Studio):
                 with ui.row().classes("w-full items-center gap-2"):
                     c["pathopen"] = ui.checkbox("Path-open", value=False)
                     _slider(c, "po_len_m", "len m", 4, 40, 1, 14, compact=True)
-                _slider(c, "min_area_m2", "Min blob area (m²)", 0, 400, 10, 40)
-                c["skel"] = ui.select(["zhang", "lee", "medial"], value="zhang",
+                _slider(c, "min_area_m2", "Min blob area (m²)", 0, 400, 10, 10)
+                c["skel"] = ui.select(["zhang", "lee", "medial"], value="lee",
                     label="Skeleton method").props("dense outlined").classes("w-full")
-                _slider(c, "spur", "Prune spurs shorter than (m)", 0, 60, 5, 20)
+                _slider(c, "spur", "Prune spurs shorter than (m)", 0, 60, 2, 6)
                 c["reconnect"] = ui.select(["none", "lcp", "mst"], value="none",
                     label="Reconnect gaps").props("dense outlined").classes("w-full")
-                _slider(c, "island", "Drop networks shorter than (m)", 0, 400, 10, 120)
+                # island=0 by default: keep every road, don't delete short networks
+                # (island-80 was silently dropping real roads); raise it only to
+                # de-noise. reconnect stays 'none' to avoid runaway bridges.
+                _slider(c, "island", "Drop networks shorter than (m)", 0, 400, 10, 0)
 
             with ui.card().classes("w-full"):
                 ui.label("Polyline geometry").classes("text-sm font-bold text-gray-600")
