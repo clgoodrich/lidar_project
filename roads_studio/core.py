@@ -204,6 +204,8 @@ def to_pipeline_cfg(ucfg: dict, res: float) -> dict:
         island=ucfg.get("island", 120),      # meters — as-is
         reconnect=ucfg.get("reconnect", "none"),
         min_px=max(1, int(round(ucfg.get("min_area_m2", 40) / (res * res)))),
+        simplify_m=ucfg.get("simplify_m", 0.0),   # map units — Douglas-Peucker tol
+        smooth=int(ucfg.get("smooth", 0)),          # Chaikin passes
     )
     if ucfg.get("slope_max"):
         cfg["slope_max"] = ucfg["slope_max"]

@@ -63,6 +63,7 @@ class Studio:
             pathopen=v["pathopen"], po_len_m=v["po_len_m"],
             min_area_m2=v["min_area_m2"], skel=v["skel"], spur=v["spur"],
             reconnect=v["reconnect"], island=v["island"],
+            simplify_m=v["simplify_m"], smooth=v["smooth"],
         )
 
     def schedule(self):
@@ -208,6 +209,13 @@ def build_extract_tab(s: Studio):
                 c["reconnect"] = ui.select(["none", "lcp", "mst"], value="none",
                     label="Reconnect gaps").props("dense outlined").classes("w-full")
                 _slider(c, "island", "Drop networks shorter than (m)", 0, 400, 10, 120)
+
+            with ui.card().classes("w-full"):
+                ui.label("Polyline geometry").classes("text-sm font-bold text-gray-600")
+                ui.label("Turns the raw pixel-staircase trace into clean, "
+                         "editable QGIS polylines.").classes("text-xs text-gray-500")
+                _slider(c, "simplify_m", "Simplify tolerance (m)", 0.0, 8.0, 0.5, 2.0)
+                _slider(c, "smooth", "Smoothing passes", 0, 4, 1, 1)
 
             with ui.card().classes("w-full"):
                 with ui.row().classes("w-full items-center justify-between"):

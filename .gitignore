@@ -106,6 +106,11 @@ data/derivatives/inference_*/_tmp_*.json
 data/derivatives/tiles/mosaic_3x3/*/
 data/derivatives/tiles/mosaic_3x3_mckean/*/
 
+# McKean SW curiosity RRIM (McKean set aside per advisor 2026-07) — regenerable
+# from the two Northcentral_B19 tiles via _build_derivatives.py + _make_rrim.py.
+data/derivatives/tiles/mckean_sw_1m/
+data/derivatives/tiles/mckean_sw_05/
+
 # Inference outputs — heavy intermediates (feature stacks + prob rasters)
 # regenerable from best.pt + _build_derivatives.py + _predict_on_tile.py.
 # Track only the small overlay PNGs.

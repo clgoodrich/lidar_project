@@ -273,6 +273,45 @@ def reconnect(segs, prob, tf, res, method, max_gap=35, max_ang=40, gate=3.0):
     return segs + bridges, bridges
 
 
+def _chaikin(coords, iters):
+    """Chaikin corner-cutting: each pass replaces every vertex with two points
+    at 1/4 and 3/4 of each edge, keeping the two endpoints fixed. Rounds the
+    pixel-staircase into a road-like curve without moving the line off-centre."""
+    pts = [tuple(p) for p in coords]
+    for _ in range(int(iters)):
+        new = [pts[0]]
+        for i in range(len(pts) - 1):
+            p, q = pts[i], pts[i + 1]
+            new.append((0.75 * p[0] + 0.25 * q[0], 0.75 * p[1] + 0.25 * q[1]))
+            new.append((0.25 * p[0] + 0.75 * q[0], 0.25 * p[1] + 0.75 * q[1]))
+        new.append(pts[-1])
+        pts = new
+    return pts
+
+
+def simplify_smooth(segs, simplify_m=0.0, smooth=0):
+    """Turn raw skeleton traces into clean, editable polylines.
+
+    1) Douglas-Peucker (`simplify_m` metres) drops the ~1-vertex-per-pixel
+       staircase to a handful of vertices; `preserve_topology=False` is safe
+       because each seg is already a single centreline path.
+    2) Chaikin smoothing (`smooth` passes) rounds the remaining corners.
+    Both default to no-op so the optimizer/scoring pipeline is unchanged."""
+    from shapely.geometry import LineString
+    if not segs or (simplify_m <= 0 and smooth <= 0):
+        return segs
+    out = []
+    for ls in segs:
+        g = ls.simplify(simplify_m, preserve_topology=False) if simplify_m > 0 else ls
+        if g.is_empty or g.geom_type != "LineString" or len(g.coords) < 2:
+            continue
+        if smooth > 0 and len(g.coords) >= 3:
+            g = LineString(_chaikin(list(g.coords), smooth))
+        if g.length > 0:
+            out.append(g)
+    return out
+
+
 def island_filter(segs, min_len):
     import networkx as nx
     G = nx.Graph()
@@ -302,6 +341,7 @@ def run_pipeline(D, cfg):
     segs, _ = reconnect(segs, D["prob"], D["tf"], D["res"], cfg.get("reconnect", "none"))
     segs = prune_merge(segs, 0.1)
     segs = island_filter(segs, cfg.get("island", 120))
+    segs = simplify_smooth(segs, cfg.get("simplify_m", 0.0), cfg.get("smooth", 0))
     return gpd.GeoDataFrame(geometry=segs, crs=DST_CRS)
 
 
@@ -437,6 +477,7 @@ def apply_best(D, cfg, conf_min=0.6):
     segs, bridges = reconnect(segs, D["prob"], D["tf"], D["res"], cfg.get("reconnect", "lcp"))
     segs = prune_merge(segs, 0.1)
     segs = island_filter(segs, cfg.get("island", 80))
+    segs = simplify_smooth(segs, cfg.get("simplify_m", 0.0), cfg.get("smooth", 0))
     rows = []
     for s in segs:
         mp = _sample(D["prob"], s, D["tf"]); sl = _sample(D["slope"], s, D["tf"])
