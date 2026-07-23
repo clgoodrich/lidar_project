@@ -111,6 +111,10 @@ data/derivatives/tiles/mosaic_3x3_mckean/*/
 data/derivatives/tiles/mckean_sw_1m/
 data/derivatives/tiles/mckean_sw_05/
 
+# McKean full-extent road feature stack (cldice-on-entire-shapefile experiment)
+# — regenerable from F: mckean_full.las via _build_derivatives.py.
+data/derivatives/tiles/mkf_road_1m/
+
 # Inference outputs — heavy intermediates (feature stacks + prob rasters)
 # regenerable from best.pt + _build_derivatives.py + _predict_on_tile.py.
 # Track only the small overlay PNGs.

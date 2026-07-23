@@ -381,6 +381,8 @@ def main() -> int:
                     help="Rebuild outputs that already exist")
     ap.add_argument("--out-dir", default=None,
                     help="Explicit output directory (default: data/derivatives/<suffix>/)")
+    ap.add_argument("--dem-method", default="delaunay", choices=["delaunay", "gdal"],
+                    help="DEM interpolation: delaunay (TIN, high RAM) or gdal (IDW, streams — use for dense QL1)")
     args = ap.parse_args()
 
     tiles = resolve_tiles(args.tiles)
@@ -393,7 +395,8 @@ def main() -> int:
           res=args.res, sfx=args.suffix, dst_crs=args.crs,
           src_crs=args.src_crs, merge_path=merge,
           skip_existing=(not args.overwrite),
-          out_dir=Path(args.out_dir) if args.out_dir else None)
+          out_dir=Path(args.out_dir) if args.out_dir else None,
+          dem_method=args.dem_method)
     return 0
 
 

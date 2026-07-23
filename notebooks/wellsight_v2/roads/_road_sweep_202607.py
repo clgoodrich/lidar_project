@@ -52,6 +52,15 @@ SWEEP = DERIV_9T / "road_sweep_202607"
 BLOCK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / "613590"
 CORR = BLOCK / "corrections"
 
+# ---- McKean full-extent road labels (1 m) — separate-model experiment ----
+# roads.shp has ~137 km of road annotations in McKean beyond the 9t area.
+# cfg["mkf"]=True appends these (feature stack + labels + sampled centers)
+# to the TRAIN set only; val stays 9t so metrics remain comparable.
+MKF_DIR = DERIV / "tiles" / "mkf_road_1m"
+MKF_F = MKF_DIR / "features_mkf_road_1m.tif"
+MKF_L = MKF_DIR / "labels_road_mkf_road_1m.tif"
+MKF_CENTERS = MKF_DIR / "mkf_road_centers.csv"
+
 # ---- shared 9t inputs (1 m) ----
 F1 = DERIV_9T / "features_pit_9t_1m.tif"
 L1 = DERIV_9T / "labels_road_9t_1m.tif"
@@ -276,6 +285,20 @@ def corr_policies(split, centers, cells):
     return pol, bounds
 
 
+def mkf_policies(centers_csv, feat_path):
+    """McKean centers: patches centered on road pixels + sampled background."""
+    c = pd.read_csv(centers_csv)
+    pol = []
+    for kind in ("road", "not_road"):
+        pts = c.loc[c.kind == kind, ["x", "y"]].to_numpy()
+        if len(pts):
+            pol.append((kind, pts, JITTER_M))
+    with rasterio.open(feat_path) as r:
+        b = r.bounds
+    bounds = np.array([[b.left, b.bottom, b.right, b.top]])
+    return pol, bounds
+
+
 def build_datasets(cfg, mu, sd):
     """Returns (train_ds, val_ds, dual)."""
     res = cfg["res"]
@@ -306,6 +329,16 @@ def build_datasets(cfg, mu, sd):
         polc, bc = corr_policies("train", centers, cells)
         trc = mk(polc, bc, CORR_F, CORR_L, 44, True, ORI_CORR)
         train_sets.append(trc)
+    if cfg.get("mkf"):
+        # McKean full-extent roads -> TRAIN only. Seg-only (no orient labels
+        # there); force a plain CenteredPatchSampler even if the model is dual.
+        polm, bm = mkf_policies(MKF_CENTERS, MKF_F)
+        trm = CenteredPatchSampler(
+            feat_path=str(MKF_F), lbl_path=str(MKF_L), policies=polm,
+            block_bounds=bm, transform=rasterio.open(MKF_F).transform,
+            mu=mu, sd=sd, patch=PATCH, augment=True, seed=46)
+        train_sets.append(trm)
+        print(f"  + McKean train set: {sum(len(p[1]) for p in polm)} centers")
     train_ds = ConcatDataset(train_sets) if len(train_sets) > 1 else train_sets[0]
 
     # val is always seg-only single-head (eval mode), deterministic
