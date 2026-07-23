@@ -125,13 +125,14 @@ def ch_structure_tensor(dem, res, nanmask, rough_win_m=5.0, smooth_sig=2.0):
 
 
 def ch_profile_curv_doublet(dem, res, out_dir, sfx, nanmask, feat_orient_deg,
-                            offset_m=2.5):
+                            offset_m=2.5, dem_name=None):
     """WBT profile curvature + a cut/fill doublet score across feature orient."""
     import whitebox
     wbt = whitebox.WhiteboxTools()
     wbt.set_working_dir(str(out_dir.resolve()))
     wbt.set_verbose_mode(False)
-    wbt.profile_curvature(dem=f"dem_{sfx}.tif", output=f"profile_curv_{sfx}.tif")
+    wbt.profile_curvature(dem=dem_name or f"dem_{sfx}.tif",
+                          output=f"profile_curv_{sfx}.tif")
     with rasterio.open(out_dir / f"profile_curv_{sfx}.tif") as r:
         curv = r.read(1).astype(np.float32)
         cnod = r.nodata
@@ -313,6 +314,9 @@ def main() -> int:
     ap.add_argument("--only", default=None,
                     help="Comma list of channel groups to run "
                          "(slope_residual,diff_openness,rough,curv,sllac,frangi,ridge,savgol,tophat)")
+    ap.add_argument("--dem-name", default=None,
+                    help="Override DEM filename (default dem_<sfx>.tif). Use e.g. "
+                         "dem_breached_9t_1m.tif for dirs holding only a consolidated stack.")
     args = ap.parse_args()
 
     d = Path(args.dir)
@@ -328,15 +332,23 @@ def main() -> int:
             a[a == nod] = np.nan
         return a
 
-    with rasterio.open(d / f"dem_{sfx}.tif") as r:
+    dem_path = d / (args.dem_name if args.dem_name else f"dem_{sfx}.tif")
+    with rasterio.open(dem_path) as r:
         transform, crs = r.transform, r.crs
-    dem = rd("dem")
+        dem = r.read(1).astype(np.float32)
+        nod = r.nodata
+    if nod is not None:
+        dem[dem == nod] = np.nan
     nanmask = ~np.isfinite(dem)
-    print(f"[extra] {sfx}  grid {dem.shape}  nan {100*nanmask.mean():.2f}%")
+    print(f"[extra] {sfx}  grid {dem.shape}  nan {100*nanmask.mean():.2f}%  dem={dem_path.name}")
 
-    slope = rd("slope")
-    op_pos, op_neg = rd("openness_pos"), rd("openness_neg")
-    lrm5 = rd("lrm_5")
+    # lazy per-channel reads: savgol/curv/rough need only the DEM, so tiles that
+    # hold just a DEM (e.g. 9t 1 m consolidated stack) still work with --only.
+    _cache = {}
+    def lazy(stem):
+        if stem not in _cache:
+            _cache[stem] = rd(stem)
+        return _cache[stem]
 
     def emit(stem, arr):
         write_tif(d / f"{stem}_{sfx}.tif", arr, transform=transform, crs=crs)
@@ -346,13 +358,11 @@ def main() -> int:
         return only is None or g in only
 
     if want("slope_residual"):
-        for stem, arr in ch_slope_residual(slope, res, nanmask):
+        for stem, arr in ch_slope_residual(lazy("slope"), res, nanmask):
             emit(stem, arr)
-    slresid12 = rd("slope_residual_12m") if (d / f"slope_residual_12m_{sfx}.tif").exists() \
-        else (slope - focal_mean(slope, int(round(24 / res)) | 1))
 
     if want("diff_openness"):
-        for stem, arr in ch_diff_openness(op_pos, op_neg, nanmask):
+        for stem, arr in ch_diff_openness(lazy("openness_pos"), lazy("openness_neg"), nanmask):
             emit(stem, arr)
 
     feat_orient = None
@@ -366,21 +376,25 @@ def main() -> int:
         if feat_orient is None:
             feat_orient = rd("rough_orient") if (d / f"rough_orient_{sfx}.tif").exists() \
                 else np.zeros(dem.shape, np.float32)
-        for stem, arr in ch_profile_curv_doublet(dem, res, d, sfx, nanmask, feat_orient):
+        for stem, arr in ch_profile_curv_doublet(dem, res, d, sfx, nanmask, feat_orient,
+                                                  dem_name=args.dem_name):
             emit(stem, arr)
         gc.collect()
 
     if want("sllac"):
-        for stem, arr in ch_sllac(slope, res, nanmask):
+        for stem, arr in ch_sllac(lazy("slope"), res, nanmask):
             emit(stem, arr)
         gc.collect()
 
     if want("frangi"):
-        for stem, arr in ch_frangi(lrm5, slresid12, nanmask):
+        slresid12 = (lazy("slope_residual_12m")
+                     if (d / f"slope_residual_12m_{sfx}.tif").exists()
+                     else (lazy("slope") - focal_mean(lazy("slope"), int(round(24 / res)) | 1)))
+        for stem, arr in ch_frangi(lazy("lrm_5"), slresid12, nanmask):
             emit(stem, arr)
 
     if want("ridge"):
-        for stem, arr in ch_ridge(lrm5, res, nanmask):
+        for stem, arr in ch_ridge(lazy("lrm_5"), res, nanmask):
             emit(stem, arr)
 
     if want("savgol"):

@@ -57,7 +57,7 @@ CORR = BLOCK / "corrections"
 # cfg["mkf"]=True appends these (feature stack + labels + sampled centers)
 # to the TRAIN set only; val stays 9t so metrics remain comparable.
 MKF_DIR = DERIV / "tiles" / "mkf_road_1m"
-MKF_F = MKF_DIR / "features_mkf_road_1m.tif"
+MKF_F = MKF_DIR / "features_mkf_road_1m_clean.tif"  # gaps as NaN (not -9999)
 MKF_L = MKF_DIR / "labels_road_mkf_road_1m.tif"
 MKF_CENTERS = MKF_DIR / "mkf_road_centers.csv"
 
@@ -89,6 +89,16 @@ ORI_CORR = CORR / "labels_roadorient_corr_613590_1m.tif"
 CORRECTED = DERIV_9T / "road_unet_1m_corrected" / "best.pt"
 BASELINE_PROB = DERIV_9T / "road_unet_1m_recall" / "road_prob_613590_1m.tif"
 
+# ---- SavGol+3 augmented 1m stacks (cldice_sg3 experiment, 2026-07-23) ----
+# cfg["extra_ch"] appends these linear-feature channels to the 7-band stack;
+# uses 10-band stacks + merged stats + a checkpoint whose first conv is
+# expanded 7->10 (built by scratchpad/prep_sg3.py). See docs/iterations.
+EXTRA_CH3 = ("savgol_resid_msmax", "profile_curv", "rough_aniso")
+F1_SG3 = DERIV_9T / "features_pit_9t_1m_sg3.tif"
+S1_SG3 = DERIV_9T / "feature_stats_1m_sg3.json"
+CORR_F_SG3 = BLOCK / "features_613590_1m_sg3.tif"
+CORRECTED_SG3 = DERIV_9T / "road_unet_1m_corrected_sg3.pt"
+
 PATCH, OVERLAP, N_CLASSES = 256, 64, 3
 JITTER_M = 30.0
 GAMMA = 2.0
@@ -100,6 +110,11 @@ SEED = 1234
 VARIANTS = {
     "cldice":   dict(res="1m", init="corrected", loss="cldice",
                      model="unet", ep=12, lr=2e-4, corr=True, alpha=(0.10, 0.72, 0.25)),
+    # identical to cldice but with 3 linear-feature channels appended (savgol
+    # residual + profile curvature + roughness anisotropy). A/B on the channels.
+    "cldice_sg3": dict(res="1m", init="corrected", loss="cldice",
+                       model="unet", ep=12, lr=2e-4, corr=True,
+                       alpha=(0.10, 0.72, 0.25), extra_ch=list(EXTRA_CH3)),
     "alpha078": dict(res="1m", init="corrected", loss="focal",
                      model="unet", ep=12, lr=2e-4, corr=True, alpha=(0.10, 0.78, 0.25)),
     "boundary": dict(res="1m", init="corrected", loss="boundary",
@@ -303,6 +318,9 @@ def build_datasets(cfg, mu, sd):
     """Returns (train_ds, val_ds, dual)."""
     res = cfg["res"]
     feat, lbl = (F1, L1) if res == "1m" else (F05, L05)
+    corr_f = CORR_F
+    if cfg.get("extra_ch"):
+        feat, corr_f = F1_SG3, CORR_F_SG3
     tf = rasterio.open(feat).transform
     manifest = pd.read_csv(MANIFEST)
     blocks = gpd.read_file(BLOCKS, layer="blocks")
@@ -327,7 +345,7 @@ def build_datasets(cfg, mu, sd):
         centers = pd.read_csv(CORR_CENTERS)
         cells = gpd.read_file(CORR_CELLS, layer="cells")
         polc, bc = corr_policies("train", centers, cells)
-        trc = mk(polc, bc, CORR_F, CORR_L, 44, True, ORI_CORR)
+        trc = mk(polc, bc, corr_f, CORR_L, 44, True, ORI_CORR)
         train_sets.append(trc)
     if cfg.get("mkf"):
         # McKean full-extent roads -> TRAIN only. Seg-only (no orient labels
@@ -371,7 +389,8 @@ def train_variant(model, train_ds, val_ds, loss_fn, cfg, out_dir, dual,
                   ori_w=0.3):
     out_dir.mkdir(parents=True, exist_ok=True)
     g = torch.Generator(); g.manual_seed(SEED)
-    train_loader = DataLoader(train_ds, batch_size=16, shuffle=True,
+    train_loader = DataLoader(train_ds, batch_size=cfg.get("batch", 16),
+                              shuffle=True,
                               num_workers=2, pin_memory=True,
                               persistent_workers=True, generator=g)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg["lr"], weight_decay=WD)
@@ -472,6 +491,9 @@ def run_variant(name, epochs_override=None, eval_only=False):
     res = cfg["res"]
     feat, lbl, stats, chans = ((F1, L1, S1, CH1) if res == "1m"
                                else (F05, L05, S05, CH05))
+    if cfg.get("extra_ch"):
+        feat, stats = F1_SG3, S1_SG3
+        chans = tuple(CH1) + tuple(cfg["extra_ch"])
     cfg["_channels"] = list(chans)
     out_dir = SWEEP / name
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -485,9 +507,10 @@ def run_variant(name, epochs_override=None, eval_only=False):
 
     if not eval_only:
         if cfg["init"] == "corrected":
-            ck = torch.load(CORRECTED, map_location="cpu", weights_only=False)
+            init_ck = CORRECTED_SG3 if cfg.get("extra_ch") else CORRECTED
+            ck = torch.load(init_ck, map_location="cpu", weights_only=False)
             model.load_state_dict(ck["state_dict"], strict=False)
-            print(f"[{name}] finetune from corrected (ep {ck['epoch']}, "
+            print(f"[{name}] finetune from {init_ck.name} (ep {ck['epoch']}, "
                   f"IoU {ck['score']:.3f}); loss={cfg['loss']} ep={cfg['ep']} "
                   f"lr={cfg['lr']}", flush=True)
         else:
