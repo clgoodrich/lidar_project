@@ -24,6 +24,9 @@ is the source of record.
 | Ferraz, Mallet & Chehata | 2016 | Forest-road detection from lidar (elongated planar model + graph gap-linking) | Motivates `slope_residual`, `rough_aniso`; blueprint for the planned gap-linking pass | `_build_extra_channels.py` + future road linker | cite-only |
 | Batra et al. | 2019 | Orientation learning for road connectivity | Orientation field for gap-linking | `ridge_orient` in `_build_extra_channels.py` + future linker | ✓ `batra_2019_road_connectivity_cvpr.pdf` |
 | Shit et al. | 2021 | clDice topology-preserving loss | `ClDiceFocal` road-segmentation loss | `notebooks/wellsight_v2/roads/_road_sweep_202607.py`; `cldice`/`cldice_mkf` `road_prob` rasters | ✓ `cldice_shit_2021.pdf` |
+| Savitzky & Golay | 1964 | Least-squares polynomial smoothing/differentiation | 2D SavGol quadratic residual (detrends slope+curvature) | `savgol_resid_*` in `_build_extra_channels.py` | ✓ `savitzky_golay_1964.pdf` |
+| Wood | 1996 | Multiscale quadratic-surface DEM geomorphometry | Basis for local quadratic land-surface fitting (SavGol residual, curvature) | `savgol_resid_*`, `profile_curv` in `_build_extra_channels.py` | cite-only |
+| Soille | 2004 | Mathematical morphology (top-hat transform) | White/black top-hat cut/fill bench channels | `tophat_white/black` in `_build_extra_channels.py` | cite-only |
 
 ---
 
@@ -106,3 +109,25 @@ is the source of record.
 - **Used for:** The `ClDiceFocal` loss (focal + w·(1−soft_clDice)) used to train the road U-Net — the current best road model.
 - **Generated:** `notebooks/wellsight_v2/roads/_road_sweep_202607.py`; `cldice` and `cldice_mkf` `road_prob` rasters under `data/derivatives/tiles/9t/road_sweep_202607/`.
 - **Local PDF:** `literature/papers/cldice_shit_2021.pdf`.
+
+### Savitzky & Golay 1964 — Least-squares polynomial smoothing
+- **Citation:** Savitzky, A., Golay, M.J.E. (1964). "Smoothing and Differentiation of Data by Simplified Least Squares Procedures." *Analytical Chemistry* 36(8): 1627–1639.
+- **About:** Local polynomial (Savitzky-Golay) regression — smooths a signal by fitting a low-order polynomial in a moving window, preserving peak shape and width that plain averaging flattens.
+- **Used for:** The 2D SavGol **quadratic residual** channels. Fitting `a+bx+cy+dx²+ey²+fxy` and subtracting removes the local slope *and* curvature, so only departures from a smooth hillslope (anthropogenic benches) survive. Fixes the curvature contamination of the LRM unsharp mask (`DEM − focal_mean` leaks ~`(σ²/2)·∇²z`).
+- **Generated:** `notebooks/wellsight_v2/build/_build_extra_channels.py` (`ch_savgol`, `_sg2d_kernel`).
+- **Provenance note:** the bench-detection *application* recipe (quadratic residual + top-hat on detrended elevation, slope-normal frame) was proposed by the user's Claude agent; this paper is the underlying smoothing method.
+- **Local PDF:** `literature/papers/savitzky_golay_1964.pdf`.
+
+### Wood 1996 — Multiscale quadratic-surface DEM geomorphometry
+- **Citation:** Wood, J. (1996). "The Geomorphological Characterisation of Digital Elevation Models." Ph.D. Thesis, University of Leicester, 466 pp.
+- **About:** Parameterises DEMs by fitting quadratic surfaces over a *range of window sizes* and taking first/second derivatives, characterising landform at any scale rather than a fixed 3×3.
+- **Used for:** Methodological basis for the local quadratic land-surface fit behind the SavGol residual and multiscale approach; also underpins profile curvature.
+- **Generated:** `notebooks/wellsight_v2/build/_build_extra_channels.py` (`ch_savgol`, multiscale stack).
+- **Source:** https://lra.le.ac.uk/handle/2381/34503 ; https://figshare.le.ac.uk/articles/thesis/10152368 — cite-only (466-pp thesis).
+
+### Soille 2004 — Mathematical morphology (top-hat)
+- **Citation:** Soille, P. (2004). *Morphological Image Analysis: Principles and Applications*, 2nd ed. Springer.
+- **About:** Standard reference for grayscale morphology. The white top-hat (`f − opening(f)`) isolates bright structures smaller than the structuring element; the black/bottom top-hat (`closing(f) − f`) isolates dark ones.
+- **Used for:** The `tophat_white` (fill lip) and `tophat_black` (cut) bench channels, run on the SavGol residual with a disk SE just wider than the tread. The offset white/black pair is a selective bench signature.
+- **Generated:** `notebooks/wellsight_v2/build/_build_extra_channels.py` (`ch_tophat`).
+- **Source:** Springer (book) — cite-only.

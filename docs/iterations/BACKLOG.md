@@ -37,6 +37,31 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **Annotate a sentinel-1800-dense block** to power the historic-vs-modern morphology contrast — the annotated 9t footprint holds only 46 sentinel wells (20 pad-matched), all tests ns.
 - **Purge the 58 null-geometry rows from `plat.shp`** next annotation pass.
 
+## Linear-feature channel refinements (from lit review + agent bench diagnosis, 2026-07-23)
+
+Context: `_build_extra_channels.py` added SavGol quadratic residual + top-hat cut/fill
+channels after the agent's diagnosis that LRM unsharp mask is curvature-contaminated
+(`DEM − focal_mean` leaks `(σ²/2)∇²z`). Confirmed on 613590_05 (see docs/iterations
+write-up). Deferred refinements from that same advice:
+
+- **Robust IRLS quadratic fit** — bisquare weights, 2–3 iterations, so the cutbank/fill
+  lip don't drag the trend surface toward the feature being isolated. Incremental over
+  the plain SavGol; matters most on narrow benches in tight windows.
+- **Slope-normal residual frame** — on sustained >30° Appalachian sideslopes, fit a
+  broad-window plane, rotate the neighborhood to hillslope-horizontal, measure residual
+  perpendicular. Vertical residual under-reads bench depth by ~cos(θ) and smears the
+  cut/fill pair. Makes one threshold work basin-wide instead of tuning by aspect. Heaviest
+  piece (per-pixel plane fit + rotation) — the highest-value follow-up.
+- **1D perpendicular-transect detector** — cast rays perpendicular to contours at ~2 m,
+  robustly detrend each 1D profile, detect benches on the transect. Cheap, debuggable
+  escape hatch; per-transect detections link into paths readily.
+- **Feed winners into the road model** — test SavGol residual + `frangi_lrm` + `rough_aniso`
+  (+ `ridge_orient`) as road-U-Net input channels vs the current 7. Prior separability test
+  said bolt-on channels give diminishing returns, but those were elevation/derivative
+  channels, not ridge/orientation — re-test.
+- **Fix Sato cross-hatch artifact** — raise the min sigma so the small-scale Hessian stops
+  picking up the QL2 scan-pattern / interpolation-grid weave.
+
 ## Model / architecture ideas (deferred)
 
 - **ConvNet / ConvNeXt backbones** as alternatives to ResNet50-FPN for the detectors.

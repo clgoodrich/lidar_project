@@ -197,6 +197,66 @@ def ch_sllac(slope, res, nanmask, win_m=7.5, max_lag_m=10.0, thr=0.4):
     yield "sllac_aniso", sllac_aniso
 
 
+def _disk(r):
+    r = int(r)
+    y, x = np.ogrid[-r:r+1, -r:r+1]
+    return (x * x + y * y) <= r * r
+
+
+def _sg2d_kernel(win):
+    """2D Savitzky-Golay kernel that returns the local quadratic least-squares
+    fit evaluated AT the window centre (the constant-term row of the design
+    pseudo-inverse). Correlating a field with it yields the fitted trend."""
+    r = win // 2
+    ys, xs = np.mgrid[-r:r+1, -r:r+1].astype(np.float64)
+    x, y = xs.ravel(), ys.ravel()
+    M = np.stack([np.ones_like(x), x, y, x * x, y * y, x * y], 1)
+    return np.linalg.pinv(M)[0].reshape(win, win).astype(np.float32)
+
+
+def _sg_residual(z, win):
+    fit = ndi.correlate(z, _sg2d_kernel(win), mode="nearest")
+    return (z - fit).astype(np.float32)
+
+
+def ch_savgol(dem, res, nanmask, tread_m=3.0, scales=(4, 6, 8)):
+    """Quadratic (2D Savitzky-Golay) residual: subtracts the local slope AND
+    curvature, so only genuine departures from a smooth hillslope survive =
+    anthropogenic benches. Fixes the curvature contamination of the LRM unsharp
+    mask (LRM = DEM - focal_mean, which leaks ~(sigma^2/2)*Laplacian). Window
+    ~4-8x tread width; multiscale keeps the largest-magnitude signed residual."""
+    z = fill_nan(dem, 25)
+    prim = int(round(6 * tread_m / res)) | 1
+    r_prim = _sg_residual(z, prim)
+    r_prim[nanmask] = np.nan
+    yield f"savgol_resid_{prim}px", r_prim
+    wins = sorted({int(round(s * tread_m / res)) | 1 for s in scales})
+    best = np.zeros(z.shape, np.float32)
+    for w in wins:
+        r = _sg_residual(z, w)
+        best = np.where(np.abs(r) > np.abs(best), r, best)
+    best = best.astype(np.float32)
+    best[nanmask] = np.nan
+    yield "savgol_resid_msmax", best
+
+
+def ch_tophat(dem, res, nanmask, tread_m=3.0):
+    """White/black morphological top-hat of the quadratic residual. The bench is
+    a step: material removed above (cut) and added below (fill). white top-hat
+    (r - opening) captures the fill lip; black top-hat (closing - r) captures the
+    cut. Run on the SavGol residual, NOT raw elevation (grey morphology needs the
+    slope+curvature trend removed first). SE just wider than the tread."""
+    z = fill_nan(dem, 25)
+    base = _sg_residual(z, int(round(6 * tread_m / res)) | 1)
+    se = _disk(max(2, int(round(0.7 * tread_m / res))))
+    wth = (base - ndi.grey_opening(base, footprint=se)).astype(np.float32)
+    bth = (ndi.grey_closing(base, footprint=se) - base).astype(np.float32)
+    wth[nanmask] = np.nan
+    bth[nanmask] = np.nan
+    yield "tophat_white", wth
+    yield "tophat_black", bth
+
+
 def _frangi(base, nanmask, sigmas):
     from skimage.filters import frangi
     img = fill_nan(base, 25)
@@ -252,7 +312,7 @@ def main() -> int:
     ap.add_argument("--res", type=float, required=True)
     ap.add_argument("--only", default=None,
                     help="Comma list of channel groups to run "
-                         "(slope_residual,diff_openness,rough,curv,sllac,frangi,ridge)")
+                         "(slope_residual,diff_openness,rough,curv,sllac,frangi,ridge,savgol,tophat)")
     args = ap.parse_args()
 
     d = Path(args.dir)
@@ -322,6 +382,16 @@ def main() -> int:
     if want("ridge"):
         for stem, arr in ch_ridge(lrm5, res, nanmask):
             emit(stem, arr)
+
+    if want("savgol"):
+        for stem, arr in ch_savgol(dem, res, nanmask):
+            emit(stem, arr)
+        gc.collect()
+
+    if want("tophat"):
+        for stem, arr in ch_tophat(dem, res, nanmask):
+            emit(stem, arr)
+        gc.collect()
 
     print(f"[extra] {sfx} DONE")
     return 0
