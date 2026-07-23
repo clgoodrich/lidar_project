@@ -551,7 +551,9 @@ def run_variant(name, epochs_override=None, eval_only=False):
 
     corr = None
     if cfg["corr"]:
-        pc, ac, pfc = predict_full_tile(model, CORR_F, mu, sd, patch=PATCH,
+        # must match the model's input channel count (10-band stack for extra_ch)
+        corr_feat = CORR_F_SG3 if cfg.get("extra_ch") else CORR_F
+        pc, ac, pfc = predict_full_tile(model, corr_feat, mu, sd, patch=PATCH,
                                         overlap=OVERLAP, n_classes=N_CLASSES)
         op = out_dir / "road_prob_613590_1m.tif"
         write_tif(op, pc[1], transform=pfc["transform"], crs=pfc["crs"],

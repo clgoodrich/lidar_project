@@ -5,6 +5,36 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-23 — Linear-feature channels: build, curvature fix, and the cldice_sg3 A/B
+
+Driven by a literature review + a bench-detection diagnosis (LRM unsharp mask is
+**curvature**-contaminated, not slope-limited: `DEM − focal_mean` leaks ~`(σ²/2)∇²z`).
+
+1. **Fixed the 613590_05 SE-corner hole.** Not missing data — tile `616590` landed
+   2026-06-14, two days *after* the 2026-06-12 build. Rebuilt with all 19 tiles:
+   DEM nodata 5.56% → **0.00%**.
+2. **Built 17 experimental channels** (`_build_extra_channels.py`): slope_residual,
+   diff_openness, rough_aniso/orient, profile_curv + curv_doublet, SLLAC, Frangi,
+   Sato ridge + orientation, SavGol quadratic residual, top-hat white/black.
+   Visual QC winner: **SavGol quadratic residual** — at a matched 18.5 m window the
+   mean residual drowns in hillslope curvature while the quadratic removes it.
+3. **Quantified the composite.** Per-pixel road/bg contrast only **1.19×** (mean) /
+   1.13× (geometric-mean AND). AND is *worse* because the signals are spatially
+   offset (curv on edges, savgol on tread, aniso on centerline). Roads read well to
+   the eye because of *continuity*, not per-pixel brightness.
+4. **A/B trained `cldice_sg3`** = cldice + 3 channels, controlled (same seed/batch/
+   epochs; corrected init transferred via 7→10 expanded first conv, new filters zero).
+   Result: missed-road recovery **0.957→0.978**, add-v-rej AP **0.470→0.486**,
+   P(road) 0.885→0.889; but pixIoU **0.558→0.550** and reject confidence up (more FP).
+   Deltas ~0.02 on a **single seed** — promising, not conclusive.
+
+**Decision:** per-pixel channel engineering is near its ceiling; the remaining lever is
+orientation-guided gap-linking (`ridge_orient` + Ferraz 2016 / Batra 2019). Multi-seed
+repeat needed before promoting cldice_sg3. Citations logged in `literature/CITATIONS.md`
+(11 + Savitzky-Golay 1964, Wood 1996, Soille 2004). Details: [[linear_feature_channels]].
+
+---
+
 ## 2026-07-20 — Well reporting-provenance flags (bounty-era proxy via 2022→2026 diff)
 
 User asked how to identify bounty-reported wells in `venango_wells_all`. The

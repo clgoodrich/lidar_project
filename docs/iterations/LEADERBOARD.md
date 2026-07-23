@@ -79,6 +79,11 @@ Same 9t+corrections recipe, one knob each. Two poles emerged — no runaway winn
 | alpha078 | road α 0.72→0.78 | 0.639 | 0.580 | 0.790 / 0.005 | 0.935 / 0.553 | ≈ no-op; α headroom already spent. |
 | orient | +orientation aux head (scratch) | 0.636 | 0.577 | 0.739 / **0.030** | 0.826 / **0.660** | Best add-v-rej separation but **drainage bled 6×**; deploy-disqualifying as-is. |
 | res05 | 0.5 m (9t-only, scratch) | 0.502‖ | 0.486‖ | 0.707 / 0.027 | — | Inconclusive; ‖0.5 m grid not pixIoU-comparable, likely undertrained. Re-run w/ road-physics channels. |
+| cldice_sg3† | cldice + 3 linear-feature channels (savgol_resid, profile_curv, rough_aniso) | 0.594 | 0.550 | 0.889 / **0.005** | **0.978** / **0.486** | Modest gain on the axis that matters — best missed-road recovery (0.957→0.978) and add-v-rej AP (0.470→0.486), P(road) up, drainage cleanest. Cost: pixIoU −0.008 and reject confidence up (more FPs). **Small deltas, single seed — promising, not conclusive.** |
+
+†Added 2026-07-23 (not part of the 2026-07-21 five-variant sweep). Identical recipe to `cldice`
+(same seed, batch 16, 12 ep, corrected init transferred via a 7→10 expanded first conv, 3 new
+filters zero-init) — the ONLY difference is the three appended channels. See [[linear_feature_channels]].
 
 **Decision:** run cldice + boundary through `_road_optimize.py` → compare APLS/completeness vs the 0.754 F1; promote the winner then. clDice+boundary combined is the natural full-10 first entry.
 

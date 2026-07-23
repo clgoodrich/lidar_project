@@ -70,6 +70,48 @@ python notebooks/wellsight_v2/build/_build_extra_channels.py \
   --dir data/derivatives/tiles/613590_05 --sfx 613590_05 --res 0.5 --only savgol,tophat
 ```
 
+## Did it move the model? cldice_sg3 A/B (2026-07-23)
+
+Trained `cldice_sg3` = `cldice` + 3 appended channels (`savgol_resid_msmax`,
+`profile_curv`, `rough_aniso`). Controlled: same seed, batch 16, 12 ep, corrected
+init transferred by expanding the first conv 7→10 (7 trained filters copied, 3 new
+zero-init, so they start as no-ops). Only the channels differ.
+
+| metric | cldice | cldice_sg3 | delta |
+|---|---|---|---|
+| best val road IoU | 0.5930 | 0.5941 | +0.001 (same) |
+| 9t-test pixel IoU | 0.5583 | 0.5502 | **−0.008 worse** |
+| AP road vs drainage | 0.9982 | 0.9984 | same (ceiling) |
+| mean P(road) on road | 0.8850 | 0.8894 | +0.004 |
+| **613590 test added ≥0.5** | 0.957 | **0.978** | **+0.021 better** |
+| **add-v-reject AP** | 0.470 | **0.486** | **+0.016 better** |
+| test added mean P | 0.8890 | 0.9194 | +0.030 better |
+| test reject mean P | 0.1546 | 0.1615 | +0.007 worse (more FP) |
+
+**Interpretation.** Not the breakthrough, but not a null either. The channels
+improve exactly the axis this model family is judged on — *missed-road recovery*
+(`added` lines are roads a human added because the model missed them) — by ~2 pts,
+with better add-vs-reject separation. The cost is slightly more false positives and
+a marginally lower pixel IoU (already flagged on the leaderboard as a poor proxy for
+the connectivity pole: topology ≠ pixels). Effectively the model became more
+confident about roads *in general*, helping real missed roads more than false ones,
+but shifting both.
+
+Caveats, stated plainly: deltas are ~0.02 on a **single seed pair**, and the training
+loss curve was essentially identical to `cldice` (0.0167→0.0112 both) — the model
+learned nearly the same function. Treat as promising, not established. A multi-seed
+repeat is needed before promoting.
+
+This is consistent with the separability analysis and the composite test (per-pixel
+road/background contrast only ~1.2×): per-pixel channel engineering yields small
+returns because the road signal lives in **connectivity**, not pixel values. The
+remaining lever is orientation-guided gap-linking (Ferraz 2016, Batra 2019).
+
+Artifacts: `data/derivatives/tiles/9t/road_sweep_202607/cldice_sg3/`
+(`best.pt`, `road_prob.tif`, `road_prob_613590_1m.tif`, `test_metrics.json`, `train_log.csv`).
+Reproduce: `python notebooks/wellsight_v2/roads/_road_sweep_202607.py --variant cldice_sg3`
+(prep via `scratchpad/prep_sg3.py`: 10-band stacks + merged stats + expanded ckpt).
+
 ## Deferred
 Robust IRLS fit, slope-normal frame (matters for >30° Appalachian slopes), 1D
 transect detector, feeding winners into the road U-Net, Sato artifact fix.
