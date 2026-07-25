@@ -69,6 +69,21 @@ write-up). Deferred refinements from that same advice:
 - **Overfit mitigations** for the thin-data regime: smaller backbone, frozen FPN, stronger augmentation, explicit early-stopping (we already know best ckpt = ep 0–1).
 - **YOLO multi-channel support.** YOLO pit/pad models are still 3-band (rgb3); Mask R-CNN moved to the 7-band stack. Widen YOLO input to 7 bands for an apples-to-apples comparison.
 
+## ICP / change detection
+
+- **Per-swath / per-tile bias correction of the 2006-2008 DEM.** The 9t DoD shows
+  along-track striping of ±0.22 m (row-mean std 0.094 m) plus mosaic-seam steps;
+  these are the dominant systematic error and set the detection floor at ~0.4 m.
+  Removing row+col means alone takes σ 0.183 → 0.154 m. See [[icp_change_9t]].
+- **Vegetation / canopy masking** before differencing.
+- **Decide whether recent-activity change detection is a project goal.** The
+  2006→2019 pair provably cannot find historic orphaned wells (they predate both
+  surveys; no significant DoD signal at 540 known wells). It *can* find new pads,
+  regrading, plugging, and subsidence. If that is not a goal, this line stops.
+- **Clean up the stale failed-run metadata** at
+  `data/derivatives/experiments/icp/003111/_meta_icp_5m.json` (`converged: false`,
+  fitness 39.4) — superseded, but misleading to anyone reading it directly.
+
 ## Data quality / coverage
 
 - **Better / more LiDAR data** — broader, higher-density, or newer surveys; current tiles vary by survey (see provenance note in [[streams_9t_t5000]]).

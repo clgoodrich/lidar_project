@@ -5,6 +5,40 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-25 — Preliminary ICP change detection on 9t (2006-2008 → 2019)
+
+Clipped the existing full-overlap DoD to the 9t footprint and ran the QC that
+decides whether it is usable. No ICP was re-run — the alignment and the 2 m
+difference raster were already built 2026-05-21.
+
+1. **Vertical agreement is excellent.** Median +0.003 m, robust σ 0.136 m over
+   2250×2250 px at 100% valid.
+2. **Registration QC passed.** Slope-stratified σ *decreases* with slope
+   (fit `σ = −0.024·tan(slope) + 0.135`), so implied residual planimetric error
+   ≈ 0 m. The earlier worry that the ~0.8 m datum shift would dominate a DoD was
+   wrong; ICP removed it cleanly.
+3. **The real limitation is swath striping in the 2006-2008 survey.** Row-mean
+   (along-track) range ±0.22 m, std 0.094 m; removing row+col means takes σ from
+   0.183 → 0.154 m. Detection floor is therefore ~0.4 m, set by acquisition
+   artifacts rather than by registration.
+4. **No detectable change at known wells.** 540 known wells inside 9t; DoD at
+   wells median +0.013 m; 4.4% exceed 3σ vs a 3.63% background rate (z ≈ 1.0,
+   not significant). Expected — these wells predate both surveys, so both see the
+   same settled ground. **This epoch pair cannot find historic orphaned wells.**
+   It can only find recent activity (new pads, regrading, plugging, subsidence).
+
+Script: `notebooks/wellsight_v2/build/_icp_change_9t.py`.
+Outputs: `data/derivatives/experiments/icp/change_9t/`
+(`dod_9t_2m.tif`, `dod_9t_sig_2m.tif`, `change_9t_quicklook.png`, `_stats_9t.json`).
+Write-up: `docs/iterations/icp_change_9t.md`.
+
+Data-quality flag: `data/derivatives/experiments/icp/003111/_meta_icp_5m.json`
+records a failed run (`converged: false`, fitness 39.4), superseded by a good
+re-run. Stale file still on disk; `_icp_change_map.py` correctly reads
+`_meta_icp_zm.json` instead.
+
+---
+
 ## 2026-07-23 — Linear-feature channels: build, curvature fix, and the cldice_sg3 A/B
 
 Driven by a literature review + a bench-detection diagnosis (LRM unsharp mask is
