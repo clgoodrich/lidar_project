@@ -380,6 +380,47 @@ def main() -> int:
              x=round(r.geometry.centroid.x, 1), y=round(r.geometry.centroid.y, 1))
         for _, r in nonero.head(20).iterrows()]
 
+    # ---- 4b. rasterize the result ----
+    # Categorical class raster, with a colour table baked in so QGIS renders it
+    # correctly on drag-and-drop with no styling step.
+    CODE = {"fluvial": 1, "mass_wasting": 2, "anthropogenic": 3}
+    cls_r = np.zeros((N, N), np.uint8)
+    rel_r = np.zeros((N, N), np.uint8)
+    for c, code in CODE.items():
+        g = gdf[gdf.cls == c]
+        if len(g):
+            cls_r = np.maximum(cls_r, rasterize(
+                ((geom, code) for geom in g.geometry), out_shape=(N, N),
+                transform=TF, fill=0, dtype="uint8"))
+        gr = g[g.reliable]
+        if len(gr):
+            rel_r = np.maximum(rel_r, rasterize(
+                ((geom, code) for geom in gr.geometry), out_shape=(N, N),
+                transform=TF, fill=0, dtype="uint8"))
+
+    cmap = {0: (0, 0, 0, 0),                 # transparent where no change
+            1: (44, 127, 184, 255),          # fluvial      blue
+            2: (217, 95, 14, 255),           # mass wasting orange
+            3: (215, 25, 28, 255)}           # anthropogenic red
+    for name, arr in (("change_class_9t_2m.tif", cls_r),
+                      ("change_class_reliable_9t_2m.tif", rel_r)):
+        p = OUT / name
+        with rasterio.open(p, "w", driver="GTiff", height=N, width=N, count=1,
+                           dtype="uint8", crs=CRS, transform=TF, nodata=0,
+                           compress="deflate", tiled=True) as d:
+            d.write(arr, 1)
+            d.write_colormap(1, cmap)
+            d.update_tags(1, CLASS_1="fluvial", CLASS_2="mass_wasting",
+                          CLASS_3="anthropogenic")
+        print(f"  wrote {p}  ({int((arr > 0).sum())} px)")
+
+    # Elevation change restricted to the reliable NON-erosional patches -- this
+    # is the "where is the non-fluvial change, and how big" layer.
+    ne = np.where(rel_r == CODE["anthropogenic"], dd, np.nan).astype(np.float32)
+    write(OUT / "dod_9t_nonerosional_2m.tif", ne)
+    print(f"    ({int(np.isfinite(ne).sum())} px, "
+          f"range {np.nanmin(ne):+.2f}..{np.nanmax(ne):+.2f} m)")
+
     # ---- 5. figures ----
     ls = LightSource(azdeg=315, altdeg=45)
     hs = ls.hillshade(np.nan_to_num(dem, nan=float(np.nanmean(dem))),

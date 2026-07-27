@@ -230,6 +230,23 @@ All are off-channel and gentle-to-moderate slope. Coordinates are EPSG:6346.
 | 2202 | cut | −0.35 | 1,184 | 415 | 11.4° | 45 m | 420 m | 446 m | 623203, 4593230 |
 | 2212 | cut | −0.33 | 1,212 | 399 | 7.5° | 116 m | 364 m | 384 m | 623118, 4593228 |
 
+### Raster outputs
+
+All EPSG:6346, 2 m, aligned to every other 9t raster.
+
+| file | type | content |
+|---|---|---|
+| `change_class_9t_2m.tif` | uint8 + colour table | all 367 patches: 1 = fluvial, 2 = mass wasting, 3 = anthropogenic; 0 = nodata |
+| `change_class_reliable_9t_2m.tif` | uint8 + colour table | same, ≥712 m² patches only (the trustworthy set) |
+| `dod_9t_nonerosional_2m.tif` | float32 | Δz in metres, masked to reliable non-erosional patches (5,692 px, −3.28 … +1.07 m) |
+
+The two class rasters carry an embedded colour table (blue / orange / red) and
+`nodata = 0`, so they render correctly in QGIS on drag-and-drop with no styling
+step. Class names are stored as band tags `CLASS_1..CLASS_3`.
+
+Pixel counts — all / reliable: fluvial 62,527 / 48,135; mass wasting 565 / 312;
+anthropogenic 11,666 / 5,692.
+
 Full attributed set: `change_patches_9t.gpkg`, layer `change_patches`
 (fields include `cls`, `reliable`, `mean_dz_m`, `volume_m3`, `slope_deg`,
 `chan_dist_m`, `road_dist_m`, `well_dist_m`, `compactness`, `reason`).
