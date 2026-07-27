@@ -1,0 +1,5 @@
+threshold,ha_claimed,pct_of_tile,found,missed,n_heldout_road,drainage_claimed,n_heldout_drainage
+0.2,101.65,5.02,1207,13,1220,10,385
+0.3,87.98,4.345,1202,18,1220,9,385
+0.4,78.09,3.856,1198,22,1220,8,385
+0.5,69.54,3.434,1192,28,1220,8,385

@@ -5,6 +5,54 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-27 — Threshold sweeps extended to pads and roads
+
+Full write-up: `docs/iterations/threshold_sweeps_pit_pad_road_9t.md`. New scripts
+`_pad_threshold_products_9t.py`, `_road_threshold_products_9t.py`, shared helpers
+factored into `_threshold_common.py`. Ground truth is hand-drawn annotation only.
+
+**Pad (194 held-out plats).** Best IoU>=0.30 recall **0.918 (178/194) at
+threshold 0.45–0.50**, claiming 10–12% of the 2,025 ha tile. Every held-out pad
+has signal (`max_prob` min 0.185, median 0.785, none below 0.05).
+
+**Pad merging artifact — the main methodological result of this pass.** The
+first run carried the pit criterion over unchanged (a prediction's centroid must
+lie inside the annotation) and reported **0/194 found at threshold 0.05**, the
+cutoff claiming 58% of the tile. Cause is blob merging, not the model. Pad
+probability has a high background (tile mean 0.162 vs 0.039 for roads), so below
+~0.30 predictions merge into tile-spanning super-blobs whose centroids sit
+inside no individual pad. Fixed by reporting three criteria that fail in
+opposite directions — `pred_centroid_in_gt` (dies on merging),
+`gt_centroid_covered` (dies on over-claiming), and `iou >= 0.30` (penalised by
+both, so it is the headline). At 0.05 the three read 0 / 0 / 194, which is the
+signature of total merging.
+
+**Road (1,220 held-out chunks, 43.07 km).** Monotonic and very flat — recall
+stays above 0.95 from threshold 0.05 to 0.80. At 0.30, 0.985 recall for 4.345%
+of the tile. Only 3 of 1,220 chunks have no road-like signal at all.
+
+**Road confusion check confirms the 3-class design.** Held-out DRAINAGE claimed
+as road falls 3.9% -> 2.1% across the useful range, and held-out NOT_ROAD is
+claimed at **0.0% at every single threshold**. Both are hand-drawn negatives, so
+this is direct evidence, not a proxy.
+
+**Road leakage quantified.** Roads split as ~40 m chunks, not whole objects, so
+**485/1,220 held-out chunks (39.8%) share a parent road with train chunks** —
+the standing BACKLOG "split leakage" item. Added a `clean` flag (735 chunks, 221
+of 344 parent roads fully held out) and a `recall_clean` column. Measured cost is
+~1.5 points (0.977 vs 0.962 at threshold 0.50), so leakage is real but not
+result-changing. `recall_clean` is the number to compare against pit and pad.
+
+**Cross-task read.** Pit 0.992 at 0.21% of tile, road 0.982 (clean) at 4–5%,
+pad 0.918 at 10–12%. Pad also claims ~197.95 ha at 0.50 against roughly 110 ha of
+total annotated pad area. **The pad U-Net, not the pit U-Net, is now the
+highest-value target.** Added to BACKLOG.
+
+Stale 0.20/0.30 pad products from the superseded-criterion first run were deleted
+rather than left on disk.
+
+---
+
 ## 2026-07-27 — Pit 0.05 reference raster + refinement literature survey
 
 **0.05 reference cut.** Added 0.05 to `_export_pit_floor_threshold_tifs.py`

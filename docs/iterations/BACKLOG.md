@@ -16,6 +16,15 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
 - **Barlow builder**: pin EDI package revisions at fetch time (currently auto-newest → provenance drift); fix flow-accum nodata→0 leak (`np.clip` turns nodata into log1p(0)=0 valid values); document the vertical-datum assumption (all three epochs ellipsoidal — constant offsets are absorbed by the DoD median-bias correction, but say so); curvature is profile (WBT) vs Barlow's ArcGIS standard curvature — a deliberate, documented deviation to keep.
 
+## From the pit/pad/road threshold sweeps (added 2026-07-27)
+
+Full results in `docs/iterations/threshold_sweeps_pit_pad_road_9t.md`.
+
+- **The PAD model is now the highest-value target, not the pit model.** At its best operating point (0.45–0.50) it reaches 0.918 recall on 194 held-out pads while claiming **10–12% of the tile**. Pit hits 0.992 at 0.21% and road 0.982 at 4–5%. Pad also claims ~197.95 ha at 0.50 against roughly 110 ha of total annotated pad area, so it is over-claiming by ~2x.
+- **Pad probability background is 4x the road model's** (tile mean 0.162 vs 0.039). Determine whether this is the focal-loss under-confidence issue from the refinement survey, or a genuine class-prior problem. It is what makes pad predictions merge into super-blobs below ~0.30.
+- **Road chunk leakage is now quantified: 485/1220 held-out chunks (39.8%) share a parent road with train chunks.** `recall_clean` (735 clean chunks, 221 fully-held-out parent roads) is a reporting workaround, not a fix — the real fix is splitting by parent road, not by chunk. Measured cost of the leakage is ~1.5 points of recall, so this is a correctness/reporting issue rather than a result-changing one.
+- **Single found/missed criteria are not safe across tasks.** The pit centroid-containment rule reported 0/194 pads found at threshold 0.05 purely from blob merging. Any new task needs its criteria checked at both ends of the sweep before the numbers are trusted.
+
 ## Pit U-Net refinements (added 2026-07-27)
 
 Full survey with citations in `docs/iterations/pit_refinement_options.md`. Ordered cheapest-first; steps 1–4 need no retraining and score on the existing 127 held-out rims via `_heldout_rim_containment_9t.py`.
