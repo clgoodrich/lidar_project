@@ -32,6 +32,61 @@ the road-extraction literature and is what makes our road result comparable.
 
 ---
 
+## The strictness scale — read your own number off the curve
+
+Rather than defend one IoU, here is the whole curve. **The probability threshold
+is selected once on val at IoU 0.3 and held fixed across every row.** Only the
+strictness of what counts as a correct match changes. Re-selecting the operating
+point per row would manufacture a flattering curve, which is the thing this
+table exists to rule out.
+
+| IoU required | pit R | pit P | pit F1 | pad R | pad P | pad F1 |
+|---|---|---|---|---|---|---|
+| 0.05 | 0.862 | 0.709 | 0.778 | 0.914 | 0.567 | 0.700 |
+| 0.10 | 0.862 | 0.709 | 0.778 | 0.903 | 0.560 | 0.691 |
+| 0.20 | 0.831 | 0.684 | 0.750 | 0.892 | 0.553 | 0.683 |
+| **0.30** | **0.754** | **0.620** | **0.681** | **0.882** | **0.547** | **0.675** |
+| 0.40 | 0.662 | 0.544 | 0.597 | 0.828 | 0.513 | 0.634 |
+| 0.50 | 0.585 | 0.481 | 0.528 | 0.742 | 0.460 | 0.568 |
+| 0.60 | 0.446 | 0.367 | 0.403 | 0.602 | 0.373 | 0.461 |
+| 0.70 | 0.185 | 0.152 | 0.167 | 0.344 | 0.213 | 0.263 |
+| 0.80 | 0.031 | 0.025 | 0.028 | 0.097 | 0.060 | 0.074 |
+| 0.90 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+
+Figure: `data/derivatives/eval_9t_instance_precision/iou_strictness_scale_pit_pad_9t.png`
+Table: `.../iou_strictness_scale_pit_pad_9t.md`
+Source: `.../metrics_9t.csv`, written by `_reeval_instance_precision_9t.py`.
+
+### What the shape says
+
+**Pit precision runs 0.71 down to 0.03 as IoU goes 0.05 to 0.80.** Pad precision
+runs 0.57 to 0.06 over the same range. Neither model survives IoU 0.9 at all.
+
+**The two models fail differently, and the curves show it.**
+
+- The **pad** curve is flat from 0.05 to 0.30, losing only 3 points of recall.
+  Pads are large, so once a pad is found its outline agrees well enough that
+  tightening the requirement changes almost nothing. The collapse starts at 0.40.
+- The **pit** curve is already falling by 0.20 and drops 11 points of recall
+  between 0.20 and 0.30. Pit floors are ~26 m² median, so a few pixels of
+  boundary disagreement move the IoU a lot. Pits are penalised for being small,
+  not for being missed.
+
+**This is why floor-inside-rim containment was worth measuring separately.** At
+IoU 0.3 the pit model scores recall 0.754. Asked only whether it put a detection
+inside the right rim, it locates 126 of 127 held-out pits. The 0.754 is mostly a
+delineation score wearing a detection score's clothes.
+
+### Which number to quote
+
+IoU 0.5 is the common default in general object detection, and at 0.5 we report
+pit F1 0.528 and pad F1 0.568. IoU 0.3 is more usual in the lidar-archaeology
+literature, where features are small and annotation boundaries are subjective.
+Quote 0.3 if the comparison is to that literature, quote 0.5 if the comparison is
+to computer vision, and **say which one**. Do not quote 0.05.
+
+---
+
 ## Roads — we are inside the band
 
 The fair comparison is *forest* roads from lidar DTM. These are unpaved benches

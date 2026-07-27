@@ -66,7 +66,13 @@ OUT = ROOT / "data" / "derivatives" / "eval_9t_instance_precision"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"
-TAUS = (0.1, 0.3, 0.5)
+# Full IoU sweep, so the whole precision/recall-vs-strictness curve is on record
+# and no single tau has to be defended as "the" number. Widened 2026-07-27 from
+# (0.1, 0.3, 0.5).
+TAUS = (0.05, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90)
+# The probability/score threshold is selected once at SEL_TAU and then held
+# FIXED across every tau below. Re-selecting per tau would be exactly the
+# cherry-picking this sweep exists to rule out.
 SEL_TAU = 0.3                      # IoU at which the threshold is selected
 MIN_AREA_M2 = 4.0                  # same blob floor as _unet_instance_eval
 UNET_THRESHOLDS = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
@@ -256,7 +262,7 @@ def main() -> int:
               f"(test footprint + class + thr)")
         for t in TAUS:
             a, f = as_is[t], fixed[t]
-            print(f"    IoU {t:.1f}  R {a['recall']:.3f}->{f['recall']:.3f}   "
+            print(f"    IoU {t:.2f}  R {a['recall']:.3f}->{f['recall']:.3f}   "
                   f"P {a['precision']:.3f}->{f['precision']:.3f}   "
                   f"F1 {a['f1']:.3f}->{f['f1']:.3f}")
             rows.append(dict(model=name, kind=kind, mode=mode, iou=t,
