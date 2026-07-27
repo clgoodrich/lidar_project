@@ -27,6 +27,17 @@ is the source of record.
 | Savitzky & Golay | 1964 | Least-squares polynomial smoothing/differentiation | 2D SavGol quadratic residual (detrends slope+curvature) | `savgol_resid_*` in `_build_extra_channels.py` | ✓ `savitzky_golay_1964.pdf` |
 | Wood | 1996 | Multiscale quadratic-surface DEM geomorphometry | Basis for local quadratic land-surface fitting (SavGol residual, curvature) | `savgol_resid_*`, `profile_curv` in `_build_extra_channels.py` | cite-only |
 | Soille | 2004 | Mathematical morphology (top-hat transform) | White/black top-hat cut/fill bench channels | `tophat_white/black` in `_build_extra_channels.py` | cite-only |
+| Guo et al. | 2017 | Temperature scaling / calibration | *Candidate* — calibrate `pit_prob_floor` | `docs/iterations/pit_refinement_options.md` | ✓ `guo_2017_calibration_temperature_scaling.pdf` |
+| Mukhoti et al. | 2020 | Focal loss is under-confident | *Candidate* — diagnosis of low pit probabilities | `docs/iterations/pit_refinement_options.md` | ✓ `mukhoti_2020_calibrating_focal_loss.pdf` |
+| Wang et al. | 2019 | Test-time augmentation | *Candidate* — D4 TTA at pit inference | `docs/iterations/pit_refinement_options.md` | ✓ `wang_2019_test_time_augmentation.pdf` |
+| Salehi et al. | 2017 | Tversky loss | *Candidate* — recall-weighted region term | `docs/iterations/pit_refinement_options.md` | ✓ `salehi_2017_tversky_loss.pdf` |
+| Abraham & Khan | 2019 | Focal Tversky loss | *Candidate* — small/hard pit floors | `docs/iterations/pit_refinement_options.md` | ✓ `abraham_2019_focal_tversky_loss.pdf` |
+| Kervadec et al. | 2019 | Boundary loss | *Candidate* — extreme foreground imbalance | `docs/iterations/pit_refinement_options.md` | ✓ `kervadec_2019_boundary_loss.pdf` |
+| Hu et al. | 2019 | Topology loss (Betti numbers) | *Candidate* — Betti-0 anti-fragmentation, the pit analogue of clDice | `docs/iterations/pit_refinement_options.md` | ✓ `hu_2019_topology_preserving_segmentation.pdf` |
+| Stucki et al. | 2024 | Efficient Betti matching | *Candidate* — makes the Betti-0 loss tractable | `docs/iterations/pit_refinement_options.md` | ✓ `stucki_2024_efficient_betti_matching.pdf` |
+| Suh et al. | 2021 | U-Net on lidar for relict charcoal hearths | *Candidate* — closest published analogue; motivates VAT/SVF channels | `docs/iterations/pit_refinement_options.md` | cite-only |
+| Zakšek et al. | 2011 | Sky-View Factor | *Candidate* — new channel, pending redundancy check vs `openness_pos` | `docs/iterations/pit_refinement_options.md` | cite-only |
+| Guyot et al. | 2018 | Multi-visualization CNN for buried structures | *Candidate* — supports the channel-stack approach | `docs/iterations/pit_refinement_options.md` | cite-only |
 
 ---
 
@@ -131,3 +142,93 @@ is the source of record.
 - **Used for:** The `tophat_white` (fill lip) and `tophat_black` (cut) bench channels, run on the SavGol residual with a disk SE just wider than the tread. The offset white/black pair is a selective bench signature.
 - **Generated:** `notebooks/wellsight_v2/build/_build_extra_channels.py` (`ch_tophat`).
 - **Source:** Springer (book) — cite-only.
+
+---
+
+## Pit U-Net refinement survey (2026-07-27)
+
+Surveyed in response to two review observations on `pit_prob_floor.tif` — pit
+probabilities lower than expected, and fragmented/partial floors. **These are
+candidates, not yet implemented.** The survey, the ranking, and the reasoning
+tying each paper to a specific symptom live in
+`docs/iterations/pit_refinement_options.md`, which is the file these citations
+generated. Move each entry's "Generated" field to the real code path when the
+change is actually made.
+
+### Guo, Pleiss, Sun & Weinberger 2017 — Temperature scaling
+- **Citation:** Guo, C., Pleiss, G., Sun, Y., Weinberger, K.Q. (2017). "On Calibration of Modern Neural Networks." *Proc. ICML 2017*, PMLR 70: 1321–1330. arXiv:1706.04599.
+- **About:** Modern deep nets are badly miscalibrated. Fitting a single scalar temperature `T` on a validation set and dividing the logits by it before softmax fixes most of it. Monotonic, so accuracy and ranking are untouched.
+- **Candidate use:** Put `pit_prob_floor` on a calibrated scale so a stated threshold means what a reader assumes, and so thresholds transfer between tiles. Explicitly cannot change recall at a re-tuned threshold.
+- **Generated:** `docs/iterations/pit_refinement_options.md` (Fix A).
+- **Local PDF:** `literature/papers/guo_2017_calibration_temperature_scaling.pdf`.
+
+### Mukhoti, Kulharia, Sanyal, Golodetz, Torr & Dokania 2020 — Focal loss and calibration
+- **Citation:** Mukhoti, J., Kulharia, V., Sanyal, A., Golodetz, S., Torr, P.H.S., Dokania, P.K. (2020). "Calibrating Deep Neural Networks using Focal Loss." *Advances in Neural Information Processing Systems 33 (NeurIPS 2020)*. arXiv:2002.09437.
+- **About:** Focal-loss models calibrate better than cross-entropy models, and the mechanism is that focal loss is empirically **under-confident**, offsetting overfitting-induced over-confidence.
+- **Candidate use:** Explains symptom 1 directly. Our pit U-Net trains on `FocalCE` with `gamma=2.0` and no region term, so compressed peak probabilities are the documented behaviour of the chosen loss, not evidence of weak pit signal.
+- **Generated:** `docs/iterations/pit_refinement_options.md` (symptom 1 diagnosis).
+- **Local PDF:** `literature/papers/mukhoti_2020_calibrating_focal_loss.pdf`.
+
+### Wang, Li, Aertsen, Deprest, Ourselin & Vercauteren 2019 — Test-time augmentation
+- **Citation:** Wang, G., Li, W., Aertsen, M., Deprest, J., Ourselin, S., Vercauteren, T. (2019). "Aleatoric uncertainty estimation with test-time augmentation for medical image segmentation with convolutional neural networks." *Neurocomputing* 338: 34–45. arXiv:1807.07356.
+- **About:** Predict over transformed copies of the input, invert each transform, aggregate. Improves segmentation accuracy and yields an aleatoric uncertainty estimate for free.
+- **Candidate use:** D4 TTA at inference. Our inputs are nadir terrain rasters with no canonical orientation, so the equivariance assumption holds exactly. Should lift confidence on true pits while suppressing direction-dependent artifacts such as swath seams. Targets both symptoms.
+- **Generated:** `docs/iterations/pit_refinement_options.md` (Fix B).
+- **Local PDF:** `literature/papers/wang_2019_test_time_augmentation.pdf`.
+
+### Salehi, Erdogmus & Gholipour 2017 — Tversky loss
+- **Citation:** Salehi, S.S.M., Erdogmus, D., Gholipour, A. (2017). "Tversky loss function for image segmentation using 3D fully convolutional deep networks." *MLMI 2017*, LNCS 10541: 379–387. arXiv:1706.05721.
+- **About:** Generalises Dice with tunable `alpha`/`beta` on false positives and false negatives, letting precision and recall be traded explicitly in the loss.
+- **Candidate use:** Add a region term to the pit loss with `beta > alpha` to buy recall, and restore the incentive to saturate confident pixels that pure focal removes.
+- **Generated:** `docs/iterations/pit_refinement_options.md` (Fix C).
+- **Local PDF:** `literature/papers/salehi_2017_tversky_loss.pdf`.
+
+### Abraham & Khan 2019 — Focal Tversky loss
+- **Citation:** Abraham, N., Khan, N.M. (2019). "A Novel Focal Tversky Loss Function with Improved Attention U-Net for Lesion Segmentation." *IEEE ISBI 2019*: 683–687. arXiv:1810.07842.
+- **About:** Focal modulation on top of Tversky, concentrating gradient on hard, small regions. Reported strong on small-lesion delineation.
+- **Candidate use:** Same slot as Tversky. Pit floors are small and hard, which is the regime this targets.
+- **Generated:** `docs/iterations/pit_refinement_options.md` (Fix C).
+- **Local PDF:** `literature/papers/abraham_2019_focal_tversky_loss.pdf`.
+
+### Kervadec, Bouchtiba, Desrosiers, Granger, Dolz & Ben Ayed 2019 — Boundary loss
+- **Citation:** Kervadec, H., Bouchtiba, J., Desrosiers, C., Granger, E., Dolz, J., Ben Ayed, I. (2019). "Boundary loss for highly unbalanced segmentation." *Proc. MIDL 2019*, PMLR 102: 285–296. arXiv:1812.07032.
+- **About:** A distance metric on contours rather than regions. Integrating over the interface avoids the ill-conditioning of region integrals when foreground is a tiny fraction of the image.
+- **Candidate use:** Pit floors are well under 1% of the 9t tile (4.33 ha at thr 0.20, 0.214%), which is the imbalance regime this was built for. Complements a region term rather than replacing it.
+- **Generated:** `docs/iterations/pit_refinement_options.md` (cause 2c).
+- **Local PDF:** `literature/papers/kervadec_2019_boundary_loss.pdf`.
+
+### Hu, Fuxin, Samaras & Chen 2019 — Topology-preserving segmentation
+- **Citation:** Hu, X., Fuxin, L., Samaras, D., Chen, C. (2019). "Topology-Preserving Deep Image Segmentation." *Advances in Neural Information Processing Systems 32 (NeurIPS 2019)*.
+- **About:** A differentiable loss built on persistent homology that forces the prediction to match the ground truth's Betti numbers. Betti-0 counts connected components, Betti-1 counts holes.
+- **Candidate use:** The pit-shaped counterpart to what clDice did for roads. clDice targets tubular skeleton connectivity and is wrong for blobs. A Betti-0 penalty encodes "one annotated pit is one component", which is exactly the fragmentation symptom.
+- **Generated:** `docs/iterations/pit_refinement_options.md` (cause 2b).
+- **Local PDF:** `literature/papers/hu_2019_topology_preserving_segmentation.pdf`.
+
+### Stucki, Paetzold, Shit, Menze & Bauer 2024 — Betti matching
+- **Citation:** Stucki, N., Paetzold, J.C., Shit, S., Menze, B., Bauer, U. (2024). "Efficient Betti Matching Enables Topology-Aware 3D Segmentation via Persistent Homology." arXiv:2407.04683.
+- **About:** Makes persistent-homology topology losses tractable at practical image sizes, which was the main barrier to using Hu et al. 2019 in production.
+- **Candidate use:** The implementation route if the Betti-0 loss is pursued.
+- **Generated:** `docs/iterations/pit_refinement_options.md` (cause 2b).
+- **Local PDF:** `literature/papers/stucki_2024_efficient_betti_matching.pdf`.
+
+### Suh, Anderson, Ouimet, Johnson & Witharana 2021 — Relict charcoal hearths from lidar with U-Net
+- **Citation:** Suh, J.W., Anderson, E., Ouimet, W., Johnson, K.M., Witharana, C. (2021). "Mapping Relict Charcoal Hearths in New England Using Deep Convolutional Neural Networks and LiDAR Data." *Remote Sensing* 13(22): 4630. doi:10.3390/rs13224630.
+- **About:** U-Net over airborne-lidar derivatives to find relict charcoal hearths, which are small circular platform features under closed forest canopy in the northeastern US. Best F1 95.5% in localised test regions, 86% at town scale. Slope, hillshade and VAT were the best-performing input rasters. Accuracy was higher in deciduous forest on slopes above 15 degrees.
+- **Candidate use:** Closest published analogue to WellSight — same region type, same canopy problem, same small-circular-feature target, same architecture. Motivates testing VAT and sky-view factor as channels.
+- **Caveat:** must be redundancy-checked against existing channels before use, the same test that caused RRIM to be rejected as a model input.
+- **Generated:** `docs/iterations/pit_refinement_options.md` ("Channels we do not have").
+- **Source:** https://doi.org/10.3390/rs13224630 — cite-only (MDPI blocks automated download).
+
+### Zakšek, Oštir & Kokalj 2011 — Sky-View Factor
+- **Citation:** Zakšek, K., Oštir, K., Kokalj, Ž. (2011). "Sky-View Factor as a Relief Visualization Technique." *Remote Sensing* 3(2): 398–415. doi:10.3390/rs3020398.
+- **About:** Portion of visible sky above a point. Illumination-independent, and unlike hillshade it does not suppress features aligned with the light azimuth. A VAT component.
+- **Candidate use:** Candidate new channel. Related to our `openness_pos` but not identical, so it needs an explicit correlation check against it before a training run is spent.
+- **Generated:** `docs/iterations/pit_refinement_options.md` ("Channels we do not have").
+- **Source:** https://doi.org/10.3390/rs3020398 — cite-only (MDPI blocks automated download).
+
+### Guyot, Hubert-Moy & Lorho 2018 — Combined detection and segmentation of archaeological structures
+- **Citation:** Guyot, A., Hubert-Moy, L., Lorho, T. (2018). "Combined Detection and Segmentation of Archeological Structures from LiDAR Data Using a Deep Learning Approach." *Journal of Computer Applications in Archaeology* 1(1): 1–10. doi:10.5334/jcaa.64.
+- **About:** Feeds a multi-visualization lidar derivative stack to a CNN for buried structures under forest.
+- **Candidate use:** Supporting evidence for the multi-visualization channel-stack approach we already use, and for adding VAT-family layers.
+- **Generated:** `docs/iterations/pit_refinement_options.md` ("Channels we do not have").
+- **Source:** https://doi.org/10.5334/jcaa.64 — cite-only (download endpoint returned non-PDF).

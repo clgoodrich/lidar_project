@@ -16,6 +16,19 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
 - **Barlow builder**: pin EDI package revisions at fetch time (currently auto-newest → provenance drift); fix flow-accum nodata→0 leak (`np.clip` turns nodata into log1p(0)=0 valid values); document the vertical-datum assumption (all three epochs ellipsoidal — constant offsets are absorbed by the DoD median-bias correction, but say so); curvature is profile (WBT) vs Barlow's ArcGIS standard curvature — a deliberate, documented deviation to keep.
 
+## Pit U-Net refinements (added 2026-07-27)
+
+Full survey with citations in `docs/iterations/pit_refinement_options.md`. Ordered cheapest-first; steps 1–4 need no retraining and score on the existing 127 held-out rims via `_heldout_rim_containment_9t.py`.
+
+- **1. Diagnose fragmentation vs the 128 m patch grid** (~1 h, no retrain). Decides whether fragmented pit floors are an inference-stitching artifact or a model property. Do this before spending a day on a loss function.
+- **2. Cosine/Hann patch feathering** (~2 h, no retrain). `_dl.py:445-449` blends overlapping patches with a uniform box mean, so one-sided-context edge predictions get the same weight as full-context centre predictions.
+- **3. D4 test-time augmentation** (~2 h, no retrain). Wang et al. 2019. Nadir terrain rasters have no canonical orientation, so the equivariance assumption holds exactly. Targets both low confidence and fragmentation.
+- **4. Temperature scaling on val** (~1 h, no retrain). Guo et al. 2017. Monotonic, so it cannot change recall at a re-tuned threshold — this is for honest reporting and threshold transfer between tiles, not for finding new pits.
+- **5. Sky-view factor channel + redundancy check** (~2 h). Zakšek et al. 2011, motivated by Suh et al. 2021 (VAT best-performing on relict charcoal hearths, the closest published analogue to this project). **Must** correlate against `openness_pos` first — this is the same shape of claim that got RRIM rejected as a model input.
+- **6. Focal + Tversky region term** (~1 d, retrain). Salehi et al. 2017 / Abraham & Khan 2019. `beta > alpha` buys recall and restores the incentive to saturate confident pixels that pure focal removes.
+- **7. Boundary loss term** (~1 d, retrain). Kervadec et al. 2019. Pit floors are 0.14–0.21% of the tile, the imbalance regime it targets.
+- **8. Betti-0 topology loss** (~3 d, retrain). Hu et al. 2019 + Stucki et al. 2024. The pit-shaped analogue of clDice — clDice is for tubular structures and is wrong for blobs. Encodes "one annotated pit is one component". Park until 1–4 are measured.
+
 ## High priority — directly limits current results
 
 - **~~Grow the training label set~~ → USE the grown label set (updated 2026-07-01).** The old "110 pit / 79 pad" figure is stale: annotations now total **426 pits / 1,053 pads** (user annotation push). The 2026-06-10 dataset rebuild picked up all 426 pits + the 650 pads inside 9t (test split now 65 pits / 93 pads), and the U-Nets were retrained on it. Still outstanding: (a) **403 pads lie outside 9t** and are in NO dataset — they need per-region feature stacks; (b) ~~**~58 newest pads** postdate the last `annotations_proj.gpkg` regen (plat.shp 1053 vs gpkg 995) — re-run `_prep_annotations` + dataset rebuild~~ **RESOLVED 2026-07-19 (misdiagnosis):** the 58 are null-geometry rows in `plat.shp` (QGIS delete artifacts), not new pads — gpkg 995 = every pad with geometry, nothing stale. Optionally purge the null rows from the shapefile; (c) ~~the instance models' saved test metrics are stale~~ — DONE 2026-07-02, all four re-run on the 65/93 split (see LEADERBOARD).

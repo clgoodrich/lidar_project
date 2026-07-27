@@ -35,11 +35,42 @@ ROOT = Path(__file__).resolve().parents[3]
 SRC = (ROOT / "data" / "derivatives" / "tiles" / "9t" / "pit_unet_v2"
        / "pit_prob_floor.tif")
 OUT_DIR = SRC.parent
-THRESHOLDS = [0.20, 0.30]
+THRESHOLDS = [0.05, 0.20, 0.30]
+# 0.05 is a REFERENCE view, not an operating point. Every held-out rim has
+# max_prob >= 0.05 (p05 = 0.472), so this cut shows the full extent of anything
+# the model considered pit-like at all -- useful for asking "did it see it and
+# score it low?" versus "did it not see it?". It is far too permissive to use.
 
 
 def tag(t: float) -> str:
     return f"thr{t:.2f}".replace(".", "p")
+
+
+def write(path, band, prof_updates, prof, tags):
+    """Write one raster, tolerating a Windows lock from an open QGIS session.
+
+    These outputs are deterministic functions of the source probability raster,
+    so an already-correct file that happens to be locked is not worth aborting
+    the whole run over -- the remaining thresholds still need writing.
+    """
+    p = prof.copy()
+    p.update(count=1, compress="deflate", tiled=True, **prof_updates)
+    try:
+        with rasterio.open(path, "w", **p) as d:
+            d.write(band, 1)
+            if band.dtype == np.uint8:
+                d.write_colormap(1, {0: (0, 0, 0, 0), 1: (215, 25, 28, 255)})
+            d.update_tags(1, **tags)
+    except rasterio.errors.RasterioIOError as e:
+        print(f"  !! SKIPPED {path.name} -- locked (open in QGIS?): {e}")
+        return False
+    except Exception as e:                      # GDAL surfaces the lock this way
+        if "Permission denied" not in str(e):
+            raise
+        print(f"  !! SKIPPED {path.name} -- locked (open in QGIS?)")
+        return False
+    print(f"  wrote {path}")
+    return True
 
 
 def main() -> int:
@@ -58,27 +89,20 @@ def main() -> int:
         m = prob >= t
         ha = m.sum() * px / 1e4
 
-        mask_p = OUT_DIR / f"pit_unet_floor_mask_{tag(t)}_9t_05.tif"
-        p = prof.copy()
-        p.update(dtype="uint8", nodata=0, count=1, compress="deflate",
-                 tiled=True)
-        with rasterio.open(mask_p, "w", **p) as d:
-            d.write(m.astype(np.uint8), 1)
-            d.write_colormap(1, {0: (0, 0, 0, 0), 1: (215, 25, 28, 255)})
-            d.update_tags(1, THRESHOLD=str(t), SOURCE=SRC.name,
-                          MEANING="1 = pit floor probability >= threshold")
-        print(f"  wrote {mask_p}")
-        print(f"    {m.sum():,} px = {ha:.2f} ha ({100 * m.mean():.3f}% of tile)")
+        print(f"  threshold {t}: {m.sum():,} px = {ha:.2f} ha "
+              f"({100 * m.mean():.3f}% of tile)")
 
-        prob_p = OUT_DIR / f"pit_unet_floor_prob_{tag(t)}_9t_05.tif"
-        p = prof.copy()
-        p.update(dtype="float32", nodata=np.nan, count=1, compress="deflate",
-                 predictor=2, tiled=True)
-        with rasterio.open(prob_p, "w", **p) as d:
-            d.write(np.where(m, prob, np.nan).astype(np.float32), 1)
-            d.update_tags(1, THRESHOLD=str(t), SOURCE=SRC.name,
-                          MEANING="pit floor probability where >= threshold")
-        print(f"  wrote {prob_p}\n")
+        write(OUT_DIR / f"pit_unet_floor_mask_{tag(t)}_9t_05.tif",
+              m.astype(np.uint8), dict(dtype="uint8", nodata=0), prof,
+              dict(THRESHOLD=str(t), SOURCE=SRC.name,
+                   MEANING="1 = pit floor probability >= threshold"))
+
+        write(OUT_DIR / f"pit_unet_floor_prob_{tag(t)}_9t_05.tif",
+              np.where(m, prob, np.nan).astype(np.float32),
+              dict(dtype="float32", nodata=np.nan, predictor=2), prof,
+              dict(THRESHOLD=str(t), SOURCE=SRC.name,
+                   MEANING="pit floor probability where >= threshold"))
+        print()
 
     return 0
 

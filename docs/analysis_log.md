@@ -5,6 +5,55 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-27 — Pit 0.05 reference raster + refinement literature survey
+
+**0.05 reference cut.** Added 0.05 to `_export_pit_floor_threshold_tifs.py`
+alongside 0.20 and 0.30. It is a *reference* view, not an operating point —
+every held-out rim has `max_prob >= 0.05` (p05 = 0.472), so this cut shows the
+full extent of anything the model considered pit-like at all. Far too permissive
+to use: 2,820,569 px = 70.51 ha = **3.482%** of the tile, versus 0.214% at 0.20
+and 0.139% at 0.30. A 16x area increase over 0.20 buys one extra pit.
+
+Wrote:
+- `data/derivatives/tiles/9t/pit_unet_v2/pit_unet_floor_prob_thr0p05_9t_05.tif`
+- `data/derivatives/tiles/9t/pit_unet_v2/pit_unet_floor_mask_thr0p05_9t_05.tif`
+
+Also made the exporter tolerate a Windows file lock (QGIS holding a raster open)
+instead of aborting the remaining thresholds.
+
+**QGIS bookmark format bug, found and fixed.** The `pit_missed_bookmarks_*.xml`
+files shipped in a16d607 used the QGIS 2 attribute form, which QGIS 3 parses to
+a null rectangle and rejects with "Bookmark extent is empty". Two separate
+defects: `sr_id` is the internal `srs.db` row id, not the EPSG code (EPSG:6346 =
+28818), and every field must be a child element with the group in `<project>`.
+Format was established by exporting a bookmark from QGIS 3.40.10 via
+`QgsBookmarkManager.exportToFile`, and all four files were then verified by
+re-importing through `importFromFile` with non-null EPSG:6346 extents. Commits
+37aea18 and 652765b.
+
+**Refinement survey.** Two review observations drove it: pit probabilities lower
+than expected, and fragmented/partial floors. Survey in
+`docs/iterations/pit_refinement_options.md`, twelve citations added to
+`literature/CITATIONS.md`, nine PDFs downloaded.
+
+Two mechanical causes identified by reading our own code, not by inference:
+1. The pit U-Net trains on `FocalCE` alone (`gamma=2.0`), with no region,
+   boundary, or topology term. Mukhoti et al. 2020 document that focal loss is
+   empirically *under-confident*. Low peak probabilities are the expected
+   behaviour of the loss we chose.
+2. `_dl.py:445-449` blends overlapping inference patches with a **uniform box
+   mean**. Edge-of-patch predictions, made with one-sided context, are weighted
+   equally with full-context centre predictions. This dilutes any pit straddling
+   a patch boundary, and is a candidate cause of the fragmentation.
+
+Ranked plan in the iteration doc. Steps 1–4 need no retraining and are scoreable
+on the existing 127 held-out rims via `_heldout_rim_containment_9t.py`. Next
+action is the cheapest one: test whether the fragmentation aligns with the 128 m
+patch grid, which decides between an inference-stitching bug and a model
+property.
+
+---
+
 ## 2026-07-26 — Where the non-erosional 9t change is (artifact removal + null test)
 
 Follow-up to 2026-07-25. Script:
