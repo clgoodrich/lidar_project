@@ -1,4 +1,14 @@
 <!DOCTYPE qgis_bookmarks>
 <qgis_bookmarks>
-  <bookmark id="miss_thr0p20_01" name="MISSED 01/1 pit_id=356.0 @0.2" group="pit missed 0.2" xmin="619503.45" ymin="4595812.31" xmax="619623.45" ymax="4595932.31" sr_id="28818"/>
+  <bookmark>
+    <id>miss_thr0p20_01</id>
+    <name>MISSED 01/1 pit_id=356.0 @0.2</name>
+    <project>pit missed 0.2</project>
+    <xmin>619503.45</xmin>
+    <ymin>4595812.31</ymin>
+    <xmax>619623.45</xmax>
+    <ymax>4595932.31</ymax>
+    <rotation>0</rotation>
+    <sr_id>28818</sr_id>
+  </bookmark>
 </qgis_bookmarks>

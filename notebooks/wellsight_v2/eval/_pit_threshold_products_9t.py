@@ -9,8 +9,8 @@ threshold gets, alongside the rasters:
   locator_missed             120 m circles around each missed pit, so they can be
                              spotted while zoomed out to the whole tile
   <...>_missed_bookmarks.xml QGIS spatial bookmarks, one per missed pit. Import
-                             via Bookmarks > Manage, then jump to each in turn --
-                             no hunting required.
+                             via View > Show Spatial Bookmark Manager > Import,
+                             then jump to each in turn -- no hunting required.
   <...>_missed_contactsheet.png  hillshade crops of every missed pit in one image,
                              reviewable without opening QGIS at all.
 
@@ -52,8 +52,11 @@ THRESHOLDS = [0.20, 0.30, 0.40, 0.50]
 MIN_AREA_M2 = 4.0
 LOCATOR_R = 120.0          # metres; big enough to see at full-tile zoom
 BOOKMARK_PAD = 60.0        # metres either side of a missed pit in a bookmark
-# QGIS bookmark XML wants the INTERNAL srs.db row id, not the EPSG code.
-# EPSG:6346 (NAD83(2011) / UTM 17N) is srs_id 28818 in QGIS 3.36 and 3.40.
+# QGIS bookmark XML: every field is a CHILD ELEMENT, not an attribute, and the
+# group lives in <project>. Attribute form is QGIS 2 and imports as an empty
+# extent ("Bookmark extent is empty"). <sr_id> is the internal srs.db row id,
+# NOT the EPSG code -- EPSG:6346 is srs_id 28818 in QGIS 3.36 and 3.40. Format
+# verified by round-tripping QgsBookmarkManager.exportToFile under QGIS 3.40.10.
 BOOKMARK_SRSID = 28818
 
 
@@ -212,16 +215,22 @@ def main() -> int:
         (OUT / f"pit_heldout_found_vs_missed_{tg}_9t.qml").write_text(style_qml())
 
         # ---- QGIS spatial bookmarks for the missed pits ----
-        bm = [f'<!DOCTYPE qgis_bookmarks>', '<qgis_bookmarks>']
+        bm = ['<!DOCTYPE qgis_bookmarks>', '<qgis_bookmarks>']
         for i, rr in enumerate(miss.itertuples(), 1):
             c = rr.geometry.centroid
-            bm.append(
-                f'  <bookmark id="miss_{tg}_{i:02d}" '
-                f'name="{escape(f"MISSED {i:02d}/{len(miss)} pit_id={rr.pit_id} @{t}")}" '
-                f'group="{escape(f"pit missed {t}")}" '
-                f'xmin="{c.x - BOOKMARK_PAD:.2f}" ymin="{c.y - BOOKMARK_PAD:.2f}" '
-                f'xmax="{c.x + BOOKMARK_PAD:.2f}" ymax="{c.y + BOOKMARK_PAD:.2f}" '
-                f'sr_id="{BOOKMARK_SRSID}"/>')
+            nm = escape(f"MISSED {i:02d}/{len(miss)} pit_id={rr.pit_id} @{t}")
+            bm += [
+                '  <bookmark>',
+                f'    <id>miss_{tg}_{i:02d}</id>',
+                f'    <name>{nm}</name>',
+                f'    <project>{escape(f"pit missed {t}")}</project>',
+                f'    <xmin>{c.x - BOOKMARK_PAD:.3f}</xmin>',
+                f'    <ymin>{c.y - BOOKMARK_PAD:.3f}</ymin>',
+                f'    <xmax>{c.x + BOOKMARK_PAD:.3f}</xmax>',
+                f'    <ymax>{c.y + BOOKMARK_PAD:.3f}</ymax>',
+                '    <rotation>0</rotation>',
+                f'    <sr_id>{BOOKMARK_SRSID}</sr_id>',
+                '  </bookmark>']
         bm.append('</qgis_bookmarks>')
         bmp = OUT / f"pit_missed_bookmarks_{tg}_9t.xml"
         bmp.write_text("\n".join(bm))
