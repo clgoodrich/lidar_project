@@ -61,8 +61,9 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"
 MIN_AREA_M2 = 4.0
-THRESHOLDS = [0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.85, 0.90]
-HEADLINE = 0.70          # pushed up from 0.60 -- containment tolerates it
+THRESHOLDS = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50,
+              0.60, 0.70, 0.80, 0.90]
+HEADLINE = 0.30          # see the per-rim max-probability analysis below
 
 QML = """<!DOCTYPE qgis PUBLIC 'http://mapserver.org/qgis' 'SYSTEM'>
 <qgis version="3.34" styleCategories="Symbology">
@@ -166,6 +167,26 @@ def main() -> int:
         if r.nodata is not None:
             prob = np.where(prob == r.nodata, 0.0, prob)
         tf, pcrs = r.transform, r.crs
+
+    # ---- threshold-free: how much floor signal exists inside each rim? ----
+    # This answers "are the missed pits actually blank, or just sub-threshold?"
+    # directly, without reference to any cut. Rasterize each rim, take the max
+    # floor probability inside it.
+    from rasterio.features import rasterize as _rasterize
+    rid = _rasterize(((g, i + 1) for i, g in enumerate(rim_h.geometry)),
+                     out_shape=prob.shape, transform=tf, fill=0, dtype="int32")
+    idx = np.arange(1, len(rim_h) + 1)
+    rim_h["max_prob"] = np.round(
+        ndi.maximum(prob, labels=rid, index=idx), 3)
+    rim_h["mean_prob"] = np.round(ndi.mean(prob, labels=rid, index=idx), 3)
+    mp = rim_h["max_prob"].values
+    print("  max floor-probability inside each held-out rim "
+          "(threshold-free):")
+    for q in (5, 10, 25, 50, 75, 90):
+        print(f"    p{q:02d}  {np.percentile(mp, q):.3f}")
+    print(f"    rims with max_prob < 0.05 (genuinely no signal): "
+          f"{int((mp < 0.05).sum())}/{len(mp)}")
+    print()
 
     rows, keep = [], {}
     print(f"  {'thr':>5} {'n_pred':>7} | rim: {'inter':>6} {'centroid':>9} "
