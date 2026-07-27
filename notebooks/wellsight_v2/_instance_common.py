@@ -502,7 +502,9 @@ def detections_to_gpkg(detections: Sequence[dict], ref_profile: dict, out_path: 
 # ---------------------------------------------------------------------------
 
 def per_instance_metrics(pred_gdf: gpd.GeoDataFrame, gt: InstanceSet,
-                         split: str = "test") -> tuple[pd.DataFrame, dict]:
+                         split: str = "test",
+                         extent=None, cls: str | None = None
+                         ) -> tuple[pd.DataFrame, dict]:
     """Instance detection metrics for `split` GT.
 
     Two matching regimes are reported side by side:
@@ -513,8 +515,33 @@ def per_instance_metrics(pred_gdf: gpd.GeoDataFrame, gt: InstanceSet,
         by score, each matched to at most one GT and vice versa), the standard
         detection protocol. Precision penalizes over-prediction, which the
         loose recall by construction cannot.
+
+    PRECISION REQUIRES `extent` (2026-07-27).
+    -----------------------------------------
+    Without it, precision is `tp / len(pred_gdf)` where tp is counted against
+    the `split` GT ONLY. The 9t split is block-wise over spatially interleaved
+    blocks and the test blocks are ~12% of the tile, so every correct detection
+    sitting on a train or val instance was counted as a false positive. That
+    understated precision by roughly 7-20x (e.g. pad_05 0.029 -> 0.538).
+
+    Pass `extent` (a shapely geometry, normally the union of this split's
+    blocks) to restrict detections to the region where GT actually exists, and
+    `cls` to keep only the predicted class the GT represents -- the pit models
+    emit 'floor' and 'wall' while pit GT is floor alone, which was a second
+    independent deflation.
+
+    Recall is unaffected by either restriction and earlier recall numbers stand.
+    When `extent` is None the legacy behaviour is preserved, and the returned
+    dict carries `precision_extent_matched: False` so downstream readers can
+    tell the difference.
     """
     gt_split = gt.for_split(split)
+    if cls is not None and pred_gdf is not None and "cls" in pred_gdf.columns:
+        pred_gdf = pred_gdf[pred_gdf["cls"] == cls]
+        gt_split = (gt_split[gt_split["cls"] == cls]
+                    if "cls" in gt_split.columns else gt_split)
+    if extent is not None and pred_gdf is not None and not pred_gdf.empty:
+        pred_gdf = pred_gdf[pred_gdf.geometry.centroid.within(extent)]
     n_gt = len(gt_split)
     n_pred = 0 if pred_gdf is None or pred_gdf.empty else len(pred_gdf)
     taus = (0.1, 0.3, 0.5)
@@ -564,6 +591,8 @@ def per_instance_metrics(pred_gdf: gpd.GeoDataFrame, gt: InstanceSet,
         "n_detections": int(n_pred),
         "mean_best_iou": float(df.best_iou.mean()) if n_gt else 0.0,
         "median_best_iou": float(df.best_iou.median()) if n_gt else 0.0,
+        "precision_extent_matched": extent is not None,
+        "precision_class_matched": cls,
     }
     for tau in taus:
         key = f"{tau:.1f}".replace("0.", "0.")
