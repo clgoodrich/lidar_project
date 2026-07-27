@@ -52,6 +52,9 @@ THRESHOLDS = [0.20, 0.30, 0.40, 0.50]
 MIN_AREA_M2 = 4.0
 LOCATOR_R = 120.0          # metres; big enough to see at full-tile zoom
 BOOKMARK_PAD = 60.0        # metres either side of a missed pit in a bookmark
+# QGIS bookmark XML wants the INTERNAL srs.db row id, not the EPSG code.
+# EPSG:6346 (NAD83(2011) / UTM 17N) is srs_id 28818 in QGIS 3.36 and 3.40.
+BOOKMARK_SRSID = 28818
 
 
 def tag(t: float) -> str:
@@ -218,7 +221,7 @@ def main() -> int:
                 f'group="{escape(f"pit missed {t}")}" '
                 f'xmin="{c.x - BOOKMARK_PAD:.2f}" ymin="{c.y - BOOKMARK_PAD:.2f}" '
                 f'xmax="{c.x + BOOKMARK_PAD:.2f}" ymax="{c.y + BOOKMARK_PAD:.2f}" '
-                f'sr_id="6346"/>')
+                f'sr_id="{BOOKMARK_SRSID}"/>')
         bm.append('</qgis_bookmarks>')
         bmp = OUT / f"pit_missed_bookmarks_{tg}_9t.xml"
         bmp.write_text("\n".join(bm))
