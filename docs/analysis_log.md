@@ -5,6 +5,47 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-26 — Where the non-erosional 9t change is (artifact removal + null test)
+
+Follow-up to 2026-07-25. Script:
+`notebooks/wellsight_v2/build/_icp_change_classify_9t.py`.
+
+1. **Three-stage artifact removal.** σ 0.136 → 0.107 (row/col median destripe)
+   → **0.087 m** (edge-preserving 400 m median background, removes a broad field
+   of std 0.057 m). A Gaussian high-pass was tried first and rejected: it cannot
+   remove the sharp-edged per-tile blocks in the 2006-2008 mosaic, only smear
+   them. A median background is edge-preserving and does remove them.
+2. **Monte-Carlo null proves the change is real.** The residual is spatially
+   correlated (integral range 16–20 px, one independent sample per ~1,290 m²), so
+   raw patch counts are meaningless alone. Against a matched-autocorrelation
+   synthetic field pushed through the identical pipeline:
+   observed **367 patches / 44.12 ha / largest 24,920 m²** vs null
+   **57±5 / 1.56 ha / largest 558 m²** — **6.4× patches, 28× area, 45× largest**.
+   Null max patch (712 m²) becomes the reliability cutoff; 108 patches clear it.
+3. **The fluvial rule was tested, not assumed.** 63% of block area is within 40 m
+   of a channel. Observed: 75% of all patches, **84% of reliable** patches
+   (1.34× enrichment). Correction to an earlier intermediate result — a flat
+   0.97–1.02× enrichment measured on the destriped-but-not-high-passed field was
+   the residual bias field swamping the signal, not evidence against the rule.
+4. **Result:** fluvial 91 reliable / 32.57 ha; mass wasting 1 / 0.12 ha;
+   **non-erosional 16 reliable / 2.65 ha / ~10,800 m³**. 10 of the top 12
+   non-erosional patches lie within 20 m of a mapped road — road maintenance and
+   regrading, not well activity. No pattern in distance to known wells.
+5. **Two bugs caught and fixed mid-pass.** (a) Flow accumulation was resampled to
+   2 m with *bilinear*, averaging away thin channel maxima (range 7.14 → 4.64) so
+   a fixed threshold caught 104 px and 300/310 patches fell through to
+   "anthropogenic"; switched to `Resampling.max` + the purpose-built
+   `stream_seed_t5000` raster. (b) A curvature-contamination hypothesis for the
+   red/blue edge dipoles was tested and **rejected** — corr(DoD, ∇²z) = +0.01,
+   DoD spread flat across curvature bins.
+
+Outputs: `data/derivatives/experiments/icp/change_9t/`
+(`dod_9t_destriped_2m.tif`, `dod_9t_highpass_2m.tif`, `change_patches_9t.gpkg`,
+`change_classified_9t.png`, `top_changes_9t.png`, `_classify_9t.json`).
+Write-up: `docs/iterations/icp_change_9t.md` (Part 2).
+
+---
+
 ## 2026-07-25 — Preliminary ICP change detection on 9t (2006-2008 → 2019)
 
 Clipped the existing full-overlap DoD to the 9t footprint and ran the QC that

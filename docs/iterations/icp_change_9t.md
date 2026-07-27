@@ -139,6 +139,129 @@ summary table reports 003111 converged at RMSE 0.915, and `_icp_change_map.py`
 correctly reads `_meta_icp_zm.json` for that tile. The stale file is still on disk
 and would mislead anyone reading it directly.
 
+---
+
+# Part 2 — Where the non-erosional change actually is (2026-07-26)
+
+Script: `notebooks/wellsight_v2/build/_icp_change_classify_9t.py`.
+
+## Removing the artifacts, in three stages
+
+| stage | robust σ | what it removes |
+|---|---|---|
+| raw DoD | 0.136 m | — |
+| + row/column median destripe | 0.107 m | along-track swath bias (row-median std 0.083 → 0.0001 m) |
+| + edge-preserving background (400 m median) | **0.087 m** | broad 2D field, std 0.057 m: smooth swath blobs **and** sharp-edged per-tile blocks |
+
+The second stage matters and is easy to get wrong. A Gaussian high-pass removes
+the smooth blobs but **cannot remove a step edge** — it smears the tile seam into
+a halo. The background is therefore estimated with a large *median* filter
+(block-median downsample → median filter → bilinear upsample), which is
+edge-preserving: it tracks the step, so subtracting it deletes the block.
+
+Cost, stated plainly: this cannot distinguish a genuine >400 m change from bias.
+Accepted — no plausible single earthwork here is that large.
+
+Rasters: `dod_9t_destriped_2m.tif`, `dod_9t_highpass_2m.tif`.
+
+## Is any of it real? A Monte-Carlo null
+
+The DoD residual is spatially **correlated** — integral range 16–20 px, i.e. one
+independent sample per ~1,290 m² (~35 m). Thresholding a correlated field
+produces sizeable blobs *with no real change at all*, so raw patch counts mean
+nothing on their own. The null is a synthetic Gaussian field with a matched
+autocorrelation (σ = 4.0 px), pushed through the identical pipeline.
+
+| | patches ≥200 m² | area | largest patch |
+|---|---|---|---|
+| **observed** | **367** | **44.12 ha** | **24,920 m²** |
+| noise-only (8 sims) | 57 ± 5 | 1.56 ha | 558 m² (max 712) |
+| ratio | **6.4×** | **28.2×** | **45×** |
+
+**The change is real.** It is not a thresholding artifact.
+
+The null also fixes the reliability cutoff: noise never produced a patch above
+**712 m²**, so patches at or above that are treated as reliable and smaller ones
+are not. 108 of 367 patches clear it.
+
+## Does erosional change actually follow the channels?
+
+Rather than assume the rule, test it. 63% of the block area lies within 40 m of a
+channel, so that is the null expectation for a patch placed at random.
+
+| set | within 40 m of a channel | enrichment |
+|---|---|---|
+| all patches | 75% | 1.20× |
+| **reliable only** | **84%** | **1.34×** |
+
+Real change *does* concentrate toward channels, and the effect strengthens when
+the unreliable patches are dropped — which is what should happen if the cutoff is
+doing its job. The enrichment is modest, so the fluvial label is supported but not
+decisive for any single patch.
+
+⚠️ An earlier version of this test, run on the destriped-but-not-high-passed
+field, showed **flat** enrichment (0.97–1.02× in every distance band). That was
+the residual bias field swamping the signal, not evidence against the rule.
+
+## Results
+
+| class | patches | reliable | area (ha) | \|volume\| (m³) |
+|---|---|---|---|---|
+| fluvial | 275 | 91 | 32.57 | 113,461 |
+| mass wasting | 5 | 1 | 0.12 | 201 |
+| **anthropogenic (non-erosional)** | 87 | **16** | **2.65** | **10,766** |
+
+### The 12 largest non-erosional changes
+
+All are off-channel and gentle-to-moderate slope. Coordinates are EPSG:6346.
+
+| id | type | mean Δz | area m² | \|vol\| m³ | slope | chan | road | well | centroid |
+|---|---|---|---|---|---|---|---|---|---|
+| 2282 | cut | −0.53 | 2,908 | 1,542 | 17.1° | 42 m | 0 m | 101 m | 621491, 4593066 |
+| 1064 | fill | +0.38 | 3,744 | 1,427 | 13.0° | 45 m | 0 m | 72 m | 620963, 4595976 |
+| 768 | fill | +0.40 | 3,476 | 1,377 | 5.0° | 48 m | 20 m | 95 m | 619974, 4596236 |
+| 939 | fill | +0.43 | 2,236 | 966 | 2.3° | 60 m | 0 m | 128 m | 619977, 4596084 |
+| 511 | fill | +0.40 | 1,688 | 668 | 7.6° | 74 m | 0 m | **8 m** | 623987, 4596497 |
+| 2128 | cut | −0.40 | 1,464 | 589 | 7.9° | 72 m | 72 m | 952 m | 623811, 4593331 |
+| 479 | fill | +0.48 | 1,224 | 584 | 8.4° | 76 m | 0 m | 139 m | 620381, 4596563 |
+| 1800 | cut | −0.37 | 1,416 | 526 | 13.7° | 47 m | 16 m | 344 m | 623872, 4593995 |
+| 315 | cut | −0.40 | 1,304 | 515 | 5.2° | 60 m | 18 m | 256 m | 620236, 4596833 |
+| 1860 | cut | −0.38 | 1,232 | 469 | 2.8° | 53 m | 8 m | 291 m | 623231, 4593838 |
+| 2202 | cut | −0.35 | 1,184 | 415 | 11.4° | 45 m | 420 m | 446 m | 623203, 4593230 |
+| 2212 | cut | −0.33 | 1,212 | 399 | 7.5° | 116 m | 364 m | 384 m | 623118, 4593228 |
+
+Full attributed set: `change_patches_9t.gpkg`, layer `change_patches`
+(fields include `cls`, `reliable`, `mean_dz_m`, `volume_m3`, `slope_deg`,
+`chan_dist_m`, `road_dist_m`, `well_dist_m`, `compactness`, `reason`).
+
+## Interpretation
+Most detected change is fluvial — 91 of 108 reliable patches, and 32.6 of 35.3 ha.
+That is the expected outcome for a forested Appalachian block over 11–13 years.
+
+The non-erosional residue is small: **16 reliable patches, 2.65 ha, ~10,800 m³**
+across a 2,025 ha block. Nearly all sit on or beside mapped roads (10 of the top
+12 are within 20 m of one), which is consistent with road maintenance, regrading,
+and skid-trail work rather than well activity.
+
+Two caveats that limit how hard these can be pushed:
+- Visual inspection of the crops (`top_changes_9t.png`) shows several patches are
+  **red/blue dipoles straddling a linear terrain edge** — the two surveys
+  resolving the same road cut or bank slightly differently. Those are artifacts,
+  not change. I tested the obvious global cause (older survey lower density →
+  smoother DEM → curvature-correlated bias) and **it is not that**: corr(DoD,
+  ∇²z) = +0.01 to +0.02, and DoD spread is flat across curvature bins
+  (0.124–0.138 m). So the dipoles are local, not a systematic field, and the
+  patch list needs manual triage before any individual entry is trusted.
+- `well_dist_m` shows no meaningful pattern. Patch 511 sits 8 m from a known
+  well, but with 540 wells in the block that is unremarkable — consistent with
+  Part 1's finding of no significant DoD signal at wells.
+
+## Reproduce
+```
+python notebooks/wellsight_v2/build/_icp_change_9t.py           # Part 1
+python notebooks/wellsight_v2/build/_icp_change_classify_9t.py  # Part 2
+```
+
 ## Deferred
 - Per-swath / per-tile bias correction of the 2006-2008 DEM (removes the ±0.22 m
   striping; would drop the detection floor from ~0.4 m toward ~0.2 m).
