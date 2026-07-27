@@ -1,6 +1,18 @@
 # 9t Iteration Leaderboard
 
-Per-task metrics across iterations on the 9t tile. **All instance rows re-scored
+Per-task metrics across iterations on the 9t tile.
+
+> **Read this first (2026-07-27).** Two things on this page were corrected today
+> and the corrections are large.
+> 1. **Every instance precision and F1 number changed.** The old 3–6% precision
+>    was a measurement bug. Real values are 0.54–0.69. See the pit/pad tables.
+> 2. **The DEP cross-reference section is not a model score** and its
+>    "median nearest" column is not positional accuracy. Do not cite it.
+>
+> The current headline detection numbers are the **held-out threshold sweeps**,
+> which score against hand-drawn annotation only.
+
+**All instance rows re-scored
 2026-07-02** against the test split of the 2026-06-10 dataset rebuild —
 `pit_dataset_manifest.csv` (**65 test** of 426 pits: 298/63/65) and
 `plat_dataset_manifest.csv` (**93 test** of 650 pads: 456/101/93) — with same-era
@@ -10,37 +22,76 @@ checkpoints (pit_07 / pit_08 / pad_06 trained 06-11; pad_05 retrained 07-02, bes
 **greedy 1:1 matching** (predictions sorted by score; each prediction may match at most
 one GT and vice versa) and reports **precision and F1** alongside recall. The legacy
 loose recall (per-GT best-IoU, no assignment) is kept as `recall_loose_*` for
-continuity — on these models loose ≈ 1:1 recall because detections are abundant.
+continuity. (The 07-02 note "loose ≈ 1:1 recall because detections are abundant"
+rested on the inflated detection counts and no longer applies at tuned thresholds.)
 Semantic-UNet rows use the identical metric via `_unet_instance_eval.py` (prob →
 threshold → connected components → polygons), with the **threshold selected on val**
 and test scored once frozen. Pre-07-02 numbers selected thresholds on test itself.
 
-## Pits (65 test instances)
+> ### ⚠️ Correction, 2026-07-27 — every precision and F1 number below changed
+>
+> The 2026-07-02 precision figures (3–6% across every model) were a **measurement
+> bug, not a model result.** Three defects compounded:
+> 1. **Extent mismatch.** Precision was `tp / n_pred` counting predictions across
+>    the whole tile, against ground truth from the **test blocks only**. Every
+>    correct prediction outside a test block scored as a false positive.
+> 2. **Class mismatch.** Pit predictions included floor **and wall** polygons,
+>    scored against floor-only ground truth.
+> 3. **Untuned thresholds.** Score thresholds (0.3, YOLO pit 0.05) were never
+>    selected, so detection volume was arbitrary.
+>
+> Corrected in `notebooks/wellsight_v2/eval/_reeval_instance_precision_9t.py`:
+> predictions clipped to the scored extent, class-matched, thresholds selected on
+> **val** and test scored **once** frozen. Source of truth is
+> `data/derivatives/eval_9t_instance_precision/_reeval_9t.json`.
+>
+> **Real precision is 0.54–0.69 across all six rows, not 0.03–0.07.** Recall also
+> moves, because the thresholds moved. The conclusion "detection volume is the
+> limiting problem" was drawn from the bug and is withdrawn.
 
-| Iteration | Approach | R@0.3 | P@0.3 | F1@0.3 | R@0.5 | Mean IoU | # Det | Notes |
-|---|---|---|---|---|---|---|---|---|
-| pit_unet_v2 (instance metric†) | UNet semantic, blobs→instances | 0.55 | 0.033 | 0.062 | 0.32 | 0.314 | 1105 | thr 0.7 (val-chosen). Blobs don't commit object boundaries → collapses under instance metric. |
-| pit_unet_v2 (native localized‡) | UNet semantic 3-class | 0.80‡ | — | — | — | 0.566‡ | — | UNet's own per-pit *local pixel* IoU — more forgiving (see ‡). |
-| **pit_07_maskrcnn (7-band)** | Mask R-CNN R50-FPN v2, floor+wall | **0.97** | 0.053 | 0.100 | **0.85** | **0.631** | 2978 (1190 fl / 1788 wa) | Best recall + IoU. score≥0.3. |
-| pit_08_yolo | YOLOv8s-seg | 0.92 | **0.054** | **0.102** | 0.69 | 0.572 | 3631 (1184 fl / 2447 wa) | conf 0.05 — detection volume inflated by design; BGR flip required at inference. |
-| pit post-proc extraction | UNet prob → tuned blob filter → centroids | rec 0.49 | prec 0.092 | 0.155 | — | — | 349 | **Point-level metric** (6 m centroid tol), val-tuned, test-frozen — not row-comparable; see [[pit_optimize]]. |
+## Pits (65 test instances) — corrected 2026-07-27
 
-## Pads (93 test instances)
+Thresholds selected on val, test scored once. IoU τ = 0.3, greedy 1:1 matching.
 
-| Iteration | Approach | R@0.3 | P@0.3 | F1@0.3 | R@0.5 | Mean IoU | # Det | Notes |
-|---|---|---|---|---|---|---|---|---|
-| plat_unet (instance metric†) | UNet semantic, blobs→instances | 0.91 | 0.070 | 0.129 | 0.76 | 0.595 | 1222 | thr 0.5 (val-chosen). Holds up far better than the pit UNet. |
-| plat_unet (native localized‡) | UNet semantic binary | 0.78‡ | — | — | — | 0.473‡ | — | Per-plat local pixel IoU. |
-| **pad_05_maskrcnn (7-band)** | Mask R-CNN R50-FPN v2 | **0.98** | 0.029 | 0.057 | **0.90** | **0.690** | 3075 | Retrained 2026-07-02 (best = ep 3, val 0.787). Recall/IoU king, worst precision. |
-| pad_06_yolo | YOLOv8s-seg | 0.88 | **0.064** | **0.118** | 0.83 | 0.661 | 1255 | Best F1 — 2.5× fewer detections for −10 pts recall. |
+| Iteration | Approach | thr (val) | val F1 | R@0.3 | P@0.3 | F1@0.3 |
+|---|---|---|---|---|---|---|
+| pit_unet_v2 (instance metric†) | UNet semantic, blobs→instances | 0.60 | 0.769 | 0.754 | 0.620 | 0.681 |
+| **pit_07_maskrcnn (7-band)** | Mask R-CNN R50-FPN v2, floor+wall | 0.95 | 0.752 | **0.938** | 0.622 | **0.748** |
+| pit_08_yolo | YOLOv8s-seg | 0.45 | 0.789 | 0.769 | **0.641** | 0.699 |
+| pit_unet_v2 (native localized‡) | UNet semantic 3-class | — | — | 0.80‡ | — | — |
+| pit post-proc extraction | UNet prob → tuned blob filter → centroids | — | — | 0.49 | 0.092 | 0.155 |
 
-**Reading the tables.** Precision is 3–6% across every instance model: they find nearly
-every annotated feature but emit 12–47× more detections than there are GT instances.
-The pre-07-02 leaderboard (recall-only, n_test 20/9) could not see this. Two levers,
-in order: (1) **score-threshold sweep selected on val** — current thresholds (0.3;
-YOLO pit 0.05) were never tuned; (2) the **active-learning loop** (reject-as-hard-negative
-retraining), which attacks the root cause. Raw recall says Mask R-CNN; F1 says YOLO;
-deployment says: tune the threshold first, then re-rank.
+The post-proc row is a **point-level metric** (6 m centroid tolerance), val-tuned
+and test-frozen. It was not part of the 07-27 reeval and is not row-comparable.
+See [[pit_optimize]].
+
+## Pads (93 test instances) — corrected 2026-07-27
+
+| Iteration | Approach | thr (val) | val F1 | R@0.3 | P@0.3 | F1@0.3 |
+|---|---|---|---|---|---|---|
+| plat_unet (instance metric†) | UNet semantic, blobs→instances | 0.50 | 0.667 | **0.882** | 0.547 | 0.675 |
+| pad_05_maskrcnn (7-band) | Mask R-CNN R50-FPN v2 | 0.95 | 0.675 | 0.828 | 0.538 | 0.653 |
+| **pad_06_yolo** | YOLOv8s-seg | 0.80 | 0.699 | 0.667 | **0.689** | **0.678** |
+| plat_unet (native localized‡) | UNet semantic binary | — | — | 0.78‡ | — | — |
+
+**Reading the corrected tables.** The models are broadly comparable, and no
+architecture dominates. Pit F1 spans 0.681–0.748, pad F1 spans 0.653–0.678. Mask
+R-CNN buys recall (0.938 pit) at the cost of precision; YOLO does the reverse.
+The semantic U-Nets sit between them on both tasks while being the only models
+that also produce a probability surface.
+
+**What this changes.** The 07-02 reading — "they find nearly everything but emit
+12–47× too many detections, so cut detection volume" — was an artifact. The
+detectors are **not** the recall-at-any-cost machines that table implied once
+their thresholds are tuned. Threshold selection was the whole story, and it is
+now done. The active-learning loop is still worth running, but it is no longer
+attacking a 30× false-positive rate that never existed.
+
+⚠️ **Columns dropped from these tables.** `R@0.5`, `Mean IoU` and `# Det` came
+from the 07-02 run at the old, untuned thresholds. Detection counts in
+particular are meaningless now — YOLO pit moved from conf 0.05 to 0.45. They were
+removed rather than left in place looking current. The 07-02 values are in git
+(`ee55d73` and earlier) if needed.
 
 † **Instance metric (apples-to-apples).** UNet prob raster → threshold (val-selected) →
 connected components → one scored polygon per blob → identical `per_instance_metrics`.
@@ -51,6 +102,48 @@ Script: `_unet_instance_eval.py`; sweep + frozen-test numbers in
 *inside a small crop around each known pit* (pit-vs-bg pixel IoU). Never has to separate
 instances or commit object boundaries, and only scored where a pit is already known to
 be. Not comparable to the detector rows; shown to explain the gap.
+
+## Held-out threshold sweeps (2026-07-27) — the headline numbers
+
+One question asked identically of all three U-Nets. At each probability cutoff,
+**how much ground does the model flag, and how many withheld hand-drawn
+annotations does it find?** "Flagged area" is the total area of pixels above the
+cutoff, as a share of the 2,025 ha tile. It is the search burden a field crew
+would actually inherit.
+
+Scored against hand-drawn annotation withheld from training. No DEP list, no
+TIGER. Full write-up in [[threshold_sweeps_pit_pad_road_9t]].
+
+| Task | Withheld | Best operating point | Flagged area | Recall there |
+|---|---|---|---|---|
+| Pit | 127 rims | thr 0.20 | 4.33 ha = **0.21%** | 126/127 = **0.992** |
+| Road | 1,220 chunks, 43.07 km | thr 0.20 | 101.65 ha = **5.02%** | **0.982** (`recall_clean`) |
+| Pad | 194 plats | thr 0.45 | 235.77 ha = **11.64%** | 178/194 = **0.918** |
+
+**The pad model is the weak one, and flagged area is what shows it.** All three
+have high recall. Only the pit model turns that recall into a short list. Pad
+needs 55× more ground than pit to find fewer of its targets. At thr 0.50 it
+flags 197.95 ha against roughly 110 ha of total annotated pad area on the tile,
+so it is over-claiming by about 2×.
+
+Three findings worth carrying forward:
+
+- **The road model rejects drainage, confirmed on hand-drawn negatives.**
+  Held-out `not_road` is claimed at **0.0% at every threshold**; held-out
+  drainage falls 3.9% → 2.1% across the useful range. Direct evidence the
+  3-class design worked.
+- **Road recall is nearly threshold-free on 9t** — above 0.95 from 0.05 to 0.80.
+- **Road numbers carry known leakage.** Roads split as ~40 m chunks, not whole
+  objects, so 485/1,220 held-out chunks (39.8%) share a parent road with train
+  chunks. `recall_clean` (735 chunks whose entire parent road was held out) is
+  the comparable number. Cost is ~1.5 points.
+
+⚠️ **A single found/missed rule does not transfer across tasks.** Applying the
+pit criterion (a prediction's centroid must lie inside the annotation) to pads
+reported **0/194 found at threshold 0.05**, the cutoff flagging 58% of the tile.
+Pad predictions merge into tile-spanning blobs at low cutoffs, and a blob's
+centroid lies inside no individual pad. Pads are now scored on three criteria
+that fail in opposite directions, with IoU ≥ 0.30 as the headline.
 
 ## Roads (semantic — line-level metric on 9t test split)
 
@@ -102,12 +195,42 @@ inside 9t.) A well counts as "matched" if any detection centroid lands within 25
 Re-run 2026-07-02 on the fresh detections; outputs in
 `data/derivatives/tiles/9t/iterations/known_well_validation/`.
 
-| Model | Detections | Wells matched (/1069) | Well recall | Median nearest (m) |
+> ### ⚠️ Correction, 2026-07-27 — this whole section is not a model score
+>
+> Two problems, and the second is worse than the first.
+>
+> **1. The denominator double-counts.** `uncounted_wells_9t.gpkg` holds 1,364
+> rows but only **872 unique `PERMIT_NUM`**. "1,069 catalogued wells" and the
+> match counts below are inflated by duplicate permits.
+>
+> **2. "Median nearest (m)" is not a positional-accuracy measure**, and it has
+> been read as one. It is the distance from a catalogued well to the nearest
+> **model detection** — a model that emits more detections drives it down for
+> free. It says nothing about how well DEP coordinates locate real wells.
+>
+> Recomputed 2026-07-27 against **hand-drawn annotation** instead of detections:
+>
+> | measurement | value |
+> |---|---|
+> | annotated pits with a catalogued well within 25 m | **27 of 424 (6.4%)** |
+> | median distance, annotated pit → nearest catalogued well | **75.1 m** |
+> | unique catalogued permits within 25 m of an annotated pad | 243 of 872 (27.9%) |
+> | median distance, catalogued well → nearest annotated pad | 50.2 m |
+>
+> So the earlier "pad detections match 521 of 1,069 wells within 25 m" does not
+> reproduce, and the "median 26.4 m" figure has been quoted elsewhere as if it
+> were DEP positional accuracy. It is not. **Do not cite this table.** The
+> AGU abstract (v4) now reports the annotation-based numbers instead.
+
+| Model | Detections | Wells matched (/1069, inflated) | Well recall | Median nearest detection (m) |
 |---|---|---|---|---|
 | pit_07_maskrcnn | 2979 | 373 | 0.35 | 42.0 |
 | pit_08_yolo | 3602 | 397 | 0.37 | 35.1 |
 | pad_05_maskrcnn | 3127 | 521 | 0.49 | 26.4 |
 | pad_06_yolo | 1291 | 337 | 0.32 | 48.3 |
+
+*(Retained for provenance only. Detection counts are at the old untuned
+thresholds, and the denominator is wrong.)*
 
 **Interpretation — do not read these as model failure.** The DEP catalog contains every
 recorded well regardless of whether it has any LiDAR-visible surface expression. Many are
