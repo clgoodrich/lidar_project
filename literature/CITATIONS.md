@@ -38,6 +38,10 @@ is the source of record.
 | Suh et al. | 2021 | U-Net on lidar for relict charcoal hearths | *Candidate* — closest published analogue; motivates VAT/SVF channels | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Zakšek et al. | 2011 | Sky-View Factor | *Candidate* — new channel, pending redundancy check vs `openness_pos` | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Guyot et al. | 2018 | Multi-visualization CNN for buried structures | *Candidate* — supports the channel-stack approach | `docs/iterations/pit_refinement_options.md` | cite-only |
+| Verschoof-van der Vaart & Lambers | 2019 | WODAN, R-CNN on lidar | Benchmark context | `docs/iterations/benchmark_context_what_counts_as_good.md` | cite-only |
+| Verschoof-van der Vaart & Lambers | 2022 | Evaluation measures; curated-vs-random test gap | **The cherry-picking argument** — curated test regions inflate 20–50 pts | `docs/iterations/benchmark_context_what_counts_as_good.md` | cite-only |
+| Gallwey et al. | 2019 | Historic mining pits, transfer learning | Benchmark comparand for the pit U-Net (F1 ~0.87) | `docs/iterations/benchmark_context_what_counts_as_good.md` | cite-only |
+| Archaeoscape | 2024 | ALS archaeology benchmark dataset | Cited as existing; **no numbers quoted** (PDF would not extract) | `docs/iterations/benchmark_context_what_counts_as_good.md` | ✓ `archaeoscape_2024_als_archaeology_benchmark.pdf` |
 
 ---
 
@@ -225,6 +229,32 @@ change is actually made.
 - **Candidate use:** Candidate new channel. Related to our `openness_pos` but not identical, so it needs an explicit correlation check against it before a training run is spent.
 - **Generated:** `docs/iterations/pit_refinement_options.md` ("Channels we do not have").
 - **Source:** https://doi.org/10.3390/rs3020398 — cite-only (MDPI blocks automated download).
+
+### Verschoof-van der Vaart & Lambers 2019 — WODAN, R-CNN on lidar
+- **Citation:** Verschoof-van der Vaart, W.B., Lambers, K. (2019). "Learning to Look at LiDAR: The Use of R-CNN in the Automated Detection of Archaeological Objects in LiDAR Data from the Netherlands." *Journal of Computer Applications in Archaeology* 2(1): 31–40. doi:10.5334/jcaa.32.
+- **About:** Faster R-CNN workflow (WODAN) for barrows, Celtic fields and charcoal kilns in Dutch lidar.
+- **Used for:** Benchmark context in `docs/iterations/benchmark_context_what_counts_as_good.md`.
+- **Source:** https://doi.org/10.5334/jcaa.32 — cite-only (download endpoint returned non-PDF).
+
+### Verschoof-van der Vaart & Lambers 2022 — Evaluation measures, and the curated-vs-random test gap
+- **Citation:** Verschoof-van der Vaart, W.B., Lambers, K. (2022). "Deep Learning for Archaeological Object Detection on LiDAR: New Evaluation Measures and Insights." *Remote Sensing* 14(7): 1694. doi:10.3390/rs14071694.
+- **About:** Argues there is no standard evaluation protocol for buried-feature detection and proposes centroid-based and pixel-based measures encoding how an archaeologist actually judges a detection. Reports WODAN2.0 at ~70% on a small non-random test set and **~50% barrows, ~46% Celtic fields, ~18% charcoal kilns on a large random test set.**
+- **Used for:** The central cherry-picking argument. This is the strongest published evidence that a curated test region inflates these scores by 20–50 points, and it is why WellSight's held-out-blocks-inside-the-training-tile numbers are treated as an upper bound.
+- **Generated:** `docs/iterations/benchmark_context_what_counts_as_good.md`.
+- **Source:** https://doi.org/10.3390/rs14071694 — cite-only (MDPI blocks automated download).
+
+### Archaeoscape 2024 — ALS archaeology benchmark dataset
+- **Citation:** Archaeoscape: Bringing Aerial Laser Scanning Archaeology to the Deep Learning Era (2024). arXiv:2412.05203.
+- **About:** Large open ALS archaeology dataset with benchmarked segmentation baselines, framed around detecting subtle human-made structures under dense canopy.
+- **Used for:** Cited as evidence that standardised benchmarks for this task now exist. **No numbers quoted from it** — the PDF would not text-extract cleanly and the baselines were not verified.
+- **Generated:** `docs/iterations/benchmark_context_what_counts_as_good.md`.
+- **Local PDF:** `literature/papers/archaeoscape_2024_als_archaeology_benchmark.pdf`.
+
+### Gallwey et al. 2019 — Historic mining pits by transfer learning
+- **Citation:** Gallwey, J., Eyre, M., Tonkins, M., Coggan, J. (2019). "Bringing Lunar LiDAR Back Down to Earth: Mapping Our Industrial Heritage through Deep Transfer Learning." *Remote Sensing* 11(17): 1994. doi:10.3390/rs11171994.
+- **About:** Fine-tunes a crater-detection network (DeepMoon) onto lidar DTM to segment historic mining pits, reporting F1 up to ~0.87.
+- **Used for:** Benchmark comparand for the WellSight pit U-Net.
+- **Source:** https://doi.org/10.3390/rs11171994 — cite-only (MDPI blocks automated download).
 
 ### Guyot, Hubert-Moy & Lorho 2018 — Combined detection and segmentation of archaeological structures
 - **Citation:** Guyot, A., Hubert-Moy, L., Lorho, T. (2018). "Combined Detection and Segmentation of Archeological Structures from LiDAR Data Using a Deep Learning Approach." *Journal of Computer Applications in Archaeology* 1(1): 1–10. doi:10.5334/jcaa.64.
