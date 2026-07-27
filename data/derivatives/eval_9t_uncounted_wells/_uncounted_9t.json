@@ -1,0 +1,82 @@
+{
+  "n_catalogued_9t": 1069,
+  "report_radius_m": 25.0,
+  "counted_radius_m": {
+    "pit": 25.0,
+    "pad": 40.0
+  },
+  "headline": [
+    {
+      "model": "pit_unet_v2",
+      "kind": "pit",
+      "block_split": "test",
+      "radius_m": 25,
+      "n_uncounted": 127,
+      "n_recovered": 2,
+      "frac": 0.015748031496062992
+    },
+    {
+      "model": "pit_unet_v2",
+      "kind": "pit",
+      "block_split": "val",
+      "radius_m": 25,
+      "n_uncounted": 134,
+      "n_recovered": 5,
+      "frac": 0.03731343283582089
+    },
+    {
+      "model": "pit_unet_v2",
+      "kind": "pit",
+      "block_split": "train",
+      "radius_m": 25,
+      "n_uncounted": 590,
+      "n_recovered": 36,
+      "frac": 0.061016949152542375
+    },
+    {
+      "model": "pit_unet_v2",
+      "kind": "pit",
+      "block_split": "all",
+      "radius_m": 25,
+      "n_uncounted": 854,
+      "n_recovered": 43,
+      "frac": 0.05035128805620609
+    },
+    {
+      "model": "plat_unet",
+      "kind": "pad",
+      "block_split": "test",
+      "radius_m": 25,
+      "n_uncounted": 60,
+      "n_recovered": 15,
+      "frac": 0.25
+    },
+    {
+      "model": "plat_unet",
+      "kind": "pad",
+      "block_split": "val",
+      "radius_m": 25,
+      "n_uncounted": 79,
+      "n_recovered": 30,
+      "frac": 0.379746835443038
+    },
+    {
+      "model": "plat_unet",
+      "kind": "pad",
+      "block_split": "train",
+      "radius_m": 25,
+      "n_uncounted": 368,
+      "n_recovered": 143,
+      "frac": 0.38858695652173914
+    },
+    {
+      "model": "plat_unet",
+      "kind": "pad",
+      "block_split": "all",
+      "radius_m": 25,
+      "n_uncounted": 510,
+      "n_recovered": 188,
+      "frac": 0.3686274509803922
+    }
+  ]
+}
