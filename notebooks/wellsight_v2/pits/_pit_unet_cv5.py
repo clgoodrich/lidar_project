@@ -309,9 +309,15 @@ def main() -> int:
         # are deterministic products of a fold that already ran, so re-deriving
         # them would change nothing and costs ~9 min of GPU each.
         model = UNet(in_ch=len(DEFAULT_CHANNELS), n_classes=N_CLASSES, base=32)
-        if (fd / "best.pt").exists():
-            print(f"  reusing existing checkpoint {fd / 'best.pt'}")
+        tlog = fd / "train_log.csv"
+        n_done = len(pd.read_csv(tlog)) if tlog.exists() else 0
+        if (fd / "best.pt").exists() and n_done >= args.epochs:
+            print(f"  reusing existing checkpoint {fd / 'best.pt'} "
+                  f"({n_done} epochs)")
         else:
+            if (fd / "best.pt").exists():
+                print(f"  DISCARDING partial checkpoint in {fd.name}: "
+                      f"{n_done}/{args.epochs} epochs -- retraining from scratch")
             train_loop(
                 model=model,
                 train_loader=DataLoader(tr_ds, batch_size=args.batch, shuffle=True,

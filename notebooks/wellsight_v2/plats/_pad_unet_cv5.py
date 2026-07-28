@@ -295,11 +295,21 @@ def main() -> int:
             policies=[("plat", va_pads, JITTER_M)], block_bounds=bounds_of(val_blocks),
             transform=tf, mu=mu, sd=sd, patch=PATCH, augment=False, seed=200 + k)
 
-        # Resumable: a finished checkpoint or prob raster is reused as-is.
+        # Resumable, but ONLY from a checkpoint whose fold ran the full schedule.
+        # A run killed mid-fold leaves a best.pt from a partial schedule. Reusing
+        # it would silently give this fold fewer epochs than its siblings, which
+        # breaks the one thing cross-validation is for -- folds that differ only
+        # in which blocks are held out. train_log.csv is the completion record.
         model = UNet(in_ch=len(DEFAULT_CHANNELS), n_classes=N_CLASSES, base=32)
-        if (fd / "best.pt").exists():
-            print(f"  reusing existing checkpoint {fd / 'best.pt'}")
+        tlog = fd / "train_log.csv"
+        n_done = len(pd.read_csv(tlog)) if tlog.exists() else 0
+        if (fd / "best.pt").exists() and n_done >= args.epochs:
+            print(f"  reusing existing checkpoint {fd / 'best.pt'} "
+                  f"({n_done} epochs)")
         else:
+            if (fd / "best.pt").exists():
+                print(f"  DISCARDING partial checkpoint in {fd.name}: "
+                      f"{n_done}/{args.epochs} epochs -- retraining from scratch")
             train_loop(
                 model=model,
                 train_loader=DataLoader(tr_ds, batch_size=args.batch, shuffle=True,
