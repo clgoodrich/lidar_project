@@ -96,6 +96,34 @@ Full write-up: [[pit_unet_cv5_9t]].
 | **pad_06_yolo** | YOLOv8s-seg | 0.80 | 0.699 | 0.667 | **0.689** | **0.678** |
 | plat_unet (native localized‡) | UNet semantic binary | — | — | 0.78‡ | — | — |
 
+### Pads, 5-fold cross-validated — all 650 pads, 2026-07-28
+
+Same treatment as the pits. Parameters copied verbatim from `_plat_unet.py`, so
+this measures the split and not a new model.
+
+| Selection | thr chosen per fold | R@0.3 | P@0.3 | R@0.5 | locate |
+|---|---|---|---|---|---|
+| by F1 | 0.55, 0.60, 0.55, 0.60, 0.65 | **0.917** (sd 0.021) | 0.606 | 0.782 | 0.928 |
+| by F2 | 0.55, 0.50, 0.55, 0.55, 0.55 | **0.920** (sd 0.025) | 0.591 | 0.788 | 0.909 |
+
+**The single-split 0.882 / 0.547 was pessimistic**, same direction as the pits
+but smaller in magnitude.
+
+**Pads are the more stable model.** Per-fold recall sd is 0.021 against 0.088
+for pits under the same rule. Pads have a median annotated area of 1,343 m²
+against ~26 m² for a pit floor, so boundary disagreement barely moves a pad's
+IoU and moves a pit's a lot.
+
+F1 and F2 pooled recall differ by 0.003, and three of five folds selected the
+same threshold under both. The operating point does not depend on which
+objective you argue for.
+
+`locate` is the pad analogue of pit rim-containment. Pads have no
+inside/outside annotation pair, so it asks whether the annotated pad contains at
+least one predicted centroid.
+
+Full write-up: [[pad_unet_cv5_9t]].
+
 **Reading the corrected tables.** The models are broadly comparable, and no
 architecture dominates. Pit F1 spans 0.681–0.748, pad F1 spans 0.653–0.678. Mask
 R-CNN buys recall (0.938 pit) at the cost of precision; YOLO does the reverse.

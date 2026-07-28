@@ -5,6 +5,72 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-28 — Pad U-Net 5-fold cross-validation (all 650 pads scored)
+
+Full write-up: `docs/iterations/pad_unet_cv5_9t.md`. New scripts
+`notebooks/wellsight_v2/plats/_pad_unet_cv5.py` and
+`notebooks/wellsight_v2/eval/_pad_cv5_tau_scale.py`. Outputs in
+`data/derivatives/tiles/9t/pad_unet_cv5/`.
+
+**Why.** Companion to the pit CV. Pad numbers rested on 93 test pads from one
+split. Parameters copied verbatim from `_plat_unet.py` (patch 384, jitter 40 m,
+2 classes, focal 0.15/0.85, 40 epochs), so this measures the split and not a new
+model. 650 pads across 129 blocks, folds balanced to within 3 pads.
+
+**Result, pooled over 650 pads.**
+
+| selection | R@IoU 0.3 | P@0.3 | R@0.5 | locate |
+|---|---|---|---|---|
+| by F1 | **0.917** (per-fold 0.894–0.946, sd 0.021) | 0.606 | 0.782 | 0.928 (603/650) |
+| by F2 | **0.920** (per-fold 0.879–0.946, sd 0.025) | 0.591 | 0.788 | 0.909 (591/650) |
+
+IoU scale, F1-selected, thresholds held fixed: 0.3 → 0.917, 0.4 → 0.865,
+0.5 → 0.782, 0.6 → 0.622, 0.7 → 0.380.
+
+**The single split was pessimistic here too** (0.882 / 0.547), same direction as
+the pits, smaller magnitude.
+
+**Pads are the more stable model.** Per-fold recall sd 0.021 against 0.088 for
+pits. Median pad area is 1,343 m² against ~26 m² for a pit floor, so boundary
+disagreement barely moves a pad's IoU.
+
+**F1 and F2 nearly agree** — pooled recall differs by 0.003, and three of five
+folds picked the same threshold under both.
+
+**One honest wrinkle.** On fold 3 the F2 selection scored recall 0.879, below the
+F1 selection's 0.894, despite F2 favouring recall. F2 did pick the lower
+threshold as designed; it simply scored worse on the held-out fifth. Val and
+held-out do not always agree. Both objectives were declared in advance and both
+are reported, which is the point.
+
+**Locate metric substitution.** Pads have only one annotated polygon, so the pit
+rim-containment metric becomes "annotated pad contains at least one predicted
+centroid".
+
+**Three bugs found and fixed.**
+1. **Resume could reuse a partial checkpoint.** The run was killed at epoch 35/40
+   of fold 2, leaving a `best.pt` from an incomplete schedule that the resume
+   path would have reused, silently giving that fold fewer epochs than its
+   siblings. `train_log.csv` row count is now the completion record.
+2. **Inner-val draw was execution-order dependent.** One RNG created before the
+   fold loop meant skipped folds shifted every later draw, so `--only-folds`
+   gave a different inner val than a full run. Observed live: pad fold 2 drew 93
+   inner-val pads originally and 112 on resume. Held-out sets are unaffected, so
+   no scored number is invalid — only exact reproducibility. Now seeded per fold
+   with `CV_SEED + 1000 * k`. **The same issue affected pit fold 4**, which was
+   re-scored alone; disclosed in the pit iteration doc.
+3. **`flush()` crashed on an empty result set**, breaking the dry-run path used
+   to check fold balance before spending GPU time.
+
+**Cost.** ~30 min per fold at patch 384, 88.9 min for folds 2–4. My initial
+75–100 min estimate for all five was wrong; the real figure is ~2.5 h.
+
+**Abstract updated to v13.** Both models are now cross-validated, so the
+asymmetry flagged in v9 is gone. Pad recall 0.88 → 0.92 at IoU 0.3, precision
+0.55 → 0.61.
+
+---
+
 ## 2026-07-27 — Pit U-Net 5-fold cross-validation (all 426 pits scored)
 
 Full write-up: `docs/iterations/pit_unet_cv5_9t.md`. New script

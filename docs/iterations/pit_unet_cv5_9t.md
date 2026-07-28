@@ -150,13 +150,30 @@ does not measure whether it transfers.** A held-out tile is still the open
 question, and remains the single largest unquantified optimism in every pit
 number we publish.
 
-### Known limitation, stated not hidden
+### Known limitations, stated not hidden
 
-Channel normalisation statistics (`feature_stats.json`, 7 means and 7 standard
-deviations) were computed once over the original training blocks and are reused
-for every fold. They are not recomputed per fold. This leaks 14 global numbers
-into each fold. The effect is small but it is not zero, and it is cheaper to
-disclose than to re-derive.
+**1. Shared normalisation statistics.** `feature_stats.json` (7 means and 7
+standard deviations) was computed once over the original training blocks and is
+reused for every fold. It is not recomputed per fold. This leaks 14 global
+numbers into each fold. The effect is small but it is not zero, and it is
+cheaper to disclose than to re-derive.
+
+**2. Fold 4's inner-val draw differs from folds 0–3.** Added 2026-07-28, found
+while running the pad CV. The script created one RNG before the fold loop, so
+the inner-val draw depended on how many folds had already run in that process.
+Folds 0–3 were scored in one pass; fold 4 crashed and was re-scored alone, which
+gave it the *first* draw rather than the fifth.
+
+**Held-out sets are identical either way**, because fold assignment is
+deterministic and independent of the RNG. No scored number is affected and no
+held-out data influenced any threshold. What breaks is exact reproducibility —
+re-running `--folds 5` today will not reproduce fold 4's threshold selection
+bit-for-bit.
+
+Fixed after this run by seeding per fold (`CV_SEED + 1000 * k`), so each fold's
+draw is independent of execution order. **That fix also means a fresh run will
+not reproduce folds 0–3 exactly either.** The numbers on this page stand as
+scored; they are simply not bit-reproducible under the current code.
 
 ## Bugs found and fixed in this pass
 

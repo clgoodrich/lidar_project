@@ -1,6 +1,12 @@
 # AGU 2026 abstract — WellSight
 
-v12, 2026-07-28. 1,997 characters / 323 words (AGU limit 2,000 characters).
+v13, 2026-07-28. 1,993 characters / 322 words (AGU limit 2,000 characters).
+
+**v13 makes the pad numbers cross-validated too.** The pad 5-fold run finished,
+so both models are now scored the same way and the asymmetry flagged in v9 is
+gone. Pad recall 0.88 to 0.92 at IoU 0.3, precision 0.55 to 0.61. The sentence
+now reads "both models" and "every pit and pad". Paid for by dropping the second
+"annotated" in "426 annotated pits and 650 pads".
 
 **v11 added a closing sentence** on scope and next steps, paid for by four
 redundancy trims. **v12 is the author's edit to that sentence**, naming the
@@ -8,7 +14,7 @@ scope as the rest of Pennsylvania rather than "new terrain". That is the
 stronger claim, since it is bounded and checkable, and we already hold McKean
 and Venango data outside 9t. It costs 13 characters.
 
-⚠️ **Only 3 characters of headroom remain.** If AGU's counter normalises
+⚠️ **Only 7 characters of headroom remain.** If AGU's counter normalises
 whitespace or counts anything beyond the body, this goes over with no room to
 react. The cheapest 12 characters back, at no loss of meaning, is
 "the rest of Pennsylvania" to "Pennsylvania" — the western PA study area is
@@ -33,7 +39,7 @@ covering all 426 pits instead of one 65-pit split. Earlier versions are in git
 
 ---
 
-Orphan and abandoned wells are an ongoing problem across North America. During the 19th century, thousands of wells were drilled in western Pennsylvania, representing the North American oil boom. This boom was wild and reckless and poorly documented, leaving the hills and valleys riddled with potentially dangerous wells leaking methane and brine into forests and streams. Given the heavy vegetation in the area, locating these wells involves countless hours on foot or reliance on landowners or hikers. We present a lidar-based framework to detect the surface expressions of orphaned wells. Airborne lidar resolves the ground beneath the dense deciduous canopy, revealing terrain that optical imagery cannot capture. We process US Geological Survey 3D Elevation Program 2019 swaths over this region into 0.5 and 1 meter resolution models. For each model we derive a stack of terrain channels including local relief models, topographic openness, and slope residuals. Older wells leave three recurring signs. These are graded pads marking the site, access roads, and shallow depressions. We segment all three with U-Nets trained on the same terrain stack, from 426 annotated pits and 650 annotated pads. We score only against hand-drawn annotations withheld from training. Thresholds are selected on validation data and test scored once. We cross-validate the pit model five ways, so every pit is scored by a model that never saw it. Pit recall falls from 0.85 at an IoU of 0.3 to 0.61 at an IoU of 0.6. Pad recall falls from 0.88 to 0.60 across the same range. Precision at an IoU of 0.3 is 0.62 for pits and 0.55 for pads. Roads are scored by length rather than overlap, and the model recovers 98 percent of 1,220 withheld segments at a pixel IoU of 0.58. Withheld hand-drawn negatives confirm the road model rejects drainage channels. These results come from one survey area, and current work extends the framework to the rest of Pennsylvania and to field validation of undocumented candidates.
+Orphan and abandoned wells are an ongoing problem across North America. During the 19th century, thousands of wells were drilled in western Pennsylvania, representing the North American oil boom. This boom was wild and reckless and poorly documented, leaving the hills and valleys riddled with potentially dangerous wells leaking methane and brine into forests and streams. Given the heavy vegetation in the area, locating these wells involves countless hours on foot or reliance on landowners or hikers. We present a lidar-based framework to detect the surface expressions of orphaned wells. Airborne lidar resolves the ground beneath the dense deciduous canopy, revealing terrain that optical imagery cannot capture. We process US Geological Survey 3D Elevation Program 2019 swaths over this region into 0.5 and 1 meter resolution models. For each model we derive a stack of terrain channels including local relief models, topographic openness, and slope residuals. Older wells leave three recurring signs. These are graded pads marking the site, access roads, and shallow depressions. We segment all three with U-Nets trained on the same terrain stack, from 426 annotated pits and 650 pads. We score only against hand-drawn annotations withheld from training. Thresholds are selected on validation data and test scored once. We cross-validate both models five ways, so every pit and pad is scored by a model that never saw it. Pit recall falls from 0.85 at an IoU of 0.3 to 0.61 at an IoU of 0.6. Pad recall falls from 0.92 to 0.62 across the same range. Precision at an IoU of 0.3 is 0.62 for pits and 0.61 for pads. Roads are scored by length rather than overlap, and the model recovers 98 percent of 1,220 withheld segments at a pixel IoU of 0.58. Withheld hand-drawn negatives confirm the road model rejects drainage channels. These results come from one survey area, and current work extends the framework to the rest of Pennsylvania and to field validation of undocumented candidates.
 
 ---
 
@@ -81,7 +87,9 @@ training. No state well list is used to score any model.
 | pit U-Net R 0.85 / P 0.62 @ IoU 0.3 | 5-fold CV, all 426 pits, per-fold thr val-selected by F1 | `pit_unet_cv5/pit_cv5_per_fold_9t.csv` |
 | pit U-Net R 0.61 @ IoU 0.6 | same five thresholds held fixed across IoU | `pit_unet_cv5/pit_cv5_iou_strictness_scale_9t.csv` |
 | pit U-Net R 0.75 / P 0.62 @ IoU 0.3 | **superseded by the CV rows above**, single 65-pit split, thr 0.60 | `eval_9t_instance_precision/_reeval_9t.json` |
-| pad U-Net R 0.88 / P 0.55 @ IoU 0.3 | thr 0.50, val-selected, SINGLE SPLIT (pad CV in progress) | same |
+| pad U-Net R 0.92 / P 0.61 @ IoU 0.3 | 5-fold CV, all 650 pads, per-fold thr val-selected by F1 | `pad_unet_cv5/pad_cv5_per_fold_9t.csv` |
+| pad U-Net R 0.62 @ IoU 0.6 | same five thresholds held fixed across IoU | `pad_unet_cv5/pad_cv5_iou_strictness_scale_9t.csv` |
+| pad U-Net R 0.88 / P 0.55 @ IoU 0.3 | **superseded by the CV rows above**, single 93-pad split, thr 0.50 | same |
 | 126/127 withheld pits located | thr 0.20 | `pit_threshold_found_vs_missed_summary_9t.csv` |
 | 178/194 withheld pads @ IoU 0.3 | thr 0.45 | `pad_threshold_sweep_9t.csv` |
 | road 98% of 1,220 withheld chunks | thr 0.20, `recall_clean` 0.982 | `road_threshold_sweep_9t.csv` |

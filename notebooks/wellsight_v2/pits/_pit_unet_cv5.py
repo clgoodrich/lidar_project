@@ -243,7 +243,6 @@ def main() -> int:
         tf = r.transform
         rcrs = r.crs
 
-    rng = np.random.default_rng(CV_SEED)
     t_start = time.time()
 
     # Carry forward rows for folds we are NOT re-running, so a resumed partial
@@ -278,6 +277,10 @@ def main() -> int:
 
         held_blocks = sorted(man.loc[man.fold == k, "block_id"].unique())
         rest = sorted(set(man.block_id.unique()) - set(held_blocks))
+        # Seed per fold, not once before the loop. A single shared RNG makes the
+        # inner-val draw depend on how many folds ran before it in the process,
+        # so --only-folds silently gives a different split than a full run.
+        rng = np.random.default_rng(CV_SEED + 1000 * k)
         rest_shuf = list(rng.permutation(rest))
         n_val = max(1, int(round(INNER_VAL_FRAC * len(rest_shuf))))
         val_blocks = sorted(rest_shuf[:n_val])
