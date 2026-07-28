@@ -5,6 +5,67 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-27 — Pit U-Net 5-fold cross-validation (all 426 pits scored)
+
+Full write-up: `docs/iterations/pit_unet_cv5_9t.md`. New script
+`notebooks/wellsight_v2/pits/_pit_unet_cv5.py`. Outputs in
+`data/derivatives/tiles/9t/pit_unet_cv5/`.
+
+**Why.** Every pit number we quoted rested on 65 test pits from one split. Too
+small for a 3-point difference to mean anything, and open to the objection that
+the split was lucky.
+
+**Design.** Five models, each holding out a different fifth of the tile. Split by
+**block** (128 m patches with 30 m jitter can overlap a neighbouring held-out
+pit), balanced on **pit count** (pits cluster on pads), seed 20260727. Inner val
+is 20% of the remaining blocks. The held-out fold never influences its own
+threshold or its own best epoch.
+
+**Threshold selection declared before scoring.** Two objectives, both reported:
+F1 (recall and precision equal) and F2 (recall weighted 4x, matching the real
+asymmetry that a missed well costs more than a false alarm). Picking whichever
+looked better afterwards would be the cherry-pick this pass exists to avoid.
+
+**Result, pooled over 426 pits / 424 rims.**
+
+| selection | R@IoU 0.3 | P@0.3 | R@0.5 | containment |
+|---|---|---|---|---|
+| by F1 | **0.854** (per-fold 0.736–0.954, sd 0.088) | 0.617 | 0.711 | 0.899 (381/424) |
+| by F2 | **0.920** (per-fold 0.880–0.953, sd 0.035) | 0.553 | 0.730 | 0.955 (405/424) |
+
+**The single-split number was pessimistic, not optimistic.** We had been quoting
+0.754 at IoU 0.3. That split drew a hard fifth, and its val-selected threshold of
+0.60 sits past the recall cliff. Recall is stable under F2 (sd 0.035). Precision
+is the weak number and never exceeds 0.65 at any of the 16 thresholds swept.
+
+**Caveat kept in front, not buried.** Every fold is still 9t — one landscape, one
+survey, one canopy condition, one annotator. This measures whether the number is
+**stable**. It does not measure whether it **transfers**. A held-out tile remains
+the open question.
+
+**Disclosed leak.** `feature_stats.json` (7 means, 7 sds) is reused across folds
+rather than recomputed per fold. 14 global numbers enter each fold. Small, not
+zero, cheaper to disclose than to re-derive.
+
+**Three bugs found and fixed.**
+1. CSVs were written only after the fold loop, so a fold-4 crash destroyed four
+   folds of finished work. Now flushed after every fold, with carry-forward of
+   folds not being re-run.
+2. `_dl.predict_full_tile` moved input patches to the GPU but never the model,
+   relying on `train_loop` having done it. Any caller that loads a checkpoint and
+   predicts immediately died with a Half/Float type mismatch. Fixed at the source
+   in `notebooks/wellsight_v2/_dl.py`.
+3. Scoring polygonized the full 9000x9000 tile at 16 thresholds. Now zeroed
+   outside the val and held-out footprints (buffered 40 m so no scored blob is
+   clipped). Stall to ~2 s per threshold. No scored number changed.
+
+**Environment note.** The original run died with a 1.75 MiB numpy allocation
+failure while C: was at 100% (928 MB free of 931 GB). A full disk stops the
+Windows pagefile growing, which surfaces as tiny allocations failing. Not a
+script memory bug.
+
+---
+
 ## 2026-07-27 — Threshold sweeps extended to pads and roads
 
 Full write-up: `docs/iterations/threshold_sweeps_pit_pad_road_9t.md`. New scripts

@@ -30,6 +30,24 @@ on val, test scored once frozen.
 Quality is derived, not measured separately. It is the standard third number in
 the road-extraction literature and is what makes our road result comparable.
 
+### Update 2026-07-27 — the pit row is now cross-validated
+
+The pit row above is one split of 65 test pits. It has since been replaced by a
+5-fold cross-validation scoring **all 426 pits**, each by a model that never saw
+it ([[pit_unet_cv5_9t]]).
+
+| pit U-Net, selection | R@IoU 0.3 | P@0.3 | F1@0.3 | containment |
+|---|---|---|---|---|
+| single split (row above) | 0.754 | 0.620 | 0.681 | — |
+| 5-fold, F1-selected | **0.854** | 0.617 | 0.733 | 0.899 |
+| 5-fold, F2-selected | **0.920** | 0.553 | 0.690 | 0.955 |
+
+**The single split was pessimistic.** It drew a hard fifth, and its val-selected
+threshold of 0.60 sits past the recall cliff. Against the literature table below
+this moves pit F1 from 0.681 to 0.733, which narrows the gap to the curated-region
+results without closing it. The pad row is still single-split and is not yet
+comparable on this basis.
+
 ---
 
 ## The strictness scale — read your own number off the curve
@@ -190,8 +208,11 @@ Ranked by how much I think each is worth.
 3. **Single seed everywhere.** No trainer sets `set_determinism` or seeds the
    loader generator. Run-to-run spread is unmeasured, so small differences
    between models may be noise.
-4. **Small n, no confidence intervals.** 65 test pits, 93 test pads. A 0.03 F1
-   difference on n=65 is not a result.
+4. ~~**Small n, no confidence intervals.**~~ **Addressed for pits 2026-07-27.**
+   5-fold CV scores all 426 pits and reports a per-fold spread (sd 0.035 under F2
+   selection, 0.088 under F1), which is a real basis for judging whether a
+   difference is a result. **Still open for pads**, which remain at 93 test
+   instances on one split.
 5. **We report at a chosen threshold at all.** Even a val-selected threshold is a
    choice. Threshold-free summaries do not have this problem.
 

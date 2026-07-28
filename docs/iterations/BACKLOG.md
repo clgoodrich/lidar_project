@@ -16,6 +16,17 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
 - **Barlow builder**: pin EDI package revisions at fetch time (currently auto-newest → provenance drift); fix flow-accum nodata→0 leak (`np.clip` turns nodata into log1p(0)=0 valid values); document the vertical-datum assumption (all three epochs ellipsoidal — constant offsets are absorbed by the DoD median-bias correction, but say so); curvature is profile (WBT) vs Barlow's ArcGIS standard curvature — a deliberate, documented deviation to keep.
 
+## From the pit 5-fold cross-validation (added 2026-07-27)
+
+Full results in `docs/iterations/pit_unet_cv5_9t.md`.
+
+- ~~**Every pit number rests on one 65-pit split.**~~ **FIXED 2026-07-27**: 5-fold CV scores all 426 pits, each by a model that never saw it. Pooled R@0.3 = 0.854 (F1-selected) / 0.920 (F2-selected). The single split was pessimistic, not optimistic.
+- **Do the same 5-fold treatment for pads.** Pads have 194 held-out instances on one split. Same script structure, same argument. This is the obvious next equivalent claim to harden.
+- **Score on 613590 as a genuinely held-out tile.** Every CV fold is still 9t — one landscape, one survey, one annotator. CV proves the number is *stable*, not that it *transfers*. This remains the single largest unquantified optimism in every pit and pad number we publish. Blocked on 613590 having zero hand annotations (annotations start at x≈619,503; the tile spans 613,500–618,000), so it needs annotation work first.
+- **Precision is the ceiling, not recall.** Pit precision never exceeds 0.65 at any of the 16 thresholds swept, while recall reaches 0.94. Whatever is generating the extra polygons is where the next real gain is — not in recall tuning.
+- **Recompute `feature_stats.json` per fold.** Currently 7 means + 7 sds from the original train blocks are reused across all folds, leaking 14 global numbers into each. Effect is small; disclosed in the write-up rather than fixed.
+- **CV gives a spread, so use it.** Per-fold sd (0.035 under F2, 0.088 under F1) is now a real basis for saying whether a difference between two models is a result. Apply it before quoting any future 3-point improvement.
+
 ## From the pit/pad/road threshold sweeps (added 2026-07-27)
 
 Full results in `docs/iterations/threshold_sweeps_pit_pad_road_9t.md`.

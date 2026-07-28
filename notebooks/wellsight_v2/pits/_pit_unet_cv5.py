@@ -208,8 +208,12 @@ def main() -> int:
     ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--workers", type=int, default=0)
+    ap.add_argument("--only-folds", type=str, default="",
+                    help="comma list, e.g. '4'. Default: all folds.")
     args = ap.parse_args()
     K = args.folds
+    want = ({int(x) for x in args.only_folds.split(",") if x.strip() != ""}
+            if args.only_folds else set(range(K)))
 
     print(f"== pit U-Net {K}-fold cross-validation on 9t ==\n")
 
@@ -240,13 +244,37 @@ def main() -> int:
         rcrs = r.crs
 
     rng = np.random.default_rng(CV_SEED)
-    curve_rows, fold_rows = [], []
     t_start = time.time()
 
+    # Carry forward rows for folds we are NOT re-running, so a resumed partial
+    # run still writes complete CSVs instead of clobbering earlier folds.
+    fold_csv = OUTDIR / "pit_cv5_per_fold_9t.csv"
+    curve_csv = OUTDIR / "pit_cv5_recovery_curve_9t.csv"
+
+    def _carry(path):
+        if not path.exists():
+            return []
+        old = pd.read_csv(path)
+        return old[~old.fold.isin(want)].to_dict("records")
+
+    fold_rows, curve_rows = _carry(fold_csv), _carry(curve_csv)
+    if fold_rows or curve_rows:
+        print(f"  carried forward {len(fold_rows)} fold rows / "
+              f"{len(curve_rows)} curve rows from previous run\n")
+
+    def flush():
+        pd.DataFrame(fold_rows).sort_values(["fold", "objective"]).to_csv(
+            fold_csv, index=False)
+        pd.DataFrame(curve_rows).sort_values(["fold", "prob_threshold"]).to_csv(
+            curve_csv, index=False)
+
     for k in range(K):
+        if k not in want:
+            continue
         print(f"{'='*70}\nFOLD {k}\n{'='*70}")
         fd = OUTDIR / f"fold{k}"
         fd.mkdir(parents=True, exist_ok=True)
+        prob_tif = fd / f"pit_prob_floor_cvfold{k}_9t_05.tif"
 
         held_blocks = sorted(man.loc[man.fold == k, "block_id"].unique())
         rest = sorted(set(man.block_id.unique()) - set(held_blocks))
@@ -277,34 +305,46 @@ def main() -> int:
             policies=[("pit", va_pits, JITTER_M)], block_bounds=bounds_of(val_blocks),
             transform=tf, mu=mu, sd=sd, patch=PATCH, augment=False, seed=200 + k)
 
+        # Resumable: a finished checkpoint or prob raster is reused as-is. Both
+        # are deterministic products of a fold that already ran, so re-deriving
+        # them would change nothing and costs ~9 min of GPU each.
         model = UNet(in_ch=len(DEFAULT_CHANNELS), n_classes=N_CLASSES, base=32)
-        train_loop(
-            model=model,
-            train_loader=DataLoader(tr_ds, batch_size=args.batch, shuffle=True,
-                                    num_workers=args.workers, pin_memory=True),
-            val_loader=DataLoader(va_ds, batch_size=args.batch, shuffle=False,
-                                  num_workers=args.workers, pin_memory=True),
-            loss_fn=FocalCE(alpha=FOCAL_ALPHA, gamma=FOCAL_GAMMA),
-            epochs=args.epochs, lr=args.lr, n_classes=N_CLASSES, out_dir=fd,
-            checkpoint_extra={"mu": mu, "sd": sd, "fold": k,
-                              "channels": list(DEFAULT_CHANNELS), "patch": PATCH,
-                              "held_out_blocks": held_blocks},
-            score=lambda iou: float(np.nanmean(iou[1:])),
-            extra_iou_names=("bg", "floor", "wall"))
+        if (fd / "best.pt").exists():
+            print(f"  reusing existing checkpoint {fd / 'best.pt'}")
+        else:
+            train_loop(
+                model=model,
+                train_loader=DataLoader(tr_ds, batch_size=args.batch, shuffle=True,
+                                        num_workers=args.workers, pin_memory=True),
+                val_loader=DataLoader(va_ds, batch_size=args.batch, shuffle=False,
+                                      num_workers=args.workers, pin_memory=True),
+                loss_fn=FocalCE(alpha=FOCAL_ALPHA, gamma=FOCAL_GAMMA),
+                epochs=args.epochs, lr=args.lr, n_classes=N_CLASSES, out_dir=fd,
+                checkpoint_extra={"mu": mu, "sd": sd, "fold": k,
+                                  "channels": list(DEFAULT_CHANNELS), "patch": PATCH,
+                                  "held_out_blocks": held_blocks},
+                score=lambda iou: float(np.nanmean(iou[1:])),
+                extra_iou_names=("bg", "floor", "wall"))
 
-        ck = torch.load(fd / "best.pt", map_location="cpu", weights_only=False)
-        model.load_state_dict(ck["model"] if "model" in ck else ck["state_dict"])
-        prob, _, prof = predict_full_tile(model, FEATURES, mu, sd, patch=PATCH,
-                                          overlap=OVERLAP, n_classes=N_CLASSES,
-                                          batch=args.batch)
-        floor = prob[1].astype(np.float32)
-        with rasterio.open(fd / f"pit_prob_floor_cvfold{k}_9t_05.tif", "w",
-                           driver="GTiff", height=floor.shape[0],
-                           width=floor.shape[1], count=1, dtype="float32",
-                           crs=prof["crs"], transform=prof["transform"],
-                           nodata=-1.0, compress="deflate", predictor=2,
-                           tiled=True, BIGTIFF="YES") as d:
-            d.write(floor, 1)
+        if prob_tif.exists():
+            print(f"  reusing existing probability raster {prob_tif}")
+            with rasterio.open(prob_tif) as r:
+                floor = r.read(1).astype(np.float32)
+        else:
+            ck = torch.load(fd / "best.pt", map_location="cpu", weights_only=False)
+            model.load_state_dict(ck["model"] if "model" in ck else ck["state_dict"])
+            prob, _, prof = predict_full_tile(model, FEATURES, mu, sd, patch=PATCH,
+                                              overlap=OVERLAP, n_classes=N_CLASSES,
+                                              batch=args.batch)
+            floor = prob[1].astype(np.float32)
+            del prob
+            with rasterio.open(prob_tif, "w",
+                               driver="GTiff", height=floor.shape[0],
+                               width=floor.shape[1], count=1, dtype="float32",
+                               crs=prof["crs"], transform=prof["transform"],
+                               nodata=-1.0, compress="deflate", predictor=2,
+                               tiled=True, BIGTIFF="YES") as d:
+                d.write(floor, 1)
 
         gt_val = floors[floors.pit_id.isin(man.loc[man.block_id.isin(val_blocks),
                                                    "pit_id"])]
@@ -365,15 +405,20 @@ def main() -> int:
                   f"  recall@0.5 {m[0.5]['recall']:.3f}  containment "
                   f"{c[0]:.3f} ({c[1]}/{len(rim_held)})")
 
-        del model, prob, floor
+        # Write after EVERY fold. The first run of this script lost four folds of
+        # completed work when fold 4 died, because the CSVs were only written
+        # after the loop.
+        flush()
+        print(f"  flushed results through fold {k} -> {fold_csv.name}")
+
+        del model, floor, floor_scored, keep
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
         print(f"  fold {k} done, {(time.time()-t_start)/60:.1f} min elapsed\n")
 
     fdf = pd.DataFrame(fold_rows)
     cdf = pd.DataFrame(curve_rows)
-    fdf.to_csv(OUTDIR / "pit_cv5_per_fold_9t.csv", index=False)
-    cdf.to_csv(OUTDIR / "pit_cv5_recovery_curve_9t.csv", index=False)
+    flush()
     man[["pit_id", "block_id", "fold"]].to_csv(
         OUTDIR / "pit_cv5_fold_assignment_9t.csv", index=False)
 

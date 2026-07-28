@@ -65,6 +65,28 @@ The post-proc row is a **point-level metric** (6 m centroid tolerance), val-tune
 and test-frozen. It was not part of the 07-27 reeval and is not row-comparable.
 See [[pit_optimize]].
 
+### Pits, 5-fold cross-validated — all 426 pits, 2026-07-27
+
+The rows above rest on one split of 65 test pits. This is the same architecture,
+loss, channels and schedule, trained five times, each holding out a different
+fifth of the tile. Every pit is scored by a model that never saw it. Thresholds
+are selected on an inner val split under an objective named in advance.
+
+| Selection | thr chosen per fold | R@0.3 | P@0.3 | R@0.5 | containment |
+|---|---|---|---|---|---|
+| by F1 | 0.40, 0.50, 0.50, 0.50, 0.55 | **0.854** (sd 0.088) | 0.617 | 0.711 | 0.899 |
+| by F2 | 0.30, 0.30, 0.30, 0.35, 0.55 | **0.920** (sd 0.035) | 0.553 | 0.730 | 0.955 |
+
+**The single-split 0.754 was pessimistic.** That split drew a hard fifth, and its
+val-selected threshold of 0.60 sits past the point where recall falls away.
+Cross-validated recall at IoU 0.3 is 0.854 under the same F1 rule.
+
+Recall is stable (F2 per-fold spread 0.880–0.953). Precision is the weak number
+and never exceeds 0.65 at any threshold. Every fold is still 9t, so this shows
+the number is **stable**, not that it **transfers**.
+
+Full write-up: [[pit_unet_cv5_9t]].
+
 ## Pads (93 test instances) — corrected 2026-07-27
 
 | Iteration | Approach | thr (val) | val F1 | R@0.3 | P@0.3 | F1@0.3 |

@@ -432,6 +432,11 @@ def predict_full_tile(
     count = np.zeros((H, W), dtype=np.float32)
     use_amp = DEVICE.type == "cuda"
 
+    # Patches are moved to DEVICE below, so the model must be there too. Callers
+    # that train first get this from train_loop; a caller that loads a
+    # checkpoint and predicts straight away does not, and used to die with
+    # "Input type (torch.cuda.HalfTensor) and weight type (torch.FloatTensor)".
+    model.to(DEVICE)
     model.eval()
     buf_x: list[np.ndarray] = []
     buf_pos: list[tuple[int, int]] = []
