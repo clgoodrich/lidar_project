@@ -27,6 +27,8 @@ Full results in `docs/iterations/pit_unet_cv5_9t.md`.
 - **Recompute `feature_stats.json` per fold.** Currently 7 means + 7 sds from the original train blocks are reused across all folds, leaking 14 global numbers into each. Effect is small; disclosed in the write-up rather than fixed.
 - **CV gives a spread, so use it.** Per-fold sd (0.035 under F2, 0.088 under F1) is now a real basis for saying whether a difference between two models is a result. Apply it before quoting any future 3-point improvement.
 
+- **CV inner-val draw is execution-order dependent (found 2026-07-28, fix pending).** Both `_pit_unet_cv5.py` and `_pad_unet_cv5.py` create one `default_rng(CV_SEED)` before the fold loop and call `rng.permutation(rest)` inside it. Skipped folds `continue` before that call, so `--only-folds 2,3,4` gives fold 2 the *first* draw instead of the third. Observed live: pad fold 2 got inner-val 93 in the original run and 112 on resume. **Held-out sets are unaffected** (deterministic fold assignment), so no scored number is invalid and thresholds are still selected without held-out data. Only exact reproducibility breaks — `--folds 5` and a resumed run disagree. Fix: seed per fold, `default_rng(CV_SEED + 1000 * k)` inside the loop. Held until the in-flight pad run finishes rather than editing a script mid-experiment. Pad folds 0–1 and 2–4 were drawn in separate batches; note this wherever pad CV numbers are published.
+
 ## From the pit/pad/road threshold sweeps (added 2026-07-27)
 
 Full results in `docs/iterations/threshold_sweeps_pit_pad_road_9t.md`.

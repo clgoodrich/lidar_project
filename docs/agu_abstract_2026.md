@@ -1,6 +1,15 @@
 # AGU 2026 abstract — WellSight
 
-v9, 2026-07-28. 1,976 characters / 319 words (AGU limit 2,000 characters).
+v11, 2026-07-28. 1,984 characters / 321 words (AGU limit 2,000 characters).
+
+**v11 adds a closing sentence** on scope and next steps, paid for by four
+redundancy trims. See "The closing sentence" below.
+
+**v10 is the author's rewrite.** He opened with the historical boom instead of
+the statistics, cut the DEP-coordinate finding, cut the Permian transfer, and
+cut the clDice sentence. Those are his calls and they stand. Two factual
+corrections and a length fix were applied on top, listed under "Corrections
+applied to the v10 draft" below.
 
 v1 was roads-heavy. v2 balanced the three signatures but wrongly presented
 Mask R-CNN and YOLO as the method for pits and pads. **U-Net is the method**
@@ -15,7 +24,7 @@ covering all 426 pits instead of one 65-pit split. Earlier versions are in git
 
 ---
 
-Pennsylvania carries a 150-year legacy of oil and gas extraction. Hundreds of thousands of abandoned wells remain, many absent from records. These wells leak methane and brine into forests and streams. Field survey across steep, forested terrain is slow and costly. We present a LiDAR framework that detects the surface expressions of orphaned wells in western Pennsylvania. Airborne LiDAR resolves the ground beneath dense canopy, exposing features aerial imagery cannot. We process QL1 and QL2 point clouds into bare-earth models at 0.5 to 1 m. From each we derive terrain channels including local relief models, topographic openness, and slope residuals. Orphaned wells leave three recurring marks. Casing depressions form small circular pits. Drilling operations leave graded pads. Access roads survive as shallow benches cut into hillsides. We segment all three with U-Nets trained on the same terrain stack, from 426 annotated pits and 650 annotated pads. The road model adds a clDice loss that keeps traced networks connected across canopy gaps. We score only against hand-drawn annotations withheld from training. Thresholds are selected on validation data and test scored once. We cross-validate the pit model five ways, so every pit is scored by a model that never saw it. Pit recall falls from 0.85 at an IoU of 0.3 to 0.61 at an IoU of 0.6. Pad recall falls from 0.88 to 0.60 across the same range. Precision at an IoU of 0.3 is 0.62 for pits and 0.55 for pads. Roads are scored by length rather than overlap, and the model recovers 98 percent of 1,220 withheld segments at a pixel IoU of 0.58. Withheld hand-drawn negatives confirm the road model rejects drainage channels. We then compare state records against our annotations. Only 6 percent of 424 mapped pits carry a catalogued well within 25 m. Validation keyed to official coordinates is unreliable in this terrain. The same terrain-signature approach transfers to other legacy basins including the Permian.
+Orphan and abandoned wells are an ongoing problem across North America. During the 19th century, thousands of wells were drilled in western Pennsylvania, representing the North American oil boom. This boom was wild and reckless and poorly documented, leaving the hills and valleys riddled with potentially dangerous wells leaking methane and brine into forests and streams. Given the heavy vegetation in the area, locating these wells involves countless hours on foot or reliance on landowners or hikers. We present a lidar-based framework to detect the surface expressions of orphaned wells. Airborne lidar resolves the ground beneath the dense deciduous canopy, revealing terrain that optical imagery cannot capture. We process US Geological Survey 3D Elevation Program 2019 swaths over this region into 0.5 and 1 meter resolution models. For each model we derive a stack of terrain channels including local relief models, topographic openness, and slope residuals. Older wells leave three recurring signs. These are graded pads marking the site, access roads, and shallow depressions. We segment all three with U-Nets trained on the same terrain stack, from 426 annotated pits and 650 annotated pads. We score only against hand-drawn annotations withheld from training. Thresholds are selected on validation data and test scored once. We cross-validate the pit model five ways, so every pit is scored by a model that never saw it. Pit recall falls from 0.85 at an IoU of 0.3 to 0.61 at an IoU of 0.6. Pad recall falls from 0.88 to 0.60 across the same range. Precision at an IoU of 0.3 is 0.62 for pits and 0.55 for pads. Roads are scored by length rather than overlap, and the model recovers 98 percent of 1,220 withheld segments at a pixel IoU of 0.58. Withheld hand-drawn negatives confirm the road model rejects drainage channels. These results come from one survey area, and current work extends the framework to new terrain and to field validation of undocumented candidates.
 
 ---
 
@@ -63,7 +72,7 @@ training. No state well list is used to score any model.
 | pit U-Net R 0.85 / P 0.62 @ IoU 0.3 | 5-fold CV, all 426 pits, per-fold thr val-selected by F1 | `pit_unet_cv5/pit_cv5_per_fold_9t.csv` |
 | pit U-Net R 0.61 @ IoU 0.6 | same five thresholds held fixed across IoU | `pit_unet_cv5/pit_cv5_iou_strictness_scale_9t.csv` |
 | pit U-Net R 0.75 / P 0.62 @ IoU 0.3 | **superseded by the CV rows above**, single 65-pit split, thr 0.60 | `eval_9t_instance_precision/_reeval_9t.json` |
-| pad U-Net R 0.88 / P 0.55 @ IoU 0.3 | thr 0.50, val-selected | same |
+| pad U-Net R 0.88 / P 0.55 @ IoU 0.3 | thr 0.50, val-selected, SINGLE SPLIT (pad CV in progress) | same |
 | 126/127 withheld pits located | thr 0.20 | `pit_threshold_found_vs_missed_summary_9t.csv` |
 | 178/194 withheld pads @ IoU 0.3 | thr 0.45 | `pad_threshold_sweep_9t.csv` |
 | road 98% of 1,220 withheld chunks | thr 0.20, `recall_clean` 0.982 | `road_threshold_sweep_9t.csv` |
@@ -77,6 +86,84 @@ Full sweep write-up: `docs/iterations/threshold_sweeps_pit_pad_road_9t.md`.
 
 ⚠️ The multitask model is not named. Its iteration doc holds only a comparison
 *plan* and no metrics file exists. It was costing a sentence for no result.
+
+## The closing sentence
+
+The v10 draft ended on the drainage-rejection result, which is a detail, not a
+conclusion. v11 closes with:
+
+> These results come from one survey area, and current work extends the
+> framework to new terrain and to field validation of undocumented candidates.
+
+**Why this one.** It does two jobs in one sentence. The first clause states the
+limitation that every number on this page shares, which is that 9t is one
+landscape, one survey, one canopy condition, one annotator. Cross-validation
+proved our numbers are *stable*. It did not prove they *transfer*. Saying so
+first is what makes the second clause credible rather than promotional.
+
+The second clause names the two things that would actually settle it. Scoring on
+terrain we have not annotated tests transfer. Field validation tests whether a
+detected signature is a well at all, which no amount of held-out annotation can
+answer, because our ground truth is our own interpretation of the same terrain
+the model sees.
+
+**What it deliberately does not claim.** No count of undocumented wells found.
+No accuracy figure for a region we have not scored. No completion date. Every
+one of those would be a promise the results do not support.
+
+**Paid for by four trims**, since v10 had 13 characters spare and the sentence
+needs 146.
+
+| cut | saved | why it was safe |
+|---|---|---|
+| "These channels enhance the local signatures that mark well site expressions." | 77 | asserts a purpose without adding content. The next sentences show what the channels are for. |
+| "in many regions of North America" to "across North America" | 11 | same meaning, fewer words |
+| "the hills and valleys **of western Pennsylvania**" | 23 | the location is named in the sentence immediately before |
+| "**Older well drilling in the region** leaves three recurring signs" to "Older wells leave" | 23 | same claim |
+| "swaths **collected** over this region" | 10 | the verb is implied |
+
+Final 1,984 characters, 16 spare.
+
+## Corrections applied to the v10 draft
+
+The draft came in at **2,049 characters, 49 over the AGU limit**, so something
+had to go regardless.
+
+**Two factual corrections.**
+
+| draft said | problem | now |
+|---|---|---|
+| "into 1 meter resolution models" | the pit and pad stacks are **0.5 m** (`features_pit_9t_05.tif`). Only the road model is 1 m. Every pit and pad number in the results comes from 0.5 m data. | "into 0.5 and 1 meter resolution models" |
+| channels include "red relief image maps" | **RRIM is not a model input.** The training stack is exactly 7 bands: `lrm_25, lrm_5, slope, tpi_05, openness_pos, openness_neg, roughness_11`. RRIM is a visualization product. `diff_openness` is documented as the Chiba RRIM base in `_build_extra_channels.py` but is not in `DEFAULT_CHANNELS`. | phrase removed |
+
+The RRIM claim is the dangerous one. It is checkable, and a reviewer who checks
+it finds the channel list does not contain it.
+
+**Verified and left alone.** 3DEP 2019 is right for 9t (~4 pts/m², 2019 D20,
+`docs/methodology.md`). 426 pits and 650 pads match the manifests.
+
+**Typos fixed.** poorely, methan, forets, presend, framewor, conduceed. Also
+"Western Pennsylvania" lowercased to match the other two uses.
+
+**Four wording edits, all minor.**
+
+1. "resolves the ground into the dense deciduous canopy" reads backwards. Now
+   "beneath the dense deciduous canopy".
+2. "terrain that optical imagery is unable to process" — imagery does not
+   process. Now "terrain that optical imagery cannot capture".
+3. "swaths conduceed over this region" — surveys are flown or collected, not
+   conducted. Now "collected".
+4. "Graded pads marking the location of the site, access roads, and shallow
+   depressions" was a sentence fragment. Now "These are graded pads marking the
+   site, access roads, and shallow depressions."
+
+**Length trims** to get from 2,049 under 2,000. Dropped the third
+"in western Pennsylvania" (already said twice) and shortened "These channels are
+used to enhance" to "These channels enhance". Final 1,987, 13 characters spare.
+
+**Voice note.** This draft runs longer sentences than v8 did — median 17 words
+against 11, max 30 against 24. That is a deliberate change of register, from
+clipped declaratives to narrative. Not corrected.
 
 ## The pit numbers are now cross-validated
 
