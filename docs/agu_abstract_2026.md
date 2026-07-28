@@ -1,9 +1,18 @@
 # AGU 2026 abstract — WellSight
 
-v11, 2026-07-28. 1,984 characters / 321 words (AGU limit 2,000 characters).
+v12, 2026-07-28. 1,997 characters / 323 words (AGU limit 2,000 characters).
 
-**v11 adds a closing sentence** on scope and next steps, paid for by four
-redundancy trims. See "The closing sentence" below.
+**v11 added a closing sentence** on scope and next steps, paid for by four
+redundancy trims. **v12 is the author's edit to that sentence**, naming the
+scope as the rest of Pennsylvania rather than "new terrain". That is the
+stronger claim, since it is bounded and checkable, and we already hold McKean
+and Venango data outside 9t. It costs 13 characters.
+
+⚠️ **Only 3 characters of headroom remain.** If AGU's counter normalises
+whitespace or counts anything beyond the body, this goes over with no room to
+react. The cheapest 12 characters back, at no loss of meaning, is
+"the rest of Pennsylvania" to "Pennsylvania" — the western PA study area is
+already established three sentences earlier.
 
 **v10 is the author's rewrite.** He opened with the historical boom instead of
 the statistics, cut the DEP-coordinate finding, cut the Permian transfer, and
@@ -24,7 +33,7 @@ covering all 426 pits instead of one 65-pit split. Earlier versions are in git
 
 ---
 
-Orphan and abandoned wells are an ongoing problem across North America. During the 19th century, thousands of wells were drilled in western Pennsylvania, representing the North American oil boom. This boom was wild and reckless and poorly documented, leaving the hills and valleys riddled with potentially dangerous wells leaking methane and brine into forests and streams. Given the heavy vegetation in the area, locating these wells involves countless hours on foot or reliance on landowners or hikers. We present a lidar-based framework to detect the surface expressions of orphaned wells. Airborne lidar resolves the ground beneath the dense deciduous canopy, revealing terrain that optical imagery cannot capture. We process US Geological Survey 3D Elevation Program 2019 swaths over this region into 0.5 and 1 meter resolution models. For each model we derive a stack of terrain channels including local relief models, topographic openness, and slope residuals. Older wells leave three recurring signs. These are graded pads marking the site, access roads, and shallow depressions. We segment all three with U-Nets trained on the same terrain stack, from 426 annotated pits and 650 annotated pads. We score only against hand-drawn annotations withheld from training. Thresholds are selected on validation data and test scored once. We cross-validate the pit model five ways, so every pit is scored by a model that never saw it. Pit recall falls from 0.85 at an IoU of 0.3 to 0.61 at an IoU of 0.6. Pad recall falls from 0.88 to 0.60 across the same range. Precision at an IoU of 0.3 is 0.62 for pits and 0.55 for pads. Roads are scored by length rather than overlap, and the model recovers 98 percent of 1,220 withheld segments at a pixel IoU of 0.58. Withheld hand-drawn negatives confirm the road model rejects drainage channels. These results come from one survey area, and current work extends the framework to new terrain and to field validation of undocumented candidates.
+Orphan and abandoned wells are an ongoing problem across North America. During the 19th century, thousands of wells were drilled in western Pennsylvania, representing the North American oil boom. This boom was wild and reckless and poorly documented, leaving the hills and valleys riddled with potentially dangerous wells leaking methane and brine into forests and streams. Given the heavy vegetation in the area, locating these wells involves countless hours on foot or reliance on landowners or hikers. We present a lidar-based framework to detect the surface expressions of orphaned wells. Airborne lidar resolves the ground beneath the dense deciduous canopy, revealing terrain that optical imagery cannot capture. We process US Geological Survey 3D Elevation Program 2019 swaths over this region into 0.5 and 1 meter resolution models. For each model we derive a stack of terrain channels including local relief models, topographic openness, and slope residuals. Older wells leave three recurring signs. These are graded pads marking the site, access roads, and shallow depressions. We segment all three with U-Nets trained on the same terrain stack, from 426 annotated pits and 650 annotated pads. We score only against hand-drawn annotations withheld from training. Thresholds are selected on validation data and test scored once. We cross-validate the pit model five ways, so every pit is scored by a model that never saw it. Pit recall falls from 0.85 at an IoU of 0.3 to 0.61 at an IoU of 0.6. Pad recall falls from 0.88 to 0.60 across the same range. Precision at an IoU of 0.3 is 0.62 for pits and 0.55 for pads. Roads are scored by length rather than overlap, and the model recovers 98 percent of 1,220 withheld segments at a pixel IoU of 0.58. Withheld hand-drawn negatives confirm the road model rejects drainage channels. These results come from one survey area, and current work extends the framework to the rest of Pennsylvania and to field validation of undocumented candidates.
 
 ---
 
@@ -93,7 +102,7 @@ The v10 draft ended on the drainage-rejection result, which is a detail, not a
 conclusion. v11 closes with:
 
 > These results come from one survey area, and current work extends the
-> framework to new terrain and to field validation of undocumented candidates.
+> framework to the rest of Pennsylvania and to field validation of undocumented candidates.
 
 **Why this one.** It does two jobs in one sentence. The first clause states the
 limitation that every number on this page shares, which is that 9t is one
