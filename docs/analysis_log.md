@@ -5,6 +5,71 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-29 — Road "big vs faint": width is constant, depth is a continuum
+
+Full write-up: `docs/iterations/road_morphology_bins.md`. New script
+`notebooks/wellsight_v2/analysis/_road_morphology_bins.py`. Outputs in
+`data/derivatives/experiments/road_morphology_bins/`.
+
+**Why.** User observation: the annotated roads come in two varieties, big and
+faint. Asked whether that split is real and where the boundary sits.
+
+**Method.** Cross-section, not plan shape. `annotations/roads.shp` clipped to 9t
+= 1,112 roads / 186.20 km; perpendicular transects every 10 m, +/-25 m at 0.5 m
+= 18,062 transects / 1.82 M samples, each detrended on the OUTER thirds only so
+the road never influences its own trend surface. StandardScaler -> PCA(90%) ->
+KMeans, k by silhouette, mirroring [[pad_morphology_bins]].
+
+**The premise is half right. k=2 IS the best partition** (silhouette 0.229 vs
+0.164 at k=3), but not on the axis assumed.
+
+| | bin 0 | bin 1 |
+|---|---|---|
+| n / km | 686 / 106.3 | 410 / 79.4 |
+| incision depth | 0.51 m | 0.86 m |
+| width (berm-to-berm) | 14.0 m | 15.0 m |
+| width (FWHM) | 6.38 m | 6.50 m |
+| hillslope at crossing | 2.85 deg | 7.85 deg |
+| TIGER match / P(road) | 0.080 / 0.746 | 0.061 / 0.753 |
+
+1. **Width does not vary.** eta^2 = **0.001** for FWHM width and 0.016 for
+   berm separation, against **0.508** for incision depth. Network-wide
+   berm-to-berm CV is **0.20**. The 9t roads are one width — consistent with a
+   single-lane access-road construction standard used throughout the field.
+2. **Depth is a continuum, not two populations.** 1-D GMM on log depth prefers
+   **one** component (BIC -776) over two (-753). The k=2 bins are a threshold on
+   a continuum, not a discovered boundary. **Central result, and negative.**
+3. **Depth is substantially terrain.** Spearman **+0.42** with hillslope; bins
+   retain eta^2 0.24 on hillslope even with terrain features excluded. A road
+   benched into a sideslope must be cut in; the same road on flat ground need
+   not be. Much of "looks faint" is "is on flat ground".
+4. **Neither bin is the public network.** Only 80/1,096 roads (7%) match TIGER
+   over >=50% of length, and the match rate is *lower* for the deeper bin. The
+   annotated network is lease/haul/skid roads, so TIGER cannot label "big".
+   Model P(road) is flat across bins (0.746 vs 0.753) — no evidence the U-Net
+   finds faint roads harder.
+
+**Deliverable: `prominence_z`.** log(incision depth) regressed on
+log(hillslope), residual z-scored = how strongly a road is expressed FOR ITS
+TERRAIN. Terrain coupling **+0.416 -> -0.002**. On every road in the output
+GeoPackage. Use a threshold on this rather than the hard bins.
+
+**Three measurement bugs found and fixed en route.** (a) The first run binned
+terrain, not size (hillslope 8.7 vs 2.7 deg) — terrain features moved out of the
+clustering. (b) `tread_width_m` (contiguous slope <= 8 deg) has no terminating
+shoulder on flat ground and reported *wider* treads for the fainter roads —
+replaced by berm separation + trough FWHM. (c) CHM medians measured the
+zero-inflation, not canopy (`chm_9t_05` tile median 0.091 m, p99 25.8 m) —
+switched to p90 per band. Also flagged: `intensity_ground_9t_05` is 44.6% nodata
+over the samples, so `inten_ratio` is the weakest feature in the set.
+
+**Consequences.** Do NOT build a two-class road model — there is no second
+population to learn. Do use `prominence_z` for candidate prioritisation and
+sample stratification. Terrain-stratified recall reporting is now possible and
+has never been done.
+
+---
+
 ## 2026-07-29 — Drainage: 9t model vectorized to review layers on 613590
 
 Full write-up: `docs/iterations/drainage_review_613590.md`. New scripts

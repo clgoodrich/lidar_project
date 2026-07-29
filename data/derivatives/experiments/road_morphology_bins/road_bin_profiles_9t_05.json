@@ -1,0 +1,73 @@
+{
+  "k": 2,
+  "silhouette": {
+    "2": 0.22878600663699247,
+    "3": 0.16448783409093434,
+    "4": 0.16545999073569384,
+    "5": 0.16485155038130497,
+    "6": 0.15304797137115939,
+    "7": 0.14248059386109233,
+    "8": 0.14800389679301718
+  },
+  "features": [
+    "incision_depth_m",
+    "incision_fwhm_m",
+    "berm_sep_m",
+    "bench_amp_m",
+    "relief_amp_m",
+    "shoulder_grad",
+    "lrm5_amp",
+    "chm_centre",
+    "chm_deficit_m",
+    "inten_ratio",
+    "sinuosity",
+    "log_length"
+  ],
+  "n_roads": 1096,
+  "km": 185.75,
+  "transect": {
+    "step_m": 10.0,
+    "half_w_m": 25.0,
+    "dx_m": 0.5
+  },
+  "profiles": {
+    "0": {
+      "incision_depth_m": 0.5099999905,
+      "incision_fwhm_m": 6.38,
+      "berm_sep_m": 14.0,
+      "bench_amp_m": 0.64,
+      "relief_amp_m": 0.57,
+      "shoulder_grad": 0.28,
+      "chm_centre": 2.82,
+      "chm_deficit_m": 4.35,
+      "inten_ratio": 1.11,
+      "length_m": 117.4,
+      "sinuosity": 1.04,
+      "hillslope_deg": 2.85,
+      "tread_width_m": 4.5,
+      "n": 686,
+      "km": 106.3,
+      "is_tiger": 0.08,
+      "mean_proad": 0.7459999919
+    },
+    "1": {
+      "incision_depth_m": 0.8600000143,
+      "incision_fwhm_m": 6.5,
+      "berm_sep_m": 15.0,
+      "bench_amp_m": 1.11,
+      "relief_amp_m": 1.01,
+      "shoulder_grad": 0.45,
+      "chm_centre": 2.29,
+      "chm_deficit_m": 6.87,
+      "inten_ratio": 1.17,
+      "length_m": 130.18,
+      "sinuosity": 1.05,
+      "hillslope_deg": 7.85,
+      "tread_width_m": 2.5,
+      "n": 410,
+      "km": 79.4,
+      "is_tiger": 0.061,
+      "mean_proad": 0.753000021
+    }
+  }
+}
