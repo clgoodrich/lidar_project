@@ -16,6 +16,34 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
 - **Barlow builder**: pin EDI package revisions at fetch time (currently auto-newest → provenance drift); fix flow-accum nodata→0 leak (`np.clip` turns nodata into log1p(0)=0 valid values); document the vertical-datum assumption (all three epochs ellipsoidal — constant offsets are absorbed by the DoD median-bias correction, but say so); curvature is profile (WBT) vs Barlow's ArcGIS standard curvature — a deliberate, documented deviation to keep.
 
+## Road label coverage (added 2026-07-29) — HIGHEST PRIORITY for roads
+
+Full results in `docs/iterations/road_bold_vs_faint.md`.
+
+- **The faint road class has ~zero labels and ~zero detections.** 0 of 21
+  user-labelled faint roads appear in `roads.shp`; the road model scores them
+  0.032 mean P(road) (0/21 above 0.5) against 0.775 for bold (8/8 above 0.5).
+  Annotating this class is the single highest-value road task — no loss
+  function, architecture, or threshold fixes a class absent from training.
+- **Every published road metric is bold-conditional.** The 0.754 extraction F1,
+  [[road_unet_1m_recall]] recall figures, and the alpha tuning in
+  [[road_recall_alpha_fix]] were scored against `roads.shp`, which contains only
+  bold roads. Re-state the restriction or re-measure once faint labels exist.
+- **The 613590 added roads are probably this class.** 373 lines / 37.68 km the
+  user drew as model misses. Check their morphology against the faint profile
+  before treating them as ordinary hard positives — if they are the faint class,
+  they are the seed of the missing label set.
+- **Resolve the pad confound.** All 8 bold exemplars touch an annotated pad
+  (`dist_pad_m` = 0 vs 126 m for faint), so bold-vs-faint is entangled with
+  pad-adjacent-vs-not. Label bold roads away from pads and faint roads at pads
+  to break it.
+- **Grow the exemplar set.** n = 8 vs 21 clear cases gives six features at
+  perfect separation, which will not survive a random sample. Need enough to fit
+  and validate a discriminator rather than describe a contrast.
+- **CHM is unusable as a median.** `chm_9t_05` is zero-inflated (tile median
+  0.091 m, p99 25.8 m). Any analysis wanting canopy must use a cover fraction
+  (CHM > 2 m) or a high percentile. Audit prior uses of CHM medians.
+
 ## Road expansion / drainage (added 2026-07-29)
 
 Full results in `docs/iterations/drainage_review_613590.md`.

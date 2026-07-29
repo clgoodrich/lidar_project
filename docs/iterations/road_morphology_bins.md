@@ -4,6 +4,17 @@
 · **Outputs:** `data/derivatives/experiments/road_morphology_bins/`
 · **Related:** [[pad_morphology_bins]], [[road_unet_1m_recall]], [[road_sweep_202607]]
 
+> **CORRECTED 2026-07-29 — read [[road_bold_vs_faint]] first.** The central
+> conclusion below ("width is constant, depth is a continuum, there is no second
+> population") describes the **annotated** roads, not the roads. The user's
+> `faint_roads.shp` exemplars showed that **0 of 21 faint roads exist in
+> `roads.shp`** (median 87.4 m from the nearest annotated line), so this analysis
+> sampled a population from which the faint variety had already been excluded.
+> There ARE two varieties; one of them is missing from the label set, and the
+> road model scores it 0.032 mean P(road) against 0.775 for bold. The
+> width/depth/continuum measurements below remain valid **within the bold
+> class**, as does `prominence_z` as a within-bold terrain-fair measure.
+
 ## Goal
 
 The annotated roads look like they come in two varieties — wide engineered

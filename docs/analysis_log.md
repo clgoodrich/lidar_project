@@ -5,6 +5,71 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-29 — bold vs faint roads: the faint class is unlabelled and undetected
+
+Full write-up: `docs/iterations/road_bold_vs_faint.md`. New script
+`notebooks/wellsight_v2/analysis/_bold_vs_faint_roads.py`. Outputs in
+`data/derivatives/experiments/road_morphology_bins/bold_vs_faint_*`.
+**Supersedes the central conclusion of the road_morphology_bins entry below.**
+
+**Why.** User hand-labelled exemplars of the two varieties they see —
+`annotations/bold_roads.shp` (8 lines / 1.79 km) and `faint_roads.shp`
+(21 lines / 2.35 km) — and asked to compare the roads AND their surroundings.
+
+**The finding that reframes everything: 0 of 21 faint roads exist in
+`roads.shp`** (coverage 0.00 each, median 87.4 m to the nearest annotated line),
+while 8 of 8 bold roads do (coverage 0.98-1.00). The earlier morphology pass
+analysed `roads.shp` and concluded "one width, one population, a continuum" —
+it found one population because only one was in the file. It measured the
+**annotated** population and mistook it for the road population.
+
+**The model is blind, not weak** (`road_unet_1m_recall/road_prob.tif`):
+
+| | P(road) mean | >=0.5 | range |
+|---|---|---|---|
+| bold | 0.775 | **8/8 (100%)** | 0.57-0.89 |
+| faint | **0.032** | **0/21 (0%)** | 0.00-0.09 |
+
+No overlap — the best faint road scores 6x below the worst bold one. P(drainage)
+~0 for both, so they are not being misread as drainage; they are undetected.
+**Every published road metric is therefore bold-conditional** — the 0.754
+extraction F1, the recall numbers, the alpha tuning, all scored against
+`roads.shp`. This also explains the 613590 active-learning loop, where the user
+drew 373 added roads / 37.68 km: that is this class.
+
+**Road contrast** (n=8 vs 21, Mann-Whitney + BH; 25 of 65 features q<0.05, six
+at |Cliff's delta| = 1.00): positive openness on tread 85.76 vs 88.47 (delta
+-1.00), lrm25 -0.127 vs -0.023 (-1.00), roughness contrast +0.129 vs 0.000
+(+1.00), incision depth **0.547 vs 0.181 m** (+0.96), slope contrast +2.39 vs
+-0.44 deg (+0.95), length 222 vs 119 m. The faint median incision (0.181 m) sits
+**below the p5 (0.23 m) of the entire annotated population** — outside it, not
+its low tail.
+
+**Surroundings contrast** (what was asked): road density within 100 m **0.716 vs
+0.104 km** (delta +1.00), distance to nearest pad **0 vs 126 m** (-0.94), canopy
+cover in the 25-60 m band **0.155 vs 0.310** (q 0.040), context slope 2.7 vs
+4.0 deg. Bold roads live in open, pad-adjacent, road-dense country; faint roads
+are isolated under closed canopy. Setting separates them nearly as well as
+construction does.
+
+**Caveats kept in front.** `dist_pad_m` is 0 for all 8 bold roads, so
+bold-vs-faint is partly confounded with pad-adjacent-vs-not and n=8 cannot
+separate them. Exemplars were chosen as clear cases, so effect sizes overstate a
+random sample. Transect-level stats are pseudo-replication and are reported as
+`delta_transect` but never quoted. Two profile panels are unusable: CHM medians
+are flat at 0 (zero-inflated raster — only the `canopy_cover_*` fraction form
+works) and `roughness_11` renders quantized.
+
+**Actions.** (1) Annotate the faint class — this is a label-coverage problem
+before it is a model problem, and no loss or architecture fixes an absent class.
+(2) Re-report road metrics as bold-conditional until faint labels exist. (3) Use
+the context features (road density, pad proximity, canopy cover) but validate
+them on faint roads far from pads, since they carry the confound. (4)
+`prominence_z` is retired as a bold/faint discriminator — it was fitted on
+bold-only data; it survives as a within-bold measure.
+
+---
+
 ## 2026-07-29 — Road "big vs faint": width is constant, depth is a continuum
 
 Full write-up: `docs/iterations/road_morphology_bins.md`. New script
