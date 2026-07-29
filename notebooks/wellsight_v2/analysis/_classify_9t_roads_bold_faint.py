@@ -55,8 +55,14 @@ R9 = DERIV / "tiles" / "9t"
 ANN = DERIV / "annotations"
 OUT = DERIV / "experiments" / "road_morphology_bins"
 
-STEP, HALF_W, DX = 10.0, 60.0, 0.5
-MIN_LEN = 25.0
+# Transects every 5 m and roads chopped into 50 m segments -> ~10 transects per
+# scored unit. Whole-road scoring was wrong: within-road SD of the score (2.230)
+# EXCEEDS between-road SD (1.892), ICC 0.419, and the median road's own
+# transects vote only 57% bold. Boldness is a property of a place along a road,
+# not of a road, so the scored unit has to be a segment.
+STEP, HALF_W, DX = 5.0, 60.0, 0.5
+MIN_LEN = 20.0
+SEG_M = 50.0
 
 # Only channels that survived the trust audit in road_bold_vs_faint.md.
 RASTERS = {
@@ -73,6 +79,29 @@ PRIMARY = "opos_zcontrast"
 PANEL = ["opos_zcontrast", "lrm25_zcontrast", "tpi15_zcontrast",
          "slope_zcontrast", "relief10_zcontrast", "oneg_zcontrast",
          "incision_depth_m"]
+
+
+def segmentise(gdf, seg_m=SEG_M):
+    """Chop each road into ~seg_m pieces, carrying the parent road id."""
+    from shapely.geometry import LineString
+    rows = []
+    for pid, geom in zip(gdf.index.values, gdf.geometry.values):
+        parts = list(geom.geoms) if geom.geom_type == "MultiLineString" else [geom]
+        for part in parts:
+            if part.length < MIN_LEN:
+                continue
+            n = max(1, int(round(part.length / seg_m)))
+            edges = np.linspace(0.0, part.length, n + 1)
+            for t0, t1 in zip(edges[:-1], edges[1:]):
+                k = max(2, int(np.ceil((t1 - t0) / 5.0)) + 1)
+                ts = np.linspace(t0, t1, k)
+                ls = LineString([(p.x, p.y) for p in
+                                 (part.interpolate(x) for x in ts)])
+                if ls.length > 1.0:
+                    rows.append({"parent_road": int(pid), "geometry": ls})
+    out = gpd.GeoDataFrame(rows, crs=gdf.crs)
+    out["length_m"] = out.length
+    return out.reset_index(drop=True)
 
 
 def build_transects(gdf):
@@ -226,21 +255,39 @@ def main() -> int:
     roads = roads[roads.length_m >= MIN_LEN].reset_index(drop=True)
     print(f"\nroads.shp -> 9t: {len(roads)} roads, "
           f"{roads.length_m.sum()/1000:.2f} km")
-    rf = featurise(roads, "9t roads")
-    out = roads.join(rf, how="inner")
+    segs = segmentise(roads)
+    print(f"  chopped into {len(segs)} segments of ~{SEG_M:.0f} m")
+    rf = featurise(segs, "9t segments")
+    out = segs.join(rf, how="inner")
 
-    out["class"] = np.where(out[PRIMARY] <= thr, "bold", "faint")
+    # Three classes, defined by the EXEMPLAR RANGES rather than a midpoint.
+    # 18% of units fall in the gap between the two exemplar ranges; forcing them
+    # to a side is what made the first version look random on screen. They are
+    # labelled `ambiguous` and shipped as their own layer instead.
+    bold_hi = float(b.max())      # bold exemplars are all <= this
+    faint_lo = float(f.min())     # faint exemplars are all >= this
+    out["class"] = np.where(out[PRIMARY] <= bold_hi, "bold",
+                   np.where(out[PRIMARY] >= faint_lo, "faint", "ambiguous"))
     # margin in sigma from the decision boundary — how confident, and which way
     out["margin_sigma"] = (thr - out[PRIMARY]).round(3)
     out["faint_score"] = out[PRIMARY].round(3)
 
-    nb = int((out["class"] == "bold").sum())
-    nf = int((out["class"] == "faint").sum())
-    kb = out[out["class"] == "bold"].length_m.sum() / 1000
-    kf = out[out["class"] == "faint"].length_m.sum() / 1000
-    print(f"\n=== split of the ANNOTATED 9t network ===")
-    print(f"  bold  {nb:5d} roads  {kb:7.2f} km  ({nb/len(out)*100:.1f}%)")
-    print(f"  faint {nf:5d} roads  {kf:7.2f} km  ({nf/len(out)*100:.1f}%)")
+    print(f"\n=== split of the ANNOTATED 9t network ({SEG_M:.0f} m segments) ===")
+    counts = {}
+    for c in ("bold", "ambiguous", "faint"):
+        s_ = out[out["class"] == c]
+        counts[c] = (len(s_), s_.length_m.sum() / 1000)
+        print(f"  {c:9s} {len(s_):5d} segs  {s_.length_m.sum()/1000:7.2f} km  "
+              f"({len(s_)/len(out)*100:4.1f}%)")
+    nb, kb = counts["bold"]
+    nf, kf = counts["faint"]
+    # Internal consistency of each parent road. Whole-road labelling was
+    # arbitrary precisely because so many roads are mixed along their length.
+    vote = out.groupby("parent_road")["class"].apply(lambda s: (s == "bold").mean())
+    mixed = int(((vote > 0.25) & (vote < 0.75)).sum())
+    print(f"\n  parent roads internally MIXED (25-75% bold segments): "
+          f"{mixed}/{vote.size} ({mixed/vote.size*100:.0f}%)")
+    print("  -> that mixing is why whole-road labels looked arbitrary")
     print(f"\n  {PRIMARY} quantiles over the annotated network:")
     print("   ", out[PRIMARY].quantile([.05, .25, .5, .75, .95]).round(2).to_dict())
     print(f"  exemplar reference: bold median {b.median():.2f}, "
@@ -289,12 +336,15 @@ def main() -> int:
 
     # ---- write -------------------------------------------------------------
     gp = OUT / "roads_bold_faint_9t_05.gpkg"
-    keep = ["geometry", "length_m", "class", "faint_score", "margin_sigma",
-            "n_transects", "P_road", "split"] + [c for c in PANEL if c in out.columns]
+    keep = ["geometry", "parent_road", "length_m", "class", "faint_score",
+            "margin_sigma", "n_transects", "P_road", "split"] + [
+            c for c in PANEL if c in out.columns]
     keep = [c for c in keep if c in out.columns]
     o = out[keep]
     o[o["class"] == "bold"].to_file(gp, layer="roads_bold_9t", driver="GPKG")
     o[o["class"] == "faint"].to_file(gp, layer="roads_faint_9t", driver="GPKG")
+    o[o["class"] == "ambiguous"].to_file(gp, layer="roads_ambiguous_9t",
+                                         driver="GPKG")
     o.to_file(gp, layer="roads_scored_9t", driver="GPKG")
     o.drop(columns="geometry").to_csv(
         OUT / "roads_bold_faint_9t_05_scores.csv", index=False)
@@ -315,8 +365,12 @@ def main() -> int:
     fig, ax = plt.subplots(1, 2, figsize=(15, 6))
     ax[0].hist(out[PRIMARY].clip(-12, 4), bins=60, color="0.6",
                label=f"annotated 9t roads (n={len(out)})")
-    ax[0].axvline(thr, color="k", ls="--", lw=1.6,
-                  label=f"threshold {thr:.2f}")
+    ax[0].axvspan(bold_hi, faint_lo, color="0.85", alpha=0.9, zorder=0,
+                  label="ambiguous band (gap between exemplar ranges)")
+    ax[0].axvline(bold_hi, color="#c1272d", ls="--", lw=1.4,
+                  label=f"bold cut {bold_hi:.2f}")
+    ax[0].axvline(faint_lo, color="#2b6cb0", ls="--", lw=1.4,
+                  label=f"faint cut {faint_lo:.2f}")
     for v, c, lb in ((b, "#c1272d", "bold exemplars"),
                      (f, "#2b6cb0", "faint exemplars")):
         ax[0].plot(np.clip(v, -12, 4), np.full(len(v), ax[0].get_ylim()[1] * 0.5),
@@ -336,14 +390,17 @@ def main() -> int:
             ax[1].imshow(im, cmap="gray", extent=plotting_extent(r),
                          origin="upper", vmin=np.nanpercentile(im, 2),
                          vmax=np.nanpercentile(im, 98))
-    o[o["class"] == "bold"].plot(ax=ax[1], color="#c1272d", linewidth=1.1,
+    o[o["class"] == "ambiguous"].plot(
+        ax=ax[1], color="#bbbbbb", linewidth=0.7,
+        label=f"ambiguous ({counts['ambiguous'][0]}, {counts['ambiguous'][1]:.0f} km)")
+    o[o["class"] == "bold"].plot(ax=ax[1], color="#c1272d", linewidth=1.3,
                                  label=f"bold ({nb}, {kb:.0f} km)")
-    o[o["class"] == "faint"].plot(ax=ax[1], color="#2b6cb0", linewidth=0.9,
+    o[o["class"] == "faint"].plot(ax=ax[1], color="#2b6cb0", linewidth=1.1,
                                   label=f"faint ({nf}, {kf:.0f} km)")
     ax[1].legend(fontsize=8, loc="upper right")
     ax[1].set_xticks([])
     ax[1].set_yticks([])
-    ax[1].set_title("9t annotated roads split by local-openness contrast",
+    ax[1].set_title(f"9t annotated roads, {SEG_M:.0f} m segments",
                     fontsize=10)
     fig.suptitle("Bold vs faint split of the annotated 9t road network",
                  fontsize=12)

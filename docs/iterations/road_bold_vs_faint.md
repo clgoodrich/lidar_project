@@ -173,65 +173,66 @@ correction.
 - `gdens` is 42% nodata with a context spread of exactly 0 — it carries no
   information here and should be dropped from this analysis.
 
-## Applying it: two layers for the 9t annotated network
+## Applying it: layers for the 9t annotated network
 
 Script: `notebooks/wellsight_v2/analysis/_classify_9t_roads_bold_faint.py`.
 
-**Rule:** bold if `opos_zcontrast` <= **-1.735**. That is the midpoint between
-the bold exemplars' maximum (-2.126) and the faint exemplars' minimum (-1.345),
-a **+0.781 sigma** clean gap. Leave-one-out accuracy 28/29 (97%), which is
-optimistic because the classes are separable at this n.
+### First attempt was wrong — the user said the map "looked random", and it was
 
-`opos_zcontrast` was chosen as the sole score because it separates the exemplars
-cleanly, is genuinely continuous, and — unlike incision depth — is **not a proxy
-for terrain**: Spearman with hillslope is only **+0.18** (median 3.49 deg bold
-vs 4.92 deg faint), against +0.42 for incision depth. `dist_pad_m` and
-`road_density_100m_km` also separate the exemplars perfectly but were
-**excluded**: all 8 bold exemplars touch a pad, so including them would relabel
-"near a pad" as "bold".
+The first version scored **whole roads** and forced a binary label at the
+midpoint threshold. Two measurements explain why that produced visual noise:
 
-**Result on 1,112 annotated 9t roads / 186.20 km:**
+- **Within-road variability exceeds between-road variability.** Pooled
+  within-road SD of the score is **2.230** against a between-road SD of
+  **1.892** — ICC **0.419**. The median road's own transects vote only **57%
+  bold**, and 17% of roads are a 40-60% internal split. "This road is bold" is
+  not a well-posed statement; a haul road that degrades into a trace got one
+  label for both halves.
+- **The threshold sat in the mode.** 47% of roads fell within 1 sigma of the
+  boundary and 22% within 0.5 sigma. 18% fell in the *gap between the two
+  exemplar ranges* and were forced to a side with no evidence either way.
 
-| layer | roads | km | share |
+### Fixed: score 50 m segments, and admit an ambiguous class
+
+Roads are chopped into **50 m segments** with transects every **5 m** (~10 per
+scored unit), and the class cuts are the **exemplar ranges** rather than a
+midpoint: bold if score <= the bold exemplars' maximum, faint if >= the faint
+exemplars' minimum, `ambiguous` in between.
+
+| layer | segments | km | share |
 |---|---|---|---|
-| `roads_bold_9t` | 622 | 112.45 | 55.9% |
-| `roads_faint_9t` | 490 | 73.75 | 44.1% |
+| `roads_bold_9t` | 1,971 | 98.40 | 52.8% |
+| `roads_ambiguous_9t` | 711 | 35.59 | 19.1% |
+| `roads_faint_9t` | 1,050 | 51.97 | 28.1% |
 
-### The split predicts detection, but only on held-out ground
+**281 of 1,125 parent roads (25%) are internally mixed** (25-75% bold segments)
+— direct confirmation that whole-road labelling was the error, not the score.
 
-| 9t blocks | bold P(road) | faint P(road) |
+### It is not a terrain proxy
+
+Segment-level `faint_score` vs slope: Spearman **-0.030**. Median slope is
+4.72 deg bold / 4.55 ambiguous / 4.53 faint — indistinguishable. The visible
+concentration of faint segments on the steep eastern valley sides is a real
+spatial pattern, not the terrain axis leaking back in (which is what happened to
+incision depth, Spearman +0.42).
+
+### The split still predicts detection on held-out ground
+
+| 9t blocks | bold | faint |
 |---|---|---|
-| train | 0.890 (100% >= 0.5, n=395) | 0.891 (100%, n=281) |
-| val | 0.826 (99%, n=70) | 0.791 (90%, n=29) |
-| **test (never trained)** | **0.811 (97%, n=70)** | **0.738 (86%, n=92)** |
+| train | 0.908 (100% >= 0.5, n=1149) | 0.912 (100%, n=644) |
+| **test (never trained)** | **0.837 (98% >= 0.5, n=240)** | **0.758 (85%, n=185)** |
 
-On training blocks the two classes are **indistinguishable** — the model has
-memorised them, so a naive whole-network comparison shows no effect and is
-worthless as a test. On held-out blocks the split predicts an **11-point
-detection gap**. The discriminator carries real information about detectability.
-
-### Where the exemplars sit, and a refinement
-
-The faint exemplars (score -1.35 to +0.7) land in the annotated network's own
-faint tail, around its p75-p95, **not outside it**. This refines the earlier
-statement that the faint class sits outside the annotated distribution — that
-was true on *incision depth* (0.181 m vs a p5 of 0.23 m) but is **not** true on
-*openness contrast*.
-
-The sharper version: annotated roads of comparable openness contrast are still
-detected at 86% on held-out ground, while the user's faint exemplars score
-**0.032 and 0/21**. Since both groups are similarly faint by this measure, the
-difference is not faintness alone — it is that the exemplars were never
-labelled, and they are isolated (road density 0.104 vs 0.716 km) rather than
-attached to an annotated network the model has learned.
+On training blocks the classes are indistinguishable — memorisation. On held-out
+blocks bold segments clear 0.5 at 98% against faint at 85%.
 
 ### How to use the layers
 
-`margin_sigma` is distance from the decision boundary; large positive is
-confidently bold, large negative confidently faint. `faint_score` is the raw
-`opos_zcontrast` if you want to move the threshold. `P_road` and `split` are
-attached — **filter to `split = 'test'` before drawing any conclusion about
-detection**, since train-block probabilities are memorisation.
+`faint_score` is the raw `opos_zcontrast`; move the cuts yourself if you want.
+`margin_sigma` is distance from the boundary. `parent_road` joins segments back
+to their source line. `P_road` and `split` are attached — **filter to
+`split = 'test'` before concluding anything about detection**, since train-block
+probabilities are memorisation.
 
 ## Caveats, and they matter
 
