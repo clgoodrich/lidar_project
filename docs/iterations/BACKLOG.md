@@ -16,6 +16,51 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
 - **Barlow builder**: pin EDI package revisions at fetch time (currently auto-newest → provenance drift); fix flow-accum nodata→0 leak (`np.clip` turns nodata into log1p(0)=0 valid values); document the vertical-datum assumption (all three epochs ellipsoidal — constant offsets are absorbed by the DoD median-bias correction, but say so); curvature is profile (WBT) vs Barlow's ArcGIS standard curvature — a deliberate, documented deviation to keep.
 
+## Road expansion / drainage (added 2026-07-29)
+
+Full results in `docs/iterations/drainage_review_613590.md`.
+
+- **Fetch LAZ for the 10 unbuildable westernpa_d20 blocks.** 604608, 609608,
+  613608, 618591, 618608, 622591, 622594, 622599, 622603, 622608 have DEMs on
+  disk but no source LAZ, so `enumerate_blocks` skips them and no water mask
+  (or any class-9 product) can be built. Water coverage is 15/15 of *buildable*
+  blocks, not 25/25. This gates water masking on 40% of the Venango footprint.
+- **Apply the water mask inside the road pipeline, not just as a diagnostic.**
+  `water_banks` removes 22.2% of 613590's human-rejected road segments at zero
+  cost to real roads. Decide whether it belongs as a `to_mask()` gate in
+  `_road_optimize.py`, an extra U-Net input channel, or a training negative —
+  the project's fix-in-training preference argues for the last.
+- **Regenerate the 613590 road review from the corrected model + water mask.**
+  55% of the current deletions are already fixed by `road_unet_1m_corrected`
+  and 22% are water, so most remaining review effort is redundant. Write to a
+  new `review_r2/` so in-progress edits survive.
+- **Review the 613590 drainage package** (`review_drainage/`, 1,131 segments /
+  30.60 km) and draw missed channels into `added_drainage_613590.gpkg`, then
+  ingest as a corrections block mirroring `_build_road_corrections_613590.py`.
+- **clDice drainage retrain.** The vectorized drainage is fragmented — many
+  short disconnected stubs instead of connected downhill networks. Topology
+  failure, not placement failure. clDice won the connectivity pole in
+  [[road_sweep_202607]] and suits drainage better than roads (it was designed
+  for tubular connected structures); the loss is already implemented in
+  `_road_sweep_202607.py`. Deliberately NOT fixed by post-hoc bridging — an
+  invented channel taught as a positive is worse than a gap drawn by hand.
+- **Re-check other extraction params inherited across tasks.** The 100 m island
+  filter cost drainage 27 points of completeness purely because it was carried
+  over from roads. `_road_optimize.py`'s other stages (spur prune, min_px,
+  hysteresis bounds) were tuned for roads too and are reused unaudited wherever
+  a new linear feature is vectorized.
+- **Drainage labels exist for 9t only.** `drainage.shp` spans x 620,659–624,000;
+  any block outside that runs the drainage class unsupervised (`gt_dist_m` is
+  null for all 1,131 613590 segments). Consider per-region drainage labels or a
+  hydrology-derived weak label (flow accumulation) as a substitute.
+- **The road sweep tiebreak is still open.** `cldice` vs `boundary` through
+  `_road_optimize.py` extraction vs the 0.754 test F1, per
+  [[road_sweep_202607]]. Blocked on nothing — `_road_optimize.py` hardcodes
+  `MODEL_DIR_NAME` and needs a `--model-dir` flag.
+- **25 Venango blocks still carry June-8 road_prob rasters**, two model
+  generations stale, and only 613590 has been vectorized. Re-inference is
+  ~25 s/block (~11 min for all 25) once a champion is declared.
+
 ## From the pit 5-fold cross-validation (added 2026-07-27)
 
 Full results in `docs/iterations/pit_unet_cv5_9t.md`.

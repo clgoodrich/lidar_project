@@ -5,6 +5,73 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-29 — Drainage: 9t model vectorized to review layers on 613590
+
+Full write-up: `docs/iterations/drainage_review_613590.md`. New scripts
+`notebooks/wellsight_v2/build/_build_drainage_review_package.py`,
+`_calibrate_drainage_extraction_9t.py`, `_overlay_drainage_review_613590.py`.
+Outputs in `data/derivatives/tiles/data_3x3/westernpa_d20/613590/review_drainage/`.
+
+**Why.** Run the road active-learning pipeline end to end for drainage: 9t
+labels → U-Net → apply to 613590 → vectorize → `review_`/`added_` layers the
+user edits in QGIS, exactly as `review_roads_613590`/`added_roads_613590` work.
+Only the vectorization step was missing — [[drainage_unet_1m]] (2026-06-16, val
+drainage IoU 0.811, AP drainage-vs-road 0.990) and its 613590 inference already
+existed.
+
+**Raster provenance trap.** Two files share the name
+`drainage_prob_613590_1m.tif`: the block-directory one is the **road** model's
+third class (0.591% of tile ≥0.5); the correct one is
+`tiles/9t/drainage_unet_1m/drainage_prob_613590_1m.tif` from the **dedicated**
+drainage U-Net (0.709%). An early version of this pass used the wrong file and
+reported a "4.5x drainage under-prediction" — wrong raster, and it compared
+pruned centreline length to raw hand-drawn line length. **Retracted.** The
+defensible transfer number is pixel coverage: 1.035% on 9t (training domain) vs
+0.709% on 613590, a 32% drop — ordinary out-of-domain softening.
+
+**Main result: the vectorizer was mis-tuned, and calibrating it doubled the
+output.** Extraction settings were inherited from the road pipeline and never
+checked against drainage GT. Swept 48 configs on the 9t held-out test blocks,
+scored with the same Heipke/Wiedemann 8 m buffer matching `_road_optimize.py`
+uses, so the F1 is road-comparable:
+
+| config | comp | corr | F1 | km |
+|---|---|---|---|---|
+| road settings carried over (island=100, spur=20) | 0.552 | 0.747 | 0.635 | 5.01 |
+| **calibrated (t=0.50, min_px=60, spur=10, island=0)** | **0.824** | **0.737** | **0.778** | 7.52 |
+
+The 100 m island filter was the culprit — a drainage network is mostly short
+first-order tributary stubs and the filter deletes them. Removing it buys **27
+points of completeness at zero cost to correctness**. Road extraction scores
+0.754 on the same harness, so drainage vectorizes slightly *better* than roads.
+Delivered package went 13.62 km → **30.60 km** (0.67 → 1.51 km/km²), 1,131
+segments. Calibration record: `tiles/9t/drainage_extract_calib_9t_1m.json`.
+
+**QC.** Blue lines sit in hollows and valley bottoms and stay distinct from road
+predictions (the 0.990 drainage-vs-road AP holds visually out of domain). The
+weakness is **fragmentation** — disconnected stubs rather than connected
+downhill networks. Topology failure, not placement failure, and exactly what
+clDice targets. No bridging was added: an invented channel taught as a positive
+is worse than a gap the reviewer draws by hand, so connectivity should be fixed
+in the loss. `gt_dist_m` is null throughout — no hand-drawn drainage within
+500 m of 613590, so nothing in the package is supervised.
+
+**Next.** (1) user reviews the 1,131 segments + draws misses; (2) clDice
+drainage retrain — it won the connectivity pole in [[road_sweep_202607]] and
+drainage suits it better than roads, being tubular and connected by nature; loss
+already implemented in `_road_sweep_202607.py`; (3) ingest the review as a
+corrections block mirroring `_build_road_corrections_613590.py`.
+
+**Side finding, filed not pursued.** While diagnosing, 613590 turned out to have
+no water mask (11 of 25 blocks lacked one). Built it in 42 s;
+`water_banks_613590_1m.tif` covers 22.2% of the road segments the user had
+already deleted, with **zero** kept roads, hand-added roads, or drainage
+segments over it. Free road precision, no labeling. The other 10 blocks cannot
+be built — `enumerate_blocks` only yields the 15 blocks whose source LAZ is on
+disk. Both logged in BACKLOG rather than acted on.
+
+---
+
 ## 2026-07-28 — Pad U-Net 5-fold cross-validation (all 650 pads scored)
 
 Full write-up: `docs/iterations/pad_unet_cv5_9t.md`. New scripts

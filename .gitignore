@@ -222,3 +222,7 @@ barlow/MDV_Resources.docx
 # back in-repo from the external drive 2026-07-13 so the project is
 # self-contained on C:. Regenerable via barlow/build/_fetch_barlow_data.py.
 /barlow_data/
+
+# QGIS/sqlite write-ahead-log sidecars — transient, never track
+*.gpkg-wal
+*.gpkg-shm
