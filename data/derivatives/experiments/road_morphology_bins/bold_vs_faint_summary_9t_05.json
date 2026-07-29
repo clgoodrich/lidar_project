@@ -9,7 +9,7 @@
     "near": "5-15",
     "context": "25-60"
   },
-  "n_sig_bh": 25,
+  "n_sig_bh": 36,
   "top": [
     {
       "feature": "lrm25_road",
@@ -21,7 +21,19 @@
       "delta_transect": -0.7771941063,
       "auc_transect": 0.1114029468,
       "abs_delta": 1.0,
-      "q": 7.572e-06
+      "q": 6.0576e-06
+    },
+    {
+      "feature": "lrm25_zcontrast",
+      "bold_med": -2.5627558231,
+      "faint_med": -0.4657642245,
+      "delta": -1.0,
+      "auc": 0.0,
+      "p": 4.66e-07,
+      "delta_transect": -0.7553875721,
+      "auc_transect": 0.122306214,
+      "abs_delta": 1.0,
+      "q": 6.0576e-06
     },
     {
       "feature": "road_density_100m_km",
@@ -33,43 +45,7 @@
       "delta_transect": null,
       "auc_transect": null,
       "abs_delta": 1.0,
-      "q": 7.572e-06
-    },
-    {
-      "feature": "lrm25_contrast",
-      "bold_med": -0.1275558472,
-      "faint_med": -0.0238265991,
-      "delta": -1.0,
-      "auc": 0.0,
-      "p": 4.66e-07,
-      "delta_transect": -0.7485714286,
-      "auc_transect": 0.1257142857,
-      "abs_delta": 1.0,
-      "q": 7.572e-06
-    },
-    {
-      "feature": "opos_contrast",
-      "bold_med": -2.725151062,
-      "faint_med": -0.146697998,
-      "delta": -1.0,
-      "auc": 0.0,
-      "p": 4.66e-07,
-      "delta_transect": -0.9085714286,
-      "auc_transect": 0.0457142857,
-      "abs_delta": 1.0,
-      "q": 7.572e-06
-    },
-    {
-      "feature": "opos_road",
-      "bold_med": 85.7589569092,
-      "faint_med": 88.4735717773,
-      "delta": -1.0,
-      "auc": 0.0,
-      "p": 4.66e-07,
-      "delta_transect": -0.9278923767,
-      "auc_transect": 0.0360538117,
-      "abs_delta": 1.0,
-      "q": 7.572e-06
+      "q": 6.0576e-06
     },
     {
       "feature": "rough_contrast",
@@ -81,7 +57,79 @@
       "delta_transect": 0.5688661115,
       "auc_transect": 0.7844330557,
       "abs_delta": 1.0,
-      "q": 2.42303e-05
+      "q": 6.0576e-06
+    },
+    {
+      "feature": "opos_road",
+      "bold_med": 85.7589569092,
+      "faint_med": 88.4735717773,
+      "delta": -1.0,
+      "auc": 0.0,
+      "p": 4.66e-07,
+      "delta_transect": -0.9278923767,
+      "auc_transect": 0.0360538117,
+      "abs_delta": 1.0,
+      "q": 6.0576e-06
+    },
+    {
+      "feature": "opos_zcontrast",
+      "bold_med": -5.208088398,
+      "faint_med": -0.2923777401,
+      "delta": -1.0,
+      "auc": 0.0,
+      "p": 4.66e-07,
+      "delta_transect": -0.877821909,
+      "auc_transect": 0.0610890455,
+      "abs_delta": 1.0,
+      "q": 6.0576e-06
+    },
+    {
+      "feature": "opos_contrast",
+      "bold_med": -2.725151062,
+      "faint_med": -0.146697998,
+      "delta": -1.0,
+      "auc": 0.0,
+      "p": 4.66e-07,
+      "delta_transect": -0.9085714286,
+      "auc_transect": 0.0457142857,
+      "abs_delta": 1.0,
+      "q": 6.0576e-06
+    },
+    {
+      "feature": "lrm5_zcontrast",
+      "bold_med": -0.6953799725,
+      "faint_med": -0.1366983205,
+      "delta": -1.0,
+      "auc": 0.0,
+      "p": 4.66e-07,
+      "delta_transect": -0.476796925,
+      "auc_transect": 0.2616015375,
+      "abs_delta": 1.0,
+      "q": 6.0576e-06
+    },
+    {
+      "feature": "lrm25_contrast",
+      "bold_med": -0.1275558472,
+      "faint_med": -0.0238265991,
+      "delta": -1.0,
+      "auc": 0.0,
+      "p": 4.66e-07,
+      "delta_transect": -0.7485714286,
+      "auc_transect": 0.1257142857,
+      "abs_delta": 1.0,
+      "q": 6.0576e-06
+    },
+    {
+      "feature": "rough_zcontrast",
+      "bold_med": 1.8752458096,
+      "faint_med": 0.0,
+      "delta": 0.9880952381,
+      "auc": 0.994047619,
+      "p": 1.88563e-05,
+      "delta_transect": 0.5748110186,
+      "auc_transect": 0.7874055093,
+      "abs_delta": 0.9880952381,
+      "q": 2.12015e-05
     },
     {
       "feature": "lrm5_road",
@@ -93,7 +141,7 @@
       "delta_transect": -0.505983344,
       "auc_transect": 0.247008328,
       "abs_delta": 0.9761904762,
-      "q": 2.42303e-05
+      "q": 2.12015e-05
     },
     {
       "feature": "lrm5_contrast",
@@ -105,19 +153,7 @@
       "delta_transect": -0.481153107,
       "auc_transect": 0.2594234465,
       "abs_delta": 0.9761904762,
-      "q": 2.42303e-05
-    },
-    {
-      "feature": "tpi15_road",
-      "bold_med": -0.1778411865,
-      "faint_med": -0.0243225098,
-      "delta": -0.9642857143,
-      "auc": 0.0178571429,
-      "p": 3.2618e-06,
-      "delta_transect": -0.7426777707,
-      "auc_transect": 0.1286611147,
-      "abs_delta": 0.9642857143,
-      "q": 3.02879e-05
+      "q": 2.12015e-05
     },
     {
       "feature": "incision_depth_m",
@@ -129,7 +165,31 @@
       "delta_transect": 0.8692632928,
       "auc_transect": 0.9346316464,
       "abs_delta": 0.9642857143,
-      "q": 3.02879e-05
+      "q": 2.96821e-05
+    },
+    {
+      "feature": "tpi15_road",
+      "bold_med": -0.1778411865,
+      "faint_med": -0.0243225098,
+      "delta": -0.9642857143,
+      "auc": 0.0178571429,
+      "p": 3.2618e-06,
+      "delta_transect": -0.7426777707,
+      "auc_transect": 0.1286611147,
+      "abs_delta": 0.9642857143,
+      "q": 2.96821e-05
+    },
+    {
+      "feature": "slope_zcontrast",
+      "bold_med": 1.5643889904,
+      "faint_med": -0.2760005593,
+      "delta": 0.9523809524,
+      "auc": 0.9761904762,
+      "p": 5.5916e-06,
+      "delta_transect": 0.5937988469,
+      "auc_transect": 0.7968994234,
+      "abs_delta": 0.9523809524,
+      "q": 4.2403e-05
     },
     {
       "feature": "slope_contrast",
@@ -141,7 +201,7 @@
       "delta_transect": 0.584317745,
       "auc_transect": 0.7921588725,
       "abs_delta": 0.9523809524,
-      "q": 4.54318e-05
+      "q": 4.2403e-05
     },
     {
       "feature": "dist_pad_m",
@@ -153,7 +213,19 @@
       "delta_transect": null,
       "auc_transect": null,
       "abs_delta": 0.9404761905,
-      "q": 0.0002029288
+      "q": 9.78532e-05
+    },
+    {
+      "feature": "tpi15_zcontrast",
+      "bold_med": -2.4631738663,
+      "faint_med": -0.3243077099,
+      "delta": -0.9285714286,
+      "auc": 0.0357142857,
+      "p": 1.3979e-05,
+      "delta_transect": -0.7187956438,
+      "auc_transect": 0.1406021781,
+      "abs_delta": 0.9285714286,
+      "q": 9.78532e-05
     },
     {
       "feature": "tpi15_contrast",
@@ -165,7 +237,7 @@
       "delta_transect": -0.6974503523,
       "auc_transect": 0.1512748238,
       "abs_delta": 0.9047619048,
-      "q": 0.0002029288
+      "q": 0.0001775627
     },
     {
       "feature": "length_m",
@@ -177,19 +249,7 @@
       "delta_transect": null,
       "auc_transect": null,
       "abs_delta": 0.8452380952,
-      "q": 0.0007507069
-    },
-    {
-      "feature": "relief10_contrast",
-      "bold_med": 0.2520294189,
-      "faint_med": -0.1121063232,
-      "delta": 0.8333333333,
-      "auc": 0.9166666667,
-      "p": 0.0002157429,
-      "delta_transect": 0.6208840487,
-      "auc_transect": 0.8104420243,
-      "abs_delta": 0.8333333333,
-      "q": 0.0008764557
+      "q": 0.0007356928
     },
     {
       "feature": "oneg_contrast",
@@ -201,7 +261,31 @@
       "delta_transect": -0.4623446509,
       "auc_transect": 0.2688276746,
       "abs_delta": 0.8333333333,
-      "q": 0.0008764557
+      "q": 0.0008923913
+    },
+    {
+      "feature": "relief10_contrast",
+      "bold_med": 0.2520294189,
+      "faint_med": -0.1121063232,
+      "delta": 0.8333333333,
+      "auc": 0.9166666667,
+      "p": 0.0002157429,
+      "delta_transect": 0.6208840487,
+      "auc_transect": 0.8104420243,
+      "abs_delta": 0.8333333333,
+      "q": 0.0008923913
+    },
+    {
+      "feature": "relief10_zcontrast",
+      "bold_med": 0.9523644447,
+      "faint_med": -0.3440388739,
+      "delta": 0.8095238095,
+      "auc": 0.9047619048,
+      "p": 0.0003704441,
+      "delta_transect": 0.5547982063,
+      "auc_transect": 0.7773991031,
+      "abs_delta": 0.8095238095,
+      "q": 0.0014046007
     },
     {
       "feature": "oneg_road",
@@ -213,7 +297,7 @@
       "delta_transect": -0.464830237,
       "auc_transect": 0.2675848815,
       "abs_delta": 0.8095238095,
-      "q": 0.0014164041
+      "q": 0.0014046007
     },
     {
       "feature": "relief_amp_m",
@@ -225,91 +309,7 @@
       "delta_transect": 0.6867136451,
       "auc_transect": 0.8433568225,
       "abs_delta": 0.7976190476,
-      "q": 0.0017247269
-    },
-    {
-      "feature": "oneg_near",
-      "bold_med": 88.2821426392,
-      "faint_med": 88.8721160889,
-      "delta": -0.7619047619,
-      "auc": 0.119047619,
-      "p": 0.0009780658,
-      "delta_transect": -0.5992825112,
-      "auc_transect": 0.2003587444,
-      "abs_delta": 0.7619047619,
-      "q": 0.0031787138
-    },
-    {
-      "feature": "opos_near",
-      "bold_med": 88.1030654907,
-      "faint_med": 88.765335083,
-      "delta": -0.7619047619,
-      "auc": 0.119047619,
-      "p": 0.0009780658,
-      "delta_transect": -0.6481742473,
-      "auc_transect": 0.1759128764,
-      "abs_delta": 0.7619047619,
-      "q": 0.0031787138
-    },
-    {
-      "feature": "canopy_cover_context",
-      "bold_med": 0.1549295775,
-      "faint_med": 0.3098591549,
-      "delta": -0.6011904762,
-      "auc": 0.1994047619,
-      "p": 0.0146485644,
-      "delta_transect": -0.4632158873,
-      "auc_transect": 0.2683920564,
-      "abs_delta": 0.6011904762,
-      "q": 0.0396280463
-    },
-    {
-      "feature": "slope_road",
-      "bold_med": 5.2680282593,
-      "faint_med": 3.7345561981,
-      "delta": 0.5952380952,
-      "auc": 0.7976190476,
-      "p": 0.0134235909,
-      "delta_transect": 0.3425752723,
-      "auc_transect": 0.6712876361,
-      "abs_delta": 0.5952380952,
-      "q": 0.0396280463
-    },
-    {
-      "feature": "dist_wells_m",
-      "bold_med": 24.2343578199,
-      "faint_med": 75.0643773673,
-      "delta": -0.5833333333,
-      "auc": 0.2083333333,
-      "p": 0.0156313452,
-      "delta_transect": null,
-      "auc_transect": null,
-      "abs_delta": 0.5833333333,
-      "q": 0.0396280463
-    },
-    {
-      "feature": "slope_context",
-      "bold_med": 2.8616309166,
-      "faint_med": 4.3376312256,
-      "delta": -0.5714285714,
-      "auc": 0.2142857143,
-      "p": 0.0181377847,
-      "delta_transect": -0.3462652146,
-      "auc_transect": 0.3268673927,
-      "abs_delta": 0.5714285714,
-      "q": 0.0396280463
-    },
-    {
-      "feature": "rough_context",
-      "bold_med": 0.0,
-      "faint_med": 0.1290994436,
-      "delta": -0.5714285714,
-      "auc": 0.2142857143,
-      "p": 0.0128029073,
-      "delta_transect": -0.2838693145,
-      "auc_transect": 0.3580653427,
-      "abs_delta": 0.5714285714,
-      "q": 0.0396280463
+      "q": 0.0017385247
     }
   ]
 }

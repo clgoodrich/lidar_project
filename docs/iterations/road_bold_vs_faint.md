@@ -103,6 +103,76 @@ uniform hillslopes.
 So the two varieties differ in *setting* as much as in *construction*. That is a
 useful detection signal and a serious confound — see below.
 
+## Contrast against the surroundings, normalised — the sharpest framing
+
+A raw `road - context` difference conflates a strong feature with a quiet
+neighbourhood. The honest question is how many **local sigma** the road departs
+by, using the context band's own robust spread (MAD x 1.4826) as the
+denominator. That is what "stands out" means, and it is effectively what a
+detector sees.
+
+| channel | bold (sigma) | faint (sigma) | delta | q |
+|---|---|---|---|---|
+| `opos_zcontrast` | **-5.21** | **-0.29** | -1.00 | <0.05 |
+| `lrm25_zcontrast` | -2.56 | -0.47 | -1.00 | <0.05 |
+| `tpi15_zcontrast` | -2.46 | -0.32 | -0.93 | <0.05 |
+| `rough_zcontrast` | +1.88 | 0.00 | +0.99 | <0.05 |
+| `slope_zcontrast` | +1.56 | -0.28 | +0.95 | <0.05 |
+| `relief10_zcontrast` | +0.95 | -0.34 | +0.81 | <0.05 |
+| `oneg_zcontrast` | -1.44 | +0.03 | -0.79 | <0.05 |
+
+**A faint road departs from its surroundings by less than half a local sigma on
+every channel.** Bold roads clear 5 sigma in positive openness. This is the
+cleanest available statement of what "faint" is, and it says the signal is
+genuinely absent rather than merely below a badly-chosen threshold.
+
+### The surroundings are noisier too — a double penalty
+
+The context band's own spread differs between the classes:
+
+| context spread (MAD, 25-60 m) | bold | faint | delta | q |
+|---|---|---|---|---|
+| `dsm_ctx_spread` | 1.62 | **3.79** | -0.65 | 0.018 |
+| `chm_ctx_spread` | 0.024 | **0.059** | -0.67 | 0.016 |
+| `rough_ctx_spread` | 0.000 | 0.079 | -0.47 | 0.091 |
+| `slope_ctx_spread` | 1.62 | 2.05 | -0.43 | 0.127 |
+| `dem_ctx_spread` | 1.22 | 2.00 | -0.43 | 0.127 |
+
+Faint roads carry a **weaker signal into a noisier neighbourhood** — more than
+twice the surface (DSM/CHM) variability, consistent with the denser canopy
+already measured. Both terms of the signal-to-noise ratio work against them.
+Only the DSM and CHM spreads survive BH correction at n=8 vs 21; the terrain
+spreads trend the same way but do not.
+
+### The near band (5-15 m) — the disturbance footprint
+
+Reported for completeness; it was computed but omitted from the first pass.
+
+| feature | bold | faint | delta | q |
+|---|---|---|---|---|
+| `oneg_near` | 88.28 | 88.87 | -0.76 | 0.003 |
+| `opos_near` | 88.10 | 88.77 | -0.76 | 0.003 |
+| `canopy_cover_near` | 0.214 | 0.333 | -0.46 | 0.130 |
+
+Openness still separates at 5-15 m out, so a bold road's disturbance extends
+beyond its tread into the shoulder zone. Nothing else in this band survives
+correction.
+
+### Two channels to distrust
+
+- **`roughness_11` is quantised.** Only 1,032 unique values across 81 M cells,
+  on a sqrt(k) ladder (0, 0.0913, 0.1291, 0.1581, 0.1826, ...) with the tile
+  median sitting on the 4th rung. The bold-vs-faint difference of 0.129 vs 0.000
+  is a **single rung**, so `rough_contrast`'s |delta| = 1.00 partly reflects a
+  coarse instrument rather than a wide gap. Direction is trustworthy, magnitude
+  is not. `openness_pos` by contrast has 2.2 M unique values and is genuinely
+  continuous.
+- **`chm_zcontrast` = 402 for bold** is division by a near-zero CHM MAD (0.024),
+  not a real effect. Same zero-inflation problem noted above. Use
+  `canopy_cover_*` instead.
+- `gdens` is 42% nodata with a context spread of exactly 0 — it carries no
+  information here and should be dropped from this analysis.
+
 ## Caveats, and they matter
 
 - **`dist_pad_m` = 0 for all 8 bold roads.** Bold-vs-faint may be partly

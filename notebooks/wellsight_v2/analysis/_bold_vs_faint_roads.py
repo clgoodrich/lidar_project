@@ -194,7 +194,28 @@ def main() -> int:
                      else np.nanmedian(sub, axis=1))
             per_t[f"{nm}_{bn}"] = v
         per_t[f"{nm}_contrast"] = per_t[f"{nm}_road"] - per_t[f"{nm}_context"]
-        print(f"  {nm:9s} nan {nanfrac*100:5.2f}%")
+
+        # LOCAL-Z CONTRAST — the "does it stand out from its own surroundings"
+        # measure. A raw difference conflates a strong feature with a quiet
+        # neighbourhood: a faint trace in smooth ground can be more detectable
+        # than a bold road in broken ground. Dividing by the context band's own
+        # robust spread (MAD -> sigma) asks how many local sigma the road
+        # departs by, which is what "stands out" actually means and is the
+        # quantity a detector effectively sees.
+        cm = fn_ctx = BANDS["context"](offs)
+        ctx = np.where(cm[None, :], prof[nm], np.nan)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            c_med = np.nanmedian(ctx, axis=1)
+            c_mad = np.nanmedian(np.abs(ctx - c_med[:, None]), axis=1) * 1.4826
+        # floor the spread so a degenerate/quantized context cannot manufacture
+        # a huge z; floored at the raster's own 5th-percentile non-zero MAD
+        floor = np.nanpercentile(c_mad[c_mad > 0], 5) if np.any(c_mad > 0) else 1e-6
+        per_t[f"{nm}_zcontrast"] = ((per_t[f"{nm}_road"] - c_med)
+                                    / np.maximum(c_mad, floor))
+        per_t[f"{nm}_ctx_spread"] = c_mad
+        print(f"  {nm:9s} nan {nanfrac*100:5.2f}%   context spread (median MAD) "
+              f"{np.nanmedian(c_mad):.4f}")
 
     # detrended cross-section -> incision depth, width
     z = prof["dem"]
