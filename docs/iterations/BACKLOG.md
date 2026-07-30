@@ -20,11 +20,15 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 
 Full results in `docs/iterations/road_bold_vs_faint.md`.
 
-- **The faint road class has ~zero labels and ~zero detections.** 0 of 21
-  user-labelled faint roads appear in `roads.shp`; the road model scores them
-  0.032 mean P(road) (0/21 above 0.5) against 0.775 for bold (8/8 above 0.5).
-  Annotating this class is the single highest-value road task — no loss
-  function, architecture, or threshold fixes a class absent from training.
+- **[PARTLY DONE 2026-07-30] The faint road class had ~zero labels.** The user
+  added **159 lines / 15.55 km** to `roads.shp` inside 9t; faint exemplars
+  present in the layer went 0/21 -> 18/21. The bold/faint cut now validates at
+  **94.1% grouped CV** and the network splits 57.0% bold / 43.0% faint. Still
+  open: the model remains blind to the class — exemplar-matched faint segments
+  score **0.037** mean P(road) against 0.855 for bold. **Retrain the road model
+  on the extended `roads.shp`** and re-measure; that is now the top road task.
+- **Extend the faint labels beyond 9t.** 9t is one landscape, one survey, one
+  annotator. Nothing here is known to transfer.
 - **Every published road metric is bold-conditional.** The 0.754 extraction F1,
   [[road_unet_1m_recall]] recall figures, and the alpha tuning in
   [[road_recall_alpha_fix]] were scored against `roads.shp`, which contains only
@@ -37,9 +41,12 @@ Full results in `docs/iterations/road_bold_vs_faint.md`.
   (`dist_pad_m` = 0 vs 126 m for faint), so bold-vs-faint is entangled with
   pad-adjacent-vs-not. Label bold roads away from pads and faint roads at pads
   to break it.
-- **Grow the exemplar set.** n = 8 vs 21 clear cases gives six features at
-  perfect separation, which will not survive a random sample. Need enough to fit
-  and validate a discriminator rather than describe a contrast.
+- **[DONE 2026-07-30] Grow the exemplar set.** Superseded by matching exemplars
+  to `roads.shp` segments: 79 matched segments (37 bold / 42 faint) instead of
+  29 lines, which supports grouped cross-validation. AUC 0.990, CV 94.1%.
+- **The 3 orphan faint exemplars.** 18 of 21 faint exemplars now match a
+  `roads.shp` line; 3 remain 54.9-107.2 m from anything. Either they are a
+  different feature type or they are still unannotated roads. Check them.
 - **CHM is unusable as a median.** `chm_9t_05` is zero-inflated (tile median
   0.091 m, p99 25.8 m). Any analysis wanting canopy must use a cover fraction
   (CHM > 2 m) or a high percentile. Audit prior uses of CHM medians.

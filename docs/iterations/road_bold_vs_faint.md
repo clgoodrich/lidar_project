@@ -1,6 +1,7 @@
-# road_bold_vs_faint — the faint variety is absent from the labels, and the model is blind to it
+# road_bold_vs_faint — the faint variety was absent from the labels, and the model is blind to it
 
-**Date:** 2026-07-29 · **Script:** `notebooks/wellsight_v2/analysis/_bold_vs_faint_roads.py`
+**Date:** 2026-07-29, updated 2026-07-30
+· **Script:** `notebooks/wellsight_v2/analysis/_bold_vs_faint_roads.py`
 · **Outputs:** `data/derivatives/experiments/road_morphology_bins/bold_vs_faint_*`
 · **Supersedes the central conclusion of** [[road_morphology_bins]]
 · **Related:** [[road_unet_1m_recall]], [[road_active_learning_loop]], [[road_sweep_202607]]
@@ -192,47 +193,101 @@ midpoint threshold. Two measurements explain why that produced visual noise:
   boundary and 22% within 0.5 sigma. 18% fell in the *gap between the two
   exemplar ranges* and were forced to a side with no evidence either way.
 
-### Fixed: score 50 m segments, and admit an ambiguous class
+### Second attempt also looked random, for a deeper reason
 
-Roads are chopped into **50 m segments** with transects every **5 m** (~10 per
-scored unit), and the class cuts are the **exemplar ranges** rather than a
-midpoint: bold if score <= the bold exemplars' maximum, faint if >= the faint
-exemplars' minimum, `ambiguous` in between.
+Segment scoring (50 m segments, transects every 5 m) fixed the *unit* but the
+map still read as noise. Two measurements found why:
+
+- **The cut points came entirely from the exemplars.** `bold_hi` was the bold
+  exemplars' maximum and `faint_lo` the faint exemplars' minimum. Nothing in the
+  pipeline ever asked how `roads.shp` itself was distributed.
+- **So they landed inside the mode.** `bold_hi` = -1.99 sat at **percentile
+  52.8** of the network and `faint_lo` = -1.09 at **percentile 71.9**, at 86%
+  and 93% of peak histogram density. Adjacent segments with near-identical
+  scores fell on opposite sides.
+
+A second defect was found in the same pass: the divide-by-zero **floor on the
+context MAD was computed separately per `featurise()` call** — 0.3731 over the
+29 exemplars against 0.4654 over the 3.7k segments, a 25% discrepancy affecting
+the ~5% of transects that hit it. The two score sets were not on one scale.
+
+A detour tried to replace the cut with an unsupervised one (KDE valley / GMM
+crossover / Otsu, all near percentile 27). **That was wrong** and the labels
+below falsify it: Otsu's cut scores only **83.8%** balanced accuracy. GMM BIC
+preferring k=2 by -811 was skew being absorbed by a second Gaussian, not
+bimodality — BIC kept improving through k=4, and the KDE trough between the two
+apparent peaks is only **4.9%** deep at percentile 1.7. The score distribution
+is a skewed continuum, consistent with [[road_morphology_bins]].
+
+### The actual fix was more labels — 2026-07-30
+
+The user extended `roads.shp` by **159 lines / 15.55 km inside 9t** (1,155 ->
+1,314 lines, 186.87 -> 202.42 km), adding the faint variety that had been
+missing. Faint exemplars inside the layer went from **0/21 to 18/21** (median
+distance to the nearest line 101.8 m -> **0.6 m**).
+
+That made the correct test possible for the first time: label `roads.shp`
+segments by proximity to an exemplar (60% of length within **8 m**), then fit
+the cut on **those segments**, not on the exemplar geometries.
+
+| matched set | n segments | median score | IQR |
+|---|---|---|---|
+| bold | 37 | **-4.72** | [-6.49, -2.77] |
+| faint | 42 | **-0.44** | [-0.72, +0.03] |
+
+**Cliff's delta -0.981, AUC 0.990, Mann-Whitney p = 7.4e-14.** The two classes
+overlap only across -1.24 to -0.70.
+
+| cut | value | balanced accuracy |
+|---|---|---|
+| Youden J on matched segments | **-1.585** (pct 57.0) | **97.3%** in-sample |
+| — grouped CV, whole parent roads held out, 38 folds | | **94.1%** |
+| unsupervised Otsu (rejected) | -3.45 (pct 27.3) | 83.8% |
+
+The original exemplar-derived midpoint was **-1.54**. The threshold was right
+all along; the *layer* was wrong. With no faint roads in `roads.shp` that cut
+had nothing correct to select, so it sliced the bold population's dim tail.
 
 | layer | segments | km | share |
 |---|---|---|---|
-| `roads_bold_9t` | 1,971 | 98.40 | 52.8% |
-| `roads_ambiguous_9t` | 711 | 35.59 | 19.1% |
-| `roads_faint_9t` | 1,050 | 51.97 | 28.1% |
+| `roads_bold_9t` | 2,303 | 114.81 | 57.0% |
+| `roads_faint_9t` | 1,740 | 86.61 | 43.0% |
 
-**281 of 1,125 parent roads (25%) are internally mixed** (25-75% bold segments)
-— direct confirmation that whole-road labelling was the error, not the score.
+**263 of 1,280 parent roads (21%) are internally mixed** (25-75% bold segments)
+— confirmation that whole-road labelling was never well-posed.
+
+The `ambiguous` class is retired. It existed to absorb the gap between exemplar
+ranges; with a cross-validated cut there is no gap to absorb.
 
 ### It is not a terrain proxy
 
-Segment-level `faint_score` vs slope: Spearman **-0.030**. Median slope is
-4.72 deg bold / 4.55 ambiguous / 4.53 faint — indistinguishable. The visible
-concentration of faint segments on the steep eastern valley sides is a real
-spatial pattern, not the terrain axis leaking back in (which is what happened to
-incision depth, Spearman +0.42).
+Segment-level `faint_score` vs slope: Spearman **-0.040** (p = 0.011). Median
+slope 4.68 deg bold vs 4.42 faint — indistinguishable. The concentration of
+faint segments on the steep eastern valley sides is a real spatial pattern, not
+the terrain axis leaking back in (which is what happened to incision depth,
+Spearman +0.42).
 
-### The split still predicts detection on held-out ground
+### The split predicts detection on held-out ground
 
 | 9t blocks | bold | faint |
 |---|---|---|
-| train | 0.908 (100% >= 0.5, n=1149) | 0.912 (100%, n=644) |
-| **test (never trained)** | **0.837 (98% >= 0.5, n=240)** | **0.758 (85%, n=185)** |
+| train (memorised) | 0.898 (99% >= 0.5, n=1332) | 0.764 (83%, n=1054) |
+| **test (never trained)** | **0.825 (96% >= 0.5, n=292)** | **0.734 (83%, n=270)** |
+| **exemplar-matched segments only** | **0.855** | **0.037** |
 
-On training blocks the classes are indistinguishable — memorisation. On held-out
-blocks bold segments clear 0.5 at 98% against faint at 85%.
+The last row is the important one. Segments matching the hand-drawn faint
+exemplars score **0.037** mean P(road) — the model is effectively blind to them.
+The class-wide faint mean of 0.734 is far higher, so the exemplars sit at the
+extreme end of the class; but that extreme end exists and is invisible.
 
 ### How to use the layers
 
-`faint_score` is the raw `opos_zcontrast`; move the cuts yourself if you want.
+`faint_score` is the raw `opos_zcontrast`; move the cut yourself if you want.
 `margin_sigma` is distance from the boundary. `parent_road` joins segments back
-to their source line. `P_road` and `split` are attached — **filter to
-`split = 'test'` before concluding anything about detection**, since train-block
-probabilities are memorisation.
+to their source line. `exlabel` marks the 79 exemplar-matched segments the cut
+was fitted on. `P_road` and `split` are attached — **filter to `split = 'test'`
+before concluding anything about detection**, since train-block probabilities
+are memorisation.
 
 ## Caveats, and they matter
 

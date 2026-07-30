@@ -18,12 +18,18 @@ Deliberately EXCLUDED from the score:
   chm / dsm / gdens / inten  — CHM is zero-inflated so its z-contrast divides by
       a near-zero MAD; gdens and inten are 42-45% nodata.
 
+The cut is fitted on segments OF roads.shp that match a hand-drawn exemplar,
+not on the exemplar geometries. Before roads.shp was extended on 2026-07-30 that
+was impossible — 0 of 21 faint exemplars were in the layer.
+
 Outputs (data/derivatives/experiments/road_morphology_bins/):
     roads_bold_faint_9t_05.gpkg
-        layer `roads_bold_9t`   — roads scoring bold-like
-        layer `roads_faint_9t`  — roads scoring faint-like
-        layer `roads_scored_9t` — all roads with scores, for thresholding by hand
+        layer `roads_bold_9t`   — 50 m segments scoring bold-like
+        layer `roads_faint_9t`  — 50 m segments scoring faint-like
+        layer `roads_scored_9t` — every segment with `faint_score`, for
+                                  thresholding by hand
     roads_bold_faint_9t_05_scores.csv
+    roads_bold_faint_9t_05_threshold.json
     fig_roads_bold_faint_split_9t_05.png
 
 CLI:
@@ -41,6 +47,7 @@ import matplotlib
 import numpy as np
 import pandas as pd
 import rasterio
+from scipy.stats import mannwhitneyu
 from shapely.ops import unary_union
 
 matplotlib.use("Agg")
@@ -63,6 +70,10 @@ OUT = DERIV / "experiments" / "road_morphology_bins"
 STEP, HALF_W, DX = 5.0, 60.0, 0.5
 MIN_LEN = 20.0
 SEG_M = 50.0
+# A roads.shp segment counts as an exemplar match when 60% of its length falls
+# within MATCH_TOL of a hand-drawn bold/faint line. Same tolerance the road
+# extraction harness uses for Heipke/Wiedemann matching.
+MATCH_TOL = 8.0
 
 # Only channels that survived the trust audit in road_bold_vs_faint.md.
 RASTERS = {
@@ -150,9 +161,16 @@ def sample(path, xs, ys):
     return o
 
 
-def featurise(gdf, tag):
-    """Per-road local-z contrast features. Identical maths for exemplars and
-    the full road set, so the threshold transfers."""
+def featurise(gdf, tag, floors=None):
+    """Per-road local-z contrast features.
+
+    `floors` is the per-raster divide-by-zero floor on the context MAD. It MUST
+    be shared between the exemplar pass and the network pass, otherwise the two
+    score sets sit on different scales and the cut does not transfer. Measured:
+    computing it independently gave 0.3731 (29 exemplars) vs 0.4654 (3.7k
+    segments) for `opos`, a 25% discrepancy on the ~5% of transects that hit it.
+    Pass the network's floors into the exemplar call. Returns (features, floors).
+    """
     xs, ys, ri, ti, offs = build_transects(gdf)
     n_t = ti.max() + 1
     n_off = len(offs)
@@ -163,6 +181,7 @@ def featurise(gdf, tag):
 
     per_t = {}
     dem = None
+    out_floors = {} if floors is None else dict(floors)
     for nm, p in RASTERS.items():
         arr = sample(p, xs, ys).reshape(n_t, n_off)
         if nm == "dem":
@@ -174,8 +193,12 @@ def featurise(gdf, tag):
             cmad = np.nanmedian(
                 np.abs(np.where(ctx_m[None, :], arr, np.nan) - cv[:, None]),
                 axis=1) * 1.4826
-        pos = cmad[np.isfinite(cmad) & (cmad > 0)]
-        floor = np.nanpercentile(pos, 5) if pos.size else 1e-6
+        if nm in out_floors:
+            floor = out_floors[nm]
+        else:
+            pos = cmad[np.isfinite(cmad) & (cmad > 0)]
+            floor = float(np.nanpercentile(pos, 5)) if pos.size else 1e-6
+            out_floors[nm] = floor
         per_t[f"{nm}_zcontrast"] = (rv - cv) / np.maximum(cmad, floor)
 
     # incision depth, detrended on |d| in [30, 60] so the road never shapes its
@@ -202,7 +225,7 @@ def featurise(gdf, tag):
     d["road"] = t_road
     agg = d.groupby("road").median(numeric_only=True)
     agg["n_transects"] = d.groupby("road").size()
-    return agg
+    return agg, out_floors
 
 
 def main() -> int:
@@ -210,43 +233,7 @@ def main() -> int:
     blocks = gpd.read_file(R9 / "pit_blocks_9t.gpkg")
     region = unary_union(blocks.geometry.values)
 
-    # ---- exemplars ---------------------------------------------------------
-    ex = []
-    for lab, nm in ((1, "bold_roads"), (0, "faint_roads")):
-        g = gpd.read_file(ANN / f"{nm}.shp")
-        g = (g.set_crs(4326) if g.crs is None else g).to_crs(DST_CRS)
-        g = g[g.intersects(region)].copy()
-        g["label"] = lab
-        ex.append(g[["geometry", "label"]])
-    ex = gpd.GeoDataFrame(pd.concat(ex, ignore_index=True),
-                          geometry="geometry", crs=DST_CRS)
-    exf = featurise(ex, "exemplars").join(ex[["label"]])
-
-    b = exf[exf.label == 1][PRIMARY]
-    f = exf[exf.label == 0][PRIMARY]
-    print(f"\n{PRIMARY}:  bold  max {b.max():.3f}  median {b.median():.3f}")
-    print(f"{' ' * len(PRIMARY)}   faint min {f.min():.3f}  median {f.median():.3f}")
-    gap = f.min() - b.max()
-    thr = (b.max() + f.min()) / 2.0
-    print(f"  separation gap {gap:+.3f} sigma;  threshold {thr:.3f} "
-          f"(bold if {PRIMARY} <= threshold)")
-    if gap <= 0:
-        print("  WARNING: exemplars overlap on the primary score — the "
-              "threshold is a compromise, not a clean cut")
-
-    # honest-ish check: leave-one-out on a single-feature midpoint rule.
-    # Perfect separation makes this optimistic; it is reported, not trusted.
-    loo = 0
-    for i in exf.index:
-        tr_ = exf.drop(index=i)
-        bb, ff = tr_[tr_.label == 1][PRIMARY], tr_[tr_.label == 0][PRIMARY]
-        t_ = (bb.max() + ff.min()) / 2.0
-        pred = 1 if exf.loc[i, PRIMARY] <= t_ else 0
-        loo += int(pred == exf.loc[i, "label"])
-    print(f"  leave-one-out accuracy {loo}/{len(exf)} "
-          f"({loo/len(exf)*100:.0f}%) — optimistic, the classes are separable")
-
-    # ---- all 9t annotated roads --------------------------------------------
+    # ---- all 9t annotated roads (FIRST, so it defines the MAD floors) ------
     roads = gpd.read_file(ANN / "roads.shp").to_crs(DST_CRS)
     roads = roads[roads.intersects(region)].copy()
     roads["geometry"] = roads.geometry.intersection(region)
@@ -257,24 +244,80 @@ def main() -> int:
           f"{roads.length_m.sum()/1000:.2f} km")
     segs = segmentise(roads)
     print(f"  chopped into {len(segs)} segments of ~{SEG_M:.0f} m")
-    rf = featurise(segs, "9t segments")
+    rf, floors = featurise(segs, "9t segments")
     out = segs.join(rf, how="inner")
+    out = out[np.isfinite(out[PRIMARY])].copy()
 
-    # Three classes, defined by the EXEMPLAR RANGES rather than a midpoint.
-    # 18% of units fall in the gap between the two exemplar ranges; forcing them
-    # to a side is what made the first version look random on screen. They are
-    # labelled `ambiguous` and shipped as their own layer instead.
-    bold_hi = float(b.max())      # bold exemplars are all <= this
-    faint_lo = float(f.min())     # faint exemplars are all >= this
-    out["class"] = np.where(out[PRIMARY] <= bold_hi, "bold",
-                   np.where(out[PRIMARY] >= faint_lo, "faint", "ambiguous"))
-    # margin in sigma from the decision boundary — how confident, and which way
+    # ---- label segments by proximity to the exemplars -----------------------
+    # The cut is now fit on SEGMENTS OF roads.shp that match a hand-drawn
+    # exemplar, not on the exemplar geometries themselves. That matters: until
+    # roads.shp was extended on 2026-07-30, 0 of 21 faint exemplars existed in
+    # it (median 101.8 m from the nearest line), so the faint side of the layer
+    # was empty and any cut selected the dim tail of the bold class instead.
+    # Now 18/21 are in (median 0.6 m) and the split is a real within-layer one.
+    out["exlabel"] = "unlabelled"
+    for nm, tag in (("bold_roads", "bold_ex"), ("faint_roads", "faint_ex")):
+        g = gpd.read_file(ANN / f"{nm}.shp")
+        g = (g.set_crs(4326) if g.crs is None else g).to_crs(DST_CRS)
+        g = g[g.intersects(region)]
+        buf = unary_union([x.buffer(MATCH_TOL) for x in g.geometry])
+        frac = out.geometry.intersection(buf).length / out["length_m"]
+        out.loc[frac >= 0.60, "exlabel"] = tag
+    B = out[out.exlabel == "bold_ex"][PRIMARY]
+    F = out[out.exlabel == "faint_ex"][PRIMARY]
+    print(f"\nsegments matching an exemplar (>={MATCH_TOL:.0f} m buffer, 60% of "
+          f"length): bold {len(B)}, faint {len(F)}")
+    if len(B) < 5 or len(F) < 5:
+        print("  ERROR: too few matched segments to fit a cut")
+        return 1
+    print(f"  bold_ex  median {B.median():+.2f}  IQR "
+          f"[{B.quantile(.25):+.2f}, {B.quantile(.75):+.2f}]")
+    print(f"  faint_ex median {F.median():+.2f}  IQR "
+          f"[{F.quantile(.25):+.2f}, {F.quantile(.75):+.2f}]")
+    u, pv = mannwhitneyu(B, F)
+    auc = u / (len(B) * len(F))
+    print(f"  Mann-Whitney p={pv:.2e}  Cliff's delta {2*auc-1:+.3f}  "
+          f"AUC {max(auc, 1-auc):.3f}")
+
+    # ---- cut by Youden J, honestly cross-validated --------------------------
+    def youden(bb, ff):
+        cands = np.unique(np.concatenate([bb, ff]))
+        return float(max(cands, key=lambda c: (bb <= c).mean() + (ff > c).mean()))
+
+    thr = youden(B.values, F.values)
+    ba_in = ((B <= thr).mean() + (F > thr).mean()) / 2
+    # Grouped CV: hold out whole parent roads, so a segment is never scored by a
+    # cut fitted on its own neighbours. In-sample balanced accuracy is optimistic
+    # by construction; this is the number to quote.
+    grp = out.loc[B.index.union(F.index), "parent_road"]
+    lab = pd.Series(np.r_[np.ones(len(B)), np.zeros(len(F))],
+                    index=B.index.append(F.index))
+    sc = out.loc[lab.index, PRIMARY]
+    accs = []
+    for g_ in grp.unique():
+        te = grp[grp == g_].index
+        tr_ = lab.index.difference(te)
+        bb, ff = sc[tr_][lab[tr_] == 1].values, sc[tr_][lab[tr_] == 0].values
+        if len(bb) < 3 or len(ff) < 3:
+            continue
+        t_ = youden(bb, ff)
+        pred = (sc[te] <= t_).astype(int)
+        accs.append((pred == lab[te]).mean())
+    cv_acc = float(np.mean(accs)) if accs else np.nan
+    print(f"\n  cut (Youden J) = {thr:.3f}  "
+          f"-> percentile {(out[PRIMARY] <= thr).mean()*100:.1f} of the network")
+    print(f"  in-sample balanced accuracy {ba_in*100:.1f}% "
+          f"(bold {(B<=thr).sum()}/{len(B)}, faint {(F>thr).sum()}/{len(F)})")
+    print(f"  grouped CV accuracy (hold out whole parent roads, "
+          f"{len(accs)} folds) {cv_acc*100:.1f}%")
+
+    out["class"] = np.where(out[PRIMARY] <= thr, "bold", "faint")
     out["margin_sigma"] = (thr - out[PRIMARY]).round(3)
     out["faint_score"] = out[PRIMARY].round(3)
 
     print(f"\n=== split of the ANNOTATED 9t network ({SEG_M:.0f} m segments) ===")
     counts = {}
-    for c in ("bold", "ambiguous", "faint"):
+    for c in ("bold", "faint"):
         s_ = out[out["class"] == c]
         counts[c] = (len(s_), s_.length_m.sum() / 1000)
         print(f"  {c:9s} {len(s_):5d} segs  {s_.length_m.sum()/1000:7.2f} km  "
@@ -290,8 +333,8 @@ def main() -> int:
     print("  -> that mixing is why whole-road labels looked arbitrary")
     print(f"\n  {PRIMARY} quantiles over the annotated network:")
     print("   ", out[PRIMARY].quantile([.05, .25, .5, .75, .95]).round(2).to_dict())
-    print(f"  exemplar reference: bold median {b.median():.2f}, "
-          f"faint median {f.median():.2f}")
+    print(f"  matched reference: bold_ex median {B.median():.2f}, "
+          f"faint_ex median {F.median():.2f}")
 
     # ---- attach model response + data split --------------------------------
     # Both matter for reading the layers. The road model trained on 9t, so
@@ -337,14 +380,12 @@ def main() -> int:
     # ---- write -------------------------------------------------------------
     gp = OUT / "roads_bold_faint_9t_05.gpkg"
     keep = ["geometry", "parent_road", "length_m", "class", "faint_score",
-            "margin_sigma", "n_transects", "P_road", "split"] + [
+            "margin_sigma", "n_transects", "exlabel", "P_road", "split"] + [
             c for c in PANEL if c in out.columns]
     keep = [c for c in keep if c in out.columns]
     o = out[keep]
     o[o["class"] == "bold"].to_file(gp, layer="roads_bold_9t", driver="GPKG")
     o[o["class"] == "faint"].to_file(gp, layer="roads_faint_9t", driver="GPKG")
-    o[o["class"] == "ambiguous"].to_file(gp, layer="roads_ambiguous_9t",
-                                         driver="GPKG")
     o.to_file(gp, layer="roads_scored_9t", driver="GPKG")
     o.drop(columns="geometry").to_csv(
         OUT / "roads_bold_faint_9t_05_scores.csv", index=False)
@@ -352,9 +393,15 @@ def main() -> int:
     (OUT / "roads_bold_faint_9t_05_threshold.json").write_text(json.dumps({
         "primary_score": PRIMARY, "threshold": float(thr),
         "rule": f"bold if {PRIMARY} <= {thr:.4f}",
-        "exemplar_bold_max": float(b.max()), "exemplar_faint_min": float(f.min()),
-        "separation_gap_sigma": float(gap),
-        "loo_accuracy": f"{loo}/{len(exf)}",
+        "cut_fitted_on": "roads.shp segments matching a hand-drawn exemplar "
+                         f"(60% of length within {MATCH_TOL:.0f} m)",
+        "n_bold_matched": int(len(B)), "n_faint_matched": int(len(F)),
+        "auc": round(float(max(auc, 1 - auc)), 4),
+        "cliffs_delta": round(float(2 * auc - 1), 4),
+        "balanced_accuracy_in_sample": round(float(ba_in), 4),
+        "balanced_accuracy_grouped_cv": round(float(cv_acc), 4),
+        "mad_floors_shared_from_network": {k: round(v, 5)
+                                           for k, v in floors.items()},
         "excluded_features": ["dist_pad_m", "road_density_100m_km",
                               "roughness_11", "chm", "dsm", "gdens", "inten"],
         "n_bold": nb, "n_faint": nf, "km_bold": round(kb, 2),
@@ -365,20 +412,16 @@ def main() -> int:
     fig, ax = plt.subplots(1, 2, figsize=(15, 6))
     ax[0].hist(out[PRIMARY].clip(-12, 4), bins=60, color="0.6",
                label=f"annotated 9t roads (n={len(out)})")
-    ax[0].axvspan(bold_hi, faint_lo, color="0.85", alpha=0.9, zorder=0,
-                  label="ambiguous band (gap between exemplar ranges)")
-    ax[0].axvline(bold_hi, color="#c1272d", ls="--", lw=1.4,
-                  label=f"bold cut {bold_hi:.2f}")
-    ax[0].axvline(faint_lo, color="#2b6cb0", ls="--", lw=1.4,
-                  label=f"faint cut {faint_lo:.2f}")
-    for v, c, lb in ((b, "#c1272d", "bold exemplars"),
-                     (f, "#2b6cb0", "faint exemplars")):
+    ax[0].axvline(thr, color="k", ls="--", lw=1.6,
+                  label=f"cut {thr:.2f} (Youden, CV acc {cv_acc*100:.0f}%)")
+    for v, c, lb in ((B, "#c1272d", f"bold-matched segs (n={len(B)})"),
+                     (F, "#2b6cb0", f"faint-matched segs (n={len(F)})")):
         ax[0].plot(np.clip(v, -12, 4), np.full(len(v), ax[0].get_ylim()[1] * 0.5),
-                   "|", color=c, ms=18, mew=2.5, label=lb)
+                   "|", color=c, ms=16, mew=2.0, label=lb)
     ax[0].set_xlabel(f"{PRIMARY}  (local sigma vs 25-60 m surroundings)")
-    ax[0].set_ylabel("roads")
-    ax[0].set_title("Where the annotated network sits\nrelative to the exemplars",
-                    fontsize=10)
+    ax[0].set_ylabel("segments")
+    ax[0].set_title("Cut fitted on roads.shp segments that\nmatch a hand-drawn "
+                    "exemplar", fontsize=10)
     ax[0].legend(fontsize=8)
 
     hs = R9 / "hillshade_9t_05.tif"
@@ -390,9 +433,6 @@ def main() -> int:
             ax[1].imshow(im, cmap="gray", extent=plotting_extent(r),
                          origin="upper", vmin=np.nanpercentile(im, 2),
                          vmax=np.nanpercentile(im, 98))
-    o[o["class"] == "ambiguous"].plot(
-        ax=ax[1], color="#bbbbbb", linewidth=0.7,
-        label=f"ambiguous ({counts['ambiguous'][0]}, {counts['ambiguous'][1]:.0f} km)")
     o[o["class"] == "bold"].plot(ax=ax[1], color="#c1272d", linewidth=1.3,
                                  label=f"bold ({nb}, {kb:.0f} km)")
     o[o["class"] == "faint"].plot(ax=ax[1], color="#2b6cb0", linewidth=1.1,

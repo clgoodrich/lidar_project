@@ -1,11 +1,24 @@
 {
   "primary_score": "opos_zcontrast",
-  "threshold": -1.537851333618164,
-  "rule": "bold if opos_zcontrast <= -1.5379",
-  "exemplar_bold_max": -1.9879003763198853,
-  "exemplar_faint_min": -1.0878024101257324,
-  "separation_gap_sigma": 0.9000979661941528,
-  "loo_accuracy": "28/29",
+  "threshold": -1.5851529836654663,
+  "rule": "bold if opos_zcontrast <= -1.5852",
+  "cut_fitted_on": "roads.shp segments matching a hand-drawn exemplar (60% of length within 8 m)",
+  "n_bold_matched": 37,
+  "n_faint_matched": 42,
+  "auc": 0.9903,
+  "cliffs_delta": -0.9807,
+  "balanced_accuracy_in_sample": 0.973,
+  "balanced_accuracy_grouped_cv": 0.9408,
+  "mad_floors_shared_from_network": {
+    "dem": 0.34568,
+    "slope": 1.32215,
+    "opos": 0.45998,
+    "oneg": 0.46225,
+    "lrm5": 0.00975,
+    "lrm25": 0.03194,
+    "tpi15": 0.04572,
+    "relief10": 0.12669
+  },
   "excluded_features": [
     "dist_pad_m",
     "road_density_100m_km",
@@ -15,8 +28,8 @@
     "gdens",
     "inten"
   ],
-  "n_bold": 1971,
-  "n_faint": 1050,
-  "km_bold": 98.4,
-  "km_faint": 51.97
+  "n_bold": 2303,
+  "n_faint": 1740,
+  "km_bold": 114.81,
+  "km_faint": 86.61
 }

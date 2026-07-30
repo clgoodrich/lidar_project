@@ -5,6 +5,61 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-30 — the faint class gets labelled, and the bold/faint cut validates at 94.1%
+
+Full write-up: `docs/iterations/road_bold_vs_faint.md`. Script rewritten:
+`notebooks/wellsight_v2/analysis/_classify_9t_roads_bold_faint.py`.
+
+**Why the previous layers looked random.** Two defects, both mine:
+
+1. The cut points were taken from the exemplar geometries (`bold_hi` = the bold
+   exemplars' max, `faint_lo` = the faint exemplars' min) and never referenced
+   the `roads.shp` distribution. They landed at **percentile 52.8 and 71.9**, at
+   86% and 93% of peak histogram density — inside the mode.
+2. The divide-by-zero floor on the context MAD was computed **separately per
+   `featurise()` call**: 0.3731 over 29 exemplars vs 0.4654 over 3.7k segments,
+   a 25% scale discrepancy on the ~5% of transects that hit it.
+
+**A rejected detour.** An unsupervised cut (KDE valley / GMM crossover / Otsu,
+all near percentile 27) looked justified — GMM BIC preferred k=2 by -811. It was
+wrong. BIC kept improving to k=4 (skew absorbed by extra Gaussians) and the KDE
+trough is 4.9% deep at percentile 1.7. The labels below score Otsu's cut at
+**83.8%** balanced accuracy. The distribution is a skewed continuum.
+
+**What actually fixed it: the user extended `roads.shp`.** +159 lines / 15.55 km
+inside 9t (1,155 -> 1,314 lines; 186.87 -> 202.42 km). Faint exemplars present
+in the layer went **0/21 -> 18/21**, median distance to the nearest annotated
+line **101.8 m -> 0.6 m**. The class now exists in the population being split.
+
+**Method change.** The cut is fitted on `roads.shp` segments that match a
+hand-drawn exemplar (60% of length within 8 m, the same tolerance the extraction
+harness uses), not on the exemplar geometries. 37 bold-matched, 42
+faint-matched.
+
+| measure | value |
+|---|---|
+| bold-matched median / faint-matched median | -4.72 / -0.44 |
+| Cliff's delta, AUC | **-0.981**, **0.990** (p = 7.4e-14) |
+| cut (Youden J) | **-1.585**, percentile 57.0 |
+| balanced accuracy, in-sample | 97.3% (bold 35/37, faint 42/42) |
+| **balanced accuracy, grouped CV** (parent roads held out, 38 folds) | **94.1%** |
+
+The original exemplar midpoint was -1.54. **The threshold was right; the layer
+was wrong** — with no faint roads in `roads.shp` it had nothing correct to
+select.
+
+**Layers** (`data/derivatives/experiments/road_morphology_bins/roads_bold_faint_9t_05.gpkg`):
+`roads_bold_9t` 2,303 segs / 114.81 km (57.0%), `roads_faint_9t` 1,740 segs /
+86.61 km (43.0%). `ambiguous` retired. 263/1,280 parent roads (21%) internally
+mixed.
+
+**Validation.** Held-out test blocks: bold 0.825 (96% >= 0.5, n=292) vs faint
+0.734 (83%, n=270). Exemplar-matched segments only: bold **0.855** vs faint
+**0.037** — the model is effectively blind to the faint extreme. Terrain clean
+(Spearman -0.040, median slope 4.68 vs 4.42).
+
+---
+
 ## 2026-07-29 — bold vs faint roads: the faint class is unlabelled and undetected
 
 Full write-up: `docs/iterations/road_bold_vs_faint.md`. New script
