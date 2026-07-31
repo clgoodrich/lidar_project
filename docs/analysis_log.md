@@ -5,6 +5,52 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-31 — swept 31 candidate features; 3 are worth adding, intensity is dead
+
+Asked whether any parameters are missing from the bold/faint panel. Tested three
+families on the 84 exemplar segments: 14 `tiles/9t` rasters the classifier never
+samples, 6 cross-section shape terms free from the transect stack, and 2
+along-segment consistency terms. Ranking:
+`scratchpad/_candidate_feature_ranking.csv`, script
+`scratchpad/_test_candidate_features.py`.
+
+**Worth adding.**
+
+| feature | bold | faint | δ | rho vs `opos` | why |
+|---|---|---|---|---|---|
+| `berm_min_m` | 0.410 m | 0.105 m | +0.964 | 0.851 | height of the *weaker* shoulder; beats `incision_depth_m` (0.935) |
+| `sgres19_zcontrast` | -2.437 | -0.272 | -0.963 | 0.855 | Savitzky-Golay residual, raster never sampled |
+| `raniso_zcontrast` | 2.361 | 0.736 | +0.862 | 0.719 | anisotropic roughness; trustworthy replacement for the quantised `roughness_11` |
+
+**Confirmed dead — do not add.** `intens_zcontrast` δ -0.200, **p = 0.12**, the
+only non-geometric channel tested and it fails. `gdens_*` δ 0.000 (confirms the
+42% nodata note). `allret_*` δ ~0.10, p > 0.35. `cdoublet_zcontrast` δ 0.313.
+
+**A hypothesis that failed.** `bench_asym_m` = |left shoulder - right shoulder|,
+predicting that a benched road is cut uphill and filled downhill while a skid
+trail is symmetric. δ +0.248, **p = 0.054**. Not supported. Recorded because the
+reasoning was sound and someone will propose it again.
+
+**Circular — excluded.** `opos_frac_bold` (fraction of a segment's transects
+below the fitted cut) δ +0.987, bold 1.000 vs faint 0.000. It is the cut applied
+to itself. Same class of error as `P_road`.
+
+**Redundancy is the real finding.** 10 pairs among the top 20 correlate at
+|rho| >= 0.90. `tpi15_zcontrast` ~ `lrm51_zcontrast` at **rho = 0.998** -- the
+same measurement under two names. `incision_depth_m` ~ `berm_max_m` 0.945.
+Every scale of LRM and TPI tested (5/11/25/51 and 05/15/51) separates at
+δ 0.75-0.97, so the signal is scale-robust and adding scales adds nothing.
+**Decision: the panel is not short of terrain channels.** The gap is
+non-geometric evidence -- surface material, compaction, vegetation regrowth --
+and intensity was the one candidate the tiles offer for it.
+
+**Caution recorded.** `tread_flat_m` separates at δ +0.808 with the sign
+*backwards* from intuition (bold roads have a rougher running surface, 0.084 vs
+0.035). Likely the |d| <= 2 m window catching the cut walls rather than the
+tread. Not adopted pending a fix to the window.
+
+---
+
 ## 2026-07-31 — every feature ranked bold vs faint, and P_road turns out to be circular
 
 Full write-up: `docs/iterations/road_bold_vs_faint.md`, section "Per-feature

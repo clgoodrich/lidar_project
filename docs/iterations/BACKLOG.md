@@ -27,6 +27,21 @@ Full results in `docs/iterations/road_bold_vs_faint.md`.
   open: the model remains blind to the class — exemplar-matched faint segments
   score **0.037** mean P(road) against 0.855 for bold. **Retrain the road model
   on the extended `roads.shp`** and re-measure; that is now the top road task.
+- **Add 3 features to the bold/faint panel** (swept 2026-07-31, full table in
+  `analysis_log.md`): `berm_min_m` (δ +0.964, beats `incision_depth_m`),
+  `sgres19_zcontrast` (δ -0.963, raster never sampled), `raniso_zcontrast`
+  (δ +0.862, replaces the quantised `roughness_11`). Low priority — all three
+  correlate 0.72-0.86 with `opos_zcontrast`, so they add little to a
+  single-feature cut. They matter only if the classifier goes multivariate,
+  which at n = 79 labelled segments it should not yet.
+- **Find a non-geometric channel.** Every feature that separates bold from faint
+  is measuring the same trough. `intensity_ground` was the one surface-material
+  candidate in `tiles/9t` and it fails (δ -0.200, p = 0.12). Nothing currently
+  measures compaction, surface material, or vegetation regrowth. This is the
+  actual limit on the panel, not the number of terrain derivatives.
+- **`tread_flat_m` has a backwards sign** (bold rougher, 0.084 vs 0.035, δ
+  +0.808). Suspect the |d| <= 2 m window catches the cut walls. Fix the window
+  and retest before using.
 - **Extend the faint labels beyond 9t.** 9t is one landscape, one survey, one
   annotator. Nothing here is known to transfer.
 - **Every published road metric is bold-conditional.** The 0.754 extraction F1,
