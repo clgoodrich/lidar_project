@@ -5,6 +5,75 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-31 — 9t DoD rebuilt with ONE ICP solve; the "signal at wells" is circular
+
+Script: `notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py`. Full write-up
+in `docs/iterations/icp_change_9t.md` Part 3.
+
+**Rebuild.** All four 2006-2008 tiles covering 9t merged and solved as a SINGLE
+ICP problem against the nine 2019 D20 tiles, ground only, 5 m voxel (same voxel
+as 2026-05-21). 2019 reference is `tiles/9t/dem_9t_05.tif`, dropping the
+vanished `mosaic_3x3` dependency. Mosaicked by true mean, not the old
+order-dependent `0.5*(dst+buf)`.
+
+Solve: converged, fitness 0.967, displacement at block centroid dx −0.0024,
+dy −0.0003, dz +0.0396 m.
+
+| | per-tile spread | robust sigma |
+|---|---|---|
+| original (4 independent solves) | 0.103 m | 0.1358 m |
+| **single ICP** | **0.0576 m** | **0.1119 m** |
+| single ICP + per-tile dz | 0 | 0.1102 m |
+
+Per-tile spread −44%, sigma −18%. Reconstruct test now PASSES exactly
+(`max|resid| = 0`); the old product failed at 0.24 m. What remains is genuine
+along-track striping — row-mean std 0.0786 m, 3.7x the column-mean std.
+
+Slope-stratified sigma now RISES with slope (`sigma = +0.098*tan(slope) +
+0.106`, ~0.10 m implied planimetric error). Part 1 reported a negative
+coefficient; that was the per-tile blocks inflating sigma on flat ground.
+
+**Two ICP failures worth remembering.** (1) `filters.icp` diverged
+(converged=False, fitness 17.7, −30 km shift) because both clouds were cropped
+to the same bbox, leaving the moving cloud a 200 m rim with no counterpart and
+`max_dist` unset. The fixed cloud must strictly ENCLOSE the moving cloud.
+(2) The raw translation column of an ICP matrix is NOT the shift — the
+transform is about the coordinate origin, so a 2.8e-5 rad rotation shows up as
++130 m of translation that the rotation cancels. Evaluate displacement at the
+cloud centroid.
+
+**The wells result, and why it is rejected.** The rebuilt DoD appeared to show
+14.63% of well points exceeding 3 sigma vs 4.08% background (naive z +12.4),
+and it survived a toroidal-shift null that preserves clustering and the ~35 m
+autocorrelation (p = 0.001). It is still an artifact:
+
+1. `annotations/well_head_pts_reprojected.gpkg` and
+   `annotations/wellhead_pits.gpkg` are the SAME 861 points (median separation
+   0.0 m). These are hand-digitised pits — selected for being depressions on
+   the 2019 DEM. Circular.
+2. The surveys differ ~7x in density. Local depression depth at those points:
+   2019 −0.3251 m, 2006-08 −0.2343 m. The sparse survey resolves 72% of the
+   depth; the −0.0907 m shortfall exceeds the observed −0.0555 m DoD median.
+
+Sparse survey smooths small pits away + points chosen for being small pits =
+negative DoD by construction. **No subsidence claim is supported.** Part 1's
+clean negative stands, and any future DoD test against these points is circular
+until a non-DEM-derived well list is used.
+
+**Consequence:** Part 2's products (`change_class_9t_2m.tif`,
+`change_class_reliable_9t_2m.tif`, `dod_9t_nonerosional_2m.tif`,
+`change_patches_9t.gpkg`) all derive from the superseded DoD and are stale. Its
+destripe/high-pass stack was tuned against blocky artifacts that no longer
+exist.
+
+Outputs (`data/derivatives/experiments/icp/change_9t/`):
+`dem_2006_singleicp_9t_2m.tif`, `dod_9t_singleicp_2m.tif`,
+`dod_9t_singleicp_tiledz_2m.tif`, `fig_dod_9t_singleicp_vs_original.png`,
+`_icp_rebuild_9t.json`. The 2026-05-21 rasters are left untouched for
+comparison and should not be used.
+
+---
+
 ## 2026-07-31 — CRS ALERT: the 2006-2008 LAZ headers carry the WRONG EPSG code
 
 Found while inspecting six newly downloaded tiles. Every

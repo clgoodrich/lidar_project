@@ -286,3 +286,181 @@ python notebooks/wellsight_v2/build/_icp_change_classify_9t.py  # Part 2
 - Decide whether recent-activity change detection is a project goal at all — if
   so, this product is already usable; if not, this line stops here.
 See `BACKLOG.md` → "ICP / change detection".
+
+---
+
+# Part 3 — Rebuilt with ONE ICP solve (2026-07-31)
+
+Script: `notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py`.
+
+Triggered by a simple observation: `dod_9t_2m.tif` does not look like 9t. The
+location was right, but two defects were found and both are fixed here.
+
+## What was wrong with the 2026-05-21 product
+
+1. **Each older tile got its own independent ICP solve**, then the results were
+   mosaicked. Median DoD inside each tile footprint: 002958 −0.038, 002959
+   −0.057, 003111 +0.046, 003112 +0.044 m — a **0.103 m spread** against a
+   0.136 m pooled sigma. Part 1 called this "swath-level vertical bias in the
+   2006-2008 acquisition". About half of it was our own alignment residual.
+2. **`dem_diff_2m.tif` did not reconstruct from its own inputs.** Its 2019 side
+   covered 44.4% of 9t while the diff covered 99.97%, and `diff − (new − old)`
+   had mean |r| 0.24 m (not a shift; ±4 px scanned, dy=dx=0 optimal). The repo
+   script is not the version that produced the rasters — rasters 2026-05-21,
+   `_icp_change_map.py` edited 2026-05-22 (`acce517`) and 2026-05-23
+   (`375f9f5`) — and its `tiles/mosaic_3x3` input no longer exists on any drive.
+
+## What the rebuild does differently
+
+| | 2026-05-21 | rebuild |
+|---|---|---|
+| ICP solves | 4 independent | **1**, all four tiles merged |
+| 2019 reference | `tiles/mosaic_3x3/*/dem_1m.tif` (gone) | `tiles/9t/dem_9t_05.tif` |
+| mosaicking | running `0.5*(dst+buf)`, order-dependent | true mean (sum/count) |
+| Z scale | 0.3048 (international ft) | 1200/3937 (US survey ft) |
+| ICP `max_dist` | unset | 5.0 m |
+
+Inputs: 2006-2008 tiles `002958, 002959, 003111, 003112` (the four that cover
+9t: 30.6 + 17.0 + 36.9 + 20.6 = 105.1% with overlaps) against all nine 2019 D20
+tiles, ground class only, 5 m voxel — the same voxel as the original so the
+comparison is apples-to-apples.
+
+### Two failures worth recording
+
+**The first attempt diverged**: `converged=False`, fitness 17.7, shift
+−30431 / +4219 / +3687 m. Cause: both clouds were cropped to the same bbox, but
+the 2019 tiles stop at the block edge, so the older cloud kept a 200 m rim with
+no counterpart. `filters.icp` leaves `max_dist` unset, so those orphan points
+were still paired with their nearest 2019 neighbour hundreds of metres away and
+dominated the solve. **The fixed cloud must strictly enclose the moving cloud.**
+This is the same failure mode as the stale `003111/_meta_icp_5m.json`
+(`converged: false`, fitness 39.4) — not a one-off.
+
+**The second attempt tripped a guard that was itself wrong.** ICP returns a
+rigid transform about the coordinate ORIGIN. UTM northings are ~4.6e6 m away, so
+the 2.8e-5 rad rotation in the solution appears as a +130 m translation term
+that the rotation immediately cancels. The raw translation column is not the
+shift. The guard now evaluates displacement at the moving cloud centroid.
+
+## The solve
+
+`converged=True`, fitness 0.967, rotation ~2.8e-5 rad. Displacement at the block
+centroid: **dx −0.0024, dy −0.0003, dz +0.0396 m**. The two surveys were already
+very nearly co-registered — consistent with Part 1, but now as one transform for
+the whole block rather than four that could disagree.
+
+## Results
+
+| | per-tile spread | robust sigma | row-mean std | sigma after row+col removal |
+|---|---|---|---|---|
+| original (4 solves) | 0.103 m | 0.1358 m | 0.0939 m | 0.1124 m |
+| **single ICP** | **0.0576 m** | **0.1119 m** | 0.0786 m | 0.0877 m |
+| single ICP + per-tile dz | 0 by construction | 0.1102 m | 0.0740 m | 0.0874 m |
+
+The single solve cut the per-tile spread by **44%** and sigma by **18%**. So
+roughly half the rectangular stepping was our own alignment residual. The
+remainder is in the 2006-2008 data, but removing it explicitly buys only another
+1.5% of sigma — it is a small-amplitude step, not a dominant term.
+
+**Reconstruct test: PASS**, `max|resid| = 0.000e+00`. The 2026-05-21 product
+failed this at 0.24 m.
+
+**What is left is genuine along-track striping.** With the tile blocks gone it is
+plainly visible in the figure as east-west banding, and row-mean std (0.0786 m)
+is now 3.7x the column-mean std (0.0213 m). Part 1 described the artifact
+correctly even though it attributed the cause half wrong.
+
+### Registration QC — and a correction to Part 1
+
+| slope (deg) | n | median | robust sigma |
+|---|---|---|---|
+| 0–5 | 1,589,413 | −0.0072 | 0.0923 |
+| 5–10 | 1,751,418 | −0.0089 | 0.1075 |
+| 10–15 | 917,661 | −0.0036 | 0.1250 |
+| 15–20 | 435,084 | +0.0038 | 0.1488 |
+| 20–30 | 292,607 | +0.0134 | 0.1794 |
+| 30–90 | 75,992 | +0.0693 | 0.2683 |
+
+Fit: `sigma = +0.098*tan(slope) + 0.106`, implying ~**0.10 m** residual
+planimetric error. Part 1 reported a *negative* coefficient and "implied
+planimetric error ≈ 0 m". A DoD noisier on steep ground is the physically
+expected behaviour; Part 1's inverted result was the per-tile blocks inflating
+sigma on flat ground, where they were most visible. The alignment is still
+excellent — 0.10 m is a twentieth of a 2 m cell.
+
+## Change at known wells — the negative HOLDS
+
+The rebuilt DoD initially appeared to show a strong signal:
+
+| | >3 sigma at wells | background | naive z |
+|---|---|---|---|
+| original | 4.44% | 3.63% | +1.02 |
+| single ICP | **14.63%** | 4.08% | +12.39 |
+
+It survives a properly specified null too — toroidal shifts of the whole point
+pattern, which preserve clustering and the ~35 m autocorrelation (p = 0.001,
+observed 14.63% vs null 2.41–5.74%). **It is still an artifact.**
+
+Two facts kill it:
+
+1. **The "known wells" layer is circular.**
+   `annotations/well_head_pts_reprojected.gpkg` and
+   `annotations/wellhead_pits.gpkg` are the SAME 861 points (median separation
+   0.0 m, 100% within 5 m). These are hand-digitised *pits* — points placed
+   where a depression is visible on the 2019 LiDAR DEM. They are selected for
+   being depressions in the newer survey.
+2. **The two surveys differ ~7x in density** (2019 D20 QL2 ~4.8 pts/m2;
+   2006-2008 ~0.67 pts/m2). Local depression depth at those same points:
+
+   | survey | median local relief |
+   |---|---|
+   | 2019 (~4.8 pts/m2) | −0.3251 m |
+   | 2006-08 (~0.67 pts/m2) | −0.2343 m |
+
+   The sparse survey resolves only **72%** of the depth. The shortfall,
+   **−0.0907 m**, is the same sign as and larger than the observed DoD median at
+   those points (−0.0555 m).
+
+So the sparse older survey smooths small pits away, the annotation points were
+chosen for being small pits, and `2019 − 2006` therefore goes negative at
+exactly those locations. The artifact alone more than accounts for the
+observation. **No claim of subsidence at wells is supported.** Part 1's
+conclusion stands: this epoch pair cannot find historic orphaned wells.
+
+This also means any future DoD test against these points is circular. A
+non-DEM-derived well list (DEP permit coordinates) is required.
+
+## Outputs
+
+All EPSG:6346, 2 m, 2250x2250, aligned to every other 9t raster, in
+`data/derivatives/experiments/icp/change_9t/`:
+
+| file | content |
+|---|---|
+| `dem_2006_singleicp_9t_2m.tif` | aligned 2006-2008 DEM, one ICP solve |
+| `dod_9t_singleicp_2m.tif` | 2019 − 2006/08, m — **the product to use** |
+| `dod_9t_singleicp_tiledz_2m.tif` | same, per-tile residual dz removed |
+| `fig_dod_9t_singleicp_vs_original.png` | three-panel comparison |
+| `_icp_rebuild_9t.json` | every number quoted above |
+
+The 2026-05-21 rasters are left in place, unmodified, for comparison. They
+should not be used for analysis.
+
+## Reproduce
+```
+python notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py
+python notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py --reuse-icp
+```
+QC scripts (scratchpad, not repo-tracked): `_qc_icp_rebuild_9t.py`,
+`_test_wells_signal_9t.py`, `_test_wells_resolution_artifact.py`,
+`_diag_icp_9t_provenance.py`.
+
+## Deferred
+- **Destriping is now the only lever left.** Row-mean std 0.0786 m; removing
+  row+col means takes sigma 0.1119 → 0.0877 m (22%). Part 2's stack was tuned
+  against blocky artifacts that no longer exist and must be re-derived on
+  `dod_9t_singleicp_2m.tif` before its patch classification means anything.
+- **Part 2's outputs are stale.** `change_class_9t_2m.tif`,
+  `change_class_reliable_9t_2m.tif`, `dod_9t_nonerosional_2m.tif` and
+  `change_patches_9t.gpkg` all derive from the superseded DoD.
+- A non-DEM-derived well list, so the wells test stops being circular.

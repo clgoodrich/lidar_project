@@ -216,7 +216,28 @@ write-up). Deferred refinements from that same advice:
 
 ## ICP / change detection
 
-- **[BLOCKER 2026-07-31] Rebuild the 9t DoD — the shipped one fails its own
+- **[DONE 2026-07-31] Rebuilt with one ICP solve.** Per-tile spread 0.103 →
+  0.0576 m, robust sigma 0.1358 → 0.1119 m, reconstruct test now exact. Use
+  `dod_9t_singleicp_2m.tif`. See [[icp_change_9t]] Part 3.
+- **[CIRCULARITY 2026-07-31] `well_head_pts_reprojected.gpkg` is NOT a well
+  list.** It is byte-identical to `wellhead_pits.gpkg` — 861 hand-digitised
+  pits placed on the 2019 DEM. Any test that compares a 2019-derived product
+  against these points is circular. It produced an apparent 14.63%-vs-4.08%
+  DoD signal (p = 0.001 under a spatial null) that is fully explained by the
+  2006-08 survey resolving only 72% of pit depth at 7x lower density. **Get a
+  non-DEM-derived well list (DEP permit coordinates) before any further
+  validation against "known wells".** Audit past work that used this layer as
+  ground truth.
+- **[STALE 2026-07-31] Part 2 outputs derive from the superseded DoD.**
+  `change_class_9t_2m.tif`, `change_class_reliable_9t_2m.tif`,
+  `dod_9t_nonerosional_2m.tif`, `change_patches_9t.gpkg`. The destripe/
+  high-pass stack was tuned against blocky artifacts that no longer exist;
+  re-derive on `dod_9t_singleicp_2m.tif` before trusting the 16 "reliable
+  non-erosional patches".
+- **Destriping is the only lever left on the 9t DoD.** Row-mean std 0.0786 m
+  (3.7x the column-mean std); removing row+col means takes sigma 0.1119 →
+  0.0877 m, a 22% gain.
+- **[SUPERSEDED] Rebuild the 9t DoD — the shipped one fails its own
   reconstruct test.** `dem_diff_2m.tif` covers 99.97% of 9t while the
   `dem_new_2m.tif` it was supposedly built from covers 44.4%, and
   `diff − (new − old)` has mean |r| 0.24 m against a DoD σ of 0.14 m (not a
