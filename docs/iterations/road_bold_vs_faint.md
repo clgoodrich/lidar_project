@@ -289,6 +289,65 @@ was fitted on. `P_road` and `split` are attached — **filter to `split = 'test'
 before concluding anything about detection**, since train-block probabilities
 are memorisation.
 
+## Per-feature comparison of the labelled segments — 2026-07-31
+
+Every feature, bold-exemplar segments vs faint-exemplar segments, ranked by
+Cliff's δ. Two products, both on 9t.
+
+**Figure** `fig_bold_vs_faint_feature_ridgeline_9t_05.png` — one ridgeline row
+per feature. Each feature is z-scored on the **pooled** bold+faint values, so
+all eight share one x axis in pooled-SD units and the classes are normalised
+against each other rather than against the network. y is KDE density, rescaled
+per panel. Rug ticks are individual segments, so the reader can check the
+smoothing against the sample. Built on the 79 `roads.shp` segments that match an
+exemplar — the same set the cut was fitted on.
+
+| feature | bold median | faint median | δ | AUC | p |
+|---|---|---|---|---|---|
+| `P_road` | 0.856 | 0.023 | **+1.000** | 1.000 | 2.4e-14 |
+| `opos_zcontrast` | -4.72 | -0.44 | -0.981 | 0.990 | 7.4e-14 |
+| `incision_depth_m` | 0.515 m | 0.178 m | +0.976 | 0.988 | 9.9e-14 |
+| `lrm25_zcontrast` | -2.63 | -0.34 | -0.925 | 0.963 | 1.7e-12 |
+| `tpi15_zcontrast` | -2.46 | -0.46 | -0.906 | 0.953 | 4.8e-12 |
+| `slope_zcontrast` | +1.32 | -0.13 | +0.777 | 0.889 | 3.0e-09 |
+| `relief10_zcontrast` | +0.88 | -0.24 | +0.722 | 0.861 | 3.7e-08 |
+| `oneg_zcontrast` | -1.24 | -0.01 | -0.655 | 0.828 | 5.9e-07 |
+
+Three readings:
+
+- **`P_road` δ = +1.000 is not a result, it is the problem.** Perfect
+  separation, zero overlap. The road model is a trained detector, not an
+  independent measurement, and it has already decided these are different
+  things. This row is circular with respect to the classification and must not
+  be cited as evidence the classes are separable.
+- **The top four terrain features are one physical fact measured four ways.**
+  Bold roads are cut into the hillside, faint roads sit on it.
+  `incision_depth_m` is the legible version: **51.5 cm vs 17.8 cm** median.
+- **The bottom three are terrain, not roads.** `slope`, `relief10`, `oneg` sit
+  at δ 0.66-0.78 with visibly overlapping curves. A road on a steep slope *has*
+  to be cut to be level; these are consequences of siting, not independent
+  evidence of boldness. Using them as discriminators would import a terrain
+  bias.
+
+The distribution shapes also explain the earlier failures. The faint curves are
+tight and near zero, the bold ones wide and pushed out — "no measurable cut" is
+a narrow condition, "some amount of cut" spans a range. That asymmetry is why
+the whole-network distribution reads as a skewed continuum and why the
+unsupervised cuts landed inside the mode.
+
+**CSV** `bold_faint_exemplar_segments_9t_05_scores.csv` — the exemplar
+shapefiles themselves, chopped to ~50 m and scored: 36 bold segments from 8
+lines (1.786 km), 48 faint from 21 lines (2.351 km). Distinct from the figure's
+population, which is `roads.shp` segments *matched to* exemplars. Medians agree
+closely (`opos` -4.39 / -0.26 here vs -4.72 / -0.44 matched), which is the
+cross-check that the matching step is not distorting the labelled set.
+
+Both passes reuse the MAD floors computed on the 9t `roads.shp` network
+(`opos` 0.4600, `oneg` 0.4623, `slope` 1.3221, `lrm25` 0.0319, `tpi15` 0.0457,
+`relief10` 0.1267, `dem` 0.3457) so every score sits on one scale. `MIN_LEN` is
+lowered 20 m -> 5 m for the exemplar pass so no line is silently dropped; in the
+event no segment fell below 5 transects.
+
 ## Caveats, and they matter
 
 - **`dist_pad_m` = 0 for all 8 bold roads.** Bold-vs-faint may be partly
@@ -336,6 +395,12 @@ are memorisation.
 | `bold_vs_faint_summary_9t_05.json` | headline numbers + top 25 |
 | `fig_bold_vs_faint_profiles_9t_05.png` | median transect profiles, 6 rasters, road/context bands shaded |
 | `fig_bold_vs_faint_effects_9t_05.png` | ranked effect sizes with q labels |
+| `roads_bold_faint_9t_05.gpkg` | layers `roads_bold_9t` / `roads_faint_9t` / `roads_scored_9t` |
+| `roads_bold_faint_9t_05_scores.csv` | 4,043 network segments, features + class + `exlabel` + `P_road` + `split` |
+| `roads_bold_faint_9t_05_threshold.json` | cut, provenance, CV accuracy, shared MAD floors |
+| `fig_roads_bold_faint_split_9t_05.png` | network histogram with the cut |
+| `fig_bold_vs_faint_feature_ridgeline_9t_05.png` | 2026-07-31, per-feature ridgeline, pooled-z, δ-ranked |
+| `bold_faint_exemplar_segments_9t_05_scores.csv` | 2026-07-31, 84 exemplar segments (36 bold / 48 faint), 7 features + `P_road` |
 
 ## Method
 
@@ -348,5 +413,16 @@ terms (road − context). Detrending for the elevation residual uses |d| ∈
 ## Reproduce
 
 ```bash
+# the original 29-exemplar effect-size study
 python notebooks/wellsight_v2/analysis/_bold_vs_faint_roads.py
+
+# fit the cut and write the bold/faint layers over the 9t network
+python notebooks/wellsight_v2/analysis/_classify_9t_roads_bold_faint.py
+
+# score every segment of bold_roads.shp / faint_roads.shp to CSV
+python notebooks/wellsight_v2/analysis/_score_bold_faint_exemplar_segments.py
 ```
+
+The ridgeline figure is generated by a scratch script; regenerate it from
+`bold_faint_exemplar_segments_9t_05_scores.csv` or from the `exlabel` column of
+`roads_bold_faint_9t_05_scores.csv`.

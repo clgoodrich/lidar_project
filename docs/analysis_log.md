@@ -5,6 +5,68 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-31 — every feature ranked bold vs faint, and P_road turns out to be circular
+
+Full write-up: `docs/iterations/road_bold_vs_faint.md`, section "Per-feature
+comparison of the labelled segments". New script:
+`notebooks/wellsight_v2/analysis/_score_bold_faint_exemplar_segments.py`.
+
+Asked for a graphical comparison of the labelled bold vs faint segments across
+all eight scored parameters, then for the same as a CSV over the exemplar
+shapefiles themselves.
+
+**Figure.** `fig_bold_vs_faint_feature_ridgeline_9t_05.png`. One ridgeline row
+per feature over the 79 exemplar-matched `roads.shp` segments. Each feature
+z-scored on the **pooled** bold+faint values so all eight share one x axis in
+pooled-SD units; y is KDE density rescaled per panel; rug ticks are individual
+segments. Rows ordered by |Cliff's δ|.
+
+| feature | bold med | faint med | δ | AUC | p |
+|---|---|---|---|---|---|
+| `P_road` | 0.856 | 0.023 | +1.000 | 1.000 | 2.4e-14 |
+| `opos_zcontrast` | -4.72 | -0.44 | -0.981 | 0.990 | 7.4e-14 |
+| `incision_depth_m` | 0.515 | 0.178 | +0.976 | 0.988 | 9.9e-14 |
+| `lrm25_zcontrast` | -2.63 | -0.34 | -0.925 | 0.963 | 1.7e-12 |
+| `tpi15_zcontrast` | -2.46 | -0.46 | -0.906 | 0.953 | 4.8e-12 |
+| `slope_zcontrast` | +1.32 | -0.13 | +0.777 | 0.889 | 3.0e-09 |
+| `relief10_zcontrast` | +0.88 | -0.24 | +0.722 | 0.861 | 3.7e-08 |
+| `oneg_zcontrast` | -1.24 | -0.01 | -0.655 | 0.828 | 5.9e-07 |
+
+**Decision — `P_road` is barred from the discriminator set.** δ = +1.000 is
+perfect separation with zero overlap. `P_road` is a trained detector's output,
+not an independent measurement, so this is circular with respect to the
+classification. It stays in the tables as a *detection* diagnostic and is not
+cited as evidence the classes separate.
+
+**Decision — `slope`, `relief10`, `oneg` are demoted.** δ 0.66-0.78 with
+overlapping curves, and the mechanism is siting rather than boldness: a road on
+a steep slope must be cut to be level. Using them would import terrain bias.
+`opos_zcontrast` stays PRIMARY; `incision_depth_m` (δ 0.976, 51.5 cm vs 17.8 cm)
+is the interpretable companion.
+
+**Shape finding.** Faint distributions are tight near zero, bold ones wide and
+displaced — "no measurable cut" is narrow, "some amount of cut" spans a range.
+That asymmetry is the mechanism behind the skewed continuum that defeated the
+earlier unsupervised cuts.
+
+**CSV.** `bold_faint_exemplar_segments_9t_05_scores.csv`, 84 rows: 36 bold
+segments from 8 lines (1.786 km) + 48 faint from 21 lines (2.351 km), chopped to
+~50 m. Columns `seg_id, class, src_file, src_line, length_m, n_transects, mid_x,
+mid_y, P_road` + the 7 terrain features. Coordinates EPSG:6346.
+
+Two parameter choices in that pass. MAD floors are computed on the 9t
+`roads.shp` network and passed in (`opos` 0.4600, `oneg` 0.4623, `slope` 1.3221,
+`lrm25` 0.0319, `tpi15` 0.0457, `relief10` 0.1267, `dem` 0.3457) so exemplar and
+network scores share one scale. `MIN_LEN` lowered 20 m -> 5 m for this pass
+only, so no exemplar line is silently dropped; no segment ended up below 5
+transects.
+
+**Cross-check.** Exemplar-shapefile medians (`opos` -4.39 bold / -0.26 faint)
+track the matched-segment medians (-4.72 / -0.44). The 8 m / 60% matching step
+is not distorting the labelled set.
+
+---
+
 ## 2026-07-30 — the faint class gets labelled, and the bold/faint cut validates at 94.1%
 
 Full write-up: `docs/iterations/road_bold_vs_faint.md`. Script rewritten:
