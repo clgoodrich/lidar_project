@@ -216,10 +216,33 @@ write-up). Deferred refinements from that same advice:
 
 ## ICP / change detection
 
-- **Per-swath / per-tile bias correction of the 2006-2008 DEM.** The 9t DoD shows
-  along-track striping of ±0.22 m (row-mean std 0.094 m) plus mosaic-seam steps;
-  these are the dominant systematic error and set the detection floor at ~0.4 m.
-  Removing row+col means alone takes σ 0.183 → 0.154 m. See [[icp_change_9t]].
+- **[BLOCKER 2026-07-31] Rebuild the 9t DoD — the shipped one fails its own
+  reconstruct test.** `dem_diff_2m.tif` covers 99.97% of 9t while the
+  `dem_new_2m.tif` it was supposedly built from covers 44.4%, and
+  `diff − (new − old)` has mean |r| 0.24 m against a DoD σ of 0.14 m (not a
+  shift — ±4 px scanned, dy=dx=0 optimal). The repo script is not the version
+  that made the rasters (rasters 2026-05-21; `_icp_change_map.py` edited
+  2026-05-22 `acce517`, 2026-05-23 `375f9f5`) and its `mosaic_3x3` input no
+  longer exists. Rebuild reading `dem_9t_05.tif` as the 2019 side instead.
+  Inputs are all on hand. See [[icp_change_9t]].
+- **[CORRECTION 2026-07-31] The ±0.22 m "acquisition striping" is really
+  per-tile ICP residual bias.** Median DoD per old-tile footprint: 002958
+  −0.038, 002959 −0.057, 003111 +0.046, 003112 +0.044 m — 0.103 m spread vs a
+  0.136 m pooled σ. Each tile was solved independently and the mosaic butts the
+  biases together. Fix at the source: one ICP across the merged tile set, or
+  remove per-tile vertical offsets on the overlaps before mosaicking. This also
+  means Part 2's destripe/high-pass stack was tuned against the wrong artifact
+  geometry, so the 16 "reliable non-erosional patches" are not trustworthy.
+- **[CRS ALERT 2026-07-31] Never read the 2006-2008 LAZ without forcing
+  EPSG:2271.** Their WKT is self-contradictory — ftUS false easting (1968500)
+  and ftUS units, but stamped `AUTHORITY["EPSG",32128]` (the metre variant).
+  PDAL's derived proj4 is the mangled hybrid `+x_0=600000 +units=us-ft`;
+  trusting it lands the data ~417 km off. `_icp_change_map.py` already
+  hard-codes 2271, so existing work is safe.
+- **Six more 2006-2008 tiles are now on disk** (`002960, 003113, 003254-003257`
+  in `F:\lidar_project\consolidated\lidar_all\`). None overlap 9t — they extend
+  the change footprint north and east to X[616093..628618]
+  Y[4592119..4601369]. Only useful if the change-detection line continues.
 - **Vegetation / canopy masking** before differencing.
 - **Decide whether recent-activity change detection is a project goal.** The
   2006→2019 pair provably cannot find historic orphaned wells (they predate both

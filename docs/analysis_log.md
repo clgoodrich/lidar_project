@@ -5,6 +5,84 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-31 — CRS ALERT: the 2006-2008 LAZ headers carry the WRONG EPSG code
+
+Found while inspecting six newly downloaded tiles. Every
+`USGS_LPC_PA_STATEWIDE_N_2006_2008_*.laz` header contains a WKT that is
+**internally inconsistent**:
+
+| WKT element | value | implies |
+|---|---|---|
+| `PARAMETER["false_easting", ...]` | 1968500 | ftUS variant |
+| `UNIT[...]` | US survey foot | ftUS variant |
+| `AUTHORITY["EPSG", ...]` | **32128** | metre variant (false easting 600000 m) |
+
+PDAL's derived proj4 inherits the contradiction and is unusable:
+`+x_0=600000 ... +units=us-ft` — the metre false easting applied in feet.
+Trusting it puts the data **~417 km** off (1968500 − 600000 = 1368500 ftUS).
+
+The correct CRS is **EPSG:2271** (NAD83 / Pennsylvania North, ftUS).
+`notebooks/wellsight/build/_icp_change_map.py` already hard-codes
+`OLD_CRS = "EPSG:2271"` and overrides the header, so all existing ICP work is
+unaffected. **Never read these tiles without forcing the CRS explicitly.**
+
+Z is also ftUS; the pipeline's `Z * 0.3048` uses the international foot rather
+than the survey foot. Error is 2 ppm — ~1 mm over the 738 m elevation range,
+negligible against the 0.136 m DoD sigma. Recorded, not corrected.
+
+---
+
+## 2026-07-31 — fetched the 6 missing 2006-2008 tiles; ICP change product fails its own reconstruct test
+
+**Downloads.** `downloadlist 2006-2008 laz.txt` lists 12 tiles; 6 were already
+on F:. Fetched the rest to `F:\lidar_project\consolidated\lidar_all\`:
+`002960, 003113, 003254, 003255, 003256, 003257` (~6.2M points each, ~0.67
+pts/m², LAS 1.1 pf 1). Script: `scratchpad/_fetch_2006_tiles.sh`.
+Source: USGS 3DEP, public domain. Outside the repo — large-file rule N/A.
+
+**None of the six touch 9t.** Header bboxes reprojected to EPSG:6346 put them
+north and east of the block. 9t was already fully enclosed by `002958, 002959,
+003111, 003112` (30.6 + 17.0 + 36.9 + 20.6 = 105.1% with overlaps). The six add
+a wider change-detection footprint, X[616093..628618] Y[4592119..4601369].
+
+**Defects found in the existing 9t ICP product** (prompted by the observation
+that `dod_9t_2m.tif` does not look like 9t terrain). Scripts:
+`scratchpad/_verify_icp_is_9t.py`, `_verify_icp_coverage.py`,
+`_verify_icp_reconstruct.py`, `_verify_icp_fullraster.py`,
+`_verify_icp_tileblocks.py`, `_diag_icp_9t_provenance.py`.
+
+1. **Location is correct.** Bounds byte-identical to `dem_9t_05.tif`;
+   the chain's 2019 DEM correlates with it at 1.000000, median diff 0.0000 m.
+2. **The rectangular blocks are per-tile ICP residual bias, not acquisition
+   striping.** Median DoD per old-tile footprint: 002958 −0.038, 002959 −0.057,
+   003111 +0.046, 003112 +0.044 m — a **0.103 m spread** against a pooled
+   robust sigma of 0.136 m. Each tile got an independent ICP solution with its
+   own vertical bias and the mosaic butts them together. **This invalidates the
+   "swath-level bias in the 2006-2008 acquisition" attribution in
+   `docs/iterations/icp_change_9t.md`, and Part 2's destripe/high-pass stack
+   was tuned against the wrong artifact geometry.**
+3. **`dem_diff_2m.tif` does not reconstruct from its own inputs.**
+   `dem_new_2m` is valid over 44.4% of 9t; `dem_diff_2m` over 99.97%. Residual
+   `diff − (new − old)` has mean |r| 0.24 m against a DoD sigma of 0.14 m, and
+   it is not a shift (scanned ±4 px; dy=dx=0 is already optimal). Cause: the
+   script in the repo is not the version that produced the rasters — rasters
+   dated 2026-05-21, `_icp_change_map.py` edited 2026-05-22 (`acce517`) and
+   2026-05-23 (`375f9f5`). Its `mosaic_3x3` input no longer exists on any drive.
+
+Surviving from the original write-up: the registration QC and the clean
+negative at known wells (4.4% vs 3.63% background, z ~ 1.0) — both insensitive
+to a ±0.05 m per-tile step. Not surviving: the noise-floor attribution and,
+downstream of it, the 16 "reliable non-erosional patches".
+
+Rebuild is unblocked (old side = 4 LAZ on F:, new side = `dem_9t_05.tif`
+directly, dropping the missing `mosaic_3x3` dependency) but **not started** —
+pending a decision on whether recent-activity change detection is a project
+goal, since Part 1's negative means this line does not serve orphan-well
+detection. The fix that matters is solving one ICP across the merged tile set,
+or removing per-tile vertical offsets on the overlaps before mosaicking.
+
+---
+
 ## 2026-07-31 — CRS ALERT: drainage.shp is EPSG:6346, not 4326 like the other annotations
 
 Found while testing an external claim. `roads.shp`, `bold_roads.shp` and
