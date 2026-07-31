@@ -5,6 +5,92 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-07-31 — CRS ALERT: drainage.shp is EPSG:6346, not 4326 like the other annotations
+
+Found while testing an external claim. `roads.shp`, `bold_roads.shp` and
+`faint_roads.shp` are stored unprojected and are read with
+`set_crs(4326).to_crs(DST_CRS)`. **`drainage.shp` is already in EPSG:6346** and
+also carries no `.prj` (`crs is None`), so the same idiom silently mangles it —
+it reprojects projected metres as if they were degrees. Symptom: total length
+came out **0.00 km** instead of 45.04 km, with no exception raised.
+
+`drainage.shp` also has **986 of 2777 records with null geometry** (1791
+usable).
+
+Audit every existing read of `drainage.shp` for this pattern. The road model
+uses drainage as a negative class, so if any trainer applied the 4326 idiom the
+negatives were placed at garbage coordinates. Filed in BACKLOG.
+
+---
+
+## 2026-07-31 — external reports audited: one fabricated, one real but optimistically cross-validated
+
+Two external analyses of `bold_faint_exemplar_segments_9t_05_scores.csv` were
+supplied for review. Checked every quantitative claim against the file.
+Script: `scratchpad/_audit_external_reports.py`.
+
+**Report A (ChatGPT) — fabricated, do not use.** Decisive checks:
+
+| claim | actual |
+|---|---|
+| "bold segments have **higher** values of these contrast metrics" | `opos` bold **-4.83** vs faint -0.35; sign inverted on all four top features |
+| `relief10` bold mean ~1.8, faint ~0.7 | 1.376 and **-0.137** |
+| "incision_depth_m > ~100 m -> bold" | column max is **0.885 m** |
+| confusion matrix 45+5+10+50 | sums to 110; **n = 84** |
+| "`relief10` is the top predictor" | AUC 0.839, 5th of 7 |
+| "no perfect collinearity, features not redundant" | 10 pairs at \|rho\| >= 0.90, `tpi15`~`lrm51` = 0.998 |
+| `opos_zcontrast` = "planform curvature" | it is positive openness |
+
+Its recommended index weights `relief10` at 0.45 and `opos` at 0.03 — inverted
+against measured discriminating power (AUC 0.839 vs 0.992). Applying it would
+degrade the classifier.
+
+**Report B (Fable) — genuine.** Its per-feature AUCs match ours to within 0.002
+across all seven (0.992/0.987/0.976/0.968/0.869/0.839/0.766). It independently
+reached the `P_road` circularity conclusion. Two corrections:
+
+- Claimed `opos <= -1.50` gives 97.6% (82/84) with **zero false negatives**.
+  Measured: **96.4% (81/84), 1 FN and 2 FP**.
+- **LOO-CV is not grouped.** The 84 segments come from only **29 parent lines**,
+  and same-line segments are adjacent 50 m pieces of one road, so plain LOO
+  trains on a segment's own neighbours.
+
+| rule | LOO | leave-one-line-out | drop |
+|---|---|---|---|
+| `opos` alone | 95.2% | **91.7%** | -3.6 |
+| `opos` + `tpi15` (its 98.8% rule) | 95.2% | **92.9%** | -2.4 |
+| `opos` + `incision_depth_m` | 96.4% | **95.2%** | -1.2 |
+| all 7, logistic | 95.2% | **92.9%** | -2.4 |
+
+**Its recommendation survives the correction anyway.** `opos` + `incision` is
+the best rule under grouped CV and the only one losing under 2 points — the two
+features come from independent derivation chains (openness raster vs transect
+profile geometry), which is why it degrades least. Adopted as the reported
+two-feature rule at **95.2% grouped CV**.
+
+**Rejected from Report B: the "clean bimodal composite".** It proposes an
+equal-weight composite of the top four and describes its distribution as
+bimodal, for thresholding when scaling to unlabelled segments. The bimodality is
+an artifact of the exemplars being hand-picked clear cases. Measured on the full
+4,043-segment network the distribution is a skewed continuum — KDE trough
+**4.9% deep** at percentile 1.7, BIC still improving at k=4. This is the same
+error corrected in the 2026-07-30 entry and it must not be reintroduced.
+
+**Open, and worth the user's eyes: `f0058`.** A faint-labelled segment sitting
+inside the bold cluster on every trough metric (`opos` -3.43, `incision` 0.78 m,
+above the bold median 0.487) while scoring **P_road 0.0007**. Its only sibling on
+parent line 8, `f0057`, is flat (`opos` +0.08) — one 50 m piece deeply incised
+next to one that is not, which is a crossing, not a road. Location
+**622846.8, 4593369.5** (EPSG:6346).
+
+Attempted to test the gully hypothesis against `drainage.shp`: **inconclusive**.
+The nearest drainage annotation to *any* exemplar segment is 142 m, so drainage
+labels do not cover this area. Needs visual inspection.
+`f0045` (`opos` -1.58, `incision` 0.37) is a genuine borderline case, not an
+error.
+
+---
+
 ## 2026-07-31 — swept 31 candidate features; 3 are worth adding, intensity is dead
 
 Asked whether any parameters are missing from the bold/faint panel. Tested three

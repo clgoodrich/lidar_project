@@ -27,6 +27,21 @@ Full results in `docs/iterations/road_bold_vs_faint.md`.
   open: the model remains blind to the class — exemplar-matched faint segments
   score **0.037** mean P(road) against 0.855 for bold. **Retrain the road model
   on the extended `roads.shp`** and re-measure; that is now the top road task.
+- **[CRS ALERT 2026-07-31] Audit every read of `drainage.shp`.** It is stored in
+  **EPSG:6346 with no `.prj`**, unlike `roads.shp`/`bold_roads.shp`/
+  `faint_roads.shp` which are unprojected. The project-wide
+  `set_crs(4326).to_crs(DST_CRS)` idiom therefore mangles it silently — length
+  reads 0.00 km instead of 45.04 km, no exception. The road model uses drainage
+  as a **negative class**, so any trainer applying that idiom placed its
+  negatives at garbage coordinates. Also 986 of 2777 records have null geometry.
+  Check `_road_unet*.py` and the drainage retrain before trusting those runs.
+- **Inspect segment `f0058` at 622846.8, 4593369.5 (EPSG:6346).** Faint-labelled
+  but sits inside the bold cluster on every trough metric (`opos` -3.43,
+  `incision` 0.78 m > bold median 0.487) while scoring P_road 0.0007. Its only
+  sibling on parent line 8 is flat (`opos` +0.08), so the line crosses something
+  incised rather than following it. Likely a gully or ditch in the faint
+  exemplar set. The `drainage.shp` test was inconclusive — nearest drainage
+  annotation to any exemplar is 142 m, so that layer does not cover this ground.
 - **Add 3 features to the bold/faint panel** (swept 2026-07-31, full table in
   `analysis_log.md`): `berm_min_m` (δ +0.964, beats `incision_depth_m`),
   `sgres19_zcontrast` (δ -0.963, raster never sampled), `raniso_zcontrast`
