@@ -40,6 +40,7 @@ Reproduce:
 """
 from __future__ import annotations
 
+import datetime as _dt
 import json
 import sys
 from pathlib import Path
@@ -268,9 +269,15 @@ def main() -> int:
         g[cols].to_file(lines_path, layer=name, driver="GPKG",
                         mode="a" if name != "added" else "w")
 
+    # Stamp from file mtimes. The review is edited in QGIS between rounds, so a
+    # hardcoded date silently goes stale the moment the user saves again.
+    def _mtime(p):
+        return _dt.date.fromtimestamp(p.stat().st_mtime).isoformat()
+
     summary = {
-        "built": "2026-07-20",
-        "source_review_edited": "2026-06-17",
+        "built": _dt.date.today().isoformat(),
+        "source_review_edited": _mtime(REVIEW / "review_roads_613590.gpkg"),
+        "source_added_edited": _mtime(REVIEW / "added_roads_613590.gpkg"),
         "n_kept": len(kept), "km_kept": round(kept.length.sum() / 1000, 2),
         "n_rejected": len(rejected),
         "km_rejected": round(rejected.length.sum() / 1000, 2),

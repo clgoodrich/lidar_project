@@ -23,6 +23,8 @@ CLI:
   python notebooks/wellsight_v2/roads/_road_unet_1m_corrected.py --epochs 15
   ... --scratch          train from random init instead of fine-tuning
   ... --eval-only        just re-run evaluation with the saved best.pt
+  ... --tag r2           write to road_unet_1m_corrected_r2 (one dir per
+                         active-learning round, so round 1 stays comparable)
 """
 from __future__ import annotations
 
@@ -44,7 +46,7 @@ from _common import DERIV, DERIV_9T, make_profile, write_tif
 from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet, load_stats,
                  predict_full_tile, train_loop)
 
-OUTDIR = DERIV_9T / "road_unet_1m_corrected"
+OUTDIR = DERIV_9T / "road_unet_1m_corrected"   # overridden by --tag
 CHAMPION = DERIV_9T / "road_unet_1m_recall"
 
 FEATURES = DERIV_9T / "features_pit_9t_1m.tif"
@@ -233,8 +235,16 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=2e-4)
     ap.add_argument("--scratch", action="store_true")
     ap.add_argument("--eval-only", action="store_true")
+    ap.add_argument("--tag", default=None,
+                    help="suffix for the output dir, e.g. 'r2' -> "
+                         "road_unet_1m_corrected_r2. Each active-learning "
+                         "round gets its own so earlier metrics stay readable.")
     args = ap.parse_args()
 
+    global OUTDIR
+    if args.tag:
+        OUTDIR = OUTDIR.with_name(f"{OUTDIR.name}_{args.tag}")
+    print(f"output dir: {OUTDIR}")
     OUTDIR.mkdir(parents=True, exist_ok=True)
     manifest = pd.read_csv(MANIFEST)
     blocks = gpd.read_file(BLOCKS, layer="blocks")
