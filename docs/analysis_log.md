@@ -5,6 +5,59 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-04 — pit/pad scoring moved to centroid matching; annotations expanded; pits retrained
+
+Full write-up in `docs/iterations/centroid_matching_pit_pad_9t.md`.
+
+**Why.** A reviewer could not follow the abstract's pit/pad results. The cause
+was not wording. We were reporting an IoU-strictness sweep for objects the
+literature says should not be scored by IoU. Fiorucci et al. 2022 argues exactly
+that; Lidberg et al. 2024 — hunting pits, U-Net, ALS, forested Sweden, the
+closest published analogue — uses centroid matching and reports only
+recall/precision/F1. Both logged in `literature/CITATIONS.md`.
+
+**Annotation expansion.** User reviewed unmatched detections in QGIS. `pit_inside`
+in 9t 426 -> 503; `pit_outside` 428 -> 506. 56 further pits landed in
+`northcentral_b19/e1423n2235` (McKean) and are `unused` in the manifest.
+All 381 unmatched pad predictions reviewed: **277 confirmed real, 104 rejected**.
+Confirmed pads were deliberately NOT added to `plat.shp` — scoring evidence only.
+
+**Measurement correction, isolated.** Same 587 June-10 predictions re-scored
+against the growing annotation set, no model change:
+
+| annotations | truth | matched | precision | recall | F1 |
+|---|---|---|---|---|---|
+| Jun 10 (426) | 423 | 385 | 0.656 | 0.910 | 0.762 |
+| 12:59 (503) | 496 | 451 | **0.768** | 0.909 | **0.833** |
+
+66 of 202 "false positives" were real wells.
+
+**Pit retrain.** `_pit_unet_cv5.py --folds 5 --epochs 40`, 54.8 min. Fold dirs
+deleted first — the script silently reuses checkpoints and prob rasters.
+Trained on the 12:35 manifest = **471** pits in 9t (not 503; the last 32 arrived
+mid-run). Scored on current rims: precision **0.716**, recall **0.931**, F1 0.809.
+An earlier 0.667 was against the stale 12:35 rim set and is superseded.
+
+**Match rules** (`_match_rules_pit_pad_9t.py`). Bidirectional containment gains
+pads +10 matches (recall 0.928 -> 0.943), pits nothing. The overlap-fraction leg
+never fires. Log-space 3-sigma size cut = 283 m2; the linear equivalent is
+-839 m2 and filters nothing. Size filter DROPPED for pads — 6 confirmed pads sit
+below the cut, smallest 106 m2.
+
+**Shipped numbers.** pit 0.931 / 0.716; pad 0.943 / 0.898. Pad recall uses the
+650 independently drawn pads, not the 921 grown set — the 0.960 figure is
+circular, since confirmed pads are found by construction.
+
+**Five abstract corrections** (v13 -> v17): 471 not 503 training pits; 93% not
+94% pit locate; 0.72 not 0.67 pit precision; 94% not 96% pad locate; 735 not
+1,220 road segments (`recall_clean` 0.982 applies to the leakage-free subset).
+Abstract also trimmed 311 -> 279 words on request.
+
+**Do not compare pit 0.72 against pad 0.90 as models.** Pads had a complete
+candidate review; pits had none. 187 pit candidates deferred.
+
+---
+
 ## 2026-07-31 — 9t DoD rebuilt with ONE ICP solve; the "signal at wells" is circular
 
 Script: `notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py`. Full write-up

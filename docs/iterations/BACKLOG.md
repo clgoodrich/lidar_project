@@ -16,6 +16,32 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
 - **Barlow builder**: pin EDI package revisions at fetch time (currently auto-newest → provenance drift); fix flow-accum nodata→0 leak (`np.clip` turns nodata into log1p(0)=0 valid values); document the vertical-datum assumption (all three epochs ellipsoidal — constant offsets are absorbed by the DoD median-bias correction, but say so); curvature is profile (WBT) vs Barlow's ArcGIS standard curvature — a deliberate, documented deviation to keep.
 
+## Pit/pad scoring + annotation (added 2026-08-04)
+
+Full results in `docs/iterations/centroid_matching_pit_pad_9t.md`.
+
+- **[DEFERRED 2026-08-04] Review the 187 unreviewed pit candidates.**
+  `data/derivatives/eval_9t_centroid_matching/pit_candidates_filtered_heldout_9t.shp`.
+  Pads went precision 0.623 -> 0.898 on a complete review; pits have had none, so
+  the 0.72 vs 0.90 gap in the abstract is review effort, not model quality. User
+  explicitly held this for another time.
+- **Retrain the pad model.** Pads were never retrained. The 277 confirmed pads
+  are scoring evidence only and are unused as training signal.
+- **Rebuild pits on 503.** The retrain used the 12:35 label raster (471 in 9t);
+  32 more floors and 37 rims arrived at 12:59, after it started.
+- **`e1423n2235` (McKean) as a second block.** 56 annotated pits already sit
+  there with a full 1 m derivative stack but no label raster or manifest, so they
+  train nothing. This is the cheapest route to the held-out-TILE score that
+  `benchmark_context_what_counts_as_good.md` ranks as the top methodology fix.
+- **[METRIC] IoU is retired for pits and pads**, retained for roads. Centroid
+  matching per Fiorucci et al. 2022 / Lidberg et al. 2024. Any older doc quoting
+  pit/pad IoU recall is on the superseded metric.
+- **Recall-from-verified-detections is circular** and must never be quoted.
+  Precision may use confirmed detections; recall needs an independently drawn
+  reference set. Applies to `well_head_pts_reprojected.gpkg` too — see the ICP
+  circularity finding.
+- 4 rims with no floor and 1 floor with no rim remain inside 9t.
+
 ## Road label coverage (added 2026-07-29) — HIGHEST PRIORITY for roads
 
 Full results in `docs/iterations/road_bold_vs_faint.md`.

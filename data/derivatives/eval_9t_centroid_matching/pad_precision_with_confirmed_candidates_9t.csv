@@ -1,0 +1,4 @@
+basis,n_truth,n_pred,TP,precision,recall,f1
+annotation only (as published),650,984,603,0.613,0.928,0.738
+"+confirmed, truth NOT grown",650,984,880,0.894,1.0,0.944
+"+confirmed, truth grown",927,984,880,0.894,0.949,0.921

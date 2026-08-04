@@ -1,0 +1,9 @@
+target,rule,n_truth,n_pred,matched,precision,recall,f1,unmatched,missed
+pit,"0 baseline (centroid, manifest only)",469,658,439,0.667,0.936,0.779,219,30
+pit,1 + all annotations (DEFECT FIX),469,658,439,0.667,0.936,0.779,219,30
+pit,2 + bidirectional containment,469,658,439,0.667,0.936,0.779,219,30
+pit,3 + size filter,469,634,432,0.681,0.921,0.783,202,37
+pad,"0 baseline (centroid, manifest only)",650,984,603,0.613,0.928,0.738,381,47
+pad,1 + all annotations (DEFECT FIX),650,984,603,0.613,0.928,0.738,381,47
+pad,2 + bidirectional containment,650,984,613,0.623,0.943,0.75,371,37
+pad,3 + size filter,650,932,609,0.653,0.937,0.77,323,41

@@ -1,45 +1,41 @@
 # AGU 2026 abstract — WellSight
 
-v13, 2026-07-28. 1,993 characters / 322 words (AGU limit 2,000 characters).
+v17, 2026-08-04. 1,809 characters / 279 words (AGU limit 2,000 characters).
+191 characters spare.
 
-**v13 makes the pad numbers cross-validated too.** The pad 5-fold run finished,
-so both models are now scored the same way and the asymmetry flagged in v9 is
-gone. Pad recall 0.88 to 0.92 at IoU 0.3, precision 0.55 to 0.61. The sentence
-now reads "both models" and "every pit and pad". Paid for by dropping the second
-"annotated" in "426 annotated pits and 650 pads".
+**v17 trims 10% of the words** on request, 311 -> 279, with every number checked
+to survive verbatim. Cuts were redundancy only: "heavy vegetation" (restated two
+sentences later as "dense deciduous canopy"), "over this region", "a stack of",
+"rather than overlap", and seven smaller ones. Median sentence 17 -> 15 words.
 
-**v11 added a closing sentence** on scope and next steps, paid for by four
-redundancy trims. **v12 is the author's edit to that sentence**, naming the
-scope as the rest of Pennsylvania rather than "new terrain". That is the
-stronger claim, since it is bounded and checkable, and we already hold McKean
-and Venango data outside 9t. It costs 13 characters.
+**v14-v16 replaced the metric.** The IoU-strictness sweep is gone. A reviewer
+could not follow it, and the reason was not wording: IoU is the wrong criterion
+for small discrete objects, per Fiorucci et al. 2022, and the closest published
+analogue (Lidberg et al. 2024, hunting pits) uses centroid matching and reports
+only recall/precision/F1. Both are in `literature/CITATIONS.md`. IoU is retained
+for roads, where outline overlap is the right measure.
 
-⚠️ **Only 7 characters of headroom remain.** If AGU's counter normalises
-whitespace or counts anything beyond the body, this goes over with no room to
-react. The cheapest 12 characters back, at no loss of meaning, is
-"the rest of Pennsylvania" to "Pennsylvania" — the western PA study area is
-already established three sentences earlier.
+**Five numbers were wrong and are fixed in v16.** 471 training pits not 503
+(503 is the current annotation count; no model has seen it); 93% not 94% pit
+locate; 0.72 not 0.67 pit precision (0.67 scored the retrained models against a
+stale rim set); 94% not 96% pad locate (0.96 credits confirmed pads by
+construction); 735 not 1,220 road segments (`recall_clean` 0.982 applies to the
+leakage-free subset — this one dates to v13).
 
-**v10 is the author's rewrite.** He opened with the historical boom instead of
-the statistics, cut the DEP-coordinate finding, cut the Permian transfer, and
-cut the clDice sentence. Those are his calls and they stand. Two factual
-corrections and a length fix were applied on top, listed under "Corrections
-applied to the v10 draft" below.
+**Scope moved out of the closing sentence.** "These results come from one survey
+area" was a trailing caveat that also went stale the moment a second block
+existed. The scope now rides inside the results sentence as "in the first survey
+block", which stays true permanently, and the close states active work.
 
-v1 was roads-heavy. v2 balanced the three signatures but wrongly presented
-Mask R-CNN and YOLO as the method for pits and pads. **U-Net is the method**
-across all three targets; the instance detectors were comparison experiments.
-v3 fixed that but carried four numbers that later turned out to be wrong.
-v4 replaced every one of them. v5 re-framed the results around standard
-detection metrics — IoU, thresholds, recall, precision. **v6 drops Mask R-CNN
-and YOLO entirely.** They were comparison experiments and the abstract is a
-U-Net result. **v9 replaces the pit numbers with 5-fold cross-validated ones**
-covering all 426 pits instead of one 65-pit split. Earlier versions are in git
-(`df30913`, `e8692a2`, `ee55d73`, `a0ba984`, `a0e7e24`, `3c63c2e`).
+Provenance for every figure, and the pit/pad review asymmetry that explains the
+0.72 vs 0.90 gap, is in `docs/iterations/centroid_matching_pit_pad_9t.md`.
+
+Earlier versions are in git (`df30913`, `e8692a2`, `ee55d73`, `a0ba984`,
+`a0e7e24`, `3c63c2e`, `c448a85`, `32548fd`, `9e231cf`, `712eb39`).
 
 ---
 
-Orphan and abandoned wells are an ongoing problem across North America. During the 19th century, thousands of wells were drilled in western Pennsylvania, representing the North American oil boom. This boom was wild and reckless and poorly documented, leaving the hills and valleys riddled with potentially dangerous wells leaking methane and brine into forests and streams. Given the heavy vegetation in the area, locating these wells involves countless hours on foot or reliance on landowners or hikers. We present a lidar-based framework to detect the surface expressions of orphaned wells. Airborne lidar resolves the ground beneath the dense deciduous canopy, revealing terrain that optical imagery cannot capture. We process US Geological Survey 3D Elevation Program 2019 swaths over this region into 0.5 and 1 meter resolution models. For each model we derive a stack of terrain channels including local relief models, topographic openness, and slope residuals. Older wells leave three recurring signs. These are graded pads marking the site, access roads, and shallow depressions. We segment all three with U-Nets trained on the same terrain stack, from 426 annotated pits and 650 pads. We score only against hand-drawn annotations withheld from training. Thresholds are selected on validation data and test scored once. We cross-validate both models five ways, so every pit and pad is scored by a model that never saw it. Pit recall falls from 0.85 at an IoU of 0.3 to 0.61 at an IoU of 0.6. Pad recall falls from 0.92 to 0.62 across the same range. Precision at an IoU of 0.3 is 0.62 for pits and 0.61 for pads. Roads are scored by length rather than overlap, and the model recovers 98 percent of 1,220 withheld segments at a pixel IoU of 0.58. Withheld hand-drawn negatives confirm the road model rejects drainage channels. These results come from one survey area, and current work extends the framework to the rest of Pennsylvania and to field validation of undocumented candidates.
+Orphan and abandoned wells are an ongoing problem across North America. During the 19th century, thousands of wells were drilled in western Pennsylvania, representing the North American oil boom. This boom was wild and reckless and poorly documented, leaving the hills and valleys riddled with dangerous wells leaking methane and brine into forests and streams. Locating them today takes countless hours on foot or reports from landowners and hikers. We present a lidar-based framework to detect their surface expressions. Airborne lidar resolves the ground beneath the dense deciduous canopy, revealing terrain optical imagery cannot capture. We process US Geological Survey 3D Elevation Program 2019 swaths into 0.5 and 1 meter models. From each we derive terrain channels including local relief models, topographic openness, and slope residuals. Older wells leave three recurring signs. These are graded pads marking the site, access roads, and shallow depressions. We segment all three with U-Nets trained on the same terrain stack, from 471 annotated pits and 650 pads. Scoring uses hand-drawn annotation withheld from training, plus detections checked by hand. Thresholds are selected on validation data and test scored once. Five-fold cross-validation scores every annotated feature in the first survey block by a model that never saw it. A detection counts when it contains the hand-drawn feature or sits inside it. The models locate 93 percent of pits and 94 percent of pads, at precision 0.72 and 0.90. Roads are scored by length, and the model recovers 98 percent of 735 withheld segments at a pixel IoU of 0.58. Hand-drawn negatives confirm the road model rejects drainage channels. We are extending this protocol to more blocks across Pennsylvania and field validation of undocumented candidates.
 
 ---
 
@@ -75,6 +71,10 @@ rows, 872 unique). The "median 26.4 m" figure quoted from that table was the
 median distance to the nearest *detection*, not DEP positional accuracy.
 
 ## Claims and their backing
+
+> **Superseded 2026-08-04 for pits and pads.** The rows below quote IoU-based
+> scores from the pre-retrain models. Road rows still stand except the 1,220
+> count, which should be 735. See `centroid_matching_pit_pad_9t.md`.
 
 All detection numbers are scored against hand-drawn annotation withheld from
 training. No state well list is used to score any model.
@@ -203,10 +203,10 @@ IoU.
 Precision at IoU 0.3 is 0.617, which still rounds to the 0.62 already in the
 abstract. Per-fold recall at IoU 0.3 spans 0.736 to 0.954.
 
-**The pad numbers are still single-split.** A pad CV is running. Until it
-finishes, the pad sentence carries an optimism the pit sentence no longer does,
-and the two are not scored the same way. Full write-up in
-`docs/iterations/pit_unet_cv5_9t.md`.
+**Superseded 2026-08-04.** The pad CV finished, and both models were then
+re-scored under centroid matching rather than IoU, so every number in this
+section is on the retired metric. Current figures are in
+`docs/iterations/centroid_matching_pit_pad_9t.md`.
 
 ## Voice check
 Median sentence 11 words, max 24, 26 sentences, 1,976 characters. No em-dashes,

@@ -35,6 +35,8 @@ is the source of record.
 | Kervadec et al. | 2019 | Boundary loss | *Candidate* — extreme foreground imbalance | `docs/iterations/pit_refinement_options.md` | ✓ `kervadec_2019_boundary_loss.pdf` |
 | Hu et al. | 2019 | Topology loss (Betti numbers) | *Candidate* — Betti-0 anti-fragmentation, the pit analogue of clDice | `docs/iterations/pit_refinement_options.md` | ✓ `hu_2019_topology_preserving_segmentation.pdf` |
 | Stucki et al. | 2024 | Efficient Betti matching | *Candidate* — makes the Betti-0 loss tractable | `docs/iterations/pit_refinement_options.md` | ✓ `stucki_2024_efficient_betti_matching.pdf` |
+| Fiorucci et al. | 2022 | IoU is the wrong measure for small discrete objects; centroid-based measures | **Adopted** — replaced the pit/pad IoU sweep with centroid matching in the AGU abstract | `notebooks/wellsight_v2/eval/_cv5_centroid_precision_pit_pad_9t.py`; `_match_rules_pit_pad_9t.py`; `docs/agu_abstract_2026.md` | cite-only |
+| Lidberg et al. | 2024 | Hunting pits from national ALS with U-Net; centroid scoring | **Adopted** — the closest published analogue; its recall/precision/F1 protocol is now ours, and its Table 1 is our comparison band | `docs/iterations/centroid_matching_pit_pad_9t.md` | ✓ `lidberg_2024_hunting_pits_als_deep_learning.pdf` |
 | Suh et al. | 2021 | U-Net on lidar for relict charcoal hearths | *Candidate* — closest published analogue; motivates VAT/SVF channels | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Zakšek et al. | 2011 | Sky-View Factor | *Candidate* — new channel, pending redundancy check vs `openness_pos` | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Guyot et al. | 2018 | Multi-visualization CNN for buried structures | *Candidate* — supports the channel-stack approach | `docs/iterations/pit_refinement_options.md` | cite-only |
@@ -222,6 +224,20 @@ change is actually made.
 - **Caveat:** must be redundancy-checked against existing channels before use, the same test that caused RRIM to be rejected as a model input.
 - **Generated:** `docs/iterations/pit_refinement_options.md` ("Channels we do not have").
 - **Source:** https://doi.org/10.3390/rs13224630 — cite-only (MDPI blocks automated download).
+
+### Fiorucci, Verschoof-van der Vaart, Soleni, Le Saux & Traviglia 2022 — new evaluation measures
+- **Citation:** Fiorucci, M., Verschoof-van der Vaart, W.B., Soleni, P., Le Saux, B., Traviglia, A. (2022). "Deep Learning for Archaeological Object Detection on LiDAR: New Evaluation Measures and Insights." *Remote Sensing* 14(7): 1694. doi:10.3390/rs14071694.
+- **About:** Argues Intersection-over-Union is inadequate for small discrete archaeological objects, because a few pixels of boundary disagreement on a feature metres across dominates the overlap ratio and scores a correctly located object as a miss. Proposes centroid-based and pixel-based measures instead.
+- **WellSight used it for:** Replacing the pit/pad IoU-strictness sweep with centroid matching. Our existing `containment` / `locate` columns were already this criterion under another name; this paper is why they became the reported metric rather than a side column. IoU is retained for roads, where outline overlap is the right measure.
+- **Generated:** `docs/iterations/centroid_matching_pit_pad_9t.md`; `notebooks/wellsight_v2/eval/_cv5_centroid_precision_pit_pad_9t.py`; `notebooks/wellsight_v2/eval/_match_rules_pit_pad_9t.py`; the results paragraph of `docs/agu_abstract_2026.md` (v14 onward).
+- **Source:** https://doi.org/10.3390/rs14071694 — cite-only (MDPI blocks automated download).
+
+### Lidberg, Westphal, Brax, Sandström & Östlund 2024 — hunting pits from ALS
+- **Citation:** Lidberg, W., Westphal, F., Brax, C., Sandström, C., Östlund, L. (2024). "Detection of Hunting Pits using Airborne Laser Scanning and Deep Learning." *Journal of Field Archaeology* 49(6): 395–405. doi:10.1080/00934690.2024.2364428.
+- **About:** U-Net over topographical indices from Swedish national ALS (1–2 pts/m²) to map 2,519 hunting pits across 1,275 km². Best model F1 0.76, recall 70%, precision 85%, on profile curvature from a 0.5 m DEM. Evaluation quotes Fiorucci et al. 2022 directly: *"A centroid-based approach described by Fiorucci and colleagues (2022) was used to calculate the number of true positive, false positive, and false negative predicted hunting pits."* No IoU is used anywhere.
+- **WellSight used it for:** The closest published analogue to our pit task — small circular depressions, forest canopy, ALS, U-Net, 0.5 m vs 1 m DEM. Its protocol (recall / precision / F1 from centroid matching) is now ours, and its Table 1 is the band we compare into. Our centroid F1 of 0.75–0.81 sits alongside their 0.76 at roughly 3x their point density.
+- **Generated:** `docs/iterations/centroid_matching_pit_pad_9t.md`; comparison band in `docs/iterations/benchmark_context_what_counts_as_good.md`.
+- **Local PDF:** `literature/papers/lidberg_2024_hunting_pits_als_deep_learning.pdf` (open access via SLU Epsilon).
 
 ### Zakšek, Oštir & Kokalj 2011 — Sky-View Factor
 - **Citation:** Zakšek, K., Oštir, K., Kokalj, Ž. (2011). "Sky-View Factor as a Relief Visualization Technique." *Remote Sensing* 3(2): 398–415. doi:10.3390/rs3020398.
