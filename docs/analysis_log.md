@@ -5,6 +5,56 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-05 — 613590 road review folded into `annotations/roads.shp` (+188 km)
+
+Script: `notebooks/wellsight_v2/annotations/_merge_review_added_roads_613590_into_roads_shp.py`
+
+**Inputs.** Round-2 active-learning review package for tile 613590:
+`review/review_roads_613590.gpkg` layer `review` (15,057 chunks, all
+`status='keep'`, 138.56 km) and `review/added_roads_613590.gpkg` layer `added`
+(487 hand-drawn missed roads, 49.04 km). Chunk `seg_id` runs 27..16994 with
+15,057 present, so **1,911 chunks were deleted by hand** during review. Rejected
+geometry is NOT merged — it stays in the review package as a hard negative for
+retraining.
+
+**Reassembly.** The review layer is model output chunked to ~9 m (median 9.2 m)
+so a bad stretch can be flagged without splitting a line. Appending 15,057 stubs
+would turn `roads.shp` from hand-drawn polylines (158 m mean) into chunks, so
+chunks were dissolved by `parent_id`, `linemerge`d, then exploded:
+**15,057 chunks -> 1,003 lines, 138.56 km, mean 138 m**. Length is preserved to
+2 decimals, so the merge is lossless. 1,003 parts from 1,003 parents means no
+parent was left gapped by the deletions — whole parents were removed, not middles.
+
+**Checks before writing.**
+- Only 1.03 km of the 487 added lines (2.1%) falls within 2 m of a kept model
+  road, so the hand-drawn additions are new road, not retracing.
+- **0** new lines fall within 5 m of any pre-existing `roads.shp` line.
+  `roads.shp` had zero coverage in the 613590 extent, so this is a clean append
+  with no dedup needed.
+- All geometries valid, none empty, CRS EPSG:4326 preserved.
+
+**Result.** 2,200 features / 348.31 km -> **3,690 features / 535.91 km**.
+New `src` column records provenance: `prior` 2200, `613590_review_r2` 1003,
+`613590_added_r2` 487. Consumers of `roads.shp` read geometry only
+(`_road_morphology_bins.py`, `_classify_9t_roads_bold_faint.py`,
+`_bold_vs_faint_roads.py`, `_icp_change_classify_9t.py`), so the added column is
+inert.
+
+**Status: staged, not yet in place.** `roads.shp` was open in QGIS and held a
+write lock. The merged product is at
+`data/derivatives/annotations/roads_with_613590_r2_staged.gpkg`. Pre-merge copy
+of `roads.*` is at `data/derivatives/annotations/_backup_roads_2026-08-05/`.
+Rerun the script with the layer closed to write `roads.shp` in place, then rerun
+`notebooks/wellsight_v2/annotations/_prep_annotations.py` so the `roads` layer in
+`annotations_proj.gpkg` — which the training scripts read — stops being stale.
+
+**Caveat.** These 138.56 km are model output the annotator vetted, not lines drawn
+from scratch. Scoring a road model on 9t+613590 now includes 138 km of ground
+truth that a previous road model proposed. The 49 km of `added` lines and the
+existing 348 km are independent of any model.
+
+---
+
 ## 2026-08-04 — pit/pad scoring moved to centroid matching; annotations expanded; pits retrained
 
 Full write-up in `docs/iterations/centroid_matching_pit_pad_9t.md`.

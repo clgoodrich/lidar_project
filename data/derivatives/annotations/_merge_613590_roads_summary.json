@@ -1,0 +1,25 @@
+{
+  "date": "2026-08-05",
+  "source_review": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\tiles\\data_3x3\\westernpa_d20\\613590\\review\\review_roads_613590.gpkg",
+  "source_added": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\tiles\\data_3x3\\westernpa_d20\\613590\\review\\added_roads_613590.gpkg",
+  "review_chunks_kept": 15057,
+  "review_chunks_not_keep_dropped": 0,
+  "review_reassembled_lines": 1003,
+  "review_km": 138.56,
+  "added_lines": 487,
+  "added_km": 49.04,
+  "added_km_within_2m_of_model_road": 1.03,
+  "new_lines_within_5m_of_existing_roads_shp": 0,
+  "roads_shp_before": {
+    "features": 2200,
+    "km": 348.31
+  },
+  "roads_shp_after": {
+    "features": 3690,
+    "km": 535.91
+  },
+  "crs": "EPSG:4326",
+  "backup": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\annotations\\_backup_roads_2026-08-05",
+  "written_to": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\annotations\\roads.shp",
+  "roads_shp_updated_in_place": true
+}
