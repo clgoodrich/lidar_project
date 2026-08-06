@@ -1,0 +1,22 @@
+{
+  "pixel_iou_road_test": 0.5842367956131798,
+  "ap_road_vs_not_road": 0.9985096919796583,
+  "ap_road_vs_drainage": 0.9983775990341096,
+  "mean_Proad_on_road_test": 0.7789164674251972,
+  "mean_Proad_on_drainage_test": 0.0037618045342856887,
+  "focal_alpha": [
+    0.1,
+    0.72,
+    0.25
+  ],
+  "n_classes": 3,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ]
+}

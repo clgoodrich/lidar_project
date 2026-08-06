@@ -230,6 +230,51 @@ filters zero-init) — the ONLY difference is the three appended channels. See [
 
 **Decision:** run cldice + boundary through `_road_optimize.py` → compare APLS/completeness vs the 0.754 F1; promote the winner then. clDice+boundary combined is the natural full-10 first entry.
 
+### Roads on 613590 — out-of-domain, real ground truth (2026-08-06)
+
+Full write-up in [[road_613590_out_of_domain_test]]. **This is the first road table on
+this page scored against a tile no road model ever trained on.**
+
+> **Quote only the `added` column.** The 613590 ground truth splits by `src`.
+> `613590_review_r2` (138.23 km) is a previous road model's own output that the
+> annotator vetted, and **every model below scores 0.96–1.00 completeness on it** —
+> the subset cannot rank anything. `613590_added_r2` (48.87 km) was drawn from
+> scratch on roads that model missed, so it is the only informative half, and it is
+> adversarially hard by construction. Correctness is a **lower bound**: `roads.shp`
+> covers 613590 only where the annotator worked.
+
+Metric = Wiedemann et al. 1998 completeness / correctness / quality, buffer 5 m,
+~40 m chunks, `correctness_px` measured on pixels. Best-quality threshold per model.
+
+| Model | Trained on 613590? | thr | added completeness | correctness_px | quality |
+|---|---|---|---|---|---|
+| corrected_r2 | **YES — saw these lines** | 0.70 | 0.919 | 0.842 | 0.784 |
+| **sweep_orient** | no | 0.40 | 0.811 | 0.816 | **0.686** |
+| **sweep_ENSEMBLE_mean** | no | 0.30 | 0.820 | 0.804 | 0.684 |
+| **sweep_ENSEMBLE_max** | no | 0.70 | 0.808 | 0.812 | 0.681 |
+| sweep_boundary | no | 0.50 | 0.777 | 0.837 | 0.674 |
+| sweep_alpha078 | no | 0.50 | 0.782 | 0.829 | 0.674 |
+| corrected_r1 | **YES — corridor labels** | 0.50 | 0.788 | 0.822 | 0.674 |
+| sweep_cldice_sg3 | no | 0.50 | 0.777 | 0.825 | 0.667 |
+| **road_unet_1m_recall_relabeled20260806** | no | 0.40 | 0.788 | 0.802 | 0.660 |
+| sweep_cldice | no | 0.30 | 0.761 | 0.827 | 0.657 |
+| road_unet_1m_recall (Jun 14) | no | 0.30 | 0.691 | 0.784 | 0.581 |
+| sweep_cldice_mkf | no | 0.70 | 0.640 | 0.615 | 0.457 |
+
+**The label fix, isolated.** Same recipe, same hyperparameters, same 9t-only data —
+only the label raster changed (+19 km of previously-unlabelled road, mostly faint):
+
+| | thr | added completeness | correctness_px | quality | mean P(road) on added |
+|---|---|---|---|---|---|
+| road_unet_1m_recall (Jun 14, stale labels) | 0.50 | 0.613 | 0.835 | 0.547 | 0.432 |
+| road_unet_1m_recall_relabeled20260806 | 0.50 | **0.759** | 0.828 | **0.655** | **0.549** |
+
++0.146 completeness at zero correctness cost. Recovering mislabelled road bought more
+than any architecture change in the 2026-07 sweep. **Every sweep variant above was
+trained on the same stale labels** and should be re-run.
+
+Max recovery: `sweep_ENSEMBLE_max` at thr 0.30 → **0.909** completeness / 0.651 correctness.
+
 **Vector extraction (2026-07-02, honest protocol):** `_road_optimize.py` cleaning
 config tuned on **val** blocks only (best val F1 0.535), frozen, then scored once on
 test: **F1 0.754** (completeness 0.695 / correctness 0.824, 22.5 km GT). Test > val

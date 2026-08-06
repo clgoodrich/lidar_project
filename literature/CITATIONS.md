@@ -44,6 +44,7 @@ is the source of record.
 | Verschoof-van der Vaart & Lambers | 2022 | Evaluation measures; curated-vs-random test gap | **The cherry-picking argument** — curated test regions inflate 20–50 pts | `docs/iterations/benchmark_context_what_counts_as_good.md` | cite-only |
 | Gallwey et al. | 2019 | Historic mining pits, transfer learning | Benchmark comparand for the pit U-Net (F1 ~0.87) | `docs/iterations/benchmark_context_what_counts_as_good.md` | cite-only |
 | Archaeoscape | 2024 | ALS archaeology benchmark dataset | Cited as existing; **no numbers quoted** (PDF would not extract) | `docs/iterations/benchmark_context_what_counts_as_good.md` | ✓ `archaeoscape_2024_als_archaeology_benchmark.pdf` |
+| Wiedemann et al. | 1998 | Empirical evaluation of road extraction: completeness / correctness / quality on a buffer match | **Adopted** — the scoring triple for the 613590 out-of-domain road test | `notebooks/wellsight_v2/eval/_score_road_pred_vs_roads_shp_613590.py` | cite-only |
 
 ---
 
@@ -278,3 +279,10 @@ change is actually made.
 - **Candidate use:** Supporting evidence for the multi-visualization channel-stack approach we already use, and for adding VAT-family layers.
 - **Generated:** `docs/iterations/pit_refinement_options.md` ("Channels we do not have").
 - **Source:** https://doi.org/10.5334/jcaa.64 — cite-only (download endpoint returned non-PDF).
+
+### Wiedemann et al. 1998 — Empirical evaluation of automatically extracted road axes
+- **Citation:** Wiedemann, C., Heipke, C., Mayer, H., Jamet, O. (1998). "Empirical Evaluation of Automatically Extracted Road Axes." In *Empirical Evaluation Techniques in Computer Vision*, IEEE Computer Society Press, pp. 172-187.
+- **About:** Defines the standard evaluation protocol for road extraction. Extracted and reference road axes are matched inside a buffer of width rho, then scored as completeness (matched reference length / total reference length), correctness (matched extracted length / total extracted length), and quality (comp * corr / (comp - comp*corr + corr)), a single figure that penalises both misses and false road.
+- **Used for:** The scoring triple for the 613590 out-of-domain road test. Buffer rho = 5 m, matching the tolerance already used by `_road_threshold_products_9t.py` on 9t. Correctness is measured on predicted PIXELS rather than extracted line length, because a probability raster has no honest line length; it is labelled `correctness_px` in every output so the deviation from the paper stays visible.
+- **Generated:** `notebooks/wellsight_v2/eval/_score_road_pred_vs_roads_shp_613590.py`; `data/derivatives/eval_613590_roads/road_score_vs_roads_shp_613590_1m.csv`.
+- **Source:** https://www.researchgate.net/publication/2378378 — cite-only (conference volume, no open PDF).

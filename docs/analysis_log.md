@@ -5,6 +5,64 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-06 — 9t-only road retrain, 613590 out-of-domain test, 12-model comparison
+
+Full write-up in `docs/iterations/road_613590_out_of_domain_test.md`.
+
+**Stale labels found and fixed.** `labels_road_9t_1m.tif` dated 2026-06-10 and held
+556,773 road px (~185.6 km) while `roads.shp` carried **206.09 km** inside 9t after
+the 2026-07-30 extension. **~19 km of hand-drawn road was labelled background**, and
+disproportionately the faint lines added on 07-30 — the exact class the model fails
+on. Rebuilt to 614,003 px (+57,230) with `_rebuild_labels_road_9t_1m.py`; the old
+raster is kept as `labels_road_9t_1m_pre2026-08-06.tif`. `road_dataset_manifest.csv`
+and `road_chunks_9t.gpkg` rebuilt too (15,292 road chunks; 3,315/983/672 in-tile).
+`_prep_road_1m.py` could not be used: `tiles/9t_1m/` is a dead junction into
+`E:\lidar_project_data_DO_NOT_DELETE`.
+
+**`--tag` added to `_road_unet_1m_recall.py`** — it had none and would have
+overwritten the Jun 14 champion.
+
+**Circularity, measured not assumed.** 613590 ground truth splits by `src`:
+`613590_review_r2` 138.23 km is a previous model's vetted output,
+`613590_added_r2` 48.87 km is hand-drawn. **All 12 models score 0.96-1.00
+completeness on the review subset.** It ranks nothing. Only the added subset counts.
+
+**The controlled result** — same recipe, same data, only labels changed:
+
+| model | thr | added completeness | correctness_px | quality | mean P(road) added |
+|---|---|---|---|---|---|
+| recall (Jun 14, stale labels) | 0.50 | 0.613 | 0.835 | 0.547 | 0.432 |
+| recall_relabeled20260806 | 0.50 | **0.759** | 0.828 | **0.655** | **0.549** |
+
++0.146 completeness at zero correctness cost. The faint-road confidence gap narrowed
+from -0.459 to -0.266. Review-subset confidence FELL (0.891 -> 0.815), which is
+healthy: the model is no longer a near-clone of the one that drew those lines.
+
+**12-model comparison** at each model's best-quality threshold, added subset:
+`sweep_orient` 0.686 Q leads, then `ENSEMBLE_mean` 0.684, `ENSEMBLE_max` 0.681,
+`boundary`/`alpha078` 0.674, `relabeled20260806` 0.660, Jun 14 baseline 0.581.
+`sweep_cldice_mkf` 0.457 is a clear negative (1.84 M predicted px, 2.4x the others,
+correctness 0.520) — multi-block McKean training over-predicts, matching the earlier
+`road_unet_mb` rejection. Max recovery: `ENSEMBLE_max` at thr 0.30, **0.909**
+completeness / 0.651 correctness.
+
+**Interpretation.** The retrain beat its own predecessor by +0.11 quality but sits
+below the sweep variants — and every sweep variant was trained on the same stale
+labels. Relabelling bought more than any architecture change in the 2026-07 sweep.
+Three independent measurements now agree the dominant failure mode is a road class
+under-represented in the labels, not architecture or capacity. **Next: re-run
+`orient`, `boundary` and the ensemble members on the corrected labels.**
+
+**Side finding.** Rebuilding the manifests showed `plat.shp` has **995** features
+while `plat_dataset_manifest.csv` only ever had **650** — 345 pads have never been in
+the manifest. The 650-row file was restored from a snapshot so pad CV5 fold
+assignment is unchanged. Needs its own pass.
+
+Wiedemann et al. 1998 logged in `literature/CITATIONS.md` for the completeness /
+correctness / quality triple.
+
+---
+
 ## 2026-08-05 — 613590 road review folded into `annotations/roads.shp` (+188 km)
 
 Script: `notebooks/wellsight_v2/annotations/_merge_review_added_roads_613590_into_roads_shp.py`

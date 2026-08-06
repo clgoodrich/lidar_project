@@ -12,7 +12,9 @@ band-7 data). The only changes target ROAD RECALL on out-of-domain blocks:
 After training it evals on the held-out 9t test blocks AND predicts 613590
 (road_prob + drainage_prob) so we can compare gap-closing vs the deployed model.
 
-CLI:  python notebooks/wellsight/roads/_road_unet_1m_recall.py --epochs 40
+CLI:  python notebooks/wellsight_v2/roads/_road_unet_1m_recall.py --epochs 40
+  ... --tag relabeled20260806   write to road_unet_1m_recall_<tag> instead of
+                                overwriting an earlier run
 """
 from __future__ import annotations
 
@@ -155,8 +157,15 @@ def main() -> int:
     ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--eval-only", action="store_true")
+    ap.add_argument("--tag", default=None,
+                    help="suffix for the output dir, e.g. 'relabeled20260806', "
+                         "so an earlier run stays intact and comparable")
     args = ap.parse_args()
 
+    global OUTDIR
+    if args.tag:
+        OUTDIR = OUTDIR.with_name(f"{OUTDIR.name}_{args.tag}")
+    print(f"OUTDIR = {OUTDIR}")
     OUTDIR.mkdir(parents=True, exist_ok=True)
     manifest = pd.read_csv(MANIFEST)
     blocks = gpd.read_file(BLOCKS, layer="blocks")
