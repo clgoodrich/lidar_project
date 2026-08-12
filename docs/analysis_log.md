@@ -5,6 +5,57 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-12 — Phase 4 reorganization plan (role-based layout), no files moved
+
+Survey only. Nothing moved, nothing deleted. Full plan in
+`docs/REORGANIZATION_PLAN_phase4_role_based.md`; it succeeds
+`docs/REORGANIZATION_PLAN.md`, which scoped the Phases 0–3 that already shipped.
+
+**Diagnosis.** The tree is keyed by *how a file was made*, not *what it is for*.
+`derivatives` is a provenance adjective, so it collects everything: 116 loose
+files, 9 flat `eval_*` dirs, the hand-drawn truth, the checkpoints, the
+experiments and the tile stacks, all at one depth. `tiles/9t/` repeats the
+pattern one level down — 33 GB across 6 unrelated roles.
+
+**Measured this pass.**
+- `data/derivatives/` — 116 loose files; `tiles/9t/` — 199 loose files, 19 subdirs.
+- `label_grids/westernpa_0{1..4}` is a 1 m derivative stack identical in kind to
+  `tiles/<area>/`, plus a `.qgz` and two annotation `.gpkg`. It is top-level only
+  because `_build_label_grids.py:46` hardcodes `ROOT / "label_grids"`.
+- `tiles/{venango,washington,mckean}_1m/` each hold exactly one landcover clip.
+  They are reference data, not tile stacks.
+- `613590` exists in two trees under two rules (`tiles/613590_05/` and
+  `tiles/data_3x3/westernpa_d20/613590/`).
+- `docs/reference_index.csv` is **stale**: 88,487 of 101,839 rows point at
+  `barlow/` and `ramachandran_2024/`, both archived in `ba7bcec`. It is the
+  move-safety oracle, so it is rebuilt first in Phase 4A.
+- `.git` is **5.4 GB for 1,422 tracked files** — rasters untracked via
+  `git rm --cached` are still in the pack.
+- `qgis/wellsight.qgz` binds 62 datasources; 4 more per-grid `pa1.qgz` exist.
+- 6 `.gpkg-wal`/`.gpkg-shm` sidecars still persist under `derivatives/`.
+
+**Obsolete, with citation** (archive, never delete): `road_multiblock` (241 MB,
+LEADERBOARD "Rejected"); three `best.pt.*.BAK` (279 MB); the 2-class
+`roads_<key>_1m.gpkg` + `road_clean_*` across 25 `data_3x3` blocks (~1 GB,
+`BACKLOG.md:201`); ICP Part-2 outputs (`BACKLOG.md:257`); IoU-strictness evals
+(`BACKLOG.md:36`); the duplicate `diagnostics/twi_9t_1m.tif` (77 MB); and
+`notebooks/wellsight/` (51 v1 scripts, zero live references).
+
+**Not obsolete despite appearances:** every dated `_backup_*`/`_snapshot_*`
+(they are the only record of a prior annotation state) and the McKean stacks
+(parked by advisor decision, but `mkf_road_1m` fed a leaderboard sweep).
+
+**Path-respect mechanism.** Phase 4A moves nothing — it makes every directory a
+key in `config/paths.toml`, converts the ~25 self-rolling scripts to
+`path_for()`, and generates `.gitignore` from the config instead of hand-editing
+60 anchored rules. Gates A–D exist (leak audit, QGIS resolve, script paths,
+golden outputs); Gate E (`tools/verify_no_path_literals.py`) is new.
+
+Five decisions are open, listed in §11 of the plan. Nothing proceeds until they
+are answered.
+
+---
+
 ## 2026-08-06 — 9t-only road retrain, 613590 out-of-domain test, 12-model comparison
 
 Full write-up in `docs/iterations/road_613590_out_of_domain_test.md`.
