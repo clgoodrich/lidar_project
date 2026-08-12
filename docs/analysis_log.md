@@ -54,6 +54,26 @@ golden outputs); Gate E (`tools/verify_no_path_literals.py`) is new.
 Five decisions are open, listed in §11 of the plan. Nothing proceeds until they
 are answered.
 
+**Follow-up, same day — the loose `*_9t_1m.tif` files are NOT obsolete. Nothing
+archived.** The 11 loose `*_9t_1m.tif` at the `derivatives/` root have same-named
+twins in `tiles/9t_1m_rebuilt20260812/`, built 2026-08-12, which reads as
+supersession. It is not. `HANDOFF_code_cleanup_wellsight_v2.md:281` records that
+`9t_1m_rebuilt20260812/` is a **quarantine directory** — `_prep_road_1m.py`
+rebuilds the trained-on stack ~2% off (slope mean 8.3177 → 8.5156), so its output
+target was deliberately renamed to make the script fail fast. "Do not undo that."
+
+Measured on the 10 same-named pairs: CRS, grid, resolution and bounds identical;
+whole-tile slope mean identical at 8.8074; **per-pixel max abs difference
+non-zero on 9 of 10** (slope 6.64°, openness_pos 4.89°, DEM 0.29 m, intensity
+59,639). Aggregate statistics agree while pixels do not — a min/max/mean check
+calls these duplicates and is wrong. Both sets move intact in Phase 4D.
+
+**Separate defect found, not fixed.** `s2_labels/_prep_road_1m.py:52`,
+`s5_eval/_road_methods_compare.py:82` and `s5_eval/_road_optimize.py:69` all read
+`tiles/9t_1m/`, a dead junction into `E:\lidar_project_data_DO_NOT_DELETE`. All
+three are broken today. Which 1 m stack is canonical is a path decision for the
+`refactor-package` work.
+
 ---
 
 ## 2026-08-06 — 9t-only road retrain, 613590 out-of-domain test, 12-model comparison

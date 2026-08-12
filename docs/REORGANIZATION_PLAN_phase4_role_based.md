@@ -632,9 +632,44 @@ Consequence of decision 4 worth stating plainly: **Phase 4E archives only the
 large or because it is quiet. `road_multiblock` goes because the leaderboard
 says "Rejected", not because it is 241 MB.
 
-### Still open — minor, non-blocking
+### Resolved 2026-08-12 — the loose `*_9t_1m.tif` files are NOT obsolete
 
-`tiles/9t_1m_rebuilt20260812/` was built 2026-08-12 and is untracked. Is it the
-replacement for the 34 loose `*_9t_1m.tif` files at the `derivatives/` root? If
-yes, those 34 files (~1 GB) resolve in Phase 4B rather than 4D, and the rebuilt
-stack becomes `03_derived/9t/1m/`. If no, both stay and both move in 4D.
+Investigated because the 11 loose `*_9t_1m.tif` files at the `derivatives/` root
+have same-named twins in `tiles/9t_1m_rebuilt20260812/`, built the same day. The
+obvious reading is that the old set is superseded. **It is not.**
+
+`docs/HANDOFF_code_cleanup_wellsight_v2.md:281` records the actual situation:
+
+> `_prep_road_1m.py` overwrites the trained-on feature stack. Running it clobbers
+> `features_pit_9t_1m.tif` / `feature_stats_1m.json` with values ~2% off what the
+> models trained on (slope mean 8.3177 → 8.5156). Already restored from the E:
+> mirror and the rebuild target was renamed to `tiles/9t_1m_rebuilt20260812/` so
+> the script fails fast. **Do not undo that.**
+
+`9t_1m_rebuilt20260812/` is a **quarantine directory**, not a replacement. It is
+named the way it is specifically so `_prep_road_1m.py` — which reads
+`SRC_1M = DERIV / "tiles" / "9t_1m"` — raises `FileNotFoundError` instead of
+silently rebuilding the stack the models were trained on.
+
+Measured this pass, on the 10 same-named pairs:
+
+| Check | Result |
+|---|---|
+| CRS, grid size, resolution, bounds | identical on all 10 |
+| Whole-tile mean (slope) | identical, 8.8074 both |
+| Per-pixel max abs difference | **non-zero on 9 of 10** — slope 6.64°, openness_pos 4.89°, DEM 0.29 m, intensity 59,639 |
+
+Summary statistics match while individual pixels do not. Any check that stops at
+min/max/mean will call these files duplicates. They are not.
+
+**Conclusion: nothing here is archived.** Neither set is superseded by the other,
+so neither meets the §6 bar of "obsolete with documentary evidence". Both move
+intact in Phase 4D. `ground_density_noverlap_9t_1m.tif` has no twin at all and is
+likewise untouched.
+
+**Separate defect, not fixed here.** Three live scripts —
+`s2_labels/_prep_road_1m.py:52`, `s5_eval/_road_methods_compare.py:82`,
+`s5_eval/_road_optimize.py:69` — read `tiles/9t_1m/`, which no longer exists. It
+was a junction into `E:\lidar_project_data_DO_NOT_DELETE` and is dead. All three
+are broken today. The fix is a path decision about which 1 m stack is canonical,
+and it belongs with the `refactor-package` work, not with a directory move.
