@@ -1,0 +1,10 @@
+old_path,new_path,phase,reason
+bad roads.png,docs/figures/scratch/road_vectorization_bad_result_613590.png,phase4b,"root clutter; road vectorization comparison figure, renamed per descriptive-filename rule"
+original roads.png,docs/figures/scratch/road_vectorization_original_613590.png,phase4b,"root clutter; the before half of the same comparison"
+roads_prob.png,docs/figures/scratch/road_prob_quicklook_613590.png,phase4b,"root clutter; road probability quicklook"
+distorted_river.jpg,docs/figures/scratch/dem_artifact_distorted_river_9t.jpg,phase4b,"root clutter; DEM artifact screenshot"
+stream_bottom.jpg,docs/figures/scratch/dem_artifact_stream_bottom_9t.jpg,phase4b,"root clutter; DEM artifact screenshot"
+scratchpad_tiles_613590.txt,docs/_ledgers/scratchpad_tiles_613590.txt,phase4b,"root clutter; working notes on 613590 tile selection"
+downloadlist 2006-2008 laz.txt,data/external/downloadlist_2006-2008_laz.txt,phase4b,"root clutter; USGS download manifest belongs with the external data it fetches"
+yolo26n.pt,models/pretrained/yolo26n.pt,phase4b,"root clutter; pretrained weight belongs with yolov8s-seg.pt (models/pretrained/yolo26n_dupe.pt is the redundant copy)"
+backup_to_E_Colton_last_run.log,docs/_ledgers/backup_to_E_Colton_last_run.log,phase4b,"root clutter; robocopy run log is a record, not a document"

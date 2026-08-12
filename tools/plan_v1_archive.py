@@ -25,7 +25,7 @@ deleted, and the directory structure is preserved so an un-archive is a
 straight reversal.
 
 Outputs:
-    docs/v1_archive_moves.csv    ledger for tools/apply_moves.py
+    docs/_ledgers/v1_archive_moves.csv    ledger for tools/apply_moves.py
     docs/v1_archive_plan.md      what stays, what goes, and why
 
 Reproduce:
@@ -45,7 +45,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 V1 = ROOT / "notebooks" / "wellsight"
 USED = ROOT / "docs" / "script_last_used.csv"
-LEDGER = ROOT / "docs" / "v1_archive_moves.csv"
+LEDGER = ROOT / "docs" / "_ledgers" / "v1_archive_moves.csv"
 PLAN = ROOT / "docs" / "v1_archive_plan.md"
 DEST = "data/99_archive/superseded/notebooks_wellsight"
 

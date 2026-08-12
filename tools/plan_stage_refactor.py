@@ -37,8 +37,8 @@ land in s3_train and keep their inference tail. Splitting them is a code change,
 not a move, and is out of scope here.
 
 Outputs:
-    docs/stage_refactor_moves.csv     ledger for tools/apply_moves.py
-    docs/stage_refactor_edits.csv     per-file source rewrites to apply
+    docs/_ledgers/stage_refactor_moves.csv     ledger for tools/apply_moves.py
+    docs/_ledgers/stage_refactor_edits.csv     per-file source rewrites to apply
     docs/stage_refactor_plan.md       the mapping, and what breaks if it is wrong
 
 Reproduce:
@@ -58,8 +58,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 V2 = ROOT / "notebooks" / "wellsight_v2"
-LEDGER = ROOT / "docs" / "stage_refactor_moves.csv"
-EDITS = ROOT / "docs" / "stage_refactor_edits.csv"
+LEDGER = ROOT / "docs" / "_ledgers" / "stage_refactor_moves.csv"
+EDITS = ROOT / "docs" / "_ledgers" / "stage_refactor_edits.csv"
 PLAN = ROOT / "docs" / "stage_refactor_plan.md"
 
 # ---------------------------------------------------------------- the mapping

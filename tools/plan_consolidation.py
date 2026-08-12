@@ -25,7 +25,7 @@ earlier tiling scheme, so they get their own top-level tile directories rather
 than being filed under a `data_3x3` region they do not belong to.
 
 Outputs:
-    docs/phase2_consolidation_moves.csv   ledger for tools/apply_moves.py
+    docs/_ledgers/phase2_consolidation_moves.csv   ledger for tools/apply_moves.py
     docs/phase2_consolidation_plan.md     what moves, what stays, and why
 
 Reproduce:
@@ -43,7 +43,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DERIV = ROOT / "data" / "derivatives"
 TILES = DERIV / "tiles"
 INDEX = ROOT / "docs" / "reference_index.csv"
-LEDGER = ROOT / "docs" / "phase2_consolidation_moves.csv"
+LEDGER = ROOT / "docs" / "_ledgers" / "phase2_consolidation_moves.csv"
 PLAN = ROOT / "docs" / "phase2_consolidation_plan.md"
 
 # <channel>_<area>_<res>.<ext>  -- area and res are what decide the destination

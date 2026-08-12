@@ -504,3 +504,34 @@ ts,phase,old_path,new_path,size_bytes,reason
 2026-08-12T19:00:11+00:00,v1_restore,data/99_archive/superseded/notebooks_wellsight/roads/_road_postfilter.py,notebooks/wellsight/roads/_road_postfilter.py,4955,"v1-only: no replacement exists anywhere, so it still needs to exist"
 2026-08-12T19:00:11+00:00,v1_restore,data/99_archive/superseded/notebooks_wellsight/roads/_road_unet.py,notebooks/wellsight/roads/_road_unet.py,7622,"v1-only: no replacement exists anywhere, so it still needs to exist"
 2026-08-12T19:00:11+00:00,v1_restore,data/99_archive/superseded/notebooks_wellsight/roads/_road_unet_1m.py,notebooks/wellsight/roads/_road_unet_1m.py,9016,"v1-only: no replacement exists anywhere, so it still needs to exist"
+2026-08-12T22:15:03+00:00,phase4b,bad roads.png,docs/figures/scratch/road_vectorization_bad_result_613590.png,2031155,"root clutter; road vectorization comparison figure, renamed per descriptive-filename rule"
+2026-08-12T22:15:03+00:00,phase4b,original roads.png,docs/figures/scratch/road_vectorization_original_613590.png,2099558,root clutter; the before half of the same comparison
+2026-08-12T22:15:03+00:00,phase4b,roads_prob.png,docs/figures/scratch/road_prob_quicklook_613590.png,200995,root clutter; road probability quicklook
+2026-08-12T22:15:03+00:00,phase4b,distorted_river.jpg,docs/figures/scratch/dem_artifact_distorted_river_9t.jpg,74111,root clutter; DEM artifact screenshot
+2026-08-12T22:15:03+00:00,phase4b,stream_bottom.jpg,docs/figures/scratch/dem_artifact_stream_bottom_9t.jpg,232718,root clutter; DEM artifact screenshot
+2026-08-12T22:15:03+00:00,phase4b,scratchpad_tiles_613590.txt,docs/_ledgers/scratchpad_tiles_613590.txt,1386,root clutter; working notes on 613590 tile selection
+2026-08-12T22:15:03+00:00,phase4b,downloadlist 2006-2008 laz.txt,data/external/downloadlist_2006-2008_laz.txt,2172,root clutter; USGS download manifest belongs with the external data it fetches
+2026-08-12T22:15:03+00:00,phase4b,yolo26n.pt,models/pretrained/yolo26n.pt,5544453,root clutter; pretrained weight belongs with yolov8s-seg.pt (models/pretrained/yolo26n_dupe.pt is the redundant copy)
+2026-08-12T22:15:03+00:00,phase4b,backup_to_E_Colton_last_run.log,docs/_ledgers/backup_to_E_Colton_last_run.log,1205,"root clutter; robocopy run log is a record, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/duplicates_proposed_moves.csv,docs/_ledgers/duplicates_proposed_moves.csv,862,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/phase1_moves.csv,docs/_ledgers/phase1_moves.csv,504,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/phase1_revert_notebook_demo.csv,docs/_ledgers/phase1_revert_notebook_demo.csv,1246,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/phase1b_rename_9t1m.csv,docs/_ledgers/phase1b_rename_9t1m.csv,339,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/phase2_consolidation_moves.csv,docs/_ledgers/phase2_consolidation_moves.csv,27910,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/phase_archive_moves.csv,docs/_ledgers/phase_archive_moves.csv,1008,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/qgis_repoint.csv,docs/_ledgers/qgis_repoint.csv,243,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/stage_cleanup_moves.csv,docs/_ledgers/stage_cleanup_moves.csv,195,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/stage_refactor_edits.csv,docs/_ledgers/stage_refactor_edits.csv,1029,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/stage_refactor_moves.csv,docs/_ledgers/stage_refactor_moves.csv,13669,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/v1_archive_moves.csv,docs/_ledgers/v1_archive_moves.csv,13931,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/v1_restore_moves.csv,docs/_ledgers/v1_restore_moves.csv,8610,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,docs/verify_paths_baseline.json,docs/_ledgers/verify_paths_baseline.json,670,"execution ledger from the Phases 0-3 tooling; a record of a tool run, not a document"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/pit_candidates_610594.gpkg-shm,data/99_archive/superseded/qgis_sidecars/pit_candidates_610594.gpkg-shm,32768,"QGIS sqlite write-ahead-log sidecar; transient, never valid to keep"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/pit_candidates_610594.gpkg-wal,data/99_archive/superseded/qgis_sidecars/pit_candidates_610594.gpkg-wal,0,"QGIS sqlite write-ahead-log sidecar; transient, never valid to keep"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/pit_candidates_616593.gpkg-shm,data/99_archive/superseded/qgis_sidecars/pit_candidates_616593.gpkg-shm,32768,"QGIS sqlite write-ahead-log sidecar; transient, never valid to keep"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/pit_candidates_616593.gpkg-wal,data/99_archive/superseded/qgis_sidecars/pit_candidates_616593.gpkg-wal,0,"QGIS sqlite write-ahead-log sidecar; transient, never valid to keep"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/pit_candidates_mk5.gpkg-shm,data/99_archive/superseded/qgis_sidecars/pit_candidates_mk5.gpkg-shm,32768,"QGIS sqlite write-ahead-log sidecar; transient, never valid to keep"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/pit_candidates_mk5.gpkg-wal,data/99_archive/superseded/qgis_sidecars/pit_candidates_mk5.gpkg-wal,0,"QGIS sqlite write-ahead-log sidecar; transient, never valid to keep"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/tiles/venango_1m/landcover_venango_1m.tif,data/external/landcover/landcover_venango_1m.tif,214877,"single NLCD clip, not a derivative tile stack; reference data"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/tiles/washington_1m/landcover_washington_1m.tif,data/external/landcover/landcover_washington_1m.tif,3099643,"single NLCD clip, not a derivative tile stack; reference data"
+2026-08-12T22:15:31+00:00,phase4b,data/derivatives/tiles/mckean_1m/landcover_mckean_1m.tif,data/external/landcover/landcover_mckean_1m.tif,1230565,"single NLCD clip, not a derivative tile stack; reference data"

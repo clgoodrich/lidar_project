@@ -32,7 +32,7 @@ first, hash only inside groups of two or more.
 
 Outputs:
     docs/duplicates_report.md            human-readable, grouped by size
-    docs/duplicates_proposed_moves.csv   ledger for tools/apply_moves.py
+    docs/_ledgers/duplicates_proposed_moves.csv   ledger for tools/apply_moves.py
 
 Reproduce:
   python tools/find_duplicates.py
@@ -50,7 +50,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "duplicates_report.md"
-LEDGER = ROOT / "docs" / "duplicates_proposed_moves.csv"
+LEDGER = ROOT / "docs" / "_ledgers" / "duplicates_proposed_moves.csv"
 REF_INDEX = ROOT / "docs" / "reference_index.csv"
 
 SKIP_DIRS = {".git", ".venv", "__pycache__", ".pytest_cache", ".idea",

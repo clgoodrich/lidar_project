@@ -25,7 +25,7 @@ Outputs:
     docs/verify_paths_report.md    latest run, all three gates
 
 Exit code 0 if all gates pass, 1 otherwise. `--baseline` writes the current
-failures to docs/verify_paths_baseline.json and always exits 0.
+failures to docs/_ledgers/verify_paths_baseline.json and always exits 0.
 
 Reproduce:
   python tools/verify_paths.py
@@ -43,7 +43,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "verify_paths_report.md"
-BASELINE = ROOT / "docs" / "verify_paths_baseline.json"
+BASELINE = ROOT / "docs" / "_ledgers" / "verify_paths_baseline.json"
 BIG_BYTES = 100 * 1024 * 1024
 
 SCRIPT_ROOTS = ["notebooks/wellsight_v2", "ui", "roads_studio", "tools"]

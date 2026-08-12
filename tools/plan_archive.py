@@ -28,7 +28,7 @@ and a stale rule is silent. Affected rules are listed in the plan output and
 must be updated in the SAME change that performs the move.
 
 Outputs:
-    docs/phase_archive_moves.csv   ledger for tools/apply_moves.py
+    docs/_ledgers/phase_archive_moves.csv   ledger for tools/apply_moves.py
     docs/phase_archive_plan.md     what moves, sizes, and the gitignore work
 
 Reproduce:
@@ -41,7 +41,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-LEDGER = ROOT / "docs" / "phase_archive_moves.csv"
+LEDGER = ROOT / "docs" / "_ledgers" / "phase_archive_moves.csv"
 PLAN = ROOT / "docs" / "phase_archive_plan.md"
 ARCHIVE = "data/99_archive/parked"
 

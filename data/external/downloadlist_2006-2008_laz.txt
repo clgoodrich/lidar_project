@@ -1,0 +1,12 @@
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002957.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002958.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002959.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002960.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003110.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003111.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003112.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003113.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003254.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003255.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003256.laz
+https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/legacy/PA_STATEWIDE_N_2006_2008/LAZ/USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003257.laz
