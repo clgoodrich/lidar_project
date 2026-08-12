@@ -94,10 +94,17 @@ data/derivatives/experiments/roads/*.tif
 # Per-tile temp intensity rasters (PDAL outputs during build)
 data/derivatives/_tmp_intensity_tiles_*/
 
-# Build pipeline temp JSON + logs (regenerable, sometimes left on hard crash)
+# Build pipeline temp JSON + logs (regenerable, sometimes left on hard crash).
+# These were anchored to the top of data/derivatives/ only. The 2026-08-12
+# consolidation moved loose files down into tiles/<area>/, which silently took
+# them out of ignore coverage -- so the patterns are now recursive. Preview
+# PNGs stay tracked, per the existing "track only the small overlay PNGs" rule.
+data/derivatives/**/_build_*.log
+data/derivatives/**/_tmp_*.json
 data/derivatives/_build_*.log
-backup_to_E_last_run.log
 data/derivatives/_tmp_*.json
+backup_to_E_last_run.log
+backup_to_E_Colton_last_run.log
 data/derivatives/inference_*/_tmp_*.json
 
 # 3x3 mosaic build outputs — heavy DEM/hillshade rasters regenerable from LAZ

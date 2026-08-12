@@ -1,0 +1,57 @@
+output dir: C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_unet_1m_corrected_r2
+fine-tuning from champion ep 38 (val road IoU 0.643), lr=0.0002
+9t train tiles/ep=12352  613590 train tiles/ep=4800  (28% corrections)
+  613590 policies: added=458, reject=635, kept=1200
+ep   1/15  tr_loss=0.0028 va_loss=0.0033  va_iou bg=0.976  road=0.590  drainage=0.793  score=0.590  380.2s
+    -> new best (score=0.590), saved
+ep   2/15  tr_loss=0.0024 va_loss=0.0033  va_iou bg=0.975  road=0.579  drainage=0.789  score=0.579  358.3s
+ep   3/15  tr_loss=0.0023 va_loss=0.0033  va_iou bg=0.977  road=0.591  drainage=0.799  score=0.591  354.7s
+    -> new best (score=0.591), saved
+ep   4/15  tr_loss=0.0022 va_loss=0.0035  va_iou bg=0.977  road=0.598  drainage=0.798  score=0.598  343.7s
+    -> new best (score=0.598), saved
+ep   5/15  tr_loss=0.0022 va_loss=0.0036  va_iou bg=0.979  road=0.620  drainage=0.805  score=0.620  356.0s
+    -> new best (score=0.620), saved
+ep   6/15  tr_loss=0.0021 va_loss=0.0037  va_iou bg=0.978  road=0.614  drainage=0.802  score=0.614  356.5s
+ep   7/15  tr_loss=0.0021 va_loss=0.0035  va_iou bg=0.978  road=0.605  drainage=0.805  score=0.605  356.5s
+ep   8/15  tr_loss=0.0020 va_loss=0.0035  va_iou bg=0.978  road=0.602  drainage=0.812  score=0.602  351.5s
+ep   9/15  tr_loss=0.0020 va_loss=0.0035  va_iou bg=0.979  road=0.616  drainage=0.811  score=0.616  349.4s
+ep  10/15  tr_loss=0.0019 va_loss=0.0038  va_iou bg=0.978  road=0.612  drainage=0.806  score=0.612  348.6s
+ep  11/15  tr_loss=0.0019 va_loss=0.0036  va_iou bg=0.979  road=0.619  drainage=0.808  score=0.619  367.5s
+ep  12/15  tr_loss=0.0019 va_loss=0.0035  va_iou bg=0.979  road=0.624  drainage=0.812  score=0.624  363.7s
+    -> new best (score=0.624), saved
+ep  13/15  tr_loss=0.0019 va_loss=0.0036  va_iou bg=0.979  road=0.620  drainage=0.810  score=0.620  361.8s
+ep  14/15  tr_loss=0.0019 va_loss=0.0035  va_iou bg=0.979  road=0.622  drainage=0.818  score=0.622  351.4s
+ep  15/15  tr_loss=0.0019 va_loss=0.0035  va_iou bg=0.979  road=0.625  drainage=0.809  score=0.625  354.9s
+    -> new best (score=0.625), saved
+
+Best score: 0.625. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_unet_1m_corrected_r2
+
+Loaded best (ep 15, 9t val road IoU 0.625)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.7s
+
+=== 9t held-out test ===
+  pixel_iou_road_test            0.5491
+  ap_road_vs_drainage            0.9986
+  mean_Proad_on_road_test        0.7855
+  mean_Proad_on_drainage_test    0.0094
+Inference grid: 24 x 24 = 576 patches
+  inference done in 8.0s
+
+613590: road>=0.5 px = 1,229,706 (champion raster for comparison below)
+
+=== 613590 held-out corrections (before -> after) ===
+  [val]
+    added   n= 311 10.20 km  P(road) 0.518 -> 0.699  (+0.181)   frac>=0.5 0.55 -> 0.86
+    reject  n= 373  3.38 km  P(road) 0.284 -> 0.223  (-0.061)   frac>=0.5 0.30 -> 0.21
+    kept    n=3219 29.74 km  P(road) 0.865 -> 0.849  (-0.015)   frac>=0.5 0.99 -> 0.99
+    AP added-vs-reject before 0.5877
+    AP added-vs-reject after  0.8105
+  [test]
+    added   n= 272  9.17 km  P(road) 0.445 -> 0.638  (+0.194)   frac>=0.5 0.43 -> 0.76
+    reject  n= 409  3.77 km  P(road) 0.594 -> 0.370  (-0.224)   frac>=0.5 0.69 -> 0.41
+    kept    n=2097 19.44 km  P(road) 0.870 -> 0.857  (-0.012)   frac>=0.5 1.00 -> 1.00
+    AP added-vs-reject before 0.3096
+    AP added-vs-reject after  0.4733
+
+DONE. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_unet_1m_corrected_r2

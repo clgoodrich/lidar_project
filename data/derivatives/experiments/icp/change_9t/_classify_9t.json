@@ -1,0 +1,267 @@
+{
+  "sigma_raw": 0.13582657470703124,
+  "sigma_destriped": 0.10731068572998047,
+  "sigma_highpass": 0.08717537874653936,
+  "broad_field_std_removed": 0.05732208117842674,
+  "bg_window_m": 400.0,
+  "row_median_std_before": 0.08292926847934723,
+  "row_median_std_after": 6.906847556820139e-05,
+  "threshold_m": 0.26152613623961807,
+  "n_patches": 367,
+  "null": {
+    "acf_sigma_px": 4.0,
+    "acf_err": 0.16851003468036652,
+    "n_sims": 8,
+    "patches_mean": 57.0,
+    "patches_std": 5.477225575051661,
+    "area_ha_mean": 1.56285,
+    "largest_m2_mean": 557.5,
+    "largest_m2_max": 712.0
+  },
+  "observed_over_null": {
+    "patches": 6.44,
+    "area": 28.23
+  },
+  "reliable_area_m2": 712.0,
+  "min_area_m2": 200.0,
+  "params": {
+    "channel_loga": 4.0,
+    "channel_buf_m": 40.0,
+    "steep_deg": 18.0,
+    "road_buf_m": 30.0
+  },
+  "by_class": {
+    "fluvial": {
+      "n": 275,
+      "n_reliable": 91,
+      "area_ha": 32.57,
+      "abs_vol_m3": 113461.2
+    },
+    "mass_wasting": {
+      "n": 5,
+      "n_reliable": 1,
+      "area_ha": 0.12,
+      "abs_vol_m3": 201.3
+    },
+    "anthropogenic": {
+      "n": 87,
+      "n_reliable": 16,
+      "area_ha": 2.65,
+      "abs_vol_m3": 10765.7
+    }
+  },
+  "channel_fraction": {
+    "all patches": 0.755,
+    "reliable only": 0.843
+  },
+  "top_anthropogenic": [
+    {
+      "patch_id": 2282,
+      "sign": "cut",
+      "mean_dz_m": -0.53,
+      "area_m2": 2908.0,
+      "abs_volume_m3": 1542.0,
+      "slope_deg": 17.1,
+      "chan_dist_m": 41.6,
+      "road_dist_m": 0.0,
+      "well_dist_m": 101.1,
+      "x": 621491.3,
+      "y": 4593065.7
+    },
+    {
+      "patch_id": 1064,
+      "sign": "fill",
+      "mean_dz_m": 0.381,
+      "area_m2": 3744.0,
+      "abs_volume_m3": 1427.2,
+      "slope_deg": 13.0,
+      "chan_dist_m": 45.1,
+      "road_dist_m": 0.0,
+      "well_dist_m": 71.8,
+      "x": 620963.0,
+      "y": 4595976.0
+    },
+    {
+      "patch_id": 768,
+      "sign": "fill",
+      "mean_dz_m": 0.396,
+      "area_m2": 3476.0,
+      "abs_volume_m3": 1376.9,
+      "slope_deg": 5.0,
+      "chan_dist_m": 47.5,
+      "road_dist_m": 20.4,
+      "well_dist_m": 94.9,
+      "x": 619974.5,
+      "y": 4596235.7
+    },
+    {
+      "patch_id": 939,
+      "sign": "fill",
+      "mean_dz_m": 0.432,
+      "area_m2": 2236.0,
+      "abs_volume_m3": 965.9,
+      "slope_deg": 2.3,
+      "chan_dist_m": 60.5,
+      "road_dist_m": 0.0,
+      "well_dist_m": 128.1,
+      "x": 619977.1,
+      "y": 4596084.2
+    },
+    {
+      "patch_id": 511,
+      "sign": "fill",
+      "mean_dz_m": 0.396,
+      "area_m2": 1688.0,
+      "abs_volume_m3": 667.9,
+      "slope_deg": 7.6,
+      "chan_dist_m": 74.0,
+      "road_dist_m": 0.0,
+      "well_dist_m": 8.0,
+      "x": 623986.8,
+      "y": 4596496.6
+    },
+    {
+      "patch_id": 2128,
+      "sign": "cut",
+      "mean_dz_m": -0.403,
+      "area_m2": 1464.0,
+      "abs_volume_m3": 589.3,
+      "slope_deg": 7.9,
+      "chan_dist_m": 72.5,
+      "road_dist_m": 72.0,
+      "well_dist_m": 951.7,
+      "x": 623811.4,
+      "y": 4593330.7
+    },
+    {
+      "patch_id": 479,
+      "sign": "fill",
+      "mean_dz_m": 0.477,
+      "area_m2": 1224.0,
+      "abs_volume_m3": 583.8,
+      "slope_deg": 8.4,
+      "chan_dist_m": 76.4,
+      "road_dist_m": 0.0,
+      "well_dist_m": 138.7,
+      "x": 620381.2,
+      "y": 4596562.8
+    },
+    {
+      "patch_id": 1800,
+      "sign": "cut",
+      "mean_dz_m": -0.371,
+      "area_m2": 1416.0,
+      "abs_volume_m3": 525.8,
+      "slope_deg": 13.7,
+      "chan_dist_m": 46.9,
+      "road_dist_m": 16.1,
+      "well_dist_m": 344.3,
+      "x": 623872.2,
+      "y": 4593994.8
+    },
+    {
+      "patch_id": 315,
+      "sign": "cut",
+      "mean_dz_m": -0.395,
+      "area_m2": 1304.0,
+      "abs_volume_m3": 515.0,
+      "slope_deg": 5.2,
+      "chan_dist_m": 59.7,
+      "road_dist_m": 18.4,
+      "well_dist_m": 256.2,
+      "x": 620235.8,
+      "y": 4596833.4
+    },
+    {
+      "patch_id": 1860,
+      "sign": "cut",
+      "mean_dz_m": -0.381,
+      "area_m2": 1232.0,
+      "abs_volume_m3": 468.8,
+      "slope_deg": 2.8,
+      "chan_dist_m": 53.1,
+      "road_dist_m": 8.2,
+      "well_dist_m": 291.3,
+      "x": 623230.5,
+      "y": 4593837.7
+    },
+    {
+      "patch_id": 2202,
+      "sign": "cut",
+      "mean_dz_m": -0.351,
+      "area_m2": 1184.0,
+      "abs_volume_m3": 415.4,
+      "slope_deg": 11.4,
+      "chan_dist_m": 45.3,
+      "road_dist_m": 420.2,
+      "well_dist_m": 446.3,
+      "x": 623203.0,
+      "y": 4593230.0
+    },
+    {
+      "patch_id": 2212,
+      "sign": "cut",
+      "mean_dz_m": -0.329,
+      "area_m2": 1212.0,
+      "abs_volume_m3": 398.6,
+      "slope_deg": 7.5,
+      "chan_dist_m": 115.6,
+      "road_dist_m": 364.1,
+      "well_dist_m": 384.2,
+      "x": 623118.3,
+      "y": 4593227.9
+    },
+    {
+      "patch_id": 2041,
+      "sign": "fill",
+      "mean_dz_m": 0.489,
+      "area_m2": 772.0,
+      "abs_volume_m3": 377.9,
+      "slope_deg": 3.2,
+      "chan_dist_m": 135.2,
+      "road_dist_m": 203.9,
+      "well_dist_m": 226.1,
+      "x": 623074.4,
+      "y": 4593456.9
+    },
+    {
+      "patch_id": 2196,
+      "sign": "cut",
+      "mean_dz_m": -0.345,
+      "area_m2": 964.0,
+      "abs_volume_m3": 332.6,
+      "slope_deg": 6.0,
+      "chan_dist_m": 97.7,
+      "road_dist_m": 34.0,
+      "well_dist_m": 142.5,
+      "x": 622687.6,
+      "y": 4593234.5
+    },
+    {
+      "patch_id": 560,
+      "sign": "cut",
+      "mean_dz_m": -0.354,
+      "area_m2": 896.0,
+      "abs_volume_m3": 317.6,
+      "slope_deg": 3.2,
+      "chan_dist_m": 76.4,
+      "road_dist_m": 17.1,
+      "well_dist_m": 111.1,
+      "x": 620667.5,
+      "y": 4596436.2
+    },
+    {
+      "patch_id": 1995,
+      "sign": "fill",
+      "mean_dz_m": 0.351,
+      "area_m2": 744.0,
+      "abs_volume_m3": 261.0,
+      "slope_deg": 1.5,
+      "chan_dist_m": 110.4,
+      "road_dist_m": 116.8,
+      "well_dist_m": 199.0,
+      "x": 623055.2,
+      "y": 4593543.3
+    }
+  ]
+}

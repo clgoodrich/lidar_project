@@ -1,0 +1,49 @@
+partition: 25 blocks (15 full, 10 partial)
+   604590  9t  x=604500..609000 y=4590000..4594500  full     [built]
+   609590  9t  x=609000..613500 y=4590000..4594500  full     [built]
+   613590  9t  x=613500..618000 y=4590000..4594500  full     [built]
+   618591  6t  x=618000..622500 y=4591500..4594500  partial  [built]
+   622591  4t  x=622500..625500 y=4591500..4594500  partial  [built]
+   604594  9t  x=604500..609000 y=4594500..4599000  full     [built]
+   609594  9t  x=609000..613500 y=4594500..4599000  full     [built]
+   613594  9t  x=613500..618000 y=4594500..4599000  full     [built]
+   618594  9t  x=618000..622500 y=4594500..4599000  full     [built]
+   622594  6t  x=622500..625500 y=4594500..4599000  partial  [built]
+   604599  9t  x=604500..609000 y=4599000..4603500  full     [built]
+   609599  9t  x=609000..613500 y=4599000..4603500  full     [built]
+   613599  9t  x=613500..618000 y=4599000..4603500  full     [built]
+   618599  9t  x=618000..622500 y=4599000..4603500  full     [built]
+   622599  6t  x=622500..625500 y=4599000..4603500  partial  [built]
+   604603  9t  x=604500..609000 y=4603500..4608000  full     [built]
+   609603  9t  x=609000..613500 y=4603500..4608000  full     [built]
+   613603  9t  x=613500..618000 y=4603500..4608000  full     [built]
+   618603  9t  x=618000..622500 y=4603500..4608000  full     [built]
+   622603  6t  x=622500..625500 y=4603500..4608000  partial  [built]
+   604608  3t  x=604500..609000 y=4608000..4609500  partial  [built]
+   609608  3t  x=609000..613500 y=4608000..4609500  partial  [built]
+   613608  3t  x=613500..618000 y=4608000..4609500  partial  [built]
+   618608  3t  x=618000..622500 y=4608000..4609500  partial  [built]
+   622608  2t  x=622500..625500 y=4608000..4609500  partial  [built]
+
+will build 1 block(s): 613590
+
+========== westernpa_d20/613590 (9 tiles) ==========
+  bbox: 613500,4590000,618000,4594500  (4500x4500 m)
+
+=== 613590_1m ===  grid 4500x4500 @ 1.0 m  CRS=EPSG:6346  tiles=9
+  output dir: data\derivatives\tiles\data_3x3\westernpa_d20\613590
+  [merge_613590_1m] rc=0 in 60.3s
+  merged: 3.35 GB
+  [dem_613590_1m] rc=0 in 159.4s
+  DEM: nan=0.00%  z=305.6..486.0 m
+  [dsm_613590_1m] rc=0 in 82.3s
+  reading LAS for density + intensity...
+  wrote hillshade_613590_1m + slope_613590_1m
+  openness ...
+  wrote tile_overview_613590_1m.png
+=== 613590_1m DONE ===
+
+  [613590] done in 546.1s
+  removed merge intermediate (3.4 GB)
+
+ALL DONE in 9.1 min
