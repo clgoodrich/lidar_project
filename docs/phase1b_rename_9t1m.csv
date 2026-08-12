@@ -1,0 +1,2 @@
+old_path,new_path,phase,reason
+data/derivatives/tiles/9t_1m,data/derivatives/tiles/9t_1m_rebuilt20260812,phase1b,"2026-08-12 rebuild of the lost 9t_1m channels; NOT byte-identical to what the models trained on (slope mean 8.3177 -> 8.5156). Renamed so _prep_road_1m.py fails fast instead of silently producing a mismatched feature stack."

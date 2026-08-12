@@ -1,5 +1,39 @@
 """Prep the 1 m road-training inputs from the 9t_1m derivative stack.
 
+╔══════════════════════════════════════════════════════════════════════════╗
+║ STOP. RUNNING THIS INVALIDATES EVERY TRAINED CHECKPOINT.                 ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+The original `data/derivatives/tiles/9t_1m/` channels are GONE. That directory
+was a junction into `E:\\lidar_project_data_DO_NOT_DELETE`, and the junctions
+were removed. There is no copy on C: or on the E: backup.
+
+`tiles/9t_1m_rebuilt20260812/` is a rebuild from 66 WesternPA D20 tiles over the
+exact 9t bbox. It is NOT byte-identical to what the models trained on, and the
+difference is large enough to matter:
+
+    channel        trained-on mean/std      2026-08-12 rebuild
+    slope            8.3177 / 6.3956          8.5156 / 6.5471
+    roughness_5      0.2031 / 0.1777          0.2086 / 0.1817
+    lrm_25          -0.0001 / 0.2727          0.0002 / 0.2766
+
+`feature_stats_1m.json` is the per-channel normalisation every checkpoint was
+trained against. Regenerating it shifts the model's inputs by ~2%, silently, at
+inference time. On 2026-08-12 this script was run to test that it worked; it
+overwrote `features_pit_9t_1m.tif`, the stats and the labels, and all three had
+to be restored from the E: backup.
+
+So `SRC_1M` deliberately points at a directory that does NOT exist. The script
+fails fast rather than succeeding wrongly. If you genuinely intend to rebuild
+the stack AND retrain every model that consumes it, point `SRC_1M` at the
+rebuild explicitly.
+
+To rebuild only the road LABEL raster -- which is safe, deterministic and does
+not touch the feature stack -- use `_rebuild_labels_road_9t_1m.py` instead.
+
+---
+
+
 Mirrors pits/_stack_features.py but at 1 m and with roughness_5 (the native 1 m
 roughness kernel) in place of roughness_11. Produces, under data/derivatives/tiles/9t/:
     features_pit_9t_1m.tif   7-band float32 stack (same channel order as 0.5 m)

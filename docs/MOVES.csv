@@ -217,3 +217,4 @@ ts,phase,old_path,new_path,size_bytes,reason
 2026-08-12T15:30:24+00:00,archive,label_grids/permian_04,data/99_archive/parked/permian_ramachandran/label_grids_permian_04,529402322,"Permian label grid, parked 2026-08-12."
 2026-08-12T15:30:24+00:00,archive,barlow,data/99_archive/parked/barlow_finesst/barlow,1591913319,"FINESST proposal material, submitted. Not lidar analysis."
 2026-08-12T15:30:24+00:00,archive,barlow_data,data/99_archive/parked/barlow_finesst/barlow_data,0,Empty; ~50 GB .gitignore reservation released.
+2026-08-12T16:04:35+00:00,phase1b,data/derivatives/tiles/9t_1m,data/derivatives/tiles/9t_1m_rebuilt20260812,1030826831,2026-08-12 rebuild of the lost 9t_1m channels; NOT byte-identical to what the models trained on (slope mean 8.3177 -> 8.5156). Renamed so _prep_road_1m.py fails fast instead of silently producing a mismatched feature stack.
