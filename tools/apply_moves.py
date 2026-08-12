@@ -63,6 +63,19 @@ def append_master(row: dict) -> None:
 
 
 def do_move(src: Path, dst: Path) -> int:
+    # Directories are moved whole. On one volume that is a metadata rename, so
+    # archiving 88,523 files is instant; across volumes shutil.move falls back
+    # to a recursive copy. The size check below only applies to files.
+    if src.is_dir():
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        if src.drive.lower() == dst.drive.lower():
+            src.rename(dst)
+        else:
+            shutil.move(str(src), str(dst))
+        if not dst.exists():
+            raise RuntimeError(f"directory move failed: {src} -> {dst}")
+        return sum(p.stat().st_size for p in dst.rglob("*") if p.is_file())
+
     size = src.stat().st_size
     dst.parent.mkdir(parents=True, exist_ok=True)
     if src.drive.lower() == dst.drive.lower():

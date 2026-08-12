@@ -210,3 +210,10 @@ ts,phase,old_path,new_path,size_bytes,reason
 2026-08-12T15:11:06+00:00,phase2,data/derivatives/tpi_grad_mag_9t_1m.tif,data/derivatives/tiles/9t/tpi_grad_mag_9t_1m.tif,67848070,loose raster -> tiles/9t by <area>_<res> suffix
 2026-08-12T15:11:06+00:00,phase2,data/derivatives/tpi_grad_mag_mck_e1423n2238_05.tif,data/derivatives/tiles/mck_e1423n2238_05/tpi_grad_mag_mck_e1423n2238_05.tif,119004773,loose raster -> tiles/mck_e1423n2238_05 by <area>_<res> suffix
 2026-08-12T15:11:06+00:00,phase2,data/derivatives/tpi_grad_mag_mk5_1m.tif,data/derivatives/tiles/mk5_1m/tpi_grad_mag_mk5_1m.tif,80227985,loose raster -> tiles/mk5_1m by <area>_<res> suffix
+2026-08-12T15:30:24+00:00,archive,data/external/ramachandran_2024,data/99_archive/parked/permian_ramachandran/ramachandran_2024,5274184358,"Texas/Permian orphan-well thread, parked 2026-08-12. 87,535 NAIP chips."
+2026-08-12T15:30:24+00:00,archive,label_grids/permian_01,data/99_archive/parked/permian_ramachandran/label_grids_permian_01,1693873329,"Permian label grid, parked 2026-08-12."
+2026-08-12T15:30:24+00:00,archive,label_grids/permian_02,data/99_archive/parked/permian_ramachandran/label_grids_permian_02,529896167,"Permian label grid, parked 2026-08-12."
+2026-08-12T15:30:24+00:00,archive,label_grids/permian_03,data/99_archive/parked/permian_ramachandran/label_grids_permian_03,534690154,"Permian label grid, parked 2026-08-12."
+2026-08-12T15:30:24+00:00,archive,label_grids/permian_04,data/99_archive/parked/permian_ramachandran/label_grids_permian_04,529402322,"Permian label grid, parked 2026-08-12."
+2026-08-12T15:30:24+00:00,archive,barlow,data/99_archive/parked/barlow_finesst/barlow,1591913319,"FINESST proposal material, submitted. Not lidar analysis."
+2026-08-12T15:30:24+00:00,archive,barlow_data,data/99_archive/parked/barlow_finesst/barlow_data,0,Empty; ~50 GB .gitignore reservation released.

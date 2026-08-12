@@ -1,0 +1,58 @@
+# WellSight path configuration — the single source of truth.
+#
+# Before this file existed, `notebooks/wellsight_v2/_common.py` hardcoded
+#     ROOT = C:\Users\colto\Documents\GitHub\lidar_project
+# which pinned the whole project to one username on one machine, and meant every
+# future directory move was a hunt through 92 scripts.
+#
+# Now: 67 scripts import DERIV / DERIV_9T from _common, _common reads this file,
+# and a move becomes one edit here.
+#
+# ROOT RESOLUTION, in order:
+#   1. $WELLSIGHT_ROOT           environment variable, if set
+#   2. root_override below       if uncommented
+#   3. auto                      three parents up from _common.py
+# Auto is the default and is correct as long as _common.py stays at
+# notebooks/wellsight_v2/_common.py. That location is load-bearing anyway —
+# 93 sys.path calls resolve by parents[N] — so it is a safe anchor.
+
+# root_override = "C:/Users/colto/Documents/GitHub/lidar_project"
+
+# --- Current layout -------------------------------------------------------
+# Every value is relative to root and uses forward slashes.
+[paths]
+data          = "data"
+source_laz    = "data/source_laz"
+external      = "data/external"
+derivatives   = "data/derivatives"
+annotations   = "data/derivatives/annotations"
+tiles         = "data/derivatives/tiles"
+nine_t        = "data/derivatives/tiles/9t"
+data_3x3      = "data/derivatives/tiles/data_3x3"
+experiments   = "data/derivatives/experiments"
+label_grids   = "label_grids"
+literature    = "literature"
+docs          = "docs"
+qgis          = "qgis"
+tools         = "tools"
+archive       = "data/99_archive"
+
+# --- Project constants ----------------------------------------------------
+[crs]
+# NAD83(2011) / UTM 17N. Every derived product is written in this CRS.
+project = "EPSG:6346"
+# roads.shp / plat.shp / pit_*.shp ship in WGS84 and are reprojected on read.
+annotation_source = "EPSG:4326"
+
+[tools]
+# Resolved with shutil.which() first; this is the fallback name only.
+pdal = "pdal"
+
+# --- Deferred: the Phase 4 role-based layout ------------------------------
+# NOT ACTIVE. Recorded here so the eventual move is a value change rather than
+# an archaeology exercise. See docs/REORGANIZATION_PLAN.md section 5.
+#   source  = "data/01_source"
+#   truth   = "data/02_truth"
+#   derived = "data/03_derived"
+#   models  = "data/04_models"
+#   results = "data/05_results"

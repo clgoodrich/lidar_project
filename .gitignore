@@ -233,3 +233,19 @@ barlow/MDV_Resources.docx
 # QGIS/sqlite write-ahead-log sidecars — transient, never track
 *.gpkg-wal
 *.gpkg-shm
+
+# ---------------------------------------------------------------------------
+# Archived / parked research threads (moved 2026-08-12, NEVER deleted).
+# data/99_archive/parked/permian_ramachandran/  87,538 files, 8.3 GB
+# data/99_archive/parked/barlow_finesst/           911 files, 1.5 GB
+#
+# Everything in here is externally sourced (NAIP chips, USGS tiles), a
+# submitted document, or regenerable. Ignore the bulk. ARCHIVE_MANIFEST.csv is
+# force-added so the record of what was archived, when and why stays in git.
+#
+# The rules above that anchor to the OLD locations
+# (data/external/ramachandran_2024/..., label_grids/permian_01/pad_unet_xfer/,
+# /barlow_data/, barlow/docs/...) no longer match anything. They are left in
+# place deliberately: if a thread is ever un-archived, its coverage comes back
+# with it instead of silently leaking.
+data/99_archive/**

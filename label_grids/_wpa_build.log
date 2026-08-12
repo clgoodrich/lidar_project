@@ -1,0 +1,87 @@
+WPA: 135 candidate 2x2 blocks (16 dropped for 9t-core overlap), 4786 PA orphan wells
+
+== selected 4 well-dense WPA 2x2 grids ==
+  westernpa_01:  258 wells  x=616500..619500 y=4593000..4596000  tiles=['17TPF6165', '17TPF6165', '17TPF6185', '17TPF6185']
+  westernpa_02:  193 wells  x=621000..624000 y=4597500..4600500  tiles=['17TPF6215', '17TPF6215', '17TPF6225', '17TPF6225']
+  westernpa_03:  174 wells  x=609000..612000 y=4596000..4599000  tiles=['17TPF6095', '17TPF6095', '17TPF6105', '17TPF6105']
+  westernpa_04:  163 wells  x=610500..613500 y=4593000..4596000  tiles=['17TPF6105', '17TPF6105', '17TPF6125', '17TPF6125']
+
+========== westernpa_01  (258 wells) ==========
+  DEM (3000x3000) from 4 tiles ...
+  [dem_westernpa_01_1m] rc=0 in 75.6s
+  hillshade ok -> hillshade_westernpa_01_1m.tif
+
+=== westernpa_01_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6346  tiles=4
+  output dir: label_grids\westernpa_01
+  [merge_westernpa_01_1m] rc=0 in 37.6s
+  merged: 1.41 GB
+  DEM: nan=0.00%  z=344.8..514.7 m
+  [dsm_westernpa_01_1m] rc=0 in 50.5s
+  reading LAS for density + intensity...
+  wrote hillshade_westernpa_01_1m + slope_westernpa_01_1m
+  openness ...
+  wrote tile_overview_westernpa_01_1m.png
+=== westernpa_01_1m DONE ===
+
+  [westernpa_01] done in 311s (+ empty pit_inside/pit_outside gpkgs)
+
+========== westernpa_02  (193 wells) ==========
+  DEM (3000x3000) from 4 tiles ...
+  [dem_westernpa_02_1m] rc=0 in 65.1s
+  hillshade ok -> hillshade_westernpa_02_1m.tif
+
+=== westernpa_02_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6346  tiles=4
+  output dir: label_grids\westernpa_02
+  [merge_westernpa_02_1m] rc=0 in 31.7s
+  merged: 1.42 GB
+  DEM: nan=0.00%  z=408.6..526.0 m
+  [dsm_westernpa_02_1m] rc=0 in 47.7s
+  reading LAS for density + intensity...
+  wrote hillshade_westernpa_02_1m + slope_westernpa_02_1m
+  openness ...
+  wrote tile_overview_westernpa_02_1m.png
+=== westernpa_02_1m DONE ===
+
+  [westernpa_02] done in 279s (+ empty pit_inside/pit_outside gpkgs)
+
+========== westernpa_03  (174 wells) ==========
+  DEM (3000x3000) from 4 tiles ...
+  [dem_westernpa_03_1m] rc=0 in 66.1s
+  hillshade ok -> hillshade_westernpa_03_1m.tif
+
+=== westernpa_03_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6346  tiles=4
+  output dir: label_grids\westernpa_03
+  [merge_westernpa_03_1m] rc=0 in 33.1s
+  merged: 1.51 GB
+  DEM: nan=0.01%  z=321.5..486.4 m
+  [dsm_westernpa_03_1m] rc=0 in 46.5s
+  reading LAS for density + intensity...
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_derivatives.py:268: RuntimeWarning: invalid value encountered in divide
+  smooth = np.where(sc > 0, sm / sc, np.nan)
+  wrote hillshade_westernpa_03_1m + slope_westernpa_03_1m
+  openness ...
+  wrote tile_overview_westernpa_03_1m.png
+=== westernpa_03_1m DONE ===
+
+  [westernpa_03] done in 281s (+ empty pit_inside/pit_outside gpkgs)
+
+========== westernpa_04  (163 wells) ==========
+  DEM (3000x3000) from 4 tiles ...
+  [dem_westernpa_04_1m] rc=0 in 71.1s
+  hillshade ok -> hillshade_westernpa_04_1m.tif
+
+=== westernpa_04_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6346  tiles=4
+  output dir: label_grids\westernpa_04
+  [merge_westernpa_04_1m] rc=0 in 32.8s
+  merged: 1.46 GB
+  DEM: nan=0.00%  z=320.3..490.7 m
+  [dsm_westernpa_04_1m] rc=0 in 47.3s
+  reading LAS for density + intensity...
+  wrote hillshade_westernpa_04_1m + slope_westernpa_04_1m
+  openness ...
+  wrote tile_overview_westernpa_04_1m.png
+=== westernpa_04_1m DONE ===
+
+  [westernpa_04] done in 283s (+ empty pit_inside/pit_outside gpkgs)
+
+WPA grids in C:\Users\colto\Documents\GitHub\lidar_project\label_grids

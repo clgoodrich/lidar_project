@@ -27,6 +27,7 @@ from rasterio.transform import Affine
 
 __all__ = [
     "ROOT", "DERIV", "DERIV_9T", "DST_CRS", "PDAL_EXE",
+    "PATHS", "CONFIG", "path_for",
     "run_pdal",
     "read_tif", "write_tif", "make_profile",
 ]
@@ -34,12 +35,89 @@ __all__ = [
 # ---------------------------------------------------------------------------
 # Paths and constants
 # ---------------------------------------------------------------------------
+# Read from config/paths.toml so a directory move is one edit in one file
+# instead of a hunt through 92 scripts. ROOT was hardcoded to one username's
+# home directory until 2026-08-12.
+#
+# EVERY LEGACY NAME IS PRESERVED. ROOT, DERIV, DERIV_9T, DST_CRS and PDAL_EXE
+# mean exactly what they meant before, so all 67 importing scripts keep working
+# with no change. If the config is missing or unreadable, the old values are
+# reconstructed from __file__ -- a broken config must never take the pipeline
+# down.
 
-ROOT: Path = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-DERIV: Path = ROOT / "data" / "derivatives"
-DERIV_9T: Path = DERIV / "tiles" / "9t"
-DST_CRS: str = "EPSG:6346"  # NAD83(2011) / UTM 17N — project canonical CRS
-PDAL_EXE: str = shutil.which("pdal") or "pdal"
+_DEFAULTS: dict[str, str] = {
+    "data": "data",
+    "source_laz": "data/source_laz",
+    "external": "data/external",
+    "derivatives": "data/derivatives",
+    "annotations": "data/derivatives/annotations",
+    "tiles": "data/derivatives/tiles",
+    "nine_t": "data/derivatives/tiles/9t",
+    "data_3x3": "data/derivatives/tiles/data_3x3",
+    "experiments": "data/derivatives/experiments",
+    "label_grids": "label_grids",
+    "literature": "literature",
+    "docs": "docs",
+    "qgis": "qgis",
+    "tools": "tools",
+    "archive": "data/99_archive",
+}
+
+
+def _load_config() -> tuple[Path, dict]:
+    """Resolve ROOT and read config/paths.toml. Never raises."""
+    import os
+
+    # 1. auto-detect: notebooks/wellsight_v2/_common.py -> repo root
+    root = Path(__file__).resolve().parents[2]
+    cfg: dict = {}
+    try:
+        import tomllib
+        cfg_path = root / "config" / "paths.toml"
+        if cfg_path.is_file():
+            cfg = tomllib.loads(cfg_path.read_text(encoding="utf8"))
+    except Exception:                      # noqa: BLE001 - config is optional
+        cfg = {}
+
+    # 2. root_override in the config file beats auto-detection
+    override = cfg.get("root_override")
+    if override:
+        root = Path(override)
+    # 3. the environment beats everything, for CI and second machines
+    env = os.environ.get("WELLSIGHT_ROOT")
+    if env:
+        root = Path(env)
+    return root, cfg
+
+
+ROOT, CONFIG = _load_config()
+
+#: Named project directories, resolved to absolute paths.
+PATHS: dict[str, Path] = {
+    k: ROOT / v for k, v in {**_DEFAULTS, **CONFIG.get("paths", {})}.items()
+}
+
+
+def path_for(name: str) -> Path:
+    """Look up a configured directory by name, e.g. ``path_for("annotations")``.
+
+    Prefer this over hand-assembling ``ROOT / "data" / "derivatives" / ...`` in
+    new code. Raises KeyError with the valid names rather than silently
+    returning a path that does not exist.
+    """
+    try:
+        return PATHS[name]
+    except KeyError:
+        raise KeyError(
+            f"unknown path {name!r}; configured names: {sorted(PATHS)}") from None
+
+
+# --- Legacy names, unchanged in meaning ------------------------------------
+DERIV: Path = PATHS["derivatives"]
+DERIV_9T: Path = PATHS["nine_t"]
+DST_CRS: str = CONFIG.get("crs", {}).get("project", "EPSG:6346")
+PDAL_EXE: str = (shutil.which("pdal")
+                 or CONFIG.get("tools", {}).get("pdal", "pdal"))
 
 
 # ---------------------------------------------------------------------------

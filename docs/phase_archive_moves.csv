@@ -1,0 +1,8 @@
+old_path,new_path,phase,reason
+data/external/ramachandran_2024,data/99_archive/parked/permian_ramachandran/ramachandran_2024,archive,"Texas/Permian orphan-well thread, parked 2026-08-12. 87,535 NAIP chips."
+label_grids/permian_01,data/99_archive/parked/permian_ramachandran/label_grids_permian_01,archive,"Permian label grid, parked 2026-08-12."
+label_grids/permian_02,data/99_archive/parked/permian_ramachandran/label_grids_permian_02,archive,"Permian label grid, parked 2026-08-12."
+label_grids/permian_03,data/99_archive/parked/permian_ramachandran/label_grids_permian_03,archive,"Permian label grid, parked 2026-08-12."
+label_grids/permian_04,data/99_archive/parked/permian_ramachandran/label_grids_permian_04,archive,"Permian label grid, parked 2026-08-12."
+barlow,data/99_archive/parked/barlow_finesst/barlow,archive,"FINESST proposal material, submitted. Not lidar analysis."
+barlow_data,data/99_archive/parked/barlow_finesst/barlow_data,archive,Empty; ~50 GB .gitignore reservation released.

@@ -1,0 +1,56 @@
+
+========== permian_01  (4 tiles, EPSG:6343) ==========
+  bbox 346500,3330000..349500,3333000
+
+=== permian_01_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6343  tiles=4
+  output dir: label_grids\permian_01
+  [merge_permian_01_1m] rc=0 in 39.6s
+  merged: 1.69 GB
+  [dem_permian_01_1m] rc=0 in 94.2s
+  DEM: nan=0.00%  z=609.9..694.5 m
+  [dsm_permian_01_1m] rc=0 in 51.6s
+  reading LAS for density + intensity...
+  wrote hillshade_permian_01_1m + slope_permian_01_1m
+  openness ...
+  wrote tile_overview_permian_01_1m.png
+=== permian_01_1m DONE ===
+
+  [permian_01] done in 322s (+ empty pads gpkg)
+
+========== permian_02  (4 tiles, EPSG:6342) ==========
+  bbox 705500,3456000..708500,3459000
+
+=== permian_02_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6342  tiles=4
+  output dir: label_grids\permian_02
+  [merge_permian_02_1m] rc=0 in 26.9s
+  merged: 1.14 GB
+  [dem_permian_02_1m] rc=0 in 85.5s
+  DEM: nan=0.00%  z=739.1..748.9 m
+  [dsm_permian_02_1m] rc=0 in 40.9s
+  reading LAS for density + intensity...
+  wrote hillshade_permian_02_1m + slope_permian_02_1m
+  openness ...
+  wrote tile_overview_permian_02_1m.png
+=== permian_02_1m DONE ===
+
+  [permian_02] done in 291s (+ empty pads gpkg)
+
+========== permian_03  (4 tiles, EPSG:6343) ==========
+  bbox 234000,3405000..237000,3408000
+
+=== permian_03_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6343  tiles=4
+  output dir: label_grids\permian_03
+  [merge_permian_03_1m] rc=0 in 30.5s
+  merged: 1.34 GB
+  [dem_permian_03_1m] rc=0 in 75.5s
+  DEM: nan=0.00%  z=732.9..854.4 m
+  [dsm_permian_03_1m] rc=0 in 42.8s
+  reading LAS for density + intensity...
+  wrote hillshade_permian_03_1m + slope_permian_03_1m
+  openness ...
+  wrote tile_overview_permian_03_1m.png
+=== permian_03_1m DONE ===
+
+  [permian_03] done in 280s (+ empty pads gpkg)
+
+Permian grids in C:\Users\colto\Documents\GitHub\lidar_project\label_grids

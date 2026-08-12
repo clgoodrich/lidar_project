@@ -1,0 +1,64 @@
+
+========== permian_01  (4 tiles, EPSG:6343) ==========
+  bbox 346500,3330000..349500,3333000
+  DEM (3000x3000) from 4 tiles ...
+  [dem_permian_01_1m] rc=0 in 104.6s
+  hillshade ok -> hillshade_permian_01_1m.tif
+
+=== permian_01_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6343  tiles=4
+  output dir: label_grids\permian_01
+  [merge_permian_01_1m] rc=1 in 0.2s
+  [permian_01] FAILED: PDAL pipeline failed (rc=1) for merge_permian_01_1m:
+PDAL: writers.las: Unable to convert scaled value (3330038845) to int32 for dimension 'Y' when writing LAS/LAZ file C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\_merged_permian_01_1m.las.
+
+
+
+========== permian_02  (4 tiles, EPSG:6342) ==========
+  bbox 705500,3456000..708500,3459000
+  DEM (3000x3000) from 4 tiles ...
+  [dem_permian_02_1m] rc=0 in 92.6s
+  hillshade ok -> hillshade_permian_02_1m.tif
+
+=== permian_02_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6342  tiles=4
+  output dir: label_grids\permian_02
+  [merge_permian_02_1m] rc=1 in 0.2s
+  [permian_02] FAILED: PDAL pipeline failed (rc=1) for merge_permian_02_1m:
+PDAL: writers.las: Unable to convert scaled value (3456070917) to int32 for dimension 'Y' when writing LAS/LAZ file C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\_merged_permian_02_1m.las.
+
+
+
+========== permian_03  (4 tiles, EPSG:6343) ==========
+  bbox 234000,3405000..237000,3408000
+  DEM (3000x3000) from 4 tiles ...
+  [dem_permian_03_1m] rc=0 in 84.2s
+  hillshade ok -> hillshade_permian_03_1m.tif
+
+=== permian_03_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6343  tiles=4
+  output dir: label_grids\permian_03
+  [merge_permian_03_1m] rc=1 in 0.2s
+  [permian_03] FAILED: PDAL pipeline failed (rc=1) for merge_permian_03_1m:
+PDAL: writers.las: Unable to convert scaled value (3405054930) to int32 for dimension 'Y' when writing LAS/LAZ file C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\_merged_permian_03_1m.las.
+
+
+
+========== permian_04  (4 tiles, EPSG:6343) ==========
+  bbox 297000,3579000..300000,3582000
+  DEM (3000x3000) from 4 tiles ...
+  [dem_permian_04_1m] rc=0 in 173.8s
+  hillshade ok -> hillshade_permian_04_1m.tif
+
+=== permian_04_1m ===  grid 3000x3000 @ 1.0 m  CRS=EPSG:6343  tiles=4
+  output dir: label_grids\permian_04
+  [merge_permian_04_1m] rc=0 in 69.3s
+  merged: 3.21 GB
+  DEM: nan=0.00%  z=653.3..691.4 m
+  [dsm_permian_04_1m] rc=0 in 108.8s
+  reading LAS for density + intensity...
+  wrote hillshade_permian_04_1m + slope_permian_04_1m
+  openness ...
+  wrote tile_overview_permian_04_1m.png
+=== permian_04_1m DONE ===
+
+  [permian_04] done in 490s (+ empty pads gpkg)
+
+Permian grids in C:\Users\colto\Documents\GitHub\lidar_project\label_grids
