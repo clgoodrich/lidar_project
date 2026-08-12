@@ -5,7 +5,8 @@
 which scoped Phases 0–3. Those shipped (commits `89192d8`, `9412b7b`, `3df97d6`,
 `ba7bcec`). This document specifies Phase 4 onward.
 **Governing constraints:** file paths are respected. Nothing is deleted.
-**Status:** proposal. Four decisions needed before Phase 4A can start (§11).
+**Status:** decisions taken 2026-08-12 (§11). Nothing moved yet. Phase 4A starts
+once `refactor-package` lands.
 
 ---
 
@@ -614,29 +615,26 @@ Before Phase 4D starts, take the snapshot regardless. E: has ~4.1 TB free.
 
 ---
 
-## 11. Decisions needed before Phase 4A
+## 11. Decisions
 
-1. **Annotations under `qgis/`, or `data/02_truth/` with QGIS as the front door?**
-   Recommendation: `02_truth/` + purpose-built `.qgz` projects (§1.4). Tell me if
-   you want the files themselves under `qgis/` and I will wire the config that way.
+Taken 2026-08-12.
 
-2. **Numeric prefixes (`01_source`, `02_truth`, …), or plain names
-   (`source`, `truth`, `derived`)?** Recommendation: keep the numbers. They sort
-   the tree into pipeline order in every file browser, which is worth the mild
-   ugliness. `config/paths.toml` already reserves them.
+| # | Decision | Effect |
+|---|---|---|
+| 1 | **Truth lives at `data/02_truth/`. `qgis/` is the front door.** | Annotations leave the blanket-ignored `derivatives/` subtree and become tracked by default. Access is through `annotate_9t.qgz`, `annotate_grids.qgz`, `review_candidates.qgz` — three new projects built in Phase 4C. You never navigate to truth in Explorer again. |
+| 2 | **Numeric prefixes kept** (`01_source` … `99_archive`). | The tree sorts into pipeline order in every file browser. `config/paths.toml` already reserves the names. |
+| 3 | **`refactor-package` lands first, then Phase 4.** | The package will carry one path module to edit instead of 92 scripts. Phases 4A and 4B are safe to run now in parallel; **4C onward waits.** |
+| 4 | **Phase 4D moves everything and keeps everything.** | All 19 tile stacks move into `03_derived/<area>/<res>/`. Nothing dropped, nothing archived for size alone. Disk stays ~128 GB; the tree gains one rule and every leaf gains a `_PROVENANCE.json`. The McKean stacks and `inference_613590_05` move with the rest. |
+| 5 | **Git history rewrite: yes, but last.** | `git filter-repo --strip-blobs-bigger-than 10M`, 5.4 GB → under 200 MB. Runs only after the tree is settled and a fresh `E:` snapshot exists. Every SHA changes; 21 branches force-push. |
 
-3. **Sequencing against `refactor-package`.** That branch is mid-flight —
-   92 scripts becoming a parameterised package, Phase 0 golden harness landed.
-   Reorganizing the data tree while the code that references it is being rewritten
-   is how a silent breakage happens. Recommendation: **land `refactor-package`
-   first**, then Phase 4 — the package will have one path module to edit instead of
-   92 scripts. Phase 4A and 4B are safe to run now in parallel either way.
+Consequence of decision 4 worth stating plainly: **Phase 4E archives only the
+§6.1 items, which are obsolete by evidence.** Nothing is archived because it is
+large or because it is quiet. `road_multiblock` goes because the leaderboard
+says "Rejected", not because it is 241 MB.
 
-4. **Git history rewrite (Phase 7)?** 5.4 GB → under 200 MB, at the cost of
-   rewriting every SHA and force-pushing 21 branches. Recommendation: yes, but
-   last, after the tree is settled and a fresh E: snapshot exists.
+### Still open — minor, non-blocking
 
-5. **Minor, non-blocking:** `tiles/9t_1m_rebuilt20260812/` was built today and is
-   untracked. Is it the replacement for the loose `*_9t_1m.tif` files at the
-   `derivatives/` root, and can those be archived? If yes, that is 34 files and
-   ~1 GB resolved in Phase 4B rather than 4D.
+`tiles/9t_1m_rebuilt20260812/` was built 2026-08-12 and is untracked. Is it the
+replacement for the 34 loose `*_9t_1m.tif` files at the `derivatives/` root? If
+yes, those 34 files (~1 GB) resolve in Phase 4B rather than 4D, and the rebuilt
+stack becomes `03_derived/9t/1m/`. If no, both stay and both move in 4D.
