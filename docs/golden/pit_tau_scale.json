@@ -1,0 +1,20 @@
+{
+  "name": "pit_tau_scale",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s5_eval/_pit_cv5_tau_scale.py"
+  ],
+  "recorded_utc": "2026-08-12T19:59:42Z",
+  "elapsed_seconds": 39.8,
+  "n_outputs": 2,
+  "outputs": {
+    "data/derivatives/tiles/9t/pit_unet_cv5/pit_cv5_iou_strictness_scale_9t.csv": {
+      "sha256": "fe7e98507988273decbfdf9172c4ba5e51c1d89911f9fc606ab75bc660342188",
+      "bytes": 3874
+    },
+    "data/derivatives/tiles/9t/pit_unet_cv5/pit_cv5_iou_strictness_scale_9t.md": {
+      "sha256": "da94d24a43ccd394ccd47ee457719b040d0e18a69722c390356de71efa89a6cc",
+      "bytes": 319
+    }
+  }
+}

@@ -52,6 +52,28 @@ Do not start until the backup verifies PASS.
 
 # PHASE 0 — the golden harness
 
+> **EXECUTED 2026-08-12. 11 of 13 planned scripts recorded and verified
+> clean. Full findings in `docs/golden/NON_DETERMINISTIC.md`.**
+>
+> The 2 deferred (`_build_pit_dataset.py`, `_build_plat_road_dataset.py`) were
+> not a judgment call — running `_build_pit_dataset.py` live during this pass
+> regenerated `pit_blocks_9t.gpkg` against 655 currently-drawn pits instead of
+> the 527 the deployed CV5 checkpoints were trained and fold-assigned against.
+> Caught against the E: mirror, restored, re-verified identical. **This is a
+> live footgun in the current 9t pipeline**, not a 613590-only problem: every
+> time annotation grows, the next run of either script silently reassigns
+> folds with no warning. It is the strongest evidence yet for Phase 2 Step 2.1
+> (extract `assign_folds`) and motivates a `--force` write-guard that does not
+> exist yet — add it before Phase 1 touches either script.
+>
+> Also found and fixed: `.gpkg` files are not byte-stable between runs even
+> with zero data change (GDAL embeds a `last_change` timestamp), and this
+> project's QGIS auto-styling convention adds a second, similar false
+> positive via `layer_styles.update_time`. `tools/golden.py` now hashes
+> `.gpkg` output by content instead of raw bytes and skips `layer_styles`.
+> Both were real harness bugs, not script bugs — 5 of the first 11 scripts
+> tripped the first one, 1 tripped the second.
+
 Nothing in the pipeline changes. Exit criterion: every Tier-1 script proves
 itself deterministic across two consecutive runs.
 

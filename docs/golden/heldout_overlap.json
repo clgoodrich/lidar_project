@@ -1,0 +1,32 @@
+{
+  "name": "heldout_overlap",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s5_eval/_heldout_overlap_9t.py"
+  ],
+  "recorded_utc": "2026-08-12T20:42:49Z",
+  "elapsed_seconds": 39.1,
+  "n_outputs": 5,
+  "outputs": {
+    "data/derivatives/eval_9t_heldout_overlap/_heldout_9t.json": {
+      "sha256": "7ae935bce79eeee3f4bf8320f3e70c964e62abb83533ed74ff809ebadb9f98fa",
+      "bytes": 453
+    },
+    "data/derivatives/eval_9t_heldout_overlap/heldout_overlap_9t.csv": {
+      "sha256": "6aa990953a00fc913b4f358fec09fb5e9a57c81342aa2c7fe63501c20ed61f94",
+      "bytes": 3529
+    },
+    "data/derivatives/eval_9t_heldout_overlap/heldout_overlap_9t.png": {
+      "sha256": "b7742d02b175bef6f29d13c97690d689636b28f54a1c7bf3663874bb74d4ee11",
+      "bytes": 498564
+    },
+    "data/derivatives/eval_9t_heldout_overlap/heldout_pit_unet_v2.gpkg": {
+      "sha256": "c642c1c3f7011fc4b4aab1793607a79d3c80f6bf213c47b44a04bcbb21707d4d",
+      "bytes": 864256
+    },
+    "data/derivatives/eval_9t_heldout_overlap/heldout_plat_unet.gpkg": {
+      "sha256": "f74e3f086c7a6087872d992a758a907d2519b9efc31d3edbc5384ccfe4cc9450",
+      "bytes": 7200768
+    }
+  }
+}

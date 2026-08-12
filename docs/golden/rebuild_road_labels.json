@@ -1,0 +1,16 @@
+{
+  "name": "rebuild_road_labels",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s2_labels/_rebuild_labels_road_9t_1m.py"
+  ],
+  "recorded_utc": "2026-08-12T19:48:36Z",
+  "elapsed_seconds": 2.6,
+  "n_outputs": 1,
+  "outputs": {
+    "data/derivatives/tiles/9t/labels_road_9t_1m.tif": {
+      "sha256": "88d38f52a3b9cf6e68dd0ac162cb1de7bac867f98a4288eddbcc9ccc8b77a8c5",
+      "bytes": 380952
+    }
+  }
+}

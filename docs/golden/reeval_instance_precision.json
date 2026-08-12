@@ -1,0 +1,64 @@
+{
+  "name": "reeval_instance_precision",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s5_eval/_reeval_instance_precision_9t.py"
+  ],
+  "recorded_utc": "2026-08-12T20:46:32Z",
+  "elapsed_seconds": 210.0,
+  "n_outputs": 13,
+  "outputs": {
+    "data/derivatives/eval_9t_instance_precision/_reeval_9t.json": {
+      "sha256": "603cd5a56cdbb0d279d36acbe33ea58b5d6132f50c2ca1ad56548d9229b0e3dd",
+      "bytes": 1404
+    },
+    "data/derivatives/eval_9t_instance_precision/detections_map_9t.png": {
+      "sha256": "0969fda227e51ea52006c19ba6fea564dc19eda48f330e7dc64052dfd7932c4f",
+      "bytes": 1887659
+    },
+    "data/derivatives/eval_9t_instance_precision/metrics_9t.csv": {
+      "sha256": "947e1e61172db7351f623651b8de82743c065584a9cea2a1cad792fde228057a",
+      "bytes": 9410
+    },
+    "data/derivatives/eval_9t_instance_precision/precision_reeval_9t.png": {
+      "sha256": "6a3de9b38eda7878a2c0a60ae6d963febdb028f215eef859a423d26687043e64",
+      "bytes": 141122
+    },
+    "data/derivatives/eval_9t_instance_precision/scored_pad_05_maskrcnn.gpkg": {
+      "sha256": "10166e14f47b9701c78f11dc2ca4e64fb6232d79555ee388d91baab9b38e9beb",
+      "bytes": 1069056
+    },
+    "data/derivatives/eval_9t_instance_precision/scored_pad_06_yolo.gpkg": {
+      "sha256": "3e80728df597f391245850a01aba1bba742116e0e6869ce952625256c85f2fb5",
+      "bytes": 929792
+    },
+    "data/derivatives/eval_9t_instance_precision/scored_pit_07_maskrcnn.gpkg": {
+      "sha256": "d456ae953bec356e6ad7574aaad17af38fb49edf447103c35e909d40a289f8a3",
+      "bytes": 303104
+    },
+    "data/derivatives/eval_9t_instance_precision/scored_pit_08_yolo.gpkg": {
+      "sha256": "cd3804b9f687eeed7e9c444f90303e6798ba4b782ecba37346bb0a0d2a386c74",
+      "bytes": 282624
+    },
+    "data/derivatives/eval_9t_instance_precision/scored_pit_unet_v2.gpkg": {
+      "sha256": "ee6491a5346732c226794f0d250fe149fb1ed90cf7c8988c4bce2e8c9203c60e",
+      "bytes": 311296
+    },
+    "data/derivatives/eval_9t_instance_precision/scored_plat_unet.gpkg": {
+      "sha256": "5b76f4263be10b487f305179e90b882f1ef7dade6500e59577d66b13d4831f7d",
+      "bytes": 1171456
+    },
+    "data/derivatives/eval_9t_instance_precision/unet_instances_pad.gpkg": {
+      "sha256": "57a450b0ab8195eedc88cd5d3d0becbaa4e236647c7dc5ced91f45885763de01",
+      "bytes": 5300224
+    },
+    "data/derivatives/eval_9t_instance_precision/unet_instances_pit.gpkg": {
+      "sha256": "b5a733c40862bcc27799793b88db53a89b071b48234968194ad0a8dd2cd14166",
+      "bytes": 573440
+    },
+    "data/derivatives/eval_9t_instance_precision/val_threshold_sweep_9t.csv": {
+      "sha256": "0af41c651e031bdbcc71646a83bcdc166f2c011dd5f317d73bddc927e84d026c",
+      "bytes": 6846
+    }
+  }
+}

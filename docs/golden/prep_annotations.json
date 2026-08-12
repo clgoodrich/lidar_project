@@ -1,0 +1,16 @@
+{
+  "name": "prep_annotations",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s2_labels/_prep_annotations.py"
+  ],
+  "recorded_utc": "2026-08-12T20:42:05Z",
+  "elapsed_seconds": 1.8,
+  "n_outputs": 1,
+  "outputs": {
+    "data/derivatives/annotations/annotations_proj.gpkg": {
+      "sha256": "273c724fedb294e46d412444950915b3efa7e603d4a5d90bfd91c6cd1dcc0b9d",
+      "bytes": 10412032
+    }
+  }
+}

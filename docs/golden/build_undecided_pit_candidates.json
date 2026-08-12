@@ -1,0 +1,24 @@
+{
+  "name": "build_undecided_pit_candidates",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s5_eval/_build_undecided_pit_candidates_9t.py"
+  ],
+  "recorded_utc": "2026-08-12T20:47:09Z",
+  "elapsed_seconds": 22.1,
+  "n_outputs": 3,
+  "outputs": {
+    "data/derivatives/eval_9t_centroid_matching/README_EDIT_pit_candidates.md": {
+      "sha256": "797d5ce5e37a7041772542ecba3951c358f8a3fd18f9c7ba7a0064730ec7b591",
+      "bytes": 2120
+    },
+    "data/derivatives/eval_9t_centroid_matching/_pit_candidates_undecided_thr0p50_9t.json": {
+      "sha256": "1aed95c74a5f3b4a072db49e8484e592972e84f672321b4954c735594d8a84d9",
+      "bytes": 761
+    },
+    "data/derivatives/eval_9t_centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg": {
+      "sha256": "23e45a2c7b09f7805e899fa54b93e80cb0b5f08859957e42bbc33267932b0ec2",
+      "bytes": 630784
+    }
+  }
+}

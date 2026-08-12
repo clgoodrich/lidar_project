@@ -1,0 +1,28 @@
+{
+  "name": "score_road_613590",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s5_eval/_score_road_pred_vs_roads_shp_613590.py",
+    "--prob",
+    "data/derivatives/tiles/9t/road_unet_1m_recall_relabeled20260806/road_prob_613590_1m.tif",
+    "--label",
+    "recall_relabeled20260806"
+  ],
+  "recorded_utc": "2026-08-12T20:47:27Z",
+  "elapsed_seconds": 13.9,
+  "n_outputs": 3,
+  "outputs": {
+    "data/derivatives/eval_613590_roads/_road_score_vs_roads_shp_613590_1m.json": {
+      "sha256": "4ff3b2f0f2baf8e3bf82f5d608b7df09193a42af6617612ec030a3725a17054e",
+      "bytes": 5774
+    },
+    "data/derivatives/eval_613590_roads/road_found_vs_missed_thr0p50_613590_1m.gpkg": {
+      "sha256": "11582cf2b5beb7180171ef34c93e2210104ab22fd55950970293954bd7c6e3ce",
+      "bytes": 1814528
+    },
+    "data/derivatives/eval_613590_roads/road_score_vs_roads_shp_613590_1m.csv": {
+      "sha256": "44bdba749d3c3db07b4c763e6573d67ff4bd3564d884450a3d93b3724950cf2a",
+      "bytes": 15681
+    }
+  }
+}

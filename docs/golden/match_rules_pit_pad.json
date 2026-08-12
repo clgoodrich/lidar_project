@@ -1,0 +1,56 @@
+{
+  "name": "match_rules_pit_pad",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s5_eval/_match_rules_pit_pad_9t.py"
+  ],
+  "recorded_utc": "2026-08-12T19:56:58Z",
+  "elapsed_seconds": 48.4,
+  "n_outputs": 11,
+  "outputs": {
+    "data/derivatives/eval_9t_centroid_matching/match_rule_ablation_pit_pad_9t.csv": {
+      "sha256": "e2138c77dce280783c66635bc5d49857f958e3a3bd67d1a086d7bf22479e1ee9",
+      "bytes": 638
+    },
+    "data/derivatives/eval_9t_centroid_matching/pad_candidates_filtered_heldout_9t.cpg": {
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+      "bytes": 5
+    },
+    "data/derivatives/eval_9t_centroid_matching/pad_candidates_filtered_heldout_9t.dbf": {
+      "sha256": "a7be3a3993dcca2c675648f87abec671136a352a494bcdeee3855759f75591f0",
+      "bytes": 58753
+    },
+    "data/derivatives/eval_9t_centroid_matching/pad_candidates_filtered_heldout_9t.prj": {
+      "sha256": "d794ee57d176ed115d8e462ee7075636e12f6517eaaf23e387f9dab17aca808c",
+      "bytes": 417
+    },
+    "data/derivatives/eval_9t_centroid_matching/pad_candidates_filtered_heldout_9t.shp": {
+      "sha256": "9234aca095e61aff8eed0c554a5294a453faa944e964b9056a9fd39e5310753f",
+      "bytes": 1282952
+    },
+    "data/derivatives/eval_9t_centroid_matching/pad_candidates_filtered_heldout_9t.shx": {
+      "sha256": "8dffaad6284f1f675da388bc728123abf39420bde5b18ee272848af027170a94",
+      "bytes": 2684
+    },
+    "data/derivatives/eval_9t_centroid_matching/pit_candidates_filtered_heldout_9t.cpg": {
+      "sha256": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+      "bytes": 5
+    },
+    "data/derivatives/eval_9t_centroid_matching/pit_candidates_filtered_heldout_9t.dbf": {
+      "sha256": "0098ccabfd08f4bca71135c52c362404989ead092ce6ea1f6182e66bd2509fd5",
+      "bytes": 31784
+    },
+    "data/derivatives/eval_9t_centroid_matching/pit_candidates_filtered_heldout_9t.prj": {
+      "sha256": "d794ee57d176ed115d8e462ee7075636e12f6517eaaf23e387f9dab17aca808c",
+      "bytes": 417
+    },
+    "data/derivatives/eval_9t_centroid_matching/pit_candidates_filtered_heldout_9t.shp": {
+      "sha256": "1de077df15955812295605be6de2afb4ac67fddb8c160a6eca9a160adc1e4ba0",
+      "bytes": 83056
+    },
+    "data/derivatives/eval_9t_centroid_matching/pit_candidates_filtered_heldout_9t.shx": {
+      "sha256": "bacc2b13c19341ab4b9683668bbce69458c8bbc8a5e564ea500c69e27f12d345",
+      "bytes": 1492
+    }
+  }
+}

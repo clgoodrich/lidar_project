@@ -1,0 +1,20 @@
+{
+  "name": "cv5_centroid_precision",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s5_eval/_cv5_centroid_precision_pit_pad_9t.py"
+  ],
+  "recorded_utc": "2026-08-12T19:58:13Z",
+  "elapsed_seconds": 62.8,
+  "n_outputs": 2,
+  "outputs": {
+    "data/derivatives/eval_9t_centroid_matching/_centroid_matching_cv5_9t.json": {
+      "sha256": "25758e367b5db78d8c6dd8a6fb677f333f9ebea6aba1dc59ff520833a0969c70",
+      "bytes": 2523
+    },
+    "data/derivatives/eval_9t_centroid_matching/centroid_matching_cv5_pit_pad_9t.csv": {
+      "sha256": "14d75efa1fc4fc06d9351667e9f68103efcd4730d22824c16f3d9cd7730995c8",
+      "bytes": 4219
+    }
+  }
+}
