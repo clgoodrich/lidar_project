@@ -1,0 +1,15 @@
+path,kind,old,new
+notebooks/wellsight_v2/build/_build_drainage_review_package.py,sys.path repoint,,
+notebooks/wellsight_v2/build/_calibrate_drainage_extraction_9t.py,sys.path repoint,,
+notebooks/wellsight_v2/eval/_build_undecided_pit_candidates_9t.py,sys.path repoint,,
+notebooks/wellsight_v2/eval/_cv5_centroid_precision_pit_pad_9t.py,sys.path repoint,,
+notebooks/wellsight_v2/eval/_map_cv5_unmatched_pit_thr0p50_9t.py,sys.path repoint,,
+notebooks/wellsight_v2/eval/_match_rules_pit_pad_9t.py,sys.path repoint,,
+notebooks/wellsight_v2/eval/_pad_cv5_tau_scale.py,sys.path repoint,,
+notebooks/wellsight_v2/eval/_pit_cv5_tau_scale.py,sys.path repoint,,
+notebooks/wellsight_v2/plats/_pad_maskrcnn.py,sys.path repoint,,
+notebooks/wellsight_v2/plats/_pad_maskrcnn_infer.py,"MANUAL: fans out to s3_train,s4_infer",pits,s3_train
+notebooks/wellsight_v2/plats/_pad_maskrcnn_infer.py,sys.path repoint,,
+ui/registry.py,external reference,,
+roads_studio/core.py,external reference,,
+roads_studio/train.py,external reference,,
