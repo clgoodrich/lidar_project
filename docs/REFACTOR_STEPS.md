@@ -383,9 +383,33 @@ road model trained on both areas exists with an honest caveat recorded.
 
 # PHASE 2 — extract the shared core
 
-Order is by bug risk, highest first.
+> **AMENDED 2026-08-12 after reading the code — see `REFACTOR_REVIEW.md`.**
+> Two thirds of the core already exists: `_dl.py` (379 LOC, 14 importers) is
+> `core/models.py`, and `_common.py` (67 importers) is `core/io.py`. The order
+> below is revised, and two steps that were missing entirely are now first.
+>
+> **Step 2.0 — `core/vector.py` <- `polygonize`.** Defined in **9 files**,
+> referenced in **18**. Five textual variants, all behaviourally identical
+> (parameter name, a moved import, early-return style). Provably safe, biggest
+> reach, so it goes first and doubles as a test of the golden harness.
+>
+> **Step 2.1 — `core/folds.py` <- `assign_folds`.** Four `s5_eval` scripts
+> currently do `from _pit_unet_cv5 import assign_folds, polygonize`. Eval imports
+> a TRAINER, which drags in torch to compute a fold assignment.
+>
+> **Step 2.2 — eval constants out of the trainers.** `_pit_cv5_tau_scale.py` and
+> `_pad_cv5_tau_scale.py` import `ANN_GPKG, BLOCKS, CRS, FEATURES, OUTDIR,
+> SCORE_BUF_M` from the trainer, so the trainer is also the eval config module
+> and a training constant silently moves an eval result. Move them to
+> `config/*.toml`.
+>
+> **This is a hard prerequisite for Phase 3.** Phase 3 merges `_pit_unet_cv5`
+> and `_pad_unet_cv5` into `train.py --target`; **six scripts import those module
+> names directly** and would break. The original Phase 3 did not mention it.
+>
+> Steps 2.3-2.6 below then follow: matching, metrics, models (a rename), labels.
 
-## Step 2.1 — `core/matching.py`
+## Step 2.3 — `core/matching.py`
 
 The single highest-value extraction. Centroid containment, bidirectional
 matching, greedy 1:1, log-space size filtering currently exist in four separate
@@ -405,13 +429,13 @@ So: record a *new* golden for those three, and document the delta in
 `_build_undecided_pit_candidates_9t.py` already has the fix and **must not
 change** — it is the control.
 
-## Step 2.2 — `core/metrics.py`
+## Step 2.4 — `core/metrics.py`
 
 P/R/F1 and the Wiedemann completeness/correctness/quality triple.
 Consumers: the three `*_threshold_products_9t.py`, `_score_road_pred_*`,
 `_road_optimize.py`. Pure functions, no I/O. Golden must be unchanged.
 
-## Step 2.3 — `core/models.py`
+## Step 2.5 — `core/models.py` (a RENAME: `_dl.py` already is this)
 
 Move `_dl.py`'s `UNet`, `FocalCE`, `train_loop`, `predict_full_tile`,
 `CenteredPatchSampler` in as-is, then add MaskRCNN and YOLO behind the same
@@ -422,7 +446,7 @@ existing 20-odd importers keep working during migration.
 (2 epochs) before and after must produce the same loss at epoch 1 with a fixed
 seed on CPU.
 
-## Step 2.4 — `core/labels.py`
+## Step 2.6 — `core/labels.py`
 
 Rasterisation, chunking, block-grid generation, split assignment — from
 `_build_pit_dataset.py`, `_build_plat_road_dataset.py`, `_build_block_grid.py`.
