@@ -10,7 +10,12 @@ lidar_project/
 ├── STRUCTURE.md                This file
 ├── .gitignore                  Policy: every >=100 MB output has a rule
 ├── .gitattributes
-├── backup_to_E.bat             Incremental robocopy mirror to E:\lidar_project
+├── tools/backup_to_E.bat       Incremental robocopy mirror to
+│                               E:\Colton\_BACKUPS\lidar_project_MIRROR.
+│                               The old root-level backup_to_E.bat targeted
+│                               E:\lidar_project, which never existed; it is
+│                               retired to archive/retired_tools/. F: is gone
+│                               as of 2026-08-12 and E: is the only backup.
 ├── pytest.ini
 │
 ├── data/

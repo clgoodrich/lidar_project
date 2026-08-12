@@ -32,7 +32,7 @@ warnings.filterwarnings("ignore")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV, DST_CRS  # noqa: E402
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "wellsight" / "build"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "build"))
 from _road_optimize import island_filter, lines_from_skel, prune_merge, skeleton  # noqa: E402
 
 R9 = DERIV / "tiles" / "9t"

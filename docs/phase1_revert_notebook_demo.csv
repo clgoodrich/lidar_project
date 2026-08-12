@@ -1,0 +1,7 @@
+old_path,new_path,phase,reason
+data/derivatives/experiments/notebook_demo/lrm_11_dupe.tif,data/derivatives/experiments/notebook_demo/lrm_11.tif,revert,REVERT: referenced by notebooks/*.ipynb; scanner missed JSON-escaped path strings
+data/derivatives/experiments/notebook_demo/tpi_05_dupe.tif,data/derivatives/experiments/notebook_demo/tpi_05.tif,revert,REVERT: referenced by notebooks/*.ipynb; scanner missed JSON-escaped path strings
+data/derivatives/experiments/notebook_demo/lrm_25_dupe.tif,data/derivatives/experiments/notebook_demo/lrm_25.tif,revert,REVERT: referenced by notebooks/*.ipynb; scanner missed JSON-escaped path strings
+data/derivatives/experiments/notebook_demo/lrm_5_dupe.tif,data/derivatives/experiments/notebook_demo/lrm_5.tif,revert,REVERT: referenced by notebooks/*.ipynb; scanner missed JSON-escaped path strings
+data/derivatives/experiments/notebook_demo/tpi_25_dupe.tif,data/derivatives/experiments/notebook_demo/tpi_25.tif,revert,REVERT: referenced by notebooks/*.ipynb; scanner missed JSON-escaped path strings
+data/derivatives/experiments/notebook_demo/lrm_3_dupe.tif,data/derivatives/experiments/notebook_demo/lrm_3.tif,revert,REVERT: referenced by notebooks/*.ipynb; scanner missed JSON-escaped path strings

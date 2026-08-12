@@ -60,7 +60,19 @@ SKIP_DIRS = {".git", ".venv", "__pycache__", ".pytest_cache", ".idea",
 # "which copy is real" is an editorial judgement, not a file-system one --
 # the descriptive-name heuristic ranks `finesst_proposal_v11_working` above
 # `ultimate_final/proposal_STM`, which is exactly backwards for a submission.
-NO_RENAME_DIRS = {"barlow", "personal", "docs/related", "literature/papers"}
+NO_RENAME_DIRS = {
+    "barlow", "personal", "docs/related", "literature/papers",
+    # A coherent demo set whose rasters are addressed by bare generic names
+    # from notebooks/*.ipynb. Four of its six files are referenced; renaming
+    # the other two would break the set's internal naming consistency for no
+    # gain. Treat the directory as a unit.
+    "data/derivatives/experiments/notebook_demo",
+}
+
+# Already-tagged files must never be re-tagged. Without this the tool is not
+# idempotent: a second run turns x_dupe.tif into x_dupe_dupe.tif, because the
+# tagged file is still byte-identical to its canonical twin.
+DUPE_SUFFIX = "_dupe"
 
 # A shapefile is not one file. Renaming the .shp alone orphans the rest.
 SIDECARS = {
@@ -269,6 +281,9 @@ def main() -> int:
             if ROOT not in d.parents:
                 lines.append(f"  > outside the repository, report only: "
                              f"`{rel(d)}`")
+                continue
+            if d.name.split(".")[0].endswith(DUPE_SUFFIX):
+                lines.append(f"  > already tagged, left alone: `{rel(d)}`")
                 continue
             if in_no_rename(d):
                 lines.append(f"  > author-owned area, not renamed: `{rel(d)}`")

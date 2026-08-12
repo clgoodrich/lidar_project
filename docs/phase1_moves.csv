@@ -1,0 +1,4 @@
+old_path,new_path,phase,reason
+backup_to_E.bat,archive/retired_tools/backup_to_E_OBSOLETE_targeted_E_lidar_project.bat,phase1,"targeted E:\lidar_project which has never existed; replaced by tools/backup_to_E.bat"
+backup_to_E_last_run.log,archive/retired_tools/backup_to_E_last_run_OBSOLETE.log,phase1,"log of the obsolete launcher"
+backup_to_F_last_run.log,archive/retired_tools/backup_to_F_last_run_DRIVE_GONE.log,phase1,"F: unmounted as of 2026-08-12; kept as the record of what was last copied there"

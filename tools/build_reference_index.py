@@ -95,6 +95,24 @@ def iter_source_files():
 
 
 def read_text(p: Path) -> str:
+    if p.suffix.lower() == ".ipynb":
+        # A notebook stores source as JSON, so every path literal arrives
+        # double-escaped: "    p = D / \"lrm_25.tif\"\n". The quote characters
+        # are backslashed, so the plain string regex reads the whole JSON line
+        # as one literal and never sees the filename inside it. Six rasters got
+        # renamed as unreferenced because of exactly this. Decode the notebook
+        # to its concatenated source before scanning.
+        try:
+            import json
+            nb = json.loads(p.read_text(encoding="utf8", errors="replace"))
+            out = []
+            for cell in nb.get("cells", []):
+                src = cell.get("source", "")
+                out.append("".join(src) if isinstance(src, list) else str(src))
+            return "\n".join(out)
+        except Exception:
+            # fall through to raw text rather than losing the file entirely
+            return p.read_text(encoding="utf8", errors="replace")
     if p.suffix.lower() == ".qgz":
         try:
             with zipfile.ZipFile(p) as z:

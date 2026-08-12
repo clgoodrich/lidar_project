@@ -1,0 +1,1014 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Wednesday, June 17, 2026 10:49:25 PM
+   Source : C:\Users\colto\Documents\GitHub\lidar_project\
+     Dest = E:\lidar_project\
+
+    Files : *.*
+	    
+  Options : *.* /FFT /TEE /S /E /DCOPY:DA /COPY:DAT /NP /XO /MT:8 /R:2 /W:5 
+
+------------------------------------------------------------------------------
+
+	*EXTRA Dir        -1	E:\lidar_project\images\
+	*EXTRA Dir        -1	E:\lidar_project\OilGasLocations_ConventionalUnconventional2026_04\
+	*EXTRA Dir        -1	E:\lidar_project\PA_LandCover\
+	  *EXTRA File 		  14.6 m	E:\lidar_project\Areas of Interest.png
+	  *EXTRA File 		 412.8 m	E:\lidar_project\BARLOW-DISSERTATION-2026.pdf
+	  *EXTRA File 		   71673	E:\lidar_project\boresight_comparison.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\close up errors.png
+	  *EXTRA File 		   24601	E:\lidar_project\colton_goodrich_resume_draft7.docx
+	  *EXTRA File 		   26880	E:\lidar_project\colton_goodrich_resume_draft7.docx.bak
+	  *EXTRA File 		   22047	E:\lidar_project\Detecting abandoned roads beneath forest canopy with LiDAR and Python.md
+	  *EXTRA File 		   18079	E:\lidar_project\Detecting orphaned well pads in LiDAR a Python pipeline guide.md
+	  *EXTRA File 		     517	E:\lidar_project\downloadlist(7).txt
+	  *EXTRA File 		   22008	E:\lidar_project\filtering_methods_wellpad.md
+	  *EXTRA File 		   89536	E:\lidar_project\imu_angles.png
+	  *EXTRA File 		   1.0 m	E:\lidar_project\kang-et-al-2014-direct-measurements-of-methane-emissions-from-abandoned-oil-and-gas-wells-in-pennsylvania.pdf
+	  *EXTRA File 		   8.3 m	E:\lidar_project\Lab2_Georeferenced_UTM14N.xyz
+	  *EXTRA File 		   1.6 m	E:\lidar_project\Manual Picks.png
+	  *EXTRA File 		  22.9 m	E:\lidar_project\OilGasLocations_ConventionalUnconventional2026_04.zip
+	  *EXTRA File 		  768803	E:\lidar_project\orphaned with no clear wells.png
+	  *EXTRA File 		   19268	E:\lidar_project\outline.md
+	  *EXTRA File 		   24111	E:\lidar_project\paper_outline.md
+	  *EXTRA File 		  10.4 m	E:\lidar_project\Pennsylvania AOI.png
+	  *EXTRA File 		  15.5 m	E:\lidar_project\Pennsylvania Map Abandoned.png
+	  *EXTRA File 		  14.3 m	E:\lidar_project\Pennsylvania Map.png
+	  *EXTRA File 		  755894	E:\lidar_project\pointcloud_overview.png
+	  *EXTRA File 		  49.7 m	E:\lidar_project\project export.dxf
+	  *EXTRA File 		   83920	E:\lidar_project\qgis_lidar class.qgz
+	  *EXTRA File 		     102	E:\lidar_project\region_without_trees.pgw
+	  *EXTRA File 		   1.0 m	E:\lidar_project\region_without_trees.png
+	  *EXTRA File 		     102	E:\lidar_project\region_with_trees.pgw
+	  *EXTRA File 		   1.5 m	E:\lidar_project\region_with_trees.png
+	  *EXTRA File 		   79845	E:\lidar_project\residuals_vs_reference.png
+	  *EXTRA File 		  145661	E:\lidar_project\road error.jpg
+	  *EXTRA File 		   8.4 m	E:\lidar_project\SAOCOM InSAR DEM Validation Study vc4.docx
+	  *EXTRA File 		    7225	E:\lidar_project\SESSION_RESUME.md
+	  *EXTRA File 		   20370	E:\lidar_project\terrain-analysis-techniques.md
+	  *EXTRA File 		   3.3 m	E:\lidar_project\Urban_LiDAR_Report_FINAL.docx
+	  *EXTRA File 		   1.1 m	E:\lidar_project\US_Documented_Unplugged_Orphaned_Oil_and_Gas_Well_Dataset_6253178536396862938.csv
+	  *EXTRA File 		   1.3 m	E:\lidar_project\WellSight_Paper.docx
+	  *EXTRA File 		   32770	E:\lidar_project\WellSight_Paper.md
+	  *EXTRA File 		  61.8 m	E:\lidar_project\WellSight_Paper_skeleton.docx
+	  *EXTRA File 		  61.8 m	E:\lidar_project\WellSight_Paper_skeleton_v2.docx
+	  *EXTRA File 		  61.8 m	E:\lidar_project\WellSight_Paper_skeleton_v3.docx
+	  *EXTRA File 		  61.9 m	E:\lidar_project\WellSight_Paper_v2.docx
+	  *EXTRA File 		  61.9 m	E:\lidar_project\WellSight_Paper_v3.docx
+	  *EXTRA File 		  61.9 m	E:\lidar_project\WellSight_Paper_v4.docx
+	  *EXTRA File 		  61.9 m	E:\lidar_project\WellSight_Paper_v5.docx
+	  *EXTRA File 		   49581	E:\lidar_project\WellSight_Paper_v6.docx
+	  *EXTRA File 		  22.8 m	E:\lidar_project\yolov8s-seg.pt
+	  *EXTRA File 		    8075	E:\lidar_project\_build_well_comparison.py
+	    Newer     		    6999	C:\Users\colto\Documents\GitHub\lidar_project\.gitignore
+	*EXTRA Dir        -1	E:\lidar_project\archive\derivatives\
+	*EXTRA Dir        -1	E:\lidar_project\archive\docs\
+	*EXTRA Dir        -1	E:\lidar_project\archive\notebooks_legacy\
+	*EXTRA Dir        -1	E:\lidar_project\archive\notebooks_root\
+	  *EXTRA File 		    3210	E:\lidar_project\archive\README.md
+
+
+	*EXTRA Dir        -1		*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\docs\paper_versions\
+E:\lidar_project\data\dem_tiles\
+E:\lidar_project\notebooks\archive\
+	*EXTRA Dir        -1		  *EXTRA File 		   32743	E:\lidar_project\data\files\
+E:\lidar_project\notebooks\build_anomaly_notebook.py
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\docs\pipelines\
+E:\lidar_project\data\mckean\
+	  *EXTRA File 		   3.4 m		*EXTRA Dir        -1	E:\lidar_project\docs\preprocessing\
+	*EXTRA Dir        -1	E:\lidar_project\notebooks\lidar_project.ipynb
+	*EXTRA Dir        -1	E:\lidar_project\data\older_files\
+E:\lidar_project\docs\presentations\
+	  *EXTRA File 		   38877		  *EXTRA File 		   1.5 g	E:\lidar_project\notebooks\lidar_project_anomaly.ipynb
+E:\lidar_project\data\full_dem.tif	  *EXTRA File 		   10447		  *EXTRA File 		   22281	E:\lidar_project\docs\abandoned_well_pit_research.md
+E:\lidar_project\notebooks\lidar_project_characterization.ipynb
+	  *EXTRA File 		  254312	E:\lidar_project\docs\pit_radial_profiles.png	  *EXTRA File 		   44304	
+E:\lidar_project\notebooks\pad_detection.ipynb
+	  *EXTRA File 		   48128		  *EXTRA File 		    2168	E:\lidar_project\docs\WellSight_Methodology.docxE:\lidar_project\notebooks\test.py
+	  *EXTRA File 		   66074	E:\lidar_project\notebooks\wellsight_morphology_pipeline.ipynb
+	  *EXTRA File 		   44580	E:\lidar_project\notebooks\wellsight_pipeline.ipynb
+	  *EXTRA File 		    9695	E:\lidar_project\notebooks\_anomaly_utils.py
+	  *EXTRA File 		   10893	E:\lidar_project\notebooks\_build_05_output3.py
+	  *EXTRA File 		   10341	E:\lidar_project\notebooks\_build_05_output3_2008.py
+	  *EXTRA File 		   12309	E:\lidar_project\notebooks\_build_05_stack.py
+	  *EXTRA File 		    9563	E:\lidar_project\notebooks\_build_1m_output3_2008.py
+	  *EXTRA File 		   10371	E:\lidar_project\notebooks\_build_9tile_1m.py
+	  *EXTRA File 		   13121	E:\lidar_project\notebooks\_build_9tile_stack.py
+	  *EXTRA File 		    5480	E:\lidar_project\notebooks\_build_geomorphon_enc.py
+	  *EXTRA File 		    9865	E:\lidar_project\notebooks\_build_mckean_5x5.py
+	  *EXTRA File 		   11008	E:\lidar_project\notebooks\_build_mckean_full.py
+	  *EXTRA File 		   13089	E:\lidar_project\notebooks\_build_output2_stack.py
+	  *EXTRA File 		    2915	E:\lidar_project\notebooks\_build_output3_2008_clean.py
+	  *EXTRA File 		   38177	E:\lidar_project\notebooks\_build_pad_detection_notebook.py
+	  *EXTRA File 		   29274	E:\lidar_project\notebooks\_build_paper_docx.py
+	  *EXTRA File 		   11938	E:\lidar_project\notebooks\_build_paper_skeleton.py
+	  *EXTRA File 		   34658	E:\lidar_project\notebooks\_build_pipeline_nb.py
+	  *EXTRA File 		   10954	E:\lidar_project\notebooks\_build_sep_05.py
+	  *EXTRA File 		   12548	E:\lidar_project\notebooks\_build_sep_1m.py
+	  *EXTRA File 		    8896	E:\lidar_project\notebooks\_build_sep_2008_1m.py
+	  *EXTRA File 		   56051	E:\lidar_project\notebooks\_build_wellsight_notebook.py
+	  *EXTRA File 		    7708	E:\lidar_project\notebooks\_generate_paper_figures.py
+	  *EXTRA File 		    6520	E:\lidar_project\notebooks\_inspect_terrain.py
+	  *EXTRA File 		   15003	E:\lidar_project\notebooks\_pit_apply_sep_2008.py
+	  *EXTRA File 		   19449	E:\lidar_project\notebooks\_pit_apply_to_output2.py
+	  *EXTRA File 		   17859	E:\lidar_project\notebooks\_pit_apply_to_sep.py
+	  *EXTRA File 		    5190	E:\lidar_project\notebooks\_pit_discoveries.py
+	  *EXTRA File 		   21122	E:\lidar_project\notebooks\_pit_ensemble.py
+	  *EXTRA File 		    9276	E:\lidar_project\notebooks\_pit_morphology_audit.py
+	  *EXTRA File 		    8148	E:\lidar_project\notebooks\_pit_morphology_audit_1m.py
+	  *EXTRA File 		   25880	E:\lidar_project\notebooks\_pit_pipeline_1m.py
+	  *EXTRA File 		   10403	E:\lidar_project\notebooks\_pit_rf_on_template.py
+	  *EXTRA File 		    3184	E:\lidar_project\notebooks\_pit_rf_per_threshold.py
+	  *EXTRA File 		   10094	E:\lidar_project\notebooks\_pit_rim_polygons.py
+	  *EXTRA File 		   10590	E:\lidar_project\notebooks\_pit_template_match.py
+	  *EXTRA File 		   11282	E:\lidar_project\notebooks\_pit_xgb_on_template.py
+	  *EXTRA File 		   14152	E:\lidar_project\notebooks\_pit_xgb_plus.py
+	  *EXTRA File 		   21501	E:\lidar_project\notebooks\_pit_xgb_plus2.py
+	  *EXTRA File 		    2377	E:\lidar_project\notebooks\_preview_05.py
+	  *EXTRA File 		    2140	E:\lidar_project\notebooks\_preview_05_2008.py
+	  *EXTRA File 		    2136	E:\lidar_project\notebooks\_preview_1m_2008.py
+	  *EXTRA File 		    3835	E:\lidar_project\notebooks\_preview_zoom.py
+	  *EXTRA File 		   23366	E:\lidar_project\notebooks\_retrain_675.py
+	  *EXTRA File 		   17156	E:\lidar_project\notebooks\_retrain_675_lc.py
+	  *EXTRA File 		   10611	E:\lidar_project\notebooks\_run_aspect_detector.py
+	  *EXTRA File 		   12919	E:\lidar_project\notebooks\_run_feature_A_pads.py
+	  *EXTRA File 		   11066	E:\lidar_project\notebooks\_run_feature_B_roads.py
+	  *EXTRA File 		   19453	E:\lidar_project\notebooks\_run_hotspots_and_mckean.py
+	  *EXTRA File 		   12573	E:\lidar_project\notebooks\_run_lrm_detector.py
+	  *EXTRA File 		    8559	E:\lidar_project\notebooks\_run_phase0_dem.py
+	  *EXTRA File 		    4252	E:\lidar_project\notebooks\_run_phase0_full_preview.py
+	  *EXTRA File 		    4294	E:\lidar_project\notebooks\_run_phase0_hand_buffered.py
+	  *EXTRA File 		    9612	E:\lidar_project\notebooks\_run_phase0_pointcloud.py
+	  *EXTRA File 		    5647	E:\lidar_project\notebooks\_run_phase0_slope_and_sanity.py
+	  *EXTRA File 		   12643	E:\lidar_project\notebooks\_run_phase2_validation.py
+	  *EXTRA File 		    7975	E:\lidar_project\notebooks\_run_session_summary.py
+	  *EXTRA File 		   18299	E:\lidar_project\notebooks\_run_single_tiles.py
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\9t\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\9t_1m\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\archive\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\beck_9t\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\beck_mkf\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\candidates\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\chm_age_proxy\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\data_3x3\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\extras\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\icp\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\inference_mck_e1423n2238_05\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\mck_inference\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\model_archive\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\mosaic_3x3\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\mosaic_3x3_mckean\
+
+	    Newer     		       0		*EXTRA Dir        -1	C:\Users\colto\Documents\GitHub\lidar_project\backup_to_E_last_run.log
+E:\lidar_project\data\derivatives\nec_marcellus_1m\
+	    Newer     		      20		*EXTRA Dir        -1	
+C:\Users\colto\Documents\GitHub\lidar_project\.idea\.name	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\oilcreek_22tile_05\
+E:\lidar_project\data\external\lidar\
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\data\external\usgs_3dep_pa_lidar\
+E:\lidar_project\data\derivatives\oilcreek_inference\
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\data\external\usgs_3dep_permian_tx\
+E:\lidar_project\data\derivatives\permian_sample\
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\data\external\well-pad-denver-permian\E:\lidar_project\data\derivatives\pilot_A\
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\ramachandran_verifier\
+	*EXTRA Dir        -1	
+E:\lidar_project\data\derivatives\roads\
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\data\source_laz\lidar\
+E:\lidar_project\data\derivatives\subarea\
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\data\derivatives\sw_marcellus_1m\E:\lidar_project\data\source_laz\mckean\
+
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\data\derivatives\wc_coaloil_1m\
+E:\lidar_project\data\source_laz\usgs_3dep_pa_lidar\
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\data\derivatives\_notebook_demo\
+E:\lidar_project\data\source_laz\usgs_3dep_permian_tx\
+	*EXTRA Dir        -1		*EXTRA Dir        -1	E:\lidar_project\data\derivatives\_tmp_intensity_tiles\
+E:\lidar_project\data\source_laz\well-pad-denver-permian\	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\_tmp_intensity_tiles_mkf\
+	  *EXTRA File 		   1.4 m	E:\lidar_project\data\derivatives\canopy_05.tif
+	  *EXTRA File 		   6.0 m	E:\lidar_project\data\derivatives\canopy_mk_1m.tif
+	  *EXTRA File 		  21.3 m	E:\lidar_project\data\derivatives\chm_05.tif
+	  *EXTRA File 		   5.7 m	E:\lidar_project\data\derivatives\chm_1m.tif
+	  *EXTRA File 		 117.1 m	E:\lidar_project\data\derivatives\chm_mkf_1m.tif
+	  *EXTRA File 		  22.5 m	E:\lidar_project\data\derivatives\chm_mk_1m.tif
+	  *EXTRA File 		   1.5 g	E:\lidar_project\data\derivatives\curvature.tif
+	  *EXTRA File 		  34.3 m	E:\lidar_project\data\derivatives\dem_05.tif
+	  *EXTRA File 		   8.5 m	E:\lidar_project\data\derivatives\dem_1m.tif
+	  *EXTRA File 		 381.5 m	E:\lidar_project\data\derivatives\dem_mkf_1m.tif
+	  *EXTRA File 		  61.0 m	E:\lidar_project\data\derivatives\dem_mk_1m.tif
+	  *EXTRA File 		  34.3 m	E:\lidar_project\data\derivatives\dsm_05.tif
+	  *EXTRA File 		   8.5 m	E:\lidar_project\data\derivatives\dsm_1m.tif
+	  *EXTRA File 		 381.5 m	E:\lidar_project\data\derivatives\dsm_mkf_1m.tif
+	  *EXTRA File 		  61.0 m	E:\lidar_project\data\derivatives\dsm_mk_1m.tif
+	  *EXTRA File 		  95.4 m	E:\lidar_project\data\derivatives\geomorphon_enc_12_mkf_1m.tif
+	  *EXTRA File 		     408	E:\lidar_project\data\derivatives\geomorphon_enc_12_mkf_1m.tif.aux.xml
+	  *EXTRA File 		  95.4 m	E:\lidar_project\data\derivatives\geomorphon_enc_5_mkf_1m.tif
+	  *EXTRA File 		  95.4 m	E:\lidar_project\data\derivatives\geomorphon_enc_8_mkf_1m.tif
+	  *EXTRA File 		   3.4 m	E:\lidar_project\data\derivatives\ground_cover_05.tif
+	  *EXTRA File 		   5.2 m	E:\lidar_project\data\derivatives\ground_cover_mk_1m.tif
+	  *EXTRA File 		  847511	
+E:\lidar_project\data\derivatives\ground_density.tif
+	    Newer     		   12038		  *EXTRA File 		   1.9 m	C:\Users\colto\Documents\GitHub\lidar_project\.idea\workspace.xml
+E:\lidar_project\data\derivatives\ground_density_05.tif	    Newer     		     562	
+C:\Users\colto\Documents\GitHub\lidar_project\.git\COMMIT_EDITMSG	  *EXTRA File 		  20.0 m	E:\lidar_project\data\derivatives\ground_density_mkf_1m.tif
+	  *EXTRA File 		   3.9 m	E:\lidar_project\data\derivatives\ground_density_mk_1m.tif
+	  *EXTRA File 		  56.6 m	
+E:\lidar_project\data\derivatives\ground_density_persource_mkf_1m.tif
+	    Newer     		    2135		  *EXTRA File 		     410	C:\Users\colto\Documents\GitHub\lidar_project\.git\config
+E:\lidar_project\data\derivatives\hillshade.tif.aux.xml
+	    Newer     		    2548		  *EXTRA File 		  17.1 m	C:\Users\colto\Documents\GitHub\lidar_project\.git\FETCH_HEADE:\lidar_project\data\derivatives\hillshade_05.tif
+	  *EXTRA File 		     414	E:\lidar_project\data\derivatives\hillshade_05.tif.aux.xml
+	  *EXTRA File 		 190.8 m	E:\lidar_project\data\derivatives\hillshade_az000_alt25_mkf_1m.tif
+	  *EXTRA File 		 190.8 m	E:\lidar_project\data\derivatives\hillshade_az090_alt25_mkf_1m.tif
+	  *EXTRA File 		 190.8 m	E:\lidar_project\data\derivatives\hillshade_az180_alt25_mkf_1m.tif
+	  *EXTRA File 		 190.8 m	E:\lidar_project\data\derivatives\hillshade_az270_alt25_mkf_1m.tif
+	  *EXTRA File 		 190.8 m	E:\lidar_project\data\derivatives\hillshade_az315_alt25_mkf_1m.tif
+	  *EXTRA File 		 190.8 m	E:\lidar_project\data\derivatives\hillshade_az315_alt70_mkf_1m.tif
+	  *EXTRA File 		 190.8 m	E:\lidar_project\data\derivatives\hillshade_mkf_1m.tif
+	  *EXTRA File 		  30.5 m	E:\lidar_project\data\derivatives\hillshade_mk_1m.tif
+	  *EXTRA File 		     413	E:\lidar_project\data\derivatives\hillshade_mk_1m.tif.aux.xml
+	  *EXTRA File 		  61.0 m	E:\lidar_project\data\derivatives\hillshade_mk_1m_fixed.tif
+	  *EXTRA File 		     411	E:\lidar_project\data\derivatives\hillshade_mk_1m_fixed.tif.aux.xml
+	  *EXTRA File 		     410	E:\lidar_project\data\derivatives\hillshade_sep_1m.tif.aux.xml
+	  *EXTRA File 		     414	E:\lidar_project\data\derivatives\hillshade_sep_2008_1m.tif.aux.xml
+	  *EXTRA File 		   5.0 m	E:\lidar_project\data\derivatives\intensity_ground.png
+	  *EXTRA File 		    1366	E:\lidar_project\data\derivatives\intensity_ground.png.aux.xml
+	  *EXTRA File 		   5.0 m	E:\lidar_project\data\derivatives\intensity_ground.tif
+	  *EXTRA File 		  14.4 m	E:\lidar_project\data\derivatives\intensity_ground_05.tif
+	  *EXTRA File 		  23.0 m	E:\lidar_project\data\derivatives\intensity_ground_mk_1m.tif
+	  *EXTRA File 		  14.0 m	E:\lidar_project\data\derivatives\intensity_max_05.tif
+	  *EXTRA File 		  16.4 m	E:\lidar_project\data\derivatives\intensity_max_mk_1m.tif
+	  *EXTRA File 		  26.3 m	E:\lidar_project\data\derivatives\intensity_zscore_05.tif
+	  *EXTRA File 		 284.3 m	E:\lidar_project\data\derivatives\intensity_zscore_mkf_1m.tif
+	  *EXTRA File 		  30.7 m	E:\lidar_project\data\derivatives\intensity_zscore_mk_1m.tif
+	  *EXTRA File 		   4.5 m	E:\lidar_project\data\derivatives\local_relief_10.tif
+	  *EXTRA File 		  16.4 m	E:\lidar_project\data\derivatives\local_relief_10_05.tif
+	  *EXTRA File 		 107.8 m	E:\lidar_project\data\derivatives\local_relief_10_mkf_1m.tif
+	  *EXTRA File 		  18.1 m	E:\lidar_project\data\derivatives\local_relief_10_mk_1m.tif
+	  *EXTRA File 		  286608	E:\lidar_project\data\derivatives\low_veg_05.tif
+	  *EXTRA File 		     410	E:\lidar_project\data\derivatives\low_veg_05.tif.aux.xml
+	  *EXTRA File 		   2.6 m	E:\lidar_project\data\derivatives\low_veg_mk_1m.tif
+	  *EXTRA File 		     409	E:\lidar_project\data\derivatives\low_veg_mk_1m.tif.aux.xml
+	  *EXTRA File 		   4.8 m	E:\lidar_project\data\derivatives\lrm_11.tif
+	  *EXTRA File 		  18.2 m	E:\lidar_project\data\derivatives\lrm_11_05.tif
+	  *EXTRA File 		 116.8 m	E:\lidar_project\data\derivatives\lrm_11_mkf_1m.tif
+	  *EXTRA File 		  19.6 m	E:\lidar_project\data\derivatives\lrm_11_mk_1m.tif
+	  *EXTRA File 		     442	E:\lidar_project\data\derivatives\lrm_11_sep_2008_1m.tif.aux.xml
+	  *EXTRA File 		   4.8 m	E:\lidar_project\data\derivatives\lrm_25.tif
+	  *EXTRA File 		  512844	E:\lidar_project\data\derivatives\lrm_25.tif.aux.xml
+	  *EXTRA File 		  18.3 m	E:\lidar_project\data\derivatives\lrm_25_05.tif
+	  *EXTRA File 		 116.1 m	E:\lidar_project\data\derivatives\lrm_25_mkf_1m.tif
+	  *EXTRA File 		  19.4 m	E:\lidar_project\data\derivatives\lrm_25_mk_1m.tif
+	  *EXTRA File 		     442	E:\lidar_project\data\derivatives\lrm_25_mk_1m.tif.aux.xml
+	  *EXTRA File 		     440	E:\lidar_project\data\derivatives\lrm_25_sep_1m.tif.aux.xml
+	  *EXTRA File 		 107.7 m	E:\lidar_project\data\derivatives\lrm_3_mkf_1m.tif
+	  *EXTRA File 		  18.6 m	E:\lidar_project\data\derivatives\lrm_3_mk_1m.tif
+	  *EXTRA File 		   4.8 m	E:\lidar_project\data\derivatives\lrm_5.tif
+	  *EXTRA File 		   4.7 m	E:\lidar_project\data\derivatives\lrm_51.tif
+	  *EXTRA File 		  18.1 m	E:\lidar_project\data\derivatives\lrm_51_05.tif
+	  *EXTRA File 		  17.5 m	E:\lidar_project\data\derivatives\lrm_5_05.tif
+	  *EXTRA File 		 113.3 m	E:\lidar_project\data\derivatives\lrm_5_mkf_1m.tif
+	  *EXTRA File 		  19.2 m	E:\lidar_project\data\derivatives\lrm_5_mk_1m.tif
+	  *EXTRA File 		  413257	E:\lidar_project\data\derivatives\mid_veg_05.tif
+	  *EXTRA File 		   3.8 m	E:\lidar_project\data\derivatives\mid_veg_mk_1m.tif
+	  *EXTRA File 		     411	E:\lidar_project\data\derivatives\num_returns_mean.tif.aux.xml
+	  *EXTRA File 		   5.6 m	E:\lidar_project\data\derivatives\openness_neg.tif
+	  *EXTRA File 		  21.9 m	E:\lidar_project\data\derivatives\openness_neg_05.tif
+	  *EXTRA File 		 139.7 m	E:\lidar_project\data\derivatives\openness_neg_mkf_1m.tif
+	  *EXTRA File 		  23.1 m	E:\lidar_project\data\derivatives\openness_neg_mk_1m.tif
+	  *EXTRA File 		   5.6 m	E:\lidar_project\data\derivatives\openness_pos.tif
+	  *EXTRA File 		  21.9 m	E:\lidar_project\data\derivatives\openness_pos_05.tif
+	  *EXTRA File 		 139.9 m	E:\lidar_project\data\derivatives\openness_pos_mkf_1m.tif
+	  *EXTRA File 		  23.1 m	E:\lidar_project\data\derivatives\openness_pos_mk_1m.tif
+	  *EXTRA File 		 381.5 m	E:\lidar_project\data\derivatives\pit_1m_match_score_mkf.tif
+	  *EXTRA File 		     222	E:\lidar_project\data\derivatives\pit_675lc_9tile_metrics.txt
+	  *EXTRA File 		   1.8 m	E:\lidar_project\data\derivatives\pit_675lc_9tile_overview.png
+	  *EXTRA File 		     223	E:\lidar_project\data\derivatives\pit_675lc_mckean_metrics.txt
+	  *EXTRA File 		   1.0 m	E:\lidar_project\data\derivatives\pit_675lc_mckean_overview.png
+	  *EXTRA File 		     225	E:\lidar_project\data\derivatives\pit_675_9tile_metrics.txt
+	  *EXTRA File 		   1.8 m	E:\lidar_project\data\derivatives\pit_675_9tile_overview.png
+	  *EXTRA File 		   83660	E:\lidar_project\data\derivatives\pit_675_lc_feature_importance.png
+	  *EXTRA File 		     226	E:\lidar_project\data\derivatives\pit_675_mckean_metrics.txt
+	  *EXTRA File 		   1.0 m	E:\lidar_project\data\derivatives\pit_675_mckean_overview.png
+
+	    Newer     		  130781	C:\Users\colto\Documents\GitHub\lidar_project\.git\index	  *EXTRA File 		  13.0 m	E:\lidar_project\data\derivatives\pit_candidates_675lc_9tile.gpkg
+
+	  *EXTRA File 		   5.8 m		*EXTRA Dir        -1	E:\lidar_project\data\derivatives\pit_candidates_675lc_mckean.gpkg
+E:\lidar_project\notebooks\wellsight\archive\
+	  *EXTRA File 		  12.8 m	E:\lidar_project\data\derivatives\pit_candidates_675_9tile.gpkg
+	*EXTRA Dir        -1		  *EXTRA File 		   5.8 m	E:\lidar_project\notebooks\wellsight\paper\
+E:\lidar_project\data\derivatives\pit_candidates_675_mckean.gpkg
+	*EXTRA Dir        -1		  *EXTRA File 		   1.7 m	E:\lidar_project\notebooks\wellsight\pilotA\
+E:\lidar_project\data\derivatives\pit_candidates_ensemble.gpkg
+	*EXTRA Dir        -1		  *EXTRA File 		   6.0 m	E:\lidar_project\notebooks\wellsight\ramachandran\
+E:\lidar_project\data\derivatives\pit_candidates_mckean.gpkg
+	*EXTRA Dir        -1		  *EXTRA File 		   1.3 m	E:\lidar_project\notebooks\wellsight\runs\
+E:\lidar_project\data\derivatives\pit_candidates_output2.gpkg
+	  *EXTRA File 		   10371	E:\lidar_project\notebooks\wellsight\_build_9tile_1m.py
+	  *EXTRA File 		   1.5 m		  *EXTRA File 		    5480	E:\lidar_project\data\derivatives\pit_candidates_rf.gpkg
+E:\lidar_project\notebooks\wellsight\_build_geomorphon_enc.py
+	  *EXTRA File 		   1.6 m		  *EXTRA File 		    9865	E:\lidar_project\data\derivatives\pit_candidates_rf.png
+E:\lidar_project\notebooks\wellsight\_build_mckean_5x5.py
+	  *EXTRA File 		  19.2 m		  *EXTRA File 		   11008	E:\lidar_project\data\derivatives\pit_candidates_sep.gpkg
+E:\lidar_project\notebooks\wellsight\_build_mckean_full.py
+	  *EXTRA File 		  27.5 m		  *EXTRA File 		   34703	E:\lidar_project\notebooks\wellsight\_build_paper_docx.pyE:\lidar_project\data\derivatives\pit_candidates_sep_2008.gpkg
+
+	  *EXTRA File 		   11938		  *EXTRA File 		  18.8 m	E:\lidar_project\notebooks\wellsight\_build_paper_skeleton.py
+E:\lidar_project\data\derivatives\pit_candidates_sep_filtered.gpkg
+	  *EXTRA File 		   56051	E:\lidar_project\notebooks\wellsight\_build_wellsight_notebook.py
+	  *EXTRA File 		   1.4 m		  *EXTRA File 		    7708	
+E:\lidar_project\data\derivatives\pit_candidates_template.gpkg
+E:\lidar_project\notebooks\wellsight\_generate_paper_figures.py
+	*EXTRA Dir        -1		  *EXTRA File 		   1.7 m		  *EXTRA File 		    8148	E:\lidar_project\data\derivatives\pit_candidates_template.png
+E:\lidar_project\notebooks\wellsight\_pit_morphology_audit_1m.py
+E:\lidar_project\.venv\Lib\site-packages\google_genai-1.68.0.dist-info\	  *EXTRA File 		   1.6 m		  *EXTRA File 		   25880	E:\lidar_project\notebooks\wellsight\_pit_pipeline_1m.pyE:\lidar_project\data\derivatives\pit_candidates_xgb.gpkg
+
+	  *EXTRA File 		   10094		  *EXTRA File 		   1.6 m	E:\lidar_project\notebooks\wellsight\_pit_rim_polygons.py
+E:\lidar_project\data\derivatives\pit_candidates_xgb_plus.gpkg
+	  *EXTRA File 		   23366		  *EXTRA File 		   1.6 m	E:\lidar_project\notebooks\wellsight\_retrain_675.py
+E:\lidar_project\data\derivatives\pit_candidates_xgb_plus2.gpkg
+	  *EXTRA File 		   19453		  *EXTRA File 		  438272	E:\lidar_project\notebooks\wellsight\_run_hotspots_and_mckean.py
+E:\lidar_project\data\derivatives\pit_combined_candidates.gpkg
+	  *EXTRA File 		   18299		  *EXTRA File 		   76098	E:\lidar_project\notebooks\wellsight\_run_single_tiles.pyE:\lidar_project\data\derivatives\pit_combined_feature_importance.png
+	  *EXTRA File 		     651	E:\lidar_project\data\derivatives\pit_combined_metrics.txt
+	  *EXTRA File 		  105494	E:\lidar_project\data\derivatives\pit_ensemble_calibration.png
+	  *EXTRA File 		   89004	E:\lidar_project\data\derivatives\pit_ensemble_feature_importance.png
+	  *EXTRA File 		     798	E:\lidar_project\data\derivatives\pit_ensemble_metrics.txt
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_ensemble_thr30.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_ensemble_thr40.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_ensemble_thr50.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_ensemble_thr60.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_ensemble_thr70.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_ensemble_thr80.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_ensemble_thr90.png
+	  *EXTRA File 		  29.2 m	E:\lidar_project\data\derivatives\pit_match_max_05.tif
+	  *EXTRA File 		  28.9 m	E:\lidar_project\data\derivatives\pit_match_score_05.tif
+	  *EXTRA File 		     204	E:\lidar_project\data\derivatives\pit_mckean_metrics.txt
+	  *EXTRA File 		   1.2 m	E:\lidar_project\data\derivatives\pit_mckean_overview.png
+	  *EXTRA File 		  124329	E:\lidar_project\data\derivatives\pit_morphology_all_with_anomaly.csv
+	  *EXTRA File 		  196401	E:\lidar_project\data\derivatives\pit_morphology_audit.csv
+	  *EXTRA File 		  401408	E:\lidar_project\data\derivatives\pit_morphology_audit.gpkg
+	  *EXTRA File 		   13396	E:\lidar_project\data\derivatives\pit_morphology_table.csv
+	  *EXTRA File 		     396	E:\lidar_project\data\derivatives\pit_output2_metrics.txt
+	  *EXTRA File 		   1.9 m	E:\lidar_project\data\derivatives\pit_output2_overview.png
+	  *EXTRA File 		  258556	E:\lidar_project\data\derivatives\pit_pca_analysis.png
+	  *EXTRA File 		  254312	E:\lidar_project\data\derivatives\pit_radial_profiles.png
+	  *EXTRA File 		   95829	E:\lidar_project\data\derivatives\pit_rf_feature_importance.png
+	  *EXTRA File 		     394	E:\lidar_project\data\derivatives\pit_rf_metrics.txt
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_rf_thr30.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_rf_thr40.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_rf_thr50.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_rf_thr60.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_rf_thr70.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_rf_thr80.png
+	  *EXTRA File 		     241	E:\lidar_project\data\derivatives\pit_sep_2008_metrics.txt
+	  *EXTRA File 		     234	E:\lidar_project\data\derivatives\pit_sep_metrics.txt
+	  *EXTRA File 		   38462	E:\lidar_project\data\derivatives\pit_templates_multi.png
+	  *EXTRA File 		  106231	E:\lidar_project\data\derivatives\pit_template_cutouts.png
+	  *EXTRA File 		  131672	E:\lidar_project\data\derivatives\pit_template_mean.png
+	  *EXTRA File 		 381.5 m	E:\lidar_project\data\derivatives\pit_unet_pred_mkf.tif
+	  *EXTRA File 		   88520	E:\lidar_project\data\derivatives\pit_xgb_feature_importance.png
+	  *EXTRA File 		     445	E:\lidar_project\data\derivatives\pit_xgb_metrics.txt
+	  *EXTRA File 		  114527	E:\lidar_project\data\derivatives\pit_xgb_plus2_feature_importance.png
+	  *EXTRA File 		     495	E:\lidar_project\data\derivatives\pit_xgb_plus2_metrics.txt
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus2_thr30.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus2_thr40.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus2_thr50.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus2_thr60.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus2_thr70.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus2_thr80.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus2_thr90.png
+	  *EXTRA File 		  101582	E:\lidar_project\data\derivatives\pit_xgb_plus_feature_importance.png
+	  *EXTRA File 		     464	E:\lidar_project\data\derivatives\pit_xgb_plus_metrics.txt
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus_thr30.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus_thr40.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus_thr50.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus_thr60.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus_thr70.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus_thr80.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_plus_thr90.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_thr30.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_thr40.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_thr50.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_thr60.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_thr70.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_thr80.png
+	  *EXTRA File 		   1.6 m	E:\lidar_project\data\derivatives\pit_xgb_thr90.png
+	  *EXTRA File 		  15.9 m	E:\lidar_project\data\derivatives\reflective_anomaly_05.tif
+	  *EXTRA File 		  500766	E:\lidar_project\data\derivatives\reflective_anomaly_05.tif.aux.xml
+	  *EXTRA File 		  18.2 m	E:\lidar_project\data\derivatives\reflective_anomaly_mk_1m.tif
+	  *EXTRA File 		  504314	E:\lidar_project\data\derivatives\reflective_anomaly_mk_1m.tif.aux.xml
+	  *EXTRA File 		   1.5 g	E:\lidar_project\data\derivatives\relief_10m.tif
+	  *EXTRA File 		   1.5 g	E:\lidar_project\data\derivatives\roughness.tif
+	  *EXTRA File 		   4.6 m	E:\lidar_project\data\derivatives\roughness_11.tif
+	  *EXTRA File 		  14.0 m	E:\lidar_project\data\derivatives\roughness_11_05.tif
+	  *EXTRA File 		 100.9 m	E:\lidar_project\data\derivatives\roughness_5_mkf_1m.tif
+	  *EXTRA File 		  15.9 m	E:\lidar_project\data\derivatives\roughness_5_mk_1m.tif
+	  *EXTRA File 		   6.2 m	E:\lidar_project\data\derivatives\single_return_frac_05.tif
+	  *EXTRA File 		  14.6 m	E:\lidar_project\data\derivatives\single_return_frac_mk_1m.tif
+	  *EXTRA File 		   8.5 m	E:\lidar_project\data\derivatives\slope.tif
+	  *EXTRA File 		  34.3 m	E:\lidar_project\data\derivatives\slope_05.tif
+	  *EXTRA File 		 381.5 m	E:\lidar_project\data\derivatives\slope_mkf_1m.tif
+	  *EXTRA File 		  61.0 m	E:\lidar_project\data\derivatives\slope_mk_1m.tif
+	  *EXTRA File 		  61.0 m	E:\lidar_project\data\derivatives\slope_mk_1m_fixed.tif
+	  *EXTRA File 		   98304	E:\lidar_project\data\derivatives\structures_detected_mk_1m.gpkg
+	  *EXTRA File 		  206182	E:\lidar_project\data\derivatives\structure_mask_05.tif
+	  *EXTRA File 		  131619	E:\lidar_project\data\derivatives\structure_mask_mk_1m.tif
+	  *EXTRA File 		   3.6 m	E:\lidar_project\data\derivatives\structure_score_05.tif
+	  *EXTRA File 		   3.9 m	E:\lidar_project\data\derivatives\structure_score_mk_1m.tif
+	  *EXTRA File 		   6.0 m	E:\lidar_project\data\derivatives\tile_overview_05.png
+	  *EXTRA File 		   2.3 m	E:\lidar_project\data\derivatives\tile_overview_mk_1m.png
+	  *EXTRA File 		   4.6 m	E:\lidar_project\data\derivatives\total_returns.png
+	  *EXTRA File 		     410	E:\lidar_project\data\derivatives\total_returns.tif.aux.xml
+	  *EXTRA File 		   4.8 m	E:\lidar_project\data\derivatives\tpi_05.tif
+	  *EXTRA File 		  18.4 m	E:\lidar_project\data\derivatives\tpi_05_05.tif
+	  *EXTRA File 		 116.4 m	E:\lidar_project\data\derivatives\tpi_05_mkf_1m.tif
+	  *EXTRA File 		  19.5 m	E:\lidar_project\data\derivatives\tpi_05_mk_1m.tif
+	  *EXTRA File 		   4.8 m	E:\lidar_project\data\derivatives\tpi_15.tif
+	  *EXTRA File 		   1.5 g	E:\lidar_project\data\derivatives\tpi_15m.tif
+	  *EXTRA File 		  18.1 m	E:\lidar_project\data\derivatives\tpi_15_05.tif
+	  *EXTRA File 		 116.0 m	E:\lidar_project\data\derivatives\tpi_15_mkf_1m.tif
+	  *EXTRA File 		  19.4 m	E:\lidar_project\data\derivatives\tpi_15_mk_1m.tif
+	  *EXTRA File 		 114.3 m	E:\lidar_project\data\derivatives\tpi_25_mkf_1m.tif
+	  *EXTRA File 		  19.1 m	E:\lidar_project\data\derivatives\tpi_25_mk_1m.tif
+	  *EXTRA File 		   1.5 g	E:\lidar_project\data\derivatives\tpi_50m.tif
+	  *EXTRA File 		   4.7 m	E:\lidar_project\data\derivatives\tpi_51.tif
+	  *EXTRA File 		  17.8 m	E:\lidar_project\data\derivatives\tpi_51_05.tif
+	  *EXTRA File 		   1.5 g	E:\lidar_project\data\derivatives\tpi_5m.tif
+	  *EXTRA File 		   7.1 m	E:\lidar_project\data\derivatives\tpi_grad_dir.tif
+	  *EXTRA File 		  28.1 m	E:\lidar_project\data\derivatives\tpi_grad_dir_05.tif
+	  *EXTRA File 		 171.2 m	E:\lidar_project\data\derivatives\tpi_grad_dir_mkf_1m.tif
+	  *EXTRA File 		  28.6 m	E:\lidar_project\data\derivatives\tpi_grad_dir_mk_1m.tif
+	  *EXTRA File 		   7.1 m	E:\lidar_project\data\derivatives\tpi_grad_mag.tif
+	  *EXTRA File 		  28.4 m	E:\lidar_project\data\derivatives\tpi_grad_mag_05.tif
+	  *EXTRA File 		 175.1 m	E:\lidar_project\data\derivatives\tpi_grad_mag_mkf_1m.tif
+	  *EXTRA File 		  28.7 m	E:\lidar_project\data\derivatives\tpi_grad_mag_mk_1m.tif
+	  *EXTRA File 		     538	E:\lidar_project\data\derivatives\_tmp_covar.json
+	  *EXTRA File 		     436	E:\lidar_project\data\derivatives\_tmp_covar_full.json
+	  *EXTRA File 		     529	E:\lidar_project\data\derivatives\_tmp_covar_gnd.json
+	  *EXTRA File 		    4682	E:\lidar_project\data\derivatives\_tmp_density_no_pipeline.json
+	  *EXTRA File 		    4701	E:\lidar_project\data\derivatives\_tmp_intensity_9t_pipeline.json
+	    Newer     		   70506	C:\Users\colto\Documents\GitHub\lidar_project\docs\analysis_log.md
+	    Newer     		   68550	C:\Users\colto\Documents\GitHub\lidar_project\qgis\wellsight.qgz
+	    New File  		    2789	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\_permian_build.log
+	    New File  		    2190	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\_permian_build2.log
+	    New File  		    1905	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\_permian_build3.log
+	    New File  		    3654	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\_wpa_build.log
+	    Newer     		   21100	C:\Users\colto\Documents\GitHub\lidar_project\.git\logs\HEAD
+	  *EXTRA File 		   10094	E:\lidar_project\archive\wellsight\pits\_pit_rim_polygons_spoke_v1.py
+	  *EXTRA File 		   19483	E:\lidar_project\archive\wellsight\pits\_pit_unet.py
+	*EXTRA Dir        -1	E:\lidar_project\data\source_laz\westernpa\shp\
+	  *EXTRA File 		   83980	E:\lidar_project\data\source_laz\westernpa\western_pa_terrascan_project.prj
+	  *EXTRA File 		   2.7 g	E:\lidar_project\data\source_laz\westernpa\_merged_613590_05.las
+	  *EXTRA File 		   2.8 g	E:\lidar_project\data\source_laz\westernpa\_merged_9t_1m.las
+	  *EXTRA File 		   3.1 g	E:\lidar_project\data\source_laz\westernpa\_merged_mck_e1423n2238_05.las
+	  *EXTRA File 		   1.9 g	E:\lidar_project\data\source_laz\westernpa\_merged_nec_marcellus_1m.las
+	  *EXTRA File 		   3.1 g	E:\lidar_project\data\source_laz\westernpa\_merged_northcentral_b19_e1423n2238_1m.las
+	  *EXTRA File 		   7.5 g	E:\lidar_project\data\source_laz\westernpa\_merged_oilcreek_22tile_05.las
+	  *EXTRA File 		   2.9 g	E:\lidar_project\data\source_laz\westernpa\_merged_sw_marcellus_1m.las
+	  *EXTRA File 		   4.7 g	E:\lidar_project\data\source_laz\westernpa\_merged_wc_coaloil_1m.las
+	    New File  		    2824	C:\Users\colto\Documents\GitHub\lidar_project\docs\iterations\drainage_unet_1m.md
+	    Newer     		    8220	C:\Users\colto\Documents\GitHub\lidar_project\docs\iterations\LEADERBOARD.md
+	    New File  		    3322	C:\Users\colto\Documents\GitHub\lidar_project\docs\iterations\pit_optimize.md
+	    New File  		    6073	C:\Users\colto\Documents\GitHub\lidar_project\docs\iterations\_drainage_train.log
+	    New File  		    3847	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\README.md
+	    New File  		    6606	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\_common.py
+	    New File  		   17921	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\_dl.py
+	    New File  		   30138	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\_instance_common.py
+	    Newer     		   30138	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\_instance_common.py
+
+
+
+	  *EXTRA File 		    2565		  *EXTRA File 		   10371		  *EXTRA File 		    8148	E:\lidar_project\notebooks\wellsight\fetch\_filter_3dep_tiles_to_well_pads.py	  *EXTRA File 		   17906	E:\lidar_project\notebooks\wellsight\pits\_pit_morphology_audit_1m.py
+E:\lidar_project\notebooks\wellsight\roads\_beck_road_replication.py
+E:\lidar_project\notebooks\wellsight\build\_build_9tile_1m.py
+	  *EXTRA File 		   28992		  *EXTRA File 		   25880	E:\lidar_project\notebooks\wellsight\roads\_road_extract.py
+E:\lidar_project\notebooks\wellsight\pits\_pit_pipeline_1m.py
+	  *EXTRA File 		    2287		*EXTRA Dir        -1	E:\lidar_project\notebooks\wellsight\build\_build_density_noverlap_9t.py
+E:\lidar_project\data\derivatives\inference\mck\
+	  *EXTRA File 		   15654		  *EXTRA File 		    6410	E:\lidar_project\notebooks\wellsight\pits\_pit_rim_polygons.py
+E:\lidar_project\notebooks\wellsight\build\_build_density_persource.py
+	*EXTRA Dir        -1	E:\lidar_project\data\derivatives\inference\oilcreek\	  *EXTRA File 		   16761		  *EXTRA File 		    5794	E:\lidar_project\notebooks\wellsight\pits\_pit_rim_polygons_v2.py
+E:\lidar_project\notebooks\wellsight\build\_build_geomorphon_enc.py
+	  *EXTRA File 		   19483		  *EXTRA File 		    2574	E:\lidar_project\notebooks\wellsight\pits\_pit_unet.py
+E:\lidar_project\notebooks\wellsight\build\_build_intensity_9t.py
+	  *EXTRA File 		    3829		  *EXTRA File 		    8861	E:\lidar_project\notebooks\wellsight\pits\_pit_unet_eval.py
+E:\lidar_project\notebooks\wellsight\build\_build_intensity_zscore.py
+	  *EXTRA File 		   15008	E:\lidar_project\notebooks\wellsight\pits\_pit_unet_xgb_combined.py	  *EXTRA File 		    9865	E:\lidar_project\notebooks\wellsight\build\_build_mckean_5x5.py
+	  *EXTRA File 		   11008	E:\lidar_project\notebooks\wellsight\build\_build_mckean_full.py
+	  *EXTRA File 		    1868	E:\lidar_project\notebooks\wellsight\build\_merge_9t_las.py
+	    New File  		  47.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\chm_permian_01_1m.tif
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\dem_permian_01_1m.tif
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\dsm_permian_01_1m.tif
+	    New File  		   8.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\ground_density_permian_01_1m.tif
+	    New File  		  38.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\hillshade_permian_01_1m.tif
+	    New File  		  50.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\intensity_ground_permian_01_1m.tif
+	    New File  		  33.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\local_relief_10_permian_01_1m.tif
+	    New File  		  37.8 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\lrm_11_permian_01_1m.tif
+	    New File  		  38.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\lrm_25_permian_01_1m.tif
+	    New File  		  34.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\lrm_3_permian_01_1m.tif
+	    New File  		  36.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\lrm_5_permian_01_1m.tif
+	    New File  		  47.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\openness_neg_permian_01_1m.tif
+	    New File  		  47.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\openness_pos_permian_01_1m.tif
+	    New File  		   20220	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\perm1.qgz
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\permian_01_pads.gpkg
+	    New File  		  20.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\roughness_5_permian_01_1m.tif
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\slope_permian_01_1m.tif
+	    New File  		   4.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\tile_overview_permian_01_1m.png
+	    New File  		  37.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\tpi_05_permian_01_1m.tif
+	    New File  		  38.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\tpi_15_permian_01_1m.tif
+	    New File  		  38.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\tpi_25_permian_01_1m.tif
+	    New File  		  64.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\tpi_grad_dir_permian_01_1m.tif
+	    New File  		  64.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\tpi_grad_mag_permian_01_1m.tif
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\dem_permian_02_1m.tif
+	    New File  		  46.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\openness_neg_permian_02_1m.tif
+	    New File  		  46.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\openness_pos_permian_02_1m.tif
+	    New File  		   14465	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\perm2.qgz
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\permian_02_pads.gpkg
+	    New File  		  28.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\ramachandran_permian_pads_pts.gpkg
+	    New File  		   3.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\tile_overview_permian_02_1m.png
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\dem_permian_03_1m.tif
+	    New File  		  48.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\openness_neg_permian_03_1m.tif
+	    New File  		  47.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\openness_pos_permian_03_1m.tif
+	    New File  		   20630	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\perm3.qgz
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\permian_03_pads.gpkg
+	    New File  		  28.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\ramachandran_permian_pads_pts.gpkg
+	    New File  		   4.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\tile_overview_permian_03_1m.png
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\dem_permian_04_1m.tif
+	    New File  		  47.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\openness_neg_permian_04_1m.tif
+	    New File  		  47.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\openness_pos_permian_04_1m.tif
+	    New File  		   20662	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\perm4.qgz
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\permian_04_pads.gpkg
+	    New File  		  28.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\ramachandran_permian_pads_pts.gpkg
+	    New File  		   4.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\tile_overview_permian_04_1m.png
+	    New File  		  23.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\chm_westernpa_01_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\dem_westernpa_01_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\dsm_westernpa_01_1m.tif
+	    New File  		   3.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\ground_density_westernpa_01_1m.tif
+	    New File  		  17.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\hillshade_westernpa_01_1m.tif
+	    New File  		  19.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\intensity_ground_westernpa_01_1m.tif
+	    New File  		  18.0 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\local_relief_10_westernpa_01_1m.tif
+	    New File  		  19.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\lrm_11_westernpa_01_1m.tif
+	    New File  		  19.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\lrm_25_westernpa_01_1m.tif
+	    New File  		     439	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\lrm_25_westernpa_01_1m.tif.aux.xml
+	    New File  		  18.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\lrm_3_westernpa_01_1m.tif
+	    New File  		  19.0 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\lrm_5_westernpa_01_1m.tif
+	    New File  		  22.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\openness_neg_westernpa_01_1m.tif
+	    New File  		     434	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\openness_neg_westernpa_01_1m.tif.aux.xml
+	    New File  		  22.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\openness_pos_westernpa_01_1m.tif
+	    New File  		     434	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\openness_pos_westernpa_01_1m.tif.aux.xml
+	    New File  		  23.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\chm_westernpa_02_1m.tif
+	    New File  		   21030	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\pa1.qgz
+	    New File  		  14.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\roughness_5_westernpa_01_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\slope_westernpa_01_1m.tif
+	    New File  		     436	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\slope_westernpa_01_1m.tif.aux.xml
+	    New File  		   5.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\tile_overview_westernpa_01_1m.png
+	    New File  		  19.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\tpi_05_westernpa_01_1m.tif
+	    New File  		  19.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\tpi_15_westernpa_01_1m.tif
+	    New File  		  18.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\tpi_25_westernpa_01_1m.tif
+	    New File  		     437	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\tpi_25_westernpa_01_1m.tif.aux.xml
+	    New File  		  28.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\tpi_grad_dir_westernpa_01_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\dem_westernpa_02_1m.tif
+	    New File  		  28.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\tpi_grad_mag_westernpa_01_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\dsm_westernpa_02_1m.tif
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\westernpa_01_pit_inside.gpkg
+	    New File  		  23.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\chm_westernpa_04_1m.tif
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_01\westernpa_01_pit_outside.gpkg
+	    New File  		   3.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\ground_density_westernpa_02_1m.tif
+	    New File  		  17.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\hillshade_westernpa_02_1m.tif
+	    New File  		  20.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\intensity_ground_westernpa_02_1m.tif
+	    New File  		  16.8 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\local_relief_10_westernpa_02_1m.tif
+	    New File  		  19.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\lrm_11_westernpa_02_1m.tif
+	    New File  		  19.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\lrm_25_westernpa_02_1m.tif
+	    New File  		     442	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\lrm_25_westernpa_02_1m.tif.aux.xml
+	    New File  		  18.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\lrm_3_westernpa_02_1m.tif
+	    New File  		  18.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\lrm_5_westernpa_02_1m.tif
+	    New File  		  22.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\openness_neg_westernpa_02_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\dem_westernpa_04_1m.tif
+	    New File  		     436	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\openness_neg_westernpa_02_1m.tif.aux.xml
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\dsm_westernpa_04_1m.tif
+	    New File  		  22.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\openness_pos_westernpa_02_1m.tif
+	    New File  		   3.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\ground_density_westernpa_04_1m.tif
+	    New File  		  17.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\hillshade_westernpa_04_1m.tif
+	    New File  		  20.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\intensity_ground_westernpa_04_1m.tif
+	    New File  		     436	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\openness_pos_westernpa_02_1m.tif.aux.xml
+	    New File  		  16.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\local_relief_10_westernpa_04_1m.tif
+	    New File  		  18.8 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\lrm_11_westernpa_04_1m.tif
+	    New File  		  18.8 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\lrm_25_westernpa_04_1m.tif
+	    New File  		     440	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\lrm_25_westernpa_04_1m.tif.aux.xml
+	    New File  		  17.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\lrm_3_westernpa_04_1m.tif
+	    New File  		  18.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\lrm_5_westernpa_04_1m.tif
+	    New File  		  22.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\openness_neg_westernpa_04_1m.tif
+	    New File  		     433	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\openness_neg_westernpa_04_1m.tif.aux.xml
+	    New File  		  22.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\openness_pos_westernpa_04_1m.tif
+	    New File  		     433	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\openness_pos_westernpa_04_1m.tif.aux.xml
+	    New File  		   20891	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\pa4.qgz
+	    New File  		  11.0 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\roughness_5_westernpa_04_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\slope_westernpa_04_1m.tif
+	    New File  		     437	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\slope_westernpa_04_1m.tif.aux.xml
+	    New File  		   5.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\tile_overview_westernpa_04_1m.png
+	    New File  		  18.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\tpi_05_westernpa_04_1m.tif
+	    New File  		  18.8 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\tpi_15_westernpa_04_1m.tif
+	    New File  		  18.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\tpi_25_westernpa_04_1m.tif
+	    New File  		  28.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\tpi_grad_dir_westernpa_04_1m.tif
+	    New File  		  28.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\tpi_grad_mag_westernpa_04_1m.tif
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\westernpa_04_pit_inside.gpkg
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_04\westernpa_04_pit_outside.gpkg
+	    New File  		   21106	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\pa2.qgz
+	    New File  		  11.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\roughness_5_westernpa_02_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\slope_westernpa_02_1m.tif
+	    New File  		     440	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\slope_westernpa_02_1m.tif.aux.xml
+	    New File  		   5.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\tile_overview_westernpa_02_1m.png
+	    New File  		  19.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\tpi_05_westernpa_02_1m.tif
+	    New File  		  19.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\tpi_15_westernpa_02_1m.tif
+	    New File  		  18.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\tpi_25_westernpa_02_1m.tif
+	    New File  		  28.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\tpi_grad_dir_westernpa_02_1m.tif
+	    New File  		  28.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\tpi_grad_mag_westernpa_02_1m.tif
+	    New File  		     442	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\tpi_grad_mag_westernpa_02_1m.tif.aux.xml
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\westernpa_02_pit_inside.gpkg
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_02\westernpa_02_pit_outside.gpkg
+	    New File  		     520	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\00\02f1951dcf67bb5972296d5f8d45d72fbd8c66
+	    New File  		     216	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\00\96acdb16bf0b7548f67177fcb68178505070df
+	    New File  		    2477	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\03\f5a5b40d0ad53ad077b12f93e4a67ae717b8bc
+	    New File  		    7147	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\04\5f97fc76a411eee1fc731a40ba28b8ee4be442
+	    Newer     		    2328	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\04\8d2c4a2f0f7ddecd5de48793ecac75938a270f
+	    Newer     		    2525	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\06\cf0263a0bd94f80f3ff8046abf4f818d7f334a
+	    New File  		  23.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\chm_westernpa_03_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\dem_westernpa_03_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\dsm_westernpa_03_1m.tif
+	    New File  		   3.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\ground_density_westernpa_03_1m.tif
+	    New File  		  17.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\hillshade_westernpa_03_1m.tif
+	    New File  		  20.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\intensity_ground_westernpa_03_1m.tif
+	    New File  		  18.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\local_relief_10_westernpa_03_1m.tif
+	    New File  		  19.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\lrm_11_westernpa_03_1m.tif
+	    New File  		  19.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\lrm_25_westernpa_03_1m.tif
+	    New File  		     442	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\lrm_25_westernpa_03_1m.tif.aux.xml
+	    New File  		  18.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\lrm_3_westernpa_03_1m.tif
+	    New File  		  19.0 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\lrm_5_westernpa_03_1m.tif
+	    New File  		  22.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\openness_neg_westernpa_03_1m.tif
+	    New File  		     437	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\openness_neg_westernpa_03_1m.tif.aux.xml
+	    New File  		  22.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\openness_pos_westernpa_03_1m.tif
+	    New File  		     437	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\openness_pos_westernpa_03_1m.tif.aux.xml
+	    New File  		   20940	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\pa3.qgz
+	    New File  		  16.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\roughness_5_westernpa_03_1m.tif
+	    New File  		  34.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\slope_westernpa_03_1m.tif
+	    New File  		     436	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\slope_westernpa_03_1m.tif.aux.xml
+	    New File  		   5.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\tile_overview_westernpa_03_1m.png
+	    New File  		  19.3 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\tpi_05_westernpa_03_1m.tif
+	    New File  		  19.1 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\tpi_15_westernpa_03_1m.tif
+	    New File  		  18.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\tpi_25_westernpa_03_1m.tif
+	    New File  		  28.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\tpi_grad_dir_westernpa_03_1m.tif
+	    New File  		  28.6 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\tpi_grad_mag_westernpa_03_1m.tif
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\westernpa_03_pit_inside.gpkg
+	    New File  		   98304	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\westernpa_03\westernpa_03_pit_outside.gpkg
+	    New File  		     101	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\0b\d318c20a231980416a1cde5dfd47ca85d877bf
+	    New File  		     668	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\0b\ee1ce23e5fa79e160ce3b956cd5b5448277c19
+	    New File  		    4018	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\0c\71ecb13aa3dca2f003a7b463da20fc30ecbaa8
+	    New File  		     712	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\0c\912df6164275e511af8e7ace1ee9f1c6345075
+	    Newer     		    1459	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\0c\c6cfbea759b0a70e31b565962a176c57a0cb95
+	    New File  		    4039	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\0e\a1036584d8118dfdeb2fc2d806d59380cfdde5
+	    Newer     		    2967	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\10\41d66843ee19c41c17fc61252d5051af7e085d
+	    New File  		     553	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\10\7af50c56a8e95d3736867936f25c21b53616ef
+	    New File  		     528	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\11\84debe523d7a23ce1b7c8cd654acce655253c7
+	    New File  		    4959	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\13\9687cd105139ec96520ac47f79775c86cba0cf
+	    Newer     		    8192	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\16\a2f85b915c794f2d0075220c521bafe1e2ffa4
+	    New File  		     102	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\15\5400f9e0d22a205a10b30e5afa58f37385e634
+	    Newer     		    1887	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\17\9e2860ad106a8f064ecd15292ab4674b74896d
+	    New File  		      53	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\17\deffcbfab947ff6de8d52335678fee8ea29388
+	    New File  		    3968	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\1a\4de07b6f169cda2d9d10848d259d94715040a1
+	    New File  		    4015	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\1c\8d1b6378ef1e14a7a21eeb8ae045006cfd0d10
+	    New File  		     585	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\1e\22ee94205c6ea5e85661558ff355bd24215726
+	    Newer     		    1377	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\1e\46600e88cfd9653a21620e7b069eaf184c30ab
+	    New File  		    4015	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\1e\ffd36845ba99caa119353e6728ec35d04f1e3c
+	    New File  		     333	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\22\a5a6a10f5f784f3bff1fce6dbfb95260a7cb8e
+	    Newer     		    1351	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\20\805b0890258eca7d8fcc15b10b6c7f742c7db8
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\25\6f35d4faeee62a8e4e210436a8fbc1ffdf0634
+	    New File  		    4046	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\2b\19c276bbbc4e96ea4bd358e1170672eeb984f1
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\2b\6412e2a947bf6fdfaf6805a559ead88d215076
+	    New File  		    2590	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\2a\a15ae4c3484e63e4d41ba030148500d6ee2e51
+	    Newer     		    8561	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\2a\d5dafe777991bca1dabf7562b4d88e5f99b73c
+	    New File  		      65	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\29\bc3e40cbeb333b9c4f5059c783822b28294255
+	    New File  		    3107	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\3c\527d649a5c5ec061df76d2c0326fb70eb7d85a
+	    New File  		    3247	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\3c\c9d07e397fb8e2207fa345fd76ce178ac7bba6
+	    New File  		   10510	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\3d\2cfe95f67d82b4ecfac023120891c82d7e7edd
+	    New File  		    3197	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\3e\d6dab8908ebc1fee10b1ccf08901c7416f8b91
+	    New File  		     102	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\40\94bacef8c027473954c8437b8873722c7adc27
+	    New File  		     668	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\45\218104df5ba5e4f48e6c71a3f0ba07376fa132
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\48\c5ffa77df5cedd4092526cf0b23071cc044dc9
+	    New File  		     332	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\47\7bb7fae1573c1ae9663be1f098939cf8bb0dc7
+	    New File  		    4045	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\47\9d10d63597f65a79f0216b5159e8b15e65d694
+	    New File  		      54	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\4a\71ee2d62430bc2f2e0714f28e4ba80b8901c34
+	    New File  		     668	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\4c\53e641d6625d6ccb34c8da1137ccaf5e86e83c
+	    New File  		    2665	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\52\6895aef94fe9fb2d6ac2f701a5ce60a3fa0787
+	    New File  		   28547	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\51\c3612d77639ba956ebd27d1f48553023a392f9
+	    New File  		      88	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\54\7dfc24c5be0c285915db50abf344d4dd02f7e0
+	    New File  		     313	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\54\bb10939fc05ac815231fa0680cab8396731673
+	    New File  		    1500	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\57\61eb797e77f43d437192d389954b15ed6f1fa2
+	    New File  		     528	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\58\08055e76e295fea562f1b24ee2583f5e333f55
+	    New File  		      54	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\5a\decbc67bf2ca4f1b85807467a5e124d78427f9
+	    New File  		     888	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\5d\d92e364c524e643ac492e8baf0bcaba03cc747
+	    Newer     		    2618	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\5e\86afd8c780cfb6d45fe424a73e2bd970cf49a9
+	    Newer     		    3193	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\64\13cebba3c4d8b939b41a84524f8513defb52e8
+	    New File  		     493	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\65\a498f3da0f6a2e2bc0094d65a35ea0a979030f
+	    New File  		    2799	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\68\0c686281ceff105c6ef04be643b5872c35dafd
+	    New File  		     713	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\68\bb8df472c171e749393d75868c2a9a1941dfef
+	    New File  		      88	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\6b\56983c9531cae573f73e7487d8b9e49a8b965e
+	    Newer     		    6121	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\6c\5b378bde5368f2e7a632e1867238d67bef212e
+	    New File  		    5355	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\6e\9ccfca0cc54c3902a0623a93816220a89e7265
+	    New File  		    3411	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\70\2a36d4189457dba973b33399f78977642e5503
+	    New File  		    1534	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\70\9c4fe0f9c0c60d698b79f62d8bc7fcf8ab06df
+	    Newer     		    1286	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\73\016f2931878849f7d2c53e4a02169100aa3cfe
+	    New File  		    3076	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\75\357fe24598157c0c5af729e2003e17c1f405c8
+	    Newer     		    2127	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\78\8345f3474b5db3f51b2680deefa960daca7b4b
+	    New File  		   26288	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\7a\3bc2897a3e25301ddffbf40f82c2e7674d1000
+	    New File  		     333	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\7a\4c4aa61e376d72088e93358bd2e7a1152896ed
+	    New File  		    4045	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\7b\71f3562868553082b8c46c4ea7b5f0acb47ee5
+	    New File  		      64	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\7b\9c1870290a1a3239e128cb34243e333e6fc4bd
+	    New File  		      65	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\7b\e2c60cc0cc3c30290c1e626ac6c79f1fa6882d
+	    New File  		      64	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\7b\fe9a1fc913232beeb940c42db4737bcd2126d4
+	    New File  		     713	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\7e\a3570ca26c03954b81d4184f7b7fc692ef07f6
+	    New File  		    1876	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\7d\77acad29f7e3c458de6e5713887f398e076012
+	    New File  		    4039	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\80\ea59d0c44d9add78f2dd465032fa01d53e99ba
+	    Newer     		    6788	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\85\104a538c7e418f3568e392d20073d9df82a547
+	    New File  		   27899	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\85\60084c4c18cbd173210507e5c0bd2db82811e6
+	    New File  		    1737	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\84\4ffdde72fcf1e04edd3c1c49c47bdc1cb511f8
+	    New File  		     668	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\86\54fb3cfb25e70170218bd35f8d6c67a0eb47d4
+	    New File  		     102	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\86\a409e2ca4a8458acdd2319612e198edf20e57b
+	    New File  		     742	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\88\2bf24ee493170ad7d5479e7a3e7371bc9e410a
+	    New File  		    2278	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\89\6bb18812048df308b3f5ffcc5fd70140c3e478
+	    New File  		     242	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\89\7e0f994875345a25a2980f26813ef42d9a3f18
+	    New File  		      53	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\8f\aab895e0b2b68b53dbdc17833491f8ad4ee772
+	    New File  		     638	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\8e\c06d82fc702445d4ad90237e44e957fd0387d6
+	    New File  		     557	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\94\62756691c011f0b828b7b8bab20e33e9bf8690
+	    New File  		     640	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\95\074758e3bcb8e36a096a1c94383d281884334a
+	    New File  		    6632	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\95\c3c28de0880e2e35c330257a1e3410e2bf1da9
+	    Newer     		    3742	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\97\2422e4d1788a83ce66a791f04521848655e5ee
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\97\eff50d14d79cd18ab670717346faacd0acd226
+	    New File  		     240	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\96\81a0c0547c9fc55b56bf398a5ebb2188e029aa
+	    New File  		    4046	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\9b\c03aeb11f4557e877e15369b4a8c8ef75b07ca
+	    New File  		      88	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\9c\0e101244d8bad847aff8a2089f74854f166d3d
+	    New File  		   26667	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\9c\0efd0a0b9fa98a7977f80e2fdb369f80254e0d
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\9d\5cdbc606aefc272609ce729ccfbc61a594ad87
+	    New File  		    4040	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\9d\80206ea3ff38acd6e8fcb0b78a715f6ae0c359
+	    New File  		    1801	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\9e\38ae53cfa871c2eef08a62732fb77b8277a25e
+	    Newer     		    2897	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\a0\1e09ccbae330ed1677b9214e9337139814bd44
+	    New File  		    1804	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\a2\262125ecfe44592987c2be4286bcd405098f33
+	    New File  		    1920	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\a4\8559ea86a289223905d79b1c1572ae0f9a4950
+	    New File  		     237	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\a6\622869c6fbce45bdb0d44f4d541c3259f88d1d
+	    New File  		     103	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\aa\16b3d63e9d9ea5d7bc74b7baf76af9f737a267
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ad\5501a0e85e3f5e411ce2b47f5259a9e5b8b109
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ac\434a92b51faf5f77f29e17e1d53e6dc51eb825
+	    Newer     		    2466	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ae\10f18e2dba0f8f22855f8dc5ebd58c3ef97378
+	    Newer     		    1607	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\b5\f30cc1a6149736c4d6a36b1ed120212473506d
+	    New File  		     667	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\b8\29be3386edb2008c31f32b53476ffa8b04f648
+	    New File  		     743	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\b8\beaddb2206b2170272d9795a3e7c85d7f08b40
+	    New File  		     660	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\b8\f521e193c28eb294a2c4b0454ae3eb638712c9
+	    New File  		    4015	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ba\326e467e1eaf03f1469b0c724f2279ee27115f
+	    New File  		     563	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\b9\69b60bbb5c151a44b17b5c1c72d9f0b3756368
+	    New File  		    1808	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\bb\7925f172ccbaa2c7b0f2abb61a71182d9d08b3
+	    New File  		   25461	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\bb\87ed5fe9e703a81b542e64b4aa44319a65aa6c
+	    New File  		     587	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\be\71c020f12a4439e507611472ed25c6f7d91907
+	    New File  		     246	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\c0\fd6ec1a9b284cef2f9aba4fc6c9399f95d1a57
+	    Newer     		    2587	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\c3\84b495dee961816badad5209283b91c1b1c424
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\c1\aa0aa616edc5a88a49416efd636becf4848128
+	    New File  		    1058	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ce\8d7d6f7823e20f9117f5ffc2c3d58ac59814ba
+	    Newer     		    1022	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ce\b0212ecc415c068433af9231416f3b92e021c1
+	    Newer     		    4385	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ce\ee10d4a82caa6da0cb71996c9899eac74f59fe
+	    New File  		     562	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\cf\55df7bd8df93868c624aea68da7a89d2da803e
+	    New File  		      65	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\d2\11b6f029cac437e4920cf27fbb62bec6096e00
+	    New File  		     528	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\d4\4aae94bfddeed94cb83d7b6012c53b8641d5bc
+	    New File  		      63	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\d8\510b080565b5d6c6e41c227fe5626cfe58d5d7
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\d8\c2c9332746db2552ee3264b97e3a5768554d26
+	    New File  		     614	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\d9\ecee414542742d130bf1f4fb4091b00855b166
+	    New File  		    3047	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\e3\7b1642baecdcf5156308c53476ec520d82bf7f
+	    New File  		    3849	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\e3\ab8d77196bc5aba3e364adbd64861042e16623
+	    New File  		     528	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\e6\398f543dcdbe5af20675a4bd19b59730bea10f
+	    New File  		     365	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\e8\2a700e1ebe67daacbbe51ac91245e9a77ac4a5
+	    New File  		      50	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\e8\4ebc2b4828382a1f67cfe4b2189f0218306209
+	    New File  		    4040	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\e9\26831262773884ce2269f53b7687bc9a838542
+	    New File  		     562	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ea\813848e56a2f936e8829e45808634ae934dd84
+	    New File  		    6296	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\eb\8a68da581bfed9cc0b48e49762cedf463b3553
+	    New File  		    7552	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\eb\8fa37360d6b33981b91d1fc5222e7249d6973e
+	    Newer     		    3295	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ed\3035185c94e1c519591becdafd6c745552a188
+	    New File  		      88	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ec\d4f8bd2dd679dffdfbff501ae57a7b0f4d4460
+	    New File  		      72	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\ec\e0a8a833a1d7ee1e5bff5eda2423eeee018efa
+	    Newer     		    2643	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\f3\0089df90883a14c03092a47cb094987bb9593a
+	    New File  		    6339	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\f3\f6bf898c404f3ddf44b12caaf9565c21c2f952
+	    Newer     		    1131	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\f8\85146f62725daf455891e43e1cf2a00caa5c22
+	    New File  		     181	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\fd\1ace09f70bff4a91c59159566487a052c1928d
+	    New File  		     364	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\fd\fa699f43d26f910d296c035938f203bb7ce0bd
+	    New File  		     638	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\fe\92713823bcacb4b3979f44be1a900b98603077
+	    Newer     		      41	C:\Users\colto\Documents\GitHub\lidar_project\.git\refs\heads\pit-iter-06-dem-only
+	    New File  		    1968	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_grids_manifest.json
+	    New File  		    1406	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\_fetch.log
+	    New File  		    6296	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\_build_pit_dataset.py
+	    New File  		    8641	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\_build_plat_road_dataset.py
+	    New File  		    3901	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\_build_plat_split.py
+	    New File  		    3686	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\_build_unified_split.py
+	    New File  		    6609	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\_prep_annotations.py
+	    New File  		    2942	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\_sanity_render.py
+	    New File  		    7059	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_3x3_hillshades.py
+	    New File  		    3493	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_contours_data_3x3.py
+	    New File  		    5822	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_data_3x3_derivatives.py
+	    New File  		    6086	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_data_3x3_partial_westernpa.py
+	    New File  		   19496	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_derivatives.py
+	    New File  		    3164	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_exag_derivatives.py
+	    New File  		   18562	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_label_grids.py
+	    New File  		    8039	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_pit_review_package.py
+	    New File  		    6551	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_build_road_review_package.py
+	    New File  		    7076	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_fetch_permian_grids.py
+	    New File  		    7777	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_infer_roads_data_3x3.py
+	    New File  		    4192	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_pit_corrections_diff.py
+	    New File  		   15739	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_pit_optimize.py
+	    New File  		    5581	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_postfilter_tile_candidates.py
+	    New File  		    8617	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_predict_on_tile.py
+	    New File  		   21968	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_refine_roads_data_3x3.py
+	    New File  		    4095	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_road_corrections_diff.py
+	    New File  		    6338	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_road_methods_compare.py
+	    New File  		   22272	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_road_optimize.py
+	    New File  		    5258	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\_yolo_infer_tile.py
+	    New File  		    9443	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\drainage\_drainage_unet_1m.py
+	    New File  		   21456	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\multitask\_multitask_unet.py
+	    New File  		   11109	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\_pit_maskrcnn.py
+	    New File  		    6824	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\_pit_maskrcnn_infer.py
+	    New File  		    4325	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\_pit_unet_v2.py
+	    New File  		    8006	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\_pit_unet_v2_infer.py
+	    New File  		    2928	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\_pit_yolo.py
+	    New File  		    3095	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\_pit_yolo_infer.py
+	    New File  		    3161	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\_stack_features.py
+	    New File  		    6172	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\_pad_maskrcnn.py
+	    New File  		    2488	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\_pad_maskrcnn_infer.py
+	    New File  		    6661	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\_pad_unet_infer_grid.py
+	    New File  		    2305	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\_pad_yolo.py
+	    New File  		    2244	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\_pad_yolo_infer.py
+	    New File  		    9648	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\_plat_unet.py
+	    New File  		    7752	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\__pycache__\_common.cpython-313.pyc
+	    New File  		   29304	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\__pycache__\_dl.cpython-313.pyc
+	    New File  		   39975	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\__pycache__\_instance_common.cpython-313.pyc
+	    New File  		    5092	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\roads\_prep_road_1m.py
+	    New File  		    8852	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\roads\_road_unet_1m_recall.py
+	    Newer     		   21456	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\multitask\_multitask_unet.py
+	    Newer     		    2488	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\plats\_pad_maskrcnn_infer.py
+	    Newer     		    2305	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\plats\_pad_yolo.py
+	    Newer     		    9648	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\plats\_plat_unet.py
+	    Newer     		   40018	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\__pycache__\_instance_common.cpython-313.pyc
+	    Newer     		    7622	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\_road_unet.py
+	    Newer     		    9016	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\_road_unet_1m.py
+	    Newer     		    8510	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\_road_unet_multiblock.py
+	    Newer     		    8006	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\pits\_pit_unet_v2_infer.py
+	    New File  		    6551	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_build_road_review_package.py
+	    Newer     		    8617	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_predict_on_tile.py
+	    New File  		    4095	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_road_corrections_diff.py
+	    New File  		  52.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\exag3x\openness_neg_permian_01_1m_z3.tif
+	    New File  		  51.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\exag3x\openness_pos_permian_01_1m_z3.tif
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\exag3x\slope_permian_01_1m_z3.tif
+	    New File  		 369.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\pad_unet_xfer\features_pad_permian_01_1m.tif
+	    New File  		  397312	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\pad_unet_xfer\pads_pred.gpkg
+	    New File  		   47842	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\pad_unet_xfer\pad_argmax.tif
+	    New File  		  872379	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\pad_unet_xfer\pad_overlay.png
+	    New File  		  57.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\pad_unet_xfer\pad_prob.tif
+	    New File  		     439	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_01\pad_unet_xfer\pad_prob.tif.aux.xml
+	    New File  		  51.4 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\exag3x\openness_neg_permian_02_1m_z3.tif
+	    New File  		  50.9 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\exag3x\openness_pos_permian_02_1m_z3.tif
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_02\exag3x\slope_permian_02_1m_z3.tif
+	    New File  		  52.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\exag3x\openness_neg_permian_03_1m_z3.tif
+	    New File  		  52.0 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\exag3x\openness_pos_permian_03_1m_z3.tif
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_03\exag3x\slope_permian_03_1m_z3.tif
+	    New File  		  51.7 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\exag3x\openness_neg_permian_04_1m_z3.tif
+	    New File  		  51.5 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\exag3x\openness_pos_permian_04_1m_z3.tif
+	    New File  		  77.2 m	C:\Users\colto\Documents\GitHub\lidar_project\label_grids\permian_04\exag3x\slope_permian_04_1m_z3.tif
+	    Newer     		    6373	C:\Users\colto\Documents\GitHub\lidar_project\.git\logs\refs\heads\pit-iter-06-dem-only
+	    Newer     		      30	C:\Users\colto\Documents\GitHub\lidar_project\.git\refs\remotes\origin\HEAD
+	    Newer     		      41	C:\Users\colto\Documents\GitHub\lidar_project\.git\refs\remotes\origin\pit-iter-06-dem-only
+	    New File  		  35.0 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA940715.laz
+	    New File  		  34.5 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA940730.laz
+	    New File  		  38.2 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA940745.laz
+	    New File  		  35.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA955715.laz
+	    New File  		  35.5 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA955730.laz
+	    New File  		  39.2 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA955745.laz
+	    New File  		  35.6 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA970715.laz
+	    New File  		  35.4 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA970730.laz
+	    New File  		  40.0 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_01\14SKA970745.laz
+	    New File  		 161.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU925870.laz
+	    New File  		 154.1 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU925885.laz
+	    New File  		 143.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU925900.laz
+	    New File  		 207.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU940870.laz
+	    New File  		 210.3 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU940885.laz
+	    New File  		 173.1 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU940900.laz
+	    New File  		 126.6 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU955870.laz
+	    New File  		 122.5 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU955885.laz
+	    New File  		 122.6 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_04\14RKU955900.laz
+	    New File  		  40.4 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8603.laz
+	    New File  		  37.5 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8604.laz
+	    New File  		  40.4 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8606.laz
+	    New File  		  41.5 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8703.laz
+	    New File  		  41.1 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8704.laz
+	    New File  		  41.3 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8706.laz
+	    New File  		  41.0 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8903.laz
+	    New File  		  41.5 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8904.laz
+	    New File  		  41.9 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_03\13RFR8906.laz
+	    New File  		 103.5 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR605670.laz
+	    New File  		 101.7 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR605685.laz
+	    New File  		 102.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR605700.laz
+	    New File  		 108.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR620670.laz
+	    New File  		 109.6 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR620685.laz
+	    New File  		 107.0 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR620700.laz
+	    New File  		  89.9 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR635670.laz
+	    New File  		  90.7 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR635685.laz
+	    New File  		  86.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\source_laz\permian\permian_02\13SGR635700.laz
+	    New File  		    9667	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\__pycache__\_build_pit_dataset.cpython-313.pyc
+	    New File  		   12595	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\__pycache__\_build_plat_road_dataset.cpython-313.pyc
+	    New File  		    6155	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\__pycache__\_build_plat_split.cpython-313.pyc
+	    New File  		    5790	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\__pycache__\_build_unified_split.cpython-313.pyc
+	    New File  		   10236	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\__pycache__\_prep_annotations.cpython-313.pyc
+	    New File  		    5161	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\__pycache__\_sanity_render.cpython-313.pyc
+	    New File  		   15567	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\drainage\__pycache__\_drainage_unet_1m.cpython-313.pyc
+	    New File  		   11503	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_build_3x3_hillshades.cpython-313.pyc
+	    New File  		    6603	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_build_contours_data_3x3.cpython-313.pyc
+	    New File  		    8880	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_build_data_3x3_derivatives.cpython-313.pyc
+	    New File  		    9599	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_build_data_3x3_partial_westernpa.cpython-313.pyc
+	    New File  		   27030	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_build_derivatives.cpython-313.pyc
+	    New File  		   22837	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_build_label_grids.cpython-313.pyc
+	    New File  		    9952	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_build_pit_review_package.cpython-313.pyc
+	    New File  		   10742	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_build_road_review_package.cpython-313.pyc
+	    New File  		   11895	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_fetch_permian_grids.cpython-313.pyc
+	    New File  		   13104	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_infer_roads_data_3x3.cpython-313.pyc
+	    New File  		    6904	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_pit_corrections_diff.cpython-313.pyc
+	    New File  		   24156	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_pit_optimize.cpython-313.pyc
+	    New File  		    9234	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_postfilter_tile_candidates.cpython-313.pyc
+	    New File  		   12244	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_predict_on_tile.cpython-313.pyc
+	    New File  		   31071	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_refine_roads_data_3x3.cpython-313.pyc
+	    New File  		    6916	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_road_corrections_diff.cpython-313.pyc
+	    New File  		   11690	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_road_methods_compare.cpython-313.pyc
+	    New File  		   38563	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_road_optimize.cpython-313.pyc
+	    New File  		    9738	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\build\__pycache__\_yolo_infer_tile.cpython-313.pyc
+	    New File  		   34971	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\multitask\__pycache__\_multitask_unet.cpython-313.pyc
+	    New File  		   16465	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\__pycache__\_pit_maskrcnn.cpython-313.pyc
+	    New File  		   11505	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\__pycache__\_pit_maskrcnn_infer.cpython-313.pyc
+	    New File  		    6439	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\__pycache__\_pit_unet_v2.cpython-313.pyc
+	    New File  		   13899	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\__pycache__\_pit_unet_v2_infer.cpython-313.pyc
+	    New File  		    4144	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\__pycache__\_pit_yolo.cpython-313.pyc
+	    New File  		    5540	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\__pycache__\_pit_yolo_infer.cpython-313.pyc
+	    New File  		    5336	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\pits\__pycache__\_stack_features.cpython-313.pyc
+	    New File  		    9985	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\__pycache__\_pad_maskrcnn.cpython-313.pyc
+	    New File  		    4153	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\__pycache__\_pad_maskrcnn_infer.cpython-313.pyc
+	    New File  		    3607	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\__pycache__\_pad_yolo.cpython-313.pyc
+	    New File  		    3812	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\__pycache__\_pad_yolo_infer.cpython-313.pyc
+	    New File  		   16122	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\plats\__pycache__\_plat_unet.cpython-313.pyc
+	    New File  		    7876	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\roads\__pycache__\_prep_road_1m.cpython-313.pyc
+	    New File  		   15046	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\roads\__pycache__\_road_unet_1m_recall.cpython-313.pyc
+	    Newer     		   11546	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\__pycache__\_build_3x3_hillshades.cpython-313.pyc
+	    Newer     		   25756	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\__pycache__\_build_derivatives.cpython-313.pyc
+	    New File  		   10785	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\__pycache__\_build_road_review_package.cpython-313.pyc
+	    New File  		   11733	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\__pycache__\_road_methods_compare.cpython-313.pyc
+	    Newer     		   95130	C:\Users\colto\Documents\GitHub\lidar_project\.git\logs\refs\remotes\origin\HEAD
+	    Newer     		    4071	C:\Users\colto\Documents\GitHub\lidar_project\.git\logs\refs\remotes\origin\pit-iter-06-dem-only
+	    New File  		  29.6 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\drainage_unet_1m\best.pt
+	    New File  		  400672	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\drainage_unet_1m\drainage_argmax.tif
+	    New File  		  64.4 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\drainage_unet_1m\drainage_prob.tif
+	    New File  		  64.5 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\drainage_unet_1m\drainage_prob_613590_1m.tif
+	    New File  		  63.9 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\drainage_unet_1m\road_prob_613590_1m.tif
+	    New File  		     460	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\drainage_unet_1m\test_metrics.json
+	    New File  		    5711	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\drainage_unet_1m\train_log.csv
+	    New File  		 212.4 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\exag3x\openness_neg_9t_05_z3.tif
+	    New File  		 211.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\exag3x\openness_pos_9t_05_z3.tif
+	    New File  		 309.0 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\exag3x\slope_9t_05_z3.tif
+	    New File  		     399	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\pit_unet_v2\pit_postproc_best.json
+	    Newer     		   16994	C:\Users\colto\Documents\GitHub\lidar_project\.venv\Lib\site-packages\pip\_internal\commands\__pycache__\list.cpython-313.pyc
+	    New File  		     410	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\604590\hillshade_az135_604590_1m.tif.aux.xml
+	    New File  		     443	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\604599\lrm_25_604599_1m.tif.aux.xml
+	    New File  		     434	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\609599\openness_neg_609599_1m.tif.aux.xml
+	    New File  		     434	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\609590\openness_neg_609590_1m.tif.aux.xml
+	    New File  		     440	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\lrm_25_613590_1m.tif.aux.xml
+	    New File  		     433	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\openness_neg_613590_1m.tif.aux.xml
+	    New File  		     434	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\openness_pos_613590_1m.tif.aux.xml
+	    New File  		   2.9 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\roads_nobridge_613590_1m.gpkg
+	    New File  		     437	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\slope_613590_1m.tif.aux.xml
+	    New File  		     443	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\609608\lrm_11_609608_1m.tif.aux.xml
+	    New File  		     439	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\618591\lrm_25_618591_1m.tif.aux.xml
+	    New File  		     437	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\622603\openness_neg_622603_1m.tif.aux.xml
+	    New File  		     433	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\622594\openness_pos_622594_1m.tif.aux.xml
+	    New File  		     441	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613603\lrm_11_613603_1m.tif.aux.xml
+	    New File  		     440	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\622599\lrm_11_622599_1m.tif.aux.xml
+	    New File  		  172032	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\review\added_roads_613590.gpkg
+	    New File  		    1449	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\review\README_EDIT.md
+	    New File  		   3.2 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\review\review_roads_613590.gpkg
+	    New File  		    3144	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\review\review_roads_613590.qml
+	    New File  		   3.2 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\review\review_roads_613590_ORIGINAL.gpkg
+	    New File  		   3.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\review\review_roads_raw_613590.gpkg
+	    New File  		    3144	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\review\review_roads_raw_613590.qml
+	    New File  		   3.8 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\review\review_roads_raw_613590_ORIGINAL.gpkg
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :      3650      3650      3612         0         0        62
+   Files :    132679       525    132154         0         0       398
+   Bytes : 138.770 g   8.242 g 130.527 g         0         0  47.926 g
+   Times :   0:06:35   0:00:41                       0:00:00   0:00:05
+
+
+   Speed :           211,697,154 Bytes/sec.
+   Speed :            12,113.408 MegaBytes/min.
+   Ended : Wednesday, June 17, 2026 10:50:13 PM
+

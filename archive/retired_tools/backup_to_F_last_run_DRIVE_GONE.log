@@ -1,0 +1,122 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Thursday, August 6, 2026 8:23:38 AM
+   Source : C:\Users\colto\Documents\GitHub\lidar_project\
+     Dest = F:\lidar_project\
+
+    Files : *.*
+	    
+  Options : *.* /FFT /NDL /S /E /DCOPY:DA /COPY:DAT /NP /XO /XJ /MT:8 /R:2 /W:5 
+
+------------------------------------------------------------------------------
+
+	  *EXTRA File 		   1.3 m	F:\lidar_project\2008 RedReliefImageMap.pdf
+	  *EXTRA File 		   3.8 m	F:\lidar_project\2022 A Recipe for Simple Red Relief.pdf
+	    New File  		       0	C:\Users\colto\Documents\GitHub\lidar_project\backup_to_E_Colton_last_run.log
+	  *EXTRA File 		    2815	F:\lidar_project\docs\barlow_data_manifest.md
+	    Newer     		       0	C:\Users\colto\Documents\GitHub\lidar_project\backup_to_F_last_run.log
+	    Newer     		    1656	C:\Users\colto\Documents\GitHub\lidar_project\.git\COMMIT_EDITMSG
+	  *EXTRA File 		   20064	F:\lidar_project\docs\articles\barlow_dissertation_explained.md
+	  *EXTRA File 		   11710	F:\lidar_project\docs\finesst\FINESST_Barlow_Expansion_Concept.pdf
+	    Newer     		    2548	C:\Users\colto\Documents\GitHub\lidar_project\.git\FETCH_HEAD
+	    Newer     		  210640	C:\Users\colto\Documents\GitHub\lidar_project\.git\index
+	    Newer     		  206169	C:\Users\colto\Documents\GitHub\lidar_project\docs\analysis_log.md
+	    Newer     		  127479	C:\Users\colto\Documents\GitHub\lidar_project\qgis\wellsight.qgz
+	  *EXTRA File 		       0	F:\lidar_project\.git\logs\refs\stash
+	    Newer     		   52633	C:\Users\colto\Documents\GitHub\lidar_project\.git\logs\HEAD
+	  *EXTRA File 		    5794	F:\lidar_project\notebooks\wellsight_v2\build\_fetch_barlow_data.py
+	    Newer     		      41	C:\Users\colto\Documents\GitHub\lidar_project\.git\refs\heads\pit-iter-06-dem-only
+	    Newer     		   9.9 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\annotations_proj.gpkg
+	  *EXTRA File 		     477	F:\lidar_project\data\derivatives\tiles\613590_05\dem_613590_05.tif.aux.xml
+	    Newer     		    7271	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\pit_inside.dbf
+	    Newer     		  547612	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\pit_inside.shp
+	    Newer     		    5340	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\pit_inside.shx
+	    Newer     		       5	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\roads.cpg
+	    Newer     		  594188	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\roads.dbf
+	    Newer     		     145	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\roads.prj
+	    Newer     		   1.6 m	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\roads.shp
+	    Newer     		   29620	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\roads.shx
+	    New File  		    1078	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\_merge_613590_roads_summary.json
+	    New File  		  630784	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\eval_9t_centroid_matching\pit_candidates_undecided_thr0p50_9t.gpkg
+	    New File  		  663552	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\eval_9t_centroid_matching\pit_candidates_undecided_thr0p50_9t_PENDING.gpkg
+	    New File  		    2117	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\eval_9t_centroid_matching\README_EDIT_pit_candidates.md
+	    New File  		     761	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\eval_9t_centroid_matching\_pit_candidates_undecided_thr0p50_9t.json
+	    New File  		    6798	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\01\6f6c1b96cc4787d58f7e71c95805b205a946c4
+	    New File  		   5.2 m	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\07\1b2a70e19a5681bb6dc4cd1cf1dfaa50098d88
+	    New File  		     304	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\0d\f9945d98fb8846f6a07946157e0477a8fc0afb
+	    New File  		     364	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\1a\0ffbe91dea64f0b9554a0b60b445b75aba375c
+	    New File  		     895	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\2c\901fb93ce56c7d99d70fbfde4cd81c26d7f358
+	    New File  		     434	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\2d\f2a485a38842a9ac80452f59cb1ea03dad303f
+	    New File  		  154388	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\38\8261119d8a4dfc1888107582a524ebb56dead2
+	    New File  		     744	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\45\3f734c60926afb7c69b69e86bf907859b2b586
+	    New File  		     422	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\52\b347b2bbbec61c8687838484c3017509e1034f
+	    New File  		     271	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\55\bd943e4f6da3ac6da1d86940589e0abc9ae35e
+	    New File  		     260	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\57\b645756b89d4fd505ee5c555991ef8cc112e3d
+	    New File  		     735	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\58\09736a675cb89f5eddea1c6475b2d16a510bc9
+	    New File  		   92908	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\5a\af9f346dce220b25203deb8b81600dcb3b0385
+	    New File  		   1.0 m	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\64\254616f3039cf00ff9232e0571c1ea178536ee
+	    New File  		    1350	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\74\a9b138c2d8abbd3bd4ce565884df9eac4f0896
+	    New File  		     138	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\87\b6c47f8034a6acdc792b92339ffcdda00f7580
+	    New File  		    1098	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\90\2188f5e8031969f459ecb2c2fc8d72f147b84e
+	    New File  		    3451	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\99\81015b722449935c541bea5c133a8f2f2480b3
+	    New File  		   16303	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\9a\e0297173aa0cd08865a0bdcc2c3c966788591a
+	    New File  		    1228	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\9b\2499541a933d1705dc238f6e61878a83405cf8
+	    New File  		     704	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\c7\f349f5e66cba64f8b3de1fea03623a0c3bd759
+	    New File  		   1.0 m	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\e3\8838ee42f20e59039c3365ff9fb56e5d726837
+	    New File  		     821	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\f7\da3fccdb9151291b5d9dd772c40a7f00c198a9
+	    Newer     		   4.7 g	C:\Users\colto\Documents\GitHub\lidar_project\.git\objects\pack\pack-ba3ea816a3ad14c3d6b51d68ce96aece2a04ec66.pack
+	  *EXTRA File 		 257.5 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\dem_oilcreek_22tile_1m.tif
+	  *EXTRA File 		  44.4 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\dist_to_water_banks_oilcreek_22tile_1m.tif
+	  *EXTRA File 		  44.9 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\dist_to_water_oilcreek_22tile_1m.tif
+	  *EXTRA File 		  44.6 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\dist_to_water_solid_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.8 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_az000_alt25_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.8 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_az090_alt25_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.8 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_az135_oilcreek_22tile_1m.tif
+	  *EXTRA File 		     413	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_az135_oilcreek_22tile_1m.tif.aux.xml
+	  *EXTRA File 		 128.8 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_az180_alt25_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.8 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_az270_alt25_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.8 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_az315_alt25_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.8 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_az315_alt70_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.8 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\hillshade_oilcreek_22tile_1m.tif
+	  *EXTRA File 		  163170	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_banks_2006_oilcreek_22tile_1m.tif
+	  *EXTRA File 		  109157	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_banks_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.7 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_count_2006_oilcreek_22tile_1m.tif
+	  *EXTRA File 		 128.7 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_count_oilcreek_22tile_1m.tif
+	  *EXTRA File 		  195726	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_mask_2006_oilcreek_22tile_1m.tif
+	  *EXTRA File 		  119510	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_mask_oilcreek_22tile_1m.tif
+	  *EXTRA File 		     411	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_mask_oilcreek_22tile_1m.tif.aux.xml
+	  *EXTRA File 		   1.0 m	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_polygons_banks_2006_oilcreek_22tile.gpkg
+	  *EXTRA File 		  512000	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_polygons_banks_oilcreek_22tile.gpkg
+	  *EXTRA File 		  147547	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_solid_2006_oilcreek_22tile_1m.tif
+	  *EXTRA File 		  108655	F:\lidar_project\data\derivatives\tiles\extras\oilcreek_22tile\water_solid_oilcreek_22tile_1m.tif
+	  *EXTRA File 		     444	F:\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\drainage_prob_613590_1m.tif.aux.xml
+	  *EXTRA File 		     442	F:\lidar_project\data\derivatives\tiles\data_3x3\westernpa_d20\613590\road_prob_613590_1m.tif.aux.xml
+	    New File  		    8077	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\annotations\_merge_review_added_roads_613590_into_roads_shp.py
+	    New File  		   17763	C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\eval\_build_undecided_pit_candidates_9t.py
+	    Newer     		      30	C:\Users\colto\Documents\GitHub\lidar_project\.git\refs\remotes\origin\HEAD
+	    Newer     		      41	C:\Users\colto\Documents\GitHub\lidar_project\.git\refs\remotes\origin\pit-iter-06-dem-only
+	    Newer     		   52449	C:\Users\colto\Documents\GitHub\lidar_project\.git\logs\refs\heads\pit-iter-06-dem-only
+	    New File  		       5	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\_backup_roads_2026-08-05\roads.cpg
+	    New File  		   28666	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\_backup_roads_2026-08-05\roads.dbf
+	    New File  		     145	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\_backup_roads_2026-08-05\roads.prj
+	    New File  		  971108	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\_backup_roads_2026-08-05\roads.shp
+	    New File  		   17700	C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\annotations\_backup_roads_2026-08-05\roads.shx
+	    Newer     		     624	C:\Users\colto\Documents\GitHub\lidar_project\.git\logs\refs\remotes\origin\HEAD
+	    Newer     		   38232	C:\Users\colto\Documents\GitHub\lidar_project\.git\logs\refs\remotes\origin\pit-iter-06-dem-only
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :      3751      3751      3750         0         0        23
+   Files :    134036        59    133977         0         0        34
+   Bytes : 132.605 g   4.809 g 127.795 g         0         0   1.647 g
+   Times :   0:00:21   0:00:05                       0:00:00   0:00:05
+
+
+   Speed :           943,818,673 Bytes/sec.
+   Speed :            54,005.738 MegaBytes/min.
+   Ended : Thursday, August 6, 2026 8:23:49 AM
+

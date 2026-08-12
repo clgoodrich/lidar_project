@@ -47,7 +47,7 @@ from _common import DERIV, DST_CRS
 
 # Reuse the road extraction primitives so drainage segments behave like road
 # segments in QGIS (same chunk length, same skeleton/prune semantics).
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "wellsight" / "build"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "build"))
 from _road_optimize import island_filter, lines_from_skel, prune_merge, skeleton
 
 REGION = DERIV / "tiles" / "data_3x3" / "westernpa_d20"
