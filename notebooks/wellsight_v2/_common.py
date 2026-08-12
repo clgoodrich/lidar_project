@@ -45,22 +45,49 @@ __all__ = [
 # reconstructed from __file__ -- a broken config must never take the pipeline
 # down.
 
+#
+# Kept in step with config/paths.toml by hand. The config wins; this is only the
+# fallback for a missing or unparseable file, so a config typo degrades to the
+# last-known-good layout instead of taking the pipeline down.
 _DEFAULTS: dict[str, str] = {
     "data": "data",
+    # 01 source -- immutable
+    "source": "data/source_laz",
     "source_laz": "data/source_laz",
+    "reference": "data/external",
     "external": "data/external",
-    "derivatives": "data/derivatives",
+    "landcover": "data/external/landcover",
+    # 02 truth -- hand-drawn, irreplaceable
+    "truth": "data/derivatives/annotations",
     "annotations": "data/derivatives/annotations",
+    "truth_grids": "label_grids",
+    "truth_history": "data/derivatives/annotations",
+    # 03 derived -- regenerable by definition
+    "derived": "data/derivatives/tiles",
+    "derivatives": "data/derivatives",
     "tiles": "data/derivatives/tiles",
     "nine_t": "data/derivatives/tiles/9t",
+    "nine_t_1m": "data/derivatives",
     "data_3x3": "data/derivatives/tiles/data_3x3",
-    "experiments": "data/derivatives/experiments",
     "label_grids": "label_grids",
+    # 04 models
+    "models": "data/derivatives/tiles/9t",
+    "pretrained": "models/pretrained",
+    "models_retired": "data/derivatives/tiles/9t/iterations",
+    # 05 results
+    "results": "data/derivatives",
+    "candidates": "data/derivatives/experiments/candidates",
+    "validation": "data/derivatives/validation",
+    # 06 experiments / 99 archive
+    "experiments": "data/derivatives/experiments",
+    "archive": "data/99_archive",
+    # repo-level
     "literature": "literature",
     "docs": "docs",
+    "ledgers": "docs/_ledgers",
+    "figures": "docs/figures",
     "qgis": "qgis",
     "tools": "tools",
-    "archive": "data/99_archive",
 }
 
 

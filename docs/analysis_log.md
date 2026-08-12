@@ -68,11 +68,70 @@ non-zero on 9 of 10** (slope 6.64°, openness_pos 4.89°, DEM 0.29 m, intensity
 59,639). Aggregate statistics agree while pixels do not — a min/max/mean check
 calls these duplicates and is wrong. Both sets move intact in Phase 4D.
 
+**Canonical 1 m stack identified.** The loose `*_9t_1m.tif` at the
+`data/derivatives/` root are canonical. All 7 channels of
+`tiles/9t/features_pit_9t_1m.tif` — the stack the models read — are byte-exact
+against them (max abs diff 0.0 on every channel) and differ from
+`tiles/9t_1m_rebuilt20260812/` on every channel. The rebuilt directory stays
+quarantined and is not consolidated into `tiles/9t_1m/`, because creating that
+name re-arms `_prep_road_1m.py`.
+
+Could not reproduce `feature_stats_1m.json`'s slope mean of 8.3177: today's
+`pit_blocks_9t.gpkg` (77 train blocks, untracked, mtime 2026-08-12 14:47) gives
+8.5156 for **both** raster sets. So the 8.3177 → 8.5156 drift the handoff
+attributes to the rebuild is at least partly a block-split change. Recorded, not
+chased. It does not affect which stack is canonical.
+
 **Separate defect found, not fixed.** `s2_labels/_prep_road_1m.py:52`,
 `s5_eval/_road_methods_compare.py:82` and `s5_eval/_road_optimize.py:69` all read
 `tiles/9t_1m/`, a dead junction into `E:\lidar_project_data_DO_NOT_DELETE`. All
 three are broken today. Which 1 m stack is canonical is a path decision for the
 `refactor-package` work.
+
+---
+
+## 2026-08-12 — Reorg Phases 4B and 4A executed on branch `reorg/phase4`
+
+**4B — 31 moves, nothing deleted.** All through `tools/apply_moves.py`, recorded
+in `docs/MOVES.csv`, reversible with `--undo`.
+
+- Repo root drops from 21 entries to 12. The nine loose files were figures,
+  scratch notes, a download manifest, a pretrained weight and a robocopy log.
+  Renamed where the name did not say what the file shows —
+  `bad roads.png` → `docs/figures/scratch/road_vectorization_bad_result_613590.png`.
+- 17 planning CSV/JSON files → `docs/_ledgers/`. Seven tool constants pointed at
+  the old locations; the **tools were repointed**, not the files moved back
+  (`find_duplicates`, `plan_archive`, `plan_consolidation`, `plan_stage_refactor`,
+  `plan_v1_archive`, `verify_paths`).
+- 6 `.gpkg-wal`/`.gpkg-shm` sidecars → `data/99_archive/superseded/qgis_sidecars/`.
+  They were tracked in git, which they should never have been.
+- `tiles/{venango,washington,mckean}_1m/` held one NLCD clip each →
+  `data/external/landcover/`. Study-area count in `tiles/` drops 19 → 16.
+
+**4A — the path layer, nothing moved.**
+
+- `docs/reference_index.csv` rebuilt: 101,608 files, 100,681 with zero
+  references. The prior index was 87% stale after the `ba7bcec` archive.
+- `config/paths.toml` gains the **full role-based vocabulary**, 31 keys, all
+  resolving. Names are final; values point at the current tree until 4D. The 4D
+  values are recorded as comments in the same file. `_common.py::_DEFAULTS`
+  mirrors it as the fallback. Every legacy name (`DERIV`, `DERIV_9T`,
+  `annotations`, `tiles`) is preserved, so all 67 importers are untouched.
+- **Gate E added**: `tools/verify_no_path_literals.py` walks the AST of every
+  live `.py` and fails on a directory literal below `ROOT`/`DERIV`/`DERIV_9T`.
+  Each hit prints the exact `path_for()` replacement. 231 sites / 226 distinct,
+  frozen as a baseline in `docs/_ledgers/path_literals_baseline.json`. Breakdown:
+  s5_eval 66, tools 50, s7_analysis 26, s3_train 23, s2_labels 16, s4_infer 15,
+  s1_build 12, s6_review 9, ui 9.
+
+**Converting those 226 sites is deliberately NOT done here.** They sit in the
+same 92 files `refactor-package` is rewriting, and editing both at once
+guarantees merge conflicts. Per decision 3, that conversion lands with the
+package refactor.
+
+**Gates after both phases:** A clean (0 unignored >100 MB). B clean (61/61 QGIS
+layers resolve). C improved, broken script constants 14 → 7, no new breakage vs
+baseline. D not re-run (no pipeline code changed). E green at baseline.
 
 ---
 

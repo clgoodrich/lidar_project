@@ -1,8 +1,31 @@
 # Project structure
 
-Reorganized **2026-06-09** (full data-tree restructure + root cleanup). The
-previous 2026-05-15 reorg is superseded by this document. See `CLAUDE.md` for the
-agent operating instructions (unchanged location at repo root).
+Reorganized **2026-06-09** (full data-tree restructure + root cleanup), then
+**2026-08-12** (Phases 0–3, then Phase 4A/4B). The previous 2026-05-15 reorg is
+superseded by this document. See `CLAUDE.md` for the agent operating
+instructions (unchanged location at repo root).
+
+## Where paths come from — read this before adding a file
+
+`config/paths.toml` is the single source of truth. It carries the **full
+role-based vocabulary** (`source`, `truth`, `derived`, `models`, `results`,
+`experiments`, `archive`, …) as of Phase 4A. The names are final; the values
+still point at the current tree because Phase 4D has not run.
+
+```python
+from _common import path_for
+path_for("truth") / "roads.shp"        # correct
+ROOT / "data" / "derivatives" / "annotations" / "roads.shp"   # Gate E failure
+```
+
+Adding a directory means adding a key here, not spelling it in a script.
+`tools/verify_no_path_literals.py` enforces it against a 226-site baseline in
+`docs/_ledgers/path_literals_baseline.json`. Those 226 are the pre-existing
+sites, frozen; new ones fail the gate.
+
+The eventual Phase 4D values are recorded as comments at the bottom of
+`paths.toml`, so the move is a value change rather than an archaeology exercise.
+Full plan: `docs/REORGANIZATION_PLAN_phase4_role_based.md`.
 
 ```
 lidar_project/
@@ -50,6 +73,9 @@ lidar_project/
 │       ├── literature/, lidar/, legacy_data/
 │
 ├── docs/
+│   ├── _ledgers/               Move ledgers + tool-run records (17 CSV/JSON,
+│   │                           moved out of docs/ 2026-08-12). MOVES.csv is the
+│   │                           master; tools/apply_moves.py --undo reverses it.
 │   ├── 01_project_scope.md .. 05_processing_pipeline.md   Documentation-first deliverables
 │   ├── HOW_IT_WORKS.md, methodology.md, development_history.md
 │   ├── analysis_log.md         Append-only running log (newest at top)

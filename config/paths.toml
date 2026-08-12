@@ -18,24 +18,62 @@
 
 # root_override = "C:/Users/colto/Documents/GitHub/lidar_project"
 
-# --- Current layout -------------------------------------------------------
+# --- Layout ----------------------------------------------------------------
 # Every value is relative to root and uses forward slashes.
+#
+# PHASE 4A, 2026-08-12. Every key below is the FULL role-based vocabulary from
+# docs/REORGANIZATION_PLAN_phase4_role_based.md section 4. The names are final.
+# The values still point at the CURRENT tree, because Phase 4D has not run yet.
+#
+# That is the whole point. New code writes path_for("truth") today and keeps
+# working after the move, because the move is a value change here and nothing
+# else. Do not add a key whose value is spelled out anywhere but this file.
 [paths]
 data          = "data"
-source_laz    = "data/source_laz"
-external      = "data/external"
-derivatives   = "data/derivatives"
-annotations   = "data/derivatives/annotations"
-tiles         = "data/derivatives/tiles"
+
+# --- 01 source: immutable. The pipeline never writes here. ------------------
+source        = "data/source_laz"
+source_laz    = "data/source_laz"                    # legacy alias for source
+reference     = "data/external"
+external      = "data/external"                      # legacy alias for reference
+landcover     = "data/external/landcover"
+
+# --- 02 truth: hand-drawn. Irreplaceable. Always tracked. -------------------
+truth         = "data/derivatives/annotations"
+annotations   = "data/derivatives/annotations"       # legacy alias for truth
+truth_grids   = "label_grids"
+truth_history = "data/derivatives/annotations"
+
+# --- 03 derived: regenerable BY DEFINITION. Delete-and-rebuild. -------------
+derived       = "data/derivatives/tiles"
+derivatives   = "data/derivatives"                   # legacy; the old catch-all
+tiles         = "data/derivatives/tiles"             # legacy alias for derived
 nine_t        = "data/derivatives/tiles/9t"
+nine_t_1m     = "data/derivatives"                   # canonical 1 m 9t stack, still loose (see note)
 data_3x3      = "data/derivatives/tiles/data_3x3"
-experiments   = "data/derivatives/experiments"
 label_grids   = "label_grids"
+
+# --- 04 models: a model is a bundle -- weights, manifest, log, prob rasters -
+models        = "data/derivatives/tiles/9t"
+pretrained    = "models/pretrained"
+models_retired = "data/derivatives/tiles/9t/iterations"
+
+# --- 05 results: what the project produces ---------------------------------
+results       = "data/derivatives"
+candidates    = "data/derivatives/experiments/candidates"
+validation    = "data/derivatives/validation"
+
+# --- 06 experiments / 99 archive -------------------------------------------
+experiments   = "data/derivatives/experiments"
+archive       = "data/99_archive"
+
+# --- repo-level ------------------------------------------------------------
 literature    = "literature"
 docs          = "docs"
+ledgers       = "docs/_ledgers"
+figures       = "docs/figures"
 qgis          = "qgis"
 tools         = "tools"
-archive       = "data/99_archive"
 
 # --- Project constants ----------------------------------------------------
 [crs]
@@ -48,11 +86,38 @@ annotation_source = "EPSG:4326"
 # Resolved with shutil.which() first; this is the fallback name only.
 pdal = "pdal"
 
-# --- Deferred: the Phase 4 role-based layout ------------------------------
-# NOT ACTIVE. Recorded here so the eventual move is a value change rather than
-# an archaeology exercise. See docs/REORGANIZATION_PLAN.md section 5.
-#   source  = "data/01_source"
-#   truth   = "data/02_truth"
-#   derived = "data/03_derived"
-#   models  = "data/04_models"
-#   results = "data/05_results"
+# --- Phase 4D: the values these keys will take ----------------------------
+# NOT ACTIVE. When Phase 4D runs, the [paths] block above becomes this, the
+# MOVES.csv ledger moves the files, and tools/rewrite_qgis_paths.py repoints the
+# QGIS projects. No script changes, because no script spells a path.
+#
+#   source        = "data/01_source/lidar"
+#   reference     = "data/01_source/reference"
+#   landcover     = "data/01_source/reference/landcover"
+#   truth         = "data/02_truth/annotations"
+#   truth_grids   = "data/02_truth/grids"
+#   truth_history = "data/02_truth/_history"
+#   derived       = "data/03_derived"
+#   nine_t        = "data/03_derived/9t/05"
+#   nine_t_1m     = "data/03_derived/9t/1m"
+#   data_3x3      = "data/03_derived/westernpa_d20"
+#   label_grids   = "data/03_derived/grids"
+#   models        = "data/04_models"
+#   pretrained    = "data/04_models/pretrained"
+#   models_retired = "data/04_models/_retired"
+#   results       = "data/05_results"
+#   candidates    = "data/05_results/candidates"
+#   experiments   = "data/06_experiments"
+
+# --- Note: nine_t_1m ------------------------------------------------------
+# The canonical 1 m 9t stack is the 11 loose *_9t_1m.tif files sitting directly
+# in data/derivatives/, which is why this key points at a directory rather than
+# a tidy stack folder. Proven canonical 2026-08-12: all 7 channels of
+# tiles/9t/features_pit_9t_1m.tif -- the stack the models read -- are byte-exact
+# against them, and differ from tiles/9t_1m_rebuilt20260812/ on all 7.
+#
+# They are NOT consolidated into tiles/9t_1m/ yet, deliberately. That directory
+# name is what _prep_road_1m.py reads, and it was removed so the script fails
+# fast instead of rewriting feature_stats_1m.json with a changed block split.
+# See docs/HANDOFF_code_cleanup_wellsight_v2.md:281. Consolidate in Phase 4D,
+# after the stats regression is resolved.
