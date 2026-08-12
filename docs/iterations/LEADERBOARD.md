@@ -40,7 +40,7 @@ and test scored once frozen. Pre-07-02 numbers selected thresholds on test itsel
 > 3. **Untuned thresholds.** Score thresholds (0.3, YOLO pit 0.05) were never
 >    selected, so detection volume was arbitrary.
 >
-> Corrected in `notebooks/wellsight_v2/eval/_reeval_instance_precision_9t.py`:
+> Corrected in `notebooks/wellsight_v2/s5_eval/_reeval_instance_precision_9t.py`:
 > predictions clipped to the scored extent, class-matched, thresholds selected on
 > **val** and test scored **once** frozen. Source of truth is
 > `data/derivatives/eval_9t_instance_precision/_reeval_9t.json`.

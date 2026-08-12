@@ -16,7 +16,7 @@ plateaued and the LRM/slope channels are weak on treads.
   2016, Batra 2019).
 
 ## What was built
-Script: `notebooks/wellsight_v2/build/_build_extra_channels.py` (reads an existing
+Script: `notebooks/wellsight_v2/s1_build/_build_extra_channels.py` (reads an existing
 tile dir, writes `<stem>_<sfx>.tif`). Channels:
 
 | channel | method | source |
@@ -59,14 +59,14 @@ model *misses* (the recall question) — next step.
 ## Reproduce
 ```
 # rebuild base (fills SE hole)
-python notebooks/wellsight_v2/build/_build_derivatives.py \
+python notebooks/wellsight_v2/s1_build/_build_derivatives.py \
   --tiles <19 D20 tiles incl 616590> --bbox 613500,4590000,618000,4594500 \
   --suffix 613590_05 --res 0.5 --crs EPSG:6346 --overwrite --dem-method delaunay
 # all extra channels
-python notebooks/wellsight_v2/build/_build_extra_channels.py \
+python notebooks/wellsight_v2/s1_build/_build_extra_channels.py \
   --dir data/derivatives/tiles/613590_05 --sfx 613590_05 --res 0.5
 # just the SavGol + top-hat additions
-python notebooks/wellsight_v2/build/_build_extra_channels.py \
+python notebooks/wellsight_v2/s1_build/_build_extra_channels.py \
   --dir data/derivatives/tiles/613590_05 --sfx 613590_05 --res 0.5 --only savgol,tophat
 ```
 
@@ -109,7 +109,7 @@ remaining lever is orientation-guided gap-linking (Ferraz 2016, Batra 2019).
 
 Artifacts: `data/derivatives/tiles/9t/road_sweep_202607/cldice_sg3/`
 (`best.pt`, `road_prob.tif`, `road_prob_613590_1m.tif`, `test_metrics.json`, `train_log.csv`).
-Reproduce: `python notebooks/wellsight_v2/roads/_road_sweep_202607.py --variant cldice_sg3`
+Reproduce: `python notebooks/wellsight_v2/s3_train/_road_sweep_202607.py --variant cldice_sg3`
 (prep via `scratchpad/prep_sg3.py`: 10-band stacks + merged stats + expanded ckpt).
 
 ## Deferred

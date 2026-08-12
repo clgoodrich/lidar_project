@@ -148,10 +148,10 @@ not architecture, not loss function, and not capacity.
 
 ## Reproduce
 
-    python notebooks/wellsight_v2/annotations/_build_plat_road_dataset.py
-    python notebooks/wellsight_v2/roads/_rebuild_labels_road_9t_1m.py
-    python notebooks/wellsight_v2/roads/_road_unet_1m_recall.py --epochs 40 --tag relabeled20260806
-    python notebooks/wellsight_v2/eval/_score_road_pred_vs_roads_shp_613590.py \
+    python notebooks/wellsight_v2/s2_labels/_build_plat_road_dataset.py
+    python notebooks/wellsight_v2/s2_labels/_rebuild_labels_road_9t_1m.py
+    python notebooks/wellsight_v2/s3_train/_road_unet_1m_recall.py --epochs 40 --tag relabeled20260806
+    python notebooks/wellsight_v2/s5_eval/_score_road_pred_vs_roads_shp_613590.py \
         --prob data/derivatives/tiles/9t/road_unet_1m_recall_relabeled20260806/road_prob_613590_1m.tif \
         --label recall_relabeled20260806
 
@@ -163,8 +163,8 @@ not architecture, not loss function, and not capacity.
   (12 models x 5 thresholds x 3 subsets)
 - `data/derivatives/eval_613590_roads/_road_score_vs_roads_shp_613590_1m.json`
 - `data/derivatives/eval_613590_roads/road_found_vs_missed_thr0p50_613590_1m.gpkg`
-- Scripts: `notebooks/wellsight_v2/eval/_score_road_pred_vs_roads_shp_613590.py`,
-  `notebooks/wellsight_v2/roads/_rebuild_labels_road_9t_1m.py`
+- Scripts: `notebooks/wellsight_v2/s5_eval/_score_road_pred_vs_roads_shp_613590.py`,
+  `notebooks/wellsight_v2/s2_labels/_rebuild_labels_road_9t_1m.py`
 
 ## Caveats
 

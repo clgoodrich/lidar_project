@@ -1,7 +1,7 @@
 """Roads Studio — engine layer.
 
 Thin wrapper over the existing road post-processing arsenal in
-``notebooks/wellsight_v2/build/_road_optimize.py``. That module already turns a
+``notebooks/wellsight_v2/s5_eval/_road_optimize.py``. That module already turns a
 road-probability raster into vector centerlines via a configurable pipeline
 (enhance -> threshold -> path-open -> skeleton -> prune -> reconnect -> island
 filter). This layer just:
@@ -27,7 +27,7 @@ import numpy as np
 import rasterio
 
 REPO = Path(__file__).resolve().parent.parent
-_BUILD = REPO / "notebooks" / "wellsight_v2" / "build"
+_BUILD = REPO / "notebooks" / "wellsight_v2" / "s5_eval"
 
 import sys
 

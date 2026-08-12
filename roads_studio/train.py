@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-DRIVER = REPO / "notebooks" / "wellsight_v2" / "roads" / "_road_sweep_202607.py"
+DRIVER = REPO / "notebooks" / "wellsight_v2" / "s3_train" / "_road_sweep_202607.py"
 SWEEP = REPO / "data" / "derivatives" / "tiles" / "9t" / "road_sweep_202607"
 RUNLOGS = Path(__file__).resolve().parent / "runs"
 RUNLOGS.mkdir(exist_ok=True)

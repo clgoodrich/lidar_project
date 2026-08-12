@@ -1,26 +1,26 @@
 path,verdict,why,imports,imported_by,executed,cited,documented,has_v2_twin
-notebooks/wellsight/_common.py,ACTIVE,R7 via notebooks/wellsight/roads/_prep_road_1m.py,0,79,0,1,0,1
+notebooks/wellsight/_common.py,ACTIVE,R7 via notebooks/wellsight/pits/_pit_unet_v2.py,0,79,0,1,0,1
 notebooks/wellsight/_compare_known_wells.py,HISTORICAL,,1,0,3,1,0,0
 notebooks/wellsight/_dl.py,ACTIVE,R7 via notebooks/wellsight/pits/_pit_unet_v2.py,0,12,0,1,0,1
-notebooks/wellsight/_instance_common.py,ORPHAN,,1,11,11,0,0,1
+notebooks/wellsight/_instance_common.py,ACTIVE,R7 via notebooks/wellsight/plats/_pad_yolo.py,1,11,11,0,0,1
 notebooks/wellsight/_rasterize_instances.py,UNREFERENCED,,2,0,0,0,0,0
 notebooks/wellsight/_unet_instance_eval.py,HISTORICAL,,2,0,1,1,0,0
 notebooks/wellsight/analysis/_chm_age_proxy.py,ORPHAN,,1,0,2,0,0,0
 notebooks/wellsight/analysis/_chm_age_proxy_v2.py,ORPHAN,,1,0,2,0,0,0
-notebooks/wellsight/annotations/_build_pit_dataset.py,HISTORICAL,,1,0,3,1,0,1
-notebooks/wellsight/annotations/_build_plat_road_dataset.py,HISTORICAL,,1,0,3,1,0,1
-notebooks/wellsight/annotations/_build_plat_split.py,ORPHAN,,1,0,2,0,0,1
-notebooks/wellsight/annotations/_build_unified_split.py,ORPHAN,,1,0,1,0,0,1
-notebooks/wellsight/annotations/_prep_annotations.py,ACTIVE,R7 via notebooks/wellsight_v2/annotations/_merge_review_added_roads_613590_into_roads_shp.py,1,0,2,1,0,1
-notebooks/wellsight/annotations/_sanity_render.py,ORPHAN,,1,0,5,0,0,1
-notebooks/wellsight/build/_build_3x3_hillshades.py,ORPHAN,,1,4,1,0,0,1
+notebooks/wellsight/annotations/_build_pit_dataset.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,3,1,0,1
+notebooks/wellsight/annotations/_build_plat_road_dataset.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,3,1,0,1
+notebooks/wellsight/annotations/_build_plat_split.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,2,0,0,1
+notebooks/wellsight/annotations/_build_unified_split.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,1,0,0,1
+notebooks/wellsight/annotations/_prep_annotations.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,2,1,0,1
+notebooks/wellsight/annotations/_sanity_render.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,5,0,0,1
+notebooks/wellsight/build/_build_3x3_hillshades.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,4,1,0,0,1
 notebooks/wellsight/build/_build_3x3_hillshades_mckean.py,ORPHAN,,1,0,1,0,0,0
 notebooks/wellsight/build/_build_chm_e1423n2238.py,ORPHAN,,1,0,1,0,0,0
 notebooks/wellsight/build/_build_chm_mckean.py,ORPHAN,,1,0,1,0,0,0
-notebooks/wellsight/build/_build_contours_data_3x3.py,SUPERSEDED,,1,0,0,1,0,1
-notebooks/wellsight/build/_build_data_3x3_derivatives.py,ORPHAN,,3,0,2,0,0,1
-notebooks/wellsight/build/_build_data_3x3_partial_westernpa.py,HISTORICAL,,3,0,1,1,0,1
-notebooks/wellsight/build/_build_derivatives.py,SUPERSEDED,,1,3,0,1,0,1
+notebooks/wellsight/build/_build_contours_data_3x3.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,0,1,0,1
+notebooks/wellsight/build/_build_data_3x3_derivatives.py,ACTIVE,R7 via tools/plan_stage_refactor.py,3,0,2,0,0,1
+notebooks/wellsight/build/_build_data_3x3_partial_westernpa.py,ACTIVE,R7 via tools/plan_stage_refactor.py,3,0,1,1,0,1
+notebooks/wellsight/build/_build_derivatives.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,3,0,1,0,1
 notebooks/wellsight/build/_build_diagnostics_9t.py,HISTORICAL,,1,0,2,1,0,0
 notebooks/wellsight/build/_build_dsm_chm_westernpa.py,ORPHAN,,2,0,1,0,0,0
 notebooks/wellsight/build/_build_hillshade_az135.py,UNREFERENCED,,1,0,0,0,0,0
@@ -28,9 +28,9 @@ notebooks/wellsight/build/_build_hillshade_variants.py,ORPHAN,,1,0,1,0,0,0
 notebooks/wellsight/build/_build_hillshades_downloadlist7.py,ORPHAN,,1,0,2,0,0,0
 notebooks/wellsight/build/_build_hydrology_9t.py,ORPHAN,,1,0,3,0,0,0
 notebooks/wellsight/build/_build_oilcreek_22tile_mosaic.py,ORPHAN,,1,0,2,0,0,0
-notebooks/wellsight/build/_build_road_review_package.py,HISTORICAL,,1,0,1,1,0,1
-notebooks/wellsight/build/_build_streams_9t.py,HISTORICAL,,1,0,2,1,0,0
-notebooks/wellsight/build/_build_streams_t10k_mckean.py,ORPHAN,,1,0,1,0,0,0
+notebooks/wellsight/build/_build_road_review_package.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,1,1,0,1
+notebooks/wellsight/build/_build_streams_9t.py,ACTIVE,R7 via notebooks/wellsight/build/_filter_streams_xsec_9t.py,1,0,2,1,0,0
+notebooks/wellsight/build/_build_streams_t10k_mckean.py,ACTIVE,R7 via notebooks/wellsight/build/_build_streams_9t.py,1,0,1,0,0,0
 notebooks/wellsight/build/_build_water_2006_oilcreek.py,ORPHAN,,1,0,1,0,0,0
 notebooks/wellsight/build/_build_water_banks_all.py,ORPHAN,,2,0,1,0,0,0
 notebooks/wellsight/build/_build_water_banks_oilcreek.py,UNREFERENCED,,1,0,0,0,0,0
@@ -39,151 +39,151 @@ notebooks/wellsight/build/_build_water_oilcreek_22tile.py,ORPHAN,,1,0,2,0,0,0
 notebooks/wellsight/build/_build_water_solid_oilcreek.py,UNREFERENCED,,1,0,0,0,0,0
 notebooks/wellsight/build/_build_water_void_density.py,UNREFERENCED,,1,0,0,0,0,0
 notebooks/wellsight/build/_clean_road_network.py,ORPHAN,,1,0,1,0,0,0
-notebooks/wellsight/build/_filter_streams_chunked_mckean.py,ORPHAN,,1,0,1,0,0,0
+notebooks/wellsight/build/_filter_streams_chunked_mckean.py,ACTIVE,R7 via notebooks/wellsight/build/_filter_streams_xsec_9t.py,1,0,1,0,0,0
 notebooks/wellsight/build/_filter_streams_roads_mckean.py,ORPHAN,,1,0,1,0,0,0
-notebooks/wellsight/build/_filter_streams_xsec_9t.py,HISTORICAL,,1,0,2,1,0,0
-notebooks/wellsight/build/_filter_streams_xsection_mckean.py,ORPHAN,,1,0,1,0,0,0
-notebooks/wellsight/build/_icp_change_map.py,HISTORICAL,,1,0,2,1,0,0
-notebooks/wellsight/build/_icp_old_vs_new.py,HISTORICAL,,1,0,1,1,0,0
-notebooks/wellsight/build/_infer_roads_data_3x3.py,HISTORICAL,,2,0,1,1,0,1
+notebooks/wellsight/build/_filter_streams_xsec_9t.py,ACTIVE,R7 via notebooks/wellsight/build/_refine_roads_data_3x3.py,1,0,2,1,0,0
+notebooks/wellsight/build/_filter_streams_xsection_mckean.py,ACTIVE,R7 via notebooks/wellsight/build/_filter_streams_xsec_9t.py,1,0,1,0,0,0
+notebooks/wellsight/build/_icp_change_map.py,ACTIVE,R7 via notebooks/wellsight_v2/s7_analysis/_icp_change_9t.py,1,0,2,1,0,0
+notebooks/wellsight/build/_icp_old_vs_new.py,ACTIVE,R7 via notebooks/wellsight_v2/s7_analysis/_icp_change_9t.py,1,0,1,1,0,0
+notebooks/wellsight/build/_infer_roads_data_3x3.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,1,1,0,1
 notebooks/wellsight/build/_make_derivatives_walkthrough_nb.py,ORPHAN,,0,0,1,0,0,0
 notebooks/wellsight/build/_make_rrim.py,UNREFERENCED,,0,0,0,1,0,0
 notebooks/wellsight/build/_make_training_walkthrough_nb.py,ORPHAN,,0,0,1,0,0,0
-notebooks/wellsight/build/_pit_optimize.py,HISTORICAL,,1,0,3,1,0,1
-notebooks/wellsight/build/_postfilter_tile_candidates.py,SUPERSEDED,,1,0,0,0,0,1
+notebooks/wellsight/build/_pit_optimize.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,3,1,0,1
+notebooks/wellsight/build/_postfilter_tile_candidates.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,0,0,0,1
 notebooks/wellsight/build/_predict_multitask_oilcreek.py,ORPHAN,,4,0,2,0,0,0
-notebooks/wellsight/build/_predict_on_mkf.py,UNREFERENCED,,2,0,0,0,0,0
-notebooks/wellsight/build/_predict_on_tile.py,SUPERSEDED,,2,0,0,0,0,1
-notebooks/wellsight/build/_refine_roads_data_3x3.py,SUPERSEDED,,1,0,0,1,0,1
-notebooks/wellsight/build/_road_corrections_diff.py,HISTORICAL,,1,0,1,1,0,1
-notebooks/wellsight/build/_road_methods_compare.py,ORPHAN,,2,0,3,0,0,1
-notebooks/wellsight/build/_road_optimize.py,ACTIVE,R7 via roads_studio/core.py,1,1,1,1,0,1
-notebooks/wellsight/build/_yolo_infer_tile.py,SUPERSEDED,,2,0,0,0,0,1
+notebooks/wellsight/build/_predict_on_mkf.py,ACTIVE,R7 via notebooks/wellsight/build/_predict_on_tile.py,2,0,0,0,0,0
+notebooks/wellsight/build/_predict_on_tile.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,0,0,0,1
+notebooks/wellsight/build/_refine_roads_data_3x3.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,0,1,0,1
+notebooks/wellsight/build/_road_corrections_diff.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,1,1,0,1
+notebooks/wellsight/build/_road_methods_compare.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,3,0,0,1
+notebooks/wellsight/build/_road_optimize.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,1,1,1,0,1
+notebooks/wellsight/build/_yolo_infer_tile.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,0,0,0,1
 notebooks/wellsight/fetch/_fetch_3dep_inventory.py,UNREFERENCED,,1,0,0,0,0,0
 notebooks/wellsight/fetch/_fetch_dense_3x3.py,UNREFERENCED,,1,0,0,0,0,0
 notebooks/wellsight/fetch/_fetch_oilcreek_contiguous_20.py,ORPHAN,,1,0,1,0,0,0
 notebooks/wellsight/fetch/_fetch_pa_laz.py,UNREFERENCED,,1,0,0,0,0,0
-notebooks/wellsight/multitask/_multitask_unet.py,HISTORICAL,,2,1,10,1,0,1
-notebooks/wellsight/pits/_pit_maskrcnn.py,HISTORICAL,,2,3,1,1,0,1
-notebooks/wellsight/pits/_pit_maskrcnn_infer.py,HISTORICAL,,3,1,2,1,0,1
-notebooks/wellsight/pits/_pit_unet_v2.py,ACTIVE,R7 via notebooks/wellsight_v2/_dl.py,2,0,6,1,0,1
-notebooks/wellsight/pits/_pit_unet_v2_infer.py,ORPHAN,,2,0,7,0,0,1
-notebooks/wellsight/pits/_pit_yolo.py,HISTORICAL,,2,0,2,1,0,1
-notebooks/wellsight/pits/_pit_yolo_infer.py,HISTORICAL,,2,0,2,1,0,1
-notebooks/wellsight/pits/_stack_features.py,ACTIVE,R7 via notebooks/wellsight_v2/_dl.py,1,0,0,0,0,1
-notebooks/wellsight/plats/_pad_maskrcnn.py,HISTORICAL,,3,0,1,1,0,1
-notebooks/wellsight/plats/_pad_maskrcnn_infer.py,HISTORICAL,,4,0,2,1,0,1
-notebooks/wellsight/plats/_pad_yolo.py,ORPHAN,,2,0,2,0,0,1
-notebooks/wellsight/plats/_pad_yolo_infer.py,ORPHAN,,2,0,2,0,0,1
-notebooks/wellsight/plats/_plat_unet.py,ACTIVE,R7 via notebooks/wellsight_v2/_dl.py,2,0,7,1,0,1
+notebooks/wellsight/multitask/_multitask_unet.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,1,10,1,0,1
+notebooks/wellsight/pits/_pit_maskrcnn.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,3,1,1,0,1
+notebooks/wellsight/pits/_pit_maskrcnn_infer.py,ACTIVE,R7 via tools/plan_stage_refactor.py,3,1,2,1,0,1
+notebooks/wellsight/pits/_pit_unet_v2.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,6,1,0,1
+notebooks/wellsight/pits/_pit_unet_v2_infer.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,7,0,0,1
+notebooks/wellsight/pits/_pit_yolo.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,2,1,0,1
+notebooks/wellsight/pits/_pit_yolo_infer.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,2,1,0,1
+notebooks/wellsight/pits/_stack_features.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,0,0,0,1
+notebooks/wellsight/plats/_pad_maskrcnn.py,ACTIVE,R7 via tools/plan_stage_refactor.py,3,0,1,1,0,1
+notebooks/wellsight/plats/_pad_maskrcnn_infer.py,ACTIVE,R7 via tools/plan_stage_refactor.py,4,0,2,1,0,1
+notebooks/wellsight/plats/_pad_yolo.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,2,0,0,1
+notebooks/wellsight/plats/_pad_yolo_infer.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,2,0,0,1
+notebooks/wellsight/plats/_plat_unet.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,7,1,0,1
 notebooks/wellsight/preprocessing/__init__.py,UNREFERENCED,,2,0,0,0,0,0
 notebooks/wellsight/preprocessing/_build_cornrow_demo_nb.py,UNREFERENCED,,0,0,0,0,0,0
 notebooks/wellsight/preprocessing/cornrow_filter.py,ACTIVE,R7 via tests/preprocessing/test_cornrow_filter.py,0,2,0,0,0,0
 notebooks/wellsight/preprocessing/dem_idw_builder.py,UNREFERENCED,,0,1,0,0,0,0
 notebooks/wellsight/roads/_build_road_multiblock_dataset.py,HISTORICAL,,1,0,3,1,0,0
-notebooks/wellsight/roads/_prep_road_1m.py,ACTIVE,R7 via tools/audit_script_usage.py,1,0,1,1,0,1
+notebooks/wellsight/roads/_prep_road_1m.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,1,1,0,1
 notebooks/wellsight/roads/_road_postfilter.py,ORPHAN,,1,0,1,0,0,0
 notebooks/wellsight/roads/_road_unet.py,ACTIVE,R7 via notebooks/wellsight_v2/_dl.py,2,0,7,0,0,0
-notebooks/wellsight/roads/_road_unet_1m.py,HISTORICAL,,2,0,8,1,0,0
-notebooks/wellsight/roads/_road_unet_1m_recall.py,HISTORICAL,,2,0,8,1,0,1
+notebooks/wellsight/roads/_road_unet_1m.py,ACTIVE,R7 via notebooks/wellsight/roads/_road_unet_1m_recall.py,2,0,8,1,0,0
+notebooks/wellsight/roads/_road_unet_1m_recall.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,8,1,0,1
 notebooks/wellsight/roads/_road_unet_multiblock.py,HISTORICAL,,2,0,6,1,0,0
-notebooks/wellsight_v2/_common.py,ACTIVE,R7 via notebooks/wellsight_v2/roads/_rebuild_labels_road_9t_1m.py,0,68,0,1,0,0
-notebooks/wellsight_v2/_dl.py,ACTIVE,R7 via notebooks/wellsight_v2/roads/_road_sweep_202607.py,0,14,0,1,0,0
+notebooks/wellsight_v2/_common.py,ACTIVE,R7 via notebooks/wellsight_v2/s5_eval/_map_cv5_unmatched_pit_thr0p50_9t.py,0,68,0,1,0,0
+notebooks/wellsight_v2/_dl.py,ACTIVE,R7 via notebooks/wellsight_v2/s3_train/_road_sweep_202607.py,0,14,0,1,0,0
 notebooks/wellsight_v2/_instance_common.py,ORPHAN,,1,9,11,0,0,0
-notebooks/wellsight_v2/analysis/_bold_vs_faint_roads.py,HISTORICAL,,1,0,3,1,0,0
-notebooks/wellsight_v2/analysis/_classify_9t_roads_bold_faint.py,HISTORICAL,,1,0,3,1,0,0
-notebooks/wellsight_v2/analysis/_export_well_age_qgis.py,ACTIVE,R3 Reproduce:,0,3,4,1,0,0
-notebooks/wellsight_v2/analysis/_pad_morphology_bins.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,5,1,0,0
-notebooks/wellsight_v2/analysis/_photo_source_locations.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,3,1,0,0
-notebooks/wellsight_v2/analysis/_road_morphology_bins.py,HISTORICAL,,1,0,3,1,0,0
-notebooks/wellsight_v2/analysis/_score_bold_faint_exemplar_segments.py,UNREFERENCED,,0,0,0,1,0,0
-notebooks/wellsight_v2/analysis/_well_age_morphology.py,ACTIVE,R2 ui/registry; R3 Reproduce:,0,0,4,1,0,0
-notebooks/wellsight_v2/analysis/_well_provenance_flags.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,4,1,0,0
-notebooks/wellsight_v2/annotations/_build_pit_dataset.py,HISTORICAL,,1,0,3,1,0,0
-notebooks/wellsight_v2/annotations/_build_plat_road_dataset.py,HISTORICAL,,1,0,3,1,0,0
-notebooks/wellsight_v2/annotations/_build_plat_split.py,ORPHAN,,1,0,2,0,0,0
-notebooks/wellsight_v2/annotations/_build_unified_split.py,ORPHAN,,1,0,1,0,0,0
-notebooks/wellsight_v2/annotations/_merge_review_added_roads_613590_into_roads_shp.py,ACTIVE,R3 Reproduce:,0,0,5,1,0,0
-notebooks/wellsight_v2/annotations/_prep_annotations.py,ACTIVE,R7 via notebooks/wellsight_v2/annotations/_merge_review_added_roads_613590_into_roads_shp.py,1,0,2,1,0,0
-notebooks/wellsight_v2/annotations/_sanity_render.py,ORPHAN,,1,0,5,0,0,0
-notebooks/wellsight_v2/build/_build_3x3_hillshades.py,ORPHAN,,1,3,1,0,0,0
-notebooks/wellsight_v2/build/_build_contours_data_3x3.py,UNREFERENCED,,1,0,0,1,0,0
-notebooks/wellsight_v2/build/_build_data_3x3_derivatives.py,ORPHAN,,3,0,2,0,0,0
-notebooks/wellsight_v2/build/_build_data_3x3_partial_westernpa.py,HISTORICAL,,3,0,1,1,0,0
-notebooks/wellsight_v2/build/_build_derivatives.py,UNREFERENCED,,1,4,0,1,0,0
-notebooks/wellsight_v2/build/_build_drainage_review_package.py,HISTORICAL,,2,0,1,1,0,0
-notebooks/wellsight_v2/build/_build_exag_derivatives.py,UNREFERENCED,,2,0,0,1,0,0
-notebooks/wellsight_v2/build/_build_extra_channels.py,UNREFERENCED,,1,0,0,1,0,0
-notebooks/wellsight_v2/build/_build_label_grids.py,HISTORICAL,,3,0,3,1,0,0
-notebooks/wellsight_v2/build/_build_pit_review_package.py,ORPHAN,,1,0,1,0,0,0
-notebooks/wellsight_v2/build/_build_road_review_package.py,HISTORICAL,,1,0,1,1,0,0
-notebooks/wellsight_v2/build/_calibrate_drainage_extraction_9t.py,HISTORICAL,,2,0,2,1,0,0
-notebooks/wellsight_v2/build/_fetch_nisar_9t.py,UNREFERENCED,,1,0,0,1,0,0
-notebooks/wellsight_v2/build/_fetch_permian_grids.py,HISTORICAL,,1,0,1,1,0,0
-notebooks/wellsight_v2/build/_icp_change_9t.py,HISTORICAL,,0,0,3,1,0,0
-notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py,HISTORICAL,,1,0,3,1,0,0
-notebooks/wellsight_v2/build/_icp_change_classify_9t.py,HISTORICAL,,0,0,4,1,0,0
-notebooks/wellsight_v2/build/_infer_roads_data_3x3.py,HISTORICAL,,2,0,1,1,0,0
-notebooks/wellsight_v2/build/_overlay_drainage_review_613590.py,UNREFERENCED,,1,0,0,1,0,0
-notebooks/wellsight_v2/build/_pit_corrections_diff.py,ORPHAN,,1,0,1,0,0,0
-notebooks/wellsight_v2/build/_pit_optimize.py,HISTORICAL,,1,0,3,1,0,0
-notebooks/wellsight_v2/build/_postfilter_tile_candidates.py,UNREFERENCED,,1,0,0,0,0,0
-notebooks/wellsight_v2/build/_predict_on_tile.py,UNREFERENCED,,2,0,0,0,0,0
-notebooks/wellsight_v2/build/_refine_roads_data_3x3.py,UNREFERENCED,,1,0,0,1,0,0
-notebooks/wellsight_v2/build/_road_corrections_diff.py,HISTORICAL,,1,0,1,1,0,0
-notebooks/wellsight_v2/build/_road_methods_compare.py,ORPHAN,,2,0,3,0,0,0
-notebooks/wellsight_v2/build/_road_optimize.py,ACTIVE,R7 via roads_studio/core.py,1,3,1,1,0,0
-notebooks/wellsight_v2/build/_yolo_infer_tile.py,UNREFERENCED,,2,0,0,0,0,0
-notebooks/wellsight_v2/drainage/_drainage_unet_1m.py,HISTORICAL,,2,0,8,1,0,0
-notebooks/wellsight_v2/eval/_build_undecided_pit_candidates_9t.py,ACTIVE,R3 Reproduce:,2,0,4,0,0,0
-notebooks/wellsight_v2/eval/_cv5_centroid_precision_pit_pad_9t.py,ACTIVE,R3 Reproduce:,2,1,3,1,0,0
-notebooks/wellsight_v2/eval/_export_pit_floor_threshold_tifs.py,HISTORICAL,,0,0,2,1,0,0
-notebooks/wellsight_v2/eval/_heldout_overlap_9t.py,ORPHAN,,0,0,3,0,0,0
-notebooks/wellsight_v2/eval/_heldout_rim_containment_9t.py,HISTORICAL,,0,0,4,1,0,0
-notebooks/wellsight_v2/eval/_map_cv5_unmatched_pit_thr0p50_9t.py,ACTIVE,R3 Reproduce:,3,0,3,1,0,0
-notebooks/wellsight_v2/eval/_match_rules_pit_pad_9t.py,ACTIVE,R3 Reproduce:,2,0,2,1,0,0
-notebooks/wellsight_v2/eval/_pad_cv5_tau_scale.py,UNREFERENCED,,1,0,0,1,0,0
-notebooks/wellsight_v2/eval/_pad_threshold_products_9t.py,ACTIVE,R7 via notebooks/wellsight_v2/eval/_road_threshold_products_9t.py,1,0,6,1,0,0
-notebooks/wellsight_v2/eval/_pit_cv5_tau_scale.py,UNREFERENCED,,1,0,0,0,0,0
-notebooks/wellsight_v2/eval/_pit_threshold_products_9t.py,ACTIVE,R7 via notebooks/wellsight_v2/eval/_road_threshold_products_9t.py,0,0,5,1,0,0
-notebooks/wellsight_v2/eval/_plot_iou_strictness_scale_9t.py,ORPHAN,,0,0,2,0,0,0
-notebooks/wellsight_v2/eval/_reeval_instance_precision_9t.py,ACTIVE,R7 via notebooks/wellsight_v2/pits/_pit_unet_cv5.py,0,0,4,1,0,0
-notebooks/wellsight_v2/eval/_road_threshold_products_9t.py,ACTIVE,R7 via notebooks/wellsight_v2/eval/_score_road_pred_vs_roads_shp_613590.py,1,0,6,1,0,0
-notebooks/wellsight_v2/eval/_score_road_pred_vs_roads_shp_613590.py,ACTIVE,R3 Reproduce:,0,0,2,1,0,0
-notebooks/wellsight_v2/eval/_style_heldout_gpkg.py,ORPHAN,,0,0,1,0,0,0
-notebooks/wellsight_v2/eval/_threshold_common.py,ACTIVE,R7 via notebooks/wellsight_v2/eval/_road_threshold_products_9t.py,0,2,0,1,0,0
-notebooks/wellsight_v2/eval/_uncounted_well_recovery_9t.py,ORPHAN,,0,0,4,0,0,0
-notebooks/wellsight_v2/multitask/_multitask_unet.py,HISTORICAL,,2,0,10,1,0,0
-notebooks/wellsight_v2/pits/_pit_maskrcnn.py,HISTORICAL,,2,3,1,1,0,0
-notebooks/wellsight_v2/pits/_pit_maskrcnn_infer.py,HISTORICAL,,3,1,2,1,0,0
-notebooks/wellsight_v2/pits/_pit_unet_cv5.py,ACTIVE,R7 via notebooks/wellsight_v2/eval/_map_cv5_unmatched_pit_thr0p50_9t.py,2,5,7,1,0,0
-notebooks/wellsight_v2/pits/_pit_unet_v2.py,ACTIVE,R7 via notebooks/wellsight_v2/_dl.py,2,0,6,1,0,0
-notebooks/wellsight_v2/pits/_pit_unet_v2_infer.py,ORPHAN,,2,0,7,0,0,0
-notebooks/wellsight_v2/pits/_pit_yolo.py,HISTORICAL,,2,0,2,1,0,0
-notebooks/wellsight_v2/pits/_pit_yolo_infer.py,HISTORICAL,,2,0,2,1,0,0
-notebooks/wellsight_v2/pits/_stack_features.py,ACTIVE,R7 via notebooks/wellsight_v2/_dl.py,1,0,0,0,0,0
-notebooks/wellsight_v2/plats/_pad_maskrcnn.py,HISTORICAL,,3,0,1,1,0,0
-notebooks/wellsight_v2/plats/_pad_maskrcnn_infer.py,HISTORICAL,,4,0,2,1,0,0
-notebooks/wellsight_v2/plats/_pad_unet_cv5.py,HISTORICAL,,2,1,7,1,0,0
-notebooks/wellsight_v2/plats/_pad_unet_infer_grid.py,HISTORICAL,,2,0,2,1,0,0
-notebooks/wellsight_v2/plats/_pad_yolo.py,ORPHAN,,2,0,2,0,0,0
-notebooks/wellsight_v2/plats/_pad_yolo_infer.py,ORPHAN,,2,0,2,0,0,0
-notebooks/wellsight_v2/plats/_plat_unet.py,ACTIVE,R7 via notebooks/wellsight_v2/_dl.py,2,0,7,1,0,0
-notebooks/wellsight_v2/roads/_build_orient_labels.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,8,1,0,0
-notebooks/wellsight_v2/roads/_build_road_corrections_613590.py,ACTIVE,R3 Reproduce:,1,0,4,1,0,0
-notebooks/wellsight_v2/roads/_compare_corrected_613590.py,ACTIVE,R3 Reproduce:,1,0,6,1,0,0
-notebooks/wellsight_v2/roads/_prep_road_1m.py,ACTIVE,R7 via tools/audit_script_usage.py,1,0,1,1,0,0
-notebooks/wellsight_v2/roads/_rebuild_labels_road_9t_1m.py,ACTIVE,R3 Reproduce:,1,0,4,1,0,0
-notebooks/wellsight_v2/roads/_road_infer.py,ACTIVE,R2 ui/registry,2,0,0,0,0,0
-notebooks/wellsight_v2/roads/_road_sweep_202607.py,ACTIVE,R2 ui/registry,3,0,28,1,0,0
-notebooks/wellsight_v2/roads/_road_sweep_aggregate.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,1,1,0,0
-notebooks/wellsight_v2/roads/_road_unet_1m_corrected.py,ACTIVE,R7 via notebooks/wellsight_v2/roads/_road_sweep_202607.py,2,1,15,1,0,0
-notebooks/wellsight_v2/roads/_road_unet_1m_recall.py,HISTORICAL,,2,0,8,1,0,0
+notebooks/wellsight_v2/s1_build/_build_3x3_hillshades.py,ACTIVE,R7 via notebooks/wellsight_v2/s2_labels/_build_label_grids.py,1,3,1,0,0,0
+notebooks/wellsight_v2/s1_build/_build_contours_data_3x3.py,UNREFERENCED,,1,0,0,1,0,0
+notebooks/wellsight_v2/s1_build/_build_data_3x3_derivatives.py,ORPHAN,,3,0,2,0,0,0
+notebooks/wellsight_v2/s1_build/_build_data_3x3_partial_westernpa.py,HISTORICAL,,3,0,1,1,0,0
+notebooks/wellsight_v2/s1_build/_build_derivatives.py,ACTIVE,R7 via notebooks/wellsight_v2/s2_labels/_build_label_grids.py,1,4,0,1,0,0
+notebooks/wellsight_v2/s1_build/_build_exag_derivatives.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,0,1,0,0
+notebooks/wellsight_v2/s1_build/_build_extra_channels.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,0,1,0,0
+notebooks/wellsight_v2/s1_build/_fetch_nisar_9t.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,0,1,0,0
+notebooks/wellsight_v2/s1_build/_fetch_permian_grids.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,1,1,0,0
+notebooks/wellsight_v2/s1_build/_stack_features.py,UNREFERENCED,,1,0,0,0,0,0
+notebooks/wellsight_v2/s2_labels/_build_label_grids.py,ACTIVE,R7 via tools/plan_stage_refactor.py,3,0,3,1,0,0
+notebooks/wellsight_v2/s2_labels/_build_orient_labels.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,8,1,0,0
+notebooks/wellsight_v2/s2_labels/_build_pit_dataset.py,HISTORICAL,,1,0,3,1,0,0
+notebooks/wellsight_v2/s2_labels/_build_plat_road_dataset.py,HISTORICAL,,1,0,3,1,0,0
+notebooks/wellsight_v2/s2_labels/_build_plat_split.py,ORPHAN,,1,0,2,0,0,0
+notebooks/wellsight_v2/s2_labels/_build_unified_split.py,ORPHAN,,1,0,1,0,0,0
+notebooks/wellsight_v2/s2_labels/_merge_review_added_roads_613590_into_roads_shp.py,ACTIVE,R3 Reproduce:,0,0,5,1,0,0
+notebooks/wellsight_v2/s2_labels/_prep_annotations.py,ACTIVE,R7 via notebooks/wellsight_v2/s2_labels/_merge_review_added_roads_613590_into_roads_shp.py,1,0,2,1,0,0
+notebooks/wellsight_v2/s2_labels/_prep_road_1m.py,HISTORICAL,,1,0,1,1,0,0
+notebooks/wellsight_v2/s2_labels/_rebuild_labels_road_9t_1m.py,ACTIVE,R3 Reproduce:,1,0,4,1,0,0
+notebooks/wellsight_v2/s2_labels/_sanity_render.py,ORPHAN,,1,0,5,0,0,0
+notebooks/wellsight_v2/s3_train/_drainage_unet_1m.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,8,1,0,0
+notebooks/wellsight_v2/s3_train/_multitask_unet.py,HISTORICAL,,2,0,10,1,0,0
+notebooks/wellsight_v2/s3_train/_pad_maskrcnn.py,HISTORICAL,,3,0,1,1,0,0
+notebooks/wellsight_v2/s3_train/_pad_unet_cv5.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,1,7,1,0,0
+notebooks/wellsight_v2/s3_train/_pad_yolo.py,ORPHAN,,2,0,2,0,0,0
+notebooks/wellsight_v2/s3_train/_pit_maskrcnn.py,HISTORICAL,,2,3,1,1,0,0
+notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py,ACTIVE,R7 via notebooks/wellsight_v2/s5_eval/_map_cv5_unmatched_pit_thr0p50_9t.py,2,5,7,1,0,0
+notebooks/wellsight_v2/s3_train/_pit_unet_v2.py,HISTORICAL,,2,0,6,1,0,0
+notebooks/wellsight_v2/s3_train/_pit_yolo.py,HISTORICAL,,2,0,2,1,0,0
+notebooks/wellsight_v2/s3_train/_plat_unet.py,HISTORICAL,,2,0,7,1,0,0
+notebooks/wellsight_v2/s3_train/_road_sweep_202607.py,ACTIVE,R2 ui/registry,3,0,28,1,0,0
+notebooks/wellsight_v2/s3_train/_road_unet_1m_corrected.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,1,15,1,0,0
+notebooks/wellsight_v2/s3_train/_road_unet_1m_recall.py,HISTORICAL,,2,0,8,1,0,0
+notebooks/wellsight_v2/s4_infer/_infer_roads_data_3x3.py,HISTORICAL,,2,0,1,1,0,0
+notebooks/wellsight_v2/s4_infer/_pad_maskrcnn_infer.py,HISTORICAL,,4,0,2,1,0,0
+notebooks/wellsight_v2/s4_infer/_pad_unet_infer_grid.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,2,1,0,0
+notebooks/wellsight_v2/s4_infer/_pad_yolo_infer.py,ORPHAN,,2,0,2,0,0,0
+notebooks/wellsight_v2/s4_infer/_pit_maskrcnn_infer.py,HISTORICAL,,3,1,2,1,0,0
+notebooks/wellsight_v2/s4_infer/_pit_unet_v2_infer.py,ORPHAN,,2,0,7,0,0,0
+notebooks/wellsight_v2/s4_infer/_pit_yolo_infer.py,HISTORICAL,,2,0,2,1,0,0
+notebooks/wellsight_v2/s4_infer/_postfilter_tile_candidates.py,UNREFERENCED,,1,0,0,0,0,0
+notebooks/wellsight_v2/s4_infer/_predict_on_tile.py,UNREFERENCED,,2,0,0,0,0,0
+notebooks/wellsight_v2/s4_infer/_refine_roads_data_3x3.py,UNREFERENCED,,1,0,0,1,0,0
+notebooks/wellsight_v2/s4_infer/_road_infer.py,ACTIVE,R2 ui/registry,2,0,0,0,0,0
+notebooks/wellsight_v2/s4_infer/_yolo_infer_tile.py,UNREFERENCED,,2,0,0,0,0,0
+notebooks/wellsight_v2/s5_eval/_build_undecided_pit_candidates_9t.py,ACTIVE,R3 Reproduce:,2,0,4,0,0,0
+notebooks/wellsight_v2/s5_eval/_compare_corrected_613590.py,ACTIVE,R3 Reproduce:,1,0,6,1,0,0
+notebooks/wellsight_v2/s5_eval/_cv5_centroid_precision_pit_pad_9t.py,ACTIVE,R3 Reproduce:,2,1,3,1,0,0
+notebooks/wellsight_v2/s5_eval/_export_pit_floor_threshold_tifs.py,HISTORICAL,,0,0,2,1,0,0
+notebooks/wellsight_v2/s5_eval/_heldout_overlap_9t.py,ORPHAN,,0,0,3,0,0,0
+notebooks/wellsight_v2/s5_eval/_heldout_rim_containment_9t.py,HISTORICAL,,0,0,4,1,0,0
+notebooks/wellsight_v2/s5_eval/_map_cv5_unmatched_pit_thr0p50_9t.py,ACTIVE,R3 Reproduce:,3,0,3,1,0,0
+notebooks/wellsight_v2/s5_eval/_match_rules_pit_pad_9t.py,ACTIVE,R3 Reproduce:,2,0,2,1,0,0
+notebooks/wellsight_v2/s5_eval/_pad_cv5_tau_scale.py,UNREFERENCED,,1,0,0,1,0,0
+notebooks/wellsight_v2/s5_eval/_pad_threshold_products_9t.py,ACTIVE,R7 via notebooks/wellsight_v2/s5_eval/_road_threshold_products_9t.py,1,0,6,1,0,0
+notebooks/wellsight_v2/s5_eval/_pit_cv5_tau_scale.py,UNREFERENCED,,1,0,0,0,0,0
+notebooks/wellsight_v2/s5_eval/_pit_optimize.py,HISTORICAL,,1,0,3,1,0,0
+notebooks/wellsight_v2/s5_eval/_pit_threshold_products_9t.py,ACTIVE,R7 via notebooks/wellsight_v2/s5_eval/_road_threshold_products_9t.py,0,0,5,1,0,0
+notebooks/wellsight_v2/s5_eval/_plot_iou_strictness_scale_9t.py,ORPHAN,,0,0,2,0,0,0
+notebooks/wellsight_v2/s5_eval/_reeval_instance_precision_9t.py,ACTIVE,R7 via notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py,0,0,4,1,0,0
+notebooks/wellsight_v2/s5_eval/_road_methods_compare.py,ORPHAN,,2,0,3,0,0,0
+notebooks/wellsight_v2/s5_eval/_road_optimize.py,ACTIVE,R7 via notebooks/wellsight_v2/s6_review/_calibrate_drainage_extraction_9t.py,1,3,1,1,0,0
+notebooks/wellsight_v2/s5_eval/_road_sweep_aggregate.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,1,1,0,0
+notebooks/wellsight_v2/s5_eval/_road_threshold_products_9t.py,ACTIVE,R7 via notebooks/wellsight_v2/s5_eval/_score_road_pred_vs_roads_shp_613590.py,1,0,6,1,0,0
+notebooks/wellsight_v2/s5_eval/_score_road_pred_vs_roads_shp_613590.py,ACTIVE,R3 Reproduce:,0,0,2,1,0,0
+notebooks/wellsight_v2/s5_eval/_style_heldout_gpkg.py,ORPHAN,,0,0,1,0,0,0
+notebooks/wellsight_v2/s5_eval/_threshold_common.py,ACTIVE,R7 via notebooks/wellsight_v2/s5_eval/_road_threshold_products_9t.py,0,2,0,1,0,0
+notebooks/wellsight_v2/s5_eval/_uncounted_well_recovery_9t.py,ORPHAN,,0,0,4,0,0,0
+notebooks/wellsight_v2/s6_review/_build_drainage_review_package.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,1,1,0,0
+notebooks/wellsight_v2/s6_review/_build_pit_review_package.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,1,0,0,0
+notebooks/wellsight_v2/s6_review/_build_road_corrections_613590.py,ACTIVE,R3 Reproduce:,1,0,4,1,0,0
+notebooks/wellsight_v2/s6_review/_build_road_review_package.py,HISTORICAL,,1,0,1,1,0,0
+notebooks/wellsight_v2/s6_review/_calibrate_drainage_extraction_9t.py,ACTIVE,R7 via tools/plan_stage_refactor.py,2,0,2,1,0,0
+notebooks/wellsight_v2/s6_review/_overlay_drainage_review_613590.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,0,1,0,0
+notebooks/wellsight_v2/s6_review/_pit_corrections_diff.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,1,0,0,0
+notebooks/wellsight_v2/s6_review/_road_corrections_diff.py,HISTORICAL,,1,0,1,1,0,0
+notebooks/wellsight_v2/s7_analysis/_bold_vs_faint_roads.py,HISTORICAL,,1,0,3,1,0,0
+notebooks/wellsight_v2/s7_analysis/_classify_9t_roads_bold_faint.py,HISTORICAL,,1,0,3,1,0,0
+notebooks/wellsight_v2/s7_analysis/_export_well_age_qgis.py,ACTIVE,R3 Reproduce:,0,3,4,1,0,0
+notebooks/wellsight_v2/s7_analysis/_icp_change_9t.py,ACTIVE,R7 via tools/plan_stage_refactor.py,0,0,3,1,0,0
+notebooks/wellsight_v2/s7_analysis/_icp_change_9t_rebuild.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,0,3,1,0,0
+notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py,ACTIVE,R7 via tools/plan_stage_refactor.py,0,0,4,1,0,0
+notebooks/wellsight_v2/s7_analysis/_pad_morphology_bins.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,5,1,0,0
+notebooks/wellsight_v2/s7_analysis/_photo_source_locations.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,3,1,0,0
+notebooks/wellsight_v2/s7_analysis/_road_morphology_bins.py,HISTORICAL,,1,0,3,1,0,0
+notebooks/wellsight_v2/s7_analysis/_score_bold_faint_exemplar_segments.py,UNREFERENCED,,0,0,0,1,0,0
+notebooks/wellsight_v2/s7_analysis/_well_age_morphology.py,ACTIVE,R2 ui/registry; R3 Reproduce:,0,0,4,1,0,0
+notebooks/wellsight_v2/s7_analysis/_well_provenance_flags.py,ACTIVE,R2 ui/registry; R3 Reproduce:,1,0,4,1,0,0
 roads_studio/__init__.py,ACTIVE,R7 via roads_studio/app.py,0,1,0,0,0,0
 roads_studio/app.py,ACTIVE,R5 streamlit,1,1,0,0,0,0
-roads_studio/core.py,ACTIVE,R7 via tools/audit_script_usage.py,0,0,0,0,0,0
+roads_studio/core.py,ACTIVE,R7 via tools/plan_stage_refactor.py,0,0,0,0,0,0
 roads_studio/main.py,ACTIVE,R1 .bat,1,0,0,0,0,0
-roads_studio/train.py,UNREFERENCED,,0,0,0,0,0,0
+roads_studio/train.py,ACTIVE,R7 via tools/plan_stage_refactor.py,0,0,0,0,0,0
 tests/__init__.py,UNREFERENCED,,0,0,0,0,0,0
 tests/conftest.py,ACTIVE,R4 pytest,0,0,0,0,0,0
 tests/preprocessing/__init__.py,UNREFERENCED,,0,0,0,0,0,0
@@ -195,6 +195,7 @@ tools/find_duplicates.py,ACTIVE,R3 Reproduce:,0,0,3,0,0,0
 tools/find_unused_scripts.py,ACTIVE,R3 Reproduce:,0,0,1,0,0,0
 tools/plan_archive.py,ACTIVE,R3 Reproduce:,0,0,2,0,0,0
 tools/plan_consolidation.py,ACTIVE,R3 Reproduce:,0,0,5,0,0,0
+tools/plan_stage_refactor.py,ACTIVE,R3 Reproduce:,0,0,4,0,0,0
 tools/rewrite_qgis_paths.py,ORPHAN,,0,0,1,0,0,0
 tools/verify_backup.py,ACTIVE,R3 Reproduce:,0,0,1,0,0,0
 tools/verify_paths.py,ACTIVE,R3 Reproduce:,0,0,2,0,0,0
@@ -203,8 +204,8 @@ ui/jobs.py,ACTIVE,R7 via ui/state.py,1,1,0,0,0,0
 ui/pages/1_Roads.py,ACTIVE,R5 streamlit,3,0,0,0,0,0
 ui/pages/2_Analysis.py,ACTIVE,R5 streamlit,3,0,0,0,0,0
 ui/pages/3_Jobs.py,ACTIVE,R5 streamlit,3,0,0,0,0,0
-ui/paths.py,ACTIVE,R7 via ui/app.py,1,4,6,0,0,0
-ui/registry.py,ACTIVE,R7 via tools/find_unused_scripts.py,1,3,1,0,0,0
-ui/state.py,ACTIVE,R7 via ui/app.py,2,3,0,0,0,0
+ui/paths.py,ACTIVE,R7 via tools/verify_paths.py,1,4,6,0,0,0
+ui/registry.py,ACTIVE,R7 via tools/plan_stage_refactor.py,1,3,1,0,0,0
+ui/state.py,ACTIVE,R7 via ui/pages/3_Jobs.py,2,3,0,0,0,0
 ui/style.py,ACTIVE,R7 via ui/pages/1_Roads.py,0,5,0,0,0,0
 ui/widgets.py,ACTIVE,R7 via ui/pages/1_Roads.py,3,3,0,0,0,0

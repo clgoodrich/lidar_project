@@ -20,7 +20,7 @@ apples-to-apples leaderboard against the current best model. The user's aim is
   Its 613590 rasters are deployed as the live block rasters
   (`.../613590/road_prob_613590_1m.tif`; champion preserved as `*_recall.tif`).
 - **Training recipe that produced it** (reuse verbatim as the sweep base):
-  `notebooks/wellsight_v2/roads/_road_unet_1m_corrected.py` — ConcatDataset of
+  `notebooks/wellsight_v2/s3_train/_road_unet_1m_corrected.py` — ConcatDataset of
   9t train patches + 613590 correction patches (28%/epoch, kept-cap 1200),
   FocalCE α=(0.10, 0.72, 0.25) γ=2.0, wd 2e-4, lr 2e-4, 15 ep, patch 256,
   batch 16, model selection on **9t val road IoU** (`score=iou[1]`).

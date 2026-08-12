@@ -1,6 +1,6 @@
 # road_morphology_bins — do 9t roads split into "big" and "faint"?
 
-**Date:** 2026-07-29 · **Script:** `notebooks/wellsight_v2/analysis/_road_morphology_bins.py`
+**Date:** 2026-07-29 · **Script:** `notebooks/wellsight_v2/s7_analysis/_road_morphology_bins.py`
 · **Outputs:** `data/derivatives/experiments/road_morphology_bins/`
 · **Related:** [[pad_morphology_bins]], [[road_unet_1m_recall]], [[road_sweep_202607]]
 
@@ -178,6 +178,6 @@ Practical consequences:
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/analysis/_road_morphology_bins.py          # k by silhouette
-python notebooks/wellsight_v2/analysis/_road_morphology_bins.py --k 3    # force k
+python notebooks/wellsight_v2/s7_analysis/_road_morphology_bins.py          # k by silhouette
+python notebooks/wellsight_v2/s7_analysis/_road_morphology_bins.py --k 3    # force k
 ```

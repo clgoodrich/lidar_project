@@ -5,7 +5,7 @@ Georeferenced layer: `data/derivatives/experiments/well_photo_locations/well_pho
 categorized by folder), `photo_sources` (10 photo locations, categorized by
 `precision`: exact / site / vicinity / area / town). Every feature carries
 `dist_9t_km` and `dist_mck_km`. Built by
-`notebooks/wellsight_v2/analysis/_photo_source_locations.py` from
+`notebooks/wellsight_v2/s7_analysis/_photo_source_locations.py` from
 `data/external/vpasec/vpasec_wells_venango.kml` (archived 2026-07-20 from the
 public VPASEC Google map).
 

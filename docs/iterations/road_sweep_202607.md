@@ -1,6 +1,6 @@
 # road_sweep_202607 — five road U-Net optimizations, ranked
 
-**Date:** 2026-07-20/21 · **Driver:** `notebooks/wellsight_v2/roads/_road_sweep_202607.py` · **Outputs:** `data/derivatives/tiles/9t/road_sweep_202607/<variant>/` · **Spec:** [[ROAD_SWEEP_HANDOFF]]
+**Date:** 2026-07-20/21 · **Driver:** `notebooks/wellsight_v2/s3_train/_road_sweep_202607.py` · **Outputs:** `data/derivatives/tiles/9t/road_sweep_202607/<variant>/` · **Spec:** [[ROAD_SWEEP_HANDOFF]]
 
 ## Goal
 
@@ -83,9 +83,9 @@ Not yet deployed — the winner gets promoted after the extraction/APLS check.
 ## Reproduce
 
 ```bash
-python -u notebooks/wellsight_v2/roads/_build_orient_labels.py     # orient prereq
+python -u notebooks/wellsight_v2/s2_labels/_build_orient_labels.py     # orient prereq
 for v in cldice alpha078 boundary res05 orient; do
-  python -u notebooks/wellsight_v2/roads/_road_sweep_202607.py --variant $v
+  python -u notebooks/wellsight_v2/s3_train/_road_sweep_202607.py --variant $v
 done
-python notebooks/wellsight_v2/roads/_road_sweep_aggregate.py
+python notebooks/wellsight_v2/s5_eval/_road_sweep_aggregate.py
 ```

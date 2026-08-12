@@ -1,6 +1,6 @@
 # road_unet_1m_corrected — active-learning correction loop closes on 613590
 
-**Date:** 2026-07-20 · **Script:** `notebooks/wellsight_v2/roads/_road_unet_1m_corrected.py` · **Model dir:** `data/derivatives/tiles/9t/road_unet_1m_corrected/`
+**Date:** 2026-07-20 · **Script:** `notebooks/wellsight_v2/s3_train/_road_unet_1m_corrected.py` · **Model dir:** `data/derivatives/tiles/9t/road_unet_1m_corrected/`
 
 ## Goal
 
@@ -115,7 +115,7 @@ the model dir is the new deployable raster.
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/roads/_build_road_corrections_613590.py
-python notebooks/wellsight_v2/roads/_road_unet_1m_corrected.py --epochs 15
-python notebooks/wellsight_v2/roads/_compare_corrected_613590.py
+python notebooks/wellsight_v2/s6_review/_build_road_corrections_613590.py
+python notebooks/wellsight_v2/s3_train/_road_unet_1m_corrected.py --epochs 15
+python notebooks/wellsight_v2/s5_eval/_compare_corrected_613590.py
 ```

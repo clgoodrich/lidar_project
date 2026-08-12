@@ -14,9 +14,17 @@ from typing import Callable
 from paths import (ANNOT, DERIV, DERIV_9T, ROOT, SWEEP, block_features,
                    list_blocks, list_road_models)
 
-RB = "notebooks/wellsight_v2/roads"
-AN = "notebooks/wellsight_v2/analysis"
-BU = "notebooks/wellsight_v2/build"
+# One constant per pipeline stage. The old per-target constants (RB=roads,
+# AN=analysis, BU=build) collapsed on 2026-08-12 when the stage refactor sent
+# scripts from a single old folder to four different stages -- `roads/` split
+# across s2_labels, s3_train, s4_infer and s5_eval. A per-target constant can no
+# longer name a directory correctly, so these are per-stage.
+S1 = "notebooks/wellsight_v2/s1_build"
+S2 = "notebooks/wellsight_v2/s2_labels"
+S3 = "notebooks/wellsight_v2/s3_train"
+S4 = "notebooks/wellsight_v2/s4_infer"
+S5 = "notebooks/wellsight_v2/s5_eval"
+S7 = "notebooks/wellsight_v2/s7_analysis"
 STATS_1M = DERIV_9T / "feature_stats_1m.json"
 UI_INFER = DERIV / "experiments" / "ui_infer"
 
@@ -100,7 +108,7 @@ def _add(t: Task):
 
 _add(Task(
     id="roads.infer", label="Run road inference on a block", group="Roads",
-    script=f"{RB}/_road_infer.py", gpu=True,
+    script=f"{S4}/_road_infer.py", gpu=True,
     inputs=[
         Inp("radio", "model", "Model", choices=lambda: list(list_road_models()),
             help="Trained road checkpoints found on disk."),
@@ -119,7 +127,7 @@ _add(Task(
 
 _add(Task(
     id="roads.sweep", label="Train a sweep variant", group="Roads",
-    script=f"{RB}/_road_sweep_202607.py", gpu=True,
+    script=f"{S3}/_road_sweep_202607.py", gpu=True,
     inputs=[
         Inp("radio", "variant", "Variant",
             choices=["cldice", "alpha078", "boundary", "orient", "res05"]),
@@ -134,19 +142,19 @@ _add(Task(
 
 _add(Task(
     id="roads.sweep.aggregate", label="Aggregate sweep leaderboard",
-    group="Roads", script=f"{RB}/_road_sweep_aggregate.py", gpu=False,
+    group="Roads", script=f"{S5}/_road_sweep_aggregate.py", gpu=False,
     inputs=[], build=lambda v: [],
     outputs=lambda v: [SWEEP / "leaderboard.md"],
     note="Reads every variant's test_metrics.json + baselines -> leaderboard."))
 
 _add(Task(
     id="roads.orient_labels", label="Build orientation labels", group="Roads",
-    script=f"{RB}/_build_orient_labels.py", gpu=False, inputs=[],
+    script=f"{S2}/_build_orient_labels.py", gpu=False, inputs=[],
     build=lambda v: [], note="Prerequisite for the orient sweep variant."))
 
 _add(Task(
     id="analysis.provenance", label="Well provenance flags (Venango+McKean)",
-    group="Analysis", script=f"{AN}/_well_provenance_flags.py", gpu=False,
+    group="Analysis", script=f"{S7}/_well_provenance_flags.py", gpu=False,
     inputs=[], build=lambda v: [],
     outputs=lambda v: [DERIV / "experiments/well_provenance/"
                        "well_provenance_venango.gpkg"],
@@ -154,7 +162,7 @@ _add(Task(
 
 _add(Task(
     id="analysis.age", label="Well age vs morphology", group="Analysis",
-    script=f"{AN}/_well_age_morphology.py", gpu=False, inputs=[],
+    script=f"{S7}/_well_age_morphology.py", gpu=False, inputs=[],
     build=lambda v: [],
     outputs=lambda v: [DERIV / "experiments/well_age_morphology/"
                        "summary_stats.json"],
@@ -162,7 +170,7 @@ _add(Task(
 
 _add(Task(
     id="analysis.padbins", label="Pad morphology bins", group="Analysis",
-    script=f"{AN}/_pad_morphology_bins.py", gpu=False,
+    script=f"{S7}/_pad_morphology_bins.py", gpu=False,
     inputs=[Inp("radio", "k", "Clusters (k)", choices=["", "2", "3"],
                 default="", help="blank = silhouette-selected k")],
     build=lambda v: (["--k", v["k"]] if v.get("k") else []),
@@ -171,7 +179,7 @@ _add(Task(
 
 _add(Task(
     id="analysis.photos", label="Well photo source locations", group="Analysis",
-    script=f"{AN}/_photo_source_locations.py", gpu=False, inputs=[],
+    script=f"{S7}/_photo_source_locations.py", gpu=False, inputs=[],
     build=lambda v: [],
     outputs=lambda v: [DERIV / "experiments/well_photo_locations/"
                        "well_photo_locations.gpkg"]))

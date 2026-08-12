@@ -1,61 +1,43 @@
-# wellsight_v2 — the clean pipeline
+# wellsight_v2 — organised by pipeline stage
 
-A curated copy of the WellSight spine: **only** the scripts needed to (1) build
-terrain derivatives from LiDAR, (2) train the models, and (3) run those models
-back over the derivatives. The original `notebooks/wellsight/` is untouched and
-still holds every experiment, one-off, and superseded version (~86 files); this
-folder is the ~38 that actually carry the project.
+Reorganised 2026-08-12. Previously grouped by target (`pits/`, `plats/`,
+`roads/`, `drainage/`), which meant every one of those folders held label-prep
+AND training AND inference scripts. Now the folders follow the flow of work.
 
-Scripts find the shared libs (`_common.py`, `_dl.py`, `_instance_common.py`) via
-a relative `parents[1]` path, so **keep the subfolder layout** — don't flatten.
+| Stage | Scripts | In → Out |
+|---|---:|---|
+| `s1_build/` | 10 | LAZ → DEM → terrain channels → feature stack |
+| `s2_labels/` | 11 | hand annotations → label rasters + train/val/test splits |
+| `s3_train/` | 13 | labels + features → `best.pt` |
+| `s4_infer/` | 12 | `best.pt` + a new area → probability rasters → candidates |
+| `s5_eval/` | 23 | predictions vs held-out truth → scores |
+| `s6_review/` | 8 | review packages → human corrections → **back into s2** |
+| `s7_analysis/` | 12 | morphology, change detection, science outputs |
+| *(root)* | 3 | `_common.py`, `_dl.py`, `_instance_common.py` |
 
-## Shared libraries (root)
-- `_common.py` — paths, CRS, PDAL helper (`run_pdal`), raster I/O.
-- `_dl.py` — the deep-learning engine: `UNet`, `FocalCE`, patch sampler,
-  training loop, `predict_full_tile`. Every U-Net trainer imports this.
-- `_instance_common.py` — shared data helpers for the instance models (YOLO / Mask R-CNN).
+It is not a straight line: **s6 feeds back into s2**. That loop is the
+active-learning cycle, and it is why `roads.shp` keeps growing.
 
-## Stage 1 — Build derivatives (LiDAR → input channels + labels)
-- `build/_build_3x3_hillshades.py` — LAZ tiles → 1 m DEM + hillshade per 3×3 block.
-- `build/_build_derivatives.py` — the workhorse: DEM → full channel stack
-  (lrm_25, lrm_5, slope, tpi, openness ±, roughness).
-- `build/_build_data_3x3_derivatives.py` — runs the above over full 3×3 blocks.
-- `build/_build_data_3x3_partial_westernpa.py` — same, but covers EVERY block
-  (including partial edge blocks). Current region builder.
-- `build/_build_contours_data_3x3.py` — per-block contour lines (optional product).
-- `pits/_stack_features.py` — stack channels → `features_*.tif` (0.5 m) + stats.
-- `roads/_prep_road_1m.py` — same at 1 m (roughness_5) + buffers roads → label raster.
-- `annotations/` — turn hand-drawn shapefiles into training labels/splits:
-  `_prep_annotations`, `_build_pit_dataset`, `_build_plat_road_dataset`,
-  `_build_plat_split`, `_build_unified_split`, `_sanity_render`.
+## Two places the stages blur
 
-## Stage 2 — Train the models (features + labels → best.pt)
-- `roads/_road_unet_1m_recall.py` — the active road model (3-class bg/road/drainage, α0.72).
-- `pits/_pit_unet_v2.py`, `pits/_pit_maskrcnn.py`, `pits/_pit_yolo.py` — pit models.
-- `plats/_plat_unet.py`, `plats/_pad_maskrcnn.py`, `plats/_pad_yolo.py` — plat/pad models.
-- `multitask/_multitask_unet.py` — pit + road + plat in one network.
+**`s1_build/_build_derivatives.py` does LAZ→DEM *and* DEM→channels in one pass.**
+PDAL merges the tiles, `writers.gdal` IDW makes the DEM, and openness / LRM / TPI
+/ slope come off that DEM before it exits. Splitting it is a code change, not a
+move.
 
-## Stage 3 — Inference + post-processing
-- `build/_infer_roads_data_3x3.py` — slide the road model over a block → `road_prob.tif`.
-- `build/_refine_roads_data_3x3.py` — region-level road refinement.
-- `build/_road_optimize.py` — turn the road probability heatmap into clean
-  vector lines (threshold → skeleton → vectorize → clean). `--apply` on any block.
-- `build/_predict_on_tile.py` — generic U-Net inference (pit / plat / road).
-- `build/_yolo_infer_tile.py`, `pits/_pit_*_infer.py`, `plats/_pad_*_infer.py` —
-  instance-model inference.
-- `build/_postfilter_tile_candidates.py` — filter raw candidate detections.
+**Several `s3_train/` scripts also run inference at the end.** `_pit_unet_cv5.py`,
+`_pad_unet_cv5.py` and `_road_unet_1m_recall.py` train, then predict on a tile.
+They live in `s3_train/` because training is their purpose; the inference tail is
+a convenience, not a second entry point.
 
-### Road active-learning loop (current focus)
-1. `build/_build_road_review_package.py` — chop predicted roads into ~40 m
-   segments with a `status` field → editable QGIS package.
-2. *(human edits in QGIS: flag bad segments `reject`, draw missed roads.)*
-3. `build/_road_corrections_diff.py` — diff edited vs. original → keep/reject/added
-   labels to retrain on.
-- `build/_road_methods_compare.py` — bake-off of competing extraction algorithms.
+## Why the move was safe
 
-## What was intentionally left out
-Superseded road models (`_road_unet`, `_road_unet_1m`, `_road_unet_multiblock`,
-`_road_postfilter`, `_clean_road_network`), the rejected multi-block dataset, and
-all one-off exploratory branches (water/streams, ICP change-maps, CHM age-proxy,
-hillshade variants, cornrow filter, notebook builders, area-specific predictors,
-and the `fetch/` download scripts). They remain in `notebooks/wellsight/`.
+Every script stayed at the same depth — `wellsight_v2/<stage>/<file>.py` — so all
+167 `sys.path.insert(0, Path(__file__).resolve().parents[N])` calls resolve
+exactly as before. Only 17 places named a directory literally, and each was
+repointed by resolving *what it imports*, not by string substitution. Verified
+after: 122 scripts compile, 117 intra-project imports resolve, 0 of 61 QGIS
+layers broken.
+
+Paths come from `config/paths.toml` via `_common.py`. Prefer
+`path_for("annotations")` over hand-assembling `ROOT / "data" / ...`.

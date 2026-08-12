@@ -1,7 +1,7 @@
 # pit U-Net, 5-fold cross-validation on 9t
 
 **Date:** 2026-07-27
-**Script:** `notebooks/wellsight_v2/pits/_pit_unet_cv5.py`
+**Script:** `notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py`
 **Outputs:** `data/derivatives/tiles/9t/pit_unet_cv5/`
 
 ## Goal
@@ -210,9 +210,9 @@ Run log: `data/derivatives/tiles/9t/_pit_cv5_rescore.log`, fold 4 in
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/pits/_pit_unet_cv5.py --folds 5 --epochs 40
+python notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py --folds 5 --epochs 40
 # one fold only, reusing finished checkpoints and rasters:
-python notebooks/wellsight_v2/pits/_pit_unet_cv5.py --folds 5 --only-folds 4
+python notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py --folds 5 --only-folds 4
 ```
 
 Existing checkpoints and probability rasters are reused as-is. Delete a fold

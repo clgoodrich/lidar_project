@@ -1,6 +1,6 @@
 # well_age_morphology — does pad/pit geometry encode drilling era?
 
-**Date:** 2026-07-19 · **Script:** `notebooks/wellsight_v2/analysis/_well_age_morphology.py` · **Outputs:** `data/derivatives/experiments/well_age_morphology/`
+**Date:** 2026-07-19 · **Script:** `notebooks/wellsight_v2/s7_analysis/_well_age_morphology.py` · **Outputs:** `data/derivatives/experiments/well_age_morphology/`
 
 ## Goal
 
@@ -90,7 +90,7 @@ overlaps the annotated area.
 `data/derivatives/experiments/well_age_morphology/well_age_morphology.gpkg`
 (EPSG:6346, default styles embedded in `layer_styles` — drag into QGIS and it
 renders colored). Built by
-`notebooks/wellsight_v2/analysis/_export_well_age_qgis.py`. Layers:
+`notebooks/wellsight_v2/s7_analysis/_export_well_age_qgis.py`. Layers:
 
 - `wells_annotated_area` — 1,176 catalog wells near annotations, colored by
   era (orange 1956–79, green 1980–99, blue 2000+, red historic-undated,
@@ -106,6 +106,6 @@ Static preview: `fig_map_context.png` (county overview + 9t era map).
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/analysis/_well_age_morphology.py
-python notebooks/wellsight_v2/analysis/_export_well_age_qgis.py
+python notebooks/wellsight_v2/s7_analysis/_well_age_morphology.py
+python notebooks/wellsight_v2/s7_analysis/_export_well_age_qgis.py
 ```

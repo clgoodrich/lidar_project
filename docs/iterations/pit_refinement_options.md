@@ -13,7 +13,7 @@ unit of work. It is the pit-side analogue of what clDice did for roads.
 
 ## What the pit model does today
 
-Read from `notebooks/wellsight_v2/pits/_pit_unet_v2.py` and
+Read from `notebooks/wellsight_v2/s3_train/_pit_unet_v2.py` and
 `notebooks/wellsight_v2/_dl.py` on 2026-07-27.
 
 | Setting | Value |
@@ -176,7 +176,7 @@ redundancy before we spend a training run on it. Correlate it against
 
 Steps 1 through 4 need no retraining and can be measured on the existing
 checkpoint against the 127 held-out rims. That harness already exists in
-`notebooks/wellsight_v2/eval/_heldout_rim_containment_9t.py`, so each of these
+`notebooks/wellsight_v2/s5_eval/_heldout_rim_containment_9t.py`, so each of these
 gets scored the same way and stays comparable.
 
 Do 1 first. It is an hour, and it decides whether the fragmentation is an

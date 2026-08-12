@@ -1,7 +1,7 @@
 # Iteration: `_pit_optimize.py` — pit candidate extraction (road pattern → pits)
 
 **Date:** 2026-06-16 (re-run 2026-07-02 with val-based selection)
-**Script:** `notebooks/wellsight_v2/build/_pit_optimize.py`
+**Script:** `notebooks/wellsight_v2/s5_eval/_pit_optimize.py`
 **Status:** working end-to-end on 9t; precision low (expected) → feeds active-learning loop
 
 ## Goal
@@ -65,10 +65,10 @@ become hard negatives → retrain. The `--apply` confidence gate
 ## Reproduce
 ```bash
 # optimize on 9t (writes pit_postproc_best.json; ~5 min, loads the 240 MB floor prob)
-python notebooks/wellsight_v2/build/_pit_optimize.py
+python notebooks/wellsight_v2/s5_eval/_pit_optimize.py
 
 # apply to a block's floor prob -> pits_opt_<key>_1m.gpkg (pits_all / pits_clean / pit_points)
-python notebooks/wellsight_v2/build/_pit_optimize.py \
+python notebooks/wellsight_v2/s5_eval/_pit_optimize.py \
     --apply-block data/derivatives/tiles/data_3x3/westernpa_d20/613590 \
     --apply-key 613590 --prob <pit_prob_floor.tif> --wells output_wells.csv
 ```

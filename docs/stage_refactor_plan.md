@@ -19,5 +19,5 @@ Reorganizes `notebooks/wellsight_v2/` by pipeline stage. Depth is unchanged, so 
 
 One old directory fans out to several stages, so a single sys.path insert may need to become two:
 
-- `notebooks/wellsight_v2/plats/_pad_maskrcnn_infer.py` — MANUAL: fans out to s3_train,s4_infer
+- `notebooks/wellsight_v2/s4_infer/_pad_maskrcnn_infer.py` — MANUAL: fans out to s3_train,s4_infer
 

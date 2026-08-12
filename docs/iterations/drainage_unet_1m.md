@@ -1,7 +1,7 @@
 # Iteration: `_drainage_unet_1m.py` — drainage-focused U-Net (road model, flipped)
 
 **Date:** 2026-06-16
-**Script:** `notebooks/wellsight_v2/drainage/_drainage_unet_1m.py`
+**Script:** `notebooks/wellsight_v2/s3_train/_drainage_unet_1m.py`
 **Output:** `data/derivatives/tiles/9t/drainage_unet_1m/`
 **Status:** trained, validated — clean drainage/road separation
 
@@ -46,9 +46,9 @@ because drainage lines are narrower/less buffered, not because of confusion.
 
 ## Reproduce
 ```bash
-python notebooks/wellsight_v2/drainage/_drainage_unet_1m.py --epochs 40
+python notebooks/wellsight_v2/s3_train/_drainage_unet_1m.py --epochs 40
 # eval only (uses best.pt):
-python notebooks/wellsight_v2/drainage/_drainage_unet_1m.py --eval-only
+python notebooks/wellsight_v2/s3_train/_drainage_unet_1m.py --eval-only
 ```
 
 ## Next

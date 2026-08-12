@@ -97,7 +97,7 @@ old models tended to leave gaps in real roads.
 
 ## In the code: exactly what each variant changes
 
-Everything below is in `notebooks/wellsight_v2/roads/_road_sweep_202607.py`
+Everything below is in `notebooks/wellsight_v2/s3_train/_road_sweep_202607.py`
 unless noted. The point of the sweep is that **only one thing moves per
 variant** — so here is the single dispatch point and then the one delta each
 variant makes.
@@ -170,7 +170,7 @@ blob. Knob: `edge_w`.
   downstream `predict_full_tile` is unchanged.
 - Labels: `OrientSampler` reads a **third** raster — per-pixel road-direction
   bins (`N_ORI=8` bins over 0–180°) built offline by
-  `notebooks/wellsight_v2/roads/_build_orient_labels.py`.
+  `notebooks/wellsight_v2/s2_labels/_build_orient_labels.py`.
 - Loss: the train loop adds `ori_w * CrossEntropyLoss(orient_logits, ori_target)`
   to the segmentation loss. Predicting direction is a known trick for keeping
   roads continuous. Because of the extra head it trains from `scratch`. Knob:
@@ -209,13 +209,13 @@ footing, not luck. The winner earns a deeper look — and possibly the full-deta
 
 ## Reproduce / where things live
 
-- Driver: `notebooks/wellsight_v2/roads/_road_sweep_202607.py`
+- Driver: `notebooks/wellsight_v2/s3_train/_road_sweep_202607.py`
   - Built-in preset: `... --variant cldice [--epochs N]`
   - Custom (Model Lab): `... --config runs/<name>.config.json`
 - Outputs: `data/derivatives/tiles/9t/road_sweep_202607/<variant>/`
   (`best.pt`, `road_prob.tif`, `road_prob_613590_1m.tif`,
   `drainage_prob_613590_1m.tif`, `train_log.csv`, `test_metrics.json`)
-- Orientation-label prereq: `notebooks/wellsight_v2/roads/_build_orient_labels.py`
+- Orientation-label prereq: `notebooks/wellsight_v2/s2_labels/_build_orient_labels.py`
 - Leaderboard: `docs/iterations/road_sweep_202607.md` (aggregated by
   `_road_sweep_aggregate.py`)
 - Interactive front-end: Roads Studio → **Model Lab** tab

@@ -1,0 +1,2 @@
+old_path,new_path,phase,reason
+notebooks/wellsight_v2/plats/train_run_v4.log,notebooks/wellsight_v2/s3_train/train_run_v4.log,stage_refactor,"orphan training log left behind when plats/ emptied"

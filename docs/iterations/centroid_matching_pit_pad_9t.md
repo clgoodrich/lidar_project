@@ -106,7 +106,7 @@ a corrected measurement, not an improvement.
 
 ## 4. Pit retrain
 
-`python notebooks/wellsight_v2/pits/_pit_unet_cv5.py --folds 5 --epochs 40`
+`python notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py --folds 5 --epochs 40`
 — 54.8 min, GTX 1070 Ti. Fold checkpoints and probability rasters were deleted
 first; the script reuses them when present and would otherwise have silently
 returned the old models.
@@ -135,7 +135,7 @@ Backup of the June-10 state: `data/derivatives/tiles/9t/_backup_pit_ann426_2026-
 
 ## 5. Matching-rule ablation
 
-Script: `notebooks/wellsight_v2/eval/_match_rules_pit_pad_9t.py`.
+Script: `notebooks/wellsight_v2/s5_eval/_match_rules_pit_pad_9t.py`.
 Three rules were proposed by the user and tested cumulatively.
 
 **PIT** (retrained models)
@@ -291,12 +291,12 @@ Retrained models: `data/derivatives/tiles/9t/pit_unet_cv5/`, log
 ## Reproduce
 
 ```
-python notebooks/wellsight_v2/annotations/_prep_annotations.py
-python notebooks/wellsight_v2/annotations/_build_pit_dataset.py
-python notebooks/wellsight_v2/pits/_pit_unet_cv5.py --folds 5 --epochs 40
-python notebooks/wellsight_v2/eval/_cv5_centroid_precision_pit_pad_9t.py
-python notebooks/wellsight_v2/eval/_match_rules_pit_pad_9t.py --n-sd 3.0
-python notebooks/wellsight_v2/eval/_map_cv5_unmatched_pit_thr0p50_9t.py
+python notebooks/wellsight_v2/s2_labels/_prep_annotations.py
+python notebooks/wellsight_v2/s2_labels/_build_pit_dataset.py
+python notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py --folds 5 --epochs 40
+python notebooks/wellsight_v2/s5_eval/_cv5_centroid_precision_pit_pad_9t.py
+python notebooks/wellsight_v2/s5_eval/_match_rules_pit_pad_9t.py --n-sd 3.0
+python notebooks/wellsight_v2/s5_eval/_map_cv5_unmatched_pit_thr0p50_9t.py
 ```
 
 `_pit_unet_cv5.py` reuses any existing `fold*/best.pt` and probability raster.

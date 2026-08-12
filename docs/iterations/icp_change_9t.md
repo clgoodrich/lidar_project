@@ -25,7 +25,7 @@ This pass **did not re-run ICP**. It clipped the existing DoD to 9t, ran the
 quality checks that decide whether the surface is usable, and wrote the products.
 
 ## What was built
-Script: `notebooks/wellsight_v2/build/_icp_change_9t.py`.
+Script: `notebooks/wellsight_v2/s7_analysis/_icp_change_9t.py`.
 Outputs in `data/derivatives/experiments/icp/change_9t/`:
 
 | file | content |
@@ -126,7 +126,7 @@ geomorphic and land-use change, not well signatures.
 
 ## Reproduce
 ```
-python notebooks/wellsight_v2/build/_icp_change_9t.py
+python notebooks/wellsight_v2/s7_analysis/_icp_change_9t.py
 ```
 Prerequisite artifacts (already on disk, built 2026-05-21):
 `data/derivatives/experiments/icp/change_map/dem_diff_2m.tif` and
@@ -143,7 +143,7 @@ and would mislead anyone reading it directly.
 
 # Part 2 — Where the non-erosional change actually is (2026-07-26)
 
-Script: `notebooks/wellsight_v2/build/_icp_change_classify_9t.py`.
+Script: `notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py`.
 
 ## Removing the artifacts, in three stages
 
@@ -275,8 +275,8 @@ Two caveats that limit how hard these can be pushed:
 
 ## Reproduce
 ```
-python notebooks/wellsight_v2/build/_icp_change_9t.py           # Part 1
-python notebooks/wellsight_v2/build/_icp_change_classify_9t.py  # Part 2
+python notebooks/wellsight_v2/s7_analysis/_icp_change_9t.py           # Part 1
+python notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py  # Part 2
 ```
 
 ## Deferred
@@ -291,7 +291,7 @@ See `BACKLOG.md` → "ICP / change detection".
 
 # Part 3 — Rebuilt with ONE ICP solve (2026-07-31)
 
-Script: `notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py`.
+Script: `notebooks/wellsight_v2/s7_analysis/_icp_change_9t_rebuild.py`.
 
 Triggered by a simple observation: `dod_9t_2m.tif` does not look like 9t. The
 location was right, but two defects were found and both are fixed here.
@@ -448,8 +448,8 @@ should not be used for analysis.
 
 ## Reproduce
 ```
-python notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py
-python notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py --reuse-icp
+python notebooks/wellsight_v2/s7_analysis/_icp_change_9t_rebuild.py
+python notebooks/wellsight_v2/s7_analysis/_icp_change_9t_rebuild.py --reuse-icp
 ```
 QC scripts (scratchpad, not repo-tracked): `_qc_icp_rebuild_9t.py`,
 `_test_wells_signal_9t.py`, `_test_wells_resolution_artifact.py`,

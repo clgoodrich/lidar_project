@@ -75,7 +75,7 @@ STALLED (amber), notify.
 
 ```python
 TASKS["roads.sweep"] = Task(
-  script="notebooks/wellsight_v2/roads/_road_sweep_202607.py",
+  script="notebooks/wellsight_v2/s3_train/_road_sweep_202607.py",
   gpu=True,
   inputs=[Radio("variant", [...]), Int("epochs"), Flag("eval_only")],
   requires=[F1, L1, CORR_LABELS],

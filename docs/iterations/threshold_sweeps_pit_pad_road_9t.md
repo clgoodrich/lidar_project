@@ -2,10 +2,10 @@
 
 **Date:** 2026-07-27
 **Scripts:**
-`notebooks/wellsight_v2/eval/_pit_threshold_products_9t.py`
-`notebooks/wellsight_v2/eval/_pad_threshold_products_9t.py`
-`notebooks/wellsight_v2/eval/_road_threshold_products_9t.py`
-Shared helpers in `notebooks/wellsight_v2/eval/_threshold_common.py`.
+`notebooks/wellsight_v2/s5_eval/_pit_threshold_products_9t.py`
+`notebooks/wellsight_v2/s5_eval/_pad_threshold_products_9t.py`
+`notebooks/wellsight_v2/s5_eval/_road_threshold_products_9t.py`
+Shared helpers in `notebooks/wellsight_v2/s5_eval/_threshold_common.py`.
 
 ## Goal
 
@@ -202,9 +202,9 @@ the full set is always in the GeoPackage.
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/eval/_pit_threshold_products_9t.py
-python notebooks/wellsight_v2/eval/_pad_threshold_products_9t.py
-python notebooks/wellsight_v2/eval/_road_threshold_products_9t.py
+python notebooks/wellsight_v2/s5_eval/_pit_threshold_products_9t.py
+python notebooks/wellsight_v2/s5_eval/_pad_threshold_products_9t.py
+python notebooks/wellsight_v2/s5_eval/_road_threshold_products_9t.py
 ```
 
 ## Follow-ups added to BACKLOG

@@ -18,7 +18,7 @@ Opens at <http://127.0.0.1:8095/>. Close the console window to stop.
 ## What the knobs do
 
 The engine is the existing pipeline in
-`notebooks/wellsight_v2/build/_road_optimize.py`
+`notebooks/wellsight_v2/s5_eval/_road_optimize.py`
 (`enhance -> threshold -> path-open -> skeleton -> prune -> reconnect -> island`).
 
 | Knob | Effect |

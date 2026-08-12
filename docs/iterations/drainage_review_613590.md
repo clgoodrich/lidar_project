@@ -1,9 +1,9 @@
 # drainage_review_613590 — 9t drainage model, vectorized to review layers on 613590
 
 **Date:** 2026-07-29
-· **Builder:** `notebooks/wellsight_v2/build/_build_drainage_review_package.py`
-· **Calibration:** `notebooks/wellsight_v2/build/_calibrate_drainage_extraction_9t.py`
-· **QC render:** `notebooks/wellsight_v2/build/_overlay_drainage_review_613590.py`
+· **Builder:** `notebooks/wellsight_v2/s6_review/_build_drainage_review_package.py`
+· **Calibration:** `notebooks/wellsight_v2/s6_review/_calibrate_drainage_extraction_9t.py`
+· **QC render:** `notebooks/wellsight_v2/s6_review/_overlay_drainage_review_613590.py`
 · **Outputs:** `data/derivatives/tiles/data_3x3/westernpa_d20/613590/review_drainage/`
 · **Related:** [[drainage_unet_1m]], [[road_unet_1m_corrected]], [[road_sweep_202607]]
 
@@ -120,10 +120,10 @@ reviewing it.
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/build/_calibrate_drainage_extraction_9t.py
-python notebooks/wellsight_v2/build/_build_drainage_review_package.py \
+python notebooks/wellsight_v2/s6_review/_calibrate_drainage_extraction_9t.py
+python notebooks/wellsight_v2/s6_review/_build_drainage_review_package.py \
     --key 613590 --no-rejects \
     --drain-prob data/derivatives/tiles/9t/drainage_unet_1m/drainage_prob_613590_1m.tif \
     --gt data/derivatives/annotations/annotations_proj.gpkg
-python notebooks/wellsight_v2/build/_overlay_drainage_review_613590.py
+python notebooks/wellsight_v2/s6_review/_overlay_drainage_review_613590.py
 ```

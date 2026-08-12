@@ -44,7 +44,7 @@ The good news is that the code is far less path-coupled than the file tree sugge
 **Exactly two Python files hardcode an absolute path**, out of 92 live scripts:
 
 * `notebooks/wellsight_v2/_common.py:38` — `ROOT = C:\Users\colto\Documents\GitHub\lidar_project`. This is the intended anchor.
-* `notebooks/wellsight_v2/build/_icp_change_9t_rebuild.py:79` — `OLD_DIR = F:\lidar_project\consolidated\lidar_all`. **This one is already broken.** F: is no longer mounted, so that script cannot run today.
+* `notebooks/wellsight_v2/s7_analysis/_icp_change_9t_rebuild.py:79` — `OLD_DIR = F:\lidar_project\consolidated\lidar_all`. **This one is already broken.** F: is no longer mounted, so that script cannot run today.
 
 Everything else derives from `_common`. That is what makes a restructure safe.
 

@@ -1,7 +1,7 @@
 # pad U-Net, 5-fold cross-validation on 9t
 
 **Date:** 2026-07-28
-**Script:** `notebooks/wellsight_v2/plats/_pad_unet_cv5.py`
+**Script:** `notebooks/wellsight_v2/s3_train/_pad_unet_cv5.py`
 **Outputs:** `data/derivatives/tiles/9t/pad_unet_cv5/`
 **Companion to:** [[pit_unet_cv5_9t]]
 
@@ -62,7 +62,7 @@ Per fold, F1-selected:
 
 Each fold keeps the threshold already selected on its own inner val split, held
 fixed across every row. Computed by
-`notebooks/wellsight_v2/eval/_pad_cv5_tau_scale.py`.
+`notebooks/wellsight_v2/s5_eval/_pad_cv5_tau_scale.py`.
 
 | IoU required | pad R (F1-sel) | pad P (F1-sel) | pad R (F2-sel) | pad P (F2-sel) |
 |---|---|---|---|---|
@@ -152,8 +152,8 @@ Total 88.9 min for folds 2–4, roughly 30 min per fold at patch 384.
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/plats/_pad_unet_cv5.py --folds 5 --epochs 40
-python notebooks/wellsight_v2/eval/_pad_cv5_tau_scale.py
+python notebooks/wellsight_v2/s3_train/_pad_unet_cv5.py --folds 5 --epochs 40
+python notebooks/wellsight_v2/s5_eval/_pad_cv5_tau_scale.py
 ```
 
 Finished checkpoints and probability rasters are reused. Delete a fold directory

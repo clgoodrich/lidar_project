@@ -1,6 +1,6 @@
 # pad_morphology_bins — unsupervised pad archetypes (9t + McKean)
 
-**Date:** 2026-07-19 · **Script:** `notebooks/wellsight_v2/analysis/_pad_morphology_bins.py` · **Outputs:** `data/derivatives/experiments/pad_morphology_bins/`
+**Date:** 2026-07-19 · **Script:** `notebooks/wellsight_v2/s7_analysis/_pad_morphology_bins.py` · **Outputs:** `data/derivatives/experiments/pad_morphology_bins/`
 
 > **v2 (same day):** script is now region-aware (joint 9t + McKean run, broad-k
 > support). The v1 9t-only sections below still describe the k=4 run; the joint
@@ -123,7 +123,7 @@ feature cache `pad_features_joint.csv`.
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/analysis/_pad_morphology_bins.py --k 2   # broad
-python notebooks/wellsight_v2/analysis/_pad_morphology_bins.py --k 3
-python notebooks/wellsight_v2/analysis/_pad_morphology_bins.py         # silhouette k
+python notebooks/wellsight_v2/s7_analysis/_pad_morphology_bins.py --k 2   # broad
+python notebooks/wellsight_v2/s7_analysis/_pad_morphology_bins.py --k 3
+python notebooks/wellsight_v2/s7_analysis/_pad_morphology_bins.py         # silhouette k
 ```
