@@ -42,21 +42,21 @@ from torch.utils.data import ConcatDataset, DataLoader
 
 HERE = Path(__file__).resolve()
 sys.path.insert(0, str(HERE.parents[1]))
-from _common import DERIV, DERIV_9T, make_profile, write_tif  # noqa: E402
+from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for  # noqa: E402
 from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet, load_stats,  # noqa: E402
                  normalize, predict_full_tile)
 from _road_unet_1m_corrected import (  # noqa: E402
     average_precision, evaluate_corrections, sample_line_prob)
 
 SWEEP = DERIV_9T / "road_sweep_202607"
-BLOCK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / "613590"
+BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
 CORR = BLOCK / "corrections"
 
 # ---- McKean full-extent road labels (1 m) — separate-model experiment ----
 # roads.shp has ~137 km of road annotations in McKean beyond the 9t area.
 # cfg["mkf"]=True appends these (feature stack + labels + sampled centers)
 # to the TRAIN set only; val stays 9t so metrics remain comparable.
-MKF_DIR = DERIV / "tiles" / "mkf_road_1m"
+MKF_DIR = path_for("derived") / "mkf_road_1m"
 MKF_F = MKF_DIR / "features_mkf_road_1m_clean.tif"  # gaps as NaN (not -9999)
 MKF_L = MKF_DIR / "labels_road_mkf_road_1m.tif"
 MKF_CENTERS = MKF_DIR / "mkf_road_centers.csv"

@@ -51,12 +51,20 @@ REPORT = ROOT / "docs" / "path_literals_report.md"
 #: a path expression.
 PATH_ROOTS = {"ROOT", "DERIV", "DERIV_9T", "PROJECT_ROOT", "REPO_ROOT"}
 
-#: Directories whose code is retired and deliberately not held to this rule.
+#: Exempt, each for its own reason.
+#:
+#: ``tools/`` is the important one. These scripts PERFORM the moves -- they plan
+#: ledgers, rewrite QGIS datasources, audit the tree and verify the gates. They
+#: have to name real directories, because naming real directories is their job.
+#: Holding the mover to a rule about not knowing where things are would be
+#: circular. Exempt by design, not by oversight.
+#:
+#: The rest is retired code, allowed to reference a world that no longer exists.
 EXEMPT_DIRS = ("archive", "data", ".venv", ".git", "__pycache__",
-               "notebooks/wellsight/", "tests/fixtures")
+               "notebooks/wellsight/", "tests/fixtures", "tools")
 
 #: Scanned. Anything else is not live pipeline code.
-SCAN_DIRS = ("notebooks/wellsight_v2", "ui", "roads_studio", "tools")
+SCAN_DIRS = ("notebooks/wellsight_v2", "ui", "roads_studio")
 
 
 def configured_keys() -> dict[str, str]:

@@ -29,9 +29,9 @@ import json
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import ROOT  # noqa: E402
+from _common import ROOT, path_for  # noqa: E402
 
-DST = ROOT / "data" / "external" / "nisar" / "9t"
+DST = path_for("reference") / "nisar" / "9t"
 CMR = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
 # 9t core bbox in lon/lat (from EPSG:6346 619500,4593000..624000,4597500)
 BBOX = (-79.5687, 41.4797, -79.5139, 41.5195)  # W,S,E,N

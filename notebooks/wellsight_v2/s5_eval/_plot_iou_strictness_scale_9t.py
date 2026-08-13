@@ -24,8 +24,11 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / "data" / "derivatives" / "eval_9t_instance_precision"
+OUT = path_for("derivatives") / "eval_9t_instance_precision"
 SRC = OUT / "metrics_9t.csv"
 
 MODELS = ["pit_unet_v2", "plat_unet"]

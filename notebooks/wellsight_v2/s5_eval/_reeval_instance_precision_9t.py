@@ -58,11 +58,14 @@ from matplotlib.patches import Patch
 from rasterio.features import shapes
 from scipy import ndimage as ndi
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-NINE_T = ROOT / "data" / "derivatives" / "tiles" / "9t"
+NINE_T = path_for("nine_t")
 ITER = NINE_T / "iterations"
-ANN_GPKG = ROOT / "data" / "derivatives" / "annotations" / "annotations_proj.gpkg"
-OUT = ROOT / "data" / "derivatives" / "eval_9t_instance_precision"
+ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
+OUT = path_for("derivatives") / "eval_9t_instance_precision"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

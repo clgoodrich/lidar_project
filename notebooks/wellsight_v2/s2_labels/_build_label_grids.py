@@ -37,15 +37,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 # this file. The 2026-08-12 stage refactor put them in s1_build and this script
 # in s2_labels, so the same-directory import no longer resolves.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "s1_build"))
-from _common import DERIV, DST_CRS, ROOT, run_pdal          # noqa: E402
+from _common import DERIV, DST_CRS, ROOT, run_pdal, path_for  # noqa: E402
 from _build_derivatives import build as build_derivatives    # type: ignore  # noqa: E402
 from _build_3x3_hillshades import (                           # type: ignore  # noqa: E402
     TILE_M, discover_tiles, build_indices, axis_origins,
 )
 
-LABEL_GRIDS = ROOT / "label_grids"
-PA_WELLS = ROOT / "data" / "external" / "legacy_data" / "US_Documented_Orphan_Wells.csv"
-PERMIAN_WELLS = (DERIV / "experiments" / "permian_sample" / "rrc_orphan_wells_permian.gpkg")
+LABEL_GRIDS = path_for("truth_grids")
+PA_WELLS = path_for("reference") / "legacy_data" / "US_Documented_Orphan_Wells.csv"
+PERMIAN_WELLS = (path_for("experiments") / "permian_sample" / "rrc_orphan_wells_permian.gpkg")
 RES = 1.0
 N_GRIDS = 4
 # 9t training core (EPSG:6346) -- exclude so WPA label grids are fresh, non-redundant
@@ -194,7 +194,7 @@ def build_wpa(args):
         out_dir = LABEL_GRIDS / name
         print(f"\n========== {name}  ({b['n_wells']} wells) ==========")
         t0 = time.time()
-        merge = ROOT / "data" / "source_laz" / "westernpa" / f"_merged_{sfx}.las"
+        merge = path_for("source") / "westernpa" / f"_merged_{sfx}.las"
         try:
             build_dem_hillshade(b["members"], b["x0"], b["y0"], b["x1"], b["y1"], sfx, out_dir)
             build_derivatives(b["members"], x0=b["x0"], y0=b["y0"], x1=b["x1"], y1=b["y1"],
@@ -267,7 +267,7 @@ def build_wpa_manual(args):
         for old in out_dir.glob("*.tif.aux.xml"):
             old.unlink()
         t0 = time.time()
-        merge = ROOT / "data" / "source_laz" / "westernpa" / f"_merged_{sfx}.las"
+        merge = path_for("source") / "westernpa" / f"_merged_{sfx}.las"
         try:
             build_dem_hillshade(members, x0, y0, x1, y1, sfx, out_dir)
             build_derivatives(members, x0=x0, y0=y0, x1=x1, y1=y1, res=RES, sfx=sfx,
@@ -326,7 +326,7 @@ def build_permian(args):
     *.laz so it is agnostic to grid size."""
     import json
     import laspy
-    src = ROOT / "data" / "source_laz" / "permian"
+    src = path_for("source") / "permian"
     manifest = json.loads((src / "permian_grids_manifest.json").read_text())
     for name, info in manifest.items():
         if args.only and name not in args.only.split(","):

@@ -21,8 +21,11 @@ from pathlib import Path
 
 import geopandas as gpd
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-OUT = ROOT / "data" / "derivatives" / "eval_9t_heldout_overlap"
+OUT = path_for("derivatives") / "eval_9t_heldout_overlap"
 
 TARGETS = ["heldout_pit_unet_v2.gpkg", "heldout_plat_unet.gpkg"]
 

@@ -32,7 +32,7 @@ from rasterio.features import rasterize
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T, make_profile, write_tif
+from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for
 from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
@@ -55,7 +55,7 @@ FOCAL_ALPHA = (0.10, 0.72, 0.25)   # bg, ROAD(+), drainage(-)
 FOCAL_GAMMA = 2.0
 WEIGHT_DECAY = 2e-4
 
-PREDICT_BLOCK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / "613590"
+PREDICT_BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
 
 
 def build_dataset(split, manifest, blocks, transform, mu, sd, *, augment, seed):

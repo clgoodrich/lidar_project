@@ -33,10 +33,10 @@ from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402
 import _instance_common as ic  # noqa: E402
 
-OUTDIR = DERIV_9T / "iterations" / "pit_07_maskrcnn"
+OUTDIR = path_for("models_retired") / "pit_07_maskrcnn"
 PATCH = 256          # 128 m at 0.5 m/px - matches pit_unet_v2 baseline
 JITTER_M = 30.0      # matches pit_unet_v2
 PATCHES_PER_INST = 4 # 74 train x 4 = ~300 training patches per epoch

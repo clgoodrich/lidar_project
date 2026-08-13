@@ -46,10 +46,12 @@ import geopandas as gpd
 import pandas as pd
 from shapely.ops import linemerge
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-ANN = ROOT / "data" / "derivatives" / "annotations"
-REVIEW = (ROOT / "data" / "derivatives" / "tiles" / "data_3x3" / "westernpa_d20"
-          / "613590" / "review")
+ANN = path_for("truth")
+REVIEW = (path_for("data_3x3") / "westernpa_d20" / "613590" / "review")
 ROADS = ANN / "roads.shp"
 BACKUP = ANN / "_backup_roads_2026-08-05"
 SUMMARY = ANN / "_merge_613590_roads_summary.json"

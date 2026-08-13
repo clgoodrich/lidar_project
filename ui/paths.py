@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2"))
 
-from _common import DERIV, DERIV_9T, DST_CRS, ROOT as _CROOT  # noqa: E402
+from _common import DERIV, DERIV_9T, DST_CRS, ROOT as _CROOT, path_for  # noqa: E402
 
 assert ROOT == _CROOT, f"UI ROOT {ROOT} != _common ROOT {_CROOT}"
 
@@ -23,10 +23,10 @@ SETTINGS = UI / "settings.json"
 RUNS.mkdir(parents=True, exist_ok=True)
 
 # --- common data locations the registry references ---
-TILES = DERIV / "tiles"
+TILES = path_for("derived")
 DATA3X3 = TILES / "data_3x3"
 SWEEP = DERIV_9T / "road_sweep_202607"
-ANNOT = DERIV / "annotations"
+ANNOT = path_for("truth")
 
 
 def list_blocks() -> list[str]:

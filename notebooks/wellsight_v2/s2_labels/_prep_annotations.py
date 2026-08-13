@@ -14,9 +14,9 @@ import geopandas as gpd
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS as TARGET_CRS
+from _common import DERIV, DST_CRS as TARGET_CRS, path_for
 
-SRC = DERIV / "annotations"
+SRC = path_for("truth")
 OUT = SRC / "annotations_proj.gpkg"
 
 

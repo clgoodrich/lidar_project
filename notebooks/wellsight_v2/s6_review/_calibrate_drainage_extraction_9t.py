@@ -30,12 +30,12 @@ from shapely.ops import unary_union
 warnings.filterwarnings("ignore")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS  # noqa: E402
+from _common import DERIV, DST_CRS, path_for  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "s5_eval"))
 from _road_optimize import island_filter, lines_from_skel, prune_merge, skeleton  # noqa: E402
 
-R9 = DERIV / "tiles" / "9t"
+R9 = path_for("nine_t")
 PROB = R9 / "drainage_unet_1m" / "drainage_prob.tif"
 TOL = 8.0   # buffer match tolerance (m) — same as the road harness
 
@@ -80,7 +80,7 @@ def main() -> int:
     blocks = gpd.read_file(R9 / "pit_blocks_9t.gpkg")
     test = blocks[blocks.split == "test"]
     region = unary_union(test.geometry.values)
-    gt = gpd.read_file(DERIV / "annotations" / "annotations_proj.gpkg",
+    gt = gpd.read_file(path_for("truth") / "annotations_proj.gpkg",
                        layer="drainage")
     if gt.crs is None:
         gt = gt.set_crs(DST_CRS)

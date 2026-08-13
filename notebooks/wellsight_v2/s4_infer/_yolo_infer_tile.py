@@ -20,7 +20,7 @@ import numpy as np
 import rasterio
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, make_profile
+from _common import DERIV, make_profile, path_for
 import _instance_common as ic  # noqa: E402
 
 PATCH, OVERLAP, IMGSZ = 256, 64, 640
@@ -107,7 +107,7 @@ def main() -> int:
     ap.add_argument("--suffix", default="613590_05")
     args = ap.parse_args()
     sfx = args.suffix
-    tile_dir = DERIV / "tiles" / sfx
+    tile_dir = path_for("derived") / sfx
     out_dir = DERIV / f"inference_{sfx}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -117,8 +117,8 @@ def main() -> int:
         dem = r.read(1); nd = r.nodata
     valid = np.isfinite(dem) & (dem != nd if nd is not None else True)
 
-    pit_ck = DERIV / "tiles" / "9t" / "iterations" / "pit_08_yolo" / "best.pt"
-    pad_ck = DERIV / "tiles" / "9t" / "iterations" / "pad_06_yolo" / "best.pt"
+    pit_ck = path_for("models_retired") / "pit_08_yolo" / "best.pt"
+    pad_ck = path_for("models_retired") / "pad_06_yolo" / "best.pt"
     n_pit = run_model(pit_ck, rgb_path, ref_profile,
                       out_dir / f"pit_yolo_candidates_{sfx}.gpkg",
                       {0: "floor", 1: "wall"}, "pit_yolo", valid)

@@ -49,7 +49,7 @@ from scipy import ndimage as ndi
 from scipy.ndimage import uniform_filter
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS, ROOT, make_profile, read_tif, run_pdal, write_tif
+from _common import DERIV, DST_CRS, ROOT, make_profile, read_tif, run_pdal, write_tif, path_for
 
 
 # ---------------------------------------------------------------------------
@@ -145,7 +145,7 @@ def build(
     H = int(round((y1 - y0) / res))
     transform = from_origin(x0, y1, res, res)
     if out_dir is None:
-        out_dir = DERIV / "tiles" / sfx
+        out_dir = path_for("derived") / sfx
     out_dir.mkdir(parents=True, exist_ok=True)
     # Files inside the suffix subdir keep the full suffix in their name so they
     # remain self-describing if pulled out of the directory.
@@ -159,7 +159,7 @@ def build(
         las_path = tiles[0]
     else:
         if merge_path is None:
-            merge_path = ROOT / "data" / "source_laz" / "westernpa" / f"_merged_{sfx}.las"
+            merge_path = path_for("source") / "westernpa" / f"_merged_{sfx}.las"
         if merge_path.exists() and skip_existing:
             print(f"  merge: reusing existing {merge_path.name}")
         else:

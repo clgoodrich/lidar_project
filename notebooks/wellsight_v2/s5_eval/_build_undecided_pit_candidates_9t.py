@@ -83,11 +83,11 @@ warnings.filterwarnings("ignore")
 ROOT = Path(__file__).resolve().parents[3]
 sys.path[:0] = [str(ROOT / "notebooks" / "wellsight_v2"),
                 str(ROOT / "notebooks" / "wellsight_v2" / "s3_train")]
-from _common import DERIV_9T                                       # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402
 from _pit_unet_cv5 import assign_folds, polygonize                 # noqa: E402
 
-ANN = ROOT / "data" / "derivatives" / "annotations" / "annotations_proj.gpkg"
-OUT = ROOT / "data" / "derivatives" / "eval_9t_centroid_matching"
+ANN = path_for("truth") / "annotations_proj.gpkg"
+OUT = path_for("derivatives") / "eval_9t_centroid_matching"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 OUTDIR = DERIV_9T / "pit_unet_cv5"
 

@@ -45,10 +45,14 @@ from rasterio.warp import Resampling, reproject
 from scipy import ndimage as ndi
 from shapely.geometry import shape
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-ICP = ROOT / "data" / "derivatives" / "experiments" / "icp"
-NINE_T = ROOT / "data" / "derivatives" / "tiles" / "9t"
-ANN = ROOT / "data" / "derivatives" / "annotations"
+ICP = path_for("experiments") / "icp"
+NINE_T = path_for("nine_t")
+ANN = path_for("truth")
 OUT = ICP / "change_9t"
 
 BBOX = (619500.0, 4593000.0, 624000.0, 4597500.0)

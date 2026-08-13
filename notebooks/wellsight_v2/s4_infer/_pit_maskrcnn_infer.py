@@ -28,11 +28,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 # split training into s3_train and inference into s4_infer, so this is now a
 # cross-stage import.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "s3_train"))
-from _common import DERIV_9T  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402
 import _instance_common as ic  # noqa: E402
 from _pit_maskrcnn import build_model, DEVICE, PATCH  # noqa: E402
 
-OUTDIR = DERIV_9T / "iterations" / "pit_07_maskrcnn"
+OUTDIR = path_for("models_retired") / "pit_07_maskrcnn"
 CKPT = OUTDIR / "best.pt"
 OVERLAP = 64
 SCORE_THRESH = 0.3

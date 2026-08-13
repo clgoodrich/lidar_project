@@ -21,10 +21,10 @@ from rasterio.features import rasterize
 from shapely.geometry import box
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T
+from _common import DERIV, DERIV_9T, path_for
 
 REF = DERIV_9T / "dem_9t_05.tif"
-ANN = DERIV / "annotations" / "annotations_proj.gpkg"
+ANN = path_for("truth") / "annotations_proj.gpkg"
 OUT = DERIV_9T
 
 # Spatial-block grid: 12 x 12 = 144 cells over the 4.5 km tile (each 375 m).

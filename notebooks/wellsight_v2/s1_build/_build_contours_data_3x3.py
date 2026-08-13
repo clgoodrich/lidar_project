@@ -27,13 +27,13 @@ from pathlib import Path
 import rasterio
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV  # noqa: E402
+from _common import DERIV, path_for  # noqa: E402
 
 GDAL_CONTOUR = shutil.which("gdal_contour") or "gdal_contour"
 
 
 def block_dems(region: str):
-    root = DERIV / "tiles" / "data_3x3" / region
+    root = path_for("data_3x3") / region
     out = []
     for d in sorted(p for p in root.iterdir() if p.is_dir()):
         dem = d / f"dem_{d.name}_1m.tif"

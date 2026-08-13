@@ -27,11 +27,11 @@ from shapely.ops import unary_union
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import _road_optimize as ro  # enhance/to_mask/skeleton/lines_from_skel/prune_merge/reconnect/island_filter/score
-from _common import DERIV, DST_CRS
+from _common import DERIV, DST_CRS, path_for
 
-R9 = DERIV / "tiles" / "9t"
+R9 = path_for("nine_t")
 RECALL = R9 / "road_unet_1m_recall"
-BLK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / "613590"
+BLK = path_for("data_3x3") / "westernpa_d20" / "613590"
 
 # Distinct methods. reconnect tuple = (method, max_gap, max_ang, gate).
 METHODS = {
@@ -86,7 +86,7 @@ def load_9t_recall():
     blocks = gpd.read_file(R9 / "pit_blocks_9t.gpkg")
     test = blocks[blocks.split == "test"]
     region = unary_union(test.geometry.values)
-    gt = gpd.read_file(DERIV / "annotations" / "annotations_proj.gpkg", layer="roads").to_crs(DST_CRS)
+    gt = gpd.read_file(path_for("truth") / "annotations_proj.gpkg", layer="roads").to_crs(DST_CRS)
     gt = gt[gt.intersects(region)].copy()
     gt["geometry"] = gt.geometry.intersection(region)
     gt = gt[~gt.is_empty]

@@ -7,10 +7,10 @@ from pathlib import Path
 import geopandas as gpd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402
 import _instance_common as ic  # noqa: E402
 
-OUTDIR = DERIV_9T / "iterations" / "pit_08_yolo"
+OUTDIR = path_for("models_retired") / "pit_08_yolo"
 CKPT = OUTDIR / "best.pt"
 PATCH = 256
 OVERLAP = 64

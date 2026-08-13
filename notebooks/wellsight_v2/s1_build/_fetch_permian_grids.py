@@ -27,9 +27,9 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import ROOT
+from _common import ROOT, path_for
 
-DST = ROOT / "data" / "source_laz" / "permian"
+DST = path_for("source") / "permian"
 API = "https://tnmaccess.nationalmap.gov/api/v1/products"
 # user-specified high-density Permian centers (lat, lon); 3x3 of 1.5 km tiles each
 CENTERS = {

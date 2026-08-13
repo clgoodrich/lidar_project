@@ -29,7 +29,7 @@ from scipy import ndimage as ndi
 from skimage.morphology import remove_small_objects
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS
+from _common import DERIV, DST_CRS, path_for
 
 
 def valid_mask(dem_path: Path, erode_px: int = 3) -> tuple[np.ndarray, object, object]:
@@ -81,7 +81,7 @@ def main() -> int:
     sfx = args.suffix
 
     inf = DERIV / f"inference_{sfx}"
-    dem = DERIV / "tiles" / sfx / f"dem_{sfx}.tif"
+    dem = path_for("derived") / sfx / f"dem_{sfx}.tif"
     with rasterio.open(dem) as r:
         res = r.res[0]
     valid, tf, crs = valid_mask(dem)
@@ -106,7 +106,7 @@ def main() -> int:
         import matplotlib.pyplot as plt
         import geopandas as gpd
         ds = 5
-        with rasterio.open(DERIV / "tiles" / sfx / f"hillshade_{sfx}.tif") as r:
+        with rasterio.open(path_for("derived") / sfx / f"hillshade_{sfx}.tif") as r:
             H, W = r.height, r.width
             hs = r.read(1, out_shape=(H // ds, W // ds), resampling=Resampling.nearest)
             b = r.bounds

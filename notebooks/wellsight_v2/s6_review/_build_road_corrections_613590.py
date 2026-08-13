@@ -53,9 +53,9 @@ from rasterio.features import rasterize
 from shapely.geometry import LineString, box
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV
+from _common import DERIV, path_for
 
-BLOCK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / "613590"
+BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
 REVIEW = BLOCK / "review"
 OUT = BLOCK / "corrections"
 FEATURES = BLOCK / "features_613590_1m.tif"

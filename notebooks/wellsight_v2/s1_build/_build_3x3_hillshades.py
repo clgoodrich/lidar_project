@@ -25,10 +25,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DST_CRS, ROOT, run_pdal
+from _common import DST_CRS, ROOT, run_pdal, path_for
 
-SRC_DIR = ROOT / "data" / "source_laz" / "westernpa"
-OUT_ROOT = ROOT / "data" / "derivatives" / "mosaic_3x3"
+SRC_DIR = path_for("source") / "westernpa"
+OUT_ROOT = path_for("derivatives") / "mosaic_3x3"
 RES = 1.0
 TILE_M = 1500.0
 

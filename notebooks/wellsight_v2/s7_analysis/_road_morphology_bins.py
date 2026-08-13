@@ -53,12 +53,12 @@ import matplotlib.pyplot as plt  # noqa: E402
 warnings.filterwarnings("ignore")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS  # noqa: E402
+from _common import DERIV, DST_CRS, path_for  # noqa: E402
 
-R9 = DERIV / "tiles" / "9t"
-OUT = DERIV / "experiments" / "road_morphology_bins"
+R9 = path_for("nine_t")
+OUT = path_for("experiments") / "road_morphology_bins"
 
-ROADS_SHP = DERIV / "annotations" / "roads.shp"
+ROADS_SHP = path_for("truth") / "roads.shp"
 
 TRANSECT_STEP = 10.0    # m along the road between transects
 HALF_W = 25.0           # m each side of centreline

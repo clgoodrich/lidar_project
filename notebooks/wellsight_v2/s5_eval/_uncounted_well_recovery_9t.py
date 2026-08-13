@@ -56,11 +56,14 @@ from rasterio.features import shapes
 from scipy import ndimage as ndi
 from shapely.geometry import box, shape
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-NINE_T = ROOT / "data" / "derivatives" / "tiles" / "9t"
-ANN_DIR = ROOT / "data" / "derivatives" / "annotations"
+NINE_T = path_for("nine_t")
+ANN_DIR = path_for("truth")
 ANN_GPKG = ANN_DIR / "annotations_proj.gpkg"
-OUT = ROOT / "data" / "derivatives" / "eval_9t_uncounted_wells"
+OUT = path_for("derivatives") / "eval_9t_uncounted_wells"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

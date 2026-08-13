@@ -42,8 +42,11 @@ from shapely.geometry import box
 sys.path.insert(0, str(Path(__file__).parent))
 from _export_well_age_qgis import embed_styles, qml_categorized  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-DERIV = ROOT / "data/derivatives"
+DERIV = path_for("derivatives")
 STATEWIDE = (ROOT / "data/external/OilGasLocations_ConventionalUnconventional"
              "2026_04/OilGasLocations_ConventionalUnconventional2026_04.shp")
 OLD_VENANGO = ROOT / "data/external/legacy_data/US_Documented_Orphan_Wells.csv"

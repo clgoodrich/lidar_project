@@ -36,7 +36,7 @@ import torch
 from matplotlib.colors import ListedColormap
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, make_profile, write_tif
+from _common import DERIV, make_profile, write_tif, path_for
 from _dl import DEVICE, UNet, predict_full_tile
 
 # Channel order MUST match what was saved in best.pt['channels']:
@@ -66,7 +66,7 @@ def find_channel_files(sfx: str) -> list[tuple[str, Path]]:
     for name in TRAINING_CHANNELS:
         on_disk = rough_band if name == "roughness_11" else name
         candidates = [
-            DERIV / "tiles" / sfx / f"{on_disk}_{sfx}.tif",   # new layout (subdir + descriptive name)
+            path_for("derived") / sfx / f"{on_disk}_{sfx}.tif",   # new layout (subdir + descriptive name)
             DERIV / f"{on_disk}_{sfx}.tif",          # legacy flat
         ]
         for p in candidates:
@@ -144,7 +144,7 @@ def infer_one(name: str, ckpt: Path, n_classes: int, patch: int, overlap: int,
 
 
 def render_overlay(argmaps: dict[str, np.ndarray], sfx: str, out_dir: Path) -> None:
-    hs_path = DERIV / "tiles" / sfx / f"hillshade_{sfx}.tif"   # new layout
+    hs_path = path_for("derived") / sfx / f"hillshade_{sfx}.tif"   # new layout
     if not hs_path.exists():
         hs_path = DERIV / f"hillshade_{sfx}.tif"               # legacy flat fallback
     with rasterio.open(hs_path) as r:
@@ -191,7 +191,7 @@ def main() -> int:
 
     argmaps: dict[str, np.ndarray] = {}
     for name, sub, n_cls, patch, overlap in TASKS:
-        ckpt = DERIV / "tiles" / "9t" / sub / "best.pt"
+        ckpt = path_for("nine_t") / sub / "best.pt"
         argmaps[name] = infer_one(name, ckpt, n_cls, patch, overlap,
                                   features, out_dir, args.suffix)
     render_overlay(argmaps, args.suffix, out_dir)

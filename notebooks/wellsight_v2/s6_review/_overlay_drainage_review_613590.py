@@ -25,10 +25,10 @@ import matplotlib.pyplot as plt  # noqa: E402
 warnings.filterwarnings("ignore")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV  # noqa: E402
+from _common import DERIV, path_for  # noqa: E402
 
 KEY = "613590"
-BLK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / KEY
+BLK = path_for("data_3x3") / "westernpa_d20" / KEY
 RD = BLK / "review_drainage"
 
 

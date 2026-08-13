@@ -24,11 +24,11 @@ from torch.utils.data import DataLoader, Dataset
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "s3_train"))
-from _common import DERIV_9T  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402
 import _instance_common as ic  # noqa: E402
 from _pit_maskrcnn import build_model, collate, train_one_epoch, val_loss, DEVICE  # noqa: E402
 
-OUTDIR = DERIV_9T / "iterations" / "pad_05_maskrcnn"
+OUTDIR = path_for("models_retired") / "pad_05_maskrcnn"
 PATCH = 384         # 192 m at 0.5 m/px - matches plat_unet baseline
 JITTER_M = 40.0     # matches multitask_unet pad policy
 PATCHES_PER_INST = 4

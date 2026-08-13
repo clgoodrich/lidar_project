@@ -82,12 +82,12 @@ from shapely.geometry import shape
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T
+from _common import DERIV_9T, path_for
 from _dl import (DEFAULT_CHANNELS, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
 ROOT = Path(__file__).resolve().parents[3]
-ANN_GPKG = ROOT / "data" / "derivatives" / "annotations" / "annotations_proj.gpkg"
+ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 LABELS = DERIV_9T / "labels_plat_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"

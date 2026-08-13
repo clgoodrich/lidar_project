@@ -68,13 +68,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _threshold_common import (CRS, bookmarks_xml, contact_sheet, embed_style,
                                style_qml, tag, write_raster)
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-NINE_T = ROOT / "data" / "derivatives" / "tiles" / "9t"
+NINE_T = path_for("nine_t")
 PROB = NINE_T / "road_unet_1m" / "road_prob.tif"
 RASTER_DIR = NINE_T / "road_unet_1m"
 CHUNKS = NINE_T / "road_chunks_9t.gpkg"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
-OUT = ROOT / "data" / "derivatives" / "eval_9t_road_thresholds"
+OUT = path_for("derivatives") / "eval_9t_road_thresholds"
 OUT.mkdir(parents=True, exist_ok=True)
 
 TOL_M = 5.0                # centreline tolerance, see docstring

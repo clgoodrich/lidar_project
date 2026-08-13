@@ -52,11 +52,14 @@ from rasterio.features import shapes
 from scipy import ndimage as ndi
 from shapely.geometry import shape
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-NINE_T = ROOT / "data" / "derivatives" / "tiles" / "9t"
-ANN_GPKG = ROOT / "data" / "derivatives" / "annotations" / "annotations_proj.gpkg"
+NINE_T = path_for("nine_t")
+ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 PROB = NINE_T / "pit_unet_v2" / "pit_prob_floor.tif"
-OUT = ROOT / "data" / "derivatives" / "eval_9t_rim_containment"
+OUT = path_for("derivatives") / "eval_9t_rim_containment"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

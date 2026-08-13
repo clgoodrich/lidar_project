@@ -27,9 +27,9 @@ import geopandas as gpd
 import pyogrio
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS
+from _common import DERIV, DST_CRS, path_for
 
-REGION = DERIV / "tiles" / "data_3x3" / "westernpa_d20"
+REGION = path_for("data_3x3") / "westernpa_d20"
 
 QML = """<!DOCTYPE qgis>
 <qgis version="3.34" styleCategories="Symbology|Fields|Forms|Default">

@@ -69,13 +69,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _threshold_common import (CRS, bookmarks_xml, contact_sheet, embed_style,
                                polygonize, style_qml, tag, write_raster)
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-NINE_T = ROOT / "data" / "derivatives" / "tiles" / "9t"
+NINE_T = path_for("nine_t")
 PROB = NINE_T / "plat_unet" / "plat_prob.tif"
 RASTER_DIR = NINE_T / "plat_unet"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
-ANN_GPKG = ROOT / "data" / "derivatives" / "annotations" / "annotations_proj.gpkg"
-OUT = ROOT / "data" / "derivatives" / "eval_9t_pad_thresholds"
+ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
+OUT = path_for("derivatives") / "eval_9t_pad_thresholds"
 OUT.mkdir(parents=True, exist_ok=True)
 
 MIN_AREA_M2 = 100.0        # see docstring -- smallest annotated pad is 261 m2

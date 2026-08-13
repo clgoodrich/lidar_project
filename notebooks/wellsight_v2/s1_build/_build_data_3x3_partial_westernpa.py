@@ -26,13 +26,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import DERIV, DST_CRS, ROOT
+from _common import DERIV, DST_CRS, ROOT, path_for
 from _build_derivatives import build as build_derivatives  # type: ignore
 from _build_3x3_hillshades import (  # type: ignore
     TILE_M, discover_tiles, build_indices, axis_origins,
 )
 
-OUT_REGION = DERIV / "tiles" / "data_3x3" / "westernpa_d20"
+OUT_REGION = path_for("data_3x3") / "westernpa_d20"
 STRIDE = 3
 
 
@@ -115,7 +115,7 @@ def main() -> int:
         key = b["key"]
         sfx = f"{key}_1m"
         out_dir = OUT_REGION / key
-        merge_path = ROOT / "data" / "source_laz" / "westernpa" / f"_merged_westernpa_d20_{sfx}.las"
+        merge_path = path_for("source") / "westernpa" / f"_merged_westernpa_d20_{sfx}.las"
         print(f"\n========== westernpa_d20/{key} ({b['n_tiles']} tiles) ==========")
         print(f"  bbox: {b['x0']:.0f},{b['y0']:.0f},{b['x1']:.0f},{b['y1']:.0f}  "
               f"({b['x1']-b['x0']:.0f}x{b['y1']-b['y0']:.0f} m)")

@@ -31,9 +31,11 @@ from pathlib import Path
 import numpy as np
 import rasterio
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-SRC = (ROOT / "data" / "derivatives" / "tiles" / "9t" / "pit_unet_v2"
-       / "pit_prob_floor.tif")
+SRC = (path_for("nine_t") / "pit_unet_v2" / "pit_prob_floor.tif")
 OUT_DIR = SRC.parent
 THRESHOLDS = [0.05, 0.20, 0.30]
 # 0.05 is a REFERENCE view, not an operating point. Every held-out rim has

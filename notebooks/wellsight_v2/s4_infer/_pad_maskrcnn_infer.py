@@ -12,12 +12,12 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "s3_train"))
-from _common import DERIV_9T  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402
 import _instance_common as ic  # noqa: E402
 from _pit_maskrcnn import build_model, DEVICE  # noqa: E402
 from _pit_maskrcnn_infer import run_inference, global_nms  # noqa: E402
 
-OUTDIR = DERIV_9T / "iterations" / "pad_05_maskrcnn"
+OUTDIR = path_for("models_retired") / "pad_05_maskrcnn"
 CKPT = OUTDIR / "best.pt"
 PATCH = 384
 OVERLAP = 96

@@ -25,9 +25,9 @@ from matplotlib.lines import Line2D
 from rasterio.windows import from_bounds
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T
+from _common import DERIV, DERIV_9T, path_for
 
-BLOCK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / "613590"
+BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
 CORR = BLOCK / "corrections"
 BEFORE = DERIV_9T / "road_unet_1m_recall" / "road_prob_613590_1m.tif"
 AFTER = DERIV_9T / "road_unet_1m_corrected" / "road_prob_613590_1m.tif"

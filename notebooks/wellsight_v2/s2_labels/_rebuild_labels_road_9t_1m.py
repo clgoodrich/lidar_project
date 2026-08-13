@@ -46,9 +46,9 @@ import rasterio
 from rasterio.features import rasterize
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T as D                          # noqa: E402
+from _common import DERIV, DERIV_9T as D, path_for  # noqa: E402
 
-ANN = DERIV / "annotations" / "annotations_proj.gpkg"
+ANN = path_for("truth") / "annotations_proj.gpkg"
 GRID = D / "features_pit_9t_1m.tif"
 OUT = D / "labels_road_9t_1m.tif"
 BACKUP = D / "labels_road_9t_1m_pre2026-08-06.tif"

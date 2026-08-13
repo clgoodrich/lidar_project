@@ -75,9 +75,12 @@ from rasterio.features import rasterize
 from scipy.ndimage import distance_transform_edt
 from shapely.geometry import LineString, box
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-ANN = ROOT / "data" / "derivatives" / "annotations" / "roads.shp"
-OUT = ROOT / "data" / "derivatives" / "eval_613590_roads"
+ANN = path_for("truth") / "roads.shp"
+OUT = path_for("derivatives") / "eval_613590_roads"
 
 CRS = "EPSG:6346"
 TOL_M = 5.0            # centreline tolerance, same as the 9t road eval

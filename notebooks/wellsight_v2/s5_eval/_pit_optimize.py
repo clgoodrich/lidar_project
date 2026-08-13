@@ -44,11 +44,11 @@ from scipy import ndimage as ndi
 from scipy.spatial import cKDTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS, ROOT
+from _common import DERIV, DST_CRS, ROOT, path_for
 
-R9 = DERIV / "tiles" / "9t"
+R9 = path_for("nine_t")
 PIT = R9 / "pit_unet_v2"
-ANN = DERIV / "annotations" / "annotations_proj.gpkg"
+ANN = path_for("truth") / "annotations_proj.gpkg"
 TOL = 6.0  # centroid match tolerance (m) -- pit floors are small
 
 

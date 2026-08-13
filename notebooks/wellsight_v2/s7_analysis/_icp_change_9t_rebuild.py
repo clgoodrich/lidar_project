@@ -73,17 +73,17 @@ from rasterio.transform import from_origin
 from rasterio.warp import reproject
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DST_CRS, PDAL_EXE, ROOT, run_pdal, write_tif  # noqa: E402
+from _common import DST_CRS, PDAL_EXE, ROOT, run_pdal, write_tif, path_for  # noqa: E402
 
-NINE_T = ROOT / "data" / "derivatives" / "tiles" / "9t"
+NINE_T = path_for("nine_t")
 # The 2006-2008 clouds lived on an external drive that is no longer mounted
 # (F: was gone by 2026-08-12). There is no copy on C: or on the E: backup, so
 # this path is not merely wrong -- the input data may be lost. Override with
 # WELLSIGHT_OLD_LAZ_DIR if the drive comes back or the clouds are re-fetched.
 OLD_DIR = Path(os.environ.get(
     "WELLSIGHT_OLD_LAZ_DIR", r"F:\lidar_project\consolidated\lidar_all"))
-NEW_DIR = ROOT / "data" / "source_laz" / "westernpa"
-OUT = ROOT / "data" / "derivatives" / "experiments" / "icp" / "change_9t"
+NEW_DIR = path_for("source") / "westernpa"
+OUT = path_for("experiments") / "icp" / "change_9t"
 WORK = Path(os.environ.get("WELLSIGHT_SCRATCH", tempfile.gettempdir())) / "icp_rebuild_9t"
 
 # 9t block, EPSG:6346. Identical to every other 9t raster.

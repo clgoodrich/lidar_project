@@ -27,17 +27,17 @@ from rasterio.features import rasterize
 from shapely.geometry import LineString
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T
+from _common import DERIV, DERIV_9T, path_for
 
 N_ORI = 8
 STEP = 5.0          # bearing-sampling step along each line (m)
 ROAD_BUF = 1.5      # matches labels_road_*_1m.tif
 
-ANN = DERIV / "annotations" / "annotations_proj.gpkg"
+ANN = path_for("truth") / "annotations_proj.gpkg"
 L1 = DERIV_9T / "labels_road_9t_1m.tif"
 OUT_9T = DERIV_9T / "labels_roadorient_9t_1m.tif"
 
-BLOCK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / "613590"
+BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
 CORR = BLOCK / "corrections"
 CORR_L = CORR / "labels_road_corr_613590_1m.tif"
 CORR_LINES = CORR / "correction_lines_613590.gpkg"

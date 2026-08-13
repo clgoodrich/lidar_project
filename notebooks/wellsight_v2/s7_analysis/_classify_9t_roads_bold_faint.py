@@ -56,11 +56,11 @@ import matplotlib.pyplot as plt  # noqa: E402
 warnings.filterwarnings("ignore")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS  # noqa: E402
+from _common import DERIV, DST_CRS, path_for  # noqa: E402
 
-R9 = DERIV / "tiles" / "9t"
-ANN = DERIV / "annotations"
-OUT = DERIV / "experiments" / "road_morphology_bins"
+R9 = path_for("nine_t")
+ANN = path_for("truth")
+OUT = path_for("experiments") / "road_morphology_bins"
 
 # Transects every 5 m and roads chopped into 50 m segments -> ~10 transects per
 # scored unit. Whole-road scoring was wrong: within-road SD of the score (2.230)

@@ -36,9 +36,13 @@ from rasterio.transform import from_origin
 from rasterio.warp import Resampling, reproject
 from rasterio.windows import from_bounds
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-ICP = ROOT / "data" / "derivatives" / "experiments" / "icp"
-NINE_T = ROOT / "data" / "derivatives" / "tiles" / "9t"
+ICP = path_for("experiments") / "icp"
+NINE_T = path_for("nine_t")
 OUT = ICP / "change_9t"
 OUT.mkdir(parents=True, exist_ok=True)
 

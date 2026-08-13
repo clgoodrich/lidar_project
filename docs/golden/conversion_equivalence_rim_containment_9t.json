@@ -1,0 +1,32 @@
+{
+  "name": "ab_rim",
+  "command": [
+    "python",
+    "notebooks/wellsight_v2/s5_eval/_heldout_rim_containment_9t.py"
+  ],
+  "recorded_utc": "2026-08-13T01:40:08Z",
+  "elapsed_seconds": 56.2,
+  "n_outputs": 5,
+  "outputs": {
+    "data/derivatives/eval_9t_rim_containment/_rim_containment_9t.json": {
+      "sha256": "8831fa6d05166d140bfe500a8a6c661cc08ca0ab797cc28636d44a1197c253de",
+      "bytes": 4839
+    },
+    "data/derivatives/eval_9t_rim_containment/rim_containment_9t.csv": {
+      "sha256": "451535364bd90bf86e881b76c1ea78120c71a78fe7dbff603bb0902c086ad034",
+      "bytes": 1291
+    },
+    "data/derivatives/eval_9t_rim_containment/rim_containment_9t.png": {
+      "sha256": "fd633cbe90793f865ef2270002a62ef41b61149f5bed6eb591c129925ad194da",
+      "bytes": 497786
+    },
+    "data/derivatives/eval_9t_rim_containment/rim_heldout_pits.gpkg": {
+      "sha256": "d24c66a892c527c637ff9cd4d47ec7133d2a832f94067911344bf24485fa422d",
+      "bytes": 1732608
+    },
+    "data/derivatives/eval_9t_rim_containment/rim_heldout_pits.qml": {
+      "sha256": "073a479425e9faf5a2aaa21a9a3e1cd259ebd281c866eee0f2978a0e67d9eac0",
+      "bytes": 1376
+    }
+  }
+}

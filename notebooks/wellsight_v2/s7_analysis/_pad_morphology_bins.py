@@ -55,8 +55,11 @@ from sklearn.preprocessing import StandardScaler
 sys.path.insert(0, str(Path(__file__).parent))
 from _export_well_age_qgis import embed_styles, qml_categorized  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-T9 = ROOT / "data/derivatives/tiles/9t"
+T9 = path_for("nine_t")
 MKF = ROOT / "data/derivatives/tiles/mkf_1m"
 NC = ROOT / "data/derivatives/tiles/data_3x3/northcentral_b19"
 ANN = ROOT / "data/derivatives/annotations/annotations_proj.gpkg"

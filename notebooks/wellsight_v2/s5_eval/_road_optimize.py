@@ -40,9 +40,9 @@ import rasterio
 from scipy import ndimage as ndi
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS, ROOT
+from _common import DERIV, DST_CRS, ROOT, path_for
 
-R9 = DERIV / "tiles" / "9t"
+R9 = path_for("nine_t")
 TOL = 8.0          # buffer match tolerance (m)
 
 
@@ -74,7 +74,7 @@ def load_9t(split: str = "test"):
     test = blocks[blocks.split == split]
     from shapely.ops import unary_union
     region = unary_union(test.geometry.values)
-    gt = gpd.read_file(DERIV / "annotations" / "annotations_proj.gpkg", layer="roads")
+    gt = gpd.read_file(path_for("truth") / "annotations_proj.gpkg", layer="roads")
     gt = gt.to_crs(DST_CRS)
     gt = gt[gt.intersects(region)].copy()
     gt["geometry"] = gt.geometry.intersection(region)
@@ -553,7 +553,7 @@ def apply_best(D, cfg, conf_min=0.6):
              "clean_km": round(float(clean.length.sum()) / 1000, 2) if len(clean) else 0.0,
              "n_clean": int(len(clean)), "bridges": len(bridges), "config": cfg}
     # county-TIGER recall (clip the full county roads to the block)
-    cty = [ROOT / "data" / "external" / "tiger_roads" / f
+    cty = [path_for("reference") / "tiger_roads" / f
            for f in ("tl_2024_42083_roads.shp", "tl_2024_42121_roads.shp")]
     tg = [gpd.read_file(f).to_crs(DST_CRS) for f in cty if f.exists()]
     if tg and len(clean):

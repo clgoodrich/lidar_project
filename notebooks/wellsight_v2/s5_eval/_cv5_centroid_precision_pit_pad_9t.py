@@ -60,12 +60,12 @@ sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2"))
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2" / "s3_train"))
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2" / "s5_eval"))
 
-from _common import DERIV_9T                                    # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402
 from _pit_unet_cv5 import assign_folds, polygonize              # noqa: E402
 
-ANN_GPKG = ROOT / "data" / "derivatives" / "annotations" / "annotations_proj.gpkg"
+ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
-OUT = ROOT / "data" / "derivatives" / "eval_9t_centroid_matching"
+OUT = path_for("derivatives") / "eval_9t_centroid_matching"
 
 CRS = "EPSG:6346"
 CV_SEED = 20260727          # must match both CV runs

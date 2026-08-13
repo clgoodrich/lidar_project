@@ -53,10 +53,10 @@ import rasterio
 from rasterio.features import rasterize
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T as D
+from _common import DERIV, DERIV_9T as D, path_for
 
-SRC_1M = DERIV / "tiles" / "9t_1m"
-ANN = DERIV / "annotations" / "annotations_proj.gpkg"
+SRC_1M = path_for("derived") / "9t_1m"
+ANN = path_for("truth") / "annotations_proj.gpkg"
 ROAD_BUFFER_M = 1.5
 DRAIN_BUFFER_M = 2.0  # channels are a touch wider than the 1.5 m road half-width
 

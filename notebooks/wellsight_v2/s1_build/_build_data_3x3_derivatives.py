@@ -30,13 +30,13 @@ import rasterio
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import DERIV, DST_CRS, ROOT
+from _common import DERIV, DST_CRS, ROOT, path_for
 from _build_derivatives import build as build_derivatives  # type: ignore
 from _build_3x3_hillshades import discover_tiles as discover_wp, enumerate_blocks as enumerate_wp_blocks  # type: ignore
 
-ROOT_3X3 = DERIV / "tiles" / "data_3x3"
+ROOT_3X3 = path_for("data_3x3")
 NC_RE = re.compile(r"^e(\d{4})n(\d{4})$")
-NC_SRC_DIR = ROOT / "data" / "source_laz" / "mckean"
+NC_SRC_DIR = path_for("source") / "mckean"
 NC_SRC_CRS = "EPSG:6350"
 
 
@@ -115,7 +115,7 @@ def main() -> int:
     t_total = time.time()
     for region, key, out_dir, dem_path, members, src_crs in jobs:
         sfx = f"{key}_1m"
-        merge_path = ROOT / "data" / "source_laz" / "westernpa" / f"_merged_{region}_{sfx}.las"
+        merge_path = path_for("source") / "westernpa" / f"_merged_{region}_{sfx}.las"
         x0, y0, x1, y1 = bbox_from_dem(dem_path)
         print(f"\n========== {region}/{key} ==========")
         print(f"  bbox: {x0:.0f},{y0:.0f},{x1:.0f},{y1:.0f}  ({(x1-x0):.0f}x{(y1-y0):.0f} m)")

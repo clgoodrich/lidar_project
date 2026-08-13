@@ -42,7 +42,7 @@ from rasterio.features import rasterize
 from torch.utils.data import ConcatDataset, DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T, make_profile, write_tif
+from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for
 from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet, load_stats,
                  predict_full_tile, train_loop)
 
@@ -56,7 +56,7 @@ BLOCKS = DERIV_9T / "pit_blocks_9t.gpkg"
 MANIFEST = DERIV_9T / "road_dataset_manifest.csv"
 CHUNKS = DERIV_9T / "road_chunks_9t.gpkg"
 
-BLOCK = DERIV / "tiles" / "data_3x3" / "westernpa_d20" / "613590"
+BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
 CORR = BLOCK / "corrections"
 CORR_FEATURES = BLOCK / "features_613590_1m.tif"
 CORR_LABELS = CORR / "labels_road_corr_613590_1m.tif"

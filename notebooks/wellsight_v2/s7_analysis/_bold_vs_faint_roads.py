@@ -53,11 +53,11 @@ import matplotlib.pyplot as plt  # noqa: E402
 warnings.filterwarnings("ignore")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS  # noqa: E402
+from _common import DERIV, DST_CRS, path_for  # noqa: E402
 
-R9 = DERIV / "tiles" / "9t"
-ANN = DERIV / "annotations"
-OUT = DERIV / "experiments" / "road_morphology_bins"
+R9 = path_for("nine_t")
+ANN = path_for("truth")
+OUT = path_for("experiments") / "road_morphology_bins"
 
 STEP = 10.0        # m between transects
 HALF_W = 60.0      # m each side — wide enough to hold real context
@@ -272,7 +272,7 @@ def main() -> int:
     for col, args in (("dist_pad_m", (ANN / "annotations_proj.gpkg", "plat")),
                       ("dist_pit_m", (ANN / "annotations_proj.gpkg", "pit_inside")),
                       ("dist_drain_m", (ANN / "annotations_proj.gpkg", "drainage")),
-                      ("dist_wells_m", (DERIV / "annotations" / "oil_gas_locations.gpkg", None))):
+                      ("dist_wells_m", (path_for("truth") / "oil_gas_locations.gpkg", None))):
         v = dist_to(*args)
         if v is not None:
             df[col] = v.values

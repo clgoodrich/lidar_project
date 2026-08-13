@@ -58,7 +58,7 @@ from skimage.morphology import (binary_closing, disk, remove_small_objects,
                                  skeletonize)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS  # noqa: E402
+from _common import DERIV, DST_CRS, path_for  # noqa: E402
 
 REGION = "westernpa_d20"
 
@@ -443,7 +443,7 @@ def main() -> int:
     ap.add_argument("--buf", type=float, default=BUF_M)
     args = ap.parse_args()
 
-    root = DERIV / "tiles" / "data_3x3" / REGION
+    root = path_for("data_3x3") / REGION
     blocks = sorted(p for p in root.iterdir()
                     if p.is_dir() and (p / f"road_prob_{p.name}_1m.tif").exists())
     if args.list:

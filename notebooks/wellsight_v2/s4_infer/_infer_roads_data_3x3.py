@@ -35,21 +35,21 @@ import torch
 from matplotlib.colors import ListedColormap
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, make_profile, write_tif
+from _common import DERIV, make_profile, write_tif, path_for
 from _dl import DEVICE, UNet, predict_full_tile
 
 TRAINING_CHANNELS = (
     "lrm_25", "lrm_5", "slope", "tpi_05",
     "openness_pos", "openness_neg", "roughness_11",
 )
-ROAD_CKPT = DERIV / "tiles" / "9t" / "road_unet_1m" / "best.pt"  # 1 m model, matches blocks
+ROAD_CKPT = path_for("nine_t") / "road_unet_1m" / "best.pt"  # 1 m model, matches blocks
 # 3-class road model: 0=bg, 1=road, 2=drainage (drainage learned as a class so it
 # is no longer predicted as road). See docs/iterations/road_unet_1m.md.
 PATCH, OVERLAP, N_CLASSES = 256, 64, 3
 
 
 def block_dirs(region: str) -> list[Path]:
-    root = DERIV / "tiles" / "data_3x3" / region
+    root = path_for("data_3x3") / region
     return sorted(p for p in root.iterdir()
                   if p.is_dir() and (p / f"dem_{p.name}_1m.tif").exists())
 

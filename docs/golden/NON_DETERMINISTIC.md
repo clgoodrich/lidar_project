@@ -100,3 +100,31 @@ a trustworthy baseline. The two deferred scripts are the two that most need
 Phase 2's `assign_folds` extraction and a write-guard — not because they are
 broken, but because they are the exact shape of footgun this whole
 reorganization has been fighting all session.
+
+## 2026-08-12 — the 11 Phase 0 baselines are STALE (inputs changed, not code)
+
+All five golden records covering annotation-reading scripts fail verify today:
+`prep_annotations`, `heldout_overlap`, `heldout_rim_containment`,
+`score_road_613590`, `reeval_instance_precision`.
+
+**This is not a code regression.** The same failures reproduce against the
+pre-conversion code, verified by stashing the change and re-running. The cause is
+that `data/derivatives/annotations/annotations_proj.gpkg` has uncommitted
+modifications made before the 2026-08-12 session, so every downstream product
+legitimately differs from what was recorded on 2026-08-11.
+
+Re-recording is the correct maintenance action, but it freezes whatever
+annotation state is on disk at that moment. That belongs to whoever made the
+edits, not to a refactor pass. Left stale deliberately.
+
+**How the path-literal conversion was proven instead.** A fresh baseline was
+recorded from the ORIGINAL code, the conversion was restored, and verify was run
+against that baseline:
+
+| record | result |
+|---|---|
+| `conversion_equivalence_rim_containment_9t.json` | 5 unchanged, 0 mismatched — PASS |
+| `conversion_equivalence_road_score_613590.json`  | 3 unchanged, 0 mismatched — PASS |
+
+Byte-identical output across the conversion. Those two records stay as the
+evidence; they are A/B artifacts, not pipeline baselines.

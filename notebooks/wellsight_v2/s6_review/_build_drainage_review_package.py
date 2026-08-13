@@ -43,14 +43,14 @@ from scipy import ndimage as ndi
 from shapely.geometry import LineString
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS
+from _common import DERIV, DST_CRS, path_for
 
 # Reuse the road extraction primitives so drainage segments behave like road
 # segments in QGIS (same chunk length, same skeleton/prune semantics).
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "s5_eval"))
 from _road_optimize import island_filter, lines_from_skel, prune_merge, skeleton
 
-REGION = DERIV / "tiles" / "data_3x3" / "westernpa_d20"
+REGION = path_for("data_3x3") / "westernpa_d20"
 CHUNK_M = 40.0
 
 # Drainage extraction. Deliberately simpler than the road pipeline: no ridge
