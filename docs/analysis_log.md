@@ -3,6 +3,82 @@
 Append-only record of every processing decision, parameter choice, and run
 result. Newest entries at the top. Per `Claude.md` reporting rule.
 
+
+---
+
+## 2026-08-12 — Phase 4 executed: the role-based tree is live
+
+Branch `reorg/phase4`. **12,076 files, 98 GB moved. Nothing deleted.** Every move
+went through `tools/apply_moves.py`, is recorded in `docs/MOVES.csv`, and
+reverses with `--undo`. Each move was replayed onto
+`E:\Colton\_BACKUPS\lidar_project_MIRROR` with the new `--root` flag, so the
+mirror stayed a mirror instead of doubling (robocopy `/XO` never deletes).
+
+| Phase | Moved | What |
+|---|---:|---|
+| 4B | 31 | root clutter, 17 ledgers to `docs/_ledgers/`, 6 QGIS sidecars, 3 landcover clips |
+| 4E | 105 | obsolete-with-evidence to `99_archive/superseded/` (390 MB) |
+| 4C | 221 | truth to `02_truth/`, the nine flat `eval_*` to `05_results/<area>/<target>/<question>/` |
+| 4D.1 | 9,356 | models to `04_models/<target>/<run>/`, `iterations` to `_retired/` (24 GB) |
+| 4D.2 | 2,119 | `tiles/` and `label_grids/` to `03_derived/` (70 GB) |
+| 4D.3 | 270 | experiments, validation, 613590 inference (3.9 GB) |
+
+**`label_grids/` is gone from the repository root.** It was a 1 m derivative
+stack, a QGIS project and two annotation layers, top-level only because
+`_build_label_grids.py:46` hardcoded the path. Each part now lives with its kind.
+
+**206 of 226 path literals converted** to `path_for()` by
+`tools/convert_path_literals.py`. The rewrite is an identity by construction: it
+only fires when the literal prefix is string-equal to the configured value.
+
+**Proven equivalent, not assumed.** Five golden records failed after the
+conversion — and failed identically against the *original* code, because
+`annotations_proj.gpkg` has uncommitted edits predating the session. Equivalence
+was shown by A/B instead: record from original code, restore the conversion,
+verify. Byte-identical.
+
+### Three tools were themselves holding stale paths
+
+Each failed silently, which is the exact disease being cured.
+
+1. `verify_paths.py` hardcoded `DERIV` / `DERIV_9T` and reported 83 phantom
+   broken constants after 4D. Now seeds from `config/paths.toml` and folds
+   `path_for()` and `.parent` — resolved constants 124 → 325.
+2. `golden.py` watched `data/derivatives` only. A re-record returned "0 output
+   files" and would have written an empty baseline that passes forever.
+3. Gate E had two blind spots: a `.parent.parent` climb, and a directory path
+   packed into one string ending `.shp`. Both reached the ground truth. Closing
+   them found 13 more sites that 4C would otherwise have broken.
+
+### Gate A caught a real leak
+
+`_backup_pit_ann426_2026-06-10` is filed as an annotation snapshot but carries a
+full `pit_unet_cv5` run — five fold prob rasters over 100 MB each. Moving it into
+`02_truth/_history`, which has no size rule by design, exposed them. The snapshot
+was **not** split (that destroys a dated record); `_history` got a targeted rule
+instead.
+
+### Corrections to the plan, made on evidence
+
+- `diagnostics/twi_9t_1m.tif` is **not** a duplicate — max pixel difference 18.74.
+- `.qml` styles do **not** move to `qgis/styles/` — QGIS auto-loads them from
+  beside the layer, so centralising would unstyle all 18.
+- `oil_gas_locations.gpkg` (77 MB) is a DEP export, not hand-drawn truth. Moved
+  to reference and ignored. The 02_truth tree caught it by having no size rule.
+- Sequencing: I had said these conversions must wait for `refactor-package`.
+  That branch has not touched a single script, so there was no conflict, and
+  converting first makes the refactor easier.
+
+### Not done
+
+`data/derivatives/` still holds 110 loose files; `source_laz/` and `external/`
+have not moved into `01_source/`. The loose files are the hard remainder — many
+are referenced by exact filename, and 11 are the canonical 1 m 9t stack, which
+cannot be consolidated until the `_prep_road_1m.py` stats regression is resolved.
+
+Gates at close: A clean, B 61/61, C 8 broken (4 known-dead, 4 create-on-write,
+none new), D re-recorded at the new paths and passing, E green at 20.
+
 ---
 
 ## 2026-08-12 — Phase 4 reorganization plan (role-based layout), no files moved
