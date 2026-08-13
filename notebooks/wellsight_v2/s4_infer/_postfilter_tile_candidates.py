@@ -80,7 +80,7 @@ def main() -> int:
     args = ap.parse_args()
     sfx = args.suffix
 
-    inf = DERIV / f"inference_{sfx}"
+    inf = path_for("derived") / sfx / "derived" / "inference"
     dem = path_for("derived") / sfx / "derived" / f"dem_{sfx}.tif"
     with rasterio.open(dem) as r:
         res = r.res[0]

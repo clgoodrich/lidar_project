@@ -46,49 +46,48 @@ __all__ = [
 # down.
 
 #
-# Kept in step with config/paths.toml by hand. The config wins; this is only the
-# fallback for a missing or unparseable file, so a config typo degrades to the
-# last-known-good layout instead of taking the pipeline down.
+# GENERATED FROM config/paths.toml -- do not hand-edit, and do not let it drift.
+# The config wins at runtime; this is the fallback for a missing or unparseable
+# file. It went stale across the 2026-08-13 move and would have silently sent a
+# broken-config run at data/derivatives, a directory that no longer exists.
+# tests/test_paths_config.py asserts the two stay identical.
 _DEFAULTS: dict[str, str] = {
-    "data": "data",
-    # 01 source -- immutable
-    "source": "data/source_laz",
-    "source_laz": "data/source_laz",
-    "reference": "data/external",
-    "external": "data/external",
-    "landcover": "data/external/landcover",
-    # 02 truth -- hand-drawn, irreplaceable
-    "truth": "data/derivatives/annotations",
-    "annotations": "data/derivatives/annotations",
-    "truth_grids": "label_grids",
-    "truth_history": "data/derivatives/annotations",
-    # 03 derived -- regenerable by definition
-    "derived": "data/derivatives/tiles",
-    "derivatives": "data/derivatives",
-    "tiles": "data/derivatives/tiles",
-    "nine_t": "data/derivatives/tiles/9t",
-    "nine_t_1m": "data/derivatives",
-    "data_3x3": "data/derivatives/tiles/data_3x3",
-    "label_grids": "label_grids",
-    # 04 models
-    "models": "data/derivatives/tiles/9t",
-    "pretrained": "models/pretrained",
-    "models_retired": "data/derivatives/tiles/9t/iterations",
-    # 05 results
-    "results": "data/derivatives",
-    "candidates": "data/derivatives/experiments/candidates",
-    "validation": "data/derivatives/validation",
-    # 06 experiments / 99 archive
-    "experiments": "data/derivatives/experiments",
-    "archive": "data/99_archive",
-    # repo-level
-    "literature": "literature",
-    "docs": "docs",
-    "ledgers": "docs/_ledgers",
-    "figures": "docs/figures",
-    "qgis": "qgis",
-    "tools": "tools",
+    'data': 'data',
+    'source': 'data/_source/lidar',
+    'source_laz': 'data/_source/lidar',
+    'reference': 'data/_source/reference',
+    'external': 'data/_source/reference',
+    'landcover': 'data/_source/reference/landcover',
+    'dep_wells': 'data/_source/reference/dep_wells',
+    'pretrained': 'data/_pretrained',
+    'experiments': 'data/_experiments',
+    'shared_results': 'data/_results',
+    'candidates': 'data/_results/candidates',
+    'validation': 'data/_results/validation',
+    'archive': 'data/_archive',
+    'truth': 'qgis/annotations',
+    'annotations': 'qgis/annotations',
+    'truth_grids': 'qgis/annotations/grids',
+    'truth_history': 'qgis/annotations/_history',
+    'nine_t': 'data/9t/derived/05',
+    'nine_t_1m': 'data/9t/derived/1m',
+    'models': 'data/9t/models',
+    'models_retired': 'data/9t/models/_retired',
+    'results_9t': 'data/9t/results',
+    'results_613590': 'data/613590/results',
+    'derived': 'data',
+    'tiles': 'data',
+    'data_3x3': 'data',
+    'label_grids': 'data/grids',
+    'results': 'data/_results',
+    'literature': 'literature',
+    'docs': 'docs',
+    'ledgers': 'docs/_ledgers',
+    'figures': 'docs/figures',
+    'qgis': 'qgis',
+    'tools': 'tools',
 }
+
 
 
 def _load_config() -> tuple[Path, dict]:
@@ -140,7 +139,13 @@ def path_for(name: str) -> Path:
 
 
 # --- Legacy names, unchanged in meaning ------------------------------------
-DERIV: Path = PATHS["derivatives"]
+#: LEGACY. Before the 2026-08-13 area-major move this was data/derivatives, the
+#: catch-all that held rasters, models, results and ground truth at one depth.
+#: That directory no longer exists. DERIV now means the DATA ROOT, and it is
+#: kept only so the ~20 scripts with `from _common import DERIV` still import.
+#: There are zero remaining `DERIV / ...` uses -- new code must not add one.
+#: Use path_for("derived") / <area> / "derived", or the specific key.
+DERIV: Path = PATHS["data"]
 DERIV_9T: Path = PATHS["nine_t"]
 DST_CRS: str = CONFIG.get("crs", {}).get("project", "EPSG:6346")
 PDAL_EXE: str = (shutil.which("pdal")

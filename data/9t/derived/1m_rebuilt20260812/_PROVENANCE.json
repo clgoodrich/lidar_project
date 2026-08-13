@@ -1,0 +1,14 @@
+{
+  "directory": "9t/derived/1m_rebuilt20260812",
+  "area": "9t",
+  "role": "derived",
+  "resolution": "1m_rebuilt20260812",
+  "files": 21,
+  "bytes": 1030826831,
+  "newest_file": "2026-08-12",
+  "regenerable": true,
+  "rebuild": null,
+  "rebuild_note": "QUARANTINE. Output of _prep_road_1m.py, whose values are ~2% off what the models trained on. Deliberately not wired up. See docs/HANDOFF_code_cleanup_wellsight_v2.md:281",
+  "recorded": "2026-08-13",
+  "recorded_at_git_sha": "0b79f3f"
+}

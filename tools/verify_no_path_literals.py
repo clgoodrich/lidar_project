@@ -191,7 +191,13 @@ def scan(path: Path, keys: dict[str, str]) -> list[dict]:
         # depth of one. Only further DIRECTORY nesting hides a path.
         if looks_like_file(segs[0]):
             continue
-        if len(segs) == 1 and looks_like_file(segs[0]):
+        # `ROOT / "notebooks" / "wellsight_v2"` is a sys.path bootstrap, not a
+        # data path. A script must be able to name its own package directory,
+        # and that location is load-bearing regardless -- 93 `parents[N]` calls
+        # resolve against it. Routing it through path_for() would make the
+        # import machinery depend on the config file it is importing in order
+        # to read. Code locations are exempt; data locations are not.
+        if segs[0] in ("notebooks", "ui", "roads_studio", "tools", "tests"):
             continue
         out.append({
             "file": path.relative_to(ROOT).as_posix(),

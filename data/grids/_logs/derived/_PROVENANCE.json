@@ -1,0 +1,14 @@
+{
+  "directory": "grids/_logs/derived",
+  "area": "grids",
+  "role": "derived",
+  "resolution": null,
+  "files": 4,
+  "bytes": 10538,
+  "newest_file": "2026-06-16",
+  "regenerable": true,
+  "rebuild": "python notebooks/wellsight_v2/s2_labels/_build_label_grids.py --region westernpa",
+  "rebuild_note": "Regenerable. Deleting this directory loses nothing that the command above cannot rebuild from data/_source/lidar/.",
+  "recorded": "2026-08-13",
+  "recorded_at_git_sha": "0b79f3f"
+}

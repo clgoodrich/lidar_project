@@ -1,0 +1,14 @@
+{
+  "directory": "mckean/mkf/derived/road_1m",
+  "area": "mckean",
+  "role": "derived",
+  "resolution": "road_1m",
+  "files": 25,
+  "bytes": 3412963520,
+  "newest_file": "2026-07-23",
+  "regenerable": true,
+  "rebuild": "python notebooks/wellsight_v2/s1_build/_build_derivatives.py --suffix mckean",
+  "rebuild_note": "Regenerable. Deleting this directory loses nothing that the command above cannot rebuild from data/_source/lidar/.",
+  "recorded": "2026-08-13",
+  "recorded_at_git_sha": "0b79f3f"
+}

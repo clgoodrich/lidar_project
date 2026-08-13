@@ -1,0 +1,14 @@
+{
+  "directory": "610594/derived/1m",
+  "area": "610594",
+  "role": "derived",
+  "resolution": "1m",
+  "files": 24,
+  "bytes": 111411720,
+  "newest_file": "2026-07-10",
+  "regenerable": true,
+  "rebuild": "python notebooks/wellsight_v2/s1_build/_build_derivatives.py --suffix 610594",
+  "rebuild_note": "Regenerable. Deleting this directory loses nothing that the command above cannot rebuild from data/_source/lidar/.",
+  "recorded": "2026-08-13",
+  "recorded_at_git_sha": "0b79f3f"
+}

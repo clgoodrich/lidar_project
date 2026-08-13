@@ -59,7 +59,7 @@ FED_RE = r"IIJA|MERP|MReP|GRANT CONTRACT|PLUG CONTRACT"
 
 REGIONS = {
     "venango": {
-        "new_gpkg": DERIV / "venango_wells_all.gpkg",
+        "new_gpkg": path_for("dep_wells") / "venango_wells_all.gpkg",
         "county_id": 121,
         "old_csv": OLD_VENANGO,
         "block": box(619311, 4592854, 624172, 4597660),  # 9t

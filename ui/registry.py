@@ -164,7 +164,7 @@ _add(Task(
     id="analysis.age", label="Well age vs morphology", group="Analysis",
     script=f"{S7}/_well_age_morphology.py", gpu=False, inputs=[],
     build=lambda v: [],
-    outputs=lambda v: [DERIV / "experiments/well_age_morphology/"
+    outputs=lambda v: [path_for("experiments") / "well_age_morphology" /
                        "summary_stats.json"],
     docs="docs/iterations/well_age_morphology.md"))
 
@@ -174,14 +174,14 @@ _add(Task(
     inputs=[Inp("radio", "k", "Clusters (k)", choices=["", "2", "3"],
                 default="", help="blank = silhouette-selected k")],
     build=lambda v: (["--k", v["k"]] if v.get("k") else []),
-    outputs=lambda v: [DERIV / "experiments/pad_morphology_bins"],
+    outputs=lambda v: [path_for("experiments") / "pad_morphology_bins"],
     docs="docs/iterations/pad_morphology_bins.md"))
 
 _add(Task(
     id="analysis.photos", label="Well photo source locations", group="Analysis",
     script=f"{S7}/_photo_source_locations.py", gpu=False, inputs=[],
     build=lambda v: [],
-    outputs=lambda v: [DERIV / "experiments/well_photo_locations/"
+    outputs=lambda v: [path_for("experiments") / "well_photo_locations" /
                        "well_photo_locations.gpkg"]))
 
 

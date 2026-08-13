@@ -108,7 +108,7 @@ def main() -> int:
     args = ap.parse_args()
     sfx = args.suffix
     tile_dir = path_for("derived") / sfx / "derived"
-    out_dir = DERIV / f"inference_{sfx}"
+    out_dir = path_for("derived") / sfx / "derived" / "inference"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     rgb_path = build_rgb3(tile_dir, sfx)

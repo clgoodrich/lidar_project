@@ -67,7 +67,7 @@ def find_channel_files(sfx: str) -> list[tuple[str, Path]]:
         on_disk = rough_band if name == "roughness_11" else name
         candidates = [
             path_for("derived") / sfx / "derived" / f"{on_disk}_{sfx}.tif",   # new layout (subdir + descriptive name)
-            DERIV / f"{on_disk}_{sfx}.tif",          # legacy flat
+            path_for("derived") / sfx / "derived" / f"{on_disk}_{sfx}.tif",
         ]
         for p in candidates:
             if p.exists():
@@ -146,7 +146,7 @@ def infer_one(name: str, ckpt: Path, n_classes: int, patch: int, overlap: int,
 def render_overlay(argmaps: dict[str, np.ndarray], sfx: str, out_dir: Path) -> None:
     hs_path = path_for("derived") / sfx / "derived" / f"hillshade_{sfx}.tif"   # new layout
     if not hs_path.exists():
-        hs_path = DERIV / f"hillshade_{sfx}.tif"               # legacy flat fallback
+        hs_path = path_for("derived") / sfx / "derived" / f"hillshade_{sfx}.tif"
     with rasterio.open(hs_path) as r:
         hs = r.read(1); b = r.bounds
     extent = [b.left, b.right, b.bottom, b.top]
@@ -185,7 +185,7 @@ def main() -> int:
                          "(e.g. mck_e1423n2238_05)")
     args = ap.parse_args()
 
-    out_dir = DERIV / f"inference_{args.suffix}"
+    out_dir = path_for("derived") / args.suffix / "derived" / "inference"
     out_dir.mkdir(parents=True, exist_ok=True)
     features = stack_features(args.suffix, out_dir / f"features_{args.suffix}.tif")
 
