@@ -95,7 +95,8 @@ three are broken today. Which 1 m stack is canonical is a path decision for the
 **4B — 31 moves, nothing deleted.** All through `tools/apply_moves.py`, recorded
 in `docs/MOVES.csv`, reversible with `--undo`.
 
-- Repo root drops from 21 entries to 12. The nine loose files were figures,
+- Repo root drops from 30 visible entries to 21, and loose non-documentation
+  files at the root go from 9 to 0. The nine were figures,
   scratch notes, a download manifest, a pretrained weight and a robocopy log.
   Renamed where the name did not say what the file shows —
   `bad roads.png` → `docs/figures/scratch/road_vectorization_bad_result_613590.png`.
