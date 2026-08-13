@@ -6,6 +6,77 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-12 — Phase 4F: the layout is area-major, and annotations are in qgis/
+
+**The axis of 4C/4D was reversed on the user's correction, and the correction was
+right.** The original ask — "why does it contain a folder for the tiles, but also
+a folder for all these different evals for one tile?" — was pointing at
+area-major. I read it as "evals should not be flat siblings", built role-major,
+and so answered "show me every derivative" well while making "show me everything
+about 9t" a four-directory hunt. That is the original complaint rotated.
+
+```
+data/9t/{derived,models,results,experiments}/
+data/613590/{derived,results}/
+data/westernpa_d20/<block>/derived/1m/
+data/mckean/{mk5,mkf,sw,e1423n2238}/derived/<res>/
+data/grids/westernpa_0N/derived/1m/
+data/_source | _results | _experiments | _pretrained | _logs | _archive/
+qgis/annotations/   <- hand-drawn truth
+```
+
+Role survives as the **second** level. That is what keeps `.gitignore` to one
+rule per role (`data/**/derived/**`) rather than one per directory.
+
+`data/derivatives` no longer exists. Neither does `label_grids`, nor the
+`02_truth` / `03_derived` / `04_models` / `05_results` tree built earlier the
+same day.
+
+**Annotations moved to `qgis/annotations/`** — what was asked for originally. I
+had offered it and then argued against it on the grounds that data should not sit
+in a tool directory. That argument does not survive the facts: `roads.shp` spans
+Oil Creek to McKean, so truth cannot be area-major regardless, and `qgis/` is
+where it is drawn every day. `path_for("truth")` points there, so no script names
+a GUI folder.
+
+**12,075 files, 99 GB** moved on C: and replayed onto the E: mirror, plus three
+whole-directory renames (`99_archive`, `source_laz`, `external`) recorded as
+single `MOVES.csv` rows instead of 89,051 per-file entries.
+
+### .gitignore regenerated rather than patched
+
+The old file was ~280 lines carrying roughly 60 rules anchored to paths this
+phase moved. A rule pointing at a directory that no longer exists protects
+nothing while looking like it does. The replacement is policy-by-role in ~40
+rules; the original is preserved at
+`docs/_ledgers/gitignore_pre_area_major.bak`.
+
+**Gate A caught two leaks against the new rules, both real:**
+`data/**/experiments/**` does not match the shared `data/_experiments/`
+(underscore is not the same component), and `.gpkg` was missing from the
+experiments rule.
+
+### golden.py watches data/ wholesale now
+
+Its narrower watch list went stale twice in two days — Phase 4D and Phase 4F —
+and each time failed **silently**, recording an empty baseline that passes verify
+forever. A slower walk beats a gate that lies.
+
+### Also
+
+- `tools/plan_consolidation.py` retired: it planned the Phase 2 consolidation
+  into `tiles/`, and neither `tiles/` nor `data/derivatives` exists now.
+- Two files named `hillshade.tif` collided during the move. Not duplicates —
+  1500×1500 at e621000 n4594500 (inside 9t) versus 3454×3403 at e697294 n4645706.
+  Both renamed to say what they show.
+- Verified end to end: `_heldout_rim_containment_9t.py` runs, writes to
+  `data/9t/results/pit/rim_containment/`, and golden-verifies unchanged.
+
+Gates at close: A clean, B 61/61 QGIS layers resolve, C re-baselined, D passing,
+E green at 19 remaining literals.
+
+---
+
 ## 2026-08-12 — Phase 4 executed: the role-based tree is live
 
 Branch `reorg/phase4`. **12,076 files, 98 GB moved. Nothing deleted.** Every move
