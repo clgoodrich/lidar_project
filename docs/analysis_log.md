@@ -133,6 +133,32 @@ package refactor.
 layers resolve). C improved, broken script constants 14 → 7, no new breakage vs
 baseline. D not re-run (no pipeline code changed). E green at baseline.
 
+**4E — 105 files, 390.5 MB archived. Nothing deleted.**
+
+Every item was checked against the rebuilt index for **literal** path references,
+not name matches. That distinction mattered: `road_multiblock/` showed 10
+"references" that were all basename collisions on `best.pt`, `train_log.csv` and
+`test_metrics.json`. Literal references: zero. `n_refs` alone over-reports badly
+and must not be used as the move test on its own.
+
+| Archived | Files | Size | Evidence |
+|---|---:|---:|---|
+| `road_multiblock/` | 21 | 251.8 MB | `LEADERBOARD.md` — "Rejected. Diluting the dense 9t core hurt." |
+| six `*.BAK` | 6 | 96.7 MB | three superseded road checkpoints, two pre-schema annotation copies, one pre-rebuild manifest |
+| `roads_<key>_1m.gpkg` + `road_clean_*` across 25 blocks | 78 | 61.0 MB | `BACKLOG.md:201` — "obsolete and can be deleted" |
+
+All three have `ARCHIVE_MANIFEST.csv` rows and reverse with
+`tools/apply_moves.py --undo --phase phase4e`.
+
+**One §6.1 claim withdrawn.** `tiles/9t/diagnostics/twi_9t_1m.tif` was listed as
+byte-identical to `tiles/9t/twi_9t_1m.tif`. It is not. Same shape, CRS and
+transform; different sha256; **max abs pixel difference 18.74 TWI units**. Two
+different rasters sharing a filename across parent and child directory. Not
+archived. The `_dupe` rule does not apply because the contents differ — this
+needs disambiguating names instead.
+
+Gates after 4E: A clean, B 61/61, C unchanged at 7, no new breakage.
+
 ---
 
 ## 2026-08-06 — 9t-only road retrain, 613590 out-of-domain test, 12-model comparison

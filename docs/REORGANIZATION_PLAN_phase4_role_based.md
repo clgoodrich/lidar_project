@@ -439,7 +439,7 @@ while." Everything below has a citation. Nothing is deleted — all of it moves 
 | `roads_<key>_1m.gpkg` + `road_clean_*` across 25 `data_3x3` blocks | ~1 GB | `BACKLOG.md:201`: "obsolete and can be deleted" — 2-class rollout leftovers |
 | ICP change-detection Part-2 outputs | varies | `BACKLOG.md:257`: "[STALE 2026-07-31] Part 2 outputs derive from the superseded DoD" |
 | pit/pad IoU-strictness eval outputs | ~50 MB | `BACKLOG.md:36`: "[METRIC] IoU is retired for pits and pads" |
-| `tiles/9t/diagnostics/twi_9t_1m.tif` | 77 MB | byte-identical to `tiles/9t/twi_9t_1m.tif` |
+| ~~`tiles/9t/diagnostics/twi_9t_1m.tif`~~ | 77 MB | **CLAIM WITHDRAWN 2026-08-12.** Not a duplicate. Same shape, CRS and transform as `tiles/9t/twi_9t_1m.tif`, but different sha256 and **max abs pixel difference 18.74 TWI units**. Two genuinely different rasters sharing one filename across parent and child directory. Not archived. Needs disambiguating names, not archiving — and the `_dupe` rule does not apply, because the contents are not identical. |
 | 6 × `*.gpkg-wal` / `*.gpkg-shm` in `derivatives/` | small | QGIS transaction sidecars. Never valid to persist. |
 | `notebooks/wellsight/` | 12 MB, 51 `.py` | v1 tree. Zero references from live code. `e437502` restored the 40 v1-only scripts here; they belong in `archive/wellsight/` beside the other 63. |
 
