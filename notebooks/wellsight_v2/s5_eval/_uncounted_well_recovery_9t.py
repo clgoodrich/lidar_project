@@ -75,8 +75,8 @@ MIN_AREA_M2 = 4.0
 # Thresholds carried over from the val selection in
 # _reeval_instance_precision_9t.py so this is not a second tuning pass.
 UNET = {
-    "pit_unet_v2": ("pit", NINE_T / "pit_unet_v2" / "pit_prob_floor.tif", 0.60),
-    "plat_unet":   ("pad", NINE_T / "plat_unet" / "plat_prob.tif", 0.50),
+    "pit_unet_v2": ("pit", path_for("models") / "pit" / "unet_v2" / "pit_prob_floor.tif", 0.60),
+    "plat_unet":   ("pad", path_for("models") / "plat" / "unet" / "plat_prob.tif", 0.50),
 }
 # "Counted" = a catalogued well close enough to an annotation that the model
 # effectively saw it as a label. Pads are big, pits are small, so the radius

@@ -128,3 +128,22 @@ against that baseline:
 
 Byte-identical output across the conversion. Those two records stay as the
 evidence; they are A/B artifacts, not pipeline baselines.
+
+## 2026-08-12 — a golden record tracks output PATHS, so a move invalidates it
+
+After Phase 4D, `conversion_equivalence_rim_containment_9t` failed with
+**0 MISMATCHED, 5 MISSING, 0 new/extra**. Read that shape carefully before
+treating it as a regression: nothing produced different content. The five
+outputs moved from `data/derivatives/eval_9t_rim_containment/` to
+`data/05_results/9t/pit/rim_containment/`, which is the reorganization working.
+
+The distinction is worth stating because the two failure modes look alike in a
+summary line and mean opposite things:
+
+| shape | meaning |
+|---|---|
+| `n MISMATCHED` | same path, different bytes. **A real behaviour change.** |
+| `n MISSING, n new/extra` | same bytes, different path. A move. |
+| `n MISSING, 0 new/extra` | the run wrote to a path outside the watched set, or wrote nothing |
+
+Re-recorded at the new location after confirming the shape.

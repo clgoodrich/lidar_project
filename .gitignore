@@ -300,3 +300,20 @@ data/06_experiments/**/*.tif.aux.xml
 data/02_truth/_history/**/*.tif
 data/02_truth/_history/**/*.tif.aux.xml
 data/02_truth/_history/**/*.pt
+
+# --- 03_derived, Phase 4D (2026-08-12) ------------------------------------
+# Regenerable BY DEFINITION. If a file here cannot be deleted and rebuilt from a
+# script, it does not belong here. That single rule is what lets this be one
+# blanket instead of the ~30 per-directory rules it replaces -- each of which
+# was anchored to a path that Phase 4D just moved, and each of which would have
+# failed SILENTLY, letting a 100 MB raster into history.
+#
+# Track only the small records: provenance, notes, metrics, preview PNGs.
+data/03_derived/**
+!data/03_derived/**/
+!data/03_derived/**/_PROVENANCE.json
+!data/03_derived/**/*.md
+!data/03_derived/**/*.json
+!data/03_derived/**/*.csv
+!data/03_derived/**/*_preview.png
+!data/03_derived/**/*_quicklook.png

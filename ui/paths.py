@@ -24,7 +24,7 @@ RUNS.mkdir(parents=True, exist_ok=True)
 
 # --- common data locations the registry references ---
 TILES = path_for("derived")
-DATA3X3 = TILES / "data_3x3"
+DATA3X3 = path_for("data_3x3")
 SWEEP = path_for("models") / "road" / "sweep_202607"
 ANNOT = path_for("truth")
 

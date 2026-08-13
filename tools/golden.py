@@ -83,7 +83,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLDEN_DIR = ROOT / "docs" / "golden"
-WATCH_DIRS = ["data/derivatives", "docs", "qgis"]
+# Everywhere this project's scripts write. Phase 4D split data/derivatives into
+# the role directories, and a stale list here fails SILENTLY -- `record` simply
+# reports "0 output file(s) recorded" and writes an empty baseline, which then
+# passes verify forever. Caught 2026-08-12 when a re-record of a working script
+# came back empty. If a new top-level output directory is ever added, it must be
+# added here in the same change.
+WATCH_DIRS = [
+    "data/02_truth", "data/03_derived", "data/04_models", "data/05_results",
+    "data/06_experiments", "data/derivatives",   # derivatives: shrinking remainder
+    "docs", "qgis",
+]
 IGNORE_GLOBS = [
     "*.log", "*.aux.xml", "*_tmp_*", "docs/golden/*",
     "backup_to_*_last_run.log", "*/__pycache__/*", "*.gpkg-wal", "*.gpkg-shm",

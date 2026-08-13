@@ -47,7 +47,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV, DST_CRS, ROOT, path_for
 
 R9 = path_for("nine_t")
-PIT = R9 / "pit_unet_v2"
+PIT = path_for("models") / "pit" / "unet_v2"
 ANN = path_for("truth") / "annotations_proj.gpkg"
 TOL = 6.0  # centroid match tolerance (m) -- pit floors are small
 

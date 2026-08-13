@@ -1,0 +1,28 @@
+{
+  "pipeline": [
+    {
+      "type": "readers.las",
+      "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\files\\_merged_mck_e1423n2238_05.las"
+    },
+    {
+      "type": "filters.range",
+      "limits": "Classification[2:2]"
+    },
+    {
+      "type": "filters.delaunay"
+    },
+    {
+      "type": "filters.faceraster",
+      "resolution": 0.5,
+      "origin_x": 697762.0,
+      "origin_y": 4648649.0,
+      "width": 6908,
+      "height": 6808
+    },
+    {
+      "type": "writers.raster",
+      "filename": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\derivatives\\dem_mck_e1423n2238_05.tif",
+      "data_type": "float32"
+    }
+  ]
+}

@@ -49,11 +49,33 @@ BIG_BYTES = 100 * 1024 * 1024
 SCRIPT_ROOTS = ["notebooks/wellsight_v2", "ui", "roads_studio", "tools"]
 SKIP_DIRS = {".git", ".venv", "__pycache__", ".pytest_cache"}
 
-SEED = {
-    "ROOT": ROOT,
-    "DERIV": ROOT / "data" / "derivatives",
-    "DERIV_9T": ROOT / "data" / "derivatives" / "tiles" / "9t",
-}
+def _seed() -> dict:
+    """Seed the symbol table from config/paths.toml, never from a literal.
+
+    This table used to hardcode DERIV and DERIV_9T. Phase 4D moved both, and the
+    gate then reported 83 "broken" constants that were in fact fine -- the
+    checker was the thing spelling a stale path. A gate that hardcodes what it
+    is auditing cannot audit it. Read the config, same as _common does.
+    """
+    seed = {"ROOT": ROOT}
+    try:
+        import tomllib
+        cfg = tomllib.loads((ROOT / "config" / "paths.toml").read_text("utf8"))
+        paths = cfg.get("paths", {})
+    except Exception:                                   # noqa: BLE001
+        paths = {"derivatives": "data/derivatives",
+                 "nine_t": "data/derivatives/tiles/9t"}
+    for k, v in paths.items():
+        seed[k] = ROOT / v
+    seed["DERIV"] = seed.get("derivatives", ROOT / "data" / "derivatives")
+    seed["DERIV_9T"] = seed.get("nine_t", seed["DERIV"] / "tiles" / "9t")
+    return seed
+
+
+SEED = _seed()
+
+#: ``path_for("k")`` folds to the configured directory for ``k``.
+PATH_FOR_KEYS = {k: v for k, v in SEED.items() if k not in ("ROOT",)}
 
 
 # ---------------------------------------------------------------- gate A
@@ -119,9 +141,15 @@ def _fold(node, syms: dict):
         if isinstance(left, Path) and isinstance(right, str):
             return left / right
         return None
-    if isinstance(node, ast.Call):               # Path("...")
+    if isinstance(node, ast.Attribute) and node.attr == "parent":
+        base = _fold(node.value, syms)
+        return base.parent if isinstance(base, Path) else None
+    if isinstance(node, ast.Call):               # Path("...") / path_for("k")
         f = node.func
         nm = getattr(f, "id", None) or getattr(f, "attr", None)
+        if nm == "path_for" and node.args:
+            k = _fold(node.args[0], syms)
+            return PATH_FOR_KEYS.get(k) if isinstance(k, str) else None
         if nm == "Path" and node.args:
             v = _fold(node.args[0], syms)
             if isinstance(v, str):

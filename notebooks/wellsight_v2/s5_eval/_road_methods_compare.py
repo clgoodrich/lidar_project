@@ -30,8 +30,8 @@ import _road_optimize as ro  # enhance/to_mask/skeleton/lines_from_skel/prune_me
 from _common import DERIV, DST_CRS, path_for
 
 R9 = path_for("nine_t")
-RECALL = R9 / "road_unet_1m_recall"
-BLK = path_for("data_3x3") / "westernpa_d20" / "613590"
+RECALL = path_for("models") / "road" / "unet_1m_recall"
+BLK = path_for("data_3x3") / "westernpa_d20" / "613590" / "1m"
 
 # Distinct methods. reconnect tuple = (method, max_gap, max_ang, gate).
 METHODS = {

@@ -42,7 +42,7 @@ TRAINING_CHANNELS = (
     "lrm_25", "lrm_5", "slope", "tpi_05",
     "openness_pos", "openness_neg", "roughness_11",
 )
-ROAD_CKPT = path_for("nine_t") / "road_unet_1m" / "best.pt"  # 1 m model, matches blocks
+ROAD_CKPT = path_for("models") / "road" / "unet_1m" / "best.pt"  # 1 m model, matches blocks
 # 3-class road model: 0=bg, 1=road, 2=drainage (drainage learned as a class so it
 # is no longer predicted as road). See docs/iterations/road_unet_1m.md.
 PATCH, OVERLAP, N_CLASSES = 256, 64, 3

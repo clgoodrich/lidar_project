@@ -61,8 +61,8 @@ MAIN_THR = {"pit_unet_v2": 0.60, "plat_unet": 0.50}   # val-selected earlier
 MODELS = {
     # pits: floor probability. The wall band is a separate class and the
     # annotation being scored (pit_inside) is the floor.
-    "pit_unet_v2": ("pit", NINE_T / "pit_unet_v2" / "pit_prob_floor.tif"),
-    "plat_unet":   ("pad", NINE_T / "plat_unet" / "plat_prob.tif"),
+    "pit_unet_v2": ("pit", path_for("models") / "pit" / "unet_v2" / "pit_prob_floor.tif"),
+    "plat_unet":   ("pad", path_for("models") / "plat" / "unet" / "plat_prob.tif"),
 }
 
 

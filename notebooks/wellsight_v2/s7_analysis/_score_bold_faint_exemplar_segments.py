@@ -87,7 +87,7 @@ def main() -> int:
     out = gpd.GeoDataFrame(out, geometry="geometry", crs=clf.DST_CRS)
 
     # ---- model response -----------------------------------------------------
-    pr = clf.R9 / "road_unet_1m_recall" / "road_prob.tif"
+    pr = clf.path_for("models") / "road" / "unet_1m_recall" / "road_prob.tif"
     if pr.exists():
         with rasterio.open(pr) as s:
             pa = s.read(1).astype(np.float32)

@@ -74,8 +74,8 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
-PROB = NINE_T / "plat_unet" / "plat_prob.tif"
-RASTER_DIR = NINE_T / "plat_unet"
+PROB = path_for("models") / "plat" / "unet" / "plat_prob.tif"
+RASTER_DIR = path_for("models") / "plat" / "unet"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 OUT = path_for("results") / "9t" / "pad" / "thresholds"

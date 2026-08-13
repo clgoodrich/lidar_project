@@ -63,7 +63,7 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
-ITER = NINE_T / "iterations"
+ITER = path_for("models_retired")
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 OUT = path_for("results") / "9t" / "instance_precision"
 OUT.mkdir(parents=True, exist_ok=True)
@@ -90,8 +90,8 @@ INSTANCE_MODELS = {
 UNET_PROB = {
     # pits: floor prob ONLY. _unet_instance_eval used max(floor, wall), which
     # cannot be matched against floor-only GT without inflating false positives.
-    "pit_unet_v2": ("pit", NINE_T / "pit_unet_v2" / "pit_prob_floor.tif"),
-    "plat_unet":   ("pad", NINE_T / "plat_unet" / "plat_prob.tif"),
+    "pit_unet_v2": ("pit", path_for("models") / "pit" / "unet_v2" / "pit_prob_floor.tif"),
+    "plat_unet":   ("pad", path_for("models") / "plat" / "unet" / "plat_prob.tif"),
 }
 
 

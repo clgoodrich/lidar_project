@@ -431,7 +431,7 @@ def main() -> int:
             g["is_tiger"] = (g.tiger_match >= 0.5).astype(int)
             print(f"TIGER: {len(tg)} lines; {int(g.is_tiger.sum())}/{len(g)} roads "
                   f"match a TIGER road over >=50% of length")
-    pr = R9 / "road_unet_1m_recall" / "road_prob.tif"
+    pr = path_for("models") / "road" / "unet_1m_recall" / "road_prob.tif"
     if pr.exists():
         pv = sample_raster(pr, xs, ys).reshape(n_t, n_off)
         c0 = int(np.argmin(np.abs(offs)))

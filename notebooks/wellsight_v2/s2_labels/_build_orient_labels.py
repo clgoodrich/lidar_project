@@ -37,7 +37,7 @@ ANN = path_for("truth") / "annotations_proj.gpkg"
 L1 = DERIV_9T / "labels_road_9t_1m.tif"
 OUT_9T = DERIV_9T / "labels_roadorient_9t_1m.tif"
 
-BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
+BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590" / "1m"
 CORR = BLOCK / "corrections"
 CORR_L = CORR / "labels_road_corr_613590_1m.tif"
 CORR_LINES = CORR / "correction_lines_613590.gpkg"

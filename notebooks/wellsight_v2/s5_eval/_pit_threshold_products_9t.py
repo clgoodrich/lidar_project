@@ -44,7 +44,7 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
-PROB = NINE_T / "pit_unet_v2" / "pit_prob_floor.tif"
+PROB = path_for("models") / "pit" / "unet_v2" / "pit_prob_floor.tif"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 OUT = path_for("results") / "9t" / "pit" / "thresholds"
@@ -185,14 +185,14 @@ def main() -> int:
         # ---- rasters ----
         p = prof.copy(); p.update(dtype="uint8", nodata=0, count=1,
                                   compress="deflate", tiled=True)
-        rp = NINE_T / "pit_unet_v2" / f"pit_unet_floor_mask_{tg}_9t_05.tif"
+        rp = path_for("models") / "pit" / "unet_v2" / f"pit_unet_floor_mask_{tg}_9t_05.tif"
         with rasterio.open(rp, "w", **p) as d:
             d.write(m.astype(np.uint8), 1)
             d.write_colormap(1, {0: (0, 0, 0, 0), 1: (215, 25, 28, 255)})
             d.update_tags(1, THRESHOLD=str(t), SOURCE=PROB.name)
         p = prof.copy(); p.update(dtype="float32", nodata=np.nan, count=1,
                                   compress="deflate", predictor=2, tiled=True)
-        rp2 = NINE_T / "pit_unet_v2" / f"pit_unet_floor_prob_{tg}_9t_05.tif"
+        rp2 = path_for("models") / "pit" / "unet_v2" / f"pit_unet_floor_prob_{tg}_9t_05.tif"
         with rasterio.open(rp2, "w", **p) as d:
             d.write(np.where(m, prob, np.nan).astype(np.float32), 1)
             d.update_tags(1, THRESHOLD=str(t), SOURCE=PROB.name)

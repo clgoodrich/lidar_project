@@ -340,7 +340,7 @@ def main() -> int:
     # Both matter for reading the layers. The road model trained on 9t, so
     # P(road) on train blocks is a memorisation figure and says nothing about
     # whether the class is detectable; only the test blocks test that.
-    pr = R9 / "road_unet_1m_recall" / "road_prob.tif"
+    pr = path_for("models") / "road" / "unet_1m_recall" / "road_prob.tif"
     if pr.exists():
         with rasterio.open(pr) as s:
             pa = s.read(1).astype(np.float32)

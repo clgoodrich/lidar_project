@@ -56,7 +56,7 @@ BLOCKS = DERIV_9T / "pit_blocks_9t.gpkg"
 MANIFEST = DERIV_9T / "road_dataset_manifest.csv"
 CHUNKS = DERIV_9T / "road_chunks_9t.gpkg"
 
-BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
+BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590" / "1m"
 CORR = BLOCK / "corrections"
 CORR_FEATURES = BLOCK / "features_613590_1m.tif"
 CORR_LABELS = CORR / "labels_road_corr_613590_1m.tif"

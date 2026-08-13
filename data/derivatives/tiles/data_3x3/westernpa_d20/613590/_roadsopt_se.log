@@ -1,5 +1,0 @@
-C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\build\_road_optimize.py:138: FutureWarning: Parameter `min_size` is deprecated since version 0.26.0 and will be removed in 2.0.0 (or later). To avoid this warning, please use the parameter `max_size` instead. For more details, see the documentation of `remove_small_objects`. Note that the new threshold removes objects smaller than **or equal to** its value, while the previous parameter only removed smaller ones.
-  m = remove_small_objects(m, min_size=cfg.get("min_px", 40))
-[613590] applied best: network 179.52 km, clean 174.47 km (1316 segs), bridges 136
-  stats: {"key": "613590", "network_km": 179.52, "clean_km": 174.47, "n_clean": 1316, "bridges": 136, "tiger_km_in_block": 52.33, "tiger_recall": 0.578, "novel_km": 138.96}
-  -> roads_opt_613590_1m_overlay.png

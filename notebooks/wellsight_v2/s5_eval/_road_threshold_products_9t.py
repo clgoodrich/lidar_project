@@ -73,8 +73,8 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
-PROB = NINE_T / "road_unet_1m" / "road_prob.tif"
-RASTER_DIR = NINE_T / "road_unet_1m"
+PROB = path_for("models") / "road" / "unet_1m" / "road_prob.tif"
+RASTER_DIR = path_for("models") / "road" / "unet_1m"
 CHUNKS = NINE_T / "road_chunks_9t.gpkg"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
 OUT = path_for("results") / "9t" / "road" / "thresholds"

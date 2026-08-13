@@ -36,7 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "s5_eval"))
 from _road_optimize import island_filter, lines_from_skel, prune_merge, skeleton  # noqa: E402
 
 R9 = path_for("nine_t")
-PROB = R9 / "drainage_unet_1m" / "drainage_prob.tif"
+PROB = path_for("models") / "drainage" / "unet_1m" / "drainage_prob.tif"
 TOL = 8.0   # buffer match tolerance (m) — same as the road harness
 
 
