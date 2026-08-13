@@ -23,12 +23,12 @@ tiles, `<BBOX>` the extent in EPSG:6346 metres as `x0,y0,x1,y1`.
 
 ```
 python notebooks/wellsight_v2/s1_build/_build_derivatives.py \
-    --tiles "data/source_laz/<region>/<GLOB>.laz" \
+    --tiles "data/_source/lidar/<region>/<GLOB>.laz" \
     --bbox "<BBOX>" --suffix <AREA> --res 1.0
 ```
 
 One pass does everything: PDAL merges the tiles, `writers.gdal` IDW builds the
-DEM, then 20 rasters come off it into `data/derivatives/tiles/<AREA>/`.
+DEM, then 20 rasters come off it into `data/<AREA>/`.
 
 Seven of those are the model input channels, and they are the only ones the
 networks see:
@@ -44,8 +44,8 @@ tiles, ~217 s for 66. The DEM and derivatives take another minute or two.
 ### A2. Red Relief Image Map — optional, for looking at
 
 ```
-python notebooks/wellsight/build/_make_rrim.py --suffix <AREA>
-python notebooks/wellsight/build/_make_rrim.py --suffix <AREA> --simple
+python notebooks/wellsight_v2/build/_make_rrim.py --suffix <AREA>
+python notebooks/wellsight_v2/build/_make_rrim.py --suffix <AREA> --simple
 ```
 
 Chiba et al. 2008: red-tinted slope over a differential-openness base. `--simple`
@@ -55,7 +55,7 @@ reuses the openness rasters from A1 and recomputes nothing.
 **RRIM is a viewing product, not a model input.** It was tested as a channel and
 rejected. Skip it if you only want detections.
 
-> Note: this script still lives in the old `notebooks/wellsight/` tree. It has no
+> Note: this script still lives in the old `notebooks/wellsight_v2/` tree. It has no
 > v2 equivalent. See "Known gaps" below.
 
 ### A3. Run the detectors
@@ -66,7 +66,7 @@ python notebooks/wellsight_v2/s4_infer/_predict_on_tile.py --suffix <AREA>
 
 Discovers the seven channels by naming convention, stacks them itself — **no
 separate feature-stack step is needed for inference** — and runs pit, road and
-plat models in one go. Outputs land in `data/derivatives/inference_<AREA>/`.
+plat models in one go. Outputs land in `data/inference_<AREA>/`.
 
 ### A4. Turn probabilities into candidate polygons
 
@@ -103,7 +103,7 @@ Only needed where hand annotation exists. Today that means 9t and 613590.
 python notebooks/wellsight_v2/s2_labels/_prep_annotations.py
 ```
 
-Reads the WGS84 shapefiles in `data/derivatives/annotations/`, reprojects to
+Reads the WGS84 shapefiles in `qgis/annotations/`, reprojects to
 EPSG:6346, pairs pit floors to rims, and writes `annotations_proj.gpkg`.
 
 **Run this after every QGIS session.** Stale projected truth was the single
@@ -154,7 +154,7 @@ Everything Track A touches, and nothing else:
 | # | Script | Stage |
 |---|---|---|
 | A1 | `s1_build/_build_derivatives.py` | build |
-| A2 | `notebooks/wellsight/build/_make_rrim.py` | build (optional, viz) |
+| A2 | `notebooks/wellsight_v2/build/_make_rrim.py` | build (optional, viz) |
 | A3 | `s4_infer/_predict_on_tile.py` | infer |
 | A4 | `s4_infer/_postfilter_tile_candidates.py` | infer |
 | A5 | `s5_eval/_road_optimize.py` | vectorise |

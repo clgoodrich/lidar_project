@@ -1,5 +1,11 @@
 # 03 — LAS Inspection Report: `output2.las`
 
+> **Paths in this document are as-of its date.** The repository moved to an
+> area-major layout on 2026-08-12/13 (`data/<area>/{derived,models,results}/`,
+> ground truth in `qgis/annotations/`). This file is a historical record and is
+> deliberately NOT rewritten — rewriting it would make the record describe a
+> world that did not exist when the work happened. Current layout: `STRUCTURE.md`.
+
 **File:** `data/source_laz/westernpa/output2.las` · **Inspected:** 2026-04-13 · **Tooling:** PDAL 2.10.0 CLI + `laspy` 2.7.0
 
 ## Header summary

@@ -1,4 +1,22 @@
-# WellSight Reorganization — Phase 4: the role-based layout
+# WellSight Reorganization — Phase 4
+
+> **SUPERSEDED IN PART, 2026-08-13.** Sections 1–3 (the diagnosis, the
+> path-coupling inventory, and what is obsolete) all held up and drove the work.
+> **Section 4's target structure did not.** It proposed a ROLE-major tree
+> (`03_derived/9t`, `04_models/pit`, `05_results/9t`). That was built, then
+> reversed on the user's correction to AREA-major (`data/9t/derived`,
+> `data/9t/models`, `data/9t/results`), because the question actually asked here
+> is "show me everything about 9t" — which role-major answered in four
+> directories, reproducing the very complaint that started this work.
+>
+> Ground truth also moved to `qgis/annotations/`, not `data/02_truth/`. The
+> argument in §1.4 against putting data in a tool directory does not survive the
+> facts: `roads.shp` spans Oil Creek to McKean and belongs to no tile, so truth
+> cannot be area-major anyway.
+>
+> **For the layout as built, read `STRUCTURE.md`.** This file is kept for the
+> diagnosis and the evidence in §6, which are still the record of what was
+> obsolete and why.
 
 **Written:** 2026-08-12
 **Supersedes:** nothing. This is the successor to `docs/REORGANIZATION_PLAN.md`,

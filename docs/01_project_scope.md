@@ -14,7 +14,7 @@ The system is called **WellSight**. Candidates are always reported as
 
 ## 2. Study area (current pilot)
 
-- **Tile:** `data/source_laz/westernpa/output2.las`
+- **Tile:** `data/_source/lidar/westernpa/output2.las`
 - **Spatial extent:** 622 500 – 624 000 E, 4 594 500 – 4 596 000 N (UTM 17N, NAD83(2011))
 - **Size:** 1.5 × 1.5 km = 2.25 km²
 - **Location:** Venango County, PA (President Twp predominantly,
@@ -24,11 +24,11 @@ The system is called **WellSight**. Candidates are always reported as
   deciduous forest, deeply incised drainages, ≥150 yr industrial activity.
 
 A wider area (50+ adjacent `.laz` tiles covering ~75 km²) is available in
-`data/source_laz/westernpa/` for scale-up after the pilot validates.
+`data/_source/lidar/westernpa/` for scale-up after the pilot validates.
 
 ## 3. Ground truth
 
-- **Source:** `data/source_laz/westernpa/output_wells.csv`
+- **Source:** `data/_source/lidar/westernpa/output_wells.csv`
 - **Records inside the tile:** 84 wells, all `Status = "Orphan"`, all
   originating from the PA DEP 5/9/2022 release.
 - **Coordinate provenance:** `Latitude` / `Longitude` (EPSG:4326). No GPS-quality
@@ -84,7 +84,7 @@ A wider area (50+ adjacent `.laz` tiles covering ~75 km²) is available in
   rasters and candidate layers inherit this CRS. Wells are reprojected from
   EPSG:4326 to this CRS at ingest.
 - **Caching:** DEM, DSM, CHM, ground-density raster are computed **once** and
-  persisted under `data/derivatives/` for reuse.
+  persisted under `data/` for reuse.
 - **Bootstrap:** any new detection technique is first validated on a
   sub-window surrounding 3–5 known wells before running tile-wide.
 - **Reporting cadence:** every "major analysis pass" (new detector, threshold

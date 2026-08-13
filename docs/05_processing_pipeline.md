@@ -32,14 +32,14 @@ Python state. This is what makes the pipeline reproducible and the WellSight
 | Step | Tool                        | Input                            | Output                                               |
 |------|-----------------------------|----------------------------------|------------------------------------------------------|
 | A1   | **PDAL CLI** (`pdal info`)  | `output2.las`                    | `docs/03_las_inspection_report.md` (already written) |
-| A2   | Python + `geopandas`        | `output_wells.csv`               | `data/derivatives/wells_in_tile.gpkg` (EPSG:6346)    |
+| A2   | Python + `geopandas`        | `output_wells.csv`               | `data/wells_in_tile.gpkg` (EPSG:6346)    |
 
 Notebook: `notebooks/01_preprocessing.ipynb` (current file, light edits to
 replace laspy raster gridding with PDAL TIN — see stage B).
 
 ### B. Raster base products
 
-Written to `data/derivatives/` as deflate-compressed float32 GeoTIFFs
+Written to `data/` as deflate-compressed float32 GeoTIFFs
 (uint8 for hillshade), always at 1 m resolution, always snapped to integer
 metres, always in EPSG:6346.
 
@@ -90,7 +90,7 @@ Single notebook `notebooks/03_pad_detector.ipynb`. Implements the stages in
 5. Apply shape + position + size gates.
 6. Compute confidence score (§5 of design spec).
 7. Compute nearest-well distance via `gpd.sjoin_nearest`.
-8. Export `data/derivatives/experiments/candidates/candidates_pads.gpkg` + Parquet.
+8. Export `data/_experiments/candidates/candidates_pads.gpkg` + Parquet.
 
 **Bootstrap gate.** Before the full-tile run, the notebook runs the detector
 on 3–5 well-window sub-extracts (§8 of design spec). Tile-wide execution is
@@ -102,9 +102,9 @@ criteria.
 Notebook `notebooks/04_validation.ipynb`. Implements §7 of the design spec
 (random-baseline + within-uncertainty recall). Outputs:
 
-- `data/derivatives/validation/baseline_nulls.parquet` (per-run null
+- `data/validation/baseline_nulls.parquet` (per-run null
   distributions).
-- `data/derivatives/validation/summary_run_<id>.md` (markdown summary
+- `data/validation/summary_run_<id>.md` (markdown summary
   appended to the analysis log).
 
 ### F. Reporting & log
@@ -122,7 +122,7 @@ Every stage that produces a new artefact appends a dated entry to
 ## 3. Cached artefacts — exhaustive list
 
 ```
-data/derivatives/
+data/
 ├── wells_in_tile.gpkg            ← stage A
 ├── dem_1m.tif                    ← stage B
 ├── dsm_1m.tif                    ← stage B

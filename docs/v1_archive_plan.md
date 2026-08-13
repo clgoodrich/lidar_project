@@ -1,5 +1,11 @@
 # v1 archive plan — the two-month rule
 
+> **Paths in this document are as-of its date.** The repository moved to an
+> area-major layout on 2026-08-12/13 (`data/<area>/{derived,models,results}/`,
+> ground truth in `qgis/annotations/`). This file is a historical record and is
+> deliberately NOT rewritten — rewriting it would make the record describe a
+> world that did not exist when the work happened. Current layout: `STRUCTURE.md`.
+
 Rule: run on or after **2026-06-12** -> keep, else archive. Evidence is `docs/analysis_log.md`. Nothing is deleted; everything moves to `data/99_archive/superseded/notebooks_wellsight/` with structure preserved.
 
 **11 stay, 77 archive** of 88.

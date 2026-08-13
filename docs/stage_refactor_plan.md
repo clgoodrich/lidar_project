@@ -1,5 +1,11 @@
 # Stage refactor plan
 
+> **Paths in this document are as-of its date.** The repository moved to an
+> area-major layout on 2026-08-12/13 (`data/<area>/{derived,models,results}/`,
+> ground truth in `qgis/annotations/`). This file is a historical record and is
+> deliberately NOT rewritten — rewriting it would make the record describe a
+> world that did not exist when the work happened. Current layout: `STRUCTURE.md`.
+
 Reorganizes `notebooks/wellsight_v2/` by pipeline stage. Depth is unchanged, so all 167 `parents[N]` sys.path calls keep working. Only literal directory names need repointing.
 
 | Stage | Scripts | What it does |

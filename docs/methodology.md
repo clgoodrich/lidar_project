@@ -248,7 +248,7 @@ Suffixes used:
 
 ## 5. Ground Truth Annotation
 
-Expert annotations were created in QGIS over the output3 hillshade, stored in `data/derivatives/annotations/`:
+Expert annotations were created in QGIS over the output3 hillshade, stored in `qgis/annotations/`:
 
 | File | Type | Count | CRS | Description |
 |------|------|-------|-----|-------------|

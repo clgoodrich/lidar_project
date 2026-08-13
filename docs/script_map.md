@@ -1,5 +1,11 @@
 # What every script in wellsight_v2 does
 
+> **Paths in this document are as-of its date.** The repository moved to an
+> area-major layout on 2026-08-12/13 (`data/<area>/{derived,models,results}/`,
+> ground truth in `qgis/annotations/`). This file is a historical record and is
+> deliberately NOT rewritten — rewriting it would make the record describe a
+> world that did not exist when the work happened. Current layout: `STRUCTURE.md`.
+
 One line each, from the docstring. 92 scripts.
 
 ## s1_build (10) - LAZ to DEM to channels

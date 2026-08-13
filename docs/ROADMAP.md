@@ -101,12 +101,12 @@ in an iteration doc).
 recall-at-distance tables, honest domain-gap statement.
 **E.3** Decision gate: fine-tune with a small Permian label set vs train-from-scratch —
 only after E.2 quantifies the gap. Labeling budget comes from the same annotation
-workflow as WPA (label_grids/ convention, gpkg-per-grid naming).
+workflow as WPA (data/grids/ convention, gpkg-per-grid naming).
 
 ## Phase F — Infrastructure & documentation debt (do opportunistically, not as a block)
 
-**F.1** `STRUCTURE.md` refresh: it still names `notebooks/wellsight/` as active (it's
-`wellsight_v2/`) and describes a blanket `data/derivatives/**` gitignore that
+**F.1** `STRUCTURE.md` refresh: it still names `notebooks/wellsight_v2/` as active (it's
+`wellsight_v2/`) and describes a blanket `data/**` gitignore that
 contradicts the targeted-rules policy — bring it in line with README/CLAUDE.md.
 **F.2** Log hygiene: adopt targeted `.gitignore` rules or a `logs/` convention for the
 untracked `_*.log` files accumulating at repo root/label_grids (currently 10+ untracked

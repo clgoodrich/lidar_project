@@ -1,5 +1,11 @@
 # Which scripts are actually used?
 
+> **Paths in this document are as-of its date.** The repository moved to an
+> area-major layout on 2026-08-12/13 (`data/<area>/{derived,models,results}/`,
+> ground truth in `qgis/annotations/`). This file is a historical record and is
+> deliberately NOT rewritten — rewriting it would make the record describe a
+> world that did not exist when the work happened. Current layout: `STRUCTURE.md`.
+
 `tools/find_unused_scripts.py` over 88 files in `notebooks/wellsight`.
 
 Libraries and entry points are judged differently. A library exists to be imported, so zero importers means dead. An entry point is run by hand, so zero importers means nothing -- it is judged on whether anything *mentions* it and whether its declared outputs exist on disk.

@@ -72,7 +72,7 @@ data/
 notebooks/
   wellsight_v2/      ACTIVE WellSight code (_common.py: ROOT/DERIV/CRS + run_pdal)
     build/ pits/ plats/ roads/ drainage/ multitask/ annotations/
-label_grids/         Per-grid annotation workspaces (WPA + Permian)
+data/grids/         Per-grid annotation workspaces (WPA + Permian)
 barlow/              FINESST subproject (build/ scripts + docs/, own README)
 docs/
   analysis_log.md    Append-only run log, newest at top — the project's memory

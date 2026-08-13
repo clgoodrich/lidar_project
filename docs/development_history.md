@@ -1,5 +1,11 @@
 # WellSight Development History — Full Session Report
 
+> **Paths in this document are as-of its date.** The repository moved to an
+> area-major layout on 2026-08-12/13 (`data/<area>/{derived,models,results}/`,
+> ground truth in `qgis/annotations/`). This file is a historical record and is
+> deliberately NOT rewritten — rewriting it would make the record describe a
+> world that did not exist when the work happened. Current layout: `STRUCTURE.md`.
+
 ## Executive Summary
 
 WellSight began as an exploratory effort to detect orphaned oil and gas wells in western Pennsylvania using airborne LiDAR data. Over the course of development, the project evolved from basic terrain visualization through template matching to a multi-model gradient-boosted ensemble, was applied across multiple geographic regions, and ultimately produced a pipeline capable of identifying candidate well pit locations from raw point cloud data with measurable precision and recall. This document traces that entire journey — what was tried, what worked, what failed, and what the results mean going forward.
