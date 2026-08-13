@@ -262,3 +262,10 @@ barlow/MDV_Resources.docx
 # place deliberately: if a thread is ever un-archived, its coverage comes back
 # with it instead of silently leaking.
 data/99_archive/**
+
+# PA DEP statewide oil & gas locations export (77 MB, re-downloadable from DEP).
+# It lived in data/derivatives/annotations/ and so was tracked by the old
+# "keep annotations" exception, despite not being hand-drawn truth. Moved to
+# data/external/dep_wells/ in Phase 4C and ignored from here on. The blob is
+# already in history from commit e70e1b7; Phase 7 is what removes it.
+data/external/dep_wells/*.gpkg

@@ -1,0 +1,2 @@
+old_path,new_path,phase,reason
+data/02_truth/annotations/oil_gas_locations.gpkg,data/external/dep_wells/oil_gas_locations.gpkg,phase4c,"PA DEP statewide well-location export, not hand-drawn truth; 76.9 MB of reference data. Re-downloadable, so it is reference and it is ignored."

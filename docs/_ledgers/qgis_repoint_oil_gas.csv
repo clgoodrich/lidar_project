@@ -1,0 +1,2 @@
+old_datasource,new_datasource
+../data/02_truth/annotations/oil_gas_locations.gpkg,../data/external/dep_wells/oil_gas_locations.gpkg

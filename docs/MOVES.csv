@@ -860,3 +860,4 @@ ts,phase,old_path,new_path,size_bytes,reason
 2026-08-13T01:48:56+00:00,phase4c,data/derivatives/experiments/candidates/pits_inside.gpkg,data/05_results/candidates/pits_inside.gpkg,106496,"candidate well layers are the deliverable, not an experiment"
 2026-08-13T01:48:56+00:00,phase4c,data/derivatives/experiments/candidates/plat.gpkg,data/05_results/candidates/plat.gpkg,139264,"candidate well layers are the deliverable, not an experiment"
 2026-08-13T01:48:56+00:00,phase4c,data/derivatives/experiments/candidates/roads.gpkg,data/05_results/candidates/roads.gpkg,135168,"candidate well layers are the deliverable, not an experiment"
+2026-08-13T01:54:01+00:00,phase4c,data/02_truth/annotations/oil_gas_locations.gpkg,data/external/dep_wells/oil_gas_locations.gpkg,80625664,"PA DEP statewide well-location export, not hand-drawn truth; 76.9 MB of reference data. Re-downloadable, so it is reference and it is ignored."
