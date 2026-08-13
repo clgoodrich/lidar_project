@@ -47,10 +47,9 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 DERIV = path_for("derivatives")
-STATEWIDE = (ROOT / "data/external/OilGasLocations_ConventionalUnconventional"
-             "2026_04/OilGasLocations_ConventionalUnconventional2026_04.shp")
-OLD_VENANGO = ROOT / "data/external/legacy_data/US_Documented_Orphan_Wells.csv"
-OUT_DIR = DERIV / "experiments/well_provenance"
+STATEWIDE = (path_for("reference") / "OilGasLocations_ConventionalUnconventional2026_04" / "OilGasLocations_ConventionalUnconventional2026_04.shp")
+OLD_VENANGO = path_for("reference") / "legacy_data" / "US_Documented_Orphan_Wells.csv"
+OUT_DIR = path_for("experiments") / "well_provenance"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 CRS = "EPSG:6346"
 

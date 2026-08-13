@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
 
-from paths import (ANNOT, DERIV, DERIV_9T, ROOT, SWEEP, block_features,
+from paths import (ANNOT, DERIV, DERIV_9T, ROOT, SWEEP, path_for, block_features,
                    list_blocks, list_road_models)
 
 # One constant per pipeline stage. The old per-target constants (RB=roads,
@@ -156,7 +156,7 @@ _add(Task(
     id="analysis.provenance", label="Well provenance flags (Venango+McKean)",
     group="Analysis", script=f"{S7}/_well_provenance_flags.py", gpu=False,
     inputs=[], build=lambda v: [],
-    outputs=lambda v: [DERIV / "experiments/well_provenance/"
+    outputs=lambda v: [path_for("experiments") / "well_provenance" /
                        "well_provenance_venango.gpkg"],
     docs="docs/analysis_log.md"))
 

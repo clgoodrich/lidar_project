@@ -108,18 +108,43 @@ def chain_segments(node: ast.AST) -> tuple[str, list[str]] | None:
         cur = cur.left
     if isinstance(cur, ast.Name) and cur.id in PATH_ROOTS:
         return cur.id, list(reversed(segs))
+    # A `.parent` climb off a configured root reaches a directory the config
+    # does not name, then walks back down by literal. `DERIV_9T.parent.parent /
+    # "annotations"` is `data/derivatives/annotations` spelled so the plain
+    # chain check cannot see it. Found 2026-08-12 in _plat_unet.py and
+    # _pit_unet_v2_infer.py, both reaching the ground truth this way.
+    climb = 0
+    while isinstance(cur, ast.Attribute) and cur.attr == "parent":
+        climb += 1
+        cur = cur.value
+    if climb and isinstance(cur, ast.Name) and cur.id in PATH_ROOTS:
+        return f"{cur.id}{'.parent' * climb}", list(reversed(segs))
     return None
 
 
 def looks_like_file(seg: str) -> bool:
-    """A segment with a suffix is a filename, which is always allowed."""
+    """A segment with a suffix is a filename, which is always allowed.
+
+    A segment containing a SLASH is not a filename, whatever else it looks like.
+    ``ROOT / "data/derivatives/annotations/plat.shp"`` is a full directory path
+    smuggled into one string literal; it slipped past the first version of this
+    check because it ends in ``.shp``. Found 2026-08-12 in
+    ``s7_analysis/_export_well_age_qgis.py``.
+    """
+    if "/" in seg or "\\" in seg:
+        return False
     return "." in seg and not seg.startswith(".")
 
 
 #: What each path root already resolves to, so a literal chain can be compared
 #: against the configured values.
 ROOT_PREFIX = {"ROOT": "", "PROJECT_ROOT": "", "REPO_ROOT": "",
-               "DERIV": "data/derivatives", "DERIV_9T": "data/derivatives/tiles/9t"}
+               "DERIV": "data/derivatives", "DERIV_9T": "data/derivatives/tiles/9t",
+               # `.parent` climbs, resolved so the chain below them can be matched
+               "DERIV.parent": "data",
+               "DERIV_9T.parent": "data/derivatives/tiles",
+               "DERIV_9T.parent.parent": "data/derivatives",
+               "DERIV_9T.parent.parent.parent": "data"}
 
 
 def suggest(root: str, segs: list[str], keys: dict[str, str]) -> str:

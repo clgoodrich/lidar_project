@@ -33,7 +33,7 @@ from rasterio.transform import Affine, rowcol
 from rasterio.windows import Window
 from shapely.geometry import Polygon, box, shape
 
-from _common import DERIV_9T, DST_CRS, make_profile, write_tif
+from _common import DERIV_9T, DST_CRS, make_profile, write_tif, path_for
 
 # ---------------------------------------------------------------------------
 # Reproducibility
@@ -101,7 +101,7 @@ def make_loader_generator(seed: int = 0):
 # Paths
 # ---------------------------------------------------------------------------
 
-ANN_GPKG = DERIV_9T.parent.parent / "annotations" / "annotations_proj.gpkg"  # = data/derivatives/annotations
+ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"  # = data/derivatives/annotations
 PIT_MANIFEST = DERIV_9T / "pit_dataset_manifest.csv"
 PAD_MANIFEST = DERIV_9T / "plat_dataset_manifest.csv"  # legacy on-disk name
 PLAT_MANIFEST = PAD_MANIFEST  # back-compat alias

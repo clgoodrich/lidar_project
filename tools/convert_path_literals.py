@@ -53,14 +53,26 @@ SCAN_DIRS = ("notebooks/wellsight_v2", "ui", "roads_studio")
 IMPORT_MARKERS = ("from _common import", "from wellsight_v2._common import")
 
 
-def operands(node: ast.AST) -> tuple[str, list[ast.AST]]:
-    """Unwind a ``/`` chain into its root name and its right-hand operands."""
+def flatten(node: ast.AST, src: str) -> list[tuple[str, str]]:
+    """Unwind a ``/`` chain into ``("lit", text)`` / ``("expr", source)`` items.
+
+    A literal holding slashes -- ``ROOT / "data/derivatives/annotations"`` -- is
+    split into one item per component, so prefix matching sees the same segments
+    it would if the author had written the chain out.
+    """
     ops: list[ast.AST] = []
     cur = node
     while isinstance(cur, ast.BinOp) and isinstance(cur.op, ast.Div):
         ops.append(cur.right)
         cur = cur.left
-    return (cur.id if isinstance(cur, ast.Name) else ""), list(reversed(ops))
+    out: list[tuple[str, str]] = []
+    for op in reversed(ops):
+        if isinstance(op, ast.Constant) and isinstance(op.value, str):
+            out += [("lit", s) for s in op.value.replace("\\", "/").split("/") if s]
+        else:
+            seg = ast.get_source_segment(src, op)
+            out.append(("expr", seg if seg is not None else ast.unparse(op)))
+    return out
 
 
 def plan_file(path: Path, keys: dict[str, str], src: str) -> list[tuple[ast.AST, str]]:
@@ -77,19 +89,19 @@ def plan_file(path: Path, keys: dict[str, str], src: str) -> list[tuple[ast.AST,
         got = chain_segments(node)
         if got is None:
             continue
-        root, segs = got
-        if not segs or segs[0] == "<expr>" or looks_like_file(segs[0]):
-            continue
-        _, ops = operands(node)
+        root, _ = got
         prefix = ROOT_PREFIX.get(root)
         if prefix is None:
             continue
+        flat = flatten(node, src)
+        if not flat or flat[0][0] != "lit" or looks_like_file(flat[0][1]):
+            continue
         # Longest literal prefix that is string-equal to a configured value.
         best = None
-        for i in range(len(segs), 0, -1):
-            if segs[i - 1] == "<expr>":
+        for i in range(len(flat), 0, -1):
+            if any(k == "expr" for k, _ in flat[:i]):
                 continue
-            cand = "/".join(filter(None, [prefix, *segs[:i]]))
+            cand = "/".join(filter(None, [prefix, *(v for _, v in flat[:i])]))
             if cand in keys:
                 best = (keys[cand], i)
                 break
@@ -97,9 +109,8 @@ def plan_file(path: Path, keys: dict[str, str], src: str) -> list[tuple[ast.AST,
             continue
         key, cut = best
         parts = [f'path_for("{key}")']
-        for op in ops[cut:]:
-            seg = ast.get_source_segment(src, op)
-            parts.append(seg if seg is not None else ast.unparse(op))
+        for kind, val in flat[cut:]:
+            parts.append(f'"{val}"' if kind == "lit" else val)
         out.append((node, " / ".join(parts)))
     return out
 
@@ -196,7 +207,11 @@ def main() -> int:
                 continue
             new = apply(src, plan)
             new, added = ensure_import(new, rel)
-            if "path_for" not in new.split("\n\n")[0] and not added:
+            # Skip only when path_for is genuinely unreachable: the import was
+            # neither added now nor already present from an earlier pass.
+            already = any(ln.startswith(IMPORT_MARKERS) and "path_for" in ln
+                          for ln in new.splitlines())
+            if not added and not already:
                 # No _common import line to extend -- leave it for a human.
                 skipped += len(plan)
                 failed.append(f"{rel}: no `from _common import` line to extend")

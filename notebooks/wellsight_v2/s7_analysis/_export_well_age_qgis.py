@@ -18,13 +18,15 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-WELLS = ROOT / "data/derivatives/venango_wells_all.gpkg"
-PADS = ROOT / "data/derivatives/annotations/plat.shp"
-MATCHES = ROOT / ("data/derivatives/experiments/well_age_morphology/"
-                  "well_pad_matches.csv")
-OUT = ROOT / ("data/derivatives/experiments/well_age_morphology/"
-              "well_age_morphology.gpkg")
+WELLS = path_for("derivatives") / "venango_wells_all.gpkg"
+PADS = path_for("truth") / "plat.shp"
+MATCHES = path_for("experiments") / "well_age_morphology" / "well_pad_matches.csv"
+OUT = path_for("experiments") / "well_age_morphology" / "well_age_morphology.gpkg"
 CRS = "EPSG:6346"
 
 ERA_BINS = [(-np.inf, 1956, "pre-1956"), (1956, 1980, "1956-1979"),

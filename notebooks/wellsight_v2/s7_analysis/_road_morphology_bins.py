@@ -421,7 +421,7 @@ def main() -> int:
           f"  (raw incision depth vs terrain-adjusted)")
 
     # ---- external validation: TIGER + model confidence ---------------------
-    tiger_p = DERIV.parent / "external" / "tiger_roads" / "roads_clipped.gpkg"
+    tiger_p = path_for("reference") / "tiger_roads" / "roads_clipped.gpkg"
     if tiger_p.exists():
         tg = gpd.read_file(tiger_p).to_crs(DST_CRS)
         tg = tg[tg.intersects(region.buffer(50))]

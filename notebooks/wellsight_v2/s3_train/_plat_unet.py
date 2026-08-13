@@ -27,7 +27,7 @@ from rasterio.windows import from_bounds
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T, make_profile, write_tif
+from _common import DERIV_9T, make_profile, path_for, write_tif
 from _dl import (DEFAULT_CHANNELS, DEVICE, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
@@ -37,7 +37,7 @@ LABELS = DERIV_9T / "labels_plat_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"
 BLOCKS = DERIV_9T / "plat_blocks_9t.gpkg"  # pad-aware split (all in-tile pads; see _build_plat_split.py)
 MANIFEST = DERIV_9T / "plat_dataset_manifest.csv"
-ANN = DERIV_9T.parent.parent / "annotations" / "annotations_proj.gpkg"  # = data/derivatives/annotations
+ANN = path_for("truth") / "annotations_proj.gpkg"
 
 PATCH = 384  # plats are bigger than pits -> larger context window
 OVERLAP = 96

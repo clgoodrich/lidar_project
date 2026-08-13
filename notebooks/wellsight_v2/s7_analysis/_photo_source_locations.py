@@ -31,9 +31,12 @@ from shapely.geometry import Point, box
 sys.path.insert(0, str(Path(__file__).parent))
 from _export_well_age_qgis import embed_styles, qml_categorized  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-KML = ROOT / "data/external/vpasec/vpasec_wells_venango.kml"
-OUT_DIR = ROOT / "data/derivatives/experiments/well_photo_locations"
+KML = path_for("reference") / "vpasec" / "vpasec_wells_venango.kml"
+OUT_DIR = path_for("experiments") / "well_photo_locations"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 OUT = OUT_DIR / "well_photo_locations.gpkg"
 CRS = "EPSG:6346"

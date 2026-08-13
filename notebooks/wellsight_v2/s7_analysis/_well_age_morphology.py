@@ -38,11 +38,15 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-WELLS = ROOT / "data/derivatives/venango_wells_all.gpkg"
-PADS = ROOT / "data/derivatives/annotations/plat.shp"
-PITS = ROOT / "data/derivatives/annotations/pit_inside.shp"
-OUT_DIR = ROOT / "data/derivatives/experiments/well_age_morphology"
+WELLS = path_for("derivatives") / "venango_wells_all.gpkg"
+PADS = path_for("truth") / "plat.shp"
+PITS = path_for("truth") / "pit_inside.shp"
+OUT_DIR = path_for("experiments") / "well_age_morphology"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 CRS = "EPSG:6346"
 MATCH_M = 50.0

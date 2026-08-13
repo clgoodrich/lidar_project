@@ -38,17 +38,13 @@
   "notebooks/wellsight_v2/s5_eval/_road_sweep_aggregate.py:DERIV_9T / \"road_sweep_202607\"",
   "notebooks/wellsight_v2/s5_eval/_road_sweep_aggregate.py:DERIV_9T / \"road_unet_1m_corrected\" / \"test_metrics.json\"",
   "notebooks/wellsight_v2/s5_eval/_road_sweep_aggregate.py:DERIV_9T / \"road_unet_1m_recall\" / \"test_metrics.json\"",
-  "notebooks/wellsight_v2/s7_analysis/_pad_morphology_bins.py:ROOT / \"data/derivatives/experiments/pad_morphology_bins\"",
-  "notebooks/wellsight_v2/s7_analysis/_pad_morphology_bins.py:ROOT / \"data/derivatives/tiles/data_3x3/northcentral_b19\"",
-  "notebooks/wellsight_v2/s7_analysis/_pad_morphology_bins.py:ROOT / \"data/derivatives/tiles/mkf_1m\"",
-  "notebooks/wellsight_v2/s7_analysis/_photo_source_locations.py:ROOT / \"data/derivatives/experiments/well_photo_locations\"",
-  "notebooks/wellsight_v2/s7_analysis/_well_age_morphology.py:ROOT / \"data/derivatives/experiments/well_age_morphology\"",
-  "notebooks/wellsight_v2/s7_analysis/_well_provenance_flags.py:DERIV / \"experiments/well_provenance\"",
   "ui/paths.py:DERIV_9T / \"road_sweep_202607\"",
   "ui/paths.py:DERIV_9T / \"road_unet_1m_corrected\" / \"best.pt\"",
   "ui/paths.py:DERIV_9T / \"road_unet_1m_recall\" / \"best.pt\"",
   "ui/paths.py:ROOT / \"notebooks\" / \"wellsight_v2\"",
   "ui/paths.py:ROOT / \"ui\"",
   "ui/registry.py:DERIV / \"experiments\" / \"ui_infer\"",
-  "ui/registry.py:DERIV / \"experiments/pad_morphology_bins\""
+  "ui/registry.py:DERIV / \"experiments/pad_morphology_bins\"",
+  "ui/registry.py:DERIV / \"experiments/well_age_morphology/summary_stats.json\"",
+  "ui/registry.py:DERIV / \"experiments/well_photo_locations/well_photo_locations.gpkg\""
 ]

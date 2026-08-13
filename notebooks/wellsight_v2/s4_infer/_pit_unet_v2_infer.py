@@ -20,7 +20,7 @@ from rasterio.features import rasterize
 from rasterio.windows import from_bounds
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T, make_profile, write_tif
+from _common import DERIV_9T, make_profile, path_for, write_tif
 from _dl import DEVICE, UNet, predict_full_tile
 
 OUTDIR = DERIV_9T / "pit_unet_v2"
@@ -29,7 +29,7 @@ LABELS = DERIV_9T / "labels_pit_9t_05.tif"
 BLOCKS = DERIV_9T / "pit_blocks_9t.gpkg"
 MANIFEST = DERIV_9T / "pit_dataset_manifest.csv"
 CKPT = OUTDIR / "best.pt"
-ANN = DERIV_9T.parent.parent / "annotations" / "annotations_proj.gpkg"  # = data/derivatives/annotations
+ANN = path_for("truth") / "annotations_proj.gpkg"
 
 PATCH = 256
 OVERLAP = 64
