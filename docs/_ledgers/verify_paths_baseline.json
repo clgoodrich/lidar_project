@@ -2,13 +2,12 @@
   "A": [],
   "B": [],
   "C": [
-    "notebooks/wellsight_v2/s1_build/_build_3x3_hillshades.py: OUT_ROOT -> data/derivatives/mosaic_3x3",
-    "notebooks/wellsight_v2/s1_build/_fetch_nisar_9t.py: DST -> data/external/nisar/9t",
-    "notebooks/wellsight_v2/s2_labels/_merge_review_added_roads_613590_into_roads_shp.py: BACKUP -> data/02_truth/annotations/_backup_roads_2026-08-05",
-    "notebooks/wellsight_v2/s2_labels/_merge_review_added_roads_613590_into_roads_shp.py: STAGED -> data/02_truth/annotations/roads_with_613590_r2_staged.gpkg",
-    "notebooks/wellsight_v2/s2_labels/_prep_road_1m.py: SRC_1M -> data/03_derived/9t_1m",
+    "notebooks/wellsight_v2/s1_build/_fetch_nisar_9t.py: DST -> data/_source/reference/nisar/9t",
+    "notebooks/wellsight_v2/s2_labels/_merge_review_added_roads_613590_into_roads_shp.py: BACKUP -> qgis/annotations/_backup_roads_2026-08-05",
+    "notebooks/wellsight_v2/s2_labels/_merge_review_added_roads_613590_into_roads_shp.py: STAGED -> qgis/annotations/roads_with_613590_r2_staged.gpkg",
+    "notebooks/wellsight_v2/s2_labels/_prep_road_1m.py: SRC_1M -> data/9t_1m",
     "ui/paths.py: LEDGER -> ui/jobs.jsonl",
     "ui/paths.py: SETTINGS -> ui/settings.json",
-    "ui/registry.py: UI_INFER -> data/derivatives/experiments/ui_infer"
+    "ui/registry.py: UI_INFER -> data/_experiments/ui_infer"
   ]
 }

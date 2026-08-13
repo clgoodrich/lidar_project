@@ -31,7 +31,7 @@ from _common import DERIV, DST_CRS, path_for
 
 R9 = path_for("nine_t")
 RECALL = path_for("models") / "road" / "unet_1m_recall"
-BLK = path_for("data_3x3") / "westernpa_d20" / "613590" / "1m"
+BLK = path_for("data_3x3") / "westernpa_d20" / "613590" / "derived" / "1m"
 
 # Distinct methods. reconnect tuple = (method, max_gap, max_ang, gate).
 METHODS = {

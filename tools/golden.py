@@ -33,9 +33,9 @@ fix is to golden-verify their INPUTS instead of their outputs for those cases
 coming out).
 
 WATCHED DIRECTORIES
-data/derivatives/, docs/, qgis/ — everywhere this project's scripts write.
-Not the whole repo: walking 100k+ files (data/external, .git, .venv) on every
-record/verify would be slow and mostly noise.
+data/, docs/, qgis/ — everywhere this project's scripts write. Coarse on purpose:
+a narrower list went stale twice (Phase 4D, then 4F) and failed silently, which
+is worse than a slower walk. .git and .venv are still excluded.
 
 GEOPACKAGE FILES ARE NOT BYTE-STABLE — HASH THEIR CONTENT INSTEAD
 Confirmed empirically: running `_prep_annotations.py` twice in a row with zero
@@ -83,17 +83,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLDEN_DIR = ROOT / "docs" / "golden"
-# Everywhere this project's scripts write. Phase 4D split data/derivatives into
-# the role directories, and a stale list here fails SILENTLY -- `record` simply
-# reports "0 output file(s) recorded" and writes an empty baseline, which then
-# passes verify forever. Caught 2026-08-12 when a re-record of a working script
-# came back empty. If a new top-level output directory is ever added, it must be
-# added here in the same change.
-WATCH_DIRS = [
-    "data/02_truth", "data/03_derived", "data/04_models", "data/05_results",
-    "data/06_experiments", "data/derivatives",   # derivatives: shrinking remainder
-    "docs", "qgis",
-]
+# Everywhere this project's scripts write. This list is deliberately coarse now:
+# it was ["data/derivatives", "docs", "qgis"], and when Phase 4D split
+# data/derivatives into role directories the list silently stopped covering
+# anything -- `record` reported "0 output file(s) recorded" and wrote an empty
+# baseline that would pass verify forever. Phase 4F then moved the tree AGAIN,
+# to area-major. Watching "data" wholesale costs a slower walk and cannot go
+# stale on the next reorganization.
+WATCH_DIRS = ["data", "docs", "qgis"]
 IGNORE_GLOBS = [
     "*.log", "*.aux.xml", "*_tmp_*", "docs/golden/*",
     "backup_to_*_last_run.log", "*/__pycache__/*", "*.gpkg-wal", "*.gpkg-shm",

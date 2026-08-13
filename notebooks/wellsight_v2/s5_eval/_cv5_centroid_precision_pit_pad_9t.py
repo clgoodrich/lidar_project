@@ -65,7 +65,7 @@ from _pit_unet_cv5 import assign_folds, polygonize              # noqa: E402
 
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
-OUT = path_for("results") / "9t" / "pit" / "centroid_matching"
+OUT = path_for("results_9t") / "pit" / "centroid_matching"
 
 CRS = "EPSG:6346"
 CV_SEED = 20260727          # must match both CV runs

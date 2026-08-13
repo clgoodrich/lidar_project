@@ -58,7 +58,7 @@ from _common import DERIV_9T, path_for  # noqa: E402
 from _pit_unet_cv5 import assign_folds, polygonize                # noqa: E402
 
 ANN = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("results") / "9t" / "pit" / "centroid_matching"
+OUT = path_for("results_9t") / "pit" / "centroid_matching"
 CRS = "EPSG:6346"
 CV_SEED = 20260727
 K = 5

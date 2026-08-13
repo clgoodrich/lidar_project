@@ -65,7 +65,7 @@ ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
 ITER = path_for("models_retired")
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("results") / "9t" / "instance_precision"
+OUT = path_for("results_9t") / "instance_precision"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

@@ -29,45 +29,61 @@ Full plan: `docs/REORGANIZATION_PLAN_phase4_role_based.md`.
 ```
 lidar_project/
 ├── CLAUDE.md  README.md  STRUCTURE.md  pytest.ini
-├── config/paths.toml           SINGLE SOURCE OF TRUTH for every directory below
+├── config/paths.toml       SINGLE SOURCE OF TRUTH for every directory below
 │
-├── data/
-│   ├── 02_truth/               HAND-DRAWN. irreplaceable. tracked by default.
-│   │   ├── annotations/        roads, plat, pit_inside/outside, drainage, ...
-│   │   ├── grids/              per-grid pit annotation gpkgs (was label_grids/)
-│   │   └── _history/           dated snapshots; rasters inside them are ignored
-│   ├── 03_derived/             REGENERABLE BY DEFINITION. one blanket .gitignore.
-│   │   ├── 9t/{05,1m_rebuilt20260812}/
-│   │   ├── 613590/{05,inference_05}/
-│   │   ├── 607594|610594|610605|616593/1m/
-│   │   ├── westernpa_d20/<block>/1m/    northcentral_b19/<block>/1m/
-│   │   ├── mckean/{mk5,mkf,sw,e1423n2238}/{05,1m,road_1m}/
-│   │   ├── oilcreek/22tile/    grids/<grid>/1m/   _logs/
-│   ├── 04_models/              A MODEL IS A BUNDLE. see 04_models/README.md
-│   │   ├── pit|pad|plat|road|drainage|multitask|classifiers/<run>/
-│   │   ├── pretrained/         _retired/  (9,055 files, cited by LEADERBOARD)
-│   ├── 05_results/             WHAT THE PROJECT PRODUCES
-│   │   ├── 9t/<target>/<question>/     613590/road/thresholds/
-│   │   ├── candidates/         validation/
-│   ├── 06_experiments/         one thread per directory
-│   ├── 99_archive/             parked/ + superseded/ + ARCHIVE_MANIFEST.csv
-│   ├── derivatives/            SHRINKING REMAINDER — 110 loose files, see below
-│   ├── source_laz/             raw LAZ (-> 01_source/lidar, not yet moved)
-│   └── external/               third-party downloads (-> 01_source/reference)
+├── data/                   AREA-MAJOR. one directory per study area.
+│   ├── 9t/                 the primary area, and where every model is trained
+│   │   ├── derived/{05,1m,1m_rebuilt20260812}/   dem, slope, lrm, rrim, features
+│   │   ├── models/         pit/ pad/ plat/ road/ drainage/ multitask/
+│   │   │                   classifiers/ _retired/   (see models/README.md)
+│   │   ├── results/        pit/{thresholds,centroid_matching,rim_containment}/
+│   │   │                   pad/ road/ wells/ heldout_overlap/ instance_precision/
+│   │   └── experiments/    diagnostics/ exag3x/
+│   ├── 613590/             derived/{05,1m,inference_05}/  results/road/
+│   ├── 607594|610594|610605|616593/derived/1m/
+│   ├── westernpa_d20/<block>/derived/1m/    northcentral_b19/<block>/derived/1m/
+│   ├── mckean/{mk5,mkf,sw,e1423n2238}/derived/{05,1m,road_1m}/
+│   ├── oilcreek/derived/22tile/
+│   ├── grids/westernpa_0{1..4}/derived/1m/   annotation grids
+│   │
+│   ├── _source/            IMMUTABLE. lidar/ (raw LAZ) + reference/ (DEP, TIGER,
+│   │                       land cover, NLCD). The pipeline never writes here.
+│   ├── _results/           results that span areas: candidates/ validation/
+│   ├── _experiments/       threads not tied to one area
+│   ├── _pretrained/        seed weights (yolov8s-seg, yolo26n)
+│   ├── _logs/              cross-area build logs
+│   └── _archive/           parked + superseded, ARCHIVE_MANIFEST.csv
 │
-├── notebooks/wellsight_v2/     UNCHANGED — parents[N] depth is load-bearing
-├── qgis/                       wellsight.qgz + grids/<grid>.qgz
+├── qgis/                   THE FRONT DOOR
+│   ├── wellsight.qgz       61 layers, all resolving
+│   ├── annotations/        HAND-DRAWN GROUND TRUTH. roads, plat, pit_inside,
+│   │                       drainage, waterways, annotations_proj.gpkg
+│   │                       grids/    per-grid pit annotation
+│   │                       _history/ dated snapshots
+│   └── grids/              per-grid QGIS projects
+│
+├── notebooks/wellsight_v2/ UNCHANGED — parents[N] depth is load-bearing
 ├── docs/  literature/  tools/  tests/  ui/  roads_studio/  archive/  personal/
 ```
 
-## Still to move
+## Why area-major
 
-`data/derivatives/` holds 110 loose files, `data/source_laz/` and
-`data/external/` still sit outside `01_source/`. Those are the remainder of
-Phase 4D and are tracked in `docs/REORGANIZATION_PLAN_phase4_role_based.md`.
-The loose files are the hard ones — many are referenced by exact filename and
-several are the canonical 1 m 9t stack, which cannot be consolidated until the
-`_prep_road_1m.py` stats regression is resolved.
+Two organisations were possible. Role-major puts the artifact class first
+(`derived/9t`, `models/pit`, `results/9t`); area-major puts the study area first
+(`9t/derived`, `9t/models`, `9t/results`).
+
+Area-major was chosen because the question asked most often here is "show me
+everything about 9t", not "show me every derivative in the project". The
+role-major arrangement answered the second question well and made the first one
+a four-directory hunt — which is the same complaint that started this
+reorganisation, just rotated.
+
+Role survives as the second level, which is what keeps the `.gitignore` to one
+rule per role (`data/**/derived/**`) instead of one per directory.
+
+Ground truth is the exception: it lives in `qgis/annotations/`, not under an
+area, because `roads.shp` spans Oil Creek to McKean and does not belong to any
+single tile — and because that is the folder it is drawn from every day.
 
 
 ## Path conventions (IMPORTANT — keep code paths anchored)

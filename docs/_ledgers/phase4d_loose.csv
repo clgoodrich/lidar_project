@@ -1,0 +1,111 @@
+old_path,new_path,phase,reason
+data/derivatives/pit_607594_overview.png,data/03_derived/607594/1m/pit_607594_overview.png,phase4d,belongs to that block's stack
+data/derivatives/pit_candidates_607594.gpkg,data/03_derived/607594/1m/pit_candidates_607594.gpkg,phase4d,belongs to that block's stack
+data/derivatives/rrim_openness_607594_1m_preview.png,data/03_derived/607594/1m/rrim_openness_607594_1m_preview.png,phase4d,belongs to that block's stack
+data/derivatives/rrim_simple_607594_1m_preview.png,data/03_derived/607594/1m/rrim_simple_607594_1m_preview.png,phase4d,belongs to that block's stack
+data/derivatives/pit_610594_dep_overlay.png,data/03_derived/610594/1m/pit_610594_dep_overlay.png,phase4d,belongs to that block's stack
+data/derivatives/pit_610594_raw_overlay.png,data/03_derived/610594/1m/pit_610594_raw_overlay.png,phase4d,belongs to that block's stack
+data/derivatives/pit_candidates_610594.gpkg,data/03_derived/610594/1m/pit_candidates_610594.gpkg,phase4d,belongs to that block's stack
+data/derivatives/rrim_openness_610594_1m_preview.png,data/03_derived/610594/1m/rrim_openness_610594_1m_preview.png,phase4d,belongs to that block's stack
+data/derivatives/rrim_simple_610594_1m_preview.png,data/03_derived/610594/1m/rrim_simple_610594_1m_preview.png,phase4d,belongs to that block's stack
+data/derivatives/pit_610605_overview.png,data/03_derived/610605/1m/pit_610605_overview.png,phase4d,belongs to that block's stack
+data/derivatives/pit_candidates_610605.gpkg,data/03_derived/610605/1m/pit_candidates_610605.gpkg,phase4d,belongs to that block's stack
+data/derivatives/rrim_openness_610605_1m_preview.png,data/03_derived/610605/1m/rrim_openness_610605_1m_preview.png,phase4d,belongs to that block's stack
+data/derivatives/rrim_simple_610605_1m_preview.png,data/03_derived/610605/1m/rrim_simple_610605_1m_preview.png,phase4d,belongs to that block's stack
+data/derivatives/pit_616593_dep_overlay.png,data/03_derived/616593/1m/pit_616593_dep_overlay.png,phase4d,belongs to that block's stack
+data/derivatives/pit_616593_raw_overlay.png,data/03_derived/616593/1m/pit_616593_raw_overlay.png,phase4d,belongs to that block's stack
+data/derivatives/pit_candidates_616593.gpkg,data/03_derived/616593/1m/pit_candidates_616593.gpkg,phase4d,belongs to that block's stack
+data/derivatives/pit_candidates_616593_enriched.gpkg,data/03_derived/616593/1m/pit_candidates_616593_enriched.gpkg,phase4d,belongs to that block's stack
+data/derivatives/rrim_openness_616593_1m_preview.png,data/03_derived/616593/1m/rrim_openness_616593_1m_preview.png,phase4d,belongs to that block's stack
+data/derivatives/rrim_simple_616593_1m_preview.png,data/03_derived/616593/1m/rrim_simple_616593_1m_preview.png,phase4d,belongs to that block's stack
+data/derivatives/dem_9t_1m.tif,data/03_derived/9t/1m/dem_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/ground_density_noverlap_9t_1m.tif,data/03_derived/9t/1m/ground_density_noverlap_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/hillshade_9t_1m.tif,data/03_derived/9t/1m/hillshade_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/hillshade_9t_1m.tif.aux.xml,data/03_derived/9t/1m/hillshade_9t_1m.tif.aux.xml,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/hillshade_9t_1m_az135.tif,data/03_derived/9t/1m/hillshade_9t_1m_az135.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/intensity_ground_9t_1m.tif,data/03_derived/9t/1m/intensity_ground_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/lrm_25_9t_1m.tif,data/03_derived/9t/1m/lrm_25_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/lrm_5_9t_1m.tif,data/03_derived/9t/1m/lrm_5_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/openness_neg_9t_1m.tif,data/03_derived/9t/1m/openness_neg_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/openness_pos_9t_1m.tif,data/03_derived/9t/1m/openness_pos_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/roughness_5_9t_1m.tif,data/03_derived/9t/1m/roughness_5_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/slope_9t_1m.tif,data/03_derived/9t/1m/slope_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/tpi_05_9t_1m.tif,data/03_derived/9t/1m/tpi_05_9t_1m.tif,phase4d,"canonical 1 m 9t stack, proven byte-exact against features_pit_9t_1m.tif"
+data/derivatives/dem_mck_e1423n2238_05.tif,data/03_derived/mckean/e1423n2238/05/dem_mck_e1423n2238_05.tif,phase4d,belongs to that McKean tile
+data/derivatives/rrim_openness_mck_e1423n2238_05_preview.png,data/03_derived/mckean/e1423n2238/05/rrim_openness_mck_e1423n2238_05_preview.png,phase4d,belongs to that McKean tile
+data/derivatives/rrim_simple_mck_e1423n2238_05_preview.png,data/03_derived/mckean/e1423n2238/05/rrim_simple_mck_e1423n2238_05_preview.png,phase4d,belongs to that McKean tile
+data/derivatives/hillshade_mk5_1m.tif,data/03_derived/mckean/mk5/1m/hillshade_mk5_1m.tif,phase4d,belongs to the mk5 stack
+data/derivatives/hillshade_mk5_1m.tif.aux.xml,data/03_derived/mckean/mk5/1m/hillshade_mk5_1m.tif.aux.xml,phase4d,belongs to the mk5 stack
+data/derivatives/rrim_openness_mk5_1m_preview.png,data/03_derived/mckean/mk5/1m/rrim_openness_mk5_1m_preview.png,phase4d,belongs to the mk5 stack
+data/derivatives/rrim_simple_mk5_1m_preview.png,data/03_derived/mckean/mk5/1m/rrim_simple_mk5_1m_preview.png,phase4d,belongs to the mk5 stack
+data/derivatives/_oilcreek_tiles_spec.txt,data/03_derived/oilcreek/_oilcreek_tiles_spec.txt,phase4d,the tile spec for that mosaic
+data/derivatives/rf_road_proba.tif,data/04_models/classifiers/rf_road/rf_road_proba.tif,phase4d,random-forest road probability output
+data/derivatives/pit_unet_eval.txt,data/04_models/pit/unet_1m_legacy/pit_unet_eval.txt,phase4d,"an earlier 1 m pit U-Net: weights, predictions and its metrics"
+data/derivatives/pit_unet_metrics.txt,data/04_models/pit/unet_1m_legacy/pit_unet_metrics.txt,phase4d,"an earlier 1 m pit U-Net: weights, predictions and its metrics"
+data/derivatives/pit_unet_model.pt,data/04_models/pit/unet_1m_legacy/pit_unet_model.pt,phase4d,"an earlier 1 m pit U-Net: weights, predictions and its metrics"
+data/derivatives/pit_unet_pred_9t.tif,data/04_models/pit/unet_1m_legacy/pit_unet_pred_9t.tif,phase4d,"an earlier 1 m pit U-Net: weights, predictions and its metrics"
+data/derivatives/pit_unet_pred_mk5.tif,data/04_models/pit/unet_1m_legacy/pit_unet_pred_mk5.tif,phase4d,"an earlier 1 m pit U-Net: weights, predictions and its metrics"
+data/derivatives/pit_candidates_mk5.gpkg,data/05_results/candidates/pit_candidates_mk5.gpkg,phase4d,candidate well locations are the deliverable
+data/derivatives/pit_candidates_thr70_presentation.png,data/05_results/candidates/pit_candidates_thr70_presentation.png,phase4d,candidate well locations are the deliverable
+data/derivatives/pit_discoveries.gpkg,data/05_results/candidates/pit_discoveries.gpkg,phase4d,candidate well locations are the deliverable
+data/derivatives/pit_discoveries.png,data/05_results/candidates/pit_discoveries.png,phase4d,candidate well locations are the deliverable
+data/derivatives/pit_discoveries.txt,data/05_results/candidates/pit_discoveries.txt,phase4d,candidate well locations are the deliverable
+data/derivatives/cornrow_demo_hillshade.png,data/06_experiments/notebook_demo/cornrow_demo_hillshade.png,phase4d,figures built by the walkthrough notebooks
+data/derivatives/cornrow_demo_hillshade.png.aux.xml,data/06_experiments/notebook_demo/cornrow_demo_hillshade.png.aux.xml,phase4d,figures built by the walkthrough notebooks
+data/derivatives/dem_demo_filtered.tif,data/06_experiments/notebook_demo/dem_demo_filtered.tif,phase4d,figures built by the walkthrough notebooks
+data/derivatives/dem_demo_unfiltered.tif,data/06_experiments/notebook_demo/dem_demo_unfiltered.tif,phase4d,figures built by the walkthrough notebooks
+data/derivatives/hillshade.tif,data/06_experiments/notebook_demo/hillshade.tif,phase4d,figures built by the walkthrough notebooks
+data/derivatives/tile_annotation_base.png,data/06_experiments/notebook_demo/tile_annotation_base.png,phase4d,figures built by the walkthrough notebooks
+data/derivatives/tile_overview.png,data/06_experiments/notebook_demo/tile_overview.png,phase4d,figures built by the walkthrough notebooks
+data/derivatives/pit_1m_candidates_ensemble.gpkg,data/06_experiments/pit_1m_ensemble/pit_1m_candidates_ensemble.gpkg,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_candidates_template.gpkg,data/06_experiments/pit_1m_ensemble/pit_1m_candidates_template.gpkg,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_ensemble_feature_importance.png,data/06_experiments/pit_1m_ensemble/pit_1m_ensemble_feature_importance.png,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_ensemble_metrics.txt,data/06_experiments/pit_1m_ensemble/pit_1m_ensemble_metrics.txt,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_ensemble_thr30.png,data/06_experiments/pit_1m_ensemble/pit_1m_ensemble_thr30.png,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_ensemble_thr50.png,data/06_experiments/pit_1m_ensemble/pit_1m_ensemble_thr50.png,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_ensemble_thr70.png,data/06_experiments/pit_1m_ensemble/pit_1m_ensemble_thr70.png,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_match_score_9t.tif,data/06_experiments/pit_1m_ensemble/pit_1m_match_score_9t.tif,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_match_score_mk.tif,data/06_experiments/pit_1m_ensemble/pit_1m_match_score_mk.tif,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_match_score_mk5.tif,data/06_experiments/pit_1m_ensemble/pit_1m_match_score_mk5.tif,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_morphology_audit.csv,data/06_experiments/pit_1m_ensemble/pit_1m_morphology_audit.csv,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_morphology_audit.gpkg,data/06_experiments/pit_1m_ensemble/pit_1m_morphology_audit.gpkg,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_polygons.gpkg,data/06_experiments/pit_1m_ensemble/pit_1m_polygons.gpkg,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_polygons_v2.gpkg,data/06_experiments/pit_1m_ensemble/pit_1m_polygons_v2.gpkg,phase4d,the 1 m pit ensemble thread
+data/derivatives/pit_1m_template_mean.png,data/06_experiments/pit_1m_ensemble/pit_1m_template_mean.png,phase4d,the 1 m pit ensemble thread
+data/derivatives/dep_wells_snapped_9tile.gpkg,data/external/dep_wells/dep_wells_snapped_9tile.gpkg,phase4d,"DEP well export or a join onto one; reference data, not hand-drawn"
+data/derivatives/venango_wells_all.gpkg,data/external/dep_wells/venango_wells_all.gpkg,phase4d,"DEP well export or a join onto one; reference data, not hand-drawn"
+data/derivatives/wells_in_tile.gpkg,data/external/dep_wells/wells_in_tile.gpkg,phase4d,"DEP well export or a join onto one; reference data, not hand-drawn"
+data/derivatives/wells_in_tile_enriched.gpkg,data/external/dep_wells/wells_in_tile_enriched.gpkg,phase4d,"DEP well export or a join onto one; reference data, not hand-drawn"
+data/derivatives/expert_validation_misses.png,docs/figures/expert_validation_misses.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/expert_validation_overview.png,docs/figures/expert_validation_overview.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/intensity_all.png,docs/figures/intensity_all.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/intensity_ground_stretch.png,docs/figures/intensity_ground_stretch.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/intensity_per_psi_zscore.png,docs/figures/intensity_per_psi_zscore.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/intensity_vs_angle_corr.png,docs/figures/intensity_vs_angle_corr.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/num_returns_corrections.png,docs/figures/num_returns_corrections.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/num_returns_mean.png,docs/figures/num_returns_mean.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/num_returns_mean_nadir.png,docs/figures/num_returns_mean_nadir.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/num_returns_mean_zscore.png,docs/figures/num_returns_mean_zscore.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/pa_9t_orphans_overlay.png,docs/figures/pa_9t_orphans_overlay.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/paper_fig_hillshade_polygons.png,docs/figures/paper_fig_hillshade_polygons.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/paper_fig_morphology_boxplots.png,docs/figures/paper_fig_morphology_boxplots.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/paper_fig_morphology_table.png,docs/figures/paper_fig_morphology_table.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/paper_fig_pca_anomaly.png,docs/figures/paper_fig_pca_anomaly.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/paper_fig_radial_profile.png,docs/figures/paper_fig_radial_profile.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/paper_fig_spoke_quality.png,docs/figures/paper_fig_spoke_quality.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/pit_detection_zoom_panels.png,docs/figures/pit_detection_zoom_panels.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/pit_mk5_dep_overlay.png,docs/figures/pit_mk5_dep_overlay.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/pit_mk5_raw_overlay.png,docs/figures/pit_mk5_raw_overlay.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/pits_overview.png,docs/figures/pits_overview.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/psi_diagnostics.png,docs/figures/psi_diagnostics.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/returns_and_intensity_overview.png,docs/figures/returns_and_intensity_overview.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/rrim_openness_9t_1m_preview.png,docs/figures/rrim_openness_9t_1m_preview.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/rrim_simple_9t_1m_preview.png,docs/figures/rrim_simple_9t_1m_preview.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/single_return_frac_ground.png,docs/figures/single_return_frac_ground.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/study_area_context.png,docs/figures/study_area_context.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/study_area_hillshade.png,docs/figures/study_area_hillshade.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/study_area_hillshade.png.aux.xml,docs/figures/study_area_hillshade.png.aux.xml,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/study_area_map.png,docs/figures/study_area_map.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/v10_rf_overview.png,docs/figures/v10_rf_overview.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/well_status_comparison_zoom.png,docs/figures/well_status_comparison_zoom.png,phase4d,"a figure; nothing reads it, it is for people"
+data/derivatives/wells_by_status_hillshade.png,docs/figures/wells_by_status_hillshade.png,phase4d,"a figure; nothing reads it, it is for people"

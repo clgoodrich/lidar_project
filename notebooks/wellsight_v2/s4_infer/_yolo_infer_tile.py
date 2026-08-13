@@ -107,7 +107,7 @@ def main() -> int:
     ap.add_argument("--suffix", default="613590_05")
     args = ap.parse_args()
     sfx = args.suffix
-    tile_dir = path_for("derived") / sfx
+    tile_dir = path_for("derived") / sfx / "derived"
     out_dir = DERIV / f"inference_{sfx}"
     out_dir.mkdir(parents=True, exist_ok=True)
 

@@ -51,7 +51,7 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 ANN = path_for("truth")
-REVIEW = (path_for("data_3x3") / "westernpa_d20" / "613590" / "1m" / "review")
+REVIEW = (path_for("data_3x3") / "westernpa_d20" / "613590" / "derived" / "1m" / "review")
 ROADS = ANN / "roads.shp"
 BACKUP = ANN / "_backup_roads_2026-08-05"
 SUMMARY = ANN / "_merge_613590_roads_summary.json"

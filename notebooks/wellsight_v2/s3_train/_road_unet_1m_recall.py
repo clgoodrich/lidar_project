@@ -55,7 +55,7 @@ FOCAL_ALPHA = (0.10, 0.72, 0.25)   # bg, ROAD(+), drainage(-)
 FOCAL_GAMMA = 2.0
 WEIGHT_DECAY = 2e-4
 
-PREDICT_BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590" / "1m"
+PREDICT_BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590" / "derived" / "1m"
 
 
 def build_dataset(split, manifest, blocks, transform, mu, sd, *, augment, seed):

@@ -77,7 +77,7 @@ PROB = path_for("models") / "road" / "unet_1m" / "road_prob.tif"
 RASTER_DIR = path_for("models") / "road" / "unet_1m"
 CHUNKS = NINE_T / "road_chunks_9t.gpkg"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
-OUT = path_for("results") / "9t" / "road" / "thresholds"
+OUT = path_for("results_9t") / "road" / "thresholds"
 OUT.mkdir(parents=True, exist_ok=True)
 
 TOL_M = 5.0                # centreline tolerance, see docstring

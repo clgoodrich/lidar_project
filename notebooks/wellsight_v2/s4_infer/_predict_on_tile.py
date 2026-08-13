@@ -66,7 +66,7 @@ def find_channel_files(sfx: str) -> list[tuple[str, Path]]:
     for name in TRAINING_CHANNELS:
         on_disk = rough_band if name == "roughness_11" else name
         candidates = [
-            path_for("derived") / sfx / f"{on_disk}_{sfx}.tif",   # new layout (subdir + descriptive name)
+            path_for("derived") / sfx / "derived" / f"{on_disk}_{sfx}.tif",   # new layout (subdir + descriptive name)
             DERIV / f"{on_disk}_{sfx}.tif",          # legacy flat
         ]
         for p in candidates:
@@ -144,7 +144,7 @@ def infer_one(name: str, ckpt: Path, n_classes: int, patch: int, overlap: int,
 
 
 def render_overlay(argmaps: dict[str, np.ndarray], sfx: str, out_dir: Path) -> None:
-    hs_path = path_for("derived") / sfx / f"hillshade_{sfx}.tif"   # new layout
+    hs_path = path_for("derived") / sfx / "derived" / f"hillshade_{sfx}.tif"   # new layout
     if not hs_path.exists():
         hs_path = DERIV / f"hillshade_{sfx}.tif"               # legacy flat fallback
     with rasterio.open(hs_path) as r:

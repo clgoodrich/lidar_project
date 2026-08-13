@@ -80,7 +80,7 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 ANN = path_for("truth") / "roads.shp"
-OUT = path_for("results") / "613590" / "road" / "thresholds"
+OUT = path_for("results_613590") / "road" / "thresholds"
 
 CRS = "EPSG:6346"
 TOL_M = 5.0            # centreline tolerance, same as the 9t road eval

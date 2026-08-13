@@ -31,43 +31,49 @@
 [paths]
 data          = "data"
 
-# --- 01 source: immutable. The pipeline never writes here. ------------------
-source        = "data/source_laz"
-source_laz    = "data/source_laz"                    # legacy alias for source
-reference     = "data/external"
-external      = "data/external"                      # legacy alias for reference
-landcover     = "data/external/landcover"
+# --- AREA-MAJOR, 2026-08-12 (Phase 4F) ------------------------------------
+# data/<area>/{derived,models,results,experiments}/ -- everything about one
+# study area lives under that area, and role is the second level. Shared things
+# that belong to no single area carry an underscore prefix so they sort together
+# and read as "not an area": _source, _results, _experiments, _archive.
 
-# --- 02 truth: hand-drawn. Irreplaceable. Always tracked. -------------------
-truth         = "data/02_truth/annotations"
-annotations   = "data/02_truth/annotations"          # legacy alias for truth
-truth_grids   = "data/02_truth/grids"
-truth_history = "data/02_truth/_history"
+# shared / not area-specific
+source        = "data/_source/lidar"
+source_laz    = "data/_source/lidar"                 # legacy alias
+reference     = "data/_source/reference"
+external      = "data/_source/reference"             # legacy alias
+landcover     = "data/_source/reference/landcover"
+dep_wells     = "data/_source/reference/dep_wells"
+pretrained    = "data/_pretrained"
+experiments   = "data/_experiments"
+shared_results = "data/_results"
+candidates    = "data/_results/candidates"
+validation    = "data/_results/validation"
+archive       = "data/_archive"
 
-# --- 03 derived: regenerable BY DEFINITION. Delete-and-rebuild. -------------
-derived       = "data/03_derived"
-derivatives   = "data/derivatives"                   # legacy; the old catch-all
-tiles         = "data/03_derived"                    # legacy alias for derived
-nine_t        = "data/03_derived/9t/05"
-nine_t_1m     = "data/derivatives"                   # canonical 1 m 9t stack, still loose (see note)
-data_3x3      = "data/03_derived"
-label_grids   = "data/03_derived/grids"
+# truth is drawn in QGIS and lives with it. roads.shp spans Oil Creek to
+# McKean, so truth cannot decompose per-area anyway.
+truth         = "qgis/annotations"
+annotations   = "qgis/annotations"                   # legacy alias
+truth_grids   = "qgis/annotations/grids"
+truth_history = "qgis/annotations/_history"
 
-# --- 04 models: a model is a bundle -- weights, manifest, log, prob rasters -
-models        = "data/04_models"
-pretrained    = "data/04_models/pretrained"
-models_retired = "data/04_models/_retired"
+# 9t -- the primary study area, and where every model is trained
+nine_t        = "data/9t/derived/05"
+nine_t_1m     = "data/9t/derived/1m"
+models        = "data/9t/models"
+models_retired = "data/9t/models/_retired"
+results_9t    = "data/9t/results"
 
-# --- 05 results: what the project produces ---------------------------------
-results       = "data/05_results"
-candidates    = "data/05_results/candidates"
-validation    = "data/05_results/validation"
+# other areas
+results_613590 = "data/613590/results"
+derived       = "data"                               # <area> is the next level
+tiles         = "data"                               # legacy alias
+data_3x3      = "data"                               # blocks are areas now
+label_grids   = "data/grids"
+results       = "data/_results"                      # shared results only
 
-# --- 06 experiments / 99 archive -------------------------------------------
-experiments   = "data/06_experiments"
-archive       = "data/99_archive"
-
-# --- repo-level ------------------------------------------------------------
+# repo-level
 literature    = "literature"
 docs          = "docs"
 ledgers       = "docs/_ledgers"
@@ -86,38 +92,8 @@ annotation_source = "EPSG:4326"
 # Resolved with shutil.which() first; this is the fallback name only.
 pdal = "pdal"
 
-# --- Phase 4D: the values these keys will take ----------------------------
-# NOT ACTIVE. When Phase 4D runs, the [paths] block above becomes this, the
-# MOVES.csv ledger moves the files, and tools/rewrite_qgis_paths.py repoints the
-# QGIS projects. No script changes, because no script spells a path.
-#
-#   source        = "data/01_source/lidar"
-#   reference     = "data/01_source/reference"
-#   landcover     = "data/01_source/reference/landcover"
-#   truth         = "data/02_truth/annotations"
-#   truth_grids   = "data/02_truth/grids"
-#   truth_history = "data/02_truth/_history"
-#   derived       = "data/03_derived"
-#   nine_t        = "data/03_derived/9t/05"
-#   nine_t_1m     = "data/03_derived/9t/1m"
-#   data_3x3      = "data/03_derived/westernpa_d20"
-#   label_grids   = "data/03_derived/grids"
-#   models        = "data/04_models"
-#   pretrained    = "data/04_models/pretrained"
-#   models_retired = "data/04_models/_retired"
-#   results       = "data/05_results"
-#   candidates    = "data/05_results/candidates"
-#   experiments   = "data/06_experiments"
-
-# --- Note: nine_t_1m ------------------------------------------------------
-# The canonical 1 m 9t stack is the 11 loose *_9t_1m.tif files sitting directly
-# in data/derivatives/, which is why this key points at a directory rather than
-# a tidy stack folder. Proven canonical 2026-08-12: all 7 channels of
-# tiles/9t/features_pit_9t_1m.tif -- the stack the models read -- are byte-exact
-# against them, and differ from tiles/9t_1m_rebuilt20260812/ on all 7.
-#
-# They are NOT consolidated into tiles/9t_1m/ yet, deliberately. That directory
-# name is what _prep_road_1m.py reads, and it was removed so the script fails
-# fast instead of rewriting feature_stats_1m.json with a changed block split.
-# See docs/HANDOFF_code_cleanup_wellsight_v2.md:281. Consolidate in Phase 4D,
-# after the stats regression is resolved.
+# --- Note ------------------------------------------------------------------
+# The canonical 1 m 9t stack now sits at data/9t/derived/1m. _prep_road_1m.py
+# reads path_for("derived") / "9t_1m", which does not exist -- deliberately. It
+# must keep failing fast until the feature_stats_1m.json block-split regression
+# is resolved. See docs/HANDOFF_code_cleanup_wellsight_v2.md:281.

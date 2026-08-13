@@ -1,0 +1,4 @@
+old_path,new_path,phase,reason
+data/derivatives/tiles/data_3x3/northcentral_b19/_batch.log,data/northcentral_b19/_logs/_batch.log,phase4f,"per-project build log; kept with its project"
+data/derivatives/tiles/data_3x3/westernpa_d20/_batch.log,data/westernpa_d20/_logs/_batch.log,phase4f,"per-project build log; kept with its project"
+data/derivatives/tiles/data_3x3/westernpa_d20/_water_backfill_10blocks.log,data/westernpa_d20/_logs/_water_backfill_10blocks.log,phase4f,"per-project build log; kept with its project"

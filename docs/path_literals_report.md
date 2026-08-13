@@ -4,7 +4,7 @@ Scanned: notebooks/wellsight_v2, ui, roads_studio
 
 | sites | distinct | allow-listed | new |
 |---:|---:|---:|---:|
-| 20 | 20 | 48 | 0 |
+| 19 | 19 | 19 | 0 |
 
 No new violations.
 

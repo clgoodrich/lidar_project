@@ -26,7 +26,7 @@ S4 = "notebooks/wellsight_v2/s4_infer"
 S5 = "notebooks/wellsight_v2/s5_eval"
 S7 = "notebooks/wellsight_v2/s7_analysis"
 STATS_1M = DERIV_9T / "feature_stats_1m.json"
-UI_INFER = DERIV / "experiments" / "ui_infer"
+UI_INFER = path_for("experiments") / "ui_infer"
 
 
 @dataclass

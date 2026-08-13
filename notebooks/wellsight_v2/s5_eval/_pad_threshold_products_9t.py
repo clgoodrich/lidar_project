@@ -78,7 +78,7 @@ PROB = path_for("models") / "plat" / "unet" / "plat_prob.tif"
 RASTER_DIR = path_for("models") / "plat" / "unet"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("results") / "9t" / "pad" / "thresholds"
+OUT = path_for("results_9t") / "pad" / "thresholds"
 OUT.mkdir(parents=True, exist_ok=True)
 
 MIN_AREA_M2 = 100.0        # see docstring -- smallest annotated pad is 261 m2

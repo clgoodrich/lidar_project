@@ -145,7 +145,7 @@ def build(
     H = int(round((y1 - y0) / res))
     transform = from_origin(x0, y1, res, res)
     if out_dir is None:
-        out_dir = path_for("derived") / sfx
+        out_dir = path_for("derived") / sfx / "derived"
     out_dir.mkdir(parents=True, exist_ok=True)
     # Files inside the suffix subdir keep the full suffix in their name so they
     # remain self-describing if pulled out of the directory.

@@ -81,7 +81,7 @@ def main() -> int:
     sfx = args.suffix
 
     inf = DERIV / f"inference_{sfx}"
-    dem = path_for("derived") / sfx / f"dem_{sfx}.tif"
+    dem = path_for("derived") / sfx / "derived" / f"dem_{sfx}.tif"
     with rasterio.open(dem) as r:
         res = r.res[0]
     valid, tf, crs = valid_mask(dem)
@@ -106,7 +106,7 @@ def main() -> int:
         import matplotlib.pyplot as plt
         import geopandas as gpd
         ds = 5
-        with rasterio.open(path_for("derived") / sfx / f"hillshade_{sfx}.tif") as r:
+        with rasterio.open(path_for("derived") / sfx / "derived" / f"hillshade_{sfx}.tif") as r:
             H, W = r.height, r.width
             hs = r.read(1, out_shape=(H // ds, W // ds), resampling=Resampling.nearest)
             b = r.bounds

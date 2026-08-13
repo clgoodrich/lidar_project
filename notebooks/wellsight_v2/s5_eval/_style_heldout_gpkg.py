@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
-OUT = path_for("results") / "9t" / "heldout_overlap"
+OUT = path_for("results_9t") / "heldout_overlap"
 
 TARGETS = ["heldout_pit_unet_v2.gpkg", "heldout_plat_unet.gpkg"]
 

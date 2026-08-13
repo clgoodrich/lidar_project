@@ -27,7 +27,7 @@ from rasterio.windows import from_bounds
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV, DERIV_9T, path_for
 
-BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590" / "1m"
+BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590" / "derived" / "1m"
 CORR = BLOCK / "corrections"
 BEFORE = path_for("models") / "road" / "unet_1m_recall" / "road_prob_613590_1m.tif"
 AFTER = path_for("models") / "road" / "unet_1m_corrected" / "road_prob_613590_1m.tif"

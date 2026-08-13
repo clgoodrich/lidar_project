@@ -60,7 +60,7 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 T9 = path_for("nine_t")
-MKF = path_for("derived") / "mckean" / "mkf" / "1m"
+MKF = path_for("derived") / "mckean" / "mkf" / "derived" / "1m"
 NC = path_for("data_3x3") / "northcentral_b19"
 ANN = path_for("truth") / "annotations_proj.gpkg"
 OUT_DIR = path_for("experiments") / "pad_morphology_bins"

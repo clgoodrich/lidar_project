@@ -59,7 +59,7 @@ ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 PROB = path_for("models") / "pit" / "unet_v2" / "pit_prob_floor.tif"
-OUT = path_for("results") / "9t" / "pit" / "rim_containment"
+OUT = path_for("results_9t") / "pit" / "rim_containment"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

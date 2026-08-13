@@ -1,0 +1,2 @@
+old_path,new_path,phase,reason
+tools/plan_consolidation.py,archive/retired_tools/plan_consolidation_PHASE2_DONE.py,phase4f,"planned the Phase 2 consolidation of loose rasters into tiles/; both data/derivatives and tiles/ no longer exist, so it cannot run and its job is finished"

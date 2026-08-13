@@ -50,7 +50,7 @@ from _common import path_for  # noqa: E402
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("results") / "9t" / "heldout_overlap"
+OUT = path_for("results_9t") / "heldout_overlap"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

@@ -1,0 +1,3 @@
+old_datasource,new_datasource
+../data/external/OilGasLocations_ConventionalUnconventional2026_04/OilGasLocations_ConventionalUnconventional2026_04.shp,../data/_source/reference/OilGasLocations_ConventionalUnconventional2026_04/OilGasLocations_ConventionalUnconventional2026_04.shp
+../data/external/dep_wells/oil_gas_locations.gpkg,../data/_source/reference/dep_wells/oil_gas_locations.gpkg

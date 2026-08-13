@@ -1,319 +1,132 @@
-# Data files (too large for git)
-data/source_laz/westernpa/*.las
-data/source_laz/westernpa/*.laz
-data/source_laz/westernpa/*.copc.laz
-data/source_laz/westernpa/older_files/
-data/source_laz/westernpa/mcKean/
-data/source_laz/westernpa/seperate sections/
-data/external/lidar/*/laz/
-data/external/lidar/**/*.laz
-data/external/lidar/**/*.las
-data/derivatives/*.tif
-data/derivatives/*.png
-data/derivatives/tiles/9t/
+# WellSight .gitignore
+#
+# Rewritten 2026-08-12 for the area-major layout. The previous file had ~280
+# lines and roughly 60 rules anchored to paths that Phase 4F moved. A rule that
+# points at a directory which no longer exists fails SILENTLY -- it stops
+# protecting anything, and the next commit puts a 100 MB raster into history
+# forever. The pre-rewrite file is kept at
+# docs/_ledgers/gitignore_pre_area_major.bak.
+#
+# THE POLICY IS SET BY ROLE, NOT BY PATH.
+#
+#   <area>/derived/     regenerable by definition   -> ignored, records negated back
+#   <area>/models/      weights and prob rasters    -> ignored; manifests/logs kept
+#   <area>/results/     small, and the deliverable  -> TRACKED, no rule
+#   qgis/annotations/   hand-drawn, irreplaceable   -> TRACKED, no rule
+#   data/_source/       raw input, re-downloadable  -> ignored
+#   data/_archive/      parked and superseded       -> ignored, manifest force-added
+#
+# Audit after anything that writes large outputs (must print nothing):
+#   find . -type f -size +100M -not -path './.git/*' -not -path './.venv/*' | \
+#     while read f; do git check-ignore -q "$f" || echo "LEAKING: $f"; done
 
-# Archived dead/superseded derivative DATA (moved out of the active tree to
-# archive/derivatives/, kept on disk + E: backup). Ignore the heavy regenerable
-# types; small records (*.txt / *.md / *.json / *.csv / *.png) stay tracked.
+# --- derived: every raster under any area, at any depth --------------------
+data/**/derived/**
+!data/**/derived/**/
+!data/**/derived/**/_PROVENANCE.json
+!data/**/derived/**/*.md
+!data/**/derived/**/*.json
+!data/**/derived/**/*.csv
+!data/**/derived/**/*_preview.png
+!data/**/derived/**/*_quicklook.png
+
+# --- models: a bundle. Keep the record, drop the weights and the rasters. --
+data/**/models/**/*.pt
+data/**/models/**/*.pth
+data/**/models/**/*.tif
+data/**/models/**/*.tif.aux.xml
+data/**/models/**/*.npz
+data/**/models/**/dataset/
+data/**/models/**/run/
+data/_pretrained/
+
+# --- experiments: notes and metrics in, rasters out ------------------------
+# Both a shared _experiments/ and a per-area <area>/experiments/ exist, so the
+# rule has to match at any depth rather than anchoring to the shared one. Gate A
+# caught exactly that: 9t/experiments/exag3x/ leaked three rasters through a
+# rule written only for data/_experiments/.
+data/**/experiments/**/*.tif
+data/**/experiments/**/*.tif.aux.xml
+data/**/experiments/**/*.npz
+data/**/experiments/**/*.pt
+data/**/experiments/**/*.gpkg
+# `data/**/experiments/` needs a component literally named "experiments", which
+# the shared `_experiments` (underscore) does not match. Both spellings listed.
+data/_experiments/**/*.tif
+data/_experiments/**/*.gpkg
+data/_experiments/**/*.npz
+data/_experiments/**/*.pt
+# `data/**/experiments/` needs a component literally named "experiments", which
+# the shared `_experiments` (underscore) does not match. Both spellings listed.
+data/_experiments/**/*.tif
+data/_experiments/**/*.gpkg
+data/_experiments/**/*.npz
+data/_experiments/**/*.pt.aux.xml
+data/_experiments/**/*.npz
+data/_experiments/**/*.pt
+
+# --- source: raw input, all of it re-downloadable --------------------------
+data/_source/**
+!data/_source/**/
+!data/_source/**/*.md
+!data/_source/**/*.txt
+!data/_source/**/*.csv
+
+# --- archive: bulk out, manifest in ----------------------------------------
+data/_archive/**
+!data/_archive/ARCHIVE_MANIFEST.csv
+!data/_archive/README.md
+
+# --- annotations are TRACKED. Only the snapshots' rasters are not. ---------
+# qgis/annotations/ carries the one thing in this repository no script can
+# rebuild, so it has no ignore rule at all. _history/ holds dated snapshots,
+# and _backup_pit_ann426_2026-06-10 happens to contain a full model run.
+qgis/annotations/_history/**/*.tif
+qgis/annotations/_history/**/*.tif.aux.xml
+qgis/annotations/_history/**/*.pt
+qgis/*.qgz.*.bak
+
+# --- point clouds anywhere, always large -----------------------------------
+*.las
+*.laz
+*.copc.laz
+*.h5
+!tests/fixtures/*.las
+!tests/fixtures/*.laz
+
+# --- legacy trees still on disk --------------------------------------------
 archive/derivatives/**/*.tif
 archive/derivatives/**/*.tif.aux.xml
-archive/derivatives/**/*.tif.ovr
-archive/derivatives/**/*.tif.ovr.aux.xml
 archive/derivatives/**/*.gpkg
-archive/derivatives/**/*.las
-archive/derivatives/**/*.laz
 archive/derivatives/**/*.npz
 archive/derivatives/**/*.pt
 
-# --- Role-based tree, Phase 4C (2026-08-12) -------------------------------
-# data/02_truth/ and data/05_results/ have NO rule, deliberately.
-#
-# Ground truth used to live at data/derivatives/annotations/, inside a subtree
-# whose default is "ignore", protected only by the exception line that used to
-# sit here. The one irreplaceable thing in the repository was tracked by
-# exception. Now it sits in a directory with no ignore rule at all, so the
-# default is "tracked" -- which is the correct default for data no script can
-# rebuild. Same for results: they are small, and they are the deliverable.
-#
-# If you ever add a heavy file under either tree, add a targeted rule HERE and
-# say why. Do not add a blanket.
+# --- large reference PDFs (re-downloadable) --------------------------------
+docs/papers/Allegheny-Oil.pdf
+docs/papers/annas-arch-784c7616f171.pdf
+barlow/docs/BARLOW-DISSERTATION-2026*.pdf
+barlow/docs/BARLOW-DISSERTATION-2026_readalong.epub
+barlow/Shapefiles/
+barlow/MDV_Resources.docx
 
-# Land cover data
-nlcd_*/
-landcover_*/
-PA_LandCover/
-OilGasLocations_*/
-EnviroAtlas_*
+# --- build scratch ---------------------------------------------------------
+data/**/_build_*.log
+data/**/_tmp_*.json
+data/**/_tmp_intensity_tiles_*/
+*.gpkg-wal
+*.gpkg-shm
+backup_to_E*.log
 
-# Zips
-*.zip
-
-# Python
+# --- Python / IDE / OS -----------------------------------------------------
 .venv/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
-
-# IDE
+.pytest_cache/
 .vscode/
 *.code-workspace
-
-# OS
 Thumbs.db
 .DS_Store
-
-# Large files (>100 MB) not covered by patterns above
-data/full_dem.tif
-data/derivatives/_output3_covar.las
-data/derivatives/pit_1m_candidates_ensemble.gpkg
-data/source_laz/westernpa/OilGasLocations/
-
-# LAZ/LAS point clouds anywhere (always large)
-*.las
-*.laz
-*.copc.laz
-
-# ...except small synthetic test fixtures (a few KB each)
-!tests/fixtures/*.laz
-!tests/fixtures/*.las
-
-# External data downloads (NAIP chips, USGS 3DEP tiles, paper bundles)
-data/external/ramachandran_2024/naip_chips/
-data/external/ramachandran_2024/naip_chips_pilot/
-data/external/ramachandran_2024/permian_denver_data.zip
-data/external/usgs_3dep_permian_tx/laz_pilot_A/
-data/external/usgs_3dep_permian_tx/tile_inventory.parquet
-data/external/usgs_3dep_permian_tx/tiles_intersecting_pads.parquet
-data/external/usgs_3dep_pa_lidar/
-data/external/well-pad-denver-permian/
-
-# Ramachandran verifier training outputs (model weights, prob arrays)
-data/derivatives/experiments/ramachandran_verifier/verifier_best.pt
-data/derivatives/experiments/ramachandran_verifier/verifier_last.pt
-data/derivatives/experiments/ramachandran_verifier/index.csv
-data/derivatives/experiments/ramachandran_verifier/*_probs*.npz
-
-# Pilot A LiDAR derivatives (1m rasters per tile)
-data/derivatives/experiments/pilot_A/*.tif
-
-# Road-extract pipeline rasters (score/mask, ~100-200 MB each at 10k x 10k)
-data/derivatives/experiments/roads/*.tif
-
-# (Beck replication outputs archived to archive/derivatives/ — see archive rules above.)
-
-# Per-tile temp intensity rasters (PDAL outputs during build)
-data/derivatives/_tmp_intensity_tiles_*/
-
-# Build pipeline temp JSON + logs (regenerable, sometimes left on hard crash).
-# These were anchored to the top of data/derivatives/ only. The 2026-08-12
-# consolidation moved loose files down into tiles/<area>/, which silently took
-# them out of ignore coverage -- so the patterns are now recursive. Preview
-# PNGs stay tracked, per the existing "track only the small overlay PNGs" rule.
-data/derivatives/**/_build_*.log
-data/derivatives/**/_tmp_*.json
-data/derivatives/_build_*.log
-data/derivatives/_tmp_*.json
-backup_to_E_last_run.log
-backup_to_E_Colton_last_run.log
-data/derivatives/inference_*/_tmp_*.json
-
-# 3x3 mosaic build outputs — heavy DEM/hillshade rasters regenerable from LAZ
-# + notebooks/wellsight/build/_build_3x3_hillshades*.py. Track no contents
-# below the block-id subdirs.
-data/derivatives/tiles/mosaic_3x3/*/
-data/derivatives/tiles/mosaic_3x3_mckean/*/
-
-# McKean SW curiosity RRIM (McKean set aside per advisor 2026-07) — regenerable
-# from the two Northcentral_B19 tiles via _build_derivatives.py + _make_rrim.py.
-data/derivatives/tiles/mckean_sw_1m/
-data/derivatives/tiles/mckean_sw_05/
-
-# McKean full-extent road feature stack (cldice-on-entire-shapefile experiment)
-# — regenerable from F: mckean_full.las via _build_derivatives.py.
-data/derivatives/tiles/mkf_road_1m/
-
-# Inference outputs — heavy intermediates (feature stacks + prob rasters)
-# regenerable from best.pt + _build_derivatives.py + _predict_on_tile.py.
-# Track only the small overlay PNGs.
-data/derivatives/inference/mck/*.tif
-data/derivatives/inference/mck/*.tif.aux.xml
-data/derivatives/inference/oilcreek/*.tif
-data/derivatives/inference/oilcreek/*.tif.aux.xml
-data/derivatives/tiles/extras/*/*.tif
-# (legacy inference_* one-off archived; new inference/ tifs covered by the blanket below)
-data/derivatives/tiles/extras/*/*.tif.aux.xml
-
-# Instance-segmentation experiments (Mask R-CNN, YOLO) on 9t.
-# Heavy: torchvision Mask R-CNN best.pt is ~180 MB; YOLO datasets are 100s of PNG patches.
-# Regenerable from _pit_maskrcnn.py / _pit_yolo.py / etc.
-data/derivatives/tiles/9t/rgb3_9t_05.tif
-data/04_models/_retired/pit_07_maskrcnn/best.pt
-data/04_models/_retired/pit_07_maskrcnn/*.tif
-data/04_models/_retired/pit_07_maskrcnn/*.tif.aux.xml
-data/04_models/_retired/pit_08_yolo/best.pt
-data/04_models/_retired/pit_08_yolo/*.tif
-data/04_models/_retired/pit_08_yolo/*.tif.aux.xml
-data/04_models/_retired/pit_08_yolo/dataset/
-data/04_models/_retired/pit_08_yolo/run/
-data/04_models/_retired/pad_05_maskrcnn/best.pt
-data/04_models/_retired/pad_05_maskrcnn/*.tif
-data/04_models/_retired/pad_05_maskrcnn/*.tif.aux.xml
-data/04_models/_retired/pad_06_yolo/best.pt
-data/04_models/_retired/pad_06_yolo/*.tif
-data/04_models/_retired/pad_06_yolo/*.tif.aux.xml
-data/04_models/_retired/pad_06_yolo/dataset/
-data/04_models/_retired/pad_06_yolo/run/
-
-# Statewide ancillary (PA O&G locations shapefile, PA land cover)
-# Patterns above (OilGasLocations_*/ and PA_LandCover/) already cover new
-# data/external/ locations since they have no anchor.
-# Legacy archived data dumps
-data/external/legacy_data/
-
-# Claude
-.claude/worktrees/
-
-# Office lock files
 ~$*
-
-# 9t diagnostic derivatives (curvature/hydrology/texture, ~1GB, regenerable)
-data/06_experiments/9t_diagnostics/
-
-# Oil Creek 0.5 m derivative stack (~10 GB of DEM/slope/lrm/tpi/openness rasters,
-# regenerable from _build_derivatives.py --suffix oilcreek_22tile_05).
-data/derivatives/tiles/oilcreek_22tile_05/
-
-# Blanket: ALL derivative rasters are heavy and regenerable — never track them.
-# (Replaces the old per-subdir approach; data_3x3 / icp / *_marcellus_1m /
-# wc_coaloil_1m / roads tifs that were previously committed have been untracked
-# via `git rm --cached`. Files stay on disk; just not in git.)
-data/derivatives/**/*.tif
-data/derivatives/**/*.tif.aux.xml
-data/derivatives/*.tif.aux.xml
-
-# Per-block contour vectors (gdal_contour from each DEM, ~37 MB each at 2 m).
-# Regenerable via _build_contours_data_3x3.py; heavy, so not tracked.
-data/derivatives/tiles/data_3x3/**/contours_*.gpkg
-
-# RRIM full-res GeoTIFFs are regenerable viewing products (via _make_rrim.py),
-# not pipeline inputs; only the small preview PNGs are tracked.
-data/derivatives/tiles/data_3x3/**/rrim_*_1m.tif
-
-# Large scanned-book source PDFs (~120 MB combined) — kept locally as reference
-# material, not committed (re-downloadable; would bloat history). Small papers in
-# docs/papers/ stay tracked.
-docs/papers/Allegheny-Oil.pdf
-docs/papers/annas-arch-784c7616f171.pdf
-
-# multi-block road experiment (regenerable dataset + model; dead-end, kept local)
-# (archived 2026-08-12 to data/99_archive/superseded/road_multiblock/, which the
-# blanket data/99_archive/** rule covers. Rule kept so coverage returns with the
-# data if the thread is ever un-archived.)
-data/derivatives/tiles/road_multiblock/
-
-# label_grids: heavy regenerable rasters/point-clouds (keep .gpkg annotation templates tracked)
-label_grids/**/*.tif
-label_grids/**/*.tif.aux.xml
-label_grids/**/*.las
-label_grids/**/*.laz
-label_grids/**/*.png
-
-# NISAR L-band granules (large .h5, regenerable via _fetch_nisar_9t.py)
-data/external/nisar/
-*.h5
-
-# 613590 0.5m phase-3 stack + inference (heavy, regenerable; 2026-07-01)
-data/derivatives/tiles/613590_05/
-data/derivatives/inference_613590_05/
-# permian pad-transfer experiment rasters (regenerable)
-label_grids/permian_01/pad_unet_xfer/
-# pretrained YOLO weights (downloaded, regenerable)
-yolo26n.pt
-# ramachandran pad points: 28MB derived from tracked permian_well_pads.csv, copied per-grid for QGIS
-ramachandran_permian_pads_pts.gpkg
-barlow/docs/BARLOW-DISSERTATION-2026.pdf
-barlow/docs/BARLOW-DISSERTATION-2026_sidebyside*.pdf
-barlow/docs/BARLOW-DISSERTATION-2026_readalong.epub
-# Cami Barlow's privately shared GIS data (author-provided, not ours to publish)
-barlow/Shapefiles/
-barlow/MDV_Resources.docx
-
-# Barlow MDV datasets (~50 GB: REMA, MDV lidar 2001/2014, LTER, ERA5) — moved
-# back in-repo from the external drive 2026-07-13 so the project is
-# self-contained on C:. Regenerable via barlow/build/_fetch_barlow_data.py.
-/barlow_data/
-
-# QGIS/sqlite write-ahead-log sidecars — transient, never track
-*.gpkg-wal
-*.gpkg-shm
-
-# ---------------------------------------------------------------------------
-# Archived / parked research threads (moved 2026-08-12, NEVER deleted).
-# data/99_archive/parked/permian_ramachandran/  87,538 files, 8.3 GB
-# data/99_archive/parked/barlow_finesst/           911 files, 1.5 GB
-#
-# Everything in here is externally sourced (NAIP chips, USGS tiles), a
-# submitted document, or regenerable. Ignore the bulk. ARCHIVE_MANIFEST.csv is
-# force-added so the record of what was archived, when and why stays in git.
-#
-# The rules above that anchor to the OLD locations
-# (data/external/ramachandran_2024/..., label_grids/permian_01/pad_unet_xfer/,
-# /barlow_data/, barlow/docs/...) no longer match anything. They are left in
-# place deliberately: if a thread is ever un-archived, its coverage comes back
-# with it instead of silently leaking.
-data/99_archive/**
-
-# PA DEP statewide oil & gas locations export (77 MB, re-downloadable from DEP).
-# It lived in data/derivatives/annotations/ and so was tracked by the old
-# "keep annotations" exception, despite not being hand-drawn truth. Moved to
-# data/external/dep_wells/ in Phase 4C and ignored from here on. The blob is
-# already in history from commit e70e1b7; Phase 7 is what removes it.
-data/external/dep_wells/*.gpkg
-
-# --- 04_models, Phase 4D (2026-08-12) --------------------------------------
-# A model bundle is weights + manifest + train log + the prob rasters it made.
-# The weights and rasters are heavy and regenerable from the training script;
-# the manifest, log and metrics are small and are the record. Track the record,
-# ignore the bulk.
-data/04_models/**/*.pt
-data/04_models/**/*.tif
-data/04_models/**/*.tif.aux.xml
-data/04_models/**/*.npz
-data/04_models/**/dataset/
-data/04_models/**/run/
-
-# 06_experiments: same shape -- heavy rasters out, notes and metrics in.
-data/06_experiments/**/*.tif
-data/06_experiments/**/*.tif.aux.xml
-
-# --- 02_truth/_history: keep the record, not the rasters -------------------
-# _history holds dated snapshots of prior annotation state, and those snapshots
-# are the only record of what the labels looked like before a rebuild. But
-# _backup_pit_ann426_2026-06-10/ also carries a full pit_unet_cv5 run -- five
-# fold prob rasters, >100 MB each. Gate A caught them the moment the snapshot
-# moved into a subtree with no size rule, which is precisely why that gate runs
-# after every phase.
-#
-# The snapshot is NOT split: splitting a dated record destroys the thing that
-# makes it a record. The vectors, manifests and metrics inside it stay tracked;
-# only the regenerable rasters and weights are ignored.
-data/02_truth/_history/**/*.tif
-data/02_truth/_history/**/*.tif.aux.xml
-data/02_truth/_history/**/*.pt
-
-# --- 03_derived, Phase 4D (2026-08-12) ------------------------------------
-# Regenerable BY DEFINITION. If a file here cannot be deleted and rebuilt from a
-# script, it does not belong here. That single rule is what lets this be one
-# blanket instead of the ~30 per-directory rules it replaces -- each of which
-# was anchored to a path that Phase 4D just moved, and each of which would have
-# failed SILENTLY, letting a 100 MB raster into history.
-#
-# Track only the small records: provenance, notes, metrics, preview PNGs.
-data/03_derived/**
-!data/03_derived/**/
-!data/03_derived/**/_PROVENANCE.json
-!data/03_derived/**/*.md
-!data/03_derived/**/*.json
-!data/03_derived/**/*.csv
-!data/03_derived/**/*_preview.png
-!data/03_derived/**/*_quicklook.png
+.claude/worktrees/
+*.zip

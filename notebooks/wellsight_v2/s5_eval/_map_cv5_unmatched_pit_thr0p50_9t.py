@@ -53,7 +53,7 @@ from _pit_unet_cv5 import assign_folds, polygonize               # noqa: E402
 from _cv5_centroid_precision_pit_pad_9t import (ANN_GPKG, CRS,   # noqa: E402
                                                 CV_SEED)
 
-OUT = path_for("results") / "9t" / "pit" / "centroid_matching"
+OUT = path_for("results_9t") / "pit" / "centroid_matching"
 HILLSHADE = DERIV_9T / "hillshade_9t_05.tif"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 
