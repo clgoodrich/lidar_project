@@ -18,7 +18,7 @@ call and the answer should not hinge on one arbitrary cutoff:
   centroid     a model polygon contains the annotation's centroid
   iou>=0.3     the standard detection bar, for continuity with the leaderboard
 
-Outputs (data/derivatives/eval_9t_heldout_overlap/):
+Outputs (data/05_results/9t/heldout_overlap/):
   heldout_overlap_9t.csv     counts per model / split / threshold / criterion
   heldout_<model>.gpkg       every skipped annotation, flagged found / missed
   heldout_overlap_9t.png     bar summary + a map of hits and misses
@@ -50,7 +50,7 @@ from _common import path_for  # noqa: E402
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("derivatives") / "eval_9t_heldout_overlap"
+OUT = path_for("results") / "9t" / "heldout_overlap"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

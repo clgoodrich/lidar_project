@@ -1,0 +1,24 @@
+{
+  "pit_unet_v2": {
+    "kind": "pit",
+    "threshold": 0.6,
+    "n_heldout": 141,
+    "touch": 124,
+    "centroid": 118,
+    "iou30": 112,
+    "pct_touch": 87.9,
+    "pct_centroid": 83.7,
+    "pct_iou30": 79.4
+  },
+  "plat_unet": {
+    "kind": "pad",
+    "threshold": 0.5,
+    "n_heldout": 187,
+    "touch": 184,
+    "centroid": 181,
+    "iou30": 175,
+    "pct_touch": 98.4,
+    "pct_centroid": 96.8,
+    "pct_iou30": 93.6
+  }
+}

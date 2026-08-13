@@ -47,7 +47,7 @@ NINE_T = path_for("nine_t")
 PROB = NINE_T / "pit_unet_v2" / "pit_prob_floor.tif"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("derivatives") / "eval_9t_pit_thresholds"
+OUT = path_for("results") / "9t" / "pit" / "thresholds"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

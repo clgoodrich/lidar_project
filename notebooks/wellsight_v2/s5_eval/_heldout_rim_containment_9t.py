@@ -24,7 +24,7 @@ Three containment criteria, loosest to strictest:
   centroid_in   a prediction's centroid lies inside the rim  <- the headline
   fully_within  a prediction lies entirely inside the rim
 
-Outputs (data/derivatives/eval_9t_rim_containment/):
+Outputs (data/05_results/9t/pit/rim_containment/):
   rim_containment_9t.csv        counts per threshold per criterion
   rim_heldout_pits.gpkg         held-out RIM polygons flagged found/missed,
                                 self-styling, + floor + model geometry layers
@@ -59,7 +59,7 @@ ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 PROB = NINE_T / "pit_unet_v2" / "pit_prob_floor.tif"
-OUT = path_for("derivatives") / "eval_9t_rim_containment"
+OUT = path_for("results") / "9t" / "pit" / "rim_containment"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

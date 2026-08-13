@@ -25,8 +25,18 @@ archive/derivatives/**/*.laz
 archive/derivatives/**/*.npz
 archive/derivatives/**/*.pt
 
-# Keep annotations and candidate GPKGs (small)
-!data/derivatives/annotations/
+# --- Role-based tree, Phase 4C (2026-08-12) -------------------------------
+# data/02_truth/ and data/05_results/ have NO rule, deliberately.
+#
+# Ground truth used to live at data/derivatives/annotations/, inside a subtree
+# whose default is "ignore", protected only by the exception line that used to
+# sit here. The one irreplaceable thing in the repository was tracked by
+# exception. Now it sits in a directory with no ignore rule at all, so the
+# default is "tracked" -- which is the correct default for data no script can
+# rebuild. Same for results: they are small, and they are the deliverable.
+#
+# If you ever add a heavy file under either tree, add a targeted rule HERE and
+# say why. Do not add a blanket.
 
 # Land cover data
 nlcd_*/

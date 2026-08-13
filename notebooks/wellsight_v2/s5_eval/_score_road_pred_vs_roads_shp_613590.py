@@ -51,7 +51,7 @@ distinction visible rather than buried.
 Correctness on this tile is a LOWER BOUND. roads.shp covers 613590 only where
 the annotator worked; a prediction on a real road nobody drew counts against it.
 
-Outputs (data/derivatives/eval_613590_roads/):
+Outputs (data/05_results/613590/road/thresholds/):
     road_score_vs_roads_shp_613590_1m.csv     one row per threshold per subset
     _road_score_vs_roads_shp_613590_1m.json   summary at the best-quality thr
     road_found_vs_missed_thr<t>_613590_1m.gpkg  chunks with coverage + found
@@ -80,7 +80,7 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 ANN = path_for("truth") / "roads.shp"
-OUT = path_for("derivatives") / "eval_613590_roads"
+OUT = path_for("results") / "613590" / "road" / "thresholds"
 
 CRS = "EPSG:6346"
 TOL_M = 5.0            # centreline tolerance, same as the 9t road eval

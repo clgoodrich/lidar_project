@@ -29,7 +29,7 @@ model against hand-drawn annotations it never saw and involves no state list:
     pits: 109/128 held-out found (85.2%) at thr 0.60
     pads: 187/194 held-out found (96.4%) at thr 0.50
 
-Outputs (data/derivatives/eval_9t_uncounted_wells/):
+Outputs (data/05_results/9t/wells/uncounted/):
   uncounted_recovery_9t.csv     hit rate vs match radius -- DEP position study
   uncounted_wells_9t.gpkg       DEP points with distance to nearest detection
   recovered_uncounted_9t.gpkg   DEP points that do sit near a detection
@@ -63,7 +63,7 @@ ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
 ANN_DIR = path_for("truth")
 ANN_GPKG = ANN_DIR / "annotations_proj.gpkg"
-OUT = path_for("derivatives") / "eval_9t_uncounted_wells"
+OUT = path_for("results") / "9t" / "wells" / "uncounted"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

@@ -55,7 +55,7 @@ Output layers in pit_candidates_undecided_thr0p50_9t.gpkg (EPSG:6346):
 recorded pit -- a few metres means the model found a known pit but the centroid
 drifted outside it, tens of metres means it fired on something else.
 
-Outputs (data/derivatives/eval_9t_centroid_matching/):
+Outputs (data/05_results/9t/pit/centroid_matching/):
     pit_candidates_undecided_thr0p50_9t.gpkg
     _pit_candidates_undecided_thr0p50_9t.json
     README_EDIT_pit_candidates.md
@@ -87,7 +87,7 @@ from _common import DERIV_9T, path_for  # noqa: E402
 from _pit_unet_cv5 import assign_folds, polygonize                 # noqa: E402
 
 ANN = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("derivatives") / "eval_9t_centroid_matching"
+OUT = path_for("results") / "9t" / "pit" / "centroid_matching"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 OUTDIR = DERIV_9T / "pit_unet_cv5"
 

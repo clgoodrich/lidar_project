@@ -18,7 +18,7 @@ rim. It separates the two failure modes that matter: a few metres means the
 model found the pit but its blob centroid drifted outside the rim, tens of
 metres means it fired on something else entirely.
 
-Outputs (data/derivatives/eval_9t_centroid_matching/):
+Outputs (data/05_results/9t/pit/centroid_matching/):
     pit_cv5_centroid_match_thr0p50_9t_05.gpkg   4 layers, EPSG:6346
     pit_cv5_unmatched_map_thr0p50_9t_05.png     overview + 4 zoom panels
     _pit_cv5_unmatched_thr0p50_9t.json          counts and distance stats
@@ -53,7 +53,7 @@ from _pit_unet_cv5 import assign_folds, polygonize               # noqa: E402
 from _cv5_centroid_precision_pit_pad_9t import (ANN_GPKG, CRS,   # noqa: E402
                                                 CV_SEED)
 
-OUT = path_for("derivatives") / "eval_9t_centroid_matching"
+OUT = path_for("results") / "9t" / "pit" / "centroid_matching"
 HILLSHADE = DERIV_9T / "hillshade_9t_05.tif"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 

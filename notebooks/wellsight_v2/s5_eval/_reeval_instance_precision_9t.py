@@ -27,7 +27,7 @@ fall in its "test" blocks. Its block_id NUMBERING is shared, though (verified
 650/650 pads and 426/426 pits land in the block matching their manifest row), so
 each task's footprint is built from its own manifest's block_ids.
 
-Outputs (data/derivatives/eval_9t_instance_precision/):
+Outputs (data/05_results/9t/instance_precision/):
   metrics_9t.csv              as-is vs corrected, per model, per IoU
   val_threshold_sweep_9t.csv  the val selection that fixed each threshold
   scored_<model>.gpkg         detections labelled TP/FP  (layer 'detections')
@@ -65,7 +65,7 @@ ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
 ITER = NINE_T / "iterations"
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("derivatives") / "eval_9t_instance_precision"
+OUT = path_for("results") / "9t" / "instance_precision"
 OUT.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

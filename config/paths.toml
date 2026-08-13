@@ -39,10 +39,10 @@ external      = "data/external"                      # legacy alias for referenc
 landcover     = "data/external/landcover"
 
 # --- 02 truth: hand-drawn. Irreplaceable. Always tracked. -------------------
-truth         = "data/derivatives/annotations"
-annotations   = "data/derivatives/annotations"       # legacy alias for truth
+truth         = "data/02_truth/annotations"
+annotations   = "data/02_truth/annotations"          # legacy alias for truth
 truth_grids   = "label_grids"
-truth_history = "data/derivatives/annotations"
+truth_history = "data/02_truth/_history"
 
 # --- 03 derived: regenerable BY DEFINITION. Delete-and-rebuild. -------------
 derived       = "data/derivatives/tiles"
@@ -59,8 +59,8 @@ pretrained    = "models/pretrained"
 models_retired = "data/derivatives/tiles/9t/iterations"
 
 # --- 05 results: what the project produces ---------------------------------
-results       = "data/derivatives"
-candidates    = "data/derivatives/experiments/candidates"
+results       = "data/05_results"
+candidates    = "data/05_results/candidates"
 validation    = "data/derivatives/validation"
 
 # --- 06 experiments / 99 archive -------------------------------------------

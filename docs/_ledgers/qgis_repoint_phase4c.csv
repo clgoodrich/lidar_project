@@ -1,0 +1,15 @@
+old_datasource,new_datasource
+../data/derivatives/experiments/candidates/candidates_pits.gpkg,../data/05_results/candidates/candidates_pits.gpkg
+../data/derivatives/annotations/existing_roads.shp,../data/02_truth/annotations/existing_roads.shp
+../data/derivatives/eval_9t_heldout_overlap/heldout_pit_unet_v2.gpkg,../data/05_results/9t/heldout_overlap/heldout_pit_unet_v2.gpkg
+../data/derivatives/eval_9t_centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg,../data/05_results/9t/pit/centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg
+../data/derivatives/eval_9t_centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg,../data/05_results/9t/pit/centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg
+../data/derivatives/annotations/not_roads.shp,../data/02_truth/annotations/not_roads.shp
+../data/derivatives/annotations/oil_gas_locations.gpkg,../data/02_truth/annotations/oil_gas_locations.gpkg
+../data/derivatives/annotations/pit_inside.shp,../data/02_truth/annotations/pit_inside.shp
+../data/derivatives/annotations/pit_outside.shp,../data/02_truth/annotations/pit_outside.shp
+../data/derivatives/eval_9t_centroid_matching/pit_rims_no_floor_9t.shp,../data/05_results/9t/pit/centroid_matching/pit_rims_no_floor_9t.shp
+../data/derivatives/annotations/plat.shp,../data/02_truth/annotations/plat.shp
+../data/derivatives/annotations/roads.shp,../data/02_truth/annotations/roads.shp
+../data/derivatives/eval_9t_centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg,../data/05_results/9t/pit/centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg
+../data/derivatives/annotations/well_head_pts_reprojected.gpkg,../data/02_truth/annotations/well_head_pts_reprojected.gpkg

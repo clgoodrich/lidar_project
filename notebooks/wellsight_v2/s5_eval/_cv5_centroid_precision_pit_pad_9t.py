@@ -36,7 +36,7 @@ No retraining and no re-inference. Reuses the per-fold probability rasters and
 the exact polygonize/threshold settings of the CV runs, so results are directly
 comparable to `pit_cv5_per_fold_9t.csv` / `pad_cv5_per_fold_9t.csv`.
 
-Outputs (data/derivatives/eval_9t_centroid_matching/):
+Outputs (data/05_results/9t/pit/centroid_matching/):
     centroid_matching_cv5_pit_pad_9t.csv   per fold, per target, per objective
     _centroid_matching_cv5_9t.json         pooled summary
 
@@ -65,7 +65,7 @@ from _pit_unet_cv5 import assign_folds, polygonize              # noqa: E402
 
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
-OUT = path_for("derivatives") / "eval_9t_centroid_matching"
+OUT = path_for("results") / "9t" / "pit" / "centroid_matching"
 
 CRS = "EPSG:6346"
 CV_SEED = 20260727          # must match both CV runs

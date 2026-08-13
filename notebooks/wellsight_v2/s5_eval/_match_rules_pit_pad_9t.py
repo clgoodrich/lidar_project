@@ -28,7 +28,7 @@ RULE 2  size plausibility. A blob far smaller than any annotated feature of that
 Rejected predictions are dropped from BOTH the precision denominator and the
 candidate list, so the filter cannot flatter precision for free.
 
-Outputs (data/derivatives/eval_9t_centroid_matching/):
+Outputs (data/05_results/9t/pit/centroid_matching/):
     match_rule_ablation_pit_pad_9t.csv          one row per target per rule
     pad_candidates_filtered_heldout_9t.shp      survivors, ranked by score
     pit_candidates_filtered_heldout_9t.shp      survivors, ranked by score
@@ -58,7 +58,7 @@ from _common import DERIV_9T, path_for  # noqa: E402
 from _pit_unet_cv5 import assign_folds, polygonize                # noqa: E402
 
 ANN = path_for("truth") / "annotations_proj.gpkg"
-OUT = path_for("derivatives") / "eval_9t_centroid_matching"
+OUT = path_for("results") / "9t" / "pit" / "centroid_matching"
 CRS = "EPSG:6346"
 CV_SEED = 20260727
 K = 5
