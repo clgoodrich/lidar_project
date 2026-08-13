@@ -26,11 +26,11 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV_9T
 
-SWEEP = DERIV_9T / "road_sweep_202607"
+SWEEP = path_for("models") / "road" / "sweep_202607"
 VARIANTS = ["cldice", "alpha078", "boundary", "orient", "res05"]
 BASELINES = {
-    "recall (baseline)": DERIV_9T / "road_unet_1m_recall" / "test_metrics.json",
-    "corrected (baseline)": DERIV_9T / "road_unet_1m_corrected" / "test_metrics.json",
+    "recall (baseline)": path_for("models") / "road" / "unet_1m_recall" / "test_metrics.json",
+    "corrected (baseline)": path_for("models") / "road" / "unet_1m_corrected" / "test_metrics.json",
 }
 
 

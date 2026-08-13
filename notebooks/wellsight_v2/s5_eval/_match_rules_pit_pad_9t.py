@@ -64,7 +64,7 @@ CV_SEED = 20260727
 K = 5
 
 TARGETS = {
-    "pit": dict(outdir=DERIV_9T / "pit_unet_cv5", per_fold="pit_cv5_per_fold_9t.csv",
+    "pit": dict(outdir=path_for("models") / "pit" / "unet_cv5", per_fold="pit_cv5_per_fold_9t.csv",
                 blocks=DERIV_9T / "pit_blocks_9t.gpkg",
                 manifest=DERIV_9T / "pit_dataset_manifest.csv",
                 id_col="pit_id", n_col="n_pits", gt_layer="pit_outside",
@@ -74,7 +74,7 @@ TARGETS = {
                 size_layer="pit_inside",
                 prob="pit_prob_floor_cvfold{k}_9t_05.tif",
                 min_area=4.0, buf=40.0),
-    "pad": dict(outdir=DERIV_9T / "pad_unet_cv5", per_fold="pad_cv5_per_fold_9t.csv",
+    "pad": dict(outdir=path_for("models") / "pad" / "unet_cv5", per_fold="pad_cv5_per_fold_9t.csv",
                 blocks=DERIV_9T / "plat_blocks_9t.gpkg",
                 manifest=DERIV_9T / "plat_dataset_manifest.csv",
                 id_col="plat_id", n_col="n_pads", gt_layer="plat",

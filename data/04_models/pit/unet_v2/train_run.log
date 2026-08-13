@@ -1,0 +1,53 @@
+train pits=298 tiles_per_epoch=596
+val   pits=63 tiles_per_epoch=126
+UNet params: 7.76 M
+ep   1/40  tr_loss=0.0099 va_loss=0.0060  va_iou bg=0.967  floor=0.211  wall=0.188  score=0.200  28.3s
+    -> new best (score=0.200), saved
+ep   2/40  tr_loss=0.0027 va_loss=0.0023  va_iou bg=0.984  floor=0.470  wall=0.359  score=0.415  14.3s
+    -> new best (score=0.415), saved
+ep   3/40  tr_loss=0.0018 va_loss=0.0019  va_iou bg=0.986  floor=0.357  wall=0.361  score=0.359  13.7s
+ep   4/40  tr_loss=0.0014 va_loss=0.0026  va_iou bg=0.971  floor=0.125  wall=0.243  score=0.184  14.1s
+ep   5/40  tr_loss=0.0015 va_loss=0.0013  va_iou bg=0.994  floor=0.576  wall=0.556  score=0.566  13.7s
+    -> new best (score=0.566), saved
+ep   6/40  tr_loss=0.0012 va_loss=0.0014  va_iou bg=0.991  floor=0.532  wall=0.479  score=0.505  13.4s
+ep   7/40  tr_loss=0.0011 va_loss=0.0010  va_iou bg=0.991  floor=0.539  wall=0.495  score=0.517  13.4s
+ep   8/40  tr_loss=0.0010 va_loss=0.0012  va_iou bg=0.986  floor=0.422  wall=0.400  score=0.411  13.4s
+ep   9/40  tr_loss=0.0010 va_loss=0.0012  va_iou bg=0.989  floor=0.374  wall=0.388  score=0.381  13.2s
+ep  10/40  tr_loss=0.0010 va_loss=0.0010  va_iou bg=0.991  floor=0.465  wall=0.504  score=0.485  13.2s
+ep  11/40  tr_loss=0.0010 va_loss=0.0011  va_iou bg=0.993  floor=0.597  wall=0.535  score=0.566  12.9s
+    -> new best (score=0.566), saved
+ep  12/40  tr_loss=0.0009 va_loss=0.0015  va_iou bg=0.994  floor=0.493  wall=0.506  score=0.500  13.3s
+ep  13/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.989  floor=0.506  wall=0.439  score=0.473  13.0s
+ep  14/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.989  floor=0.486  wall=0.451  score=0.468  13.1s
+ep  15/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.994  floor=0.587  wall=0.552  score=0.569  13.5s
+    -> new best (score=0.569), saved
+ep  16/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.995  floor=0.630  wall=0.569  score=0.599  13.1s
+    -> new best (score=0.599), saved
+ep  17/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.995  floor=0.618  wall=0.581  score=0.600  13.2s
+    -> new best (score=0.600), saved
+ep  18/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.993  floor=0.627  wall=0.538  score=0.582  13.0s
+ep  19/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.993  floor=0.621  wall=0.551  score=0.586  12.9s
+ep  20/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.994  floor=0.607  wall=0.560  score=0.583  13.0s
+ep  21/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.993  floor=0.465  wall=0.531  score=0.498  13.4s
+ep  22/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.994  floor=0.587  wall=0.564  score=0.575  13.2s
+ep  23/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.994  floor=0.617  wall=0.579  score=0.598  13.1s
+ep  24/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.991  floor=0.462  wall=0.482  score=0.472  13.2s
+ep  25/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.994  floor=0.500  wall=0.547  score=0.523  13.0s
+ep  26/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.994  floor=0.598  wall=0.561  score=0.579  13.0s
+ep  27/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.994  floor=0.626  wall=0.556  score=0.591  13.0s
+ep  28/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.995  floor=0.617  wall=0.582  score=0.600  12.8s
+ep  29/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.993  floor=0.559  wall=0.532  score=0.546  12.8s
+ep  30/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.994  floor=0.608  wall=0.574  score=0.591  12.7s
+ep  31/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.995  floor=0.615  wall=0.577  score=0.596  13.3s
+ep  32/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.994  floor=0.618  wall=0.555  score=0.587  13.0s
+ep  33/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.994  floor=0.605  wall=0.583  score=0.594  13.0s
+ep  34/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.994  floor=0.621  wall=0.559  score=0.590  13.0s
+ep  35/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.995  floor=0.646  wall=0.602  score=0.624  12.8s
+    -> new best (score=0.624), saved
+ep  36/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.994  floor=0.587  wall=0.558  score=0.573  12.7s
+ep  37/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.995  floor=0.611  wall=0.579  score=0.595  13.2s
+ep  38/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.994  floor=0.616  wall=0.573  score=0.595  13.0s
+ep  39/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.994  floor=0.638  wall=0.581  score=0.609  13.1s
+ep  40/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.993  floor=0.585  wall=0.535  score=0.560  12.9s
+
+Best score: 0.624. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\pit_unet_v2

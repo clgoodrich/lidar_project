@@ -1,0 +1,100 @@
+{
+  "variant": "cldice",
+  "config": {
+    "res": "1m",
+    "init": "corrected",
+    "loss": "cldice",
+    "model": "unet",
+    "ep": 12,
+    "lr": 0.0002,
+    "corr": true,
+    "alpha": [
+      0.1,
+      0.72,
+      0.25
+    ]
+  },
+  "best_epoch": 2,
+  "val_road_iou": 0.5929552463808143,
+  "9t_test": {
+    "pixel_iou_road_test": 0.5583445496548521,
+    "ap_road_vs_not_road": null,
+    "ap_road_vs_drainage": 0.9981612038535652,
+    "mean_Proad_on_road_test": 0.8849845486355848,
+    "mean_Proad_on_drainage_test": 0.00616646191172836
+  },
+  "corrections_613590": {
+    "val": {
+      "added": {
+        "n": 47,
+        "km": 1.56,
+        "mean_Proad_before": 0.7182,
+        "mean_Proad_after": 0.8514,
+        "delta": 0.1332,
+        "frac_over_0.5_before": 0.851,
+        "frac_over_0.5_after": 0.915
+      },
+      "reject": {
+        "n": 288,
+        "km": 2.62,
+        "mean_Proad_before": 0.3445,
+        "mean_Proad_after": 0.2491,
+        "delta": -0.0953,
+        "frac_over_0.5_before": 0.372,
+        "frac_over_0.5_after": 0.243
+      },
+      "kept": {
+        "n": 3298,
+        "km": 30.46,
+        "mean_Proad_before": 0.8612,
+        "mean_Proad_after": 0.9632,
+        "delta": 0.102,
+        "frac_over_0.5_before": 0.996,
+        "frac_over_0.5_after": 0.985
+      },
+      "ap_added_vs_reject_before": 0.24511175146864297,
+      "ap_added_vs_reject_after": 0.43882223443933943
+    },
+    "test": {
+      "added": {
+        "n": 46,
+        "km": 1.36,
+        "mean_Proad_before": 0.7418,
+        "mean_Proad_after": 0.889,
+        "delta": 0.1472,
+        "frac_over_0.5_before": 0.891,
+        "frac_over_0.5_after": 0.957
+      },
+      "reject": {
+        "n": 344,
+        "km": 3.12,
+        "mean_Proad_before": 0.1605,
+        "mean_Proad_after": 0.1546,
+        "delta": -0.0059,
+        "frac_over_0.5_before": 0.16,
+        "frac_over_0.5_after": 0.148
+      },
+      "kept": {
+        "n": 3318,
+        "km": 30.3,
+        "mean_Proad_before": 0.8467,
+        "mean_Proad_after": 0.9464,
+        "delta": 0.0997,
+        "frac_over_0.5_before": 0.988,
+        "frac_over_0.5_after": 0.966
+      },
+      "ap_added_vs_reject_before": 0.5544109486846528,
+      "ap_added_vs_reject_after": 0.4703535373880099
+    }
+  },
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ],
+  "res": "1m"
+}

@@ -29,10 +29,10 @@ from _common import DERIV, DERIV_9T, path_for
 
 BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
 CORR = BLOCK / "corrections"
-BEFORE = DERIV_9T / "road_unet_1m_recall" / "road_prob_613590_1m.tif"
-AFTER = DERIV_9T / "road_unet_1m_corrected" / "road_prob_613590_1m.tif"
+BEFORE = path_for("models") / "road" / "unet_1m_recall" / "road_prob_613590_1m.tif"
+AFTER = path_for("models") / "road" / "unet_1m_corrected" / "road_prob_613590_1m.tif"
 HILLSHADE = BLOCK / "hillshade_613590_1m.tif"
-OUT = DERIV_9T / "road_unet_1m_corrected"
+OUT = path_for("models") / "road" / "unet_1m_corrected"
 
 
 def read_win(path, bounds=None, band=1):

@@ -1,0 +1,25 @@
+{
+  "metrics": {
+    "comp": 0.754,
+    "corr": 0.835,
+    "f1": 0.793,
+    "quality": 0.655,
+    "km": 24.22,
+    "n": 1028
+  },
+  "config": {
+    "enhance": "sato",
+    "thresh": "otsu",
+    "hi": 0.6,
+    "lo": 0.4,
+    "t": 0.5,
+    "pathopen": false,
+    "po_len": 14,
+    "slope_max": null,
+    "skel": "lee",
+    "spur": 20,
+    "reconnect": "lcp",
+    "island": 80,
+    "min_px": 40
+  }
+}

@@ -25,7 +25,7 @@ RUNS.mkdir(parents=True, exist_ok=True)
 # --- common data locations the registry references ---
 TILES = path_for("derived")
 DATA3X3 = TILES / "data_3x3"
-SWEEP = DERIV_9T / "road_sweep_202607"
+SWEEP = path_for("models") / "road" / "sweep_202607"
 ANNOT = path_for("truth")
 
 
@@ -46,8 +46,8 @@ def list_blocks() -> list[str]:
 def list_road_models() -> dict[str, Path]:
     """Discoverable road checkpoints: name -> best.pt path (only if exists)."""
     cands = {
-        "recall": DERIV_9T / "road_unet_1m_recall" / "best.pt",
-        "corrected (deployed)": DERIV_9T / "road_unet_1m_corrected" / "best.pt",
+        "recall": path_for("models") / "road" / "unet_1m_recall" / "best.pt",
+        "corrected (deployed)": path_for("models") / "road" / "unet_1m_corrected" / "best.pt",
     }
     for v in sorted(SWEEP.glob("*")):
         if (v / "best.pt").exists():

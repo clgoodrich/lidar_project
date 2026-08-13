@@ -1,0 +1,70 @@
+train plats=456 tiles/ep=912
+val   plats=101 tiles/ep=202
+ep   1/40  tr_loss=0.0190 va_loss=0.0203  va_iou bg=0.779  plat=0.262  score=0.262  59.7s
+    -> new best (score=0.262), saved
+ep   2/40  tr_loss=0.0156 va_loss=0.0165  va_iou bg=0.823  plat=0.286  score=0.286  44.8s
+    -> new best (score=0.286), saved
+ep   3/40  tr_loss=0.0153 va_loss=0.0164  va_iou bg=0.901  plat=0.394  score=0.394  43.7s
+    -> new best (score=0.394), saved
+ep   4/40  tr_loss=0.0139 va_loss=0.0141  va_iou bg=0.922  plat=0.446  score=0.446  44.2s
+    -> new best (score=0.446), saved
+ep   5/40  tr_loss=0.0141 va_loss=0.0136  va_iou bg=0.906  plat=0.414  score=0.414  44.3s
+ep   6/40  tr_loss=0.0130 va_loss=0.0140  va_iou bg=0.883  plat=0.372  score=0.372  43.8s
+ep   7/40  tr_loss=0.0131 va_loss=0.0149  va_iou bg=0.897  plat=0.390  score=0.390  44.0s
+ep   8/40  tr_loss=0.0127 va_loss=0.0139  va_iou bg=0.911  plat=0.430  score=0.430  44.1s
+ep   9/40  tr_loss=0.0124 va_loss=0.0170  va_iou bg=0.832  plat=0.335  score=0.335  43.7s
+ep  10/40  tr_loss=0.0129 va_loss=0.0133  va_iou bg=0.908  plat=0.435  score=0.435  44.0s
+ep  11/40  tr_loss=0.0125 va_loss=0.0165  va_iou bg=0.942  plat=0.465  score=0.465  44.3s
+    -> new best (score=0.465), saved
+ep  12/40  tr_loss=0.0120 va_loss=0.0138  va_iou bg=0.915  plat=0.445  score=0.445  43.9s
+ep  13/40  tr_loss=0.0115 va_loss=0.0146  va_iou bg=0.927  plat=0.447  score=0.447  44.3s
+ep  14/40  tr_loss=0.0125 va_loss=0.0157  va_iou bg=0.942  plat=0.500  score=0.500  44.5s
+    -> new best (score=0.500), saved
+ep  15/40  tr_loss=0.0120 va_loss=0.0136  va_iou bg=0.927  plat=0.463  score=0.463  44.1s
+ep  16/40  tr_loss=0.0116 va_loss=0.0126  va_iou bg=0.910  plat=0.459  score=0.459  44.2s
+ep  17/40  tr_loss=0.0117 va_loss=0.0144  va_iou bg=0.931  plat=0.487  score=0.487  44.5s
+ep  18/40  tr_loss=0.0114 va_loss=0.0128  va_iou bg=0.903  plat=0.432  score=0.432  44.3s
+ep  19/40  tr_loss=0.0112 va_loss=0.0124  va_iou bg=0.920  plat=0.460  score=0.460  44.2s
+ep  20/40  tr_loss=0.0114 va_loss=0.0131  va_iou bg=0.924  plat=0.477  score=0.477  44.3s
+ep  21/40  tr_loss=0.0108 va_loss=0.0150  va_iou bg=0.932  plat=0.495  score=0.495  44.2s
+ep  22/40  tr_loss=0.0107 va_loss=0.0132  va_iou bg=0.926  plat=0.490  score=0.490  44.2s
+ep  23/40  tr_loss=0.0108 va_loss=0.0133  va_iou bg=0.934  plat=0.479  score=0.479  44.0s
+ep  24/40  tr_loss=0.0108 va_loss=0.0126  va_iou bg=0.922  plat=0.466  score=0.466  44.0s
+ep  25/40  tr_loss=0.0102 va_loss=0.0134  va_iou bg=0.934  plat=0.522  score=0.522  44.1s
+    -> new best (score=0.522), saved
+ep  26/40  tr_loss=0.0101 va_loss=0.0122  va_iou bg=0.901  plat=0.449  score=0.449  44.1s
+ep  27/40  tr_loss=0.0105 va_loss=0.0131  va_iou bg=0.918  plat=0.459  score=0.459  44.0s
+ep  28/40  tr_loss=0.0103 va_loss=0.0127  va_iou bg=0.921  plat=0.466  score=0.466  44.1s
+ep  29/40  tr_loss=0.0097 va_loss=0.0118  va_iou bg=0.925  plat=0.489  score=0.489  44.0s
+ep  30/40  tr_loss=0.0100 va_loss=0.0123  va_iou bg=0.907  plat=0.455  score=0.455  43.9s
+ep  31/40  tr_loss=0.0098 va_loss=0.0131  va_iou bg=0.925  plat=0.490  score=0.490  43.7s
+ep  32/40  tr_loss=0.0100 va_loss=0.0126  va_iou bg=0.924  plat=0.502  score=0.502  43.7s
+ep  33/40  tr_loss=0.0097 va_loss=0.0122  va_iou bg=0.917  plat=0.464  score=0.464  43.5s
+ep  34/40  tr_loss=0.0094 va_loss=0.0138  va_iou bg=0.930  plat=0.491  score=0.491  43.6s
+ep  35/40  tr_loss=0.0091 va_loss=0.0124  va_iou bg=0.934  plat=0.493  score=0.493  43.5s
+ep  36/40  tr_loss=0.0095 va_loss=0.0129  va_iou bg=0.922  plat=0.493  score=0.493  43.6s
+ep  37/40  tr_loss=0.0093 va_loss=0.0124  va_iou bg=0.924  plat=0.483  score=0.483  43.6s
+ep  38/40  tr_loss=0.0093 va_loss=0.0123  va_iou bg=0.921  plat=0.489  score=0.489  43.4s
+ep  39/40  tr_loss=0.0095 va_loss=0.0127  va_iou bg=0.929  plat=0.473  score=0.473  43.6s
+ep  40/40  tr_loss=0.0093 va_loss=0.0133  va_iou bg=0.923  plat=0.486  score=0.486  43.7s
+
+Best score: 0.522. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\plat_unet
+
+Loaded best (ep 25). Inference + test eval...
+Inference grid: 31 x 31 = 961 patches
+  inference done in 28.9s
+  wrote plat_prob.tif + plat_argmax.tif
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\plats\_plat_unet.py", line 216, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\plats\_plat_unet.py", line 209, in main
+    df, _ = evaluate_test(argmax)
+            ~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\plats\_plat_unet.py", line 108, in evaluate_test
+    "area_m2":    float(row.area_m2),
+                        ^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pandas\core\generic.py", line 6318, in __getattr__
+    return object.__getattribute__(self, name)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AttributeError: 'Series' object has no attribute 'area_m2'

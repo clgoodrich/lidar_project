@@ -1,0 +1,47 @@
+train: pit=301 plat=430 road=3552 not_road=157 tiles/ep=17760
+val:   pit=66 plat=107 road=837 not_road=46 tiles/ep=4185
+MultiHeadUNet params: 13.86 M
+ep   1/40  tr=0.012 (p=0.001 r=0.006 a=0.012)  va=0.012  iou pit[fl=0.46,wl=0.49] road=0.38 plat=0.45  score=0.436  3130.7s
+    -> new best (score=0.436), saved
+ep   2/40  tr=0.009 (p=0.000 r=0.004 a=0.009)  va=0.011  iou pit[fl=0.49,wl=0.41] road=0.40 plat=0.47  score=0.440  1819.6s
+    -> new best (score=0.440), saved
+ep   3/40  tr=0.008 (p=0.000 r=0.004 a=0.008)  va=0.012  iou pit[fl=0.51,wl=0.53] road=0.40 plat=0.52  score=0.480  1774.8s
+    -> new best (score=0.480), saved
+ep   4/40  tr=0.007 (p=0.000 r=0.004 a=0.007)  va=0.008  iou pit[fl=0.50,wl=0.43] road=0.41 plat=0.51  score=0.459  1763.0s
+ep   5/40  tr=0.006 (p=0.000 r=0.004 a=0.006)  va=0.009  iou pit[fl=0.52,wl=0.50] road=0.41 plat=0.52  score=0.481  1762.6s
+    -> new best (score=0.481), saved
+ep   6/40  tr=0.005 (p=0.000 r=0.003 a=0.005)  va=0.010  iou pit[fl=0.54,wl=0.48] road=0.42 plat=0.48  score=0.472  1764.9s
+ep   7/40  tr=0.005 (p=0.000 r=0.003 a=0.005)  va=0.010  iou pit[fl=0.51,wl=0.50] road=0.42 plat=0.56  score=0.498  1764.4s
+    -> new best (score=0.498), saved
+ep   8/40  tr=0.005 (p=0.000 r=0.003 a=0.004)  va=0.010  iou pit[fl=0.53,wl=0.52] road=0.43 plat=0.59  score=0.514  1764.2s
+    -> new best (score=0.514), saved
+ep   9/40  tr=0.004 (p=0.000 r=0.003 a=0.004)  va=0.010  iou pit[fl=0.58,wl=0.57] road=0.45 plat=0.55  score=0.526  1765.2s
+    -> new best (score=0.526), saved
+ep  10/40  tr=0.004 (p=0.000 r=0.003 a=0.003)  va=0.012  iou pit[fl=0.58,wl=0.55] road=0.44 plat=0.57  score=0.525  1765.8s
+ep  11/40  tr=0.004 (p=0.000 r=0.002 a=0.003)  va=0.012  iou pit[fl=0.57,wl=0.54] road=0.47 plat=0.58  score=0.537  1761.3s
+    -> new best (score=0.537), saved
+ep  12/40  tr=0.003 (p=0.000 r=0.002 a=0.003)  va=0.014  iou pit[fl=0.61,wl=0.60] road=0.46 plat=0.60  score=0.554  1763.5s
+    -> new best (score=0.554), saved
+ep  13/40  tr=0.003 (p=0.000 r=0.002 a=0.003)  va=0.010  iou pit[fl=0.56,wl=0.58] road=0.49 plat=0.61  score=0.554  1761.9s
+ep  14/40  tr=0.003 (p=0.000 r=0.002 a=0.002)  va=0.014  iou pit[fl=0.61,wl=0.56] road=0.49 plat=0.61  score=0.562  1763.2s
+    -> new best (score=0.562), saved
+ep  15/40  tr=0.003 (p=0.000 r=0.002 a=0.002)  va=0.013  iou pit[fl=0.60,wl=0.59] road=0.48 plat=0.62  score=0.566  1762.4s
+    -> new best (score=0.566), saved
+ep  16/40  tr=0.003 (p=0.000 r=0.002 a=0.002)  va=0.014  iou pit[fl=0.61,wl=0.59] road=0.49 plat=0.61  score=0.566  1764.5s
+ep  17/40  tr=0.002 (p=0.000 r=0.002 a=0.002)  va=0.014  iou pit[fl=0.62,wl=0.62] road=0.50 plat=0.63  score=0.583  1763.0s
+    -> new best (score=0.583), saved
+ep  18/40  tr=0.002 (p=0.000 r=0.002 a=0.002)  va=0.015  iou pit[fl=0.63,wl=0.62] road=0.51 plat=0.62  score=0.585  1764.2s
+    -> new best (score=0.585), saved
+ep  19/40  tr=0.002 (p=0.000 r=0.002 a=0.002)  va=0.012  iou pit[fl=0.61,wl=0.60] road=0.51 plat=0.63  score=0.580  1765.2s
+ep  20/40  tr=0.002 (p=0.000 r=0.002 a=0.002)  va=0.014  iou pit[fl=0.62,wl=0.62] road=0.52 plat=0.65  score=0.596  1762.9s
+    -> new best (score=0.596), saved
+ep  21/40  tr=0.002 (p=0.000 r=0.001 a=0.002)  va=0.016  iou pit[fl=0.63,wl=0.59] road=0.52 plat=0.65  score=0.591  1765.4s
+ep  22/40  tr=0.002 (p=0.000 r=0.001 a=0.002)  va=0.015  iou pit[fl=0.64,wl=0.63] road=0.53 plat=0.64  score=0.601  1764.2s
+    -> new best (score=0.601), saved
+ep  23/40  tr=0.002 (p=0.000 r=0.001 a=0.002)  va=0.016  iou pit[fl=0.64,wl=0.63] road=0.53 plat=0.65  score=0.602  1764.3s
+    -> new best (score=0.602), saved
+ep  24/40  tr=0.002 (p=0.000 r=0.001 a=0.001)  va=0.016  iou pit[fl=0.64,wl=0.64] road=0.53 plat=0.65  score=0.608  1764.2s
+    -> new best (score=0.608), saved
+ep  25/40  tr=0.002 (p=0.000 r=0.001 a=0.001)  va=0.017  iou pit[fl=0.64,wl=0.65] road=0.55 plat=0.66  score=0.615  1764.2s
+    -> new best (score=0.615), saved
+ep  26/40  tr=0.002 (p=0.000 r=0.001 a=0.001)  va=0.017  iou pit[fl=0.66,wl=0.64] road=0.54 plat=0.66  score=0.615  1765.0s

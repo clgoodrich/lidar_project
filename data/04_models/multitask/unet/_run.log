@@ -1,0 +1,62 @@
+train: pit=74 plat=51 road=63 not_road=32 tiles/ep=370
+val:   pit=16 plat=16 road=17 not_road=3 tiles/ep=85
+MultiHeadUNet params: 13.86 M
+ep   1/40  tr=0.027 (p=0.009 r=0.010 a=0.021)  va=0.028  iou pit[fl=0.07,wl=0.03] road=0.11 plat=0.14  score=0.098  6249.5s
+    -> new best (score=0.098), saved
+ep   2/40  tr=0.019 (p=0.004 r=0.008 a=0.017)  va=0.021  iou pit[fl=0.25,wl=0.16] road=0.25 plat=0.15  score=0.202  6688.4s
+    -> new best (score=0.202), saved
+ep   3/40  tr=0.016 (p=0.003 r=0.007 a=0.014)  va=0.016  iou pit[fl=0.31,wl=0.17] road=0.20 plat=0.26  score=0.235  8615.6s
+    -> new best (score=0.235), saved
+ep   4/40  tr=0.015 (p=0.002 r=0.007 a=0.014)  va=0.014  iou pit[fl=0.35,wl=0.33] road=0.20 plat=0.30  score=0.279  6241.5s
+    -> new best (score=0.279), saved
+ep   5/40  tr=0.014 (p=0.002 r=0.007 a=0.013)  va=0.016  iou pit[fl=0.42,wl=0.29] road=0.25 plat=0.39  score=0.330  7557.2s
+    -> new best (score=0.330), saved
+ep   6/40  tr=0.013 (p=0.001 r=0.007 a=0.012)  va=0.013  iou pit[fl=0.33,wl=0.25] road=0.15 plat=0.36  score=0.268  7314.5s
+ep   7/40  tr=0.012 (p=0.001 r=0.007 a=0.011)  va=0.013  iou pit[fl=0.22,wl=0.22] road=0.30 plat=0.31  score=0.276  272.1s
+ep   8/40  tr=0.012 (p=0.001 r=0.007 a=0.011)  va=0.014  iou pit[fl=0.47,wl=0.44] road=0.21 plat=0.37  score=0.346  1678.9s
+    -> new best (score=0.346), saved
+ep   9/40  tr=0.011 (p=0.001 r=0.007 a=0.010)  va=0.016  iou pit[fl=0.41,wl=0.42] road=0.22 plat=0.32  score=0.318  796.2s
+ep  10/40  tr=0.011 (p=0.001 r=0.007 a=0.011)  va=0.017  iou pit[fl=0.52,wl=0.45] road=0.24 plat=0.41  score=0.380  364.8s
+    -> new best (score=0.380), saved
+ep  11/40  tr=0.011 (p=0.001 r=0.006 a=0.010)  va=0.012  iou pit[fl=0.29,wl=0.22] road=0.27 plat=0.45  score=0.325  188.8s
+ep  12/40  tr=0.010 (p=0.001 r=0.006 a=0.009)  va=0.011  iou pit[fl=0.36,wl=0.35] road=0.30 plat=0.39  score=0.348  442.1s
+ep  13/40  tr=0.011 (p=0.001 r=0.006 a=0.010)  va=0.013  iou pit[fl=0.33,wl=0.29] road=0.21 plat=0.38  score=0.302  657.1s
+ep  14/40  tr=0.011 (p=0.001 r=0.006 a=0.010)  va=0.011  iou pit[fl=0.19,wl=0.23] road=0.28 plat=0.44  score=0.308  677.8s
+ep  15/40  tr=0.010 (p=0.001 r=0.006 a=0.009)  va=0.014  iou pit[fl=0.15,wl=0.14] road=0.28 plat=0.24  score=0.219  660.4s
+ep  16/40  tr=0.012 (p=0.001 r=0.007 a=0.011)  va=0.011  iou pit[fl=0.45,wl=0.51] road=0.23 plat=0.35  score=0.353  523.3s
+ep  17/40  tr=0.010 (p=0.001 r=0.006 a=0.009)  va=0.010  iou pit[fl=0.43,wl=0.33] road=0.18 plat=0.43  score=0.331  307.1s
+ep  18/40  tr=0.009 (p=0.001 r=0.006 a=0.009)  va=0.011  iou pit[fl=0.38,wl=0.25] road=0.29 plat=0.40  score=0.333  198.7s
+ep  19/40  tr=0.009 (p=0.001 r=0.006 a=0.008)  va=0.011  iou pit[fl=0.47,wl=0.38] road=0.21 plat=0.46  score=0.365  287.5s
+ep  20/40  tr=0.009 (p=0.001 r=0.005 a=0.008)  va=0.011  iou pit[fl=0.34,wl=0.30] road=0.30 plat=0.47  score=0.365  113.6s
+ep  21/40  tr=0.008 (p=0.001 r=0.005 a=0.007)  va=0.010  iou pit[fl=0.51,wl=0.44] road=0.29 plat=0.44  score=0.400  214.5s
+    -> new best (score=0.400), saved
+ep  22/40  tr=0.008 (p=0.001 r=0.005 a=0.007)  va=0.010  iou pit[fl=0.48,wl=0.40] road=0.28 plat=0.42  score=0.381  250.3s
+ep  23/40  tr=0.008 (p=0.001 r=0.005 a=0.007)  va=0.010  iou pit[fl=0.47,wl=0.49] road=0.26 plat=0.43  score=0.389  290.4s
+ep  24/40  tr=0.008 (p=0.001 r=0.005 a=0.007)  va=0.012  iou pit[fl=0.60,wl=0.57] road=0.23 plat=0.47  score=0.429  161.1s
+    -> new best (score=0.429), saved
+ep  25/40  tr=0.008 (p=0.001 r=0.005 a=0.006)  va=0.010  iou pit[fl=0.53,wl=0.48] road=0.27 plat=0.51  score=0.425  227.4s
+ep  26/40  tr=0.008 (p=0.001 r=0.005 a=0.007)  va=0.013  iou pit[fl=0.52,wl=0.46] road=0.28 plat=0.42  score=0.397  412.4s
+ep  27/40  tr=0.008 (p=0.001 r=0.005 a=0.006)  va=0.011  iou pit[fl=0.48,wl=0.42] road=0.31 plat=0.52  score=0.423  193.2s
+ep  28/40  tr=0.007 (p=0.001 r=0.005 a=0.006)  va=0.015  iou pit[fl=0.50,wl=0.51] road=0.28 plat=0.39  score=0.393  312.7s
+ep  29/40  tr=0.007 (p=0.001 r=0.005 a=0.006)  va=0.013  iou pit[fl=0.50,wl=0.46] road=0.30 plat=0.42  score=0.399  125.8s
+ep  30/40  tr=0.007 (p=0.001 r=0.005 a=0.005)  va=0.012  iou pit[fl=0.51,wl=0.44] road=0.24 plat=0.47  score=0.397  295.1s
+ep  31/40  tr=0.007 (p=0.001 r=0.005 a=0.006)  va=0.011  iou pit[fl=0.56,wl=0.50] road=0.29 plat=0.47  score=0.427  100.1s
+ep  32/40  tr=0.007 (p=0.001 r=0.005 a=0.006)  va=0.010  iou pit[fl=0.56,wl=0.49] road=0.30 plat=0.53  score=0.454  158.9s
+    -> new best (score=0.454), saved
+ep  33/40  tr=0.007 (p=0.000 r=0.005 a=0.006)  va=0.013  iou pit[fl=0.58,wl=0.51] road=0.31 plat=0.48  score=0.445  151.0s
+ep  34/40  tr=0.007 (p=0.001 r=0.005 a=0.005)  va=0.016  iou pit[fl=0.54,wl=0.49] road=0.29 plat=0.43  score=0.414  380.4s
+ep  35/40  tr=0.007 (p=0.001 r=0.005 a=0.005)  va=0.014  iou pit[fl=0.57,wl=0.49] road=0.28 plat=0.52  score=0.442  102.3s
+ep  36/40  tr=0.006 (p=0.000 r=0.005 a=0.005)  va=0.013  iou pit[fl=0.54,wl=0.45] road=0.29 plat=0.50  score=0.428  156.7s
+ep  37/40  tr=0.006 (p=0.001 r=0.005 a=0.005)  va=0.011  iou pit[fl=0.55,wl=0.46] road=0.28 plat=0.52  score=0.438  132.7s
+ep  38/40  tr=0.006 (p=0.001 r=0.005 a=0.005)  va=0.013  iou pit[fl=0.53,wl=0.48] road=0.30 plat=0.49  score=0.431  191.7s
+ep  39/40  tr=0.006 (p=0.000 r=0.005 a=0.005)  va=0.013  iou pit[fl=0.57,wl=0.49] road=0.28 plat=0.51  score=0.438  156.7s
+ep  40/40  tr=0.006 (p=0.001 r=0.004 a=0.005)  va=0.012  iou pit[fl=0.51,wl=0.46] road=0.28 plat=0.49  score=0.418  37.3s
+
+Best score: 0.454
+Loaded best (ep 32). Running full-tile inference...
+Inference: 31x31 = 961 patches
+  inference done in 167.6s
+  wrote pit_prob.tif + pit_argmax.tif
+  wrote road_prob.tif + road_argmax.tif
+  wrote plat_prob.tif + plat_argmax.tif
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\multitask_unet

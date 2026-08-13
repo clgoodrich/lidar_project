@@ -1,0 +1,11 @@
+
+Loaded best (ep 25). Inference + test eval...
+Inference grid: 31 x 31 = 961 patches
+  inference done in 33.9s
+  wrote plat_prob.tif + plat_argmax.tif
+
+TEST pixel IoU: 0.493
+Per-plat (93): mean_recall=0.840  mean_local_iou=0.617
+  detected (>=10% recall): 88/93
+  local IoU > 0.3:         88/93
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\plat_unet

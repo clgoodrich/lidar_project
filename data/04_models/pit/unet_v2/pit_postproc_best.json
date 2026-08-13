@@ -1,0 +1,34 @@
+{
+  "metrics_val_selection": {
+    "prec": 0.126,
+    "rec": 0.698,
+    "f1": 0.214,
+    "tp": 44,
+    "fp": 305,
+    "fn": 19,
+    "n": 349
+  },
+  "metrics_test_frozen": {
+    "prec": 0.092,
+    "rec": 0.492,
+    "f1": 0.155,
+    "tp": 32,
+    "fp": 317,
+    "fn": 33,
+    "n": 349
+  },
+  "config": {
+    "enhance": "none",
+    "thresh": "hysteresis",
+    "t": 0.5,
+    "hi": 0.6,
+    "lo": 0.4,
+    "floor_gate": true,
+    "min_px": 12,
+    "area_min": 9.0,
+    "area_max": 1500.0,
+    "circ_min": 0.55,
+    "ecc_max": 0.88
+  },
+  "note": "config selected on val blocks; test scored once frozen"
+}

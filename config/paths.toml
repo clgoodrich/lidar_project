@@ -54,9 +54,9 @@ data_3x3      = "data/derivatives/tiles/data_3x3"
 label_grids   = "label_grids"
 
 # --- 04 models: a model is a bundle -- weights, manifest, log, prob rasters -
-models        = "data/derivatives/tiles/9t"
-pretrained    = "models/pretrained"
-models_retired = "data/derivatives/tiles/9t/iterations"
+models        = "data/04_models"
+pretrained    = "data/04_models/pretrained"
+models_retired = "data/04_models/_retired"
 
 # --- 05 results: what the project produces ---------------------------------
 results       = "data/05_results"

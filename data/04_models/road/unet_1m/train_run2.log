@@ -1,0 +1,84 @@
+train roads=3088 not_roads=135 tiles/ep=12352
+val   roads=451 not_roads=48 tiles/ep=1804
+ep   1/40  tr_loss=0.0088 va_loss=0.0067  va_iou bg=0.950  road=0.427  drainage=0.472  score=0.427  256.6s
+    -> new best (score=0.427), saved
+ep   2/40  tr_loss=0.0056 va_loss=0.0053  va_iou bg=0.948  road=0.413  drainage=0.545  score=0.413  253.6s
+ep   3/40  tr_loss=0.0048 va_loss=0.0048  va_iou bg=0.948  road=0.422  drainage=0.539  score=0.422  246.4s
+ep   4/40  tr_loss=0.0042 va_loss=0.0047  va_iou bg=0.961  road=0.480  drainage=0.606  score=0.480  244.9s
+    -> new best (score=0.480), saved
+ep   5/40  tr_loss=0.0037 va_loss=0.0039  va_iou bg=0.962  road=0.487  drainage=0.640  score=0.487  244.8s
+    -> new best (score=0.487), saved
+ep   6/40  tr_loss=0.0033 va_loss=0.0040  va_iou bg=0.963  road=0.486  drainage=0.666  score=0.486  244.8s
+ep   7/40  tr_loss=0.0030 va_loss=0.0040  va_iou bg=0.964  road=0.499  drainage=0.652  score=0.499  245.1s
+    -> new best (score=0.499), saved
+ep   8/40  tr_loss=0.0028 va_loss=0.0041  va_iou bg=0.969  road=0.523  drainage=0.706  score=0.523  260.0s
+    -> new best (score=0.523), saved
+ep   9/40  tr_loss=0.0025 va_loss=0.0038  va_iou bg=0.969  road=0.524  drainage=0.730  score=0.524  263.1s
+    -> new best (score=0.524), saved
+ep  10/40  tr_loss=0.0024 va_loss=0.0041  va_iou bg=0.969  road=0.515  drainage=0.736  score=0.515  270.0s
+ep  11/40  tr_loss=0.0023 va_loss=0.0038  va_iou bg=0.969  road=0.522  drainage=0.727  score=0.522  259.0s
+ep  12/40  tr_loss=0.0022 va_loss=0.0038  va_iou bg=0.972  road=0.553  drainage=0.747  score=0.553  252.8s
+    -> new best (score=0.553), saved
+ep  13/40  tr_loss=0.0020 va_loss=0.0040  va_iou bg=0.973  road=0.557  drainage=0.756  score=0.557  259.5s
+    -> new best (score=0.557), saved
+ep  14/40  tr_loss=0.0019 va_loss=0.0039  va_iou bg=0.975  road=0.581  drainage=0.763  score=0.581  282.7s
+    -> new best (score=0.581), saved
+ep  15/40  tr_loss=0.0019 va_loss=0.0039  va_iou bg=0.976  road=0.586  drainage=0.779  score=0.586  261.5s
+    -> new best (score=0.586), saved
+ep  16/40  tr_loss=0.0017 va_loss=0.0036  va_iou bg=0.975  road=0.582  drainage=0.790  score=0.582  286.8s
+ep  17/40  tr_loss=0.0017 va_loss=0.0036  va_iou bg=0.977  road=0.606  drainage=0.793  score=0.606  254.4s
+    -> new best (score=0.606), saved
+ep  18/40  tr_loss=0.0016 va_loss=0.0038  va_iou bg=0.977  road=0.598  drainage=0.779  score=0.598  251.8s
+ep  19/40  tr_loss=0.0015 va_loss=0.0038  va_iou bg=0.978  road=0.613  drainage=0.785  score=0.613  263.2s
+    -> new best (score=0.613), saved
+ep  20/40  tr_loss=0.0015 va_loss=0.0034  va_iou bg=0.978  road=0.615  drainage=0.793  score=0.615  266.7s
+    -> new best (score=0.615), saved
+ep  21/40  tr_loss=0.0014 va_loss=0.0037  va_iou bg=0.979  road=0.616  drainage=0.815  score=0.616  256.3s
+    -> new best (score=0.616), saved
+ep  22/40  tr_loss=0.0014 va_loss=0.0038  va_iou bg=0.980  road=0.634  drainage=0.817  score=0.634  257.3s
+    -> new best (score=0.634), saved
+ep  23/40  tr_loss=0.0013 va_loss=0.0039  va_iou bg=0.979  road=0.635  drainage=0.787  score=0.635  254.7s
+    -> new best (score=0.635), saved
+ep  24/40  tr_loss=0.0013 va_loss=0.0037  va_iou bg=0.981  road=0.635  drainage=0.819  score=0.635  263.2s
+    -> new best (score=0.635), saved
+ep  25/40  tr_loss=0.0012 va_loss=0.0035  va_iou bg=0.980  road=0.637  drainage=0.826  score=0.637  256.4s
+    -> new best (score=0.637), saved
+ep  26/40  tr_loss=0.0012 va_loss=0.0038  va_iou bg=0.981  road=0.639  drainage=0.820  score=0.639  253.6s
+    -> new best (score=0.639), saved
+ep  27/40  tr_loss=0.0012 va_loss=0.0037  va_iou bg=0.981  road=0.641  drainage=0.826  score=0.641  249.2s
+    -> new best (score=0.641), saved
+ep  28/40  tr_loss=0.0011 va_loss=0.0036  va_iou bg=0.982  road=0.655  drainage=0.829  score=0.655  245.5s
+    -> new best (score=0.655), saved
+ep  29/40  tr_loss=0.0011 va_loss=0.0038  va_iou bg=0.982  road=0.652  drainage=0.837  score=0.652  245.6s
+ep  30/40  tr_loss=0.0011 va_loss=0.0040  va_iou bg=0.982  road=0.660  drainage=0.836  score=0.660  247.0s
+    -> new best (score=0.660), saved
+ep  31/40  tr_loss=0.0011 va_loss=0.0038  va_iou bg=0.983  road=0.661  drainage=0.841  score=0.661  245.5s
+    -> new best (score=0.661), saved
+ep  32/40  tr_loss=0.0010 va_loss=0.0039  va_iou bg=0.983  road=0.666  drainage=0.844  score=0.666  245.3s
+    -> new best (score=0.666), saved
+ep  33/40  tr_loss=0.0010 va_loss=0.0036  va_iou bg=0.983  road=0.664  drainage=0.840  score=0.664  246.6s
+ep  34/40  tr_loss=0.0010 va_loss=0.0039  va_iou bg=0.983  road=0.664  drainage=0.837  score=0.664  245.7s
+ep  35/40  tr_loss=0.0010 va_loss=0.0037  va_iou bg=0.983  road=0.669  drainage=0.843  score=0.669  253.3s
+    -> new best (score=0.669), saved
+ep  36/40  tr_loss=0.0010 va_loss=0.0039  va_iou bg=0.983  road=0.665  drainage=0.842  score=0.665  251.5s
+ep  37/40  tr_loss=0.0010 va_loss=0.0040  va_iou bg=0.983  road=0.666  drainage=0.842  score=0.666  251.4s
+ep  38/40  tr_loss=0.0010 va_loss=0.0040  va_iou bg=0.983  road=0.671  drainage=0.842  score=0.671  249.0s
+    -> new best (score=0.671), saved
+ep  39/40  tr_loss=0.0010 va_loss=0.0040  va_iou bg=0.983  road=0.664  drainage=0.839  score=0.664  250.1s
+ep  40/40  tr_loss=0.0010 va_loss=0.0039  va_iou bg=0.983  road=0.665  drainage=0.845  score=0.665  256.2s
+
+Best score: 0.671. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_unet_1m
+
+Loaded best (ep 38). Inference + test eval...
+Inference grid: 24 x 24 = 576 patches
+  inference done in 8.9s
+  wrote road_prob.tif + road_argmax.tif
+
+TEST pixel IoU (road): 0.610
+Per-line AP road-vs-not_road: None   road-vs-drainage: 0.9985711295429736
+mean P(road) by kind:
+           mean  median  count
+kind                          
+drainage  0.003   0.000    249
+road      0.789   0.851    769
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_unet_1m

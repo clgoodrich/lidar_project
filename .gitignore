@@ -147,22 +147,22 @@ data/derivatives/tiles/extras/*/*.tif.aux.xml
 # Heavy: torchvision Mask R-CNN best.pt is ~180 MB; YOLO datasets are 100s of PNG patches.
 # Regenerable from _pit_maskrcnn.py / _pit_yolo.py / etc.
 data/derivatives/tiles/9t/rgb3_9t_05.tif
-data/derivatives/tiles/9t/iterations/pit_07_maskrcnn/best.pt
-data/derivatives/tiles/9t/iterations/pit_07_maskrcnn/*.tif
-data/derivatives/tiles/9t/iterations/pit_07_maskrcnn/*.tif.aux.xml
-data/derivatives/tiles/9t/iterations/pit_08_yolo/best.pt
-data/derivatives/tiles/9t/iterations/pit_08_yolo/*.tif
-data/derivatives/tiles/9t/iterations/pit_08_yolo/*.tif.aux.xml
-data/derivatives/tiles/9t/iterations/pit_08_yolo/dataset/
-data/derivatives/tiles/9t/iterations/pit_08_yolo/run/
-data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/best.pt
-data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/*.tif
-data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/*.tif.aux.xml
-data/derivatives/tiles/9t/iterations/pad_06_yolo/best.pt
-data/derivatives/tiles/9t/iterations/pad_06_yolo/*.tif
-data/derivatives/tiles/9t/iterations/pad_06_yolo/*.tif.aux.xml
-data/derivatives/tiles/9t/iterations/pad_06_yolo/dataset/
-data/derivatives/tiles/9t/iterations/pad_06_yolo/run/
+data/04_models/_retired/pit_07_maskrcnn/best.pt
+data/04_models/_retired/pit_07_maskrcnn/*.tif
+data/04_models/_retired/pit_07_maskrcnn/*.tif.aux.xml
+data/04_models/_retired/pit_08_yolo/best.pt
+data/04_models/_retired/pit_08_yolo/*.tif
+data/04_models/_retired/pit_08_yolo/*.tif.aux.xml
+data/04_models/_retired/pit_08_yolo/dataset/
+data/04_models/_retired/pit_08_yolo/run/
+data/04_models/_retired/pad_05_maskrcnn/best.pt
+data/04_models/_retired/pad_05_maskrcnn/*.tif
+data/04_models/_retired/pad_05_maskrcnn/*.tif.aux.xml
+data/04_models/_retired/pad_06_yolo/best.pt
+data/04_models/_retired/pad_06_yolo/*.tif
+data/04_models/_retired/pad_06_yolo/*.tif.aux.xml
+data/04_models/_retired/pad_06_yolo/dataset/
+data/04_models/_retired/pad_06_yolo/run/
 
 # Statewide ancillary (PA O&G locations shapefile, PA land cover)
 # Patterns above (OilGasLocations_*/ and PA_LandCover/) already cover new
@@ -177,7 +177,7 @@ data/external/legacy_data/
 ~$*
 
 # 9t diagnostic derivatives (curvature/hydrology/texture, ~1GB, regenerable)
-data/derivatives/tiles/9t/diagnostics/
+data/06_experiments/9t_diagnostics/
 
 # Oil Creek 0.5 m derivative stack (~10 GB of DEM/slope/lrm/tpi/openness rasters,
 # regenerable from _build_derivatives.py --suffix oilcreek_22tile_05).
@@ -269,3 +269,34 @@ data/99_archive/**
 # data/external/dep_wells/ in Phase 4C and ignored from here on. The blob is
 # already in history from commit e70e1b7; Phase 7 is what removes it.
 data/external/dep_wells/*.gpkg
+
+# --- 04_models, Phase 4D (2026-08-12) --------------------------------------
+# A model bundle is weights + manifest + train log + the prob rasters it made.
+# The weights and rasters are heavy and regenerable from the training script;
+# the manifest, log and metrics are small and are the record. Track the record,
+# ignore the bulk.
+data/04_models/**/*.pt
+data/04_models/**/*.tif
+data/04_models/**/*.tif.aux.xml
+data/04_models/**/*.npz
+data/04_models/**/dataset/
+data/04_models/**/run/
+
+# 06_experiments: same shape -- heavy rasters out, notes and metrics in.
+data/06_experiments/**/*.tif
+data/06_experiments/**/*.tif.aux.xml
+
+# --- 02_truth/_history: keep the record, not the rasters -------------------
+# _history holds dated snapshots of prior annotation state, and those snapshots
+# are the only record of what the labels looked like before a rebuild. But
+# _backup_pit_ann426_2026-06-10/ also carries a full pit_unet_cv5 run -- five
+# fold prob rasters, >100 MB each. Gate A caught them the moment the snapshot
+# moved into a subtree with no size rule, which is precisely why that gate runs
+# after every phase.
+#
+# The snapshot is NOT split: splitting a dated record destroys the thing that
+# makes it a record. The vectors, manifests and metrics inside it stay tracked;
+# only the regenerable rasters and weights are ignored.
+data/02_truth/_history/**/*.tif
+data/02_truth/_history/**/*.tif.aux.xml
+data/02_truth/_history/**/*.pt

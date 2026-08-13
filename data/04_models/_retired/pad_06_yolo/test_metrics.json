@@ -1,0 +1,22 @@
+{
+  "n_test_instances": 93,
+  "n_detections": 1291,
+  "mean_best_iou": 0.6612697214893752,
+  "median_best_iou": 0.7482056710690459,
+  "recall_loose_at_iou_0.1": 0.9032258064516129,
+  "recall_at_iou_0.1": 0.9032258064516129,
+  "precision_at_iou_0.1": 0.06506584043377227,
+  "f1_at_iou_0.1": 0.12138728323699421,
+  "recall_loose_at_iou_0.3": 0.8817204301075269,
+  "recall_at_iou_0.3": 0.8817204301075269,
+  "precision_at_iou_0.3": 0.06351665375677769,
+  "f1_at_iou_0.3": 0.11849710982658958,
+  "recall_loose_at_iou_0.5": 0.8279569892473119,
+  "recall_at_iou_0.5": 0.8279569892473119,
+  "precision_at_iou_0.5": 0.05964368706429125,
+  "f1_at_iou_0.5": 0.11127167630057803,
+  "n_detections_after_nms": 1255,
+  "score_thresh": 0.3,
+  "nms_iou": 0.4,
+  "imgsz": 640
+}

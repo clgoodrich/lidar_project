@@ -31,7 +31,7 @@ from _common import DERIV_9T, make_profile, path_for, write_tif
 from _dl import (DEFAULT_CHANNELS, DEVICE, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
-OUTDIR = DERIV_9T / "plat_unet"
+OUTDIR = path_for("models") / "plat" / "unet"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 LABELS = DERIV_9T / "labels_plat_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"

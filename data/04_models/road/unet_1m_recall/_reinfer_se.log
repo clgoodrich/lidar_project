@@ -1,0 +1,16 @@
+
+Loaded best (ep 38, val road IoU 0.643).
+Inference grid: 24 x 24 = 576 patches
+  inference done in 9.1s
+
+=== 9t held-out test ===
+  pixel_iou_road_test          0.5814
+  ap_road_vs_drainage          0.9985
+  mean_Proad_on_road_test      0.7782
+  mean_Proad_on_drainage_test  0.0041
+Inference grid: 24 x 24 = 576 patches
+  inference done in 7.6s
+
+=== 613590 predict ===  road>=0.5 px = 731421  mean P(road) where>=0.3 = 0.663
+
+DONE. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_unet_1m_recall

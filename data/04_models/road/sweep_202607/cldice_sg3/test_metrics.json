@@ -1,0 +1,108 @@
+{
+  "variant": "cldice_sg3",
+  "config": {
+    "res": "1m",
+    "init": "corrected",
+    "loss": "cldice",
+    "model": "unet",
+    "ep": 12,
+    "lr": 0.0002,
+    "corr": true,
+    "alpha": [
+      0.1,
+      0.72,
+      0.25
+    ],
+    "extra_ch": [
+      "savgol_resid_msmax",
+      "profile_curv",
+      "rough_aniso"
+    ]
+  },
+  "best_epoch": 1,
+  "val_road_iou": 0.5940529208203071,
+  "9t_test": {
+    "pixel_iou_road_test": 0.550172529584771,
+    "ap_road_vs_not_road": null,
+    "ap_road_vs_drainage": 0.9983543776961183,
+    "mean_Proad_on_road_test": 0.8894173267109671,
+    "mean_Proad_on_drainage_test": 0.0049776374829033085
+  },
+  "corrections_613590": {
+    "val": {
+      "added": {
+        "n": 47,
+        "km": 1.56,
+        "mean_Proad_before": 0.7182,
+        "mean_Proad_after": 0.8692,
+        "delta": 0.151,
+        "frac_over_0.5_before": 0.851,
+        "frac_over_0.5_after": 0.957
+      },
+      "reject": {
+        "n": 288,
+        "km": 2.62,
+        "mean_Proad_before": 0.3445,
+        "mean_Proad_after": 0.2749,
+        "delta": -0.0695,
+        "frac_over_0.5_before": 0.372,
+        "frac_over_0.5_after": 0.278
+      },
+      "kept": {
+        "n": 3298,
+        "km": 30.46,
+        "mean_Proad_before": 0.8612,
+        "mean_Proad_after": 0.9667,
+        "delta": 0.1055,
+        "frac_over_0.5_before": 0.996,
+        "frac_over_0.5_after": 0.986
+      },
+      "ap_added_vs_reject_before": 0.24511175146864297,
+      "ap_added_vs_reject_after": 0.4268867755437792
+    },
+    "test": {
+      "added": {
+        "n": 46,
+        "km": 1.36,
+        "mean_Proad_before": 0.7418,
+        "mean_Proad_after": 0.9194,
+        "delta": 0.1776,
+        "frac_over_0.5_before": 0.891,
+        "frac_over_0.5_after": 0.978
+      },
+      "reject": {
+        "n": 344,
+        "km": 3.12,
+        "mean_Proad_before": 0.1605,
+        "mean_Proad_after": 0.1615,
+        "delta": 0.0011,
+        "frac_over_0.5_before": 0.16,
+        "frac_over_0.5_after": 0.157
+      },
+      "kept": {
+        "n": 3318,
+        "km": 30.3,
+        "mean_Proad_before": 0.8467,
+        "mean_Proad_after": 0.9518,
+        "delta": 0.1051,
+        "frac_over_0.5_before": 0.988,
+        "frac_over_0.5_after": 0.971
+      },
+      "ap_added_vs_reject_before": 0.5544109486846528,
+      "ap_added_vs_reject_after": 0.48564666834091
+    }
+  },
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5",
+    "savgol_resid_msmax",
+    "profile_curv",
+    "rough_aniso"
+  ],
+  "res": "1m"
+}

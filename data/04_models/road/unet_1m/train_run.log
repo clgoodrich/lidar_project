@@ -1,0 +1,35 @@
+train roads=3088 not_roads=135 tiles/ep=12352
+val   roads=451 not_roads=48 tiles/ep=1804
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\_road_unet_1m.py", line 205, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\roads\_road_unet_1m.py", line 181, in main
+    train_loop(
+    ~~~~~~~~~~^
+        model=model, train_loader=train_loader, val_loader=val_loader,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        extra_iou_names=("bg", "road", "drainage"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\_dl.py", line 367, in train_loop
+    tr_loss, _ = run_epoch(model, train_loader, opt, loss_fn, scaler, n_classes, train=True)
+                 ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\_dl.py", line 302, in run_epoch
+    for x, y in loader:
+                ^^^^^^
+  File "C:\Users\colto\AppData\Roaming\Python\Python313\site-packages\torch\utils\data\dataloader.py", line 733, in __next__
+    data = self._next_data()
+  File "C:\Users\colto\AppData\Roaming\Python\Python313\site-packages\torch\utils\data\dataloader.py", line 789, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\colto\AppData\Roaming\Python\Python313\site-packages\torch\utils\data\_utils\fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\_dl.py", line 269, in __getitem__
+    feat = normalize(feat, self.mu, self.sd)
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight\_dl.py", line 140, in normalize
+    return (feat - mu[:, None, None]) / sd[:, None, None]
+            ~~~~~^~~~~~~~~~~~~~~~~~~
+numpy._core._exceptions._ArrayMemoryError: Unable to allocate 1.75 MiB for an array with shape (7, 256, 256) and data type float32

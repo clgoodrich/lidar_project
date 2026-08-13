@@ -93,7 +93,7 @@ LABELS = DERIV_9T / "labels_plat_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"
 BLOCKS = DERIV_9T / "plat_blocks_9t.gpkg"
 MANIFEST = DERIV_9T / "plat_dataset_manifest.csv"
-OUTDIR = DERIV_9T / "pad_unet_cv5"
+OUTDIR = path_for("models") / "pad" / "unet_cv5"
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"

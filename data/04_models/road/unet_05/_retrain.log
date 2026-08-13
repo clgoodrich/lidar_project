@@ -1,0 +1,69 @@
+train roads=123 not_roads=44 tiles/ep=369
+val   roads=21 not_roads=3 tiles/ep=63
+ep   1/40  tr_loss=0.0158 va_loss=0.0306  va_iou bg=0.775  road=0.084  score=0.084  14.2s
+    -> new best (score=0.084), saved
+ep   2/40  tr_loss=0.0113 va_loss=0.0104  va_iou bg=0.866  road=0.125  score=0.125  8.6s
+    -> new best (score=0.125), saved
+ep   3/40  tr_loss=0.0102 va_loss=0.0092  va_iou bg=0.849  road=0.127  score=0.127  8.3s
+    -> new best (score=0.127), saved
+ep   4/40  tr_loss=0.0099 va_loss=0.0091  va_iou bg=0.875  road=0.138  score=0.138  8.5s
+    -> new best (score=0.138), saved
+ep   5/40  tr_loss=0.0097 va_loss=0.0082  va_iou bg=0.910  road=0.176  score=0.176  8.3s
+    -> new best (score=0.176), saved
+ep   6/40  tr_loss=0.0088 va_loss=0.0086  va_iou bg=0.897  road=0.169  score=0.169  8.3s
+ep   7/40  tr_loss=0.0088 va_loss=0.0132  va_iou bg=0.790  road=0.103  score=0.103  8.2s
+ep   8/40  tr_loss=0.0080 va_loss=0.0081  va_iou bg=0.896  road=0.159  score=0.159  8.2s
+ep   9/40  tr_loss=0.0084 va_loss=0.0083  va_iou bg=0.946  road=0.222  score=0.222  8.2s
+    -> new best (score=0.222), saved
+ep  10/40  tr_loss=0.0076 va_loss=0.0070  va_iou bg=0.931  road=0.217  score=0.217  8.2s
+ep  11/40  tr_loss=0.0076 va_loss=0.0072  va_iou bg=0.946  road=0.235  score=0.235  8.2s
+    -> new best (score=0.235), saved
+ep  12/40  tr_loss=0.0073 va_loss=0.0068  va_iou bg=0.938  road=0.203  score=0.203  8.6s
+ep  13/40  tr_loss=0.0072 va_loss=0.0059  va_iou bg=0.935  road=0.246  score=0.246  8.6s
+    -> new best (score=0.246), saved
+ep  14/40  tr_loss=0.0068 va_loss=0.0112  va_iou bg=0.813  road=0.113  score=0.113  8.5s
+ep  15/40  tr_loss=0.0070 va_loss=0.0076  va_iou bg=0.953  road=0.254  score=0.254  8.5s
+    -> new best (score=0.254), saved
+ep  16/40  tr_loss=0.0068 va_loss=0.0077  va_iou bg=0.946  road=0.252  score=0.252  8.3s
+ep  17/40  tr_loss=0.0068 va_loss=0.0058  va_iou bg=0.952  road=0.266  score=0.266  8.5s
+    -> new best (score=0.266), saved
+ep  18/40  tr_loss=0.0065 va_loss=0.0069  va_iou bg=0.951  road=0.262  score=0.262  8.5s
+ep  19/40  tr_loss=0.0062 va_loss=0.0066  va_iou bg=0.940  road=0.233  score=0.233  8.2s
+ep  20/40  tr_loss=0.0065 va_loss=0.0068  va_iou bg=0.954  road=0.317  score=0.317  8.1s
+    -> new best (score=0.317), saved
+ep  21/40  tr_loss=0.0066 va_loss=0.0058  va_iou bg=0.939  road=0.267  score=0.267  8.2s
+ep  22/40  tr_loss=0.0062 va_loss=0.0049  va_iou bg=0.968  road=0.359  score=0.359  8.2s
+    -> new best (score=0.359), saved
+ep  23/40  tr_loss=0.0059 va_loss=0.0058  va_iou bg=0.949  road=0.286  score=0.286  8.2s
+ep  24/40  tr_loss=0.0060 va_loss=0.0058  va_iou bg=0.945  road=0.261  score=0.261  8.3s
+ep  25/40  tr_loss=0.0055 va_loss=0.0065  va_iou bg=0.960  road=0.351  score=0.351  8.3s
+ep  26/40  tr_loss=0.0057 va_loss=0.0049  va_iou bg=0.942  road=0.245  score=0.245  8.3s
+ep  27/40  tr_loss=0.0052 va_loss=0.0061  va_iou bg=0.948  road=0.276  score=0.276  8.3s
+ep  28/40  tr_loss=0.0054 va_loss=0.0073  va_iou bg=0.960  road=0.322  score=0.322  8.3s
+ep  29/40  tr_loss=0.0057 va_loss=0.0071  va_iou bg=0.915  road=0.205  score=0.205  8.4s
+ep  30/40  tr_loss=0.0058 va_loss=0.0064  va_iou bg=0.956  road=0.299  score=0.299  8.3s
+ep  31/40  tr_loss=0.0054 va_loss=0.0070  va_iou bg=0.953  road=0.323  score=0.323  8.4s
+ep  32/40  tr_loss=0.0052 va_loss=0.0046  va_iou bg=0.957  road=0.313  score=0.313  8.3s
+ep  33/40  tr_loss=0.0053 va_loss=0.0046  va_iou bg=0.948  road=0.288  score=0.288  8.2s
+ep  34/40  tr_loss=0.0052 va_loss=0.0047  va_iou bg=0.957  road=0.337  score=0.337  8.2s
+ep  35/40  tr_loss=0.0055 va_loss=0.0055  va_iou bg=0.957  road=0.306  score=0.306  8.3s
+ep  36/40  tr_loss=0.0051 va_loss=0.0053  va_iou bg=0.946  road=0.289  score=0.289  8.4s
+ep  37/40  tr_loss=0.0050 va_loss=0.0054  va_iou bg=0.950  road=0.303  score=0.303  8.2s
+ep  38/40  tr_loss=0.0051 va_loss=0.0046  va_iou bg=0.956  road=0.327  score=0.327  8.3s
+ep  39/40  tr_loss=0.0050 va_loss=0.0054  va_iou bg=0.952  road=0.310  score=0.310  8.1s
+ep  40/40  tr_loss=0.0049 va_loss=0.0056  va_iou bg=0.950  road=0.297  score=0.297  8.1s
+
+Best score: 0.359. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\road_unet
+
+Loaded best (ep 22). Inference + test eval...
+Inference grid: 47 x 47 = 2209 patches
+  inference done in 34.3s
+  wrote road_prob.tif + road_argmax.tif
+
+TEST pixel IoU (road): 0.343
+Per-line AP on test: 0.9629629629629629
+           mean    50%
+kind                  
+not_road  0.125  0.121
+road      0.565  0.584
+Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\9t\road_unet

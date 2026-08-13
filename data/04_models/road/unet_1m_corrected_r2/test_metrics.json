@@ -1,0 +1,84 @@
+{
+  "init": "road_unet_1m_recall",
+  "best_epoch": 15,
+  "9t_val_road_iou": 0.6254583412882374,
+  "9t_test": {
+    "pixel_iou_road_test": 0.5490712121675796,
+    "ap_road_vs_not_road": null,
+    "ap_road_vs_drainage": 0.9985840372488535,
+    "mean_Proad_on_road_test": 0.7855296303128804,
+    "mean_Proad_on_drainage_test": 0.009360667484328797
+  },
+  "corrections_613590": {
+    "val": {
+      "added": {
+        "n": 311,
+        "km": 10.2,
+        "mean_Proad_before": 0.5179,
+        "mean_Proad_after": 0.6992,
+        "delta": 0.1812,
+        "frac_over_0.5_before": 0.553,
+        "frac_over_0.5_after": 0.865
+      },
+      "reject": {
+        "n": 373,
+        "km": 3.38,
+        "mean_Proad_before": 0.2839,
+        "mean_Proad_after": 0.223,
+        "delta": -0.0609,
+        "frac_over_0.5_before": 0.303,
+        "frac_over_0.5_after": 0.214
+      },
+      "kept": {
+        "n": 3219,
+        "km": 29.74,
+        "mean_Proad_before": 0.8647,
+        "mean_Proad_after": 0.8493,
+        "delta": -0.0154,
+        "frac_over_0.5_before": 0.995,
+        "frac_over_0.5_after": 0.992
+      },
+      "ap_added_vs_reject_before": 0.5877232880713634,
+      "ap_added_vs_reject_after": 0.8105470693777601
+    },
+    "test": {
+      "added": {
+        "n": 272,
+        "km": 9.17,
+        "mean_Proad_before": 0.4445,
+        "mean_Proad_after": 0.6384,
+        "delta": 0.1939,
+        "frac_over_0.5_before": 0.43,
+        "frac_over_0.5_after": 0.761
+      },
+      "reject": {
+        "n": 409,
+        "km": 3.77,
+        "mean_Proad_before": 0.5941,
+        "mean_Proad_after": 0.3702,
+        "delta": -0.2239,
+        "frac_over_0.5_before": 0.689,
+        "frac_over_0.5_after": 0.408
+      },
+      "kept": {
+        "n": 2097,
+        "km": 19.44,
+        "mean_Proad_before": 0.8696,
+        "mean_Proad_after": 0.8572,
+        "delta": -0.0124,
+        "frac_over_0.5_before": 0.998,
+        "frac_over_0.5_after": 0.996
+      },
+      "ap_added_vs_reject_before": 0.30960706991284004,
+      "ap_added_vs_reject_after": 0.47329423125589143
+    }
+  },
+  "focal_alpha": [
+    0.1,
+    0.72,
+    0.25
+  ],
+  "kept_cap": 1200,
+  "lr": 0.0002,
+  "epochs": 15
+}

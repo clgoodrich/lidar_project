@@ -1,0 +1,216 @@
+=== START cldice 16:14:52 ===
+[cldice] finetune from corrected (ep 15, IoU 0.636); loss=cldice ep=12 lr=0.0002
+[cldice] train tiles/ep=17152 dual=False
+ep   1/12  tr_loss=0.0167  val_road_iou=0.5916  343.6s
+    -> new best 0.5916
+ep   2/12  tr_loss=0.0152  val_road_iou=0.5930  333.9s
+    -> new best 0.5930
+ep   3/12  tr_loss=0.0144  val_road_iou=0.5806  333.5s
+ep   4/12  tr_loss=0.0137  val_road_iou=0.5905  333.1s
+ep   5/12  tr_loss=0.0132  val_road_iou=0.5891  334.5s
+ep   6/12  tr_loss=0.0127  val_road_iou=0.5873  342.3s
+ep   7/12  tr_loss=0.0124  val_road_iou=0.5883  348.2s
+ep   8/12  tr_loss=0.0118  val_road_iou=0.5896  348.5s
+ep   9/12  tr_loss=0.0117  val_road_iou=0.5874  345.1s
+ep  10/12  tr_loss=0.0114  val_road_iou=0.5885  335.3s
+ep  11/12  tr_loss=0.0113  val_road_iou=0.5900  333.1s
+ep  12/12  tr_loss=0.0112  val_road_iou=0.5892  333.2s
+[cldice] best val road IoU 0.5930
+[cldice] loaded best ep 2 (IoU 0.593)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 8.7s
+[cldice] 9t test: pixel_iou_road_test=0.5583  ap_road_vs_drainage=0.9982  mean_Proad_on_road_test=0.8850  mean_Proad_on_drainage_test=0.0062
+Inference grid: 24 x 24 = 576 patches
+  inference done in 8.9s
+[cldice] val added: P 0.718->0.851
+[cldice] val reject: P 0.344->0.249
+[cldice] test added: P 0.742->0.889
+[cldice] test reject: P 0.161->0.155
+[cldice] DONE -> C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_sweep_202607\cldice
+=== END cldice rc=0 17:23:27 ===
+=== START alpha078 17:23:27 ===
+[alpha078] finetune from corrected (ep 15, IoU 0.636); loss=focal ep=12 lr=0.0002
+[alpha078] train tiles/ep=17152 dual=False
+ep   1/12  tr_loss=0.0017  val_road_iou=0.6269  319.9s
+    -> new best 0.6269
+ep   2/12  tr_loss=0.0017  val_road_iou=0.6220  309.0s
+ep   3/12  tr_loss=0.0017  val_road_iou=0.6163  308.0s
+ep   4/12  tr_loss=0.0016  val_road_iou=0.6287  308.1s
+    -> new best 0.6287
+ep   5/12  tr_loss=0.0016  val_road_iou=0.6332  308.6s
+    -> new best 0.6332
+ep   6/12  tr_loss=0.0016  val_road_iou=0.6283  309.1s
+ep   7/12  tr_loss=0.0016  val_road_iou=0.6319  308.1s
+ep   8/12  tr_loss=0.0015  val_road_iou=0.6389  308.1s
+    -> new best 0.6389
+ep   9/12  tr_loss=0.0015  val_road_iou=0.6341  308.4s
+ep  10/12  tr_loss=0.0015  val_road_iou=0.6343  315.0s
+ep  11/12  tr_loss=0.0015  val_road_iou=0.6372  318.4s
+ep  12/12  tr_loss=0.0015  val_road_iou=0.6373  315.5s
+[alpha078] best val road IoU 0.6389
+[alpha078] loaded best ep 8 (IoU 0.639)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 8.9s
+[alpha078] 9t test: pixel_iou_road_test=0.5796  ap_road_vs_drainage=0.9985  mean_Proad_on_road_test=0.7905  mean_Proad_on_drainage_test=0.0051
+Inference grid: 24 x 24 = 576 patches
+  inference done in 9.2s
+[alpha078] val added: P 0.718->0.754
+[alpha078] val reject: P 0.344->0.252
+[alpha078] test added: P 0.742->0.779
+[alpha078] test reject: P 0.161->0.158
+[alpha078] DONE -> C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_sweep_202607\alpha078
+=== END alpha078 rc=0 18:26:34 ===
+=== START boundary 18:26:34 ===
+[boundary] finetune from corrected (ep 15, IoU 0.636); loss=boundary ep=12 lr=0.0002
+[boundary] train tiles/ep=17152 dual=False
+ep   1/12  tr_loss=0.0026  val_road_iou=0.6544  319.6s
+    -> new best 0.6544
+ep   2/12  tr_loss=0.0026  val_road_iou=0.6539  314.9s
+ep   3/12  tr_loss=0.0025  val_road_iou=0.6551  314.3s
+    -> new best 0.6551
+ep   4/12  tr_loss=0.0025  val_road_iou=0.6612  314.8s
+    -> new best 0.6612
+ep   5/12  tr_loss=0.0025  val_road_iou=0.6640  308.2s
+    -> new best 0.6640
+ep   6/12  tr_loss=0.0024  val_road_iou=0.6610  308.1s
+ep   7/12  tr_loss=0.0024  val_road_iou=0.6641  307.9s
+    -> new best 0.6641
+ep   8/12  tr_loss=0.0023  val_road_iou=0.6683  308.1s
+    -> new best 0.6683
+ep   9/12  tr_loss=0.0023  val_road_iou=0.6662  308.6s
+ep  10/12  tr_loss=0.0023  val_road_iou=0.6667  307.9s
+ep  11/12  tr_loss=0.0023  val_road_iou=0.6677  307.9s
+ep  12/12  tr_loss=0.0023  val_road_iou=0.6681  308.0s
+[boundary] best val road IoU 0.6683
+[boundary] loaded best ep 8 (IoU 0.668)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 8.7s
+[boundary] 9t test: pixel_iou_road_test=0.6008  ap_road_vs_drainage=0.9986  mean_Proad_on_road_test=0.7423  mean_Proad_on_drainage_test=0.0045
+Inference grid: 24 x 24 = 576 patches
+  inference done in 8.7s
+[boundary] val added: P 0.718->0.704
+[boundary] val reject: P 0.344->0.234
+[boundary] test added: P 0.742->0.732
+[boundary] test reject: P 0.161->0.147
+[boundary] DONE -> C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_sweep_202607\boundary
+=== END boundary rc=0 19:29:31 ===
+=== START res05 19:29:31 ===
+[res05] scratch; loss=focal ep=30 lr=0.001 res=05
+[res05] train tiles/ep=12352 dual=False
+ep   1/30  tr_loss=0.0072  val_road_iou=0.3781  239.2s
+    -> new best 0.3781
+ep   2/30  tr_loss=0.0043  val_road_iou=0.3778  230.6s
+ep   3/30  tr_loss=0.0038  val_road_iou=0.4101  230.3s
+    -> new best 0.4101
+ep   4/30  tr_loss=0.0036  val_road_iou=0.3920  230.6s
+ep   5/30  tr_loss=0.0034  val_road_iou=0.4188  230.3s
+    -> new best 0.4188
+ep   6/30  tr_loss=0.0033  val_road_iou=0.4041  230.4s
+ep   7/30  tr_loss=0.0032  val_road_iou=0.4189  230.4s
+    -> new best 0.4189
+ep   8/30  tr_loss=0.0030  val_road_iou=0.4253  230.6s
+    -> new best 0.4253
+ep   9/30  tr_loss=0.0029  val_road_iou=0.4548  230.7s
+    -> new best 0.4548
+ep  10/30  tr_loss=0.0028  val_road_iou=0.4499  230.4s
+ep  11/30  tr_loss=0.0027  val_road_iou=0.4396  230.4s
+ep  12/30  tr_loss=0.0026  val_road_iou=0.4510  230.5s
+ep  13/30  tr_loss=0.0025  val_road_iou=0.4489  230.4s
+ep  14/30  tr_loss=0.0024  val_road_iou=0.4758  230.6s
+    -> new best 0.4758
+ep  15/30  tr_loss=0.0023  val_road_iou=0.4585  230.9s
+ep  16/30  tr_loss=0.0023  val_road_iou=0.4748  230.5s
+ep  17/30  tr_loss=0.0022  val_road_iou=0.4937  230.5s
+    -> new best 0.4937
+ep  18/30  tr_loss=0.0021  val_road_iou=0.4720  231.4s
+ep  19/30  tr_loss=0.0021  val_road_iou=0.4826  230.5s
+ep  20/30  tr_loss=0.0020  val_road_iou=0.4850  230.5s
+ep  21/30  tr_loss=0.0019  val_road_iou=0.4954  230.6s
+    -> new best 0.4954
+ep  22/30  tr_loss=0.0019  val_road_iou=0.4900  230.5s
+ep  23/30  tr_loss=0.0018  val_road_iou=0.4971  230.5s
+    -> new best 0.4971
+ep  24/30  tr_loss=0.0018  val_road_iou=0.4953  230.5s
+ep  25/30  tr_loss=0.0018  val_road_iou=0.5003  230.6s
+    -> new best 0.5003
+ep  26/30  tr_loss=0.0018  val_road_iou=0.4939  230.5s
+ep  27/30  tr_loss=0.0017  val_road_iou=0.5002  230.5s
+ep  28/30  tr_loss=0.0017  val_road_iou=0.4978  230.5s
+ep  29/30  tr_loss=0.0017  val_road_iou=0.5019  230.4s
+    -> new best 0.5019
+ep  30/30  tr_loss=0.0017  val_road_iou=0.5015  230.6s
+[res05] best val road IoU 0.5019
+[res05] loaded best ep 29 (IoU 0.502)
+Inference grid: 47 x 47 = 2209 patches
+  inference done in 33.9s
+[res05] 9t test: pixel_iou_road_test=0.4855  ap_road_vs_drainage=0.9973  mean_Proad_on_road_test=0.7066  mean_Proad_on_drainage_test=0.0275
+[res05] DONE -> C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_sweep_202607\res05
+=== END res05 rc=0 21:25:48 ===
+=== START orient 21:25:48 ===
+[orient] scratch; loss=orient ep=30 lr=0.001 res=1m
+[orient] train tiles/ep=17152 dual=True
+  return torch._C._nn.cross_entropy_loss(
+ep   1/30  tr_loss=0.1284  val_road_iou=0.4042  325.5s
+    -> new best 0.4042
+ep   2/30  tr_loss=0.0544  val_road_iou=0.4429  318.9s
+    -> new best 0.4429
+ep   3/30  tr_loss=0.0381  val_road_iou=0.4305  318.7s
+ep   4/30  tr_loss=0.0311  val_road_iou=0.4557  318.8s
+    -> new best 0.4557
+ep   5/30  tr_loss=0.0270  val_road_iou=0.4967  318.9s
+    -> new best 0.4967
+ep   6/30  tr_loss=0.0235  val_road_iou=0.4944  318.9s
+ep   7/30  tr_loss=0.0213  val_road_iou=0.5051  318.7s
+    -> new best 0.5051
+ep   8/30  tr_loss=0.0193  val_road_iou=0.5285  318.8s
+    -> new best 0.5285
+ep   9/30  tr_loss=0.0180  val_road_iou=0.5349  318.8s
+    -> new best 0.5349
+ep  10/30  tr_loss=0.0165  val_road_iou=0.5290  318.8s
+ep  11/30  tr_loss=0.0150  val_road_iou=0.5466  318.7s
+    -> new best 0.5466
+ep  12/30  tr_loss=0.0137  val_road_iou=0.5750  318.8s
+    -> new best 0.5750
+ep  13/30  tr_loss=0.0128  val_road_iou=0.5815  318.8s
+    -> new best 0.5815
+ep  14/30  tr_loss=0.0117  val_road_iou=0.5734  318.8s
+ep  15/30  tr_loss=0.0108  val_road_iou=0.5786  318.7s
+ep  16/30  tr_loss=0.0100  val_road_iou=0.5922  318.7s
+    -> new best 0.5922
+ep  17/30  tr_loss=0.0095  val_road_iou=0.5916  318.7s
+ep  18/30  tr_loss=0.0088  val_road_iou=0.6049  318.7s
+    -> new best 0.6049
+ep  19/30  tr_loss=0.0081  val_road_iou=0.5894  318.8s
+ep  20/30  tr_loss=0.0075  val_road_iou=0.6071  321.5s
+    -> new best 0.6071
+ep  21/30  tr_loss=0.0070  val_road_iou=0.6113  323.5s
+    -> new best 0.6113
+ep  22/30  tr_loss=0.0065  val_road_iou=0.6216  321.6s
+    -> new best 0.6216
+ep  23/30  tr_loss=0.0062  val_road_iou=0.6268  318.7s
+    -> new best 0.6268
+ep  24/30  tr_loss=0.0059  val_road_iou=0.6292  318.7s
+    -> new best 0.6292
+ep  25/30  tr_loss=0.0056  val_road_iou=0.6322  318.7s
+    -> new best 0.6322
+ep  26/30  tr_loss=0.0054  val_road_iou=0.6297  318.7s
+ep  27/30  tr_loss=0.0053  val_road_iou=0.6346  318.7s
+    -> new best 0.6346
+ep  28/30  tr_loss=0.0051  val_road_iou=0.6328  318.8s
+ep  29/30  tr_loss=0.0050  val_road_iou=0.6333  318.7s
+ep  30/30  tr_loss=0.0049  val_road_iou=0.6361  318.6s
+    -> new best 0.6361
+[orient] best val road IoU 0.6361
+[orient] loaded best ep 30 (IoU 0.636)
+Inference grid: 24 x 24 = 576 patches
+  inference done in 9.2s
+[orient] 9t test: pixel_iou_road_test=0.5770  ap_road_vs_drainage=0.9964  mean_Proad_on_road_test=0.7386  mean_Proad_on_drainage_test=0.0299
+Inference grid: 24 x 24 = 576 patches
+  inference done in 9.0s
+[orient] val added: P 0.718->0.643
+[orient] val reject: P 0.344->0.172
+[orient] test added: P 0.742->0.681
+[orient] test reject: P 0.161->0.116
+[orient] DONE -> C:\Users\colto\Documents\GitHub\lidar_project\data\derivatives\tiles\9t\road_sweep_202607\orient
+=== END orient rc=0 00:06:16 ===
+=== ALL DONE 00:06:16 ===

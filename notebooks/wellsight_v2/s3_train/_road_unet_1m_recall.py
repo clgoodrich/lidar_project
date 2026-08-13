@@ -36,7 +36,7 @@ from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for
 from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
-OUTDIR = DERIV_9T / "road_unet_1m_recall"
+OUTDIR = path_for("models") / "road" / "unet_1m_recall"
 FEATURES = DERIV_9T / "features_pit_9t_1m.tif"
 LABELS = DERIV_9T / "labels_road_9t_1m.tif"
 STATS = DERIV_9T / "feature_stats_1m.json"

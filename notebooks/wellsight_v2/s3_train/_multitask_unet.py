@@ -49,7 +49,7 @@ from _common import DERIV_9T, make_profile, write_tif
 from _dl import (DEFAULT_CHANNELS, DEVICE, FocalCE, load_stats, normalize,
                  _cbr)  # type: ignore[attr-defined]
 
-OUTDIR = DERIV_9T / "multitask_unet"
+OUTDIR = path_for("models") / "multitask" / "unet"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 LBL_PIT = DERIV_9T / "labels_pit_9t_05.tif"
 LBL_ROAD = DERIV_9T / "labels_road_9t_05.tif"

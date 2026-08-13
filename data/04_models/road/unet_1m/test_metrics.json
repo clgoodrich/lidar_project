@@ -1,0 +1,19 @@
+{
+  "pixel_iou_road_test": 0.6097176613520914,
+  "line_average_precision_test": null,
+  "line_ap_road_vs_drainage_test": 0.9985711295429736,
+  "mean_Proad_on_road_test": 0.789197950882319,
+  "mean_Proad_on_drainage_test": 0.003037489220401008,
+  "n_test_lines_evaluated": 1018,
+  "n_classes": 3,
+  "resolution_m": 1.0,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ]
+}

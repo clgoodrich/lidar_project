@@ -1,0 +1,24 @@
+Device: cuda
+Loaded ep 35 -> channels: ['lrm_25', 'lrm_5', 'slope', 'tpi_05', 'openness_pos', 'openness_neg', 'roughness_11']
+Inference grid: 47 x 47 = 2209 patches
+  inference done in 30.5s
+  wrote pit_prob_floor.tif
+  wrote pit_prob_wall.tif
+  wrote pit_argmax.tif
+
+TEST pixel IoU: bg=0.995  floor=0.412  wall=0.433
+
+Per-pit recall on TEST (65 pits):
+       recall_floor  recall_wall  recall_any_pit  pit_iou_local
+count        65.000       65.000          65.000         65.000
+mean          0.706        0.884           0.900          0.703
+std           0.266        0.187           0.193          0.155
+min           0.000        0.106           0.092          0.092
+25%           0.588        0.889           0.916          0.643
+50%           0.800        0.969           0.982          0.731
+75%           0.919        0.982           1.000          0.806
+max           1.000        1.000           1.000          0.910
+
+Pits with any pit pixels predicted (>=10% recall): 64/65
+Pits with local IoU > 0.3:                          63/65
+Wrote test_preds.png (8 worst-IoU pits)

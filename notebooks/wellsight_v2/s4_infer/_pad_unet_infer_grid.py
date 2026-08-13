@@ -36,7 +36,7 @@ from _common import DERIV_9T, ROOT, make_profile, write_tif       # noqa: E402
 from _dl import (DEFAULT_CHANNELS, DEVICE, UNet, load_stats,        # noqa: E402
                  predict_full_tile)
 
-CKPT = DERIV_9T / "plat_unet" / "best.pt"
+CKPT = path_for("models") / "plat" / "unet" / "best.pt"
 STATS = DERIV_9T / "feature_stats.json"
 PATCH, OVERLAP, N_CLASSES = 384, 96, 2
 # 9t stack calls the 1 m roughness band "roughness_11"; on the grids it is roughness_5.

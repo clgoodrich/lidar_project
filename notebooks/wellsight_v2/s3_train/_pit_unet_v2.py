@@ -32,7 +32,7 @@ from _common import DERIV_9T
 from _dl import (DEFAULT_CHANNELS, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, train_loop)
 
-OUTDIR = DERIV_9T / "pit_unet_v2"
+OUTDIR = path_for("models") / "pit" / "unet_v2"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 LABELS = DERIV_9T / "labels_pit_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"

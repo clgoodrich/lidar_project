@@ -74,7 +74,7 @@ K = 5
 # Per-target settings, lifted verbatim from the two CV scripts.
 TARGETS = {
     "pit": dict(
-        outdir=DERIV_9T / "pit_unet_cv5",
+        outdir=path_for("models") / "pit" / "unet_cv5",
         per_fold="pit_cv5_per_fold_9t.csv",
         blocks=DERIV_9T / "pit_blocks_9t.gpkg",
         manifest=DERIV_9T / "pit_dataset_manifest.csv",
@@ -84,7 +84,7 @@ TARGETS = {
         min_area=4.0, score_buf=40.0,
     ),
     "pad": dict(
-        outdir=DERIV_9T / "pad_unet_cv5",
+        outdir=path_for("models") / "pad" / "unet_cv5",
         per_fold="pad_cv5_per_fold_9t.csv",
         blocks=DERIV_9T / "plat_blocks_9t.gpkg",
         manifest=DERIV_9T / "plat_dataset_manifest.csv",

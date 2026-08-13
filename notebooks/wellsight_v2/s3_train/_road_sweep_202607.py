@@ -48,7 +48,7 @@ from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet, load_stats,  # noq
 from _road_unet_1m_corrected import (  # noqa: E402
     average_precision, evaluate_corrections, sample_line_prob)
 
-SWEEP = DERIV_9T / "road_sweep_202607"
+SWEEP = path_for("models") / "road" / "sweep_202607"
 BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590"
 CORR = BLOCK / "corrections"
 
@@ -86,8 +86,8 @@ CORR_CELLS = CORR / "correction_split_cells_613590.gpkg"
 ORI_9T = DERIV_9T / "labels_roadorient_9t_1m.tif"
 ORI_CORR = CORR / "labels_roadorient_corr_613590_1m.tif"
 
-CORRECTED = DERIV_9T / "road_unet_1m_corrected" / "best.pt"
-BASELINE_PROB = DERIV_9T / "road_unet_1m_recall" / "road_prob_613590_1m.tif"
+CORRECTED = path_for("models") / "road" / "unet_1m_corrected" / "best.pt"
+BASELINE_PROB = path_for("models") / "road" / "unet_1m_recall" / "road_prob_613590_1m.tif"
 
 # ---- SavGol+3 augmented 1m stacks (cldice_sg3 experiment, 2026-07-23) ----
 # cfg["extra_ch"] appends these linear-feature channels to the 7-band stack;

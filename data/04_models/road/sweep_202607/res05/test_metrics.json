@@ -1,0 +1,37 @@
+{
+  "variant": "res05",
+  "config": {
+    "res": "05",
+    "init": "scratch",
+    "loss": "focal",
+    "model": "unet",
+    "ep": 30,
+    "lr": 0.001,
+    "corr": false,
+    "alpha": [
+      0.1,
+      0.72,
+      0.25
+    ]
+  },
+  "best_epoch": 29,
+  "val_road_iou": 0.5019324656733306,
+  "9t_test": {
+    "pixel_iou_road_test": 0.48552540546116485,
+    "ap_road_vs_not_road": null,
+    "ap_road_vs_drainage": 0.9973238988282955,
+    "mean_Proad_on_road_test": 0.7065584801305832,
+    "mean_Proad_on_drainage_test": 0.027491349391586165
+  },
+  "corrections_613590": null,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_11"
+  ],
+  "res": "05"
+}

@@ -1,0 +1,8 @@
+old_datasource,new_datasource
+../data/derivatives/tiles/9t/pit_unet_v2/pit_argmax.tif,../data/04_models/pit/unet_v2/pit_argmax.tif
+../data/derivatives/tiles/9t/pit_unet_v2/pit_argmax.tif,../data/04_models/pit/unet_v2/pit_argmax.tif
+../data/derivatives/tiles/9t/pit_unet_v2/pit_prob_floor.tif,../data/04_models/pit/unet_v2/pit_prob_floor.tif
+../data/derivatives/tiles/9t/pit_unet_v2/pit_unet_floor_prob_thr0p20_9t_05.tif,../data/04_models/pit/unet_v2/pit_unet_floor_prob_thr0p20_9t_05.tif
+../data/derivatives/tiles/9t/pit_unet_v2/pit_unet_floor_prob_thr0p30_9t_05.tif,../data/04_models/pit/unet_v2/pit_unet_floor_prob_thr0p30_9t_05.tif
+../data/derivatives/tiles/9t/pit_unet_v2/pit_unet_floor_prob_thr0p50_9t_05.tif,../data/04_models/pit/unet_v2/pit_unet_floor_prob_thr0p50_9t_05.tif
+../data/derivatives/tiles/9t/road_sweep_202607/road_prob_613590_1m_cldice.tif,../data/04_models/road/sweep_202607/road_prob_613590_1m_cldice.tif
