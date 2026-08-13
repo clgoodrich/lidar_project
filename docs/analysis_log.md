@@ -6,6 +6,46 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-13 — Phase 7: git history rewritten, 5.6 GB to 1.4 GB
+
+`git filter-repo`, stripping every `.tif`, `.tiff`, `.ovr`, `.pt`, `.pth`,
+`.npz`, `.las`, `.laz` blob (and their `.aux.xml` siblings) from all 309 commits.
+
+**Size-based stripping would have been wrong here.** The obvious command,
+`--strip-blobs-bigger-than 10M`, would have deleted 14 currently-tracked files
+from the working tree — including `WellSight_Paper_V9.docx` (47 MB), the
+presentation (24 MB), and six large figures. The bloat is raster-shaped, not
+size-shaped, so the filter is type-based with a negative lookahead sparing
+`tests/fixtures/`, the one heavy-typed file that is legitimately tracked.
+
+```
+git filter-repo --force --invert-paths   --path-regex '^(?!tests/fixtures/).*\.(tif|tiff|ovr|pt|pth|npz|las|laz)(\.aux\.xml)?$'
+```
+
+| | before | after |
+|---|---:|---:|
+| `.git` | 5.6 GB | **1.4 GB** |
+| tracked files | 1,228 | 1,221 |
+
+**Rollback:** `E:\Colton\_BACKUPS\lidar_project_ALLREFS_pre_filter_repo_2026-08-13.bundle`
+— 5.37 GB, every ref, `git bundle verify` reports "the bundle records a complete
+history". Taken and verified before the rewrite ran.
+
+**The 7 files that left HEAD were all `.tif.aux.xml`** — GDAL statistics
+sidecars, regenerated on demand, which should never have been tracked. Confirmed
+by diffing the tracked-file list against the bundle rather than assuming. They
+were restored to disk from the bundle and are now ignored globally, so the next
+QGIS session does not re-add them.
+
+The remaining 1.4 GB is document history: `docs/publication/*.docx`, the
+presentation, and the figure set. That is real project record, not bloat, so it
+stays.
+
+All 22 branches force-pushed. Every commit SHA changed; any other clone must be
+re-cloned rather than pulled.
+
+---
+
 ## 2026-08-12 — Phase 4F: the layout is area-major, and annotations are in qgis/
 
 **The axis of 4C/4D was reversed on the user's correction, and the correction was
