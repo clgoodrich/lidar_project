@@ -53,12 +53,14 @@ data/**/experiments/**/*.gpkg
 # `data/**/experiments/` needs a component literally named "experiments", which
 # the shared `_experiments` (underscore) does not match. Both spellings listed.
 data/_experiments/**/*.tif
+data/_experiments/**/*.tif.aux.xml
 data/_experiments/**/*.gpkg
 data/_experiments/**/*.npz
 data/_experiments/**/*.pt
 # `data/**/experiments/` needs a component literally named "experiments", which
 # the shared `_experiments` (underscore) does not match. Both spellings listed.
 data/_experiments/**/*.tif
+data/_experiments/**/*.tif.aux.xml
 data/_experiments/**/*.gpkg
 data/_experiments/**/*.npz
 data/_experiments/**/*.pt.aux.xml
@@ -85,6 +87,12 @@ qgis/annotations/_history/**/*.tif
 qgis/annotations/_history/**/*.tif.aux.xml
 qgis/annotations/_history/**/*.pt
 qgis/*.qgz.*.bak
+
+# GDAL statistics sidecars. Regenerated on demand by GDAL/QGIS, so they are
+# never worth tracking -- 7 of them were the only current files the 2026-08-13
+# history rewrite removed.
+*.tif.aux.xml
+*.tif.ovr
 
 # --- point clouds anywhere, always large -----------------------------------
 *.las
