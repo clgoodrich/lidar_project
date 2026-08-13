@@ -182,6 +182,7 @@ def undo(last: int | None, phase: str | None, execute: bool) -> int:
 
 
 def main() -> int:
+    global ROOT
     ap = argparse.ArgumentParser()
     ap.add_argument("--ledger", type=Path)
     ap.add_argument("--execute", action="store_true")
@@ -189,7 +190,22 @@ def main() -> int:
     ap.add_argument("--undo", action="store_true")
     ap.add_argument("--last", type=int)
     ap.add_argument("--phase")
+    ap.add_argument("--root", type=Path, help=(
+        "apply the ledger against a DIFFERENT tree, e.g. the E: mirror. "
+        "backup_to_E.bat uses robocopy /XO, which never deletes -- so a "
+        "restructure on C: would leave the mirror holding both the old tree and "
+        "the new one, doubling it. Replaying the same ledger on the mirror keeps "
+        "it a mirror. Same-volume renames, so it is near-instant. The master "
+        "docs/MOVES.csv is NOT appended to for a replay; it records what happened "
+        "to the project, not to its copies."))
     a = ap.parse_args()
+    replay = a.root is not None
+    if replay:
+        ROOT = a.root.resolve()
+        if not ROOT.is_dir():
+            ap.error(f"--root {ROOT} is not a directory")
+        print(f"REPLAY against {ROOT} (master ledger not appended)\n")
+        globals()["append_master"] = lambda row: None
     if a.undo:
         return undo(a.last, a.phase, a.execute)
     if not a.ledger:
