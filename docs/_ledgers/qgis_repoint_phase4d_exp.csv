@@ -1,0 +1,3 @@
+old_datasource,new_datasource
+../data/derivatives/experiments/permian_sample/hillshade_13RGQ040575_05m.tif,../data/06_experiments/permian_sample/hillshade_13RGQ040575_05m.tif
+../data/derivatives/experiments/permian_sample/ramachandran_permian_pads_pts.gpkg,../data/06_experiments/permian_sample/ramachandran_permian_pads_pts.gpkg

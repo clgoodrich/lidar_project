@@ -29,90 +29,47 @@ Full plan: `docs/REORGANIZATION_PLAN_phase4_role_based.md`.
 
 ```
 lidar_project/
-├── CLAUDE.md                   Agent operating instructions
-├── STRUCTURE.md                This file
-├── .gitignore                  Policy: every >=100 MB output has a rule
-├── .gitattributes
-├── tools/backup_to_E.bat       Incremental robocopy mirror to
-│                               E:\Colton\_BACKUPS\lidar_project_MIRROR.
-│                               The old root-level backup_to_E.bat targeted
-│                               E:\lidar_project, which never existed; it is
-│                               retired to archive/retired_tools/. F: is gone
-│                               as of 2026-08-12 and E: is the only backup.
-├── pytest.ini
+├── CLAUDE.md  README.md  STRUCTURE.md  pytest.ini
+├── config/paths.toml           SINGLE SOURCE OF TRUTH for every directory below
 │
 ├── data/
-│   ├── source_laz/             RAW input point clouds (LAZ, gitignored)
-│   │   ├── westernpa/          USGS WesternPA 2019 D20 tiles (+ older_files, merge scratch)
-│   │   └── mckean/             PA Northcentral B19 + NY SouthwestNY A17 tiles
-│   ├── derivatives/            Built rasters/vectors. Loose top-level files are
-│   │   │                       per-tile *.tif/*.png/*.gpkg (kept flat; referenced
-│   │   │                       by exact filename across scripts).
-│   │   ├── annotations/        Hand-curated ground truth (small, TRACKED)
-│   │   ├── tiles/              Per-area raster derivative stacks
-│   │   │   ├── 9t/             Venango Co. 0.5 m stack (DEM/slope/hillshade/LRM/...)
-│   │   │   ├── 9t_1m/          9t at 1 m
-│   │   │   ├── data_3x3/       Per-block 3x3 mosaics (westernpa_d20, northcentral_b19)
-│   │   │   ├── oilcreek_22tile_05/   Oil Creek 22-tile 0.5 m stack (~10 GB)
-│   │   │   ├── nec/sw_marcellus_1m, wc_coaloil_1m   1 m regional stacks
-│   │   │   ├── extras/         Oil Creek water/2006 per-key outputs
-│   │   │   └── mosaic_3x3[_mckean]/  3x3 hillshade discovery outputs
-│   │   ├── inference/          Model prediction outputs
-│   │   │   ├── mck/            (was mck_inference)
-│   │   │   └── oilcreek/       (was oilcreek_inference)
-│   │   ├── experiments/        Exploratory / one-off analysis stacks
-│   │   │   ├── chm_age_proxy, icp, pilot_A, ramachandran_verifier,
-│   │   │   ├── roads, candidates, notebook_demo, permian_sample
-│   │   └── validation/         Accuracy assessment outputs
-│   └── external/               Third-party downloads (mostly gitignored)
-│       ├── usgs_3dep_pa_lidar/        PA LAZ tiles (+ downloadlist_7.txt)
-│       ├── usgs_3dep_permian_tx/      TX/Permian Pilot A LAZ
-│       ├── ramachandran_2024/         Zenodo bundle + NAIP chips
-│       ├── well-pad-denver-permian/   Stanford ML Group eval repo
-│       ├── OilGasLocations_*/, PA_LandCover/, tiger_roads/, oil_creek/,
-│       ├── literature/, lidar/, legacy_data/
+│   ├── 02_truth/               HAND-DRAWN. irreplaceable. tracked by default.
+│   │   ├── annotations/        roads, plat, pit_inside/outside, drainage, ...
+│   │   ├── grids/              per-grid pit annotation gpkgs (was label_grids/)
+│   │   └── _history/           dated snapshots; rasters inside them are ignored
+│   ├── 03_derived/             REGENERABLE BY DEFINITION. one blanket .gitignore.
+│   │   ├── 9t/{05,1m_rebuilt20260812}/
+│   │   ├── 613590/{05,inference_05}/
+│   │   ├── 607594|610594|610605|616593/1m/
+│   │   ├── westernpa_d20/<block>/1m/    northcentral_b19/<block>/1m/
+│   │   ├── mckean/{mk5,mkf,sw,e1423n2238}/{05,1m,road_1m}/
+│   │   ├── oilcreek/22tile/    grids/<grid>/1m/   _logs/
+│   ├── 04_models/              A MODEL IS A BUNDLE. see 04_models/README.md
+│   │   ├── pit|pad|plat|road|drainage|multitask|classifiers/<run>/
+│   │   ├── pretrained/         _retired/  (9,055 files, cited by LEADERBOARD)
+│   ├── 05_results/             WHAT THE PROJECT PRODUCES
+│   │   ├── 9t/<target>/<question>/     613590/road/thresholds/
+│   │   ├── candidates/         validation/
+│   ├── 06_experiments/         one thread per directory
+│   ├── 99_archive/             parked/ + superseded/ + ARCHIVE_MANIFEST.csv
+│   ├── derivatives/            SHRINKING REMAINDER — 110 loose files, see below
+│   ├── source_laz/             raw LAZ (-> 01_source/lidar, not yet moved)
+│   └── external/               third-party downloads (-> 01_source/reference)
 │
-├── docs/
-│   ├── _ledgers/               Move ledgers + tool-run records (17 CSV/JSON,
-│   │                           moved out of docs/ 2026-08-12). MOVES.csv is the
-│   │                           master; tools/apply_moves.py --undo reverses it.
-│   ├── 01_project_scope.md .. 05_processing_pipeline.md   Documentation-first deliverables
-│   ├── HOW_IT_WORKS.md, methodology.md, development_history.md
-│   ├── analysis_log.md         Append-only running log (newest at top)
-│   ├── _build_methodology_docx.py   -> docs/publication/WellSight_Methodology.docx
-│   ├── articles/               Long-form research notes / pipeline guides
-│   ├── iterations/             Per-iteration write-ups + LEADERBOARD.md + BACKLOG.md
-│   ├── publication/            Paper drafts (md/docx), presentation, methodology docx
-│   ├── papers/                 Reference PDFs (small; large books gitignored)
-│   ├── figures/                Static figures (+ figures/debug/, figures/extracted/)
-│   ├── handoff/                Cross-machine session-resume notes
-│   └── related/                Adjacent work docs (SAOCOM InSAR, Urban LiDAR)
-│
-├── notebooks/
-│   ├── 01..05_*.ipynb          Curated end-to-end pipeline notebooks
-│   └── wellsight/              ACTIVE scripts only (import _common / _dl)
-│       ├── _common.py          ROOT/DERIV/DERIV_9T/DST_CRS, run_pdal, raster I/O
-│       ├── _dl.py              Shared DL building blocks
-│       ├── annotations/ build/ fetch/ pits/ plats/ roads/ multitask/
-│       │   analysis/ preprocessing/
-│
-├── models/
-│   └── pretrained/             YOLO seed weights (yolov8s-seg.pt, yolo26n.pt)
-│
-├── qgis/
-│   └── wellsight.qgz           QGIS project (was "qgis_lidar class.qgz")
-│
-├── personal/                   Non-project files (resume) — kept out of the tree
-│
-├── archive/                    Inactive/superseded material
-│   ├── wellsight/              Pre-reorg scripts (dead refactors, baselines, runs)
-│   └── derivatives/            2026-06-09: beck_9t, beck_mkf,
-│                               inference_mck_e1423n2238_05, model_archive
-│                               (heavy rasters gitignored; small records kept)
-│
-├── tests/                      pytest suite + fixtures
-├── .claude/  .venv/  .idea/
+├── notebooks/wellsight_v2/     UNCHANGED — parents[N] depth is load-bearing
+├── qgis/                       wellsight.qgz + grids/<grid>.qgz
+├── docs/  literature/  tools/  tests/  ui/  roads_studio/  archive/  personal/
 ```
+
+## Still to move
+
+`data/derivatives/` holds 110 loose files, `data/source_laz/` and
+`data/external/` still sit outside `01_source/`. Those are the remainder of
+Phase 4D and are tracked in `docs/REORGANIZATION_PLAN_phase4_role_based.md`.
+The loose files are the hard ones — many are referenced by exact filename and
+several are the canonical 1 m 9t stack, which cannot be consolidated until the
+`_prep_road_1m.py` stats regression is resolved.
+
 
 ## Path conventions (IMPORTANT — keep code paths anchored)
 

@@ -61,10 +61,10 @@ models_retired = "data/04_models/_retired"
 # --- 05 results: what the project produces ---------------------------------
 results       = "data/05_results"
 candidates    = "data/05_results/candidates"
-validation    = "data/derivatives/validation"
+validation    = "data/05_results/validation"
 
 # --- 06 experiments / 99 archive -------------------------------------------
-experiments   = "data/derivatives/experiments"
+experiments   = "data/06_experiments"
 archive       = "data/99_archive"
 
 # --- repo-level ------------------------------------------------------------
