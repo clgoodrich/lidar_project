@@ -1,2 +1,42 @@
-# Auto detect text files and perform LF normalization
+# Text files get LF normalization. Everything spatial or compiled does NOT.
+#
+# This file used to be a bare `* text=auto`, which told git to GUESS. It guessed
+# wrong on tests/fixtures/cornrow_test_tile.las -- the only .las in the
+# repository -- and normalized line endings inside a binary point cloud, leaving
+# it permanently dirty in `git status` and silently altered on checkout. Found
+# 2026-08-13.
 * text=auto
+
+# Point clouds, rasters, spatial vectors
+*.las    binary
+*.laz    binary
+*.copc.laz binary
+*.tif    binary
+*.tiff   binary
+*.ovr    binary
+*.gpkg   binary
+*.shp    binary
+*.shx    binary
+*.dbf    binary
+*.sbn    binary
+*.sbx    binary
+*.h5     binary
+*.npz    binary
+*.npy    binary
+*.parquet binary
+
+# Model checkpoints
+*.pt     binary
+*.pth    binary
+
+# Documents and media
+*.docx   binary
+*.pptx   binary
+*.xlsx   binary
+*.pdf    binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.epub   binary
+*.zip    binary
+*.qgz    binary
