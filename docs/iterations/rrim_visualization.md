@@ -1,7 +1,8 @@
 # Red Relief Image Map (RRIM) visualization
 
-**Date:** 2026-07-07
-**Script:** `notebooks/wellsight/build/_make_rrim.py`
+**Date:** 2026-07-07 (script moved into v2 and re-run 2026-08-15)
+**Script:** `notebooks/wellsight_v2/s1_build/_make_rrim.py`
+  — was `notebooks/wellsight/build/_make_rrim.py` until 2026-08-15
 **Tile:** 613590 (9-tile / 3×3 block, 1 m, EPSG:6346, 4500×4500 = 4.5×4.5 km)
 
 ## Goal
@@ -91,20 +92,22 @@ gitignored (the whole `tiles/9t/` dir is ignored); only the 1 m previews are tra
 
 ## Reproduce
 
-```bash
-# 1 m block build (data_3x3)
-python notebooks/wellsight/build/_make_rrim.py --tile 613590            # classic
-python notebooks/wellsight/build/_make_rrim.py --tile 613590 --simple   # LRM base
+Paths below are as of 2026-08-15 (area-major layout). `--dir` now defaults to
+`data/<tile>/derived/<suffix>/`, resolved through `path_for`, so it only needs
+passing for a non-standard location.
 
-# 0.5 m native (canonical 9t stack) — inputs are slope_9t_05.tif etc.
-python notebooks/wellsight/build/_make_rrim.py --tile 9t --suffix 05 \
-    --dir data/derivatives/tiles/9t                # classic
-python notebooks/wellsight/build/_make_rrim.py --tile 9t --suffix 05 \
-    --dir data/derivatives/tiles/9t --simple       # LRM base
+```bash
+# 0.5 m stacks (9t, 613590) — inputs are slope_<tile>_05.tif etc.
+python notebooks/wellsight_v2/s1_build/_make_rrim.py --tile 613590 --suffix 05            # classic
+python notebooks/wellsight_v2/s1_build/_make_rrim.py --tile 613590 --suffix 05 --simple   # LRM base
+python notebooks/wellsight_v2/s1_build/_make_rrim.py --tile 9t --suffix 05
+
+# 1 m block builds (607594, 610594, 610605, 616593)
+python notebooks/wellsight_v2/s1_build/_make_rrim.py --tile 607594 --suffix 1m
 ```
 
-`--suffix` selects the input resolution token (`1m` for the data_3x3 build, `05` for the
-0.5 m 9t stack); filenames are `<name>_<tile>_<suffix>.tif`.
+`--suffix` selects the input resolution token (`05` for the 0.5 m stacks, `1m` for the
+block builds); filenames are `<name>_<tile>_<suffix>.tif`.
 
 ## Next
 

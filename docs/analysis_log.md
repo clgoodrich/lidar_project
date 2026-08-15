@@ -6,6 +6,46 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-15 — RRIM builder moved into v2, stale default path fixed
+
+`_make_rrim.py` was the last live script stranded in the v1 tree. Moved
+`notebooks/wellsight/build/_make_rrim.py` -> `notebooks/wellsight_v2/s1_build/_make_rrim.py`
+with `git mv` (history preserved). Closes open item 4 in `docs/RUNBOOK.md`.
+
+**Why it was stranded.** The v1 archive pass sorted 88 scripts into keep vs
+archive, not keep vs port. RRIM landed in "keep" on recency alone (last run
+2026-07-07, inside the two-month window) and simply stayed put. Nothing pulled
+it across afterwards because nothing imports it — `docs/script_usage_audit.csv`
+marks it UNREFERENCED, 0 imports. It is a terminal viewing product: it consumes
+`slope`, `openness_pos/neg`, `lrm_11` and emits an RGB GeoTIFF that no model
+reads.
+
+**Two defaults were broken by the 2026-08-13 area-major move.** `--dir`
+defaulted to `data/derivatives/tiles/data_3x3/westernpa_d20/613590`, a path that
+no longer exists, so a bare run raised `RasterioIOError`. The input dir is now
+resolved from `--tile` + `--suffix` through `path_for("derived")`, i.e.
+`data/<area>/derived/<res>/`, so a future move stays one edit in
+`config/paths.toml`. `--suffix` also defaulted to `1m` while the default tile
+613590 only holds a `05` stack; default is now `05`.
+
+**Verified by running it.** `--tile 613590 --suffix 05` wrote
+`data/613590/derived/05/rrim_openness_613590_05.tif` (9000x9000, 167.5 MB,
+differential openness ±4.90 deg, slope_hi 40) plus
+`rrim_openness_613590_05_preview.png` (1800x1800). Large-file audit clean —
+`.gitignore:24` (`data/**/derived/**`) covers the GeoTIFF, and the repo-wide
+`find -size +100M` + `git check-ignore` sweep printed nothing.
+
+Docs repointed in the same change: `docs/RUNBOOK.md` (A2 command block, stage
+table, open-item 4), `docs/iterations/rrim_visualization.md`,
+`literature/CITATIONS.md` (Chiba 2008, Auld-Thomas 2022). `docs/v1_archive_plan.md`
+deliberately left alone — it is a dated historical record.
+
+Generated ledgers still name the old path and will correct on their next
+regeneration: `docs/script_last_used.{md,csv}`, `docs/script_usage_audit.{md,csv}`,
+`docs/unused_scripts_report.md`, `docs/reference_index.csv`.
+
+---
+
 ## 2026-08-13 — Phase 7: git history rewritten, 5.6 GB to 1.4 GB
 
 `git filter-repo`, stripping every `.tif`, `.tiff`, `.ovr`, `.pt`, `.pth`,

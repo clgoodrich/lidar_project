@@ -6,20 +6,25 @@ rasters already produced by the derivatives pipeline (no recompute). An optional
 --simple mode swaps the openness base for a Local Relief Model base, reproducing
 Auld-Thomas' (2022) patent-free "Simple Red Relief".
 
-Refs (papers/ in repo root):
+Refs (PDFs in literature/papers/, logged in literature/CITATIONS.md):
   Chiba, Kaneta & Suzuki 2008 — Red Relief Image Map, IAPRS XXXVII.
   Auld-Thomas 2022 — "A Recipe for Simple Red Relief".
 
-Outputs (into the tile's derivative dir):
+Outputs (into the tile's derivative dir, data/<area>/derived/<res>/):
   rrim_<tile>_1m.tif    georeferenced 3-band uint8 RGB
   plus a downsampled preview PNG next to it for quick viewing.
 """
 import argparse
 import os
 import sys
+from pathlib import Path
+
 import numpy as np
 import rasterio
 from rasterio.enums import Resampling
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _common import path_for
 
 sys.stdout.reconfigure(errors="replace")
 
@@ -88,12 +93,23 @@ def build_rrim(tile_dir, tile, simple=False, slope_hi=40.0, do_pct=98.0,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tile", default="613590")
-    ap.add_argument("--dir", default="data/derivatives/tiles/data_3x3/westernpa_d20/613590")
-    ap.add_argument("--suffix", default="1m",
-                    help="input resolution suffix, e.g. '1m' (data_3x3) or '05' (9t 0.5 m)")
+    ap.add_argument("--dir", default=None,
+                    help="derivative dir holding the inputs "
+                         "(default: <area-major dir for --tile at --suffix>)")
+    # 613590 and 9t both hold a 05 stack; the 1m block builds (607594, 610594,
+    # 610605, 616593) need --suffix 1m explicitly.
+    ap.add_argument("--suffix", default="05",
+                    help="input resolution suffix: '05' (0.5 m) or '1m' (block builds)")
     ap.add_argument("--simple", action="store_true", help="LRM base (Simple Red Relief)")
     ap.add_argument("--slope-hi", type=float, default=40.0)
     args = ap.parse_args()
+
+    # Area-major layout: data/<area>/derived/<res>/. Resolved through path_for so
+    # a future directory move stays one edit in config/paths.toml. The old default
+    # was the pre-2026-08-13 path data/derivatives/tiles/data_3x3/<region>/<tile>,
+    # which no longer exists.
+    if args.dir is None:
+        args.dir = str(path_for("derived") / args.tile / "derived" / args.suffix)
 
     rrim, prof, base_label, dlim, shi = build_rrim(
         args.dir, args.tile, simple=args.simple, slope_hi=args.slope_hi,

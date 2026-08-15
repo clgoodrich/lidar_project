@@ -14,8 +14,8 @@ is the source of record.
 | Key | Year | Topic | Used for (WellSight) | Generated file(s) | Local PDF |
 |---|---|---|---|---|---|
 | Yokoyama et al. | 2002 | Topographic openness | `openness_pos/neg` channels | `notebooks/wellsight_v2/s1_build/_build_derivatives.py` | cite-only |
-| Chiba et al. | 2008 | Red Relief Image Map (RRIM) | `diff_openness` channel + RRIM viz products | `_make_rrim.py`; `diff_openness_*` in `_build_extra_channels.py` | ✓ `chiba_2008_red_relief_image_map.pdf` |
-| Auld-Thomas (blog) | 2022 | "Simple Red Relief" (LRM-base RRIM) | RRIM variant (LRM as base layer) | `notebooks/.../_make_rrim.py` | ✓ `auldthomas_2022_simple_red_relief.pdf` |
+| Chiba et al. | 2008 | Red Relief Image Map (RRIM) | `diff_openness` channel + RRIM viz products | `notebooks/wellsight_v2/s1_build/_make_rrim.py`; `diff_openness_*` in `notebooks/wellsight_v2/s1_build/_build_extra_channels.py` | ✓ `chiba_2008_red_relief_image_map.pdf` |
+| Auld-Thomas (blog) | 2022 | "Simple Red Relief" (LRM-base RRIM) | RRIM variant (LRM as base layer) | `notebooks/wellsight_v2/s1_build/_make_rrim.py` | ✓ `auldthomas_2022_simple_red_relief.pdf` |
 | Hesse | 2010 | LiDAR Local Relief Model (LRM) | `lrm_{3,5,11,25}` channels | `notebooks/wellsight_v2/s1_build/_build_derivatives.py` | cite-only |
 | Sofia, Marinello & Tarolli | 2014 | SLLAC (slope local autocorrelation length) | `sllac_len`, `sllac_aniso` channels | `notebooks/wellsight_v2/s1_build/_build_extra_channels.py` | cite-only |
 | Frangi et al. | 1998 | Multiscale vesselness (Hessian) | `frangi_lrm`, `frangi_slresid` channels | `notebooks/wellsight_v2/s1_build/_build_extra_channels.py` | cite-only |
@@ -61,14 +61,14 @@ is the source of record.
 - **Citation:** Chiba, T., Kaneta, S., Suzuki, Y. (2008). "Red Relief Image Map: New Visualization Method for Three-Dimensional Data." *Int. Archives of Photogrammetry, Remote Sensing and Spatial Information Sciences* 37(B2): 1071–1076.
 - **About:** Composite terrain visualization = red-chroma slope × brightness from differential openness (positive − negative). Steep = vivid red, ridges bright, channels/cuts dark; illumination-independent.
 - **Used for:** The `diff_openness` channel (openness_pos − openness_neg, the RRIM brightness base) and the RRIM viewing products.
-- **Generated:** RRIM builder `_make_rrim.py`; `diff_openness_*.tif` in `_build_extra_channels.py`.
+- **Generated:** RRIM builder `notebooks/wellsight_v2/s1_build/_make_rrim.py` (`rrim_openness_<area>_<res>.tif` under `data/<area>/derived/<res>/`); `diff_openness_*.tif` in `notebooks/wellsight_v2/s1_build/_build_extra_channels.py`.
 - **Local PDF:** `literature/papers/chiba_2008_red_relief_image_map.pdf`.
 
 ### Auld-Thomas 2022 — "A Recipe for Simple Red Relief" (methods note)
 - **Citation:** Ancient Maya Settlement project (Auld-Thomas et al.), "A Recipe for Simple Red Relief," 2022-02-12 (technical blog / methods note, not peer-reviewed).
 - **About:** A simplified RRIM that swaps Chiba's differential-openness base for a Local Relief Model base — cheaper to compute, similar linear-feature legibility.
 - **Used for:** The LRM-base RRIM variant.
-- **Generated:** `_make_rrim.py` (simple-red-relief mode).
+- **Generated:** `notebooks/wellsight_v2/s1_build/_make_rrim.py --simple` (`rrim_simple_<area>_<res>.tif` under `data/<area>/derived/<res>/`).
 - **Source:** https://ancientmayasettlement.com/2022/02/12/a-recipe-for-simple-red-relief/
 - **Local PDF:** `literature/papers/auldthomas_2022_simple_red_relief.pdf`.
 

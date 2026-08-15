@@ -44,9 +44,13 @@ tiles, ~217 s for 66. The DEM and derivatives take another minute or two.
 ### A2. Red Relief Image Map — optional, for looking at
 
 ```
-python notebooks/wellsight_v2/build/_make_rrim.py --suffix <AREA>
-python notebooks/wellsight_v2/build/_make_rrim.py --suffix <AREA> --simple
+python notebooks/wellsight_v2/s1_build/_make_rrim.py --tile <AREA> --suffix <RES>
+python notebooks/wellsight_v2/s1_build/_make_rrim.py --tile <AREA> --suffix <RES> --simple
 ```
+
+`--tile` is the area (`9t`, `613590`, `607594`, …) and `--suffix` is the
+resolution token of the input rasters — `05` or `1m`. Together they resolve the
+input dir to `data/<area>/derived/<res>/` via `path_for`; override with `--dir`.
 
 Chiba et al. 2008: red-tinted slope over a differential-openness base. `--simple`
 swaps the base for a Local Relief Model (Auld-Thomas 2022, patent-free). It
@@ -154,7 +158,7 @@ Everything Track A touches, and nothing else:
 | # | Script | Stage |
 |---|---|---|
 | A1 | `s1_build/_build_derivatives.py` | build |
-| A2 | `notebooks/wellsight_v2/build/_make_rrim.py` | build (optional, viz) |
+| A2 | `notebooks/wellsight_v2/s1_build/_make_rrim.py` | build (optional, viz) |
 | A3 | `s4_infer/_predict_on_tile.py` | infer |
 | A4 | `s4_infer/_postfilter_tile_candidates.py` | infer |
 | A5 | `s5_eval/_road_optimize.py` | vectorise |
@@ -194,9 +198,11 @@ silently rebuilding the feature stack with channels that do not match what the
 models trained on. See its docstring. Use `_rebuild_labels_road_9t_1m.py` for
 labels only.
 
-**4. `_make_rrim.py` still lives in the v1 tree.** It is live — last run
-2026-07-07, cited in `literature/CITATIONS.md` for Chiba 2008 — and has no v2
-twin. It should move to `s1_build/`.
+**4. `_make_rrim.py` moved into v2 on 2026-08-15.** It now lives at
+`notebooks/wellsight_v2/s1_build/_make_rrim.py`. Its `--dir` default was a
+pre-area-major path that no longer existed; the input dir is now resolved from
+`--tile` + `--suffix` through `path_for`. Cited in `literature/CITATIONS.md`
+for Chiba 2008 and Auld-Thomas 2022.
 
 ---
 
