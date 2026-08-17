@@ -8,7 +8,8 @@ Provides:
   * Project paths and CRS constants (``ROOT``, ``DERIV``, ``DERIV_9T``, ``DST_CRS``)
   * PDAL CLI helper (``run_pdal``) — single source of truth for the
     write-JSON-then-subprocess pattern documented in ``CLAUDE.md``.
-  * Raster I/O helpers (``read_tif``, ``write_tif``, ``make_profile``).
+  * Raster I/O helpers (``read_tif``, ``write_tif``, ``write_rgb_tif``,
+    ``make_profile``).
 
 Other internal modules: ``_dl.py`` (deep-learning building blocks).
 """
@@ -29,7 +30,7 @@ __all__ = [
     "ROOT", "DERIV", "DERIV_9T", "DST_CRS", "PDAL_EXE",
     "PATHS", "CONFIG", "path_for",
     "run_pdal",
-    "read_tif", "write_tif", "make_profile",
+    "read_tif", "write_tif", "write_rgb_tif", "make_profile",
 ]
 
 # ---------------------------------------------------------------------------
@@ -299,3 +300,34 @@ def write_tif(
     )
     with rasterio.open(path, "w", **profile) as ds:
         ds.write(out, 1)
+
+
+def write_rgb_tif(
+    path: Path,
+    rgb: np.ndarray,
+    *,
+    transform: Affine,
+    crs: str | rasterio.crs.CRS,
+    **extra: Any,
+) -> None:
+    """Write an ``(H, W, 3)`` uint8 array as a 3-band RGB GeoTIFF.
+
+    ``write_tif`` is single-band only (it ends in ``ds.write(arr, 1)``), and its
+    default ``nodata=-9999`` is out of range for uint8, so colour products like
+    the RRIM need this instead. Bands are written one at a time to avoid
+    materialising a band-first copy of a full-tile array.
+    """
+    if rgb.ndim != 3 or rgb.shape[2] != 3:
+        raise ValueError(f"expected an (H, W, 3) array, got {rgb.shape}")
+    out = rgb.astype("uint8", copy=False)
+    profile = make_profile(
+        width=out.shape[1], height=out.shape[0],
+        transform=transform, crs=crs,
+        dtype="uint8", nodata=None, count=3, predictor=2,
+        **extra,
+    )
+    # Without this QGIS opens the file as three grey bands instead of a colour image.
+    profile["photometric"] = "RGB"
+    with rasterio.open(path, "w", **profile) as ds:
+        for b in range(3):
+            ds.write(out[:, :, b], b + 1)

@@ -6,6 +6,36 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-17 — `write_rgb_tif` added to `_common.py`
+
+`write_tif` is single-band by construction: it ends in `ds.write(out, 1)` and
+defaults to `nodata=-9999`, which is out of range for uint8. Any caller with a
+colour product hit `ValueError: Given nodata value, -9999.0, is beyond the valid
+range of its data type, uint8`. `_make_rrim.py:121-125` had worked around this
+with its own inline `rasterio.open` block.
+
+Added `write_rgb_tif(path, rgb, *, transform, crs)` at
+`notebooks/wellsight_v2/_common.py:304`. Takes `(H, W, 3)` uint8, sets
+`count=3`, `nodata=None`, `predictor=2`, `photometric="RGB"`, and writes band by
+band so no band-first copy of a full tile is materialised. Rejects any array
+that is not `(H, W, 3)`.
+
+`write_tif` was left alone rather than widened to handle 3-D input. It is called
+throughout the pipeline for single-band float rasters, and an `ndim` branch
+would sit in front of all of them for one caller.
+
+Verified by round-trip on a 64x48 test raster: `count=3`, dtype uint8,
+`nodata=None`, CRS EPSG:26917, transform preserved, pixel values identical,
+`colorinterp = (red, green, blue)`. Note `ds.photometric` reads back `None` in
+rasterio even when the tag is set — `colorinterp` is the check that matters, and
+it is what QGIS uses to render the file as colour.
+
+Unblocks the `rrim_process` cell in
+`notebooks/wellsight_v2/s1_build/phase_1_derivative_generation.ipynb`. No raster
+outputs generated.
+
+---
+
 ## 2026-08-15 — RRIM builder moved into v2, stale default path fixed
 
 `_make_rrim.py` was the last live script stranded in the v1 tree. Moved
