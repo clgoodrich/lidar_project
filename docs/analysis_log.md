@@ -22,6 +22,16 @@ tiles.
 
 No contact has been made with any of them. Every row is a lead.
 
+Follow-up the same day: identified the EDF people behind that drone survey.
+It is the **Pennsylvania Abandoned Well (PAW) project**, and its principal
+investigator is **Meg Coleman**, EDF Senior Policy Manager and a geologist.
+Adam Peltz (apeltz@edf.org) is the policy lead, Mary Kang (McGill,
+mary.kang@mcgill.ca) is the academic partner — and Kang is already cited in
+this repo via `docs/articles/kang_2014_explained.md`. PAW detects well casings
+magnetically; WellSight detects disturbance topographically. Complementary,
+not competing, which is the angle to lead with. Contacts recorded in the same
+doc.
+
 ---
 
 ## 2026-08-18 — `skip_existing` removed from `write_tif` (reverses the entry below)

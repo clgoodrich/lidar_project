@@ -35,10 +35,47 @@ Both tracks flow into the PA DEP Abandoned and Orphan Well database. That is
 the same layer our `venango_wells_all` ground truth comes from, so newly
 reported wells eventually show up in our validation set.
 
+## EDF and the PAW project (added 2026-08-18)
+
+The spring-2026 Venango drone survey is one piece of the **Pennsylvania
+Abandoned Well (PAW) project**. EDF runs it with PA DEP, DOE, McGill
+University, Harrisburg University, Indiana University of Pennsylvania, Penn
+State Extension, the Oil Region Alliance, University of Maryland/MOAA, and
+Moms Clean Air Force.
+
+Their method stack is drone-mounted and backpack magnetometers plus vehicle
+methane sniffing. They found and documented roughly 250 orphan and abandoned
+wells in northwestern PA between October 2024 and summer 2025. Peltz frames
+the goal as handing PA DEP "a blueprint to do this work at scale."
+
+That framing matters for us. PAW detects casings magnetically and we detect
+disturbance topographically. The two are complementary rather than
+competing, and their confirmed points are exactly the ground truth our tiles
+lack.
+
+| Who | Contact | Why they matter |
+|---|---|---|
+| **Meg Coleman** — Senior Policy Manager, Energy Transition; geologist | via <https://www.edf.org/people/meg-coleman> (remote office; no public email) | **Best first contact.** Principal investigator on PAW. Leads the field research on detecting and characterizing undocumented orphan wells. |
+| **Adam Peltz** — Director and Senior Attorney, EDF Energy Program | apeltz@edf.org | Public face of the project and of orphan-well policy. Engineered the bipartisan push behind the $4.7B federal plugging fund. Co-author with Kang on the national orphan-well inventory. |
+| **Mary Kang** — Assistant Professor, Civil Engineering, McGill University | mary.kang@mcgill.ca | The McGill side of PAW. First author of Kang et al. 2014, already cited in this repo (`docs/articles/kang_2014_explained.md`). The strongest academic entry point. |
+| **Renee McVay** — EDF | via EDF | Co-author with Kang and Peltz on the documented-orphan-well inventory. Data-side contact. |
+| **Matt Dracup** — Professional Geologist Manager, PA DEP Southwest Regional Office | via DEP SW office | DEP's technical lead on the field side. Relevant if the ask is about DEP data or survey coordination. |
+| **Patrice Tomcik** — National Field Director, Moms Clean Air Force | via <https://www.momscleanairforce.org> | Runs the citizen-outreach half of PAW. |
+| **Wesley Ramsey** — Executive Director, Penn Soil RC&D Council | via Penn Soil RC&D | Regional partner, Venango-area landowner access. |
+| Jacquelyn Kellar-Davis — EDF media contact | (212) 993-0123 | Press only. Not the right door for a technical collaboration. |
+
+Coleman is the one to write to. She is the PI, she is a geologist rather
+than a communicator, and her stated goal — scalable methods for finding
+undocumented wells — is the same problem WellSight is working on from the
+other direction.
+
 ## Open actions
 
 - Contact Drake Well Museum about Mather photos of President Twp river wells.
-- Watch for the spring-2026 EDF/DEP drone survey release.
+- Watch for the spring-2026 EDF/DEP drone survey release (President and
+  Victory Twp, Venango County).
+- Reach out to Meg Coleman (EDF, PAW PI) about the Venango survey and whether
+  LiDAR-derived candidates could feed their magnetometer targeting.
 
 ## Sources
 
@@ -47,3 +84,9 @@ reported wells eventually show up in our validation set.
 - PA Environment Digest, "$100/Well Bounty Established...": <http://paenvironmentdaily.blogspot.com/2025/06/100well-bounty-established-for.html>
 - EDF, "Unearthing Pennsylvania's legacy of orphan and abandoned wells": <https://www.edf.org/unearthing-pennsylvanias-legacy-orphan-and-abandoned-wells>
 - Pulitzer Center, "Lost: Hunting for Pennsylvania's Orphaned and Abandoned Wells": <https://pulitzercenter.org/stories/lost-hunting-pennsylvanias-orphaned-and-abandoned-wells>
+- EDF, Adam Peltz staff page: <https://www.edf.org/people/adam-peltz>
+- EDF, Meg Coleman staff page: <https://www.edf.org/people/meg-coleman>
+- Mary Kang research group: <https://sites.google.com/view/subsurface-hydrology-kang/bio>
+- Moms Clean Air Force, PAW project: <https://www.momscleanairforce.org/paw-project/>
+- WITF, "Boots and drones deployed in hunt for orphan gas wells in Southwest Pa.": <https://www.witf.org/2025/06/27/boots-and-drones-deployed-in-hunt-for-orphan-gas-wells-in-southwest-pa/>
+- PA Environment Digest, "Groundbreaking Initiative Using Drones...": <http://paenvironmentdaily.blogspot.com/2024/09/groundbreaking-initiative-using-drones.html>
