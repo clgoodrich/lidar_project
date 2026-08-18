@@ -6,6 +6,42 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-18 — phase 2 notebook verified against `_prep_annotations.py`
+
+`notebooks/wellsight_v2/s1_build/phase_2_prep_annotations.ipynb` is a manual
+rebuild of `s2_labels/_prep_annotations.py`. Verified by running both into
+scratch GeoPackages and diffing layer by layer. All seven layers match on row
+count and geometry (`geom_equals_exact`, 1e-9): plat 995, pit_inside 712,
+pit_outside 723, pit_wall 586, roads 3690, not_roads 112, drainage 1791. Every
+renamed column matches value-for-value.
+
+Three fixes applied to the notebook.
+
+1. The write cell was indented at top level, left over from copying out of
+   `main()`. It raised `IndentationError` and had never run.
+2. `pit_wall_gdf` never received a pad ID. The script joins six layers; the
+   notebook joined five. Added the missing `assign_pad_id_process` call. Its
+   `pad_id` now matches the script's `plat_id` exactly (335 of 586 non-null).
+3. `OUT` pointed at the live `qgis/annotations/annotations_proj.gpkg`, which 29
+   scripts read expecting `plat_id` / `pit_id`. The notebook writes `pad_id` /
+   `pit_inside_id`, so running it would have broken all of them. Redirected to
+   `annotations_proj_v2.gpkg` until the naming is reconciled.
+
+The column naming stays divergent by choice: `pad_id`, `pit_inside_id`,
+`pit_outside_id`, `matched_pit_id` against the script's `plat_id`, `pit_id`,
+`pit_id_outer`, `pit_id`. The notebook's names are clearer; the script's are
+what downstream expects. Reconciling them is deferred, not resolved.
+
+Also removed `write_rgb_tif` from `_common.__all__`. It was added on 2026-08-17
+and the function has since been folded into `write_tif(..., rgb_bool=True)`, so
+the stale export made `from _common import *` raise AttributeError.
+
+Separately: `qgis/annotations/annotations_proj.gpkg` was regenerated 2026-08-17
+16:41 and now carries the 712/723/586 counts from the current shapefiles,
+replacing the stale 2026-08-12 version (655/687/550).
+
+---
+
 ## 2026-08-17 — `write_rgb_tif` added to `_common.py`
 
 `write_tif` is single-band by construction: it ends in `ds.write(out, 1)` and

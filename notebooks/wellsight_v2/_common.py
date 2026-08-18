@@ -8,8 +8,8 @@ Provides:
   * Project paths and CRS constants (``ROOT``, ``DERIV``, ``DERIV_9T``, ``DST_CRS``)
   * PDAL CLI helper (``run_pdal``) — single source of truth for the
     write-JSON-then-subprocess pattern documented in ``CLAUDE.md``.
-  * Raster I/O helpers (``read_tif``, ``write_tif``, ``write_rgb_tif``,
-    ``make_profile``).
+  * Raster I/O helpers (``read_tif``, ``write_tif``, ``make_profile``).
+    ``write_tif(..., rgb_bool=True)`` writes a 3-band uint8 RGB GeoTIFF.
 
 Other internal modules: ``_dl.py`` (deep-learning building blocks).
 """
@@ -30,7 +30,7 @@ __all__ = [
     "ROOT", "DERIV", "DERIV_9T", "DST_CRS", "PDAL_EXE",
     "PATHS", "CONFIG", "path_for",
     "run_pdal",
-    "read_tif", "write_tif", "write_rgb_tif", "make_profile",
+    "read_tif", "write_tif", "make_profile",
 ]
 
 # ---------------------------------------------------------------------------
@@ -274,60 +274,114 @@ def make_profile(
     return profile
 
 
+# def write_tif(
+#     path: Path,
+#     arr: np.ndarray,
+#     *,
+#     transform: Affine,
+#     crs: str | rasterio.crs.CRS,
+#     dtype: str | None = None,
+#     nodata: float | int | None = -9999.0,
+#     **extra: Any,
+# ) -> None:
+#     """Write a 2-D array as a single-band GeoTIFF with project-standard
+#     compression. Float arrays have NaNs replaced with ``nodata`` automatically.
+#     """
+#     if dtype is None:
+#         dtype = str(arr.dtype)
+#     out = arr.astype(dtype, copy=False)
+#     if dtype.startswith("float") and nodata is not None:
+#         out = np.where(np.isnan(out), nodata, out).astype(dtype, copy=False)
+#     profile = make_profile(
+#         width=out.shape[1], height=out.shape[0],
+#         transform=transform, crs=crs,
+#         dtype=dtype, nodata=nodata,
+#         **extra,
+#     )
+#     with rasterio.open(path, "w", **profile) as ds:
+#         ds.write(out, 1)
+
 def write_tif(
     path: Path,
     arr: np.ndarray,
     *,
     transform: Affine,
+    rgb_bool: bool = False,
     crs: str | rasterio.crs.CRS,
     dtype: str | None = None,
     nodata: float | int | None = -9999.0,
+    skip_existing: bool = False,
     **extra: Any,
-) -> None:
+) -> bool:
+    """...  Returns True if the file was written, False if it already existed."""
+
     """Write a 2-D array as a single-band GeoTIFF with project-standard
     compression. Float arrays have NaNs replaced with ``nodata`` automatically.
     """
-    if dtype is None:
-        dtype = str(arr.dtype)
-    out = arr.astype(dtype, copy=False)
-    if dtype.startswith("float") and nodata is not None:
-        out = np.where(np.isnan(out), nodata, out).astype(dtype, copy=False)
-    profile = make_profile(
-        width=out.shape[1], height=out.shape[0],
-        transform=transform, crs=crs,
-        dtype=dtype, nodata=nodata,
-        **extra,
-    )
-    with rasterio.open(path, "w", **profile) as ds:
-        ds.write(out, 1)
+    if skip_existing and path.exists():
+        with rasterio.open(path) as ds:
+            if (ds.height, ds.width) == arr.shape[:2]:
+                return False
+        print(f"  {path.name} exists but shape differs -- rewriting")
+    if not rgb_bool:
+        if dtype is None:
+            dtype = str(arr.dtype)
+        out = arr.astype(dtype, copy=False)
+        if dtype.startswith("float") and nodata is not None:
+            out = np.where(np.isnan(out), nodata, out).astype(dtype, copy=False)
+        profile = make_profile(
+            width=out.shape[1], height=out.shape[0],
+            transform=transform, crs=crs,
+            dtype=dtype, nodata=nodata,
+            **extra,
+        )
+        with rasterio.open(path, "w", **profile) as ds:
+            ds.write(out, 1)
+    else:
+        print(arr)
+        if arr.ndim != 3 or arr.shape[2] != 3:
+            raise ValueError(f"expected an (H, W, 3) array, got {arr.shape}")
+        out = arr.astype("uint8", copy=False)
+        profile = make_profile(
+            width=out.shape[1], height=out.shape[0],
+            transform=transform, crs=crs,
+            dtype="uint8", nodata=None, count=3, predictor=2,
+            **extra,
+        )
+        # Without this QGIS opens the file as three grey bands instead of a colour image.
+        profile["photometric"] = "RGB"
+        with rasterio.open(path, "w", **profile) as ds:
+            for b in range(3):
+                ds.write(out[:, :, b], b + 1)
 
 
-def write_rgb_tif(
-    path: Path,
-    rgb: np.ndarray,
-    *,
-    transform: Affine,
-    crs: str | rasterio.crs.CRS,
-    **extra: Any,
-) -> None:
-    """Write an ``(H, W, 3)`` uint8 array as a 3-band RGB GeoTIFF.
 
-    ``write_tif`` is single-band only (it ends in ``ds.write(arr, 1)``), and its
-    default ``nodata=-9999`` is out of range for uint8, so colour products like
-    the RRIM need this instead. Bands are written one at a time to avoid
-    materialising a band-first copy of a full-tile array.
-    """
-    if rgb.ndim != 3 or rgb.shape[2] != 3:
-        raise ValueError(f"expected an (H, W, 3) array, got {rgb.shape}")
-    out = rgb.astype("uint8", copy=False)
-    profile = make_profile(
-        width=out.shape[1], height=out.shape[0],
-        transform=transform, crs=crs,
-        dtype="uint8", nodata=None, count=3, predictor=2,
-        **extra,
-    )
-    # Without this QGIS opens the file as three grey bands instead of a colour image.
-    profile["photometric"] = "RGB"
-    with rasterio.open(path, "w", **profile) as ds:
-        for b in range(3):
-            ds.write(out[:, :, b], b + 1)
+# def write_rgb_tif(
+#     path: Path,
+#     rgb: np.ndarray,
+#     *,
+#     transform: Affine,
+#     crs: str | rasterio.crs.CRS,
+#     **extra: Any,
+# ) -> None:
+#     """Write an ``(H, W, 3)`` uint8 array as a 3-band RGB GeoTIFF.
+#
+#     ``write_tif`` is single-band only (it ends in ``ds.write(arr, 1)``), and its
+#     default ``nodata=-9999`` is out of range for uint8, so colour products like
+#     the RRIM need this instead. Bands are written one at a time to avoid
+#     materialising a band-first copy of a full-tile array.
+#     """
+#     if rgb.ndim != 3 or rgb.shape[2] != 3:
+#         raise ValueError(f"expected an (H, W, 3) array, got {rgb.shape}")
+#     out = rgb.astype("uint8", copy=False)
+#     profile = make_profile(
+#         width=out.shape[1], height=out.shape[0],
+#         transform=transform, crs=crs,
+#         dtype="uint8", nodata=None, count=3, predictor=2,
+#         **extra,
+#     )
+#     # Without this QGIS opens the file as three grey bands instead of a colour image.
+#     profile["photometric"] = "RGB"
+#     with rasterio.open(path, "w", **profile) as ds:
+#         for b in range(3):
+#             ds.write(out[:, :, b], b + 1)
