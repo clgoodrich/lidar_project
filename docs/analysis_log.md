@@ -6,6 +6,32 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-18 — `write_tif` skip guard tightened, return value made consistent
+
+The guard compared only `(height, width)`. Phase 1 now passes
+`skip_existing=(not args.overwrite)` on all 15 `write_tif` calls, so a loose
+guard silently keeps stale rasters. It now also compares band count and dtype,
+and prints what it found against what was wanted before rewriting.
+
+It still cannot detect a parameter change. A rerun with a different window size
+or threshold writes an identically-shaped raster under the same name and gets
+skipped. Filenames that carry the parameter are safe (`lrm_11` vs `lrm_31`,
+`tpi_05` vs `tpi_25`); `openness_pos`, `roughness_5`, `chm`, and `rrim_openness`
+are not. Documented in the docstring: pass `--overwrite` when a parameter moved.
+
+Return value is now always a bool — True written, False kept. It previously
+returned False on skip and fell off the end returning None on success, against
+its own `-> bool` annotation.
+
+`path` is coerced with `Path(path)` so a str caller no longer breaks on
+`.exists()`.
+
+Verified across eight cases: fresh write, exact match, shape change, dtype
+change, single-band to RGB at the same shape, RGB repeat, str path, and a
+missing file. Returns and rewrite decisions correct in all eight.
+
+---
+
 ## 2026-08-18 — phase 2 notebook verified against `_prep_annotations.py`
 
 `notebooks/wellsight_v2/s1_build/phase_2_prep_annotations.ipynb` is a manual
