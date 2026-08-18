@@ -34,6 +34,84 @@ doc.
 
 ---
 
+## 2026-08-18 — naming reconciliation, part 1: columns, shims, and pit dataset v2
+
+The live `annotations_proj.gpkg` was regenerated 2026-08-17 by
+`phase_2_prep_annotations.ipynb` and carries the notebook vocabulary
+(`pit_inside_id`, `pad_id`). Fourteen scripts read `pit_id` / `plat_id` from it
+and were broken. Rather than regenerate with the old names, the codebase adopts
+the notebook's: a column should say what it points at, and
+`_instance_common.py:211-212` already conceded `plat` was a "legacy misnomer".
+
+**Rules.** `pit_id`, `matched_pit_id` -> `pit_inside_id`; `pit_id_outer`,
+`pit_outside_id` -> `pit_full_id`; `plat_id` -> `pad_id`; layer `pit_outside` ->
+`pit_full` (it holds floor *plus* rim, so "outside" read as the opposite);
+`plat` -> `pad`.
+
+**Notebook reconciled with itself.** Cell 5 wrote the inner-pit foreign key as
+`pit_inside_id`; cell 7 wrote the same value as `matched_pit_id`. Cell 7 now
+agrees. That one decision is what makes the sweep a flat rename instead of a
+per-layer judgement — under the old scheme `pit_id` meant "my own id" on
+pit_inside and "the pit I belong to" on pit_outside, and a wrong call there
+fails *silently* by dissolving rims on the wrong key and inflating scores.
+
+Cell 9's tally merge was not idempotent: re-running merged onto an
+already-merged frame, so pandas appended `n_pits_x` / `n_pits_y`. That is how
+the live `plat` layer ended up with `n_pits_x`, `n_pits_y` *and* `n_pits`. Fixed
+by dropping the tally columns first.
+
+**Shims.** `_common.normalize_ids` and `_common.read_layer` keep every
+pre-rename artefact readable — the 2026-06-10 fixture, older manifests, backups
+— without regenerating anything. That is what makes the equivalence test below
+possible at all.
+
+**Sweep.** 171 substitutions across 25 files. Every annotation read became
+`read_layer()`, every manifest read wrapped in `normalize_ids()`. Verified: 35
+files parse, zero legacy identifiers remain, every used name is imported, 31 of
+35 import cleanly. The four that do not fail identically at HEAD and are
+pre-existing — `_build_label_grids.py` and `_pad_morphology_bins.py` call
+`path_for("derivatives")`, a key that does not exist, and `_pit_unet_v2.py` uses
+`path_for` without importing it.
+
+**Guard test.** `tests/test_no_legacy_id_columns.py`, parametrized per file, plus
+an assertion that the rejected names and `LEGACY_ID_ALIASES` cannot drift apart.
+Proven to fail by injecting `man[man.pit_id.isin(held)]` into `_sanity_render.py`.
+137 tests pass.
+
+**`_build_pit_dataset_v2.py`.** 206 lines of code, largest function 55; the
+original was 117 in a single 111-line `main()`. Wires in `check_or_refuse`,
+which had sat unused in s2_labels since the 2026-08-12 incident. One pre-write
+gate, so a refusal leaves every output byte-identical — the original writes the
+raster at line 77 and the manifest at 159 and currently dies in between. Adds
+`--out-dir`, `--dry-run`, a CRS-object comparison, a uniqueness assertion, and a
+loud failure where the original silently deduped a double-matched centroid.
+Drops the `mask_plat` write, so the pad layer is never loaded.
+
+Equivalence against the committed 426-pit fixture, 10/10: label raster sha256
+identical to the pre-sweep original; manifest columns, dtypes, rows, values and
+split counts identical; blocks gpkg identical by content with exact geometry;
+the only file difference is the dropped `mask_plat`. The same outputs also match
+the committed `_backup_pit_ann426_2026-06-10/` artefacts — an oracle independent
+of any run in this session.
+
+Guard verified: refuses at exit 1 with the `527 -> 426` banner, all three files
+byte-identical afterwards; `--force` proceeds at exit 0 with the stderr warning;
+`--dry-run` leaves the live directory unchanged with and without `--force`.
+
+**Numbers from a dry run on the current 712-pit annotation**, for the record
+before anything is adopted: train 352 / val 77 / test 74 / unused 209 pits over
+77 / 14 / 24 / 29 blocks. **209 of 712 centroids (29%) fall outside the 9t
+reference grid**, up from 56 of 527 (11%) — the newer annotation extends well
+past the tile. 369 of 712 sit on no drawn pad.
+
+**Not done, blocked on QGIS holding the files:** shapefile renames
+(`plat.shp` -> `pad.shp`, `pit_outside.shp` -> `pit_full.shp`), the 15 + 15 layer
+references inside `qgis/wellsight.qgz`, the derived data artefacts,
+`mask_plat_9t_05.tif` -> `_dupe`, and 136 doc references. A partial rename was
+attempted and fully reverted when `.shp` and `.dbf` came back Permission denied.
+
+---
+
 ## 2026-08-18 — `skip_existing` removed from `write_tif` (reverses the entry below)
 
 Removed rather than kept. The guard can only compare what is already on disk —
