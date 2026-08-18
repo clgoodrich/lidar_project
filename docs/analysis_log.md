@@ -34,6 +34,71 @@ doc.
 
 ---
 
+## 2026-08-18 — naming reconciliation, part 2: files, QGIS project, docs
+
+Second half of the rename, unblocked once QGIS released the shapefiles. A first
+attempt was reverted when `.shp` and `.dbf` came back Permission denied
+mid-way; sidecar sets move atomically or not at all.
+
+**Shapefiles.** `plat.*` -> `pad.*`, `pit_outside.*` -> `pit_full.*`, all five
+sidecars each. Verified complete afterwards: 1053 pads, 723 pit_full, 712
+pit_inside, all EPSG:4326. Git's commit output pairs `plat.prj` with
+`pit_full.prj` — that is rename detection matching identical `.prj` contents,
+not what happened on disk.
+
+**`qgis/wellsight.qgz`.** Rewritten in place inside the zip: two datasource
+paths, ten `labels_plat` references, three display names. **All 62 file
+datasources in the project now resolve on disk**, checked programmatically.
+The opaque layer ids (`plat_020df8d3...`, `pit_outside_807c...`) are deliberately
+left: they are internal keys cross-referenced from the legend and
+`lRRgtH_styles.db`, QGIS never re-derives them from a name, and renaming risks a
+desync for no gain. A pre-rename backup was kept outside the repo.
+
+**Data artefacts.** `git mv` where tracked, plain `mv` where gitignored —
+including a `labels_plat_9t_05.tif.aux.xml` sidecar the first pass missed, which
+is exactly the failure the atomic rule exists to prevent. `mask_plat_9t_05.tif`
+became `mask_pad_9t_05_dupe.tif` under the `_dupe` rule: zero readers,
+byte-identical to `labels_pad_9t_05.tif`. `data/9t/models/plat/unet` merged into
+the existing `pad/` tree; the empty parent removed. `_retired/plat_01..04` left
+alone — those names appear in LEADERBOARD rows describing runs that happened
+under them.
+
+**Scripts.** `_build_plat_road_dataset.py` -> `_build_pad_road_dataset.py`,
+`_build_plat_split.py` -> `_build_pad_split.py`, `_plat_unet.py` ->
+`_pad_unet.py`. Nothing imported them; every reference was prose.
+
+**309 further substitutions** across the live tree: filename literals, layer
+names, the `plat_unet` model key, internal variables. A case-insensitive audit
+of `notebooks/wellsight_v2` and `tools` now returns nothing.
+
+**Docs: 108 substitutions across 16 operational files** — runbook, script map,
+handoff, refactor plans, backlog, NON_DETERMINISTIC. Historical records were
+left as written: `analysis_log.md`, the iteration write-ups, `LEADERBOARD.md`
+and the ledgers describe runs that happened under the old names, and rewriting
+them would falsify the record. To read them, apply: `pit_id` ->
+`pit_inside_id`, `matched_pit_id` -> `pit_inside_id`, `pit_id_outer` /
+`pit_outside_id` -> `pit_full_id`, `plat_id` -> `pad_id`, `plat` -> `pad`,
+`pit_outside` -> `pit_full`, `plat_unet` -> `pad_unet`.
+
+**One near-miss.** The filename rule initially rewrote `LEGACY_LAYER_ALIASES` in
+`_common.py` to `{"pit_full": "pit_full"}`, silently killing the legacy
+fallback — the shim that makes every pre-rename artefact readable. Caught by
+reading the diff, reverted, and `_common.py` is now excluded from these sweeps.
+It is the same class of silent failure the guard test was written for, and it
+got past the guard because the guard checks ID columns, not layer aliases.
+
+**Verified.** 137 tests pass. Equivalence against the 426-pit fixture still
+10/10. `_prep_annotations.py` reads the renamed shapefiles and emits the
+canonical schema, identical to the notebook's output. `_build_pit_dataset_v2.py`
+runs on that output end to end. Large-file audit clean.
+
+**Still stale.** `docs/golden/heldout_overlap.json` and
+`reeval_instance_precision.json` reference `heldout_plat_unet.gpkg` and must be
+re-recorded after rollout. `docs/reference_index.csv`, `script_map.md` and
+`script_last_used.md` should be regenerated.
+
+---
+
 ## 2026-08-18 — naming reconciliation, part 1: columns, shims, and pit dataset v2
 
 The live `annotations_proj.gpkg` was regenerated 2026-08-17 by
