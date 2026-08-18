@@ -6,6 +6,38 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-18 — `skip_existing` removed from `write_tif` (reverses the entry below)
+
+Removed rather than kept. The guard can only compare what is already on disk —
+shape, band count, dtype — and all three are unchanged when a parameter moves.
+So the one case it needed to catch was the one case it could not catch, and it
+kept a stale raster while reporting success.
+
+Two ways to close that hole were considered and both rejected as
+disproportionate. Putting the parameter in the filename touches 25 .py files, 7
+notebooks, 21 docs and ~250 rasters, and the ordered channel tuples in
+`_road_unet_1m_recall.py:48` and `_infer_roads_data_3x3.py:41` must stay in
+lockstep with the feature stacks — a missed rename feeds the wrong channel to a
+trained model with no error. Writing the parameters into GeoTIFF metadata tags
+would have worked, but adds a provenance mechanism nothing else in the project
+uses.
+
+`write_tif` is back to always writing, returning None, with `-> None` restored.
+Stripped `skip_existing=(not args.overwrite)` from all 14 `write_tif` calls in
+`phase_1_derivative_generation.ipynb`. `make_profile` takes no `**kwargs`, so any
+caller still passing the argument now raises TypeError instead of having it
+silently swallowed into the GeoTIFF creation options.
+
+The block-level guards in `stitcher`, `DEM_maker` and `dsm_chm_process` are
+untouched. Those skip expensive PDAL stages keyed on the LAS input, not on
+tunable raster parameters, so they are safe.
+
+Verified: single-band float (nodata -9999, NaN mapped), RGB (3-band uint8,
+colorinterp red/green/blue), the (H, W, 3) guard, and an unconditional rewrite
+on a second call.
+
+---
+
 ## 2026-08-18 — `write_tif` skip guard tightened, return value made consistent
 
 The guard compared only `(height, width)`. Phase 1 now passes

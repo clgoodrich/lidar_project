@@ -310,36 +310,18 @@ def write_tif(
     crs: str | rasterio.crs.CRS,
     dtype: str | None = None,
     nodata: float | int | None = -9999.0,
-    skip_existing: bool = False,
     **extra: Any,
-) -> bool:
+) -> None:
     """Write ``arr`` as a GeoTIFF with project-standard compression.
 
     Single-band by default: ``arr`` is 2-D ``(H, W)``, any dtype, and NaNs in a
     float array are replaced with ``nodata``. With ``rgb_bool=True`` it writes a
     3-band RGB image instead: ``arr`` must be ``(H, W, 3)`` and is cast to uint8.
 
-    ``skip_existing`` leaves an existing file alone when it already matches the
-    array's shape, band count, and dtype. It exists to resume an interrupted
-    run. It CANNOT detect a parameter change -- a rerun with a different window
-    size or threshold produces an identically-shaped raster under the same name
-    and will be skipped, leaving the stale file in place. Pass
-    ``skip_existing=False`` (``--overwrite``) whenever a parameter changed.
-
-    Returns True if the file was written, False if an existing file was kept.
+    Always writes. There is no skip-if-exists guard: it could only compare
+    shape and dtype, which stay identical when a parameter changes, so it
+    silently kept stale rasters.
     """
-    path = Path(path)                    # so a str caller still gets .exists()
-    if skip_existing and path.exists():
-        want_count = 3 if rgb_bool else 1
-        want_dtype = "uint8" if rgb_bool else (dtype or str(arr.dtype))
-        with rasterio.open(path) as ds:
-            if ((ds.height, ds.width) == arr.shape[:2]
-                    and ds.count == want_count
-                    and ds.dtypes[0] == want_dtype):
-                return False
-            found = f"{ds.width}x{ds.height} {ds.count}-band {ds.dtypes[0]}"
-        want = f"{arr.shape[1]}x{arr.shape[0]} {want_count}-band {want_dtype}"
-        print(f"  {path.name} exists as {found}, want {want} -- rewriting")
     if not rgb_bool:
         if dtype is None:
             dtype = str(arr.dtype)
@@ -369,7 +351,6 @@ def write_tif(
         with rasterio.open(path, "w", **profile) as ds:
             for b in range(3):
                 ds.write(out[:, :, b], b + 1)
-    return True
 
 
 
