@@ -3,7 +3,7 @@
 Outputs (under data/derivatives/tiles/9t/):
     labels_plat_9t_05.tif        uint8  0=bg, 1=plat
     labels_road_9t_05.tif        uint8  0=bg, 1=road  (roads buffered 1.5 m)
-    plat_dataset_manifest.csv    one row per plat: plat_id, block_id, split, centroid_x/y
+    plat_dataset_manifest.csv    one row per plat: pad_id, block_id, split, centroid_x/y
     road_dataset_manifest.csv    one row per road LINE: road_id, kind, block_id, split, mid_x/y
     road_classifier_samples.csv  one row per sample POINT along lines (for the classifier)
 """
@@ -18,7 +18,7 @@ from rasterio.features import rasterize
 from shapely.geometry import LineString
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T as D, path_for
+from _common import DERIV, DERIV_9T as D, path_for, read_layer
 
 ANN = path_for("truth") / "annotations_proj.gpkg"
 REF = D / "dem_9t_05.tif"
@@ -85,10 +85,10 @@ def main():
         crs = r.crs
 
     blocks = gpd.read_file(BLOCKS, layer="blocks")
-    plat = gpd.read_file(ANN, layer="plat")
-    roads = gpd.read_file(ANN, layer="roads")
-    not_roads = gpd.read_file(ANN, layer="not_roads")
-    drainage = (gpd.read_file(ANN, layer="drainage")
+    plat = read_layer(ANN, "plat")
+    roads = read_layer(ANN, "roads")
+    not_roads = read_layer(ANN, "not_roads")
+    drainage = (read_layer(ANN, "drainage")
                 if "drainage" in gpd.list_layers(ANN)["name"].tolist()
                 else gpd.GeoDataFrame(geometry=[], crs=roads.crs))
     print(f"plat={len(plat)}  roads={len(roads)}  not_roads={len(not_roads)}  "
@@ -122,7 +122,7 @@ def main():
             continue
         bid, split = assign_split(row.geometry, blocks)
         c = row.geometry.centroid
-        plat_rows.append({"plat_id": int(row.plat_id), "block_id": bid, "split": split,
+        plat_rows.append({"pad_id": int(row.pad_id), "block_id": bid, "split": split,
                           "centroid_x": c.x, "centroid_y": c.y,
                           "area_m2": float(row.geometry.area)})
     plat_man = pd.DataFrame(plat_rows)

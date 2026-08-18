@@ -60,7 +60,7 @@ def main():
 
         axes[i, 0].imshow(hs, cmap="gray")
         axes[i, 0].imshow(lbl, cmap=label_cmap, vmin=0, vmax=2, interpolation="nearest")
-        axes[i, 0].set_title(f"pit {int(row.pit_id)} [{row._split}]  hillshade + label", fontsize=8)
+        axes[i, 0].set_title(f"pit {int(row.pit_inside_id)} [{row._split}]  hillshade + label", fontsize=8)
 
         # LRM with diverging colormap
         v = np.nanpercentile(np.abs(lrm), 98)

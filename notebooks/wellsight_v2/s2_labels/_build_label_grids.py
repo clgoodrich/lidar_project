@@ -207,9 +207,9 @@ def build_wpa(args):
                 try: merge.unlink()
                 except OSError: pass
         write_empty(out_dir / f"{name}_pit_inside.gpkg", "MultiPolygon",
-                    {"pit_id": "int64", "plat_id": "int64"}, DST_CRS)
+                    {"pit_inside_id": "int64", "pad_id": "int64"}, DST_CRS)
         write_empty(out_dir / f"{name}_pit_outside.gpkg", "Polygon",
-                    {"pit_id": "int64", "plat_id": "int64"}, DST_CRS)
+                    {"pit_inside_id": "int64", "pad_id": "int64"}, DST_CRS)
         print(f"  [{name}] done in {time.time()-t0:.0f}s "
               f"(+ empty {name}_pit_inside/{name}_pit_outside gpkgs)")
     print(f"\nWPA grids in {LABEL_GRIDS}")
@@ -280,9 +280,9 @@ def build_wpa_manual(args):
                 try: merge.unlink()
                 except OSError: pass
         write_empty(out_dir / f"{name}_pit_inside.gpkg", "MultiPolygon",
-                    {"pit_id": "int64", "plat_id": "int64"}, DST_CRS)
+                    {"pit_inside_id": "int64", "pad_id": "int64"}, DST_CRS)
         write_empty(out_dir / f"{name}_pit_outside.gpkg", "Polygon",
-                    {"pit_id": "int64", "plat_id": "int64"}, DST_CRS)
+                    {"pit_inside_id": "int64", "pad_id": "int64"}, DST_CRS)
         print(f"  [{name}] done in {time.time()-t0:.0f}s")
     print(f"\nWPA manual grids in {LABEL_GRIDS}")
 

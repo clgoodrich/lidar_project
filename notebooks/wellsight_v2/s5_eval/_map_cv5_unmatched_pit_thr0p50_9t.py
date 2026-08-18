@@ -48,7 +48,7 @@ sys.path[:0] = [str(ROOT / "notebooks" / "wellsight_v2"),
                 str(ROOT / "notebooks" / "wellsight_v2" / "s3_train"),
                 str(ROOT / "notebooks" / "wellsight_v2" / "s5_eval")]
 
-from _common import DERIV_9T, path_for  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402, read_layer, normalize_ids
 from _pit_unet_cv5 import assign_folds, polygonize               # noqa: E402
 from _cv5_centroid_precision_pit_pad_9t import (ANN_GPKG, CRS,   # noqa: E402
                                                 CV_SEED)
@@ -67,7 +67,7 @@ ZOOM_HALF_M = 60.0
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-    man = pd.read_csv(DERIV_9T / "pit_dataset_manifest.csv")
+    man = normalize_ids(pd.read_csv(DERIV_9T / "pit_dataset_manifest.csv"))
     blocks = gpd.read_file(DERIV_9T / "pit_blocks_9t.gpkg",
                            layer="blocks").to_crs(CRS)
     nper = man.groupby("block_id").size().rename("n_pits").reset_index()
@@ -75,9 +75,9 @@ def main() -> int:
     man["fold"] = man.block_id.map(fo)
     blocks["fold"] = blocks.block_id.map(fo)
 
-    rims = gpd.read_file(ANN_GPKG, layer="pit_outside").to_crs(CRS)
-    rims = (rims[["pit_id", "geometry"]].dissolve(by="pit_id").reset_index()
-            .merge(man[["pit_id", "fold"]], on="pit_id", how="inner"))
+    rims = read_layer(ANN_GPKG, "pit_outside").to_crs(CRS)
+    rims = (rims[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
+            .merge(man[["pit_inside_id", "fold"]], on="pit_inside_id", how="inner"))
 
     with rasterio.open(FEATURES) as r:
         tf, rcrs = r.transform, r.crs

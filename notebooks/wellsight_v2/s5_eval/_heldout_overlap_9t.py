@@ -45,7 +45,7 @@ from scipy import ndimage as ndi
 from shapely.geometry import shape
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import path_for  # noqa: E402
+from _common import path_for  # noqa: E402, read_layer
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
@@ -121,10 +121,10 @@ def main() -> int:
 
     ann = {}
     for kind, layer, man, idcol in (
-        ("pit", "pit_inside", "pit_dataset_manifest.csv", "pit_id"),
-        ("pad", "plat", "plat_dataset_manifest.csv", "plat_id"),
+        ("pit", "pit_inside", "pit_dataset_manifest.csv", "pit_inside_id"),
+        ("pad", "plat", "plat_dataset_manifest.csv", "pad_id"),
     ):
-        g = gpd.read_file(ANN_GPKG, layer=layer).to_crs(CRS)
+        g = read_layer(ANN_GPKG, layer).to_crs(CRS)
         g = g.rename(columns={idcol: "inst_id"})[["inst_id", "geometry"]]
         m = pd.read_csv(NINE_T / man).rename(columns={idcol: "inst_id"})
         g = g.merge(m[["inst_id", "split"]], on="inst_id", how="inner")

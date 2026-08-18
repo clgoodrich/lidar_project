@@ -27,6 +27,7 @@ from rasterio.features import rasterize as _rasterize
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2"))
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2" / "s3_train"))
+from _common import normalize_ids, read_layer
 from _pit_unet_cv5 import (ANN_GPKG, BLOCKS, CRS, FEATURES, OUTDIR, SCORE_BUF_M,
                            match_scores, polygonize)
 
@@ -36,14 +37,14 @@ OBJECTIVES = ("f1", "f2")
 
 def main() -> int:
     fold_df = pd.read_csv(OUTDIR / "pit_cv5_per_fold_9t.csv")
-    assign = pd.read_csv(OUTDIR / "pit_cv5_fold_assignment_9t.csv")
+    assign = normalize_ids(pd.read_csv(OUTDIR / "pit_cv5_fold_assignment_9t.csv"))
     blocks = gpd.read_file(BLOCKS, layer="blocks").to_crs(CRS)
     blocks = blocks.merge(assign[["block_id", "fold"]].drop_duplicates(),
                           on="block_id", how="inner")
 
-    floors = gpd.read_file(ANN_GPKG, layer="pit_inside").to_crs(CRS)
-    floors = floors[["pit_id", "geometry"]].dissolve(by="pit_id").reset_index()
-    floors = floors.merge(assign[["pit_id", "fold"]], on="pit_id", how="inner")
+    floors = read_layer(ANN_GPKG, "pit_inside").to_crs(CRS)
+    floors = floors[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
+    floors = floors.merge(assign[["pit_inside_id", "fold"]], on="pit_inside_id", how="inner")
 
     with rasterio.open(FEATURES) as r:
         tf, rcrs = r.transform, r.crs

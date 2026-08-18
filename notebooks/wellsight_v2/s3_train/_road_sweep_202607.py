@@ -42,7 +42,7 @@ from torch.utils.data import ConcatDataset, DataLoader
 
 HERE = Path(__file__).resolve()
 sys.path.insert(0, str(HERE.parents[1]))
-from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for  # noqa: E402
+from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for  # noqa: E402, normalize_ids
 from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet, load_stats,  # noqa: E402
                  normalize, predict_full_tile)
 from _road_unet_1m_corrected import (  # noqa: E402
@@ -322,7 +322,7 @@ def build_datasets(cfg, mu, sd):
     if cfg.get("extra_ch"):
         feat, corr_f = F1_SG3, CORR_F_SG3
     tf = rasterio.open(feat).transform
-    manifest = pd.read_csv(MANIFEST)
+    manifest = normalize_ids(pd.read_csv(MANIFEST))
     blocks = gpd.read_file(BLOCKS, layer="blocks")
     dual = cfg["model"] == "orient"
 

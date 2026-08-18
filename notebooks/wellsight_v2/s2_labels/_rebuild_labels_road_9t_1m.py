@@ -46,7 +46,7 @@ import rasterio
 from rasterio.features import rasterize
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T as D, path_for  # noqa: E402
+from _common import DERIV, DERIV_9T as D, path_for  # noqa: E402, read_layer
 
 ANN = path_for("truth") / "annotations_proj.gpkg"
 GRID = D / "features_pit_9t_1m.tif"
@@ -76,9 +76,9 @@ def main() -> int:
         else:
             print(f"backup already exists, left alone: {BACKUP.name}")
 
-    roads = gpd.read_file(ANN, layer="roads").to_crs(crs)
+    roads = read_layer(ANN, "roads").to_crs(crs)
     layers = gpd.list_layers(ANN)["name"].tolist()
-    drainage = (gpd.read_file(ANN, layer="drainage").to_crs(crs)
+    drainage = (read_layer(ANN, "drainage").to_crs(crs)
                 if "drainage" in layers else gpd.GeoDataFrame(geometry=[]))
     print(f"annotations: {len(roads)} road lines, {len(drainage)} drainage lines")
 

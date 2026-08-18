@@ -11,12 +11,12 @@ A pit is "recorded" if it appears in EITHER annotation layer, and NO annotated
 feature may be dropped on the way in. Two traps, both of which bit earlier
 versions of this script:
 
-  * `_prep_annotations.py` pairs floors to rims and writes `pit_id` onto the
+  * `_prep_annotations.py` pairs floors to rims and writes `pit_inside_id` onto the
     rim only when a pairing succeeded. 137 rims have no floor inside them and
-    carry a NULL `pit_id`. `dissolve(by="pit_id")` throws those rows away
+    carry a NULL `pit_inside_id`. `dissolve(by="pit_inside_id")` throws those rows away
     silently, so a prediction sitting squarely on one of them came out
     "undecided" while the annotator could see the rim in QGIS. The key here is
-    `pit_id` where present and `o<pit_id_outer>` otherwise, so every rim counts.
+    `pit_inside_id` where present and `o<pit_full_id>` otherwise, so every rim counts.
   * 105 floors have no rim. Matching on rims alone loses those too.
 
 Match target is therefore the per-key union of `pit_outside` and `pit_inside`:
@@ -83,7 +83,7 @@ warnings.filterwarnings("ignore")
 ROOT = Path(__file__).resolve().parents[3]
 sys.path[:0] = [str(ROOT / "notebooks" / "wellsight_v2"),
                 str(ROOT / "notebooks" / "wellsight_v2" / "s3_train")]
-from _common import DERIV_9T, path_for  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402, read_layer, normalize_ids
 from _pit_unet_cv5 import assign_folds, polygonize                 # noqa: E402
 
 ANN = path_for("truth") / "annotations_proj.gpkg"
@@ -98,7 +98,7 @@ MIN_AREA_M2 = 4.0
 SCORE_BUF_M = 40.0
 RIM_LAYER = "pit_outside"   # rims
 FLOOR_LAYER = "pit_inside"  # floors -- what the model actually draws
-# Match target is the per-pit_id UNION of both. Size reference is floors only.
+# Match target is the per-pit_inside_id UNION of both. Size reference is floors only.
 
 
 def build_pairs(gt, pred, *, overlap_frac):
@@ -150,7 +150,7 @@ def main() -> int:
     with rasterio.open(FEATURES) as r:
         tf, rcrs = r.transform, r.crs
 
-    man = pd.read_csv(DERIV_9T / "pit_dataset_manifest.csv")
+    man = normalize_ids(pd.read_csv(DERIV_9T / "pit_dataset_manifest.csv"))
     blocks = gpd.read_file(DERIV_9T / "pit_blocks_9t.gpkg", layer="blocks").to_crs(CRS)
     nper = man.groupby("block_id").size().rename("n_pits").reset_index()
     fo = assign_folds(nper[["block_id", "n_pits"]], K, CV_SEED)
@@ -158,19 +158,19 @@ def main() -> int:
     blocks["fold"] = blocks.block_id.map(fo)
 
     # EVERY current annotation, not only manifest rows. A pit counts as recorded
-    # if it appears in either layer, so the target is the per-pit_id union.
-    rims = gpd.read_file(ANN, layer=RIM_LAYER).to_crs(CRS)
-    floors = gpd.read_file(ANN, layer=FLOOR_LAYER).to_crs(CRS)
+    # if it appears in either layer, so the target is the per-pit_inside_id union.
+    rims = read_layer(ANN, RIM_LAYER).to_crs(CRS)
+    floors = read_layer(ANN, FLOOR_LAYER).to_crs(CRS)
     for g in (rims, floors):
         g["geometry"] = g.geometry.buffer(0)
 
-    # Key on pit_id where prep managed to pair a floor to a rim, and on
-    # pit_id_outer otherwise. Dissolving on pit_id alone drops every rim that
+    # Key on pit_inside_id where prep managed to pair a floor to a rim, and on
+    # pit_full_id otherwise. Dissolving on pit_inside_id alone drops every rim that
     # has no floor -- 137 of them -- which is how real rims went missing.
     def keyed(g, prefix):
-        k = g.get("pit_id")
-        if "pit_id_outer" in g.columns:
-            alt = "o" + g["pit_id_outer"].astype("Int64").astype(str)
+        k = g.get("pit_inside_id")
+        if "pit_full_id" in g.columns:
+            alt = "o" + g["pit_full_id"].astype("Int64").astype(str)
             key = np.where(k.notna(), prefix + k.astype("Int64").astype(str), alt)
         else:
             key = prefix + k.astype("Int64").astype(str)
@@ -179,18 +179,18 @@ def main() -> int:
         return out
 
     both = pd.concat([keyed(rims, "p"), keyed(floors, "p")], ignore_index=True)
-    n_rim_nokey = int(rims.pit_id.isna().sum())
+    n_rim_nokey = int(rims.pit_inside_id.isna().sum())
     pits = gpd.GeoDataFrame(both, crs=CRS).dissolve(by="pit_key").reset_index()
     pits["geometry"] = pits.geometry.buffer(0)
     pits = pits[~pits.geometry.is_empty].reset_index(drop=True)
 
-    rid = set(rims.pit_id.dropna().unique())
-    fid = set(floors.pit_id.dropna().unique())
+    rid = set(rims.pit_inside_id.dropna().unique())
+    fid = set(floors.pit_inside_id.dropna().unique())
 
     a = floors[~floors.geometry.is_empty].geometry.area.to_numpy()
     la = np.log10(a[a > 0])
     cut = 10 ** (la.mean() - args.n_sd * la.std()) if args.size_filter else 0.0
-    print(f"annotations: {len(rims)} rim feats ({n_rim_nokey} with no pit_id), "
+    print(f"annotations: {len(rims)} rim feats ({n_rim_nokey} with no pit_inside_id), "
           f"{len(floors)} floor feats -> {len(pits)} recorded pits")
     print(f"  {len(rid & fid)} paired, {len(fid - rid)} floor-only, "
           f"{n_rim_nokey} rim-only")
@@ -313,7 +313,7 @@ def main() -> int:
     summ = {"date": "2026-08-05", "threshold": args.thr, "n_sd": args.n_sd,
             "overlap_frac": args.overlap_frac, "size_cut_m2": round(float(cut), 1),
             "match_target": "per-key union of pit_outside and pit_inside; key is "
-                            "pit_id where prep paired them, pit_id_outer otherwise",
+                            "pit_inside_id where prep paired them, pit_full_id otherwise",
             "size_filter_on": bool(args.size_filter),
             "recorded_pits": int(len(pits)),
             "rim_feats": int(len(rims)), "floor_feats": int(len(floors)),

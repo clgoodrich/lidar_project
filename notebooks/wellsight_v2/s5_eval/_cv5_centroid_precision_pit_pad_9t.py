@@ -60,7 +60,7 @@ sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2"))
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2" / "s3_train"))
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2" / "s5_eval"))
 
-from _common import DERIV_9T, path_for  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402, read_layer, normalize_ids
 from _pit_unet_cv5 import assign_folds, polygonize              # noqa: E402
 
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
@@ -78,7 +78,7 @@ TARGETS = {
         per_fold="pit_cv5_per_fold_9t.csv",
         blocks=DERIV_9T / "pit_blocks_9t.gpkg",
         manifest=DERIV_9T / "pit_dataset_manifest.csv",
-        id_col="pit_id", n_col="n_pits",
+        id_col="pit_inside_id", n_col="n_pits",
         gt_layer="pit_outside",     # rims: containment is centroid-inside-RIM
         prob_name="pit_prob_floor_cvfold{k}_9t_05.tif",
         min_area=4.0, score_buf=40.0,
@@ -88,7 +88,7 @@ TARGETS = {
         per_fold="pad_cv5_per_fold_9t.csv",
         blocks=DERIV_9T / "plat_blocks_9t.gpkg",
         manifest=DERIV_9T / "plat_dataset_manifest.csv",
-        id_col="plat_id", n_col="n_pads",
+        id_col="pad_id", n_col="n_pads",
         gt_layer="plat",
         prob_name="pad_prob_cvfold{k}_9t_05.tif",
         min_area=100.0, score_buf=80.0,
@@ -143,14 +143,14 @@ def centroid_match(gt: gpd.GeoDataFrame, pred: gpd.GeoDataFrame):
 
 
 def run_target(name: str, cfg: dict, tf, rcrs) -> list[dict]:
-    man = pd.read_csv(cfg["manifest"])
+    man = normalize_ids(pd.read_csv(cfg["manifest"]))
     blocks = gpd.read_file(cfg["blocks"], layer="blocks").to_crs(CRS)
     n_per = man.groupby("block_id").size().rename(cfg["n_col"]).reset_index()
     fold_of = assign_folds(n_per[["block_id", cfg["n_col"]]], K, CV_SEED)
     man["fold"] = man.block_id.map(fold_of)
     blocks["fold"] = blocks.block_id.map(fold_of)
 
-    gt_all = gpd.read_file(ANN_GPKG, layer=cfg["gt_layer"]).to_crs(CRS)
+    gt_all = read_layer(ANN_GPKG, cfg["gt_layer"]).to_crs(CRS)
     gt_all = gt_all[[cfg["id_col"], "geometry"]].dissolve(
         by=cfg["id_col"]).reset_index()
     gt_all = gt_all.merge(man[[cfg["id_col"], "fold"]], on=cfg["id_col"],

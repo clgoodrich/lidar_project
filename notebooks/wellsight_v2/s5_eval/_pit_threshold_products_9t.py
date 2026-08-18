@@ -40,7 +40,7 @@ from scipy import ndimage as ndi
 from shapely.geometry import shape
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import path_for  # noqa: E402
+from _common import path_for  # noqa: E402, read_layer, normalize_ids
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
@@ -141,12 +141,12 @@ def embed_style(gpkg: Path, layer: str, qml: str, desc: str) -> None:
 def main() -> int:
     print("== per-threshold pit products (0.20 / 0.30 / 0.40 / 0.50) ==\n")
 
-    rim = gpd.read_file(ANN_GPKG, layer="pit_outside").to_crs(CRS)
-    man = pd.read_csv(NINE_T / "pit_dataset_manifest.csv")
-    held = set(man.loc[man.split.isin(("val", "test")), "pit_id"])
-    rim = rim[["pit_id", "geometry"]].dissolve(by="pit_id").reset_index()
-    rim = rim.merge(man[["pit_id", "split"]], on="pit_id", how="inner")
-    rim_h = rim[rim.pit_id.isin(held)].reset_index(drop=True)
+    rim = read_layer(ANN_GPKG, "pit_outside").to_crs(CRS)
+    man = normalize_ids(pd.read_csv(NINE_T / "pit_dataset_manifest.csv"))
+    held = set(man.loc[man.split.isin(("val", "test")), "pit_inside_id"])
+    rim = rim[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
+    rim = rim.merge(man[["pit_inside_id", "split"]], on="pit_inside_id", how="inner")
+    rim_h = rim[rim.pit_inside_id.isin(held)].reset_index(drop=True)
     print(f"  held-out pits with a rim: {len(rim_h)}\n")
 
     with rasterio.open(PROB) as r:
@@ -221,7 +221,7 @@ def main() -> int:
         bm = ['<!DOCTYPE qgis_bookmarks>', '<qgis_bookmarks>']
         for i, rr in enumerate(miss.itertuples(), 1):
             c = rr.geometry.centroid
-            nm = escape(f"MISSED {i:02d}/{len(miss)} pit_id={rr.pit_id} @{t}")
+            nm = escape(f"MISSED {i:02d}/{len(miss)} pit_inside_id={rr.pit_inside_id} @{t}")
             bm += [
                 '  <bookmark>',
                 f'    <id>miss_{tg}_{i:02d}</id>',
@@ -260,7 +260,7 @@ def main() -> int:
                                  lw=1.2)
                     mx = float(np.nanmax(np.where(
                         ndi.binary_dilation(np.zeros(1, bool)), 0, 0)) or 0)
-                    a.set_title(f"pit_id {rr.pit_id}  ({rr.split})\n"
+                    a.set_title(f"pit_inside_id {rr.pit_inside_id}  ({rr.split})\n"
                                 f"{c.x:.0f}, {c.y:.0f}", fontsize=9)
                     a.set_xticks([]); a.set_yticks([])
             for a in axs.ravel()[n:]:

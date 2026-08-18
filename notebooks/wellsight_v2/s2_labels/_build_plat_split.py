@@ -13,7 +13,7 @@ the split column is recomputed from pads. Mirrors the pit greedy-fill method
 
 Outputs (under data/derivatives/tiles/9t/):
     plat_blocks_9t.gpkg        12x12 grid, split assigned by pad content
-    plat_dataset_manifest.csv  per-pad: plat_id, block_id, split, centroid_x/y
+    plat_dataset_manifest.csv  per-pad: pad_id, block_id, split, centroid_x/y
                                (OVERWRITES the pit-inherited version)
 
 Run:  python notebooks/wellsight/annotations/_build_plat_split.py
@@ -26,7 +26,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T as D, path_for
+from _common import DERIV, DERIV_9T as D, path_for, read_layer
 
 ANN = path_for("truth") / "annotations_proj.gpkg"
 PIT_BLOCKS = D / "pit_blocks_9t.gpkg"
@@ -36,14 +36,14 @@ RNG_SEED = 42
 
 def main() -> int:
     blocks = gpd.read_file(PIT_BLOCKS, layer="blocks")[["block_id", "geometry"]].copy()
-    plat = gpd.read_file(ANN, layer="plat").copy()
+    plat = read_layer(ANN, "plat").copy()
     plat = plat[~plat.geometry.isna() & ~plat.geometry.is_empty].copy()
     plat["ctr_x"] = plat.geometry.centroid.x
     plat["ctr_y"] = plat.geometry.centroid.y
 
     # Count pads per block via centroid-in-block spatial join.
     cent = gpd.GeoDataFrame(
-        plat[["plat_id", "ctr_x", "ctr_y"]],
+        plat[["pad_id", "ctr_x", "ctr_y"]],
         geometry=gpd.points_from_xy(plat["ctr_x"], plat["ctr_y"]), crs=plat.crs,
     )
     joined = gpd.sjoin(cent, blocks, how="left", predicate="within")
@@ -73,8 +73,8 @@ def main() -> int:
 
     # Per-pad manifest from the new block splits.
     joined["split"] = joined["block_id"].map(split_of).fillna("unused")
-    man = joined[["plat_id", "block_id", "split", "ctr_x", "ctr_y"]].copy()
-    man.columns = ["plat_id", "block_id", "split", "centroid_x", "centroid_y"]
+    man = joined[["pad_id", "block_id", "split", "ctr_x", "ctr_y"]].copy()
+    man.columns = ["pad_id", "block_id", "split", "centroid_x", "centroid_y"]
     man = man.dropna(subset=["block_id"])
     man["block_id"] = man["block_id"].astype(int)
     man.to_csv(D / "plat_dataset_manifest.csv", index=False)

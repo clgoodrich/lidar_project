@@ -59,7 +59,7 @@ from rasterio.features import shapes
 from scipy import ndimage as ndi
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import path_for  # noqa: E402
+from _common import path_for  # noqa: E402, read_layer, normalize_ids
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
@@ -182,18 +182,18 @@ def main() -> int:
 
     # ---- ground truth ----
     gts, foot = {}, {}
-    pits = gpd.read_file(ANN_GPKG, layer="pit_inside").to_crs(CRS)
-    pits = pits.rename(columns={"pit_id": "inst_id"})[["inst_id", "geometry"]]
-    pm = pd.read_csv(NINE_T / "pit_dataset_manifest.csv")
-    gts["pit"] = pits.merge(pm[["pit_id", "split"]].rename(
-        columns={"pit_id": "inst_id"}), on="inst_id", how="inner")
+    pits = read_layer(ANN_GPKG, "pit_inside").to_crs(CRS)
+    pits = pits.rename(columns={"pit_inside_id": "inst_id"})[["inst_id", "geometry"]]
+    pm = normalize_ids(pd.read_csv(NINE_T / "pit_dataset_manifest.csv"))
+    gts["pit"] = pits.merge(pm[["pit_inside_id", "split"]].rename(
+        columns={"pit_inside_id": "inst_id"}), on="inst_id", how="inner")
     foot["pit"] = {s: footprint(pm, s) for s in ("val", "test")}
 
-    pads = gpd.read_file(ANN_GPKG, layer="plat").to_crs(CRS)
-    pads = pads.rename(columns={"plat_id": "inst_id"})[["inst_id", "geometry"]]
-    am = pd.read_csv(NINE_T / "plat_dataset_manifest.csv")
-    gts["pad"] = pads.merge(am[["plat_id", "split"]].rename(
-        columns={"plat_id": "inst_id"}), on="inst_id", how="inner")
+    pads = read_layer(ANN_GPKG, "plat").to_crs(CRS)
+    pads = pads.rename(columns={"pad_id": "inst_id"})[["inst_id", "geometry"]]
+    am = normalize_ids(pd.read_csv(NINE_T / "plat_dataset_manifest.csv"))
+    gts["pad"] = pads.merge(am[["pad_id", "split"]].rename(
+        columns={"pad_id": "inst_id"}), on="inst_id", how="inner")
     foot["pad"] = {s: footprint(am, s) for s in ("val", "test")}
 
     for k in ("pit", "pad"):

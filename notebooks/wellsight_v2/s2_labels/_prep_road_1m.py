@@ -53,7 +53,7 @@ import rasterio
 from rasterio.features import rasterize
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T as D, path_for
+from _common import DERIV, DERIV_9T as D, path_for, read_layer
 
 SRC_1M = path_for("derived") / "9t_1m"
 ANN = path_for("truth") / "annotations_proj.gpkg"
@@ -119,9 +119,9 @@ def main():
     # --- road labels at 1 m: 0=bg, 1=road, 2=drainage ---
     # Drainage is painted first, then road on top, so a road that crosses a
     # channel (culvert) stays labelled road rather than drainage.
-    roads = gpd.read_file(ANN, layer="roads")
+    roads = read_layer(ANN, "roads")
     layers = gpd.list_layers(ANN)["name"].tolist()
-    drainage = (gpd.read_file(ANN, layer="drainage")
+    drainage = (read_layer(ANN, "drainage")
                 if "drainage" in layers else gpd.GeoDataFrame(geometry=[]))
 
     label = np.zeros((H, W), dtype="uint8")

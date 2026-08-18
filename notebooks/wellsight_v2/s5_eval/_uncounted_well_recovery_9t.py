@@ -57,7 +57,7 @@ from scipy import ndimage as ndi
 from shapely.geometry import box, shape
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import path_for  # noqa: E402
+from _common import path_for  # noqa: E402, read_layer, normalize_ids
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
@@ -134,17 +134,17 @@ def main() -> int:
 
     # ---- annotations, and which split block each falls in ----
     ann = {
-        "pit": gpd.read_file(ANN_GPKG, layer="pit_inside").to_crs(CRS),
-        "pad": gpd.read_file(ANN_GPKG, layer="plat").to_crs(CRS),
+        "pit": read_layer(ANN_GPKG, "pit_inside").to_crs(CRS),
+        "pad": read_layer(ANN_GPKG, "plat").to_crs(CRS),
     }
     man = {
-        "pit": pd.read_csv(NINE_T / "pit_dataset_manifest.csv").rename(
-            columns={"pit_id": "inst_id"}),
-        "pad": pd.read_csv(NINE_T / "plat_dataset_manifest.csv").rename(
-            columns={"plat_id": "inst_id"}),
+        "pit": normalize_ids(pd.read_csv(NINE_T / "pit_dataset_manifest.csv")).rename(
+            columns={"pit_inside_id": "inst_id"}),
+        "pad": normalize_ids(pd.read_csv(NINE_T / "plat_dataset_manifest.csv")).rename(
+            columns={"pad_id": "inst_id"}),
     }
     for k in ann:
-        idcol = "pit_id" if k == "pit" else "plat_id"
+        idcol = "pit_inside_id" if k == "pit" else "pad_id"
         ann[k] = ann[k].rename(columns={idcol: "inst_id"})[["inst_id", "geometry"]]
         ann[k] = ann[k].merge(man[k][["inst_id", "split"]], on="inst_id",
                               how="inner")

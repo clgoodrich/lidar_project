@@ -28,7 +28,7 @@ from torch.utils.data import DataLoader
 
 # Sibling-import the project's shared modules.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T
+from _common import DERIV_9T, normalize_ids
 from _dl import (DEFAULT_CHANNELS, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, train_loop)
 
@@ -69,7 +69,7 @@ def main() -> int:
     if args.smoke:
         args.epochs = 1
 
-    manifest = pd.read_csv(MANIFEST)
+    manifest = normalize_ids(pd.read_csv(MANIFEST))
     blocks = gpd.read_file(BLOCKS, layer="blocks")
     mu, sd = load_stats(STATS, DEFAULT_CHANNELS)
     with rasterio.open(FEATURES) as r:

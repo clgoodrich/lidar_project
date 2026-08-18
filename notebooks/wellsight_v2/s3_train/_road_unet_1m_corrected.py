@@ -42,7 +42,7 @@ from rasterio.features import rasterize
 from torch.utils.data import ConcatDataset, DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for
+from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for, normalize_ids
 from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet, load_stats,
                  predict_full_tile, train_loop)
 
@@ -246,7 +246,7 @@ def main() -> int:
         OUTDIR = OUTDIR.with_name(f"{OUTDIR.name}_{args.tag}")
     print(f"output dir: {OUTDIR}")
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    manifest = pd.read_csv(MANIFEST)
+    manifest = normalize_ids(pd.read_csv(MANIFEST))
     blocks = gpd.read_file(BLOCKS, layer="blocks")
     centers = pd.read_csv(CORR_CENTERS)
     cells = gpd.read_file(CORR / "correction_split_cells_613590.gpkg",

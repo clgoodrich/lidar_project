@@ -53,9 +53,9 @@ def main() -> int:
     added_p = Path(args.added) if args.added else rev / f"added_pits_{args.key}.gpkg"
     out = Path(args.out) if args.out else rev / f"corrections_diff_pits_{args.key}.gpkg"
 
-    orig = gpd.read_file(original).to_crs(DST_CRS).set_index("pit_id", drop=False)
+    orig = gpd.read_file(original).to_crs(DST_CRS).set_index("pit_inside_id", drop=False)
     ed = gpd.read_file(edited).to_crs(DST_CRS)
-    ed_by_id = ed.set_index("pit_id", drop=False)
+    ed_by_id = ed.set_index("pit_inside_id", drop=False)
     ed_status = ed_by_id["status"].to_dict() if "status" in ed_by_id.columns else {}
     present = set(ed_by_id.index)
 

@@ -70,7 +70,7 @@ from _threshold_common import (CRS, bookmarks_xml, contact_sheet, embed_style,
                                polygonize, style_qml, tag, write_raster)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import path_for  # noqa: E402
+from _common import path_for  # noqa: E402, read_layer, normalize_ids
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
@@ -95,12 +95,12 @@ THRESHOLDS_PRODUCTS = [0.40, 0.50, 0.60, 0.70]
 def main() -> int:
     print("== per-threshold PAD products (ground truth = hand-drawn plats) ==\n")
 
-    plat = gpd.read_file(ANN_GPKG, layer="plat").to_crs(CRS)
-    man = pd.read_csv(NINE_T / "plat_dataset_manifest.csv")
-    held = set(man.loc[man.split.isin(("val", "test")), "plat_id"])
-    plat = plat[["plat_id", "geometry"]].dissolve(by="plat_id").reset_index()
-    plat = plat.merge(man[["plat_id", "split"]], on="plat_id", how="inner")
-    held_g = plat[plat.plat_id.isin(held)].reset_index(drop=True)
+    plat = read_layer(ANN_GPKG, "plat").to_crs(CRS)
+    man = normalize_ids(pd.read_csv(NINE_T / "plat_dataset_manifest.csv"))
+    held = set(man.loc[man.split.isin(("val", "test")), "pad_id"])
+    plat = plat[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
+    plat = plat.merge(man[["pad_id", "split"]], on="pad_id", how="inner")
+    held_g = plat[plat.pad_id.isin(held)].reset_index(drop=True)
     print(f"  annotated pads: {len(plat)}   held out (val+test): {len(held_g)}")
     print(f"  held-out pad area: median {held_g.area.median():.0f} m2, "
           f"total {held_g.area.sum() / 1e4:.2f} ha\n")
@@ -211,7 +211,7 @@ def main() -> int:
 
         bmp = OUT / f"pad_missed_bookmarks_{tg}_9t.xml"
         bmp.write_text(bookmarks_xml(
-            [(f"MISSED {i:02d}/{len(miss)} plat_id={rr.plat_id} @{t}",
+            [(f"MISSED {i:02d}/{len(miss)} pad_id={rr.pad_id} @{t}",
               rr.geometry.centroid.x, rr.geometry.centroid.y)
              for i, rr in enumerate(miss.itertuples(), 1)],
             group=f"pad missed {t}", id_prefix=f"padmiss_{tg}",
@@ -222,7 +222,7 @@ def main() -> int:
             f"Held-out PADS missed at threshold {t}  "
             f"(red = annotated pad, green = model geometry nearby)",
             CROP_HALF_M,
-            lambda rr: (f"plat_id {rr.plat_id}  ({rr.split})\n"
+            lambda rr: (f"pad_id {rr.pad_id}  ({rr.split})\n"
                         f"max_prob {rr.max_prob:.3f}  best_iou {rr.best_iou:.2f}\n"
                         f"{rr.geometry.centroid.x:.0f}, "
                         f"{rr.geometry.centroid.y:.0f}"))

@@ -152,7 +152,7 @@ def main() -> int:
         geom = row.geometry
         if geom is None or geom.is_empty:
             continue
-        rec = {"pit_id": int(pid), "status": "keep", "geometry": geom}
+        rec = {"pit_inside_id": int(pid), "status": "keep", "geometry": geom}
         for c in keep_cols:
             rec[c] = row[c]
         rows.append(rec)

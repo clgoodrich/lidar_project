@@ -27,7 +27,7 @@ from rasterio.windows import from_bounds
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T, make_profile, path_for, write_tif
+from _common import DERIV_9T, make_profile, path_for, write_tif, read_layer, normalize_ids
 from _dl import (DEFAULT_CHANNELS, DEVICE, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
@@ -89,12 +89,12 @@ def evaluate_test(argmax: np.ndarray) -> tuple[pd.DataFrame, dict]:
     inter = int((p & t & test_mask).sum()); union = int(((p | t) & test_mask).sum())
     pix_iou = inter / union if union else None
 
-    plat = gpd.read_file(ANN, layer="plat")
-    tp = pd.read_csv(MANIFEST).query("split == 'test'")
+    plat = read_layer(ANN, "plat")
+    tp = normalize_ids(pd.read_csv(MANIFEST)).query("split == 'test'")
     rows: list[dict] = []
     for _, row in tp.iterrows():
-        pid = int(row.plat_id)
-        g = plat.loc[plat.plat_id == pid].geometry.iloc[0]
+        pid = int(row.pad_id)
+        g = plat.loc[plat.pad_id == pid].geometry.iloc[0]
         r0, c0, wh, ww = _per_plat_window(g, tf, H, W)
         if wh <= 0 or ww <= 0:
             continue
@@ -102,7 +102,7 @@ def evaluate_test(argmax: np.ndarray) -> tuple[pd.DataFrame, dict]:
         sp = argmax[r0:r0+wh, c0:c0+ww] == 1
         inter2 = int((sl & sp).sum()); union2 = int((sl | sp).sum())
         rows.append({
-            "plat_id": pid,
+            "pad_id": pid,
             "recall":     float((sl & sp).sum() / max(sl.sum(), 1)),
             "local_iou":  inter2 / union2 if union2 else None,
             "area_m2":    float(g.area),
@@ -130,7 +130,7 @@ def render_grid(df: pd.DataFrame, argmax: np.ndarray, *, n: int = 6) -> None:
     if df.empty:
         return
     df = df.sort_values("local_iou").head(n).reset_index(drop=True)
-    plat = gpd.read_file(ANN, layer="plat")
+    plat = read_layer(ANN, "plat")
     with rasterio.open(DERIV_9T / "hillshade_9t_05.tif") as r:
         tf, H, W = r.transform, r.height, r.width
         hs_full = r.read(1)
@@ -143,8 +143,8 @@ def render_grid(df: pd.DataFrame, argmax: np.ndarray, *, n: int = 6) -> None:
     if len(df) == 1:
         axes = np.array([axes])
     for i, row in df.iterrows():
-        pid = int(row.plat_id)
-        g = plat.loc[plat.plat_id == pid].geometry.iloc[0]
+        pid = int(row.pad_id)
+        g = plat.loc[plat.pad_id == pid].geometry.iloc[0]
         r0, c0, wh, ww = _per_plat_window(g, tf, H, W)
         hs = hs_full[r0:r0+wh, c0:c0+ww]
         sl = lbl_full[r0:r0+wh, c0:c0+ww]
@@ -176,7 +176,7 @@ def main() -> int:
         tf = r.transform
 
     if not args.eval_only:
-        manifest = pd.read_csv(MANIFEST)
+        manifest = normalize_ids(pd.read_csv(MANIFEST))
         blocks = gpd.read_file(BLOCKS, layer="blocks")
         train_ds = build_dataset("train", manifest, blocks, tf, mu, sd, augment=True,  seed=42)
         val_ds   = build_dataset("val",   manifest, blocks, tf, mu, sd, augment=False, seed=43)

@@ -27,6 +27,7 @@ from rasterio.features import rasterize as _rasterize
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2"))
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2" / "s3_train"))
+from _common import normalize_ids, read_layer
 from _pad_unet_cv5 import (ANN_GPKG, BLOCKS, CRS, FEATURES, OUTDIR, SCORE_BUF_M,
                            match_scores, polygonize)
 
@@ -36,14 +37,14 @@ OBJECTIVES = ("f1", "f2")
 
 def main() -> int:
     fold_df = pd.read_csv(OUTDIR / "pad_cv5_per_fold_9t.csv")
-    assign = pd.read_csv(OUTDIR / "pad_cv5_fold_assignment_9t.csv")
+    assign = normalize_ids(pd.read_csv(OUTDIR / "pad_cv5_fold_assignment_9t.csv"))
     blocks = gpd.read_file(BLOCKS, layer="blocks").to_crs(CRS)
     blocks = blocks.merge(assign[["block_id", "fold"]].drop_duplicates(),
                           on="block_id", how="inner")
 
-    pads = gpd.read_file(ANN_GPKG, layer="plat").to_crs(CRS)
-    pads = pads[["plat_id", "geometry"]].dissolve(by="plat_id").reset_index()
-    pads = pads.merge(assign[["plat_id", "fold"]], on="plat_id", how="inner")
+    pads = read_layer(ANN_GPKG, "plat").to_crs(CRS)
+    pads = pads[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
+    pads = pads.merge(assign[["pad_id", "fold"]], on="pad_id", how="inner")
 
     with rasterio.open(FEATURES) as r:
         tf, rcrs = r.transform, r.crs

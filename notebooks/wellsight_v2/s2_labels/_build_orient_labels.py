@@ -27,7 +27,7 @@ from rasterio.features import rasterize
 from shapely.geometry import LineString
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T, path_for
+from _common import DERIV, DERIV_9T, path_for, read_layer
 
 N_ORI = 8
 STEP = 5.0          # bearing-sampling step along each line (m)
@@ -87,7 +87,7 @@ def build(lines_gdf, grid_path, out_path):
 
 def main():
     print("9t:")
-    roads = gpd.read_file(ANN, layer="roads").to_crs("EPSG:6346")
+    roads = read_layer(ANN, "roads").to_crs("EPSG:6346")
     build(roads, L1, OUT_9T)
 
     print("613590 corrections (added + kept):")

@@ -8,7 +8,7 @@ Outputs (under data/derivatives/tiles/9t/):
     labels_pit_9t_05.tif       uint8 raster: 0=bg, 1=pit_floor, 2=pit_wall
     mask_plat_9t_05.tif        uint8 raster: 0/1 plat mask
     pit_blocks_9t.gpkg         spatial-block grid with split assignments
-    pit_dataset_manifest.csv   per-pit table: pit_id, plat_id, block_id, split, centroid_x/y
+    pit_dataset_manifest.csv   per-pit table: pit_inside_id, pad_id, block_id, split, centroid_x/y
 """
 import sys                                  # used to edit Python's import search path below
 from pathlib import Path                    # file paths as objects, works on any OS
@@ -23,7 +23,7 @@ from shapely.geometry import box            # build a rectangle from its four ed
 # Put notebooks/wellsight_v2/ on the import path so `from _common import ...` works
 # no matter what directory you launch the script from.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T, path_for  # shared project paths
+from _common import DERIV, DERIV_9T, path_for  # shared project paths, read_layer
 
 REF = DERIV_9T / "dem_9t_05.tif"            # the DEM whose grid every output below copies
 ANN = path_for("truth") / "annotations_proj.gpkg"  # your drawings, reprojected to metres
@@ -48,9 +48,9 @@ def main():
         crs = r.crs                         # EPSG:6346
     print(f"Reference grid: {W} x {H} @ 0.5 m, bounds={tuple(bounds)}")
 
-    pit_in = gpd.read_file(ANN, layer="pit_inside")   # pit floors, the inner polygons you drew
-    pit_wall = gpd.read_file(ANN, layer="pit_wall")   # the rim donuts, built by _prep_annotations
-    plat = gpd.read_file(ANN, layer="plat")           # well pad outlines
+    pit_in = read_layer(ANN, "pit_inside")   # pit floors, the inner polygons you drew
+    pit_wall = read_layer(ANN, "pit_wall")   # the rim donuts, built by _prep_annotations
+    plat = read_layer(ANN, "plat")           # well pad outlines
 
     # --- rasterize labels ---
     # Burn order matters: wall first, floor on top so floor wins on overlap.
@@ -114,10 +114,10 @@ def main():
     pit_in["cy"] = pit_in.geometry.centroid.y  # each pit's centre point, y
     # A pit belongs to whichever square its CENTRE lands in. Using the centre means a
     # pit straddling a block edge is counted once, not twice.
-    cents = gpd.GeoDataFrame(pit_in[["pit_id"]].copy(), geometry=pit_in.geometry.centroid, crs=pit_in.crs)
+    cents = gpd.GeoDataFrame(pit_in[["pit_inside_id"]].copy(), geometry=pit_in.geometry.centroid, crs=pit_in.crs)
     j = gpd.sjoin(cents, blocks[["block_id", "geometry"]], how="left", predicate="within")  # which square holds each centre
-    pit_block = j.set_index("pit_id")["block_id"].to_dict()  # lookup: pit -> its square
-    pit_in["block_id"] = pit_in["pit_id"].map(pit_block)     # stamp the square number onto each pit
+    pit_block = j.set_index("pit_inside_id")["block_id"].to_dict()  # lookup: pit -> its square
+    pit_in["block_id"] = pit_in["pit_inside_id"].map(pit_block)     # stamp the square number onto each pit
 
     n_per_block = pit_in.groupby("block_id").size().rename("n_pits")  # tally pits per square
     blocks = blocks.merge(n_per_block, on="block_id", how="left")     # attach the tally as a column
@@ -154,8 +154,8 @@ def main():
     # One row per pit, saying which square it sits in and which split that square
     # went to. The trainer reads this to know which pits it is allowed to learn from.
     pit_in["split"] = pit_in["block_id"].map(split_of).fillna("unused")  # copy the square's split onto the pit
-    manifest = pit_in[["pit_id", "plat_id", "block_id", "split", "cx", "cy"]].copy()  # keep only these columns
-    manifest.columns = ["pit_id", "plat_id", "block_id", "split", "centroid_x", "centroid_y"]  # clearer names in the CSV
+    manifest = pit_in[["pit_inside_id", "pad_id", "block_id", "split", "cx", "cy"]].copy()  # keep only these columns
+    manifest.columns = ["pit_inside_id", "pad_id", "block_id", "split", "centroid_x", "centroid_y"]  # clearer names in the CSV
     manifest.to_csv(OUT / "pit_dataset_manifest.csv", index=False)  # index=False: no extra unnamed column
     print(f"Wrote pit_dataset_manifest.csv  ({len(manifest)} pits)")
 

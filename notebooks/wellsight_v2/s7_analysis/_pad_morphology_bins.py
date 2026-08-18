@@ -56,7 +56,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from _export_well_age_qgis import embed_styles, qml_categorized  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import path_for  # noqa: E402
+from _common import path_for  # noqa: E402, read_layer
 
 ROOT = Path(__file__).resolve().parents[3]
 T9 = path_for("nine_t")
@@ -212,7 +212,7 @@ def build_features(pads):
 
 def main(k_override=None):
     sfx = "_joint" + (f"_k{k_override}" if k_override else "")
-    pads = gpd.read_file(ANN, layer="plat").to_crs(CRS)
+    pads = read_layer(ANN, "plat").to_crs(CRS)
     pads.geometry = pads.geometry.make_valid()
     pads = pads[pads.geometry.notna() & ~pads.geometry.is_empty].copy()
     pads = pads.reset_index(drop=True).reset_index(names="pad_i")

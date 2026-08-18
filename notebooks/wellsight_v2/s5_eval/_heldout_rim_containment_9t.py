@@ -53,7 +53,7 @@ from scipy import ndimage as ndi
 from shapely.geometry import shape
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import path_for  # noqa: E402
+from _common import path_for  # noqa: E402, read_layer, normalize_ids
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
@@ -151,15 +151,15 @@ def main() -> int:
     print("== held-out pits: predicted FLOOR inside annotated RIM ==")
     print("   ground truth = hand-drawn annotations only\n")
 
-    ins = gpd.read_file(ANN_GPKG, layer="pit_inside").to_crs(CRS)
-    rim = gpd.read_file(ANN_GPKG, layer="pit_outside").to_crs(CRS)
-    man = pd.read_csv(NINE_T / "pit_dataset_manifest.csv")
-    held_ids = set(man.loc[man.split.isin(("val", "test")), "pit_id"])
+    ins = read_layer(ANN_GPKG, "pit_inside").to_crs(CRS)
+    rim = read_layer(ANN_GPKG, "pit_outside").to_crs(CRS)
+    man = normalize_ids(pd.read_csv(NINE_T / "pit_dataset_manifest.csv"))
+    held_ids = set(man.loc[man.split.isin(("val", "test")), "pit_inside_id"])
 
-    rim = rim[["pit_id", "geometry"]].dissolve(by="pit_id").reset_index()
-    rim = rim.merge(man[["pit_id", "split"]], on="pit_id", how="inner")
-    rim_h = rim[rim.pit_id.isin(held_ids)].reset_index(drop=True)
-    floor_h = ins[ins.pit_id.isin(held_ids)].reset_index(drop=True)
+    rim = rim[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
+    rim = rim.merge(man[["pit_inside_id", "split"]], on="pit_inside_id", how="inner")
+    rim_h = rim[rim.pit_inside_id.isin(held_ids)].reset_index(drop=True)
+    floor_h = ins[ins.pit_inside_id.isin(held_ids)].reset_index(drop=True)
     print(f"  held-out pits: {len(held_ids)}  with a rim polygon: {len(rim_h)}")
     print(f"  rim median area {rim_h.geometry.area.median():.0f} m2 vs "
           f"floor {floor_h.geometry.area.median():.0f} m2 "

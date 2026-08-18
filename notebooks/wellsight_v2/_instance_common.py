@@ -33,7 +33,7 @@ from rasterio.transform import Affine, rowcol
 from rasterio.windows import Window
 from shapely.geometry import Polygon, box, shape
 
-from _common import DERIV_9T, DST_CRS, make_profile, write_tif, path_for
+from _common import DERIV_9T, DST_CRS, make_profile, write_tif, path_for, read_layer, normalize_ids
 
 # ---------------------------------------------------------------------------
 # Reproducibility
@@ -191,20 +191,20 @@ class InstanceSet:
 
 def load_pit_set(with_walls: bool = False) -> InstanceSet:
     """Pit floors (pit_inside). With with_walls=True also loads the wall ring
-    (pit_outside) as class 'wall', sharing each pit's split via pit_id."""
-    floor = gpd.read_file(ANN_GPKG, layer="pit_inside")
-    floor = floor.rename(columns={"pit_id": "inst_id"})[["inst_id", "geometry"]]
+    (pit_outside) as class 'wall', sharing each pit's split via pit_inside_id."""
+    floor = read_layer(ANN_GPKG, "pit_inside")
+    floor = floor.rename(columns={"pit_inside_id": "inst_id"})[["inst_id", "geometry"]]
     floor["cls"] = "floor"
     if with_walls:
-        wall = gpd.read_file(ANN_GPKG, layer="pit_outside")
-        wall = wall.rename(columns={"pit_id": "inst_id"})[["inst_id", "geometry"]]
+        wall = read_layer(ANN_GPKG, "pit_outside")
+        wall = wall.rename(columns={"pit_inside_id": "inst_id"})[["inst_id", "geometry"]]
         wall["cls"] = "wall"
         gdf = gpd.GeoDataFrame(pd.concat([floor, wall], ignore_index=True),
                                crs=floor.crs)
     else:
         gdf = floor
-    manifest = pd.read_csv(PIT_MANIFEST)
-    split_ids = {s: manifest.loc[manifest.split == s, "pit_id"].astype(int).tolist()
+    manifest = normalize_ids(pd.read_csv(PIT_MANIFEST))
+    split_ids = {s: manifest.loc[manifest.split == s, "pit_inside_id"].astype(int).tolist()
                  for s in ("train", "val", "test")}
     return InstanceSet("pit", gdf, split_ids)
 
@@ -212,11 +212,11 @@ def load_pit_set(with_walls: bool = False) -> InstanceSet:
 def load_pad_set() -> InstanceSet:
     """Well pads. NOTE: the on-disk annotation layer + manifest are still named
     'plat' (legacy misnomer); only the API/outputs use 'pad'."""
-    gdf = gpd.read_file(ANN_GPKG, layer="plat")
-    gdf = gdf.rename(columns={"plat_id": "inst_id"})[["inst_id", "geometry"]]
+    gdf = read_layer(ANN_GPKG, "plat")
+    gdf = gdf.rename(columns={"pad_id": "inst_id"})[["inst_id", "geometry"]]
     gdf["cls"] = "pad"
-    manifest = pd.read_csv(PAD_MANIFEST)
-    split_ids = {s: manifest.loc[manifest.split == s, "plat_id"].astype(int).tolist()
+    manifest = normalize_ids(pd.read_csv(PAD_MANIFEST))
+    split_ids = {s: manifest.loc[manifest.split == s, "pad_id"].astype(int).tolist()
                  for s in ("train", "val", "test")}
     return InstanceSet("pad", gdf, split_ids)
 

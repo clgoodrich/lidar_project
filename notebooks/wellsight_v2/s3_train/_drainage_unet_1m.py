@@ -35,7 +35,7 @@ from rasterio.features import rasterize
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for
+from _common import DERIV, DERIV_9T, make_profile, write_tif, path_for, normalize_ids
 from _dl import (DEVICE, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
@@ -165,7 +165,7 @@ def main() -> int:
     args = ap.parse_args()
 
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    manifest = pd.read_csv(MANIFEST)
+    manifest = normalize_ids(pd.read_csv(MANIFEST))
     blocks = gpd.read_file(BLOCKS, layer="blocks")
     mu, sd = load_stats(STATS, CHANNELS_1M)
     with rasterio.open(FEATURES) as r:

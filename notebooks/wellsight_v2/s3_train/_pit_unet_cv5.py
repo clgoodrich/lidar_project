@@ -81,7 +81,7 @@ from shapely.geometry import shape
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T, path_for
+from _common import DERIV_9T, path_for, read_layer, normalize_ids
 from _dl import (DEFAULT_CHANNELS, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
@@ -217,7 +217,7 @@ def main() -> int:
 
     print(f"== pit U-Net {K}-fold cross-validation on 9t ==\n")
 
-    man = pd.read_csv(MANIFEST)
+    man = normalize_ids(pd.read_csv(MANIFEST))
     blocks = gpd.read_file(BLOCKS, layer="blocks").to_crs(CRS)
     n_per = man.groupby("block_id").size().rename("n_pits").reset_index()
     fold_of = assign_folds(n_per[["block_id", "n_pits"]], K, CV_SEED)
@@ -231,12 +231,12 @@ def main() -> int:
     print()
 
     # ground truth geometry
-    floors = gpd.read_file(ANN_GPKG, layer="pit_inside").to_crs(CRS)
-    floors = floors[["pit_id", "geometry"]].dissolve(by="pit_id").reset_index()
-    floors = floors.merge(man[["pit_id", "fold"]], on="pit_id", how="inner")
-    rims = gpd.read_file(ANN_GPKG, layer="pit_outside").to_crs(CRS)
-    rims = rims[["pit_id", "geometry"]].dissolve(by="pit_id").reset_index()
-    rims = rims.merge(man[["pit_id", "fold"]], on="pit_id", how="inner")
+    floors = read_layer(ANN_GPKG, "pit_inside").to_crs(CRS)
+    floors = floors[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
+    floors = floors.merge(man[["pit_inside_id", "fold"]], on="pit_inside_id", how="inner")
+    rims = read_layer(ANN_GPKG, "pit_outside").to_crs(CRS)
+    rims = rims[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
+    rims = rims.merge(man[["pit_inside_id", "fold"]], on="pit_inside_id", how="inner")
 
     mu, sd = load_stats(STATS, DEFAULT_CHANNELS)
     with rasterio.open(FEATURES) as r:
@@ -355,8 +355,8 @@ def main() -> int:
                                tiled=True, BIGTIFF="YES") as d:
                 d.write(floor, 1)
 
-        gt_val = floors[floors.pit_id.isin(man.loc[man.block_id.isin(val_blocks),
-                                                   "pit_id"])]
+        gt_val = floors[floors.pit_inside_id.isin(man.loc[man.block_id.isin(val_blocks),
+                                                   "pit_inside_id"])]
         gt_held = floors[floors.fold == k]
         rim_held = rims[rims.fold == k]
         foot_val = blocks.loc[blocks.block_id.isin(val_blocks)].geometry.union_all()
@@ -428,7 +428,7 @@ def main() -> int:
     fdf = pd.DataFrame(fold_rows)
     cdf = pd.DataFrame(curve_rows)
     flush()
-    man[["pit_id", "block_id", "fold"]].to_csv(
+    man[["pit_inside_id", "block_id", "fold"]].to_csv(
         OUTDIR / "pit_cv5_fold_assignment_9t.csv", index=False)
 
     print(f"\n{'='*70}\nPOOLED RESULT ({K} folds, all {len(man)} pits scored once "

@@ -82,7 +82,7 @@ from shapely.geometry import shape
 from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T, path_for
+from _common import DERIV_9T, path_for, read_layer, normalize_ids
 from _dl import (DEFAULT_CHANNELS, CenteredPatchSampler, FocalCE, UNet,
                  load_stats, predict_full_tile, train_loop)
 
@@ -210,7 +210,7 @@ def main() -> int:
 
     print(f"== pad U-Net {K}-fold cross-validation on 9t ==\n")
 
-    man = pd.read_csv(MANIFEST)
+    man = normalize_ids(pd.read_csv(MANIFEST))
     blocks = gpd.read_file(BLOCKS, layer="blocks").to_crs(CRS)
     n_per = man.groupby("block_id").size().rename("n_pads").reset_index()
     fold_of = assign_folds(n_per[["block_id", "n_pads"]], K, CV_SEED)
@@ -223,9 +223,9 @@ def main() -> int:
         print(f"    fold {f}: {sub.block_id.nunique():3d} blocks  {len(sub):4d} pads")
     print()
 
-    pads = gpd.read_file(ANN_GPKG, layer="plat").to_crs(CRS)
-    pads = pads[["plat_id", "geometry"]].dissolve(by="plat_id").reset_index()
-    pads = pads.merge(man[["plat_id", "fold"]], on="plat_id", how="inner")
+    pads = read_layer(ANN_GPKG, "plat").to_crs(CRS)
+    pads = pads[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
+    pads = pads.merge(man[["pad_id", "fold"]], on="pad_id", how="inner")
     print(f"  {len(pads)} annotated pad polygons matched to the manifest\n")
 
     mu, sd = load_stats(STATS, DEFAULT_CHANNELS)
@@ -347,8 +347,8 @@ def main() -> int:
                                tiled=True, BIGTIFF="YES") as d:
                 d.write(pad_prob, 1)
 
-        gt_val = pads[pads.plat_id.isin(man.loc[man.block_id.isin(val_blocks),
-                                                "plat_id"])]
+        gt_val = pads[pads.pad_id.isin(man.loc[man.block_id.isin(val_blocks),
+                                                "pad_id"])]
         gt_held = pads[pads.fold == k]
         foot_val = blocks.loc[blocks.block_id.isin(val_blocks)].geometry.union_all()
         foot_held = blocks.loc[blocks.block_id.isin(held_blocks)].geometry.union_all()
@@ -410,7 +410,7 @@ def main() -> int:
 
     fdf = pd.DataFrame(fold_rows)
     flush()
-    man[["plat_id", "block_id", "fold"]].to_csv(
+    man[["pad_id", "block_id", "fold"]].to_csv(
         OUTDIR / "pad_cv5_fold_assignment_9t.csv", index=False)
 
     if fdf.empty:

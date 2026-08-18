@@ -54,7 +54,7 @@ warnings.filterwarnings("ignore")
 ROOT = Path(__file__).resolve().parents[3]
 sys.path[:0] = [str(ROOT / "notebooks" / "wellsight_v2"),
                 str(ROOT / "notebooks" / "wellsight_v2" / "s3_train")]
-from _common import DERIV_9T, path_for  # noqa: E402
+from _common import DERIV_9T, path_for  # noqa: E402, read_layer, normalize_ids
 from _pit_unet_cv5 import assign_folds, polygonize                # noqa: E402
 
 ANN = path_for("truth") / "annotations_proj.gpkg"
@@ -67,7 +67,7 @@ TARGETS = {
     "pit": dict(outdir=path_for("models") / "pit" / "unet_cv5", per_fold="pit_cv5_per_fold_9t.csv",
                 blocks=DERIV_9T / "pit_blocks_9t.gpkg",
                 manifest=DERIV_9T / "pit_dataset_manifest.csv",
-                id_col="pit_id", n_col="n_pits", gt_layer="pit_outside",
+                id_col="pit_inside_id", n_col="n_pits", gt_layer="pit_outside",
                 # The model predicts FLOORS; the match target is the RIM. Size
                 # plausibility must therefore be judged against annotated
                 # floors, not rims, or every prediction is rejected.
@@ -77,7 +77,7 @@ TARGETS = {
     "pad": dict(outdir=path_for("models") / "pad" / "unet_cv5", per_fold="pad_cv5_per_fold_9t.csv",
                 blocks=DERIV_9T / "plat_blocks_9t.gpkg",
                 manifest=DERIV_9T / "plat_dataset_manifest.csv",
-                id_col="plat_id", n_col="n_pads", gt_layer="plat",
+                id_col="pad_id", n_col="n_pads", gt_layer="plat",
                 prob="pad_prob_cvfold{k}_9t_05.tif",
                 min_area=100.0, buf=80.0),
 }
@@ -132,7 +132,7 @@ def main() -> int:
 
     rows = []
     for name, cfg in TARGETS.items():
-        man = pd.read_csv(cfg["manifest"])
+        man = normalize_ids(pd.read_csv(cfg["manifest"]))
         blocks = gpd.read_file(cfg["blocks"], layer="blocks").to_crs(CRS)
         nper = man.groupby("block_id").size().rename(cfg["n_col"]).reset_index()
         fo = assign_folds(nper[["block_id", cfg["n_col"]]], K, CV_SEED)
@@ -140,7 +140,7 @@ def main() -> int:
         blocks["fold"] = blocks.block_id.map(fo)
 
         # EVERY annotation, not only manifest rows -- this is the defect fix.
-        ann_all = gpd.read_file(ANN, layer=cfg["gt_layer"]).to_crs(CRS)
+        ann_all = read_layer(ANN, cfg["gt_layer"]).to_crs(CRS)
         ann_all = ann_all[[cfg["id_col"], "geometry"]].dissolve(
             by=cfg["id_col"]).reset_index()
         ann_all["geometry"] = ann_all.geometry.buffer(0)
@@ -150,7 +150,7 @@ def main() -> int:
         # Size reference is the layer the model actually draws, which for pits
         # is the floor, not the rim it is matched against.
         size_lyr = cfg.get("size_layer", cfg["gt_layer"])
-        ref = gpd.read_file(ANN, layer=size_lyr).to_crs(CRS)
+        ref = read_layer(ANN, size_lyr).to_crs(CRS)
         ref["geometry"] = ref.geometry.buffer(0)
         a = ref[~ref.geometry.is_empty].geometry.area.to_numpy()
         print(f"  size reference layer: {size_lyr}")

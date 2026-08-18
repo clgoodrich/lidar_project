@@ -44,7 +44,7 @@ from scipy import ndimage as ndi
 from scipy.spatial import cKDTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DST_CRS, ROOT, path_for
+from _common import DERIV, DST_CRS, ROOT, path_for, read_layer
 
 R9 = path_for("nine_t")
 PIT = path_for("models") / "pit" / "unet_v2"
@@ -71,7 +71,7 @@ def load_9t(split: str = "test"):
             arg = r.read(1)
     blocks = gpd.read_file(R9 / "pit_blocks_9t.gpkg")
     region = unary_union(blocks[blocks.split == split].geometry.values)
-    gt = gpd.read_file(ANN, layer="pit_inside").to_crs(DST_CRS)
+    gt = read_layer(ANN, "pit_inside").to_crs(DST_CRS)
     gt = gt[gt.intersects(region)].copy()
     gt["geometry"] = gt.geometry.intersection(region)
     gt = gt[~gt.is_empty]

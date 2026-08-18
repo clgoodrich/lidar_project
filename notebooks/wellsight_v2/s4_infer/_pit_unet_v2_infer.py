@@ -20,7 +20,7 @@ from rasterio.features import rasterize
 from rasterio.windows import from_bounds
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV_9T, make_profile, path_for, write_tif
+from _common import DERIV_9T, make_profile, path_for, write_tif, read_layer, normalize_ids
 from _dl import DEVICE, UNet, predict_full_tile
 
 OUTDIR = path_for("models") / "pit" / "unet_v2"
@@ -73,12 +73,12 @@ def evaluate_test(argmax: np.ndarray) -> tuple[pd.DataFrame, dict]:
           f"floor={pix_iou['floor']:.3f}  wall={pix_iou['wall']:.3f}")
 
     # Per-pit recall + local IoU.
-    pit_in = gpd.read_file(ANN, layer="pit_inside")
-    test_pits = pd.read_csv(MANIFEST).query("split == 'test'")
+    pit_in = read_layer(ANN, "pit_inside")
+    test_pits = normalize_ids(pd.read_csv(MANIFEST)).query("split == 'test'")
     rows: list[dict] = []
     for _, mrow in test_pits.iterrows():
-        pid = int(mrow.pit_id)
-        ginner = pit_in.loc[pit_in.pit_id == pid].geometry.iloc[0]
+        pid = int(mrow.pit_inside_id)
+        ginner = pit_in.loc[pit_in.pit_inside_id == pid].geometry.iloc[0]
         win = from_bounds(*[ginner.bounds[i] + (-6 if i < 2 else 6) for i in range(4)], tf)
         r0, c0 = max(int(win.row_off), 0), max(int(win.col_off), 0)
         wh, ww = min(int(win.height), H - r0), min(int(win.width), W - c0)
@@ -91,7 +91,7 @@ def evaluate_test(argmax: np.ndarray) -> tuple[pd.DataFrame, dict]:
         pit_p = (sub_pred == 1) | (sub_pred == 2)
         inter = int((pit_t & pit_p).sum()); union = int((pit_t | pit_p).sum())
         rows.append({
-            "pit_id": pid,
+            "pit_inside_id": pid,
             "recall_floor":   float((floor_t & (sub_pred == 1)).sum() / max(floor_t.sum(), 1)),
             "recall_wall":    float((wall_t  & (sub_pred == 2)).sum() / max(wall_t.sum(),  1)),
             "recall_any_pit": float((pit_t & pit_p).sum() / max(pit_t.sum(), 1)),
@@ -124,7 +124,7 @@ def render_grid(df: pd.DataFrame, argmax: np.ndarray, *, n: int = 8) -> None:
     if df.empty:
         return
     df = df.sort_values("pit_iou_local").head(n).reset_index(drop=True)
-    pit_in = gpd.read_file(ANN, layer="pit_inside")
+    pit_in = read_layer(ANN, "pit_inside")
     with rasterio.open(DERIV_9T / "hillshade_9t_05.tif") as r:
         tf, H, W = r.transform, r.height, r.width
         hs_full = r.read(1)
@@ -137,8 +137,8 @@ def render_grid(df: pd.DataFrame, argmax: np.ndarray, *, n: int = 8) -> None:
     if len(df) == 1:
         axes = np.array([axes])
     for i, row in df.iterrows():
-        pid = int(row.pit_id)
-        g = pit_in.loc[pit_in.pit_id == pid].geometry.iloc[0]
+        pid = int(row.pit_inside_id)
+        g = pit_in.loc[pit_in.pit_inside_id == pid].geometry.iloc[0]
         minx, miny, maxx, maxy = g.bounds
         win = from_bounds(minx - 8, miny - 8, maxx + 8, maxy + 8, tf)
         r0, c0 = max(int(win.row_off), 0), max(int(win.col_off), 0)
