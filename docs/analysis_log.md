@@ -32,6 +32,10 @@ The column naming stays divergent by choice: `pad_id`, `pit_inside_id`,
 `pit_id_outer`, `pit_id`. The notebook's names are clearer; the script's are
 what downstream expects. Reconciling them is deferred, not resolved.
 
+Removed a leftover `print(arr)` from the RGB branch of `_common.write_tif`.
+It printed the whole array, which for a 9000x9000x3 RRIM means formatting
+243 M elements before a single byte is written.
+
 Also removed `write_rgb_tif` from `_common.__all__`. It was added on 2026-08-17
 and the function has since been folded into `write_tif(..., rgb_bool=True)`, so
 the stale export made `from _common import *` raise AttributeError.

@@ -338,7 +338,6 @@ def write_tif(
         with rasterio.open(path, "w", **profile) as ds:
             ds.write(out, 1)
     else:
-        print(arr)
         if arr.ndim != 3 or arr.shape[2] != 3:
             raise ValueError(f"expected an (H, W, 3) array, got {arr.shape}")
         out = arr.astype("uint8", copy=False)
