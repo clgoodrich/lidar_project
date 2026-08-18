@@ -75,7 +75,7 @@ def main() -> int:
     man["fold"] = man.block_id.map(fo)
     blocks["fold"] = blocks.block_id.map(fo)
 
-    rims = read_layer(ANN_GPKG, "pit_outside").to_crs(CRS)
+    rims = read_layer(ANN_GPKG, "pit_full").to_crs(CRS)
     rims = (rims[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
             .merge(man[["pit_inside_id", "fold"]], on="pit_inside_id", how="inner"))
 

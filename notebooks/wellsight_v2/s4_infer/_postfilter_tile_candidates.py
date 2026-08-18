@@ -8,7 +8,7 @@ the raw output needs:
       ->  morphological close + fill  ->  polygonize  ->  gpkg (+ mean prob, area)
 
 Inputs (under data/derivatives/inference_<sfx>/ and tiles/<sfx>/):
-    pit_prob_floor_<sfx>.tif, plat_prob_<sfx>.tif, tiles/<sfx>/dem_<sfx>.tif
+    pit_prob_floor_<sfx>.tif, pad_prob_<sfx>.tif, tiles/<sfx>/dem_<sfx>.tif
 Outputs (inference_<sfx>/):
     pit_candidates_<sfx>.gpkg, pad_candidates_<sfx>.gpkg, candidates_overlay_<sfx>.png
 
@@ -94,7 +94,7 @@ def main() -> int:
           f"{pit_n} candidates, {pit_ha:.2f} ha, mean P {pit_mp:.2f}")
 
     pad_n, pad_ha, pad_mp = candidates(
-        inf / f"plat_prob_{sfx}.tif", valid, args.pad_thresh, args.pad_min_area,
+        inf / f"pad_prob_{sfx}.tif", valid, args.pad_thresh, args.pad_min_area,
         res, tf, crs, "pad_candidates", inf / f"pad_candidates_{sfx}.gpkg")
     print(f"  PAD  P>={args.pad_thresh} min{args.pad_min_area:g}m2 -> "
           f"{pad_n} candidates, {pad_ha:.2f} ha, mean P {pad_mp:.2f}")

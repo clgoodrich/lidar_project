@@ -34,7 +34,7 @@ A zero-reference file is a **move candidate**, not a delete candidate. Matching 
 | `data/03_derived/610594` | 19 | 19 | 0.10 | 100% |
 | `data/03_derived/610605` | 20 | 20 | 0.10 | 100% |
 | `data/06_experiments/pilot_A` | 44 | 32 | 0.09 | 73% |
-| `data/04_models/plat` | 17 | 10 | 0.09 | 59% |
+| `data/04_models/pad` | 17 | 10 | 0.09 | 59% |
 | `data/derivatives/pit_1m_match_score_9t.tif` | 1 | 1 | 0.08 | 100% |
 | `data/derivatives/pit_unet_pred_9t.tif` | 1 | 1 | 0.08 | 100% |
 | `data/source_laz/mckean_sw` | 2 | 2 | 0.08 | 100% |

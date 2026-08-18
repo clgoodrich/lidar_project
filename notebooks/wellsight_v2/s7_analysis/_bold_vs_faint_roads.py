@@ -269,7 +269,7 @@ def main() -> int:
             return None
         u = h.union_all()
         return df.geometry.apply(lambda g: g.distance(u))
-    for col, args in (("dist_pad_m", (ANN / "annotations_proj.gpkg", "plat")),
+    for col, args in (("dist_pad_m", (ANN / "annotations_proj.gpkg", "pad")),
                       ("dist_pit_m", (ANN / "annotations_proj.gpkg", "pit_inside")),
                       ("dist_drain_m", (ANN / "annotations_proj.gpkg", "drainage")),
                       ("dist_wells_m", (path_for("truth") / "oil_gas_locations.gpkg", None))):

@@ -27,14 +27,14 @@ _none_
 | `notebooks/wellsight/roads/_road_unet_multiblock.py` | 6 | yes | - |
 | `notebooks/wellsight_v2/s1_build/_build_data_3x3_partial_westernpa.py` | 1 | yes | - |
 | `notebooks/wellsight_v2/s2_labels/_build_pit_dataset.py` | 3 | yes | - |
-| `notebooks/wellsight_v2/s2_labels/_build_plat_road_dataset.py` | 3 | yes | - |
+| `notebooks/wellsight_v2/s2_labels/_build_pad_road_dataset.py` | 3 | yes | - |
 | `notebooks/wellsight_v2/s2_labels/_prep_road_1m.py` | 1 | yes | - |
 | `notebooks/wellsight_v2/s3_train/_multitask_unet.py` | 10 | yes | - |
 | `notebooks/wellsight_v2/s3_train/_pad_maskrcnn.py` | 1 | yes | - |
 | `notebooks/wellsight_v2/s3_train/_pit_maskrcnn.py` | 1 | yes | - |
 | `notebooks/wellsight_v2/s3_train/_pit_unet_v2.py` | 6 | yes | - |
 | `notebooks/wellsight_v2/s3_train/_pit_yolo.py` | 2 | yes | - |
-| `notebooks/wellsight_v2/s3_train/_plat_unet.py` | 7 | yes | - |
+| `notebooks/wellsight_v2/s3_train/_pad_unet.py` | 7 | yes | - |
 | `notebooks/wellsight_v2/s3_train/_road_unet_1m_recall.py` | 8 | yes | - |
 | `notebooks/wellsight_v2/s4_infer/_infer_roads_data_3x3.py` | 1 | yes | - |
 | `notebooks/wellsight_v2/s4_infer/_pad_maskrcnn_infer.py` | 2 | yes | - |
@@ -75,7 +75,7 @@ _none_
 | `notebooks/wellsight/roads/_road_postfilter.py` | 1 | - | - |
 | `notebooks/wellsight_v2/_instance_common.py` | 11 | - | - |
 | `notebooks/wellsight_v2/s1_build/_build_data_3x3_derivatives.py` | 2 | - | - |
-| `notebooks/wellsight_v2/s2_labels/_build_plat_split.py` | 2 | - | - |
+| `notebooks/wellsight_v2/s2_labels/_build_pad_split.py` | 2 | - | - |
 | `notebooks/wellsight_v2/s2_labels/_build_unified_split.py` | 1 | - | - |
 | `notebooks/wellsight_v2/s2_labels/_sanity_render.py` | 5 | - | - |
 | `notebooks/wellsight_v2/s3_train/_pad_yolo.py` | 2 | - | - |

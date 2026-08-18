@@ -3,13 +3,13 @@
 Used by:
   * pits/_pit_maskrcnn.py + _pit_maskrcnn_infer.py
   * pits/_pit_yolo.py     + _pit_yolo_infer.py
-  * plats/_plat_maskrcnn.py + _plat_maskrcnn_infer.py
-  * plats/_plat_yolo.py     + _plat_yolo_infer.py
+  * pads/_plat_maskrcnn.py + _plat_maskrcnn_infer.py
+  * pads/_plat_yolo.py     + _plat_yolo_infer.py
 
 Responsibilities:
   * Build / cache the 3-channel composite raster (hillshade + slope + LRM) used as
     pretraining-friendly input for Mask R-CNN and YOLO-seg.
-  * Read the per-pit / per-plat manifests + matching polygon layers.
+  * Read the per-pit / per-pad manifests + matching polygon layers.
   * Sample patch windows centred on annotated instances with random jitter.
   * Convert polygon sets into Mask R-CNN targets (boxes + binary masks + labels)
     and YOLO-seg label text (class + normalized polygon vertices).
@@ -103,7 +103,7 @@ def make_loader_generator(seed: int = 0):
 
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"  # = data/derivatives/annotations
 PIT_MANIFEST = DERIV_9T / "pit_dataset_manifest.csv"
-PAD_MANIFEST = DERIV_9T / "plat_dataset_manifest.csv"  # legacy on-disk name
+PAD_MANIFEST = DERIV_9T / "pad_dataset_manifest.csv"  # legacy on-disk name
 PLAT_MANIFEST = PAD_MANIFEST  # back-compat alias
 DEM_REF = DERIV_9T / "dem_9t_05.tif"
 RGB3_PATH = DERIV_9T / "rgb3_9t_05.tif"
@@ -191,12 +191,12 @@ class InstanceSet:
 
 def load_pit_set(with_walls: bool = False) -> InstanceSet:
     """Pit floors (pit_inside). With with_walls=True also loads the wall ring
-    (pit_outside) as class 'wall', sharing each pit's split via pit_inside_id."""
+    (pit_full) as class 'wall', sharing each pit's split via pit_inside_id."""
     floor = read_layer(ANN_GPKG, "pit_inside")
     floor = floor.rename(columns={"pit_inside_id": "inst_id"})[["inst_id", "geometry"]]
     floor["cls"] = "floor"
     if with_walls:
-        wall = read_layer(ANN_GPKG, "pit_outside")
+        wall = read_layer(ANN_GPKG, "pit_full")
         wall = wall.rename(columns={"pit_inside_id": "inst_id"})[["inst_id", "geometry"]]
         wall["cls"] = "wall"
         gdf = gpd.GeoDataFrame(pd.concat([floor, wall], ignore_index=True),
@@ -211,8 +211,8 @@ def load_pit_set(with_walls: bool = False) -> InstanceSet:
 
 def load_pad_set() -> InstanceSet:
     """Well pads. NOTE: the on-disk annotation layer + manifest are still named
-    'plat' (legacy misnomer); only the API/outputs use 'pad'."""
-    gdf = read_layer(ANN_GPKG, "plat")
+    'pad' (legacy misnomer); only the API/outputs use 'pad'."""
+    gdf = read_layer(ANN_GPKG, "pad")
     gdf = gdf.rename(columns={"pad_id": "inst_id"})[["inst_id", "geometry"]]
     gdf["cls"] = "pad"
     manifest = normalize_ids(pd.read_csv(PAD_MANIFEST))

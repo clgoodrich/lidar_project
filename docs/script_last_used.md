@@ -86,8 +86,8 @@ The log started 2026-04-30. Anything older than that, or run without being logge
 - `notebooks/wellsight/analysis/_chm_age_proxy.py`
 - `notebooks/wellsight/analysis/_chm_age_proxy_v2.py`
 - `notebooks/wellsight/annotations/_build_pit_dataset.py`
-- `notebooks/wellsight/annotations/_build_plat_road_dataset.py`
-- `notebooks/wellsight/annotations/_build_plat_split.py`
+- `notebooks/wellsight/annotations/_build_pad_road_dataset.py`
+- `notebooks/wellsight/annotations/_build_pad_split.py`
 - `notebooks/wellsight/annotations/_build_unified_split.py`
 - `notebooks/wellsight/annotations/_prep_annotations.py`
 - `notebooks/wellsight/annotations/_sanity_render.py`
@@ -143,11 +143,11 @@ The log started 2026-04-30. Anything older than that, or run without being logge
 - `notebooks/wellsight/pits/_pit_yolo.py`
 - `notebooks/wellsight/pits/_pit_yolo_infer.py`
 - `notebooks/wellsight/pits/_stack_features.py`
-- `notebooks/wellsight/plats/_pad_maskrcnn.py`
-- `notebooks/wellsight/plats/_pad_maskrcnn_infer.py`
-- `notebooks/wellsight/plats/_pad_yolo.py`
-- `notebooks/wellsight/plats/_pad_yolo_infer.py`
-- `notebooks/wellsight/plats/_plat_unet.py`
+- `notebooks/wellsight/pads/_pad_maskrcnn.py`
+- `notebooks/wellsight/pads/_pad_maskrcnn_infer.py`
+- `notebooks/wellsight/pads/_pad_yolo.py`
+- `notebooks/wellsight/pads/_pad_yolo_infer.py`
+- `notebooks/wellsight/pads/_pad_unet.py`
 - `notebooks/wellsight/preprocessing/__init__.py`
 - `notebooks/wellsight/preprocessing/_build_cornrow_demo_nb.py`
 - `notebooks/wellsight/preprocessing/cornrow_filter.py`
@@ -166,8 +166,8 @@ The log started 2026-04-30. Anything older than that, or run without being logge
 - `notebooks/wellsight_v2/s1_build/_stack_features.py`
 - `notebooks/wellsight_v2/s2_labels/_build_orient_labels.py`
 - `notebooks/wellsight_v2/s2_labels/_build_pit_dataset.py`
-- `notebooks/wellsight_v2/s2_labels/_build_plat_road_dataset.py`
-- `notebooks/wellsight_v2/s2_labels/_build_plat_split.py`
+- `notebooks/wellsight_v2/s2_labels/_build_pad_road_dataset.py`
+- `notebooks/wellsight_v2/s2_labels/_build_pad_split.py`
 - `notebooks/wellsight_v2/s2_labels/_build_unified_split.py`
 - `notebooks/wellsight_v2/s2_labels/_prep_annotations.py`
 - `notebooks/wellsight_v2/s2_labels/_prep_road_1m.py`
@@ -178,7 +178,7 @@ The log started 2026-04-30. Anything older than that, or run without being logge
 - `notebooks/wellsight_v2/s3_train/_pit_maskrcnn.py`
 - `notebooks/wellsight_v2/s3_train/_pit_unet_v2.py`
 - `notebooks/wellsight_v2/s3_train/_pit_yolo.py`
-- `notebooks/wellsight_v2/s3_train/_plat_unet.py`
+- `notebooks/wellsight_v2/s3_train/_pad_unet.py`
 - `notebooks/wellsight_v2/s3_train/_road_unet_1m_recall.py`
 - `notebooks/wellsight_v2/s4_infer/_infer_roads_data_3x3.py`
 - `notebooks/wellsight_v2/s4_infer/_pad_maskrcnn_infer.py`

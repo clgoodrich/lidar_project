@@ -67,7 +67,7 @@ TARGETS = {
     "pit": dict(outdir=path_for("models") / "pit" / "unet_cv5", per_fold="pit_cv5_per_fold_9t.csv",
                 blocks=DERIV_9T / "pit_blocks_9t.gpkg",
                 manifest=DERIV_9T / "pit_dataset_manifest.csv",
-                id_col="pit_inside_id", n_col="n_pits", gt_layer="pit_outside",
+                id_col="pit_inside_id", n_col="n_pits", gt_layer="pit_full",
                 # The model predicts FLOORS; the match target is the RIM. Size
                 # plausibility must therefore be judged against annotated
                 # floors, not rims, or every prediction is rejected.
@@ -75,9 +75,9 @@ TARGETS = {
                 prob="pit_prob_floor_cvfold{k}_9t_05.tif",
                 min_area=4.0, buf=40.0),
     "pad": dict(outdir=path_for("models") / "pad" / "unet_cv5", per_fold="pad_cv5_per_fold_9t.csv",
-                blocks=DERIV_9T / "plat_blocks_9t.gpkg",
-                manifest=DERIV_9T / "plat_dataset_manifest.csv",
-                id_col="pad_id", n_col="n_pads", gt_layer="plat",
+                blocks=DERIV_9T / "pad_blocks_9t.gpkg",
+                manifest=DERIV_9T / "pad_dataset_manifest.csv",
+                id_col="pad_id", n_col="n_pads", gt_layer="pad",
                 prob="pad_prob_cvfold{k}_9t_05.tif",
                 min_area=100.0, buf=80.0),
 }

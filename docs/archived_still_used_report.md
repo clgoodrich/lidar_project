@@ -22,21 +22,21 @@ Biased toward *still used* — a shared output directory can be touched by a sib
 |---|---|---:|---|
 | `notebooks/wellsight/_instance_common.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
 | `notebooks/wellsight/annotations/_build_pit_dataset.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
-| `notebooks/wellsight/annotations/_build_plat_road_dataset.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
-| `notebooks/wellsight/annotations/_build_plat_split.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
+| `notebooks/wellsight/annotations/_build_pad_road_dataset.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
+| `notebooks/wellsight/annotations/_build_pad_split.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
 | `notebooks/wellsight/annotations/_prep_annotations.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
 | `notebooks/wellsight/build/_pit_optimize.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
 | `notebooks/wellsight/multitask/_multitask_unet.py` | 2026-08-12 | 0 | `data/derivatives/tiles/9t/features_pit_9t_05.tif` |
 | `notebooks/wellsight/pits/_pit_unet_v2.py` | 2026-08-12 | 0 | `data/derivatives/tiles/9t/features_pit_9t_05.tif` |
 | `notebooks/wellsight/pits/_pit_unet_v2_infer.py` | 2026-08-12 | 0 | `data/derivatives/tiles/9t/features_pit_9t_05.tif` |
-| `notebooks/wellsight/plats/_plat_unet.py` | 2026-08-12 | 0 | `data/derivatives/tiles/9t/features_pit_9t_05.tif` |
+| `notebooks/wellsight/pads/_pad_unet.py` | 2026-08-12 | 0 | `data/derivatives/tiles/9t/features_pit_9t_05.tif` |
 | `notebooks/wellsight/roads/_prep_road_1m.py` | 2026-08-12 | 0 | `data/derivatives/annotations/annotations_proj.gpkg` |
 | `notebooks/wellsight/roads/_road_unet.py` | 2026-08-12 | 0 | `data/derivatives/tiles/9t/features_pit_9t_05.tif` |
 | `notebooks/wellsight/roads/_road_unet_1m.py` | 2026-08-12 | 0 | `data/derivatives/tiles/9t/road_dataset_manifest.csv` |
 | `notebooks/wellsight/roads/_road_unet_1m_recall.py` | 2026-08-12 | 0 | `data/derivatives/tiles/9t/road_dataset_manifest.csv` |
 | `notebooks/wellsight/annotations/_build_unified_split.py` | 2026-08-04 | 8 | `data/derivatives/tiles/9t/pit_blocks_9t.gpkg` |
 | `notebooks/wellsight/annotations/_sanity_render.py` | 2026-08-04 | 8 | `data/derivatives/tiles/9t/labels_pit_9t_05.tif` |
-| `notebooks/wellsight/plats/_pad_maskrcnn_infer.py` | 2026-07-02 | 41 | `data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/best.pt` |
+| `notebooks/wellsight/pads/_pad_maskrcnn_infer.py` | 2026-07-02 | 41 | `data/derivatives/tiles/9t/iterations/pad_05_maskrcnn/best.pt` |
 
 ## Outputs exist, but older
 
@@ -44,7 +44,7 @@ Biased toward *still used* — a shared output directory can be touched by a sib
 - `notebooks/wellsight/build/_predict_multitask_oilcreek.py` — newest output 2026-06-11
 - `notebooks/wellsight/pits/_pit_maskrcnn_infer.py` — newest output 2026-06-11
 - `notebooks/wellsight/pits/_pit_yolo_infer.py` — newest output 2026-06-11
-- `notebooks/wellsight/plats/_pad_yolo_infer.py` — newest output 2026-06-11
+- `notebooks/wellsight/pads/_pad_yolo_infer.py` — newest output 2026-06-11
 - `notebooks/wellsight/build/_make_derivatives_walkthrough_nb.py` — newest output 2026-06-09
 - `notebooks/wellsight/build/_make_training_walkthrough_nb.py` — newest output 2026-06-09
 - `notebooks/wellsight/build/_build_water_2006_oilcreek.py` — newest output 2026-05-28
@@ -101,7 +101,7 @@ Nothing to date them by. Absence of evidence.
 - `notebooks/wellsight/pits/_pit_maskrcnn.py`
 - `notebooks/wellsight/pits/_pit_yolo.py`
 - `notebooks/wellsight/pits/_stack_features.py`
-- `notebooks/wellsight/plats/_pad_maskrcnn.py`
-- `notebooks/wellsight/plats/_pad_yolo.py`
+- `notebooks/wellsight/pads/_pad_maskrcnn.py`
+- `notebooks/wellsight/pads/_pad_yolo.py`
 - `notebooks/wellsight/preprocessing/_build_cornrow_demo_nb.py`
 - `notebooks/wellsight/roads/_road_postfilter.py`

@@ -1,4 +1,4 @@
-"""Unified spatial-block split for the MULTITASK U-Net (pit + road + plat heads).
+"""Unified spatial-block split for the MULTITASK U-Net (pit + road + pad heads).
 
 The multitask model samples one set of patches whose pixels are supervised by all
 three heads, so every head MUST share ONE consistent block split or a patch
@@ -18,7 +18,7 @@ Outputs (under data/derivatives/tiles/9t/), all multitask-only (standalone files
 untouched):
     blocks_unified_9t.gpkg
     pit_dataset_manifest_unified.csv
-    plat_dataset_manifest_unified.csv
+    pad_dataset_manifest_unified.csv
     road_dataset_manifest_unified.csv
 
 Run:  python notebooks/wellsight/annotations/_build_unified_split.py
@@ -36,7 +36,7 @@ from _common import DERIV_9T as D
 PIT_BLOCKS = D / "pit_blocks_9t.gpkg"
 MAN = {
     "pit":  D / "pit_dataset_manifest.csv",
-    "plat": D / "plat_dataset_manifest.csv",
+    "pad": D / "pad_dataset_manifest.csv",
     "road": D / "road_dataset_manifest.csv",
 }
 SPLIT_FRACS = {"train": 0.70, "val": 0.15, "test": 0.15}
@@ -80,7 +80,7 @@ def main() -> int:
     for k, m in mans.items():
         m = m.copy()
         m["split"] = m["block_id"].map(split_of).fillna("unused")
-        out = D / f"{ 'pit' if k=='pit' else 'plat' if k=='plat' else 'road' }_dataset_manifest_unified.csv"
+        out = D / f"{ 'pit' if k=='pit' else 'pad' if k=='pad' else 'road' }_dataset_manifest_unified.csv"
         m.to_csv(out, index=False)
         used = m[m.split.isin(["train", "val", "test"])]
         print(f"  {k:4s}: {len(used)}/{len(m)} used  splits={used['split'].value_counts().to_dict()}")

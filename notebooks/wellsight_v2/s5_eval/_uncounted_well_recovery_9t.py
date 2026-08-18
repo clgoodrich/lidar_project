@@ -76,7 +76,7 @@ MIN_AREA_M2 = 4.0
 # _reeval_instance_precision_9t.py so this is not a second tuning pass.
 UNET = {
     "pit_unet_v2": ("pit", path_for("models") / "pit" / "unet_v2" / "pit_prob_floor.tif", 0.60),
-    "plat_unet":   ("pad", path_for("models") / "plat" / "unet" / "plat_prob.tif", 0.50),
+    "pad_unet":   ("pad", path_for("models") / "pad" / "unet" / "pad_prob.tif", 0.50),
 }
 # "Counted" = a catalogued well close enough to an annotation that the model
 # effectively saw it as a label. Pads are big, pits are small, so the radius
@@ -135,12 +135,12 @@ def main() -> int:
     # ---- annotations, and which split block each falls in ----
     ann = {
         "pit": read_layer(ANN_GPKG, "pit_inside").to_crs(CRS),
-        "pad": read_layer(ANN_GPKG, "plat").to_crs(CRS),
+        "pad": read_layer(ANN_GPKG, "pad").to_crs(CRS),
     }
     man = {
         "pit": normalize_ids(pd.read_csv(NINE_T / "pit_dataset_manifest.csv")).rename(
             columns={"pit_inside_id": "inst_id"}),
-        "pad": normalize_ids(pd.read_csv(NINE_T / "plat_dataset_manifest.csv")).rename(
+        "pad": normalize_ids(pd.read_csv(NINE_T / "pad_dataset_manifest.csv")).rename(
             columns={"pad_id": "inst_id"}),
     }
     for k in ann:
@@ -236,7 +236,7 @@ def main() -> int:
         hs = r.read(1)
         ext = (r.bounds.left, r.bounds.right, r.bounds.bottom, r.bounds.top)
     ax[2].imshow(hs, cmap="gray", extent=ext, alpha=0.9)
-    sub = allw[allw.model == "plat_unet"]
+    sub = allw[allw.model == "pad_unet"]
     sub[~sub.recovered_25m].plot(ax=ax[2], color="#d7191c", markersize=4,
                                  label="not recovered")
     sub[sub.recovered_25m].plot(ax=ax[2], color="#1a9641", markersize=6,
@@ -244,7 +244,7 @@ def main() -> int:
     ax[2].set_xlim(BBOX[0], BBOX[2]); ax[2].set_ylim(BBOX[1], BBOX[3])
     ax[2].set_xticks([]); ax[2].set_yticks([]); ax[2].set_aspect("equal")
     ax[2].legend(fontsize=8, loc="lower left")
-    ax[2].set_title(f"plat_unet: uncounted wells @{REPORT_R:.0f} m")
+    ax[2].set_title(f"pad_unet: uncounted wells @{REPORT_R:.0f} m")
     fig.suptitle("Uncounted catalogued wells recovered by the U-Nets "
                  "(lower bound: many catalogued wells have no surface expression)")
     fig.tight_layout()

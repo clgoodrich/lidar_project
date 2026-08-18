@@ -1,4 +1,4 @@
-"""Plat (pad) instance segmentation with YOLOv8-seg on 9t.
+"""Pad instance segmentation with YOLOv8-seg on 9t.
 
 Mirrors _pit_yolo.py: patch=384, jitter=40 m, class "pad".
 

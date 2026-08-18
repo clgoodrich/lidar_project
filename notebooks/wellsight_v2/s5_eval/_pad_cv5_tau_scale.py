@@ -42,7 +42,7 @@ def main() -> int:
     blocks = blocks.merge(assign[["block_id", "fold"]].drop_duplicates(),
                           on="block_id", how="inner")
 
-    pads = read_layer(ANN_GPKG, "plat").to_crs(CRS)
+    pads = read_layer(ANN_GPKG, "pad").to_crs(CRS)
     pads = pads[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
     pads = pads.merge(assign[["pad_id", "fold"]], on="pad_id", how="inner")
 

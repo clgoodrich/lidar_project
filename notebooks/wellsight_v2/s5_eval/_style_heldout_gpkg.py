@@ -27,7 +27,7 @@ from _common import path_for  # noqa: E402
 ROOT = Path(__file__).resolve().parents[3]
 OUT = path_for("results_9t") / "heldout_overlap"
 
-TARGETS = ["heldout_pit_unet_v2.gpkg", "heldout_plat_unet.gpkg"]
+TARGETS = ["heldout_pit_unet_v2.gpkg", "heldout_pad_unet.gpkg"]
 
 # found: green, semi-transparent fill, solid outline
 # missed: red, heavier outline so the failures stand out at any zoom

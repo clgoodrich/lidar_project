@@ -107,7 +107,7 @@ These ran at least once -- their outputs are on disk -- but no doc, script or la
 ### `notebooks/wellsight/pits/_pit_unet_v2_infer.py`
 - outputs exist: `data/derivatives/tiles/9t/pit_unet_v2` (+5 more)
 
-### `notebooks/wellsight/plats/_pad_yolo_infer.py`
+### `notebooks/wellsight/pads/_pad_yolo_infer.py`
 - outputs exist: `data/derivatives/tiles/9t/iterations/pad_06_yolo` (+1 more)
 
 ## LIVE
@@ -118,8 +118,8 @@ These ran at least once -- their outputs are on disk -- but no doc, script or la
 - `notebooks/wellsight/_instance_common.py` — imported by 11, mentioned in 6
 - `notebooks/wellsight/_unet_instance_eval.py` — mentioned in 2
 - `notebooks/wellsight/annotations/_build_pit_dataset.py` — mentioned in 4
-- `notebooks/wellsight/annotations/_build_plat_road_dataset.py` — mentioned in 5
-- `notebooks/wellsight/annotations/_build_plat_split.py` — mentioned in 3
+- `notebooks/wellsight/annotations/_build_pad_road_dataset.py` — mentioned in 5
+- `notebooks/wellsight/annotations/_build_pad_split.py` — mentioned in 3
 - `notebooks/wellsight/annotations/_build_unified_split.py` — mentioned in 3
 - `notebooks/wellsight/annotations/_prep_annotations.py` — mentioned in 4
 - `notebooks/wellsight/build/_build_3x3_hillshades.py` — imported by 4, mentioned in 6
@@ -156,10 +156,10 @@ These ran at least once -- their outputs are on disk -- but no doc, script or la
 - `notebooks/wellsight/pits/_pit_yolo.py` — mentioned in 8
 - `notebooks/wellsight/pits/_pit_yolo_infer.py` — mentioned in 3
 - `notebooks/wellsight/pits/_stack_features.py` — mentioned in 5
-- `notebooks/wellsight/plats/_pad_maskrcnn.py` — mentioned in 5
-- `notebooks/wellsight/plats/_pad_maskrcnn_infer.py` — mentioned in 2
-- `notebooks/wellsight/plats/_pad_yolo.py` — mentioned in 1
-- `notebooks/wellsight/plats/_plat_unet.py` — mentioned in 7
+- `notebooks/wellsight/pads/_pad_maskrcnn.py` — mentioned in 5
+- `notebooks/wellsight/pads/_pad_maskrcnn_infer.py` — mentioned in 2
+- `notebooks/wellsight/pads/_pad_yolo.py` — mentioned in 1
+- `notebooks/wellsight/pads/_pad_unet.py` — mentioned in 7
 - `notebooks/wellsight/preprocessing/__init__.py` — mentioned in 1
 - `notebooks/wellsight/preprocessing/cornrow_filter.py` — imported by 1, mentioned in 1
 - `notebooks/wellsight/preprocessing/dem_idw_builder.py` — imported by 1

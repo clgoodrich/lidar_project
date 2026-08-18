@@ -14,7 +14,7 @@ threshold gets, alongside the rasters:
   <...>_missed_contactsheet.png  hillshade crops of every missed pit in one image,
                              reviewable without opening QGIS at all.
 
-Ground truth is hand-drawn annotation (pit_outside rims). A pit counts as found
+Ground truth is hand-drawn annotation (pit_full rims). A pit counts as found
 when a predicted floor polygon's centroid lies inside its rim.
 
 Run:
@@ -141,7 +141,7 @@ def embed_style(gpkg: Path, layer: str, qml: str, desc: str) -> None:
 def main() -> int:
     print("== per-threshold pit products (0.20 / 0.30 / 0.40 / 0.50) ==\n")
 
-    rim = read_layer(ANN_GPKG, "pit_outside").to_crs(CRS)
+    rim = read_layer(ANN_GPKG, "pit_full").to_crs(CRS)
     man = normalize_ids(pd.read_csv(NINE_T / "pit_dataset_manifest.csv"))
     held = set(man.loc[man.split.isin(("val", "test")), "pit_inside_id"])
     rim = rim[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()

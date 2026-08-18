@@ -126,7 +126,7 @@ def looks_like_file(seg: str) -> bool:
     """A segment with a suffix is a filename, which is always allowed.
 
     A segment containing a SLASH is not a filename, whatever else it looks like.
-    ``ROOT / "data/derivatives/annotations/plat.shp"`` is a full directory path
+    ``ROOT / "data/derivatives/annotations/pad.shp"`` is a full directory path
     smuggled into one string literal; it slipped past the first version of this
     check because it ends in ``.shp``. Found 2026-08-12 in
     ``s7_analysis/_export_well_age_qgis.py``.

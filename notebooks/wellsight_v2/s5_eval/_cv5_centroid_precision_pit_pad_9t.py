@@ -79,17 +79,17 @@ TARGETS = {
         blocks=DERIV_9T / "pit_blocks_9t.gpkg",
         manifest=DERIV_9T / "pit_dataset_manifest.csv",
         id_col="pit_inside_id", n_col="n_pits",
-        gt_layer="pit_outside",     # rims: containment is centroid-inside-RIM
+        gt_layer="pit_full",     # rims: containment is centroid-inside-RIM
         prob_name="pit_prob_floor_cvfold{k}_9t_05.tif",
         min_area=4.0, score_buf=40.0,
     ),
     "pad": dict(
         outdir=path_for("models") / "pad" / "unet_cv5",
         per_fold="pad_cv5_per_fold_9t.csv",
-        blocks=DERIV_9T / "plat_blocks_9t.gpkg",
-        manifest=DERIV_9T / "plat_dataset_manifest.csv",
+        blocks=DERIV_9T / "pad_blocks_9t.gpkg",
+        manifest=DERIV_9T / "pad_dataset_manifest.csv",
         id_col="pad_id", n_col="n_pads",
-        gt_layer="plat",
+        gt_layer="pad",
         prob_name="pad_prob_cvfold{k}_9t_05.tif",
         min_area=100.0, score_buf=80.0,
     ),

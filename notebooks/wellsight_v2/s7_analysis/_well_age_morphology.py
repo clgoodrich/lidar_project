@@ -7,7 +7,7 @@ signal, calibrated on the wells that DO have real dates?
 Method:
   1. Load venango_wells_all.gpkg; classify SPUD_DATE into real / sentinel_1800
      / missing; reproject to EPSG:6346 (annotation CRS).
-  2. Load hand-annotated pads (plat.shp, repo-wide) + pits (pit_inside.shp).
+  2. Load hand-annotated pads (pad.shp, repo-wide) + pits (pit_inside.shp).
   3. Match each well to nearest pad and nearest pit within MATCH_M (50 m,
      the literature default for PA DEP historic positional uncertainty —
      see docs/02_data_dictionary_wells.md note 2).
@@ -44,7 +44,7 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 WELLS = path_for("derivatives") / "venango_wells_all.gpkg"
-PADS = path_for("truth") / "plat.shp"
+PADS = path_for("truth") / "pad.shp"
 PITS = path_for("truth") / "pit_inside.shp"
 OUT_DIR = path_for("experiments") / "well_age_morphology"
 OUT_DIR.mkdir(parents=True, exist_ok=True)

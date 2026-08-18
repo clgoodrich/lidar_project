@@ -200,7 +200,7 @@ There is no rule a reader can infer.
 | Subdir group | Size | Role |
 |---|---:|---|
 | loose `*_9t_*.tif` (86 files) | ~8 GB | derived rasters |
-| `pit_unet_cv5/`, `pad_unet_cv5/`, `road_unet_1m*/`, `drainage_unet_1m/`, `plat_unet/`, `multitask_unet/`, `road_classifier/` | ~5 GB | trained models |
+| `pit_unet_cv5/`, `pad_unet_cv5/`, `road_unet_1m*/`, `drainage_unet_1m/`, `pad_unet/`, `multitask_unet/`, `road_classifier/` | ~5 GB | trained models |
 | `iterations/` | 13 GB | retired models |
 | `road_sweep_202607/` | 1.8 GB | a hyperparameter sweep |
 | `diagnostics/`, `exag3x/` | 1.7 GB | one-off analysis |
@@ -264,7 +264,7 @@ lidar_project/
 │   │       └── _SOURCES.md            provenance + licence for every dataset
 │   │
 │   ├── 02_truth/                     HAND-DRAWN. irreplaceable. always tracked.
-│   │   ├── annotations/              roads, plat, pit_inside/outside, drainage,
+│   │   ├── annotations/              roads, pad, pit_inside/outside, drainage,
 │   │   │                             waterways, bold/faint/not_roads,
 │   │   │                             annotations_proj.gpkg, pads_truth, roads_truth
 │   │   ├── grids/                    westernpa_0{1..4}_pit_{inside,outside}.gpkg
@@ -284,7 +284,7 @@ lidar_project/
 │   ├── 04_models/                    a model is a bundle (principle 5)
 │   │   ├── pit/{unet_cv5,unet_v2}/       best.pt, manifest, train log,
 │   │   ├── pad/{unet_cv5}/               prob rasters, eval/, _PROVENANCE.json
-│   │   ├── plat/{unet}/
+│   │   ├── pad/{unet}/
 │   │   ├── road/{unet_1m_recall,unet_1m_corrected_r2,sweep_202607,...}/
 │   │   ├── drainage/{unet_1m}/
 │   │   ├── multitask/{unet}/
@@ -451,7 +451,7 @@ while." Everything below has a citation. Nothing is deleted — all of it moves 
 | `road_unet_1m/best.pt.2class.BAK` | 93 MB | superseded 2026-06-08 by the 3-class in-model fix (`BACKLOG.md:200`) |
 | `road_unet_1m/best.pt.3class_nochunk.BAK` | 93 MB | superseded by the chunked 3-class model |
 | `road_unet/best.pt.BAK` | 93 MB | 0.5 m two-class lineage, retired |
-| `annotations_proj.gpkg.BAK` | 0.4 MB | pre-`plat_id` schema |
+| `annotations_proj.gpkg.BAK` | 0.4 MB | pre-`pad_id` schema |
 | `annotations_proj.gpkg.preDrainage.BAK` | 2.6 MB | pre-drainage-layer schema |
 | `road_dataset_manifest.csv.BAK` | small | superseded by the 2026-08-06 rebuild |
 | `roads_<key>_1m.gpkg` + `road_clean_*` across 25 `data_3x3` blocks | ~1 GB | `BACKLOG.md:201`: "obsolete and can be deleted" — 2-class rollout leftovers |
@@ -464,7 +464,7 @@ while." Everything below has a citation. Nothing is deleted — all of it moves 
 ### 6.2 Superseded but actively cited — archive **in place**, keep reachable
 
 `tiles/9t/iterations/` — 13 GB, 9,055 files, `01_tta_miou` through `06_dem_only`
-plus the plat/road/pit/pad instance runs. Every one is superseded by
+plus the pad/road/pit/pad instance runs. Every one is superseded by
 `pit_unet_cv5` / `pad_unet_cv5` / `road_unet_1m_*`. But `LEADERBOARD.md` cites
 their numbers throughout, and six branches on origin are named after them.
 

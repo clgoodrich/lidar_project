@@ -1,4 +1,4 @@
-"""Run trained pit / road / plat U-Nets on a tile suffix's derivative stack.
+"""Run trained pit / road / pad U-Nets on a tile suffix's derivative stack.
 
 Generalisation of ``_predict_on_mkf.py``: given a ``--suffix`` (e.g.
 ``mck_e1423n2238_05``), discovers the 7 channel rasters from the standard
@@ -18,8 +18,8 @@ Outputs land under data/derivatives/inference_<suffix>/:
     pit_prob_wall_<sfx>.tif     float32 prob of class 2
     road_argmax_<sfx>.tif       uint8: 0=bg 1=road
     road_prob_<sfx>.tif         float32
-    plat_argmax_<sfx>.tif       uint8: 0=bg 1=plat
-    plat_prob_<sfx>.tif         float32
+    pad_argmax_<sfx>.tif       uint8: 0=bg 1=pad
+    pad_prob_<sfx>.tif         float32
     overlay_<sfx>.png           4-panel hillshade + predictions composite
 """
 from __future__ import annotations
@@ -49,7 +49,7 @@ TRAINING_CHANNELS = (
 TASKS = [
     ("pit",  "pit_unet_v2", 3, 256, 64),
     ("road", "road_unet",   2, 256, 64),
-    ("plat", "plat_unet",   2, 384, 96),
+    ("pad", "pad_unet",   2, 384, 96),
 ]
 
 
@@ -165,9 +165,9 @@ def render_overlay(argmaps: dict[str, np.ndarray], sfx: str, out_dir: Path) -> N
                       interpolation="nearest", extent=extent)
     axes[1, 0].set_title("road argmax (orange)")
     axes[1, 1].imshow(hs, cmap="gray", extent=extent)
-    axes[1, 1].imshow(argmaps["plat"], cmap=cmap_bin, vmin=0, vmax=1,
+    axes[1, 1].imshow(argmaps["pad"], cmap=cmap_bin, vmin=0, vmax=1,
                       interpolation="nearest", extent=extent)
-    axes[1, 1].set_title("plat argmax (orange)")
+    axes[1, 1].set_title("pad argmax (orange)")
     for ax in axes.ravel():
         ax.set_xlabel("UTM 17N E (m)"); ax.set_ylabel("UTM 17N N (m)")
     fig.suptitle(f"Inference on {sfx}", fontsize=14)

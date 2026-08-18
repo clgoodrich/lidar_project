@@ -1,10 +1,10 @@
 """Reproject, validate, and spatial-join annotation layers.
 
 Inputs (EPSG:4326 shapefiles in data/derivatives/annotations/):
-    roads, not_roads, pit_outside, pit_inside, plat
+    roads, not_roads, pit_full, pit_inside, pad
 
 Output: data/derivatives/annotations/annotations_proj.gpkg with layers:
-    plat, pit_inside, pit_outside, pit_wall, roads, not_roads
+    pad, pit_inside, pit_full, pit_wall, roads, not_roads
 All reprojected to EPSG:6346 (project CRS), with pad_id joined onto every feature.
 """
 import sys                                  # used to edit Python's import search path below
@@ -43,7 +43,7 @@ def load(name: str, *, assume_epsg: int | None = None) -> gpd.GeoDataFrame:
     return g                                 # hand back the cleaned, reprojected layer
 
 
-def assign_plat_id(features: gpd.GeoDataFrame, plats: gpd.GeoDataFrame, kind: str) -> gpd.GeoDataFrame:
+def assign_plat_id(features: gpd.GeoDataFrame, pads: gpd.GeoDataFrame, kind: str) -> gpd.GeoDataFrame:
     """Attach pad_id to features. Polygons -> by centroid; lines -> by majority overlap (buffered)."""
     f = features.copy()                      # work on a copy so the caller's table is untouched
     if kind == "polygon":
@@ -52,7 +52,7 @@ def assign_plat_id(features: gpd.GeoDataFrame, plats: gpd.GeoDataFrame, kind: st
         probes = gpd.GeoDataFrame(geometry=f.geometry, crs=f.crs)  # test using the whole line
     # For every probe, look up which pad polygon it falls inside. how="left" keeps
     # features that land on no pad at all (they get a blank pad_id).
-    j = gpd.sjoin(probes, plats[["pad_id", "geometry"]], how="left", predicate="intersects")
+    j = gpd.sjoin(probes, pads[["pad_id", "geometry"]], how="left", predicate="intersects")
     j = j[~j.index.duplicated(keep="first")]  # a probe touching 2 pads gets 2 rows; keep the first, arbitrarily
     f["pad_id"] = j["pad_id"].values        # copy the matched pad number onto the feature
     return f                                  # same table as before, plus a pad_id column
@@ -62,20 +62,20 @@ def main():
     print(f"Reading from {SRC}")             # echo the input folder so a run is traceable
     print(f"Target CRS: {TARGET_CRS}\n")     # echo the CRS everything gets converted to
 
-    plat = load("plat")                      # well pad outlines
+    pad = load("pad")                      # well pad outlines
     pit_in = load("pit_inside")              # the pit floor, inner polygon
-    pit_out = load("pit_outside")            # the pit plus its raised rim, outer polygon
+    pit_out = load("pit_full")            # the pit plus its raised rim, outer polygon
     roads = load("roads")                    # access roads you traced
     not_roads = load("not_roads")            # things that look like roads but aren't (hard negatives)
     drainage = load("drainage", assume_epsg=6346)  # stream channels, the other big road look-alike
     print(f"  drainage: {len(drainage)} channel segments")  # sanity count
 
     # Stable pad_id
-    plat = plat.reset_index(drop=True)       # renumber rows 0,1,2,... with no gaps
-    plat["pad_id"] = plat.index.astype(int)  # that row number IS the pad's permanent ID
-    plat["area_m2"] = plat.geometry.area     # pad size in m^2; free because the CRS is already metres
+    pad = pad.reset_index(drop=True)       # renumber rows 0,1,2,... with no gaps
+    pad["pad_id"] = pad.index.astype(int)  # that row number IS the pad's permanent ID
+    pad["area_m2"] = pad.geometry.area     # pad size in m^2; free because the CRS is already metres
 
-    # Pit wall = pit_outside MINUS pit_inside, matched 1:1 by intersection
+    # Pit wall = pit_full MINUS pit_inside, matched 1:1 by intersection
     pit_in = pit_in.reset_index(drop=True)   # clean, gapless numbering
     pit_in["pit_inside_id"] = pit_in.index.astype(int)  # row number becomes the pit's ID
     pit_out = pit_out.reset_index(drop=True)  # same clean numbering for the outer rings
@@ -115,56 +115,56 @@ def main():
     pit_wall = gpd.GeoDataFrame(walls, crs=TARGET_CRS)  # turn the plain list into a real map layer
     print(f"Pit wall geometries built: {len(pit_wall)}")  # count check against the pairing above
 
-    # Tag pit_outside with its inner pit_inside_id for downstream joins
+    # Tag pit_full with its inner pit_inside_id for downstream joins
     # Flip the lookup (outer -> inner) so the outer layer can be joined on pit_inside_id too.
     pit_out["pit_inside_id"] = pit_out["pit_full_id"].map({v: k for k, v in in2out.items()})
 
     # Spatial join pad_id onto everything
-    pit_in = assign_plat_id(pit_in, plat, "polygon")      # which pad is this pit floor on
-    pit_out = assign_plat_id(pit_out, plat, "polygon")    # same for the outer ring
-    pit_wall = assign_plat_id(pit_wall, plat, "polygon")  # same for the rim donut
-    roads = assign_plat_id(roads, plat, "line")           # which pad does this road serve
-    not_roads = assign_plat_id(not_roads, plat, "line")   # same for the fake roads
-    drainage = assign_plat_id(drainage, plat, "line")     # same for stream channels
+    pit_in = assign_plat_id(pit_in, pad, "polygon")      # which pad is this pit floor on
+    pit_out = assign_plat_id(pit_out, pad, "polygon")    # same for the outer ring
+    pit_wall = assign_plat_id(pit_wall, pad, "polygon")  # same for the rim donut
+    roads = assign_plat_id(roads, pad, "line")           # which pad does this road serve
+    not_roads = assign_plat_id(not_roads, pad, "line")   # same for the fake roads
+    drainage = assign_plat_id(drainage, pad, "line")     # same for stream channels
 
     # Stats
     def coverage(name, gdf):
         n = len(gdf)                          # total features in this layer
-        on_plat = gdf["pad_id"].notna().sum()  # how many landed on a labelled pad
-        print(f"  {name:14s} n={n:4d}  on_plat={on_plat:4d}  off_plat={n-on_plat:4d}")  # one summary line
+        on_pad = gdf["pad_id"].notna().sum()  # how many landed on a labelled pad
+        print(f"  {name:14s} n={n:4d}  on_pad={on_pad:4d}  off_pad={n-on_pad:4d}")  # one summary line
 
-    print("\nplat coverage (features falling on a labeled plat):")  # header for the block below
-    coverage("pit_inside",  pit_in)          # off_plat here means a pit with no pad drawn around it
-    coverage("pit_outside", pit_out)
+    print("\nplat coverage (features falling on a labeled pad):")  # header for the block below
+    coverage("pit_inside",  pit_in)          # off_pad here means a pit with no pad drawn around it
+    coverage("pit_full", pit_out)
     coverage("pit_wall",    pit_wall)
     coverage("roads",       roads)
     coverage("not_roads",   not_roads)
 
-    # Per-plat counts
+    # Per-pad counts
     # dropna first so features with no pad don't get counted; groupby+size counts
     # rows per pad; rename gives the resulting column its final name.
-    pit_per_plat = pit_in.dropna(subset=["pad_id"]).groupby("pad_id").size().rename("n_pits")
-    road_per_plat = roads.dropna(subset=["pad_id"]).groupby("pad_id").size().rename("n_roads")
-    notroad_per_plat = not_roads.dropna(subset=["pad_id"]).groupby("pad_id").size().rename("n_not_roads")
-    plat = plat.merge(pit_per_plat, on="pad_id", how="left") \
-               .merge(road_per_plat, on="pad_id", how="left") \
-               .merge(notroad_per_plat, on="pad_id", how="left")  # attach the three counts as columns
+    pit_per_pad = pit_in.dropna(subset=["pad_id"]).groupby("pad_id").size().rename("n_pits")
+    road_per_pad = roads.dropna(subset=["pad_id"]).groupby("pad_id").size().rename("n_roads")
+    notroad_per_pad = not_roads.dropna(subset=["pad_id"]).groupby("pad_id").size().rename("n_not_roads")
+    pad = pad.merge(pit_per_pad, on="pad_id", how="left") \
+               .merge(road_per_pad, on="pad_id", how="left") \
+               .merge(notroad_per_pad, on="pad_id", how="left")  # attach the three counts as columns
     for col in ("n_pits", "n_roads", "n_not_roads"):
-        plat[col] = plat[col].fillna(0).astype(int)  # a pad with nothing on it gets 0, not blank
+        pad[col] = pad[col].fillna(0).astype(int)  # a pad with nothing on it gets 0, not blank
 
-    print(f"\nPlats: {len(plat)} total")                              # how many pads exist
-    print(f"  with >=1 pit:        {(plat.n_pits>0).sum()}")          # how many have at least one pit
-    print(f"  with >=1 road:       {(plat.n_roads>0).sum()}")         # ...at least one road
-    print(f"  with >=1 not_road:   {(plat.n_not_roads>0).sum()}")     # ...at least one hard negative
-    print(f"  median pits/plat:    {plat.n_pits.median():.1f}")       # typical pits per pad
-    print(f"  median area (m^2):   {plat.area_m2.median():.0f}")      # typical pad size
+    print(f"\nPlats: {len(pad)} total")                              # how many pads exist
+    print(f"  with >=1 pit:        {(pad.n_pits>0).sum()}")          # how many have at least one pit
+    print(f"  with >=1 road:       {(pad.n_roads>0).sum()}")         # ...at least one road
+    print(f"  with >=1 not_road:   {(pad.n_not_roads>0).sum()}")     # ...at least one hard negative
+    print(f"  median pits/pad:    {pad.n_pits.median():.1f}")       # typical pits per pad
+    print(f"  median area (m^2):   {pad.area_m2.median():.0f}")      # typical pad size
 
     # Write
     if OUT.exists():
         OUT.unlink()                         # delete the old file so we never half-overwrite it
-    plat.to_file(OUT, layer="plat", driver="GPKG")  # a GeoPackage holds many layers in one file
+    pad.to_file(OUT, layer="pad", driver="GPKG")  # a GeoPackage holds many layers in one file
     pit_in.to_file(OUT, layer="pit_inside", driver="GPKG")    # each call appends another layer
-    pit_out.to_file(OUT, layer="pit_outside", driver="GPKG")
+    pit_out.to_file(OUT, layer="pit_full", driver="GPKG")
     pit_wall.to_file(OUT, layer="pit_wall", driver="GPKG")
     roads.to_file(OUT, layer="roads", driver="GPKG")
     not_roads.to_file(OUT, layer="not_roads", driver="GPKG")

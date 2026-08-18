@@ -19,7 +19,7 @@ versions of this script:
     `pit_inside_id` where present and `o<pit_full_id>` otherwise, so every rim counts.
   * 105 floors have no rim. Matching on rims alone loses those too.
 
-Match target is therefore the per-key union of `pit_outside` and `pit_inside`:
+Match target is therefore the per-key union of `pit_full` and `pit_inside`:
 550 paired pits + 105 floor-only + 137 rim-only.
 
 Matching otherwise follows `_match_rules_pit_pad_9t.py`, so the `undecided`
@@ -96,7 +96,7 @@ CV_SEED = 20260727          # must match the CV run
 K = 5
 MIN_AREA_M2 = 4.0
 SCORE_BUF_M = 40.0
-RIM_LAYER = "pit_outside"   # rims
+RIM_LAYER = "pit_full"   # rims
 FLOOR_LAYER = "pit_inside"  # floors -- what the model actually draws
 # Match target is the per-pit_inside_id UNION of both. Size reference is floors only.
 
@@ -312,7 +312,7 @@ def main() -> int:
 
     summ = {"date": "2026-08-05", "threshold": args.thr, "n_sd": args.n_sd,
             "overlap_frac": args.overlap_frac, "size_cut_m2": round(float(cut), 1),
-            "match_target": "per-key union of pit_outside and pit_inside; key is "
+            "match_target": "per-key union of pit_full and pit_inside; key is "
                             "pit_inside_id where prep paired them, pit_full_id otherwise",
             "size_filter_on": bool(args.size_filter),
             "recorded_pits": int(len(pits)),
@@ -331,7 +331,7 @@ def main() -> int:
     readme.write_text(f"""# Pit candidate review — 9t, threshold {args.thr:.2f}
 
 `{gpkg.name}` layer **undecided** holds {len(und)} held-out detections that match
-no recorded pit. A pit counts as recorded if it appears in EITHER `pit_outside`
+no recorded pit. A pit counts as recorded if it appears in EITHER `pit_full`
 (rim) or `pit_inside` (floor): {len(fid - rid)} are drawn as a floor with no rim and
 {n_rim_nokey} as a rim with no floor, and all of them count. Each candidate is either a
 false positive or a well nobody has drawn yet.
@@ -340,7 +340,7 @@ false positive or a well nobody has drawn yet.
 1. Load `{DERIV_9T / 'hillshade_9t_05.tif'}` as a basemap.
 2. Load the `undecided` layer from `{gpkg}`.
 3. Toggle editing. For each candidate set **status**:
-   - `pit` — it is a real pit. Draw it into `pit_inside` / `pit_outside` as usual.
+   - `pit` — it is a real pit. Draw it into `pit_inside` / `pit_full` as usual.
    - `not_pit` — it is not.
    - `unsure` — leave it out of the scoring either way.
 4. Save edits.

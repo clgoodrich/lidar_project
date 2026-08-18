@@ -30,9 +30,9 @@ One line each, from the docstring. 92 scripts.
 | `_build_label_grids.py` | Build 2x2 derivative grids over the most well-dense areas, for annotation. |
 | `_build_orient_labels.py` | Build per-pixel road-orientation label rasters for the `orient` sweep variant. |
 | `_build_pit_dataset.py` | Build labeled raster + spatial-block train/val/test split for the pit segmentation task. |
-| `_build_plat_road_dataset.py` | Build labels and manifests for plat segmentation, road segmentation, and road classification. |
-| `_build_plat_split.py` | Pad-aware spatial-block split for the STANDALONE plat/pad U-Net. |
-| `_build_unified_split.py` | Unified spatial-block split for the MULTITASK U-Net (pit + road + plat heads). |
+| `_build_pad_road_dataset.py` | Build labels and manifests for pad segmentation, road segmentation, and road classification. |
+| `_build_pad_split.py` | Pad-aware spatial-block split for the STANDALONE pad/pad U-Net. |
+| `_build_unified_split.py` | Unified spatial-block split for the MULTITASK U-Net (pit + road + pad heads). |
 | `_merge_review_added_roads_613590_into_roads_shp.py` | Fold the corrected 613590 road review into the master annotation file. |
 | `_prep_annotations.py` | Reproject, validate, and spatial-join annotation layers. |
 | `_prep_road_1m.py` | Prep the 1 m road-training inputs from the 9t_1m derivative stack. |
@@ -44,15 +44,15 @@ One line each, from the docstring. 92 scripts.
 | Script | What it does |
 |---|---|
 | `_drainage_unet_1m.py` | Drainage-focused 9t road/drainage U-Net (1 m, 3-class bg/road/drainage). |
-| `_multitask_unet.py` | Multi-task U-Net for pit / road / plat joint segmentation at 0.5 m. |
+| `_multitask_unet.py` | Multi-task U-Net for pit / road / pad joint segmentation at 0.5 m. |
 | `_pad_maskrcnn.py` | Plat (pad) instance segmentation with Mask R-CNN on 9t. |
-| `_pad_unet_cv5.py` | 5-fold cross-validation of the pad (plat) U-Net on 9t. |
+| `_pad_unet_cv5.py` | 5-fold cross-validation of the pad (pad) U-Net on 9t. |
 | `_pad_yolo.py` | Plat (pad) instance segmentation with YOLOv8-seg on 9t. |
 | `_pit_maskrcnn.py` | Pit instance segmentation with Mask R-CNN (torchvision, ResNet-50 FPN v2). |
 | `_pit_unet_cv5.py` | 5-fold cross-validation of the pit U-Net on 9t. |
 | `_pit_unet_v2.py` | Pit semantic segmentation v2: 3-class (bg / floor / wall) at 0.5 m. |
 | `_pit_yolo.py` | Pit instance segmentation with YOLOv8-seg on 9t. |
-| `_plat_unet.py` | Binary plat segmentation U-Net (plat / background) at 0.5 m. |
+| `_pad_unet.py` | Binary pad segmentation U-Net (pad / background) at 0.5 m. |
 | `_road_sweep_202607.py` | Road U-Net top-5 optimization sweep (2026-07-20). |
 | `_road_unet_1m_corrected.py` | Road U-Net fine-tuned on the human corrections for 613590 (active learning). |
 | `_road_unet_1m_recall.py` | Recall-focused 9t-only road U-Net (1 m, 3-class bg/road/drainage). |
@@ -63,13 +63,13 @@ One line each, from the docstring. 92 scripts.
 |---|---|
 | `_infer_roads_data_3x3.py` | Run the trained road U-Net over every data_3x3 block in a region. |
 | `_pad_maskrcnn_infer.py` | Full-tile inference for the Mask R-CNN pad model on 9t. |
-| `_pad_unet_infer_grid.py` | Apply the PA-trained pad/plat U-Net straight to a label_grids/<grid> tile. |
+| `_pad_unet_infer_grid.py` | Apply the PA-trained pad/pad U-Net straight to a label_grids/<grid> tile. |
 | `_pad_yolo_infer.py` | Full-tile inference for the YOLOv8-seg pad model on 9t. |
 | `_pit_maskrcnn_infer.py` | Full-tile inference for the Mask R-CNN pit model on 9t. |
 | `_pit_unet_v2_infer.py` | Full-tile inference + test-set eval for pit_unet_v2. |
 | `_pit_yolo_infer.py` | Full-tile inference for the YOLOv8-seg pit model on 9t. |
 | `_postfilter_tile_candidates.py` | Turn raw per-tile U-Net probability rasters into clean candidate polygons. |
-| `_predict_on_tile.py` | Run trained pit / road / plat U-Nets on a tile suffix's derivative stack. |
+| `_predict_on_tile.py` | Run trained pit / road / pad U-Nets on a tile suffix's derivative stack. |
 | `_refine_roads_data_3x3.py` | Post-process the raw road U-Net rasters into clean, connected road centerlines. |
 | `_road_infer.py` | Generic road-model inference: load any road best.pt and predict a tile. |
 | `_yolo_infer_tile.py` | Generalized YOLOv8-seg inference (pit + pad models) on an arbitrary 0.5 m tile. |
@@ -137,5 +137,5 @@ One line each, from the docstring. 92 scripts.
 | Script | What it does |
 |---|---|
 | `_common.py` | Shared utilities for active WellSight scripts. |
-| `_dl.py` | Shared deep-learning building blocks for pit / road / plat U-Net trainers. |
+| `_dl.py` | Shared deep-learning building blocks for pit / road / pad U-Net trainers. |
 | `_instance_common.py` | Shared helpers for instance-segmentation experiments on the 9t tile. |

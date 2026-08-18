@@ -1,6 +1,6 @@
-"""Plat (pad) instance segmentation with Mask R-CNN on 9t.
+"""Pad instance segmentation with Mask R-CNN on 9t.
 
-Single foreground class ("plat") trained on 79 hand-annotated pad polygons
+Single foreground class ("pad") trained on 79 hand-annotated pad polygons
 (51 train / 16 val / 9 test). Larger patch than pits (384 px = 192 m) since
 pads are typically 30-80 m across and need surrounding context for the model
 to distinguish a pad scar from natural clearings.
@@ -29,7 +29,7 @@ import _instance_common as ic  # noqa: E402
 from _pit_maskrcnn import build_model, collate, train_one_epoch, val_loss, DEVICE  # noqa: E402
 
 OUTDIR = path_for("models_retired") / "pad_05_maskrcnn"
-PATCH = 384         # 192 m at 0.5 m/px - matches plat_unet baseline
+PATCH = 384         # 192 m at 0.5 m/px - matches pad_unet baseline
 JITTER_M = 40.0     # matches multitask_unet pad policy
 PATCHES_PER_INST = 4
 

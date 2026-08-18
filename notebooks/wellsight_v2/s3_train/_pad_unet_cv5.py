@@ -1,4 +1,4 @@
-"""5-fold cross-validation of the pad (plat) U-Net on 9t.
+"""5-fold cross-validation of the pad (pad) U-Net on 9t.
 
 WHY
 ---
@@ -11,7 +11,7 @@ five models, each holding out a different fifth of the tile, so:
   * the spread across folds says whether a number is stable or noise
 
 No new annotation. No change to the architecture, loss, channels or schedule.
-Parameters are copied verbatim from `_plat_unet.py` (patch 384, jitter 40 m,
+Parameters are copied verbatim from `_pad_unet.py` (patch 384, jitter 40 m,
 2 classes, focal alpha 0.15/0.85) so this measures the split, not a new model.
 
 DESIGN
@@ -42,7 +42,7 @@ thresholds, per fold.
 
 SCORING
 -------
-  recall@IoU     predicted pad vs annotated pad (`plat` layer), greedy 1:1
+  recall@IoU     predicted pad vs annotated pad (`pad` layer), greedy 1:1
   locate         annotated pad containing >=1 predicted centroid -- LOCATING a
                  pad, not delineating it. This is the pad analogue of the pit
                  rim-containment metric. Pads have no inside/outside pair, so
@@ -89,17 +89,17 @@ from _dl import (DEFAULT_CHANNELS, CenteredPatchSampler, FocalCE, UNet,
 ROOT = Path(__file__).resolve().parents[3]
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
-LABELS = DERIV_9T / "labels_plat_9t_05.tif"
+LABELS = DERIV_9T / "labels_pad_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"
-BLOCKS = DERIV_9T / "plat_blocks_9t.gpkg"
-MANIFEST = DERIV_9T / "plat_dataset_manifest.csv"
+BLOCKS = DERIV_9T / "pad_blocks_9t.gpkg"
+MANIFEST = DERIV_9T / "pad_dataset_manifest.csv"
 OUTDIR = path_for("models") / "pad" / "unet_cv5"
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"
-PATCH = 384                        # plats are bigger than pits -> more context
+PATCH = 384                        # pads are bigger than pits -> more context
 OVERLAP = 96
-N_CLASSES = 2                      # bg, plat
+N_CLASSES = 2                      # bg, pad
 JITTER_M = 40.0
 FOCAL_ALPHA = (0.15, 0.85)
 FOCAL_GAMMA = 2.0
@@ -223,7 +223,7 @@ def main() -> int:
         print(f"    fold {f}: {sub.block_id.nunique():3d} blocks  {len(sub):4d} pads")
     print()
 
-    pads = read_layer(ANN_GPKG, "plat").to_crs(CRS)
+    pads = read_layer(ANN_GPKG, "pad").to_crs(CRS)
     pads = pads[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
     pads = pads.merge(man[["pad_id", "fold"]], on="pad_id", how="inner")
     print(f"  {len(pads)} annotated pad polygons matched to the manifest\n")
@@ -291,11 +291,11 @@ def main() -> int:
 
         tr_ds = CenteredPatchSampler(
             feat_path=FEATURES, lbl_path=LABELS,
-            policies=[("plat", tr_pads, JITTER_M)], block_bounds=bounds_of(tr_blocks),
+            policies=[("pad", tr_pads, JITTER_M)], block_bounds=bounds_of(tr_blocks),
             transform=tf, mu=mu, sd=sd, patch=PATCH, augment=True, seed=100 + k)
         va_ds = CenteredPatchSampler(
             feat_path=FEATURES, lbl_path=LABELS,
-            policies=[("plat", va_pads, JITTER_M)], block_bounds=bounds_of(val_blocks),
+            policies=[("pad", va_pads, JITTER_M)], block_bounds=bounds_of(val_blocks),
             transform=tf, mu=mu, sd=sd, patch=PATCH, augment=False, seed=200 + k)
 
         # Resumable, but ONLY from a checkpoint whose fold ran the full schedule.
@@ -325,7 +325,7 @@ def main() -> int:
                                   "channels": list(DEFAULT_CHANNELS), "patch": PATCH,
                                   "held_out_blocks": held_blocks},
                 score=lambda iou: float(iou[1]),
-                extra_iou_names=("bg", "plat"))
+                extra_iou_names=("bg", "pad"))
 
         if prob_tif.exists():
             print(f"  reusing existing probability raster {prob_tif}")

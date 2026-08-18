@@ -56,13 +56,13 @@ OUT.mkdir(parents=True, exist_ok=True)
 CRS = "EPSG:6346"
 MIN_AREA_M2 = 4.0
 THRESHOLDS = [0.3, 0.5, 0.6, 0.7]
-MAIN_THR = {"pit_unet_v2": 0.60, "plat_unet": 0.50}   # val-selected earlier
+MAIN_THR = {"pit_unet_v2": 0.60, "pad_unet": 0.50}   # val-selected earlier
 
 MODELS = {
     # pits: floor probability. The wall band is a separate class and the
     # annotation being scored (pit_inside) is the floor.
     "pit_unet_v2": ("pit", path_for("models") / "pit" / "unet_v2" / "pit_prob_floor.tif"),
-    "plat_unet":   ("pad", path_for("models") / "plat" / "unet" / "plat_prob.tif"),
+    "pad_unet":   ("pad", path_for("models") / "pad" / "unet" / "pad_prob.tif"),
 }
 
 
@@ -122,7 +122,7 @@ def main() -> int:
     ann = {}
     for kind, layer, man, idcol in (
         ("pit", "pit_inside", "pit_dataset_manifest.csv", "pit_inside_id"),
-        ("pad", "plat", "plat_dataset_manifest.csv", "pad_id"),
+        ("pad", "pad", "pad_dataset_manifest.csv", "pad_id"),
     ):
         g = read_layer(ANN_GPKG, layer).to_crs(CRS)
         g = g.rename(columns={idcol: "inst_id"})[["inst_id", "geometry"]]

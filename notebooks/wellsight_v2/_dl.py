@@ -1,4 +1,4 @@
-"""Shared deep-learning building blocks for pit / road / plat U-Net trainers.
+"""Shared deep-learning building blocks for pit / road / pad U-Net trainers.
 
 What's here vs. what stays in the per-task scripts:
 
@@ -11,7 +11,7 @@ What's here vs. what stays in the per-task scripts:
   * ``predict_full_tile``                — sliding-window full-tile inference
 
 Per-task scripts (``pits/_pit_unet_v2.py``, ``roads/_road_unet.py``,
-``plats/_plat_unet.py``) supply: task-specific sample policy, ``n_classes``,
+``s3_train/_pad_unet.py``) supply: task-specific sample policy, ``n_classes``,
 focal-loss class weights, patch size, label raster path, and the test-eval
 function — the rest is reused verbatim.
 """
@@ -41,7 +41,7 @@ __all__ = [
 
 DEVICE: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Channel order frozen across pit / road / plat tasks. Must match the band
+# Channel order frozen across pit / road / pad tasks. Must match the band
 # order produced by ``pits/_stack_features.py``.
 DEFAULT_CHANNELS: tuple[str, ...] = (
     "lrm_25", "lrm_5", "slope", "tpi_05",

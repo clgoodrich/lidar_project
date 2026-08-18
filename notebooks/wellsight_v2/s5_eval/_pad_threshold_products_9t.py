@@ -3,8 +3,8 @@
 Pad counterpart to `_pit_threshold_products_9t.py`. Same question, same
 ground-truth rule, so the two are directly comparable.
 
-Ground truth is the hand-drawn `plat` polygons. Held out = the val + test rows
-of `plat_dataset_manifest.csv`, i.e. exactly the pads the U-Net never trained on.
+Ground truth is the hand-drawn `pad` polygons. Held out = the val + test rows
+of `pad_dataset_manifest.csv`, i.e. exactly the pads the U-Net never trained on.
 No state well list is involved.
 
 MEASURING A PAD -- WHY THREE CRITERIA AND NOT ONE
@@ -74,8 +74,8 @@ from _common import path_for  # noqa: E402, read_layer, normalize_ids
 
 ROOT = Path(__file__).resolve().parents[3]
 NINE_T = path_for("nine_t")
-PROB = path_for("models") / "plat" / "unet" / "plat_prob.tif"
-RASTER_DIR = path_for("models") / "plat" / "unet"
+PROB = path_for("models") / "pad" / "unet" / "pad_prob.tif"
+RASTER_DIR = path_for("models") / "pad" / "unet"
 HILLSHADE = NINE_T / "hillshade_9t_05.tif"
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
 OUT = path_for("results_9t") / "pad" / "thresholds"
@@ -93,15 +93,15 @@ THRESHOLDS_PRODUCTS = [0.40, 0.50, 0.60, 0.70]
 
 
 def main() -> int:
-    print("== per-threshold PAD products (ground truth = hand-drawn plats) ==\n")
+    print("== per-threshold PAD products (ground truth = hand-drawn pads) ==\n")
 
-    plat = read_layer(ANN_GPKG, "plat").to_crs(CRS)
-    man = normalize_ids(pd.read_csv(NINE_T / "plat_dataset_manifest.csv"))
+    pad = read_layer(ANN_GPKG, "pad").to_crs(CRS)
+    man = normalize_ids(pd.read_csv(NINE_T / "pad_dataset_manifest.csv"))
     held = set(man.loc[man.split.isin(("val", "test")), "pad_id"])
-    plat = plat[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
-    plat = plat.merge(man[["pad_id", "split"]], on="pad_id", how="inner")
-    held_g = plat[plat.pad_id.isin(held)].reset_index(drop=True)
-    print(f"  annotated pads: {len(plat)}   held out (val+test): {len(held_g)}")
+    pad = pad[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
+    pad = pad.merge(man[["pad_id", "split"]], on="pad_id", how="inner")
+    held_g = pad[pad.pad_id.isin(held)].reset_index(drop=True)
+    print(f"  annotated pads: {len(pad)}   held out (val+test): {len(held_g)}")
     print(f"  held-out pad area: median {held_g.area.median():.0f} m2, "
           f"total {held_g.area.sum() / 1e4:.2f} ha\n")
 

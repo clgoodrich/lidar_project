@@ -116,7 +116,7 @@ and surfaces **stale chains** as actionable banners: "annotations edited
 2026-07-21 but labels_road_9t_1m built 2026-07-18 → re-rasterize?" (one click
 queues the builder). This directly addresses recurring real bugs: the 58
 null-geometry pads misdiagnosis, the stale 613590 vector network after raster
-deploy, plat.shp-vs-gpkg drift.
+deploy, pad.shp-vs-gpkg drift.
 
 ### 2.3 Deploy & rollback manager (per block)
 A small state file per block records which model produced each *live* raster
@@ -289,7 +289,7 @@ winner" action (= deploy + leaderboard-row snippet + report stub).
   n displayed, JSON + leaderboard-row snippet.
 
 ### 4.4 Pads tab
-Mirror of Pits (plat_unet · pad_05_maskrcnn · pad_06_yolo · multitask), plus
+Mirror of Pits (pad_unet · pad_05_maskrcnn · pad_06_yolo · multitask), plus
 **Morphology bins** (`_pad_morphology_bins.py`): k radio (2/3/4/auto),
 region scope (9t / joint McKean), outputs (styled gpkg, montage, profile)
 listed with QGIS handoff buttons.
@@ -363,7 +363,7 @@ block, notification prefs, keep-awake toggle, theme. Stored settings.json.
 | roads.review / corrections / compare | `_build_road_review_package.py` / `_build_road_corrections_613590.py` / `_compare_corrected_613590.py` | no |
 | roads.sweep.aggregate | `_road_sweep_aggregate.py` | no |
 | pits.* | `_pit_unet_v2.py`, `_pit_maskrcnn.py`, `_pit_yolo.py`, `_pit_optimize.py`, review builder | mixed |
-| pads.* | plat trainers, `_pad_morphology_bins.py` | mixed |
+| pads.* | pad trainers, `_pad_morphology_bins.py` | mixed |
 | build.* | `_build_derivatives.py`, `_build_label_grids.py`, `_make_rrim.py`, contours, fetchers, `_build_orient_labels.py` | no |
 | analysis.* | `_compare_known_wells.py`, `_well_age_morphology.py`, `_well_provenance_flags.py`, `_photo_source_locations.py` | no |
 

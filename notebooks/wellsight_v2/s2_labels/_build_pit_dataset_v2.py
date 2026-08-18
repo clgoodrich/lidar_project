@@ -18,8 +18,10 @@ raster at its line 77 and the manifest at 159, and currently dies in between.
 without touching the live training inputs. Their absence is how the 2026-08-12
 incident happened.
 
-It no longer writes ``mask_plat_9t_05.tif``: zero readers repo-wide, and
-byte-identical to ``labels_plat_9t_05.tif`` from ``_build_pad_road_dataset.py``.
+It no longer writes the pad mask the original emitted as ``mask_plat_9t_05.tif``:
+zero readers repo-wide, and byte-identical to ``labels_pad_9t_05.tif`` from
+``_build_pad_road_dataset.py``. The stale copy now sits at
+``mask_pad_9t_05_dupe.tif`` under the _dupe rule.
 Dropping it also means the pad layer is never loaded -- ``pad_id`` already rides
 on ``pit_inside``.
 

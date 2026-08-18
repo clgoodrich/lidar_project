@@ -61,7 +61,7 @@ Do not start until the backup verifies PASS.
 > **EXECUTED 2026-08-12. 11 of 13 planned scripts recorded and verified
 > clean. Full findings in `docs/golden/NON_DETERMINISTIC.md`.**
 >
-> The 2 deferred (`_build_pit_dataset.py`, `_build_plat_road_dataset.py`) were
+> The 2 deferred (`_build_pit_dataset.py`, `_build_pad_road_dataset.py`) were
 > not a judgment call — running `_build_pit_dataset.py` live during this pass
 > regenerated `pit_blocks_9t.gpkg` against 655 currently-drawn pits instead of
 > the 527 the deployed CV5 checkpoints were trained and fold-assigned against.
@@ -118,7 +118,7 @@ the plot-only ones, plus the label builders:
 ```
 s2_labels/_prep_annotations.py
 s2_labels/_build_pit_dataset.py
-s2_labels/_build_plat_road_dataset.py
+s2_labels/_build_pad_road_dataset.py
 s2_labels/_rebuild_labels_road_9t_1m.py
 s5_eval/_match_rules_pit_pad_9t.py
 s5_eval/_cv5_centroid_precision_pit_pad_9t.py
@@ -226,7 +226,7 @@ score_buf_m = 40.0
 match       = "centroid-bidirectional"
 
 [pad]
-layers      = ["plat"]
+layers      = ["pad"]
 classes     = 2
 min_area_m2 = 100.0
 score_buf_m = 80.0
@@ -325,15 +325,15 @@ Produces `labels_road_613590_1m.tif` and `road_blocks_613590.gpkg`.
 
 **Do not proceed to training until this is eyeballed.**
 
-## Step 1.7 — parameterise `_build_plat_road_dataset.py`
+## Step 1.7 — parameterise `_build_pad_road_dataset.py`
 
-Currently writes plat labels, road labels, road chunks, road manifest and the
+Currently writes pad labels, road labels, road chunks, road manifest and the
 classifier samples in one pass — five products, three targets. Split by
 `--target`:
 
 ```
-python …/_build_plat_road_dataset.py --area 9t --target road
-python …/_build_plat_road_dataset.py --area 9t --target pad
+python …/_build_pad_road_dataset.py --area 9t --target road
+python …/_build_pad_road_dataset.py --area 9t --target pad
 ```
 
 `--target road` on 613590 produces `road_dataset_manifest_613590.csv` and
@@ -343,10 +343,10 @@ python …/_build_plat_road_dataset.py --area 9t --target pad
 reproduce the current outputs byte-for-byte. Expect 15,292 road chunks,
 3,315 / 983 / 672 in-tile.
 
-**Known trap:** this script also rewrites `plat_dataset_manifest.csv`, which is
-still at 650 rows while `plat.shp` has 1,053. Running it regenerates the
+**Known trap:** this script also rewrites `pad_dataset_manifest.csv`, which is
+still at 650 rows while `pad.shp` has 1,053. Running it regenerates the
 manifest at 995+ and **changes the pad CV5 fold assignment**. Snapshot
-`plat_dataset_manifest.csv` first and restore it, exactly as on 2026-08-06,
+`pad_dataset_manifest.csv` first and restore it, exactly as on 2026-08-06,
 until the pad manifest question is settled separately.
 
 ## Step 1.8 — parameterise `_build_pit_dataset.py`
@@ -357,7 +357,7 @@ dataset.
 
 **Verification:** `--area 9t` reproduces `pit_dataset_manifest.csv` and
 `pit_blocks_9t.gpkg` byte-identical. `--area 613590` exits non-zero with
-"target `pit` requires layer `pit_outside`, which has 0 features in this area".
+"target `pit` requires layer `pit_full`, which has 0 features in this area".
 
 ## Step 1.9 — train a road model on 9t + 613590
 
@@ -441,17 +441,17 @@ road model trained on both areas exists with an honest caveat recorded.
 
 The single highest-value extraction. Centroid containment, bidirectional
 matching, greedy 1:1, log-space size filtering currently exist in four separate
-copies, and the NULL-`pit_id` defect lived in three of them at once.
+copies, and the NULL-`pit_inside_id` defect lived in three of them at once.
 
 Consumers to repoint: `_match_rules_pit_pad_9t.py`,
 `_cv5_centroid_precision_pit_pad_9t.py`, `_map_cv5_unmatched_pit_thr0p50_9t.py`,
 `_build_undecided_pit_candidates_9t.py`.
 
 The extracted module must implement the **corrected** behaviour: key on
-`pit_id` where present and `pit_id_outer` otherwise, so no rim is dropped.
+`pit_inside_id` where present and `pit_full_id` otherwise, so no rim is dropped.
 
 **Verification:** golden-verify all four consumers. Three of them will
-**legitimately change** — they currently use the buggy `dissolve(by="pit_id")`.
+**legitimately change** — they currently use the buggy `dissolve(by="pit_inside_id")`.
 So: record a *new* golden for those three, and document the delta in
 `analysis_log.md` as a metric correction, with old and new numbers side by side.
 `_build_undecided_pit_candidates_9t.py` already has the fix and **must not
@@ -477,7 +477,7 @@ seed on CPU.
 ## Step 2.6 — `core/labels.py`
 
 Rasterisation, chunking, block-grid generation, split assignment — from
-`_build_pit_dataset.py`, `_build_plat_road_dataset.py`, `_build_block_grid.py`.
+`_build_pit_dataset.py`, `_build_pad_road_dataset.py`, `_build_block_grid.py`.
 Golden must be unchanged.
 
 ---

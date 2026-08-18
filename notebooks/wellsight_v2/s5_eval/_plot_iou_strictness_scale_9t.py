@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parents[3]
 OUT = path_for("results_9t") / "instance_precision"
 SRC = OUT / "metrics_9t.csv"
 
-MODELS = ["pit_unet_v2", "plat_unet"]
+MODELS = ["pit_unet_v2", "pad_unet"]
 COLORS = {"recall": "#1a9641", "precision": "#d7191c", "f1": "#2c7bb6"}
 
 
@@ -73,7 +73,7 @@ def main() -> int:
     md = ["| IoU required | pit R | pit P | pit F1 | pad R | pad P | pad F1 |",
           "|---|---|---|---|---|---|---|"]
     pit = df[df.model == "pit_unet_v2"].set_index("iou")
-    pad = df[df.model == "plat_unet"].set_index("iou")
+    pad = df[df.model == "pad_unet"].set_index("iou")
     for t in sorted(pit.index):
         md.append(f"| {t:.2f} | {pit.loc[t, 'recall']:.3f} | "
                   f"{pit.loc[t, 'precision']:.3f} | {pit.loc[t, 'f1']:.3f} | "

@@ -91,7 +91,7 @@ UNET_PROB = {
     # pits: floor prob ONLY. _unet_instance_eval used max(floor, wall), which
     # cannot be matched against floor-only GT without inflating false positives.
     "pit_unet_v2": ("pit", path_for("models") / "pit" / "unet_v2" / "pit_prob_floor.tif"),
-    "plat_unet":   ("pad", path_for("models") / "plat" / "unet" / "plat_prob.tif"),
+    "pad_unet":   ("pad", path_for("models") / "pad" / "unet" / "pad_prob.tif"),
 }
 
 
@@ -189,9 +189,9 @@ def main() -> int:
         columns={"pit_inside_id": "inst_id"}), on="inst_id", how="inner")
     foot["pit"] = {s: footprint(pm, s) for s in ("val", "test")}
 
-    pads = read_layer(ANN_GPKG, "plat").to_crs(CRS)
+    pads = read_layer(ANN_GPKG, "pad").to_crs(CRS)
     pads = pads.rename(columns={"pad_id": "inst_id"})[["inst_id", "geometry"]]
-    am = normalize_ids(pd.read_csv(NINE_T / "plat_dataset_manifest.csv"))
+    am = normalize_ids(pd.read_csv(NINE_T / "pad_dataset_manifest.csv"))
     gts["pad"] = pads.merge(am[["pad_id", "split"]].rename(
         columns={"pad_id": "inst_id"}), on="inst_id", how="inner")
     foot["pad"] = {s: footprint(am, s) for s in ("val", "test")}

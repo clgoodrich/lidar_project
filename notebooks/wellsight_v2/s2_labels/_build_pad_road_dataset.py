@@ -1,9 +1,9 @@
-"""Build labels and manifests for plat segmentation, road segmentation, and road classification.
+"""Build labels and manifests for pad segmentation, road segmentation, and road classification.
 
 Outputs (under data/derivatives/tiles/9t/):
-    labels_plat_9t_05.tif        uint8  0=bg, 1=plat
+    labels_pad_9t_05.tif        uint8  0=bg, 1=pad
     labels_road_9t_05.tif        uint8  0=bg, 1=road  (roads buffered 1.5 m)
-    plat_dataset_manifest.csv    one row per plat: pad_id, block_id, split, centroid_x/y
+    pad_dataset_manifest.csv    one row per pad: pad_id, block_id, split, centroid_x/y
     road_dataset_manifest.csv    one row per road LINE: road_id, kind, block_id, split, mid_x/y
     road_classifier_samples.csv  one row per sample POINT along lines (for the classifier)
 """
@@ -85,25 +85,25 @@ def main():
         crs = r.crs
 
     blocks = gpd.read_file(BLOCKS, layer="blocks")
-    plat = read_layer(ANN, "plat")
+    pad = read_layer(ANN, "pad")
     roads = read_layer(ANN, "roads")
     not_roads = read_layer(ANN, "not_roads")
     drainage = (read_layer(ANN, "drainage")
                 if "drainage" in gpd.list_layers(ANN)["name"].tolist()
                 else gpd.GeoDataFrame(geometry=[], crs=roads.crs))
-    print(f"plat={len(plat)}  roads={len(roads)}  not_roads={len(not_roads)}  "
+    print(f"pad={len(pad)}  roads={len(roads)}  not_roads={len(not_roads)}  "
           f"drainage={len(drainage)}")
 
-    # --- plat label raster (binary) ---
-    plat_arr = rasterize(
-        [(g, 1) for g in plat.geometry if g and not g.is_empty],
+    # --- pad label raster (binary) ---
+    pad_arr = rasterize(
+        [(g, 1) for g in pad.geometry if g and not g.is_empty],
         out_shape=(H, W), transform=tf, fill=0, dtype="uint8",
     )
     p1 = profile.copy()
     p1.update(dtype="uint8", count=1, nodata=255, compress="deflate", predictor=2)
-    with rasterio.open(D / "labels_plat_9t_05.tif", "w", **p1) as dst:
-        dst.write(plat_arr, 1)
-    print(f"labels_plat_9t_05.tif  ({int(plat_arr.sum())} px = {int(plat_arr.sum()*0.25)} m^2)")
+    with rasterio.open(D / "labels_pad_9t_05.tif", "w", **p1) as dst:
+        dst.write(pad_arr, 1)
+    print(f"labels_pad_9t_05.tif  ({int(pad_arr.sum())} px = {int(pad_arr.sum()*0.25)} m^2)")
 
     # --- road label raster (binary, buffered) ---
     buffered = [g.buffer(ROAD_BUFFER_M) for g in roads.geometry if g and not g.is_empty]
@@ -115,19 +115,19 @@ def main():
         dst.write(road_arr, 1)
     print(f"labels_road_9t_05.tif  ({int(road_arr.sum())} px = {int(road_arr.sum()*0.25)} m^2)")
 
-    # --- plat manifest ---
-    plat_rows = []
-    for _, row in plat.iterrows():
+    # --- pad manifest ---
+    pad_rows = []
+    for _, row in pad.iterrows():
         if row.geometry is None or row.geometry.is_empty:
             continue
         bid, split = assign_split(row.geometry, blocks)
         c = row.geometry.centroid
-        plat_rows.append({"pad_id": int(row.pad_id), "block_id": bid, "split": split,
+        pad_rows.append({"pad_id": int(row.pad_id), "block_id": bid, "split": split,
                           "centroid_x": c.x, "centroid_y": c.y,
                           "area_m2": float(row.geometry.area)})
-    plat_man = pd.DataFrame(plat_rows)
-    plat_man.to_csv(D / "plat_dataset_manifest.csv", index=False)
-    print(f"plat_dataset_manifest.csv  splits={plat_man['split'].value_counts().to_dict()}")
+    pad_man = pd.DataFrame(pad_rows)
+    pad_man.to_csv(D / "pad_dataset_manifest.csv", index=False)
+    print(f"pad_dataset_manifest.csv  splits={pad_man['split'].value_counts().to_dict()}")
 
     # --- road CHUNK manifest + chunk geometries (used by the road U-Net) ---
     # Roads/not_roads are long polylines -> chunk them so every ~40 m becomes its

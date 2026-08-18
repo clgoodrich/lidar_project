@@ -7,7 +7,7 @@ The U-Net draws pit floors about half the size we do (median 13.5 m2 vs 26.2 m2)
 so IoU-based scoring marks a correctly located pit as a partial miss purely
 because the outline is tighter.
 
-The rim (`pit_outside`) is the natural target for "did we find this pit". It is
+The rim (`pit_full`) is the natural target for "did we find this pit". It is
 ~7.6x the floor area, and the annotated floor sits inside it in 423 of 424 cases.
 A predicted floor blob landing inside the rim IS the pit, whatever its exact
 outline. That separates LOCATING a pit from DELINEATING one, which are different
@@ -152,7 +152,7 @@ def main() -> int:
     print("   ground truth = hand-drawn annotations only\n")
 
     ins = read_layer(ANN_GPKG, "pit_inside").to_crs(CRS)
-    rim = read_layer(ANN_GPKG, "pit_outside").to_crs(CRS)
+    rim = read_layer(ANN_GPKG, "pit_full").to_crs(CRS)
     man = normalize_ids(pd.read_csv(NINE_T / "pit_dataset_manifest.csv"))
     held_ids = set(man.loc[man.split.isin(("val", "test")), "pit_inside_id"])
 

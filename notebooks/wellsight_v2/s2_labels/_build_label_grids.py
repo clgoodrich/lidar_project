@@ -3,7 +3,7 @@
 Creates label_grids/<region>_NN/ folders, each a contiguous 2x2 tile mosaic with
 the 1 m DEM + hillshade + WellSight analytical derivative stack, plus EMPTY
 annotation geopackages to draw labels on:
-  westernpa_*: pit_inside.gpkg (MultiPolygon), pit_outside.gpkg (Polygon)
+  westernpa_*: pit_inside.gpkg (MultiPolygon), pit_full.gpkg (Polygon)
   permian_*  : pads.gpkg (Polygon)
 
 Grids are selected to MAXIMIZE known orphan-well count inside the footprint

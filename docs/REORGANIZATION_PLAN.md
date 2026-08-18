@@ -223,7 +223,7 @@ while**. I split the candidates three ways, and only the first group is obsolete
 | `road_unet_1m/best.pt.2class.BAK` | 93 MB | superseded 2026-06-08 by the 3-class in-model fix |
 | `road_unet_1m/best.pt.3class_nochunk.BAK` | 93 MB | superseded by the chunked 3-class model |
 | `road_unet/best.pt.BAK` | 93 MB | 0.5 m two-class lineage, retired |
-| `annotations_proj.gpkg.BAK` | 0.4 MB | pre-`plat_id` schema |
+| `annotations_proj.gpkg.BAK` | 0.4 MB | pre-`pad_id` schema |
 | `annotations_proj.gpkg.preDrainage.BAK` | 2.6 MB | pre-drainage-layer schema |
 | `road_dataset_manifest.csv.BAK` | small | superseded by the 2026-08-06 rebuild |
 | stale `roads_<key>_1m.gpkg` / `road_clean_*` | varies | `BACKLOG.md`: "are obsolete and can be deleted" |
@@ -418,7 +418,7 @@ step's gate protects the next.
 2. The nine flat `eval_*` directories → `data/05_results/`
 3. `data/derivatives/experiments/` → `data/06_experiments/`
 4. Model directories under `tiles/9t/` (`pit_unet_cv5`, `pad_unet_cv5`,
-   `road_unet_1m*`, `drainage_unet_1m`, `plat_unet`, `multitask_unet`,
+   `road_unet_1m*`, `drainage_unet_1m`, `pad_unet`, `multitask_unet`,
    `road_sweep_202607`, `road_classifier`) → `data/04_models/<target>/`
 5. `data/derivatives/tiles/` → `data/03_derived/`, normalising the naming
    inconsistencies from §1.4

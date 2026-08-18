@@ -212,7 +212,7 @@ def build_features(pads):
 
 def main(k_override=None):
     sfx = "_joint" + (f"_k{k_override}" if k_override else "")
-    pads = read_layer(ANN, "plat").to_crs(CRS)
+    pads = read_layer(ANN, "pad").to_crs(CRS)
     pads.geometry = pads.geometry.make_valid()
     pads = pads[pads.geometry.notna() & ~pads.geometry.is_empty].copy()
     pads = pads.reset_index(drop=True).reset_index(names="pad_i")

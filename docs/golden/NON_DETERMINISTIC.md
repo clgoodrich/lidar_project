@@ -25,11 +25,11 @@ pad_tau_scale
 score_road_613590
 ```
 
-## Two deferred: `_build_pit_dataset.py`, `_build_plat_road_dataset.py`
+## Two deferred: `_build_pit_dataset.py`, `_build_pad_road_dataset.py`
 
 **Not run for golden recording.** Both regenerate `pit_blocks_9t.gpkg` /
-`pit_dataset_manifest.csv` and `plat_dataset_manifest.csv` from whatever is
-currently in `pit_inside.shp` / `plat.shp` — no dry-run mode, no output
+`pit_dataset_manifest.csv` and `pad_dataset_manifest.csv` from whatever is
+currently in `pit_inside.shp` / `pad.shp` — no dry-run mode, no output
 redirect, they always write to the canonical `DERIV_9T` paths.
 
 **This was not a hypothetical risk.** Running `_build_pit_dataset.py` once,
@@ -52,7 +52,7 @@ adding a guard to the label builders** — e.g., refuse to overwrite
 `pit_blocks_9t.gpkg` when the annotation count differs from the manifest's
 recorded count without an explicit `--force`. That guard does not exist yet
 and this is a live footgun in the current 9t pipeline, not just a 613590
-problem: **every time `pit_inside.shp` or `plat.shp` grows, the next run of
+problem: **every time `pit_inside.shp` or `pad.shp` grows, the next run of
 these two scripts silently reassigns folds with no warning.**
 
 Golden-recording these two safely requires either the `--force` guard above,

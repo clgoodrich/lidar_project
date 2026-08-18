@@ -157,7 +157,7 @@ importing a trainer, and stops loading torch to compute a fold assignment.
 imports. **After this the trainers can be merged safely.**
 
 **2.3 — `core/matching.py` ← `match_scores`, `containment`, `locate_rate`**
-Carries the corrected `pit_id` / `pit_id_outer` keying. Three consumers will
+Carries the corrected `pit_inside_id` / `pit_full_id` keying. Three consumers will
 legitimately change; `_build_undecided_pit_candidates_9t.py` already has the fix
 and is the control that must not.
 

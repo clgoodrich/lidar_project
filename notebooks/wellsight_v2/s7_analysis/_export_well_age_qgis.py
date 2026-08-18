@@ -24,7 +24,7 @@ from _common import path_for  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
 WELLS = path_for("derivatives") / "venango_wells_all.gpkg"
-PADS = path_for("truth") / "plat.shp"
+PADS = path_for("truth") / "pad.shp"
 MATCHES = path_for("experiments") / "well_age_morphology" / "well_pad_matches.csv"
 OUT = path_for("experiments") / "well_age_morphology" / "well_age_morphology.gpkg"
 CRS = "EPSG:6346"

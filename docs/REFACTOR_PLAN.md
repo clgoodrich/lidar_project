@@ -46,8 +46,8 @@ them silently. Nothing moves without a proven-identical output.
 `_pit_threshold_products_9t.py` and `_pad_threshold_products_9t.py` began as
 copies and are now **16% similar**. A fix to one does not reach the other.
 
-That is not hypothetical. The NULL-`pit_id` defect — where
-`dissolve(by="pit_id")` silently discarded 138 annotated rims — existed
+That is not hypothetical. The NULL-`pit_inside_id` defect — where
+`dissolve(by="pit_inside_id")` silently discarded 138 annotated rims — existed
 simultaneously in `_match_rules_pit_pad_9t.py`,
 `_cv5_centroid_precision_pit_pad_9t.py` and
 `_map_cv5_unmatched_pit_thr0p50_9t.py`, because each carries its own copy of the
@@ -62,7 +62,7 @@ training. Not a data problem — a hardcoding problem:
 | Script | `9t` references | CLI arguments |
 |---|---:|---:|
 | `_build_pit_dataset.py` | 11 | **0** |
-| `_build_plat_road_dataset.py` | 12 | **0** |
+| `_build_pad_road_dataset.py` | 12 | **0** |
 | `_rebuild_labels_road_9t_1m.py` | 11 | **0** |
 
 There is no way to point them at another tile.
@@ -120,7 +120,7 @@ blocks  = ""            # <- does not exist yet; Phase 1 builds it
 ```toml
 # targets.toml
 [pit]
-layers      = ["pit_inside", "pit_outside"]
+layers      = ["pit_inside", "pit_full"]
 predicts    = "pit_inside"      # the model draws floors
 matches_on  = "union"           # scored against rim OR floor
 classes     = 3                 # bg / floor / wall
@@ -193,7 +193,7 @@ The highest-value phase. No code is restructured; constants become config.
    and train/val/test split for any area. This is the genuinely missing piece;
    613590 has a feature stack and annotation but no grid.
 4. Parameterise the three blockers: `_build_pit_dataset.py`,
-   `_build_plat_road_dataset.py`, `_rebuild_labels_road_9t_1m.py` →
+   `_build_pad_road_dataset.py`, `_rebuild_labels_road_9t_1m.py` →
    `--area {9t,613590}`, defaulting to `9t`.
 
 **Verification:** run each with `--area 9t`, golden-verify byte-identical to the
@@ -209,7 +209,7 @@ In this order, highest bug-risk first:
 
 1. **`core/matching.py`** — centroid containment, bidirectional, greedy 1:1,
    size filtering. Currently duplicated across four eval scripts and the site of
-   the NULL-`pit_id` defect. One implementation, one place to fix.
+   the NULL-`pit_inside_id` defect. One implementation, one place to fix.
 2. **`core/metrics.py`** — P/R/F1 and the Wiedemann completeness/correctness/
    quality triple.
 3. **`core/models.py`** — the U-Net/loss/train-loop currently in `_dl.py`, plus

@@ -44,7 +44,7 @@ SCORING
 -------
   recall@IoU     predicted floor vs annotated floor (`pit_inside`), greedy 1:1
   containment    predicted floor centroid inside the annotated rim
-                 (`pit_outside`) -- LOCATING a pit, not delineating it
+                 (`pit_full`) -- LOCATING a pit, not delineating it
   precision      predictions restricted to the held-out fold's block footprint,
                  the extent-matching fix from `_reeval_instance_precision_9t.py`
 
@@ -234,7 +234,7 @@ def main() -> int:
     floors = read_layer(ANN_GPKG, "pit_inside").to_crs(CRS)
     floors = floors[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
     floors = floors.merge(man[["pit_inside_id", "fold"]], on="pit_inside_id", how="inner")
-    rims = read_layer(ANN_GPKG, "pit_outside").to_crs(CRS)
+    rims = read_layer(ANN_GPKG, "pit_full").to_crs(CRS)
     rims = rims[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
     rims = rims.merge(man[["pit_inside_id", "fold"]], on="pit_inside_id", how="inner")
 

@@ -1,7 +1,7 @@
-"""Apply the PA-trained pad/plat U-Net straight to a label_grids/<grid> tile.
+"""Apply the PA-trained pad/pad U-Net straight to a label_grids/<grid> tile.
 
-Cross-region transfer EXPERIMENT: the model is trained on Western-PA plats at 0.5 m
-(`data/derivatives/tiles/9t/plat_unet/best.pt`, 7-band pit feature stack, channels =
+Cross-region transfer EXPERIMENT: the model is trained on Western-PA pads at 0.5 m
+(`data/derivatives/tiles/9t/pad_unet/best.pt`, 7-band pit feature stack, channels =
 DEFAULT_CHANNELS, normalized by 9t feature_stats.json). Here we run it unchanged on a
 grid's EXISTING derivatives — no Permian labels, no retraining, no resampling.
 
@@ -36,7 +36,7 @@ from _common import DERIV_9T, ROOT, make_profile, write_tif       # noqa: E402
 from _dl import (DEFAULT_CHANNELS, DEVICE, UNet, load_stats,        # noqa: E402
                  predict_full_tile)
 
-CKPT = path_for("models") / "plat" / "unet" / "best.pt"
+CKPT = path_for("models") / "pad" / "unet" / "best.pt"
 STATS = DERIV_9T / "feature_stats.json"
 PATCH, OVERLAP, N_CLASSES = 384, 96, 2
 # 9t stack calls the 1 m roughness band "roughness_11"; on the grids it is roughness_5.
@@ -127,7 +127,7 @@ def main() -> int:
     model = UNet(in_ch=len(DEFAULT_CHANNELS), n_classes=N_CLASSES, base=32)
     ck = torch.load(CKPT, map_location=DEVICE, weights_only=False)
     model.to(DEVICE).load_state_dict(ck["state_dict"])
-    print(f"  loaded plat_unet best.pt (ep {ck.get('epoch','?')})")
+    print(f"  loaded pad_unet best.pt (ep {ck.get('epoch','?')})")
 
     prob, argmax, profile = predict_full_tile(
         model, feats, mu, sd, patch=PATCH, overlap=OVERLAP, n_classes=N_CLASSES)

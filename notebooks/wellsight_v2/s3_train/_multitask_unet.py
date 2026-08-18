@@ -1,14 +1,14 @@
-"""Multi-task U-Net for pit / road / plat joint segmentation at 0.5 m.
+"""Multi-task U-Net for pit / road / pad joint segmentation at 0.5 m.
 
 Combines everything the per-task trainers learn separately:
 
   * pit head   (3 classes: bg / floor / wall)  -- from labels_pit_9t_05.tif
   * road head  (2 classes: bg / road)          -- from labels_road_9t_05.tif
-  * plat head  (2 classes: bg / plat)          -- from labels_plat_9t_05.tif
+  * pad head  (2 classes: bg / pad)          -- from labels_pad_9t_05.tif
 
 Sampling policies (cycled per __getitem__, +1 random-background slot):
     pit centroid (jitter 30 m)        -- centers on a pit
-    plat centroid (jitter 40 m)       -- centers on a well pad
+    pad centroid (jitter 40 m)       -- centers on a well pad
     road midpoint (jitter 30 m)       -- centers on a road line
     not_road midpoint (jitter 30 m)   -- HARD NEGATIVE for the road head
     random block-interior background
@@ -20,7 +20,7 @@ Outputs under ``data/derivatives/tiles/9t/multitask_unet/``:
     best.pt              best-val checkpoint (state_dict + cfg + norm stats)
     train_log.csv        per-epoch metrics with one IoU column per head class
     pit_prob.tif, pit_argmax.tif, road_prob.tif, road_argmax.tif,
-    plat_prob.tif, plat_argmax.tif    full-tile inference outputs
+    pad_prob.tif, pad_argmax.tif    full-tile inference outputs
 
 Run:
     python notebooks/wellsight/multitask/_multitask_unet.py --epochs 40 --batch 8
@@ -53,7 +53,7 @@ OUTDIR = path_for("models") / "multitask" / "unet"
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 LBL_PIT = DERIV_9T / "labels_pit_9t_05.tif"
 LBL_ROAD = DERIV_9T / "labels_road_9t_05.tif"
-LBL_PLAT = DERIV_9T / "labels_plat_9t_05.tif"
+LBL_PLAT = DERIV_9T / "labels_pad_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"
 # Unified "any-feature" split so all three heads share ONE consistent split
 # (no cross-head leakage; uses all in-tile pits/pads/roads). See
@@ -61,10 +61,10 @@ STATS = DERIV_9T / "feature_stats.json"
 BLOCKS = DERIV_9T / "blocks_unified_9t.gpkg"
 MAN_PIT = DERIV_9T / "pit_dataset_manifest_unified.csv"
 MAN_ROAD = DERIV_9T / "road_dataset_manifest_unified.csv"
-MAN_PLAT = DERIV_9T / "plat_dataset_manifest_unified.csv"
+MAN_PLAT = DERIV_9T / "pad_dataset_manifest_unified.csv"
 
 # 384 px = 192 m at 0.5 m/px. Multiple of 16 (4-level encoder), and matches the
-# plat trainer's window so well pads fit with context. Pits/roads centered in
+# pad trainer's window so well pads fit with context. Pits/roads centered in
 # it still have plenty of background.
 PATCH = 384
 OVERLAP = 96
@@ -79,8 +79,8 @@ FOCAL_PLAT = (0.15, 0.85)
 FOCAL_GAMMA = 2.0
 
 # Per-task loss weighting. Pit gets the most weight because it's the
-# downstream detection target; road/plat are auxiliary context.
-LOSS_WEIGHTS = {"pit": 1.0, "road": 0.6, "plat": 0.6}
+# downstream detection target; road/pad are auxiliary context.
+LOSS_WEIGHTS = {"pit": 1.0, "road": 0.6, "pad": 0.6}
 
 
 # ---------------------------------------------------------------------------
@@ -152,7 +152,7 @@ class MultiLabelPatchSampler(Dataset):
 
     ``policies`` are ``(name, xy_array, jitter_m)``. Each __getitem__ cycles
     through them (plus one random-background slot) and returns
-    ``(feat, lbl_pit, lbl_road, lbl_plat)`` -- all three label tiles for the
+    ``(feat, lbl_pit, lbl_road, lbl_pad)`` -- all three label tiles for the
     same window, so every patch contributes to every head's loss.
     """
 
@@ -241,16 +241,16 @@ def build_dataset(split: str, blocks: gpd.GeoDataFrame, transform, mu, sd,
                   *, augment: bool, seed: int) -> MultiLabelPatchSampler:
     pit = pd.read_csv(MAN_PIT)
     road = pd.read_csv(MAN_ROAD)
-    plat = pd.read_csv(MAN_PLAT)
+    pad = pd.read_csv(MAN_PLAT)
     pit_pts = pit.loc[pit.split == split, ["centroid_x", "centroid_y"]].to_numpy()
-    plat_pts = plat.loc[plat.split == split, ["centroid_x", "centroid_y"]].to_numpy()
+    pad_pts = pad.loc[pad.split == split, ["centroid_x", "centroid_y"]].to_numpy()
     r = road[road.split == split]
     road_pts = r.loc[r.kind == "road", ["mid_x", "mid_y"]].to_numpy()
     not_road_pts = r.loc[r.kind == "not_road", ["mid_x", "mid_y"]].to_numpy()
     bounds = np.array([g.bounds for g in blocks.loc[blocks.split == split].geometry])
     policies = [
         ("pit",      pit_pts,      30.0),
-        ("plat",     plat_pts,     40.0),
+        ("pad",     pad_pts,     40.0),
         ("road",     road_pts,     30.0),
         ("not_road", not_road_pts, 30.0),
     ]
@@ -275,10 +275,10 @@ def _iou_accum(pred: torch.Tensor, tgt: torch.Tensor, nc: int,
 def _run_epoch(model, loader, opt, losses, scaler, *, train: bool):
     model.train(mode=train)
     use_amp = DEVICE.type == "cuda"
-    totals = {"all": 0.0, "pit": 0.0, "road": 0.0, "plat": 0.0}
+    totals = {"all": 0.0, "pit": 0.0, "road": 0.0, "pad": 0.0}
     n = 0
-    inter = {"pit": np.zeros(NC_PIT), "road": np.zeros(NC_ROAD), "plat": np.zeros(NC_PLAT)}
-    union = {"pit": np.zeros(NC_PIT), "road": np.zeros(NC_ROAD), "plat": np.zeros(NC_PLAT)}
+    inter = {"pit": np.zeros(NC_PIT), "road": np.zeros(NC_ROAD), "pad": np.zeros(NC_PLAT)}
+    union = {"pit": np.zeros(NC_PIT), "road": np.zeros(NC_ROAD), "pad": np.zeros(NC_PLAT)}
     ctx = torch.enable_grad() if train else torch.no_grad()
     with ctx:
         for x, yp, yr, ya in loader:
@@ -292,20 +292,20 @@ def _run_epoch(model, loader, opt, losses, scaler, *, train: bool):
                 logit_p, logit_r, logit_a = model(x)
                 l_pit = losses["pit"](logit_p, yp)
                 l_road = losses["road"](logit_r, yr)
-                l_plat = losses["plat"](logit_a, ya)
+                l_pad = losses["pad"](logit_a, ya)
                 loss = (LOSS_WEIGHTS["pit"] * l_pit
                         + LOSS_WEIGHTS["road"] * l_road
-                        + LOSS_WEIGHTS["plat"] * l_plat)
+                        + LOSS_WEIGHTS["pad"] * l_pad)
             if train:
                 scaler.scale(loss).backward()
                 scaler.step(opt)
                 scaler.update()
             totals["all"] += float(loss); totals["pit"] += float(l_pit)
-            totals["road"] += float(l_road); totals["plat"] += float(l_plat)
+            totals["road"] += float(l_road); totals["pad"] += float(l_pad)
             n += 1
             _iou_accum(logit_p.argmax(1), yp, NC_PIT, inter["pit"], union["pit"])
             _iou_accum(logit_r.argmax(1), yr, NC_ROAD, inter["road"], union["road"])
-            _iou_accum(logit_a.argmax(1), ya, NC_PLAT, inter["plat"], union["plat"])
+            _iou_accum(logit_a.argmax(1), ya, NC_PLAT, inter["pad"], union["pad"])
     iou = {k: [(inter[k][c] / union[k][c]) if union[k][c] else float("nan")
                for c in range(len(inter[k]))] for k in inter}
     means = {k: v / max(n, 1) for k, v in totals.items()}
@@ -329,7 +329,7 @@ def write_full_tile(model, mu, sd, out_dir: Path) -> None:
     print(f"Inference: {len(rs)}x{len(cs)} = {len(rs)*len(cs)} patches")
     probs = {"pit": np.zeros((NC_PIT, H, W), dtype=np.float32),
              "road": np.zeros((NC_ROAD, H, W), dtype=np.float32),
-             "plat": np.zeros((NC_PLAT, H, W), dtype=np.float32)}
+             "pad": np.zeros((NC_PLAT, H, W), dtype=np.float32)}
     cnt = np.zeros((H, W), dtype=np.float32)
     model.eval()
     use_amp = DEVICE.type == "cuda"
@@ -343,11 +343,11 @@ def write_full_tile(model, mu, sd, out_dir: Path) -> None:
             outs = model(x)
             p_pit = torch.softmax(outs[0], 1).cpu().numpy()
             p_road = torch.softmax(outs[1], 1).cpu().numpy()
-            p_plat = torch.softmax(outs[2], 1).cpu().numpy()
+            p_pad = torch.softmax(outs[2], 1).cpu().numpy()
         for i, (r0, c0) in enumerate(buf_pos):
             probs["pit"][:, r0:r0+PATCH, c0:c0+PATCH] += p_pit[i]
             probs["road"][:, r0:r0+PATCH, c0:c0+PATCH] += p_road[i]
-            probs["plat"][:, r0:r0+PATCH, c0:c0+PATCH] += p_plat[i]
+            probs["pad"][:, r0:r0+PATCH, c0:c0+PATCH] += p_pad[i]
             cnt[r0:r0+PATCH, c0:c0+PATCH] += 1
         buf_x.clear(); buf_pos.clear()
 
@@ -402,10 +402,10 @@ def main() -> int:
 
     train_ds = build_dataset("train", blocks, tf, mu, sd, augment=True,  seed=42)
     val_ds   = build_dataset("val",   blocks, tf, mu, sd, augment=False, seed=43)
-    print(f"train: pit={len(train_ds.policies[0][1])} plat={len(train_ds.policies[1][1])} "
+    print(f"train: pit={len(train_ds.policies[0][1])} pad={len(train_ds.policies[1][1])} "
           f"road={len(train_ds.policies[2][1])} not_road={len(train_ds.policies[3][1])} "
           f"tiles/ep={len(train_ds)}")
-    print(f"val:   pit={len(val_ds.policies[0][1])} plat={len(val_ds.policies[1][1])} "
+    print(f"val:   pit={len(val_ds.policies[0][1])} pad={len(val_ds.policies[1][1])} "
           f"road={len(val_ds.policies[2][1])} not_road={len(val_ds.policies[3][1])} "
           f"tiles/ep={len(val_ds)}")
 
@@ -417,7 +417,7 @@ def main() -> int:
     model = MultiHeadUNet(in_ch=len(DEFAULT_CHANNELS), base=32).to(DEVICE)
     losses = {"pit":  FocalCE(FOCAL_PIT,  FOCAL_GAMMA).to(DEVICE),
               "road": FocalCE(FOCAL_ROAD, FOCAL_GAMMA).to(DEVICE),
-              "plat": FocalCE(FOCAL_PLAT, FOCAL_GAMMA).to(DEVICE)}
+              "pad": FocalCE(FOCAL_PLAT, FOCAL_GAMMA).to(DEVICE)}
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
     scaler = torch.amp.GradScaler("cuda", enabled=DEVICE.type == "cuda")
@@ -431,24 +431,24 @@ def main() -> int:
         tr, _ = _run_epoch(model, train_loader, opt, losses, scaler, train=True)
         va, va_iou = _run_epoch(model, val_loader, None, losses, None, train=False)
         sched.step()
-        # Composite score: pit floor+wall + road class + plat class, all
+        # Composite score: pit floor+wall + road class + pad class, all
         # equally weighted -- this is what we actually care about downstream.
         pit_score = np.nanmean(va_iou["pit"][1:])
-        score = float(np.nanmean([pit_score, va_iou["road"][1], va_iou["plat"][1]]))
+        score = float(np.nanmean([pit_score, va_iou["road"][1], va_iou["pad"][1]]))
         dt = time.time() - t0
         print(f"ep {ep:3d}/{args.epochs}  "
-              f"tr={tr['all']:.3f} (p={tr['pit']:.3f} r={tr['road']:.3f} a={tr['plat']:.3f})  "
+              f"tr={tr['all']:.3f} (p={tr['pit']:.3f} r={tr['road']:.3f} a={tr['pad']:.3f})  "
               f"va={va['all']:.3f}  "
               f"iou pit[fl={va_iou['pit'][1]:.2f},wl={va_iou['pit'][2]:.2f}] "
-              f"road={va_iou['road'][1]:.2f} plat={va_iou['plat'][1]:.2f}  "
+              f"road={va_iou['road'][1]:.2f} pad={va_iou['pad'][1]:.2f}  "
               f"score={score:.3f}  {dt:.1f}s")
         log_rows.append({
             "epoch": ep, "tr_loss": tr["all"], "va_loss": va["all"],
-            "tr_loss_pit": tr["pit"], "tr_loss_road": tr["road"], "tr_loss_plat": tr["plat"],
+            "tr_loss_pit": tr["pit"], "tr_loss_road": tr["road"], "tr_loss_pad": tr["pad"],
             "iou_pit_bg": va_iou["pit"][0], "iou_pit_floor": va_iou["pit"][1],
             "iou_pit_wall": va_iou["pit"][2],
             "iou_road_bg": va_iou["road"][0], "iou_road": va_iou["road"][1],
-            "iou_plat_bg": va_iou["plat"][0], "iou_plat": va_iou["plat"][1],
+            "iou_pad_bg": va_iou["pad"][0], "iou_pad": va_iou["pad"][1],
             "score": score, "sec": dt,
         })
         if score > best_score:

@@ -167,8 +167,8 @@ Wire `check_or_refuse()` into both label builders, each of which currently takes
 **0 CLI args** and always writes to the canonical `DERIV_9T` paths:
 
 - `s2_labels/_build_pit_dataset.py` (152 lines) → guards `pit_dataset_manifest.csv`
-- `s2_labels/_build_plat_road_dataset.py` (189 lines) → guards
-  `plat_dataset_manifest.csv` (written line 129) and `road_dataset_manifest.csv`
+- `s2_labels/_build_pad_road_dataset.py` (189 lines) → guards
+  `pad_dataset_manifest.csv` (written line 129) and `road_dataset_manifest.csv`
   (line 157)
 
 Add a `--force` flag to each. Then golden-record both — that takes Phase 0 from
@@ -191,13 +191,13 @@ Real differences to parameterise: patch 128 m / 30 m jitter / 3 classes (pit) vs
 384 px / 40 m jitter / 2 classes (pad); `MIN_AREA_M2` 4.0 vs 100.0; one
 target-specific match rule. Target: `train_unet_cv5.py --target {pit,pad}`.
 
-### Step 6 — the NULL-`pit_id` correctness bug (three scripts still carry it)
+### Step 6 — the NULL-`pit_inside_id` correctness bug (three scripts still carry it)
 
-This is a **real defect**, not a refactor. `dissolve(by="pit_id")` silently drops
-**138 rims** whose `pit_id` is NULL (a rim with no paired floor). The tell is a
+This is a **real defect**, not a refactor. `dissolve(by="pit_inside_id")` silently drops
+**138 rims** whose `pit_inside_id` is NULL (a rim with no paired floor). The tell is a
 candidate that overlaps a rim 100% while reporting `near_pit_m` of 126–137 m.
 
-Fix: key on `pit_id` where present, `f"o{pit_id_outer}"` otherwise.
+Fix: key on `pit_inside_id` where present, `f"o{pit_full_id}"` otherwise.
 
 - **Already fixed** (use as the control that must NOT change):
   `s5_eval/_build_undecided_pit_candidates_9t.py`
@@ -205,9 +205,9 @@ Fix: key on `pit_id` where present, `f"o{pit_id_outer}"` otherwise.
   `s5_eval/_cv5_centroid_precision_pit_pad_9t.py`,
   `s5_eval/_map_cv5_unmatched_pit_thr0p50_9t.py`
 
-Related and also required: pit matching must consider **both** `pit_outside` and
-`pit_inside` — key on the per-`pit_id` union of the two layers. The user caught
-this explicitly: *".... are you not checking this against pit_outside and
+Related and also required: pit matching must consider **both** `pit_full` and
+`pit_inside` — key on the per-`pit_inside_id` union of the two layers. The user caught
+this explicitly: *".... are you not checking this against pit_full and
 pit_inside?"*
 
 **These three scripts will legitimately change their golden output.** That is the
@@ -279,7 +279,7 @@ of added to it. The defect is duplication and coupling, not craft.
   off what the models trained on (slope mean 8.3177 → 8.5156). Already restored
   from the E: mirror and the rebuild target was renamed to
   `tiles/9t_1m_rebuilt20260812/` so the script fails fast. Do not undo that.
-- **`_build_pit_dataset.py` / `_build_plat_road_dataset.py` have no dry-run and
+- **`_build_pit_dataset.py` / `_build_pad_road_dataset.py` have no dry-run and
   no output redirect.** Do not run them until Step 4 lands.
 - **Backups:** `E:\Colton\_BACKUPS\lidar_project_MIRROR` is the only backup.
   **There is no F: drive** (it was mounted 2026-08-05/06, gone since). Robocopy
@@ -294,7 +294,7 @@ of added to it. The defect is duplication and coupling, not craft.
 
 ## 5. Open questions, unresolved
 
-- `plat.shp` has **1,053** features but `plat_dataset_manifest.csv` has **650**.
+- `pad.shp` has **1,053** features but `pad_dataset_manifest.csv` has **650**.
   No explanation found.
 - `plat_02`/`road_02` and `plat_03`/`road_03` hold **byte-identical checkpoints**
   under different names. Candidates for the `_dupe` rename rule — but confirm
@@ -313,7 +313,7 @@ of added to it. The defect is duplication and coupling, not craft.
 - [ ] All 11 golden baselines PASS after Steps 1–3
 - [ ] `_manifest_guard.py` wired into both label builders with `--force`;
       golden at 13/13
-- [ ] NULL-`pit_id` fix in the 3 remaining eval scripts; baselines re-recorded
+- [ ] NULL-`pit_inside_id` fix in the 3 remaining eval scripts; baselines re-recorded
       and the moved numbers written up
 - [ ] `docs/analysis_log.md` entry (newest at top) and
       `docs/iterations/BACKLOG.md` updated

@@ -1,6 +1,6 @@
 """Refuse to silently reassign spatial-block splits when annotation has grown.
 
-`_build_pit_dataset.py` and `_build_plat_road_dataset.py` rasterize the
+`_build_pit_dataset.py` and `_build_pad_road_dataset.py` rasterize the
 CURRENT annotation and write a fresh block/fold assignment every time they
 run, with no dry-run mode and no output redirect -- they always overwrite the
 canonical manifest under `data/derivatives/tiles/9t/`. Trained CV5 checkpoints

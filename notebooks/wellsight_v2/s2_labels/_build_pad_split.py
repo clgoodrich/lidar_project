@@ -1,7 +1,7 @@
-"""Pad-aware spatial-block split for the STANDALONE plat/pad U-Net.
+"""Pad-aware spatial-block split for the STANDALONE pad/pad U-Net.
 
 The pit dataset (`_build_pit_dataset.py`) assigns train/val/test by *pit* content,
-leaving pit-free blocks "unused". `_build_plat_road_dataset.py` then inherits that
+leaving pit-free blocks "unused". `_build_pad_road_dataset.py` then inherits that
 split for pads, so every pad in a pit-free block is dropped (~420 of ~995). For a
 dedicated pad model that is pure waste -- a pit-free block is a perfectly good pad
 block. This builds an independent split keyed on PAD content so the pad U-Net uses
@@ -12,11 +12,11 @@ the split column is recomputed from pads. Mirrors the pit greedy-fill method
 (balance by feature COUNT, RNG_SEED=42, 70/15/15).
 
 Outputs (under data/derivatives/tiles/9t/):
-    plat_blocks_9t.gpkg        12x12 grid, split assigned by pad content
-    plat_dataset_manifest.csv  per-pad: pad_id, block_id, split, centroid_x/y
+    pad_blocks_9t.gpkg        12x12 grid, split assigned by pad content
+    pad_dataset_manifest.csv  per-pad: pad_id, block_id, split, centroid_x/y
                                (OVERWRITES the pit-inherited version)
 
-Run:  python notebooks/wellsight/annotations/_build_plat_split.py
+Run:  python notebooks/wellsight_v2/s2_labels/_build_pad_split.py
 """
 import sys
 from pathlib import Path
@@ -36,15 +36,15 @@ RNG_SEED = 42
 
 def main() -> int:
     blocks = gpd.read_file(PIT_BLOCKS, layer="blocks")[["block_id", "geometry"]].copy()
-    plat = read_layer(ANN, "plat").copy()
-    plat = plat[~plat.geometry.isna() & ~plat.geometry.is_empty].copy()
-    plat["ctr_x"] = plat.geometry.centroid.x
-    plat["ctr_y"] = plat.geometry.centroid.y
+    pad = read_layer(ANN, "pad").copy()
+    pad = pad[~pad.geometry.isna() & ~pad.geometry.is_empty].copy()
+    pad["ctr_x"] = pad.geometry.centroid.x
+    pad["ctr_y"] = pad.geometry.centroid.y
 
     # Count pads per block via centroid-in-block spatial join.
     cent = gpd.GeoDataFrame(
-        plat[["pad_id", "ctr_x", "ctr_y"]],
-        geometry=gpd.points_from_xy(plat["ctr_x"], plat["ctr_y"]), crs=plat.crs,
+        pad[["pad_id", "ctr_x", "ctr_y"]],
+        geometry=gpd.points_from_xy(pad["ctr_x"], pad["ctr_y"]), crs=pad.crs,
     )
     joined = gpd.sjoin(cent, blocks, how="left", predicate="within")
     n_per_block = joined.groupby("block_id").size()
@@ -64,7 +64,7 @@ def main() -> int:
         running[chosen] += n
     blocks["split"] = blocks["block_id"].map(split_of).fillna("unused")
 
-    blocks.to_file(D / "plat_blocks_9t.gpkg", layer="blocks", driver="GPKG")
+    blocks.to_file(D / "pad_blocks_9t.gpkg", layer="blocks", driver="GPKG")
 
     print("Pad block split summary:")
     for s in ["train", "val", "test", "unused"]:
@@ -77,8 +77,8 @@ def main() -> int:
     man.columns = ["pad_id", "block_id", "split", "centroid_x", "centroid_y"]
     man = man.dropna(subset=["block_id"])
     man["block_id"] = man["block_id"].astype(int)
-    man.to_csv(D / "plat_dataset_manifest.csv", index=False)
-    print(f"\nplat_dataset_manifest.csv  splits={man['split'].value_counts().to_dict()}")
+    man.to_csv(D / "pad_dataset_manifest.csv", index=False)
+    print(f"\npad_dataset_manifest.csv  splits={man['split'].value_counts().to_dict()}")
     print(f"  total pads used (train+val+test): "
           f"{int((man.split != 'unused').sum())} / {len(man)}")
     return 0

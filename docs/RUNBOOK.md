@@ -70,7 +70,7 @@ python notebooks/wellsight_v2/s4_infer/_predict_on_tile.py --suffix <AREA>
 
 Discovers the seven channels by naming convention, stacks them itself — **no
 separate feature-stack step is needed for inference** — and runs pit, road and
-plat models in one go. Outputs land in `data/inference_<AREA>/`.
+pad models in one go. Outputs land in `data/inference_<AREA>/`.
 
 ### A4. Turn probabilities into candidate polygons
 
@@ -116,7 +116,7 @@ biggest source of wrong numbers in this project.
 ### B2. Labels and splits
 
 ```
-python notebooks/wellsight_v2/s2_labels/_build_plat_road_dataset.py   # pads + roads
+python notebooks/wellsight_v2/s2_labels/_build_pad_road_dataset.py   # pads + roads
 python notebooks/wellsight_v2/s2_labels/_build_pit_dataset.py         # pits
 python notebooks/wellsight_v2/s2_labels/_rebuild_labels_road_9t_1m.py # 1 m road labels
 ```
@@ -177,7 +177,7 @@ evaluation, review tooling, or one-off analysis.
 ```
 ("pit",  "pit_unet_v2", ...)
 ("road", "road_unet",   ...)      <-- 0.5 m, 2-class, superseded
-("plat", "plat_unet",   ...)
+("pad", "pad_unet",   ...)
 ```
 
 `road_unet` is the retired 2-class model. The 3-class `road_unet_1m_recall`

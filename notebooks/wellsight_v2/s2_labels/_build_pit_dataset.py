@@ -2,11 +2,11 @@
 
 Inputs:
     data/derivatives/tiles/9t/dem_9t_05.tif                  (reference grid)
-    data/derivatives/annotations/annotations_proj.gpkg (pit_inside, pit_wall, plat)
+    data/derivatives/annotations/annotations_proj.gpkg (pit_inside, pit_wall, pad)
 
 Outputs (under data/derivatives/tiles/9t/):
     labels_pit_9t_05.tif       uint8 raster: 0=bg, 1=pit_floor, 2=pit_wall
-    mask_plat_9t_05.tif        uint8 raster: 0/1 plat mask
+    mask_pad_9t_05_dupe.tif        uint8 raster: 0/1 pad mask
     pit_blocks_9t.gpkg         spatial-block grid with split assignments
     pit_dataset_manifest.csv   per-pit table: pit_inside_id, pad_id, block_id, split, centroid_x/y
 """
@@ -50,7 +50,7 @@ def main():
 
     pit_in = read_layer(ANN, "pit_inside")   # pit floors, the inner polygons you drew
     pit_wall = read_layer(ANN, "pit_wall")   # the rim donuts, built by _prep_annotations
-    plat = read_layer(ANN, "plat")           # well pad outlines
+    pad = read_layer(ANN, "pad")           # well pad outlines
 
     # --- rasterize labels ---
     # Burn order matters: wall first, floor on top so floor wins on overlap.
@@ -78,19 +78,19 @@ def main():
         dst.write(label, 1)                 # write the grid into band 1
     print(f"Wrote {label_path.name}")
 
-    # --- plat mask ---
+    # --- pad mask ---
     # Same idea, simpler: 1 anywhere a pad polygon covers, 0 everywhere else.
-    plat_mask = rasterize(
-        [(g, 1) for g in plat.geometry if g and not g.is_empty],
+    pad_mask = rasterize(
+        [(g, 1) for g in pad.geometry if g and not g.is_empty],
         out_shape=(H, W),
         transform=transform,
         fill=0,
         dtype="uint8",
     )
-    plat_path = OUT / "mask_plat_9t_05.tif"
-    with rasterio.open(plat_path, "w", **lbl_profile) as dst:
-        dst.write(plat_mask, 1)
-    print(f"Wrote {plat_path.name}  ({int(plat_mask.sum())} px = {int(plat_mask.sum()*px_m2)} m^2)")
+    pad_path = OUT / "mask_pad_9t_05_dupe.tif"
+    with rasterio.open(pad_path, "w", **lbl_profile) as dst:
+        dst.write(pad_mask, 1)
+    print(f"Wrote {pad_path.name}  ({int(pad_mask.sum())} px = {int(pad_mask.sum()*px_m2)} m^2)")
 
     # --- spatial-block grid ---
     # Chop the tile into a 12 x 12 chessboard. Each square goes entirely into

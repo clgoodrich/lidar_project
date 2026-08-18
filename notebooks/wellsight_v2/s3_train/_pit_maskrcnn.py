@@ -191,7 +191,7 @@ def main() -> int:
     n_ch = len(mu)
     print(f"feature channels ({n_ch}): {ic.FEATURE_CHANNELS}")
 
-    # 3-class: bg (0) / floor (1) / wall (2). Walls come from pit_outside.
+    # 3-class: bg (0) / floor (1) / wall (2). Walls come from pit_full.
     pit_set = ic.load_pit_set(with_walls=True)
     train_ds = PitPatchDataset(pit_set, "train", mu, sd, seed=42,
                                patches_per_inst=PATCHES_PER_INST)
