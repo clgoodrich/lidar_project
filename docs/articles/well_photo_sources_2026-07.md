@@ -69,3 +69,5 @@ carry generic PA field photos.
 - Contact Drake Well Museum re: Mather photos of President Twp river wells.
 - Watch for the spring-2026 President/Victory Twp drone-survey results (EDF →
   PA DEP); those would be in-tile magnetometer confirmations.
+
+- Outreach contacts for the people behind these archives: `docs/articles/well_reporting_outreach_contacts_pa_2026-08.md`.

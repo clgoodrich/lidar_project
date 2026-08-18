@@ -6,6 +6,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-08-18 — Outreach contacts written up
+
+Pulled the well-reporting contacts out of the 2026-07-19/20 web sweep and into
+a standing doc: `docs/articles/well_reporting_outreach_contacts_pa_2026-08.md`.
+They had only existed in session history and as scattered lines in the photo
+sources doc.
+
+Eight leads. Penn State Extension (Dan Brockett, Summer Boyle) is the intake
+for the Oil Region Alliance $100/well bounty. Drake Well Museum holds the
+Mather glass-plate archive. VPASEC and Laurie Barr are the volunteer
+well-hunters on public land. The EDF/DEP drone survey of President and Victory
+Twp is due spring 2026 and would put magnetometer-confirmed points inside our
+tiles.
+
+No contact has been made with any of them. Every row is a lead.
+
+---
+
 ## 2026-08-18 — `skip_existing` removed from `write_tif` (reverses the entry below)
 
 Removed rather than kept. The guard can only compare what is already on disk —
