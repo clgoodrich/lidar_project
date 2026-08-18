@@ -10,6 +10,8 @@ Provides:
     write-JSON-then-subprocess pattern documented in ``CLAUDE.md``.
   * Raster I/O helpers (``read_tif``, ``write_tif``, ``make_profile``).
     ``write_tif(..., rgb_bool=True)`` writes a 3-band uint8 RGB GeoTIFF.
+  * Annotation vocabulary shims (``normalize_ids``, ``read_layer``) so a
+    legacy GeoPackage still loads after the 2026-08-18 rename.
 
 Other internal modules: ``_dl.py`` (deep-learning building blocks).
 """
@@ -31,6 +33,7 @@ __all__ = [
     "PATHS", "CONFIG", "path_for",
     "run_pdal",
     "read_tif", "write_tif", "make_profile",
+    "LEGACY_ID_ALIASES", "LEGACY_LAYER_ALIASES", "normalize_ids", "read_layer",
 ]
 
 # ---------------------------------------------------------------------------
@@ -211,6 +214,68 @@ def run_pdal(
         )
     pipeline_json.unlink(missing_ok=True)
     return meta_json
+
+
+# ---------------------------------------------------------------------------
+# Annotation vocabulary
+# ---------------------------------------------------------------------------
+# The 2026-08-18 rename adopted the notebook's names project-wide. A column now
+# says what it POINTS AT rather than how it was derived, which is the rule
+# ``pad_id`` already followed. These maps keep every pre-rename artefact
+# readable -- the 2026-06-10 fixture, older manifests, anything restored from a
+# backup -- so nothing has to be regenerated just to be opened.
+#
+# ``pit_id`` and ``matched_pit_id`` BOTH map to ``pit_inside_id`` on purpose.
+# In the old schema ``pit_id`` meant "my own id" on pit_inside and "the pit I
+# belong to" on pit_outside/pit_wall. Both are now the same foreign key, which
+# is what makes this a flat rename instead of a per-layer judgement call.
+LEGACY_ID_ALIASES: dict[str, str] = {
+    "pit_id": "pit_inside_id",
+    "matched_pit_id": "pit_inside_id",
+    "pit_id_outer": "pit_full_id",
+    "pit_outside_id": "pit_full_id",
+    "plat_id": "pad_id",
+}
+
+#: Old layer name -> new. ``pit_outside`` held the floor PLUS the rim, so
+#: "outside" read as the opposite of what it contained.
+LEGACY_LAYER_ALIASES: dict[str, str] = {
+    "pit_outside": "pit_full",
+    "plat": "pad",
+}
+
+
+def normalize_ids(df):
+    """Rename legacy ID columns to the canonical ones.
+
+    Idempotent, and safe on any DataFrame or GeoDataFrame -- columns that are
+    not present are simply not renamed. Call it once immediately after reading
+    an annotation layer or a manifest.
+    """
+    return df.rename(columns={k: v for k, v in LEGACY_ID_ALIASES.items()
+                              if k in df.columns})
+
+
+def read_layer(path: Path, layer: str, **kwargs):
+    """Read a vector layer by its canonical name, falling back to the legacy one.
+
+    Resolves the layer name against what the file actually contains, then runs
+    the result through :func:`normalize_ids`. A caller asks for ``pit_full`` and
+    gets it whether the file on disk calls it ``pit_full`` or ``pit_outside``.
+    """
+    import geopandas as gpd
+    from pyogrio import list_layers
+
+    available = {name for name, _ in list_layers(str(path))}
+    if layer not in available:
+        legacy = {v: k for k, v in LEGACY_LAYER_ALIASES.items()}.get(layer)
+        if legacy in available:
+            layer = legacy
+        else:
+            raise KeyError(
+                f"{path.name} has no layer {layer!r} (or its legacy alias "
+                f"{legacy!r}); present: {sorted(available)}")
+    return normalize_ids(gpd.read_file(path, layer=layer, **kwargs))
 
 
 # ---------------------------------------------------------------------------
