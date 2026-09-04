@@ -6,6 +6,122 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-04 — Phase 4 rollout: the 9t split moves from 527 to 712 pits
+
+Ran steps 1-3 and 5-7 of the naming-reconciliation plan. Step 4, the retrain,
+did not run. Every number on the pit and pad leaderboard is stale until it does.
+
+### What changed on disk
+
+`qgis/annotations/annotations_proj_v2.gpkg` was promoted to
+`qgis/annotations/annotations_proj.gpkg`. The v2 file fixes the cell-9
+idempotency bug in `phase_2_prep_annotations.ipynb`, which had left the pad
+layer carrying `n_pits_x`, `n_pits_y` and `n_pits` side by side. It also adds
+`pad_id` to `pit_wall`.
+
+It did **not** rename the layers. On disk they are still `plat` and
+`pit_outside`, not `pad` and `pit_full` as the plan's schema table specifies.
+Reads work anyway, because Phase 1 landed `read_layer()` and
+`LEGACY_LAYER_ALIASES` in `notebooks/wellsight_v2/_common.py`. Logged in
+`docs/iterations/BACKLOG.md`.
+
+Then `_build_pit_dataset_v2.py --force`:
+
+```
+Loaded 712 pit floors, 586 rims
+Label pixels: floor=58669 (14667 m^2)  wall=325209 (81302 m^2)
+Off-grid: 209 of 712 pit centroids fall outside the reference grid -> 'unused'
+No pad:   369 of 712 pits sit on no drawn pad
+
+  train    blocks= 77  pits= 352
+  val      blocks= 14  pits=  77
+  test     blocks= 24  pits=  74
+  unused   blocks= 29  pits=   0
+```
+
+The guard fired first, as designed. `--dry-run` printed `REFUSING TO OVERWRITE
+pit_dataset_manifest.csv / on disk now: 527 / about to write: 712` and wrote
+nothing. `--force` then printed the invalidation warning and proceeded.
+
+**The annotation grew by 185 pits and only about 32 of them are inside 9t.**
+Off-grid went 56/527 to 209/712. Train grew 330 to 352, val 72 to 77, test 69
+to 74. Most of the recent annotation work is on some other tile. That is worth
+chasing before reading much into the new split.
+
+`_build_pad_road_dataset.py` was re-run because it inherits the pit split.
+Pads now split 401 train / 69 val / 114 test / 411 unused of 995.
+
+### Contract checks
+
+All five items the plan pins still hold on the new outputs:
+
+| check | result |
+|---|---|
+| `labels_pit_9t_05.tif` uint8, values `{0,1,2}`, nodata 255 | pass |
+| `pit_blocks_9t.gpkg` layer `"blocks"`, all 144 rows | pass |
+| manifest carries the literal `"unused"` split | pass |
+| `block_id` / `pad_id` stay float64 | pass |
+| `pit_inside_id` unique and non-null | pass |
+
+### Why the retrain did not run
+
+`_pit_unet_cv5.py:317` reuses any `best.pt` whose `train_log.csv` shows a full
+epoch count. The comment calls a finished checkpoint "a deterministic product of
+a fold that already ran", which is true only while the split holds still. With
+the split reassigned, the trainer would have quietly kept the ann527 models and
+reported them as if they were retrained.
+
+Worked around by retiring the stale checkpoints rather than deleting them:
+
+- `data/9t/models/pit/unet_cv5/` -> `data/9t/models/_retired/pit_09_unet_cv5_ann527_2026-09-04/`
+- `data/9t/models/pad/unet_cv5/` -> `data/9t/models/_retired/pad_07_unet_cv5_ann527_2026-09-04/`
+
+The training environment is `C:\Users\colto\miniconda3\python.exe`, torch
+2.7.1+cu118 on a GTX 1070 Ti. Not `.venv`, which has no torch. Budget about 90
+minutes per model for 5 folds at 40 epochs, from `_pad_cv5_resume.log`.
+
+### Safety snapshot
+
+`--force` destroys the split every deployed checkpoint was scored against, and
+the 2026-08-12 incident recorded in `docs/golden/NON_DETERMINISTIC.md` was
+recovered from the E: mirror. That mirror is not currently dependable, so the
+snapshot went in the repo instead, following the existing `_history/`
+convention:
+
+`qgis/annotations/_history/_backup_pit_ann527_2026-09-04/` — the pre-rollout
+`annotations_proj.gpkg`, the 527-row pit manifest, `pit_blocks_9t.gpkg`,
+`labels_pit_9t_05.tif`, the pad and road manifests, and both CV5 fold
+assignments and per-fold score tables. 12.9 MB, all small, all tracked.
+
+### Docs
+
+`docs/iterations/LEADERBOARD.md` carries a stale banner at the top and a marker
+on both the Pits and Pads sections. Road rows are untouched — road models train
+on 1 m data from a separate manifest and the pit split does not reach them.
+
+`docs/reference_index.csv`, `docs/reference_index_summary.md`,
+`docs/script_last_used.md` and `docs/script_last_used.csv` regenerated.
+`docs/script_map.md` was **not** regenerated: its own header declares it a
+historical record that is deliberately not rewritten, and its generator no
+longer exists in `tools/`.
+
+`docs/golden/NON_DETERMINISTIC.md` now records that the pit builder's guard is
+wired and that `_build_pad_road_dataset.py` remains unguarded.
+
+### Reproduce
+
+```
+python notebooks/wellsight_v2/s2_labels/_build_pit_dataset_v2.py --dry-run
+python notebooks/wellsight_v2/s2_labels/_build_pit_dataset_v2.py --force
+python notebooks/wellsight_v2/s2_labels/_build_pad_road_dataset.py
+C:\Users\colto\miniconda3\python.exe notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py --folds 5 --epochs 40
+C:\Users\colto\miniconda3\python.exe notebooks/wellsight_v2/s3_train/_pad_unet_cv5.py --folds 5 --epochs 40
+python tools/build_reference_index.py
+python tools/script_last_used.py
+```
+
+---
+
 ## 2026-08-18 — Outreach contacts written up
 
 Pulled the well-reporting contacts out of the 2026-07-19/20 web sweep and into

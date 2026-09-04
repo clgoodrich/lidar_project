@@ -27,6 +27,20 @@ score_road_613590
 
 ## Two deferred: `_build_pit_dataset.py`, `_build_pad_road_dataset.py`
 
+> **RESOLVED for the pit builder, 2026-09-04.** The guard argued for below now
+> exists. `notebooks/wellsight_v2/s2_labels/_build_pit_dataset_v2.py` calls
+> `_manifest_guard.check_or_refuse()` once, before anything writes, and exits 1
+> with a `REFUSING TO OVERWRITE` banner when the annotation count disagrees with
+> the manifest on disk. `--force` is required to proceed and prints the warning;
+> `--dry-run` reports and writes nothing; `--out-dir` makes a scratch run
+> possible at all. Verified live the same day: the guard refused a 527 -> 712
+> rebuild, then `--force` performed it deliberately as Phase 4 step 2.
+>
+> `_build_pad_road_dataset.py` is **still unguarded** and still has no argparse
+> at all -- it ignores `--help` and runs the full build. Same footgun, separate
+> change. Tracked in `docs/iterations/BACKLOG.md`.
+
+
 **Not run for golden recording.** Both regenerate `pit_blocks_9t.gpkg` /
 `pit_dataset_manifest.csv` and `pad_dataset_manifest.csv` from whatever is
 currently in `pit_inside.shp` / `pad.shp` — no dry-run mode, no output

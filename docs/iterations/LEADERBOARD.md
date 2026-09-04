@@ -2,6 +2,21 @@
 
 Per-task metrics across iterations on the 9t tile.
 
+> **STALE — every pit and pad number below (2026-09-04).** The 9t annotation
+> grew from 527 to 712 pit floors and the spatial-block train/val/test split was
+> reassigned to match (`_build_pit_dataset_v2.py --force`). The pad and road
+> manifests were rebuilt from that split. No checkpoint on this page was trained
+> against it, so no pit or pad row here is a held-out number any more.
+>
+> The checkpoints that produced these rows are preserved at
+> `data/9t/models/_retired/pit_09_unet_cv5_ann527_2026-09-04/` and
+> `data/9t/models/_retired/pad_07_unet_cv5_ann527_2026-09-04/`, and the split
+> they were scored against at
+> `qgis/annotations/_history/_backup_pit_ann527_2026-09-04/`.
+>
+> Road rows are unaffected: the road models train on 1 m data from a separate
+> manifest. Do not cite a pit or pad row until the ann712 retrain lands.
+
 > **Read this first (2026-07-27).** Two things on this page were corrected today
 > and the corrections are large.
 > 1. **Every instance precision and F1 number changed.** The old 3–6% precision
@@ -51,6 +66,9 @@ and test scored once frozen. Pre-07-02 numbers selected thresholds on test itsel
 
 ## Pits (65 test instances) — corrected 2026-07-27
 
+**STALE (2026-09-04)** — scored against the ann527 split, superseded. See the banner at the top.
+
+
 Thresholds selected on val, test scored once. IoU τ = 0.3, greedy 1:1 matching.
 
 | Iteration | Approach | thr (val) | val F1 | R@0.3 | P@0.3 | F1@0.3 |
@@ -88,6 +106,9 @@ the number is **stable**, not that it **transfers**.
 Full write-up: [[pit_unet_cv5_9t]].
 
 ## Pads (93 test instances) — corrected 2026-07-27
+
+**STALE (2026-09-04)** — scored against the ann527 split, superseded. See the banner at the top.
+
 
 | Iteration | Approach | thr (val) | val F1 | R@0.3 | P@0.3 | F1@0.3 |
 |---|---|---|---|---|---|---|

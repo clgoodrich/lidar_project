@@ -311,12 +311,16 @@ of added to it. The defect is duplication and coupling, not craft.
       `s5_eval/`
 - [ ] Eval scripts import without loading torch
 - [ ] All 11 golden baselines PASS after Steps 1–3
-- [ ] `_manifest_guard.py` wired into both label builders with `--force`;
+- [~] `_manifest_guard.py` wired into both label builders with `--force`;
       golden at 13/13
+      — **half done 2026-09-04.** Wired into `_build_pit_dataset_v2.py` and
+      exercised live (refused 527 -> 712, then `--force`).
+      `_build_pad_road_dataset.py` still has no argparse at all. Golden not
+      re-recorded.
 - [ ] NULL-`pit_inside_id` fix in the 3 remaining eval scripts; baselines re-recorded
       and the moved numbers written up
-- [ ] `docs/analysis_log.md` entry (newest at top) and
-      `docs/iterations/BACKLOG.md` updated
+- [x] `docs/analysis_log.md` entry (newest at top) and
+      `docs/iterations/BACKLOG.md` updated — 2026-09-04, Phase 4 rollout
 - [ ] Committed and pushed on a branch off `main`
 
 **Report progress in deleted lines and passing golden checks, not in documents

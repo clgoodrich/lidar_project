@@ -2,6 +2,37 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## Phase 4 rollout leftovers (added 2026-09-04)
+
+- **`_build_pad_road_dataset.py` has no argparse and no manifest guard.** It
+  ignores `--help` and runs the full build. It regenerates
+  `pad_dataset_manifest.csv`, `road_dataset_manifest.csv`,
+  `labels_pad_9t_05.tif`, `labels_road_9t_05.tif` and `road_chunks_9t.gpkg`
+  straight into `DERIV_9T` with no way to redirect, dry-run, or refuse. Same
+  footgun `_build_pit_dataset_v2.py` just fixed. Give it the identical
+  `--ann` / `--out-dir` / `--force` / `--dry-run` treatment.
+- **The CV5 trainers reuse a checkpoint whenever `best.pt` exists and the epoch
+  count is complete** (`_pit_unet_cv5.py:317`, same in `_pad_unet_cv5.py`). The
+  comment justifies it as "a deterministic product of a fold that already ran",
+  which holds only while the split is unchanged. When the split moves, the
+  trainer silently keeps models trained on the old one. Worked around on
+  2026-09-04 by moving the stale fold dirs into `_retired/` before retraining.
+  Real fix: fingerprint the manifest (row count + hash) into `train_log.csv` and
+  refuse to reuse a checkpoint whose fingerprint no longer matches.
+- **`annotations_proj.gpkg` still uses the legacy layer names** `plat` and
+  `pit_outside`. Reads work because `_common.read_layer()` resolves them through
+  `LEGACY_LAYER_ALIASES`, so this is cosmetic, but the Phase 0 notebook was
+  supposed to emit `pad` and `pit_full` and did not. Either finish the notebook
+  rename or delete the aliases and accept the legacy names as canonical.
+- **209 of 712 pit floors fall outside the 9t reference grid** and are marked
+  `unused`, up from 56 of 527. Most recent annotation work is outside this tile.
+  Worth confirming which area those pits belong to and whether they should be
+  driving a second tile's dataset rather than sitting inert in the 9t manifest.
+- **`docs/script_map.md` has no generator any more** -- only a stale
+  `tools/__pycache__/map_scripts.cpython-313.pyc` remains. The file declares
+  itself a historical record that is deliberately not rewritten, so this may be
+  intentional; if so, say so in `tools/` rather than leaving an orphan `.pyc`.
+
 ## Methodology-audit findings (2026-07-01) — fix before trusting/publishing metrics
 
 Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation entry). Ranked:
