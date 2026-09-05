@@ -24,12 +24,13 @@ are NOT failures. The backup policy is `robocopy /XO`, which never deletes, so
 extras are expected and deliberate.
 
 Outputs:
-    docs/verify_backup_report.md
+    docs/verify_backup_report.md   (override with --report)
 
 Exit 0 if the source is fully represented in the target, 1 otherwise.
 
 Reproduce:
   python tools/verify_backup.py --target "E:/Colton/_BACKUPS/lidar_project_MIRROR"
+  python tools/verify_backup.py --target "F:/Colton/_BACKUPS/lidar_project_MIRROR"       --report docs/verify_backup_report_F_mirror.md
   ... --sample 300 --big-mb 500
   ... --full
 """
@@ -39,6 +40,7 @@ import argparse
 import hashlib
 import random
 import sys
+from fnmatch import fnmatch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,7 +54,13 @@ SKIP_DIRS = {".git", ".venv", "__pycache__", ".pytest_cache"}
 # Same self-reference applies to this tool's own report, which is written after
 # the comparison finishes. Both are excluded so a clean backup can actually
 # report PASS instead of failing on artefacts of the check itself.
-SKIP_FILES = {"backup_to_E_Colton_last_run.log", "verify_backup_report.md"}
+# Matched with fnmatch so a second mirror on another drive (backup_to_F.bat,
+# verify_backup_report_F_mirror.md) is covered without editing this set again.
+SKIP_GLOBS = ("backup_to_*_last_run.log", "verify_backup_report*.md")
+
+
+def skipped(name: str) -> bool:
+    return any(fnmatch(name, g) for g in SKIP_GLOBS)
 
 
 def sha(p: Path, chunk: int = 1 << 22) -> str:
@@ -68,7 +76,7 @@ def inventory(base: Path) -> dict[str, int]:
     for p in base.rglob("*"):
         if any(part in SKIP_DIRS for part in p.parts):
             continue
-        if p.name in SKIP_FILES:
+        if skipped(p.name):
             continue
         try:
             if p.is_file():
@@ -84,7 +92,14 @@ def main() -> int:
     ap.add_argument("--sample", type=int, default=250)
     ap.add_argument("--big-mb", type=float, default=500.0)
     ap.add_argument("--full", action="store_true")
+    ap.add_argument("--report", default=str(REPORT),
+                    help="where to write the markdown report. Give a "
+                         "target-specific name when verifying a second "
+                         "mirror, so it does not overwrite the first one's "
+                         "record -- an unmounted drive's report cannot be "
+                         "regenerated.")
     a = ap.parse_args()
+    report_path = Path(a.report)
     tgt = Path(a.target)
     if not tgt.exists():
         print(f"target does not exist: {tgt}")

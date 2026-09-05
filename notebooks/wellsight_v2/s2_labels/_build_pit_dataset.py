@@ -23,7 +23,7 @@ from shapely.geometry import box            # build a rectangle from its four ed
 # Put notebooks/wellsight_v2/ on the import path so `from _common import ...` works
 # no matter what directory you launch the script from.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _common import DERIV, DERIV_9T, path_for  # shared project paths, read_layer
+from _common import DERIV, DERIV_9T, path_for, read_layer
 
 REF = DERIV_9T / "dem_9t_05.tif"            # the DEM whose grid every output below copies
 ANN = path_for("truth") / "annotations_proj.gpkg"  # your drawings, reprojected to metres

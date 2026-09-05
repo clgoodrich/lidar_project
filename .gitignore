@@ -20,6 +20,14 @@
 #   find . -type f -size +100M -not -path './.git/*' -not -path './.venv/*' | \
 #     while read f; do git check-ignore -q "$f" || echo "LEAKING: $f"; done
 
+# --- area top level: loose rasters written beside derived/ -----------------
+# A build that writes to data/<area>/ instead of data/<area>/derived/ escapes
+# the derived rule below entirely. data/FOO/ held 22 such tifs (464 MB) and all
+# of them were staged before this rule existed. Regenerable, same as derived.
+data/*/*.tif
+data/*/*.tif.aux.xml
+data/*/*.tfw
+
 # --- derived: every raster under any area, at any depth --------------------
 data/**/derived/**
 !data/**/derived/**/
@@ -124,6 +132,8 @@ data/**/_tmp_intensity_tiles_*/
 *.gpkg-wal
 *.gpkg-shm
 backup_to_E*.log
+backup_to_F*.log
+backup_to_t7*.log
 
 # --- Python / IDE / OS -----------------------------------------------------
 .venv/

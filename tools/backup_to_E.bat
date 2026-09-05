@@ -1,15 +1,24 @@
 @echo off
 REM ============================================================
-REM  backup_to_E.bat   -- the ONLY backup launcher for this project
+REM  backup_to_E.bat   -- letter-keyed launcher, SUPERSEDED
+REM  Prefer tools/backup_to_t7.ps1 (see below). Kept because this one
+REM  wrote the mirror that docs/verify_backup_report.md records as PASS.
 REM
 REM  Target:  E:\Colton\_BACKUPS\lidar_project_MIRROR
 REM
 REM  This replaces the old backup_to_E.bat, which pointed at
 REM  E:\lidar_project -- a path that has never existed on this machine.
 REM
-REM  F: NO LONGER EXISTS. Backups were written to F:\lidar_project on
-REM  2026-08-05 and 2026-08-06; the drive was gone by 2026-08-12. Do not
-REM  assume anything on F: is current or recoverable.
+REM  F: was gone on 2026-08-12 and is back as of 2026-08-19, but it is a
+REM  DIFFERENT state: F:\lidar_project, written on 2026-08-05/06, no longer
+REM  exists on the remounted volume. Nothing from those runs is recoverable.
+REM  The current mirror script is tools/backup_to_t7.ps1. It resolves the
+
+REM  target by VOLUME LABEL, not drive letter: the same physical T7 answered
+
+REM  to F: and later to E: on 2026-09-03, so a letter-keyed launcher can copy
+
+REM  onto the wrong disk. tools/backup_to_F.bat was deleted for that reason.
 REM
 REM  robocopy compares timestamp + size per file:
 REM    - New files            -> copied
