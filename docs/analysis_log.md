@@ -6,6 +6,232 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-18 — Ground-classification sniff test, then the experiment that killed it
+
+Asked whether the vendor is withholding points from class 2 that ought to be
+ground, and specifically whether it is bridging over our pits.
+
+**The screen** (`s7_analysis/_sniff_ground_classification_9t.py`). Height above
+the class-2 surface via PDAL `filters.hag_nn`, on decimated samples. Three tiles.
+The delivery carries only classes 1 and 2 in any quantity — no vegetation classes
+at all, so class 1 is "not ground, or not looked at", not a decision. About 42% of
+non-ground points sit within 15 cm of the ground surface, 73% of those within
+5 cm. On 17TPF621594, non-ground points inside 98 annotated pit floors were 2.6x
+more likely to sit *below* the surface than elsewhere (25.4% against 9.6%).
+
+That looked like Axelsson progressive TIN densification spanning small pits.
+
+**The experiment** (`s7_analysis/_reclaim_ground_pit_depth_experiment.py`). Four
+tiles, 40.97 M points at full density, 216 annotated pit floors, 187 crops. DEM
+rebuilt both ways at 0.5 m by Delaunay TIN, which is phase 1's method.
+
+| | result |
+|---|---|
+| ground density, floor / ring | **0.921** (per tile 0.873–0.961) |
+| pit floors with zero class-2 points | **0 of 216** |
+| median depth, as delivered | 0.78 m |
+| median change in depth, strict rule | **+0.000 m**, max +0.070 m |
+| median change in depth, permissive rule | **+0.000 m**, max +0.083 m |
+| pits deepened by >= 0.10 m | **0 of 216**, both rules |
+
+**The hypothesis is wrong.** The TIN is not bridging these pits — it is sitting on
+real ground inside every one of them, at a median 84 class-2 points per floor. The
+sniff test's 2.6x was a share of non-ground points, and non-ground points are
+sparse inside floors: 547 points reclaimed across 216 pits against 20,734 class-2
+points already there, 2.6% of the floors' point budget. Real signal, far too small
+to move the surface.
+
+Run twice on purpose. The permissive variant drops the coherence and planarity
+tests and accepts all 50,354 terminal class-1 returns below the surface — 3.8x the
+strict rule — and the depth still does not move. The conclusion does not depend on
+how the rule was tuned.
+
+Secondary results kept: the strict rule is genuinely pit-specific (8.2x the
+reclaim density inside floors versus the ring, falling to 4.4x permissive, so the
+coherence test is what makes it selective); the reclaimed points are twice as
+rough as class-2 ground in the same floors but match its intensity almost exactly,
+which reads as real returns off a rough floor rather than noise; and of 1,675,743
+class-1 points only 3.0% sit below the ground surface at all, all but 11 of those
+already terminal returns.
+
+Does not rule out: pits so bridged we never annotated them, since this can only
+measure floors we drew. Scope is four tiles of PA WesternPA 2019 D20 QL2.
+
+Write-up `docs/iterations/ground_reclassification_pit_depth.md`. Citation added
+for Axelsson (2000). Outputs in `data/9t/results/ground_reclassification/`, four
+CSVs and five before/after figures. No model metrics changed, so LEADERBOARD is
+untouched.
+
+---
+
+## 2026-09-18 — Deleted 83.4 GB of unreferenced derived rasters
+
+C: was down to 36.8 GB free with a 150 GB repo and CV5 training on the same
+disk. Removed every `.tif` with zero references in `docs/reference_index.csv`,
+in two passes, after confirming each file byte-size-identical on BOTH backup
+mirrors. C: free afterwards: 118 GB.
+
+| pass | scope | rasters | sidecars | size |
+|---|---|---|---|---|
+| 1 | all unreferenced except `data/westernpa_d20/` | 829 | 81 | 46.91 GB |
+| 2 | `data/westernpa_d20/` | 825 | 53 | 36.49 GB |
+
+Four guards per file, re-checked at delete time rather than trusted from the
+survey: still present locally; byte size matching E: AND F:; not tracked by git;
+inside the requested scope. Zero files were skipped, and `git status` showed
+zero deletions afterwards.
+
+All 1,788 removals are logged in `docs/MOVES.csv` under phase
+`delete-regenerable`. Reader-facing note left at
+`data/REMOVED_UNREFERENCED_RASTERS_2026-09-18.md` with restore paths.
+
+Coverage was verified first, not assumed: all 1,654 candidate rasters were
+checked against both mirrors by path and size before anything was deleted.
+0 missing, 0 size mismatches. Per-file evidence in the scratchpad at
+`zeroref_backup_check.csv`.
+
+Caveat recorded on purpose: "unreferenced" means no path literal names the file.
+A directory glob or a QGIS project leaves no reference the index can see. If
+something downstream breaks on a missing raster, restore from a mirror and log
+it here rather than treating the deletion as justified after the fact.
+
+### Backups, same day
+
+E: verified PASS earlier (101,913 files, 151.54 GB, 0 missing, 0 size mismatch,
+0 content mismatch over 265 hashed files).
+
+F: had NTFS corruption on `Colton\_BACKUPS\` — robocopy ERROR 1392, and
+`chkdsk /scan` could not snapshot. An offline `chkdsk F: /f` repaired it, after
+which the mirror copied clean on pass 2 (132,454 files, 154.7 GB, 0 failures).
+
+Then pruned 4.88 GB of stale pre-reorg paths from the F: mirror: `barlow`
+(911/911 files verified against `data/_archive/parked/barlow_finesst/barlow`),
+`label_grids`, two empty dirs and three stale logs. Logged under phase `prune`.
+
+Two self-inflicted problems worth remembering. Force-killing robocopy under
+`backup_to_t7.ps1` orphaned a second copy from the script's own retry loop,
+which held the volume until it drained; stop the wrapper before the child. And
+a delete script using Git Bash `/f/...` paths under Python silently resolved to
+a nonexistent `C:\...` and reported every target absent — Windows paths only
+in anything that deletes.
+
+`tools/backup_to_t7.ps1` still defaults `-SubPath` to the near-empty
+`lidar_project_data_DO_NOT_DELETE\lidar_project_repo_MIRROR`. The verified
+mirror is `Colton\_BACKUPS\lidar_project_MIRROR`. Pass `-SubPath` explicitly
+until that default is fixed.
+
+---
+
+## 2026-09-17 — Pit CV5 retrained on ann712. Precision up, recall down.
+
+Ran `_pit_unet_cv5.py` against the current ann712 split. 57.3 min, five folds,
+712 pits, 502 rims scored, exit 0. Architecture, loss, channels and schedule
+unchanged from the ann426 run. Only the annotation and the block split moved.
+
+Pooled, threshold selected on inner val:
+
+| rule | R@0.3 | P@0.3 | R@0.5 | containment |
+|---|---|---|---|---|
+| F1 | 0.861 (sd 0.045) | 0.686 | 0.700 | 0.914 |
+| F2 | 0.928 (sd 0.023) | 0.633 | 0.823 | 0.956 |
+
+Against ann527 under F1: recall 0.890 -> 0.861, precision 0.637 -> 0.686,
+containment 0.936 -> 0.914. Under F2: recall 0.938 -> 0.928, precision
+0.598 -> 0.633.
+
+Precision rose on both rules. Recall fell slightly on both. Per-fold spread
+tightened, sd 0.088 -> 0.045 under F1.
+
+Hypothesis, not a finding: some ann527 false positives were real pit floors that
+had not been annotated, and ann712 labelled them. Testing that means matching
+ann527 false positives against the 185 floors ann712 added. Not done.
+
+### Pad CV5 on ann712. The pits' precision gain did not reproduce.
+
+`_pad_unet_cv5.py` ran straight after on the same GPU. 159.9 min, five folds, 650
+in-tile pads scored, exit 0.
+
+| rule | R@0.3 | P@0.3 | R@0.5 | locate |
+|---|---|---|---|---|
+| F1 | 0.888 (sd 0.051) | 0.597 | 0.749 | 0.923 (600/650) |
+| F2 | 0.912 (sd 0.022) | 0.587 | 0.774 | 0.917 (596/650) |
+
+Against the 650-pad ann426 run under F1: recall 0.917 -> 0.888, precision
+0.606 -> 0.597, locate 0.928 -> 0.923. Recall down slightly, precision flat.
+
+Fold 0 alone showed precision 0.655 and looked like the pit pattern. Pooled it
+does not. The unannotated-true-positive hypothesis from the pit run is supported
+by the pits only. Treat it as weaker than a single fold suggested.
+
+Per-fold recall spread widened under F1, sd 0.021 -> 0.051, opposite to the pits.
+
+Outputs in `data/9t/models/pad/unet_cv5/`: `pad_cv5_per_fold_9t.csv`,
+`pad_cv5_recovery_curve_9t.csv`, `pad_cv5_fold_assignment_9t.csv`,
+`_pad_cv5_ann712_train.log`. `LEADERBOARD.md` updated in the same pass; B1 is
+now closed for both tasks.
+
+Epochs 35 and 36 of pad fold 4 took 439 s and 152 s against a 40-50 s norm. The
+T7 backup, the reference-index rebuild and a figure regeneration were all hitting
+disk at once. No effect on results, but do not run those together again.
+
+Outputs in `data/9t/models/pit/unet_cv5/`: `pit_cv5_per_fold_9t.csv`,
+`pit_cv5_recovery_curve_9t.csv`, `pit_cv5_fold_assignment_9t.csv`,
+`_pit_cv5_ann712_train.log`. The ann527 checkpoints were already retired to
+`data/9t/models/_retired/pit_09_unet_cv5_ann527_2026-09-04/`, so nothing was
+overwritten. `LEADERBOARD.md` updated in the same pass.
+
+### Worklist blocker B2 resolved
+
+The "unused" rows in the pit and pad manifests are not features the greedy fill
+skipped. They carry a null `block_id` because they fall outside the 9t tile.
+Verified on centroids: all 209 unused pit centroids lie outside 619500-624000 E,
+4593000-4597500 N, spanning 613899-700410 E.
+
+| | annotated | train | val | test | in 9t unassigned | outside 9t | in 9t |
+|---|---|---|---|---|---|---|---|
+| pit | 712 | 352 | 77 | 74 | 0 | 209 | 503 |
+| pad | 995 | 401 | 69 | 114 | 66 | 345 | 650 |
+
+Corrected later the same day. "unused" conflates two states. A null `block_id`
+means outside the tile. An in-tile row is also unused if the greedy fill left its
+block out of every split. Pads have 66 of the second kind, pits none, so the pad
+manifest's 411 unused is 345 outside plus 66 in-tile. 650 pads are in 9t, not the
+584 first written here.
+
+Slide 10 of the May deck says 861 pits. That predates both counts. Drop it.
+
+### Presentation figures
+
+Nine figures built to `docs/presentation_figures_30to45min/`, with
+`figure_notes_what_each_image_shows.md` describing each and
+`_build_presentation_figures.py` rebuilding all of them. Everything is read from
+disk; the only schematic is the pipeline diagram, and the only hand-entered
+numbers are the two classical AUC values carried from the May deck.
+
+Two facts the figures surfaced. No pad in 9t carries more than two annotated pit
+floors; 995 pads hold 712 floors. And the pad recall curve falls off below
+threshold 0.35 rather than rising, because pad predictions merge into
+tile-spanning blobs at low cutoffs and no merged blob clears IoU 0.30. That is
+the same failure already recorded in the LEADERBOARD warning box.
+
+Permian material was removed from the worklist and the figure set on request.
+
+Later the same day, everything presentation-related was consolidated under
+`docs/presentation/`: the May deck moved out of `docs/publication/`, the
+worklist moved out of `docs/`, and the figure directory became
+`docs/presentation/figures_30to45min/`. Paths above are pre-move.
+
+### Backup
+
+Re-ran the T7 mirror. `tools/backup_to_t7.ps1` defaults `-SubPath` to
+`lidar_project_data_DO_NOT_DELETE\lidar_project_repo_MIRROR`, which holds 17 GB.
+The verified mirror is `Colton\_BACKUPS\lidar_project_MIRROR` at 111 GB, and
+`docs/verify_backup_report.md` records that path as PASS. The script default is
+wrong. Run it with `-SubPath 'Colton\_BACKUPS\lidar_project_MIRROR'` until it
+is fixed.
+
+---
+
 ## 2026-09-04 — Phase 4 rollout: the 9t split moves from 527 to 712 pits
 
 Ran steps 1-3 and 5-7 of the naming-reconciliation plan. Step 4, the retrain,

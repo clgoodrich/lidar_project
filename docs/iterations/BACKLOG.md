@@ -2,6 +2,25 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## Ground classification (added 2026-09-18) — CLOSED, with one residual
+
+The bridging hypothesis was tested and rejected on 2026-09-18
+(`docs/iterations/ground_reclassification_pit_depth.md`). Class 2 is sound inside
+our pits and no depth-derived channel is damped. Two things were deliberately left
+open:
+
+- **Pits bridged badly enough that we never annotated them are outside the test
+  by construction.** The experiment measures 216 floors we drew; a depression
+  erased from the DEM would never have been drawn. A way to probe this without
+  circularity: rebuild a DEM from class 1 + class 2 over a whole tile, run the pit
+  model on it, and look at candidates that appear ONLY in the reclassified
+  version. Not obviously worth it given how small the surface change was, but it
+  is the one gap the current result cannot close.
+- **Scope is four tiles of PA WesternPA 2019 D20 (QL2).** Nothing here transfers
+  to the McKean QL1 delivery or to any future acquisition. Re-run the same script
+  on a new delivery before assuming its class 2 behaves the same way — it is one
+  command and about 12 minutes.
+
 ## Phase 4 rollout leftovers (added 2026-09-04)
 
 - **`_build_pad_road_dataset.py` has no argparse and no manifest guard.** It
