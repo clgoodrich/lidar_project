@@ -5,6 +5,35 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-19 — RRIM formula card rebuilt on the QGIS styling
+
+The card explaining how RRIM is built was the last figure still drawing its
+inputs on invented ramps: positive and negative openness on a green ramp, slope
+on an orange-red one. Two defects in one. It is not what those layers look like
+when opened, which is what `_build_derivative_panel.py` was fixed for the same
+day; and a green ramp beside a red ramp, each meaning something different, is
+the exact pair the colourblind rule forbids.
+
+All three inputs are now greyscale, read from `qgis/wellsight.qgz` via
+`qgis_styles` imported from the panel builder, so the card and the panels
+cannot drift apart. The project styles `openness_pos` WhiteToBlack and the
+other two BlackToWhite, and the card now honours that inversion instead of
+flattening it. The RRIM thumbnail was also applying a 2-98 percentile stretch
+of its own over a layer the project renders with NoEnhancement; it is raw bytes
+now, so it matches the annotation series base exactly.
+
+The two ramp swatches keep the real RRIM constants, because they are the
+algorithm. The dataviz validator scores teal against grey at dE 4.2 deutan,
+but it is scoring them as a categorical palette and they are not one -- they
+are adjacent stops of a diverging ramp, where sitting close together at the
+midpoint is the ramp working. Both ramps carry numeric ticks, so neither is
+read by colour alone, and with the green gone there is no red/green pair left
+on the card.
+
+`docs/presentation/figures_30to45min/2_terrain_derivatives/rrim_formula_card.png`
+
+---
+
 ## 2026-09-19 — Every talk figure renamed and every stage folder flattened
 
 **Why.** The figure names had grown to carry everything: the site as a lat/lon

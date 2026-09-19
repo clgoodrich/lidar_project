@@ -5,6 +5,31 @@ not out of the paper, so the card describes what this project actually computes.
 The thumbnails come from the same 300 m Venango window as the annotation series,
 so the card and the maps agree.
 
+THE INPUT THUMBNAILS ARE DRAWN THE WAY QGIS DRAWS THEM
+------------------------------------------------------
+Openness and slope used to be shown here on invented green and orange ramps.
+Two problems with that. They are not what those layers look like when opened,
+which is the same defect `_build_derivative_panel.py` was fixed for; and a
+green ramp beside an orange-red ramp, each carrying a different meaning, is
+precisely the pair the colourblind rule in CLAUDE.md forbids. All three inputs
+are now greyscale, read from `qgis/wellsight.qgz` through that module's
+`qgis_styles`, so this card and the derivative panels agree with the screen and
+with each other.
+
+The RRIM panel is likewise raw bytes now. `rrim_openness_9t_05` is
+multibandcolor with NoEnhancement in the project, and this card was applying a
+2-98 percentile stretch of its own on top.
+
+COLOUR THAT STAYS, AND WHY
+--------------------------
+The two ramp swatches keep the real RRIM constants, because they ARE the
+algorithm -- teal/grey/yellow diverging about zero, white to red for slope.
+The dataviz validator scores teal against grey at dE 4.2 deutan, but it is
+scoring them as a categorical palette and they are not one: they are adjacent
+stops of a diverging ramp, where being close together at the midpoint is the
+ramp working. Neither ramp is read by colour alone -- both carry numeric ticks.
+There is no green anywhere on the card, so there is no red/green pair.
+
 Reference (already in literature/CITATIONS.md, PDFs in literature/papers/):
     Chiba, T., Kaneta, S., Suzuki, Y. (2008). "Red Relief Image Map: New
     Visualization Method for Three-Dimensional Data." Int. Archives of
@@ -17,6 +42,7 @@ Run:
 """
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -26,6 +52,9 @@ import numpy as np
 import rasterio
 from matplotlib.colors import LinearSegmentedColormap
 from rasterio.windows import from_bounds
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _build_derivative_panel import qgis_styles, style_for   # noqa: E402
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
@@ -40,6 +69,9 @@ INK = "#0b0b0b"
 INK2 = "#52514e"
 MUTED = "#8a887e"
 RULE = "#d8d7cf"
+#: The step numbers take the card's own subject colour, RRIM's slope red,
+#: rather than the orange of the invented ramp that used to sit above them.
+ACCENT = "#b62700"
 
 # The exact constants from _make_rrim.py -- if that file changes, change these.
 TEAL = np.array([0, 158, 162], float)
@@ -70,13 +102,18 @@ def read(name, bb):
     return a[0] if a.ndim == 3 else a
 
 
-def thumb(ax, arr, title, cmap, sym=False):
-    v = arr[np.isfinite(arr)]
-    if sym:
-        m = np.percentile(np.abs(v), 98)
-        vmin, vmax = -m, m
+def thumb(ax, arr, title, cmap=None, sym=False, st=None):
+    """One input, either QGIS-styled greyscale (st) or an explicit ramp."""
+    if st is not None:
+        cmap = "gray" if st["gradient"] == "BlackToWhite" else "gray_r"
+        vmin, vmax = st["vmin"], st["vmax"]
     else:
-        vmin, vmax = np.percentile(v, 2), np.percentile(v, 98)
+        v = arr[np.isfinite(arr)]
+        if sym:
+            m = np.percentile(np.abs(v), 98)
+            vmin, vmax = -m, m
+        else:
+            vmin, vmax = np.percentile(v, 2), np.percentile(v, 98)
     ax.imshow(arr, cmap=cmap, vmin=vmin, vmax=vmax)
     ax.set_xticks([]); ax.set_yticks([])
     for sp in ax.spines.values():
@@ -110,10 +147,8 @@ def main() -> int:
     with rasterio.open(D05 / "rrim_openness_9t_05.tif") as r:
         w = from_bounds(*bb, transform=r.transform)
         rr = r.read(window=w, boundless=True, fill_value=np.nan).astype("float32")[:3]
-    rr = np.stack([(b - np.nanpercentile(b, 2))
-                   / max(np.nanpercentile(b, 98) - np.nanpercentile(b, 2), 1e-9)
-                   for b in rr])
-    rrim = np.clip(np.moveaxis(rr, 0, -1), 0, 1)
+    # NoEnhancement in the QGIS project: the stored bytes go straight to screen.
+    rrim = np.clip(np.moveaxis(rr / 255.0, 0, -1), 0, 1)
 
     plt.rcParams.update({
         "figure.facecolor": SURFACE, "axes.facecolor": SURFACE,
@@ -126,14 +161,23 @@ def main() -> int:
                           hspace=0.26, wspace=0.22,
                           left=0.045, right=0.965, top=0.845, bottom=0.175)
 
-    CM_G = LinearSegmentedColormap.from_list("g", ["#d8f0e4", "#1baf7a", "#0a5238"])
-    CM_O = LinearSegmentedColormap.from_list("o", ["#fde3d1", "#eb6834", "#8c2f0c"])
     CM_D = LinearSegmentedColormap.from_list(
         "d", [TEAL / 255, GRAY / 255, YELLOW / 255])
 
-    thumb(fig.add_subplot(gs[0, 0]), op, "\u03a6  positive openness", CM_G)
-    thumb(fig.add_subplot(gs[0, 1]), on, "\u03a8  negative openness", CM_G)
-    thumb(fig.add_subplot(gs[0, 2]), slope, "S  slope", CM_O)
+    # The three real rasters are drawn the way the QGIS project draws them.
+    # D is an intermediate that exists only inside _make_rrim.py, so it has no
+    # project style; it wears the base ramp it feeds, which is the point of it.
+    styles = qgis_styles()
+    for ax_, arr, stem, title in (
+            (fig.add_subplot(gs[0, 0]), op, "openness_pos_9t_05",
+             "\u03a6  positive openness"),
+            (fig.add_subplot(gs[0, 1]), on, "openness_neg_9t_05",
+             "\u03a8  negative openness"),
+            (fig.add_subplot(gs[0, 2]), slope, "slope_9t_05", "S  slope")):
+        st = style_for(stem, styles, D05 / f"{stem}.tif")
+        print(f"  {stem:22s} gray {st['gradient']} "
+              f"{st['vmin']:.4g} to {st['vmax']:.4g}  ({st['source']})")
+        thumb(ax_, arr, title, st=st)
     thumb(fig.add_subplot(gs[0, 3]), do, "D  differential openness", CM_D, sym=True)
 
     # --- the maths, as it is actually coded -----------------------------------
@@ -152,7 +196,7 @@ def main() -> int:
     ]
     y = 0.97
     for num, words, formula in lines:
-        ax.text(0.0, y, num, fontsize=11, fontweight="bold", color="#eb6834",
+        ax.text(0.0, y, num, fontsize=11, fontweight="bold", color=ACCENT,
                 va="top")
         ax.text(0.045, y, words, fontsize=10.5, color=INK2, va="top")
         ax.text(0.045, y - 0.075, formula, fontsize=13, color=INK, va="top")
