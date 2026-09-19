@@ -539,11 +539,7 @@ def _figure(code, ci, bb, A, B, dz, sub, nkeep):
         sub.boundary.plot(ax=a, color="#eb6834", linewidth=1.4)
         a.set_xlim(ext[0], ext[1]); a.set_ylim(ext[2], ext[3])
         a.set_xticks([]); a.set_yticks([]); a.set_aspect("equal")
-    fig.text(0.01, 0.02, f"tile {code}, cluster {ci}  ·  {RES} m  ·  "
-             f"EPSG:6346  ·  {nkeep:,} points reclaimed in this crop  "
-             f"·  orange = annotated pit floors",
-             fontsize=9, color="#52514e")
-    fig.subplots_adjust(left=0.01, right=0.97, top=0.9, bottom=0.07, wspace=0.05)
+    fig.subplots_adjust(left=0.01, right=0.97, top=0.9, bottom=0.030, wspace=0.05)
     p = FIGDIR / f"dem_before_after_reclaim_{code}_c{ci}_{str(RES).replace('.','p')}m.png"
     fig.savefig(p, dpi=190)
     plt.close(fig)

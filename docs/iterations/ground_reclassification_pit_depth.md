@@ -33,7 +33,7 @@ this project is built from class 2. A bridged pit reads shallower than it is, an
 | point clouds | `data/_source/lidar/westernpa/USGS_LPC_PA_WesternPA_2019_D20_17TPF{621594,616591,615591,613591}.laz` |
 | | 40,970,303 points total, USGS 3DEP QL2, EPSG:6346 + NAVD88 Geoid12B |
 | truth | `qgis/annotations/annotations_proj.gpkg`, layer `pit_inside` — 216 of the 712 annotated floors fall in these four tiles |
-| tile choice | the four tiles holding the most annotated pit floors; 613591/615591/616591 are 9t training tiles, 621594 is the tile the sniff test flagged |
+| tile choice | the four tiles holding the most annotated pit floors. **621594 is a 9t tile**; 613591 / 615591 / 616591 sit in the 613590 block, not 9t — 9t is the nine tiles spanning 619500–624000 E, 4593000–4597500 N, which live in `data/_source/lidar/westernpa/OTHER_DATA/`. Corrected 2026-09-18; the tiles used are unchanged and so is the result. |
 
 ## Method
 

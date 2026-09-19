@@ -2,6 +2,34 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## Scan-angle ground cut (added 2026-09-18) — OPEN, and the biggest one here
+
+The PA WesternPA 2019 D20 March-2020 block discards every at-ground return
+beyond 18 degrees off nadir — roughly **1 M per tile**, measuring 0.065–0.067 m
+RMSE against neighbouring flight lines, inside the QL2 spec of 0.10 m. Details in
+`docs/iterations/nonground_classification_and_scan_angle_cut.md`.
+
+- **Run our own ground classification and compare.** PDAL `filters.smrf` with no
+  angle cut, on one Venango tile, then a like-for-like DEM against the vendor's.
+  Two things to measure: how many of the 17.81% void cells close, and whether the
+  pit / pad / road channels the models train on get sharper or noisier. This is
+  the only way to find out whether the million returns per tile are worth
+  anything to us. Est. 1–2 hours. **Do this before any further channel work.**
+- **Do NOT fix it by promoting flags.** The reference surface is built from
+  class 2, so promoting points moves the surface and re-opens the question. One
+  pass does not converge.
+- **Vegetation structure is an unused channel.** Canopy p95 is 1.3–2.8 m lower
+  over annotated pads and pits than the forest ring around them, same direction
+  on 5 of 5 feature/tile combinations, pad effect Cliff's d −0.242 over 3,427
+  cells. Built from points currently discarded. Candidate input channel — but
+  nothing yet shows it adds anything the existing channels do not.
+- **The spatial void claim is not general.** Voids stripe with swath geometry on
+  four tiles and give r = −0.04 on 615591. Do not quote "DEM voids are swath
+  stripes" without that caveat.
+- **`data/9t/results/nonground_classification/` is misfiled.** Three of its four
+  tiles are in the 613590 block, not 9t. The repo is area-major; this should move
+  or be split. Cosmetic, but it will mislead someone.
+
 ## Ground classification (added 2026-09-18) — CLOSED, with one residual
 
 The bridging hypothesis was tested and rejected on 2026-09-18

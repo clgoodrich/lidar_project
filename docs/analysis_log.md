@@ -6,6 +6,77 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-18 — The unassigned third of the cloud, and an 18-degree ground-classification cut
+
+Asked what the 43.7% of returns sitting in class 1 actually are, and whether we
+can classify them ourselves. Ended up finding a hard threshold in the vendor's
+processing.
+
+**The delivery.** 10 tiles, 113,556,364 points: class 1 43.678%, class 2 56.307%,
+everything else (water 9, bridge deck 17, noise 7/18, vendor class 20) 0.016%.
+Correcting an earlier overstatement: those classes DO exist, they are just a
+rounding error. There are still no vegetation classes. Flown 5-18 March 2020,
+**leaf-off**, checked from GpsTime.
+
+**Class 1 is classifiable.** 43.6% of pulses are multi-return and 1,867,932
+class-1 points (11.0%) are intermediate returns, so they sit inside a canopy as
+recorded fact. Banding by height above ground per the 3DEP spec takes unassigned
+from 41.6% to **13.7%** of all points: 23.5% high veg, 2.0% medium, 1.9% low.
+What is left is the +/-15 cm at-ground band.
+
+**A usable signal fell out of it.** Canopy p95 over annotated features is
+consistently lower than the forest ring around them -- pads on 621594 -2.72 m
+(Cliff's d -0.242, p~0, 3,427 cells), pits -1.30 to -2.81 m on four tiles, same
+direction 5 of 5. The bare-earth DEM cannot see this. The bias runs against the
+finding for pits, so it is conservative.
+
+**Why the at-ground points were withheld.** 5,615,796 of them across four tiles,
+100% terminal returns, 75% single, overlap flag 0.00% -- identical to class 2 on
+every property except one: median abs scan angle **18.6 deg against 9.4 deg**.
+
+**It is a cliff, not a taper.** Of returns that demonstrably reached the ground:
+97-98% classified as ground from 0-13.5 deg, tapering to 88% by 17.5 deg, then
+**0.0% at 18.5 deg and beyond**. Same 18 deg threshold on all five tiles tested,
+zero exceptions, ~1 M returns discarded per tile.
+
+**The vendor was not justified.** Each excluded return compared against a plane
+fitted through class-2 ground from a DIFFERENT flight line: RMSE **0.067 m**
+(616591) and **0.065 m** (621594), median bias -0.004/-0.006 m. The wide-angle
+returns they KEPT score 0.070 and 0.099 m. All inside the USGS 3DEP QL2 bar of
+RMSEz <= 0.10 m. The discarded data is as good as the retained data.
+
+Method note, recorded because it changed the result: the intended yardstick was
+narrow-angle (<10 deg) ground from neighbouring lines. It does not exist --
+adjacent swaths meet edge to edge, so measured overlap with a <10 deg reference
+is **0.0%**. Fell back to all accepted ground from other lines (~100% coverage),
+which makes this wide-against-wide relative accuracy and therefore a lower bound.
+
+**Not a convention.** 7 tiles each from two acquisitions: PA WesternPA 2019 D20
+(Venango, QL2) shows the cliff in 6 of 7, all at 18 deg; PA Northcentral 2019 B19
+(McKean, QL1) in **0 of 7**, tapering smoothly and recovering to 98% at 27-29 deg.
+The one Venango tile without it, 17TNE565467, was flown 2019-11-26 with a 29 deg
+field of view -- so "WesternPA D20" is at least two flight blocks and only the
+**March 2020 +/-20 deg block** carries the cut. That block is the whole study
+area. McKean needs no reprocessing.
+
+**Cost on the DEM grid.** 17.81% of 0.5 m cells hold no class-2 return (105.5 ha
+over four tiles). **24.5% of those voids have an excluded at-ground return
+sitting in them** -- 1,032,075 cells, 25.8 ha where a guessed elevation could be
+a measured one. Caveat: voids stripe with swath geometry on four tiles but
+615591 gives r = -0.04, so that spatial claim is not general.
+
+Not shown: that any of this improves model performance. The fix is a fresh
+ground classification (`filters.smrf`) with no angle cut, not flag-patching --
+promoting flags moves the reference surface they were measured against.
+
+Write-up `docs/iterations/nonground_classification_and_scan_angle_cut.md`.
+Citation added for the USGS 3DEP Lidar Base Specification. Six scripts in
+`s7_analysis/`, outputs in `data/9t/results/nonground_classification/` and
+`docs/presentation/figures_30to45min/{scan_angle,cross_sections}/`. No model
+metrics changed, so LEADERBOARD is untouched.
+
+---
+
 ## 2026-09-18 — Ground-classification sniff test, then the experiment that killed it
 
 Asked whether the vendor is withholding points from class 2 that ought to be

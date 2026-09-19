@@ -1,0 +1,38 @@
+[
+  [
+    "locator_study_areas_pa.png",
+    "6 Venango tiles and 1 McKean, plus an extent table"
+  ],
+  [
+    "pipeline_diagram_classical_and_unet_branches.png",
+    "schematic; replaces the four-step pipeline slide"
+  ],
+  [
+    "annotation_growth_pit_splits_426_527_712.png",
+    "split composition across ann426/527/712; 503 of 712 current pits are inside 9t"
+  ],
+  [
+    "spatial_block_split_grid_12x12_9t_ann712.png",
+    "144 blocks by split, 503 pit floors inside the tile; count vs block share"
+  ],
+  [
+    "classical_vs_unet_pit_detection_same_scene_9t.png",
+    "180 classical candidates vs U-Net floor probability in a 400 m window, 14 annotated floors"
+  ],
+  [
+    "nisar_gcov_hh_hv_clip_9t_10m_20260120.png",
+    "450x450 px HH/HV/ratio clip, median HH -8.1 dB, HV -16.2 dB, ratio 8.0 dB"
+  ],
+  [
+    "annotation_schema_one_pad_one_pit_9t_05.png",
+    "pad 896 with 2 floors, then floor/rim/full on one pit"
+  ],
+  [
+    "threshold_sweep_flagged_area_vs_recall_pit_pad_road_9t.png",
+    "pit 0.21% of tile at thr 0.20 for 126/127 rims; road and pad on the same axes"
+  ],
+  [
+    "annotation_growth_pad_splits_650_995_9t.png",
+    "pad split composition, 650 of 995 current pads inside 9t"
+  ]
+]
