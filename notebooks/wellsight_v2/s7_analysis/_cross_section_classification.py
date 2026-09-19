@@ -410,9 +410,12 @@ def _draw(code, A, B, L, u, n, s, o, d, keep, cls, args, subject, az, where,
         panels.append((ax[2], cls, titles[2]))
     for a, cc, title in panels:
         if where is not None:
-            a.axvspan(*where, color="#eb6834", alpha=0.10, zorder=0)
+            # neutral, not a hue: this band marks WHERE the feature is, and a
+            # red band beside green vegetation points is the one pair a
+            # protanope cannot separate (see the palette note above)
+            a.axvspan(*where, color="#5A6069", alpha=0.10, zorder=0)
             for xv in where:
-                a.axvline(xv, color="#eb6834", linewidth=1.3, alpha=0.6,
+                a.axvline(xv, color="#5A6069", linewidth=1.3, alpha=0.75,
                           zorder=1)
         for c in sorted(np.unique(cc)):
             k = cc == c
