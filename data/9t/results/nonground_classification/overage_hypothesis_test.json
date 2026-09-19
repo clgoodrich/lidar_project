@@ -1,0 +1,15 @@
+[
+  {
+    "tile": "621594",
+    "fmt": 6,
+    "points": 8956340,
+    "lines": 2,
+    "discarded": 1412392,
+    "withheld_on_discarded": 0.9874213391183184,
+    "overlap_on_discarded": 0.0,
+    "class12": 0,
+    "void_cells": 86435,
+    "void_multiline_pct": 6.181523688320703,
+    "res": 1.0
+  }
+]
