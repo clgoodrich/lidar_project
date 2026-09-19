@@ -1,32 +1,42 @@
 """The WellSight pipeline, end to end, as it actually runs today.
 
+SHAPE
+-----
+Three rows of five boxes, read left to right, at the scale of the old
+two-branch diagram it replaces. An earlier version of this file packed the same
+content into five tall columns of dense body text; on a projector it was
+unreadable. A box here holds two or three short lines and nothing else. The
+long lists that have to be on the figure -- every derivative, every annotation
+layer -- sit under their row as a caption, where they can be read if wanted and
+skipped if not.
+
 WHAT CHANGED FROM THE OLD DIAGRAM
 ---------------------------------
-The previous figure showed two branches off a shared base -- a classical
-branch scoring ROC-AUC 0.905 / PR-AUC 0.212, and a deep-learning branch. The
-classical branch is retired. Everything on the leaderboard, every probability
-raster and every threshold product is U-Net, so a two-branch picture now
-misdescribes the project. This is one path.
+It showed two branches off a shared base: a classical branch scoring ROC-AUC
+0.905 / PR-AUC 0.212, and a deep-learning branch. The classical branch is
+retired. Everything on the leaderboard, every probability raster and every
+threshold product is U-Net, so a two-branch picture now misdescribes the
+project. This is one path.
 
 NOTHING HERE IS DECORATIVE
 --------------------------
-Every box is a step that exists in the repository, and the numbers are read off
+Every box is a step that exists in the repository, and the counts are read off
 the things they describe rather than typed from memory:
 
-    the seven feature-stack channels     band descriptions of features_pit_9t_05
-    the annotation layer names           gpkg_contents in annotations_proj.gpkg
-    patch size, folds, epochs, loss      _pit_unet_cv5.py
-    the derivative list                  data/9t/derived/05
+    the feature-stack channels      band descriptions of features_pit_9t_05
+    the annotation layer names      gpkg_contents in annotations_proj.gpkg
+    patch size, folds, epochs       _pit_unet_cv5.py
+    the derivative list             data/9t/derived/05
 
-If a step is not in the repo it is not on the diagram. Where a stage is genuinely
-untested -- the SMRF ground surface is measured but no model has been retrained
-on it -- the box says so rather than implying it is wired in.
+Where a stage is genuinely untested -- the SMRF ground surface is measured but
+no model has been retrained on it -- it is said in a footnote rather than drawn
+into the flow.
 
 COLOUR
 ------
 One blue accent on a grey ground, per the colourblind rule in CLAUDE.md. No
-red/green pair anywhere; the two tinted stages are distinguished by position and
-label, not by hue alone.
+red/green pair anywhere; the rows are told apart by position and heading, not
+by hue.
 
 Run:
     python docs/presentation/figures_30to45min/_build_pipeline_diagram.py
@@ -51,19 +61,27 @@ PAPER = "#f7f8f6"
 INK = "#141a1f"
 INK2 = "#545c63"
 MUTED = "#8a887e"
-RULE = "#d7dad4"
+RULE = "#c9ccc6"
 ACCENT = "#1F5FA8"
-BOX = "#ffffff"
-TINT = "#e7eef7"
+TINT = "#eaf0f8"
+
+#: Canvas units. Five boxes across, three rows down.
+NCOL, BW, GAP, BH = 5, 34.0, 3.6, 17.0
+X0 = 5.0
 
 
-def wrap_join(items, width):
-    """Join names with a separator, breaking before the box edge."""
+def col_x(i):
+    return X0 + i * (BW + GAP)
+
+
+def wrap_join(items, width, sep=" · "):
+    """Join names with a separator, breaking before the caption runs out."""
     out, cur = [], ""
     for it in items:
-        add = it if not cur else cur + " · " + it
+        add = it if not cur else cur + sep + it
         if len(add) > width and cur:
-            out.append(cur); cur = it
+            out.append(cur)
+            cur = it
         else:
             cur = add
     if cur:
@@ -86,11 +104,10 @@ def annotation_layers():
         return []
     con = sqlite3.connect(ANN)
     try:
-        names = [r[0] for r in con.execute(
+        return [r[0] for r in con.execute(
             "select table_name from gpkg_contents order by table_name")]
     finally:
         con.close()
-    return names
 
 
 def derivative_names():
@@ -106,7 +123,20 @@ def derivative_names():
     return sorted(out)
 
 
-# --------------------------------------------------------------------------
+#: What each hand-drawn layer is FOR. The old diagram flattened all seven into
+#: "hand annotation in QGIS", which hides the fact that matters most: the pit
+#: model trains on the floor, not on the whole pit.
+ROLE = {
+    "pit_inside": "the floor, what the pit model trains on",
+    "pit_outside": "the outer rim",
+    "pit_wall": "the slope between rim and floor",
+    "plat": "the pads",
+    "roads": "access roads and tracks",
+    "drainage": "streams and ditches",
+    "not_roads": "hard negatives from the correction pass",
+}
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     chans = feature_channels()
@@ -116,136 +146,99 @@ def main() -> int:
     print(f"annotations   : {len(layers)} layers {layers}")
     print(f"derivatives   : {len(derivs)} rasters {derivs}")
 
+    rows = [
+        ("1", "Data and terrain", [
+            "USGS 3DEP QL2\n~4.8 pts/m², leaf-off\nMarch 2020, 9 tiles",
+            "ground classification\nchecked — the vendor stops\nat 18° off nadir",
+            "bare-earth DEM\nand DSM\nat 0.5 m",
+            f"{len(derivs)} terrain derivatives,\nall at 0.5 m",
+            f"hand annotation in QGIS\non RRIM — {len(layers)} layers,\neach drawn separately",
+        ]),
+        ("2", "Training prep", [
+            "labels rasterised\nonto the DEM grid",
+            "roads cut into\n~40 m chunks",
+            f"{len(chans)}-channel feature stack,\nnormalised on train",
+            "12×12 spatial blocks\nsplit by BLOCK,\nnever by well",
+            "128 m patches\nwith 30 m jitter",
+        ]),
+        ("3", "Training and QA", [
+            "U-Net, base 32\nfocal cross-entropy",
+            "5-fold cross-validation\n40 epochs",
+            "one model each:\npit, pad,\nroad, drainage",
+            "probability raster per class\n→ threshold sweep\n→ candidate polygons",
+            "QA: centroid precision,\nrim containment,\n613590 never trained on",
+        ]),
+    ]
+    caps = [
+        ("derivatives", wrap_join(derivs, 172)),
+        ("annotation layers",
+         wrap_join([f"{n} ({ROLE[n]})" if n in ROLE else n for n in layers],
+                   172)),
+        (None, []),
+    ]
+
     plt.rcParams.update({"figure.facecolor": PAPER, "axes.facecolor": PAPER,
                          "savefig.facecolor": PAPER,
                          "font.family": "DejaVu Sans", "text.color": INK})
-    fig, ax = plt.subplots(figsize=(19.2, 9.4))
-    ax.set_xlim(0, 192); ax.set_ylim(0, 94)
+    fig, ax = plt.subplots(figsize=(20.0, 11.2))
+    ax.set_xlim(0, 200)
+    ax.set_ylim(0, 112)
     ax.axis("off")
 
-    #: (x, stage number, heading, one-line summary, [(body, is_tinted)])
-    #: Grouped by what the channel measures. Twenty-one names in one
-    #: alphabetical run ran straight through the next three columns.
-    FAMILY = [
-        ("surfaces",      ("dem", "dsm", "chm")),
-        ("shading",       ("hillshade", "hillshade_az090_alt25",
-                           "hillshade_az270_alt25", "hillshade_az315_alt25",
-                           "hillshade_az315_alt70", "rrim_openness")),
-        ("slope and shape", ("slope", "tpi_05", "tpi_15", "roughness_11")),
-        ("local relief",  ("lrm_5", "lrm_11", "lrm_25", "local_relief_10")),
-        ("openness",      ("openness_pos", "openness_neg")),
-        ("point statistics", ("ground_density", "intensity_ground")),
-    ]
-    seen, lines = set(), []
-    for fam, names in FAMILY:
-        have = [n for n in names if n in derivs]
-        if not have:
-            continue
-        seen.update(have)
-        lines.append(fam)
-        lines += ["   " + t for t in wrap_join(have, 34)]
-    rest = sorted(set(derivs) - seen)
-    if rest:
-        lines.append("other")
-        lines += ["   " + t for t in wrap_join(rest, 34)]
-    hs = "\n".join(lines)
-    ch = "\n".join(f"{i+1}.  {c}" for i, c in enumerate(chans))
-    ann = "\n".join(f"·  {n}" for n in layers)
+    ax.text(X0, 108.0, "The WellSight pipeline, end to end", fontsize=27,
+            fontweight="bold", color=INK, va="top", ha="left")
+    ax.text(X0, 103.0, "One path. Every box is a step that exists in the "
+            "repository, and every count on this figure is read out of the "
+            "data rather than typed in.",
+            fontsize=13.5, color=INK2, va="top", ha="left")
 
-    STAGES = [
-        (2.0, "1", "Data QA",
-         "is the lidar we were handed any good",
-         [("USGS 3DEP  PA WesternPA 2019 D20\nQL2, ~4.8 pts/m², flown March 2020\n"
-           "leaf-off, 9 tiles over the 9t area", False),
-          ("ground classification checked\n"
-           "vendor stops calling ground past 18°\n"
-           "off nadir — 13.8% of the area has no\n"
-           "ground measurement under it", True),
-          ("SMRF reclassification\nhalves that to 8.2%\n"
-           "MEASURED, NOT YET WIRED IN — the\n"
-           "stack below is still vendor ground", True)]),
+    top = 95.5
+    for (num, head, boxes), cap in zip(rows, caps):
+        ax.text(X0, top, num, fontsize=21, fontweight="bold", color=ACCENT,
+                va="bottom", ha="left")
+        ax.text(X0 + 5.0, top + 0.15, head, fontsize=18, fontweight="bold",
+                color=INK, va="bottom", ha="left")
+        ax.plot([X0, col_x(NCOL - 1) + BW], [top - 1.7, top - 1.7],
+                color=RULE, linewidth=1.3)
 
-        (40.0, "2", "Terrain derivatives",
-         f"{len(derivs)} rasters at 0.5 m from the ground surface",
-         [(hs, False),
-          ("bare-earth DEM and DSM first, then\n"
-           "everything else derives from them\n"
-           "RRIM = openness + slope, Chiba 2008", False)]),
-
-        (78.0, "3", "Hand annotation",
-         f"{len(layers)} layers drawn in QGIS on RRIM",
-         [(ann, False),
-          ("pit_inside is the FLOOR and is what the\n"
-           "pit model trains on; pit_outside is the\n"
-           "rim and pit_wall the slope between.\n"
-           "plat holds the pads. not_roads are hard\n"
-           "negatives from a correction pass.", True)]),
-
-        (116.0, "4", "Training prep",
-         "labels and channels onto one grid",
-         [("labels rasterised to the DEM grid\n"
-           "roads cut into ~40 m chunks\n"
-           "12×12 spatial blocks, split by BLOCK\n"
-           "and never by well", False),
-          (f"feature stack, {len(chans)} bands:\n{ch}", True)]),
-
-        (154.0, "5", "Training and QA",
-         "U-Net per task, then check it honestly",
-         [("U-Net, base 32, focal cross-entropy\n"
-           "128 m patches with 30 m jitter\n"
-           "5-fold cross-validation, 40 epochs\n"
-           "one model each: pit, pad, road, drainage", False),
-          ("probability raster per class\n"
-           "→ threshold sweep → candidate polygons", False),
-          ("QA / QC\n"
-           "centroid precision at 6 m tolerance\n"
-           "rim containment on held-out pits\n"
-           "613590: a tile never trained on\n"
-           "every result on one leaderboard", True)]),
-    ]
-
-    W = 34.0
-    for x, num, head, sub, blocks in STAGES:
-        ax.text(x, 89.5, num, fontsize=25, fontweight="bold", color=ACCENT,
-                va="top", ha="left")
-        ax.text(x + 6.2, 89.1, head, fontsize=16.5, fontweight="bold",
-                color=INK, va="top", ha="left")
-        ax.text(x + 6.2, 84.3, sub, fontsize=10.5, color=INK2, va="top",
-                ha="left")
-        ax.plot([x, x + W], [81.8, 81.8], color=RULE, linewidth=1.2)
-
-        y = 78.6
-        for body, tinted in blocks:
-            n = body.count("\n") + 1
-            h = 2.6 + n * 2.62
+        by = top - 3.1
+        for i, body in enumerate(boxes):
+            x = col_x(i)
             ax.add_patch(FancyBboxPatch(
-                (x, y - h), W, h, boxstyle="round,pad=0.0,rounding_size=1.1",
-                facecolor=TINT if tinted else BOX,
-                edgecolor=ACCENT if tinted else RULE,
-                linewidth=1.1 if tinted else 0.9, zorder=2))
-            ax.text(x + 1.6, y - h / 2, body, fontsize=9.3, color=INK,
-                    va="center", ha="left", zorder=3, linespacing=1.5)
-            y -= h + 2.2
+                (x, by - BH), BW, BH,
+                boxstyle="round,pad=0.0,rounding_size=1.4",
+                facecolor=TINT, edgecolor=ACCENT, linewidth=1.5, zorder=2))
+            ax.text(x + BW / 2, by - BH / 2, body, fontsize=14.5, color=INK,
+                    va="center", ha="center", zorder=3, linespacing=1.55)
+            if i < NCOL - 1:
+                ax.add_patch(FancyArrowPatch(
+                    (x + BW + 0.5, by - BH / 2),
+                    (x + BW + GAP - 0.5, by - BH / 2),
+                    arrowstyle="-|>", mutation_scale=20, color=ACCENT,
+                    linewidth=2.2, zorder=4))
 
-        if x < 150:
-            ax.add_patch(FancyArrowPatch(
-                (x + W + 0.8, 52.0), (x + W + 3.0, 52.0),
-                arrowstyle="-|>", mutation_scale=22, color=ACCENT,
-                linewidth=2.4, zorder=4))
+        label, lines = cap
+        cy = by - BH - 2.4
+        if label:
+            # the label sits once, at the left; the wrapped names hang off it
+            ax.text(X0, cy, label + ":", fontsize=11.5, color=MUTED,
+                    va="top", ha="left", fontweight="bold")
+        for line in lines:
+            ax.text(X0 + 20.0, cy, line, fontsize=11.5, color=MUTED,
+                    va="top", ha="left")
+            cy -= 2.7
+        top = (cy if lines else by - BH - 2.0) - 3.4
 
-    ax.text(0, 7.6, "Everything here exists in the repository. The classical "
-            "branch that used to sit beside this one is retired — every "
-            "model on the leaderboard, every probability\nraster and every "
-            "threshold product is U-Net, so there is one path and not two.",
-            fontsize=11, color=INK2, va="top", ha="left", linespacing=1.7)
-    ax.text(0, 2.2, "The SMRF ground surface is measured but no model has been "
-            "retrained on it yet, so it is marked as such rather than drawn "
-            "into the flow.",
-            fontsize=10, color=MUTED, va="top", ha="left")
+    ax.text(X0, 6.6, "The SMRF ground reclassification halves the "
+            "no-ground-measurement area over 9t, 13.8% to 8.2%. It is measured "
+            "but no model has been retrained on it yet, so it is\nnot drawn "
+            "into the flow above — the feature stack is still built on "
+            "vendor ground.",
+            fontsize=12, color=INK2, va="top", ha="left", linespacing=1.6)
 
-    fig.subplots_adjust(left=0.012, right=0.994, top=0.985, bottom=0.01)
+    fig.subplots_adjust(left=0.006, right=0.997, top=0.995, bottom=0.005)
     p = OUT / "pipeline_diagram_9t.png"
-    fig.savefig(p, dpi=170)
+    fig.savefig(p, dpi=150)
     plt.close(fig)
     print(f"\n{p.stat().st_size/1e3:.0f} KB  {p}")
     return 0

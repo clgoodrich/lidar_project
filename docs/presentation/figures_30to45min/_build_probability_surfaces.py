@@ -36,6 +36,11 @@ from matplotlib.colors import LinearSegmentedColormap
 from rasterio.windows import from_bounds
 from shapely.geometry import box
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _figure_style import CM_PROB, read_rrim   # noqa: E402
+from _build_derivative_panel import qgis_styles, style_for   # noqa: E402
+
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
 MODELS = ROOT / "data" / "9t" / "models"
@@ -55,10 +60,15 @@ RULE = "#d8d7cf"
 #: Probability is a magnitude, so it gets a single-hue ramp. Low probability is
 #: transparent rather than pale, so the hillshade shows through and you can see
 #: WHERE the model is confident, not just how much.
-CM_PROB = LinearSegmentedColormap.from_list(
-    "p", ["#ffffcc", "#fd8d3c", "#bd0026"])
+#: Shared with every other probability figure -- see _figure_style.py.
+#: This file used to carry its own warm ramp; the import now supplies it.
 
-C_ANN = "#00e5ff"
+#: Our own annotation, outlined over the probability ramp. It was cyan,
+#: which sits on the same side of the wheel as the blue ramp underneath
+#: it -- worst pair against the ramp mid-tone dE 23.8. Yellow against
+#: blue is the one pair every form of colour blindness keeps: dE 35.4
+#: protan, 30.8 tritan, 39.8 normal, all-pairs check against #4a87c8.
+C_ANN = "#ffd400"
 HALO = [pe.Stroke(linewidth=3.0, foreground="#000000"), pe.Normal()]
 
 #: Argmax is the class the network actually picks per pixel -- the probability
@@ -115,8 +125,24 @@ def read(path, bb, band=1):
     return a
 
 
+HS_TIF = D05 / "hillshade_9t_05.tif"
+
+
 def read_hillshade(bb):
-    return read(D05 / "hillshade_9t_05.tif", bb)
+    return read(HS_TIF, bb)
+
+
+def hillshade_style():
+    """The stretch QGIS uses on the hillshade, over the WHOLE raster.
+
+    This used to be a 2-98 percentile of whatever window was on screen, so
+    the base shifted from figure to figure and matched neither QGIS nor the
+    derivative panels.
+    """
+    st = style_for("hillshade_9t_05", qgis_styles(), HS_TIF)
+    print(f"  hillshade base: gray {st['gradient']} "
+          f"{st['vmin']:.4g} to {st['vmax']:.4g}  ({st['source']})")
+    return st
 
 
 def read_layer(layer, clip):
@@ -144,6 +170,8 @@ def main() -> int:
     outdir.mkdir(parents=True, exist_ok=True)
 
     hs = read_hillshade(bb)
+    hs_st = hillshade_style()
+    hs_cmap = "gray" if hs_st["gradient"] == "BlackToWhite" else "gray_r"
     plt.rcParams.update({
         "figure.facecolor": SURFACE, "axes.facecolor": SURFACE,
         "savefig.facecolor": SURFACE, "font.family": "DejaVu Sans",
@@ -163,8 +191,8 @@ def main() -> int:
         prob = np.clip(prob, 0, 1)
 
         fig, ax = plt.subplots(figsize=(7.4, 8.0))
-        ax.imshow(hs, extent=ext, origin="upper", cmap="gray",
-                  vmin=np.nanpercentile(hs, 2), vmax=np.nanpercentile(hs, 98),
+        ax.imshow(hs, extent=ext, origin="upper", cmap=hs_cmap,
+                  vmin=hs_st["vmin"], vmax=hs_st["vmax"],
                   zorder=1)
         # below 0.05 is background noise; showing it as a wash of pale colour
         # makes the model look far less certain than it is
@@ -232,8 +260,8 @@ def main() -> int:
             continue
         arr = read(raster, bb)
         fig, ax = plt.subplots(figsize=(7.4, 8.0))
-        ax.imshow(hs, extent=ext, origin="upper", cmap="gray",
-                  vmin=np.nanpercentile(hs, 2), vmax=np.nanpercentile(hs, 98),
+        ax.imshow(hs, extent=ext, origin="upper", cmap=hs_cmap,
+                  vmin=hs_st["vmin"], vmax=hs_st["vmax"],
                   zorder=1)
         handles, counts = [], {}
         for val, (label, colour) in sorted(classes.items()):

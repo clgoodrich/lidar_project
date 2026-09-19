@@ -5,6 +5,49 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-19 - The QGIS-styling fix finished, and the pipeline diagram redrawn
+
+Three defects reported off the v3 deck, all of them mine.
+
+**The pipeline diagram was unreadable on a projector.** Rebuilding it "from the
+repo" turned into five tall columns of 9.3 pt body text. It is now three rows
+of five boxes at the scale of the two-branch diagram it replaced, two or three
+short lines per box, 14.5 pt. The lists that must be on the figure - all 21
+derivatives, all 7 annotation layers with what each is for - sit under their
+row as a caption instead of inside a box.
+
+**Drainage and pads on the annotation slides were still the archived 300 m
+images**, built before the QGIS styling fix, so their RRIM did not match the
+pits slides beside them. Roads was the new image but the `no_lines` variant, so
+the annotation slide showed no annotation. All three now use the `lines`
+variant of the current series.
+
+**The outcome figures were the real miss.** The styling fix covered
+`_build_derivative_panel.py`, the annotation series and the formula card, but
+not the three probability builders, and nobody had said so. All three were
+applying their own 2-98 percentile stretch to RRIM - the exact defect that was
+fixed elsewhere - and `_build_probability_surfaces.py` was doing the same to
+the hillshade base. They also carried two different warm ramps between them.
+
+`_figure_style.py` is new and holds the single answer to both: `read_rrim`,
+which does no stretch because the project renders that layer with
+NoEnhancement, and `CM_PROB`, a single-hue blue sequential ramp on the accent
+`#1F5FA8`. Blue keeps the prediction from reading as more terrain, and it puts
+no warm ramp in the same talk as the classification figures' green. Lightness
+falls 0.891 -> 0.029 across the five stops, which is the check that applies to
+a sequential ramp; the validator's categorical checks do not.
+
+Two knock-ons. The probability panel now masks below 0.05, because a pale blue
+floor washed the whole frame and hid the cells the model committed to. And the
+annotation outline moved from cyan to `#ffd400`: cyan against the ramp
+mid-tone was dE 23.8, yellow is 35.4 protan / 30.8 tritan / 39.8 normal.
+
+Also fixed while there: the two compare-figure titles were right-aligned and
+left-aligned on the same line and had been overprinting each other on every
+one of the eight images.
+
+---
+
 ## 2026-09-19 — RRIM formula card rebuilt on the QGIS styling
 
 The card explaining how RRIM is built was the last figure still drawing its

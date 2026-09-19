@@ -31,6 +31,10 @@ import rasterio
 from matplotlib.colors import LinearSegmentedColormap
 from rasterio.windows import from_bounds
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _figure_style import CM_PROB, read_rrim   # noqa: E402
+
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
 
@@ -41,8 +45,9 @@ INK2 = "#52514e"
 MUTED = "#8a887e"
 RULE = "#d8d7cf"
 
-CM = LinearSegmentedColormap.from_list("p", ["#fff7ec", "#fdbb84", "#e34a33",
-                                            "#7f0000"])
+#: The probability ramp, and how RRIM is drawn, are shared with every other
+#: figure now -- see _figure_style.py for why both were wrong here.
+CM = CM_PROB
 
 #: Where the feature stack has no data the network still emits a probability --
 #: around 0.5, which is above every operating threshold. Those pixels are not
@@ -143,11 +148,8 @@ def read(path, bb, rgb=False):
         if r.nodata is not None and np.isfinite(r.nodata):
             a[a == r.nodata] = np.nan
     if rgb:
-        a = a[:3]
-        a = np.stack([(c - np.nanpercentile(c, 2)) /
-                      max(np.nanpercentile(c, 98) - np.nanpercentile(c, 2), 1e-9)
-                      for c in a])
-        return np.clip(np.moveaxis(a, 0, -1), 0, 1)
+        # NoEnhancement in the QGIS project: no stretch of our own.
+        return np.clip(np.moveaxis(a[:3] / 255.0, 0, -1), 0, 1)
     a = a[0] if a.ndim == 3 else a
     if np.isfinite(a).any() and np.nanmax(a) > 1.5:
         a = a / 255.0
@@ -192,18 +194,22 @@ def main() -> int:
                                feat_path=VALID.get((tile, res)))
         print(f"  {tile}/{task}: window at {bb[0]:.0f},{bb[1]:.0f} "
               f"holding {n} above-{thr} cells")
-        rr = read(rrim_p, bb, rgb=True)
+        rr = read_rrim(rrim_p, bb)
         pr = read(prob_p, bb)
         ext = [bb[0], bb[2], bb[1], bb[3]]
 
         fig, axes = plt.subplots(1, 2, figsize=(13.2, 7.2))
         axes[0].imshow(rr, extent=ext, origin="upper")
         axes[0].set_title("RRIM \u2014 the terrain", fontsize=15,
-                          fontweight="bold", loc="left", pad=8)
-        im = axes[1].imshow(pr, extent=ext, origin="upper", cmap=CM,
+                          fontweight="bold", loc="left", pad=24)
+        # Below 0.05 is background. Drawn, it is a flat wash over the whole
+        # frame that hides the handful of cells the model actually committed
+        # to; masked, the panel shows what was found.
+        shown = np.ma.masked_where(~np.isfinite(pr) | (pr < 0.05), pr)
+        im = axes[1].imshow(shown, extent=ext, origin="upper", cmap=CM,
                             vmin=0.0, vmax=1.0)
         axes[1].set_title(f"{task} probability \u2014 what the model made of it",
-                          fontsize=15, fontweight="bold", loc="left", pad=8)
+                          fontsize=15, fontweight="bold", loc="left", pad=24)
         for ax in axes:
             ax.set_xlim(ext[0], ext[1]); ax.set_ylim(ext[2], ext[3])
             ax.set_aspect("equal")
@@ -220,16 +226,20 @@ def main() -> int:
         # This caveat is load-bearing: the crop is a best case by construction,
         # and a reader who does not know that will over-read the figure. It goes
         # at the top, where it cannot be cropped off a slide.
-        axes[1].set_title(
-            f"window chosen by density of pixels above {thr:.2f}, not by eye"
-            f"  \u00b7  a best case by construction",
-            fontsize=9.5, fontweight="normal", loc="right", color=MUTED, pad=8)
-        axes[0].set_title(f"{tile}  \u00b7  {trained}", fontsize=9.5,
-                          fontweight="normal", loc="right", color=MUTED, pad=8)
+        # These sit on their own line under each bold title. As right-aligned
+        # titles they overprinted the titles themselves on every figure.
+        axes[1].text(0, 1.006,
+                     f"window chosen by density of pixels above {thr:.2f}, "
+                     f"not by eye  \u00b7  below 0.05 left blank",
+                     transform=axes[1].transAxes, fontsize=10, color=MUTED,
+                     va="bottom", ha="left")
+        axes[0].text(0, 1.006, f"{tile}  \u00b7  {trained}",
+                     transform=axes[0].transAxes, fontsize=10, color=MUTED,
+                     va="bottom", ha="left")
         fig.text(0.012, 0.014,
                  "Red Relief Image Map \u00b7 Chiba et al. 2008",
                  fontsize=9, color=MUTED)
-        fig.subplots_adjust(left=0.012, right=0.955, top=0.9, bottom=0.048,
+        fig.subplots_adjust(left=0.012, right=0.955, top=0.885, bottom=0.048,
                             wspace=0.06)
 
         name = f"rrim_vs_prob_{task}_{SIDE_M:.0f}m_{tile}.png"

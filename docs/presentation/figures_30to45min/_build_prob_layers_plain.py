@@ -29,6 +29,10 @@ import rasterio
 from matplotlib.colors import LinearSegmentedColormap
 from rasterio.windows import from_bounds
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _figure_style import CM_PROB, read_rrim   # noqa: E402
+
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 MODELS = ROOT / "data" / "9t" / "models"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
@@ -45,8 +49,8 @@ RULE = "#d8d7cf"
 #: Single hue, light to dark. Probability is a magnitude, so it gets a
 #: sequential ramp -- never a rainbow, which would invent thresholds that are
 #: not in the data.
-CM = LinearSegmentedColormap.from_list("p", ["#fff7ec", "#fdbb84", "#e34a33",
-                                            "#7f0000"])
+#: Shared with every other probability figure -- see _figure_style.py.
+CM = CM_PROB
 
 LAYERS = [
     ("pit", "Pit floor probability",
