@@ -90,40 +90,38 @@ C_PIT_OUT = "#ffffff"
 
 HALO = [pe.Stroke(linewidth=3.2, foreground="#000000"), pe.Normal()]
 
-#: (order, slug, title, variants, latitude, longitude, window width in metres).
+#: (slug, title, variants, latitude, longitude, window width in metres).
 #: Each variant is (filename tag, panel subtitle, layers to draw). The first is
 #: always the bare terrain, so every site gives a before/after pair at minimum.
 #: `None` for the centre means the dead centre of 9t.
 #:
-#: The leading number is what puts the twelve files in talk order inside one
-#: flat folder. They used to sit in five subfolders keyed by latitude and
-#: longitude, which is precise and unreadable -- the class and the variant are
-#: what anyone picking a slide is actually looking for, so those are the name.
-#: The coordinates live in README.md beside the images instead.
-BARE = ("before_no_annotation", "terrain only, nothing drawn on it", [])
+#: The name is the class, the frame width and the variant, and nothing else:
+#: annotation_roads_2km_no_lines_9t.png. The precise centre of each site lives
+#: in README.md, because a lat/lon blob in every filename made the folder
+#: unreadable.
+BARE = ("no_lines", "terrain only, nothing drawn on it", [])
 SERIES = [
-    (1, "roads", "Roads",
-     [BARE, ("after_roads_drawn", "with the hand-drawn roads", ["roads"])],
+    ("roads", "Roads",
+     [BARE, ("lines", "with the hand-drawn roads", ["roads"])],
      41.499080, -79.541300, 2000.0),
-    (2, "drainage", "Drainage",
-     [BARE, ("after_drainage_drawn", "with the hand-drawn drainage",
-             ["drainage"])],
+    ("drainage", "Drainage",
+     [BARE, ("lines", "with the hand-drawn drainage", ["drainage"])],
      41.502510, -79.533711, 2000.0),
-    (3, "pads", "Pads",
-     [BARE, ("after_pads_drawn", "with the hand-drawn pads", ["pad"])],
+    ("pads", "Pads",
+     [BARE, ("lines", "with the hand-drawn pads", ["pad"])],
      41.507320, -79.541360, 2000.0),
     # Pits are drawn as two separate things and the floor is what the model is
     # trained on, so the rim, the floor and the pair all get their own picture.
-    (4, "pits", "Pits",
+    ("pits", "Pits",
      [BARE,
-      ("after_floors_only", "pit floors only — this is what the model learns",
+      ("floors", "pit floors only — this is what the model learns",
        ["pit_inside"]),
-      ("after_rims_only", "outer rims only", ["pit_outside"]),
-      ("after_rims_and_floors", "rims and floors together",
+      ("rims", "outer rims only", ["pit_outside"]),
+      ("floors_and_rims", "rims and floors together",
        ["pit_outside", "pit_inside"])],
      41.494906, -79.537175, 1000.0),
-    (5, "all_four_layers", "All four annotation layers",
-     [BARE, ("after_all_four_drawn", "with all four layers drawn",
+    ("all", "All four annotation layers",
+     [BARE, ("lines", "with all four layers drawn",
              ["pad", "drainage", "roads", "pit_inside"])],
      None, None, 3000.0),
 ]
@@ -231,7 +229,7 @@ def write_readme(index):
             "",
             "## The per-class before/after series",
             "",
-            "Twelve images, in talk order. Each class is a pair on the same",
+            "Twelve images. Each class is a pair on the same",
             "frame: the terrain alone, then the same terrain with the",
             "hand-drawn layer over it. Flicking between the two answers \"is",
             "that really in the terrain, or did somebody draw it\". Pits get",
@@ -279,7 +277,7 @@ def main() -> int:
     written = 0
     index = []
 
-    for order, slug, title, variants, lat, lon, side_m in SERIES:
+    for slug, title, variants, lat, lon, side_m in SERIES:
         bounds = window_bounds(lat, lon, side_m)
         x, y = target_xy(lat, lon)
         clip = box(*bounds)
@@ -353,7 +351,7 @@ def main() -> int:
             fig.subplots_adjust(left=0.02, right=0.98, top=0.905, bottom=0.045)
 
             wide = (f"{side_m/1000:g}km").replace(".", "p")
-            name = (f"{order}_annotation_{slug}_{wide}_{tag}_9t_05.png")
+            name = f"annotation_{slug}_{wide}_{tag}_9t.png"
             fig.savefig(OUT / name, dpi=200)
             plt.close(fig)
             written += 1

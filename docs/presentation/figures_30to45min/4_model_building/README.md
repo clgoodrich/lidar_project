@@ -2,15 +2,16 @@
 
 The pipeline itself and the decisions inside it.
 
-    pipeline_diagram_unet_end_to_end_9t.png
-        the whole pipeline as one path: data QA, terrain derivatives, hand
-        annotation, training prep, training and QA. Built by
-        `_build_pipeline_diagram.py`, which reads the channel list, the
-        annotation layer names and the training parameters out of the data and
-        the trainer rather than having them typed in.
+    pipeline_diagram_9t            the whole pipeline as one path: data QA,
+                                   terrain derivatives, hand annotation,
+                                   training prep, training and QA
+    classical_vs_unet_pits_9t      the same scene, both methods
+    road_chunking_cuts_40m_9t      where roads get cut
+    road_chunking_by_split_40m_9t  and how the chunks fall across the splits
 
-    classical_vs_unet_*     the same scene, both methods
-    road_chunking_*         why roads are cut into ~40 m chunks before training
+`_build_pipeline_diagram.py` reads the channel list, the annotation layer names
+and the training parameters out of the data and the trainer rather than having
+them typed in, so the diagram cannot drift from the code.
 
     archive/
         pipeline_diagram_classical_and_unet_branches.png -- the old two-branch

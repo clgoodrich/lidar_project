@@ -175,7 +175,7 @@ def main() -> int:
                      label="cut point")],
              "road_chunks_9t.gpkg  \u00b7  colours alternate along each parent "
              "road so the segmentation is visible; they carry no meaning")
-    p = OUT / f"road_chunking_40m_cuts_9t_{SIDE_M:.0f}m.png"
+    p = OUT / "road_chunking_cuts_40m_9t.png"
     fig.savefig(p, dpi=200); plt.close(fig)
     print(f"  {p.stat().st_size/1e3:7.0f} KB  {p.name}")
 
@@ -203,7 +203,7 @@ def main() -> int:
              "land in different splits. 485 of 1,220 held-out chunks share a "
              "parent with a training chunk \u2014 recall_clean is the "
              "comparable number.")
-    p = OUT / f"road_chunking_40m_by_split_9t_{SIDE_M:.0f}m.png"
+    p = OUT / "road_chunking_by_split_40m_9t.png"
     fig.savefig(p, dpi=200); plt.close(fig)
     print(f"  {p.stat().st_size/1e3:7.0f} KB  {p.name}")
     return 0

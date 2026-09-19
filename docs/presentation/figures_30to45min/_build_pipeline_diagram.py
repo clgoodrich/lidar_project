@@ -244,7 +244,7 @@ def main() -> int:
             fontsize=10, color=MUTED, va="top", ha="left")
 
     fig.subplots_adjust(left=0.012, right=0.994, top=0.985, bottom=0.01)
-    p = OUT / "pipeline_diagram_unet_end_to_end_9t.png"
+    p = OUT / "pipeline_diagram_9t.png"
     fig.savefig(p, dpi=170)
     plt.close(fig)
     print(f"\n{p.stat().st_size/1e3:.0f} KB  {p}")

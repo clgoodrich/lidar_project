@@ -79,7 +79,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ROOT = Path(__file__).resolve().parents[3]
 SRCROOT = ROOT / "data" / "_source" / "lidar"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "scan_angle"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
 CSV = ROOT / "data" / "9t" / "results" / "nonground_classification"
 PDAL = "pdal"
 
@@ -469,7 +469,7 @@ def _figure(rows, df, suffix=""):
                  fontsize=9.5, color=MUTED, ha="left")
     fig.subplots_adjust(left=0.055, right=0.985, top=0.855,
                         bottom=0.135 if no_angle else 0.115, wspace=0.30)
-    p = OUT / f"ground_classification_cliff_by_acquisition{suffix}.png"
+    p = OUT / f"scan_angle_cliff_by_survey{suffix}.png"
     fig.savefig(p, dpi=190)
     plt.close(fig)
     print(f"wrote {p}")

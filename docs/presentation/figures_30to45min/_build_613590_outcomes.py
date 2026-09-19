@@ -50,7 +50,7 @@ from matplotlib.patches import Patch
 from rasterio.windows import from_bounds
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces" / "tile_613590"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
 EPSG = 6346
 
 FAITHFUL = ROOT / "roads_studio" / "exports" / "faithful_613590_deployed_t030.gpkg"
@@ -184,7 +184,7 @@ def main() -> int:
                   label=f"model output  ({km:.0f} km)")],
           "faithful_613590_deployed_t030.gpkg  \u00b7  threshold 0.30, "
           "faithful vectorisation \u2014 strip and trace, nothing invented")
-    save(fig, "roads_613590_generated_network_t030.png")
+    save(fig, "roads_generated_thr0p30_613590.png")
 
     # --- 2. against TIGER ----------------------------------------------------
     tig = read_any(TIGER)
@@ -202,7 +202,7 @@ def main() -> int:
                   label=f"TIGER  ({tkm:.0f} km)")],
           "US Census TIGER/Line roads. These are the roads a public dataset "
           "carries; the rest are logging and access traces under canopy.")
-    save(fig, "roads_613590_generated_vs_tiger.png")
+    save(fig, "roads_vs_tiger_613590.png")
 
     # --- 3. found vs missed --------------------------------------------------
     # The `chunks` layer carries found=True/False and src. The vetted subset
@@ -234,7 +234,7 @@ def main() -> int:
               "The other 4,004 chunks are 613590_review_r2 — a previous "
               "model's output that a human vetted. Every model scores 0.96+ on "
               "those, so they rank nothing and are excluded here.")
-        save(fig, "roads_613590_found_vs_missed_added_thr0p50.png")
+        save(fig, "roads_found_vs_missed_thr0p50_613590.png")
 
     # --- 4. pit and pad candidates ------------------------------------------
     pit = read_any(PIT_CAND)

@@ -69,7 +69,7 @@ SRC = ROOT / "data" / "_source" / "lidar" / "westernpa"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 #: Cross-sections are presentation material, not an intermediate product,
 #: so they live with the rest of the deck figures and are tracked in git.
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "cross_sections"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
 PDAL = "pdal"
 
 MARGIN = 25.0       # crop margin around the corridor, so hag_nn has ground context
@@ -451,8 +451,7 @@ def _draw(code, A, B, L, u, n, s, o, d, keep, cls, args, subject, az, where,
         (ax[-1].get_position().height / ax[-1].get_position().width)
 
     tag = args.name or ("pad" if args.pad else "pit" if args.pit else "line")
-    p = OUT / (f"cross_section_{tag}_{code}_{L:.0f}m_az{az:.0f}_"
-               f"w{str(args.width).replace('.', 'p')}.png")
+    p = OUT / f"cross_section_{tag}_{L:.0f}m_{code}.png"
     fig.savefig(p, dpi=185)
     plt.close(fig)
     print(f"\nwrote {p}")

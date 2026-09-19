@@ -187,7 +187,7 @@ def main() -> int:
              "Information Sciences 37(B2): 1071\u20131076.",
              fontsize=9.5, color=INK2, va="top")
 
-    out = OUT / "rrim_formula_card_chiba2008_9t_05.png"
+    out = OUT / "rrim_formula_card.png"
     fig.savefig(out, dpi=200)
     plt.close(fig)
     print(f"d_lim = {dlim:.2f} deg")

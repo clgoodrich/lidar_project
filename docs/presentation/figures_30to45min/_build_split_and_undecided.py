@@ -77,17 +77,17 @@ C_MISS = "#e5194b"
 #:   5 probability surfaces.  A name missing here lands at the top level, which
 #:   is reserved for figures that belong to no single stage (the locator map).
 STAGE = {
-    "nisar_gcov_hh_hv_clip_9t_10m_20260120.png": "1_data_qa",
-    "annotation_schema_one_pad_one_pit_9t_05.png": "3_annotations",
-    "annotation_growth_pit_splits_426_527_712.png": "3_annotations",
-    "annotation_growth_pad_splits_650_995_9t.png": "3_annotations",
-    "spatial_block_split_grid_12x12_9t_ann712.png": "3_annotations",
-    "pit_split_held_out_blocks_9t.png": "3_annotations",
+    "nisar_radar_10m_9t.png": "1_data_qa",
+    "annotation_schema_pad_and_pit_9t.png": "3_annotations",
+    "annotation_growth_pits_9t.png": "3_annotations",
+    "annotation_growth_pads_9t.png": "3_annotations",
+    "split_blocks_12x12_9t.png": "3_annotations",
+    "split_held_out_pits_9t.png": "3_annotations",
     "pipeline_diagram_classical_and_unet_branches.png": "4_model_building",
-    "classical_vs_unet_pit_detection_same_scene_9t.png": "4_model_building",
-    "pit_outcomes_matched_undecided_missed_9t.png": "5_probability_surfaces",
-    "pit_undecided_review_queue_zoom_9t.png": "5_probability_surfaces",
-    "threshold_sweep_flagged_area_vs_recall_pit_pad_road_9t.png":
+    "classical_vs_unet_pits_9t.png": "4_model_building",
+    "pit_outcomes_9t.png": "5_probability_surfaces",
+    "pit_review_queue_9t.png": "5_probability_surfaces",
+    "threshold_sweep_9t.png":
         "5_probability_surfaces",
 }
 
@@ -206,7 +206,7 @@ def main() -> int:
              "Training windows wobble 30 m, so a window on a train pit can cover "
              "the pit next door. Blocks put a wall between the sets. Balanced on "
              "pit count, not block count \u2014 pits cluster.")
-    save(fig, "pit_split_held_out_blocks_9t.png")
+    save(fig, "split_held_out_pits_9t.png")
 
     # --- 2. outcomes ---------------------------------------------------------
     layers = {n for n, _ in pyogrio.list_layers(str(UND))}
@@ -240,7 +240,7 @@ def main() -> int:
              "pit_candidates_undecided_thr0p50_9t.gpkg, 2026-08-05 (ann527-era "
              "model). 'Flagged, nothing drawn there' is a review queue, not an "
              "error list \u2014 some are real pits nobody had drawn yet.")
-    save(fig, "pit_outcomes_matched_undecided_missed_9t.png")
+    save(fig, "pit_outcomes_9t.png")
 
     # --- 3. zoom on the undecided -------------------------------------------
     if undec is not None and len(undec):
@@ -289,7 +289,7 @@ def main() -> int:
                          label=f"hand-drawn floor  ({len(ann)})")],
                  "RRIM base. Each orange outline is a decision a human still has "
                  "to make: real pit, or not?", bar_m=50)
-        save(fig, "pit_undecided_review_queue_zoom_9t.png")
+        save(fig, "pit_review_queue_9t.png")
     return 0
 
 

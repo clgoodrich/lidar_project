@@ -64,16 +64,16 @@ written: list[tuple[str, str]] = []
 #:   5 probability surfaces.  A name missing here lands at the top level, which
 #:   is reserved for figures that belong to no single stage (the locator map).
 STAGE = {
-    "nisar_gcov_hh_hv_clip_9t_10m_20260120.png": "1_data_qa",
-    "annotation_schema_one_pad_one_pit_9t_05.png": "3_annotations",
-    "annotation_growth_pit_splits_426_527_712.png": "3_annotations",
-    "annotation_growth_pad_splits_650_995_9t.png": "3_annotations",
-    "spatial_block_split_grid_12x12_9t_ann712.png": "3_annotations",
-    "pit_split_held_out_blocks_9t.png": "3_annotations",
-    "classical_vs_unet_pit_detection_same_scene_9t.png": "4_model_building",
-    "pit_outcomes_matched_undecided_missed_9t.png": "5_probability_surfaces",
-    "pit_undecided_review_queue_zoom_9t.png": "5_probability_surfaces",
-    "threshold_sweep_flagged_area_vs_recall_pit_pad_road_9t.png":
+    "nisar_radar_10m_9t.png": "1_data_qa",
+    "annotation_schema_pad_and_pit_9t.png": "3_annotations",
+    "annotation_growth_pits_9t.png": "3_annotations",
+    "annotation_growth_pads_9t.png": "3_annotations",
+    "split_blocks_12x12_9t.png": "3_annotations",
+    "split_held_out_pits_9t.png": "3_annotations",
+    "classical_vs_unet_pits_9t.png": "4_model_building",
+    "pit_outcomes_9t.png": "5_probability_surfaces",
+    "pit_review_queue_9t.png": "5_probability_surfaces",
+    "threshold_sweep_9t.png":
         "5_probability_surfaces",
 }
 
@@ -339,7 +339,7 @@ def fig_annotation_growth():
              "Verified: all 209 of the current 'unused' rows fall outside "
              "619500-624000 E, 4593000-4597500 N. ann426 had none.",
              fontsize=8.5, color=MUTED)
-    save(fig, "annotation_growth_pit_splits_426_527_712.png",
+    save(fig, "annotation_growth_pits_9t.png",
          f"split composition across ann426/527/712; "
          f"{int(df.iloc[-1][['train','val','test']].sum())} of "
          f"{int(df.iloc[-1]['total'])} current pits are inside 9t")
@@ -398,7 +398,7 @@ def fig_block_grid():
     title(ax, "b  Why the fill balances on count",
           "blocks and pits do not track each other; pits cluster")
     fig.subplots_adjust(wspace=0.26)
-    save(fig, "spatial_block_split_grid_12x12_9t_ann712.png",
+    save(fig, "split_blocks_12x12_9t.png",
          f"144 blocks by split, {int(tot_p)} pit floors inside the tile; "
          f"count vs block share")
 
@@ -492,7 +492,7 @@ def fig_classical_vs_unet():
                  fontsize=8.5, loc="lower left")
     fig.suptitle("Same scene, both branches", fontsize=13, fontweight="bold",
                  x=0.09, ha="left", y=1.0)
-    save(fig, "classical_vs_unet_pit_detection_same_scene_9t.png",
+    save(fig, "classical_vs_unet_pits_9t.png",
          f"{len(cw)} classical candidates vs U-Net floor probability in a "
          f"400 m window, {len(ann)} annotated floors")
 
@@ -543,7 +543,7 @@ def fig_nisar():
     fig.text(0.5, -0.02, f"{hh.shape[1]} x {hh.shape[0]} px at 10 m, clipped from a "
              f"36,216 x 35,784 px swath.  9t is 0.016% of the granule area.",
              ha="center", fontsize=8.5, color=MUTED)
-    save(fig, "nisar_gcov_hh_hv_clip_9t_10m_20260120.png",
+    save(fig, "nisar_radar_10m_9t.png",
          f"{hh.shape[1]}x{hh.shape[0]} px HH/HV/ratio clip, median HH "
          f"{np.nanmedian(hh_db):.1f} dB, HV {np.nanmedian(hv_db):.1f} dB, "
          f"ratio {np.nanmedian(ratio):.1f} dB")
@@ -682,7 +682,7 @@ def fig_pit_anatomy():
              "containment\nand IoU had to be added to the metrics. Pads hold one "
              "or two floors: 995 pads carry 712 floors.",
              fontsize=8.5, color=MUTED)
-    save(fig, "annotation_schema_one_pad_one_pit_9t_05.png",
+    save(fig, "annotation_schema_pad_and_pit_9t.png",
          f"pad {int(pid)} with {int(sel.n)} floors, then floor/rim/full on one pit")
 
 
@@ -772,7 +772,7 @@ def fig_threshold_sweep():
              "55x the ground for fewer targets. Scored against hand-drawn "
              "annotation withheld from training — no DEP list, no TIGER.",
              fontsize=8.5, color=MUTED)
-    save(fig, "threshold_sweep_flagged_area_vs_recall_pit_pad_road_9t.png",
+    save(fig, "threshold_sweep_9t.png",
          f"pit {pr.pct:.2f}% of tile at thr 0.20 for {int(pr.found)}/"
          f"{int(pr.n_heldout)} rims; road and pad on the same axes")
 
@@ -842,7 +842,7 @@ def fig_pad_growth():
              "right one.\nUnlike the pits, not every unused pad is outside the "
              "tile. 66 sit in 9t blocks the greedy fill left unassigned,\nso 650 "
              "pads are in-tile, not 584.", fontsize=8.5, color=MUTED)
-    save(fig, "annotation_growth_pad_splits_650_995_9t.png",
+    save(fig, "annotation_growth_pads_9t.png",
          f"pad split composition, "
          f"{int(df.iloc[-1][['train','val','test','unassigned']].sum())} of "
          f"{int(df.iloc[-1]['total'])} current pads inside 9t")

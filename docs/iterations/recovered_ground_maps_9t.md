@@ -101,12 +101,12 @@ is real occlusion that no reclassification can invent.
 
 ## Outputs
 
-`docs/presentation/figures_30to45min/1_data_qa/recovered_ground_9t/`
+`docs/presentation/figures_30to45min/1_data_qa/`
 
-- `map_1_ground_as_delivered_9t_0p5m.png`
-- `map_2_ground_thrown_away_9t_0p5m.png`
-- `map_3_ground_both_together_9t_0p5m.png`
-- `cross_section_before_after_621594_300m_az10_w2p0_slope0p35.png`
+- `ground_delivered_9t.png`
+- `ground_thrown_away_9t.png`
+- `ground_both_9t.png`
+- `ground_cross_section_300m_621594.png`
 
 `data/9t/results/recovered_ground_9t/`
 

@@ -80,7 +80,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "_source" / "lidar" / "westernpa" / "OTHER_DATA"
 OUT = ROOT / "data" / "9t" / "results" / "recovered_ground_9t"
-FIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "recovered_ground_9t"
+FIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
 PDAL = "pdal"
 
 RES = 0.5
@@ -439,7 +439,7 @@ def map_vendor(vend, cnt_v, cnt_a, k, kb, extent, stats):
             f"measurement — the surface there is a guess between two rims",
             transform=ax.transAxes, ha="center", va="top", fontsize=13,
             color=HOLE, fontweight="bold")
-    save(fig, "map_1_ground_as_delivered_9t_0p5m.png")
+    save(fig, "ground_delivered_9t.png")
 
 
 def map_recovered(cnt_r, k, kb, extent, stats):
@@ -459,7 +459,7 @@ def map_recovered(cnt_r, k, kb, extent, stats):
             f"away in stripes along the edges of the flight paths",
             transform=ax.transAxes, ha="center", va="top", fontsize=13,
             color=FOUND, fontweight="bold")
-    save(fig, "map_2_ground_thrown_away_9t_0p5m.png")
+    save(fig, "ground_thrown_away_9t.png")
 
 
 def map_both(both, cnt_b, cnt_a, k, kb, extent, stats):
@@ -479,7 +479,7 @@ def map_both(both, cnt_b, cnt_a, k, kb, extent, stats):
             f"{stats['closed']:,} cells filled in",
             transform=ax.transAxes, ha="center", va="top", fontsize=13,
             color=FOUND, fontweight="bold")
-    save(fig, "map_3_ground_both_together_9t_0p5m.png")
+    save(fig, "ground_both_9t.png")
 
 
 def to_1m(cnt):
@@ -674,8 +674,7 @@ def cross_section(vend, both, cnt_v, cnt_b, cnt_a, code, slope,
     fig.suptitle("The same slice of ground, before and after", fontsize=20,
                  fontweight="bold", x=0.062, ha="left", y=0.985, color=INK)
     fig.subplots_adjust(top=0.90)
-    save(fig, f"cross_section_before_after_{code}_{int(length)}m_"
-              f"az{int(az)}_w{width:.0f}p0_slope{str(slope).replace('.','p')}.png")
+    save(fig, f"ground_cross_section_{int(length)}m_{code}.png")
     return cx, cy, az
 
 

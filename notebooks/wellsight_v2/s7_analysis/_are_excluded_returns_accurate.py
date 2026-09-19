@@ -85,7 +85,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "_source" / "lidar" / "westernpa"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "scan_angle"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
 CSV = ROOT / "data" / "9t" / "results" / "nonground_classification"
 PDAL = "pdal"
 
@@ -369,7 +369,7 @@ def _figure(df, keep):
              fontsize=9, color=MUTED)
     fig.subplots_adjust(left=0.055, right=0.985, top=0.90, bottom=0.115,
                         wspace=0.18)
-    p = OUT / "excluded_returns_vertical_accuracy.png"
+    p = OUT / "scan_angle_accuracy_9t.png"
     fig.savefig(p, dpi=190)
     plt.close(fig)
     print(f"wrote {p}")

@@ -31,7 +31,7 @@ from rasterio.windows import from_bounds
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 MODELS = ROOT / "data" / "9t" / "models"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces" / "prob_layers_plain"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
 
 FRACTION = 0.5          # of the tile's width, centred
 MAX_PX = 2600           # cap the read so a 0.5 m layer does not blow memory
@@ -137,7 +137,7 @@ def main() -> int:
         ax.set_title(title, fontsize=18, fontweight="bold", loc="left", pad=11)
         fig.subplots_adjust(left=0.02, right=0.90, top=0.93, bottom=0.030)
 
-        name = f"prob_{slug}_9t_half_extent.png"
+        name = f"prob_{slug}_9t.png"
         fig.savefig(OUT / name, dpi=200)
         plt.close(fig)
         print(f"  {(OUT / name).stat().st_size/1e3:7.0f} KB  {name}"

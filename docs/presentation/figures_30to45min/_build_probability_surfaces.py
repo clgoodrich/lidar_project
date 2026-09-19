@@ -140,7 +140,7 @@ def main() -> int:
     clip = box(*bb)
     site = (f"{LAT:.6f}".replace(".", "p") + "N_"
             + f"{abs(LON):.6f}".replace(".", "p") + "W")
-    outdir = OUT / f"venango_site_{site}"
+    outdir = OUT
     outdir.mkdir(parents=True, exist_ok=True)
 
     hs = read_hillshade(bb)
@@ -213,7 +213,7 @@ def main() -> int:
             res = r.res[0]
         fig.subplots_adjust(left=0.02, right=0.90, top=0.93, bottom=0.030)
 
-        name = f"venango_{site}_{SIDE_M:.0f}m_prob_{slug}_9t.png"
+        name = f"prob_{slug}_{SIDE_M:.0f}m_9t.png"
         fig.savefig(outdir / name, dpi=200)
         plt.close(fig)
         hi = float(np.nanmax(prob)) if np.isfinite(prob).any() else float("nan")
@@ -276,7 +276,7 @@ def main() -> int:
         with rasterio.open(raster) as r:
             res = r.res[0]
         fig.subplots_adjust(left=0.02, right=0.99, top=0.93, bottom=0.030)
-        name = f"venango_{site}_{SIDE_M:.0f}m_argmax_{slug}_9t.png"
+        name = f"argmax_{slug}_{SIDE_M:.0f}m_9t.png"
         fig.savefig(outdir / name, dpi=200)
         plt.close(fig)
         print(f"  {(outdir / name).stat().st_size/1e3:7.0f} KB  {name}   {counts}")

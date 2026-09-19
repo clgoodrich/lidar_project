@@ -78,7 +78,7 @@ ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "_source" / "lidar" / "westernpa"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 OUT = ROOT / "data" / "9t" / "results" / "smrf_ground"
-FIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "smrf_ground"
+FIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
 PDAL = "pdal"
 
 RES = 0.5            # DEM cell size, matching the project's 0.5 m products
@@ -452,7 +452,7 @@ def _figure(code, slope, A, B, dz, cov, vv, vs, bounds, m):
                  fontsize=16, fontweight="bold", x=0.010, ha="left", y=0.975)
     fig.subplots_adjust(left=0.010, right=0.99, top=0.88, bottom=0.02,
                         wspace=0.05)
-    p = FIG / f"smrf_vs_vendor_ground_{code}_slope{str(slope).replace('.','p')}.png"
+    p = FIG / f"smrf_vs_vendor_{code}.png"
     fig.savefig(p, dpi=185)
     plt.close(fig)
     print(f"    wrote {p}")

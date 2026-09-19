@@ -246,8 +246,7 @@ def north_arrow(ax, bounds):
 def main() -> int:
     bounds = window_bounds()
     x, y = target_xy()
-    site = f"{LAT:.6f}".replace(".", "p") + "N_" + f"{abs(LON):.6f}".replace(".", "p") + "W"
-    outdir = OUT / f"venango_site_{site}"
+    outdir = OUT
     outdir.mkdir(parents=True, exist_ok=True)
     print(f"centre {x:.1f} E, {y:.1f} N   window {SIDE_M:.0f} m")
     print(f"writing to {outdir}\n")
@@ -322,7 +321,7 @@ def main() -> int:
             fig.text(0.021, 0.018, cite, fontsize=9, color=MUTED)
         fig.subplots_adjust(left=0.02, right=0.98, top=0.93, bottom=bot)
 
-        name = f"venango_{site}_{SIDE_M:.0f}m_{slug}_9t_05.png"
+        name = f"{slug}_{SIDE_M:.0f}m_9t.png"
         fig.savefig(outdir / name, dpi=200)
         plt.close(fig)
         kb = (outdir / name).stat().st_size / 1e3

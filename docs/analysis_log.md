@@ -5,6 +5,37 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-19 — Every talk figure renamed and every stage folder flattened
+
+**Why.** The figure names had grown to carry everything: the site as a lat/lon
+blob, the azimuth, the corridor width, the slope parameter, a leading sequence
+number, and a trailing `_9t_05`. Precise, and unreadable -- picking a slide
+meant opening folders to find out what was inside them.
+
+**The scheme now is what, how big, where.** `annotation_roads_2km_no_lines_9t`,
+`prob_pit_300m_9t`, `cross_section_pad_357m_621594`. Parameters stay in the name
+only where they are the point of the figure, which is thresholds
+(`roads_found_vs_missed_thr0p50_613590`) and nothing else. The precise centre of
+each annotation site moved into a generated table in
+`3_annotations/README.md`, so the Descriptive-filename rule still has somewhere
+to point.
+
+**All five stage folders are flat.** Thirteen subfolders went -- `scan_angle/`,
+`recovered_ground_9t/`, `smrf_ground/`, `cross_sections/`,
+`report_lidar_ground/`, `prob_layers_plain/`, `rrim_vs_prob/`, `tile_613590/`,
+and the `venango_site_<lat><lon>/` folders. Only `archive/` and one folder of
+source GeoTIFFs are still nested. 71 images moved, 12 were rebuilt.
+
+**Sixteen builders were repointed in the same pass**, so nothing regenerates
+under the old names. `_build_report_figures.py` moved up to sit with the other
+builders and its `parents[5]` became `parents[3]`. The stale names were also
+swept out of `_manifest.json`, `FIGURE_INDEX.md`,
+`figure_notes_what_each_image_shows.md`, `reference_index.csv`, three iteration
+docs and this log. Four builders were re-run to confirm they write the new
+names.
+
+---
+
 ## 2026-09-19 — Figures restyled to match QGIS, and the annotation series rebuilt per class
 
 **Terrain derivatives now render the way the project renders them.** The panels
@@ -154,7 +185,7 @@ change. Slope swept 0.15-0.70 first, and the answer moves 0.9% across that range
 The four `dem_*.tif` are 36 MB each and gitignored at `.gitignore:154`.
 
 **Plain-language report.** Eight single-chart PNGs under
-`docs/presentation/figures_30to45min/1_data_qa/report_lidar_ground/`, every number read
+`docs/presentation/figures_30to45min/1_data_qa/`, every number read
 from a measurement CSV rather than typed. Published as an artifact.
 
 

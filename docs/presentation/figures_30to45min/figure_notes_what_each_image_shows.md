@@ -61,7 +61,7 @@ diagram is a measurement.
 **Reads:** the deck's four-step story is now one of two branches, and both score
 against the same hand annotation.
 
-## 3. `annotation_growth_pit_splits_426_527_712.png`
+## 3. `annotation_growth_pits_9t.png`
 
 **Slide:** new, Act II.
 
@@ -86,7 +86,7 @@ inside 9t**. The slide should say it that way.
 **Reads:** every expansion reassigns the split, so no earlier checkpoint stays
 held-out. That is the honest setup for the stale-numbers problem.
 
-## 4. `spatial_block_split_grid_12x12_9t_ann712.png`
+## 4. `split_blocks_12x12_9t.png`
 
 **Slide:** new, Act IV, the spatial-block splitting slide.
 
@@ -109,7 +109,7 @@ Note that val gets 14 blocks and test gets 24, yet they hold 77 and 74 pits.
 holding the wrong share of the data. This is the one-slide justification for the
 greedy fill on feature count.
 
-## 5. `classical_vs_unet_pit_detection_same_scene_9t.png`
+## 5. `classical_vs_unet_pits_9t.png`
 
 **Slide:** NONE. **Unused as of 2026-09-17.** The outline cut the classical
 branch, so the slide this served no longer exists. The figure is kept on disk
@@ -133,7 +133,7 @@ tight blobs on the floors and almost nothing elsewhere. Count the green outlines
 without a blue blob to see what 0.20 still misses — that is the threshold
 conversation, on screen.
 
-## 6. `nisar_gcov_hh_hv_clip_9t_10m_20260120.png`
+## 6. `nisar_radar_10m_9t.png`
 
 **Slide:** new, Act V, the NISAR slide.
 
@@ -158,7 +158,7 @@ Pennsylvania canopy.
 
 ---
 
-## 7. `annotation_schema_one_pad_one_pit_9t_05.png`
+## 7. `annotation_schema_pad_and_pit_9t.png`
 
 **Slide:** new, Act II slides 2-3. The schema, and why floor/rim/full are three
 layers.
@@ -185,7 +185,7 @@ Layer counts in the legend are live from the gpkg, not typed.
 be right in the wrong place, the right place at the wrong size, or one object
 split in two. That is the whole argument for Act II.
 
-## 8. `threshold_sweep_flagged_area_vs_recall_pit_pad_road_9t.png`
+## 8. `threshold_sweep_9t.png`
 
 **Slide:** new, Act IV. The headline pair. Currently one row in one table.
 
@@ -218,7 +218,7 @@ dip is a real property of the metric, not a plotting error.
 needs 55x the ground to find fewer of its targets, which is the cleanest way to
 name the weak model without arguing about F1.
 
-## 9. `annotation_growth_pad_splits_650_995_9t.png`
+## 9. `annotation_growth_pads_9t.png`
 
 **Slide:** new, Act II slide 5, beside the pit growth chart.
 

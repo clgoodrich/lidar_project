@@ -32,7 +32,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from rasterio.windows import from_bounds
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces" / "rrim_vs_prob"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
 
 SIDE_M = 400.0
 SURFACE = "#fcfcfb"
@@ -232,7 +232,7 @@ def main() -> int:
         fig.subplots_adjust(left=0.012, right=0.955, top=0.9, bottom=0.048,
                             wspace=0.06)
 
-        name = f"rrim_vs_prob_{task}_{tile}_{SIDE_M:.0f}m.png"
+        name = f"rrim_vs_prob_{task}_{SIDE_M:.0f}m_{tile}.png"
         fig.savefig(OUT / name, dpi=200)
         plt.close(fig)
         print(f"    {(OUT / name).stat().st_size/1e3:7.0f} KB  {name}")

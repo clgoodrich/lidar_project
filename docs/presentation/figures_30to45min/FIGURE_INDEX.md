@@ -52,19 +52,19 @@ an old one.
 |---|---|---|
 | `locator_study_areas_pa.png` | 6 Venango tiles, McKean, and an extent table for all seven | `_build_presentation_figures.py` |
 | `pipeline_diagram_classical_and_unet_branches.png` | schematic. **Needs redrawing as one path** — the outline cut the classical branch | `_build_presentation_figures.py` |
-| `annotation_growth_pit_splits_426_527_712.png` | 426 → 527 → 712 pit floors, split composition each time | `_build_presentation_figures.py` |
-| `annotation_growth_pad_splits_650_995_9t.png` | 650 → 995 pads; the two 995 bars hold the same pads with different splits | `_build_presentation_figures.py` |
-| `annotation_schema_one_pad_one_pit_9t_05.png` | one pad with its floors and road, then floor/rim/full on one pit | `_build_presentation_figures.py` |
-| `spatial_block_split_grid_12x12_9t_ann712.png` | 144 blocks by split, plus block-share against pit-share | `_build_presentation_figures.py` |
-| `threshold_sweep_flagged_area_vs_recall_pit_pad_road_9t.png` | **the headline.** flagged area vs recall, all three tasks | `_build_presentation_figures.py` |
-| `nisar_gcov_hh_hv_clip_9t_10m_20260120.png` | NISAR HH / HV / HH−HV over 9t | `_build_presentation_figures.py` |
-| `classical_vs_unet_pit_detection_same_scene_9t.png` | **unused.** The outline cut the classical branch; kept on disk | `_build_presentation_figures.py` |
-| `rrim_formula_card_chiba2008_9t_05.png` | how RRIM is computed, with Chiba et al. 2008 cited | `_build_rrim_formula_card.py` |
-| `pit_split_held_out_blocks_9t.png` | which pits the model was never allowed to see | `_build_split_and_undecided.py` |
-| `pit_outcomes_matched_undecided_missed_9t.png` | what it found, flagged, and missed, whole tile | `_build_split_and_undecided.py` |
-| `pit_undecided_review_queue_zoom_9t.png` | the review queue up close, on RRIM | `_build_split_and_undecided.py` |
-| `road_chunking_40m_cuts_9t_700m.png` | roads cut into ~40 m chunks, cut points marked | `_build_road_chunking.py` |
-| `road_chunking_40m_by_split_9t_700m.png` | the same chunks coloured by train / val / test | `_build_road_chunking.py` |
+| `annotation_growth_pits_9t.png` | 426 → 527 → 712 pit floors, split composition each time | `_build_presentation_figures.py` |
+| `annotation_growth_pads_9t.png` | 650 → 995 pads; the two 995 bars hold the same pads with different splits | `_build_presentation_figures.py` |
+| `annotation_schema_pad_and_pit_9t.png` | one pad with its floors and road, then floor/rim/full on one pit | `_build_presentation_figures.py` |
+| `split_blocks_12x12_9t.png` | 144 blocks by split, plus block-share against pit-share | `_build_presentation_figures.py` |
+| `threshold_sweep_9t.png` | **the headline.** flagged area vs recall, all three tasks | `_build_presentation_figures.py` |
+| `nisar_radar_10m_9t.png` | NISAR HH / HV / HH−HV over 9t | `_build_presentation_figures.py` |
+| `classical_vs_unet_pits_9t.png` | **unused.** The outline cut the classical branch; kept on disk | `_build_presentation_figures.py` |
+| `rrim_formula_card.png` | how RRIM is computed, with Chiba et al. 2008 cited | `_build_rrim_formula_card.py` |
+| `split_held_out_pits_9t.png` | which pits the model was never allowed to see | `_build_split_and_undecided.py` |
+| `pit_outcomes_9t.png` | what it found, flagged, and missed, whole tile | `_build_split_and_undecided.py` |
+| `pit_review_queue_9t.png` | the review queue up close, on RRIM | `_build_split_and_undecided.py` |
+| `road_chunking_cuts_40m_9t.png` | roads cut into ~40 m chunks, cut points marked | `_build_road_chunking.py` |
+| `road_chunking_by_split_40m_9t.png` | the same chunks coloured by train / val / test | `_build_road_chunking.py` |
 
 ## 2. The site, every way we look at it — `venango_site_41p492640N_79p546127W/`
 
@@ -142,9 +142,9 @@ Builder: `_build_613590_outcomes.py`. A tile no model ever trained on.
 
 | image | what it shows |
 |---|---|
-| `roads_613590_generated_network_t030.png` | the generated network: 3,693 segments, 231.4 km |
-| `roads_613590_generated_vs_tiger.png` | the same against TIGER: 39 features, 40.0 km — **5.8x more road** |
-| `roads_613590_found_vs_missed_added_thr0p50.png` | found vs missed on the informative subset only |
+| `roads_generated_thr0p30_613590.png` | the generated network: 3,693 segments, 231.4 km |
+| `roads_vs_tiger_613590.png` | the same against TIGER: 39 features, 40.0 km — **5.8x more road** |
+| `roads_found_vs_missed_thr0p50_613590.png` | found vs missed on the informative subset only |
 | `pit_pad_candidates_613590.png` | pit and pad candidates, transferred with no retraining |
 
 **The caution that belongs on the slide.** 613590's road truth splits by `src`.
@@ -170,9 +170,9 @@ the cut. This is not an axis-aligned slice — the line can run at any azimuth.
 
 | image | what it shows |
 |---|---|
-| `cross_section_pit_616591_72m_az172_w2p0.png` | a 104 m² annotated pit, cut along its long axis; 2,526 returns, 663 unassigned → 284 |
-| `cross_section_pad_621594_357m_az5_w2p0.png` | an annotated pad on a 9t tile; 2,735 returns |
-| `cross_section_venango_41p484384N_79p518911W_622593_200m_az90_w3p0.png` | the 41.484384 N, -79.518911 W site, 200 m east–west |
+| `cross_section_pit_72m_616591.png` | a 104 m² annotated pit, cut along its long axis; 2,526 returns, 663 unassigned → 284 |
+| `cross_section_pad_357m_621594.png` | an annotated pad on a 9t tile; 2,735 returns |
+| `cross_section_line_200m_622593.png` | the 41.484384 N, -79.518911 W site, 200 m east–west |
 
 Each figure has four panels: a locator map of the corridor built from the ground
 returns in the crop, the points **as delivered** (two classes), the points
@@ -223,7 +223,7 @@ off a slide:
 
 - `rrim_vs_prob/*` — the window was chosen by density of above-threshold pixels,
   not by eye, and is a best case by construction.
-- `tile_613590/roads_613590_found_vs_missed_added_thr0p50.png` — scored on the
+- `tile_613590/roads_found_vs_missed_thr0p50_613590.png` — scored on the
   `613590_added_r2` subset only.
 
 ---
