@@ -70,7 +70,6 @@ STAGE = {
     "annotation_growth_pad_splits_650_995_9t.png": "3_annotations",
     "spatial_block_split_grid_12x12_9t_ann712.png": "3_annotations",
     "pit_split_held_out_blocks_9t.png": "3_annotations",
-    "pipeline_diagram_classical_and_unet_branches.png": "4_model_building",
     "classical_vs_unet_pit_detection_same_scene_9t.png": "4_model_building",
     "pit_outcomes_matched_undecided_missed_9t.png": "5_probability_surfaces",
     "pit_undecided_review_queue_zoom_9t.png": "5_probability_surfaces",
@@ -206,7 +205,10 @@ def fig_locator():
 
 
 # ====================================================== F2 pipeline diagram
-def fig_pipeline():
+def fig_pipeline():   # RETIRED -- not called; see _build_pipeline_diagram.py
+    """The old two-branch diagram. Kept so the figure can be regenerated if
+    anyone needs to show what the pipeline used to look like, but it is no
+    longer part of the build: the classical branch it draws is gone."""
     fig, ax = plt.subplots(figsize=(13.2, 6.8))
     ax.set_xlim(-7, 101); ax.set_ylim(2, 64); ax.axis("off")
 
@@ -848,7 +850,9 @@ def fig_pad_growth():
 
 if __name__ == "__main__":
     os.chdir(ROOT)
-    for fn in [fig_locator, fig_pipeline, fig_annotation_growth, fig_block_grid,
+    # fig_pipeline is retired: the classical branch it drew no longer exists.
+    # The single-path diagram is built by _build_pipeline_diagram.py.
+    for fn in [fig_locator, fig_annotation_growth, fig_block_grid,
                fig_classical_vs_unet, fig_nisar,
                fig_pit_anatomy, fig_threshold_sweep, fig_pad_growth]:
         print(f"[{fn.__name__}]")
