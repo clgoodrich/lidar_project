@@ -2,6 +2,12 @@
 
 Per-task metrics across iterations on the 9t tile.
 
+> **UPDATE 2026-09-17 — the pit and pad CV5 tables are current again.** Both
+> `_pit_unet_cv5.py` and `_pad_unet_cv5.py` have been re-run on ann712; see
+> "Pits, 5-fold cross-validated — all 712 pits" and "Pads, 5-fold
+> cross-validated — all 995 pads". Every OTHER pit and pad row on this page is
+> still scored against ann527 or ann426 and the banner below still applies to it.
+>
 > **STALE — every pit and pad number below (2026-09-04).** The 9t annotation
 > grew from 527 to 712 pit floors and the spatial-block train/val/test split was
 > reassigned to match (`_build_pit_dataset_v2.py --force`). The pad and road
@@ -83,7 +89,42 @@ The post-proc row is a **point-level metric** (6 m centroid tolerance), val-tune
 and test-frozen. It was not part of the 07-27 reeval and is not row-comparable.
 See [[pit_optimize]].
 
+### Pits, 5-fold cross-validated — all 712 pits, ann712, 2026-09-17
+
+**Current.** `_pit_unet_cv5.py` re-run on the ann712 split, 57.3 min, five folds,
+502 rims scored. Same architecture, loss, channels and schedule as the ann426 run
+below — only the annotation and the split changed.
+
+| Selection | thr chosen per fold | R@0.3 | P@0.3 | R@0.5 | containment |
+|---|---|---|---|---|---|
+| by F1 | 0.45, 0.50, 0.55, 0.60, 0.60 | **0.861** (sd 0.045) | 0.686 | 0.700 | 0.914 |
+| by F2 | 0.35, 0.40, 0.40, 0.45, 0.45 | **0.928** (sd 0.023) | 0.633 | 0.823 | 0.956 |
+
+Against the ann527 run it superseded (F1 rule): recall 0.890 → 0.861, precision
+0.637 → **0.686**, containment 0.936 → 0.914. Under F2: recall 0.938 → 0.928,
+precision 0.598 → **0.633**.
+
+**Precision rose on every rule while recall moved slightly down.** The likely
+reading is that some of what the ann527 model was charged for as false positives
+were real pit floors that had not been annotated yet, and ann712 labelled them.
+That is consistent with the direction and size of both moves but is not proved
+here — confirming it means checking ann527 false positives against the 185 floors
+ann712 added. Recorded as a hypothesis, not a finding.
+
+**The pads did not reproduce it.** Pooled pad precision was flat, 0.606 -> 0.597.
+If the mechanism were general, both tasks should have moved together. Either it
+is pit-specific, or it is not the mechanism. See the pad section.
+
+Per-fold spread also tightened, sd 0.088 → 0.045 under F1, which is what more
+annotation should do.
+
+Outputs: `data/9t/models/pit/unet_cv5/pit_cv5_per_fold_9t.csv`,
+`pit_cv5_recovery_curve_9t.csv`, `pit_cv5_fold_assignment_9t.csv`.
+Log: `data/9t/models/pit/unet_cv5/_pit_cv5_ann712_train.log`.
+
 ### Pits, 5-fold cross-validated — all 426 pits, 2026-07-27
+
+**SUPERSEDED by the ann712 table above.** Kept for the trend.
 
 The rows above rest on one split of 65 test pits. This is the same architecture,
 loss, channels and schedule, trained five times, each holding out a different
@@ -117,7 +158,42 @@ Full write-up: [[pit_unet_cv5_9t]].
 | **pad_06_yolo** | YOLOv8s-seg | 0.80 | 0.699 | 0.667 | **0.689** | **0.678** |
 | plat_unet (native localized‡) | UNet semantic binary | — | — | 0.78‡ | — | — |
 
+### Pads, 5-fold cross-validated — all 995 pads, ann712, 2026-09-17
+
+**Current.** `_pad_unet_cv5.py` re-run on the ann712 split, 159.9 min, five folds,
+650 in-tile pads scored.
+
+| Selection | thr chosen per fold | R@0.3 | P@0.3 | R@0.5 | locate |
+|---|---|---|---|---|---|
+| by F1 | 0.55, 0.55, 0.55, 0.60, 0.65 | **0.888** (sd 0.051) | 0.597 | 0.749 | 0.923 |
+| by F2 | 0.50, 0.55, 0.55, 0.55, 0.55 | **0.912** (sd 0.022) | 0.587 | 0.774 | 0.917 |
+
+**The pits' precision gain did NOT reproduce here.** Against the 650-pad run
+below, under F1: recall 0.917 -> 0.888, precision 0.606 -> 0.597, locate
+0.928 -> 0.923. Under F2: recall 0.920 -> 0.912, precision 0.591 -> 0.587.
+Recall down slightly, precision flat.
+
+Fold 0 alone had shown precision up (0.655), which is why an early reading of
+this run looked like the pit pattern. Pooled over five folds it does not. The
+"unannotated true positives" hypothesis recorded in the pit section is therefore
+supported by the pits only, not by both tasks. Treat it as weaker than it looked.
+
+Per-fold recall spread widened under F1, sd 0.021 -> 0.051, the opposite of what
+the pits did.
+
+Outputs: `data/9t/models/pad/unet_cv5/pad_cv5_per_fold_9t.csv`,
+`pad_cv5_recovery_curve_9t.csv`, `pad_cv5_fold_assignment_9t.csv`.
+Log: `data/9t/models/pad/unet_cv5/_pad_cv5_ann712_train.log`.
+
+**Count note.** The pad manifest has 995 rows. 650 carry a `block_id` and are
+in-tile; 345 have none and fall outside 9t. Of the 650 in-tile, 66 sit in blocks
+the greedy fill left unassigned, so train/val/test is 401/69/114 = 584. CV5
+recomputes folds from blocks and scores all 650. Pits have no unassigned rows:
+503 in-tile, 209 outside.
+
 ### Pads, 5-fold cross-validated — all 650 pads, 2026-07-28
+
+**SUPERSEDED by the ann712 table above.** Kept for the trend.
 
 Same treatment as the pits. Parameters copied verbatim from `_plat_unet.py`, so
 this measures the split and not a new model.
