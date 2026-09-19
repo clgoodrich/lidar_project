@@ -82,13 +82,35 @@ def save(fig, name):
 
 # --------------------------------------------------------------------------
 def chart_cliff(cur):
-    v = cur[cur.tile == "17TPF619593"]
-    if v.empty:
-        v = cur[cur.area.str.contains("WesternPA")].groupby("angle", as_index=False).median(numeric_only=True)
+    """The cliff, on every map square in the affected batch of flights.
+
+    This was one map square until the census was run. One square could be a
+    quirk of one square; 183 of them doing the same thing at the same angle
+    cannot be.
+    """
+    block = "Venango 2020-03"
     fig, ax = plt.subplots(figsize=(9.6, 6.0))
+    n_sq = 0
+    if "block" in cur:
+        sq = cur[cur.block == block]
+        n_sq = sq.tile.nunique()
+        for _, g in sq.groupby("tile"):
+            ax.plot(g.angle, g.pct_called_ground, color=GROUND,
+                    linewidth=0.9, alpha=0.10, zorder=2)
+        # median only where at least half the batch still has returns
+        n = sq.groupby("angle").tile.nunique()
+        v = (sq.groupby("angle", as_index=False).median(numeric_only=True)
+             [lambda d: d.angle.map(n) >= 0.5 * n_sq])
+    else:
+        v = cur[cur.tile == "17TPF619593"]
     ax.plot(v.angle, v.pct_called_ground, color=GROUND, linewidth=3.4,
             marker="o", markersize=7, zorder=3)
     ax.fill_between(v.angle, 0, v.pct_called_ground, color=GROUND, alpha=0.12)
+    if n_sq:
+        ax.text(0.5, 8, f"one faint line for each of the {n_sq} map squares\n"
+                "the thick line is the middle of them",
+                fontsize=11.5, color=INK2, ha="left", va="bottom",
+                linespacing=1.6)
     cut = 18.0
     ax.axvline(cut, color=LOST, linewidth=2.0, linestyle="--", zorder=2)
     ax.annotate("everything past here\nwas thrown away",
@@ -316,7 +338,8 @@ def map_holes():
 
 def main() -> int:
     print(f"writing to {OUT}")
-    cur = pd.read_csv(NGC / "scan_angle_rate_curves.csv")
+    f = NGC / "scan_angle_rate_curves_all_tiles.csv"
+    cur = pd.read_csv(f if f.exists() else NGC / "scan_angle_rate_curves.csv")
     chart_cliff(cur)
     chart_two_surveys(pd.read_csv(NGC / "scan_angle_ground_stops_all_tiles.csv"))
     chart_accuracy(pd.read_csv(NGC / "excluded_returns_vertical_accuracy.csv"))

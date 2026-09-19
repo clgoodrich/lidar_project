@@ -4,7 +4,7 @@ WHY A DIFFERENT STATISTIC
 -------------------------
 The rigorous version of this test conditions on returns that demonstrably
 reached the ground, which needs `filters.hag_nn` and about 85 seconds a tile.
-Across 264 tiles that is six hours, and the resulting 264-line chart is
+Across 258 map squares that is six hours, and the resulting 258-line chart is
 spaghetti nobody can read.
 
 This asks a blunter question that needs no height model at all:
@@ -59,6 +59,37 @@ MIN_PTS = 100        # a bin must hold this many to count as "reached"
 AREAS = [("Venango", "westernpa"), ("McKean", "mckean")]
 
 
+def tile_code(path):
+    """The map-square code a source file covers."""
+    m = re.search(r"(e\d+n\d+|17T..\d{6})", path.name)
+    return m.group(1) if m else path.stem[-10:]
+
+
+def unique_tiles(root):
+    """One file per map square.
+
+    Counting files instead of squares inflated every total in the first pass.
+    Six squares under `westernpa` are on disk twice: four are byte-identical
+    copies in `separate_sections/test_section/` (already flagged in
+    `docs/_ledgers/duplicates_proposed_moves.csv`), and two are a `.copc.laz`
+    cloud-optimised re-encoding sitting beside the plain `.laz` of the same
+    tile. Either way the square is one square.
+
+    Kept copy: the plain `.laz` over a `.copc.laz`, then the shallower path --
+    the same order `tools/find_duplicates.py` uses.
+    """
+    best = {}
+    for f in sorted(root.rglob("*.laz")):
+        if f.name.startswith("_merged"):
+            continue
+        key = tile_code(f)
+        rank = (f.name.endswith(".copc.laz"), len(f.relative_to(root).parts),
+                str(f))
+        if key not in best or rank < best[key][0]:
+            best[key] = (rank, f)
+    return [f for _, f in sorted(best.values(), key=lambda t: str(t[1]))]
+
+
 def one_tile(args):
     """Widest angle with ground, widest angle with anything. One map square."""
     label, path = args
@@ -92,9 +123,8 @@ def one_tile(args):
 
     data_stops = float(mid[have_all[-1]])
     ground_stops = float(mid[have_g2[-1]])
-    code = re.search(r"(e\d+n\d+|17T..\d{6})", path.name)
     return dict(
-        area=label, tile=code.group(1) if code else path.stem[-10:],
+        area=label, tile=tile_code(path),
         flown=flown, points=int(cls.size),
         ground_pct=100 * float(g2.mean()),
         ground_stops=ground_stops, data_stops=data_stops,
@@ -114,8 +144,7 @@ def main() -> int:
 
     jobs = []
     for label, sub in AREAS:
-        files = [f for f in sorted((SRCROOT / sub).rglob("*.laz"))
-                 if not f.name.startswith("_merged")]
+        files = unique_tiles(SRCROOT / sub)
         if args.limit:
             files = files[:args.limit]
         print(f"{label:9s} {len(files)} map squares")

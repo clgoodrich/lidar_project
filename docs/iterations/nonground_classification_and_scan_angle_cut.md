@@ -304,3 +304,82 @@ go to the system temp directory and are deleted.
   hypothesis, tested and rejected.
 - `literature/CITATIONS.md` — USGS 3DEP Lidar Base Specification, added in the
   same change for the QL2 accuracy bar and the ASPRS vegetation bands.
+
+---
+
+## Update 2026-09-19 — the census, and what it changed
+
+The sections above rest on seven map squares per delivery. Seven cannot separate
+"this vendor does it" from "this batch of flights does it", so the measurement
+was re-run on every map square. Both passes are in
+`docs/analysis_log.md` under 2026-09-19.
+
+**Six squares were being counted twice.** The first census globbed `*.laz` files
+rather than map squares. Four squares under `data/_source/lidar/westernpa/` are
+byte-identical copies in `separate_sections/test_section/` — md5-confirmed, and
+already flagged with zero references in
+`docs/_ledgers/duplicates_proposed_moves.csv`, though the `_dupe` renames it
+proposes have not been applied. Two more (`17TPF621594`, `17TPG619600`) have a
+`.copc.laz` cloud-optimised re-encoding sitting beside the plain `.laz` of the
+same tile. Both scripts now pick one file per square via `unique_tiles()`.
+
+Every total below is the corrected, per-square one. The counts in the first
+version of this run were 264 files / 183 squares / 167 with the cliff.
+
+**It is one batch of flights, not a county and not a convention.**
+
+| flight block | squares | ground stops | widest flown | with the cliff | at-ground returns lost |
+|---|---|---|---|---|---|
+| **Venango, March 2020** | **177** | **18.0°** | 19.6° | **165 (93%)** | **190,855,059** |
+| Venango, November 2019 | 16 | 30.0° | 30.0° | 0 | 0 |
+| McKean, April 2019 | 59 | 29.0° | 29.0° | 0 | 0 |
+| Venango, 2011 | 6 | — | — | — | excluded, records no scan angle |
+
+The same county flown four months apart behaves completely differently. The
+November block sweeps wider (30° against 19.6°) and classifies ground all the way
+to the edge of it. So the cut tracks the flight job — the sensor configuration
+and the processing run that went with it — not the terrain, the county, or the
+industry.
+
+Every one of the 165 affected squares cuts at **exactly 18°**, range 18–18. A
+threshold that repeats to the bin across 165 independently processed squares is a
+line in a script, not an accuracy limit.
+
+The 12 squares inside the March-2020 block that have *no* cliff are the ones
+flown with the wider sweep, and they classify ground to the edge like the
+November block does. That is the explanation agreeing with itself rather than an
+exception to it.
+
+### Reproduce
+
+```
+python notebooks/wellsight_v2/s7_analysis/_scan_angle_cliff_all_tiles.py --workers 6
+python notebooks/wellsight_v2/s7_analysis/_scan_angle_cliff_across_acquisitions.py --all --workers 6
+python notebooks/wellsight_v2/s7_analysis/_scan_angle_cliff_across_acquisitions.py --all --redraw
+```
+
+The third redraws the figure from the CSVs without re-measuring — the census
+costs about 90 minutes and figure edits must not.
+
+### Outputs added by this pass
+
+```
+data/9t/results/nonground_classification/
+    scan_angle_ground_stops_all_tiles.csv        257 squares, cheap statistic
+    scan_angle_cliff_by_acquisition_all_tiles.csv 258 squares, full statistic
+    scan_angle_rate_curves_all_tiles.csv          per-bin curves, redraw input
+
+docs/presentation/figures_30to45min/scan_angle/
+    ground_classification_cliff_by_acquisition_all_tiles.png
+
+docs/presentation/figures_30to45min/report_lidar_ground/
+    chart_1_the_cliff.png        now all 177 squares, not one
+    chart_2_two_surveys.png      one row per flight block
+```
+
+### Open
+
+`data/_source/lidar/westernpa/separate_sections/test_section/` holds four
+duplicate source tiles. `tools/find_duplicates.py` has already proposed the
+`_dupe` renames and `tools/apply_moves.py` would apply them reversibly. Not
+applied here — that is a change to source data and belongs in its own pass.

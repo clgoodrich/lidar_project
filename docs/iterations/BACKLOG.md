@@ -10,8 +10,9 @@ return beyond 18 degrees off nadir — roughly **1 M per tile**, measuring
 0.10 m. Details in
 `docs/iterations/nonground_classification_and_scan_angle_cut.md`.
 
-Scoped 2026-09-19 by measuring all 263 map squares: **166 of the 183 squares in
-the March-2020 block** have the cut. The November-2019 Venango block (16 squares)
+Scoped 2026-09-19 by measuring all 258 map squares: **165 of the 177 squares in
+the March-2020 block** have the cut, every one of them at exactly 18 degrees,
+costing the block 190,855,059 at-ground returns. The November-2019 Venango block (16 squares)
 and the McKean April-2019 block (59) do not. It is one batch of flights, not a
 county and not a convention.
 
@@ -25,7 +26,7 @@ county and not a convention.
   Nothing so far shows detection improves; the whole case rests on the surface
   existing where it previously did not. Start with pit on `621594`, which is a 9t
   training tile, so the comparison lands against an existing leaderboard row.
-- **Only 2 of the 183 affected squares are repaired.** Reprocessing the rest is a
+- **Only 2 of the 177 affected squares are repaired.** Reprocessing the rest is a
   day of compute, not a research question — do not start it until the re-score
   above says it is worth doing.
 - **Do NOT fix it by promoting flags.** The reference surface is built from
