@@ -31,7 +31,7 @@ from rasterio.windows import from_bounds
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 MODELS = ROOT / "data" / "9t" / "models"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "prob_layers_plain"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces" / "prob_layers_plain"
 
 FRACTION = 0.5          # of the tile's width, centred
 MAX_PX = 2600           # cap the read so a 0.5 m layer does not blow memory

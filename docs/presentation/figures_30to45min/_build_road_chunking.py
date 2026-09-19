@@ -42,7 +42,7 @@ from shapely.geometry import box
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "4_model_building"
 CHUNKS = D05 / "road_chunks_9t.gpkg"
 HILL = D05 / "hillshade_9t_05.tif"
 EPSG = 6346

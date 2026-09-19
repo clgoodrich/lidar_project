@@ -78,7 +78,7 @@ ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "_source" / "lidar" / "westernpa"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 OUT = ROOT / "data" / "9t" / "results" / "smrf_ground"
-FIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "smrf_ground"
+FIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "smrf_ground"
 PDAL = "pdal"
 
 RES = 0.5            # DEM cell size, matching the project's 0.5 m products

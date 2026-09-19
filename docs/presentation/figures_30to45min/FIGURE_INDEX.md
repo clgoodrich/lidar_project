@@ -1,7 +1,25 @@
 # Figure index
 
 Every image in this folder: what it shows, where its numbers come from, and which
-script rebuilds it. 77 images, 10 builders.
+script rebuilds it.
+
+## How this folder is laid out
+
+Reorganised 2026-09-19 into the order the talk runs in, so a directory listing is
+the running order. Each stage folder has its own README.
+
+| folder | what stage it covers |
+|---|---|
+| `1_data_qa/` | is the lidar we were handed any good |
+| `2_terrain_derivatives/` | what we compute from the ground surface |
+| `3_annotations/` | the labels drawn by hand in QGIS |
+| `4_model_building/` | how the detector is put together |
+| `5_probability_surfaces/` | what the model outputs, and thresholding it |
+
+`locator_study_areas_pa.png` stays at the top level: it belongs to no single
+stage. The builders stay at the top level too; each one writes into its stage
+folder, and the two that produce figures for more than one stage route by
+filename through a `STAGE` table rather than a single output path.
 
 All builders are re-runnable and read from data on disk. Nothing is hand-drawn
 except the pipeline diagram, and nothing carries a typed-in number except the two

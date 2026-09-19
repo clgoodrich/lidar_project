@@ -70,6 +70,8 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.legend_handler import HandlerTuple
+from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
@@ -77,7 +79,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ROOT = Path(__file__).resolve().parents[3]
 SRCROOT = ROOT / "data" / "_source" / "lidar"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "scan_angle"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "scan_angle"
 CSV = ROOT / "data" / "9t" / "results" / "nonground_classification"
 PDAL = "pdal"
 
@@ -357,14 +359,18 @@ def _figure(rows, df, suffix=""):
     fig, ax = plt.subplots(1, 2, figsize=(16.6, 7.2),
                            gridspec_kw={"width_ratios": [1.6, 1]})
 
-    faint = 0.85 if len(rows) <= 20 else max(0.05, 6.0 / len(rows))
+    # enough opacity that a single square still reads as ITS BATCH'S
+    # colour rather than a neutral tint; 183 of them still stack legibly
+    handles, labels = [], []
+    faint = 0.85 if len(rows) <= 20 else float(np.clip(11.0 / len(rows),
+                                                       0.07, 0.85))
     for b in blocks:
         col = cmap[b]
         sub = [r for r in rows if r["block"] == b]
         for r in sub:
             ok = np.isfinite(r["rate"])
             ax[0].plot(mid[ok], 100 * r["rate"][ok], color=col,
-                       linewidth=1.1, alpha=faint, zorder=2)
+                       linewidth=0.9, alpha=faint, zorder=2)
         stack = np.vstack([r["rate"] for r in sub]) * 100
 
         # Past the edge of the sweep only a handful of squares still have
@@ -383,24 +389,33 @@ def _figure(rows, df, suffix=""):
             ax[0].fill_between(mid[ok], lo[ok], hi[ok], color=col, alpha=0.16,
                                linewidth=0, zorder=3)
         ax[0].plot(mid[ok], med[ok], color=col, linewidth=3.0, zorder=4,
-                   solid_capstyle="round",
-                   label=f"{b}   ({len(sub)} map square{plural})")
+                   solid_capstyle="round")
+        handles.append((Line2D([], [], color=col, linewidth=1.0, alpha=0.75),
+                        Line2D([], [], color=col, linewidth=3.4)))
+        labels.append(f"{b}   ({len(sub)} map square{plural})")
     ax[0].set_ylim(-4, 108)
     ax[0].set_xlim(0, float(df.max_ang.max()) + 1.5)
     ax[0].set_xlabel("off-nadir scan angle, degrees", fontsize=11.5, color=INK2)
     ax[0].set_ylabel("share classified as ground, %", fontsize=11.5, color=INK2)
     ax[0].set_title("Of the returns that reached the ground,\nhow many became "
                     "class 2", fontsize=15, fontweight="bold", loc="left", pad=9)
-    leg = ax[0].legend(frameon=True, fontsize=10.5, loc="lower left",
-                       facecolor=SURFACE, edgecolor=RULE, framealpha=0.95)
+    leg = ax[0].legend(handles, labels, frameon=True, fontsize=10.5,
+                       loc="lower left", facecolor=SURFACE, edgecolor=RULE,
+                       framealpha=0.95, handlelength=4.6, handletextpad=1.0,
+                       handler_map={tuple: HandlerTuple(ndivide=None, pad=0.5)},
+                       title="  one square │ all of them",
+                       title_fontsize=9.5, alignment="left")
+    leg.get_title().set_color(MUTED)
     leg.get_frame().set_linewidth(0.7)
     if len(rows) > 20:
-        ax[0].text(0.015, 0.045, "thin line = one map square      "
-                   "thick line = block median, drawn only where at least half "
-                   "the block still has returns\nband = 10th-90th percentile",
+        ax[0].text(0.015, 0.045,
+                   "Every faint line is one map square, in its own batch's "
+                   "colour. The thick line of that colour is the middle of\n"
+                   "them, drawn only where at least half the batch still has "
+                   "returns; the band holds the middle 80%.",
                    transform=ax[0].transAxes, ha="left", va="bottom",
                    fontsize=9.5, color=MUTED, linespacing=1.6)
-        leg.set_bbox_to_anchor((0.0, 0.10), transform=ax[0].transAxes)
+        leg.set_bbox_to_anchor((0.0, 0.115), transform=ax[0].transAxes)
 
     # right: where each square's cliff sits, one dot per square
     for i, b in enumerate(blocks):

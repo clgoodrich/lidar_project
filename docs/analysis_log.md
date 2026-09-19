@@ -103,7 +103,7 @@ change. Slope swept 0.15-0.70 first, and the answer moves 0.9% across that range
 The four `dem_*.tif` are 36 MB each and gitignored at `.gitignore:154`.
 
 **Plain-language report.** Eight single-chart PNGs under
-`docs/presentation/figures_30to45min/report_lidar_ground/`, every number read
+`docs/presentation/figures_30to45min/1_data_qa/report_lidar_ground/`, every number read
 from a measurement CSV rather than typed. Published as an artifact.
 
 

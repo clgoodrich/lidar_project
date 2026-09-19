@@ -50,7 +50,7 @@ from matplotlib.patches import Patch
 from rasterio.windows import from_bounds
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "tile_613590"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces" / "tile_613590"
 EPSG = 6346
 
 FAITHFUL = ROOT / "roads_studio" / "exports" / "faithful_613590_deployed_t030.gpkg"

@@ -101,7 +101,7 @@ is real occlusion that no reclassification can invent.
 
 ## Outputs
 
-`docs/presentation/figures_30to45min/recovered_ground_9t/`
+`docs/presentation/figures_30to45min/1_data_qa/recovered_ground_9t/`
 
 - `map_1_ground_as_delivered_9t_0p5m.png`
 - `map_2_ground_thrown_away_9t_0p5m.png`

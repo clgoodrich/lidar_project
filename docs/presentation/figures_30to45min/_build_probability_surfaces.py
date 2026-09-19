@@ -40,7 +40,7 @@ ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
 MODELS = ROOT / "data" / "9t" / "models"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
 
 LAT, LON = 41.492640, -79.546127
 SIDE_M = 300.0

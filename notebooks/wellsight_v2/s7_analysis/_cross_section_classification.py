@@ -69,7 +69,7 @@ SRC = ROOT / "data" / "_source" / "lidar" / "westernpa"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 #: Cross-sections are presentation material, not an intermediate product,
 #: so they live with the rest of the deck figures and are tracked in git.
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "cross_sections"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "cross_sections"
 PDAL = "pdal"
 
 MARGIN = 25.0       # crop margin around the corridor, so hag_nn has ground context

@@ -85,7 +85,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "_source" / "lidar" / "westernpa"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "scan_angle"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa" / "scan_angle"
 CSV = ROOT / "data" / "9t" / "results" / "nonground_classification"
 PDAL = "pdal"
 

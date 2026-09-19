@@ -284,12 +284,12 @@ data/9t/results/nonground_classification/
     canopy_height_over_pads_pits_vs_ring_5m.png
     classification_cross_section_pit_616591_55m.png
 
-docs/presentation/figures_30to45min/scan_angle/
+docs/presentation/figures_30to45min/1_data_qa/scan_angle/
     scan_angle_vs_ground_classification_616591.png
     excluded_returns_vertical_accuracy.png
     ground_classification_cliff_by_acquisition.png
 
-docs/presentation/figures_30to45min/cross_sections/
+docs/presentation/figures_30to45min/1_data_qa/cross_sections/
     cross_section_pit_616591_72m_az172_w2p0.png
     cross_section_pad_621594_357m_az5_w2p0.png
     cross_section_venango_41p484384N_79p518911W_622593_200m_az90_w3p0.png
@@ -369,10 +369,10 @@ data/9t/results/nonground_classification/
     scan_angle_cliff_by_acquisition_all_tiles.csv 258 squares, full statistic
     scan_angle_rate_curves_all_tiles.csv          per-bin curves, redraw input
 
-docs/presentation/figures_30to45min/scan_angle/
+docs/presentation/figures_30to45min/1_data_qa/scan_angle/
     ground_classification_cliff_by_acquisition_all_tiles.png
 
-docs/presentation/figures_30to45min/report_lidar_ground/
+docs/presentation/figures_30to45min/1_data_qa/report_lidar_ground/
     chart_1_the_cliff.png        now all 177 squares, not one
     chart_2_two_surveys.png      one row per flight block
 ```

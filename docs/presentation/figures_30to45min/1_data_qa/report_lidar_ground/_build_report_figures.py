@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[4]
+ROOT = Path(__file__).resolve().parents[5]   # repo root; this file sits five deep
 NGC = ROOT / "data" / "9t" / "results" / "nonground_classification"
 SMRF = ROOT / "data" / "9t" / "results" / "smrf_ground"
 OUT = Path(__file__).resolve().parent

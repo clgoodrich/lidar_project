@@ -57,8 +57,37 @@ plt.rcParams.update({
 written: list[tuple[str, str]] = []
 
 
+
+#: Which stage folder each figure belongs to. The talk runs in this order, and
+#: the folders are numbered so a directory listing is the running order:
+#:   1 data QA · 2 terrain derivatives · 3 annotations · 4 model building
+#:   5 probability surfaces.  A name missing here lands at the top level, which
+#:   is reserved for figures that belong to no single stage (the locator map).
+STAGE = {
+    "nisar_gcov_hh_hv_clip_9t_10m_20260120.png": "1_data_qa",
+    "annotation_schema_one_pad_one_pit_9t_05.png": "3_annotations",
+    "annotation_growth_pit_splits_426_527_712.png": "3_annotations",
+    "annotation_growth_pad_splits_650_995_9t.png": "3_annotations",
+    "spatial_block_split_grid_12x12_9t_ann712.png": "3_annotations",
+    "pit_split_held_out_blocks_9t.png": "3_annotations",
+    "pipeline_diagram_classical_and_unet_branches.png": "4_model_building",
+    "classical_vs_unet_pit_detection_same_scene_9t.png": "4_model_building",
+    "pit_outcomes_matched_undecided_missed_9t.png": "5_probability_surfaces",
+    "pit_undecided_review_queue_zoom_9t.png": "5_probability_surfaces",
+    "threshold_sweep_flagged_area_vs_recall_pit_pad_road_9t.png":
+        "5_probability_surfaces",
+}
+
+
+def stage_path(name):
+    """Full path for a figure, in its stage folder."""
+    d = OUT / STAGE[name] if name in STAGE else OUT
+    d.mkdir(parents=True, exist_ok=True)
+    return d / name
+
+
 def save(fig, name, note):
-    p = OUT / name
+    p = stage_path(name)
     fig.savefig(p, dpi=200, bbox_inches="tight")
     plt.close(fig)
     written.append((name, note))

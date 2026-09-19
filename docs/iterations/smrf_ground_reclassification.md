@@ -142,7 +142,7 @@ python notebooks/wellsight_v2/s7_analysis/_smrf_reclassify_ground.py \
 The four `dem_*.tif` are 36 MB each and are gitignored (`.gitignore:154`); they
 regenerate from the command above. The status rasters and CSVs are tracked.
 
-`docs/presentation/figures_30to45min/smrf_ground/`
+`docs/presentation/figures_30to45min/1_data_qa/smrf_ground/`
 
 - `smrf_vs_vendor_ground_616591_slope0p35.png`
 - `smrf_vs_vendor_ground_621594_slope0p35.png`
