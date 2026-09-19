@@ -3,6 +3,54 @@
 Append-only record of every processing decision, parameter choice, and run
 result. Newest entries at the top. Per `Claude.md` reporting rule.
 
+---
+
+## 2026-09-19 — Where ground stops, measured on every map square in both deliveries
+
+The by-acquisition cliff chart was built on 7 tiles per delivery, which cannot
+tell "this vendor" from "this batch of flights". Two passes fixed that.
+
+**Cheap census first.** `_scan_angle_cliff_all_tiles.py` asks a blunter question
+that needs no height model — the widest angle bin holding >=100 class-2 points
+against the widest bin holding >=100 points of any class, 0.5 deg bins, all 263
+squares in parallel. If ground simply thins towards the edge the two numbers land
+together; if a rule was written, ground stops dead and the data carries on.
+
+Grouped by **flight block** rather than county, because Venango was flown twice:
+
+| block | squares | ground stops | data stops | gap | with a gap |
+|---|---|---|---|---|---|
+| Venango 2020-03 | 183 | 17.75 | 19.75 | 2.00 | 166 (91%) |
+| Venango 2019-11 | 16 | 31.25 | 31.25 | 0 | 0 |
+| McKean 2019-04 | 59 | 28.75 | 28.75 | 0 | 5 (8%) |
+| Venango 2011-09 | 5 | — | — | — | excluded, no scan angle recorded |
+
+The same county four months apart behaves completely differently, so the cut
+follows the flight job, not the geography. Corrected the report's claim of "every
+map square we checked" to 166 of 183.
+
+**Then the real statistic on all of them.** `_scan_angle_cliff_across_acquisitions.py`
+gained `--all --workers 6`: the hag_nn-conditioned rate curve (of the returns
+within +/-15 cm of the ground surface, what share became class 2) on every square
+rather than a sample of seven, ~95 s each. Tiles are now grouped and coloured by
+flight block; with 263 curves on one axis each square is drawn faint and the
+block median is drawn over it with a 10th-90th percentile band. `EDGES` extended
+0-30 -> 0-40 deg because the November Venango block sweeps to 31.
+
+**SMRF, written up.** The run itself was done 2026-09-18; the iteration doc was
+missing and is now at `docs/iterations/smrf_ground_reclassification.md`, with
+Pingel, Clarke & McBride (2013) added to `literature/CITATIONS.md`. Recovered
+1,451,879 and 1,615,359 points on `616591` and `621594`; DEM void rate 15.99% ->
+9.97% and 12.36% -> 6.27%; movement confined to cells that had no ground before
+(0.3% of previously-covered cells differ by more than 10 cm). Pit depth did not
+change. Slope swept 0.15-0.70 first, and the answer moves 0.9% across that range.
+The four `dem_*.tif` are 36 MB each and gitignored at `.gitignore:154`.
+
+**Plain-language report.** Eight single-chart PNGs under
+`docs/presentation/figures_30to45min/report_lidar_ground/`, every number read
+from a measurement CSV rather than typed. Published as an artifact.
+
+
 
 ---
 

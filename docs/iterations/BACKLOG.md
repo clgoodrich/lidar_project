@@ -4,17 +4,30 @@ Live list of deferred ideas and open follow-ups. Check this before proposing new
 
 ## Scan-angle ground cut (added 2026-09-18) — OPEN, and the biggest one here
 
-The PA WesternPA 2019 D20 March-2020 block discards every at-ground return
-beyond 18 degrees off nadir — roughly **1 M per tile**, measuring 0.065–0.067 m
-RMSE against neighbouring flight lines, inside the QL2 spec of 0.10 m. Details in
+The PA WesternPA 2019 D20 **March-2020 flight block** discards every at-ground
+return beyond 18 degrees off nadir — roughly **1 M per tile**, measuring
+0.065–0.067 m RMSE against neighbouring flight lines, inside the QL2 spec of
+0.10 m. Details in
 `docs/iterations/nonground_classification_and_scan_angle_cut.md`.
 
-- **Run our own ground classification and compare.** PDAL `filters.smrf` with no
-  angle cut, on one Venango tile, then a like-for-like DEM against the vendor's.
-  Two things to measure: how many of the 17.81% void cells close, and whether the
-  pit / pad / road channels the models train on get sharper or noisier. This is
-  the only way to find out whether the million returns per tile are worth
-  anything to us. Est. 1–2 hours. **Do this before any further channel work.**
+Scoped 2026-09-19 by measuring all 263 map squares: **166 of the 183 squares in
+the March-2020 block** have the cut. The November-2019 Venango block (16 squares)
+and the McKean April-2019 block (59) do not. It is one batch of flights, not a
+county and not a convention.
+
+- ~~**Run our own ground classification and compare.**~~ **DONE 2026-09-18** on
+  two tiles — `docs/iterations/smrf_ground_reclassification.md`. SMRF recovers
+  1.45–1.62 M points per tile and halves the DEM void rate (15.99% → 9.97%,
+  12.36% → 6.27%) without moving ground the vendor already had (0.3% of covered
+  cells differ by more than 10 cm). Pit depth unchanged.
+- **Rebuild the feature stack on SMRF ground and re-score a model.** This is now
+  the open question and the only one that decides whether any of this matters.
+  Nothing so far shows detection improves; the whole case rests on the surface
+  existing where it previously did not. Start with pit on `621594`, which is a 9t
+  training tile, so the comparison lands against an existing leaderboard row.
+- **Only 2 of the 183 affected squares are repaired.** Reprocessing the rest is a
+  day of compute, not a research question — do not start it until the re-score
+  above says it is worth doing.
 - **Do NOT fix it by promoting flags.** The reference surface is built from
   class 2, so promoting points moves the surface and re-opens the question. One
   pass does not converge.
