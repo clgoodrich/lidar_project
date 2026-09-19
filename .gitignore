@@ -148,3 +148,7 @@ Thumbs.db
 ~$*
 .claude/worktrees/
 *.zip
+
+# SMRF ground reclassification DEMs -- 36 MB each, regenerable with
+# notebooks/wellsight_v2/s7_analysis/_smrf_reclassify_ground.py
+data/9t/results/smrf_ground/dem_*.tif
