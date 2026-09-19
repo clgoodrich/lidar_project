@@ -91,9 +91,13 @@ PANELS = [
 ]
 
 #: Layers the project does not hold, mapped to one it styles the same way.
-#: `lrm_5` is the same product at a different radius; the rest fall back to the
-#: project-wide convention (gray, black to white, whole-raster min/max).
-STYLE_ALIAS = {"lrm_5_9t_05": "lrm_25_9t_05"}
+#: Empty on purpose. `lrm_5` used to borrow `lrm_25`, on the reasoning that
+#: it is the same product at a different radius. It is not the same RANGE:
+#: local relief at 5 m has much the smaller amplitude, so lrm_25's stretch
+#: flattened it to a grey square with nothing in it. An unstyled layer in
+#: QGIS gets the project-wide convention anyway -- gray, black to white,
+#: whole-raster min/max -- which is what `style_for` falls back to.
+STYLE_ALIAS = {}
 
 
 def qgis_styles(qgz=None):
