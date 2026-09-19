@@ -5,6 +5,57 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-19 — Figures restyled to match QGIS, and the annotation series rebuilt per class
+
+**Terrain derivatives now render the way the project renders them.** The panels
+carried invented blue / orange / green ramps, which is not what any of those
+layers looks like when opened. `_build_derivative_panel.py` now reads
+`qgis/wellsight.qgz` at build time -- a .qgz is a zip holding one XML .qgs, so
+this needs nothing installed -- and uses each layer's actual renderer, printing
+where every panel's styling came from.
+
+Every single-band layer in that project is **singlebandgray**; the only layer
+with colour is RRIM, a multibandcolor composite with **NoEnhancement**, so its
+bytes go to screen untouched. Two things the old ramps were getting wrong beyond
+colour:
+
+- `openness_pos` is styled **WhiteToBlack** while `slope`, `lrm`, `openness_neg`
+  and `hillshade` are BlackToWhite. One shared ramp silently inverted it.
+- QGIS stretches on the **whole raster**, not the visible window. The panels were
+  using a 2-98% clip of the 300 m crop, so the greys did not correspond to the
+  layer's values. They now use the project's stored min/max, or whole-raster
+  stats for the four layers the project does not contain (`dem`, `tpi_05`,
+  `roughness_11`, `chm`).
+
+Side effect: greyscale everywhere plus one RGB composite contains no red/green
+pair, so this panel meets the colourblind rule by construction.
+
+**The annotation series is now one site per class, in pairs.** A single 300 m
+square flattered some layers and starved others -- it holds a couple of pits and
+almost no road. Each class gets a frame chosen for it, and every site is drawn
+twice, once bare and once annotated, so the terrain can be checked against the
+polygon:
+
+    roads      41.499080 N, 79.541300 W   2 km    287 features
+    drainage   41.502510 N, 79.533711 W   2 km    565
+    pads       41.507320 N, 79.541360 W   2 km    164   (layer is `plat`)
+    pits       41.494906 N, 79.537175 W   1 km     50 floors / 51 rims
+    all four   dead centre of 9t          3 km    307 pads, 1,193 drainage,
+                                                  617 roads, 248 pit floors
+
+Pits get four images rather than two -- terrain, floors, rims, and both -- since
+`pit_inside` and `pit_outside` are separate layers and the floor is what the
+model trains on. Rims are white outlines, floors yellow-green fills, so they are
+separated by form as well as colour. The RRIM base here also had its own 2-98%
+stretch and now matches the project.
+
+All five windows were checked to fall inside both the 9t extent and the RRIM
+raster before rendering. The earlier 300 m series is archived, not deleted, at
+`3_annotations/archive/venango_site_41p492640N_79p546127W_300m_series/`.
+
+
+---
+
 ## 2026-09-19 — The 9t area drawn with the discarded ground put back, and a colour rule
 
 **Four pictures over the whole 9t training area.** SMRF on all nine squares,

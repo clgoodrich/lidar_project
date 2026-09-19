@@ -1,8 +1,20 @@
-"""The same Venango site on RRIM, with each annotation layer in turn.
+"""Each annotation layer on RRIM, at a place where that layer is worth seeing.
 
-Five images, all the same 300 m square, all on the same RRIM base:
+Ten images: one PAIR per class, the same frame without the shapefile and with
+it, so the question "is that thing really there in the terrain, or did somebody
+draw it" can be answered by flicking between two pictures.
 
-    drainage        roads        pits        pads        all four
+    class      centre                        width
+    roads      41.499080 N, 79.541300 W      2 km
+    drainage   41.502510 N, 79.533711 W      2 km
+    pads       41.507320 N, 79.541360 W      2 km
+    pits       41.494906 N, 79.537175 W      1 km
+    all four   dead centre of 9t             3 km
+
+Earlier versions put every class on one 300 m square, which flattered some
+layers and starved others -- 300 m holds a couple of pits and almost no road.
+Each class now gets a frame chosen for it, and the all-four frame is the middle
+of the 9t training area so it is not cherry-picked.
 
 WHY RRIM AS THE BASE
 --------------------
@@ -14,10 +26,16 @@ it the honest backdrop for showing where a hand-drawn polygon actually sits.
 COLOUR CHOICE
 -------------
 RRIM is already red-brown and cyan, so the annotation colours deliberately avoid
-both: amber, magenta, yellow-green and strong blue, each with a white halo so it
-survives over the bright and dark parts of the base.
+both: amber, magenta, yellow-green and strong blue, each with a dark halo so it
+survives over the bright and dark parts of the base. No red/green pair, per the
+colourblind rule in CLAUDE.md.
 
-Centre: 41.492640 N, -79.546127 W  ->  621359.6 E, 4594467.4 N (EPSG:6346)
+THE BASE IS DRAWN THE WAY QGIS DRAWS IT
+---------------------------------------
+`rrim_openness_9t_05` is multibandcolor with NoEnhancement in
+`qgis/wellsight.qgz`, which means the stored bytes go to screen untouched. This
+used to apply a 2-98 percentile stretch of its own, so the base did not match
+what is on the screen. It does now.
 
 Run:
     python docs/presentation/figures_30to45min/_build_rrim_annotation_series.py
@@ -43,9 +61,9 @@ D05 = ROOT / "data" / "9t" / "derived" / "05"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "3_annotations"
 
-LAT, LON = 41.49264, -79.546127
-SIDE_M = 300.0
 EPSG = 6346
+#: 9t training area, and its dead centre -- the frame for the all-four image.
+BBOX_9T = (619500.0, 4593000.0, 624000.0, 4597500.0)
 RRIM = D05 / "rrim_openness_9t_05.tif"
 
 SURFACE = "#fcfcfb"
@@ -58,41 +76,71 @@ C_DRAIN = "#2979ff"
 C_ROAD = "#ffb300"
 C_PIT = "#ccff00"
 C_PAD = "#e040fb"
+#: The outer rim sits in the same picture as the floor, so it has to separate
+#: from C_PIT. White against yellow-green is a large lightness step, and the two
+#: also differ by FORM -- the rim is an outline, the floor is filled.
+C_PIT_OUT = "#ffffff"
 
 HALO = [pe.Stroke(linewidth=3.2, foreground="#000000"), pe.Normal()]
 
-#: (slug, title, layers to draw)
+#: (slug, title, variants, latitude, longitude, window width in metres).
+#: Each variant is (filename tag, panel subtitle, layers to draw). The first is
+#: always the bare terrain, so every site gives a before/after pair at minimum.
+#: `None` for the centre means the dead centre of 9t.
+BARE = ("terrain_only", "terrain only", [])
 SERIES = [
-    ("drainage", "Drainage", ["drainage"]),
-    ("roads",    "Roads",    ["roads"]),
-    ("pits",     "Pits",     ["pit_inside"]),
-    ("pads",     "Pads",     ["pad"]),
-    ("all",      "All four annotation layers",
-     ["pad", "drainage", "roads", "pit_inside"]),
+    ("roads", "Roads",
+     [BARE, ("with_annotation", "with the annotation", ["roads"])],
+     41.499080, -79.541300, 2000.0),
+    ("drainage", "Drainage",
+     [BARE, ("with_annotation", "with the annotation", ["drainage"])],
+     41.502510, -79.533711, 2000.0),
+    ("pads", "Pads",
+     [BARE, ("with_annotation", "with the annotation", ["pad"])],
+     41.507320, -79.541360, 2000.0),
+    # Pits are drawn as two separate things and the floor is what the model is
+    # trained on, so the rim, the floor and the pair all get their own picture.
+    ("pits", "Pits",
+     [BARE,
+      ("with_pit_inside", "floors only", ["pit_inside"]),
+      ("with_pit_outside", "outer rims only", ["pit_outside"]),
+      ("with_both", "rims and floors together", ["pit_outside", "pit_inside"])],
+     41.494906, -79.537175, 1000.0),
+    ("all", "All four annotation layers",
+     [BARE, ("with_annotation", "with the annotation",
+             ["pad", "drainage", "roads", "pit_inside"])],
+     None, None, 3000.0),
 ]
 
 
-def target_xy():
+def target_xy(lat, lon):
+    if lat is None:
+        return (BBOX_9T[0] + BBOX_9T[2]) / 2, (BBOX_9T[1] + BBOX_9T[3]) / 2
     from pyproj import Transformer
-    return Transformer.from_crs(4326, EPSG, always_xy=True).transform(LON, LAT)
+    return Transformer.from_crs(4326, EPSG, always_xy=True).transform(lon, lat)
 
 
-def window_bounds():
-    x, y = target_xy()
-    h = SIDE_M / 2
+def window_bounds(lat, lon, side_m):
+    x, y = target_xy(lat, lon)
+    h = side_m / 2
     return (x - h, y - h, x + h, y + h)
+
+
+def bar_length(side_m):
+    """A scale bar that is a sensible fraction of the frame, and a round number."""
+    for n in (1000, 500, 200, 100, 50, 20):
+        if n <= side_m / 4:
+            return n
+    return 10
 
 
 def read_rrim(bounds):
     with rasterio.open(RRIM) as r:
         w = from_bounds(*bounds, transform=r.transform)
         a = r.read(window=w, boundless=True, fill_value=np.nan).astype("float32")
-    a = a[:3]
-    out = []
-    for b in a:
-        lo, hi = np.nanpercentile(b, 2), np.nanpercentile(b, 98)
-        out.append((b - lo) / max(hi - lo, 1e-9))
-    return np.clip(np.moveaxis(np.stack(out), 0, -1), 0, 1)
+    # NoEnhancement in the QGIS project: the stored bytes go straight to screen.
+    a = a[:3] / 255.0
+    return np.clip(np.moveaxis(a, 0, -1), 0, 1)
 
 
 def read_layer_clip(layer, clip_geom):
@@ -133,6 +181,13 @@ def draw(ax, layer, gdf):
                           path_effects=HALO)
         return Patch(facecolor=C_PIT, edgecolor=C_PIT, alpha=0.75,
                      label=f"pit floors  ({len(gdf)})")
+    if layer == "pit_outside":
+        gdf.boundary.plot(ax=ax, color=C_PIT_OUT, linewidth=2.2, zorder=7,
+                          path_effects=HALO)
+        # a white patch on a white legend is invisible, so the swatch is a
+        # haloed line -- same dark outline the map uses
+        return Line2D([], [], color=C_PIT_OUT, linewidth=2.6,
+                      path_effects=HALO, label=f"pit rims  ({len(gdf)})")
     if layer in ("pad", "plat"):
         gdf.boundary.plot(ax=ax, color=C_PAD, linewidth=2.6, zorder=5,
                           path_effects=HALO)
@@ -144,81 +199,95 @@ def draw(ax, layer, gdf):
 def main() -> int:
     if not RRIM.exists():
         raise SystemExit(f"missing RRIM base: {RRIM}")
-
-    bounds = window_bounds()
-    x, y = target_xy()
-    clip = box(*bounds)
-    site = (f"{LAT:.6f}".replace(".", "p") + "N_"
-            + f"{abs(LON):.6f}".replace(".", "p") + "W")
-    outdir = OUT / f"venango_site_{site}"
-    outdir.mkdir(parents=True, exist_ok=True)
-    print(f"centre {x:.1f} E, {y:.1f} N   window {SIDE_M:.0f} m")
-
-    base = read_rrim(bounds)
-    ext = [bounds[0], bounds[2], bounds[1], bounds[3]]
-    cache = {}
-
+    OUT.mkdir(parents=True, exist_ok=True)
     plt.rcParams.update({
         "figure.facecolor": SURFACE, "axes.facecolor": SURFACE,
         "savefig.facecolor": SURFACE, "font.family": "DejaVu Sans",
         "text.color": INK,
     })
+    cache = {}
+    written = 0
 
-    for slug, title, layers in SERIES:
-        fig, ax = plt.subplots(figsize=(7.2, 7.8))
-        ax.imshow(base, extent=ext, origin="upper", zorder=1)
-        ax.set_xticks([]); ax.set_yticks([])
-        ax.set_aspect("equal")
-        for sp in ax.spines.values():
-            sp.set_color("#e5e4dd")
+    for slug, title, variants, lat, lon, side_m in SERIES:
+        bounds = window_bounds(lat, lon, side_m)
+        x, y = target_xy(lat, lon)
+        clip = box(*bounds)
+        site = ("9t_centre" if lat is None else
+                f"{lat:.6f}".replace(".", "p") + "N_"
+                + f"{abs(lon):.6f}".replace(".", "p") + "W")
+        outdir = OUT / f"venango_{slug}_{site}"
+        outdir.mkdir(parents=True, exist_ok=True)
+        base = read_rrim(bounds)
+        ext = [bounds[0], bounds[2], bounds[1], bounds[3]]
+        print(f"\n{slug}: centre {x:.1f} E, {y:.1f} N, {side_m:.0f} m window")
 
-        handles = []
-        for layer in layers:
-            if layer not in cache:
-                cache[layer] = read_layer_clip(layer, clip)
-            h = draw(ax, layer, cache[layer])
-            if h is not None:
-                handles.append(h)
+        for tag, subtitle, layers in variants:
+            fig, ax = plt.subplots(figsize=(7.6, 8.1))
+            ax.imshow(base, extent=ext, origin="upper", zorder=1)
+            ax.set_xticks([]); ax.set_yticks([])
+            ax.set_aspect("equal")
+            for sp in ax.spines.values():
+                sp.set_color("#e5e4dd")
 
-        ax.set_xlim(ext[0], ext[1]); ax.set_ylim(ext[2], ext[3])
+            handles = []
+            for layer in layers:
+                key = (layer, slug)
+                if key not in cache:
+                    cache[key] = read_layer_clip(layer, clip)
+                h = draw(ax, layer, cache[key])
+                if h is not None:
+                    handles.append(h)
 
-        # scale bar + north arrow, on every image because each stands alone
-        l, b, r_, t = bounds
-        x0, y0 = l + (r_ - l) * 0.06, b + (t - b) * 0.07
-        ax.plot([x0, x0 + 50], [y0, y0], color="white", linewidth=5.5,
-                solid_capstyle="butt", zorder=12)
-        ax.plot([x0, x0 + 50], [y0, y0], color=INK, linewidth=2.4,
-                solid_capstyle="butt", zorder=13)
-        ax.text(x0 + 25, y0 + (t - b) * 0.03, "50 m", ha="center", fontsize=9.5,
-                color=INK, zorder=13,
-                bbox=dict(boxstyle="round,pad=0.15", fc="#ffffffcc", ec="none"))
-        nx, ny = r_ - (r_ - l) * 0.075, t - (t - b) * 0.21
-        ax.annotate("", xy=(nx, ny + (t - b) * 0.115), xytext=(nx, ny),
-                    arrowprops=dict(arrowstyle="-|>", color=INK, linewidth=2.4,
-                                    mutation_scale=18), zorder=13)
-        ax.text(nx, ny + (t - b) * 0.13, "N", ha="center", va="bottom",
-                fontsize=12, fontweight="bold", color=INK, zorder=13,
-                bbox=dict(boxstyle="round,pad=0.12", fc="#ffffffcc", ec="none"))
+            ax.set_xlim(ext[0], ext[1]); ax.set_ylim(ext[2], ext[3])
 
-        if handles:
-            leg = ax.legend(handles=handles, loc="lower right", frameon=True,
-                            facecolor="#ffffff", edgecolor="#c9c8bf",
-                            fontsize=10.5, framealpha=1.0)
-            leg.set_zorder(20)          # opaque: lines were reading through it
+            # scale bar + north arrow, on every image because each stands alone
+            l, b, r_, t = bounds
+            bar = bar_length(side_m)
+            x0, y0 = l + (r_ - l) * 0.06, b + (t - b) * 0.07
+            ax.plot([x0, x0 + bar], [y0, y0], color="white", linewidth=5.5,
+                    solid_capstyle="butt", zorder=12)
+            ax.plot([x0, x0 + bar], [y0, y0], color=INK, linewidth=2.4,
+                    solid_capstyle="butt", zorder=13)
+            lab = f"{bar/1000:g} km" if bar >= 1000 else f"{bar:g} m"
+            ax.text(x0 + bar / 2, y0 + (t - b) * 0.03, lab, ha="center",
+                    fontsize=9.5, color=INK, zorder=13,
+                    bbox=dict(boxstyle="round,pad=0.15", fc="#ffffffcc",
+                              ec="none"))
+            nx, ny = r_ - (r_ - l) * 0.075, t - (t - b) * 0.21
+            ax.annotate("", xy=(nx, ny + (t - b) * 0.115), xytext=(nx, ny),
+                        arrowprops=dict(arrowstyle="-|>", color=INK,
+                                        linewidth=2.4, mutation_scale=18),
+                        zorder=13)
+            ax.text(nx, ny + (t - b) * 0.13, "N", ha="center", va="bottom",
+                    fontsize=12, fontweight="bold", color=INK, zorder=13,
+                    bbox=dict(boxstyle="round,pad=0.12", fc="#ffffffcc",
+                              ec="none"))
 
-        ax.set_title(title, fontsize=17, fontweight="bold", loc="left", pad=10)
-        fig.text(0.021, 0.016,
-                 "Red Relief Image Map \u00b7 Chiba et al. 2008",
-                 fontsize=9, color=MUTED)
-        fig.subplots_adjust(left=0.02, right=0.98, top=0.93, bottom=0.048)
+            if handles:
+                leg = ax.legend(handles=handles, loc="lower right",
+                                frameon=True, facecolor="#ffffff",
+                                edgecolor="#c9c8bf", fontsize=10.5,
+                                framealpha=1.0)
+                leg.set_zorder(20)      # opaque: lines were reading through it
 
-        name = f"venango_{site}_{SIDE_M:.0f}m_rrim_{slug}_9t_05.png"
-        fig.savefig(outdir / name, dpi=200)
-        plt.close(fig)
-        counts = {k: len(v) for k, v in cache.items() if k in layers}
-        print(f"  {(outdir / name).stat().st_size/1e3:7.0f} KB  {name}   {counts}")
+            ax.set_title(f"{title} — {subtitle}", fontsize=17,
+                         fontweight="bold", loc="left", pad=30)
+            ax.text(0, 1.008, f"{side_m/1000:g} km across", transform=ax.transAxes,
+                    fontsize=11, color=INK2, va="bottom")
+            fig.text(0.021, 0.014,
+                     "Red Relief Image Map · Chiba et al. 2008",
+                     fontsize=9, color=MUTED)
+            fig.subplots_adjust(left=0.02, right=0.98, top=0.925, bottom=0.045)
 
-    print(f"\nwrote {len(SERIES)} images to {outdir}")
+            name = f"annotations_{slug}_{site}_{side_m:.0f}m_{tag}_9t_05.png"
+            fig.savefig(outdir / name, dpi=200)
+            plt.close(fig)
+            written += 1
+            n = {l: len(cache[(l, slug)]) for l in layers}
+            print(f"  {(outdir / name).stat().st_size/1e3:7.0f} KB  {name}"
+                  + (f"   {n}" if n else ""))
+
+    print(f"\nwrote {written} images under {OUT}")
     return 0
 
 

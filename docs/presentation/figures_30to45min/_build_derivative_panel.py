@@ -16,6 +16,27 @@ feed YOLO, which expects three channels. So the optical panel is fetched from
 ESRI World Imagery and reprojected to the tile's CRS. It is basemap imagery for
 visual context, not a measured product, and it is not used in any analysis.
 
+STYLING COMES FROM THE QGIS PROJECT, NOT FROM ME
+------------------------------------------------
+These panels used to carry invented blue / orange / green ramps, which is not
+what any of these layers looks like when you open it. Every single-band layer in
+`qgis/wellsight.qgz` is rendered **singleband gray**, stretched to the whole
+raster's min and max, and the only layer with colour in it is RRIM, which is a
+3-band composite shown as raw RGB with NoEnhancement.
+
+So the styling is now READ OUT OF THE PROJECT FILE at build time. For a layer the
+project styles, the panel uses that layer's exact gradient and min/max, so the
+picture matches what is on screen. For a layer the project does not contain, the
+same convention is applied -- gray, black to white, whole-raster min/max.
+
+The gradients are not uniform and that matters: `openness_pos` is WhiteToBlack
+while `openness_neg`, `slope`, `lrm` and `hillshade` are BlackToWhite. Rendering
+them all the same way silently inverts one of them.
+
+A side effect worth stating: greyscale everywhere plus one RGB composite contains
+no red/green pair, so this panel satisfies the colourblind rule in CLAUDE.md by
+construction.
+
 North is up: EPSG:6346 is a UTM projection and grid north is within a fraction of
 a degree of true north here, so the arrow is drawn straight up without apology.
 
@@ -35,7 +56,6 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 import rasterio
-from matplotlib.colors import LinearSegmentedColormap
 from rasterio.windows import from_bounds
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
@@ -51,29 +71,95 @@ INK = "#0b0b0b"
 INK2 = "#52514e"
 MUTED = "#8a887e"
 
-# Single-hue ramps, light to dark. No rainbow -- a rainbow ramp invents
-# boundaries in continuous terrain that are not in the data.
-CM_BLUE = LinearSegmentedColormap.from_list("b", ["#d6e6f9", "#2a78d6", "#10365f"])
-CM_ORANGE = LinearSegmentedColormap.from_list("o", ["#fde3d1", "#eb6834", "#8c2f0c"])
-CM_GREEN = LinearSegmentedColormap.from_list("g", ["#d8f0e4", "#1baf7a", "#0a5238"])
+QGZ = ROOT / "qgis" / "wellsight.qgz"
 
-#: (filename, panel title, colormap, stretch). Stretch "pct" is a 2-98 percentile
-#: clip, which keeps one bad pixel from flattening the whole panel.
-#: (source raster, slug for the filename, plain title, colormap, stretch)
+#: (source raster, slug for the filename, plain title). How each one is drawn
+#: is read from the QGIS project, not decided here.
 PANELS = [
-    ("__optical__",             "aerial",         "Aerial imagery",       None,      None),
-    ("hillshade_9t_05.tif",     "hillshade",      "Hillshade",            "gray",    "pct"),
-    ("dem_9t_05.tif",           "dem",            "Bare-earth elevation", CM_BLUE,   "pct"),
-    ("slope_9t_05.tif",         "slope",          "Slope",                CM_ORANGE, "pct"),
-    ("lrm_5_9t_05.tif",         "lrm_5",          "Local relief, 5 m",    CM_ORANGE, "sym"),
-    ("lrm_25_9t_05.tif",        "lrm_25",         "Local relief, 25 m",   CM_ORANGE, "sym"),
-    ("tpi_05_9t_05.tif",        "tpi_05",         "Topographic position", CM_ORANGE, "sym"),
-    ("openness_pos_9t_05.tif",  "openness_pos",   "Openness, positive",   CM_GREEN,  "pct"),
-    ("openness_neg_9t_05.tif",  "openness_neg",   "Openness, negative",   CM_GREEN,  "pct"),
-    ("roughness_11_9t_05.tif",  "roughness_11",   "Roughness",            CM_GREEN,  "pct"),
-    ("rrim_openness_9t_05.tif", "rrim",           "RRIM",                 None,      "rgb"),
-    ("chm_9t_05.tif",           "chm",            "Canopy height",        CM_GREEN,  "pct"),
+    ("__optical__",             "aerial",        "Aerial imagery"),
+    ("hillshade_9t_05.tif",     "hillshade",     "Hillshade"),
+    ("dem_9t_05.tif",           "dem",           "Bare-earth elevation"),
+    ("slope_9t_05.tif",         "slope",         "Slope"),
+    ("lrm_5_9t_05.tif",         "lrm_5",         "Local relief, 5 m"),
+    ("lrm_25_9t_05.tif",        "lrm_25",        "Local relief, 25 m"),
+    ("tpi_05_9t_05.tif",        "tpi_05",        "Topographic position"),
+    ("openness_pos_9t_05.tif",  "openness_pos",  "Openness, positive"),
+    ("openness_neg_9t_05.tif",  "openness_neg",  "Openness, negative"),
+    ("roughness_11_9t_05.tif",  "roughness_11",  "Roughness"),
+    ("rrim_openness_9t_05.tif", "rrim",          "RRIM"),
+    ("chm_9t_05.tif",           "chm",           "Canopy height"),
 ]
+
+#: Layers the project does not hold, mapped to one it styles the same way.
+#: `lrm_5` is the same product at a different radius; the rest fall back to the
+#: project-wide convention (gray, black to white, whole-raster min/max).
+STYLE_ALIAS = {"lrm_5_9t_05": "lrm_25_9t_05"}
+
+
+def qgis_styles(qgz=None):
+    """Read every raster layer's renderer out of the QGIS project.
+
+    Returns {layer stem: style dict}. A .qgz is a zip holding one .qgs, which is
+    plain XML, so this needs nothing installed.
+    """
+    import zipfile
+    import xml.etree.ElementTree as ET
+    qgz = qgz or QGZ
+    if not qgz.exists():
+        print(f"  no QGIS project at {qgz}; falling back to gray min/max")
+        return {}
+    with zipfile.ZipFile(qgz) as z:
+        name = [n for n in z.namelist() if n.endswith(".qgs")][0]
+        xml = z.read(name).decode("utf-8", "replace")
+    out = {}
+    for ml in ET.fromstring(xml).iter("maplayer"):
+        if ml.get("type") != "raster":
+            continue
+        stem = (ml.findtext("layername") or "").strip()
+        r = ml.find(".//rasterrenderer")
+        if r is None or stem in out:
+            continue
+        kind = r.get("type")
+        if kind == "singlebandgray":
+            ce = r.find("contrastEnhancement")
+            try:
+                lo = float(ce.findtext("minValue"))
+                hi = float(ce.findtext("maxValue"))
+            except (AttributeError, TypeError, ValueError):
+                lo = hi = None
+            out[stem] = dict(kind="gray", gradient=r.get("gradient",
+                                                         "BlackToWhite"),
+                             vmin=lo, vmax=hi)
+        elif kind == "multibandcolor":
+            bands = {}
+            for c, tag in (("r", "redContrastEnhancement"),
+                           ("g", "greenContrastEnhancement"),
+                           ("b", "blueContrastEnhancement")):
+                ce = r.find(tag)
+                if ce is None:
+                    continue
+                bands[c] = (ce.findtext("algorithm"),
+                            float(ce.findtext("minValue") or 0),
+                            float(ce.findtext("maxValue") or 255))
+            out[stem] = dict(kind="rgb", bands=bands)
+    return out
+
+
+def style_for(stem, styles, path):
+    """The style QGIS would use, or the project's convention if it has none."""
+    key = STYLE_ALIAS.get(stem, stem)
+    st = styles.get(key)
+    if st is not None:
+        return dict(st, source=("project" if key == stem
+                                else f"project, via {key}"))
+    # Same convention every single-band layer in the project uses, with the
+    # min/max taken over the WHOLE raster -- QGIS stretches on the full extent,
+    # not on whatever window happens to be on screen.
+    with rasterio.open(path) as ds:
+        st_ = ds.statistics(1, approx=True)
+        lo, hi = float(st_.min), float(st_.max)
+    return dict(kind="gray", gradient="BlackToWhite", vmin=lo, vmax=hi,
+                source="convention")
 
 
 def target_xy():
@@ -111,14 +197,25 @@ def fetch_optical(bounds, px=900):
     return mpimg.imread(io.BytesIO(raw))
 
 
-def stretch(arr, mode):
-    v = arr[np.isfinite(arr)]
-    if not v.size:
-        return None, None
-    if mode == "sym":                       # signed: centre the ramp on zero
-        m = np.percentile(np.abs(v), 98)
-        return -m, m
-    return np.percentile(v, 2), np.percentile(v, 98)
+def draw_gray(ax, a, st, ext):
+    """Singleband gray, exactly as QGIS draws it."""
+    cmap = "gray" if st["gradient"] == "BlackToWhite" else "gray_r"
+    ax.imshow(a, extent=ext, origin="upper", cmap=cmap,
+              vmin=st["vmin"], vmax=st["vmax"], interpolation="nearest")
+
+
+def draw_rgb(ax, arr, st, ext):
+    """Multiband colour. RRIM is stored 0-255 and QGIS applies NoEnhancement,
+    so the bytes go to screen untouched -- no percentile stretch of our own."""
+    a = arr[:3].astype("float32")
+    bands = st.get("bands") or {}
+    for i, c in enumerate("rgb"):
+        alg, lo, hi = bands.get(c, ("NoEnhancement", 0.0, 255.0))
+        if alg == "NoEnhancement":
+            lo, hi = 0.0, 255.0
+        a[i] = (a[i] - lo) / max(hi - lo, 1e-9)
+    ax.imshow(np.clip(np.moveaxis(a, 0, -1), 0, 1), extent=ext,
+              origin="upper", interpolation="nearest")
 
 
 def scale_bar(ax, bounds, length_m=50):
@@ -163,7 +260,10 @@ def main() -> int:
     ext = [bounds[0], bounds[2], bounds[1], bounds[3]]
     written = []
 
-    for fname, slug, title, cmap, mode in PANELS:
+    styles = qgis_styles()
+    print(f"read {len(styles)} styled raster layers from {QGZ.name}\n")
+
+    for fname, slug, title in PANELS:
         fig, ax = plt.subplots(figsize=(7.2, 7.6))
         ax.set_xticks([]); ax.set_yticks([])
         ax.set_aspect("equal")
@@ -184,19 +284,20 @@ def main() -> int:
                 ok = False
             else:
                 arr = read_window(src, bounds)
-                if mode == "rgb" and arr.ndim == 3 and arr.shape[0] >= 3:
-                    a = arr[:3]
-                    a = np.stack([(b_ - np.nanpercentile(b_, 2)) /
-                                  max(np.nanpercentile(b_, 98)
-                                      - np.nanpercentile(b_, 2), 1e-9)
-                                  for b_ in a])
-                    ax.imshow(np.clip(np.moveaxis(a, 0, -1), 0, 1),
-                              extent=ext, origin="upper")
+                st = style_for(src.stem, styles, src)
+                if st["kind"] == "rgb" and arr.ndim == 3 and arr.shape[0] >= 3:
+                    draw_rgb(ax, arr, st, ext)
+                    print(f"  {slug:14s} RGB, no enhancement      "
+                          f"({st['source']})")
                 else:
                     a = arr[0] if arr.ndim == 3 else arr
-                    vmin, vmax = stretch(a, mode)
-                    ax.imshow(a, extent=ext, origin="upper", cmap=cmap,
-                              vmin=vmin, vmax=vmax)
+                    if st.get("vmin") is None:
+                        v = a[np.isfinite(a)]
+                        st = dict(st, vmin=float(v.min()), vmax=float(v.max()))
+                    print(f"  {slug:14s} gray {st['gradient']:12s} "
+                          f"{st['vmin']:.3g} to {st['vmax']:.3g}  "
+                          f"({st['source']})")
+                    draw_gray(ax, a, st, ext)
         if not ok:
             plt.close(fig)
             continue
