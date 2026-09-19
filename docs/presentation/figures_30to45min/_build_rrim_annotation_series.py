@@ -1,8 +1,15 @@
 """Each annotation layer on RRIM, at a place where that layer is worth seeing.
 
-Ten images: one PAIR per class, the same frame without the shapefile and with
-it, so the question "is that thing really there in the terrain, or did somebody
-draw it" can be answered by flicking between two pictures.
+Twelve images: one PAIR per class, the same frame without the shapefile and
+with it, so the question "is that thing really there in the terrain, or did
+somebody draw it" can be answered by flicking between two pictures. Pits get
+four -- terrain, floors, rims, and both -- because the floor and the rim are
+separate layers and the floor is the one the model trains on.
+
+They all land in one flat folder, numbered in talk order. An earlier version
+filed them in five subfolders named by latitude and longitude; the coordinates
+are exact and unreadable, so they moved to README.md and the filenames now say
+the class and the variant instead.
 
     class      centre                        width
     roads      41.499080 N, 79.541300 W      2 km
@@ -83,31 +90,40 @@ C_PIT_OUT = "#ffffff"
 
 HALO = [pe.Stroke(linewidth=3.2, foreground="#000000"), pe.Normal()]
 
-#: (slug, title, variants, latitude, longitude, window width in metres).
+#: (order, slug, title, variants, latitude, longitude, window width in metres).
 #: Each variant is (filename tag, panel subtitle, layers to draw). The first is
 #: always the bare terrain, so every site gives a before/after pair at minimum.
 #: `None` for the centre means the dead centre of 9t.
-BARE = ("terrain_only", "terrain only", [])
+#:
+#: The leading number is what puts the twelve files in talk order inside one
+#: flat folder. They used to sit in five subfolders keyed by latitude and
+#: longitude, which is precise and unreadable -- the class and the variant are
+#: what anyone picking a slide is actually looking for, so those are the name.
+#: The coordinates live in README.md beside the images instead.
+BARE = ("before_no_annotation", "terrain only, nothing drawn on it", [])
 SERIES = [
-    ("roads", "Roads",
-     [BARE, ("with_annotation", "with the annotation", ["roads"])],
+    (1, "roads", "Roads",
+     [BARE, ("after_roads_drawn", "with the hand-drawn roads", ["roads"])],
      41.499080, -79.541300, 2000.0),
-    ("drainage", "Drainage",
-     [BARE, ("with_annotation", "with the annotation", ["drainage"])],
+    (2, "drainage", "Drainage",
+     [BARE, ("after_drainage_drawn", "with the hand-drawn drainage",
+             ["drainage"])],
      41.502510, -79.533711, 2000.0),
-    ("pads", "Pads",
-     [BARE, ("with_annotation", "with the annotation", ["pad"])],
+    (3, "pads", "Pads",
+     [BARE, ("after_pads_drawn", "with the hand-drawn pads", ["pad"])],
      41.507320, -79.541360, 2000.0),
     # Pits are drawn as two separate things and the floor is what the model is
     # trained on, so the rim, the floor and the pair all get their own picture.
-    ("pits", "Pits",
+    (4, "pits", "Pits",
      [BARE,
-      ("with_pit_inside", "floors only", ["pit_inside"]),
-      ("with_pit_outside", "outer rims only", ["pit_outside"]),
-      ("with_both", "rims and floors together", ["pit_outside", "pit_inside"])],
+      ("after_floors_only", "pit floors only — this is what the model learns",
+       ["pit_inside"]),
+      ("after_rims_only", "outer rims only", ["pit_outside"]),
+      ("after_rims_and_floors", "rims and floors together",
+       ["pit_outside", "pit_inside"])],
      41.494906, -79.537175, 1000.0),
-    ("all", "All four annotation layers",
-     [BARE, ("with_annotation", "with the annotation",
+    (5, "all_four_layers", "All four annotation layers",
+     [BARE, ("after_all_four_drawn", "with all four layers drawn",
              ["pad", "drainage", "roads", "pit_inside"])],
      None, None, 3000.0),
 ]
@@ -196,6 +212,60 @@ def draw(ax, layer, gdf):
     return None
 
 
+BEGIN = "<!-- annotation-series: generated, do not edit by hand -->"
+END = "<!-- /annotation-series -->"
+
+
+def write_readme(index):
+    """The coordinates the filenames dropped, kept next to the images.
+
+    The Descriptive-filename rule wants the location in the name. One site per
+    class makes the class slug enough to tell the twelve apart, and a lat/lon
+    blob in every name made the folder unreadable, so the precise centre is
+    recorded here instead of in the name.
+
+    The stage README also describes figures this script does not build, so only
+    the block between the two markers is replaced.
+    """
+    rows = [BEGIN,
+            "",
+            "## The per-class before/after series",
+            "",
+            "Twelve images, in talk order. Each class is a pair on the same",
+            "frame: the terrain alone, then the same terrain with the",
+            "hand-drawn layer over it. Flicking between the two answers \"is",
+            "that really in the terrain, or did somebody draw it\". Pits get",
+            "four, because the floor and the rim are separate layers and the",
+            "floor is the one the model trains on.",
+            "",
+            "| file | shows | centre (WGS84) | width |",
+            "|---|---|---|---|"]
+    for name, title, subtitle, site, side_m in index:
+        rows.append(f"| `{name}` | {title} — {subtitle} | {site} "
+                    f"| {side_m/1000:g} km |")
+    rows += ["",
+             "Rebuild with:",
+             "",
+             "```bash",
+             "python docs/presentation/figures_30to45min/"
+             "_build_rrim_annotation_series.py",
+             "```",
+             "",
+             END]
+    block = "\n".join(rows)
+
+    p = OUT / "README.md"
+    old = p.read_text(encoding="utf-8") if p.exists() else ""
+    if BEGIN in old and END in old:
+        head, _, tail = old.partition(BEGIN)
+        _, _, tail = tail.partition(END)
+        new = head + block + tail
+    else:
+        new = (old.rstrip() + "\n\n" + block + "\n") if old else block + "\n"
+    p.write_text(new, encoding="utf-8")
+    print(f"  index    {p}")
+
+
 def main() -> int:
     if not RRIM.exists():
         raise SystemExit(f"missing RRIM base: {RRIM}")
@@ -207,16 +277,14 @@ def main() -> int:
     })
     cache = {}
     written = 0
+    index = []
 
-    for slug, title, variants, lat, lon, side_m in SERIES:
+    for order, slug, title, variants, lat, lon, side_m in SERIES:
         bounds = window_bounds(lat, lon, side_m)
         x, y = target_xy(lat, lon)
         clip = box(*bounds)
-        site = ("9t_centre" if lat is None else
-                f"{lat:.6f}".replace(".", "p") + "N_"
-                + f"{abs(lon):.6f}".replace(".", "p") + "W")
-        outdir = OUT / f"venango_{slug}_{site}"
-        outdir.mkdir(parents=True, exist_ok=True)
+        site = ("dead centre of 9t" if lat is None else
+                f"{lat:.6f} N, {abs(lon):.6f} W")
         base = read_rrim(bounds)
         ext = [bounds[0], bounds[2], bounds[1], bounds[3]]
         print(f"\n{slug}: centre {x:.1f} E, {y:.1f} N, {side_m:.0f} m window")
@@ -249,7 +317,7 @@ def main() -> int:
             ax.plot([x0, x0 + bar], [y0, y0], color=INK, linewidth=2.4,
                     solid_capstyle="butt", zorder=13)
             lab = f"{bar/1000:g} km" if bar >= 1000 else f"{bar:g} m"
-            ax.text(x0 + bar / 2, y0 + (t - b) * 0.03, lab, ha="center",
+            ax.text(x0 + bar / 2, y0 + (t - b) * 0.017, lab, ha="center",
                     fontsize=9.5, color=INK, zorder=13,
                     bbox=dict(boxstyle="round,pad=0.15", fc="#ffffffcc",
                               ec="none"))
@@ -270,23 +338,31 @@ def main() -> int:
                                 framealpha=1.0)
                 leg.set_zorder(20)      # opaque: lines were reading through it
 
-            ax.set_title(f"{title} — {subtitle}", fontsize=17,
-                         fontweight="bold", loc="left", pad=30)
-            ax.text(0, 1.008, f"{side_m/1000:g} km across", transform=ax.transAxes,
-                    fontsize=11, color=INK2, va="bottom")
+            # The class is the headline and the variant is the line under it.
+            # Running both into one title gave "Pits — pit floors only — this
+            # is what the model learns", which is three clauses and one dash
+            # too many to read from the back of a room.
+            ax.set_title(title, fontsize=18, fontweight="bold", loc="left",
+                         pad=26)
+            ax.text(0, 1.008, f"{subtitle}  ·  {side_m/1000:g} km across",
+                    transform=ax.transAxes, fontsize=12, color=INK2,
+                    va="bottom")
             fig.text(0.021, 0.014,
                      "Red Relief Image Map · Chiba et al. 2008",
                      fontsize=9, color=MUTED)
-            fig.subplots_adjust(left=0.02, right=0.98, top=0.925, bottom=0.045)
+            fig.subplots_adjust(left=0.02, right=0.98, top=0.905, bottom=0.045)
 
-            name = f"annotations_{slug}_{site}_{side_m:.0f}m_{tag}_9t_05.png"
-            fig.savefig(outdir / name, dpi=200)
+            wide = (f"{side_m/1000:g}km").replace(".", "p")
+            name = (f"{order}_annotation_{slug}_{wide}_{tag}_9t_05.png")
+            fig.savefig(OUT / name, dpi=200)
             plt.close(fig)
             written += 1
             n = {l: len(cache[(l, slug)]) for l in layers}
-            print(f"  {(outdir / name).stat().st_size/1e3:7.0f} KB  {name}"
+            print(f"  {(OUT / name).stat().st_size/1e3:7.0f} KB  {name}"
                   + (f"   {n}" if n else ""))
+            index.append((name, title, subtitle, site, side_m))
 
+    write_readme(index)
     print(f"\nwrote {written} images under {OUT}")
     return 0
 
