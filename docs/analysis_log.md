@@ -5,6 +5,60 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-19 — The 9t area drawn with the discarded ground put back, and a colour rule
+
+**Four pictures over the whole 9t training area.** SMRF on all nine squares,
+three surfaces rasterised from each by `filters.expression` (vendor / recovered
+only / union), mosaicked to one 0.5 m grid. Full write-up in
+`docs/iterations/recovered_ground_maps_9t.md`.
+
+    51,470,048 cells the laser reached
+    no ground return, as delivered            13.79%
+    no ground return, with the discarded back   8.24%
+    cells closed                            2,857,002
+    discarded ground points                13,746,698
+    section, 300 m at bearing 010 deg        32% -> 2% of the line with no ground
+
+Two measurement errors caught and fixed before anything was published. A
+Delaunay TIN spans its own convex hull, so DEM nodata is not a coverage map and
+the first pass measured 0.0% voids; voids are now counted on the points, which
+reproduces the two-tile numbers exactly (12.36% -> 6.25% on 621594). And a hole
+is speckle at 0.5 m but a region at 5 m, so the maps draw void density rather
+than a binary mask, and every gap claim in the section is made at 1 m where an
+empty cell means something.
+
+The section picker was wrong twice. Scoring by recovered-point density put the
+line inside the swath overlap where the vendor already had ground, giving two
+identical panels; and a 6 m corridor with a 1 m tolerance called every line
+continuous, because at 4.8 points per square metre some vendor point is nearly
+always within a metre. It now scores the thing the panel is judged on -- length
+of line that has no delivered ground but does have it after.
+
+**Standing instruction, given today: every graphic must be red/green safe.**
+Applied across the figure scripts and checked with the dataviz validator over
+ALL pairs, not just adjacent ones. This found a real failure in work already
+committed: in `_cross_section_classification.py` the below-ground class
+`#C43E1C` against high vegetation `#18512F` measures **dE 4.8 under
+protanopia**. The note in that file claimed the palette passed, but it had only
+been checked on adjacent pairs. Two palettes now, neither containing a red/green
+pair:
+
+    lost / found figures   ground #1F5FA8, recovered #D97706, missing #A31515
+                           worst pair dE 21.1 deutan / 22.6 normal, all >= 3:1
+    classification figures vegetation keeps its green ramp and the RED goes --
+                           below ground is now neutral charcoal #2B2F36, and it
+                           already carried its own marker shape as well
+                           unassigned grey darkened #B0B0B0 -> #8E959B, which
+                           measured dE 13.0 against pale vegetation in NORMAL
+                           vision, under the floor of 15
+
+Report charts, the 9t maps and the section are redrawn. The three classification
+cross-sections and the two `_smrf_reclassify_ground.py` panels still carry the
+old palette until they are re-run.
+
+
+---
+
 ## 2026-09-19 — Where ground stops, measured on every map square in both deliveries
 
 The by-acquisition cliff chart was built on 7 tiles per delivery, which cannot

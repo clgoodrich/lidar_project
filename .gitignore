@@ -152,3 +152,8 @@ Thumbs.db
 # SMRF ground reclassification DEMs -- 36 MB each, regenerable with
 # notebooks/wellsight_v2/s7_analysis/_smrf_reclassify_ground.py
 data/9t/results/smrf_ground/dem_*.tif
+
+# 9t recovered-ground surfaces -- 9000x9000 at 0.5 m, regenerable with
+# notebooks/wellsight_v2/s7_analysis/_recovered_ground_maps_9t.py
+data/9t/results/recovered_ground_9t/dem_*.tif
+data/9t/results/recovered_ground_9t/_tiles/

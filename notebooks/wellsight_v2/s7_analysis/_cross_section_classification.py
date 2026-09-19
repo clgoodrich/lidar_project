@@ -80,12 +80,18 @@ BANDS = [(-1e9, -0.15, 7), (-0.15, 0.15, 1), (0.15, 2.0, 3),
          (2.0, 5.0, 4), (5.0, 60.0, 5), (60.0, 1e9, 18)]
 
 SURFACE, INK, INK2, MUTED, RULE = "#fcfcfb", "#0b0b0b", "#52514e", "#8a887e", "#d8d7cf"
-#: Colourblind-safe, and checked rather than eyeballed. Validated with the
-#: dataviz palette validator (all pairs, light surface):
+#: Colourblind-safe, and CHECKED rather than eyeballed -- the dataviz palette
+#: validator, all pairs, light surface. Corrected 2026-09-19: the earlier note
+#: here quoted only the adjacent-pair result and missed the real worst pair.
 #:
-#:   categorical  unassigned / ground / vegetation / below ground
-#:                worst pair #C43E1C vs #4FA352  dE 8.5 deutan, 14.6 tritan  PASS
-#:                normal vision worst pair       dE 18.2                     PASS
+#:   below ground #C43E1C  vs  high veg #18512F   dE 4.8 PROTAN   FAIL
+#:
+#: Dark green against red is the exact pair a protanope cannot separate, so the
+#: red is gone. Below-ground is now a NEUTRAL charcoal, which has no hue to
+#: confuse with anything, and it keeps its own marker shape as well:
+#:
+#:   ground #1F5FA8 vs vegetation #4FA352   dE 26.9 protan, 27.6 normal  PASS
+#:   ground #1F5FA8 vs below #2B2F36        dE 20.9 deutan, 21.7 normal  PASS
 #:
 #: Vegetation is ORDERED by height, so it is a sequential single-hue ramp
 #: (L 0.75 -> 0.48 -> 0.21, monotonic) rather than three categorical hues --
@@ -95,9 +101,12 @@ SURFACE, INK, INK2, MUTED, RULE = "#fcfcfb", "#0b0b0b", "#52514e", "#8a887e", "#
 #: Brown was the obvious choice for ground and had to go: dark green against
 #: brown measures dE 1.2 under protanopia, the single worst pair tested.
 #:
+#: Unassigned grey darkened #B0B0B0 -> #8E959B: against the palest vegetation
+#: it measured dE 13.0 even in NORMAL vision, below the floor of 15.
+#:
 #: The two below-ground classes share one hue and are separated by MARKER
 #: SHAPE, not colour -- a sixth hue would not have cleared the floor.
-GREY, BLUE, VERM = "#B0B0B0", "#1F5FA8", "#C43E1C"
+GREY, BLUE, VERM = "#8E959B", "#1F5FA8", "#2B2F36"
 VEG_LOW, VEG_MED, VEG_HIGH = "#A9DCA0", "#4FA352", "#18512F"
 COL = {1: (GREY, "unassigned (at ground)", "o"),
        2: (BLUE, "ground", "o"),

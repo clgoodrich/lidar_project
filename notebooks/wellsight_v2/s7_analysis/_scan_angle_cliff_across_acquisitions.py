@@ -86,9 +86,14 @@ STEP = 3             # decimation; a ratio per angle bin is unaffected
 EDGES = np.arange(0, 40.5, 1.0)   # Venango Nov 2019 sweeps to 31 deg
 
 SURFACE, INK, INK2, MUTED, RULE = "#fcfcfb", "#0b0b0b", "#52514e", "#8a887e", "#d8d7cf"
-BLUE, VERM, GREEN, GREY = "#1F5FA8", "#C43E1C", "#4FA352", "#B0B0B0"
+#: Colourblind rule: a red/green pair is the one a deuteranope or
+#: protanope cannot read, so no figure here contains both. Checked with
+#: the dataviz validator over ALL pairs, not just adjacent ones.
+#:   blue #1F5FA8  amber #D97706  deep red #A31515
+#:   worst pair dE 21.1 deutan / 21.5 protan / 22.6 normal, all >= 3:1
+BLUE, VERM, GREEN, GREY = "#1F5FA8", "#A31515", "#D97706", "#8E959B"
 #: one colour per flight block, assigned in fixed order (dataviz skill)
-BLOCK_COLOURS = [BLUE, VERM, GREEN, "#7A4FA3", "#B8860B"]
+BLOCK_COLOURS = [BLUE, VERM, GREEN, "#111827", "#6B7280"]
 
 #: (label, directory, colour). Keep the two deliveries visually distinct --
 #: the whole question is whether they behave the same.

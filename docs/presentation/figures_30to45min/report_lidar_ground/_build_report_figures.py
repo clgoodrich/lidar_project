@@ -41,10 +41,16 @@ PAPER = "#f7f8f6"
 INK = "#141a1f"
 INK2 = "#545c63"
 RULE = "#d7dad4"
+#: Colourblind rule: a red/green pair is the one a deuteranope or
+#: protanope cannot read, so no figure here contains both. Checked with
+#: the dataviz validator over ALL pairs, not just adjacent ones.
+#:   blue #1F5FA8  amber #D97706  deep red #A31515
+#:   worst pair dE 21.1 deutan / 21.5 protan / 22.6 normal, all >= 3:1
 GROUND = "#1F5FA8"      # kept by the vendor
-LOST = "#C43E1C"        # thrown away
-FOUND = "#4FA352"       # recovered by our own pass
+LOST = "#A31515"        # thrown away
+FOUND = "#D97706"       # recovered by our own pass
 NEUTRAL = "#b9bdb6"
+RECOVER = FOUND
 
 plt.rcParams.update({
     "figure.facecolor": PAPER, "axes.facecolor": PAPER,
@@ -191,7 +197,7 @@ def chart_accuracy(acc):
     ax.text(len(tiles) - 0.52, 10.4, "the limit allowed by the national standard",
             fontsize=12.5, color=INK, ha="right", va="bottom")
     ax.set_xticks(xs)
-    ax.set_xticklabels([f"map square {t}" for t in tiles], fontsize=13)
+    ax.set_xticklabels([f"map square {int(t)}" for t in tiles], fontsize=13)
     ax.set_ylim(0, 14)
     ax.legend(frameon=False, fontsize=13, loc="upper left")
     frame(ax, None, "how far off, on average (cm)",
@@ -240,7 +246,7 @@ def chart_holes(rows):
         ax.bar_label(b, fmt="%.1f%%", fontsize=13.5, color=INK, padding=4,
                      fontweight="bold")
     ax.set_xticks(xs)
-    ax.set_xticklabels([f"map square {t}" for t in tiles], fontsize=13)
+    ax.set_xticklabels([f"map square {int(t)}" for t in tiles], fontsize=13)
     ax.set_ylim(0, max(before) * 1.35)
     ax.set_yticks([])
     ax.legend(frameon=False, fontsize=13, loc="upper right")

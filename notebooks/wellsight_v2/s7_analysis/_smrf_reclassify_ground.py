@@ -87,7 +87,12 @@ RING_IN, RING_OUT = 2.0, 8.0
 SWEEP = [0.15, 0.25, 0.35, 0.50, 0.70]
 
 SURFACE, INK, INK2, MUTED, RULE = "#fcfcfb", "#0b0b0b", "#52514e", "#8a887e", "#d8d7cf"
-GREY, BLUE, VERM, GREEN = "#B0B0B0", "#1F5FA8", "#C43E1C", "#4FA352"
+#: Colourblind rule: a red/green pair is the one a deuteranope or
+#: protanope cannot read, so no figure here contains both. Checked with
+#: the dataviz validator over ALL pairs, not just adjacent ones.
+#:   blue #1F5FA8  amber #D97706  deep red #A31515
+#:   worst pair dE 21.1 deutan / 21.5 protan / 22.6 normal, all >= 3:1
+GREY, BLUE, VERM, GREEN = "#8E959B", "#1F5FA8", "#A31515", "#D97706"
 
 
 def run_pipeline(stages, label, timeout=7200):
