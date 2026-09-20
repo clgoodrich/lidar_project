@@ -47,24 +47,43 @@ county and not a convention.
 - **Do NOT fix it by promoting flags.** The reference surface is built from
   class 2, so promoting points moves the surface and re-opens the question. One
   pass does not converge.
-- **CHM carries scanner-sweep artifacts — filter before using it as a channel
-  (added 2026-09-19).** The canopy model over the 9t derivative window is crossed
-  by thin bright streaks that are an instrument artifact, not vegetation. The
-  returns under them are **21% single-return against 70% off them**, sit at the
-  **same scan angle as their surroundings** (3.8° vs 3.6°, so this is NOT the 18°
-  cut), and fall into **20 discrete GPS-time bands** — individual scanner sweeps,
-  within a single flight line (637). A cross-section crosses 26 spikes at 3.0 m
-  median spacing: the DSM swings 46.5 m while the DEM beneath climbs smoothly by
-  23.4 m with no spikes. First-return surface only.
+- **CHM "corduroy" is NoData, not canopy — and it is a RENDERING bug
+  (added 2026-09-19, corrected and closed 2026-09-19).** The bright parallel
+  bands in `chm_300m_9t.png` are missing data. matplotlib paints NaN as the
+  figure background, and on the panel's black-to-white greyscale ramp the
+  background is brighter than the maximum value, so a hole renders brighter
+  than 27.9 m of canopy.
+  Measured by `s7_analysis/_test_chm_nodata_bands_9t.py` over the 300 m window
+  at 41.49264, -79.546127:
+  - **11,603 cells, 3.22% of the window.** CHM NoData and DSM NoData are the
+    same 11,603 cells, **100% overlap**; the DEM has **0.00%** NoData. CHM =
+    DSM − DEM, so every hole is inherited from the DSM.
+  - **Zero first-returns land in a void cell.** 652 returns total against
+    175,632 in the valid cells — 0.06 per cell versus 0.50, a ratio of 0.111 —
+    and not one of the 652 is a first return. The DSM cell is empty because
+    nothing came back to put in it.
+  - **Bearing 79.0°**, against the user's hand-measured 79.4°. Bands at 4.25 m
+    median spacing from 15 projection peaks (the peak count is sensitive to the
+    `find_peaks` height/distance settings — treat the spacing as 3–4 m, not a
+    fixed constant).
+  - ~~**RETRACTED: "21% single-return on the streaks against 70% off them",
+    "20 discrete GPS-time bands", "same scan angle 3.8° vs 3.6°".**~~ Those came
+    from `_test_chm_scanline_streaks_9t.py`, whose mask is
+    `chm >= percentile(chm, 99.3)` — by construction only cells that HAVE a
+    value, the exact complement of the bands it meant to measure. It was
+    measuring canopy versus ground. **Do not quote any number from that script
+    or from the earlier "scanner sweeps with elevated first returns" framing.**
+  - ~~**RETRACTED: bearings 121° / 135° / 139°.**~~ Wrong twice over. The mask
+    was wrong as above, and both scripts applied a `(90 − ang)` conversion that
+    does not belong: calibrated against synthetic lines at 0/30/45/79/120/135°,
+    the projection angle **is** the map bearing, returned unchanged.
   Consequence: **CHM is not one of the seven model channels, so nothing
-  downstream is affected** — but the vegetation-structure idea below cannot use
-  CHM raw. Scripts: `s7_analysis/_test_chm_scanline_streaks_9t.py`,
-  `s7_analysis/_build_chm_scanline_cross_section_9t.py`.
-  Open: the streak **bearing is not reliably measured** — 121°, 135° and 139°
-  depending on detector and angular step, because tree-crown speckle competes
-  with the streaks in the variance surface. The estimator itself is validated
-  against synthetic lines at 45/60/70/120/135° and recovers each exactly, so the
-  instability is in the mask. Do not quote a bearing until that is fixed.
+  downstream is affected.** Two things remain to do:
+  - **`_build_derivative_panel.py` has no `set_bad`**, so every greyscale panel
+    it renders shows NoData as maximum brightness. Any raster with holes is
+    affected, not just the CHM. Fix the builder and re-render.
+  - The vegetation-structure idea below still cannot use CHM raw — now because
+    of the holes, not because of an instrument artifact.
 - **Vegetation structure is an unused channel.** Canopy p95 is 1.3–2.8 m lower
   over annotated pads and pits than the forest ring around them, same direction
   on 5 of 5 feature/tile combinations, pad effect Cliff's d −0.242 over 3,427

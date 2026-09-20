@@ -1,0 +1,17 @@
+{
+  "strike_deg": 79.0,
+  "buffer_m": 1.0,
+  "half_m": 55.0,
+  "samples_per_position": 3,
+  "row_anchor_en": [
+    621392.1110298285,
+    4594509.736330279
+  ],
+  "row_offset_from_centroid_m": -15.75,
+  "side_offset_m": 1.5,
+  "row_missing_pct": 39.54545454545455,
+  "side_missing_pct": 0.45454545454545453,
+  "n_breaks": 43,
+  "row_chm_mean_present": 1.3849207162857056,
+  "side_chm_mean_present": 2.09659481048584
+}

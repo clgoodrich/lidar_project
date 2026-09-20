@@ -1,0 +1,16 @@
+{
+  "strike_deg": 79.4,
+  "profile_bearing_deg": 169.4,
+  "buffer_m": 12.4,
+  "samples_per_position": 26,
+  "half_m": 40.0,
+  "anchor_en": [
+    621395.1162715057,
+    4594494.27570214
+  ],
+  "nodata_cells": 11603,
+  "nodata_pct": 3.2230555555555553,
+  "bands_crossed": 21,
+  "median_spacing_m": 3.0,
+  "peak_gap_fraction": 1.0
+}

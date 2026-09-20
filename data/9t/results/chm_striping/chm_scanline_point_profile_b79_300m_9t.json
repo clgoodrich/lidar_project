@@ -1,0 +1,13 @@
+{
+  "strike_deg": 79.4,
+  "centre_en": [
+    621408.8227138051,
+    4594558.554711879
+  ],
+  "corridor_m": 12.4,
+  "half_m": 64.0,
+  "n_returns": 2309,
+  "single_return_pct": 95.75573841489823,
+  "above_2m": 119,
+  "above_2m_multi_pct": 24.369747899159663
+}

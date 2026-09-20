@@ -1,0 +1,20 @@
+{
+  "measured_streak_bearing_deg": 139.25,
+  "cut_bearing_deg": 79.4,
+  "cut_placed_by_hand": true,
+  "cut_anchor_en": [
+    621408.8227138051,
+    4594558.554711879
+  ],
+  "spacing_m": 2.0,
+  "across_bearing_deg": 169.4,
+  "spikes_across": 6,
+  "median_spike_gap_across_m": 3.5,
+  "n_hist_peaks": 25,
+  "threshold_m": 24.42693328857422,
+  "spikes_on_cut": 0,
+  "median_spike_gap_m": null,
+  "dsm_range_m": 15.80562246346824,
+  "dem_range_m": 14.84900837746875,
+  "dem_sd_m": 4.64248325359584
+}

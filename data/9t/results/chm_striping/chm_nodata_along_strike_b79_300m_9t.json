@@ -1,0 +1,15 @@
+{
+  "strike_deg": 79.4,
+  "along_buffer_m": 1.0,
+  "along_half_m": 55.0,
+  "band_spacing_m": 3.0,
+  "on_band_anchor_en": [
+    621392.2650255712,
+    4594509.511200052
+  ],
+  "side_offset_m": 1.5,
+  "on_band_mean_gap": 0.453030303030303,
+  "off_band_mean_gap": 0.007575757575757575,
+  "on_band_pct_over_half": 37.72727272727273,
+  "off_band_pct_over_half": 0.45454545454545453
+}

@@ -1,4 +1,23 @@
-"""What are the bright parallel streaks in the CHM?
+"""SUPERSEDED 2026-09-19 -- WRONG MASK. Do not quote any number from this file.
+
+Use `_test_chm_nodata_bands_9t.py` instead.
+
+The bands are NoData, not canopy: matplotlib paints NaN as the figure
+background, which on a black-to-white greyscale ramp is brighter than the
+maximum value. The mask below is `chm >= percentile(chm, 99.3)`, which by
+construction keeps only cells that HAVE a value -- the exact complement of the
+bands it was written to measure. Everything it reports is canopy versus ground.
+
+Retracted from this script: the 21%-vs-70% single-return split, the 20 GPS-time
+bands, the 3.8-vs-3.6 deg scan angle, and flight line 637. Its bearing is wrong
+a second time over: `(90 - ang)` does not belong, the projection angle IS the
+map bearing. Correct answer, on the NoData mask, is 79.0 deg.
+
+Kept unmodified as the record of how the mistake was made.
+
+--- original docstring follows ---
+
+What are the bright parallel streaks in the CHM?
 
 The canopy panel `chm_300m_9t.png` carries thin, bright, regularly spaced lines
 running roughly ENE across the whole window, indifferent to terrain and canopy.

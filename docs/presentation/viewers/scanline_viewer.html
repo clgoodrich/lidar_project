@@ -1,0 +1,351 @@
+<title>Scan Line Dropouts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#eef0ee; --panel:#f8f9f7; --edge:#ccd0cb;
+    --ink:#171c1a; --ink2:#59605c; --muted:#8c918c;
+    --scene:#e7eae7;
+    --dsm:#2a78d6; --dem:#eb6834; --pts:#4a3aa7; --gap:#b4322f;
+    --shadow:0 1px 2px rgba(18,24,22,.08),0 8px 24px rgba(18,24,22,.10);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0e1211; --panel:#161b19; --edge:#2b3330;
+      --ink:#eef2ef; --ink2:#a3aca7; --muted:#77817c;
+      --scene:#0a0d0c;
+      --dsm:#5b9df0; --dem:#f28a4e; --pts:#9a8df0; --gap:#e8635f;
+      --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0e1211; --panel:#161b19; --edge:#2b3330;
+    --ink:#eef2ef; --ink2:#a3aca7; --muted:#77817c;
+    --scene:#0a0d0c;
+    --dsm:#5b9df0; --dem:#f28a4e; --pts:#9a8df0; --gap:#e8635f;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px rgba(0,0,0,.45);
+  }
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+    overflow:hidden;
+  }
+  #stage{position:fixed;inset:0;background:var(--scene)}
+  canvas{display:block;touch-action:none}
+
+  .panel{
+    position:fixed;background:var(--panel);border:1px solid var(--edge);
+    border-radius:10px;box-shadow:var(--shadow);
+  }
+  #controls{
+    top:calc(12px + env(safe-area-inset-top,0px));left:12px;width:250px;
+    padding:14px 15px 15px;max-height:calc(100% - 28px);overflow-y:auto;
+  }
+  h1{
+    font-size:15px;font-weight:600;margin:0 0 2px;letter-spacing:-.01em;
+  }
+  .sub{font-size:11.5px;color:var(--ink2);margin:0 0 13px;line-height:1.45}
+  .grp{border-top:1px solid var(--edge);padding-top:11px;margin-top:11px}
+  .grp:first-of-type{border-top:0;padding-top:0;margin-top:0}
+  .lbl{
+    font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 8px;
+  }
+  .row{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+  .row:last-child{margin-bottom:0}
+  .sw{width:11px;height:11px;border-radius:3px;flex:none}
+  label.ck{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13px;flex:1}
+  input[type=checkbox]{accent-color:var(--pts);width:15px;height:15px;cursor:pointer}
+  input[type=range]{width:100%;accent-color:var(--pts);cursor:pointer}
+  .rl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink2);margin-bottom:3px}
+  .rl b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;color:var(--ink);
+        font-variant-numeric:tabular-nums}
+  .seg{display:flex;border:1px solid var(--edge);border-radius:7px;overflow:hidden}
+  .seg button{
+    flex:1;border:0;background:transparent;color:var(--ink2);font:inherit;font-size:12px;
+    padding:6px 4px;cursor:pointer;
+  }
+  .seg button[aria-pressed=true]{background:var(--pts);color:#fff}
+  .seg button:focus-visible{outline:2px solid var(--pts);outline-offset:-2px}
+  .btn{
+    width:100%;border:1px solid var(--edge);background:transparent;color:var(--ink);
+    font:inherit;font-size:12.5px;padding:7px;border-radius:7px;cursor:pointer;
+  }
+  .btn:hover{border-color:var(--pts)}
+  .btn:focus-visible{outline:2px solid var(--pts);outline-offset:1px}
+
+  #facts{
+    right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    padding:12px 14px;font-size:12px;line-height:1.55;max-width:280px;
+  }
+  #facts dl{margin:0;display:grid;grid-template-columns:1fr auto;gap:3px 14px}
+  #facts dt{color:var(--ink2)}
+  #facts dd{margin:0;font-family:"IBM Plex Mono",ui-monospace,monospace;
+            font-variant-numeric:tabular-nums;text-align:right}
+  #facts .note{margin:9px 0 0;color:var(--ink2);font-size:11.5px;line-height:1.5}
+  #hint{
+    left:50%;transform:translateX(-50%);
+    bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    padding:7px 13px;font-size:11.5px;color:var(--ink2);
+  }
+  @media (max-width:760px){
+    #controls{width:auto;left:12px;right:12px;max-height:44%}
+    #facts{display:none}
+    #hint{display:none}
+  }
+</style>
+
+<div id="stage"></div>
+
+<div class="panel" id="controls">
+  <h1>Scan line dropouts</h1>
+  <p class="sub">120&nbsp;m of 9t at 621392&nbsp;E 4594510&nbsp;N, EPSG:6346. Drag to spin on any axis, scroll to zoom, right-drag to pan, ctrl-drag to roll.</p>
+
+  <div class="grp">
+    <p class="lbl">Layers</p>
+    <div class="row"><span class="sw" style="background:var(--pts)"></span>
+      <label class="ck" for="cPts">Returns<input type="checkbox" id="cPts" checked style="margin-left:auto"></label></div>
+    <div class="row"><span class="sw" style="background:var(--dsm)"></span>
+      <label class="ck" for="cDsm">DSM &mdash; first returns<input type="checkbox" id="cDsm" checked style="margin-left:auto"></label></div>
+    <div class="row"><span class="sw" style="background:var(--dem)"></span>
+      <label class="ck" for="cDem">DEM &mdash; bare earth<input type="checkbox" id="cDem" checked style="margin-left:auto"></label></div>
+    <div class="row"><span class="sw" style="background:var(--gap)"></span>
+      <label class="ck" for="cGap">Mark the gaps<input type="checkbox" id="cGap" style="margin-left:auto"></label></div>
+  </div>
+
+  <div class="grp">
+    <p class="lbl">Colour the returns by</p>
+    <div class="seg" role="group">
+      <button id="bHt" type="button" aria-pressed="true">Height</button>
+      <button id="bRt" type="button" aria-pressed="false">Return</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <p class="lbl">View</p>
+    <div class="rl"><span>Vertical exaggeration</span><b id="vEx">1.0&times;</b></div>
+    <input type="range" id="sEx" min="1" max="5" step="0.25" value="1">
+    <div class="rl" style="margin-top:9px"><span>Point size</span><b id="vPs">1.6</b></div>
+    <input type="range" id="sPs" min="0.4" max="4" step="0.2" value="1.6">
+    <div class="rl" style="margin-top:9px"><span>Surface opacity</span><b id="vOp">0.85</b></div>
+    <input type="range" id="sOp" min="0.15" max="1" step="0.05" value="0.85">
+    <button class="btn" id="bReset" type="button" style="margin-top:11px">Reset view</button>
+  </div>
+</div>
+
+<div class="panel" id="facts">
+  <dl>
+    <dt>Returns shown</dt><dd id="fN">&mdash;</dd>
+    <dt>Multi&#8209;return pulses</dt><dd id="fM">&mdash;</dd>
+    <dt>DEM cells with no value</dt><dd id="fD">&mdash;</dd>
+    <dt>DSM cells with no value</dt><dd id="fS">&mdash;</dd>
+  </dl>
+  <p class="note">The bare earth is complete. The holes are all in the first&#8209;return surface, in rows 3&nbsp;m apart on a 79&deg; bearing &mdash; which is what the bright corduroy in the canopy model actually is.</p>
+</div>
+
+<div class="panel" id="hint">Drag to spin &middot; scroll to zoom &middot; right&#8209;drag to pan &middot; ctrl&#8209;drag to roll</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="scanline_scene_data.js"></script>
+<script>
+(function(){
+  var S = window.SCENE;
+  function f32(b64){
+    var s = atob(b64), n = s.length, u = new Uint8Array(n);
+    for (var i=0;i<n;i++) u[i] = s.charCodeAt(i);
+    return new Float32Array(u.buffer);
+  }
+  function u8(b64){
+    var s = atob(b64), n = s.length, u = new Uint8Array(n);
+    for (var i=0;i<n;i++) u[i] = s.charCodeAt(i);
+    return u;
+  }
+  var px=f32(S.px), py=f32(S.py), pz=f32(S.pz);
+  var nr=u8(S.nr);
+  var dem=f32(S.dem), dsm=f32(S.dsm);
+  var NX=S.nx, NY=S.ny, RES=S.res_m, SIDE=S.side_m;
+
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+  var stage = document.getElementById('stage');
+  var renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  stage.appendChild(renderer.domElement);
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(45, 1, 0.5, 4000);
+
+  var root = new THREE.Group();          // holds everything, carries z-scale
+  root.rotation.x = -Math.PI/2;          // z up
+  scene.add(root);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.72));
+  var key = new THREE.DirectionalLight(0xffffff, 0.62);
+  key.position.set(-0.55, -0.8, 1.0);
+  scene.add(key);
+
+  // ---- surfaces: skip any quad touching a NaN, so gaps stay gaps
+  function surface(grid, colorVar){
+    var pos=[], idx=[], map=new Int32Array(NX*NY).fill(-1), n=0;
+    for (var r=0;r<NY;r++) for (var c=0;c<NX;c++){
+      var v = grid[r*NX+c];
+      if (!isFinite(v)) continue;
+      map[r*NX+c] = n++;
+      pos.push(c*RES, (NY-1-r)*RES, v);
+    }
+    for (var r2=0;r2<NY-1;r2++) for (var c2=0;c2<NX-1;c2++){
+      var a=map[r2*NX+c2], b=map[r2*NX+c2+1],
+          d=map[(r2+1)*NX+c2], e=map[(r2+1)*NX+c2+1];
+      if (a<0||b<0||d<0||e<0) continue;
+      idx.push(a,d,b, b,d,e);
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    var m = new THREE.MeshLambertMaterial({
+      color:new THREE.Color(css(colorVar)), side:THREE.DoubleSide,
+      transparent:true, opacity:0.85, depthWrite:true
+    });
+    return new THREE.Mesh(g, m);
+  }
+  var mDem = surface(dem, '--dem');
+  var mDsm = surface(dsm, '--dsm');
+  root.add(mDem); root.add(mDsm);
+
+  // ---- gap markers: a short riser on every cell the DSM is missing
+  var gapGeo = new THREE.BufferGeometry(), gp=[];
+  for (var r=0;r<NY;r++) for (var c=0;c<NX;c++){
+    if (isFinite(dsm[r*NX+c])) continue;
+    var z = dem[r*NX+c]; if(!isFinite(z)) continue;
+    gp.push(c*RES,(NY-1-r)*RES,z, c*RES,(NY-1-r)*RES,z+6);
+  }
+  gapGeo.setAttribute('position', new THREE.Float32BufferAttribute(gp,3));
+  var mGap = new THREE.LineSegments(gapGeo, new THREE.LineBasicMaterial({
+    color:new THREE.Color(css('--gap')), transparent:true, opacity:0.5}));
+  mGap.visible=false; root.add(mGap);
+
+  // ---- points
+  var N=px.length, ppos=new Float32Array(N*3), chgt=new Float32Array(N*3), cret=new Float32Array(N*3);
+  var zlo=S.z_min, zhi=S.z_max, RAMP=[[0.93,0.96,0.99],[0.62,0.75,0.90],[0.29,0.53,0.78],[0.12,0.31,0.55],[0.05,0.14,0.28]];
+  function ramp(t){
+    t=Math.max(0,Math.min(1,t))*(RAMP.length-1);
+    var i=Math.floor(t), f=t-i, a=RAMP[i], b=RAMP[Math.min(i+1,RAMP.length-1)];
+    return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f];
+  }
+  var cSingle=new THREE.Color(css('--pts')), cMulti=new THREE.Color(css('--dem'));
+  for (var i=0;i<N;i++){
+    ppos[i*3]=px[i]; ppos[i*3+1]=py[i]; ppos[i*3+2]=pz[i];
+    var t=(pz[i]-zlo)/(zhi-zlo||1), rc=ramp(t);
+    chgt[i*3]=rc[0]; chgt[i*3+1]=rc[1]; chgt[i*3+2]=rc[2];
+    var m = nr[i]>1 ? cMulti : cSingle;
+    cret[i*3]=m.r; cret[i*3+1]=m.g; cret[i*3+2]=m.b;
+  }
+  var pg=new THREE.BufferGeometry();
+  pg.setAttribute('position', new THREE.Float32BufferAttribute(ppos,3));
+  pg.setAttribute('color', new THREE.Float32BufferAttribute(chgt.slice(),3));
+  var pm=new THREE.PointsMaterial({size:1.6, vertexColors:true, sizeAttenuation:false});
+  var pts=new THREE.Points(pg,pm); root.add(pts);
+
+  // ---- camera controls, hand-rolled (OrbitControls is not on the CDN allowlist)
+  // Trackball, not spherical. The first version stored an azimuth and a polar
+  // angle and clamped the polar to just under the horizon, so the model could
+  // not be tipped past level or turned upside down. Here the camera keeps a
+  // free offset vector and its own up vector, and both are rotated by the same
+  // quaternion, so there is no pole, no clamp and no gimbal lock: every axis
+  // spins freely and the view can pass under the terrain and right over the top.
+  var HOME={r:SIDE*1.5,th:Math.PI*0.28,ph:-Math.PI*0.35};
+  var tgt=new THREE.Vector3(SIDE/2,SIDE/2,0);
+  var offset=new THREE.Vector3(), upv=new THREE.Vector3(0,0,1);
+  function home(){
+    var st=Math.sin(HOME.th);
+    offset.set(HOME.r*st*Math.cos(HOME.ph), HOME.r*st*Math.sin(HOME.ph), HOME.r*Math.cos(HOME.th));
+    upv.set(0,0,1); tgt.set(SIDE/2,SIDE/2,0);
+  }
+  function place(){
+    camera.position.copy(tgt).add(offset);
+    camera.up.copy(upv);
+    camera.lookAt(tgt);
+  }
+  var drag=null;
+  function down(e){ drag={x:e.clientX,y:e.clientY,b:e.button}; renderer.domElement.setPointerCapture(e.pointerId); }
+  function move(e){
+    if(!drag) return;
+    var dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY;
+    var right=new THREE.Vector3().crossVectors(upv,offset).normalize();
+    if(drag.b===2||e.shiftKey){
+      var k=offset.length()*0.0016;
+      var scr=new THREE.Vector3().crossVectors(offset,right).normalize();
+      tgt.addScaledVector(right,dx*k); tgt.addScaledVector(scr,-dy*k);
+    } else if(e.ctrlKey||e.metaKey||drag.b===1){
+      // roll about the view axis
+      var ax=offset.clone().normalize();
+      var qr=new THREE.Quaternion().setFromAxisAngle(ax,dx*0.006);
+      upv.applyQuaternion(qr);
+    } else {
+      var q=new THREE.Quaternion().setFromAxisAngle(upv,-dx*0.006)
+            .multiply(new THREE.Quaternion().setFromAxisAngle(right,-dy*0.006));
+      offset.applyQuaternion(q); upv.applyQuaternion(q);
+      upv.normalize();
+    }
+    place();
+  }
+  function up_(e){ drag=null; }
+  var el=renderer.domElement;
+  el.addEventListener('pointerdown',down); el.addEventListener('pointermove',move);
+  el.addEventListener('pointerup',up_); el.addEventListener('pointercancel',up_);
+  el.addEventListener('contextmenu',function(e){e.preventDefault();});
+  el.addEventListener('wheel',function(e){
+    e.preventDefault();
+    var L=offset.length(), NL=Math.max(8,Math.min(SIDE*8,L*(1+Math.sign(e.deltaY)*0.11)));
+    offset.multiplyScalar(NL/L); place();
+  },{passive:false});
+
+  function resize(){
+    var w=stage.clientWidth,h=stage.clientHeight;
+    renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+  }
+  addEventListener('resize',resize);
+
+  function theme(){
+    scene.background=new THREE.Color(css('--scene'));
+    mDem.material.color.set(css('--dem')); mDsm.material.color.set(css('--dsm'));
+    mGap.material.color.set(css('--gap'));
+  }
+  matchMedia('(prefers-color-scheme:dark)').addEventListener('change',theme);
+
+  // ---- controls
+  function on(id,fn,ev){ document.getElementById(id).addEventListener(ev||'change',fn); }
+  on('cPts',function(e){pts.visible=e.target.checked;});
+  on('cDsm',function(e){mDsm.visible=e.target.checked;});
+  on('cDem',function(e){mDem.visible=e.target.checked;});
+  on('cGap',function(e){mGap.visible=e.target.checked;});
+  on('sEx',function(e){
+    var v=+e.target.value; root.scale.z=v;
+    document.getElementById('vEx').textContent=v.toFixed(1)+'×';
+  },'input');
+  on('sPs',function(e){
+    pm.size=+e.target.value; document.getElementById('vPs').textContent=(+e.target.value).toFixed(1);
+  },'input');
+  on('sOp',function(e){
+    var v=+e.target.value; mDem.material.opacity=v; mDsm.material.opacity=v;
+    document.getElementById('vOp').textContent=v.toFixed(2);
+  },'input');
+  var bHt=document.getElementById('bHt'), bRt=document.getElementById('bRt');
+  function mode(byHeight){
+    bHt.setAttribute('aria-pressed',byHeight); bRt.setAttribute('aria-pressed',!byHeight);
+    pg.setAttribute('color',new THREE.Float32BufferAttribute((byHeight?chgt:cret).slice(),3));
+    pg.attributes.color.needsUpdate=true;
+  }
+  bHt.addEventListener('click',function(){mode(true);});
+  bRt.addEventListener('click',function(){mode(false);});
+  document.getElementById('bReset').addEventListener('click',function(){ home(); place(); });
+
+  document.getElementById('fN').textContent=S.n_points.toLocaleString();
+  document.getElementById('fM').textContent=S.multi_return_pct.toFixed(1)+'%';
+  document.getElementById('fD').textContent=S.dem_nan_pct.toFixed(2)+'%';
+  document.getElementById('fS').textContent=S.dsm_nan_pct.toFixed(2)+'%';
+
+  theme(); resize(); home(); place();
+  (function loop(){ requestAnimationFrame(loop); renderer.render(scene,camera); })();
+})();
+</script>

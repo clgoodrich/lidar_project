@@ -201,11 +201,50 @@ def fetch_optical(bounds, px=900):
     return mpimg.imread(io.BytesIO(raw))
 
 
+#: NoData paint. Without this, matplotlib leaves NaN as the axes facecolor
+#: (SURFACE, near white), which on a BlackToWhite ramp is BRIGHTER THAN vmax --
+#: a hole renders as the tallest thing in the panel. That is what made the
+#: NoData bands in `chm_300m_9t.png` read as canopy. Any raster with holes was
+#: affected, not just the CHM.
+#:
+#: A greyscale panel contains no green, so the red/green prohibition is not the
+#: binding constraint; the binding constraint is that this colour must not read
+#: as a grey LEVEL under any vision. Measured, not eyed, with
+#: `tools/check_nodata_colour_vs_gray_ramp.py` against 11 ramp steps:
+#:   #D97706  worst dE 27.8 (protan vs #808080); normal 32.7, deutan 29.7,
+#:            tritan 33.2. Chosen for the margin -- the runner-up #A31515 sits
+#:            at 16.6 protan, barely over the floor of 15.
+#:   Rejected: #E5007D, the instinctive magenta, FAILS at dE 5.1 deutan against
+#:            mid grey. #00C2D4 fails at 12.1 protan.
+#: Second encoding: every panel with holes gets the legend patch below, so the
+#: category is never carried by colour alone.
+NODATA_RGB = "#D97706"
+
+
 def draw_gray(ax, a, st, ext):
-    """Singleband gray, exactly as QGIS draws it."""
-    cmap = "gray" if st["gradient"] == "BlackToWhite" else "gray_r"
-    ax.imshow(a, extent=ext, origin="upper", cmap=cmap,
+    """Singleband gray, exactly as QGIS draws it, with NoData painted."""
+    import matplotlib as mpl
+    base = "gray" if st["gradient"] == "BlackToWhite" else "gray_r"
+    cmap = mpl.colormaps[base].with_extremes(bad=NODATA_RGB)
+    ax.imshow(np.ma.masked_invalid(a), extent=ext, origin="upper", cmap=cmap,
               vmin=st["vmin"], vmax=st["vmax"], interpolation="nearest")
+
+
+def nodata_legend(ax, a):
+    """Label the holes, so NoData is never carried by colour alone."""
+    frac = float(np.mean(~np.isfinite(a)))
+    if frac <= 0.0:
+        return 0.0
+    from matplotlib.patches import Patch
+    lg = ax.legend(
+        handles=[Patch(facecolor=NODATA_RGB, edgecolor="none",
+                       label=f"no data  {100*frac:.1f}%")],
+        loc="lower right", frameon=True, fontsize=10, handlelength=1.2,
+        borderpad=0.5)
+    lg.get_frame().set_facecolor("#ffffff")
+    lg.get_frame().set_edgecolor("#c8c8c0")
+    lg.set_zorder(10)
+    return frac
 
 
 def draw_rgb(ax, arr, st, ext):
@@ -297,10 +336,12 @@ def main() -> int:
                     if st.get("vmin") is None:
                         v = a[np.isfinite(a)]
                         st = dict(st, vmin=float(v.min()), vmax=float(v.max()))
+                    nd = float(np.mean(~np.isfinite(a)))
                     print(f"  {slug:14s} gray {st['gradient']:12s} "
                           f"{st['vmin']:.3g} to {st['vmax']:.3g}  "
-                          f"({st['source']})")
+                          f"nodata {100*nd:5.2f}%  ({st['source']})")
                     draw_gray(ax, a, st, ext)
+                    nodata_legend(ax, a)
         if not ok:
             plt.close(fig)
             continue

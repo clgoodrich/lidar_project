@@ -1,0 +1,27 @@
+{
+  "bounds": [
+    621209.6227138052,
+    4594317.354711879,
+    621509.6227138052,
+    4594617.354711879
+  ],
+  "chm_nodata_cells": 11603,
+  "chm_nodata_pct": 3.2230555555555553,
+  "dsm_nodata_pct": 3.2230555555555553,
+  "dem_nodata_pct": 0.0,
+  "bearing_deg": 79.0,
+  "spacing_m": 4.25,
+  "n_peaks": 15,
+  "density": {
+    "void_cells": 11603,
+    "valid_cells": 348397,
+    "void_returns": 652,
+    "valid_returns": 175632,
+    "void_first_returns": 0,
+    "valid_first_returns": 150147,
+    "void_per_cell": 0.05619236404378178,
+    "valid_per_cell": 0.5041145589657775,
+    "void_first_per_cell": 0.0,
+    "valid_first_per_cell": 0.43096524941374353
+  }
+}

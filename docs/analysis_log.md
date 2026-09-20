@@ -5,6 +5,80 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-19 - CORRECTION: the CHM "streaks" are NoData, and the roaddrain architecture row is training
+
+**Retraction.** The entry below, "the CHM carries scanner-sweep artifacts", is
+wrong. The bright bands in `chm_300m_9t.png` are not an instrument artifact and
+they are not canopy. They are **missing data**. matplotlib paints NaN as the
+figure background, and on that panel's black-to-white greyscale ramp the
+background is brighter than the maximum value, so a hole renders brighter than
+27.9 m of canopy. The bands are a **rendering bug in the panel builder**, over
+real holes in the DSM.
+
+**What the correct measurement says.** New script
+`notebooks/wellsight_v2/s7_analysis/_test_chm_nodata_bands_9t.py`, 300 m window
+at 41.49264, -79.546127, output
+`data/9t/results/chm_striping/chm_nodata_bands_300m_9t.json`:
+
+- **11,603 cells, 3.22% of the window.** CHM NoData and DSM NoData are the same
+  11,603 cells, 100% overlap. DEM NoData is **0.00%**. CHM = DSM - DEM, so every
+  hole is inherited from the DSM and none of it is a ground problem.
+- **Not one first return lands in a void cell.** 652 returns fall in the 11,603
+  void cells against 175,632 in the 348,397 valid cells - 0.06 per cell against
+  0.50, ratio 0.111 - and zero of the 652 are first returns. The DSM cell is
+  empty because nothing came back to fill it.
+- **Bearing 79.0 deg**, against 79.4 deg measured by hand off the panel. Median
+  band spacing 4.25 m from 15 projection peaks; the peak count moves with the
+  `find_peaks` height and distance settings, so call it 3-4 m rather than a
+  constant.
+
+**What is retracted, specifically, so it is not re-quoted.**
+
+1. *"21% single-return on the streaks against 70% off them"*, *"20 discrete
+   GPS-time bands"*, *"same scan angle, 3.8 vs 3.6 deg"*, *"one flight line
+   637"*. All from `_test_chm_scanline_streaks_9t.py`, whose mask is
+   `chm >= percentile(chm, 99.3)`. That keeps only cells that HAVE a value - the
+   exact complement of the bands it was built to measure. It was comparing
+   canopy against ground and never touched the subject. No number from that
+   script is usable.
+2. *Bearings 121 / 135 / 139 deg.* Wrong twice over. The mask was wrong as
+   above, and both scripts applied a `(90 - ang)` conversion that does not
+   belong. Calibrated against synthetic lines at 0/30/45/79/120/135 deg, the
+   projection angle **is** the map bearing and comes back unchanged. The old
+   entry's claim that "the instability is in the mask" was half right: the mask
+   was wrong, and so was the arithmetic after it.
+
+The white top-hat reasoning in the entry below stands as a description of how to
+find thin bright ridges. It was simply pointed at the wrong thing.
+
+**Still open.** `_build_derivative_panel.py` sets no `set_bad` on its colormap,
+so every greyscale panel it produces renders NoData at maximum brightness. This
+is not CHM-specific - any raster with holes is affected. Fix the builder and
+re-render before the panels are shown.
+
+**Downstream impact: none.** CHM is not one of the seven model channels.
+
+**Training relaunched.** The `roaddrain` architecture row was the one gap in the
+architecture comparison - `_arch_compare_9t_1m.py --target roaddrain --arch unet`
+had 1 of 40 epochs on fold 0 and nothing else. That stale fold is set aside at
+`data/9t/models/_arch_compare/1m/roaddrain/unet/fold0_STALE_1epoch_timing_2026-09-18/`
+and a real 5-fold run is under way.
+
+Sizing, measured with `--time-one-epoch`: **353 s per epoch**, so 235 min per
+fold and **19.6 h per arm**. That is 12-24x the pit and pad arms (13-27 s per
+epoch) because the roaddrain manifest carries 7,825 features against a few
+hundred. The full four-arm ladder would be 78 h. It is not being run. Best-epoch
+lands at 27-40 across all 40 finished pit and pad folds, several still improving
+at 40, so the schedule cannot be shortened without truncating the arms - 40
+epochs is the honest number, not padding.
+
+**Two arms, not four**, on the existing result's own recommendation: `unet` as
+the control and `r34_imagenet` as the one rung with a positive delta on both pit
+and pad. Roughly 39 h. Logs at
+`data/9t/models/_arch_compare/1m/roaddrain/run_roaddrain_unet_cv5_40ep_1m.log`.
+
+---
+
 ## 2026-09-19 - SMRF ground does not improve pit detection, and the CHM is striped
 
 **The top BACKLOG item is closed, with a null.** The 7-band stack was rebuilt
