@@ -75,7 +75,10 @@ RULE = "#d8d7cf"
 
 #: The probability ramp, and how RRIM is drawn, are shared with every other
 #: figure now -- see _figure_style.py for why both were wrong here.
-CM = CM_PROB
+#: QGIS renders a single-band probability raster with its Greyscale renderer:
+#: black at 0, white at 1. The deck used a blue ramp, which does not match what
+#: anyone sees when they open the same raster in QGIS. Matched to QGIS.
+CM = "gray"
 
 #: Where the feature stack has no data the network still emits a probability --
 #: around 0.5, which is above every operating threshold. Those pixels are not
@@ -230,12 +233,16 @@ def main() -> int:
         axes[0].imshow(rr, extent=ext, origin="upper")
         axes[0].set_title("RRIM \u2014 the terrain", fontsize=15,
                           fontweight="bold", loc="left", pad=24)
-        # Below 0.05 is background. Drawn, it is a flat wash over the whole
-        # frame that hides the handful of cells the model actually committed
-        # to; masked, the panel shows what was found.
-        shown = np.ma.masked_where(~np.isfinite(pr) | (pr < 0.05), pr)
+        # QGIS draws the WHOLE band, 0 black to 1 white -- near-zero
+        # background comes out black and the confident cells glow white. The
+        # old code masked everything under 0.05, which was right for a blue
+        # ramp on pale paper and is wrong here: masked cells would show the
+        # light slide through, i.e. read as MORE confident than black. Only
+        # genuine nodata is masked now.
+        shown = np.ma.masked_where(~np.isfinite(pr), pr)
+        axes[1].set_facecolor("#000000")
         im = axes[1].imshow(shown, extent=ext, origin="upper", cmap=CM,
-                            vmin=0.0, vmax=1.0)
+                            vmin=0.0, vmax=1.0, interpolation="nearest")
         axes[1].set_title(f"{task} probability \u2014 what the model made of it",
                           fontsize=15, fontweight="bold", loc="left", pad=24)
         for ax in axes:
@@ -258,7 +265,7 @@ def main() -> int:
         # titles they overprinted the titles themselves on every figure.
         axes[1].text(0, 1.006,
                      f"window chosen by density of pixels above {thr:.2f}, "
-                     f"not by eye  \u00b7  below 0.05 left blank",
+                     f"not by eye  \u00b7  black is 0, white is 1, as QGIS draws it",
                      transform=axes[1].transAxes, fontsize=10, color=MUTED,
                      va="bottom", ha="left")
         axes[0].text(0, 1.006, f"{tile}  \u00b7  {trained}",

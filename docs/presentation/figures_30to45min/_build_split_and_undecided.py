@@ -63,8 +63,13 @@ INK2 = "#52514e"
 MUTED = "#8a887e"
 RULE = "#d8d7cf"
 
+#: Test is BLACK on request -- it is the category that matters most and it now
+#: cannot be confused with anything. Validated with the dataviz validator,
+#: --pairs all: CVD worst-pair dE 24.7 protan (#eb6834 vs #2a78d6),
+#: normal-vision worst 33.6. Black sits outside the validator's lightness band
+#: by design; that is what makes it unmistakable.
 SPLIT_COLOR = {"train": "#2a78d6", "val": "#eb6834",
-               "test": "#1baf7a", "unused": "#c9c8bf"}
+               "test": "#111111", "unused": "#c9c8bf"}
 C_MATCH = "#1baf7a"
 C_UNDEC = "#ffb300"
 C_MISS = "#e5194b"

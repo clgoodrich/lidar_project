@@ -98,6 +98,27 @@ def save(fig, name):
     return p
 
 
+def read_hillshade(path, size=1000):
+    """Hillshade as 0-1, whatever the file's dtype and range happen to be.
+
+    9t's hillshade is uint8 1-255 with nodata 0; 613590's is int16 running to
+    32,756 with nodata -32768. A fixed vmin/vmax works for one and renders the
+    other as blank paper, which is exactly what happened. Stretch each on its
+    own 2nd-98th percentile instead.
+    """
+    import rasterio
+    with rasterio.open(path) as r:
+        a = r.read(1, out_shape=(1, size, size)).astype("float32")
+        b = r.bounds
+        nod = r.nodata
+    if nod is not None:
+        a[a == nod] = np.nan
+    lo, hi = np.nanpercentile(a, 2), np.nanpercentile(a, 98)
+    if not np.isfinite(lo) or hi <= lo:
+        lo, hi = np.nanmin(a), np.nanmax(a)
+    return np.clip((a - lo) / max(hi - lo, 1e-9), 0, 1), b
+
+
 # ---------------------------------------------------------------------------
 # slide 12 -- where ground classification stops, per flight block
 # ---------------------------------------------------------------------------
@@ -561,6 +582,127 @@ def fig_block_grid_map():
     return save(fig, "spatial_block_split_map_only_9t.png")
 
 
+# ---------------------------------------------------------------------------
+# where 9t and 613590 actually are
+# ---------------------------------------------------------------------------
+def fig_where_the_tiles_are():
+    """Both tiles, at true relative position, with their own terrain in them.
+
+    The existing locator was a UTM coordinate scatter plus a table of DEM
+    headers. That answers "what are their extents", which nobody asked. This
+    answers "where are they" by drawing each tile's hillshade in its real
+    place, so the gap between them and the overlap in northing are visible
+    rather than tabulated.
+    """
+    import rasterio
+    from matplotlib.patches import Rectangle
+
+    tiles = [("9t", ROOT / "data/9t/derived/05/hillshade_9t_05.tif", KEPT,
+              "trained here"),
+             ("613590", ROOT / "data/613590/derived/05/hillshade_613590_05.tif",
+              GONE, "never trained on")]
+    style()
+    fig, ax = plt.subplots(figsize=(11.6, 7.4))
+    allb = []
+    for name, path, col, sub in tiles:
+        a, b = read_hillshade(path, 900)
+        ax.imshow(a, extent=(b.left / 1000, b.right / 1000,
+                             b.bottom / 1000, b.top / 1000),
+                  origin="upper", cmap="gray", vmin=0, vmax=1,
+                  interpolation="bilinear", zorder=2)
+        ax.add_patch(Rectangle((b.left / 1000, b.bottom / 1000),
+                               (b.right - b.left) / 1000,
+                               (b.top - b.bottom) / 1000,
+                               facecolor="none", edgecolor=col, linewidth=3.4,
+                               zorder=4))
+        ax.text((b.left + b.right) / 2000, b.top / 1000 + 0.18, name,
+                fontsize=19, fontweight="bold", color=col, ha="center",
+                va="bottom", zorder=5)
+        ax.text((b.left + b.right) / 2000, b.top / 1000 + 0.06, sub,
+                fontsize=13, color=INK2, ha="center", va="bottom", zorder=5)
+        allb.append(b)
+
+    # the gap between them, measured and drawn rather than described
+    gap = (allb[0].left - allb[1].right) / 1000.0
+    ymid = (max(allb[0].bottom, allb[1].bottom)
+            + min(allb[0].top, allb[1].top)) / 2000.0
+    ax.annotate("", xy=(allb[0].left / 1000, ymid),
+                xytext=(allb[1].right / 1000, ymid),
+                arrowprops=dict(arrowstyle="<->", color=INK, lw=2.0), zorder=6)
+    ax.text((allb[0].left + allb[1].right) / 2000, ymid + 0.10,
+            f"{gap:.1f} km apart", fontsize=14, fontweight="bold", color=INK,
+            ha="center", va="bottom", zorder=6)
+    ax.text((allb[0].left + allb[1].right) / 2000, ymid - 0.55,
+            "no overlap, so nothing leaks", fontsize=12.5, color=INK2,
+            ha="center", va="top", zorder=6, linespacing=1.4)
+
+    ax.set_xlabel("easting, km (UTM 17N)", fontsize=13)
+    ax.set_ylabel("northing, km", fontsize=13)
+    ax.set_aspect("equal")
+    ax.set_xlim(612.6, 625.0)
+    ax.set_ylim(4589.2, 4598.6)
+    clean(ax, keep=("bottom", "left"))
+    ax.grid(color=RULE, linewidth=0.6, zorder=0)
+    fig.subplots_adjust(left=0.085, right=0.985, top=0.93, bottom=0.10)
+    return save(fig, "where_9t_and_613590_are.png")
+
+
+# ---------------------------------------------------------------------------
+# 613590 -- which annotated pits the model found
+# ---------------------------------------------------------------------------
+def fig_613590_found_vs_missed():
+    """Found against missed on the tile the model never trained on.
+
+    Uses the fold whose 9t threshold is the median of the five, so the map is
+    not the best fold cherry-picked. Recall only: 613590 is NOT fully
+    annotated, so an unmatched prediction may be an undrawn real pit and
+    nothing here can call it a false positive.
+    """
+    import geopandas as gpd
+    import rasterio
+    from matplotlib.lines import Line2D
+
+    CMP = (ROOT / "data/_comparisons/pit_heldout_and_transfer_2026-09-20"
+           / "613590_transfer_from_9t_cv5_05")
+    gp = CMP / "pit_transfer_found_vs_missed_fold4_f2_thr0p4_613590_05.gpkg"
+    g = gpd.read_file(gp, layer="pit_floors_scored", engine="pyogrio")
+    found = g[g["found_iou30"]]
+    missed = g[~g["found_iou30"]]
+
+    hs = ROOT / "data/613590/derived/05/hillshade_613590_05.tif"
+    a, b = read_hillshade(hs, 1400)
+
+    style()
+    fig, ax = plt.subplots(figsize=(8.6, 8.6))
+    ax.imshow(a, extent=(b.left, b.right, b.bottom, b.top), origin="upper",
+              cmap="gray", vmin=0, vmax=1, interpolation="bilinear", zorder=1)
+    ax.scatter(found.geometry.centroid.x, found.geometry.centroid.y,
+               s=72, marker="o", facecolor=KEPT, edgecolor="#ffffff",
+               linewidth=1.1, zorder=4, label=f"found  ({len(found)})")
+    ax.scatter(missed.geometry.centroid.x, missed.geometry.centroid.y,
+               s=110, marker="X", facecolor=MISS, edgecolor="#ffffff",
+               linewidth=1.3, zorder=5, label=f"missed  ({len(missed)})")
+    ax.set_xlim(b.left, b.right)
+    ax.set_ylim(b.bottom, b.top)
+    ax.set_aspect("equal")
+    ax.set_xticks([]); ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_color(RULE)
+    lg = ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.012), ncol=2,
+                   fontsize=14, framealpha=1.0, facecolor="#ffffff",
+                   edgecolor=RULE)
+    for t in lg.get_texts():
+        t.set_color(INK)
+    rec = len(found) / max(len(g), 1)
+    ax.text(0.5, 1.012, f"{len(g)} annotated pit floors  ·  "
+            f"{len(found)} found  ·  recall {rec:.3f}",
+            transform=ax.transAxes, fontsize=13.5, color=INK2, ha="center",
+            va="bottom")
+    fig.subplots_adjust(left=0.02, right=0.98, top=0.955, bottom=0.085)
+    print(f"    613590 recall {rec:.3f} on {len(g)} annotated floors")
+    return save(fig, "pit_found_vs_missed_613590_05.png")
+
+
 def main() -> int:
     print("v6 figures ->", OUT)
     fig_scan_angle_cone()
@@ -570,6 +712,8 @@ def main() -> int:
     fig_split_blocks_vs_pits()
     fig_rim_floor_map()
     fig_block_grid_map()
+    fig_where_the_tiles_are()
+    fig_613590_found_vs_missed()
     return 0
 
 

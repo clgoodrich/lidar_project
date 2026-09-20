@@ -308,6 +308,28 @@ BARE_FIGS = {11: 'scan_angle_cliff_by_survey.png', 18: 'smrf_vs_vendor_621594.pn
 
 #: (insert AFTER this v5 slide, title, bare figure, kicker, notes)
 INSERTS = [
+    (6, "Where the two study tiles are",
+     "where_9t_and_613590_are.png",
+     "9t is where every model was trained. 613590 is 1.5 km west, and no "
+     "model has ever seen it.",
+     "Each square is 4.5 km across, drawn with its own shaded relief so you "
+     "can see the ground rather than just a box.\n\n"
+     "They do not overlap. 9t runs from easting 619,500 to 624,000 and 613590 "
+     "from 613,500 to 618,000. That gap is what makes 613590 a real test "
+     "rather than a rehearsal."),
+    (53, "Held-out tile 613590 - the pits it found",
+     "pit_found_vs_missed_613590_05.png",
+     "153 pits were drawn by hand on this tile. The model, trained only on "
+     "9t, found 146 of them.",
+     "Recall 0.954 on a tile no model was trained on, against 0.928 on "
+     "held-out 9t. It transfers.\n\n"
+     "This is one of the five cross-validation folds, at the threshold that "
+     "fold's own 9t validation chose. Nothing was tuned on 613590.\n\n"
+     "IMPORTANT: there is no precision number here and there must not be. "
+     "613590 is not fully annotated. A prediction with no blue dot under it "
+     "may be a false alarm, or it may be a real pit nobody has drawn yet, "
+     "and nothing in this figure can tell those apart. Recall is safe "
+     "because a drawn pit that was missed is a genuine miss."),
     (40, "Preprocessing — why the split balances on pits, not area",
      "split_share_of_map_vs_share_of_pits_9t.png",
      "Pits cluster, so equal area does not mean equal evidence.",
