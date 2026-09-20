@@ -1,4 +1,4 @@
-"""The WellSight pipeline, end to end, as it actually runs today.
+"""The detection pipeline, end to end, as it actually runs today.
 
 SHAPE
 -----
@@ -169,30 +169,21 @@ def main() -> int:
             "QA: centroid precision,\nrim containment,\n613590 never trained on",
         ]),
     ]
-    caps = [
-        ("derivatives", wrap_join(derivs, 172)),
-        ("annotation layers",
-         wrap_join([f"{n} ({ROLE[n]})" if n in ROLE else n for n in layers],
-                   172)),
-        (None, []),
-    ]
+    # The derivative list, the annotation-layer list, the in-figure title and
+    # the SMRF footnote were all cut on 2026-09-20: the slide already carries a
+    # title, and the two name lists are reference material that nobody reads off
+    # a projected slide. Three rows of boxes and nothing else.
+    caps = [(None, []), (None, []), (None, [])]
 
     plt.rcParams.update({"figure.facecolor": PAPER, "axes.facecolor": PAPER,
                          "savefig.facecolor": PAPER,
                          "font.family": "DejaVu Sans", "text.color": INK})
-    fig, ax = plt.subplots(figsize=(20.0, 11.2))
+    fig, ax = plt.subplots(figsize=(20.0, 8.0))
     ax.set_xlim(0, 200)
-    ax.set_ylim(0, 112)
+    ax.set_ylim(0, 80)
     ax.axis("off")
 
-    ax.text(X0, 108.0, "The WellSight pipeline, end to end", fontsize=27,
-            fontweight="bold", color=INK, va="top", ha="left")
-    ax.text(X0, 103.0, "One path. Every box is a step that exists in the "
-            "repository, and every count on this figure is read out of the "
-            "data rather than typed in.",
-            fontsize=13.5, color=INK2, va="top", ha="left")
-
-    top = 95.5
+    top = 76.0
     for (num, head, boxes), cap in zip(rows, caps):
         ax.text(X0, top, num, fontsize=21, fontweight="bold", color=ACCENT,
                 va="bottom", ha="left")
@@ -229,14 +220,7 @@ def main() -> int:
             cy -= 2.7
         top = (cy if lines else by - BH - 2.0) - 3.4
 
-    ax.text(X0, 6.6, "The SMRF ground reclassification halves the "
-            "no-ground-measurement area over 9t, 13.8% to 8.2%. It is measured "
-            "but no model has been retrained on it yet, so it is\nnot drawn "
-            "into the flow above — the feature stack is still built on "
-            "vendor ground.",
-            fontsize=12, color=INK2, va="top", ha="left", linespacing=1.6)
-
-    fig.subplots_adjust(left=0.006, right=0.997, top=0.995, bottom=0.005)
+    fig.subplots_adjust(left=0.006, right=0.997, top=0.985, bottom=0.015)
     p = OUT / "pipeline_diagram_9t.png"
     fig.savefig(p, dpi=150)
     plt.close(fig)

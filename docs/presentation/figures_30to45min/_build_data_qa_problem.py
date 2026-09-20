@@ -70,14 +70,21 @@ def facts():
                 closed=j["closed"], rec_pts=j["rec_pts"])
 
 
-def scan_diagram(ax, cut_deg):
-    """Why the returns go missing: everything past 18 deg stops being ground."""
+def scan_diagram(ax, cut_deg, title="what the survey did"):
+    """Why the returns go missing: everything past 18 deg stops being ground.
+
+    `title=None` draws no heading. Note for anyone clearing it later:
+    `ax.set_title("")` does NOT remove this one, because a left-aligned title
+    lives in a different slot from the centre title. It has to be suppressed
+    here, or cleared with `set_title("", loc="left")`.
+    """
     ax.set_xlim(-82, 82)
     ax.set_ylim(-9, 78)
     ax.axis("off")
     ax.set_aspect("equal")
-    ax.set_title("what the survey did", fontsize=15, fontweight="bold",
-                 loc="left", pad=8, color=INK)
+    if title:
+        ax.set_title(title, fontsize=15, fontweight="bold",
+                     loc="left", pad=8, color=INK)
 
     px, py, R = 0.0, 66.0, 74.0
     half = 30.0                      # the sensor sweeps wider than the cut
@@ -145,28 +152,35 @@ def main() -> int:
     plt.rcParams.update({"figure.facecolor": PAPER, "axes.facecolor": PAPER,
                          "savefig.facecolor": PAPER,
                          "font.family": "DejaVu Sans", "text.color": INK})
-    fig = plt.figure(figsize=(19.2, 8.6))
-    fig.text(0.022, 0.975, "The ground we were handed has holes in it",
-             fontsize=30, fontweight="bold", color=INK, va="top")
-    fig.text(0.022, 0.892,
-             "Before building anything on this lidar we checked it. Past "
-             f"{f['cut_deg']:.0f}° off straight down the survey marks its "
-             "returns “withheld” and does not classify them as ground — "
-             "deliberately, and to\nspecification. So wherever the aircraft "
-             "was looking sideways there is no ground beneath the surface it "
-             "delivered, in stripes along the swath edges.",
-             fontsize=14.5, color=INK2, va="top", linespacing=1.6)
 
-    gs = fig.add_gridspec(1, 2, width_ratios=[1.0, 1.42], left=0.022,
-                          right=0.982, top=0.745, bottom=0.155, wspace=0.07)
-    scan_diagram(fig.add_subplot(gs[0, 0]), f["cut_deg"])
+    # ---- figure 1 of 2: the diagram on its own -------------------------
+    # Split from the numbers on 2026-09-20. One slide was carrying a title, a
+    # three-line paragraph, a diagram, four stat cards and a footnote; nobody
+    # reads that off a projector. The slide supplies the title now, so the
+    # figure carries no heading of its own beyond the panel label.
+    # Axes proportioned to the diagram's own aspect (x span 164, y span 87,
+    # ratio 1.89) because set_aspect("equal") otherwise letterboxes the cone
+    # and leaves half the slide empty.
+    fig = plt.figure(figsize=(12.0, 8.1))
+    fig.text(0.040, 0.955,
+             f"Past {f['cut_deg']:.0f}° off straight down, the survey does not "
+             "call its returns ground.\nWhere the aircraft looked sideways, no "
+             "ground was delivered.",
+             fontsize=19, color=INK, va="top", linespacing=1.55)
+    ax = fig.add_axes([0.04, 0.05, 0.92, 0.74])
+    scan_diagram(ax, f["cut_deg"], title=None)
+    p1 = OUT / "data_qa_scan_angle_cut_diagram_9t.png"
+    fig.savefig(p1, dpi=150)
+    plt.close(fig)
 
-    ax = fig.add_subplot(gs[0, 1])
+    # ---- figure 2 of 2: the numbers on their own -----------------------
+    fig = plt.figure(figsize=(14.4, 8.1))
+    fig.text(0.030, 0.955, "what it cost, and what it need not cost",
+             fontsize=19, fontweight="bold", color=INK, va="top")
+    ax = fig.add_axes([0.030, 0.045, 0.940, 0.845])
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
     ax.axis("off")
-    ax.set_title("what it cost, and what it need not cost", fontsize=15,
-                 fontweight="bold", loc="left", pad=8, color=INK)
 
     block(ax, 0, 98, 100, 22.5, f"{f['lost']/1e6:,.0f} million",
           "returns that hit the ground and were not called ground",
@@ -189,17 +203,12 @@ def main() -> int:
             "ground scores 0.087 m. Matched at every slope.",
             fontsize=13, color=INK2, va="center", zorder=3)
 
-    fig.text(0.022, 0.030,
-             "The delivered surface meets its specification. It is not "
-             "sufficient for finding 0.7 m depressions, because the gaps are "
-             "systematic rather than random, and the returns that would fill "
-             "them measure as well as the ones already in.",
-             fontsize=13, color=INK, va="bottom")
-
-    p = OUT / "data_qa_the_problem_9t.png"
-    fig.savefig(p, dpi=150)
+    p2 = OUT / "data_qa_scan_angle_cut_numbers_9t.png"
+    fig.savefig(p2, dpi=150)
     plt.close(fig)
-    print(f"\n{p.stat().st_size/1e3:.0f} KB  {p}")
+
+    for p in (p1, p2):
+        print(f"\n{p.stat().st_size/1e3:.0f} KB  {p}")
     return 0
 
 

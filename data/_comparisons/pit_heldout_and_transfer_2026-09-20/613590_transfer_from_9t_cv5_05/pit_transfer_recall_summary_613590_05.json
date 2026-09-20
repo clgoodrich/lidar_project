@@ -1,0 +1,33 @@
+{
+  "tile": "613590",
+  "tile_bounds_epsg6346": [
+    613500.0,
+    4590000.0,
+    618000.0,
+    4594500.0
+  ],
+  "source_model": "data/9t/models/pit/unet_cv5 (5 folds)",
+  "annotation_complete": false,
+  "precision_reported": false,
+  "why_no_precision": "613590 is not fully annotated. An unmatched prediction may be a false positive or an undrawn real pit; nothing here separates them.",
+  "n_gt_floors": 153,
+  "n_rims": 36,
+  "by_objective": {
+    "f1": {
+      "recall_iou30_613590_mean": 0.7921568627450981,
+      "recall_iou30_613590_sd": 0.1001003384004008,
+      "recall_iou30_9t_heldout_mean": 0.8607917316003444,
+      "recall_iou30_9t_heldout_sd": 0.04055516828009921,
+      "delta_mean": -0.06863486885524643,
+      "containment_613590_mean": 0.8555555555555555
+    },
+    "f2": {
+      "recall_iou30_613590_mean": 0.9111111111111111,
+      "recall_iou30_613590_sd": 0.045395438834471454,
+      "recall_iou30_9t_heldout_mean": 0.9284212615436301,
+      "recall_iou30_9t_heldout_sd": 0.020353026794776612,
+      "delta_mean": -0.017310150432518955,
+      "containment_613590_mean": 0.9055555555555556
+    }
+  }
+}
