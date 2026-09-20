@@ -5,26 +5,39 @@ The streaks are established as an instrument artifact by
 against 70% elsewhere, at the same scan angle as their surroundings, and they
 fall into 20 discrete GPS-time bands. This draws the profile.
 
-ORIENTATION IS MEASURED, NOT EYEBALLED -- AND NOT VIA scipy.rotate
-------------------------------------------------------------------
-The first attempt used a Radon transform built on `scipy.ndimage.rotate` and
-returned a bearing that did not match the panel. The rotation convention was
-ambiguous and the peak finder split single streaks, giving 129 deg and 2.0 m,
-both wrong. This projects in MAP coordinates instead, with no rotation:
+THE ORIENTATION IS PLACED BY HAND, AND THAT IS DELIBERATE
+---------------------------------------------------------
+Three automatic estimates were tried and all three are WRONG on this window.
+`orientation()` is still called, and its answer is still printed, but it is
+reported only -- nothing in the figure is positioned from it.
 
-    along the line   u = ( sin t, cos t )      t = bearing from north
-    across the line  v = ( cos t, -sin t )
+    scipy.rotate Radon, percentile mask   129 deg
+    map-space projection, opening mask    135 deg
+    map-space projection, top-hat mask    139 deg  (121 at a coarser step)
 
-Every bright pixel is projected onto `v`. When `u` is parallel to the streaks
-they pile into a few bins and the histogram variance peaks. Spacing is then the
-median gap between histogram peaks, in metres, along `v`. Both quantities come
-out of the same projection, so they cannot disagree with each other.
+The estimator itself is sound: fed synthetic parallel lines at 45/60/70/120/135
+deg it recovers every one exactly. The failure is in the MASK. Tree-crown
+speckle contributes far more bright pixels than the streaks do, and the variance
+surface has several near-equal maxima, so which one wins depends on the
+threshold and the angular step.
+
+The refutation is geometric and does not need a better estimator: a cut placed
+at 85 deg runs very nearly ALONG the streaks -- it meets 3 spikes in 140 m --
+which is impossible if they bear 139 deg. So the streaks run close to 85 deg,
+the automatic answer is discarded, and `--cut-bearing` / `--cut-at` carry the
+placement. `--auto` restores the measured behaviour for anyone who fixes it.
 
 THE PROFILE
 -----------
-Cut along `v`, so it crosses the streaks at right angles. DSM, DEM and CHM are
-sampled on one line, which is the point: it shows the spikes living in the
-first-return surface while the bare earth underneath stays smooth.
+Two cuts through one anchor. ALONG the streaks shows the DSM spiking clear of a
+smooth DEM, which is the mechanism. ACROSS them is the cross-section proper.
+
+The across-cut is SWATH AVERAGED over a band running along the streaks, because
+the streaks are not continuous ridges in the raster -- they are rows of separate
+bright cells. A one-pixel transect lands between the dots most of the way and
+found 4 spikes where the eye sees dozens; averaging a 12 m band along them
+collapses the gaps and leaves the periodicity. That resolves 8 spikes at 3.0 m
+median spacing, which is the streak spacing.
 
 RENDERING
 ---------
@@ -157,6 +170,40 @@ def sample(a, bounds, res, x0, y0, dx, dy, half_m):
     return s, v, X, Y
 
 
+def swath(a, bounds, res, x0, y0, ax_dx, ax_dy, half_m, band_m=12.0):
+    """Profile ACROSS a dotted pattern, averaged ALONG it.
+
+    The streaks are not continuous ridges in the raster -- they are rows of
+    individual bright cells with gaps between them. A one-pixel transect
+    therefore lands between dots most of the way and reports four spikes where
+    the eye sees thirty. Averaging a band that runs ALONG the streaks collapses
+    the gaps and leaves the periodicity, which is the signal being measured.
+
+    (ax_dx, ax_dy) is the ACROSS direction -- the profile axis. The band is
+    swept perpendicular to it, i.e. along the streaks, +-band_m/2.
+    """
+    ny, nx = a.shape
+    px_, py_ = -ax_dy, ax_dx                      # along the streaks
+    offs = np.arange(-band_m / 2, band_m / 2 + res, res)
+    s = np.arange(-half_m, half_m, res)
+    acc = np.full((len(offs), len(s)), np.nan, np.float32)
+    for i, o in enumerate(offs):
+        X = x0 + o * px_ + s * ax_dx
+        Y = y0 + o * py_ + s * ax_dy
+        c = (X - bounds[0]) / res - 0.5
+        r = (bounds[3] - Y) / res - 0.5
+        ok = (c >= 0) & (c < nx - 1) & (r >= 0) & (r < ny - 1)
+        c0 = np.clip(c, 0, nx - 2).astype(int)
+        r0 = np.clip(r, 0, ny - 2).astype(int)
+        fc, fr = c - c0, r - r0
+        v = (a[r0, c0] * (1 - fc) * (1 - fr) + a[r0, c0 + 1] * fc * (1 - fr)
+             + a[r0 + 1, c0] * (1 - fc) * fr + a[r0 + 1, c0 + 1] * fc * fr)
+        v[~ok] = np.nan
+        acc[i] = v
+    with np.errstate(invalid="ignore"):
+        return s, np.nanmean(acc, axis=0), np.nanmax(acc, axis=0)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--centre", nargs=2, type=float,
@@ -166,6 +213,17 @@ def main() -> int:
     ap.add_argument("--hi", type=float, default=99.3)
     ap.add_argument("--profile-m", type=float, default=60.0,
                     help="half-length of the cross-section, metres")
+    # Placed by hand, on the user's instruction, because every automatic
+    # estimate disagreed with the panel. Bearing 85 deg is 5 degrees above
+    # horizontal; the anchor is a fraction of the window, x from the left and
+    # y from the TOP, so 0.75 / 0.25 is right-hand side, a quarter of the way
+    # down. --auto restores the measured placement.
+    ap.add_argument("--cut-bearing", type=float, default=85.0)
+    ap.add_argument("--band-m", type=float, default=12.0,
+                    help="width of the averaging band along the streaks")
+    ap.add_argument("--cut-at", nargs=2, type=float, default=[0.75, 0.25])
+    ap.add_argument("--auto", action="store_true",
+                    help="use the measured bearing and the streak centroid")
     a = ap.parse_args()
 
     b, (cx, cy) = bounds_of(a.centre[0], a.centre[1], a.side)
@@ -178,22 +236,61 @@ def main() -> int:
     streak = streak_mask(chm)
     print(f"  top-hat streak mask: {streak.sum():,} px "
           f"({100*streak.mean():.2f}% of the window)")
-    t, sp, npk, _ = orientation(streak, a.res)
-    th = np.radians(t)
-    ux, uy = np.sin(th), np.cos(th)          # along the streaks
-    vx, vy = np.cos(th), -np.sin(th)         # across them
-    print(f"streaks bear {t:.1f} deg, spacing "
+    t_meas, sp, npk, _ = orientation(streak, a.res)
+    if a.auto:
+        t = t_meas
+        th = np.radians(t)
+        cutx, cuty = np.cos(th), -np.sin(th)     # perpendicular to measured
+        cut_bearing = (t + 90.0) % 180.0
+    else:
+        cut_bearing = a.cut_bearing
+        cb = np.radians(cut_bearing)
+        cutx, cuty = np.sin(cb), np.cos(cb)      # ALONG the requested bearing
+        t = t_meas
+    vx, vy = cutx, cuty
+    print(f"measured streak bearing {t_meas:.1f} deg, spacing "
           f"{'n/a' if sp is None else f'{sp:.2f} m'} from {npk} peaks "
           f"(threshold CHM >= {thr:.2f} m, {bright.sum():,} px)")
 
-    # put the cut where the streaks actually are: the bright centroid
-    rows, cols = np.where(streak)
-    px = b[0] + (cols.mean() + 0.5) * a.res
-    py = b[3] - (rows.mean() + 0.5) * a.res
+    if a.auto:
+        rows, cols = np.where(streak)
+        px = b[0] + (cols.mean() + 0.5) * a.res
+        py = b[3] - (rows.mean() + 0.5) * a.res
+    else:
+        fx, fy = a.cut_at
+        px = b[0] + fx * (b[2] - b[0])
+        py = b[3] - fy * (b[3] - b[1])
+    print(f"  cut bearing {cut_bearing:.1f} deg through "
+          f"{px:.1f} E {py:.1f} N")
 
+    # ALONG the requested bearing, and ACROSS it, through the same anchor.
+    # The measured bearing is not trusted here: a cut placed at 85 deg on the
+    # user's instruction runs nearly parallel to the streaks, which it could not
+    # do if they bore 139 deg. The automatic estimate is refuted by that, so the
+    # geometry is taken from the instruction and the estimate is only reported.
+    pb = np.radians((cut_bearing + 90.0) % 180.0)
+    pxv, pyv = np.sin(pb), np.cos(pb)
     s_dsm, v_dsm, X, Y = sample(dsm, b, a.res, px, py, vx, vy, a.profile_m)
     s_dem, v_dem, _, _ = sample(dem, b, a.res, px, py, vx, vy, a.profile_m)
     s_chm, v_chm, _, _ = sample(chm, b, a.res, px, py, vx, vy, a.profile_m)
+    q_dsm, w_dsm, PX, PY = sample(dsm, b, a.res, px, py, pxv, pyv, a.profile_m)
+    q_dem, w_dem, _, _ = sample(dem, b, a.res, px, py, pxv, pyv, a.profile_m)
+    q_chm, w_chm, _, _ = sample(chm, b, a.res, px, py, pxv, pyv, a.profile_m)
+    # swath-averaged across-profile: this is what actually resolves the streaks
+    sw_s, sw_chm, sw_chm_max = swath(chm, b, a.res, px, py, pxv, pyv,
+                                     a.profile_m, band_m=a.band_m)
+    base = np.convolve(np.nan_to_num(sw_chm),
+                       np.ones(max(3, int(round(15.0 / a.res)) | 1))
+                       / max(3, int(round(15.0 / a.res)) | 1), mode="same")
+    resid = sw_chm - base
+    qpk, _ = find_peaks(np.nan_to_num(resid),
+                        height=max(0.15, 0.25 * np.nanmax(resid)),
+                        distance=int(round(1.0 / a.res)))
+    qgaps = np.diff(sw_s[qpk]) if len(qpk) >= 3 else np.array([])
+    print(f"  ACROSS ({(cut_bearing+90)%180:.0f} deg): {len(qpk)} spikes, "
+          f"median gap "
+          f"{np.median(qgaps):.2f} m" if len(qgaps) else
+          f"  ACROSS: {len(qpk)} spikes")
 
     # how many spikes the cut crosses, and how tall they are
     pk, _ = find_peaks(np.nan_to_num(v_chm), height=max(5.0, 0.35 * np.nanmax(v_chm)),
@@ -211,14 +308,17 @@ def main() -> int:
                          "savefig.facecolor": PAPER,
                          "font.family": "DejaVu Sans", "text.color": INK})
     fig = plt.figure(figsize=(18.6, 10.2))
-    gs = fig.add_gridspec(1, 2, width_ratios=[1.0, 1.42], left=0.028,
-                          right=0.975, top=0.815, bottom=0.085, wspace=0.11)
+    gs = fig.add_gridspec(2, 2, width_ratios=[1.0, 1.42],
+                          height_ratios=[1.0, 1.0], left=0.028,
+                          right=0.975, top=0.815, bottom=0.085, wspace=0.11,
+                          hspace=0.30)
 
-    ax = fig.add_subplot(gs[0, 0])
+    ax = fig.add_subplot(gs[:, 0])
     lo, hi = float(np.nanmin(chm)), float(np.nanmax(chm))
     ax.imshow(chm, extent=[b[0], b[2], b[1], b[3]], origin="upper", cmap="gray",
               vmin=lo, vmax=hi, interpolation="nearest")
     ax.plot(X, Y, color="#ffd400", linewidth=2.6, zorder=5)
+    ax.plot(PX, PY, color="#00d4ff", linewidth=2.6, zorder=5)
     ax.scatter([px], [py], s=48, facecolor="#ffd400", edgecolor=INK,
                zorder=6, linewidth=1.2)
     ax.set_title(f"Canopy height, black to white on {lo:.0f}–{hi:.0f} m "
@@ -226,9 +326,13 @@ def main() -> int:
                  loc="left", color=INK, pad=7)
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.text(0.5, -0.035, f"the cut runs {(t+90)%180:.0f}°, across streaks "
-            f"bearing {t:.0f}°", transform=ax.transAxes, ha="center",
-            va="top", fontsize=11.5, color=INK2)
+    ax.text(0.5, -0.030,
+            f"yellow: ALONG the streaks, {cut_bearing:.0f}°     "
+            f"cyan: ACROSS them, {(cut_bearing+90)%180:.0f}°"
+            + ("" if a.auto else "\nplaced by hand — see the note on the "
+                                 "measured bearing"),
+            transform=ax.transAxes, ha="center", va="top", fontsize=11.5,
+            color=INK2, linespacing=1.5)
 
     axp = fig.add_subplot(gs[0, 1])
     axp.plot(s_dsm, v_dsm, color=C_DSM, linewidth=1.9, zorder=4)
@@ -261,8 +365,33 @@ def main() -> int:
              linespacing=1.5,
              bbox=dict(boxstyle="round,pad=0.5", facecolor="white",
                        edgecolor=RULE))
-    axp.set_title("The spikes are in the first-return surface only",
-                  fontsize=13.5, fontweight="bold", loc="left", color=INK, pad=8)
+    axp.set_title(f"ALONG the streaks ({cut_bearing:.0f}°) — the cut "
+                  f"runs down one, so it meets few",
+                  fontsize=13, fontweight="bold", loc="left", color=INK, pad=8)
+
+    axq = fig.add_subplot(gs[1, 1])
+    axq.axhline(0, color=MUTED, linewidth=1.0, zorder=1)
+    axq.plot(sw_s, resid, color=C_CHM, linewidth=1.9, zorder=4)
+    axq.fill_between(sw_s, 0, resid, where=(resid > 0), color=C_CHM,
+                     alpha=0.16, zorder=2)
+    axq.scatter(sw_s[qpk], resid[qpk], s=30, facecolor="white",
+                edgecolor=C_CHM, linewidth=1.5, zorder=7)
+    axq.set_xlabel("distance across the streaks, metres", fontsize=12.5)
+    axq.set_ylabel("canopy height above local mean, m", fontsize=12.5)
+    axq.grid(color=RULE, linewidth=0.8)
+    axq.set_axisbelow(True)
+    for s_ in ("top", "right"):
+        axq.spines[s_].set_visible(False)
+    axq.set_xlim(sw_s.min(), sw_s.max())
+    axq.text(0.012, 0.955,
+             f"{len(qpk)} spikes crossed" +
+             (f", median spacing {np.median(qgaps):.1f} m" if len(qgaps) else ""),
+             transform=axq.transAxes, fontsize=12, color=INK, va="top",
+             bbox=dict(boxstyle="round,pad=0.45", facecolor="white",
+                       edgecolor=RULE))
+    axq.set_title(f"ACROSS the streaks ({(cut_bearing+90)%180:.0f}°), averaged "
+                  f"over a {a.band_m:.0f} m band running along them",
+                  fontsize=13, fontweight="bold", loc="left", color=INK, pad=8)
 
     fig.text(0.028, 0.972,
              "The bright lines in the canopy model are scanner sweeps, "
@@ -280,12 +409,18 @@ def main() -> int:
 
     FIG.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
-    p = FIG / f"chm_scanline_cross_section_{a.side:.0f}m_9t.png"
+    tag = "auto" if a.auto else (f"b{cut_bearing:.0f}"
+                                 f"_x{a.cut_at[0]*100:.0f}y{a.cut_at[1]*100:.0f}")
+    p = FIG / f"chm_scanline_cross_section_{tag}_{a.side:.0f}m_9t.png"
     fig.savefig(p, dpi=150)
     plt.close(fig)
-    jp = OUT / f"chm_scanline_cross_section_{a.side:.0f}m_9t.json"
+    jp = OUT / f"chm_scanline_cross_section_{tag}_{a.side:.0f}m_9t.json"
     jp.write_text(json.dumps(dict(
-        bearing_deg=t, cut_bearing_deg=(t + 90) % 180, spacing_m=sp,
+        measured_streak_bearing_deg=t_meas, cut_bearing_deg=cut_bearing,
+        cut_placed_by_hand=(not a.auto), cut_anchor_en=[px, py], spacing_m=sp,
+        across_bearing_deg=(cut_bearing + 90) % 180,
+        spikes_across=int(len(qpk)),
+        median_spike_gap_across_m=float(np.median(qgaps)) if len(qgaps) else None,
         n_hist_peaks=npk, threshold_m=thr, spikes_on_cut=int(len(pk)),
         median_spike_gap_m=float(np.median(gaps)) if len(gaps) else None,
         dsm_range_m=float(np.nanmax(v_dsm) - np.nanmin(v_dsm)),
