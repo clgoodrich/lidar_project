@@ -1,0 +1,60 @@
+{
+  "extent": [
+    619500.0,
+    4593000.0,
+    624000.0,
+    4597500.0
+  ],
+  "n_returns": 84684419,
+  "pit_floor_m2": 29.1,
+  "pit_floor_diameter_m": 6.086975501165849,
+  "delivered_void_pct_at_0p5m": {
+    "dsm": 2.044420987654321,
+    "dem": 7.4074074074074075e-06,
+    "chm": 2.0444271604938273
+  },
+  "by_cell_size": [
+    {
+      "cell_m": 0.5,
+      "empty_all": 36.4564950617284,
+      "empty_first": 43.3975049382716,
+      "empty_ground": 45.2201950617284,
+      "pit_floor_cells": 12.173951002331698
+    },
+    {
+      "cell_m": 0.75,
+      "empty_all": 11.828016666666667,
+      "empty_first": 17.21937777777778,
+      "empty_ground": 18.176433333333332,
+      "pit_floor_cells": 8.115967334887799
+    },
+    {
+      "cell_m": 1.0,
+      "empty_all": 3.7633876543209874,
+      "empty_first": 6.49159012345679,
+      "empty_ground": 7.475204938271605,
+      "pit_floor_cells": 6.086975501165849
+    },
+    {
+      "cell_m": 1.25,
+      "empty_all": 0.9986728395061728,
+      "empty_first": 2.1527777777777777,
+      "empty_ground": 2.9330246913580247,
+      "pit_floor_cells": 4.869580400932679
+    },
+    {
+      "cell_m": 1.5,
+      "empty_all": 0.2532888888888889,
+      "empty_first": 0.7383,
+      "empty_ground": 1.3993666666666666,
+      "pit_floor_cells": 4.057983667443899
+    },
+    {
+      "cell_m": 2.0,
+      "empty_all": 0.03164444444444445,
+      "empty_first": 0.11241481481481481,
+      "empty_ground": 0.6752,
+      "pit_floor_cells": 3.0434877505829245
+    }
+  ]
+}
