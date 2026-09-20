@@ -101,6 +101,9 @@ ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "_source" / "lidar" / "westernpa"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 OUT = _out(ROOT / "data" / "9t" / "results" / "smrf_ground")
+#: Never under v6/ -- the classification does not depend on how it is drawn.
+_CACHE = ROOT / "data" / "9t" / "results" / "smrf_ground" / "_cache"
+_CACHE.mkdir(parents=True, exist_ok=True)
 #: BARE builds must never overwrite the shipped figures.
 FIG = _out(ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa")
 PDAL = "pdal"
@@ -231,6 +234,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tiles", nargs="+", default=["616591", "621594"])
     ap.add_argument("--slope", type=float, default=0.35)
+    ap.add_argument("--force", action="store_true",
+                    help="re-run SMRF even when the cached LAS exists")
     ap.add_argument("--sweep", action="store_true",
                     help="try a range of slopes on the first tile and stop")
     args = ap.parse_args()
@@ -269,17 +274,26 @@ def main() -> int:
         return 0
 
     for code in args.tiles:
-        _full(code, args.slope)
+        _full(code, args.slope, args.force)
     return 0
 
 
-def _full(code, slope):
+def _full(code, slope, force=False):
     import rasterio
     laz = find_tile(code)
     print(f"\n=== tile {code}, SMRF slope {slope}")
-    las = Path(tempfile.gettempdir()) / f"_smrf_full_{code}.las"
-    dt = smrf(laz, las, slope)
-    print(f"    smrf {dt:.0f}s")
+    # SMRF over a full map square is minutes of PDAL. The result is a pure
+    # function of (tile, slope), so it is cached beside the outputs instead of
+    # written to a temp file and deleted -- redrawing the figure used to pay
+    # for the classification again every single time.
+    cache = _CACHE / f"smrf_{code}_slope{str(slope).replace('.', 'p')}.las"
+    if cache.exists() and not force:
+        print(f"    reusing cached SMRF {cache.name} "
+              f"({cache.stat().st_size/1e6:.0f} MB; --force to redo)")
+    else:
+        dt = smrf(laz, cache, slope)
+        print(f"    smrf {dt:.0f}s  -> {cache.name}")
+    las = cache
     d = read_las(las)
     m = point_metrics(d, slope)
     m["tile"] = code
@@ -393,7 +407,9 @@ def _full(code, slope):
     pd.DataFrame([m]).to_csv(OUT / f"smrf_vs_vendor_{code}.csv", index=False)
     _figure(code, slope, A, B, dz, cov.reshape(ny, nx),
             (c_v == 0).reshape(ny, nx), (c_s == 0).reshape(ny, nx), bounds, m)
-    las.unlink(missing_ok=True)
+    # Deliberately NOT deleted. This used to be a temp file; it is the SMRF
+    # cache now, and removing it here cost a full reclassification on every
+    # redraw. `--force` overwrites it when the classification must change.
     del d
 
 

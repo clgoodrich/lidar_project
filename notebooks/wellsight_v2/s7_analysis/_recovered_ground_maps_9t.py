@@ -714,8 +714,10 @@ def main() -> int:
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--slope", type=float, default=0.35)
     ap.add_argument("--section-tile", default="621594")
+    ap.add_argument("--force", action="store_true",
+                    help="re-run SMRF even when the per-tile rasters exist")
     ap.add_argument("--skip-smrf", action="store_true",
-                    help="reuse the per-tile rasters and redraw")
+                    help="deprecated; reuse is now the default")
     args = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     FIG.mkdir(parents=True, exist_ok=True)
@@ -723,7 +725,25 @@ def main() -> int:
                          "savefig.facecolor": PAPER,
                          "font.family": "DejaVu Sans", "text.color": INK})
 
-    if not args.skip_smrf:
+    # Reuse is the DEFAULT. Re-running SMRF is a PDAL ground classification
+    # over nine map squares -- about 25 minutes -- and redrawing the four PNGs
+    # from the cached per-tile rasters takes 52 seconds. The old flag was
+    # opt-in, so a caption change cost 25 minutes to anyone who forgot it.
+    # Now it costs 52 seconds unless --force is asked for explicitly.
+    need = [OUT / "_tiles" / f"{n}_{c}_0p5m.tif"
+            for c in TILES
+            for n in ("vendorground", "vendorplusrecovered",
+                      "count_anyreturn", "count_vendorground",
+                      "count_recoveredonly", "count_vendorplusrecovered")]
+    missing = [q for q in need if not q.exists()]
+    if missing and not args.force:
+        print(f"{len(missing)} of {len(need)} per-tile rasters missing, "
+              f"running SMRF")
+    elif not args.force:
+        print(f"reusing {len(need)} cached per-tile rasters "
+              f"(pass --force to rebuild them)")
+
+    if args.force or missing:
         jobs = [(c, args.slope, c == args.section_tile) for c in TILES]
         print(f"SMRF + 3 surfaces on {len(jobs)} map squares, "
               f"{args.workers} at a time")
