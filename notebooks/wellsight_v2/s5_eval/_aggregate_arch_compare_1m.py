@@ -308,6 +308,25 @@ def main() -> int:
             print(f"  {t:10s} {what:24s} {d:+.3f}  (pooled sd {pooled_sd:.3f})"
                   f"  {verdict}")
 
+    # Each rung can sit inside the noise while the WHOLE ladder does not --
+    # three small same-signed steps add up. Reporting only the rungs would hide
+    # that, so the end-to-end change is computed too, against the same pooled sd.
+    print("\nend to end (plain U-Net -> the full stack)")
+    for t in TARGETS:
+        s = g[g.target == t]
+        a, b = s[s.arch == ARCHS[0]], s[s.arch == ARCHS[-1]]
+        if a.empty or b.empty:
+            continue
+        d = float(b.iou_mean.iloc[0] - a.iou_mean.iloc[0])
+        psd = float(np.hypot(a.iou_sd.iloc[0], b.iou_sd.iloc[0]))
+        n_sd = d / psd if psd else float("nan")
+        verdict = "within noise" if abs(n_sd) < 1.0 else \
+                  ("suggestive" if abs(n_sd) < 2.0 else "clear")
+        ladder.append(dict(target=t, step="END TO END", delta_iou=d,
+                           pooled_sd=psd, verdict=verdict))
+        print(f"  {t:10s} {'unet -> unetpp_r34_imagenet':24s} {d:+.3f}  "
+              f"(pooled sd {psd:.3f}, {n_sd:+.1f} sd)  {verdict}")
+
     pd.DataFrame(ladder).to_csv(OUTDIR / "arch_compare_ladder_9t_1m.csv",
                                 index=False)
 

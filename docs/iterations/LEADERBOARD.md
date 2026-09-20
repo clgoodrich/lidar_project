@@ -370,6 +370,46 @@ only the label raster changed (+19 km of previously-unlabelled road, mostly fain
 than any architecture change in the 2026-07 sweep. **Every sweep variant above was
 trained on the same stale labels** and should be re-run.
 
+> **That "more than any architecture change" claim was tested directly on
+> 2026-09-19 and it holds for pit, not for pad.** See the section below.
+
+## Architecture comparison, 1 m — four networks on identical folds (2026-09-19)
+
+Same folds, same 7 channels, same FocalCE, same 40 epochs / batch 8 / lr 1e-3.
+Each rung of the ladder changes exactly one thing. The score is **validation IoU
+of the target class at each fold's best epoch**, with the held-out fold excluded
+from its own epoch selection (inner val is fold `(k+1) % 5`).
+
+**These are segmentation IoU at 1 m. They are NOT the held-out detection recall
+used everywhere else on this page, which is computed at 0.5 m. Do not compare a
+number in this table to a number in any other table here.**
+
+| target | architecture | params | folds | IoU | sd | min–max |
+|---|---|---|---|---|---|---|
+| pit | U-Net (plain) | 7.8 M | 5 | 0.559 | 0.020 | 0.529–0.589 |
+| pit | ResNet-34, scratch | 24.4 M | 5 | 0.528 | 0.025 | 0.491–0.560 |
+| pit | ResNet-34, ImageNet | 24.4 M | 5 | 0.548 | 0.015 | 0.524–0.565 |
+| pit | U-Net++, R34 ImageNet | 26.1 M | 5 | **0.561** | 0.020 | 0.533–0.590 |
+| pad | U-Net (plain) | 7.8 M | 5 | 0.555 | 0.020 | 0.524–0.584 |
+| pad | ResNet-34, scratch | 24.4 M | 5 | 0.567 | 0.028 | 0.528–0.604 |
+| pad | ResNet-34, ImageNet | 24.4 M | 5 | 0.599 | 0.018 | 0.576–0.627 |
+| pad | U-Net++, R34 ImageNet | 26.1 M | 5 | **0.608** | 0.019 | 0.587–0.636 |
+
+End to end, plain U-Net → full stack: **pit +0.002 (+0.1 sd, within noise)**,
+**pad +0.054 (+1.9 sd, suggestive)**. No individual rung clears its own noise on
+either target.
+
+**Pit: architecture is not the constraint.** 3.3× the parameters and ImageNet
+initialisation buy 0.002 IoU against a fold sd of 0.020. **Pad: there is
+something here** — every `unetpp_r34_imagenet` fold beats every plain U-Net fold
+but one, which is worth more than the sd arithmetic alone suggests. It needs more
+seeds before it is a finding.
+
+`roaddrain` has **no row**: that arm ran 1 of 40 epochs on one fold and stopped.
+
+Write-up: `docs/iterations/arch_compare_1m_four_architectures.md`.
+Numbers: `data/9t/results/arch_compare_1m/arch_compare_summary_9t_1m.csv`.
+
 Max recovery: `sweep_ENSEMBLE_max` at thr 0.30 → **0.909** completeness / 0.651 correctness.
 
 **Vector extraction (2026-07-02, honest protocol):** `_road_optimize.py` cleaning

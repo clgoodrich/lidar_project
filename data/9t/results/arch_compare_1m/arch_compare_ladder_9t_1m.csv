@@ -1,0 +1,9 @@
+target,step,delta_iou,pooled_sd,verdict
+pit,deeper encoder,-0.030616156753154322,0.03171987143476057,within noise
+pit,ImageNet pretraining,0.019754138807928978,0.028935882708685308,within noise
+pit,dense skip connections,0.013278228335579456,0.02509227291868467,within noise
+pad,deeper encoder,0.012837432408013605,0.03464233114421128,within noise
+pad,ImageNet pretraining,0.03171672007381088,0.03358596461422679,within noise
+pad,dense skip connections,0.009024712783947453,0.0264811711525489,within noise
+pit,END TO END,0.002416210390354112,0.02825751397297191,within noise
+pad,END TO END,0.053578865265771936,0.027808748868794603,suggestive

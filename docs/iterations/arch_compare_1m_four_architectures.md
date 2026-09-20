@@ -45,9 +45,9 @@ Nothing here should be quoted as a recall.
 | pad | U-Net (plain) | 7.8 M | 5 | 0.555 | 0.020 | 0.524 | 0.584 |
 | pad | ResNet-34, from scratch | 24.4 M | 5 | 0.567 | 0.028 | 0.528 | 0.604 |
 | pad | ResNet-34, ImageNet | 24.4 M | 5 | **0.599** | 0.018 | 0.576 | 0.627 |
-| pad | U-Net++, R34 ImageNet | 26.1 M | 5 | 0.596 | — | — | — |
+| pad | U-Net++, R34 ImageNet | 26.1 M | 5 | **0.608** | 0.019 | 0.587 | 0.636 |
 
-### The ladder
+### The ladder, one rung at a time
 
 | target | step | delta IoU | pooled sd | verdict |
 |---|---|---|---|---|
@@ -56,39 +56,57 @@ Nothing here should be quoted as a recall.
 | pit | dense skip connections | +0.013 | 0.025 | within noise |
 | pad | deeper encoder | +0.013 | 0.035 | within noise |
 | pad | ImageNet pretraining | +0.032 | 0.034 | within noise |
-| pad | dense skip connections | −0.004 | 0.018 | within noise |
+| pad | dense skip connections | +0.009 | 0.026 | within noise |
 
-**Every rung is smaller than the spread between folds of the same
-architecture.** Not one of the three changes survives its own noise.
+**No single rung survives its own noise.** But that is not the whole question —
+three small same-signed steps can add up while none of them is individually
+significant, and reporting only the rungs would hide it.
+
+### End to end
+
+| target | plain U-Net → full stack | delta | pooled sd | |
+|---|---|---|---|---|
+| pit | 0.559 → 0.561 | **+0.002** | 0.028 | +0.1 sd — within noise |
+| pad | 0.555 → 0.608 | **+0.054** | 0.028 | +1.9 sd — suggestive |
 
 ## Interpretation
 
-**Architecture is not the constraint.** A 26.1 M-parameter U-Net++ with a
-pretrained encoder scores 0.561 against a 7.8 M plain U-Net's 0.559 on pits. The
-gap is 0.002 against a fold-to-fold sd of 0.020 — it is nothing. Tripling the
-parameter count and adding ImageNet initialisation buys no measurable accuracy.
+**The two targets answer differently, and that is the result.**
 
-The leaderboard's standing claim that data is the bottleneck now has a
-controlled experiment behind it rather than an assertion.
+**For pits, architecture is irrelevant.** A 26.1 M-parameter U-Net++ with a
+pretrained encoder scores 0.561 against a 7.8 M plain U-Net's 0.559. The gap is
+0.002 against a fold sd of 0.020 — nothing. Tripling the parameter count and
+adding ImageNet initialisation buys no measurable accuracy. The leaderboard's
+standing claim that data is the bottleneck now has a controlled experiment
+behind it rather than an assertion, and it holds for the pit model.
+
+**For pads it is not nothing.** The full stack gains 0.054 IoU over the plain
+U-Net, about 1.9 sd. Each contributing step is individually inside the noise, so
+this is suggestive rather than established — but the direction is consistent
+across all three rungs and every one of the five folds of `unetpp_r34_imagenet`
+(0.587–0.636) lands above every one of the five plain U-Net folds bar one
+(0.524–0.584). That non-overlap is worth more than the sd arithmetic suggests.
+
+Why pads and not pits is a plausible story rather than a measured one: a pad is a
+wide textured clearing, which is closer to the kind of regional texture an
+ImageNet encoder has features for. A pit is a sub-metre depression whose signal
+is local relief, where a deeper encoder's larger receptive field buys little.
+Nothing here tests that explanation.
 
 **Two honest qualifications.**
 
-1. **Pretraining is the only step that looks like it might be real.** It is the
-   largest positive delta on both targets (+0.020 pit, +0.032 pad) and it is the
-   only step with the same sign on both. It still does not clear the noise on
-   five folds. If any of this is worth a follow-up, it is this rung — more folds
-   or more seeds would settle it, and nothing else here would.
-2. **The ImageNet encoder is fed a stack that looks nothing like a photograph.**
+1. **The ImageNet encoder is fed a stack that looks nothing like a photograph.**
    `smp` adapts the first convolution from 3 channels to 7 by repeating and
    rescaling. Whatever ImageNet features survive that on a DEM derivative stack
    is unknown. `r34_scratch` is in the table precisely so pretraining is measured
    rather than assumed, and on pit the pretrained model still fails to reach the
    plain U-Net.
+2. **The pad gain costs 92 GPU-minutes against the plain U-Net's 65**, and 3.3×
+   the parameters, for a result that is suggestive at five folds.
 
-**Keep the plain U-Net.** It ties or wins on pit, trains fastest, and is a third
-the size. On pad the pretrained ResNet-34 leads by 0.044, which is the largest
-single gap in the table — the one place a follow-up could be justified, and it is
-still 1.3 sd.
+**Recommendation: keep the plain U-Net for pit, and re-run pad with more seeds.**
+The pit answer is settled. The pad answer is the one live lead in this table, and
+it needs folds or seeds, not a new architecture.
 
 ## What went wrong, and what it cost
 

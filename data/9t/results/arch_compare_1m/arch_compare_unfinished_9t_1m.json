@@ -1,0 +1,8 @@
+{
+  "pad/unetpp_r34_imagenet": [
+    "fold2_CRASHED_oom_2026-09-18 (no train_log)"
+  ],
+  "roaddrain/unet": [
+    "fold0 (1/40 epochs)"
+  ]
+}
