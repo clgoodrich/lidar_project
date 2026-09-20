@@ -342,6 +342,84 @@ INSERTS = [
 ]
 
 
+def ensure_notes_master_body(prs):
+    """Make the notes master carry every placeholder the notes slides use.
+
+    THIS IS WHY POWERPOINT KEPT OFFERING TO REPAIR THE FILE.
+
+    notesMaster1 in this deck has a completely empty spTree. Meanwhile the
+    notes slides reference placeholders that are simply not there:
+
+        46x  sldImg idx=2      the slide thumbnail on the notes page
+        46x  body   idx=3      the notes text, on slides authored in PowerPoint
+        46x  sldNum idx=5      the page number
+        21x  body   idx=1      the notes text, on slides this script created
+
+    The first three predate anything done here -- they came in with the
+    original deck -- so the repair prompt is older than v6. The fourth is
+    ours: python-pptx clones a bare notes slide from an empty master,
+    `notes_text_frame` returns None, and set_notes() falls back to writing its
+    own body placeholder.
+
+    Rather than guess, this scans the notes slides for every (type, idx) they
+    actually use and adds a matching placeholder to the master for each.
+    Geometry is the conventional notes-page layout for the 6858000 x 9144000
+    EMU notes page declared in presentation.xml.
+    """
+    from lxml import etree
+    from pptx.oxml.ns import qn
+
+    BOX = {                       # type -> (x, y, cx, cy) in EMU
+        "sldImg": (1143000, 685800, 4572000, 3429000),
+        "body": (685800, 4343400, 5486400, 4114800),
+
+    }
+    BOX["sldNum"] = (3884613, 8685213, 2628900, 246221)
+    BOX["hdr"] = (0, 0, 2971800, 458788)
+    BOX["ftr"] = (0, 8685213, 2971800, 458788)
+    BOX["dt"] = (3884613, 0, 2971800, 458788)
+
+    want = set()
+    for slide in prs.slides:
+        if not slide.has_notes_slide:
+            continue
+        for ph in slide.notes_slide._element.iter(qn("p:ph")):
+            want.add((ph.get("type") or "body", ph.get("idx")))
+
+    tree = prs.notes_master.shapes._spTree
+    have = {(ph.get("type") or "body", ph.get("idx"))
+            for ph in tree.iter(qn("p:ph"))}
+    added = []
+    next_id = 2
+    for kind, idx in sorted(want - have, key=lambda k: (k[0], k[1] or "")):
+        x, y, cx, cy = BOX.get(kind, BOX["body"])
+        sp = etree.SubElement(tree, qn("p:sp"))
+        nv = etree.SubElement(sp, qn("p:nvSpPr"))
+        cnv = etree.SubElement(nv, qn("p:cNvPr"))
+        cnv.set("id", str(next_id))
+        cnv.set("name", f"{kind} placeholder {idx}")
+        next_id += 1
+        csp = etree.SubElement(nv, qn("p:cNvSpPr"))
+        etree.SubElement(csp, qn("a:spLocks")).set("noGrp", "1")
+        nvpr = etree.SubElement(nv, qn("p:nvPr"))
+        ph = etree.SubElement(nvpr, qn("p:ph"))
+        ph.set("type", kind)
+        if idx is not None:
+            ph.set("idx", idx)
+        sppr = etree.SubElement(sp, qn("p:spPr"))
+        xfrm = etree.SubElement(sppr, qn("a:xfrm"))
+        o = etree.SubElement(xfrm, qn("a:off")); o.set("x", str(x)); o.set("y", str(y))
+        e = etree.SubElement(xfrm, qn("a:ext")); e.set("cx", str(cx)); e.set("cy", str(cy))
+        g = etree.SubElement(sppr, qn("a:prstGeom")); g.set("prst", "rect")
+        etree.SubElement(g, qn("a:avLst"))
+        tx = etree.SubElement(sp, qn("p:txBody"))
+        etree.SubElement(tx, qn("a:bodyPr"))
+        etree.SubElement(tx, qn("a:lstStyle"))
+        etree.SubElement(tx, qn("a:p"))
+        added.append(f"{kind}/{idx}")
+    return added
+
+
 def pic_of(slide):
     return [sh for sh in slide.shapes if sh.__class__.__name__ == "Picture"]
 
@@ -438,6 +516,10 @@ def main() -> int:
         shutil.copy2(SRC, DST)
     prs = Presentation(str(DST if not a.dry_run else SRC))
     n0 = len(prs.slides)
+    _added = ensure_notes_master_body(prs)
+    if _added:
+        print("notes master was missing placeholders, added: "
+              + ", ".join(_added))
 
     # --- capture what we need before mutating anything ------------------
     # Capturing the BODY text matters as much as the title. An earlier version
