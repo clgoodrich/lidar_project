@@ -1,0 +1,203 @@
+{
+  "source": "qgis/annotations/annotations_proj.gpkg",
+  "crs": "EPSG:6346",
+  "lines": [
+    {
+      "layer": "roads",
+      "n_segments": 3690,
+      "total_length_m": 535912.9517460053,
+      "total_length_km": 535.9129517460053,
+      "mean_segment_m": 145.23386226179005,
+      "median_segment_m": 104.05784274921751,
+      "n_drawn_lines": 3690,
+      "n_drawn_lines_source": "one feature = one drawn line",
+      "n_networks": 1747,
+      "by_source_km": {
+        "613590_added_r2": 49.04,
+        "613590_review_r2": 138.56,
+        "prior": 348.31
+      },
+      "by_source_segments": {
+        "613590_added_r2": 487,
+        "613590_review_r2": 1003,
+        "prior": 2200
+      },
+      "by_area": {
+        "9t": {
+          "n": 1358,
+          "length_km": 206.13
+        },
+        "613590": {
+          "n": 1490,
+          "length_km": 187.6
+        },
+        "elsewhere": {
+          "n": 842,
+          "length_km": 142.18
+        }
+      }
+    },
+    {
+      "layer": "not_roads",
+      "n_segments": 112,
+      "total_length_m": 18024.73545455117,
+      "total_length_km": 18.02473545455117,
+      "mean_segment_m": 160.93513798706402,
+      "median_segment_m": 112.97899536527346,
+      "n_drawn_lines": 112,
+      "n_drawn_lines_source": "one feature = one drawn line",
+      "n_networks": 102,
+      "by_area": {
+        "9t": {
+          "n": 61,
+          "length_km": 7.03
+        },
+        "613590": {
+          "n": 0,
+          "length_km": 0.0
+        },
+        "elsewhere": {
+          "n": 51,
+          "length_km": 11.0
+        }
+      }
+    },
+    {
+      "layer": "drainage",
+      "n_segments": 1791,
+      "total_length_m": 45038.51828284854,
+      "total_length_km": 45.03851828284854,
+      "mean_segment_m": 25.147134719625093,
+      "median_segment_m": 20.864348868602278,
+      "n_drawn_lines": 594,
+      "n_drawn_lines_source": "parent_id",
+      "n_networks": 344,
+      "by_class_km": {
+        "short": 1.91,
+        "stream": 27.53,
+        "unlabelled": 15.59
+      },
+      "by_class_segments": {
+        "short": 173,
+        "stream": 1350,
+        "unlabelled": 268
+      },
+      "by_area": {
+        "9t": {
+          "n": 1791,
+          "length_km": 45.04
+        },
+        "613590": {
+          "n": 0,
+          "length_km": 0.0
+        },
+        "elsewhere": {
+          "n": 0,
+          "length_km": 0.0
+        }
+      }
+    }
+  ],
+  "polygons": [
+    {
+      "layer": "plat",
+      "n": 995,
+      "total_area_m2": 1444021.2424194245,
+      "total_area_ha": 144.40212424194246,
+      "mean_area_m2": 1451.277630572286,
+      "median_area_m2": 1343.2473869614032,
+      "p10_area_m2": 666.8267816268165,
+      "p90_area_m2": 2356.708978254196,
+      "label": "pads",
+      "by_area": {
+        "9t": {
+          "n": 650,
+          "area_ha": 115.15
+        },
+        "613590": {
+          "n": 0,
+          "area_ha": 0.0
+        },
+        "elsewhere": {
+          "n": 345,
+          "area_ha": 29.26
+        }
+      }
+    },
+    {
+      "layer": "pit_inside",
+      "n": 712,
+      "total_area_m2": 22869.61313346171,
+      "total_area_ha": 2.286961313346171,
+      "mean_area_m2": 32.12024316497431,
+      "median_area_m2": 29.102103443114565,
+      "p10_area_m2": 15.250743320407334,
+      "p90_area_m2": 50.82451387094466,
+      "label": "pit interiors",
+      "by_area": {
+        "9t": {
+          "n": 503,
+          "area_ha": 1.47
+        },
+        "613590": {
+          "n": 153,
+          "area_ha": 0.55
+        },
+        "elsewhere": {
+          "n": 56,
+          "area_ha": 0.27
+        }
+      }
+    },
+    {
+      "layer": "pit_outside",
+      "n": 723,
+      "total_area_m2": 148440.59950994083,
+      "total_area_ha": 14.844059950994083,
+      "mean_area_m2": 205.31203251720723,
+      "median_area_m2": 196.71202287275986,
+      "p10_area_m2": 127.38965450923006,
+      "p90_area_m2": 292.1887249657968,
+      "label": "pit exteriors",
+      "by_area": {
+        "9t": {
+          "n": 506,
+          "area_ha": 9.66
+        },
+        "613590": {
+          "n": 36,
+          "area_ha": 1.03
+        },
+        "elsewhere": {
+          "n": 181,
+          "area_ha": 4.15
+        }
+      }
+    },
+    {
+      "layer": "pit_wall",
+      "n": 586,
+      "total_area_m2": 99060.8387818925,
+      "total_area_ha": 9.90608387818925,
+      "mean_area_m2": 169.04579996909982,
+      "median_area_m2": 160.30784235420614,
+      "p10_area_m2": 100.86544254495226,
+      "p90_area_m2": 244.78781105263636,
+      "label": "pit walls",
+      "by_area": {
+        "9t": {
+          "n": 503,
+          "area_ha": 8.15
+        },
+        "613590": {
+          "n": 36,
+          "area_ha": 0.89
+        },
+        "elsewhere": {
+          "n": 47,
+          "area_ha": 0.86
+        }
+      }
+    }
+  ]
+}

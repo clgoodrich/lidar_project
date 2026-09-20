@@ -1,0 +1,766 @@
+<title>Scanline Dropout Orbit</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Deliberately single-theme. A terrain viewer is an instrument screen: the
+     surfaces only read against a dark ground, so there is no light variant.
+     Every colour is still painted explicitly, so the page holds on either
+     host background. */
+  :root{
+    --ground:#0e1418;      /* blue-black, biased toward the DEM slate  */
+    --panel:#16202a;
+    --edge:#25323d;
+    --ink:#dfe6ea;
+    --muted:#8ea0ab;
+    --dem:#5b8fb0;         /* bare earth, cool slate                   */
+    --dsm:#c8b88a;         /* first-return surface, warm sand          */
+    --gap:#e8663c;         /* the missing rows -- the only hot colour  */
+    --pts:#7f9aa8;
+  }
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+    overflow:hidden;
+  }
+  #stage{position:fixed; inset:0;}
+  #stage canvas{display:block; width:100%; height:100%;}
+
+  .panel{
+    position:fixed; background:color-mix(in srgb, var(--panel) 88%, transparent);
+    border:1px solid var(--edge); border-radius:10px;
+    backdrop-filter:blur(8px); padding:14px 16px;
+  }
+  #facts{
+    top:calc(14px + env(safe-area-inset-top,0px)); left:16px; max-width:19rem;
+  }
+  #facts h1{
+    margin:0 0 2px; font-size:1.02rem; font-weight:600; letter-spacing:-0.01em;
+    text-wrap:balance;
+  }
+  #facts .sub{margin:0 0 10px; font-size:0.76rem; color:var(--muted);}
+  dl{display:grid; grid-template-columns:1fr auto; gap:4px 12px; margin:0;}
+  dt{font-size:0.78rem; color:var(--muted);}
+  dd{
+    margin:0; font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:0.78rem; font-variant-numeric:tabular-nums; text-align:right;
+  }
+  .note{
+    margin:10px 0 0; font-size:0.74rem; line-height:1.45; color:var(--muted);
+  }
+  .note b{color:var(--gap); font-weight:500;}
+
+  #rail{
+    bottom:calc(14px + env(safe-area-inset-bottom,0px)); left:16px;
+    display:flex; flex-direction:column; gap:10px; min-width:16rem;
+  }
+  .row{display:flex; align-items:center; gap:10px;}
+  .row label{
+    font-size:0.74rem; color:var(--muted); flex:0 0 5.4rem;
+    letter-spacing:0.02em; text-transform:uppercase;
+  }
+  .row output{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:0.74rem;
+    color:var(--ink); flex:0 0 3.1rem; text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  input[type=range]{flex:1; accent-color:var(--dem); min-width:0;}
+  /* "9.0 m/s" does not fit the 3.1rem the degree and percent readouts use */
+  #oScanV{flex-basis:4.4rem;}
+  .btns{display:flex; flex-wrap:wrap; gap:6px;}
+  button{
+    font:inherit; font-size:0.76rem; color:var(--ink); cursor:pointer;
+    background:#1d2a35; border:1px solid var(--edge); border-radius:7px;
+    padding:6px 11px;
+  }
+  button:hover{background:#243342;}
+  button[aria-pressed="true"]{
+    background:var(--dem); border-color:var(--dem); color:#0b1116;
+    font-weight:500;
+  }
+  button:focus-visible{outline:2px solid var(--dsm); outline-offset:2px;}
+  .swatch{
+    width:9px; height:9px; border-radius:2px; display:inline-block;
+    margin-right:6px; vertical-align:baseline; flex:0 0 auto;
+  }
+  .lbl{
+    margin:2px 0 0; font-size:0.7rem; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .layers{display:flex; flex-direction:column; gap:7px;}
+  .ck{
+    display:flex; align-items:center; gap:0; font-size:0.8rem;
+    color:var(--ink); cursor:pointer;
+  }
+  .ck input{margin:0 0 0 auto; accent-color:var(--dem); cursor:pointer;}
+  .ck:hover{color:#fff;}
+  .ck input:focus-visible{outline:2px solid var(--dsm); outline-offset:2px;}
+  #scan{
+    top:calc(14px + env(safe-area-inset-top,0px)); right:16px; width:23rem;
+    max-width:calc(100vw - 32px);
+  }
+  #scan h2{
+    margin:0 0 2px; font-size:0.84rem; font-weight:600; letter-spacing:-0.01em;
+  }
+  #scan .sub{margin:0 0 8px; font-size:0.72rem; color:var(--muted);}
+  #xsec{
+    display:block; width:100%; height:130px; border-radius:6px;
+    background:#0b1116; border:1px solid var(--edge);
+  }
+  #scan .readout{
+    display:flex; justify-content:space-between; gap:10px; margin:8px 0 0;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:0.72rem;
+    font-variant-numeric:tabular-nums; color:var(--muted);
+  }
+  #scan .readout b{color:var(--gap); font-weight:500;}
+  /* #top is a layout wrapper only. On a wide screen it does nothing at all --
+     display:contents drops it out of the box tree and the two panels stay
+     fixed to opposite corners. Narrow, it becomes the column that stacks
+     them, which keeps the rail's sliders and checkboxes reachable instead of
+     hidden under an overlapping panel. */
+  #top{display:contents;}
+  @media (max-width:620px){
+    #top{
+      position:fixed; top:calc(14px + env(safe-area-inset-top,0px));
+      left:16px; right:16px; display:flex; flex-direction:column; gap:10px;
+    }
+    #facts,#scan{position:static; width:auto; max-width:none;}
+    #facts .note{display:none;}
+    #xsec{height:96px;}
+    #rail{right:16px; min-width:0;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    /* the orbit is the point of the page, so it is not removed -- it starts
+       stopped instead, and the viewer can press Orbit to begin it */
+  }
+</style>
+
+<div id="stage"></div>
+
+<div id="top">
+<div class="panel" id="facts">
+  <h1 id="fTitle">Scan-line dropout</h1>
+  <p class="sub" id="fWhere">&mdash;</p>
+  <dl>
+    <dt><span class="swatch" style="background:var(--dem)"></span>Bare earth, missing</dt><dd id="fD">&mdash;</dd>
+    <dt><span class="swatch" style="background:var(--dsm)"></span>First return, missing</dt><dd id="fS">&mdash;</dd>
+    <dt>Returns in the box</dt><dd id="fN">&mdash;</dd>
+    <dt>Regional slope removed</dt><dd id="fP">&mdash;</dd>
+  </dl>
+  <p class="note">Flattening subtracts the best-fit plane, so the hillside stops
+  tilting the view and the <b>dropout rows</b> stand on their own &mdash; 3 m
+  apart, on a 79&deg; bearing. The floor below is the canopy-height image from
+  the slide, same window, same stretch; its orange rows are the same cells the
+  red sticks mark.</p>
+</div>
+
+<div class="panel" id="scan">
+  <h2>Cross-section under the scanner</h2>
+  <p class="sub" id="sSub">&mdash;</p>
+  <canvas id="xsec" width="640" height="260"></canvas>
+  <p class="readout">
+    <span>cells on the line <span id="sN">&mdash;</span></span>
+    <span><b id="sG">&mdash;</b> with no first return</span>
+  </p>
+</div>
+</div>
+
+<div class="panel" id="rail">
+  <div class="row">
+    <label for="cFlat">Flatten</label>
+    <input id="cFlat" type="range" min="0" max="100" value="100">
+    <output id="oFlat">100%</output>
+  </div>
+  <div class="row">
+    <label for="cExag">Relief</label>
+    <input id="cExag" type="range" min="10" max="600" value="180">
+    <output id="oExag">1.8&times;</output>
+  </div>
+  <div class="row">
+    <label for="cSpin">Spin</label>
+    <input id="cSpin" type="range" min="0" max="200" value="55">
+    <output id="oSpin">5.5&deg;/s</output>
+  </div>
+  <div class="row">
+    <label for="cElev">Elevation</label>
+    <input id="cElev" type="range" min="2" max="88" value="30">
+    <output id="oElev">30&deg;</output>
+  </div>
+  <div class="row">
+    <label for="cScanV">Scan speed</label>
+    <input id="cScanV" type="range" min="0" max="400" value="90">
+    <output id="oScanV">9.0 m/s</output>
+  </div>
+  <div class="row">
+    <label>Scan cuts</label>
+    <div class="btns" style="flex:1">
+      <button id="bAcross" aria-pressed="true">Across the rows</button>
+      <button id="bAlong" aria-pressed="false">Along strike</button>
+    </div>
+  </div>
+  <p class="lbl">Layers</p>
+  <div class="layers">
+    <label class="ck" for="cPts"><span class="swatch" style="background:var(--pts)"></span>Returns<input type="checkbox" id="cPts"></label>
+    <label class="ck" for="cDsm"><span class="swatch" style="background:var(--dsm)"></span>DSM &mdash; first returns<input type="checkbox" id="cDsm" checked></label>
+    <label class="ck" for="cDem"><span class="swatch" style="background:var(--dem)"></span>DEM &mdash; bare earth<input type="checkbox" id="cDem" checked></label>
+    <label class="ck" for="cGap"><span class="swatch" style="background:var(--gap)"></span>Mark the gaps<input type="checkbox" id="cGap" checked></label>
+    <label class="ck" for="cChm"><span class="swatch" style="background:linear-gradient(135deg,#000 0 45%,#fff 45% 100%)"></span>CHM &mdash; the slide image<input type="checkbox" id="cChm" checked></label>
+    <label class="ck" for="cScan"><span class="swatch" style="background:#ffffff"></span>Scanner<input type="checkbox" id="cScan" checked></label>
+  </div>
+  <div class="btns">
+    <button id="bOrbit" aria-pressed="true">Orbit</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="scanline_scene_data.js"></script>
+<script>
+(function(){
+  var S = window.SCENE;
+  function f32(b64){
+    var s=atob(b64), n=s.length, u=new Uint8Array(n);
+    for (var i=0;i<n;i++) u[i]=s.charCodeAt(i);
+    return new Float32Array(u.buffer);
+  }
+  function u8(b64){
+    var s=atob(b64), n=s.length, u=new Uint8Array(n);
+    for (var i=0;i<n;i++) u[i]=s.charCodeAt(i);
+    return u;
+  }
+  function css(v){
+    return getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  }
+
+  var px=f32(S.px), py=f32(S.py), pz=f32(S.pz), nr=u8(S.nr);
+  var dem0=f32(S.dem), dsm0=f32(S.dsm), chm0=f32(S.chm);
+  var NX=S.nx, NY=S.ny, RES=S.res_m, SIDE=S.side_m;
+
+  // ---- the flattening plane -------------------------------------------
+  // Least squares z = a*x + b*y + c over every bare-earth cell that has a
+  // value. Fitting on the DEM and applying the SAME plane to the DSM and to
+  // the points is what keeps the three layers registered -- fit each one
+  // separately and they drift apart vertically.
+  var Sxx=0,Sxy=0,Sx=0,Syy=0,Sy=0,Sn=0,Sxz=0,Syz=0,Sz=0;
+  for (var r=0;r<NY;r++) for (var c=0;c<NX;c++){
+    var z=dem0[r*NX+c]; if(!isFinite(z)) continue;
+    var x=c*RES, y=(NY-1-r)*RES;
+    Sxx+=x*x; Sxy+=x*y; Sx+=x; Syy+=y*y; Sy+=y; Sn++;
+    Sxz+=x*z; Syz+=y*z; Sz+=z;
+  }
+  function solve3(m,v){
+    for (var i=0;i<3;i++){
+      var p=i;
+      for (var k=i+1;k<3;k++) if (Math.abs(m[k][i])>Math.abs(m[p][i])) p=k;
+      var t=m[i]; m[i]=m[p]; m[p]=t; var tv=v[i]; v[i]=v[p]; v[p]=tv;
+      if (Math.abs(m[i][i])<1e-12) return [0,0,0];
+      for (var k2=i+1;k2<3;k2++){
+        var f=m[k2][i]/m[i][i];
+        for (var j=i;j<3;j++) m[k2][j]-=f*m[i][j];
+        v[k2]-=f*v[i];
+      }
+    }
+    var out=[0,0,0];
+    for (var i2=2;i2>=0;i2--){
+      var s=v[i2];
+      for (var j2=i2+1;j2<3;j2++) s-=m[i2][j2]*out[j2];
+      out[i2]=s/m[i2][i2];
+    }
+    return out;
+  }
+  var PL = Sn>3 ? solve3([[Sxx,Sxy,Sx],[Sxy,Syy,Sy],[Sx,Sy,Sn]],[Sxz,Syz,Sz])
+                : [0,0,0];
+  var ZBAR = Sn ? Sz/Sn : 0;
+  var slopeDeg = Math.atan(Math.hypot(PL[0],PL[1]))*180/Math.PI;
+  function planeAt(x,y){ return PL[0]*x + PL[1]*y + PL[2]; }
+
+  // pre-compute both states of every surface, so the slider is a cheap lerp
+  function detrend(grid){
+    var out=new Float32Array(grid.length);
+    for (var r=0;r<NY;r++) for (var c=0;c<NX;c++){
+      var i=r*NX+c, v=grid[i];
+      out[i] = isFinite(v) ? v - planeAt(c*RES,(NY-1-r)*RES) + ZBAR : NaN;
+    }
+    return out;
+  }
+  var demF=detrend(dem0), dsmF=detrend(dsm0);
+  var pzF=new Float32Array(pz.length);
+  for (var i=0;i<pz.length;i++) pzF[i] = pz[i]-planeAt(px[i],py[i])+ZBAR;
+
+  // ---- scene ------------------------------------------------------------
+  var stage=document.getElementById('stage');
+  var renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor(new THREE.Color(css('--ground')),1);
+  stage.appendChild(renderer.domElement);
+  var scene=new THREE.Scene();
+  var camera=new THREE.PerspectiveCamera(42,1,0.5,6000);
+  var root=new THREE.Group(); root.rotation.x=-Math.PI/2; scene.add(root);
+
+  scene.add(new THREE.AmbientLight(0xffffff,0.66));
+  var key=new THREE.DirectionalLight(0xffffff,0.72);
+  key.position.set(-0.5,-0.85,1.0); scene.add(key);
+  var rim=new THREE.DirectionalLight(0xffffff,0.22);
+  rim.position.set(0.8,0.5,0.4); scene.add(rim);
+
+  // A quad touching a NaN is skipped, so a hole stays a hole instead of being
+  // bridged by a triangle that was never measured.
+  function buildSurface(grid,colorVar){
+    var pos=[],idx=[],map=new Int32Array(NX*NY).fill(-1),n=0;
+    for (var r=0;r<NY;r++) for (var c=0;c<NX;c++){
+      var v=grid[r*NX+c]; if(!isFinite(v)) continue;
+      map[r*NX+c]=n++; pos.push(c*RES,(NY-1-r)*RES,v);
+    }
+    for (var r2=0;r2<NY-1;r2++) for (var c2=0;c2<NX-1;c2++){
+      var a=map[r2*NX+c2],b=map[r2*NX+c2+1],
+          d=map[(r2+1)*NX+c2],e=map[(r2+1)*NX+c2+1];
+      if(a<0||b<0||d<0||e<0) continue;
+      idx.push(a,d,b,b,d,e);
+    }
+    var g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+    g.setIndex(idx); g.computeVertexNormals();
+    var m=new THREE.MeshLambertMaterial({
+      color:new THREE.Color(css(colorVar)), side:THREE.DoubleSide,
+      transparent:true, opacity:0.93
+    });
+    return {mesh:new THREE.Mesh(g,m), map:map, count:n};
+  }
+  var SD=buildSurface(dem0,'--dem'), SS=buildSurface(dsm0,'--dsm');
+  root.add(SD.mesh); root.add(SS.mesh);
+
+  // writing z straight into the buffer is what makes flatten and relief
+  // instant -- no geometry is rebuilt after load
+  function applySurface(s, flat, raw, f, ex){
+    var arr=s.mesh.geometry.attributes.position.array;
+    for (var r=0;r<NY;r++) for (var c=0;c<NX;c++){
+      var i=r*NX+c, k=s.map[i]; if(k<0) continue;
+      var v=raw[i]+(flat[i]-raw[i])*f;
+      arr[k*3+2]=(v-ZBAR)*ex+ZBAR;
+    }
+    s.mesh.geometry.attributes.position.needsUpdate=true;
+    s.mesh.geometry.computeVertexNormals();
+  }
+
+  // ---- gap risers: one stick on every cell the first-return surface lacks
+  var gapIdx=[];
+  for (var r=0;r<NY;r++) for (var c=0;c<NX;c++){
+    var i=r*NX+c;
+    if (!isFinite(dsm0[i]) && isFinite(dem0[i])) gapIdx.push(i);
+  }
+  var gpos=new Float32Array(gapIdx.length*6);
+  var gapGeo=new THREE.BufferGeometry();
+  gapGeo.setAttribute('position',new THREE.Float32BufferAttribute(gpos,3));
+  var gapLines=new THREE.LineSegments(gapGeo,new THREE.LineBasicMaterial({
+    color:new THREE.Color(css('--gap')),transparent:true,opacity:0.82}));
+  root.add(gapLines);
+  // The riser height has to follow the relief on screen, not sit at a fixed
+  // number of metres. Flattening takes about 19 m of regional drop out of this
+  // box, so the visible relief collapses from tens of metres to a few, and a
+  // fixed 5.5 m stick that looked right on the raw hillside ends up towering
+  // over the flattened surface. Sized at a tenth of whatever relief is
+  // currently on screen, it reads the same at every slider position.
+  // How high and how low the bare earth currently sits on screen. Both the
+  // riser height and the floor's drop are read off this, so one pass serves
+  // both and they cannot disagree.
+  function reliefRange(f,ex){
+    var lo=Infinity, hi=-Infinity;
+    for (var q=0;q<dem0.length;q++){
+      var vq=dem0[q]; if(!isFinite(vq)) continue;
+      var zq=((vq+(demF[q]-vq)*f)-ZBAR)*ex+ZBAR;
+      if (zq<lo) lo=zq;
+      if (zq>hi) hi=zq;
+    }
+    return isFinite(lo) ? [lo,hi] : [ZBAR,ZBAR+1];
+  }
+  function applyGaps(f,ex,lo,hi){
+    var H = Math.max(0.35, (hi-lo)*0.10);
+    var a=gapGeo.attributes.position.array;
+    for (var j=0;j<gapIdx.length;j++){
+      var i=gapIdx[j], c=i%NX, r=(i-c)/NX;
+      var x=c*RES, y=(NY-1-r)*RES;
+      var v=dem0[i]+(demF[i]-dem0[i])*f, z=(v-ZBAR)*ex+ZBAR;
+      a[j*6]=x; a[j*6+1]=y; a[j*6+2]=z;
+      a[j*6+3]=x; a[j*6+4]=y; a[j*6+5]=z+H;
+    }
+    gapGeo.attributes.position.needsUpdate=true;
+  }
+
+  // ---- CHM floor: the slide's own picture, laid flat under the model
+  //
+  // Same window, same greyscale, same NoData paint as the CHM panel in
+  // docs/presentation/figures_30to45min/_build_derivative_panel.py, so the two
+  // can be held against each other. The stretch is 0 to 40.24 m -- the WHOLE
+  // raster's min/max, which is the convention QGIS applies and the panel
+  // inherits; stretching on this 300 m window instead would make the same
+  // canopy a different grey here than on the slide.
+  //
+  // Unlit on purpose (MeshBasicMaterial). A Lambert material would shade the
+  // floor with the scene lights and the greys would no longer be the raster's
+  // greys, which defeats the comparison.
+  var chmCan=document.createElement('canvas');
+  chmCan.width=NX; chmCan.height=NY;
+  (function(){
+    var ctx=chmCan.getContext('2d');
+    var im=ctx.createImageData(NX,NY), d=im.data;
+    var lo=S.chm_vmin, hi=S.chm_vmax, span=Math.max(hi-lo,1e-9);
+    var hex=(S.chm_nodata_rgb||'#D97706').replace('#','');
+    var nr_=parseInt(hex.substr(0,2),16), ng=parseInt(hex.substr(2,2),16),
+        nb=parseInt(hex.substr(4,2),16);
+    for (var i=0;i<NX*NY;i++){
+      var v=chm0[i], o=i*4;
+      if (isFinite(v)){
+        var g=Math.round(255*Math.max(0,Math.min(1,(v-lo)/span)));
+        d[o]=g; d[o+1]=g; d[o+2]=g;
+      } else { d[o]=nr_; d[o+1]=ng; d[o+2]=nb; }
+      d[o+3]=255;
+    }
+    ctx.putImageData(im,0,0);
+  })();
+  var chmTex=new THREE.CanvasTexture(chmCan);
+  // nearest, so a half-metre cell stays a square and the 3 m rows keep their
+  // hard edges instead of being blurred into a smear
+  chmTex.magFilter=THREE.NearestFilter; chmTex.minFilter=THREE.LinearFilter;
+  var chmFloor=new THREE.Mesh(
+    new THREE.PlaneGeometry(SIDE,SIDE),
+    new THREE.MeshBasicMaterial({map:chmTex,side:THREE.DoubleSide}));
+  chmFloor.position.set(SIDE/2,SIDE/2,0);
+  root.add(chmFloor);
+  function applyFloor(lo,hi){
+    chmFloor.position.z = lo - Math.max(1.0,(hi-lo)*0.35);
+  }
+
+  // ---- returns
+  var N=px.length, ppos=new Float32Array(N*3), pcol=new Float32Array(N*3);
+  var cS=new THREE.Color(css('--pts')), cM=new THREE.Color(css('--dsm'));
+  for (var i2=0;i2<N;i2++){
+    ppos[i2*3]=px[i2]; ppos[i2*3+1]=py[i2];
+    var m2 = nr[i2]>1 ? cM : cS;
+    pcol[i2*3]=m2.r; pcol[i2*3+1]=m2.g; pcol[i2*3+2]=m2.b;
+  }
+  var pg=new THREE.BufferGeometry();
+  pg.setAttribute('position',new THREE.Float32BufferAttribute(ppos,3));
+  pg.setAttribute('color',new THREE.Float32BufferAttribute(pcol,3));
+  var pts=new THREE.Points(pg,new THREE.PointsMaterial({
+    size:1.5,vertexColors:true,sizeAttenuation:false}));
+  pts.visible=false; root.add(pts);
+  function applyPoints(f,ex){
+    var a=pg.attributes.position.array;
+    for (var j=0;j<N;j++){
+      var v=pz[j]+(pzF[j]-pz[j])*f;
+      a[j*3+2]=(v-ZBAR)*ex+ZBAR;
+    }
+    pg.attributes.position.needsUpdate=true;
+  }
+
+  // ---- scanner: a line that walks across the box, plus its cross-section
+  //
+  // WHICH WAY THE LINE POINTS MATTERS. The dropout rows run on a 79 degree
+  // bearing (clockwise from north), measured in
+  // notebooks/wellsight_v2/s7_analysis/_test_chm_nodata_bands_9t.py. A line
+  // laid PARALLEL to them would sit inside one row and then inside the next,
+  // flashing entirely on and entirely off, which shows the spacing but not the
+  // pattern. So the line is laid ACROSS them -- 79 - 90 = -11 degrees -- and
+  // walks ALONG the rows. Every frame then cuts all of them at once and the
+  // cross-section reads as a comb, one tooth per row, 3 m apart.
+  //
+  // TWO MODES, and they answer different questions.
+  //   ACROSS  the line lies perpendicular to the rows and walks along them.
+  //           Every frame cuts all of the rows at once, so the cross-section
+  //           reads as a comb: one tooth per row, 3 m apart. This is the mode
+  //           that shows the pattern.
+  //   ALONG   the line lies parallel to the rows and walks across them. Now
+  //           the line is either sitting in a row or between two, so the
+  //           cross-section floods orange and then clears, once every 3 m of
+  //           travel. This is the mode that shows the SPACING, and it is also
+  //           the one that makes the point that a whole strip is missing
+  //           rather than scattered cells.
+  var BEARING=79.0*Math.PI/180;
+  var B_ALONG=[Math.sin(BEARING), Math.cos(BEARING)];     // parallel to the rows
+  var B_ACROSS=[Math.cos(BEARING), -Math.sin(BEARING)];   // perpendicular
+  var alongMode=false;
+  // the line points one way and travels the other, whichever mode is on
+  function lineDir(){ return alongMode ? B_ALONG  : B_ACROSS; }
+  function moveDir(){ return alongMode ? B_ACROSS : B_ALONG;  }
+  var CEN=[SIDE/2, SIDE/2];
+  var SSTEP=RES;                          // one sample per raster cell
+  var SPAN=SIDE*Math.SQRT2/2;             // half-diagonal: always spans the box
+  var sweep=-SPAN;
+
+  // Nearest-cell lookup. Nearest and not bilinear on purpose: interpolating
+  // across a NaN would smear the hole shut, and the hole is the subject.
+  function at(grid,x,y){
+    var c=Math.round(x/RES-0.5), r=Math.round((SIDE-y)/RES-0.5);
+    if (c<0||c>=NX||r<0||r>=NY) return NaN;
+    return grid[r*NX+c];
+  }
+
+  // The profile is rebuilt every frame into these, never reallocated.
+  var NS=Math.floor(2*SPAN/SSTEP)+1;
+  var prT=new Float32Array(NS), prX=new Float32Array(NS), prY=new Float32Array(NS),
+      prD=new Float32Array(NS), prS=new Float32Array(NS);
+  var prN=0, prGap=0;
+  function sampleLine(off){
+    var n=0, gaps=0, L=lineDir(), M=moveDir();
+    for (var t=-SPAN;t<=SPAN;t+=SSTEP){
+      var x=CEN[0]+M[0]*off+L[0]*t;
+      var y=CEN[1]+M[1]*off+L[1]*t;
+      if (x<0||x>SIDE||y<0||y>SIDE) continue;
+      var d=at(dem0,x,y); if(!isFinite(d)) continue;
+      var m=at(dsm0,x,y);
+      prT[n]=t; prX[n]=x; prY[n]=y; prD[n]=d; prS[n]=m; n++;
+      if (!isFinite(m)) gaps++;
+    }
+    prN=n; prGap=gaps;
+  }
+
+  // The scanner in the 3D scene: the line itself, drawn on the bare earth, and
+  // a taller tick wherever the first-return surface is missing.
+  var scanGeo=new THREE.BufferGeometry();
+  scanGeo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(NS*3),3));
+  var scanLine=new THREE.Line(scanGeo,new THREE.LineBasicMaterial({color:0xffffff}));
+  scanLine.frustumCulled=false; root.add(scanLine);
+  var hitGeo=new THREE.BufferGeometry();
+  hitGeo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(NS*6),3));
+  var hitLines=new THREE.LineSegments(hitGeo,new THREE.LineBasicMaterial({
+    color:new THREE.Color(css('--gap'))}));
+  hitLines.frustumCulled=false; root.add(hitLines);
+
+  // ---- the cross-section panel
+  var xs=document.getElementById('xsec'), xc=xs.getContext('2d');
+  // One vertical scale for the whole sweep, computed once. A scale that
+  // re-fitted every frame would make the canopy appear to breathe as the line
+  // moved, and the height of a tree would stop being comparable between frames.
+  var YLO=Infinity, YHI=-Infinity;
+  for (var q0=0;q0<demF.length;q0++){
+    var a0=demF[q0]; if(isFinite(a0)&&a0<YLO) YLO=a0;
+    var b0=dsmF[q0]; if(isFinite(b0)&&b0>YHI) YHI=b0;
+  }
+  if (!isFinite(YLO)) { YLO=0; YHI=1; }
+  YLO-=1; YHI+=1;
+
+  function drawXsec(f){
+    var W=xs.width, H=xs.height, pad=6;
+    xc.clearRect(0,0,W,H);
+    if (prN<2) return;
+    var t0=prT[0], t1=prT[prN-1], tspan=Math.max(t1-t0,1e-6);
+    function PX(i){ return pad + (prT[i]-t0)/tspan*(W-2*pad); }
+    function PY(v){
+      var lo = YLO*f + (S.z_min)*(1-f), hi = YHI*f + (S.z_max)*(1-f);
+      return H-pad - (v-lo)/Math.max(hi-lo,1e-6)*(H-2*pad);
+    }
+    // ticks first, so the two surface traces sit on top of them
+    xc.strokeStyle=css('--gap'); xc.globalAlpha=0.9; xc.lineWidth=2;
+    xc.beginPath();
+    for (var i=0;i<prN;i++){
+      if (isFinite(prS[i])) continue;
+      var x=PX(i);
+      xc.moveTo(x,H-pad); xc.lineTo(x,pad);
+    }
+    xc.stroke(); xc.globalAlpha=1;
+    // bare earth, then first return
+    function trace(arr,colv,w){
+      xc.strokeStyle=css(colv); xc.lineWidth=w; xc.beginPath();
+      var pen=false;
+      for (var i=0;i<prN;i++){
+        var v=arr[i];
+        if (!isFinite(v)){ pen=false; continue; }
+        var vv = v + planeShift(prX[i],prY[i])*f;
+        var x=PX(i), y=PY(vv);
+        if (pen) xc.lineTo(x,y); else { xc.moveTo(x,y); pen=true; }
+      }
+      xc.stroke();
+    }
+    trace(prD,'--dem',2.2);
+    trace(prS,'--dsm',2.2);
+  }
+  // the same detrend the 3D surfaces use, evaluated at a point rather than a cell
+  function planeShift(x,y){ return -planeAt(x,y)+ZBAR; }
+
+  function applyScan(f,ex){
+    sampleLine(sweep);
+    var sp=scanGeo.attributes.position.array;
+    var hp=hitGeo.attributes.position.array;
+    var rr=reliefRange(f,ex);
+    var H=Math.max(0.5,(rr[1]-rr[0])*0.16);
+    var nh=0;
+    for (var i=0;i<prN;i++){
+      var v=prD[i]+planeShift(prX[i],prY[i])*f;
+      var z=(v-ZBAR)*ex+ZBAR;
+      sp[i*3]=prX[i]; sp[i*3+1]=prY[i]; sp[i*3+2]=z+0.05*ex;
+      if (!isFinite(prS[i])){
+        hp[nh*6]=prX[i];   hp[nh*6+1]=prY[i]; hp[nh*6+2]=z;
+        hp[nh*6+3]=prX[i]; hp[nh*6+4]=prY[i]; hp[nh*6+5]=z+H;
+        nh++;
+      }
+    }
+    scanGeo.setDrawRange(0,prN); scanGeo.attributes.position.needsUpdate=true;
+    hitGeo.setDrawRange(0,nh*2); hitGeo.attributes.position.needsUpdate=true;
+    drawXsec(f);
+    sN.textContent=prN.toLocaleString();
+    sG.textContent=prGap.toLocaleString();
+    sSub.textContent=(alongMode ? 'lying along the rows, ' : 'cutting across the rows, ')
+      +Math.round(sweep+SPAN)+' of '+Math.round(2*SPAN)+' m travelled';
+  }
+
+  // ---- camera: a fixed elevation with the azimuth driven by the clock
+  //
+  // MIND THE FRAME. `root.rotation.x = -PI/2` rotates the data into the scene,
+  // so a data point (x, y, z) lands at world (x, z, -y): the terrain's up-axis
+  // becomes world +Y, not +Z. An earlier version orbited about world Z and
+  // treated the target as if it were still in data coordinates, which put the
+  // spin axis flat IN the terrain -- the model tumbled sideways instead of
+  // turning on the spot.
+  //
+  // So the orbit is defined in world space: the axis is +Y through the middle
+  // of the bare-earth sheet, and elevation is measured up from the horizontal
+  // XZ plane. ZBAR is the mean DEM height, and the relief scaling is written
+  // as (v - ZBAR) * ex + ZBAR, so the centre stays at ZBAR whatever the
+  // sliders do and the model never drifts out of frame.
+  var UP=new THREE.Vector3(0,1,0);
+  var tgt=new THREE.Vector3(SIDE/2, ZBAR, -SIDE/2);
+  var azim=-0.7, elev=30*Math.PI/180, radius=SIDE*1.75;
+  function place(){
+    var ce=Math.cos(elev);
+    camera.position.set(
+      tgt.x + radius*ce*Math.cos(azim),
+      tgt.y + radius*Math.sin(elev),
+      tgt.z + radius*ce*Math.sin(azim));
+    camera.up.copy(UP);
+    camera.lookAt(tgt);
+  }
+
+  var drag=null;
+  renderer.domElement.style.touchAction='none';
+  renderer.domElement.addEventListener('pointerdown',function(e){
+    drag={x:e.clientX,y:e.clientY};
+    renderer.domElement.setPointerCapture(e.pointerId);
+  });
+  renderer.domElement.addEventListener('pointermove',function(e){
+    if(!drag) return;
+    azim -= (e.clientX-drag.x)*0.006;
+    elev = Math.max(0.03,Math.min(1.53, elev + (e.clientY-drag.y)*0.005));
+    drag={x:e.clientX,y:e.clientY};
+    cElev.value=Math.round(elev*180/Math.PI); oElev.textContent=cElev.value+'°';
+    place();
+  });
+  function endDrag(){ drag=null; }
+  renderer.domElement.addEventListener('pointerup',endDrag);
+  renderer.domElement.addEventListener('pointercancel',endDrag);
+  renderer.domElement.addEventListener('wheel',function(e){
+    e.preventDefault();
+    radius=Math.max(SIDE*0.35,Math.min(SIDE*6,radius*(1+Math.sign(e.deltaY)*0.09)));
+    place();
+  },{passive:false});
+
+  // ---- controls
+  var cFlat=document.getElementById('cFlat'), oFlat=document.getElementById('oFlat');
+  var cExag=document.getElementById('cExag'), oExag=document.getElementById('oExag');
+  var cSpin=document.getElementById('cSpin'), oSpin=document.getElementById('oSpin');
+  var cElev=document.getElementById('cElev'), oElev=document.getElementById('oElev');
+  var sN=document.getElementById('sN'), sG=document.getElementById('sG'),
+      sSub=document.getElementById('sSub');
+  var cScanV=document.getElementById('cScanV'), oScanV=document.getElementById('oScanV');
+  cScanV.addEventListener('input',function(){
+    oScanV.textContent=(+cScanV.value/10).toFixed(1)+' m/s';
+  });
+  // A direction switch, not a checkbox: the two are exclusive, and a pressed
+  // button is the control that says "one of these". The sweep restarts on a
+  // change, because a position measured along one axis means nothing on the
+  // other.
+  var bAcross=document.getElementById('bAcross'), bAlong=document.getElementById('bAlong');
+  function setMode(on){
+    alongMode=on;
+    bAcross.setAttribute('aria-pressed',on?'false':'true');
+    bAlong.setAttribute('aria-pressed',on?'true':'false');
+    sweep=-SPAN;
+    if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
+  }
+  bAcross.addEventListener('click',function(){ setMode(false); });
+  bAlong.addEventListener('click',function(){ setMode(true); });
+  function refresh(){
+    var f=+cFlat.value/100, ex=+cExag.value/100;
+    oFlat.textContent=cFlat.value+'%';
+    oExag.textContent=(ex).toFixed(1)+'×';
+    applySurface(SD,demF,dem0,f,ex);
+    applySurface(SS,dsmF,dsm0,f,ex);
+    var rr=reliefRange(f,ex);
+    applyGaps(f,ex,rr[0],rr[1]);
+    applyFloor(rr[0],rr[1]);
+    if (scanLine.visible) applyScan(f,ex);
+    if (pts.visible) applyPoints(f,ex);
+  }
+  cFlat.addEventListener('input',refresh);
+  cExag.addEventListener('input',refresh);
+  cSpin.addEventListener('input',function(){
+    oSpin.textContent=(+cSpin.value/10).toFixed(1)+'°/s';
+  });
+  cElev.addEventListener('input',function(){
+    elev=+cElev.value*Math.PI/180;
+    oElev.textContent=cElev.value+'°';
+    place();
+  });
+
+  // Layers are checkboxes, matching the original viewer: a layer is either on
+  // or off, which is what a checkbox says and what a pressed button only
+  // implies. Orbit stays a button because it is an action, not a layer.
+  function layer(id,fn){
+    var el=document.getElementById(id);
+    el.addEventListener('change',function(){ fn(el.checked); });
+    fn(el.checked);
+  }
+  layer('cDem',function(on){ SD.mesh.visible=on; });
+  layer('cDsm',function(on){ SS.mesh.visible=on; });
+  layer('cGap',function(on){ gapLines.visible=on; });
+  layer('cChm',function(on){ chmFloor.visible=on; });
+  layer('cScan',function(on){
+    scanLine.visible=on; hitLines.visible=on;
+    document.getElementById('scan').style.display=on?'':'none';
+    if(on) applyScan(+cFlat.value/100, +cExag.value/100);
+  });
+  layer('cPts',function(on){
+    pts.visible=on;
+    if(on) applyPoints(+cFlat.value/100, +cExag.value/100);
+  });
+
+  var orbiting=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bOrbit=document.getElementById('bOrbit');
+  bOrbit.setAttribute('aria-pressed',orbiting?'true':'false');
+  bOrbit.addEventListener('click',function(){
+    orbiting=!orbiting;
+    bOrbit.setAttribute('aria-pressed',orbiting?'true':'false');
+  });
+
+  // ---- readouts, from the data rather than typed in
+  document.getElementById('fD').textContent=S.dem_nan_pct.toFixed(2)+'%';
+  document.getElementById('fS').textContent=S.dsm_nan_pct.toFixed(2)+'%';
+  document.getElementById('fN').textContent=S.n_points.toLocaleString();
+  document.getElementById('fP').textContent=slopeDeg.toFixed(1)+'°';
+  document.getElementById('fTitle').textContent =
+    'Scan-line dropout, ' + SIDE.toFixed(0) + ' m box';
+  document.getElementById('fWhere').textContent =
+    '9t · ' + Math.round(S.origin_en[0]+SIDE/2) + ' E, ' +
+    Math.round(S.origin_en[1]+SIDE/2) + ' N · EPSG:6346 · same window as the '
+    + 'CHM panel on the slide';
+
+  function resize(){
+    var w=stage.clientWidth,h=stage.clientHeight;
+    renderer.setSize(w,h,false);
+    camera.aspect=w/Math.max(h,1); camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize',resize);
+
+  var last=performance.now();
+  function frame(now){
+    var dt=Math.min((now-last)/1000,0.1); last=now;
+    if (orbiting && !drag){ azim += (+cSpin.value/10)*Math.PI/180*dt; place(); }
+    if (scanLine.visible){
+      sweep += (+cScanV.value/10)*dt;
+      if (sweep > SPAN) sweep = -SPAN;
+      applyScan(+cFlat.value/100, +cExag.value/100);
+    }
+    renderer.render(scene,camera);
+    requestAnimationFrame(frame);
+  }
+  resize(); refresh(); place();
+  requestAnimationFrame(frame);
+})();
+</script>

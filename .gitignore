@@ -170,3 +170,6 @@ data/9t/results/*/v6/
 
 # Raster clips are regenerable in seconds by tools/make_raster_clips.py.
 data/**/clips/
+
+# Throwaway bisection copies of the deck, ~87 MB, regenerable
+docs/presentation/_repair_test/

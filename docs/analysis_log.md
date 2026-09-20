@@ -5,6 +5,42 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 -- Orbit viewer on the CHM slide window, and the hand-annotation inventory
+
+**Viewer window moved to match the slide.** `_export_scanline_viewer_data_9t.py`
+was centred on 621392 E, 4594510 N at 120 m -- the densest patch of the dropout
+field, wholly inside the CHM panel but offset 32 m east and 43 m north of it. It
+now uses the panel's own centre and side (621359.6 E, 4594467.4 N, 300 m), taken
+from LAT/LON/SIDE_M in `_build_derivative_panel.py`. The window's NoData comes
+out at 3.22%, matching `_test_chm_nodata_bands_9t.py` exactly, which confirms the
+registration. Scene file 9.1 MB, 176,275 returns, 600x600 grids.
+
+**CHM laid under the model.** The export already carried the CHM grid; the viewer
+now renders it as an unlit textured floor, greyscale 0 to 40.24 m -- the whole
+raster's min/max, which is the convention the panel inherits -- with NoData in
+`#D97706`, the same paint as the slide. Unlit on purpose: a shaded floor would
+not be the raster's greys.
+
+**Scanner.** A line walks the box and its cross-section is plotted live, with a
+tick on every cell the first-return surface lacks. Two modes: across the rows
+(the line cuts all of them at once, the section reads as a comb) and along
+strike (the line floods and clears once every 3 m of travel). Speed is a slider,
+0 to 40 m/s.
+
+**Hand-annotation inventory.** `_annotation_inventory_stats.py` counts what was
+drawn, from `annotations_proj.gpkg`. Roads 535.9 km over 3,690 lines forming
+1,747 networks; not-road 18.0 km over 112. Drainage 45.0 km, 594 drawn lines cut
+into 1,791 segments, 9t only. Pads 995, 144.40 ha, mean 1,451 m2. Pit exteriors
+723, 14.84 ha, mean 205 m2. Pit interiors 712, 2.29 ha, mean 32 m2 -- 16% of the
+outline by area. Walls 586, 9.91 ha. Every layer also split 9t / 613590 /
+elsewhere, because roads run to McKean and a grand total is not a 9t total.
+Written onto v6 slides 30, 31, 32, 34, 35 with plain-language notes.
+
+**One correction made in the pass:** the first road "drawn lines" count came out
+at 4,972 against 3,690 features, because `linemerge(unary_union(...))` nodes
+every crossing and splits lines. Replaced with a union-find over shared
+endpoints.
+
 ## 2026-09-19 - CORRECTION: the CHM "streaks" are NoData, and the roaddrain architecture row is training
 
 **Retraction.** The entry below, "the CHM carries scanner-sweep artifacts", is

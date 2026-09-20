@@ -16,7 +16,7 @@ as a plain script, since the Artifact CSP blocks fetch() to any host.
 
 Run:
     python notebooks/wellsight_v2/s7_analysis/_export_scanline_viewer_data_9t.py
-    ... --side 120 --max-points 400000
+    ... --side 300 --max-points 400000
 """
 from __future__ import annotations
 
@@ -34,8 +34,24 @@ D05 = ROOT / "data/9t/derived/05"
 SRC = ROOT / "data/_source/lidar/westernpa/OTHER_DATA"
 OUT = ROOT / "docs/presentation/viewers"
 
-#: Centre of the dropout field, from _build_chm_nodata_cross_section_9t.py.
-CX, CY = 621392.0, 4594510.0
+#: Centre and side of the CHM panel on the slide -- 41.492640 N, -79.546127 W
+#: in EPSG:6346, from LAT/LON/SIDE_M in
+#: docs/presentation/figures_30to45min/_build_derivative_panel.py.
+#:
+#: This USED to be 621392, 4594510 at 120 m, which is the densest patch of the
+#: dropout field and sits wholly inside the panel but is offset 32 m east and
+#: 43 m north of it. A viewer you cannot lay against the slide is not a
+#: comparison, so the window now matches the slide exactly.
+CX, CY = 621359.6, 4594467.4
+SIDE_M = 300.0
+
+#: The slide's CHM greyscale, so the floor texture in the viewer is the same
+#: picture. No QGIS style exists for this layer, so _build_derivative_panel.py
+#: falls back to the project convention: gray, black to white, stretched on the
+#: WHOLE raster's min/max, not the window's. Taken from chm_9t_05.tif.
+CHM_VMIN, CHM_VMAX = 0.0, 40.239532470703
+#: NoData paint, matching NODATA_RGB in _build_derivative_panel.py.
+CHM_NODATA_RGB = "#D97706"
 
 
 def b64(a: np.ndarray) -> str:
@@ -45,7 +61,7 @@ def b64(a: np.ndarray) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--centre-en", nargs=2, type=float, default=[CX, CY])
-    ap.add_argument("--side", type=float, default=120.0)
+    ap.add_argument("--side", type=float, default=SIDE_M)
     ap.add_argument("--res", type=float, default=0.5)
     ap.add_argument("--max-points", type=int, default=400000)
     ap.add_argument("--seed", type=int, default=42)
@@ -105,6 +121,7 @@ def main() -> int:
         chm_nan_pct=float(100 * np.isnan(grids["chm"]).mean()),
         z_min=float(np.nanmin(pz)), z_max=float(np.nanmax(pz)),
         multi_return_pct=float(100 * np.mean(nr > 1)),
+        chm_vmin=CHM_VMIN, chm_vmax=CHM_VMAX, chm_nodata_rgb=CHM_NODATA_RGB,
     )
     print("  " + json.dumps({k: (round(v, 2) if isinstance(v, float) else v)
                              for k, v in meta.items() if k != "origin_en"}))
