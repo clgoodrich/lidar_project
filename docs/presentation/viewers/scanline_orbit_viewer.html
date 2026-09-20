@@ -95,7 +95,7 @@
   .ck:hover{color:#fff;}
   .ck input:focus-visible{outline:2px solid var(--dsm); outline-offset:2px;}
   #scan{
-    top:calc(14px + env(safe-area-inset-top,0px)); right:16px; width:23rem;
+    top:calc(14px + env(safe-area-inset-top,0px)); right:16px; width:31rem;
     max-width:calc(100vw - 32px);
   }
   #scan h2{
@@ -103,11 +103,12 @@
   }
   #scan .sub{margin:0 0 8px; font-size:0.72rem; color:var(--muted);}
   #xsec{
-    display:block; width:100%; height:130px; border-radius:6px;
+    display:block; width:100%; height:210px; border-radius:6px;
     background:#0b1116; border:1px solid var(--edge);
   }
   #scan .readout{
-    display:flex; justify-content:space-between; gap:10px; margin:8px 0 0;
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px 10px;
+    margin:8px 0 0;
     font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:0.72rem;
     font-variant-numeric:tabular-nums; color:var(--muted);
   }
@@ -125,7 +126,7 @@
     }
     #facts,#scan{position:static; width:auto; max-width:none;}
     #facts .note{display:none;}
-    #xsec{height:96px;}
+    #xsec{height:130px;}
     #rail{right:16px; min-width:0;}
   }
   @media (prefers-reduced-motion:reduce){
@@ -156,10 +157,11 @@
 <div class="panel" id="scan">
   <h2>Cross-section under the scanner</h2>
   <p class="sub" id="sSub">&mdash;</p>
-  <canvas id="xsec" width="640" height="260"></canvas>
+  <canvas id="xsec" width="900" height="380"></canvas>
   <p class="readout">
     <span>cells on the line <span id="sN">&mdash;</span></span>
     <span><b id="sG">&mdash;</b> with no first return</span>
+    <span>scroll to zoom &middot; shift-scroll for height &middot; drag to pan &middot; double-click resets</span>
   </p>
 </div>
 </div>
@@ -537,25 +539,77 @@
   if (!isFinite(YLO)) { YLO=0; YHI=1; }
   YLO-=1; YHI+=1;
 
+  // Cached because a gradient object is rebuilt per stroke otherwise, and the
+  // section redraws every frame.
+  var _grad=null, _gradKey='';
+  function gapGrad(y0,y1){
+    var key=y0+':'+y1;
+    if (_grad && _gradKey===key) return _grad;
+    var hex=css('--gap').replace('#','');
+    var rgb=parseInt(hex.substr(0,2),16)+','+parseInt(hex.substr(2,2),16)+','
+           +parseInt(hex.substr(4,2),16);
+    var g=xc.createLinearGradient(0,y0,0,y1);
+    g.addColorStop(0.00,'rgba('+rgb+',0.95)');
+    g.addColorStop(0.16,'rgba('+rgb+',0.10)');
+    g.addColorStop(0.84,'rgba('+rgb+',0.10)');
+    g.addColorStop(1.00,'rgba('+rgb+',0.95)');
+    _grad=g; _gradKey=key;
+    return g;
+  }
+
+  // ---- the section's own view: scroll to zoom, drag to pan
+  //
+  // Anchored to the AUTO-FIT range, not to absolute metres. The sampled line
+  // gets shorter and longer as it crosses the corners of the box, so a view
+  // pinned to metres would drift and leave changing empty margins. Centre and
+  // zoom are held as fractions of whatever the line currently spans, which
+  // stays put while the scanner moves.
+  var VIEW={cx:0.5, zx:1, cy:0.5, zy:1};
+  var ZMAX=80;
+  function clampView(){
+    VIEW.zx=Math.max(1,Math.min(ZMAX,VIEW.zx));
+    VIEW.zy=Math.max(1,Math.min(ZMAX,VIEW.zy));
+    var hx=0.5/VIEW.zx, hy=0.5/VIEW.zy;
+    VIEW.cx=Math.max(hx,Math.min(1-hx,VIEW.cx));
+    VIEW.cy=Math.max(hy,Math.min(1-hy,VIEW.cy));
+  }
+
   function drawXsec(f){
     var W=xs.width, H=xs.height, pad=6;
     xc.clearRect(0,0,W,H);
     if (prN<2) return;
     var t0=prT[0], t1=prT[prN-1], tspan=Math.max(t1-t0,1e-6);
-    function PX(i){ return pad + (prT[i]-t0)/tspan*(W-2*pad); }
-    function PY(v){
-      var lo = YLO*f + (S.z_min)*(1-f), hi = YHI*f + (S.z_max)*(1-f);
-      return H-pad - (v-lo)/Math.max(hi-lo,1e-6)*(H-2*pad);
+    var lo = YLO*f + (S.z_min)*(1-f), hi = YHI*f + (S.z_max)*(1-f);
+    function PX(i){
+      var u=(prT[i]-t0)/tspan;
+      return pad + ((u-VIEW.cx)*VIEW.zx + 0.5)*(W-2*pad);
     }
-    // ticks first, so the two surface traces sit on top of them
-    xc.strokeStyle=css('--gap'); xc.globalAlpha=0.9; xc.lineWidth=2;
+    function PY(v){
+      var u=(v-lo)/Math.max(hi-lo,1e-6);
+      return H-pad - ((u-VIEW.cy)*VIEW.zy + 0.5)*(H-2*pad);
+    }
+    // Everything is clipped to the plot box. Zoomed in, the traces run well
+    // past both edges, and without this they would paint over the panel's
+    // rounded border and the readout below it.
+    xc.save();
+    xc.beginPath(); xc.rect(pad,pad,W-2*pad,H-2*pad); xc.clip();
+    // Ticks first, so the two surface traces sit on top of them.
+    //
+    // A tick is a full-height bar, faded through its middle: solid where it
+    // meets the top and bottom edges, nearly clear across the band the traces
+    // run through. At 3 m spacing there can be dozens on screen at once, and a
+    // solid bar each would curtain the section off -- but a short mark at the
+    // ends alone stops reading as a line THROUGH the data. The fade keeps both:
+    // the comb is obvious at a glance, and the ground and canopy stay legible
+    // where they cross it.
+    xc.strokeStyle=gapGrad(pad,H-pad); xc.lineWidth=2;
     xc.beginPath();
     for (var i=0;i<prN;i++){
       if (isFinite(prS[i])) continue;
       var x=PX(i);
       xc.moveTo(x,H-pad); xc.lineTo(x,pad);
     }
-    xc.stroke(); xc.globalAlpha=1;
+    xc.stroke();
     // bare earth, then first return
     function trace(arr,colv,w){
       xc.strokeStyle=css(colv); xc.lineWidth=w; xc.beginPath();
@@ -571,6 +625,14 @@
     }
     trace(prD,'--dem',2.2);
     trace(prS,'--dsm',2.2);
+    xc.restore();
+    // a scale bar, because zooming makes "how wide is this" a real question
+    var metresAcross=tspan/VIEW.zx;
+    xc.fillStyle=css('--muted');
+    xc.font='500 15px "IBM Plex Mono",ui-monospace,monospace';
+    xc.textAlign='right'; xc.textBaseline='bottom';
+    xc.fillText(metresAcross.toFixed(metresAcross<10?1:0)+' m across   '
+                +'x'+VIEW.zx.toFixed(1)+' / y'+VIEW.zy.toFixed(1), W-pad-4, H-pad-3);
   }
   // the same detrend the 3D surfaces use, evaluated at a point rather than a cell
   function planeShift(x,y){ return -planeAt(x,y)+ZBAR; }
@@ -666,6 +728,52 @@
   // button is the control that says "one of these". The sweep restarts on a
   // change, because a position measured along one axis means nothing on the
   // other.
+  // Scroll zooms the section about the pointer; shift-scroll zooms the height
+  // instead. Drag pans. Double-click resets. preventDefault on all of it, or
+  // the page scrolls under the panel on a trackpad.
+  function xsNorm(e){
+    var r=xs.getBoundingClientRect(), pad=6;
+    var W=xs.width, H=xs.height;
+    var px=(e.clientX-r.left)/r.width*W, py=(e.clientY-r.top)/r.height*H;
+    return [(px-pad)/(W-2*pad), 1-(py-pad)/(H-2*pad)];
+  }
+  xs.addEventListener('wheel',function(e){
+    e.preventDefault();
+    var n=xsNorm(e), k=Math.exp(-Math.sign(e.deltaY)*0.18);
+    if (e.shiftKey){
+      var u=VIEW.cy+(n[1]-0.5)/VIEW.zy;
+      VIEW.zy*=k; clampView();
+      VIEW.cy=u-(n[1]-0.5)/VIEW.zy;
+    } else {
+      var ux=VIEW.cx+(n[0]-0.5)/VIEW.zx;
+      VIEW.zx*=k; clampView();
+      VIEW.cx=ux-(n[0]-0.5)/VIEW.zx;
+    }
+    clampView();
+    if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
+  },{passive:false});
+  var xdrag=null;
+  xs.style.touchAction='none'; xs.style.cursor='grab';
+  xs.addEventListener('pointerdown',function(e){
+    xdrag=xsNorm(e); xs.setPointerCapture(e.pointerId); xs.style.cursor='grabbing';
+  });
+  xs.addEventListener('pointermove',function(e){
+    if(!xdrag) return;
+    var n=xsNorm(e);
+    VIEW.cx-=(n[0]-xdrag[0])/VIEW.zx;
+    VIEW.cy-=(n[1]-xdrag[1])/VIEW.zy;
+    clampView(); xdrag=n;
+    if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
+  });
+  function xsEnd(){ xdrag=null; xs.style.cursor='grab'; }
+  xs.addEventListener('pointerup',xsEnd);
+  xs.addEventListener('pointercancel',xsEnd);
+  xs.addEventListener('dblclick',function(e){
+    e.preventDefault();
+    VIEW.cx=0.5; VIEW.zx=1; VIEW.cy=0.5; VIEW.zy=1;
+    if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
+  });
+
   var bAcross=document.getElementById('bAcross'), bAlong=document.getElementById('bAlong');
   function setMode(on){
     alongMode=on;

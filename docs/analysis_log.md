@@ -5,6 +5,43 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 -- What the corn rows are: measured, not assumed
+
+`_test_chm_nodata_bands_9t.py` established that the stripes are NoData and that
+they run at 79 deg. It did not say what put them there, and "zero first returns"
+was being repeated as if it meant "no lidar at all", which is a different claim.
+`notebooks/wellsight_v2/s7_analysis/_test_corduroy_is_scan_geometry_9t.py` now
+measures both, on the CHM panel's own 300 m window.
+
+**A void cell really is empty.** 100% have no first return, 94.1% have no return
+of ANY kind, 95.0% have no ground-classified return. Mean 0.06 returns per cell
+against 0.50 for a normal cell. Note the comparison though: 54% of NORMAL cells
+also hold zero returns, because at roughly 2 returns per square metre a 0.5 m
+cell is smaller than the point spacing. Those still get a DSM value, gridded
+from a neighbour. A void is where the empty cells line up into a strip wide
+enough that there is no neighbour to borrow from.
+
+**The stripes are the scan pattern.** One flight line over this window, PSID
+637, bearing 348.2 deg, groundspeed 112.2 m/s regressed from gps_time. Across
+track is therefore 78.2 deg. The stripes run at 79. Spacing 3.00 m, width 1.12 m,
+and 112.2 / 3.00 = 37.4 Hz, one mirror sweep. Return density on a stripe is
+0.322 per cell against 0.569 between, 1.8x thinner.
+
+So: the scanner sweeps side to side, the aircraft moves 3 m forward between one
+sweep and the next, coverage in the middle of that step is 1.8x thinner, and
+where it is thin enough that nothing landed at all the DSM has nothing to grid.
+Scan angle over this window runs -7.4 to +0.1 deg, near nadir, so this is NOT
+edge-of-swath thinning.
+
+**Three measurement traps, all hit before getting the number right.** An FFT of
+the void profile peaks at 177 m, which is the patch the field sits in, not the
+stripes. Gaps between detected stripe centres move with the threshold and the
+extent (3.00 m, then 3.62 m). Autocorrelation fixes both, but argmax lands on
+8.5 m, the third harmonic, because the stripes cluster in threes -- it has to be
+the first local peak past 2 m. Folding along-track position modulo 3 m also
+fails, completely flat at 1.02x against 0.98x, because the phase drifts over a
+few hundred metres.
+
 ## 2026-09-20 -- Orbit viewer on the CHM slide window, and the hand-annotation inventory
 
 **Viewer window moved to match the slide.** `_export_scanline_viewer_data_9t.py`
