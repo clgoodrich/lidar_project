@@ -5,6 +5,72 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-19 - The architecture comparison scored, and a channel swap caught in the SMRF stack
+
+**37 trained folds had never been scored.** `_arch_compare_9t_1m.py` writes its
+`pooled_metrics.json` only when one invocation finishes every fold it was asked
+for. Two of the nine runs died partway - `pad/unetpp_r34_imagenet` to a host-RAM
+`MemoryError` in the dataloader on fold 2, which took folds 3 and 4 with it, and
+`roaddrain/unet` after 1 of 40 epochs - so those runs left no summary file at
+all and the finished work beside them went unread. New aggregator
+`s5_eval/_aggregate_arch_compare_1m.py` reads the fold directories instead and
+names the unfinished ones rather than averaging over whatever is present.
+
+**Result: architecture is not the constraint.** Four networks, same folds, same
+channels, same 40 epochs, 1 m. Every rung of the ladder falls inside the
+fold-to-fold spread - deeper encoder -0.031 pit / +0.013 pad, ImageNet
+pretraining +0.020 / +0.032, dense skip connections +0.013 / -0.004, against
+pooled sds of 0.018-0.035. A 26.1 M U-Net++ with a pretrained encoder scores
+0.561 where the 7.8 M plain U-Net scores 0.559. The leaderboard's standing claim
+that data is the bottleneck now has a controlled run behind it instead of an
+assertion. Pretraining is the only rung worth re-testing: largest positive delta
+on both targets, same sign on both, still short of the noise on five folds.
+Full write-up in `docs/iterations/arch_compare_1m_four_architectures.md`.
+
+**The crashed fold was renamed, not deleted** - `fold2_CRASHED_oom_2026-09-18/`.
+It holds a `best.pt` with no `train_log.csv`, which is exactly the state that
+makes a dead fold look finished in a directory listing.
+
+**A channel swap nearly confounded the SMRF test.** The SMRF feature stack
+failed to assemble because `_build_derivatives.py` writes `roughness_5` and the
+stack wants `roughness_11`. BACKLOG B5 records `roughness_11` as a mislabel of
+`roughness_5`, which would have made substituting it look safe. Checked instead
+of assumed, against the vendor band over a 900x900 window of `dem_9t_05.tif`:
+
+    recomputed 5x5   vs vendor roughness_11:  corr 0.568, means 0.076 / 0.151
+    recomputed 11x11 vs vendor roughness_11:  corr 0.996, mean |diff| 0.0013
+
+The mislabel holds at 1 m, where a 5-cell window spans the same ground as 11
+cells at 0.5 m. At 0.5 m the vendor band is a genuine 11x11 and the two are
+different surfaces. Using the 5x5 would have changed channel 7 between the two
+arms of the comparison. `build_roughness_11()` now reproduces the 11x11 with the
+builder's own formula. Side effect: the long-standing Oil Creek inference
+blocker, which is this same missing band at 0.5 m, is now unblocked.
+
+**SMRF stack built and grid-checked.** 9000 x 9000 @ 0.5 m, transform identical
+to the vendor stack, all seven bands 100% finite, train mask 53.5% of the tile.
+`data/9t/derived/smrf05/features_pit_smrf_9t_05.tif` (1316 MB, gitignored). The
+SMRF surface carries 15-42% more variance than the vendor's in every channel
+(sd ratios lrm_25 1.25, lrm_5 1.42, slope 1.09, tpi_05 1.26, openness_pos 1.23,
+openness_neg 1.28, roughness_11 1.15). That is either more real micro-relief or
+more low vegetation kept as ground; the 5-fold detection re-score is what
+separates those.
+
+**Palette correction.** The architecture figure's first palette was a single-hue
+blue ramp, and its validator numbers were written from expectation rather than
+from the validator. Running it failed the normal-vision floor (dE 12.8, below
+the hard floor of 15). Replaced with four hues that pass every check under
+`--pairs all`; worst CVD dE 9.2 deutan, worst normal-vision dE 16.3.
+
+**Backups.** Both external disks mirrored, resolved by volume label rather than
+drive letter: T7 (E:) 1,043 files / 10.25 GB, Seagate (F:) 1,033 files /
+10.22 GB, zero failures on either. Verified on E: by diffing the 458
+source files changed in the last four days - 451 present at matching size, 0
+mismatches, 7 absent because they were created after the copy ran.
+`data/9t/derived/smrf05/` was excluded while being written.
+
+---
+
 ## 2026-09-19 - The QGIS-styling fix finished, and the pipeline diagram redrawn
 
 Three defects reported off the v3 deck, all of them mine.

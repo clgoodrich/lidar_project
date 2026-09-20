@@ -283,7 +283,21 @@ Full survey with citations in `docs/iterations/pit_refinement_options.md`. Order
 
 - **~~Grow the training label set~~ → USE the grown label set (updated 2026-07-01).** The old "110 pit / 79 pad" figure is stale: annotations now total **426 pits / 1,053 pads** (user annotation push). The 2026-06-10 dataset rebuild picked up all 426 pits + the 650 pads inside 9t (test split now 65 pits / 93 pads), and the U-Nets were retrained on it. Still outstanding: (a) **403 pads lie outside 9t** and are in NO dataset — they need per-region feature stacks; (b) ~~**~58 newest pads** postdate the last `annotations_proj.gpkg` regen (pad.shp 1053 vs gpkg 995) — re-run `_prep_annotations` + dataset rebuild~~ **RESOLVED 2026-07-19 (misdiagnosis):** the 58 are null-geometry rows in `pad.shp` (QGIS delete artifacts), not new pads — gpkg 995 = every pad with geometry, nothing stale. Optionally purge the null rows from the shapefile; (c) ~~the instance models' saved test metrics are stale~~ — DONE 2026-07-02, all four re-run on the 65/93 split (see LEADERBOARD).
 - **Pad over-prediction is unsolved — and now quantified.** The 2026-07-02 re-eval puts pad_05 at P@0.3 = 0.029 (3,075 detections / 93 GT); pit models sit at ~5%. Next: (a) **score-threshold sweep selected on val** (re-threshold saved `instances.gpkg` — no GPU), (b) active-learning hard negatives. Feature richness was NOT the fix; more data alone wasn't either (9× pads did not move precision).
-- **Oil Creek inference — blocked on `roughness_11`.** Derivatives built at 0.5 m but only `roughness_5` exists; need `roughness_11` → assemble `features_oilcreek_22tile_05.tif` (7 bands, canonical order) → run pit/pad inference. Also decide whether 9t-derived `mu`/`sd` transfer or must be recomputed per region. See [[oilcreek_derivatives_05]].
+- **Oil Creek inference — `roughness_11` blocker is now UNBLOCKED (2026-09-19).**
+  Derivatives built at 0.5 m but `_build_derivatives.py` only writes
+  `roughness_5`. `build_roughness_11()` in
+  `notebooks/wellsight_v2/s7_analysis/_smrf_feature_stack_9t.py` generates the
+  missing band from the DEM with the builder's own formula at WIN=11; verified
+  against the vendor band at corr 0.996, mean |diff| 0.0013. Lift that function
+  into `_build_derivatives.py` rather than copying it a third time. Then →
+  assemble `features_oilcreek_22tile_05.tif` (7 bands, canonical order) → run
+  pit/pad inference. Still open: whether 9t-derived `mu`/`sd` transfer or must be
+  recomputed per region. See [[oilcreek_derivatives_05]].
+  **Correction to the standing note:** `roughness_11` is a mislabel of
+  `roughness_5` **at 1 m only**, where a 5-cell window spans the same ground as
+  11 cells at 0.5 m. At 0.5 m the vendor band is a genuine 11×11 and the two are
+  different surfaces (5×5 recomputation correlates 0.568, means 0.076 vs 0.151).
+  Do not substitute one for the other at 0.5 m.
 
 ## Promotion candidates from diagnostics (2026-06-03)
 
@@ -327,6 +341,29 @@ write-up). Deferred refinements from that same advice:
 
 ## Model / architecture ideas (deferred)
 
+- ~~**Does a bigger or pretrained network beat the plain U-Net?**~~ **ANSWERED
+  2026-09-19, no** — `docs/iterations/arch_compare_1m_four_architectures.md`. Four
+  architectures, same folds, same channels, same schedule, 1 m. Every rung of the
+  ladder is inside the fold-to-fold noise: deeper encoder −0.031 pit / +0.013 pad,
+  ImageNet pretraining +0.020 / +0.032, dense skips +0.013 / −0.004, against
+  pooled sds of 0.018–0.035. A 26.1 M U-Net++ scores 0.561 where the 7.8 M plain
+  U-Net scores 0.559. **Keep the plain U-Net.** Two follow-ups survive:
+  - **Pretraining is the only rung worth re-testing.** Largest positive delta on
+    both targets and the only one with the same sign on both, but still short of
+    the noise on five folds. More seeds or more folds would settle it; nothing
+    else in that table would.
+  - **The comparison is segmentation IoU, not detection.** Whether any of these
+    gaps move recall at IoU 0.3 is unmeasured, and the leaderboard speaks in
+    detection terms. Scoring the 40 existing checkpoints held-out needs no
+    training, only inference.
+- **`roaddrain` has no architecture row.** `_arch_compare_9t_1m.py --target
+  roaddrain --arch unet` ran 1 of 40 epochs on fold 0 and stopped. Nothing usable.
+- **`_arch_compare_9t_1m.py` hides its own failures.** It writes
+  `pooled_metrics.json` only when a single invocation finishes every requested
+  fold, so a run that dies partway leaves no summary at all — that is how 37
+  finished folds sat unscored. Its docstring also promises a per-fold
+  `fold_metrics.json` it never writes. Fix the trainer, or keep using
+  `s5_eval/_aggregate_arch_compare_1m.py`, which reads the folds directly.
 - **ConvNet / ConvNeXt backbones** as alternatives to ResNet50-FPN for the detectors.
 - **TerraScan** evaluation for point-cloud classification / feature extraction.
 - **Overfit mitigations** for the thin-data regime: smaller backbone, frozen FPN, stronger augmentation, explicit early-stopping (we already know best ckpt = ep 0–1).
