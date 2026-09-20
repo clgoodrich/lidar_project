@@ -113,11 +113,65 @@ def build_derivatives():
         raise SystemExit("derivative build failed")
 
 
+def build_roughness_11():
+    """The one channel `_build_derivatives.py` does not write at 0.5 m.
+
+    The builder writes `roughness_5` (stdev of the DEM in a 5x5 window). The
+    vendor stack's seventh channel is `roughness_11`, an 11x11 window, and at
+    0.5 m those are NOT the same surface -- checked, not assumed:
+
+        recomputed 5x5  vs vendor roughness_11:  corr 0.568, means 0.076/0.151
+        recomputed 11x11 vs vendor roughness_11: corr 0.996, mean |diff| 0.0013
+
+    (Sampled over a 900x900 window of `dem_9t_05.tif`. The residual is edge and
+    nodata handling.) BACKLOG B5 records roughness_11 as a mislabel of
+    roughness_5 -- that is true at 1 m, where a 5-cell window spans the same
+    ground as 11 cells at 0.5 m. It is not true here.
+
+    Substituting roughness_5 would have changed channel 7 between the two arms
+    and confounded the whole SMRF comparison, so this reproduces the 11x11
+    window with the builder's own formula instead.
+    """
+    from scipy import ndimage as ndi
+
+    out = DST / f"roughness_11_{SFX}.tif"
+    if out.exists():
+        print(f"  roughness_11 already present: {out}")
+        return
+    src = DST / f"dem_{SFX}.tif"
+    print(f"  roughness_11 (11x11 stdev) from {src.name}")
+    with rasterio.open(src) as r:
+        dem = r.read(1).astype("float32")
+        profile = r.profile.copy()
+        if r.nodata is not None and np.isfinite(r.nodata):
+            dem[dem == r.nodata] = np.nan
+
+    WIN = 11
+    k = np.ones((WIN, WIN), dtype=np.float32)
+    v = np.isfinite(dem).astype(np.float32)
+    z0 = np.where(v.astype(bool), dem, 0).astype(np.float32)
+    s = ndi.convolve(z0, k, mode="nearest")
+    s2 = ndi.convolve(z0 * z0, k, mode="nearest")
+    n = ndi.convolve(v, k, mode="nearest")
+    var = np.where(n > 1, (s2 - s * s / np.maximum(n, 1)) / np.maximum(n - 1, 1),
+                   np.nan)
+    rough = np.sqrt(np.clip(var, 0, None)).astype(np.float32)
+    rough[n < WIN * WIN] = np.nan
+
+    profile.update(count=1, dtype="float32", compress="deflate", predictor=3,
+                   tiled=True, blockxsize=512, blockysize=512, BIGTIFF="YES",
+                   nodata=np.nan)
+    with rasterio.open(out, "w", **profile) as d:
+        d.write(rough, 1)
+    print(f"  wrote {out}  (mean {np.nanmean(rough):.4f})")
+
+
 def stack():
     """Seven bands onto one grid, with train-block statistics beside them."""
     import geopandas as gpd
     from rasterio.features import rasterize
 
+    build_roughness_11()
     paths = [(c, DST / f"{c}_{SFX}.tif") for c in CHANNELS]
     missing = [str(p) for _, p in paths if not p.exists()]
     if missing:
