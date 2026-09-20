@@ -1,0 +1,550 @@
+<title>Why The Corn Rows</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Palette is the project's validated lost/found pair: #1F5FA8 against
+     #D97706, worst pair dE 21.1 deutan, 22.6 normal. No green appears here, so
+     the red/green prohibition is not the binding constraint; the binding one is
+     that the beam track and the gaps must stay separable, and that pair is
+     already checked. The second flight line is the same blue at a different
+     lightness AND dashed, so it is never carried by colour alone. */
+  :root{
+    --paper:#F7F8F6;
+    --card:#ffffff;
+    --edge:#dcdcd4;
+    --ink:#141A1F;
+    --ink2:#545C63;
+    --muted:#6B7278;
+    --beam:#1F5FA8;
+    --beam2:#6FA3DC;
+    --gap:#D97706;
+    --grid:#e6e6de;
+    --band:rgba(31,95,168,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#10161a;
+      --card:#182026;
+      --edge:#2a353d;
+      --ink:#e7edf0;
+      --ink2:#a9b5bd;
+      --muted:#8d99a1;
+      --beam:#6ea8e0;
+      --beam2:#2f6ba8;
+      --gap:#f0a03a;
+      --grid:#273239;
+      --band:rgba(110,168,224,0.12);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#10161a;
+    --card:#182026;
+    --edge:#2a353d;
+    --ink:#e7edf0;
+    --ink2:#a9b5bd;
+    --muted:#8d99a1;
+    --beam:#6ea8e0;
+    --beam2:#2f6ba8;
+    --gap:#f0a03a;
+    --grid:#273239;
+    --band:rgba(110,168,224,0.12);
+  }
+
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+    line-height:1.55;
+  }
+  .wrap{max-width:60rem; margin:0 auto; padding-block:38px 56px; padding-left:16px; padding-right:16px;}
+
+  h1{
+    font-size:clamp(1.75rem,4.4vw,2.6rem); line-height:1.12; margin:0 0 10px;
+    letter-spacing:-0.02em; text-wrap:balance; font-weight:600;
+  }
+  .stand{
+    font-size:1.06rem; color:var(--ink2); margin:0 0 6px; max-width:44rem;
+  }
+  .stand b{color:var(--ink); font-weight:600;}
+  .meta{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:0.76rem;
+    color:var(--muted); margin:0 0 34px; letter-spacing:0.01em;
+  }
+
+  section{margin:0 0 34px;}
+  h2{
+    font-size:1.16rem; margin:0 0 6px; font-weight:600; letter-spacing:-0.01em;
+  }
+  .lede{margin:0 0 16px; color:var(--ink2); max-width:44rem;}
+  p{margin:0 0 12px;}
+
+  .card{
+    background:var(--card); border:1px solid var(--edge); border-radius:12px;
+    padding:16px;
+  }
+  .panels{
+    display:grid; grid-template-columns:1.25fr 1fr; gap:16px; align-items:start;
+  }
+  @media (max-width:760px){ .panels{grid-template-columns:1fr;} }
+
+  canvas{display:block; width:100%; height:auto;}
+  .cap{
+    margin:10px 0 0; font-size:0.8rem; color:var(--muted);
+  }
+
+  .ctl{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    margin:0 0 16px;
+  }
+  .ctl label{
+    font-size:0.74rem; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--muted); flex:0 0 auto;
+  }
+  input[type=range]{flex:1 1 14rem; min-width:0; accent-color:var(--beam);}
+  .val{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-weight:600;
+    font-size:0.95rem; flex:0 0 4.2rem; text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  .ck{
+    display:inline-flex; align-items:center; gap:7px; font-size:0.86rem;
+    cursor:pointer; color:var(--ink);
+  }
+  .ck input{accent-color:var(--beam); cursor:pointer;}
+  .ck[aria-disabled="true"]{color:var(--muted); cursor:default;}
+
+  .nums{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));
+    gap:12px; margin:16px 0 0;
+  }
+  .num{border-left:3px solid var(--edge); padding:2px 0 2px 11px;}
+  .num.hot{border-left-color:var(--gap);}
+  .num .k{
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--muted);
+  }
+  .num .v{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:1.3rem;
+    font-weight:600; font-variant-numeric:tabular-nums; line-height:1.25;
+  }
+  .num.hot .v{color:var(--gap);}
+
+  .note{
+    border-left:3px solid var(--beam); padding:2px 0 2px 13px;
+    color:var(--ink2); font-size:0.92rem; max-width:44rem;
+  }
+  .note b{color:var(--ink);}
+  table{border-collapse:collapse; width:100%; font-size:0.9rem;}
+  th,td{
+    text-align:left; padding:7px 10px; border-bottom:1px solid var(--edge);
+  }
+  th{
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--muted); font-weight:500;
+  }
+  td.n{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  .scroll{overflow-x:auto;}
+</style>
+
+<div class="wrap">
+
+<h1>Why the corn rows are where they are</h1>
+<p class="stand">The laser never covers the ground evenly. It rules lines on it,
+about a metre apart. Whether you ever see those lines depends on
+<b>where you are standing in the swath</b> &mdash; and the reason is the shape of
+the mirror's swing.</p>
+<p class="meta">9t &middot; Venango 2020-03 &middot; one flight line &middot;
+54.3 Hz mirror &middot; 112.2 m/s &middot; 336 kHz pulse rate &mdash; all
+measured from the delivered LAZ</p>
+
+<section>
+  <h2>1 &nbsp; The mirror swings, it does not spin</h2>
+  <p class="lede">The blue line is the path the laser beam traces on the ground,
+  seen from above. Sideways is how far off to the side of the plane you are.
+  Upwards is the direction of flight. Drag the slider to stand somewhere in the
+  swath; the orange marks are where the beam crosses you.</p>
+
+  <div class="ctl">
+    <label for="ang">Where you stand</label>
+    <input id="ang" type="range" min="0" max="195" value="0">
+    <span class="val" id="angV">0.0&deg;</span>
+  </div>
+  <div class="ctl">
+    <label class="ck" for="ov" id="ovL">
+      <input type="checkbox" id="ov"> Second flight line
+    </label>
+    <label class="ck" for="an">
+      <input type="checkbox" id="an" checked> Animate the beam
+    </label>
+  </div>
+
+  <div class="panels">
+    <div class="card">
+      <canvas id="c1" width="860" height="560"></canvas>
+      <p class="cap">Beam track over 7 sweeps. The wavelength is
+      <b>2.07 m</b> &mdash; how far the plane flies in one full swing of the
+      mirror.</p>
+    </div>
+    <div class="card">
+      <canvas id="c2" width="470" height="560"></canvas>
+      <p class="cap">The same stretch of ground, ruled into half-metre map
+      squares. Blue rows got hit. Orange rows are the run with nothing in
+      it.</p>
+    </div>
+  </div>
+
+  <div class="nums">
+    <div class="num"><div class="k">Gaps alternate</div>
+      <div class="v" id="nA">&mdash;</div></div>
+    <div class="num hot"><div class="k">Widest gap</div>
+      <div class="v" id="nB">&mdash;</div></div>
+    <div class="num"><div class="k">Straight below</div>
+      <div class="v">1.03 m</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>2 &nbsp; What the slider is actually showing</h2>
+  <p class="lede">Watch the two arms of each V as you move outward.</p>
+  <p><b>Straight below the plane</b>, the mirror is at full speed. The beam
+  crosses you on the way out and on the way back at evenly spaced moments, so
+  the lines land <b>1.03 m, 1.03 m, 1.03 m</b>.</p>
+  <p><b>Near the edge of the swing</b>, the mirror has to slow, stop and
+  reverse. The there-line and the back-line now cross you almost at the same
+  instant, so they <b>land nearly on top of each other</b> &mdash; and then
+  nothing arrives until the next full swing. The gaps stop being even and
+  become <b>tiny, huge, tiny, huge</b>.</p>
+  <p class="note">The widest gap runs from <b>1.03 m directly below the plane to
+  2.07 m at the edge of the swing</b>. It exactly doubles. That is the whole
+  mechanism, and it needs no assumption about flying height &mdash; only the
+  mirror rate and the airspeed, both of which are in the file.</p>
+</section>
+
+<section>
+  <h2>3 &nbsp; And this is what it does to the map</h2>
+  <p class="lede">Measured, not modelled: the share of half-metre map squares
+  that ended up with no lidar return at all, over the whole 4.5 km tile,
+  binned by how far out to the side they sat.</p>
+  <div class="card">
+    <canvas id="c3" width="860" height="360"></canvas>
+  </div>
+  <p class="cap">809,761 cells of 5 m. The marker follows the slider above.</p>
+
+  <div class="nums">
+    <div class="num"><div class="k">Straight below</div>
+      <div class="v">0.38%</div></div>
+    <div class="num hot"><div class="k">Two thirds out</div>
+      <div class="v">5.35%</div></div>
+    <div class="num"><div class="k">Past 14&deg;</div>
+      <div class="v">0.89%</div></div>
+  </div>
+
+  <p style="margin-top:18px">The rise is the gap doubling. The cliff is the
+  <b>next flight line</b> arriving: inside 14&deg;, <b>0%</b> of the ground is
+  seen by a second pass; beyond it, <b>98.3%</b> is. A second pass rules its own
+  lines in different places, so it fills the first one's gaps.</p>
+</section>
+
+<section>
+  <h2>4 &nbsp; Trees make it worse, on top of all that</h2>
+  <div class="card scroll">
+    <table>
+      <tr><th>Canopy</th><th>0&ndash;4&deg;</th><th>4&ndash;8&deg;</th>
+          <th>8&ndash;12&deg;</th><th>12&ndash;16&deg;</th></tr>
+      <tr><td>open, under 1 m</td><td class="n">0.16%</td><td class="n">0.70%</td>
+          <td class="n">2.42%</td><td class="n">4.66%</td></tr>
+      <tr><td>scrub, 1&ndash;5 m</td><td class="n">0.41%</td><td class="n">1.36%</td>
+          <td class="n">3.64%</td><td class="n">5.76%</td></tr>
+      <tr><td>young, 5&ndash;12 m</td><td class="n">0.78%</td><td class="n">2.31%</td>
+          <td class="n">4.60%</td><td class="n">6.27%</td></tr>
+      <tr><td>tall, 12&ndash;20 m</td><td class="n">1.12%</td><td class="n">2.78%</td>
+          <td class="n">4.82%</td><td class="n">5.43%</td></tr>
+    </table>
+  </div>
+  <p class="cap">Share of cells with no return. Single-coverage ground only, so
+  the flight-line overlap cannot flatter any column.</p>
+  <p style="margin-top:14px">Read down a column: trees roughly
+  <b>double</b> it. Read across a row: the angle multiplies it
+  <b>thirty-fold</b>. Open ground straight below the plane is 0.16%. Tall trees
+  two thirds of the way out is 5.43%.</p>
+  <p class="note">So a corn row needs the recipe: <b>the middle-to-outer part of
+  a single pass, before the neighbouring strip starts helping, preferably under
+  trees.</b> Everywhere else the lines are still being ruled &mdash; you just
+  cannot see them, because something filled them in.</p>
+</section>
+
+<section>
+  <h2>What here is measured, and what is drawn</h2>
+  <p class="lede" style="margin-bottom:10px">Worth keeping straight.</p>
+  <p><b>Measured from the delivered point cloud:</b> mirror rate 54.3 Hz, from
+  362 direction reversals in 3.383 s of GPS time. Airspeed 112.2 m/s, regressed
+  from position against GPS time. Pulse rate 336 kHz. Swath out to 19.9&deg;.
+  Every percentage in sections 3 and 4.</p>
+  <p><b>Drawn from those numbers:</b> the beam track in section 1 is a sine of
+  wavelength 112.2 / 54.3 = 2.07 m. The crossing positions and the gaps between
+  them follow from it with no free parameters.</p>
+  <p><b>Simplified:</b> the second flight line is drawn at the angle it would
+  really be at for this ground, but with an arbitrary phase &mdash; nothing
+  fixes where its mirror happened to be. And a gap does not become a hole the
+  moment it opens; the gridder bridges narrow ones, which is why the measured
+  curve in section 3 is not simply the gap width.</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  // ---- measured constants -------------------------------------------------
+  var SPEED   = 112.2;    // m/s, regressed from gps_time against position
+  var MIRROR  = 54.3;     // Hz, full swing, from 362 direction reversals
+  var SWATH   = 19.9;     // deg, max |scan angle| in the delivery
+  var OVERLAP = 14.0;     // deg, where the next flight line starts covering
+  var CYCLE   = SPEED / MIRROR;   // 2.066 m of ground per full swing
+  var CELL    = 0.5;      // m, the map square
+  var VIEW_M  = 14.0;     // m of flight shown
+
+  // measured void rate by mean scan angle, whole tile, 5 m cells
+  var CURVE = [[1,0.38],[3,0.72],[5,1.23],[7,2.01],[9,3.07],[11,4.19],
+               [13,5.35],[15,2.64],[17,0.74],[21.5,1.19]];
+
+  function css(v){
+    return getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  }
+
+  // Where the beam crosses a given angle, as distance along the flight path.
+  // The beam sits at across-angle  a(y) = SWATH * sin(2*pi*y / CYCLE),
+  // so a crossing of angle t happens wherever sin(phase) = t / SWATH. A sine
+  // gives TWO solutions per turn -- the way out and the way back -- and the
+  // gap between them is the entire story.
+  function crossings(t, phase0){
+    var r = Math.max(-1, Math.min(1, t / SWATH));
+    var p = Math.asin(r), out = [];
+    for (var k = -2; k < 12; k++){
+      out.push((p + 2*Math.PI*k) / (2*Math.PI) * CYCLE + phase0);
+      out.push((Math.PI - p + 2*Math.PI*k) / (2*Math.PI) * CYCLE + phase0);
+    }
+    return out.filter(function(y){ return y > -2 && y < VIEW_M + 2; })
+              .sort(function(a,b){ return a-b; });
+  }
+
+  // The same ground point, seen from the neighbouring flight line. Line spacing
+  // is 2*h*tan(OVERLAP) and this point is at h*tan(t), so the offset cancels h
+  // and no flying height has to be guessed.
+  function otherLineAngle(t){
+    var v = Math.tan(t*Math.PI/180) - 2*Math.tan(OVERLAP*Math.PI/180);
+    return Math.atan(v) * 180/Math.PI;
+  }
+
+  var ang = document.getElementById('ang'), angV = document.getElementById('angV');
+  var ov = document.getElementById('ov'), ovL = document.getElementById('ovL');
+  var an = document.getElementById('an');
+  var c1 = document.getElementById('c1'), g1 = c1.getContext('2d');
+  var c2 = document.getElementById('c2'), g2 = c2.getContext('2d');
+  var c3 = document.getElementById('c3'), g3 = c3.getContext('2d');
+  var nA = document.getElementById('nA'), nB = document.getElementById('nB');
+
+  function theta(){ return +ang.value / 10; }
+  var t0 = performance.now(), phase = 0;
+
+  function drawTrack(){
+    var W = c1.width, H = c1.height, pad = 34;
+    var t = theta();
+    g1.clearRect(0,0,W,H);
+
+    function X(a){ return pad + (a + SWATH) / (2*SWATH) * (W - 2*pad); }
+    function Y(y){ return H - pad - y / VIEW_M * (H - 2*pad); }
+
+    // frame and the nadir line
+    g1.strokeStyle = css('--grid'); g1.lineWidth = 1;
+    g1.beginPath(); g1.moveTo(X(0), pad); g1.lineTo(X(0), H-pad); g1.stroke();
+    g1.fillStyle = css('--muted');
+    g1.font = '500 13px "IBM Plex Mono",monospace';
+    g1.textAlign = 'center';
+    g1.fillText('straight below', X(0), H - pad + 20);
+    g1.fillText(SWATH.toFixed(0) + '° out', X(SWATH) - 22, H - pad + 20);
+    g1.fillText(SWATH.toFixed(0) + '° out', X(-SWATH) + 22, H - pad + 20);
+    g1.save();
+    g1.translate(13, H/2); g1.rotate(-Math.PI/2);
+    g1.fillText('direction of flight  →', 0, 0);
+    g1.restore();
+
+    // the band you are standing in
+    g1.fillStyle = css('--band');
+    var bw = Math.max(6, (X(t+0.45) - X(t-0.45)));
+    g1.fillRect(X(t) - bw/2, pad, bw, H - 2*pad);
+
+    // the beam track
+    g1.strokeStyle = css('--beam'); g1.lineWidth = 2.4;
+    g1.beginPath();
+    for (var i = 0; i <= 1400; i++){
+      var y = -1 + (VIEW_M + 2) * i/1400;
+      var a = SWATH * Math.sin(2*Math.PI*(y - phase)/CYCLE);
+      var px = X(a), py = Y(y);
+      if (i === 0) g1.moveTo(px, py); else g1.lineTo(px, py);
+    }
+    g1.stroke();
+
+    // where it crosses you
+    var cs = crossings(t, phase);
+    g1.fillStyle = css('--gap');
+    for (var j = 0; j < cs.length; j++){
+      if (cs[j] < 0 || cs[j] > VIEW_M) continue;
+      g1.beginPath(); g1.arc(X(t), Y(cs[j]), 5.2, 0, 6.2832); g1.fill();
+    }
+    return cs;
+  }
+
+  function drawGround(cs){
+    var W = c2.width, H = c2.height, pad = 34;
+    g2.clearRect(0,0,W,H);
+    function Y(y){ return H - pad - y / VIEW_M * (H - 2*pad); }
+    var L = pad + 6, R = W - pad;
+
+    var lines = cs.slice();
+    var second = null;
+    if (ov.checked){
+      var tb = otherLineAngle(theta());
+      if (Math.abs(tb) <= SWATH){
+        // arbitrary phase: nothing in the data says where its mirror was
+        second = crossings(tb, 0.37 * CYCLE);
+        lines = lines.concat(second);
+      }
+    }
+    lines.sort(function(a,b){ return a-b; });
+
+    // half-metre map squares, blank where no line falls inside
+    var n = Math.round(VIEW_M / CELL), blank = 0;
+    for (var i = 0; i < n; i++){
+      var y0 = i*CELL, y1 = y0 + CELL, hit = false;
+      for (var k = 0; k < lines.length; k++){
+        if (lines[k] >= y0 && lines[k] < y1){ hit = true; break; }
+      }
+      if (!hit) blank++;
+      g2.fillStyle = hit ? 'transparent' : css('--gap');
+      g2.globalAlpha = hit ? 0 : 0.17;
+      g2.fillRect(L, Y(y1), R - L, Y(y0) - Y(y1));
+      g2.globalAlpha = 1;
+      g2.strokeStyle = css('--grid'); g2.lineWidth = 1;
+      g2.strokeRect(L + 0.5, Y(y1) + 0.5, R - L - 1, Y(y0) - Y(y1) - 1);
+    }
+
+    // the ruled lines themselves, dotted because that is what they are
+    function rule(ys, colour, dash){
+      g2.strokeStyle = css(colour);
+      g2.lineWidth = dash ? 2 : 2.6;
+      g2.setLineDash(dash ? [5,4] : []);
+      for (var q = 0; q < ys.length; q++){
+        if (ys[q] < 0 || ys[q] > VIEW_M) continue;
+        g2.beginPath();
+        g2.moveTo(L + 3, Y(ys[q])); g2.lineTo(R - 3, Y(ys[q]));
+        g2.stroke();
+      }
+      g2.setLineDash([]);
+    }
+    if (second) rule(second, '--beam2', true);
+    rule(cs, '--beam', false);
+
+    g2.fillStyle = css('--muted');
+    g2.font = '500 13px "IBM Plex Mono",monospace';
+    g2.textAlign = 'left';
+    g2.fillText(blank + ' of ' + n + ' squares empty', L, pad - 12);
+    g2.textAlign = 'center';
+    g2.fillText('0.5 m map squares', (L+R)/2, H - pad + 20);
+  }
+
+  function drawCurve(){
+    var W = c3.width, H = c3.height, padL = 54, padR = 20, padT = 22, padB = 44;
+    g3.clearRect(0,0,W,H);
+    var xmax = 24, ymax = 6.2;
+    function X(a){ return padL + a/xmax * (W - padL - padR); }
+    function Y(v){ return H - padB - v/ymax * (H - padT - padB); }
+
+    g3.strokeStyle = css('--grid'); g3.lineWidth = 1;
+    g3.fillStyle = css('--muted');
+    g3.font = '500 12px "IBM Plex Mono",monospace';
+    for (var v = 0; v <= 6; v += 2){
+      g3.beginPath(); g3.moveTo(padL, Y(v)); g3.lineTo(W - padR, Y(v)); g3.stroke();
+      g3.textAlign = 'right'; g3.fillText(v + '%', padL - 9, Y(v) + 4);
+    }
+    g3.textAlign = 'center';
+    for (var a = 0; a <= 20; a += 5){
+      g3.fillText(a + '°', X(a), H - padB + 19);
+    }
+    g3.fillText('how far out to the side', (padL + W - padR)/2, H - 8);
+
+    // where the second flight line takes over
+    g3.fillStyle = css('--band');
+    g3.fillRect(X(OVERLAP), padT, X(xmax) - X(OVERLAP), H - padT - padB);
+    g3.fillStyle = css('--muted');
+    g3.textAlign = 'left';
+    g3.fillText('the next flight line covers this', X(OVERLAP) + 8, padT + 16);
+
+    g3.strokeStyle = css('--gap'); g3.lineWidth = 2.8;
+    g3.beginPath();
+    for (var i = 0; i < CURVE.length; i++){
+      var px = X(CURVE[i][0]), py = Y(CURVE[i][1]);
+      if (i === 0) g3.moveTo(px, py); else g3.lineTo(px, py);
+    }
+    g3.stroke();
+    g3.fillStyle = css('--gap');
+    for (var j = 0; j < CURVE.length; j++){
+      g3.beginPath(); g3.arc(X(CURVE[j][0]), Y(CURVE[j][1]), 4.4, 0, 6.2832);
+      g3.fill();
+    }
+
+    var t = theta();
+    g3.strokeStyle = css('--beam'); g3.lineWidth = 2;
+    g3.beginPath(); g3.moveTo(X(t), padT); g3.lineTo(X(t), H - padB); g3.stroke();
+    g3.fillStyle = css('--beam');
+    g3.textAlign = t > 16 ? 'right' : 'left';
+    g3.fillText('you are here', X(t) + (t > 16 ? -8 : 8), H - padB - 8);
+  }
+
+  function gapsOf(cs){
+    var d = [];
+    for (var i = 1; i < cs.length; i++){
+      if (cs[i-1] > -1 && cs[i] < VIEW_M + 1) d.push(cs[i] - cs[i-1]);
+    }
+    return d;
+  }
+
+  function render(){
+    var cs = drawTrack();
+    drawGround(cs);
+    drawCurve();
+    var d = gapsOf(cs).filter(function(v){ return v > 1e-3; });
+    if (d.length){
+      var lo = Math.min.apply(null, d), hi = Math.max.apply(null, d);
+      nA.textContent = lo.toFixed(2) + ' / ' + hi.toFixed(2) + ' m';
+      nB.textContent = hi.toFixed(2) + ' m';
+    }
+    angV.textContent = theta().toFixed(1) + '°';
+    var can = Math.abs(otherLineAngle(theta())) <= SWATH;
+    ov.disabled = !can;
+    ovL.setAttribute('aria-disabled', can ? 'false' : 'true');
+  }
+
+  ang.addEventListener('input', render);
+  ov.addEventListener('change', render);
+  an.addEventListener('change', function(){
+    if (!an.checked) render();
+  });
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) an.checked = false;
+
+  var last = performance.now();
+  function frame(now){
+    var dt = Math.min((now - last)/1000, 0.1); last = now;
+    if (an.checked){
+      // a tenth of real speed, or the sine is a blur
+      phase = (phase + SPEED*0.1*dt) % CYCLE;
+      render();
+    }
+    requestAnimationFrame(frame);
+  }
+  render();
+  requestAnimationFrame(frame);
+})();
+</script>
