@@ -14,7 +14,8 @@
     --dem:#5b8fb0;         /* bare earth, cool slate                   */
     --dsm:#c8b88a;         /* first-return surface, warm sand          */
     --gap:#e8663c;         /* the missing rows -- the only hot colour  */
-    --pts:#7f9aa8;
+    --pts:#7f9aa8;        /* returns in the 3D scene, deliberately quiet   */
+    --xpt:#eaf2f7;        /* returns on the section -- these must be seen  */
   }
   html,body{height:100%;}
   body{
@@ -30,25 +31,6 @@
     border:1px solid var(--edge); border-radius:10px;
     backdrop-filter:blur(8px); padding:14px 16px;
   }
-  #facts{
-    top:calc(14px + env(safe-area-inset-top,0px)); left:16px; max-width:19rem;
-  }
-  #facts h1{
-    margin:0 0 2px; font-size:1.02rem; font-weight:600; letter-spacing:-0.01em;
-    text-wrap:balance;
-  }
-  #facts .sub{margin:0 0 10px; font-size:0.76rem; color:var(--muted);}
-  dl{display:grid; grid-template-columns:1fr auto; gap:4px 12px; margin:0;}
-  dt{font-size:0.78rem; color:var(--muted);}
-  dd{
-    margin:0; font-family:"IBM Plex Mono",ui-monospace,monospace;
-    font-size:0.78rem; font-variant-numeric:tabular-nums; text-align:right;
-  }
-  .note{
-    margin:10px 0 0; font-size:0.74rem; line-height:1.45; color:var(--muted);
-  }
-  .note b{color:var(--gap); font-weight:500;}
-
   #rail{
     bottom:calc(14px + env(safe-area-inset-bottom,0px)); left:16px;
     display:flex; flex-direction:column; gap:10px; min-width:16rem;
@@ -120,19 +102,9 @@
     font-variant-numeric:tabular-nums; color:var(--muted);
   }
   #scan .readout b{color:var(--gap); font-weight:500;}
-  /* #top is a layout wrapper only. On a wide screen it does nothing at all --
-     display:contents drops it out of the box tree and the two panels stay
-     fixed to opposite corners. Narrow, it becomes the column that stacks
-     them, which keeps the rail's sliders and checkboxes reachable instead of
-     hidden under an overlapping panel. */
-  #top{display:contents;}
   @media (max-width:620px){
-    #top{
-      position:fixed; top:calc(14px + env(safe-area-inset-top,0px));
-      left:16px; right:16px; display:flex; flex-direction:column; gap:10px;
-    }
-    #facts,#scan{position:static; width:auto; max-width:none;}
-    #facts .note{display:none;}
+    #scan{left:16px; right:16px;}
+    #scan{position:static; width:auto; max-width:none;}
     #xsec{height:130px;}
     #rail{right:16px; min-width:0;}
   }
@@ -144,23 +116,6 @@
 
 <div id="stage"></div>
 
-<div id="top">
-<div class="panel" id="facts">
-  <h1 id="fTitle">Scan-line dropout</h1>
-  <p class="sub" id="fWhere">&mdash;</p>
-  <dl>
-    <dt><span class="swatch" style="background:var(--dem)"></span>Bare earth, missing</dt><dd id="fD">&mdash;</dd>
-    <dt><span class="swatch" style="background:var(--dsm)"></span>First return, missing</dt><dd id="fS">&mdash;</dd>
-    <dt>Returns in the box</dt><dd id="fN">&mdash;</dd>
-    <dt>Regional slope removed</dt><dd id="fP">&mdash;</dd>
-  </dl>
-  <p class="note">Flattening subtracts the best-fit plane, so the hillside stops
-  tilting the view and the <b>dropout rows</b> stand on their own &mdash; 3 m
-  apart, on a 79&deg; bearing. The floor below is the canopy-height image from
-  the slide, same window, same stretch; its orange rows are the same cells the
-  red sticks mark.</p>
-</div>
-
 <div class="panel" id="scan">
   <h2>Cross-section under the scanner</h2>
   <p class="sub" id="sSub">&mdash;</p>
@@ -171,7 +126,7 @@
   </div>
   <div class="layers xrow">
     <label class="ck" for="cXgap"><span class="swatch" style="background:var(--gap)"></span>Gaps<input type="checkbox" id="cXgap" checked></label>
-    <label class="ck" for="cXpts"><span class="swatch" style="background:var(--pts)"></span>Returns on the line<input type="checkbox" id="cXpts" checked></label>
+    <label class="ck" for="cXpts"><span class="swatch" style="background:var(--xpt)"></span>Returns on the line<input type="checkbox" id="cXpts" checked></label>
   </div>
   <canvas id="xsec" width="900" height="380"></canvas>
   <p class="readout">
@@ -180,7 +135,6 @@
     <span><b id="sG">&mdash;</b> with no first return</span>
     <span>scroll to zoom &middot; shift-scroll for height &middot; drag to pan &middot; double-click resets</span>
   </p>
-</div>
 </div>
 
 <div class="panel" id="rail">
@@ -288,7 +242,6 @@
   var PL = Sn>3 ? solve3([[Sxx,Sxy,Sx],[Sxy,Syy,Sy],[Sx,Sy,Sn]],[Sxz,Syz,Sz])
                 : [0,0,0];
   var ZBAR = Sn ? Sz/Sn : 0;
-  var slopeDeg = Math.atan(Math.hypot(PL[0],PL[1]))*180/Math.PI;
   function planeAt(x,y){ return PL[0]*x + PL[1]*y + PL[2]; }
 
   // pre-compute both states of every surface, so the slider is a cheap lerp
@@ -501,8 +454,18 @@
   function moveDir(){ return alongMode ? B_ACROSS : B_ALONG;  }
   var CEN=[SIDE/2, SIDE/2];
   var SSTEP=RES;                          // one sample per raster cell
-  var SPAN=SIDE*Math.SQRT2/2;             // half-diagonal: always spans the box
-  var sweep=-SPAN;
+  var SPAN=SIDE*Math.SQRT2/2;             // half-diagonal: the LINE's half-length
+
+  // How far the line can TRAVEL and still touch the box. Not the same number
+  // as SPAN: the line is as long as the diagonal so it always crosses, but it
+  // leaves the square well before it has moved a diagonal's worth. Sweeping to
+  // +/-SPAN spent the first and last 17% of every pass on an empty section,
+  // which is what made the returns look like they were never drawn.
+  function travelSpan(){
+    var M=moveDir();
+    return (Math.abs(M[0])+Math.abs(M[1]))*SIDE/2;
+  }
+  var sweep=-travelSpan();
 
   // Nearest-cell lookup. Nearest and not bilinear on purpose: interpolating
   // across a NaN would smear the hole shut, and the hole is the subject.
@@ -682,19 +645,23 @@
       }
       xc.stroke();
     }
-    trace(prD,'--dem',2.2);
-    trace(prS,'--dsm',2.2);
+    trace(prD,'--dem',1.6);
+    trace(prS,'--dsm',1.6);
 
     // the real returns last, so they read as measurements sitting on the
     // surfaces rather than as something the surfaces were drawn over
     if (showPts){
-      xc.fillStyle=css('--pts');
+      // Near-white and 4 px, not the 3D scene's muted --pts at 2 px. On the
+      // section these ARE the evidence -- the reader is looking for where they
+      // stop -- so they have to sit clearly on top of the two surface traces
+      // instead of disappearing into them.
+      xc.fillStyle=css('--xpt');
       for (var j=0;j<xpN;j++){
         var i2=xpI[j];
         var v2=pz[i2]+(pzF[i2]-pz[i2])*f;
         var xx=pad + ((((xpT[j]-t0)/tspan)-VIEW.cx)*VIEW.zx + 0.5)*(W-2*pad);
-        if (xx<pad-2||xx>W-pad+2) continue;
-        xc.fillRect(xx-1.1, PY(v2)-1.1, 2.2, 2.2);
+        if (xx<pad-3||xx>W-pad+3) continue;
+        xc.fillRect(xx-2, PY(v2)-2, 4, 4);
       }
     }
     xc.restore();
@@ -743,7 +710,8 @@
     sP.textContent=xpN.toLocaleString();
     sG.textContent=prGap.toLocaleString();
     sSub.textContent=(alongMode ? 'lying along the rows, ' : 'cutting across the rows, ')
-      +Math.round(sweep+SPAN)+' of '+Math.round(2*SPAN)+' m travelled';
+      +Math.round(sweep+travelSpan())+' of '+Math.round(2*travelSpan())
+      +' m travelled';
   }
 
   // ---- camera: a fixed elevation with the azimuth driven by the clock
@@ -816,11 +784,13 @@
   }
   bRun.addEventListener('click',function(){ setRun(!scanRun); });
   function syncPos(){
-    cPos.value=Math.round((sweep+SPAN)/(2*SPAN)*1000);
+    var TS=travelSpan();
+    cPos.value=Math.round((sweep+TS)/(2*TS)*1000);
   }
   cPos.addEventListener('input',function(){
     setRun(false);
-    sweep=-SPAN + (+cPos.value/1000)*2*SPAN;
+    var TS=travelSpan();
+    sweep=-TS + (+cPos.value/1000)*2*TS;
     if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
   });
   cScanV.addEventListener('input',function(){
@@ -881,7 +851,7 @@
     alongMode=on;
     bAcross.setAttribute('aria-pressed',on?'false':'true');
     bAlong.setAttribute('aria-pressed',on?'true':'false');
-    sweep=-SPAN; syncPos();
+    sweep=-travelSpan(); syncPos();
     if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
   }
   bAcross.addEventListener('click',function(){ setMode(false); });
@@ -953,16 +923,7 @@
   });
 
   // ---- readouts, from the data rather than typed in
-  document.getElementById('fD').textContent=S.dem_nan_pct.toFixed(2)+'%';
-  document.getElementById('fS').textContent=S.dsm_nan_pct.toFixed(2)+'%';
-  document.getElementById('fN').textContent=S.n_points.toLocaleString();
-  document.getElementById('fP').textContent=slopeDeg.toFixed(1)+'°';
-  document.getElementById('fTitle').textContent =
-    'Scan-line dropout, ' + SIDE.toFixed(0) + ' m box';
-  document.getElementById('fWhere').textContent =
-    '9t · ' + Math.round(S.origin_en[0]+SIDE/2) + ' E, ' +
-    Math.round(S.origin_en[1]+SIDE/2) + ' N · EPSG:6346 · same window as the '
-    + 'CHM panel on the slide';
+
 
   function resize(){
     var w=stage.clientWidth,h=stage.clientHeight;
@@ -977,7 +938,8 @@
     if (orbiting && !drag){ azim += (+cSpin.value/10)*Math.PI/180*dt; place(); }
     if (scanLine.visible && scanRun){
       sweep += (+cScanV.value/10)*dt;
-      if (sweep > SPAN) sweep = -SPAN;
+      var TS=travelSpan();
+      if (sweep > TS) sweep = -TS;
       applyScan(+cFlat.value/100, +cExag.value/100);
       syncPos();
     }
