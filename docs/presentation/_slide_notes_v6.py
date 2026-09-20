@@ -82,8 +82,8 @@ The box's real point is bookkeeping: those counts are thrown away and
 recalculated from scratch on every run, instead of being stored. That is
 because once, a re-run merged the data twice and silently doubled them.
 
-Honestly, this box is an internal note and does not earn its place in front of
-an audience. Recommend cutting it.""",
+Cut on 2026-09-20. It was an internal safeguard, not something worth an
+audience's attention.""",
 
  37: """WHAT YOU ARE LOOKING AT, AND WHAT IS MISSING
 
@@ -103,11 +103,11 @@ walls. The leftovers are not mistakes to be tidied up -- they are real places
 where only one of the two was visible from the air.
 
 
-A FAIR CRITICISM OF THIS GRAPHIC
+WHAT THE BACKGROUND IS
 
-Right now it is outlines floating on blank paper. There is no terrain
-underneath, so there is no way to see that these are real dents in the ground.
-It needs a shaded-relief background behind the outlines.""",
+Red Relief Image Map, built from the lidar ground surface. Ridges read warm,
+hollows read cool. You can see that every outlined thing really is a dent in
+the ground, which is the point of showing terrain at all.""",
 
  39: """WHY ANY OF THIS IS NEEDED
 

@@ -233,18 +233,18 @@ def fig_schema(counts):
              ("not_roads", "things that look like roads and are not")]
     derived = [
         ("pit_wall",
-         "pit_outside MINUS pit_inside, as geometry.\nNobody draws the ring "
-         "twice, so it cannot\ndisagree with the two layers it comes from."),
-        ("matched_pit_id  /  pit_inside_id",
-         "the foreign key back to the floor: on\npit_outside it is spelled "
-         "matched_pit_id,\non pit_wall pit_inside_id. A rim always\nknows "
-         "which floor it belongs to."),
+         "the rim outline minus the floor inside it.\nNobody draws the ring "
+         "by hand, so it can\nnever disagree with the two it comes from."),
+        ("matched_pit_id",
+         "the link from a rim back to its floor.\nEvery rim knows which floor "
+         "it belongs to,\nand the pairing is worked out, not typed."),
         ("pad_id",
-         "assigned by spatial join, on every layer.\nOne rule for polygons "
-         "and lines alike."),
-        ("n_pits, n_roads, n_not_roads",
-         "counted per pad, never typed. Dropped and\nrecomputed on every run, "
-         "because a re-run\nthat merged twice is how they went wrong once."),
+         "which pad a feature sits on, assigned by\nlocation. One rule for "
+         "polygons and lines."),
+        # CUT 2026-09-20: "n_pits, n_roads, n_not_roads" sat here. It is a
+        # per-pad tally, recomputed each run so a double-merge cannot corrupt
+        # it. A genuine safeguard, and internal bookkeeping that earns nothing
+        # in front of an audience.
     ]
 
     ax.text(4, 82, "drawn by hand in QGIS", fontsize=15, fontweight="bold",

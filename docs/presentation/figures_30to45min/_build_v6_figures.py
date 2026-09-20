@@ -54,6 +54,7 @@ from matplotlib.patches import FancyBboxPatch, Patch
 
 ROOT = Path(__file__).resolve().parents[3]
 NGC = ROOT / "data/9t/results/nonground_classification"
+D05 = ROOT / "data/9t/derived/05"
 OUT = ROOT / "docs/presentation/figures_30to45min/v6"
 
 PAPER = "#f7f8f6"
@@ -386,7 +387,10 @@ def fig_rim_floor_map():
     from matplotlib.lines import Line2D
 
     ANN = ROOT / "qgis/annotations/annotations_proj.gpkg"
-    C_FLOOR, C_RIM, C_LONE = "#d6e06a", "#1F5FA8", "#A31515"
+    #: On a busy RRIM background a 2 px line disappears, so every outline
+    #: gets a dark halo underneath it (path_effects) and the floor keeps a
+    #: semi-transparent fill so the terrain still shows through.
+    C_FLOOR, C_RIM, C_LONE = "#f2ff5a", "#2f8fff", "#ff3b30"
     ins = gpd.read_file(ANN, layer="pit_inside", engine="pyogrio")
     out = gpd.read_file(ANN, layer="pit_outside", engine="pyogrio")
     ins = ins[ins.geometry.notna()]
@@ -399,38 +403,99 @@ def fig_rim_floor_map():
     paired = set(m.pit_outside_id)
 
     cent = out.geometry.centroid
-    best, bx, by = None, None, None
-    for i in range(0, len(out), 7):
-        x, y = cent.iloc[i].x, cent.iloc[i].y
-        n = ((cent.x - x).abs() < 110) & ((cent.y - y).abs() < 110)
+    h = 175
+    # The annotation layers run far past 9t -- rims exist out to easting
+    # 700,697. Picking the busiest window anywhere put the map outside every
+    # terrain raster we have, which is why the basemap came back solid black.
+    # Restrict the search to the 9t footprint, inset by the half-window so the
+    # whole frame has terrain under it.
+    T = (619500.0, 4593000.0, 624000.0, 4597500.0)
+    inside = ((cent.x > T[0] + h) & (cent.x < T[2] - h)
+              & (cent.y > T[1] + h) & (cent.y < T[3] - h))
+    cand = out[inside.values]
+    cc = cand.geometry.centroid
+    # Rank every candidate window by how many rims it holds, and prefer one
+    # that also contains an unpaired rim so the red case can be shown. Taking
+    # the FIRST window with a lone rim gave a frame with two pits in it.
+    ranked = []
+    for i in range(len(cand)):
+        x, y = cc.iloc[i].x, cc.iloc[i].y
+        n = ((cc.x - x).abs() < h * 0.92) & ((cc.y - y).abs() < h * 0.92)
         lone = any(r not in paired
-                   for r in out.loc[n.values, "pit_outside_id"])
-        if lone and (best is None or n.sum() > best):
-            best, bx, by = n.sum(), x, y
-    if best is None:
-        bx, by = cent.iloc[0].x, cent.iloc[0].y
-    h = 120
+                   for r in cand.loc[n.values, "pit_outside_id"])
+        ranked.append((int(n.sum()), bool(lone), float(x), float(y)))
+    with_lone = [r for r in ranked if r[1]]
+    pick = max(with_lone or ranked, key=lambda r: r[0])
+    best, has_lone, bx, by = pick
+    print(f"    window centre {bx:.0f},{by:.0f}  {best} rims"
+          f"{' incl. an unpaired one' if has_lone else ''}")
 
     style()
     fig, ax = plt.subplots(figsize=(8.4, 8.4))
+
+    # TERRAIN FIRST. Without it this is outlines floating on blank paper and
+    # there is no way to see that the things being outlined are real dents in
+    # the ground. RRIM if it is there, hillshade otherwise.
+    import rasterio
+    from rasterio.windows import from_bounds
+    ext = (bx - h, by - h, bx + h, by + h)
+    base = None
+    for cand, is_rgb in ((D05 / "rrim_openness_9t_05.tif", True),
+                         (D05 / "hillshade_9t_05.tif", False)):
+        if not cand.exists():
+            continue
+        with rasterio.open(cand) as r:
+            w = from_bounds(*ext, transform=r.transform)
+            a = r.read(window=w, boundless=True, fill_value=0)
+        if is_rgb and a.shape[0] >= 3:
+            base = np.moveaxis(a[:3], 0, -1).astype("float32") / 255.0
+            ax.imshow(np.clip(base, 0, 1),
+                      extent=(ext[0], ext[2], ext[1], ext[3]),
+                      origin="upper", interpolation="bilinear", zorder=0)
+        else:
+            g = a[0].astype("float32")
+            g[g <= 0] = np.nan
+            ax.imshow(g, extent=(ext[0], ext[2], ext[1], ext[3]),
+                      origin="upper", cmap="gray", interpolation="bilinear",
+                      zorder=0)
+        base = cand.name
+        break
+    print(f"    basemap: {base}")
+
     so = out[(cent.x - bx).abs().lt(h) & (cent.y - by).abs().lt(h)]
     ci = ins.geometry.centroid
     si = ins[(ci.x - bx).abs().lt(h) & (ci.y - by).abs().lt(h)]
-    so.boundary.plot(ax=ax, color=C_RIM, linewidth=2.6, zorder=3)
-    si.plot(ax=ax, facecolor=C_FLOOR, edgecolor="#3a3a3a", linewidth=1.2,
-            alpha=0.92, zorder=4)
+    import matplotlib.patheffects as pe
+    halo = [pe.Stroke(linewidth=5.0, foreground="#14181c", alpha=0.85),
+            pe.Normal()]
+    for art in so.boundary.plot(ax=ax, color=C_RIM, linewidth=2.8,
+                                zorder=3).collections[-1:]:
+        art.set_path_effects(halo)
+    si.plot(ax=ax, facecolor=C_FLOOR, edgecolor="#14181c", linewidth=1.4,
+            alpha=0.55, zorder=4)
     lone = so[~so.pit_outside_id.isin(paired)]
     if len(lone):
-        lone.boundary.plot(ax=ax, color=C_LONE, linewidth=3.6, zorder=5)
+        for art in lone.boundary.plot(ax=ax, color=C_LONE, linewidth=3.8,
+                                      zorder=5).collections[-1:]:
+            art.set_path_effects(halo)
         c = lone.geometry.centroid
         g = lone.geometry.iloc[
             int(((c.x - bx) ** 2 + (c.y - by) ** 2).to_numpy().argmin())]
+        # Put the label on whichever side of the rim has room. Fixed to the
+        # right, it ran straight off the frame for any rim near the east edge.
+        to_left = g.centroid.x > bx
         ax.annotate("this rim has no floor inside it",
-                    xy=(g.centroid.x, g.centroid.y), xytext=(18, 34),
+                    xy=(g.centroid.x, g.centroid.y),
+                    xytext=(-18 if to_left else 18, 34),
+                    ha="right" if to_left else "left",
                     textcoords="offset points", fontsize=14,
                     fontweight="bold", color=C_LONE,
-                    arrowprops=dict(arrowstyle="-", color=C_LONE, lw=1.9),
-                    zorder=6)
+                    arrowprops=dict(arrowstyle="-", color=C_LONE, lw=2.2),
+                    zorder=6,
+                    path_effects=[pe.withStroke(linewidth=4.0,
+                                                foreground="#14181c")],
+                    bbox=dict(boxstyle="round,pad=0.30", facecolor="#14181c",
+                              edgecolor="none", alpha=0.72))
     ax.set_xlim(bx - h, bx + h)
     ax.set_ylim(by - h, by + h)
     ax.set_aspect("equal")
@@ -443,7 +508,7 @@ def fig_rim_floor_map():
         Line2D([], [], color=C_LONE, lw=3.4, label="rim with no floor")],
         loc="upper center", bbox_to_anchor=(0.5, -0.012), ncol=1,
         fontsize=13, framealpha=1.0, facecolor="#ffffff", edgecolor=RULE)
-    ax.text(0.5, 1.012, "a real corner of the map, 240 m across",
+    ax.text(0.5, 1.012, f"a real corner of the map, {2*h:.0f} m across",
             transform=ax.transAxes, fontsize=13, color=INK2, ha="center",
             va="bottom")
     fig.subplots_adjust(left=0.02, right=0.98, top=0.955, bottom=0.135)
