@@ -429,20 +429,25 @@
   // bearing (clockwise from north), measured in
   // notebooks/wellsight_v2/s7_analysis/_test_chm_nodata_bands_9t.py. A line
   // laid PARALLEL to them would sit inside one row and then inside the next,
-  // flashing entirely on and entirely off, which shows the spacing but not the
+  // flashing entirely on and entirely off, which shows the rhythm but not the
   // pattern. So the line is laid ACROSS them -- 79 - 90 = -11 degrees -- and
   // walks ALONG the rows. Every frame then cuts all of them at once and the
-  // cross-section reads as a comb, one tooth per row, 3 m apart.
+  // cross-section reads as a comb.
+  //
+  // NO SPACING IS QUOTED HERE ON PURPOSE. This used to say "3 m apart". That
+  // number came from an autocorrelation told to ignore lags under 2 m, so of
+  // course it found something over 2 m; the same profile has no clean periodic
+  // peak. The rows are the sensor's scan lines -- RIEGL VQ-1560 series,
+  // rotating polygon -- and their bearing, 79 degrees, is the solid fact.
   //
   // TWO MODES, and they answer different questions.
   //   ACROSS  the line lies perpendicular to the rows and walks along them.
   //           Every frame cuts all of the rows at once, so the cross-section
-  //           reads as a comb: one tooth per row, 3 m apart. This is the mode
-  //           that shows the pattern.
+  //           reads as a comb. This is the mode that shows the pattern.
   //   ALONG   the line lies parallel to the rows and walks across them. Now
   //           the line is either sitting in a row or between two, so the
-  //           cross-section floods orange and then clears, once every 3 m of
-  //           travel. This is the mode that shows the SPACING, and it is also
+  //           cross-section floods orange and then clears. This is the mode
+  //           that shows the rhythm, and it is also
   //           the one that makes the point that a whole strip is missing
   //           rather than scattered cells.
   var BEARING=79.0*Math.PI/180;

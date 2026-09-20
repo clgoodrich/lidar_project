@@ -12,9 +12,10 @@ conflated, because both are described as "missing data" and both make stripes.
   recovered-ground DEM does.
 
   THE CORN ROWS (the CHM slide). Parallel NoData stripes in the DSM and so in
-  the CHM, 3.00 m apart on a 79 degree bearing, which
-  _test_corduroy_is_scan_geometry_9t.py showed is the across-track direction of
-  a 348.2 degree flight line at 112.2 m/s -- one mirror sweep at 37.4 Hz.
+  the CHM, on a 79 degree bearing. The sensor's scan lines run at 78 degrees,
+  measured independently off the ground pattern, so the stripes lie ALONG THE
+  SCAN LINES. See `_measure_scanner_geometry_9t.py`; an earlier version of this
+  paragraph quoted a 3.00 m spacing and a 37.4 Hz mirror sweep, both withdrawn.
 
 This asks whether they are the same thing, and answers it five ways: by scan
 angle in the window, by whether the void cells hold anything recoverable, by
@@ -238,7 +239,7 @@ def main() -> int:
 
 
 #: Full 9t extent, and the cell size the tile-scale panels are binned at. 5 m
-#: is deliberate: the corn rows are 3 m apart, so a 5 m cell cannot resolve an
+#: is deliberate: the corn rows are roughly a metre apart, so a 5 m cell cannot resolve an
 #: individual stripe and the panel shows WHERE the dropout field is rather than
 #: redrawing the stripes at a size nobody can see.
 TILE_B = (619500.0, 4593000.0, 624000.0, 4597500.0)
@@ -436,8 +437,8 @@ def figure(b, void, ang, x, y, dsm, out, tile, frac):
     ax.imshow(ov, extent=ext, origin="upper", interpolation="nearest")
     ax.set_title("300 m window — cells with no return at all",
                  loc="left", fontsize=14, fontweight="bold", color=INK)
-    ax.set_xlabel(f"{out['void_cells']['n']:,} cells, 3.00 m apart, "
-                  "running across-track", fontsize=11.5, color=MUTED)
+    ax.set_xlabel(f"{out['void_cells']['n']:,} cells, lying along the "
+                  "scan lines", fontsize=11.5, color=MUTED)
 
     # --- top right: the window, cut returns ------------------------------
     ax = axes[0][1]

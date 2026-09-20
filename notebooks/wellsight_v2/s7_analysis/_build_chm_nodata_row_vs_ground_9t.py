@@ -1,10 +1,14 @@
 """One dropout row, along its length: the canopy surface against the ground.
 
 The across-profile (`_build_chm_nodata_cross_section_9t.py`) establishes that
-the bright corduroy in `chm_300m_9t.png` is NoData -- 21 bands at 3.00 m
-spacing, bearing 79.0 deg against the 79.4 deg strike measured off the panel by
-hand -- and the --along mode shows a band is empty for 38% of its length where
+the bright corduroy in `chm_300m_9t.png` is NoData -- 21 bands, bearing 79.0 deg
+against the 79.4 deg strike measured off the panel by hand -- and the --along
+mode shows a band is empty for 38% of its length where
 the line 1.5 m beside it is empty for 0%.
+
+An earlier version of this line quoted "3.00 m spacing". That number was
+threshold-dependent and has been withdrawn; see
+`_measure_scanner_geometry_9t.py`. The bearing is unaffected.
 
 This is the view asked for after that: the ROW itself, drawn against the ground,
 with CHM and DSM shown directly rather than summarised as a gap fraction.

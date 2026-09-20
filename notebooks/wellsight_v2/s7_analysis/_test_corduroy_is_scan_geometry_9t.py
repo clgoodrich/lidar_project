@@ -1,4 +1,34 @@
-"""What the corn rows actually are: the scanner's along-track sweep step.
+"""The corn rows are a scan artefact: they lie along the scan lines.
+
+SUPERSEDED IN PART -- READ THIS FIRST
+-------------------------------------
+This script's parts 1 and 4 stand. Parts 2 and 3 were wrong, and the title used
+to say "the scanner's along-track sweep step", which was wrong too.
+
+  PART 2, flight bearing and groundspeed, regressed x and y against gps_time
+  over all returns. That measures the SWEEP, not the aircraft: the beam crosses
+  1149 m of ground in 6 ms while the plane moves under half a metre. It
+  returned 112.2 m/s; the near-nadir ground track gives 70.1 m/s.
+
+  PART 3, stripe spacing, reported 3.00 m from an autocorrelation restricted to
+  lags over 2 m. Restrict a search above 2 m and it will return something above
+  2 m. The same profile has no clean periodic peak anywhere, so no spacing is
+  claimed any more.
+
+  Everything built on those -- a 37.4 Hz sweep, a 1.03 m line spacing, an
+  oscillating mirror, and a story about lines pairing at the swath edge -- is
+  withdrawn. The sensor is a RIEGL VQ-1560 series, a ROTATING POLYGON, which
+  rules straight parallel lines and has no turnaround and no phase to pair.
+
+  `_measure_scanner_geometry_9t.py` has the corrected geometry and the full
+  account of how each number went wrong.
+
+WHAT SURVIVES, AND IT IS THE PART THAT MATTERS
+----------------------------------------------
+The corn rows run at 79.0 deg. The scan lines, measured independently off the
+ground pattern, run at 78.0 deg. The corn rows lie ALONG THE SCAN LINES. Void
+cells hold nothing: 94.1% have no return of any kind. Coverage on a stripe is
+1.8x thinner than beside it.
 
 THE QUESTION
 ------------

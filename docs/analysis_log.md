@@ -5,6 +5,58 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 -- CORRECTION: the scanner is a rotating polygon, and three numbers were wrong
+
+The entry below headed "What the corn rows are: measured, not assumed" reached
+the right conclusion about WHERE the stripes are and the wrong one about WHAT
+made them. Corrected here rather than edited there, so the mistake stays
+visible.
+
+**The sensor is a RIEGL VQ-1560 series: a rotating polygon, dual channel.**
+Identified from the manufacturer's published scan-pattern description, not from
+the LAS header, which names only "QSI LiDAR Suite". Each channel rules straight
+parallel lines; the two channels' sets are tilted 28 degrees against each other
+with a forward/backward look of plus and minus 8 degrees at the swath edge --
+RIEGL's "cross-fire". See `literature/CITATIONS.md`.
+
+**What was wrong, and why.**
+
+*Ground speed 112.2 m/s.* Regressed x and y against gps_time over all returns.
+That measures the sweep, not the aircraft: the beam crosses 1149 m of ground in
+6 ms while the plane moves under half a metre. Consecutive 1.4 s pieces of the
+same line gave 34, 55 and 72 m/s and the scatter was ignored. The near-nadir
+ground track gives **70.1 m/s**, 1503 m in 21.46 s.
+
+*Stripe spacing 3.00 m.* From an autocorrelation restricted to lags above 2 m.
+Restrict a search above 2 m and it returns something above 2 m. The same
+profile has no clean periodic peak at any lag. **No spacing is claimed now.**
+
+*"Oscillating mirror, 54.3 Hz", and 37.4 Hz before it.* The scan angle appears
+to rise and then fall, which reads as a reversal. It is two interleaved
+channels sampled alternately. The across-track ground coordinate settles it:
+its step changes sign 37,041 times in 199,900 pulses, median run length ONE. A
+single sweeping beam cannot do that. A polygon has no turnaround, so the whole
+"lines pair up at the swath edge" mechanism built on top of it is withdrawn.
+
+**What survives, all of it independently measured.** Scan lines run at
+**78.0 deg**, from the ground point pattern with nothing assumed -- for each
+candidate bearing, project onto the perpendicular and histogram; real ruled
+lines spike. Corn rows run at **79.0 deg**, from the NoData mask. The corn rows
+lie **along the scan lines**. Void cells hold nothing: 94.1% have no return of
+any kind. Coverage on a stripe is 1.8x thinner than beside it. Void rate by
+scan angle 0.38% -> 5.35% -> 0.89%, the cliff at 14 deg being flight-line
+overlap (0% double coverage inside, 98.3% beyond). Trees roughly double it.
+None of that is affected.
+
+The 78 against 85.8 deg across-track is itself a check: the 7.8 deg offset
+matches the datasheet's plus and minus 8 deg forward/backward look.
+
+New: `notebooks/wellsight_v2/s7_analysis/_measure_scanner_geometry_9t.py`,
+`notebooks/wellsight_v2/s7_analysis/_raw_returns_plan_view_9t.py`,
+`docs/presentation/figures_30to45min/v6/raw_returns_plan_view_9t.png` -- the raw
+delivery over the same 4.5 km square as `ground_thrown_away_9t.png`, with a
+300 m detail in which the straight parallel scan lines are plainly visible.
+
 ## 2026-09-20 -- The corn rows and the vendor cut are not the same problem
 
 Asked directly: do the CHM corn rows overlap the Data QA red strips, and does

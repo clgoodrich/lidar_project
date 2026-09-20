@@ -22,6 +22,13 @@ user measured off the panel by hand:
     pattern bearing            79.0 deg      (hand-measured strike 79.4 deg)
     bands                      26, median spacing 3.00 m
 
+    TREAT THAT SPACING AS THRESHOLD-DEPENDENT, NOT AS A MEASUREMENT. A band
+    faint enough to fall under the detector merges two gaps into one, so the
+    figure moves with the threshold and with the extent -- 3.00 m over one
+    window, 3.62 m over another, and the autocorrelation of the same profile
+    has no clean periodic peak at all. The bearing is solid; the spacing is
+    not. See `_measure_scanner_geometry_9t.py`.
+
 So these are sweep lines where no first return was recorded at all: no DSM
 value, so no CHM. Dropouts in the scan pattern rather than artifacts in it.
 

@@ -1,0 +1,45 @@
+{
+  "tile": "USGS_LPC_PA_WesternPA_2019_D20_17TPF621593.laz",
+  "generating_software": "QSI LiDAR Suite",
+  "sensor": "RIEGL VQ-1560 series, rotating polygon, dual channel",
+  "sensor_source": "literature/CITATIONS.md, RIEGL cross-fire",
+  "corduroy_bearing_deg": 79.0,
+  "flight_line": 637,
+  "n_first_returns": 4682949,
+  "track_m": 1503.1000752442653,
+  "track_s": 21.456575989723206,
+  "ground_speed_ms": 70.05311919125339,
+  "bearing_deg": 355.77226400408307,
+  "across_track_deg": 85.77226400408307,
+  "line_bearing_patches": [
+    {
+      "n": 8053,
+      "peak1": 1.0,
+      "peak2": 78.0,
+      "cx": 621604.8362021644,
+      "cy": 4593697.816331918
+    },
+    {
+      "n": 10597,
+      "peak1": 78.0,
+      "peak2": 178.0,
+      "cx": 621304.8362021644,
+      "cy": 4593497.816331918
+    },
+    {
+      "n": 13130,
+      "peak1": 0.0,
+      "peak2": 75.0,
+      "cx": 622104.8362021644,
+      "cy": 4593297.816331918
+    },
+    {
+      "n": 5156,
+      "peak1": 79.5,
+      "peak2": 179.5,
+      "cx": 621104.8362021644,
+      "cy": 4594097.816331918
+    }
+  ],
+  "scan_line_bearing_deg": 78.0
+}
