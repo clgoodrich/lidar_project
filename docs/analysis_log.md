@@ -5,6 +5,43 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 -- The corn rows and the vendor cut are not the same problem
+
+Asked directly: do the CHM corn rows overlap the Data QA red strips, and does
+the CHM change once the vendor's discarded ground is put back?
+`notebooks/wellsight_v2/s7_analysis/_test_corduroy_vs_vendor_cut_9t.py` answers
+it five ways. No, and no.
+
+**In the 300 m CHM window.** Scan angle runs 0.00 to 7.40 degrees, median 3.47.
+The cut is at 18. Not one of the 176,275 returns here was cut -- 10.6 degrees of
+headroom. Of the 11,603 void cells, 0 hold a cut return.
+
+**Rebuilding the CHM on both DEMs.** Vendor ground 11,603 NoData cells,
+vendor plus recovered 11,603. The masks are identical in 100.00% of cells.
+Recovery closes zero holes. Where both surfaces exist the canopy height moves
+by a median of +0.0000 m, p95 0.171 m.
+
+**Over the whole 4.5 km tile, 5 m cells.** Void fraction is 0.0215 where nothing
+was cut and 0.0090 where returns were -- the corn rows are HALF as common where
+the cut bites. Pearson r between the two is -0.074.
+
+**Why, geometrically.** Void rate climbs 0.38% at nadir to 5.35% at 12-14
+degrees, then collapses to 0.89% at 14-18. The collapse is flight-line overlap,
+checked by counting distinct point_source_ids per cell rather than assumed: 0.0%
+of cells inside 14 degrees see a second line, 98.3% beyond it do. Cells seen by
+one line are 2.29% void; cells seen by two or more are 0.83%. The vendor's cut
+lives at 18 degrees, inside that overlap. So the two problems sit in different
+parts of the swath by construction.
+
+**The distinction that matters.** The cut is about what a return was LABELLED --
+it is in the file, reclassifying it is free. The corn rows are about whether a
+return EXISTS -- 94.1% of void cells hold nothing of any kind. You cannot
+reclassify a pulse that never came back.
+
+Figures: `docs/presentation/figures_30to45min/v6/corduroy_vs_vendor_cut_9t.png`
+(four panels: window and tile, each way) and
+`docs/presentation/figures_30to45min/v6/void_rate_vs_scan_angle_9t.png`.
+
 ## 2026-09-20 -- What the corn rows are: measured, not assumed
 
 `_test_chm_nodata_bands_9t.py` established that the stripes are NoData and that
