@@ -1,0 +1,56 @@
+{
+  "centre_en": [
+    621359.6227138052,
+    4594467.354711879
+  ],
+  "side_m": 300.0,
+  "res_m": 0.5,
+  "spectrum": {
+    "chm": {
+      "wavelength_m": 72.76068751089988,
+      "across_bearing_deg": 104.03624346792648,
+      "ridge_bearing_deg": 14.036243467926482,
+      "peak_prominence": 537.77620157313
+    },
+    "dsm": {
+      "wavelength_m": 94.86832980505137,
+      "across_bearing_deg": 161.565051177078,
+      "ridge_bearing_deg": 71.565051177078,
+      "peak_prominence": 766.4149485413934
+    },
+    "dem": {
+      "wavelength_m": 94.86832980505137,
+      "across_bearing_deg": 161.565051177078,
+      "ridge_bearing_deg": 71.565051177078,
+      "peak_prominence": 2029960.6233562494
+    },
+    "density": {
+      "wavelength_m": 3.9576596571348195,
+      "across_bearing_deg": 8.343891584033095,
+      "ridge_bearing_deg": 98.34389158403309,
+      "peak_prominence": 105.2258486674091
+    }
+  },
+  "transect_bearing_deg": 104.03624346792648,
+  "ripple_sd_p95": {
+    "chm": [
+      4.368729956430033,
+      10.808652374636216
+    ],
+    "dsm": [
+      4.514269209740413,
+      11.930385751494612
+    ],
+    "dem": [
+      0.19718845855848327,
+      0.3408616255066846
+    ],
+    "density": [
+      0.0,
+      4.440892098500626e-16
+    ]
+  },
+  "flight_lines": {
+    "637": 176284
+  }
+}

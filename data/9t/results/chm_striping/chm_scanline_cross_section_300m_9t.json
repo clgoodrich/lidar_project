@@ -1,0 +1,12 @@
+{
+  "bearing_deg": 139.25,
+  "cut_bearing_deg": 49.25,
+  "spacing_m": 2.0,
+  "n_hist_peaks": 25,
+  "threshold_m": 24.42693328857422,
+  "spikes_on_cut": 26,
+  "median_spike_gap_m": 3.0,
+  "dsm_range_m": 46.50546428303471,
+  "dem_range_m": 23.391542664667327,
+  "dem_sd_m": 6.722935350628194
+}

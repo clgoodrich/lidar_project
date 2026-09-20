@@ -21,17 +21,50 @@ county and not a convention.
   1.45–1.62 M points per tile and halves the DEM void rate (15.99% → 9.97%,
   12.36% → 6.27%) without moving ground the vendor already had (0.3% of covered
   cells differ by more than 10 cm). Pit depth unchanged.
-- **Rebuild the feature stack on SMRF ground and re-score a model.** This is now
-  the open question and the only one that decides whether any of this matters.
-  Nothing so far shows detection improves; the whole case rests on the surface
-  existing where it previously did not. Start with pit on `621594`, which is a 9t
-  training tile, so the comparison lands against an existing leaderboard row.
-- **Only 2 of the 177 affected squares are repaired.** Reprocessing the rest is a
-  day of compute, not a research question — do not start it until the re-score
-  above says it is worth doing.
+- ~~**Rebuild the feature stack on SMRF ground and re-score a model.**~~
+  **ANSWERED 2026-09-19 — it does not improve detection.**
+  `docs/iterations/smrf_ground_retrain_pit_cv5.md`. Full 9-square SMRF stack on
+  the vendor stack's exact grid, same labels, same folds, same schedule, only the
+  ground classification differs. Paired per fold, **no |t| reaches 2** on any
+  metric: F1-selected recall@0.3 +0.032 (t +0.83), F2-selected recall@0.3 −0.014
+  (t −1.19), and the biggest single effect is SMRF being *worse* at IoU 0.5 under
+  F2 (−0.082, t −1.91). The two objectives disagree in sign, which is what a null
+  looks like.
+  Why, in one line: only **26.8%** of void cells are wide-angle-only, while
+  **68.1%** hold near-nadir returns and still no ground because the canopy
+  occluded it. SMRF closes about a quarter of the holes and that moved nothing.
+  The rougher SMRF surface (train-block sd ratios 1.09–1.42 across the seven
+  channels) recovers real micro-relief and retains low vegetation as ground, and
+  the two appear to cancel.
+- ~~**Only 2 of the 177 affected squares are repaired.**~~ **DO NOT reprocess the
+  rest.** That day of compute was deferred pending the re-score above. The
+  re-score says no.
+- **The Data QA section is a rigour story, not a results story.** It should now
+  say so out loud: we found systematic gaps, showed the missing returns measure
+  as well as the kept ones, tested whether it changed detection, and it did not.
+  A section that demonstrates a problem without testing whether it matters
+  invites the question from the floor.
 - **Do NOT fix it by promoting flags.** The reference surface is built from
   class 2, so promoting points moves the surface and re-opens the question. One
   pass does not converge.
+- **CHM carries scanner-sweep artifacts — filter before using it as a channel
+  (added 2026-09-19).** The canopy model over the 9t derivative window is crossed
+  by thin bright streaks that are an instrument artifact, not vegetation. The
+  returns under them are **21% single-return against 70% off them**, sit at the
+  **same scan angle as their surroundings** (3.8° vs 3.6°, so this is NOT the 18°
+  cut), and fall into **20 discrete GPS-time bands** — individual scanner sweeps,
+  within a single flight line (637). A cross-section crosses 26 spikes at 3.0 m
+  median spacing: the DSM swings 46.5 m while the DEM beneath climbs smoothly by
+  23.4 m with no spikes. First-return surface only.
+  Consequence: **CHM is not one of the seven model channels, so nothing
+  downstream is affected** — but the vegetation-structure idea below cannot use
+  CHM raw. Scripts: `s7_analysis/_test_chm_scanline_streaks_9t.py`,
+  `s7_analysis/_build_chm_scanline_cross_section_9t.py`.
+  Open: the streak **bearing is not reliably measured** — 121°, 135° and 139°
+  depending on detector and angular step, because tree-crown speckle competes
+  with the streaks in the variance surface. The estimator itself is validated
+  against synthetic lines at 45/60/70/120/135° and recovers each exactly, so the
+  instability is in the mask. Do not quote a bearing until that is fixed.
 - **Vegetation structure is an unused channel.** Canopy p95 is 1.3–2.8 m lower
   over annotated pads and pits than the forest ring around them, same direction
   on 5 of 5 feature/tile combinations, pad effect Cliff's d −0.242 over 3,427

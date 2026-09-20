@@ -5,6 +5,66 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-19 - SMRF ground does not improve pit detection, and the CHM is striped
+
+**The top BACKLOG item is closed, with a null.** The 7-band stack was rebuilt
+from SMRF-classified ground on the vendor stack's exact grid and the pit CV5
+retrained against it - same labels, same folds, same inner-validation fold, same
+architecture and schedule, only the ground classification different. Paired per
+fold, **no |t| reaches 2 on any metric**. F1-selected recall@0.3 +0.032
+(t +0.83), F2-selected recall@0.3 -0.014 (t -1.19), containment +0.020 / -0.004,
+and the largest single effect is SMRF being WORSE at IoU 0.5 under F2 (-0.082,
+t -1.91). The two threshold objectives disagree in sign on recall, which is what
+a null looks like. 53.9 min, `data/9t/models/pit/unet_cv5_smrf/`.
+
+The reason is already in the earlier tests: only 26.8% of 1 m void cells are
+wide-angle-only, while 68.1% hold near-nadir returns and still have no ground
+because the canopy occluded it. SMRF closes about a quarter of the holes, and a
+quarter was not enough to move anything. The rougher SMRF surface (train-block sd
+ratios 1.09-1.42 across the seven channels) recovers real micro-relief and
+retains low vegetation as ground; the two appear to cancel.
+
+**Consequences.** Do not reprocess the remaining 175 affected map squares - that
+day of compute was explicitly deferred pending this re-score. The Data QA section
+of the talk stays a rigour story and should now say so: we found systematic gaps,
+showed the missing returns measure as well as the kept ones, tested whether it
+changed detection, and it did not.
+
+**A prediction held and an interim claim did not.** The stated expectation before
+the run was "roughly flat, possibly slightly worse". After fold 0 alone I
+reported the arm as running ahead of baseline on the strength of one fold
+(recall 0.932 against a 0.864 baseline fold). The remaining four removed it. One
+fold of five is not a direction and should not have been described as one.
+Write-up: `docs/iterations/smrf_ground_retrain_pit_cv5.md`.
+
+**The CHM carries scanner-sweep artifacts.** The canopy panel in the talk is
+crossed by thin bright streaks. They are an instrument artifact: the returns
+under them are 21% single-return against 70% off them, sit at the SAME scan angle
+as their surroundings (3.8 vs 3.6 deg, so not the 18 deg cut), and fall into 20
+discrete GPS-time bands, all within one flight line (637). A cross-section
+crosses 26 spikes at 3.0 m median spacing - the DSM swings 46.5 m while the DEM
+beneath climbs smoothly by 23.4 m with no spikes. First-return surface only.
+CHM is not one of the seven model channels, so nothing downstream is affected,
+but the vegetation-structure channel idea in BACKLOG cannot use CHM raw.
+
+Three detectors were needed and the first two failed, both recorded in the script
+docstrings so they are not repeated: a high CHM percentile finds only tree crowns
+and returns ZERO pixels in the open ground where the streaks are clearest; a 3x3
+binary opening on that same mask inherits the problem; a white top-hat, which
+keys on local contrast rather than absolute height, is the right instrument. The
+streak BEARING is still not reliably measured - 121, 135 and 139 deg depending on
+detector and angular step - although the estimator itself recovers synthetic
+lines at 45/60/70/120/135 deg exactly, so the instability is in the mask. No
+bearing is quoted as a finding.
+
+An earlier figure from the first attempt asserted "the corduroy is survey
+geometry" from an auto-generated headline fired on a badly chosen spectral
+prominence threshold, over a diffuse spectrum with no directional peak. It was
+moved out of the presentation folder to
+`data/9t/results/chm_striping/chm_corduroy_striping_300m_9t_INCONCLUSIVE.png`.
+
+---
+
 ## 2026-09-19 - The architecture comparison scored, and a channel swap caught in the SMRF stack
 
 **37 trained folds had never been scored.** `_arch_compare_9t_1m.py` writes its

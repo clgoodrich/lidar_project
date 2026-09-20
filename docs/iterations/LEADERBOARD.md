@@ -122,6 +122,34 @@ Outputs: `data/9t/models/pit/unet_cv5/pit_cv5_per_fold_9t.csv`,
 `pit_cv5_recovery_curve_9t.csv`, `pit_cv5_fold_assignment_9t.csv`.
 Log: `data/9t/models/pit/unet_cv5/_pit_cv5_ann712_train.log`.
 
+#### Same model on SMRF-recovered ground — no improvement (2026-09-19)
+
+The row above is trained on the **vendor** ground surface, which withholds every
+at-ground return beyond 18° off nadir. This arm rebuilds the 7-band stack from
+ground we classify ourselves with SMRF, on the vendor stack's exact grid, and
+retrains with the same labels, folds, inner-validation fold, architecture and
+schedule. **Only the ground classification differs.**
+
+| Selection | metric | vendor | SMRF | delta | folds better | paired t |
+|---|---|---|---|---|---|---|
+| by F1 | R@0.3 | 0.861 | 0.893 | +0.032 | 3/5 | +0.83 |
+| by F1 | P@0.3 | 0.690 | 0.680 | −0.009 | 1/5 | −0.42 |
+| by F1 | containment | 0.914 | 0.934 | +0.020 | 4/5 | +0.81 |
+| by F2 | R@0.3 | 0.928 | 0.915 | −0.014 | 1/5 | −1.19 |
+| by F2 | R@0.5 | 0.823 | 0.742 | −0.082 | 1/5 | −1.91 |
+| by F2 | containment | 0.956 | 0.952 | −0.004 | 2/5 | −0.39 |
+
+**No |t| reaches 2, and the two objectives disagree in sign on recall.** That is
+a null. Recovering the withheld ground does not improve pit detection, and the
+largest single effect is SMRF being slightly *worse* at IoU 0.5.
+
+Why: only 26.8% of 1 m void cells are wide-angle-only; 68.1% hold near-nadir
+returns and still have no ground because the canopy occluded it. SMRF closes
+about a quarter of the holes. **Do not reprocess the remaining 175 map squares.**
+
+Write-up: `docs/iterations/smrf_ground_retrain_pit_cv5.md`.
+Outputs: `data/9t/models/pit/unet_cv5_smrf/pit_cv5_per_fold_9t.csv`.
+
 ### Pits, 5-fold cross-validated — all 426 pits, 2026-07-27
 
 **SUPERSEDED by the ann712 table above.** Kept for the trend.

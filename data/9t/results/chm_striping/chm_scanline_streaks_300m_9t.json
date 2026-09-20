@@ -1,0 +1,98 @@
+{
+  "bounds": [
+    621209.6227138052,
+    4594317.354711879,
+    621509.6227138052,
+    4594617.354711879
+  ],
+  "threshold_m": 24.42693328857422,
+  "bright_px": 2439,
+  "bearing_deg": 129.0,
+  "spacing_m": 2.0,
+  "n_peaks": 19,
+  "points": {
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF621593.laz": {
+      "on": {
+        "n": 2001,
+        "mean_z": 476.6241729135432,
+        "scan_angle_mean": -3.759355068206787,
+        "scan_angle_absmean": 3.759355068206787,
+        "scan_angle_p05": -5.184000015258789,
+        "scan_angle_p95": -1.8840000629425049,
+        "first_return_pct": 59.37031484257871,
+        "single_return_pct": 21.239380309845078,
+        "edge_of_flight_pct": 0.0,
+        "scan_dir_1_pct": 50.37481259370315,
+        "class_hist": {
+          "1": 1124,
+          "2": 877
+        }
+      },
+      "off": {
+        "n": 112907,
+        "mean_z": 465.2572567688452,
+        "scan_angle_mean": -3.549292802810669,
+        "scan_angle_absmean": 3.549816608428955,
+        "scan_angle_p05": -6.75,
+        "scan_angle_p95": -0.40382814407348633,
+        "first_return_pct": 83.96645026437687,
+        "single_return_pct": 69.94074769500563,
+        "edge_of_flight_pct": 0.0,
+        "scan_dir_1_pct": 50.044727076266305,
+        "class_hist": {
+          "1": 28062,
+          "2": 84829,
+          "7": 16
+        }
+      },
+      "gps": {
+        "span_s": 1.7569800019264221,
+        "median_gap_s": 2.9802322387695312e-06,
+        "p99_gap_s": 0.010909030437469483,
+        "n_big_gaps": 20
+      }
+    },
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF621594.laz": {
+      "on": {
+        "n": 244,
+        "mean_z": 466.6388114754099,
+        "scan_angle_mean": -0.8384999632835388,
+        "scan_angle_absmean": 0.8384999632835388,
+        "scan_angle_p05": -1.062000036239624,
+        "scan_angle_p95": -0.5118001103401184,
+        "first_return_pct": 44.26229508196721,
+        "single_return_pct": 5.327868852459016,
+        "edge_of_flight_pct": 0.0,
+        "scan_dir_1_pct": 52.459016393442624,
+        "class_hist": {
+          "1": 162,
+          "2": 81,
+          "18": 1
+        }
+      },
+      "off": {
+        "n": 61132,
+        "mean_z": 438.707536805601,
+        "scan_angle_mean": -3.5277397632598877,
+        "scan_angle_absmean": 3.5277397632598877,
+        "scan_angle_p05": -6.8580002784729,
+        "scan_angle_p95": -0.5460000038146973,
+        "first_return_pct": 88.41032519793234,
+        "single_return_pct": 77.84957141922398,
+        "edge_of_flight_pct": 0.0,
+        "scan_dir_1_pct": 50.057253157102664,
+        "class_hist": {
+          "1": 11378,
+          "2": 49747,
+          "7": 7
+        }
+      },
+      "gps": {
+        "span_s": 0.28967100381851196,
+        "median_gap_s": 0.0,
+        "p99_gap_s": 0.014875866174697732,
+        "n_big_gaps": 3
+      }
+    }
+  }
+}
