@@ -102,6 +102,9 @@
     margin:0 0 2px; font-size:0.84rem; font-weight:600; letter-spacing:-0.01em;
   }
   #scan .sub{margin:0 0 8px; font-size:0.72rem; color:var(--muted);}
+  .scanbar{display:flex; align-items:center; gap:10px; margin:0 0 8px;}
+  .scanbar button{flex:0 0 4.6rem; text-align:center;}
+  .scanbar input[type=range]{flex:1;}
   #xsec{
     display:block; width:100%; height:210px; border-radius:6px;
     background:#0b1116; border:1px solid var(--edge);
@@ -157,6 +160,11 @@
 <div class="panel" id="scan">
   <h2>Cross-section under the scanner</h2>
   <p class="sub" id="sSub">&mdash;</p>
+  <div class="scanbar">
+    <button id="bRun" aria-pressed="true">Pause</button>
+    <input id="cPos" type="range" min="0" max="1000" value="0"
+           aria-label="Scanner position">
+  </div>
   <canvas id="xsec" width="900" height="380"></canvas>
   <p class="readout">
     <span>cells on the line <span id="sN">&mdash;</span></span>
@@ -520,6 +528,16 @@
   scanGeo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(NS*3),3));
   var scanLine=new THREE.Line(scanGeo,new THREE.LineBasicMaterial({color:0xffffff}));
   scanLine.frustumCulled=false; root.add(scanLine);
+  // The same line again, laid flat on the CHM floor. Without it the scanner is
+  // only ever on the terrain, so when you are reading the floor -- which is the
+  // whole point of having the slide's image down there -- there is nothing to
+  // say where the section is being cut.
+  var floorGeo=new THREE.BufferGeometry();
+  floorGeo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(NS*3),3));
+  var floorLine=new THREE.Line(floorGeo,new THREE.LineBasicMaterial({
+    color:0xffffff, transparent:true, opacity:0.85}));
+  floorLine.frustumCulled=false; root.add(floorLine);
+
   var hitGeo=new THREE.BufferGeometry();
   hitGeo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(NS*6),3));
   var hitLines=new THREE.LineSegments(hitGeo,new THREE.LineBasicMaterial({
@@ -654,6 +672,15 @@
         nh++;
       }
     }
+    // and the same line on the floor, a hair above it so it is not z-fought
+    var fp=floorGeo.attributes.position.array;
+    var fz=chmFloor.position.z + Math.max(0.05,(rr[1]-rr[0])*0.004);
+    for (var q2=0;q2<prN;q2++){
+      fp[q2*3]=prX[q2]; fp[q2*3+1]=prY[q2]; fp[q2*3+2]=fz;
+    }
+    floorGeo.setDrawRange(0,prN); floorGeo.attributes.position.needsUpdate=true;
+    floorLine.visible = scanLine.visible && chmFloor.visible;
+
     scanGeo.setDrawRange(0,prN); scanGeo.attributes.position.needsUpdate=true;
     hitGeo.setDrawRange(0,nh*2); hitGeo.attributes.position.needsUpdate=true;
     drawXsec(f);
@@ -721,6 +748,25 @@
   var sN=document.getElementById('sN'), sG=document.getElementById('sG'),
       sSub=document.getElementById('sSub');
   var cScanV=document.getElementById('cScanV'), oScanV=document.getElementById('oScanV');
+  var bRun=document.getElementById('bRun'), cPos=document.getElementById('cPos');
+  // The sweep runs on its own until you touch it. Dragging the position bar is
+  // taken as "I want to look at this one", so it pauses rather than fighting
+  // the clock for the next frame.
+  var scanRun=true;
+  function setRun(on){
+    scanRun=on;
+    bRun.textContent=on?'Pause':'Play';
+    bRun.setAttribute('aria-pressed',on?'true':'false');
+  }
+  bRun.addEventListener('click',function(){ setRun(!scanRun); });
+  function syncPos(){
+    cPos.value=Math.round((sweep+SPAN)/(2*SPAN)*1000);
+  }
+  cPos.addEventListener('input',function(){
+    setRun(false);
+    sweep=-SPAN + (+cPos.value/1000)*2*SPAN;
+    if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
+  });
   cScanV.addEventListener('input',function(){
     oScanV.textContent=(+cScanV.value/10).toFixed(1)+' m/s';
   });
@@ -779,7 +825,7 @@
     alongMode=on;
     bAcross.setAttribute('aria-pressed',on?'false':'true');
     bAlong.setAttribute('aria-pressed',on?'true':'false');
-    sweep=-SPAN;
+    sweep=-SPAN; syncPos();
     if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
   }
   bAcross.addEventListener('click',function(){ setMode(false); });
@@ -818,9 +864,13 @@
   layer('cDem',function(on){ SD.mesh.visible=on; });
   layer('cDsm',function(on){ SS.mesh.visible=on; });
   layer('cGap',function(on){ gapLines.visible=on; });
-  layer('cChm',function(on){ chmFloor.visible=on; });
+  layer('cChm',function(on){
+    chmFloor.visible=on;
+    floorLine.visible=on && scanLine.visible;
+  });
   layer('cScan',function(on){
     scanLine.visible=on; hitLines.visible=on;
+    floorLine.visible=on && chmFloor.visible;
     document.getElementById('scan').style.display=on?'':'none';
     if(on) applyScan(+cFlat.value/100, +cExag.value/100);
   });
@@ -860,15 +910,16 @@
   function frame(now){
     var dt=Math.min((now-last)/1000,0.1); last=now;
     if (orbiting && !drag){ azim += (+cSpin.value/10)*Math.PI/180*dt; place(); }
-    if (scanLine.visible){
+    if (scanLine.visible && scanRun){
       sweep += (+cScanV.value/10)*dt;
       if (sweep > SPAN) sweep = -SPAN;
       applyScan(+cFlat.value/100, +cExag.value/100);
+      syncPos();
     }
     renderer.render(scene,camera);
     requestAnimationFrame(frame);
   }
-  resize(); refresh(); place();
+  resize(); refresh(); place(); syncPos();
   requestAnimationFrame(frame);
 })();
 </script>
