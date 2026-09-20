@@ -1,13 +1,29 @@
 """Is a NoData colour separable from every step of a greyscale ramp?
 
-WHY THIS EXISTS
----------------
+FALLBACK ONLY -- PREFER THE REAL VALIDATOR
+------------------------------------------
 The project's colourblind rule says to validate with the dataviz skill's
-`scripts/validate_palette.js`, all pairs, never by eye. That validator is not
-installed in this environment, and guessing a colour by eye is the exact
-failure the rule was written to prevent. So this measures the same thing the
-same way: simulate deuteranopia, protanopia and tritanopia, then take CIEDE2000
-between every pair.
+`scripts/validate_palette.js`, all pairs, never by eye. Use that whenever it is
+available. A greyscale ramp is sequential, so do NOT hand it the whole ramp as
+one palette (it will fail the ramp against itself, correctly, and tell you the
+scope is categorical). Hand it two-slot palettes instead, the candidate against
+one grey step at a time:
+
+    for g in '#333333' '#808080' '#b3b3b3'; do
+      node scripts/validate_palette.js "#D97706,$g" --mode light --pairs all
+    done
+
+This script is for when that validator is not installed, so that the choice is
+still measured rather than eyed -- which is the exact failure the rule exists to
+prevent. It simulates deuteranopia, protanopia and tritanopia and takes CIEDE2000
+in CAM02-UCS between every pair.
+
+**Its numbers are NOT comparable to the validator's.** Checked against it on
+five candidates: the RANKING agrees exactly, but this script reads roughly 2x
+optimistic. It put #A31515 at 16.6 where the validator says 7.6, which is the
+difference between "comfortable" and "needs a second encoding to be legal".
+Treat a pass here as provisional and re-check with the validator before
+recording numbers anywhere.
 
 WHAT IT CHECKS
 --------------

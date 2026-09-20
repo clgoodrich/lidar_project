@@ -209,13 +209,27 @@ def fetch_optical(bounds, px=900):
 #:
 #: A greyscale panel contains no green, so the red/green prohibition is not the
 #: binding constraint; the binding constraint is that this colour must not read
-#: as a grey LEVEL under any vision. Measured, not eyed, with
-#: `tools/check_nodata_colour_vs_gray_ramp.py` against 11 ramp steps:
-#:   #D97706  worst dE 27.8 (protan vs #808080); normal 32.7, deutan 29.7,
-#:            tritan 33.2. Chosen for the margin -- the runner-up #A31515 sits
-#:            at 16.6 protan, barely over the floor of 15.
-#:   Rejected: #E5007D, the instinctive magenta, FAILS at dE 5.1 deutan against
-#:            mid grey. #00C2D4 fails at 12.1 protan.
+#: as a grey LEVEL under any vision.
+#:
+#: Validated with the dataviz skill's `scripts/validate_palette.js`, run as
+#: `<colour>,<grey>` two-slot palettes, `--mode light --pairs all`, against
+#: nine steps of the ramp (#000000 .. #ffffff). Quoting the CVD-separation
+#: check, worst step for each candidate:
+#:   #D97706   12.6 protan vs #808080   PASS on all nine steps  <- chosen
+#:   #1F5FA8    8.6 tritan vs #666666   marginal
+#:   #A31515    7.6 protan vs #333333   in the 6-8 relief band
+#:   #00C2D4    4.6 protan vs #b3b3b3   fails
+#:   #E5007D    2.0 deutan vs #808080   fails badly -- the instinctive magenta
+#: #D97706 is the only candidate clear of the 6-8 band, which is why it wins
+#: over #A31515 despite #A31515 already meaning "missing" elsewhere in the
+#: project. No greyscale derivative panel ever carries lost/found categories,
+#: so the two meanings never appear in one figure.
+#:
+#: Do NOT use the numbers from `tools/check_nodata_colour_vs_gray_ramp.py` in
+#: place of these. That script exists only for when the validator is absent; it
+#: ranks the candidates identically but on a different scale, roughly 2x
+#: optimistic (it put #A31515 at 16.6 where the validator says 7.6).
+#:
 #: Second encoding: every panel with holes gets the legend patch below, so the
 #: category is never carried by colour alone.
 NODATA_RGB = "#D97706"
