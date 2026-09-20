@@ -49,11 +49,15 @@ import argparse
 import copy
 import io
 import shutil
+import sys
 from pathlib import Path
 
 from PIL import Image
 from pptx import Presentation
 from pptx.util import Inches, Pt
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _slide_notes_v6 import INSERT_NOTES, PLAIN_NOTES  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 PRES = ROOT / "docs/presentation"
@@ -512,7 +516,8 @@ def main() -> int:
         # Notes always get something. Where the wide layout had no room for the
         # carried-over body text, the notes are where it goes rather than
         # nowhere.
-        note = spec.get("notes", "").strip()
+        # Hand-written plain notes win over anything in the layout spec.
+        note = PLAIN_NOTES.get(i, spec.get("notes", "")).strip()
         carried = bodies.get(i, [])
         if mode == "wide" and carried and not spec.get("bullets"):
             extra = "From the slide: " + "  ".join(carried)
@@ -538,7 +543,7 @@ def main() -> int:
                  [(title, 28, True, ACCENT, 0)])
         add_text(new_s, 0.58, 1.18, 12.1, 0.8, [(kicker, 17, False, INK, 0)])
         place(new_s, v6fig(fig), (0.45, 2.00, 12.45, SLIDE_H - 2.25))
-        set_notes(new_s, note)
+        set_notes(new_s, INSERT_NOTES.get(after, note))
         lst = prs.slides._sldIdLst
         ids = list(lst)
         lst.remove(ids[-1])
