@@ -64,17 +64,31 @@ had 1 of 40 epochs on fold 0 and nothing else. That stale fold is set aside at
 `data/9t/models/_arch_compare/1m/roaddrain/unet/fold0_STALE_1epoch_timing_2026-09-18/`
 and a real 5-fold run is under way.
 
-Sizing, measured with `--time-one-epoch`: **353 s per epoch**, so 235 min per
-fold and **19.6 h per arm**. That is 12-24x the pit and pad arms (13-27 s per
-epoch) because the roaddrain manifest carries 7,825 features against a few
-hundred. The full four-arm ladder would be 78 h. It is not being run. Best-epoch
+Sizing, first estimated with `--time-one-epoch` at **353 s per epoch**, so 235
+min per fold and 19.6 h per arm. **That estimate was wrong by 1.8x.** Fold 0 ran
+to completion at a steady **644 s per epoch**, giving **7.2 h per fold and 36 h
+per arm**. Do not size a roaddrain run off `--time-one-epoch` again; the
+single-epoch path does not reproduce the sustained rate.
+
+Either way it is 12-24x the pit and pad arms (13-27 s per epoch), because the
+roaddrain manifest carries 7,825 features against a few hundred. Best-epoch
 lands at 27-40 across all 40 finished pit and pad folds, several still improving
 at 40, so the schedule cannot be shortened without truncating the arms - 40
 epochs is the honest number, not padding.
 
-**Two arms, not four**, on the existing result's own recommendation: `unet` as
-the control and `r34_imagenet` as the one rung with a positive delta on both pit
-and pad. Roughly 39 h. Logs at
+**Fold 0 result:** best val road IoU **0.593** at epoch 37 (drainage IoU 0.685,
+background 0.969). Comparable in magnitude to the pit and pad arms, which span
+0.49-0.64.
+
+**Plan, revised on the measured rate.** The four-arm ladder is 144 h and was
+never on the table. Two arms - `unet` as control plus `r34_imagenet`, the one
+rung with a positive delta on both pit and pad - is **72 h, three full days of
+GPU**, not the 39 h quoted when the arm was launched. The control arm is being
+allowed to finish, because it closes the named gap ("roaddrain has no
+architecture row") and yields a real CV5 leaderboard entry with a fold-to-fold
+sd, which is the noise floor any future comparison needs. **The second arm is
+held pending the user's word** rather than committed silently at double the
+advertised cost. Logs at
 `data/9t/models/_arch_compare/1m/roaddrain/run_roaddrain_unet_cv5_40ep_1m.log`.
 
 ---
