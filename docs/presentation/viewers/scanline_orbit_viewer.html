@@ -105,6 +105,10 @@
   .scanbar{display:flex; align-items:center; gap:10px; margin:0 0 8px;}
   .scanbar button{flex:0 0 4.6rem; text-align:center;}
   .scanbar input[type=range]{flex:1;}
+  /* the section's own two layers sit on one line, not stacked like the rail's */
+  .xrow{flex-direction:row; gap:18px; margin:0 0 8px;}
+  .xrow .ck{gap:6px;}
+  .xrow .ck input{margin:0;}
   #xsec{
     display:block; width:100%; height:210px; border-radius:6px;
     background:#0b1116; border:1px solid var(--edge);
@@ -165,9 +169,14 @@
     <input id="cPos" type="range" min="0" max="1000" value="0"
            aria-label="Scanner position">
   </div>
+  <div class="layers xrow">
+    <label class="ck" for="cXgap"><span class="swatch" style="background:var(--gap)"></span>Gaps<input type="checkbox" id="cXgap" checked></label>
+    <label class="ck" for="cXpts"><span class="swatch" style="background:var(--pts)"></span>Returns on the line<input type="checkbox" id="cXpts" checked></label>
+  </div>
   <canvas id="xsec" width="900" height="380"></canvas>
   <p class="readout">
     <span>cells on the line <span id="sN">&mdash;</span></span>
+    <span>returns on it <span id="sP">&mdash;</span></span>
     <span><b id="sG">&mdash;</b> with no first return</span>
     <span>scroll to zoom &middot; shift-scroll for height &middot; drag to pan &middot; double-click resets</span>
   </p>
@@ -522,6 +531,35 @@
     prN=n; prGap=gaps;
   }
 
+  // Returns lying on the scan line.
+  //
+  // WHY THIS EARNS ITS PLACE. The gap ticks say where nothing came back. They
+  // cannot say how thin the coverage got just beside a gap, and "thin" is the
+  // actual finding -- 1.8x thinner on a stripe than between. Drawing the real
+  // returns next to the ticks shows both at once: the comb, and the scatter
+  // getting sparse as it approaches each tooth.
+  //
+  // The buffer is one cell either side, deliberately. Wider and returns from
+  // the neighbouring row leak in and fill the gap on screen with points that
+  // are not on it.
+  var XBUF=RES;
+  // xpI holds point INDICES, so it is Int32 and not Float32. Float32 happens to
+  // be exact up to 2^24 and 176k points fit, but storing an index in a float
+  // array is the kind of thing that is fine until the scene gets bigger.
+  var xpT=new Float32Array(px.length), xpI=new Int32Array(px.length), xpN=0;
+  function samplePoints(off){
+    var L=lineDir(), M=moveDir(), n=0;
+    for (var i=0;i<px.length;i++){
+      var dx=px[i]-CEN[0], dy=py[i]-CEN[1];
+      var dn=dx*M[0]+dy*M[1]-off;
+      if (dn<-XBUF||dn>XBUF) continue;
+      var t=dx*L[0]+dy*L[1];
+      if (t<-SPAN||t>SPAN) continue;
+      xpT[n]=t; xpI[n]=i; n++;
+    }
+    xpN=n;
+  }
+
   // The scanner in the 3D scene: the line itself, drawn on the bare earth, and
   // a taller tick wherever the first-return surface is missing.
   var scanGeo=new THREE.BufferGeometry();
@@ -545,6 +583,7 @@
   hitLines.frustumCulled=false; root.add(hitLines);
 
   // ---- the cross-section panel
+  var showGaps=true, showPts=true;
   var xs=document.getElementById('xsec'), xc=xs.getContext('2d');
   // One vertical scale for the whole sweep, computed once. A scale that
   // re-fitted every frame would make the canopy appear to breathe as the line
@@ -620,14 +659,16 @@
     // ends alone stops reading as a line THROUGH the data. The fade keeps both:
     // the comb is obvious at a glance, and the ground and canopy stay legible
     // where they cross it.
-    xc.strokeStyle=gapGrad(pad,H-pad); xc.lineWidth=2;
-    xc.beginPath();
-    for (var i=0;i<prN;i++){
-      if (isFinite(prS[i])) continue;
-      var x=PX(i);
-      xc.moveTo(x,H-pad); xc.lineTo(x,pad);
+    if (showGaps){
+      xc.strokeStyle=gapGrad(pad,H-pad); xc.lineWidth=2;
+      xc.beginPath();
+      for (var i=0;i<prN;i++){
+        if (isFinite(prS[i])) continue;
+        var x=PX(i);
+        xc.moveTo(x,H-pad); xc.lineTo(x,pad);
+      }
+      xc.stroke();
     }
-    xc.stroke();
     // bare earth, then first return
     function trace(arr,colv,w){
       xc.strokeStyle=css(colv); xc.lineWidth=w; xc.beginPath();
@@ -643,6 +684,19 @@
     }
     trace(prD,'--dem',2.2);
     trace(prS,'--dsm',2.2);
+
+    // the real returns last, so they read as measurements sitting on the
+    // surfaces rather than as something the surfaces were drawn over
+    if (showPts){
+      xc.fillStyle=css('--pts');
+      for (var j=0;j<xpN;j++){
+        var i2=xpI[j];
+        var v2=pz[i2]+(pzF[i2]-pz[i2])*f;
+        var xx=pad + ((((xpT[j]-t0)/tspan)-VIEW.cx)*VIEW.zx + 0.5)*(W-2*pad);
+        if (xx<pad-2||xx>W-pad+2) continue;
+        xc.fillRect(xx-1.1, PY(v2)-1.1, 2.2, 2.2);
+      }
+    }
     xc.restore();
     // a scale bar, because zooming makes "how wide is this" a real question
     var metresAcross=tspan/VIEW.zx;
@@ -683,8 +737,10 @@
 
     scanGeo.setDrawRange(0,prN); scanGeo.attributes.position.needsUpdate=true;
     hitGeo.setDrawRange(0,nh*2); hitGeo.attributes.position.needsUpdate=true;
+    if (showPts) samplePoints(sweep); else xpN=0;
     drawXsec(f);
     sN.textContent=prN.toLocaleString();
+    sP.textContent=xpN.toLocaleString();
     sG.textContent=prGap.toLocaleString();
     sSub.textContent=(alongMode ? 'lying along the rows, ' : 'cutting across the rows, ')
       +Math.round(sweep+SPAN)+' of '+Math.round(2*SPAN)+' m travelled';
@@ -867,6 +923,15 @@
   layer('cChm',function(on){
     chmFloor.visible=on;
     floorLine.visible=on && scanLine.visible;
+  });
+  var sP=document.getElementById('sP');
+  layer('cXgap',function(on){
+    showGaps=on;
+    if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
+  });
+  layer('cXpts',function(on){
+    showPts=on;
+    if (scanLine.visible) applyScan(+cFlat.value/100, +cExag.value/100);
   });
   layer('cScan',function(on){
     scanLine.visible=on; hitLines.visible=on;
