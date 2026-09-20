@@ -72,13 +72,37 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+# --- v6 bare mode -----------------------------------------------------------
+import os as _os
+
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
+
+
+def _chrome(_fn, *a, **k):
+    """Draw slide chrome only when the figure has to stand on its own."""
+    if not BARE:
+        return _fn(*a, **k)
+    return None
+
+
+def _out(p):
+    from pathlib import Path as _P
+    p = _P(p)
+    if BARE:
+        p = p / "v6"
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+# ----------------------------------------------------------------------------
+
+
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "_source" / "lidar" / "westernpa"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
-OUT = ROOT / "data" / "9t" / "results" / "smrf_ground"
-FIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
+OUT = _out(ROOT / "data" / "9t" / "results" / "smrf_ground")
+#: BARE builds must never overwrite the shipped figures.
+FIG = _out(ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa")
 PDAL = "pdal"
 
 RES = 0.5            # DEM cell size, matching the project's 0.5 m products
@@ -445,7 +469,7 @@ def _figure(code, slope, A, B, dz, cov, vv, vs, bounds, m):
         a.set_aspect("equal"); a.set_xticks([]); a.set_yticks([])
         for sp in a.spines.values():
             sp.set_color(RULE)
-    fig.suptitle(f"Ground reclassified with SMRF   ·   tile {code}   "
+    _chrome(fig.suptitle, f"Ground reclassified with SMRF   ·   tile {code}   "
                  f"·   {m['recovered']:,} returns recovered, "
                  f"{m['void_vendor_pct']:.1f}% → "
                  f"{m['void_smrf_pct']:.1f}% of cells without ground",

@@ -34,10 +34,10 @@ WHAT THIS FIXES
 
 WHAT THIS DOES NOT FIX
 ----------------------
-Most figures still carry their own headline inside the PNG, because removing it
-means editing the builder that drew it and there are thirteen of them. Those are
-listed in NEEDS_FIGURE_SURGERY at the bottom and reported when the script runs,
-so the remaining work is visible rather than implied.
+Nothing, for the figures. Every builder gained a BARE mode
+(tools/add_bare_mode_to_figure_builders.py) and all 35 presentation figures are
+regenerated without their own headline, subtitle or footnote. What is kept
+inside a PNG is listed in STILL_IN_FIGURE and is the key, not chrome.
 
 Run:
     python docs/presentation/_build_deck_v6.py
@@ -59,7 +59,16 @@ ROOT = Path(__file__).resolve().parents[2]
 PRES = ROOT / "docs/presentation"
 SRC = PRES / "WellSight_Presentation v5.pptx"
 DST = PRES / "WellSight_Presentation v6.pptx"
-V6 = PRES / "figures_30to45min/v6"
+FIGROOT = PRES / "figures_30to45min"
+V6 = FIGROOT / "v6"
+
+
+def v6fig(name):
+    """Find a bare figure anywhere under figures_30to45min/**/v6/."""
+    hits = sorted(FIGROOT.rglob("v6/" + name))
+    if not hits:
+        raise FileNotFoundError("no bare figure named " + name)
+    return hits[0].read_bytes()
 
 NSP = "{http://schemas.openxmlformats.org/presentationml/2006/main}"
 SLIDE_W, SLIDE_H = 13.3333, 7.5
@@ -207,36 +216,43 @@ S = {
            "pipeline computed from it. Keeping the two visibly separate is the "
            "point: a reviewer can see exactly where human judgement enters."),
  37: dict(title="Preprocessing — matching rims to floors",
-     kicker="712 floors and 723 rims were drawn separately. Pairing them is a "
-            "geometry problem, not a bookkeeping one.",
-     notes="A pit was drawn twice: once round the outer rim, once round the "
-           "floor inside it. Nothing linked the two. 586 pairs were matched by "
-           "containment. 126 floors have no rim and 138 rims have no floor.\n\n"
-           "Those leftovers are not errors to be tidied away — they are real "
-           "features where only one of the two was visible."),
+     figure="rim_floor_pairing_map_only_9t.png", layout="box",
+     kicker="A pit was drawn twice. Nothing linked the two drawings.",
+     bullets=["712 floors drawn", "723 rims drawn",
+              "586 pairs found, by taking the rim each floor overlaps most",
+              "126 floors with no rim", "138 rims with no floor"],
+     notes="REBUILT as map-only. The v5 figure was a 2:1 composition: a map on "
+           "the left and a column of five big numbers on the right, under a "
+           "headline and a four-line paragraph. The numbers are on the slide "
+           "now, at 16 pt, instead of inside a PNG.\n\n"
+           "Only a paired pit gets a wall, and only a pit with a wall can be "
+           "measured. That is why 712 floors yield 586 walls. The leftovers "
+           "are not errors to tidy away, they are real features where only "
+           "one of the two was visible from the air."),
  39: dict(title="Preprocessing — resolving overlaps",
      kicker="Where two labels cover the same pixel, burn order decides.",
      notes="Wall is burned first and floor on top, so a cell inside both is "
            "floor. Stated here because it is the kind of choice that silently "
            "changes a metric if it is made twice in two different places."),
  40: dict(title="Preprocessing — the spatial block split",
-     layout="wide",
-     kicker="The tile is cut into a 12x12 grid and whole blocks are assigned, "
+     figure="spatial_block_split_map_only_9t.png", layout="box",
+     kicker="The tile is cut into a 12x12 grid. Whole blocks are assigned, "
             "never individual pits.",
-     notes="Splitting by pit would put a training pit 30 m from a test pit and "
-           "the model would see the same ground twice. Splitting by block makes "
-           "that impossible.\n\n"
-           "Numbers in each block are pit floors. Blank blocks hold none."),
- 41: dict(title="Preprocessing — why the split balances on pits, not on area",
-     figure="split_share_of_map_vs_share_of_pits_9t.png", layout="wide",
-     kicker="Pits cluster, so equal area does not mean equal evidence.",
-     notes="REBUILT. The old panel had a legend reading 'share of pit floors' "
-           "beside a blue swatch while the val bar was orange and the test bar "
-           "green — three colours for one quantity. Here grey always means share "
-           "of the map and blue always means share of the pits.\n\n"
-           "Train takes 53% of the map but 70% of the pits. The 20% of the map "
-           "marked unused holds no annotated pits at all, so it costs nothing to "
-           "leave out."),
+     bullets=["Splitting by pit would put a training pit 30 m from a test pit.",
+              "The model would see the same ground twice.",
+              "Splitting by block makes that impossible."],
+     notes="SPLIT OFF its second panel, which is now the slide after this one. "
+           "Each half was unreadable at a quarter of a slide.\n\n"
+           "The UTM easting and northing axes are gone. A grid reference in "
+           "kilometres tells an audience nothing about whether the split is "
+           "fair, and it was the busiest thing on the figure."),
+ 41: dict(title="Preprocessing — the pits the model never saw",
+     kicker="The held-out blocks, and every pit inside them.",
+     notes="RESTORED. An earlier v6 build overwrote this slide with a chart "
+           "that belongs straight after slide 40. The original figure is back "
+           "and the chart has its own slide.\n\n"
+           "Every pit in a held-out block is scored by a model that never saw "
+           "that block while training."),
  42: dict(title="Preprocessing — one split, shared by every task",
      kicker="Pits, pads and roads all use the same block assignment.",
      notes="If each task drew its own split, a road chunk in one task's training "
@@ -270,25 +286,34 @@ S = {
            "an unmatched prediction may be a real pit nobody has drawn yet."),
 }
 
-#: Figures whose explanatory text is still baked into the PNG. Fixing these
-#: means editing the builder that drew each one. Reported at the end of a run.
-NEEDS_FIGURE_SURGERY = {
-    11: "_scan_angle_cliff_across_acquisitions.py — headline + per-panel titles",
-    14: "_recovered_ground_maps_9t.py — '1 — The ground we were given' + footer",
-    15: "_recovered_ground_maps_9t.py — '2 — The ground that was thrown away'",
-    16: "_recovered_ground_maps_9t.py — '3 — Both together' + red footer line",
-    17: "_recovered_ground_maps_9t.py — title, two panel headings, two callouts",
-    18: "_build_report_figures.py — three panel titles + stats line",
-    19: "_build_derivative_overview.py — title, subtitle, reading-this box",
-    36: "_build_method_diagrams.py — 'Drawn, or worked out afterwards'",
-    37: "_build_preprocessing_figures.py — title + five inline counts",
-    38: "_build_preprocessing_figures.py — 'The numbers we fixed once'",
-    39: "_build_method_diagrams.py — title + three step captions",
-    40: "_build_presentation_figures.py — panel a title + subtitle",
-    42: "_build_preprocessing_figures.py — 'One split, shared by every task'",
-    43: "_build_method_diagrams.py — 'The network' + channel annotations",
-    46: "_build_rrim_vs_prob_compare.py — two panel headings per slide (46-53)",
+#: Every presentation figure now has a BARE build (WELLSIGHT_BARE=1), so the
+#: headlines, subtitles and footnotes are off the images. What is deliberately
+#: KEPT inside a PNG is listed here: panel labels that tell two panels apart,
+#: axis labels, legends and scale bars. Removing those would be deleting the
+#: key, not de-cluttering.
+STILL_IN_FIGURE = {
+    46: "'RRIM - the terrain' and '<task> probability' label the two halves of "
+        "a side-by-side image (slides 46-53). They are the key.",
+    18: "three panel headings on the vendor-vs-ours comparison, same reason.",
 }
+
+
+#: Slide -> its bare figure, once every builder gained BARE mode.
+BARE_FIGS = {11: 'scan_angle_cliff_by_survey.png', 18: 'smrf_vs_vendor_621594.png', 14: 'ground_delivered_9t.png', 15: 'ground_thrown_away_9t.png', 16: 'ground_both_9t.png', 17: 'ground_cross_section_300m_621594.png', 19: 'derivative_overview_eleven_channels_300m_9t.png', 36: 'annotation_schema_drawn_vs_derived_9t.png', 38: 'preprocessing_standard_values_9t.png', 39: 'label_burn_order_pit_wall_floor_9t.png', 42: 'split_one_shared_9t.png', 43: 'unet_architecture_9t.png', 46: 'rrim_vs_prob_road_400m_9t.png', 47: 'rrim_vs_prob_drainage_400m_9t.png', 48: 'rrim_vs_prob_pad_400m_9t.png', 49: 'rrim_vs_prob_pit_400m_9t.png', 50: 'rrim_vs_prob_pit_400m_613590.png', 51: 'rrim_vs_prob_pad_400m_613590.png', 52: 'rrim_vs_prob_road_400m_613590.png', 53: 'rrim_vs_prob_drainage_400m_613590.png'}
+
+
+#: (insert AFTER this v5 slide, title, bare figure, kicker, notes)
+INSERTS = [
+    (40, "Preprocessing — why the split balances on pits, not area",
+     "split_share_of_map_vs_share_of_pits_9t.png",
+     "Pits cluster, so equal area does not mean equal evidence.",
+     "REBUILT, and split off slide 40. The old legend read 'share of pit "
+     "floors' beside a blue swatch while the val bar was orange and the test "
+     "bar green: three colours for one quantity. Grey is now always the share "
+     "of the map and blue is always the share of the pits, on every row.\n\n"
+     "Train takes 53% of the map but 70% of the pits. The 20% marked unused "
+     "holds no annotated pits at all, so leaving it out costs nothing."),
+]
 
 
 def pic_of(slide):
@@ -423,7 +448,9 @@ def main() -> int:
 
         # figure blob: a v6 rebuild, or whatever v5 had
         if spec.get("figure"):
-            blob = (V6 / spec["figure"]).read_bytes()
+            blob = v6fig(spec["figure"])
+        elif i in BARE_FIGS:
+            blob = v6fig(BARE_FIGS[i])
         elif blobs.get(i):
             blob = blobs[i][0]
         else:
@@ -442,8 +469,8 @@ def main() -> int:
 
         if mode == "pair":
             # slide 9 only: the diagram and the cost cards, side by side
-            left = (V6 / "scan_angle_cone_bare_9t.png").read_bytes()
-            right = (V6 / "what_the_scan_angle_cut_cost_9t.png").read_bytes()
+            left = v6fig("scan_angle_cone_bare_9t.png")
+            right = v6fig("what_the_scan_angle_cut_cost_9t.png")
             add_text(slide, 0.55, TITLE_T, 12.2, 0.9,
                      [(title, 30, True, ACCENT, 0)])
             place(slide, left, (0.40, 1.45, 6.1, 5.6))
@@ -495,6 +522,29 @@ def main() -> int:
                     "its own caption)")
         set_notes(slide, note)
 
+    # --- insert the split-off panels as their own slides -----------------
+    # Done AFTER the main pass so the v5 numbering used by the spec stays
+    # valid all the way through it.
+    for after, title, fig, kicker, note in INSERTS:
+        src_slide = prs.slides[after - 1]
+        new_s = prs.slides.add_slide(src_slide.slide_layout)
+        for sh in list(new_s.shapes):
+            sh._element.getparent().remove(sh._element)
+        csld = src_slide._element.find(NSP + "cSld")
+        bg = csld.find(NSP + "bg")
+        if bg is not None:
+            new_s._element.find(NSP + "cSld").insert(0, copy.deepcopy(bg))
+        add_text(new_s, 0.55, TITLE_T, 12.2, 0.9,
+                 [(title, 28, True, ACCENT, 0)])
+        add_text(new_s, 0.58, 1.18, 12.1, 0.8, [(kicker, 17, False, INK, 0)])
+        place(new_s, v6fig(fig), (0.45, 2.00, 12.45, SLIDE_H - 2.25))
+        set_notes(new_s, note)
+        lst = prs.slides._sldIdLst
+        ids = list(lst)
+        lst.remove(ids[-1])
+        lst.insert(after, ids[-1])
+        print(f"  inserted after v5 slide {after}: {title}")
+
     # --- drop the merged slide ------------------------------------------
     lst = prs.slides._sldIdLst
     ids = list(lst)
@@ -506,8 +556,8 @@ def main() -> int:
     print(f"  layouts: box {counts['box']}, wide {counts['wide']}, "
           f"pair {counts['pair']}, untouched {counts['kept']}")
     print(f"\nstill carrying baked-in text inside the PNG "
-          f"({len(NEEDS_FIGURE_SURGERY)} figures):")
-    for k, v in sorted(NEEDS_FIGURE_SURGERY.items()):
+          f"({len(STILL_IN_FIGURE)} figures):")
+    for k, v in sorted(STILL_IN_FIGURE.items()):
         print(f"  v5 slide {k:3d}  {v}")
 
     if a.dry_run:

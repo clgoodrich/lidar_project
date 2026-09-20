@@ -370,6 +370,132 @@ def fig_scan_angle_cone():
     return save(fig, "scan_angle_cone_bare_9t.png")
 
 
+# ---------------------------------------------------------------------------
+# slide 37 -- rim/floor pairing, MAP ONLY
+# ---------------------------------------------------------------------------
+def fig_rim_floor_map():
+    """Just the corner of the map. The five counts move to the slide.
+
+    The v5 figure was a 2:1 composition: a map on the left and a column of five
+    big numbers on the right, under a headline and a four-line paragraph. Asked
+    for the map large on the right of the slide with the text beside it, the
+    right answer is to stop drawing the numbers inside the PNG at all -- the
+    slide's left column holds them, in 16 pt, where they can be read.
+    """
+    import geopandas as gpd
+    from matplotlib.lines import Line2D
+
+    ANN = ROOT / "qgis/annotations/annotations_proj.gpkg"
+    C_FLOOR, C_RIM, C_LONE = "#d6e06a", "#1F5FA8", "#A31515"
+    ins = gpd.read_file(ANN, layer="pit_inside", engine="pyogrio")
+    out = gpd.read_file(ANN, layer="pit_outside", engine="pyogrio")
+    ins = ins[ins.geometry.notna()]
+    out = out[out.geometry.notna()]
+    ov = gpd.overlay(ins[["pit_inside_id", "geometry"]],
+                     out[["pit_outside_id", "geometry"]],
+                     how="intersection", keep_geom_type=True)
+    ov["a"] = ov.area
+    m = ov.sort_values("a", ascending=False).drop_duplicates("pit_inside_id")
+    paired = set(m.pit_outside_id)
+
+    cent = out.geometry.centroid
+    best, bx, by = None, None, None
+    for i in range(0, len(out), 7):
+        x, y = cent.iloc[i].x, cent.iloc[i].y
+        n = ((cent.x - x).abs() < 110) & ((cent.y - y).abs() < 110)
+        lone = any(r not in paired
+                   for r in out.loc[n.values, "pit_outside_id"])
+        if lone and (best is None or n.sum() > best):
+            best, bx, by = n.sum(), x, y
+    if best is None:
+        bx, by = cent.iloc[0].x, cent.iloc[0].y
+    h = 120
+
+    style()
+    fig, ax = plt.subplots(figsize=(8.4, 8.4))
+    so = out[(cent.x - bx).abs().lt(h) & (cent.y - by).abs().lt(h)]
+    ci = ins.geometry.centroid
+    si = ins[(ci.x - bx).abs().lt(h) & (ci.y - by).abs().lt(h)]
+    so.boundary.plot(ax=ax, color=C_RIM, linewidth=2.6, zorder=3)
+    si.plot(ax=ax, facecolor=C_FLOOR, edgecolor="#3a3a3a", linewidth=1.2,
+            alpha=0.92, zorder=4)
+    lone = so[~so.pit_outside_id.isin(paired)]
+    if len(lone):
+        lone.boundary.plot(ax=ax, color=C_LONE, linewidth=3.6, zorder=5)
+        c = lone.geometry.centroid
+        g = lone.geometry.iloc[
+            int(((c.x - bx) ** 2 + (c.y - by) ** 2).to_numpy().argmin())]
+        ax.annotate("this rim has no floor inside it",
+                    xy=(g.centroid.x, g.centroid.y), xytext=(18, 34),
+                    textcoords="offset points", fontsize=14,
+                    fontweight="bold", color=C_LONE,
+                    arrowprops=dict(arrowstyle="-", color=C_LONE, lw=1.9),
+                    zorder=6)
+    ax.set_xlim(bx - h, bx + h)
+    ax.set_ylim(by - h, by + h)
+    ax.set_aspect("equal")
+    ax.set_xticks([]); ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_color(RULE)
+    ax.legend(handles=[
+        Patch(facecolor=C_FLOOR, edgecolor="#3a3a3a", label="floor"),
+        Line2D([], [], color=C_RIM, lw=2.8, label="rim, paired with a floor"),
+        Line2D([], [], color=C_LONE, lw=3.4, label="rim with no floor")],
+        loc="upper center", bbox_to_anchor=(0.5, -0.012), ncol=1,
+        fontsize=13, framealpha=1.0, facecolor="#ffffff", edgecolor=RULE)
+    ax.text(0.5, 1.012, "a real corner of the map, 240 m across",
+            transform=ax.transAxes, fontsize=13, color=INK2, ha="center",
+            va="bottom")
+    fig.subplots_adjust(left=0.02, right=0.98, top=0.955, bottom=0.135)
+    return save(fig, "rim_floor_pairing_map_only_9t.png")
+
+
+# ---------------------------------------------------------------------------
+# slide 40a -- the 12x12 block split, MAP ONLY
+# ---------------------------------------------------------------------------
+def fig_block_grid_map():
+    """The split map on its own. Panel b is a separate slide now.
+
+    Dropped from the v5 panel: the UTM easting/northing axes. A grid reference
+    in kilometres tells an audience nothing about whether the split is fair,
+    and it was the busiest thing on the figure.
+    """
+    import geopandas as gpd
+    import matplotlib.patches as mpatches
+
+    b = gpd.read_file(ROOT / "data/9t/derived/05/pit_blocks_9t.gpkg",
+                      layer="blocks", engine="pyogrio")
+    style()
+    fig, ax = plt.subplots(figsize=(8.4, 8.4))
+    for _, r in b.iterrows():
+        x0, y0, x1, y1 = r.geometry.bounds
+        ax.add_patch(mpatches.Rectangle(
+            (x0 / 1000, y0 / 1000), (x1 - x0) / 1000, (y1 - y0) / 1000,
+            facecolor=SPLIT[r["split"]], alpha=0.88, edgecolor=PAPER,
+            linewidth=1.8))
+        if r["n_pits"] > 0:
+            ax.text((x0 + x1) / 2000, (y0 + y1) / 2000, int(r["n_pits"]),
+                    ha="center", va="center", fontsize=11,
+                    color="white" if r["split"] != "unused" else INK2,
+                    fontweight="bold")
+    bl, bb, br, bt = b.total_bounds
+    ax.set_xlim(bl / 1000, br / 1000)
+    ax.set_ylim(bb / 1000, bt / 1000)
+    ax.set_aspect("equal")
+    ax.set_xticks([]); ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.legend(handles=[mpatches.Patch(facecolor=SPLIT[s], label=s)
+                       for s in ("train", "val", "test", "unused")],
+              frameon=False, fontsize=14, ncol=4, loc="upper center",
+              bbox_to_anchor=(0.5, -0.005))
+    ax.text(0.5, 1.012, "each square is one block; the number is how many pit "
+            "floors it holds", transform=ax.transAxes, fontsize=13,
+            color=INK2, ha="center", va="bottom")
+    fig.subplots_adjust(left=0.02, right=0.98, top=0.955, bottom=0.085)
+    return save(fig, "spatial_block_split_map_only_9t.png")
+
+
 def main() -> int:
     print("v6 figures ->", OUT)
     fig_scan_angle_cone()
@@ -377,6 +503,8 @@ def main() -> int:
     fig_where_ground_stops()
     fig_discarded_returns_accuracy()
     fig_split_blocks_vs_pits()
+    fig_rim_floor_map()
+    fig_block_grid_map()
     return 0
 
 

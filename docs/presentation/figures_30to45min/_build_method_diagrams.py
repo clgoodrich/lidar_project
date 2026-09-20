@@ -33,10 +33,38 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch
 
+# --- v6 bare mode -----------------------------------------------------------
+# WELLSIGHT_BARE=1 suppresses this figure's own headline, subtitle and footnote
+# and writes to a v6/ subdirectory. The deck supplies those words instead, in
+# the slide's side column and its speaker notes. Added by
+# tools/add_bare_mode_to_figure_builders.py.
+import os as _os
+
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
+
+
+def _chrome(_fn, *a, **k):
+    """Draw slide chrome only when the figure has to stand on its own."""
+    if not BARE:
+        return _fn(*a, **k)
+    return None
+
+
+def _out(p):
+    """Redirect an output directory into v6/ when building bare figures."""
+    from pathlib import Path as _P
+    p = _P(p)
+    if BARE:
+        p = p / "v6"
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+# ----------------------------------------------------------------------------
+
+
 ROOT = Path(__file__).resolve().parents[3]
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
-OUT_M = ROOT / "docs/presentation/figures_30to45min/4_model_building"
-OUT_A = ROOT / "docs/presentation/figures_30to45min/3_annotations"
+OUT_M = _out(ROOT / "docs/presentation/figures_30to45min/4_model_building")
+OUT_A = _out(ROOT / "docs/presentation/figures_30to45min/3_annotations")
 
 PAPER = "#f7f8f6"
 INK = "#141a1f"
@@ -297,10 +325,10 @@ def fig_burn_order():
             g_out.bounds[3] - g_out.bounds[1]) * 0.78
 
     fig, axes = plt.subplots(1, 3, figsize=(16.0, 7.0))
-    fig.suptitle("Two layers overlap on purpose. Burn order decides the label.",
+    _chrome(fig.suptitle, "Two layers overlap on purpose. Burn order decides the label.",
                  fontsize=22, fontweight="bold", x=0.018, ha="left", y=0.985,
                  color=INK)
-    fig.text(0.018, 0.925,
+    _chrome(fig.text, 0.018, 0.925,
              "pit_outside contains pit_inside, so every floor pixel is also a "
              "rim pixel. Rasterising the wall first and painting the floor on "
              "top settles it,\nand settles it the same way every run. "
@@ -352,7 +380,7 @@ def fig_burn_order():
         loc="lower right", fontsize=10.5, framealpha=1.0,
         facecolor="#ffffff", edgecolor=RULE)
 
-    fig.text(0.018, 0.028,
+    _chrome(fig.text, 0.018, 0.028,
              "Two more edge rules, same spirit. A pixel is claimed only if "
              "its CENTRE falls inside the shape: all_touched=True would fatten "
              "every pit by\nhalf a pixel of invented rim, 25 cm at 0.5 m. And "

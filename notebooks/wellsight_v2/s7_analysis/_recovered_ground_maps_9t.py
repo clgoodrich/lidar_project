@@ -75,12 +75,42 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
 
+# --- v6 bare mode -----------------------------------------------------------
+# WELLSIGHT_BARE=1 suppresses this figure's own headline, subtitle and footnote
+# and writes to a v6/ subdirectory. The deck supplies those words instead, in
+# the slide's side column and its speaker notes. Added by
+# tools/add_bare_mode_to_figure_builders.py.
+import os as _os
+
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
+
+
+def _chrome(_fn, *a, **k):
+    """Draw slide chrome only when the figure has to stand on its own."""
+    if not BARE:
+        return _fn(*a, **k)
+    return None
+
+
+def _out(p):
+    """Redirect an output directory into v6/ when building bare figures."""
+    from pathlib import Path as _P
+    p = _P(p)
+    if BARE:
+        p = p / "v6"
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+# ----------------------------------------------------------------------------
+
+
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "data" / "_source" / "lidar" / "westernpa" / "OTHER_DATA"
-OUT = ROOT / "data" / "9t" / "results" / "recovered_ground_9t"
-FIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
+OUT = _out(ROOT / "data" / "9t" / "results" / "recovered_ground_9t")
+_FIG_ORIG = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
+#: BARE builds must never overwrite the shipped figures -- they did once.
+FIG = _out(_FIG_ORIG)
 PDAL = "pdal"
 
 RES = 0.5
@@ -386,9 +416,9 @@ def scalebar(ax, extent, metres=1000):
 
 def base_map(title, subtitle):
     fig, ax = plt.subplots(figsize=(9.6, 10.1))
-    ax.set_title(title, fontsize=20, fontweight="bold", loc="left", pad=30,
+    _chrome(ax.set_title, title, fontsize=20, fontweight="bold", loc="left", pad=30,
                  color=INK)
-    ax.text(0, 1.012, subtitle, transform=ax.transAxes, fontsize=13,
+    _chrome(ax.text, 0, 1.012, subtitle, transform=ax.transAxes, fontsize=13,
             color=INK2, va="bottom")
     ax.set_xticks([]); ax.set_yticks([])
     for sp in ax.spines.values():
@@ -435,7 +465,7 @@ def map_vendor(vend, cnt_v, cnt_a, k, kb, extent, stats):
               zorder=2)
     wash_legend(ax, HOLE, "share of the ground with no measurement under it")
     scalebar(ax, extent)
-    ax.text(0.5, -0.022, f"{stats['void_v']:.1f}% of this area has no ground "
+    _chrome(ax.text, 0.5, -0.022, f"{stats['void_v']:.1f}% of this area has no ground "
             f"measurement — the surface there is a guess between two rims",
             transform=ax.transAxes, ha="center", va="top", fontsize=13,
             color=HOLE, fontweight="bold")
@@ -455,7 +485,7 @@ def map_recovered(cnt_r, k, kb, extent, stats):
     wash_legend(ax, FOUND, "discarded ground points per square metre",
                 "none", f"{top:.1f}")
     scalebar(ax, extent)
-    ax.text(0.5, -0.022, f"{stats['rec_pts']:,} ground measurements, thrown "
+    _chrome(ax.text, 0.5, -0.022, f"{stats['rec_pts']:,} ground measurements, thrown "
             f"away in stripes along the edges of the flight paths",
             transform=ax.transAxes, ha="center", va="top", fontsize=13,
             color=FOUND, fontweight="bold")
@@ -474,7 +504,7 @@ def map_both(both, cnt_b, cnt_a, k, kb, extent, stats):
               zorder=2)
     wash_legend(ax, HOLE, "share of the ground with no measurement under it")
     scalebar(ax, extent)
-    ax.text(0.5, -0.022, f"{stats['void_b']:.1f}% left with no measurement, "
+    _chrome(ax.text, 0.5, -0.022, f"{stats['void_b']:.1f}% left with no measurement, "
             f"down from {stats['void_v']:.1f}% — "
             f"{stats['closed']:,} cells filled in",
             transform=ax.transAxes, ha="center", va="top", fontsize=13,
@@ -671,7 +701,7 @@ def cross_section(vend, both, cnt_v, cnt_b, cnt_a, code, slope,
     ax[1].set_xlabel(f"distance along the line, m  "
                      f"(bearing {az:.0f}°, {2*width:.0f} m wide corridor)",
                      fontsize=12, color=INK2)
-    fig.suptitle("The same slice of ground, before and after", fontsize=20,
+    _chrome(fig.suptitle, "The same slice of ground, before and after", fontsize=20,
                  fontweight="bold", x=0.062, ha="left", y=0.985, color=INK)
     fig.subplots_adjust(top=0.90)
     save(fig, f"ground_cross_section_{int(length)}m_{code}.png")

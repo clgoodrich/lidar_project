@@ -163,3 +163,7 @@ data/9t/results/recovered_ground_9t/_tiles/
 # notebooks/wellsight_v2/s7_analysis/_smrf_feature_stack_9t.py
 data/9t/derived/smrf05/
 data/_comparisons/**/*.tif
+
+# BARE figure rebuilds (WELLSIGHT_BARE=1) mirror their heavy rasters into v6/.
+# Regenerable; only the PNGs under docs/presentation are wanted.
+data/9t/results/*/v6/

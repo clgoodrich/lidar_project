@@ -35,8 +35,36 @@ from matplotlib.patches import FancyBboxPatch, Patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _build_derivative_panel import (  # noqa: E402
+
     D05, OUT, SIDE_M, draw_gray, draw_rgb, qgis_styles, read_window,
     style_for, window_bounds)
+
+# --- v6 bare mode -----------------------------------------------------------
+# WELLSIGHT_BARE=1 suppresses this figure's own headline, subtitle and footnote
+# and writes to a v6/ subdirectory. The deck supplies those words instead, in
+# the slide's side column and its speaker notes. Added by
+# tools/add_bare_mode_to_figure_builders.py.
+import os as _os
+
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
+
+
+def _chrome(_fn, *a, **k):
+    """Draw slide chrome only when the figure has to stand on its own."""
+    if not BARE:
+        return _fn(*a, **k)
+    return None
+
+
+def _out(p):
+    """Redirect an output directory into v6/ when building bare figures."""
+    from pathlib import Path as _P
+    p = _P(p)
+    if BARE:
+        p = p / "v6"
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+# ----------------------------------------------------------------------------
 
 PAPER = "#f7f8f6"
 INK = "#141a1f"
@@ -86,9 +114,9 @@ def main() -> int:
     gs = fig.add_gridspec(2, 6, left=0.012, right=0.988, top=0.775,
                           bottom=0.175, wspace=0.055, hspace=0.20)
 
-    fig.text(0.012, 0.975, "One hillside, eleven ways of looking at it",
+    _chrome(fig.text, 0.012, 0.975, "One hillside, eleven ways of looking at it",
              fontsize=27, fontweight="bold", color=INK, va="top")
-    fig.text(0.012, 0.895,
+    _chrome(fig.text, 0.012, 0.895,
              f"The same {SIDE_M:.0f} m square of ground every time — only "
              f"the maths changes. Each one is drawn the way QGIS draws it, so "
              f"these are the layers as we\nactually work with them. Seven of "
@@ -145,14 +173,14 @@ def main() -> int:
             "annotations sit on.",
             fontsize=11, color=INK2, va="top", linespacing=1.6)
 
-    fig.text(0.012, 0.035,
+    _chrome(fig.text, 0.012, 0.035,
              "Local relief subtracts a smoothed copy of the ground from "
              "itself, leaving the bumps and dips with the hillside taken out. "
              "It was the single most\nuseful input for finding pits, which is "
              "why it appears twice, at two different smoothing radii.",
              fontsize=12.5, color=INK, va="bottom", linespacing=1.6)
 
-    p = OUT / "derivative_overview_eleven_channels_300m_9t.png"
+    p = _out(OUT) / "derivative_overview_eleven_channels_300m_9t.png"
     fig.savefig(p, dpi=150)
     plt.close(fig)
     print(f"\n{p.stat().st_size/1e3:.0f} KB  {p}")

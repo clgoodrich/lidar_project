@@ -75,11 +75,39 @@ from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
+# --- v6 bare mode -----------------------------------------------------------
+# WELLSIGHT_BARE=1 suppresses this figure's own headline, subtitle and footnote
+# and writes to a v6/ subdirectory. The deck supplies those words instead, in
+# the slide's side column and its speaker notes. Added by
+# tools/add_bare_mode_to_figure_builders.py.
+import os as _os
+
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
+
+
+def _chrome(_fn, *a, **k):
+    """Draw slide chrome only when the figure has to stand on its own."""
+    if not BARE:
+        return _fn(*a, **k)
+    return None
+
+
+def _out(p):
+    """Redirect an output directory into v6/ when building bare figures."""
+    from pathlib import Path as _P
+    p = _P(p)
+    if BARE:
+        p = p / "v6"
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+# ----------------------------------------------------------------------------
+
+
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 ROOT = Path(__file__).resolve().parents[3]
 SRCROOT = ROOT / "data" / "_source" / "lidar"
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa"
+OUT = _out(ROOT / "docs" / "presentation" / "figures_30to45min" / "1_data_qa")
 CSV = ROOT / "data" / "9t" / "results" / "nonground_classification"
 PDAL = "pdal"
 
@@ -397,7 +425,7 @@ def _figure(rows, df, suffix=""):
     ax[0].set_xlim(0, float(df.max_ang.max()) + 1.5)
     ax[0].set_xlabel("off-nadir scan angle, degrees", fontsize=11.5, color=INK2)
     ax[0].set_ylabel("share classified as ground, %", fontsize=11.5, color=INK2)
-    ax[0].set_title("Of the returns that reached the ground,\nhow many became "
+    _chrome(ax[0].set_title, "Of the returns that reached the ground,\nhow many became "
                     "class 2", fontsize=15, fontweight="bold", loc="left", pad=9)
     leg = ax[0].legend(handles, labels, frameon=True, fontsize=10.5,
                        loc="lower left", facecolor=SURFACE, edgecolor=RULE,
@@ -463,7 +491,7 @@ def _figure(rows, df, suffix=""):
             a.spines[sp].set_color(RULE)
         a.tick_params(colors=INK2, labelsize=10.5)
     if no_angle:
-        fig.text(0.055, 0.018, "Excluded: " + ", ".join(no_angle) +
+        _chrome(fig.text, 0.055, 0.018, "Excluded: " + ", ".join(no_angle) +
                  " — these squares record no scan angle at all, so the "
                  "question cannot be asked of them.",
                  fontsize=9.5, color=MUTED, ha="left")

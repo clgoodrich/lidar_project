@@ -47,11 +47,39 @@ import pandas as pd
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyBboxPatch, Patch
 
+# --- v6 bare mode -----------------------------------------------------------
+# WELLSIGHT_BARE=1 suppresses this figure's own headline, subtitle and footnote
+# and writes to a v6/ subdirectory. The deck supplies those words instead, in
+# the slide's side column and its speaker notes. Added by
+# tools/add_bare_mode_to_figure_builders.py.
+import os as _os
+
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
+
+
+def _chrome(_fn, *a, **k):
+    """Draw slide chrome only when the figure has to stand on its own."""
+    if not BARE:
+        return _fn(*a, **k)
+    return None
+
+
+def _out(p):
+    """Redirect an output directory into v6/ when building bare figures."""
+    from pathlib import Path as _P
+    p = _P(p)
+    if BARE:
+        p = p / "v6"
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+# ----------------------------------------------------------------------------
+
+
 ROOT = Path(__file__).resolve().parents[3]
 NB3 = ROOT / "notebooks/wellsight_v2/s1_build/phase_3_rasterization_training_prep.ipynb"
 ANN = ROOT / "qgis/annotations/annotations_proj.gpkg"
 D05 = ROOT / "data/9t/derived/05"
-OUT_A = ROOT / "docs/presentation/figures_30to45min/3_annotations"
+OUT_A = _out(ROOT / "docs/presentation/figures_30to45min/3_annotations")
 
 PAPER = "#f7f8f6"
 INK = "#141a1f"
@@ -128,9 +156,9 @@ def fig_standard_values():
     ax.set_xlim(0, 200)
     ax.set_ylim(0, 100)
     ax.axis("off")
-    ax.text(4, 97, "The numbers we fixed once", fontsize=27,
+    _chrome(ax.text, 4, 97, "The numbers we fixed once", fontsize=27,
             fontweight="bold", color=INK, va="top")
-    ax.text(4, 91.5,
+    _chrome(ax.text, 4, 91.5,
             "Preprocessing has eight constants. They are set in one place, at "
             "the top of the notebook, and nothing downstream is allowed to "
             "pick its own.",
@@ -143,7 +171,7 @@ def fig_standard_values():
         col, row = i % 3, i // 3
         card(ax, 4 + col * (W + GX), 84 - row * (H + GY), W, H, value, name, why)
 
-    ax.text(4, 9.5,
+    _chrome(ax.text, 4, 9.5,
             "Read out of phase_3_rasterization_training_prep.ipynb when this "
             "figure was drawn, so the slide cannot drift from the code.",
             fontsize=11.5, color=MUTED, va="top")
@@ -185,9 +213,9 @@ def fig_matching():
     fig = plt.figure(figsize=(16.0, 8.0))
     gs = fig.add_gridspec(1, 2, width_ratios=[1.12, 1.0], left=0.03,
                           right=0.975, top=0.755, bottom=0.135, wspace=0.10)
-    fig.suptitle("Which rim belongs to which floor", fontsize=27,
+    _chrome(fig.suptitle, "Which rim belongs to which floor", fontsize=27,
                  fontweight="bold", x=0.03, ha="left", y=0.965, color=INK)
-    fig.text(0.03, 0.885,
+    _chrome(fig.text, 0.03, 0.885,
              "A pit is drawn twice, as an outer rim and as the floor inside "
              "it, and the two are separate layers with separate numbering. To "
              "measure a pit we\nhave to know which rim goes with which floor. "
@@ -272,9 +300,9 @@ def fig_split():
     fig = plt.figure(figsize=(16.0, 8.0))
     gs = fig.add_gridspec(1, 2, width_ratios=[1.0, 1.15], left=0.03,
                           right=0.975, top=0.755, bottom=0.145, wspace=0.08)
-    fig.suptitle("One split, shared by every task", fontsize=27,
+    _chrome(fig.suptitle, "One split, shared by every task", fontsize=27,
                  fontweight="bold", x=0.03, ha="left", y=0.965, color=INK)
-    fig.text(0.03, 0.885,
+    _chrome(fig.text, 0.03, 0.885,
              "The map is cut into 144 square blocks and whole blocks are "
              "handed to training, validation or testing. Pits, pads and roads "
              "all use the SAME\nassignment, so a training patch centred on a "
@@ -347,7 +375,7 @@ def fig_split():
     ax2.text(20, y - 19, "of them disagree about which split they are in",
              fontsize=13.5, color=INK, va="center")
 
-    fig.text(0.03, 0.022,
+    _chrome(fig.text, 0.03, 0.022,
              "Pits and pads were once balanced separately, which is how a pad "
              "in a training block could overlap a block held out for pits. "
              "_build_unified_split.py\nreplaced the two with one. The count "

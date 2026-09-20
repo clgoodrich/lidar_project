@@ -30,10 +30,38 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+# --- v6 bare mode -----------------------------------------------------------
+# WELLSIGHT_BARE=1 suppresses this figure's own headline, subtitle and footnote
+# and writes to a v6/ subdirectory. The deck supplies those words instead, in
+# the slide's side column and its speaker notes. Added by
+# tools/add_bare_mode_to_figure_builders.py.
+import os as _os
+
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
+
+
+def _chrome(_fn, *a, **k):
+    """Draw slide chrome only when the figure has to stand on its own."""
+    if not BARE:
+        return _fn(*a, **k)
+    return None
+
+
+def _out(p):
+    """Redirect an output directory into v6/ when building bare figures."""
+    from pathlib import Path as _P
+    p = _P(p)
+    if BARE:
+        p = p / "v6"
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+# ----------------------------------------------------------------------------
+
+
 ROOT = Path(__file__).resolve().parents[3]   # repo root; this file sits three deep
 NGC = ROOT / "data" / "9t" / "results" / "nonground_classification"
 SMRF = ROOT / "data" / "9t" / "results" / "smrf_ground"
-OUT = Path(__file__).resolve().parent / "1_data_qa"
+OUT = _out(Path(__file__).resolve().parent / "1_data_qa")
 
 #: A figure is a printed plate: one light ground in both page themes, so a
 #: single PNG never has to serve two backgrounds.
@@ -64,7 +92,7 @@ plt.rcParams.update({
 
 def frame(ax, xlab=None, ylab=None, title=None, grid="y"):
     if title:
-        ax.set_title(title, fontsize=19, fontweight="bold", loc="left", pad=14,
+        _chrome(ax.set_title, title, fontsize=19, fontweight="bold", loc="left", pad=14,
                      wrap=True)
     if xlab:
         ax.set_xlabel(xlab, labelpad=10)
@@ -329,7 +357,7 @@ def map_holes():
         mp.Patch(color=LOST, label="still empty")],
         frameon=True, facecolor="#ffffffdd", edgecolor=RULE, fontsize=12,
         loc="lower left")
-    ax.set_title("The holes line up in stripes",
+    _chrome(ax.set_title, "The holes line up in stripes",
                  fontsize=19, fontweight="bold", loc="left", pad=14)
     bar = 300.0
     x0, y0 = b.left + 120, b.bottom + 120

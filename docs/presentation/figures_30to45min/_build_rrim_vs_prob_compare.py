@@ -35,8 +35,36 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _figure_style import CM_PROB, read_rrim   # noqa: E402
 
+# --- v6 bare mode -----------------------------------------------------------
+# WELLSIGHT_BARE=1 suppresses this figure's own headline, subtitle and footnote
+# and writes to a v6/ subdirectory. The deck supplies those words instead, in
+# the slide's side column and its speaker notes. Added by
+# tools/add_bare_mode_to_figure_builders.py.
+import os as _os
+
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
+
+
+def _chrome(_fn, *a, **k):
+    """Draw slide chrome only when the figure has to stand on its own."""
+    if not BARE:
+        return _fn(*a, **k)
+    return None
+
+
+def _out(p):
+    """Redirect an output directory into v6/ when building bare figures."""
+    from pathlib import Path as _P
+    p = _P(p)
+    if BARE:
+        p = p / "v6"
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+# ----------------------------------------------------------------------------
+
+
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
-OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
+OUT = _out(ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces")
 
 SIDE_M = 400.0
 SURFACE = "#fcfcfb"
