@@ -5,6 +5,55 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — the two "corn rows" are different phenomena, and the deck now says so
+
+The user caught a conflation I had been carrying: the canopy-height stripes and
+the RRIM stripes are not the same thing, and the deck had been offering a fix
+for one as though it fixed both.
+
+**Measured, full rasters, not subsampled:**
+
+| layer | 0.5 m | 1 m |
+|---|---|---|
+| DEM | **0.000%** | **0.000%** |
+| DSM | 2.044% | 0.029% |
+| CHM | 2.044% | 0.029% |
+
+That DEM row settles it. The ground surface has never had a single empty cell at
+either resolution, because `filters.delaunay` + `filters.faceraster` spans every
+gap by construction. So the RRIM stripes — which are built from that DEM —
+**cannot be missing data.**
+
+So there are two phenomena:
+- **canopy height** — literally empty cells, a grid-size artefact. The 0.5 m
+  grid asks for finer detail than the survey delivered. 2.044% → 0.029%.
+  **Solved by coarsening.**
+- **RRIM / LRM / openness** — structure in a surface with zero empty cells.
+  Real measurements disagreeing with each other. **Coarsening only reduces it**,
+  because there is nothing empty to fill; averaging more measurements per cell
+  just shows the disagreement less.
+
+**Deck restructured**, now 75 slides:
+- Slide 21 (canopy height) gains a line saying this kind is a grid-size problem
+  that 1 m solves, and points at slide 30 for the kind it does not.
+- **New slide 30, "Two different stripes, one nickname"**, with
+  `two_kinds_of_corn_rows_9t.png` — same 240 m window at the reported spot, CHM
+  with NoData picked out in the validated `#D97706` against RRIM on the same
+  ground, void percentages under each.
+- Slides 31–33 are now about the second kind only. Slide 33 lost the
+  "3.23% → 0.00%" bullet, which was a CHM number being used as evidence about
+  the RRIM — exactly the conflation. It now says coarsening helps partly, cannot
+  delete these, and that no mechanism was proved.
+
+**Process note:** broke the slide script twice with `
+` inside a bash heredoc,
+the same failure recorded earlier in this log. Restored from git and used the
+edit tool. Heredocs are not to be used for writing Python string literals.
+
+Scripts: `docs/presentation/figures_30to45min/_two_kinds_of_corn_rows_9t.py`
+
+---
+
 ## 2026-09-21 — corn-row slides, the provider's own answer, and the model comparison
 
 Deck v7 now 74 slides.

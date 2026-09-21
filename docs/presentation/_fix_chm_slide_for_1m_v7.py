@@ -64,6 +64,8 @@ BULLETS = [
     "3.23% of this window at 0.5 m.  0.00% at 1 m.",
     "Same laser, same ground. The half-metre grid was finer than the survey "
     "delivered.",
+    "This kind of stripe is a grid-size problem, and one metre solves it. "
+    "There is a second kind that it does not — slide 30.",
 ]
 NOTE = """
 Canopy height. How tall are the trees. You get it by taking the top surface and
@@ -82,6 +84,13 @@ Nothing was fixed or filled in. The half-metre grid was simply finer than the
 survey actually delivered, so it asked for detail that was never measured.
 
 That is why the terrain layers in this deck are built at one metre.
+
+One thing to be precise about, because it comes up again shortly. These stripes
+are empty cells. A grid-size problem, and one metre solves it completely.
+
+There is a second kind of stripe, on the RRIM, that looks similar and is not the
+same thing at all. Those sit in a surface with no empty cells anywhere, so
+coarsening cannot delete them. That is slide 30.
 """
 
 INK = RGBColor(0x14, 0x1A, 0x1F)

@@ -74,8 +74,43 @@ OT_QUOTE = (
 CORN = [
     dict(
         after="Step 1: Terrain Derivatives",   # the second RRIM slide
-        title="The corn rows",
-        kicker="Fine stripes that run with the laser's scan lines",
+        title="Two different stripes, one nickname",
+        kicker="“Corn rows” has meant two unrelated things. They "
+               "need separating.",
+        bullets=[
+            "On canopy height they are empty cells — no return came "
+            "back, so there is nothing to draw",
+            "That is a grid-size problem. 2.044% of cells at 0.5 m, 0.029% at "
+            "1 m. Solved.",
+            "On the RRIM they sit in a surface with no empty cells at all",
+            "The ground surface is 0.000% empty at 0.5 m and at 1 m — the "
+            "triangulation spans every gap",
+            "So these are real measurements, not missing ones. Different "
+            "problem, different fix.",
+        ],
+        fig="two_kinds_of_corn_rows_9t.png", ratio=1.889,
+        notes=(
+            "This slide exists because I had been using one name for two "
+            "unrelated things, and that led to offering a fix for one as "
+            "though it fixed both.\n\n"
+            "On the canopy height model the stripes are empty cells. No pulse "
+            "came back there, so there is literally nothing to draw. That is a "
+            "grid-size problem: the half-metre grid asks for finer detail than "
+            "the survey delivered. Two percent of cells at half a metre, near "
+            "zero at one metre. That one is solved.\n\n"
+            "On the RRIM the stripes sit in a surface that has no empty cells "
+            "anywhere. Here is the number that settles it. The ground surface "
+            "is zero percent empty at half a metre and zero percent empty at "
+            "one metre, because the triangulation spans every gap by "
+            "construction.\n\n"
+            "A layer that never has a hole still stripes. So whatever these "
+            "are, they are real measurements disagreeing with each other, not "
+            "missing measurements.\n\n"
+            "The next three slides are about the second kind only."),
+    ),
+    dict(
+        title="The corn rows in the RRIM",
+        kicker="The second kind: stripes in ground we actually measured",
         bullets=[
             "They run at 78° — the same bearing as the lines the "
             "scanner draws on the ground",
@@ -135,22 +170,27 @@ CORN = [
         title="What the two remedies actually did",
         kicker="One works. The other made it worse.",
         bullets=[
-            "Coarser grid — works. Over this window the canopy-height "
-            "void goes 3.23% to 0.00%, and the stripes fade",
+            "Coarser grid — helps, but only partly. At 1 m the stripes "
+            "fade. They do not go away.",
             "Local gridding — backfired. Averaging points in a disc "
             "smooths heights but makes the surface jump from cell to cell",
             "RRIM is built from shape, so it amplifies exactly that — "
             "look at the starbursts on every tree",
             "So: build at 1 m, and keep the triangulated surface",
-            "Being straight about it — 1 m reduces the stripes. It does "
-            "not remove them, and we could not prove what causes them.",
+            "Unlike the canopy holes, coarsening cannot delete these — "
+            "there is nothing empty to fill",
+            "And we could not prove what causes them. Three explanations "
+            "tested, three refuted.",
         ],
         fig="local_gridding_backfire_9t.png", ratio=1.887,
         notes=(
             "Two remedies, two different outcomes.\n\n"
-            "The coarser grid works, and it is the one we adopted. Over the "
-            "window on the previous slide the canopy-height gaps go from three "
-            "point two percent of cells to zero, and the weave fades.\n\n"
+            "The coarser grid helps, and it is what we adopted. But be careful "
+            "how you say it. It does not delete these stripes the way it "
+            "deletes the canopy holes, because here there is nothing empty to "
+            "fill. It averages more measurements into each cell, so the "
+            "disagreement between them shows up less. The weave fades. It is "
+            "still there.\n\n"
             "Local gridding was the surprise. It should have helped and it did "
             "the opposite.\n\n"
             "Here is the reason, and it is worth understanding rather than "
