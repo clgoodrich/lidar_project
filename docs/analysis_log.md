@@ -5,6 +5,57 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 — NISAR further-research slide, scoped to what the sensor can do
+
+Added one slide after "What would move it next". The asked-for framing was
+"use NISAR to track pits"; the numbers already in
+`docs/nisar_lidar_supplement_proposal.md` do not support detection, so the slide
+leads with that instead of burying it.
+
+The scale, all measured over 9t, not assumed:
+
+| product | pixel | area |
+|---|---|---|
+| GCOV backscatter | 10 m | 100 m² |
+| GUNW InSAR | 80 m | 6,400 m² |
+| our `pit_inside` annotations | — | mean 32.1 m² (~6 m across) |
+| our `pit_full` annotations | — | mean 210.7 m² (~16 m across) |
+
+A pit is about a third of one backscatter pixel. NISAR will not detect one.
+
+What the slide argues instead: lidar locates the candidates, then the 80 m InSAR
+cell is the right size to ask whether the ground over a cluster of them is
+moving. That is the wellbore-integrity question, and a single 2019 flight cannot
+answer it. Feasibility was already measured — a snow-free fall pair over 9t held
+coherence 0.50 with 94% of pixels above 0.3, against 0.14 for a mid-winter pair,
+so the constraint is acquisition season, not the sensor.
+
+The caveat bullet carries the caution already recorded in
+`docs/iterations/BACKLOG.md`: beta pre-calibration data, one pair, validated
+CONUS products ~July 2026. Nothing quantitative should be claimed before then.
+
+New figure `nisar_pixel_vs_pit_scale_9t.png` — 200 m window at 620752 E
+4595844 N, the densest cluster of annotated interior pits in 9t, with the 10 m
+GCOV grid and one 80 m GUNW cell drawn over it. The 80 m cell is centred on the
+pit cluster rather than snapped to a multiple of 80 m: NISAR's grid origin is
+arbitrary against ours, and snapping put the pits on the cell edge where the
+comparison read as a near miss rather than a containment.
+
+Colour: no new colours. Reuses the validated `#1F5FA8` / `#D97706` pair (worst
+pair ΔE 21.1 deutan, 22.6 normal) over a greyscale hillshade, with the two grids
+also separated by line weight and dash so colour is never the only encoding.
+The dataviz validator is not installed in this environment, so the rule was met
+by reuse rather than by a fresh run — flagged here rather than claimed as
+validated.
+
+Deck is now 68 slides.
+
+Scripts:
+- `docs/presentation/figures_30to45min/_nisar_vs_lidar_pit_scale_9t.py`
+- `docs/presentation/_add_nisar_further_research_slide_v6.py`
+
+---
+
 ## 2026-09-20 — v6 deck: the template-matching pipeline retired, 73 slides to 67
 
 Slides 60-65 were the last of the pre-U-Net deck. Six slides audited, four
