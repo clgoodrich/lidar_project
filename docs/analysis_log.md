@@ -5,6 +5,57 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 — v6 deck: the template-matching pipeline retired, 73 slides to 67
+
+Slides 60-65 were the last of the pre-U-Net deck. Six slides audited, four
+dropped, one kept and moved, one repurposed.
+
+Dropped:
+- **Step 2: Manual Annotation** (861 pits). Redundant — slides 30-35 already
+  cover annotation, with counts that postdate the rim/floor split.
+- **Step 3: Template Matching.** Normalised cross-correlation against a mean
+  17x17 m pit template across 5 channels, ~628,000 candidates. Not in the
+  method.
+- **Step 4: Classification & Results.** XGBoost + LightGBM + HistGB, ROC-AUC
+  0.905, PR-AUC 0.212, 48 features per candidate. Superseded by the held-out
+  U-Net numbers on slides 47-59.
+- **Future Work.** Duplicated "What would move it next", and two of its five
+  bullets ("U-Net semantic segmentation", "geomorphon +31% PR-AUC") described
+  work that is either finished or belongs to the retired pipeline.
+- **Appendix: 48-Feature Set (1/2) and (2/2).** Tabulated the features of the
+  ensemble that came out above.
+
+Kept:
+- **Annotation Quality Control.** The 856 measured pits it checked are the same
+  annotations the U-Nets train on, so the QC still stands. Moved from 63 to sit
+  after "Preprocessing — Annotations — Standard Values", and its closing line
+  changed from "before training the classifier on them" to "before any model is
+  trained on them".
+- **Appendix: Literature-Grounded Parameters.** TPI radii 5/15/25.5 m, LRM
+  windows 5-51 cells, roughness 11x11, openness radius 25 m — all still the
+  derivative builder's values, with citations.
+
+Repurposed:
+- **Challenges & Limitations** duplicated "What it does not say", but carried
+  the figure of DEP-listed wells with no terrain signature. The matching
+  argument was stranded on the deleted Step 2 slide with no picture. Joined into
+  **"Why we drew our own labels"**, moved to sit immediately before the
+  annotation section.
+
+Two rows on the literature appendix are questionable and were left alone rather
+than changed silently: "DEM resolution 1 m" against a 0.5 m delivered stack, and
+"Blob sigma range 0.8-5.0", a parameter of the retired blob-detection stage.
+
+Also fixed: the direction-of-flight arrow in `why_the_corn_rows.html` step 2
+pointed right. The scan lines accumulate downward, so the aircraft flies down
+the canvas; the arrow read as beam direction and contradicted the drawing.
+
+Scripts:
+- `docs/presentation/_retire_template_matching_slides_v6.py`
+- `docs/presentation/_reposition_and_trim_appendix_v6.py`
+
+---
+
 ## 2026-09-20 -- Held-out numbers onto the outcome slides, and real conclusions
 
 Slides 47 to 55 were a title and a picture. Nothing on any of them said how well

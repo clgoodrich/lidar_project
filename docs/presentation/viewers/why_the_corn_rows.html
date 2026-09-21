@@ -359,10 +359,14 @@ ground track</p>
       g.moveTo(pad, y + dx); g.lineTo(W-pad, y - dx); g.stroke();
     }
     g.globalAlpha = 1;
-    label('direction of flight', pad, top - 26, '--muted', 15);
+    // the lines pile up downward as i increases, so the aircraft is flying DOWN
+    // the canvas, not across it. The arrow used to point right, which read as
+    // the beam direction and contradicted the picture underneath it.
+    label('direction of flight', 14, top - 26, '--muted', 15);
     g.strokeStyle = css('--ink2'); g.lineWidth = 2;
-    g.beginPath(); g.moveTo(pad+168, top-31); g.lineTo(pad+212, top-31);
-    g.lineTo(pad+204, top-36); g.moveTo(pad+212,top-31); g.lineTo(pad+204,top-26);
+    var ax = 28, ay0 = top + 2, ay1 = top + 84;
+    g.beginPath(); g.moveTo(ax, ay0); g.lineTo(ax, ay1);
+    g.lineTo(ax - 6, ay1 - 9); g.moveTo(ax, ay1); g.lineTo(ax + 6, ay1 - 9);
     g.stroke();
     label('every line straight, parallel, and tilted the same 78°',
           W/2, H - 34, '--muted', 15, 'center');
