@@ -5,6 +5,39 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 — the rest of the further-research section, re-grounded
+
+Retiring the old Future Work slide took real ideas out along with the stale
+ones, and the NISAR slide only replaced one. Added two more, so the section now
+runs: more ground → a better model → watching what we found. Deck is 70 slides.
+
+**More ground.** Three directions, none needing new collection.
+- McKean is QL1 (`PA Northcentral 2019 B19`) and already downloaded. It is also
+  the cleaner delivery: the 18° vendor scan-angle cut appears in **6 of 7**
+  Venango tiles and **0 of 7** McKean tiles, so the corduroy belongs to the
+  March 2020 ±20° flight block, not to lidar.
+- Older fields. **8,054 of 20,108** wells in the DEP Venango export carry
+  `SPUD_DATE = 1800-01-01`, which is a placeholder, and another **1,553** have
+  none at all — about 48% of the county's records have no usable spud date.
+  Phrased deliberately as *missing records*, not as "8,054 wells predate 1900":
+  the sentinel year makes that reading available and it would be false.
+- Permian. `TX_WestTexas_2018`, QL1, 12–15 pts/m² measured over the hotspots,
+  with the Texas RRC orphan layer as ground truth we did not draw ourselves.
+  The best cell holds **136 confirmed orphans in 5 km**.
+
+**A better model.** Checked against `notebooks/wellsight_v2/_dl.py`:
+`DEFAULT_CHANNELS` is exactly seven bare-earth layers — `lrm_25, lrm_5, slope,
+tpi_05, openness_pos, openness_neg, roughness_11`. `chm_9t_05.tif` and
+`intensity_ground_9t_05.tif` are both built and neither reaches any detector.
+Slide carries that, plus a negative class for the confusers (trained in, not
+filtered out) and geomorphon enclosure as an extra channel. The old slide's
+**+31% PR-AUC for geomorphons was measured on the retired gradient-boosted
+ensemble**, so it is carried as "needs re-testing" rather than quoted.
+
+Script: `docs/presentation/_add_further_research_slides_v6.py`
+
+---
+
 ## 2026-09-20 — NISAR further-research slide, scoped to what the sensor can do
 
 Added one slide after "What would move it next". The asked-for framing was
