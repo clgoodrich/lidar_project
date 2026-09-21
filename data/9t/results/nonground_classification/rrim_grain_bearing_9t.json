@@ -1,0 +1,23 @@
+{
+  "window_m": 250.0,
+  "stride_m": 450.0,
+  "layers": {
+    "DSM (control)": {
+      "n_windows": 81,
+      "mean_peak1": 81.00754859464232,
+      "concentration1": 0.5541973686095816,
+      "mean_peak2": 79.32736516975399,
+      "concentration2": 0.2696178851312313,
+      "median_ratio1": 2.0234869469210484
+    },
+    "RRIM": {
+      "n_windows": 81,
+      "mean_peak1": 160.74499976532132,
+      "concentration1": 0.1922416143373259,
+      "mean_peak2": 6.783178388151003,
+      "concentration2": 0.1123239927608377,
+      "median_ratio1": 2.8328347216840037
+    }
+  },
+  "convention_check_pass": true
+}

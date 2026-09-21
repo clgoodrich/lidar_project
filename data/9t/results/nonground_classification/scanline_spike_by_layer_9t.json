@@ -1,0 +1,232 @@
+{
+  "scan_bearing": 78.0,
+  "half_deg": 6.0,
+  "baseline_deg": [
+    15.0,
+    45.0
+  ],
+  "windows": {
+    "user spot": {
+      "dsm": {
+        "05": {
+          "prominence": 1.631249534168401,
+          "peak_at": 72.0
+        }
+      },
+      "chm": {
+        "05": {
+          "prominence": 1.6642688994500108,
+          "peak_at": 72.0
+        }
+      },
+      "dem": {
+        "05": {
+          "prominence": 9.029752164886302,
+          "peak_at": 76.0
+        },
+        "1m": {
+          "prominence": 6.741626739532414,
+          "peak_at": 76.0
+        }
+      },
+      "slope": {
+        "05": {
+          "prominence": 1.6839474684752722,
+          "peak_at": 80.0
+        },
+        "1m": {
+          "prominence": 1.037537066009626,
+          "peak_at": 80.0
+        }
+      },
+      "openness_neg": {
+        "05": {
+          "prominence": 3.7142183271396427,
+          "peak_at": 80.0
+        },
+        "1m": {
+          "prominence": 3.5050303119629076,
+          "peak_at": 80.0
+        }
+      },
+      "lrm_5": {
+        "05": {
+          "prominence": 10.139654268090045,
+          "peak_at": 80.0
+        },
+        "1m": {
+          "prominence": 6.508235819860578,
+          "peak_at": 80.0
+        }
+      },
+      "hillshade": {
+        "05": {
+          "prominence": 6.695446217744937,
+          "peak_at": 80.0
+        },
+        "1m": {
+          "prominence": 5.054716370982255,
+          "peak_at": 80.0
+        }
+      },
+      "rrim": {
+        "05": {
+          "prominence": 3.6991588380522296,
+          "peak_at": 80.0
+        },
+        "1m": {
+          "prominence": 2.721612189538665,
+          "peak_at": 80.0
+        }
+      }
+    },
+    "corn-row panel": {
+      "dsm": {
+        "05": {
+          "prominence": 6.00811182138779,
+          "peak_at": 79.0
+        }
+      },
+      "chm": {
+        "05": {
+          "prominence": 1.8761820921772856,
+          "peak_at": 79.0
+        }
+      },
+      "dem": {
+        "05": {
+          "prominence": 26.77383852502132,
+          "peak_at": 77.0
+        },
+        "1m": {
+          "prominence": 23.87415460375017,
+          "peak_at": 76.0
+        }
+      },
+      "slope": {
+        "05": {
+          "prominence": 1.1831925170930737,
+          "peak_at": 80.0
+        },
+        "1m": {
+          "prominence": 1.1476025528413292,
+          "peak_at": 80.0
+        }
+      },
+      "openness_neg": {
+        "05": {
+          "prominence": 0.9970821690621865,
+          "peak_at": 76.0
+        },
+        "1m": {
+          "prominence": 0.9477226596506475,
+          "peak_at": 75.0
+        }
+      },
+      "lrm_5": {
+        "05": {
+          "prominence": 0.9056693595159343,
+          "peak_at": 75.0
+        },
+        "1m": {
+          "prominence": 1.0587804207660176,
+          "peak_at": 79.0
+        }
+      },
+      "hillshade": {
+        "05": {
+          "prominence": 0.9765049212586561,
+          "peak_at": 72.0
+        },
+        "1m": {
+          "prominence": 1.0355858158955693,
+          "peak_at": 72.0
+        }
+      },
+      "rrim": {
+        "05": {
+          "prominence": 1.0328366009665304,
+          "peak_at": 80.0
+        },
+        "1m": {
+          "prominence": 1.0213030421368772,
+          "peak_at": 80.0
+        }
+      }
+    },
+    "worst DSM void": {
+      "dsm": {
+        "05": {
+          "prominence": 7.857265715438532,
+          "peak_at": 78.0
+        }
+      },
+      "chm": {
+        "05": {
+          "prominence": 4.525300166125385,
+          "peak_at": 78.0
+        }
+      },
+      "dem": {
+        "05": {
+          "prominence": 9.875377023234007,
+          "peak_at": 77.0
+        },
+        "1m": {
+          "prominence": 11.164458807972606,
+          "peak_at": 76.0
+        }
+      },
+      "slope": {
+        "05": {
+          "prominence": 1.0420890558334313,
+          "peak_at": 76.0
+        },
+        "1m": {
+          "prominence": 1.1635107203357282,
+          "peak_at": 76.0
+        }
+      },
+      "openness_neg": {
+        "05": {
+          "prominence": 1.011451199200049,
+          "peak_at": 72.0
+        },
+        "1m": {
+          "prominence": 1.016788486912916,
+          "peak_at": 72.0
+        }
+      },
+      "lrm_5": {
+        "05": {
+          "prominence": 1.1164162945433886,
+          "peak_at": 79.0
+        },
+        "1m": {
+          "prominence": 1.0620536811384726,
+          "peak_at": 72.0
+        }
+      },
+      "hillshade": {
+        "05": {
+          "prominence": 1.129077599707767,
+          "peak_at": 72.0
+        },
+        "1m": {
+          "prominence": 1.2533052212828963,
+          "peak_at": 72.0
+        }
+      },
+      "rrim": {
+        "05": {
+          "prominence": 0.9838157651782405,
+          "peak_at": 76.0
+        },
+        "1m": {
+          "prominence": 1.0613752934510248,
+          "peak_at": 77.0
+        }
+      }
+    }
+  }
+}

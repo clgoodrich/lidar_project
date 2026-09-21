@@ -1,0 +1,25 @@
+{
+  "half_sweep_s": 0.009348,
+  "min_pts": 25,
+  "windows": {
+    "striped  (DEM x9.0, RRIM x3.7)": {
+      "n_ground": 392417,
+      "n_sweeps": 380,
+      "median_pts_per_sweep": 1251,
+      "sd_cm": 6.150028860237282,
+      "iqr_cm": 3.4674876430806023,
+      "within_sweep_sd_cm": 17.30341342829601,
+      "lag1_autocorr": 0.3569277130298185
+    },
+    "clean    (DEM x1.0, RRIM x1.0)": {
+      "n_ground": 267430,
+      "n_sweeps": 522,
+      "median_pts_per_sweep": 519,
+      "sd_cm": 4.336074758232439,
+      "iqr_cm": 4.6095067796180444,
+      "within_sweep_sd_cm": 28.971301966826,
+      "lag1_autocorr": 0.6846783766834535
+    }
+  },
+  "striped_over_clean": 1.4183401355248508
+}
