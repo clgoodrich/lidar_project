@@ -5,6 +5,55 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 -- Held-out numbers onto the outcome slides, and real conclusions
+
+Slides 47 to 55 were a title and a picture. Nothing on any of them said how well
+anything worked. `docs/presentation/_add_results_and_conclusions_to_v6.py` puts
+a one-line stats strip on each and the full account in the notes.
+
+**What is now on the slides**, all held out, all from
+`docs/iterations/LEADERBOARD.md` (ann712 sections) and
+`data/_comparisons/pit_heldout_and_transfer_2026-09-20/.../pit_transfer_recall_summary_613590_05.json`:
+
+| | withheld | recall | precision | flagged |
+|---|---|---|---|---|
+| Pits, 9t CV5 | 712 floors, 502 rims scored | 0.928 (sd 0.023) | 0.633 | 0.21% |
+| Pads, 9t CV5 | 995 drawn, 650 scored | 0.912 (sd 0.022) | 0.587 | 11.64% |
+| Roads, 9t | 1,220 chunks, 43.07 km | 0.982 clean | -- | 5.02% |
+| Pits, 613590 | 153 floors, never trained on | 0.911 (sd 0.045) | not computable | -- |
+| Roads, 613590 | 48.87 km "added" only | 0.811 completeness | 0.816 | -- |
+
+F2 quoted, F1 given beside it on every slide. The ratio of recall to flagged
+area is stated as the result rather than the recall: the pit model reaches a
+comparable recall to the pad model on one fifty-fifth of the ground.
+
+**Three slides carry no number on purpose**, each saying why. 613590 pads and
+613590 drainage have no ground truth at all -- zero of either was ever drawn
+there. And no precision is quoted on 613590 because the tile is not fully
+annotated, so an unmatched prediction may be a false positive or an undrawn pit.
+
+**The Summary slide was stale and is replaced.** It carried the pre-U-Net
+pipeline: "85.5% precision at 0.80 probability threshold", "ensemble of 48
+features", "anomaly detection flags 10.5% of annotations". None of that
+describes what the deck presents. It also said "WellSight" in the byline; zero
+occurrences remain in the deck.
+
+Three conclusion slides now sit at 66-68, before References: what the numbers
+say, what they do not say (four named limits, including the single-annotator
+bias that no metric in the deck can detect), and what would move it next,
+ordered by payoff rather than effort.
+
+**Two bugs worth recording.** The picture-move guard skipped any image above
+1.4 in, which was every image on those slides, so the new strip landed on top
+of them. And clearing a text frame by deleting paragraphs after the first
+leaves the first paragraph's runs in place, which is how slide 66 came out
+reading "Summary | What the numbers say".
+
+**Still stale, not touched:** slides 60 to 63 are "Step 2: Manual Annotation",
+"Step 3: Template Matching", "Step 4: Classification & Results" and "Annotation
+Quality Control". Template matching is not in the current pipeline. Flagged for
+the user rather than deleted.
+
 ## 2026-09-20 -- CORRECTION: the scanner is a rotating polygon, and three numbers were wrong
 
 The entry below headed "What the corn rows are: measured, not assumed" reached
