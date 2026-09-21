@@ -1,0 +1,47 @@
+{
+  "window": [
+    623522.4,
+    4594648.6,
+    624122.4,
+    4595248.6
+  ],
+  "cell_m": 0.5,
+  "results": [
+    {
+      "surface": "TIN (current)",
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\destripe_spot\\dem_tin_spot_9t_0p5m.tif",
+      "dem": 14.264474934476542,
+      "slope": 0.7224005163024148,
+      "op_neg": 0.6883901480955297,
+      "rrim": 0.8398303108243707,
+      "void_pct": 0.1670825242079006
+    },
+    {
+      "surface": "mean, radius 0.75 m",
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\destripe_spot\\dem_mean_r0p75_spot_9t_0p5m.tif",
+      "dem": 45.23173226179394,
+      "slope": 23.45424519125854,
+      "op_neg": 11.509601809867055,
+      "rrim": 7.516533826206366,
+      "void_pct": 1.997710761431807
+    },
+    {
+      "surface": "mean, radius 1.5 m",
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\destripe_spot\\dem_mean_r1p5_spot_9t_0p5m.tif",
+      "dem": 4.388138613114386,
+      "slope": 1.5821670598501842,
+      "op_neg": 2.7272228495400808,
+      "rrim": 2.000081149285239,
+      "void_pct": 0.37721826315982865
+    },
+    {
+      "surface": "mean, radius 2.5 m",
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\destripe_spot\\dem_mean_r2p5_spot_9t_0p5m.tif",
+      "dem": 6.675383170969644,
+      "slope": 1.3747852452282447,
+      "op_neg": 3.5909603926391465,
+      "rrim": 2.7742761055559293,
+      "void_pct": 0.16930104735091003
+    }
+  ]
+}
