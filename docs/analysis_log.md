@@ -5,6 +5,62 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — corn-row slides, the provider's own answer, and the model comparison
+
+Deck v7 now 74 slides.
+
+**Slide 21 rewritten (option 2 of the two offered).** It asserted "the corn
+rows are NOT canopy — 3.2% of this window", which its own 1 m figure
+contradicted after the recast. Now shows `chm_window_multires_9t.png` — the
+same 300 m window at 0.5 / 1 / 2 m, no-data picked out, percentage under each
+panel — so it demonstrates the artefact instead of asserting it. Layout
+changed from a full-height right-hand picture to text-on-top, figure full width,
+because the figure is 2.54:1.
+
+**Three new slides at 30–32, after the RRIM pair.**
+- *The corn rows* — they run at 78°, the scan-line bearing; they appear
+  in every shape-derived layer; they are tens of centimetres against a 0.7 m
+  pit, so artefact and signal are the same size.
+- *What the data provider says* — OpenTopography's FAQ quoted verbatim from
+  `notebooks/wellsight/preprocessing/dem_idw_builder.py`: *"there is nothing the
+  user (or OpenTopography) can do to fix this as it is in the raw data that we
+  receive"*, plus their two suggested remedies.
+- *What the two remedies actually did* — coarser grid works (3.23% →
+  0.00%); local gridding backfired, and the slide says 1 m **reduces** the
+  stripes rather than removing them, and that no mechanism was proved.
+
+**Two new figures**, both built because the existing ones could not go on a
+slide honestly:
+- `rrim_corn_rows_05_vs_1m_9t.png` — `rrim_05_vs_1m_9t.png` carries the
+  retracted "the grain runs with the flight lines" subtitle from the argmax
+  test, and `rrim_grain_bearing_9t.png` still shows that test's 120° answer
+  in its legend. New figure claims nothing about mechanism. Centred on
+  623822 E 4594949 N, the spot the striping was reported at by eye, because the
+  old corn-row window 2.5 km west understates it.
+- `local_gridding_backfire_9t.png` — `destripe_dem_mean_radius_9t.png`
+  labels its panels with spike-prominence ratios, and **that metric is
+  window-size dependent**, so those numbers are not quotable on a slide. Two
+  panels, no scores. Two bugs caught while building it: the first version fell
+  back to the DEM for the left panel, comparing a raw elevation raster against
+  a RRIM; and the destripe window runs 122 m past the tile's eastern edge, so
+  both panels are now cropped to the overlap.
+
+**Slide 52 — the other models, which were missing.** Four architectures,
+five folds each, identical folds/channels/loss/schedule, from
+`docs/iterations/LEADERBOARD.md`. Pits: plain U-Net 0.559, full stack 0.561, a
+gain of 0.002 against a fold sd of 0.020 — architecture is not the
+constraint. Pads: 0.555 → 0.608, suggestive. The slide states these are
+segmentation IoU at 1 m and must not be compared with the detection recall on
+the outcome slides.
+
+Scripts:
+- `docs/presentation/_fix_chm_slide_for_1m_v7.py`
+- `docs/presentation/_add_cornrow_and_arch_slides_v7.py`
+- `docs/presentation/figures_30to45min/_rrim_corn_rows_05_vs_1m_9t.py`
+- `docs/presentation/figures_30to45min/_local_gridding_backfire_9t.py`
+
+---
+
 ## 2026-09-20 — every terrain figure recast at 1 m; deck saved as v7
 
 **Built the missing 1 m stacks first.** 9t had 12 of the 1 m layers and was
