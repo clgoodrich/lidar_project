@@ -5,6 +5,62 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — v14: the annotation-QC slide dropped, and two claims corrected
+
+Built from the user's own edited v13 (82 slides, with a new opener at slide 9)
+and written to v14, so none of their work is overwritten. 82 → 81 slides,
+74 pictures unchanged.
+
+**Annotation Quality Control removed.** The work was real — a genuine script
+with a 856-row output — but it does not describe this pipeline:
+- ran April 2026 against a different annotation set (its own docstring says
+  "updated 861 pits")
+- lives in `archive/` on the pre-reorganisation path layout and cannot be
+  re-run as written
+- covered tiles 9t/mk5/mk/mkf, not this deck's scope
+- no iteration write-up, and the analysis log never records the run
+
+The annotations were rebuilt ann527 → ann712 on 2026-09-04 with the split
+reassigned, so the QC predates everything the deck's models were trained on.
+Its closing line, "before any model is trained on them", was therefore false of
+this pipeline.
+
+**The vendor-only disclosure.** `_build_derivatives.py` filters
+`Classification[2:2]`, so every derivative the models read is built from the
+vendor's ground alone. Confirmed against the data rather than only the code:
+over a window where the recovered returns fill many voids, the training DEM is
+**identical to the vendor-only DEM in 100.0% of cells** and differs from the
+vendor-plus-recovered DEM in 40.8%.
+
+Four slides read as though the restoration were in use and are reworded to
+past-experiment; slide 22 gains an explicit line: *"None of this is in the
+detection pipeline yet — every result in this talk is built on the vendor's
+ground alone."*
+
+**The outcome counts.** Slides 61 and 62 paired an all-areas annotation count
+with a 9t-only rate:
+
+| | pits | pads |
+|---|---|---|
+| drawn everywhere | 714 | 995 |
+| inside 9t | 503 | 650 |
+| `n_gt` in the CV5 file | 470 | 650 |
+| single test split | 91 | 95 |
+
+The slides showed the largest. Replaced with the scope — "held-out blocks on
+9t" — which is true regardless of which evaluation produced the rate, rather
+than substituting a number whose provenance is unsettled.
+
+**Still open, deliberately untouched.** The deck's 0.928 matches none of the
+CV5 fold means (pit 0.936/0.964, mean 0.950; pad 0.928/0.909, mean 0.919), and
+that CV5 file holds only 2 folds rather than 5. Until the source of the
+headline recall is pinned down, putting a denominator on it would replace one
+wrong number with another.
+
+Script: `docs/presentation/_build_v14_from_user_v13.py`
+
+---
+
 ## 2026-09-21 — v13: the data-QA section gets a beginning and an end, and the corn rows get measured
 
 Deck 75 -> 81 slides.
