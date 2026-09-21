@@ -173,3 +173,6 @@ data/**/clips/
 
 # Throwaway bisection copies of the deck, ~87 MB, regenerable
 docs/presentation/_repair_test/
+
+# architecture-comparison training logs (regenerable, written during long runs)
+data/9t/results/arch_compare_1m/*.log
