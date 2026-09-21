@@ -126,10 +126,9 @@ def main() -> int:
     ax.set_title("A pit is a third of one NISAR pixel",
                  loc="left", fontsize=24, fontweight="bold", color=INK, pad=14)
 
-    fig.text(0.012, 0.014,
-             "9t core, 200 m window at 620752 E 4595844 N.  Grids at NISAR's "
-             "measured resolutions.",
-             fontsize=11.5, color=MUTED)
+    # No caption baked into the image: explanatory text belongs in the
+    # slide's own left-hand column, not burned into the PNG where it
+    # cannot be edited, re-wrapped or read at presentation size.
     fig.tight_layout(rect=(0, 0.035, 1, 1))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT, dpi=170, facecolor=PAPER)

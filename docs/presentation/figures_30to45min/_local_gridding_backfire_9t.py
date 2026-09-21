@@ -113,11 +113,9 @@ def main() -> int:
     fig.suptitle("Averaging smooths the heights and roughens the shape",
                  x=0.008, y=0.985, ha="left", va="top", fontsize=21,
                  fontweight="bold", color=INK)
-    fig.text(0.008, 0.045,
-             "Same ground, same 0.5 m cells, same RRIM recipe. Only the way "
-             "the points become a surface changes. Every tree in the right "
-             "panel has grown a starburst.",
-             fontsize=11.5, color=MUTED)
+    # No caption baked into the image: explanatory text belongs in the
+    # slide's own left-hand column, not burned into the PNG where it
+    # cannot be edited, re-wrapped or read at presentation size.
     fig.tight_layout(rect=(0, 0.065, 1, 0.945))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT, dpi=160, facecolor=PAPER)

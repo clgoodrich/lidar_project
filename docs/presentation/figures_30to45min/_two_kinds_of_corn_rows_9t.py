@@ -126,15 +126,9 @@ def main() -> int:
     fig.suptitle("Two different stripes, one nickname",
                  x=0.008, y=0.985, ha="left", va="top", fontsize=22,
                  fontweight="bold", color=INK)
-    fig.text(0.008, 0.055,
-             "Left: the half-metre grid asks for finer detail than the survey "
-             "delivered, so cells come back empty. One metre closes them.",
-             fontsize=12, color=MUTED)
-    fig.text(0.008, 0.018,
-             "Right: the ground surface has no empty cells at any resolution "
-             "— the triangulation spans every gap — and it still "
-             "stripes.",
-             fontsize=12, color=MUTED)
+    # No caption baked into the image: explanatory text belongs in the
+    # slide's own left-hand column, not burned into the PNG where it
+    # cannot be edited, re-wrapped or read at presentation size.
     fig.tight_layout(rect=(0, 0.095, 1, 0.945))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT, dpi=160, facecolor=PAPER)

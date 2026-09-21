@@ -95,10 +95,9 @@ def main() -> int:
     fig.suptitle("The corn rows in the RRIM, and what one metre does to them",
                  x=0.008, y=0.985, ha="left", va="top", fontsize=21,
                  fontweight="bold", color=INK)
-    fig.text(0.008, 0.055,
-             f"Same {SIDE:.0f} m window at {CX:.0f} E {CY:.0f} N, same colour "
-             "treatment. Only the cell size changes.",
-             fontsize=12.5, color=MUTED)
+    # No caption baked into the image: explanatory text belongs in the
+    # slide's own left-hand column, not burned into the PNG where it
+    # cannot be edited, re-wrapped or read at presentation size.
     fig.tight_layout(rect=(0, 0.075, 1, 0.945))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT, dpi=165, facecolor=PAPER)

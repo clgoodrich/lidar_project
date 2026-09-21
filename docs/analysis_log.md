@@ -5,6 +5,61 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — v13: the data-QA section gets a beginning and an end, and the corn rows get measured
+
+Deck 75 -> 81 slides.
+
+**Data QA now opens where the problem was actually noticed.** Two new slides
+before the old opener: 113.5 M points, 43.7% in class 1 "unassigned"; sorting
+them by height above ground puts 56% in the canopy and **33% sitting on the
+ground**. Those 5.6 M ground-sitting points match real ground on every recorded
+property — 100% terminal returns, 75% single, 0.00% overlap-flagged — and
+differ on exactly one: median scan angle **18.6° against 9.4°**.
+
+**And it now ends on the question it was raising.** Two new slides: the
+bare-earth surface built both ways side by side, with the no-ground cells
+tinted; and the difference histogram. Neither surface has holes — both are
+triangulated — so the real difference is **a guess versus a measurement**.
+Where the vendor already had ground the surface does not move (median +0.000 m,
+0.2% beyond 10 cm); where it was filled it does (median −0.005 m, 20% beyond
+10 cm).
+
+**Corn rows, measured.** The user digitised nine rows into
+`data/cornrows.gpkg`. Reprojected out of EPSG:4326 first, because bearings
+computed in degrees of latitude and longitude are distorted and came out 3° wrong.
+
+| source | bearing |
+|---|---|
+| the nine hand-drawn lines | **79.31°** (sd 0.36, range 78.86–79.98) |
+| 2-D FFT of the LRM raster | **79°** (peak 13× the median across bearings) |
+| the point cloud's scan geometry | **78°** |
+
+Three independent measurements within one degree. Spacing median **3.35 m**,
+amplitude under a centimetre.
+
+**Three failed attempts at the direction, recorded because the failure mode is
+instructive.** A rotate-and-take-the-most-variable-profile sweep returned 100°
+(a two-sample bilinear-interpolation spike), then 173° once median-filtered
+(swath-scale banding, not corduroy), then 13° once high-passed (nothing
+dominant — everything within 78–100% of peak). Three answers from one method is
+a method problem. The FFT gives one answer sharply.
+
+Also: a slide of the same window in hillshade, local relief, negative openness
+and slope, **with no text on it at all**, per request. Corn rows are plainest in
+local relief.
+
+**Captions removed from inside eight figures.** Explanatory text baked into a
+PNG cannot be edited, re-wrapped, or read at presentation size, and the request
+to stop had already been made. It now lives in the slide's left-hand column.
+
+Scripts:
+- `docs/presentation/_build_v13_dataqa_and_cornrow_slides.py`
+- `docs/presentation/figures_30to45min/_dem_with_and_without_deleted_returns_9t.py`
+- `docs/presentation/figures_30to45min/_cornrow_four_layers_9t.py`
+- `docs/presentation/figures_30to45min/_cornrow_rows_measured_9t.py`
+
+---
+
 ## 2026-09-21 — v12: speaker notes describe the slide, not the deck's history
 
 The notes had drifted into commentary about the deck itself — why a slide was

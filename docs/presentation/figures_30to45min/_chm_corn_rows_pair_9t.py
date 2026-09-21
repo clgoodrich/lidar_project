@@ -96,10 +96,9 @@ def main() -> int:
     grey(ax, a05, v05, lo, hi)
     ax.set_title("Canopy height, 0.5 m cells", loc="left", fontsize=21,
                  fontweight="bold", color=INK, pad=12)
-    fig.text(0.012, 0.018,
-             f"{SIDE:.0f} m window at {CX:.0f} E {CY:.0f} N. "
-             "Bright is tall, dark is low.",
-             fontsize=12.5, color=MUTED)
+    # No caption baked into the image: explanatory text belongs in the
+    # slide's own left-hand column, not burned into the PNG where it
+    # cannot be edited, re-wrapped or read at presentation size.
     fig.tight_layout(rect=(0, 0.045, 1, 1))
     p1 = OUTDIR / "chm_corn_rows_05_9t.png"
     fig.savefig(p1, dpi=165, facecolor=PAPER)
@@ -132,14 +131,6 @@ def main() -> int:
     fig.suptitle("The stripes are cells with nothing in them",
                  x=0.008, y=0.985, ha="left", va="top", fontsize=22,
                  fontweight="bold", color=INK)
-    fig.text(0.008, 0.038,
-             "Same ground, same window. Cells fall between the scan lines and "
-             "come back empty.",
-             fontsize=12, color=MUTED)
-    fig.text(0.008, 0.008,
-             "One metre closes them, because a wider cell always catches a "
-             "return.",
-             fontsize=12, color=MUTED)
     fig.tight_layout(rect=(0, 0.075, 1, 0.945))
     p2 = OUTDIR / "chm_corn_rows_are_empty_cells_9t.png"
     fig.savefig(p2, dpi=160, facecolor=PAPER)
