@@ -36,7 +36,7 @@ from matplotlib.patches import FancyBboxPatch, Patch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _build_derivative_panel import (  # noqa: E402
 
-    D05, OUT, SIDE_M, draw_gray, draw_rgb, qgis_styles, read_window,
+    D05, dir_for, OUT, SIDE_M, draw_gray, draw_rgb, qgis_styles, read_window,
     style_for, window_bounds)
 
 # --- v6 bare mode -----------------------------------------------------------
@@ -77,17 +77,17 @@ TINT = "#eaf0f8"
 #: Aerial imagery is not a derivative and needs the network, so the overview
 #: leaves it out; the twelfth cell carries the key instead.
 PANELS = [
-    ("dem_9t_05.tif", "Bare-earth elevation", "dem"),
-    ("hillshade_9t_05.tif", "Hillshade", "hillshade"),
-    ("slope_9t_05.tif", "Slope", "slope"),
-    ("lrm_5_9t_05.tif", "Local relief, 5 m", "lrm_5"),
-    ("lrm_25_9t_05.tif", "Local relief, 25 m", "lrm_25"),
-    ("tpi_05_9t_05.tif", "Topographic position", "tpi_05"),
-    ("openness_pos_9t_05.tif", "Openness, positive", "openness_pos"),
-    ("openness_neg_9t_05.tif", "Openness, negative", "openness_neg"),
-    ("roughness_11_9t_05.tif", "Roughness", "roughness_11"),
-    ("chm_9t_05.tif", "Canopy height", "chm"),
-    ("rrim_openness_9t_05.tif", "RRIM", "rrim_openness"),
+    ("dem_9t_1m.tif", "Bare-earth elevation", "dem"),
+    ("hillshade_9t_1m.tif", "Hillshade", "hillshade"),
+    ("slope_9t_1m.tif", "Slope", "slope"),
+    ("lrm_5_9t_1m.tif", "Local relief, 5 m", "lrm_5"),
+    ("lrm_25_9t_1m.tif", "Local relief, 25 m", "lrm_25"),
+    ("tpi_05_9t_1m.tif", "Topographic position", "tpi_05"),
+    ("openness_pos_9t_1m.tif", "Openness, positive", "openness_pos"),
+    ("openness_neg_9t_1m.tif", "Openness, negative", "openness_neg"),
+    ("roughness_5_9t_1m.tif", "Roughness", "roughness_11"),
+    ("chm_9t_1m.tif", "Canopy height", "chm"),
+    ("rrim_openness_9t_1m.tif", "RRIM", "rrim_openness"),
 ]
 
 
@@ -125,7 +125,7 @@ def main() -> int:
 
     for i, (fname, title, slug) in enumerate(PANELS):
         ax = fig.add_subplot(gs[i // 6, i % 6])
-        path = D05 / fname
+        path = dir_for(fname) / fname
         used = slug in chans
         if not path.exists():
             ax.text(0.5, 0.5, "missing", transform=ax.transAxes, ha="center",

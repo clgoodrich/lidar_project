@@ -67,8 +67,8 @@ ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 #: The two DEMs whose footprints define the areas, so the split follows the
 #: actual raster extents rather than a bounding box typed in here.
 AREA_DEM = {
-    "9t": ROOT / "data/9t/derived/05/dem_9t_05.tif",
-    "613590": ROOT / "data/613590/derived/05/dem_613590_05.tif",
+    "9t": ROOT / "data/9t/derived/1m/dem_9t_1m.tif",
+    "613590": ROOT / "data/613590/derived/1m/dem_613590_1m.tif",
 }
 OUT = Path(__file__).resolve().parent / "annotation_inventory_9t_613590.json"
 

@@ -48,13 +48,16 @@ from shapely.geometry import box
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
+#: terrain layers moved to the 1 m stack; D05 still holds the 0.5 m split
+#: bookkeeping and model inputs, which have no 1 m twin
+D05_1M = ROOT / "data" / "9t" / "derived" / "1m"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min"
 UND = (ROOT / "data/9t/results/pit/centroid_matching"
        / "pit_candidates_undecided_thr0p50_9t.gpkg")
 BLOCKS = D05 / "pit_blocks_9t.gpkg"
 MANIFEST = D05 / "pit_dataset_manifest.csv"
-HILL = D05 / "hillshade_9t_05.tif"
-RRIM = D05 / "rrim_openness_9t_05.tif"
+HILL = D05_1M / "hillshade_9t_1m.tif"
+RRIM = D05_1M / "rrim_openness_9t_1m.tif"
 EPSG = 6346
 
 SURFACE = "#fcfcfb"

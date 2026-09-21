@@ -58,6 +58,9 @@ from _build_derivative_panel import qgis_styles, style_for   # noqa: E402
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
+#: terrain layers moved to the 1 m stack; D05 still holds the 0.5 m split
+#: bookkeeping and model inputs, which have no 1 m twin
+D05_1M = ROOT / "data" / "9t" / "derived" / "1m"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "2_terrain_derivatives"
 
 LAT, LON = 41.49264, -79.546127
@@ -96,7 +99,8 @@ def bounds():
 
 
 def read(name, bb):
-    with rasterio.open(D05 / name) as r:
+    with rasterio.open((D05_1M if name.endswith('_1m.tif') else D05)
+                       / name) as r:
         w = from_bounds(*bb, transform=r.transform)
         a = r.read(window=w, boundless=True, fill_value=np.nan).astype("float32")
     return a[0] if a.ndim == 3 else a
@@ -138,13 +142,13 @@ def ramp(ax, stops, label, ticks):
 
 def main() -> int:
     bb = bounds()
-    op = read("openness_pos_9t_05.tif", bb)
-    on = read("openness_neg_9t_05.tif", bb)
-    slope = read("slope_9t_05.tif", bb)
+    op = read("openness_pos_9t_1m.tif", bb)
+    on = read("openness_neg_9t_1m.tif", bb)
+    slope = read("slope_9t_1m.tif", bb)
     do = (op - on) / 2.0
     dlim = float(np.nanpercentile(np.abs(do[np.isfinite(do)]), DO_PCT))
 
-    with rasterio.open(D05 / "rrim_openness_9t_05.tif") as r:
+    with rasterio.open(D05_1M / "rrim_openness_9t_1m.tif") as r:
         w = from_bounds(*bb, transform=r.transform)
         rr = r.read(window=w, boundless=True, fill_value=np.nan).astype("float32")[:3]
     # NoEnhancement in the QGIS project: the stored bytes go straight to screen.
@@ -174,7 +178,7 @@ def main() -> int:
             (fig.add_subplot(gs[0, 1]), on, "openness_neg_9t_05",
              "\u03a8  negative openness"),
             (fig.add_subplot(gs[0, 2]), slope, "slope_9t_05", "S  slope")):
-        st = style_for(stem, styles, D05 / f"{stem}.tif")
+        st = style_for(stem, styles, D05_1M / f"{stem}.tif")
         print(f"  {stem:22s} gray {st['gradient']} "
               f"{st['vmin']:.4g} to {st['vmax']:.4g}  ({st['source']})")
         thumb(ax_, arr, title, st=st)

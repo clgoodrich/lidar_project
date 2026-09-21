@@ -5,6 +5,60 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-20 — every terrain figure recast at 1 m; deck saved as v7
+
+**Built the missing 1 m stacks first.** 9t had 12 of the 1 m layers and was
+missing CHM, DSM and the extra TPI/LRM radii. **613590 had no 1 m stack at
+all.** Both rebuilt with `_build_derivatives.py --res 1.0`; the 613590 RRIM
+needed `_make_rrim.py --suffix 1m` separately, since RRIM is not part of that
+builder. 9t now 22 layers, 613590 21. ~2 GB, all covered by the existing
+`data/**/derived/**` ignore rule; >100 MB audit clean.
+
+**Repointed the figure scripts in two passes**, not one find-and-replace,
+because `derived/05/` mixes terrain rasters with things that have no 1 m twin:
+- `_repoint_figures_to_1m.py` — filenames, against an allow-list of the layers
+  actually rebuilt at 1 m. Refuses any reference whose 1 m target is absent.
+- `_repoint_dir_constants_to_1m.py` — the directory constants, adding a sibling
+  `D05_1M` and moving only the `_1m.tif` usages, so `pit_blocks_9t.gpkg`,
+  `road_chunks_9t.gpkg` and the dataset manifests keep resolving to 0.5 m.
+
+Three scripts build paths from a variable filename, so they got a `dir_for()`
+helper that picks the stack from the suffix.
+
+**Deliberately left at 0.5 m**, with reasons:
+- pit/pad probability and argmax rasters — those U-Nets were *trained* on 0.5 m
+  features. Resampling the picture would imply an experiment we did not run.
+- `features_pit_9t_1m.tif` — despite the name it lives in `derived/05`; it is a
+  packed model feature stack, not a terrain layer. The first pass moved it and
+  the rebuild caught it.
+- the data-QA figures (`ground_delivered_9t`, `ground_thrown_away_9t`, the
+  scan-angle and CHM-corduroy diagnostics) — their entire subject is the 0.5 m
+  void. At 1 m there is nothing left to show.
+
+**Measured, and it is the point of the whole exercise:**
+
+| layer | 0.5 m void | 1 m void |
+|---|---|---|
+| DSM | 2.04% | 0.03% |
+| CHM | 2.04% | 0.03% |
+
+17 builders re-run, all passing. 90 PNGs rebuilt.
+
+**Consequence that needs a decision.** Slide 21 says "The corn rows are NOT
+canopy. They are missing data — 3.2% of this window." Its figure is now the 1 m
+CHM, where the void is 0.03% and **the stripes are gone**. The slide text and
+its own picture now contradict each other. Not changed unilaterally — flagged
+to the user.
+
+Also renamed the roughness panel slug `roughness_11` -> `roughness_5`, since the
+1 m source is `roughness_5_9t_1m.tif` and the old slug named a layer the figure
+no longer shows. `roughness_11_300m_9t.png` is now stale.
+
+Deck: speaker notes rewritten in plain language on all 70 slides and saved as
+**v7**; v6 untouched.
+
+---
+
 ## 2026-09-20 — the rest of the further-research section, re-grounded
 
 Retiring the old Future Work slide took real ideas out along with the stale

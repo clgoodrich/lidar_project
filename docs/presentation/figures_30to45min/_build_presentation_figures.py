@@ -107,7 +107,7 @@ def title(ax, t, sub=None):
 # ============================================================ F1 locator map
 AREAS = [
     ("9t",          6346, "data/9t/derived/05/_dem_9t_1m_link.tif",              "venango"),
-    ("613590",      6346, "data/613590/derived/05/dem_613590_05.tif",            "venango"),
+    ("613590",      6346, "data/613590/derived/1m/dem_613590_1m.tif",            "venango"),
     ("616593",      6346, "data/616593/derived/1m/dem_616593_1m.tif",            "venango"),
     ("607594",      6346, "data/607594/derived/1m/dem_607594_1m.tif",            "venango"),
     ("610594",      6346, "data/610594/derived/1m/dem_610594_1m.tif",            "venango"),
@@ -426,7 +426,7 @@ def fig_classical_vs_unet():
                 best, best_n = (x0, y0), n
     win_b = (best[0], best[1], best[0] + SIDE, best[1] + SIDE)
 
-    hs_p = ROOT / "data/9t/derived/05/hillshade_9t_05.tif"
+    hs_p = ROOT / "data/9t/derived/1m/hillshade_9t_1m.tif"
     pr_p = ROOT / "data/9t/models/pit/unet_v2/pit_prob_floor.tif"
     with rasterio.open(hs_p) as h:
         w = from_bounds(*win_b, transform=h.transform)
@@ -562,7 +562,7 @@ def _lyr(name):
 
 
 def _hs(win):
-    with rasterio.open(ROOT / "data/9t/derived/05/hillshade_9t_05.tif") as h:
+    with rasterio.open(ROOT / "data/9t/derived/1m/hillshade_9t_1m.tif") as h:
         w = from_bounds(*win, transform=h.transform)
         return h.read(1, window=w), rasterio.windows.bounds(w, h.transform)
 

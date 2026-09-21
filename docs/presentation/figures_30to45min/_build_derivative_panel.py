@@ -6,7 +6,7 @@ Optical aerial imagery plus every terrain derivative we build, over the same
 300 m square, with a scale bar and a north arrow.
 
 Centre: 41.492640 N, -79.546127 W  ->  621359.6 E, 4594467.4 N (EPSG:6346)
-Tile:   9t, 0.5 m
+Tile:   9t, 1 m
 
 WHY OPTICAL COMES FROM A WEB SERVICE
 ------------------------------------
@@ -60,7 +60,19 @@ from rasterio.windows import from_bounds
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
+D05_1M = ROOT / "data" / "9t" / "derived" / "1m"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "2_terrain_derivatives"
+
+
+def dir_for(fname) -> Path:
+    """Which stack a layer lives in, decided by its own name.
+
+    The terrain derivatives were rebuilt at 1 m and carry `_1m.tif`. The things
+    that were not -- the packed feature stacks, the RGB composite, the split
+    bookkeeping -- keep their `_05` names and stay in the 0.5 m folder. Reading
+    the suffix means no caller has to remember which is which.
+    """
+    return D05_1M if str(fname).endswith("_1m.tif") else D05
 
 LAT, LON = 41.49264, -79.546127
 SIDE_M = 300.0
@@ -77,17 +89,20 @@ QGZ = ROOT / "qgis" / "wellsight.qgz"
 #: is read from the QGIS project, not decided here.
 PANELS = [
     ("__optical__",             "aerial",        "Aerial imagery"),
-    ("hillshade_9t_05.tif",     "hillshade",     "Hillshade"),
-    ("dem_9t_05.tif",           "dem",           "Bare-earth elevation"),
-    ("slope_9t_05.tif",         "slope",         "Slope"),
-    ("lrm_5_9t_05.tif",         "lrm_5",         "Local relief, 5 m"),
-    ("lrm_25_9t_05.tif",        "lrm_25",        "Local relief, 25 m"),
-    ("tpi_05_9t_05.tif",        "tpi_05",        "Topographic position"),
-    ("openness_pos_9t_05.tif",  "openness_pos",  "Openness, positive"),
-    ("openness_neg_9t_05.tif",  "openness_neg",  "Openness, negative"),
-    ("roughness_11_9t_05.tif",  "roughness_11",  "Roughness"),
-    ("rrim_openness_9t_05.tif", "rrim",          "RRIM"),
-    ("chm_9t_05.tif",           "chm",           "Canopy height"),
+    ("hillshade_9t_1m.tif",     "hillshade",     "Hillshade"),
+    ("dem_9t_1m.tif",           "dem",           "Bare-earth elevation"),
+    ("slope_9t_1m.tif",         "slope",         "Slope"),
+    ("lrm_5_9t_1m.tif",         "lrm_5",         "Local relief, 5 m"),
+    ("lrm_25_9t_1m.tif",        "lrm_25",        "Local relief, 25 m"),
+    ("tpi_05_9t_1m.tif",        "tpi_05",        "Topographic position"),
+    ("openness_pos_9t_1m.tif",  "openness_pos",  "Openness, positive"),
+    ("openness_neg_9t_1m.tif",  "openness_neg",  "Openness, negative"),
+    # slug follows the source: at 0.5 m this was roughness_11 (an 11-cell,
+    # 5.5 m window); the 1 m stack's equivalent is roughness_5 (5 cells, 5 m).
+    # Leaving the old slug would name the file after a layer it no longer shows.
+    ("roughness_5_9t_1m.tif",   "roughness_5",   "Roughness"),
+    ("rrim_openness_9t_1m.tif", "rrim",          "RRIM"),
+    ("chm_9t_1m.tif",           "chm",           "Canopy height"),
 ]
 
 #: Layers the project does not hold, mapped to one it styles the same way.
@@ -334,7 +349,7 @@ def main() -> int:
                 print(f"  optical failed: {type(e).__name__}: {e}")
                 ok = False
         else:
-            src = D05 / fname
+            src = dir_for(fname) / fname
             if not src.exists():
                 print(f"  MISSING {fname}")
                 ok = False

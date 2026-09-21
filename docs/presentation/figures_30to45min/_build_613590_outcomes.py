@@ -59,8 +59,8 @@ FOUND_MISSED = (ROOT / "data/613590/results/road/thresholds"
                 / "road_found_vs_missed_thr0p50_613590_1m.gpkg")
 PIT_CAND = ROOT / "data/613590/derived/inference_05/pit_candidates_613590_05.gpkg"
 PAD_CAND = ROOT / "data/613590/derived/inference_05/pad_candidates_613590_05.gpkg"
-HILL = ROOT / "data/613590/derived/05/hillshade_613590_05.tif"
-DEM = ROOT / "data/613590/derived/05/dem_613590_05.tif"
+HILL = ROOT / "data/613590/derived/1m/hillshade_613590_1m.tif"
+DEM = ROOT / "data/613590/derived/1m/dem_613590_1m.tif"
 
 SURFACE = "#fcfcfb"
 INK = "#0b0b0b"

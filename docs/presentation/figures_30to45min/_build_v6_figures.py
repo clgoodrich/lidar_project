@@ -55,6 +55,9 @@ from matplotlib.patches import FancyBboxPatch, Patch
 ROOT = Path(__file__).resolve().parents[3]
 NGC = ROOT / "data/9t/results/nonground_classification"
 D05 = ROOT / "data/9t/derived/05"
+#: terrain layers moved to the 1 m stack; D05 still holds the 0.5 m split
+#: bookkeeping and model inputs, which have no 1 m twin
+D05_1M = ROOT / "data/9t/derived/1m"
 OUT = ROOT / "docs/presentation/figures_30to45min/v6"
 
 PAPER = "#f7f8f6"
@@ -461,8 +464,8 @@ def fig_rim_floor_map():
     from rasterio.windows import from_bounds
     ext = (bx - h, by - h, bx + h, by + h)
     base = None
-    for cand, is_rgb in ((D05 / "rrim_openness_9t_05.tif", True),
-                         (D05 / "hillshade_9t_05.tif", False)):
+    for cand, is_rgb in ((D05_1M / "rrim_openness_9t_1m.tif", True),
+                         (D05_1M / "hillshade_9t_1m.tif", False)):
         if not cand.exists():
             continue
         with rasterio.open(cand) as r:
@@ -597,9 +600,9 @@ def fig_where_the_tiles_are():
     import rasterio
     from matplotlib.patches import Rectangle
 
-    tiles = [("9t", ROOT / "data/9t/derived/05/hillshade_9t_05.tif", KEPT,
+    tiles = [("9t", ROOT / "data/9t/derived/1m/hillshade_9t_1m.tif", KEPT,
               "trained here"),
-             ("613590", ROOT / "data/613590/derived/05/hillshade_613590_05.tif",
+             ("613590", ROOT / "data/613590/derived/1m/hillshade_613590_1m.tif",
               GONE, "never trained on")]
     style()
     fig, ax = plt.subplots(figsize=(11.6, 7.4))
@@ -669,7 +672,7 @@ def fig_613590_found_vs_missed():
     found = g[g["found_iou30"]]
     missed = g[~g["found_iou30"]]
 
-    hs = ROOT / "data/613590/derived/05/hillshade_613590_05.tif"
+    hs = ROOT / "data/613590/derived/1m/hillshade_613590_1m.tif"
     a, b = read_hillshade(hs, 1400)
 
     style()

@@ -65,13 +65,16 @@ from shapely.geometry import box
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
+#: terrain layers moved to the 1 m stack; D05 still holds the 0.5 m split
+#: bookkeeping and model inputs, which have no 1 m twin
+D05_1M = ROOT / "data" / "9t" / "derived" / "1m"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "3_annotations"
 
 EPSG = 6346
 #: 9t training area, and its dead centre -- the frame for the all-four image.
 BBOX_9T = (619500.0, 4593000.0, 624000.0, 4597500.0)
-RRIM = D05 / "rrim_openness_9t_05.tif"
+RRIM = D05_1M / "rrim_openness_9t_1m.tif"
 
 SURFACE = "#fcfcfb"
 INK = "#0b0b0b"

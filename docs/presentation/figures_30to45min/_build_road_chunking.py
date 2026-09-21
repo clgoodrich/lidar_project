@@ -42,9 +42,12 @@ from shapely.geometry import box
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
+#: terrain layers moved to the 1 m stack; D05 still holds the 0.5 m split
+#: bookkeeping and model inputs, which have no 1 m twin
+D05_1M = ROOT / "data" / "9t" / "derived" / "1m"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "4_model_building"
 CHUNKS = D05 / "road_chunks_9t.gpkg"
-HILL = D05 / "hillshade_9t_05.tif"
+HILL = D05_1M / "hillshade_9t_1m.tif"
 EPSG = 6346
 
 SIDE_M = 700.0          # wide enough to hold several whole roads

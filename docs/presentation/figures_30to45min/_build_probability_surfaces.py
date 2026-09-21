@@ -43,6 +43,9 @@ from _build_derivative_panel import qgis_styles, style_for   # noqa: E402
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
 D05 = ROOT / "data" / "9t" / "derived" / "05"
+#: terrain layers moved to the 1 m stack; D05 still holds the 0.5 m split
+#: bookkeeping and model inputs, which have no 1 m twin
+D05_1M = ROOT / "data" / "9t" / "derived" / "1m"
 MODELS = ROOT / "data" / "9t" / "models"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
@@ -125,7 +128,7 @@ def read(path, bb, band=1):
     return a
 
 
-HS_TIF = D05 / "hillshade_9t_05.tif"
+HS_TIF = D05_1M / "hillshade_9t_1m.tif"
 
 
 def read_hillshade(bb):

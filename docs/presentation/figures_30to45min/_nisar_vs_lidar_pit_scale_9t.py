@@ -9,7 +9,7 @@ measured the products over this very tile:
 
     GCOV  (backscatter)          10 m pixel
     GUNW  (InSAR displacement)   80 m pixel
-    our LiDAR derivatives        0.5 m cell
+    our LiDAR derivatives        1 m cell
 
 and the annotations give the other half:
 
@@ -55,7 +55,7 @@ BOX = dict(boxstyle="round,pad=0.30", fc="#F7F8F6", ec="none", alpha=0.90)
 from rasterio.windows import from_bounds
 
 ROOT = Path(__file__).resolve().parents[3]
-HILL = ROOT / "data/9t/derived/05/hillshade_az315_alt25_9t_05.tif"
+HILL = ROOT / "data/9t/derived/1m/hillshade_9t_1m.tif"
 ANN = ROOT / "qgis/annotations/annotations_proj_v2.gpkg"
 OUT = ROOT / "docs/presentation/figures_30to45min/v6/nisar_pixel_vs_pit_scale_9t.png"
 
@@ -115,7 +115,7 @@ def main() -> int:
                 xy=(b[0] + 6, b[3] - 10), ha="left", va="top",
                 fontsize=16, color=NISAR, fontweight="bold", bbox=BOX)
     ax.annotate(f"{len(pits)} annotated pits, mean 32 m²  —  "
-                "drawn on 0.5 m lidar",
+                "hand-drawn on the lidar",
                 xy=(b[0] + 6, b[1] + 8), ha="left", va="bottom",
                 fontsize=16, color=PIT, fontweight="bold", bbox=BOX)
 

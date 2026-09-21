@@ -88,14 +88,16 @@ CM = "gray"
 #: and the 1 m models sit on different grids.
 VALID = {
     ("9t", 0.5): ROOT / "data/9t/derived/05/features_pit_9t_05.tif",
+    # lives in the 0.5 m folder despite the _1m name: it is a packed model
+    # feature stack built alongside the 0.5 m products, not a terrain layer
     ("9t", 1.0): ROOT / "data/9t/derived/05/features_pit_9t_1m.tif",
     ("613590", 0.5): ROOT / "data/613590/derived/inference_05/features_613590_05.tif",
     ("613590", 1.0): ROOT / "data/westernpa_d20/613590/derived/1m/features_613590_1m.tif",
 }
 
 RRIM = {
-    "9t": ROOT / "data/9t/derived/05/rrim_openness_9t_05.tif",
-    "613590": ROOT / "data/613590/derived/05/rrim_openness_613590_05.tif",
+    "9t": ROOT / "data/9t/derived/1m/rrim_openness_9t_1m.tif",
+    "613590": ROOT / "data/613590/derived/1m/rrim_openness_613590_1m.tif",
 }
 
 #: (tile, task, probability raster, operating threshold, grid resolution)
