@@ -5,6 +5,54 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — v8: canopy height and the RRIM stop borrowing each other's evidence
+
+**The rule now enforced:** canopy height is discussed on the canopy-height
+slides and nowhere else; the RRIM is discussed on the RRIM slides and nowhere
+else. Neither argues its case with the other's picture. A check at the end of
+`_clean_rrim_crossrefs_v8.py` asserts it: **0 cross-references remaining.**
+
+Changes from v7, slide count unchanged at 75 (one added, one removed):
+- Canopy height became **two slides in sequence** — slide 21 shows the rows
+  plain and unannotated (`chm_corn_rows_05_9t.png`), slide 22 says what they
+  are (`chm_corn_rows_are_empty_cells_9t.png`): the same cells painted orange
+  at 0.5 m beside 1 m where they are gone, **3.22% → 0.00%** in this window.
+  Its forward reference to the RRIM section is gone.
+- **"Two different stripes, one nickname" deleted.** Its left panel was a
+  canopy raster sitting in the RRIM section. The one fact the RRIM section
+  needed from it — the ground surface holds no empty cells at either
+  resolution, so these stripes cannot be missing data — moved onto the RRIM
+  slide as a bullet, stated without reference to canopy height.
+- Two dangling references cleaned: the RRIM kicker said "the second kind" with
+  no first kind on screen, and slide 33's notes argued the RRIM case by
+  comparison with "the canopy holes".
+
+**Repair prompt — the background hypothesis is ruled out.** Every `p:bg` in the
+deck is a plain `<a:solidFill><a:srgbClr val="F7F8F6"/>` with no relationship
+reference, so there is nothing there to dangle. v8 also passes every structural
+check available here: no dangling relationship targets, no orphan parts,
+Content_Types covers every part, no duplicate or zero shape ids, no duplicate
+zip entries, no control characters in any `a:t`, all font sizes in range, all
+91 embedded images valid and matching their declared extension, 75 slides and
+75 notesSlides, slide ids unique and in range. The 61 zero-size extents found
+are `spTree` `grpSpPr` entries, which are normal in every PPTX.
+
+So the defect is something PowerPoint checks and these tests do not. Built
+`_repair_bisect_v8.py` to narrow it by halving rather than guessing further —
+three rounds isolates one slide. First pair written to
+`docs/presentation/_repair_test/` (gitignored). **Both halves prompting would
+mean the fault is in the master, layouts or theme; neither prompting would mean
+it is in the presentation part itself.** Awaiting the user, who has to open
+them.
+
+Scripts:
+- `docs/presentation/_build_v8_split_canopy_and_rrim.py`
+- `docs/presentation/_clean_rrim_crossrefs_v8.py`
+- `docs/presentation/_repair_bisect_v8.py`
+- `docs/presentation/figures_30to45min/_chm_corn_rows_pair_9t.py`
+
+---
+
 ## 2026-09-21 — the two "corn rows" are different phenomena, and the deck now says so
 
 The user caught a conflation I had been carrying: the canopy-height stripes and
