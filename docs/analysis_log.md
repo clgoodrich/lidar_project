@@ -5,6 +5,52 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — the repair prompt was a stale docProps/app.xml
+
+v9 still prompted, so the two defects found in the previous pass were real but
+not the cause. The actual one:
+
+| | v9 (ours) | deck reality | PowerPoint's repaired copy |
+|---|---|---|---|
+| `<Slides>` | **68** | **75** | 75 |
+| `TitlesOfParts` vector | 71 | — | 78 |
+
+`docProps/app.xml` carries a declared slide count, a "Slide Titles" heading
+pair, and a vector listing every font, the theme, and **one entry per slide**.
+PowerPoint writes it and checks it against the package. **python-pptx never
+touches it.** So every slide added or removed programmatically since the deck
+was last saved by PowerPoint pushed it further out of step.
+
+This is why every structural check passed: the package *is* structurally valid.
+The defect was a stale summary of it, living in a part nothing else references
+and no integrity check looks at. It also explains why the prompt predates the
+recent work — v6, v7, v8 and v9 all carry it.
+
+**Fix:** `_sync_docprops_app.py` rewrites `<Slides>`, `<Notes>`, the
+"Slide Titles" heading pair, and the `TitlesOfParts` vector (fonts + theme +
+one entry per slide, resized), swapping only that one part and leaving the rest
+of the zip byte-identical.
+
+One trap inside it: slide 1's title contains ``, a soft line break, which
+is legal in the slide as an `<a:br/>` but which lxml refuses to write into
+app.xml at all. PowerPoint writes a space there, so `clean()` does the same.
+Worth noting my earlier "0 control characters" check missed this, because it
+only scanned `a:t` elements and this one comes from `a:br`.
+
+**v10** now matches PowerPoint's own repaired values exactly — Slides 75,
+Notes 75, vector 78, 403 parts. Content verified identical to v9: same slide
+count, titles, picture counts and notes text; zip integrity clean. `Words` and
+`Paragraphs` are left stale on purpose — PowerPoint recomputes those and does
+not validate them.
+
+Awaiting confirmation that v10 opens without the prompt.
+
+**Standing rule for every future deck build:** run `_fix_pptx_repair_defects.py`
+then `_sync_docprops_app.py` as the last two steps, or the orphaned
+relationships and the stale slide count both come straight back.
+
+---
+
 ## 2026-09-21 — the repair prompt, found by reading PowerPoint's answer
 
 Ten structural checks on v8 all passed and found nothing. The defects were
