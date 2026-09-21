@@ -1,0 +1,30 @@
+{
+  "block_m": 375.0,
+  "tiles": {
+    "9t": {
+      "n_floors": 503,
+      "n_rims": 506,
+      "rims_per_floor": 1.0059642147117296,
+      "blocks_total": 144,
+      "blocks_with_pit": 115,
+      "blocks_with_pit_pct": 79.86111111111111,
+      "share_in_busiest_quarter": 0.5447316103379721,
+      "drawn_extent_frac_of_tile": 0.9900815067440843,
+      "largest_blank_region_blocks": 17,
+      "largest_blank_region_frac": 0.11805555555555555
+    },
+    "613590": {
+      "n_floors": 153,
+      "n_rims": 36,
+      "rims_per_floor": 0.23529411764705882,
+      "blocks_total": 144,
+      "blocks_with_pit": 48,
+      "blocks_with_pit_pct": 33.33333333333333,
+      "share_in_busiest_quarter": 0.9215686274509803,
+      "drawn_extent_frac_of_tile": 0.7032773058650044,
+      "largest_blank_region_blocks": 91,
+      "largest_blank_region_frac": 0.6319444444444444
+    }
+  },
+  "verdict": "613590 is partly annotated. Precision is not computable there: an unmatched prediction may be a false positive or a pit nobody drew."
+}
