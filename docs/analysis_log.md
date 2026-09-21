@@ -5,6 +5,42 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — v12: speaker notes describe the slide, not the deck's history
+
+The notes had drifted into commentary about the deck itself — why a slide was
+added, which earlier version a figure came from, which numbers were dropped and
+why. That is useless to someone looking down at a slide mid-talk.
+
+Rewritten on all 75 slides to describe **what is on screen**:
+- what the figure shows, and which panel is which where there are panels
+- what every number on the slide means, in plain words
+- the point of the slide
+- limits stated as facts about the content
+
+Presenter guidance is kept where it is about the content — "every one of these
+is a candidate, not a confirmed well", "these are segmentation scores, not the
+detection recall on the outcome slides". What is gone is narration of the
+deck's own revision history.
+
+Checked, not assumed: a scan for `initially | originally | used to |
+previously | we changed | the old slide | no longer | superseded | retired |
+replaced | first version | earlier` returns **0 hits** across all 75 notes, and
+a separate scan for "this slide exists", "carried over from", "be careful how
+you say", "do not explain" returns 0.
+
+Example, slide 56:
+
+> **before** — "This is the good one. Recall 0.928, so it found 93% of the
+> pits. And it only flags 0.21%…"
+> **after** — "Pit results on the held-out blocks. 712 pits. Recall 0.928: it
+> found 92.8% of the pits. Precision 0.633: 63.3% of what it flagged was real.
+> Flags 0.21% of the tile…"
+
+Slide content untouched: 75 slides, identical titles, 67 pictures. Both
+finalisers clean, app.xml Slides 75 / vector 78. Median note 353 characters.
+
+---
+
 ## 2026-09-21 — v11: "held-out tile" was wrong, and the locator moved to where it lands
 
 **Terminology.** The deck used one phrase for two different things:
