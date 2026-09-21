@@ -5,6 +5,46 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — v11: "held-out tile" was wrong, and the locator moved to where it lands
+
+**Terminology.** The deck used one phrase for two different things:
+
+- slide 47, *"the held-out blocks"* — blocks inside the **training** tile,
+  withheld from training and kept for testing. Standard meaning, correct, kept.
+- 9 slides, *"Held-Out Tile 613590"* — a different 4.5 km tile, 1.5 km west,
+  that was **never in any split at all**.
+
+The second is wrong. "Held out" means withheld from a dataset the model
+otherwise saw; 613590 was never in that dataset, so there was nothing to
+withhold. One label for both made them look like the same kind of evidence,
+when the second is the stronger claim.
+
+**Renamed to "Second tile, 613590"** on all 9 slides, plus body text and notes.
+0 occurrences of the old phrase remain; `held-out blocks` survives on slide 47,
+which is the correct usage.
+
+**Deliberately NOT "out-of-domain"**, which is what `LEADERBOARD.md` and
+`FIGURE_INDEX.md` call it. On this deck that over-claims: 613590 is the same
+county, same 2019 survey, same flight block and same terrain, 1.5 km away. The
+conclusion slide already says "two tiles in one county is not evidence of
+regional generalisation", and "out-of-domain" would contradict it. "Second
+tile" is literally true and claims nothing extra.
+
+**Locator moved.** "Where the two study tiles are" was slide 7, carrying the
+line *"9t is where every model was trained. 613590 is 1.5 km west, and no model
+has ever seen it."* At slide 7 the audience has not met training, testing or
+splits, so the claim lands on nothing. Moved to **slide 57**, immediately
+before the second-tile results, and its standfirst rewritten to introduce that
+section. Slide 6 "Study Area" keeps its own maps, so the opening still has
+geographic context. Its notes now also warn against both "held-out" and
+"generalisation test" for this tile.
+
+75 slides, 67 pictures, notes on every slide — unchanged from v10 apart from
+the rename and the move. Both finalisers run clean: 0 orphaned image rels,
+0 malformed notes slides, app.xml Slides 75 / vector 78.
+
+---
+
 ## 2026-09-21 — repair prompt: what is ruled out, and the one test left
 
 v10 still prompts, so the stale `docProps/app.xml` was a real defect but not the
