@@ -5,6 +5,58 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — repair prompt: what is ruled out, and the one test left
+
+v10 still prompts, so the stale `docProps/app.xml` was a real defect but not the
+cause either. Three fixes now shipped, none of which stopped it:
+
+| fix | was it a real defect? | did it stop the prompt? |
+|---|---|---|
+| 27 orphaned image relationships | yes | no |
+| 33 malformed notes slides | yes | no |
+| `app.xml` declaring 68 slides against 75 | yes | no |
+
+**The most useful finding: repairing costs nothing.** Comparing v8 against the
+repaired copy PowerPoint wrote — 75 slides both sides, **titles identical,
+picture counts identical, notes text identical on all 75, on-slide text
+identical at 18,580 characters.** The only side effects are cosmetic: embedded
+JPEGs re-encoded as PNG, media renumbered, `app.xml` corrected, window state
+saved. Nothing is lost.
+
+**Ruled out by measurement,** beyond the structural suite already logged:
+- *python-pptx round-trip itself.* Loading and re-saving PowerPoint's own
+  repaired file with no changes drops no part, adds no part, and alters exactly
+  one: `[Content_Types].xml`, same length, Overrides in a different order.
+  Ordering is not significant there.
+- *The zip container.* `[Content_Types].xml` first, no data descriptors, no
+  ZIP64 offsets, no UTF-8 flag, 403 entries — same shape as PowerPoint's own.
+- *`ppt/presentation.xml`, `[Content_Types].xml`, `slideMaster1.xml`, all 11
+  `slideLayout*.xml`* — differ from the repaired copy only in serialisation,
+  identical length and content.
+- *`viewProps.xml`* — differs only in saved window state (zoom, pane widths).
+- *`notesMaster1.xml`* — differs only in `<a:p/>` vs `<a:p><a:endParaRPr/></a:p>`
+  and restored `spLocks`, both cosmetic normalisations.
+- *An oversized media part.* The largest is `image2.png` at 15.06 MB,
+  3507x2480 RGBA, valid and readable, and it came from the original deck.
+
+**The one test left**, written to `docs/presentation/_repair_test/`:
+- `C_powerpoint_blessed.pptx` — PowerPoint's own repaired output, untouched.
+- `D_roundtripped_once.pptx` — the same file loaded and re-saved by python-pptx,
+  nothing else changed.
+
+Outcomes and what each means:
+- **C clean, D prompts** → the round-trip is the cause despite the XML evidence,
+  and the answer is to stop saving the final deliverable with python-pptx.
+- **C prompts** → PowerPoint's own output still prompts, so the trigger is not
+  content we author at all, and no amount of package surgery will fix it.
+- **Both clean** → the trigger is in what the build scripts changed after that
+  point, and the bisect narrows it in three rounds.
+
+Until that is answered, the practical position is that the prompt is cosmetic:
+repair once, save, and the result is verified complete.
+
+---
+
 ## 2026-09-21 — the repair prompt was a stale docProps/app.xml
 
 v9 still prompted, so the two defects found in the previous pass were real but
