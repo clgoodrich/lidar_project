@@ -5,6 +5,59 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — v15, and the missing-ground overlay
+
+**Units.** Hectares gone from the deck. Pads in km², pits in m² — straight
+conversions at 10,000 m² per hectare, not recomputations, because the "723 pit
+outlines, 14.84 ha" line reconciles with no single layer in the geopackage
+(`pit_full` is 841 / 17.72 ha, `pit_inside` 714 / 2.30 ha) and recomputing
+would have changed the line's meaning rather than its units. 0 hectare
+references remain.
+
+**Slide removed** — "are the discarded returns any good?", on request. Its
+accuracy numbers survive in the speaker notes of the scan-angle slide.
+
+**Slide retitled** — "where the ground stops" reads like a fact about terrain;
+it is about a threshold in the vendor's processing. Now "nothing past 18° was
+called ground".
+
+**RRIM, clipped against unclipped** — the slide-35 window at 623822 E
+4594949 N, full Chiba recipe both sides, with the differential-openness stretch
+computed on the vendor panel and reused for the other so the comparison is not
+rescaled away. The surface differs in 8.9% of cells; 13.3% of RRIM pixels
+differ by more than 5/255. **The corn rows are present in both panels**, which
+is consistent with the earlier finding that they are unrelated to the vendor
+cut.
+
+**Missing-ground overlay.** Two attempts were wrong before the third was right,
+and the failure is worth recording because it is a general trap with thin
+masks:
+
+| tidy-up | 36.6 M void cells became | verdict |
+|---|---|---|
+| binary closing | **71.2 M (+94%)** | bridged the gaps *between* voids, one 17.6 km² blob over a 45%-void tile |
+| binary opening | **3.2 M (−91%)** | erased nearly all of it |
+| none | 36.6 M | correct |
+
+The voids are genuinely one to two cells wide. That is the data, not noise in
+it, so any morphology misrepresents it. Primary output is therefore an exact
+raster mask, which also draws faster than polygons ever would:
+
+    missing_ground_9t_0p5m.tif       36,628,564 cells, 9.157 km², 9.4 MB
+    recoverable_ground_9t_0p5m.tif    2,857,002 cells, 0.714 km², 2.3 MB
+
+Polygons are written too, from a deliberately coarsened 4 m grid (a cell counts
+as void if over half of it is), and labelled as a generalisation: 15,396 and
+407 features.
+
+**Still unanswered:** whether the annotation slides should switch from
+all-areas totals to 9t-only. The 9t figures are computed and ready — pads 650 /
+1.151 km², pit floors 503 / 14,659 m², pit rims 506 / 96,643 m² — but the
+"pit outlines" layer on the slide does not map cleanly onto a geopackage layer,
+so switching needs that resolved first.
+
+---
+
 ## 2026-09-21 — v14: the annotation-QC slide dropped, and two claims corrected
 
 Built from the user's own edited v13 (82 slides, with a new opener at slide 9)
