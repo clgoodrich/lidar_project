@@ -5,6 +5,77 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — the repair prompt, found by reading PowerPoint's answer
+
+Ten structural checks on v8 all passed and found nothing. The defects were
+found instead by opening the deck, clicking Repair, saving, and diffing the
+result against the input (`_diff_repaired_pptx.py`). PowerPoint names its own
+casualties.
+
+**What it removed:**
+- **27 image relationships across 26 slides** (slide 21 lost two, the rest one
+  each).
+- **`notesSlides/notesSlide76.xml` outright**, with its rels part — the notes
+  for the canopy slide added in v8.
+
+Everything else in the diff was housekeeping: it re-encodes embedded JPEGs as
+PNG and renumbers media. **Shape counts on surviving slides were unchanged**,
+so no visible slide content was lost.
+
+**Defect 1 — orphaned image relationships. Mine.** Several scripts re-lay a
+slide out by deleting every shape:
+
+    for sh in list(slide.shapes):
+        sh._element.getparent().remove(sh._element)
+
+That removes the `p:pic` element and leaves the slide's relationship to the
+image behind. Adding a new picture then adds a second, so the slide declares
+two images and references one. Slide 21 was wiped twice — by
+`_fix_chm_slide_for_1m_v7.py` then `_build_v8_split_canopy_and_rrim.py` —
+which is exactly why it carried two orphans.
+
+**Defect 2 — notes slides built from python-pptx's template, not PowerPoint's.**
+33 of 75 were malformed, not just the one PowerPoint deleted:
+
+| | generated | PowerPoint's own |
+|---|---|---|
+| shape order | body, sldImg, sldNum | sldImg, body, sldNum |
+| body placeholder | `type="body" idx="3"` | `type="body" sz="quarter" idx="3"` |
+| sldNum placeholder | no `sz` | `sz="quarter"` |
+| sldImg `spLocks` | `noGrp` only | `noGrp noRot noChangeAspect` |
+
+**Fix, written as `_fix_pptx_repair_defects.py`:** drop every image
+relationship no `r:embed`/`r:id`/`r:link` still refers to, and rebuild any
+malformed notes slide by cloning the skeleton from a healthy one *in the same
+deck* — which matches whatever this deck's notes master expects rather than
+guessing at the schema.
+
+**A bug in that fix, caught before shipping:** the first version set the text
+through `ns.notes_text_frame`, which had been resolved against the tree just
+detached, so the assignment landed on an orphaned element and all 33 rebuilt
+slides silently kept the *template's* notes. Found by diffing note text
+before and after. Now the text is written directly into the cloned skeleton's
+body placeholder.
+
+**Result — v9:**
+
+| | v8 | v9 |
+|---|---|---|
+| orphaned image rels | 27 | **0** |
+| malformed notes slides | 33 | **0** |
+| media parts | 92 | 65 |
+| size | 90.9 MB | 82.6 MB |
+
+All 75 slides, titles, picture counts and notes text verified identical to v8.
+Awaiting the user opening v9 to confirm the prompt is gone.
+
+**Still to do:** the slide-wipe pattern itself is unfixed in the builder
+scripts, so a future re-run reintroduces defect 1. Either add a shared
+`wipe_slide()` that drops rels, or run `_fix_pptx_repair_defects.py` as the
+last step of every deck build.
+
+---
+
 ## 2026-09-21 — v8: canopy height and the RRIM stop borrowing each other's evidence
 
 **The rule now enforced:** canopy height is discussed on the canopy-height
