@@ -86,17 +86,18 @@ BURN_ORDER = (
 
 PLAN_VIEW = (
     "An average pit, seen from directly above.\n\n"
-    "This is a real pit, not a drawing. Of the 501 pits inside 9t that have "
+    "This is a real pit, not a drawing. Of the 503 pits inside 9t that have "
     "both an outline and a floor drawn, this is the one closest to the middle "
     "on both at once.\n\n"
     "Left is shaded relief — roughly what the eye would get from a normal "
     "relief map. You can find the pit, but only because it is circled.\n\n"
-    "Middle is local relief, which is the same ground with the hillside "
-    "subtracted. Now the dish is obvious. That is the layer that does the work "
-    "in this project.\n\n"
-    "Right is the same two outlines with the numbers on them. Blue is the "
-    "outer rim, orange is the flat floor inside it. About 15 m across the rim, "
-    "about 6 m across the floor, and roughly half a metre deep.\n\n"
+    # The local-relief panel was dropped from the figure, so its paragraph
+    # goes with it. Numbers are the measured 9t medians rather than the
+    # rounded ones: 15.3 m rim, 5.8 m floor, 0.54 m deep.
+    "Right is the same two outlines with nothing behind them, carrying the "
+    "numbers. Blue is the outer rim, orange is the flat floor inside it. "
+    "15.3 m across the rim, 5.8 m across the floor, 0.54 m deep at the 9t "
+    "median.\n\n"
     "The shape to hold on to: it is a wide, shallow dish with a small flat "
     "bottom. The floor is only about a seventh of the area inside the rim. "
     "That is why the model is taught rim and floor as two separate things "

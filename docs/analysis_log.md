@@ -5,6 +5,52 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 -- every number in the deck checked against its source
+
+Second audit, wider than the count audit earlier today: every figure, rate and
+count in all 81 slides and their notes, measured back to the file it came from.
+Nine lost. The rest are listed in the docstring of
+`docs/presentation/_number_audit_fixes.py` so nobody re-derives them.
+
+| slide | claim | verdict |
+|---|---|---|
+| 66 vs 72 | completeness 0.811 / correctness 0.816 | two different road models on one tile -- 0.811 is `sweep_orient` at thr 0.40, everything else in the deck is `recall_relabeled20260806`. Slide 66 now quotes 0.759 / 0.828 at thr 0.50, same as slide 72 |
+| 69 | 42 pit and 161 pad candidates | retired pre-U-Net pipeline, `data/613590/derived/inference_05/*.gpkg` dated 2026-06-12, sitting beside the U-Net's 0.911. Attributed rather than swapped, because the map IS that candidate set |
+| 47 | body "six layers", notes "seven" | six. `pyogrio.list_layers` gives plat, pit_inside, pit_outside, roads, not_roads, drainage; pit_wall is derived |
+| 17 (notes) | "about a quarter of the holes close" | 2,857,002 of 7,097,720 = 40.2%. Body already said two in five |
+| 9, 15 (notes) | "13.8% of the training area" | denominator is the 51,470,048 cells a return reached, not the 81,000,000-cell box. Against the box it is 8.8% |
+| 34, 36, 46 | "a pit is a 0.7 m dish", "13 m across" | measured 0.54 m median (10-90% 0.26-0.91), 15.3 m rim, 5.8 m floor |
+| 46 (notes) | three-panel walkthrough | the local-relief panel was removed from the figure; the note still described it |
+| 20 | body names left and right | the figure has three panels; what the body called right is the middle |
+| 75 | "63% of it is unswept" | `largest_blank_region_frac` 0.632 is the largest single unswept region. Drawn extent covers 70.3%; 33.3% of blocks hold a drawn pit |
+| 44 | "501 pair with a floor" | 501 is the strict `within` rule; slide 48's stated rule (each floor takes the rim it overlaps most) gives 503, and 81,500 m2 of wall is already the 503 number. `_median_pit_plan_view_9t.py` switched to the same rule; same pit selected, same medians |
+
+**The headline numbers all hold, and now their source is written down.**
+Pit CV5 F2 micro 467/503 = 0.928 and 467/738 = 0.633 come from
+`data/9t/models/pit/unet_cv5/pit_cv5_per_fold_9t.csv` (2026-09-17, vendor
+ground). Pad CV5 F2 micro 593/650 = 0.912 and 593/1010 = 0.587 from
+`data/9t/models/pad/unet_cv5/`. `unet_cv5_smrf` (2026-09-19) is the SMRF-ground
+variant and gives 460/503 = 0.915 -- it is NOT the deck's number, which is
+consistent with slide 21's claim that no reprocessing is in the pipeline. Road
+9t at thr 0.20 reproduces 735/722/0.982, 1,220/1,207/0.989, 42.56 of 43.07 km
+and 5.02% exactly from `road_threshold_sweep_9t.csv`. 613590 pit transfer
+reproduces 0.911, 0.928, 0.906, folds 127/137/142/145/146. The 613590 road
+network measures 3,693 features and 231.4 km against TIGER's 40.0 km, 5.79x.
+All annotation counts reproduce from `annotations_proj.gpkg` to the unit,
+including the 138 rims with no floor -- one rim took two floors, which is why
+it is 138 and not 723 minus 586.
+
+**Left alone deliberately.** Slides 5 and 6 say the DEM is gridded at 1 m while
+everything from slide 20 on is 0.5 m. That is the open 1 m / 0.5 m question in
+`docs/iterations/BACKLOG.md`, not a typo.
+
+Scripts: `docs/presentation/_number_audit_fixes.py` (new), and at source in
+`_speaker_note_additions.py`, `_port_v17_user_edits.py`,
+`_annotation_slides_9t_only.py`,
+`figures_30to45min/_median_pit_plan_view_9t.py`. 81 slides in, 81 out.
+
+---
+
 ## 2026-09-21 — every point and cell count in the deck audited against source
 
 The Data QA section quoted counts from five scopes and named none of them.

@@ -79,7 +79,7 @@ ANNOTATION_EDITS = [
     (BULLET + "9t 97,000 m²   |   613590 10,000 m²   |   elsewhere "
      "42,000 m²", None, "body"),
     (BULLET + "586 pair with a floor, giving 99,100 m² of measurable wall",
-     BULLET + "501 pair with a floor, giving 81,500 m² of measurable wall",
+     BULLET + "503 pair with a floor, giving 81,500 m² of measurable wall",
      "body"),
 
     # ---- slide 45, pit floors --------------------------------------------

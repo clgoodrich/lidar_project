@@ -104,6 +104,7 @@ from _port_v17_user_edits import (  # noqa: E402
     V17_RETIRED_NOTES,
 )
 from _side_text_613590_roads import ROAD_SIDE_TEXT  # noqa: E402
+from _number_audit_fixes import AUDIT_EDITS, AUDIT_STALE  # noqa: E402
 from _nisar_broad_statements import (  # noqa: E402
     NISAR_ANCHOR, NISAR_EDITS, NISAR_NEW_BULLETS, NISAR_NOTE, NISAR_TITLE,
 )
@@ -284,6 +285,9 @@ EDITS += ANNOTATION_EDITS
 EDITS += NISAR_EDITS
 EDITS += EVAL_EDITS
 EDITS += V17_EDITS
+# Last, because several of these correct the OUTPUT of an edit above
+# (the 0.7 m dish bullet, the corn-row note) rather than the v15 text.
+EDITS += AUDIT_EDITS
 
 #: title -> figure. Position and box are inherited from the picture replaced.
 #: "fit" reflows the height to the new aspect instead of stretching.
@@ -321,6 +325,7 @@ STALE = ["across nine tiles", "across four tiles", "a quarter of the holes",
          "are the same size"]
 STALE += ANNOTATION_STALE
 STALE += EVAL_STALE
+STALE += AUDIT_STALE
 
 
 def title_of(slide):

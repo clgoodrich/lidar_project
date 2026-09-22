@@ -4,7 +4,7 @@
 WHY A REAL PIT AND NOT A DIAGRAM
 --------------------------------
 A drawn circle would say what we think a pit looks like. This shows one, and
-picks it by measurement rather than by eye: of the 501 pits inside 9t that have
+picks it by measurement rather than by eye: of the 503 pits inside 9t that have
 both an outline and a floor, it selects the one whose floor area and outline
 area are jointly closest to the medians of the whole population. The result is
 a pit that is average in both dimensions at once, not one that is average in
@@ -146,8 +146,17 @@ def main() -> int:
     fl["a"] = fl.area
     rm["ar"] = rm.area
 
+    # The pairing rule is the one the preprocessing slide states and the one
+    # the model's rim/floor pairs were built with: each floor takes the rim it
+    # overlaps most. "within" is stricter -- it drops the two 9t floors whose
+    # digitised edge pokes outside its rim -- and using it here made this
+    # figure say 501 while the slide beside it said 503.
     pair = gpd.sjoin(fl[["a", "geometry"]], rm[["ar", "geometry"]],
-                     predicate="within", how="inner")
+                     predicate="intersects", how="inner")
+    pair["ov"] = [fl.geometry[i].intersection(rm.geometry[r]).area
+                  for i, r in zip(pair.index, pair["index_right"])]
+    pair = (pair.sort_values("ov", ascending=False)
+                .groupby(level=0).head(1).sort_index())
     tf, tr = fl["a"].median(), rm["ar"].median()
     pair["score"] = (((pair["a"] - tf) / tf).abs()
                      + ((pair["ar"] - tr) / tr).abs())

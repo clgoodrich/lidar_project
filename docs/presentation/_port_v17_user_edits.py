@@ -129,12 +129,17 @@ V17_NOTE_APPENDS = [
      "On the balanced rule: cutoff chosen to care about real pits and "
      "avoiding false alarms."),
     # the count the user wanted, from the model this slide actually shows
+    # Retargeted 2026-09-21 by the number audit. 1,239 of 1,496 and
+    # completeness 0.811 are `sweep_orient` at threshold 0.40; every other
+    # road number in the deck, including the found-and-missed slide, is
+    # `recall_relabeled20260806`. Same model, same threshold, both slides now.
     ("Second tile, 613590 – Roads",
-     "1,239 of 1,496",
+     "1,162 of 1,496",
      "In plain terms: on the roads added during the second annotation pass, "
-     "48.87 km of them, the model found 1,239 of 1,496 segments — about "
-     "83%. Completeness 0.811 is the share of road LENGTH it covered, which "
-     "is the stricter of the two."),
+     "48.87 km of them, the model found 1,162 of 1,496 segments, 0.777. "
+     "Completeness 0.759 is the share of road LENGTH it covered, which is "
+     "the stricter of the two. Same model and same threshold as the "
+     "found-and-missed slide, so the two agree."),
 ]
 
 #: Notes replaced outright rather than appended to.
