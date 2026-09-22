@@ -105,6 +105,8 @@ from _port_v17_user_edits import (  # noqa: E402
 )
 from _side_text_613590_roads import ROAD_SIDE_TEXT  # noqa: E402
 from _number_audit_fixes import AUDIT_EDITS, AUDIT_STALE  # noqa: E402
+from _american_spellings import audit as spell_audit  # noqa: E402
+from _american_spellings import normalise_deck  # noqa: E402
 from _nisar_broad_statements import (  # noqa: E402
     NISAR_ANCHOR, NISAR_EDITS, NISAR_NEW_BULLETS, NISAR_NOTE, NISAR_TITLE,
 )
@@ -742,6 +744,17 @@ def main() -> int:
     else:
         tf.text = tf.text.rstrip() + "\n\n" + PATCH_NOTE
         print("\n  slide 57 notes gain the 128 m patch and 30 m jitter")
+
+    # ---- 4. spellings ----------------------------------------------------
+    # Last, so it catches the text every step above wrote as well as v15's own.
+    # v15 keeps its spellings; it is the user's file and is never written to.
+    n_spell = normalise_deck(prs)
+    left = sorted(set(spell_audit(prs)))
+    print(f"\n  {n_spell} runs moved to American spellings")
+    if left:
+        print("  STILL BRITISH (split across runs, fix by hand):")
+        for i, b in left:
+            print(f"    slide {i}: {b}")
 
     prs.save(DST)
 
