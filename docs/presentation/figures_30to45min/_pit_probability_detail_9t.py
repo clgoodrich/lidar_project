@@ -66,7 +66,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import rasterio
-from matplotlib.lines import Line2D
 from rasterio.features import geometry_mask
 from rasterio.windows import from_bounds
 
@@ -196,18 +195,16 @@ def main() -> int:
     fw = 12.4
     fig, ax = plt.subplots(figsize=(fw, fw * WIN_H / WIN_W / 0.95))
 
-    lo, hi = np.nanpercentile(hs, (2, 98))
-    ax.imshow(hs, cmap="gray", vmin=lo, vmax=hi, extent=ext, zorder=1)
-
-    masked = np.ma.masked_where(~np.isfinite(prob) | (prob < SHOW_FLOOR), prob)
-    im = ax.imshow(masked, cmap="magma", vmin=0.0, vmax=1.0, extent=ext,
-                   alpha=0.85, zorder=2)
-
-    for g in floors.geometry:
-        parts = list(g.geoms) if g.geom_type == "MultiPolygon" else [g]
-        for q in parts:
-            xs, ys = q.exterior.xy
-            ax.plot(xs, ys, color=PITBLUE, linewidth=1.5, zorder=4)
+    # The probability layer and nothing else. An earlier version laid the ramp
+    # over a grey hillshade so terrain context survived; the terrain won, and
+    # the slide stopped being about the model's output. This is the raster the
+    # way QGIS renders it -- black at 0, white at 1, whole band, nothing
+    # masked -- which is also how the right-hand panel on the outcome slide is
+    # drawn, so the two read as the same product at two sizes.
+    ax.set_facecolor("#000000")
+    im = ax.imshow(np.ma.masked_where(~np.isfinite(prob), prob), cmap="gray",
+                   vmin=0.0, vmax=1.0, extent=ext, zorder=2,
+                   interpolation="nearest")
 
     ax.set_xlim(WIN[0], WIN[2])
     ax.set_ylim(WIN[1], WIN[3])
@@ -218,20 +215,15 @@ def main() -> int:
         s.set_color("#c9ccc6")
 
     x0, y0 = WIN[0] + 18, WIN[1] + 18
-    ax.plot([x0, x0 + 100], [y0, y0], color="white", linewidth=5, zorder=6)
-    ax.plot([x0, x0 + 100], [y0, y0], color=INK, linewidth=2.4, zorder=7)
+    ax.plot([x0, x0 + 100], [y0, y0], color="#000000", linewidth=6, zorder=6)
+    ax.plot([x0, x0 + 100], [y0, y0], color="white", linewidth=2.6, zorder=7)
     ax.text(x0 + 50, y0 + 7, "100 m", fontsize=12, fontweight="bold",
-            color=INK, ha="center", va="bottom", zorder=7,
-            bbox=dict(facecolor="white", edgecolor="none", pad=1.5,
-                      alpha=0.85))
+            color="white", ha="center", va="bottom", zorder=7)
 
     cb = fig.colorbar(im, ax=ax, fraction=0.028, pad=0.012)
     cb.set_label("pit-floor probability", fontsize=12, color=INK)
     cb.ax.tick_params(labelsize=11)
 
-    ax.legend(handles=[Line2D([], [], color=PITBLUE, linewidth=1.8,
-                              label="pit floor, drawn by hand")],
-              loc="upper right", fontsize=11, framealpha=0.92)
     # No title inside the figure. The slide carries one, and printing it twice
     # is the double-titling this deck has been stripping out everywhere else.
     # It also buys back the vertical space the map needs to fill the slide.

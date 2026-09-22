@@ -365,6 +365,37 @@ def edit_notes(slide, old, new):
     return True
 
 
+#: Ten more figures rebuilt with WELLSIGHT_BARE=1, which strips the headline,
+#: subtitle and attribution baked into the PNG. The slide already carries a
+#: title; a second one inside the image cannot be re-wrapped, cannot be read
+#: from the back of a room, and on the road-network figure the right-hand note
+#: printed straight through the title beside it.
+#: title -> figure, all placed with mode "contain" because removing the title
+#: band changes the aspect and the existing box must not stretch them.
+BARE_FIGS = {
+    "Manual Annotation — Roads":
+        "3_annotations/v6/annotation_roads_2km_lines_9t.png",
+    "Manual Annotation — Drainage":
+        "3_annotations/v6/annotation_drainage_2km_lines_9t.png",
+    "Manual Annotation — Pads":
+        "3_annotations/v6/annotation_pads_2km_lines_9t.png",
+    "Manual Annotation – Pits (Outside)":
+        "3_annotations/v6/annotation_pits_1km_rims_9t.png",
+    "Manual Annotation – Pits (Inside)":
+        "3_annotations/v6/annotation_pits_1km_floors_9t.png",
+    "Preprocessing — matching rims to floors":
+        "3_annotations/v6/pit_rim_floor_matching_9t.png",
+    "Second tile, 613590 — stuff to investigate":
+        "5_probability_surfaces/v6/pit_pad_candidates_613590.png",
+    "Second tile, 613590 – The Road Network It Drew":
+        "5_probability_surfaces/v6/roads_generated_thr0p30_613590.png",
+    "Second tile, 613590 – Generated Roads vs TIGER":
+        "5_probability_surfaces/v6/roads_vs_tiger_613590.png",
+    "Second tile, 613590 – Roads Found and Missed":
+        "5_probability_surfaces/v6/roads_found_vs_missed_thr0p50_613590.png",
+}
+
+
 def swap_figure(slide, png, mode):
     pics = [sh for sh in slide.shapes if sh.shape_type == 13]
     if len(pics) != 1:
@@ -376,6 +407,19 @@ def swap_figure(slide, png, mode):
         w, h = im.size
     if mode == "fit":
         height = Emu(int(width / (w / h)))
+    elif mode == "contain":
+        # Largest size that fits inside the old box, centred in it. Stripping
+        # a title band changes the aspect, and reusing the box unchanged would
+        # stretch the map.
+        ar = w / h
+        if width / height > ar:
+            new_w = Emu(int(height * ar))
+            left = Emu(int(left + (width - new_w) / 2))
+            width = new_w
+        else:
+            new_h = Emu(int(width / ar))
+            top = Emu(int(top + (height - new_h) / 2))
+            height = new_h
     elif abs((w / h) - (width / height)) / (w / h) > 0.02:
         raise SystemExit(f"{png.name}: aspect changed and mode is 'keep'; "
                          "switch to 'fit' or reposition deliberately")
@@ -466,6 +510,20 @@ def main() -> int:
         if "used to be printed" not in tf.text:
             tf.text = tf.text.rstrip() + "\n\n" + note
         print(f"  {tl[:34]:36s} {a} -> {b}  {png.name}")
+
+    # ---- 2a3. the ten de-titled figures ---------------------------------
+    print()
+    for tl, rel in BARE_FIGS.items():
+        hits = [s for s in slides if title_of(s).strip() == tl]
+        if len(hits) != 1:
+            raise SystemExit(f"expected one {tl!r}, found {len(hits)}")
+        png = FIGDIR / rel
+        if not png.exists():
+            raise SystemExit(f"missing: {png}  (run the builder with "
+                             "WELLSIGHT_BARE=1)")
+        a, b, wd, ht = swap_figure(hits[0], png, "contain")
+        print(f"  {tl[:40]:42s} {a} -> {b}  "
+              f"{wd/914400:.2f}x{ht/914400:.2f} in")
 
     # ---- 2b2. the block-split key on the outcome slides -----------------
     print()

@@ -50,7 +50,15 @@ from matplotlib.patches import Patch
 from rasterio.windows import from_bounds
 
 ROOT = Path(r"C:\Users\colto\Documents\GitHub\lidar_project")
+import os as _os
+
+#: WELLSIGHT_BARE=1 builds the slide versions: no headline, no subtitle, no
+#: right-hand note, written to a v6/ subdirectory so the standalone versions
+#: with their own chrome survive alongside them.
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "5_probability_surfaces"
+if BARE:
+    OUT = OUT / "v6"
 EPSG = 6346
 
 FAITHFUL = ROOT / "roads_studio" / "exports" / "faithful_613590_deployed_t030.gpkg"
@@ -129,6 +137,15 @@ def frame(ax, bb, title, subtitle, handles, note):
     # The caveat belongs where the claim is, not in a footer that gets cropped
     # off a slide. Anything that changes how the figure should be READ goes
     # above the map; plain provenance is dropped entirely.
+    # WELLSIGHT_BARE=1 drops the headline, the subtitle and the right-hand
+    # note, and writes to v6/. The slide carries all three in its own text
+    # column, where they can be re-wrapped and read from the back of a room.
+    # Baked in they could not be, and on the road-network figure the long
+    # right-hand note printed straight through the two-line title beside it.
+    fig = ax.get_figure()
+    if BARE:
+        fig.subplots_adjust(left=0.004, right=0.996, top=0.996, bottom=0.004)
+        return
     head = title
     if subtitle:
         head += "\n" + subtitle
@@ -136,7 +153,6 @@ def frame(ax, bb, title, subtitle, handles, note):
     if note:
         ax.set_title(note, fontsize=9.5, fontweight="normal", loc="right",
                      color=MUTED, pad=10)
-    fig = ax.get_figure()
     fig.subplots_adjust(left=0.02, right=0.98, top=0.90, bottom=0.020)
 
 

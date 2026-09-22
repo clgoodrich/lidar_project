@@ -69,7 +69,11 @@ D05 = ROOT / "data" / "9t" / "derived" / "05"
 #: bookkeeping and model inputs, which have no 1 m twin
 D05_1M = ROOT / "data" / "9t" / "derived" / "1m"
 ANN = ROOT / "qgis" / "annotations" / "annotations_proj.gpkg"
+import os as _os
+BARE = _os.environ.get("WELLSIGHT_BARE") == "1"
 OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "3_annotations"
+if BARE:
+    OUT = OUT / "v6"
 
 EPSG = 6346
 #: 9t training area, and its dead centre -- the frame for the all-four image.
@@ -343,15 +347,26 @@ def main() -> int:
             # Running both into one title gave "Pits — pit floors only — this
             # is what the model learns", which is three clauses and one dash
             # too many to read from the back of a room.
-            ax.set_title(title, fontsize=18, fontweight="bold", loc="left",
-                         pad=26)
-            ax.text(0, 1.008, f"{subtitle}  ·  {side_m/1000:g} km across",
-                    transform=ax.transAxes, fontsize=12, color=INK2,
-                    va="bottom")
-            fig.text(0.021, 0.014,
-                     "Red Relief Image Map · Chiba et al. 2008",
-                     fontsize=9, color=MUTED)
-            fig.subplots_adjust(left=0.02, right=0.98, top=0.905, bottom=0.045)
+            # WELLSIGHT_BARE=1 drops the headline, the subtitle and the
+            # attribution line, and writes to v6/. The slide supplies all
+            # three: its title already says which class this is, and text
+            # baked into a PNG cannot be re-wrapped, cannot be read from the
+            # back of a room, and repeats the slide title beside it.
+            if BARE:
+                fig.subplots_adjust(left=0.006, right=0.994,
+                                    top=0.994, bottom=0.006)
+            else:
+                ax.set_title(title, fontsize=18, fontweight="bold",
+                             loc="left", pad=26)
+                ax.text(0, 1.008,
+                        f"{subtitle}  ·  {side_m/1000:g} km across",
+                        transform=ax.transAxes, fontsize=12, color=INK2,
+                        va="bottom")
+                fig.text(0.021, 0.014,
+                         "Red Relief Image Map · Chiba et al. 2008",
+                         fontsize=9, color=MUTED)
+                fig.subplots_adjust(left=0.02, right=0.98,
+                                    top=0.905, bottom=0.045)
 
             wide = (f"{side_m/1000:g}km").replace(".", "p")
             name = f"annotation_{slug}_{wide}_{tag}_9t.png"

@@ -16,16 +16,17 @@ area while being an odd shape.
 Everything on this figure is measured on 9t only, per the rule that the
 annotation and morphology slides talk about 9t and nothing else.
 
-THREE PANELS, LEFT TO RIGHT
----------------------------
-    hillshade   what a person would see on a shaded relief map. Pits are hard
-                to see here, which is the point of the next panel.
-    local relief with the hillside subtracted, the dish is obvious. This is
-                the layer a reader should associate with pit detection.
+TWO PANELS
+----------
+    hillshade   the real ground, with the outline and floor drawn on it
     dimensions  the same two outlines with nothing behind them, carrying the
                 numbers: across, floor across, depth, and the areas.
 
-The first two panels prove the third is not an idealisation.
+The first panel proves the second is not an idealisation.
+
+A local-relief panel sat between these two. It was dropped: three panels of a
+single small pit is one more than the point needs, and the slide already has a
+cross-section banner under it competing for the same attention.
 
 DEPTH IS MEASURED, NOT QUOTED
 -----------------------------
@@ -181,7 +182,7 @@ def main() -> int:
 
     plt.rcParams.update({"figure.facecolor": PAPER, "savefig.facecolor": PAPER,
                          "font.family": "DejaVu Sans", "text.color": INK})
-    fig, axes = plt.subplots(1, 3, figsize=(15.2, 5.6))
+    fig, axes = plt.subplots(1, 2, figsize=(10.4, 5.6))
 
     hs = read(HS, b)
     lo, hi = np.nanpercentile(hs, (2, 98))
@@ -209,7 +210,7 @@ def main() -> int:
             s.set_color("#c9ccc6")
 
     # ---- panel 3: the same shapes, dimensioned ---------------------------
-    ax = axes[2]
+    ax = axes[1]
     ax.set_title("The same pit, measured\n9t medians in brackets", loc="left",
                  fontsize=14, fontweight="bold", color=INK, pad=8)
     draw_poly(ax, rim_g, OUTLINE, 3.0, fill=0.10)

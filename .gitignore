@@ -176,3 +176,8 @@ docs/presentation/_repair_test/
 
 # architecture-comparison training logs (regenerable, written during long runs)
 data/9t/results/arch_compare_1m/*.log
+
+# The built deck is regenerable from v15 in one command and crossed
+# GitHub's 100 MB hard limit once the de-titled figures went in (133 MB).
+# v15 is the source of truth and stays tracked; this is the build output.
+docs/presentation/WellSight_Presentation v18.pptx

@@ -90,7 +90,13 @@ ACCENT = "#1F5FA8"
 TINT = "#eaf0f8"
 
 C_TRAIN, C_VAL, C_TEST = "#1F5FA8", "#D97706", "#A31515"
-C_FLOOR = "#ccff00"
+#: Was #ccff00, an acid yellow-green, drawn beside #A31515 rims. That is a
+#: red and a green carrying different meanings, which CLAUDE.md forbids
+#: outright. Now the validated trio from the lost/found figures: rim #1F5FA8,
+#: floor #D97706, unpaired rim #A31515, worst pair dE 21.1 deutan / 22.6
+#: normal. The floor is also the only FILL against two line classes, so the
+#: three stay separable with no colour at all.
+C_FLOOR = "#D97706"
 C_RIM = "#1F5FA8"
 C_LONE = "#A31515"
 
@@ -185,8 +191,16 @@ def fig_standard_values():
 # --------------------------------------------------------------------------
 def fig_matching():
     """Which rim belongs to which floor, and how many never pair up."""
-    ins = gpd.read_file(ANN, layer="pit_inside")
-    out = gpd.read_file(ANN, layer="pit_outside")
+    # 9t only. The slide used to quote 712 floors and 723 rims, which are
+    # all-area totals; inside the tile it is 503 and 506, and the unpaired
+    # counts collapse from 126/138 to a handful because most unpaired pits
+    # live on tiles where only one of the two layers was ever drawn.
+    from shapely.geometry import box as _box
+    BB9T = _box(619500, 4593000, 624000, 4597500)
+    ins = gpd.read_file(ANN, layer="pit_inside").to_crs(6346)
+    out = gpd.read_file(ANN, layer="pit_outside").to_crs(6346)
+    ins = ins[ins.geometry.centroid.within(BB9T)].reset_index(drop=True)
+    out = out[out.geometry.centroid.within(BB9T)].reset_index(drop=True)
     ov = gpd.overlay(ins[["pit_inside_id", "geometry"]],
                      out[["pit_outside_id", "geometry"]],
                      how="intersection", keep_geom_type=True)
@@ -196,16 +210,28 @@ def fig_matching():
     lone_r = n_r - m.pit_outside_id.nunique()
     lone_f = n_f - n_m
 
-    # a window with several pits in it, so the pairing is visible
+    # A window with several pits AND at least one unpaired rim, so the point
+    # of the panel is visible. The old search stepped through every 7th rim
+    # and kept any window containing a lone one; restricted to 9t there are
+    # only a handful of lone rims, so it kept landing on an empty corner with
+    # two pits in it. Search is now centred ON the lone rims and takes
+    # whichever has the most company.
+    # Restricted to 9t the pairing is near-perfect -- 0 floors without a rim
+    # and 4 rims without one, out of 506. Insisting the window contain a lone
+    # rim therefore picked an empty corner holding two pits, which made the
+    # panel illustrate a 0.8% case and show nothing else. The window is now
+    # simply the densest cluster of rims, which is what a reader should take
+    # away, and the lone-rim callout appears only if one happens to fall
+    # inside it.
     paired = set(m.pit_outside_id)
     cent = out.geometry.centroid
     best, bx, by = None, None, None
-    for i in range(0, len(out), 7):
+    for i in range(len(out)):
         x, y = cent.iloc[i].x, cent.iloc[i].y
         n = ((cent.x - x).abs() < 110) & ((cent.y - y).abs() < 110)
-        has_lone = any(r not in paired for r in out.loc[n.values, "pit_outside_id"])
-        if has_lone and (best is None or n.sum() > best):
+        if best is None or n.sum() > best:
             best, bx, by = n.sum(), x, y
+    print(f"    densest window holds {best} rims within 110 m")
     if best is None:
         bx, by = cent.iloc[0].x, cent.iloc[0].y
     h = 120
@@ -237,8 +263,13 @@ def fig_matching():
         # six words six times and buried the picture under its own caption.
         g = lone.geometry.iloc[0]
         ax.annotate("this rim has no floor inside it",
-                    xy=(g.centroid.x, g.centroid.y), xytext=(16, 30),
-                    textcoords="offset points", fontsize=13,
+                    # Point INWARD. A fixed offset ran the label off whichever
+                    # edge the lone rim happened to sit near.
+                    xy=(g.centroid.x, g.centroid.y),
+                    xytext=(-34 if g.centroid.x > bx else 34,
+                            -30 if g.centroid.y > by else 30),
+                    textcoords="offset points",
+                    ha="right" if g.centroid.x > bx else "left", fontsize=13,
                     fontweight="bold", color=C_LONE,
                     arrowprops=dict(arrowstyle="-", color=C_LONE, lw=1.8),
                     zorder=6)
@@ -248,8 +279,8 @@ def fig_matching():
     ax.set_xticks([]); ax.set_yticks([])
     for sp in ax.spines.values():
         sp.set_color(RULE)
-    ax.set_title("a real corner of the map, 240 m across", fontsize=14,
-                 fontweight="bold", loc="left", pad=8, color=INK)
+    _chrome(ax.set_title, "a real corner of the map, 240 m across",
+            fontsize=14, fontweight="bold", loc="left", pad=8, color=INK)
     ax.legend(handles=[
         Patch(facecolor=C_FLOOR, edgecolor="#3a3a3a", label="floor"),
         Line2D([], [], color=C_RIM, lw=2.6, label="rim, paired with a floor"),
@@ -276,7 +307,8 @@ def fig_matching():
     ax2.text(4, y + 4,
              "Only a paired pit gets a wall, and only a pit\nwith a wall can "
              "be measured. The unpaired ones\nare not lost, they are just not "
-             "measurable, and\nthat is why 712 floors yield 586 walls.",
+             f"measurable, and\nthat is why {n_f:,} floors yield {n_m:,} "
+             "measurable walls.",
              fontsize=13, color=INK2, va="top", linespacing=1.6)
 
     p = OUT_A / "pit_rim_floor_matching_9t.png"
