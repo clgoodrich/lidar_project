@@ -96,6 +96,9 @@ from _annotation_slides_9t_only import (  # noqa: E402
     ANNOTATION_EDITS, ANNOTATION_STALE,
 )
 from _speaker_note_additions import NOTE_APPENDS  # noqa: E402
+from _separate_the_two_evaluations import (  # noqa: E402
+    EVAL_EDITS, EVAL_STALE,
+)
 from _nisar_broad_statements import (  # noqa: E402
     NISAR_ANCHOR, NISAR_EDITS, NISAR_NEW_BULLETS, NISAR_NOTE, NISAR_TITLE,
 )
@@ -132,6 +135,45 @@ PITDETAIL_NOTE = (
     "cut-off is for, and it is why we report a threshold rather than a "
     "picture."
 )
+
+#: The eight RRIM-beside-probability figures lost the two grey caption lines
+#: that used to sit above the panels. Baked-in caption text cannot be
+#: re-wrapped, cannot be read from the back of a room, and half of it repeated
+#: the slide title. The captions were load-bearing though -- the crop IS a best
+#: case by construction -- so the wording moves into the speaker notes here.
+#: title -> (figure, task, operating threshold, tile)
+PROB_FIGS = {
+    "Outcome - Roads":              ("road", 0.20, "9t"),
+    "Outcome - Drainage":           ("drainage", 0.50, "9t"),
+    "Outcome - Pads":               ("pad", 0.45, "9t"),
+    "Outcome – Pits":          ("pit", 0.20, "9t"),
+    "Second tile, 613590 – Pits":     ("pit", 0.20, "613590"),
+    "Second tile, 613590 – Pads":     ("pad", 0.45, "613590"),
+    "Second tile, 613590 – Roads":    ("road", 0.20, "613590"),
+    "Second tile, 613590 – Drainage": ("drainage", 0.50, "613590"),
+}
+PROB_DIR = FIGDIR / "5_probability_surfaces/v6"
+
+
+def prob_caveat(task, thr, tile):
+    seen = ("This is the tile the models trained on."
+            if tile == "9t" else
+            "The models never saw this tile. Nothing here was trained on.")
+    return (
+        "Two things to say about this figure, because they used to be printed "
+        "on it and are not any more.\n\n"
+        f"{seen}\n\n"
+        f"The window was not chosen because it looks good. For every task the "
+        f"script bins the pixels above the operating threshold — "
+        f"{thr:.2f} for {task} — and takes the densest 400 m box, with the "
+        "same rule applied to both tiles. It is still a best case. It is a "
+        "best case found by a rule rather than by taste, and that is the "
+        "honest way to show one.\n\n"
+        "The right panel is drawn the way QGIS draws it: black is 0, white is "
+        "1, nothing masked. So the near-black background is real low "
+        "probability, not missing data."
+    )
+
 
 #: The outcome slides keep their probability maps untouched and gain a small
 #: key in the left margin showing which blocks were train, validation and test.
@@ -235,6 +277,7 @@ EDITS = [
 
 EDITS += ANNOTATION_EDITS
 EDITS += NISAR_EDITS
+EDITS += EVAL_EDITS
 
 #: title -> figure. Position and box are inherited from the picture replaced.
 #: "fit" reflows the height to the new aspect instead of stretching.
@@ -271,6 +314,7 @@ STALE = ["across nine tiles", "across four tiles", "a quarter of the holes",
          "45.2%", "41.7%", "one hole in thirteen", "tens of centimetres",
          "are the same size"]
 STALE += ANNOTATION_STALE
+STALE += EVAL_STALE
 
 
 def title_of(slide):
@@ -401,6 +445,22 @@ def main() -> int:
               f"{w/ar:.2f} in; section banner moved below it")
     else:
         print(f"\n  slide 46 already has {len(pics)} pictures, left alone")
+
+    # ---- 2a2. the de-captioned probability figures ----------------------
+    print()
+    for tl, (task, thr, tile) in PROB_FIGS.items():
+        hits = [s for s in slides if title_of(s).strip() == tl]
+        if len(hits) != 1:
+            raise SystemExit(f"expected one {tl!r}, found {len(hits)}")
+        png = PROB_DIR / f"rrim_vs_prob_{task}_400m_{tile}.png"
+        if not png.exists():
+            raise SystemExit(f"missing: {png}")
+        a, b, wd, ht = swap_figure(hits[0], png, "keep")
+        tf = hits[0].notes_slide.notes_text_frame
+        note = prob_caveat(task, thr, tile)
+        if "used to be printed" not in tf.text:
+            tf.text = tf.text.rstrip() + "\n\n" + note
+        print(f"  {tl[:34]:36s} {a} -> {b}  {png.name}")
 
     # ---- 2b2. the block-split key on the outcome slides -----------------
     print()

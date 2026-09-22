@@ -234,7 +234,7 @@ def main() -> int:
         fig, axes = plt.subplots(1, 2, figsize=(13.2, 7.2))
         axes[0].imshow(rr, extent=ext, origin="upper")
         axes[0].set_title("RRIM \u2014 the terrain", fontsize=15,
-                          fontweight="bold", loc="left", pad=24)
+                          fontweight="bold", loc="left", pad=10)
         # QGIS draws the WHOLE band, 0 black to 1 white -- near-zero
         # background comes out black and the confident cells glow white. The
         # old code masked everything under 0.05, which was right for a blue
@@ -246,7 +246,7 @@ def main() -> int:
         im = axes[1].imshow(shown, extent=ext, origin="upper", cmap=CM,
                             vmin=0.0, vmax=1.0, interpolation="nearest")
         axes[1].set_title(f"{task} probability \u2014 what the model made of it",
-                          fontsize=15, fontweight="bold", loc="left", pad=24)
+                          fontsize=15, fontweight="bold", loc="left", pad=10)
         for ax in axes:
             ax.set_xlim(ext[0], ext[1]); ax.set_ylim(ext[2], ext[3])
             ax.set_aspect("equal")
@@ -259,24 +259,21 @@ def main() -> int:
         cb.set_label("probability", fontsize=10, color=INK2)
         cb.outline.set_edgecolor(RULE)
 
-        trained = "trained here" if tile == "9t" else "never trained here"
-        # This caveat is load-bearing: the crop is a best case by construction,
-        # and a reader who does not know that will over-read the figure. It goes
-        # at the top, where it cannot be cropped off a slide.
-        # These sit on their own line under each bold title. As right-aligned
-        # titles they overprinted the titles themselves on every figure.
-        axes[1].text(0, 1.006,
-                     f"window chosen by density of pixels above {thr:.2f}, "
-                     f"not by eye  \u00b7  black is 0, white is 1, as QGIS draws it",
-                     transform=axes[1].transAxes, fontsize=10, color=MUTED,
-                     va="bottom", ha="left")
-        axes[0].text(0, 1.006, f"{tile}  \u00b7  {trained}",
-                     transform=axes[0].transAxes, fontsize=10, color=MUTED,
-                     va="bottom", ha="left")
+        # The two grey caption lines that used to sit above the panels -- the
+        # tile and "never trained here" on the left, the window-selection and
+        # black-is-zero note on the right -- are gone. They are still
+        # load-bearing, because the crop IS a best case by construction and a
+        # reader who does not know that will over-read the figure; they now
+        # live in the speaker notes, where they can be said rather than
+        # squinted at. Baked-in caption text cannot be re-wrapped, cannot be
+        # read at the back of a room, and repeats what the slide title
+        # already carries.
         fig.text(0.012, 0.014,
                  "Red Relief Image Map \u00b7 Chiba et al. 2008",
                  fontsize=9, color=MUTED)
-        fig.subplots_adjust(left=0.012, right=0.955, top=0.885, bottom=0.048,
+        # top was 0.885 to clear the captions; without them the panels take
+        # the space back rather than leaving a white band above the titles.
+        fig.subplots_adjust(left=0.012, right=0.955, top=0.925, bottom=0.048,
                             wspace=0.06)
 
         name = f"rrim_vs_prob_{task}_{SIDE_M:.0f}m_{tile}.png"
