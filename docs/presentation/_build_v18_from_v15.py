@@ -102,6 +102,20 @@ SRC = HERE / "WellSight_Presentation v15.pptx"
 DST = HERE / "WellSight_Presentation v18.pptx"
 FIGDIR = HERE / "figures_30to45min"
 PLANVIEW = FIGDIR / "v6/median_pit_plan_view_9t_05.png"
+SPLITKEY = FIGDIR / "v6/block_split_key_9t.png"
+
+#: The outcome slides keep their probability maps untouched and gain a small
+#: key in the left margin showing which blocks were train, validation and test.
+#: Drawn on the same extent, so a reader can look straight across.
+KEY_SLIDES = ["Outcome - Roads", "Outcome - Drainage", "Outcome - Pads",
+              "Outcome – Pits"]
+KEY_NOTE = (
+    "The small key on the left says which blocks were which. Blue is train, "
+    "the model learned from those. Orange hatched is validation, used to "
+    "decide when to stop and where to set the cut-off. Red crossed is test, "
+    "which nothing touched until the end. It is drawn on the same extent as "
+    "the map, so a square here is the same square there."
+)
 
 BULLET = "•  "
 EMDASH = "—"
@@ -357,6 +371,29 @@ def main() -> int:
               f"{w/ar:.2f} in; section banner moved below it")
     else:
         print(f"\n  slide 46 already has {len(pics)} pictures, left alone")
+
+    # ---- 2b2. the block-split key on the outcome slides -----------------
+    print()
+    for tl in KEY_SLIDES:
+        hits = [s for s in slides if title_of(s).strip() == tl]
+        if len(hits) != 1:
+            raise SystemExit(f"expected one {tl!r}, found {len(hits)}")
+        sl = hits[0]
+        pics = [sh for sh in sl.shapes if sh.shape_type == 13]
+        if len(pics) != 1:
+            print(f"  {tl}: {len(pics)} pictures already, key not added")
+            continue
+        with Image.open(SPLITKEY) as im:
+            ar = im.size[0] / im.size[1]
+        kw = 1.58
+        sl.shapes.add_picture(str(SPLITKEY), Emu(int(0.07 * 914400)),
+                              Emu(int(1.78 * 914400)),
+                              width=Emu(int(kw * 914400)),
+                              height=Emu(int(kw / ar * 914400)))
+        tf = sl.notes_slide.notes_text_frame
+        if "small key on the left" not in tf.text:
+            tf.text = tf.text.rstrip() + "\n\n" + KEY_NOTE
+        print(f"  {tl}: key added at {kw:.2f} x {kw/ar:.2f} in")
 
     # ---- 2c. speaker-note additions -------------------------------------
     print()
