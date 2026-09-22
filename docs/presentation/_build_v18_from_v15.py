@@ -99,6 +99,10 @@ from _speaker_note_additions import NOTE_APPENDS  # noqa: E402
 from _separate_the_two_evaluations import (  # noqa: E402
     EVAL_EDITS, EVAL_STALE,
 )
+from _port_v17_user_edits import (  # noqa: E402
+    V17_DELETED_SLIDES, V17_EDITS, V17_NOTE_APPENDS, V17_NOTE_REPLACE,
+    V17_RETIRED_NOTES,
+)
 from _nisar_broad_statements import (  # noqa: E402
     NISAR_ANCHOR, NISAR_EDITS, NISAR_NEW_BULLETS, NISAR_NOTE, NISAR_TITLE,
 )
@@ -278,6 +282,7 @@ EDITS = [
 EDITS += ANNOTATION_EDITS
 EDITS += NISAR_EDITS
 EDITS += EVAL_EDITS
+EDITS += V17_EDITS
 
 #: title -> figure. Position and box are inherited from the picture replaced.
 #: "fit" reflows the height to the new aspect instead of stretching.
@@ -579,6 +584,9 @@ def main() -> int:
     # ---- 2c. speaker-note additions -------------------------------------
     print()
     for tl, marker, text in NOTE_APPENDS:
+        if tl in V17_RETIRED_NOTES:
+            print(f"  skipped, slide deleted in v17: {tl}")
+            continue
         hits = [s for s in slides if title_of(s).strip() == tl]
         if len(hits) != 1:
             raise SystemExit(f"expected one {tl!r}, found {len(hits)}")
@@ -588,6 +596,42 @@ def main() -> int:
             continue
         tf.text = tf.text.rstrip() + "\n\n" + text
         print(f"  note +{len(text):4d} chars: {tl}")
+
+    # ---- 2d. the user's own v17 edits ------------------------------------
+    print()
+    for tl, marker, text in V17_NOTE_APPENDS:
+        hits = [s for s in slides if title_of(s).strip() == tl]
+        if len(hits) != 1:
+            raise SystemExit(f"expected one {tl!r}, found {len(hits)}")
+        tf = hits[0].notes_slide.notes_text_frame
+        if marker in tf.text:
+            print(f"  v17 note already there: {tl[:44]}")
+            continue
+        tf.text = tf.text.rstrip() + "\n\n" + text
+        print(f"  v17 note +{len(text):4d}: {tl[:44]}")
+
+    for tl, text in V17_NOTE_REPLACE.items():
+        hits = [s for s in slides if title_of(s).strip() == tl]
+        if len(hits) != 1:
+            raise SystemExit(f"expected one {tl!r}, found {len(hits)}")
+        hits[0].notes_slide.notes_text_frame.text = text
+        print(f"  v17 note REPLACED: {tl}")
+
+    # Deletions go last, so nothing above has to care that a slide is gone.
+    lst = prs.slides._sldIdLst
+    for tl in V17_DELETED_SLIDES:
+        doomed = [s for s in slides if title_of(s).strip() == tl]
+        if len(doomed) != 1:
+            raise SystemExit(f"expected one {tl!r} to delete, "
+                             f"found {len(doomed)}")
+        for sid in list(lst):
+            if prs.part.rels[sid.get(RID)].target_part is doomed[0].part:
+                lst.remove(sid)
+                prs.part.drop_rel(sid.get(RID))
+                break
+        print(f"  v17 slide DELETED: {tl}")
+    n_deleted = len(V17_DELETED_SLIDES)
+    slides = list(prs.slides)
 
     # ---- 3. slide 57 -----------------------------------------------------
     s57 = [s for s in slides if title_of(s).strip() == SLIDE_57_TITLE]
@@ -604,7 +648,7 @@ def main() -> int:
 
     # ---- verify ----------------------------------------------------------
     out = list(Presentation(DST).slides)
-    expect = n_before + (0 if had_detail else 1)
+    expect = n_before + (0 if had_detail else 1) - n_deleted
     if len(out) != expect:
         raise SystemExit(f"slide count {n_before} -> {len(out)}, expected "
                          f"{expect}; not intended")
