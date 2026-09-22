@@ -32,8 +32,14 @@ COLOUR
 ------
 The difference panel is a diverging blue-to-orange ramp built from the repo's
 validated pair, #1F5FA8 and #D97706 (worst pair dE 21.1 deutan, 22.6 normal).
-No red/green pair appears anywhere, and the void tint on the left panel is the
+No red/green pair appears anywhere, and the void class on the left panel is the
 same orange, which is also labelled.
+
+The left panel carries the only categorical split in the figure: measured
+ground against no ground. It is encoded twice, because colour alone was not
+enough at 52% coverage -- grey against orange, AND full contrast against
+compressed contrast. The second cue means the split still reads in greyscale,
+which is the worst case for any colour-vision deficiency.
 
 Run:
     python docs/presentation/figures_30to45min/_dem_with_and_without_deleted_returns_9t.py
@@ -130,21 +136,40 @@ def main() -> int:
     fig, axes = plt.subplots(1, 3, figsize=(16.4, 6.3))
     fig.patch.set_facecolor(PAPER)
 
-    axes[0].imshow(hillshade(old), cmap="gray", vmin=lo, vmax=hi)
-    tint = np.zeros(old.shape + (4,), dtype="float32")
-    # light enough to read the terrain through: the point is WHERE the
-    # guesses are, not to hide the surface under them
-    tint[novoid] = mcolors.to_rgba(ORANGE, alpha=0.30)
-    axes[0].imshow(tint)
+    # A flat orange wash at alpha 0.30 over a grey hillshade did not read:
+    # the void covers half the window, so the whole panel went warm and the
+    # boundary between "measured" and "guessed" was invisible. Two changes.
+    #
+    #  1  hue is categorical, not a wash. Measured cells keep the plain grey
+    #     hillshade. Void cells are rendered by multiplying the same shading
+    #     through a normalised orange, which keeps the terrain readable but
+    #     puts the two classes in different colour families.
+    #  2  void cells also get their contrast compressed. That is a SECOND
+    #     encoding, so the split survives without colour -- and it is honest,
+    #     because an interpolated surface really does carry less detail than a
+    #     measured one.
+    hs = hillshade(old)
+    hn = np.clip((hs - lo) / max(hi - lo, 1e-9), 0.0, 1.0)
+    rgb = np.repeat(hn[..., None], 3, axis=2)
+    oc = np.asarray(mcolors.to_rgb(ORANGE), dtype="float32")
+    oc = oc / oc.max()                       # normalise so it multiplies clean
+    flat = 0.58 + (hn - 0.5) * 0.42          # compressed, slightly lifted
+    warm = flat[..., None] * oc[None, None, :]
+    rgb[novoid] = (0.85 * warm + 0.15 * np.repeat(flat[..., None], 3, axis=2)
+                   )[novoid]
+    axes[0].imshow(np.clip(rgb, 0, 1))
     axes[0].set_title("Vendor ground only\nthe surface as delivered",
                       loc="left", fontsize=15, fontweight="bold",
                       color=INK, pad=9)
     axes[0].set_xlabel(f"{novoid.mean()*100:.0f}% of this window had no ground "
                        "return at all", fontsize=12.5, color=ORANGE,
                        fontweight="bold")
-    axes[0].legend(handles=[Patch(facecolor=ORANGE, alpha=0.30,
-                                  label="no ground measured — interpolated")],
-                   loc="upper right", fontsize=10.5, framealpha=0.92)
+    axes[0].legend(handles=[
+        Patch(facecolor=ORANGE, edgecolor="none",
+              label="no ground measured — interpolated"),
+        Patch(facecolor="#9a9a9a", edgecolor="none",
+              label="measured ground")],
+        loc="upper right", fontsize=10.5, framealpha=0.94)
 
     axes[1].imshow(hillshade(new), cmap="gray", vmin=lo, vmax=hi)
     axes[1].set_title("Vendor ground plus the deleted returns\n"
