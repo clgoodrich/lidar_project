@@ -52,7 +52,9 @@ levelled pad where the rig stood, and the access track cut in to reach it.
 
 Those are earthworks. In forest, on the Appalachian Plateau, earthworks
 persist. They fill with leaf litter and silt and become shallower, which is
-exactly why the measured shape is a dish 0.7 m deep rather than a hole.
+exactly why the measured shape is a dish about half a metre deep rather
+than a hole. Measured over the 503 paired pits in 9t: median depth 0.54 m,
+15.3 m across the rim, 5.8 m across the floor.
 
 **Q. Why 1985? That date looks arbitrary.**
 
@@ -85,24 +87,26 @@ It is a fair criticism that the training set mixes eras without saying so.
 
 ## The lidar itself
 
-**Q. Four points per square metre. How do you expect to resolve a 70-centimetre
-depression with that?**
+**Q. Four points per square metre. How do you expect to resolve a
+half-metre depression with that?**
 
 Density is not the limit here — vertical accuracy is, and there is room.
 
-At ~4 points per square metre, a pit 13 m across has roughly five hundred
-ground measurements inside it. The survey's vertical accuracy requirement is
-10 cm RMSE. The feature is 70 cm deep.
+The delivered cloud averages about 4 points per square metre, but what matters
+is ground returns, and those measure 2.7 per square metre across 9t. A pit
+15.3 m across is 184 m², so roughly five hundred ground measurements land
+inside it. The survey's vertical accuracy requirement is 10 cm RMSE. The
+feature is 54 cm deep.
 
-So the signal is about seven times the noise floor, measured with hundreds of
-points. That is a comfortable margin — the difficulty is separating it from
-other 70 cm dishes, not detecting it.
+So the signal is about five times the noise floor, measured with hundreds of
+points. That is a workable margin — the difficulty is separating it from other
+half-metre dishes, not detecting it.
 
 **Q. The laser can't see through leaves. How much of the ground are you
 actually measuring?**
 
 Not all of it, and the deck says so. Even after recovering the discarded
-returns, 8.2% of the training area has no ground measurement at all. Those are
+returns, 8.2% of the ground the laser reached has no ground measurement at all. Those are
 under canopy thick enough that no pulse reached dirt.
 
 Surveys are flown leaf-off for this reason. It helps; it does not solve it.
@@ -117,6 +121,23 @@ And the returns we added are not junk. Their measured accuracy was compared
 against the returns the vendor kept, and both clear the published
 specification. The vendor discarded good data.
 
+**Q. You spend a third of the talk proving the vendor threw away good ground,
+and then every result you report is built on the vendor's ground. Which is it?**
+
+Both, and say so before anyone catches it. The recovery work is a finding about
+the delivery and a measured opportunity. It is not in the detection pipeline.
+The derivative builder keeps class 2 only, and the training DEM is identical to
+the vendor-only DEM cell for cell.
+
+There is a run with the recovered ground in it — it scores 0.915 against the
+vendor-ground run's 0.928 — and it is not the number in this deck. Quoting the
+reprocessed result while the pipeline uses the vendor's would be the dishonest
+version of this answer.
+
+So: the section says what the delivery cost, and the results say what the
+method achieves on the delivery as it stands. Putting the two together is the
+next piece of work, not a claim being made today.
+
 **Q. Discarded why?**
 
 Every return past 18 degrees of scan angle was deleted before delivery. Not
@@ -129,9 +150,16 @@ block.
 
 **Q. What did that actually cost you?**
 
-13.8% of the training area had no ground measurement under it. Putting the
-discarded returns back brings that to 8.2% — 2.9 million cells filled, about a
-quarter of the holes.
+13.8% of the ground the laser reached had no ground measurement under it.
+Putting the discarded returns back brings that to 8.2% — 2.9 million of
+7.1 million cells filled, two holes in five.
+
+Say "the ground the laser reached" and not "the training area", because the
+denominator matters: 51,470,048 cells caught a return of some kind, and
+7,098,612 of those caught no ground return. Against all 81 million cells in the
+9t box at 0.5 m it would be 8.8%, and the missing 29.5 million were never
+sampled at all — ground returns sit 0.61 m apart and the grid asks every 0.5 m,
+which is our choice of cell size, not the vendor's doing.
 
 On a single cross-section it is starker: 32% of one line across the ground had
 nothing beneath it, down to 2% with the returns restored.
@@ -154,10 +182,19 @@ On the shape layers they are real measurements that disagree with each other.
 The ground surface has **no empty cells at either resolution**, so those cannot
 be missing data. They run at 78°, the bearing of the scanner's own lines.
 
-Their amplitude is tens of centimetres against a 70 cm target, so they are a
-genuine risk. The mitigation is that a pit is a closed, roughly circular dish
-and a stripe is a long straight line. The model sees shape over a patch, not
-one cell at a time.
+Their amplitude is under a centimetre, measured two ways: 0.91 cm across the
+nine rows drawn by hand, 0.70 cm on the cross-strike profile. Against a 54 cm
+pit that is seventy times shallower, so depth is not where the risk lives.
+
+What they share with a pit is spacing. A crest every 3.35 m is the width of the
+rims we look for, and every layer the model reads — local relief, openness,
+hillshade — measures shape rather than height, so a ripple this shallow still
+prints on them. The mitigation is geometry: a pit is a closed, roughly circular
+dish and a stripe is a long straight line, and the model sees shape over a
+128 m patch rather than one cell at a time.
+
+If an earlier version of this answer said "tens of centimetres", that was wrong
+by a factor of about thirty and is corrected here.
 
 **Q. "Mitigation" is doing a lot of work there. Have you measured that the
 detections are not artefact-driven?**
@@ -190,7 +227,10 @@ that person's drawings. What is precision actually measuring?**
 
 Agreement with one annotator. Not correctness.
 
-Precision runs 0.59 to 0.69 across the three tasks. That is the rate at which
+Precision runs 0.59 to 0.69 on the two tasks that report it — 0.587 for pads
+and 0.633 for pits under the recall-weighted rule, 0.686 for pits under the
+balanced one. Roads report correctness instead, 0.828 on the second tile. That
+is the rate at which
 the model agrees with one person's judgement about what counts as a pit, on
 ground that person had already looked at.
 
@@ -202,8 +242,11 @@ not been done. It is on the next-steps slide for that reason.
 Of pits that were drawn. If there are pits on that tile nobody noticed, they
 are not in the denominator, and the model is not penalised for missing them.
 
-So 0.928 means: of the 712 features a person identified, the model found 92.8%.
-It does not mean 92.8% of the wells that are there.
+So 0.928 means: of the 503 pit floors drawn inside 9t, five-fold
+cross-validation matched 467, and every one of those was scored by a model that
+had never seen it. It does not mean 92.8% of the wells that are there. (712 is
+the count of floors drawn across every area; 503 is the 9t subset the models
+were scored on.)
 
 **Q. So you have never confirmed a single well in the field.**
 
@@ -276,16 +319,23 @@ frozen. Recall drops 0.017.
 
 The tile is 4.5 km square, so 20.25 km². 0.21% of that is about 42,500 m².
 
-Combining recall and precision: to recover roughly 660 real pits the model
-points at about 1,040 places, of which around 380 are wrong. So a field crew
-checks a thousand spots to find six hundred and sixty wells.
+Know which run that figure comes from before you quote it beside a recall. It
+is the threshold sweep at 0.20, which draws 1,041 polygons covering 4.33 ha and
+recovers 126 of the 127 pits in the held-out blocks. The cross-validation is a
+different measurement on a different denominator.
+
+Take the cross-validation for the field arithmetic, because it covers the whole
+tile: to recover 467 real pits the model points at 738 places, so 271 are
+wrong. A crew checks about seven hundred spots to find just under five hundred
+pits.
 
 That is a workable ratio. It is not "the computer found the wells".
 
 **Q. And the pad model?**
 
-Much worse on burden. Recall 0.912 and precision 0.587, flagging 11.6% of the
-tile — about 2.3 km² to review.
+Much worse on burden. Recall 0.912 and precision 0.587, and the threshold sweep
+flags 9.8% of the tile — 197.95 ha, about 2.0 km² to review — at the same
+recall.
 
 Its finding rate is fine. The amount of ground it asks someone to walk is the
 problem, and the deck says so rather than reporting only the recall.
@@ -317,6 +367,43 @@ frozen. That is a real result and a narrow one.
 A tile from a different acquisition is the actual generalisation test, and it
 has not been run.
 
+**Q. Road recall on the first tile is 0.982 and on the second it is 0.759.
+That is not a small drop.**
+
+They are not the same measurement, and the second one is deliberately the hard
+half. On the second tile the truth splits in two: 138.23 km is a previous
+model's output that a human vetted, and 48.87 km was drawn fresh by hand. Every
+model scores 0.96 or better on the vetted half, because it is scoring against
+something descended from a model. It ranks nothing, so only the hand-drawn half
+is reported: 1,162 of 1,496 chunks, 0.777 by chunk and 0.759 by length, at
+threshold 0.50.
+
+Against the whole 187.1 km of truth on that tile the same model reads 0.915.
+The deck quotes the lower number on purpose.
+
+**Q. Your map of the second tile shows 42 pit candidates, but you also say the
+model found 139 of 153 pits there. Those cannot both be true.**
+
+They are two different models and the slide now says so. The 42 pit and 161 pad
+candidates are the earlier, pre-U-Net detector's output from June, and that is
+the layer the map draws. The 139 of 153 is the U-Net transfer, five folds with
+thresholds frozen from the first tile, which predicts between 363 and 1,162
+polygons per fold.
+
+The map has not been redrawn from the U-Net. That is a presentation gap, not a
+disagreement about a result.
+
+**Q. You report no precision at all on the second tile. Convenient.**
+
+It is not computable there and the reason is structural. Only part of that tile
+was ever annotated: the drawn extent covers 70.3% of it, only a third of its
+blocks hold a drawn pit, and the largest single unswept region is 63% of the
+tile. An unmatched prediction inside unswept ground may be a false positive or
+a pit nobody drew, and nothing in the data separates the two.
+
+Reporting a precision figure there would be a number with no meaning attached.
+Finishing the annotation is on the next-steps slide for exactly this reason.
+
 **Q. If the artefacts are specific to one flight block, does your method only
 work on that block?**
 
@@ -333,7 +420,7 @@ But that is an expectation, not a result. The model has not been run there.
 **Q. Pennsylvania forests are full of relict charcoal hearths — flat circular
 platforms 10 to 15 metres across, cut for the charcoal iron industry, and
 mapped in their tens of thousands elsewhere in the state with exactly this kind
-of lidar. Your pit rims average 16 metres across. How do you tell them apart?**
+of lidar. Your pit rims average 15 metres across. How do you tell them apart?**
 
 This is the sharpest question in the set, and the honest answer is that it has
 not been addressed. Charcoal hearths appear nowhere in the annotations, the
@@ -368,15 +455,22 @@ Several things, and only some are covered:
 - **Sinkholes** are the one thing you can dismiss cleanly: this is Appalachian
   Plateau sandstone and shale, not carbonate karst.
 
-**Q. Your annotation quality control found that half the flagged pits were
-genuine errors. Doesn't that mean the training data is roughly 5% wrong?**
+**Q. How clean is the training data? Has anybody checked the labels?**
 
-Something like that, yes. 90 of 856 measured pits were flagged as unusual, the
-top 30 were reviewed, and about half of those were real mistakes — mis-clicks
-and wrong spots.
+Not the labels these models were trained on, and do not claim otherwise.
 
-That is why the check was run and reported rather than left out. It does not
-make the labels clean; it makes the error rate known.
+There was an annotation quality-control pass — 856 measured pits, 90 flagged as
+unusual, the top 30 reviewed, about half of those genuine mis-clicks. It was
+pulled from the deck on purpose. It ran in April 2026 against a different
+annotation set of 861 pits, over tiles 9t/mk5/mk/mkf, and the annotations were
+rebuilt from 527 to 712 features on 4 September with the split reassigned. So
+it predates everything in this deck and describes labels no model here saw.
+
+If the question comes up: say a QC pass was run on an earlier annotation set
+and found an error rate of roughly that order, that it has not been repeated on
+the current set, and that a second annotator on a subset is the item on the
+next-steps slide that would actually settle it. Do not quote 5% as a property
+of the training data.
 
 ---
 
@@ -403,9 +497,15 @@ ground.
 
 **Q. If you had to defend one number, which is it?**
 
-Pits: recall 0.928 while flagging 0.21% of the tile, and 0.911 on a tile the
-model had never seen with nothing retuned.
+Pits: 0.911 on a tile the model had never seen, with the thresholds frozen from
+the first tile and nothing retuned, against 0.928 at home.
 
-The second number is the one that matters. Detection rates are easy to inflate
-by flagging everything. Finding nearly all of the features while pointing at a
-fifth of one percent of the map is the result.
+If you want the burden figure beside it, quote it from its own run rather than
+bolting it onto the cross-validation: the threshold sweep at 0.20 finds 126 of
+the 127 pits in the held-out blocks while drawing 1,041 polygons over 4.33 ha,
+0.21% of the tile.
+
+The transfer number is the one that matters. Detection rates are easy to
+inflate by flagging everything, and easy to inflate again by tuning on the
+ground you report. Finding nearly all of the features on a tile the model had
+never seen, with nothing retuned, is the result.

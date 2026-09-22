@@ -5,6 +5,43 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-22 -- the anticipated-questions document brought onto the audited numbers
+
+`docs/presentation/anticipated_questions_and_answers.md` was written 2026-09-21
+11:56, before the two count audits, and carried eight claims the deck no longer
+makes. Corrected in the same pass and re-rendered to PDF (10 pages).
+
+| answer | was | is |
+|---|---|---|
+| corn rows vs pits | "amplitude is tens of centimetres against a 70 cm target" | under a centimetre against 54 cm, seventy times shallower. The risk is the 3.35 m SPACING, not the depth. This was the doc's worst error and it was arguing the wrong case |
+| pit morphology | dish 0.7 m deep, 13 m across | 0.54 m median, 15.3 m rim, 5.8 m floor |
+| point budget | "4 pts/m2, a 13 m pit has 500 measurements, signal 7x the noise" | GROUND returns are 2.7/m2; a 15.3 m pit is 184 m2, so still ~500, but 54 cm against 10 cm RMSE is 5x not 7x |
+| void | "13.8% of the training area", "about a quarter of the holes" | of the ground the laser reached; two in five. Answer now spells out both denominators, because the question invites it |
+| recall denominator | "of the 712 features a person identified" | 467 of the 503 drawn inside 9t; 712 is every area |
+| pad burden | 11.6%, 2.3 km2 | 9.8%, 197.95 ha, 2.0 km2, same recall |
+| field arithmetic | 660 real / 1,040 places / 380 wrong | that blended the CV5 recall with the threshold sweep's polygon count. Now 467 / 738 / 271 from the CV5, with 0.21% and 1,041 polygons attributed to the sweep where they belong |
+| annotation QC | "90 of 856, so the training data is roughly 5% wrong" | that pass ran April 2026 on a different 861-pit set over 9t/mk5/mk/mkf, and the annotations were rebuilt 527 -> 712 on 2026-09-04. It was pulled from the deck for exactly this reason. The answer now says not to quote 5% as a property of these labels |
+
+**Four questions added**, all of them things the corrected slides now invite:
+
+- Why every result uses the vendor's ground while a third of the talk argues
+  the vendor threw good ground away. The SMRF-ground run exists and scores
+  0.915 against 0.928; quoting it while the pipeline uses vendor ground would
+  be the dishonest version.
+- Why road recall is 0.982 on the first tile and 0.759 on the second (two
+  different measurements; the second is deliberately the hand-drawn half, and
+  against all 187.1 km the same model reads 0.915).
+- Why the second tile's map shows 42 candidates while the text says 139 of 153
+  (two models; the map is the June pre-U-Net layer and has not been redrawn).
+- Why there is no precision on the second tile (drawn extent 70.3%, a third of
+  blocks hold a pit, largest unswept region 63%).
+
+Full paths:
+    docs/presentation/anticipated_questions_and_answers.md
+    docs/presentation/anticipated_questions_and_answers.pdf
+
+---
+
 ## 2026-09-21 -- every number in the deck checked against its source
 
 Second audit, wider than the count audit earlier today: every figure, rate and
