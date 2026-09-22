@@ -63,8 +63,19 @@ def facts():
     blk = d[d["block"].str.contains("Venango 2020", na=False)]
     with_cut = blk[blk["cut"].notna()]
     j = json.loads(JSN.read_text(encoding="utf-8"))
+    # The nine squares of 9t, taken from the summary JSON's own tile list so
+    # the figure cannot drift from the rasters the rest of the section uses.
+    # points_9t comes out at 84,684,423 against 84,684,419 counted straight
+    # from the LAZ files, a difference of four points in eighty-five million.
+    nine = [str(t) for t in j["tiles"]]
+    sub = d[d["tile"].astype(str).str.contains("|".join(nine), na=False)]
+    if len(sub) != len(nine):
+        raise SystemExit(f"expected {len(nine)} 9t squares in the CSV, "
+                         f"matched {len(sub)}")
     return dict(squares=len(blk), cut_squares=len(with_cut),
                 lost=int(blk["lost"].sum()),
+                lost_9t=int(sub["lost"].sum()),
+                points_9t=int(sub["points"].sum()),
                 cut_deg=float(with_cut["cut"].median()) if len(with_cut) else CUT_DEG,
                 void_before=j["void_v"], void_after=j["void_b"],
                 closed=j["closed"], rec_pts=j["rec_pts"])
@@ -130,7 +141,11 @@ def scan_diagram(ax, cut_deg, title="what the survey did"):
                 fontweight="bold", color=GONE, ha="center", va="top")
 
 
-def block(ax, x, y, w, h, n, label, colour=INK, note=None):
+def block(ax, x, y, w, h, n, label, colour=INK, note=None, note2=None):
+    """note sits to the RIGHT of the big number, so it must stay short or it
+    collides with it. note2 runs full width under the label and is the place
+    for anything that needs a sentence -- such as naming the scope, which is
+    the whole reason two numbers in this section looked like a typo."""
     ax.add_patch(FancyBboxPatch((x, y - h), w, h,
                                 boxstyle="round,pad=0.0,rounding_size=1.4",
                                 facecolor="#ffffff", edgecolor=RULE,
@@ -142,6 +157,9 @@ def block(ax, x, y, w, h, n, label, colour=INK, note=None):
     if note:
         ax.text(x + w - 3, y - h * 0.40, note, fontsize=12, color=MUTED,
                 va="center", ha="right", zorder=3)
+    if note2:
+        ax.text(x + 3, y - h * 0.93, note2, fontsize=11.5, color=MUTED,
+                va="center", ha="left", zorder=3)
 
 
 def main() -> int:
@@ -182,23 +200,36 @@ def main() -> int:
     ax.set_ylim(0, 100)
     ax.axis("off")
 
-    # Card 1 is the only BLOCK-WIDE number on the slide; cards 2 and 3 are 9t
-    # alone. Without the per-square rate the audience cannot see that 191
-    # million over 165 squares and 113.5 million over ten squares describe the
-    # same survey, and they conclude one of the two is wrong.
-    per_sq = f["lost"] / max(f["cut_squares"], 1) / 1e6
-    block(ax, 0, 98, 100, 22.5, f"{f['lost']/1e6:,.0f} million",
-          "returns that hit the ground and were not called ground",
-          GONE, note=f"across the whole flight block: {f['cut_squares']} of "
-                     f"{f['squares']} map squares, all cut at exactly "
-                     f"{f['cut_deg']:.0f}°  —  {per_sq:.2f} M per square")
+    # Card 1 USED to be the block-wide 191 million while cards 2 and 3 were 9t.
+    # Two things changed at once between this slide and the one before it --
+    # the quantity (all points vs discarded ground returns) and the area (ten
+    # squares vs 165) -- so 191 M read as larger than the 113.5 M it supposedly
+    # came out of, and the section looked wrong.
+    #
+    # The headline is now 9t, matching every other Data QA slide, and the block
+    # total is demoted to context. The share is what ties the two together: it
+    # holds at 11.8% in 9t and 10.5% across the block, so roughly one delivered
+    # point in nine is a ground return that was thrown away.
+    lost9 = f["lost_9t"]
+    pts9 = f["points_9t"]
+    block(ax, 0, 98, 100, 22.5, f"{lost9/1e6:,.1f} million",
+          "returns in 9t that hit the ground and were not called ground",
+          GONE,
+          note=f"one delivered point in {pts9/lost9:.0f}, "
+               f"{lost9/pts9*100:.0f}% of this tile",
+          note2=f"THIS SLIDE IS 9t ONLY. The whole flight block lost "
+                f"{f['lost']/1e6:,.0f} million across {f['cut_squares']} of "
+                f"its {f['squares']} map squares, every one cut at exactly "
+                f"{f['cut_deg']:.0f}°.")
     # "of our training area" invited the reading "of every cell in 9t", which
     # would be 45%. The denominator is the cells a return actually landed in --
     # 51.5 M of the 81 M cells in the tile. The other 29.5 M were never
     # sampled at 0.5 m at all, which is a grid-spacing matter, not a cut.
     block(ax, 0, 72, 100, 22.5, f"{f['void_before']:.1f}%",
           "of the ground the laser reached has no ground measurement on it",
-          GONE, note="9t only, of the 51.5 M cells a return landed in")
+          GONE, note="9t only",
+          note2="Of the 51.5 M cells a return landed in, not of all 81 M cells "
+                "in the tile. The rest were never sampled at 0.5 m.")
     block(ax, 0, 46, 100, 22.5, f"{f['void_after']:.1f}%",
           "after we classify the ground ourselves, keeping every angle", FOUND,
           note=f"{f['closed']/1e6:.1f} M of those 7.1 M holes filled in "
