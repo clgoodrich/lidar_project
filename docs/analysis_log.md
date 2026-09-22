@@ -5,6 +5,43 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — corn rows are not the vendor cut, and 0.5 m is finer than the data
+
+**1. Does the 18 deg cut explain the corn rows?** Sampled
+`clipped_final_count_9t_0p5m.tif` at the rows. The RRIM window used on the
+slides (623822, 4594949) has **0.00%** of cells carrying a clipped return. The
+nine rows digitised in `data/cornrows.gpkg`, 396 m away, have **24.3%** — six
+times the 3.75% tile average. So "the cut is not where the rows are" is NOT a
+claim that survives; it holds at the slide window only.
+
+The claim that does hold is the direct one:
+`docs/presentation/figures_30to45min/3_rrim/rrim_vendor_vs_unclipped_9t.png`
+builds the RRIM twice over the same ground, with and without the clipped
+returns restored. The rows are present in both panels. Supporting: rows sit
+3.35 m apart against swath edges hundreds of metres apart, and run at 79 deg
+(the scan-line bearing), not the flight-line bearing the cut follows.
+**Decision: lead with the side-by-side figure; the 18 deg footprint is the
+second answer, not the first.**
+
+**2. Grid resolution.** Ground returns in 9t sit 0.61 m apart (54,703,309
+returns, 2.70 pts/m²). At 0.5 m, 45.2% of cells contain no ground return at
+all; at 1 m, 7.5%; at 2 m, 0.7%. The 0.5 m product is therefore ~45%
+interpolation, and that is the likely source of the cross-hatch in the
+missing-ground mask. Scores remain valid — held-out blocks were scored at the
+same resolution — but the choice cost 4x the compute for a noisier input.
+Counter-argument on record: pit floors are ~6 m across and vanish by level 3 of
+a four-level U-Net at 1 m. **Deferred to BACKLOG with a queued 1 m pit CV5
+re-run rather than acted on before the talk.**
+
+**3. Deck.** v15 (user-edited, 2026-09-21 19:15) forked to v17 by
+`docs/presentation/_build_v17_patch_jitter_notes.py`. Slide 57 speaker notes
+gain an explanation of the 128 m training patch and 30 m jitter, appended to
+the existing note. Slide 54 deliberately untouched: its pasted notes look glued
+when dumped to a terminal but carry  soft line breaks that render
+correctly. 80 slides in, 80 out; app.xml already consistent.
+
+---
+
 ## 2026-09-21 — the clipped returns, isolated exactly, and the cut confirmed absolute
 
 Asked for an overlay of what the vendor actually clipped. Defined precisely:

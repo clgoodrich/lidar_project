@@ -2,6 +2,47 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## Grid resolution: 0.5 m may be finer than the data supports (added 2026-09-21) — OPEN
+
+Measured on 9t, from `count_vendorground_9t_0p5m.tif`:
+
+| | |
+|---|---|
+| vendor ground returns in 9t | 54,703,309 |
+| ground-return density | 2.70 pts / m² |
+| mean spacing between ground returns | **0.61 m** |
+
+Void fraction by grid, same points block-summed:
+
+| grid | cells | cells with no ground return | mean pts / cell |
+|---|---|---|---|
+| 0.5 m | 81,000,000 | **45.2%** | 0.68 |
+| 1 m | 20,250,000 | 7.5% | 2.70 |
+| 2 m | 5,062,500 | 0.7% | 10.81 |
+
+The ground returns sit 0.61 m apart. A 0.5 m grid therefore asks for a
+measurement roughly twice as often as one exists, and 45.2% of cells are filled
+by interpolation. At 1 m that falls to 7.5%.
+
+This is also the likely origin of the woven cross-hatch in the missing-ground
+mask: gridding finer than the point spacing draws the scan pattern.
+
+**What it does not invalidate.** Interpolation does not fabricate pits, and
+every score was measured on held-out blocks at the same resolution. The cost is
+compute and a noisy input, not a wrong answer.
+
+**The argument for keeping 0.5 m.** Pit floors average about 29 m² (503 floors,
+14,659 m² on 9t), so roughly 6 m across. At 1 m that is a 6-pixel blob, and a
+four-level U-Net halves the image four times — the object is gone by level 3. At
+0.5 m it is 12 pixels and survives. Roads already run at 1 m and are fine; pit
+floors are the class with something to lose.
+
+**Queued test.** Re-run `_pit_unet_cv5.py` at 1 m over the same five spatial
+blocks, same labels, same channels, same schedule, and compare recall directly.
+Only that settles it. Time one epoch by wall clock before sizing the run —
+`--time-one-epoch` under-reported the roaddrain rate by 1.8x (339 s predicted,
+651 s measured) and that mistake has now been made twice.
+
 ## Scan-angle ground cut (added 2026-09-18) — OPEN, and the biggest one here
 
 The PA WesternPA 2019 D20 **March-2020 flight block** discards every at-ground
