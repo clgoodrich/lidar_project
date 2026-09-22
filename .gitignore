@@ -181,3 +181,8 @@ data/9t/results/arch_compare_1m/*.log
 # GitHub's 100 MB hard limit once the de-titled figures went in (133 MB).
 # v15 is the source of truth and stays tracked; this is the build output.
 docs/presentation/WellSight_Presentation v18.pptx
+# The notes-pages PDF is a 95 MiB rasterised render of that deck, rebuilt in
+# one command by _build_notes_pages_pdf.py. Under GitHub's 100 MiB hard limit
+# but far over the 50 MiB warning, and regenerable, so it stays out of history
+# for the same reason the deck does.
+docs/presentation/WellSight_Presentation_v18_notes_pages.pdf
