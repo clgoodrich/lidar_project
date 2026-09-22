@@ -5,6 +5,48 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — every point and cell count in the deck audited against source
+
+The Data QA section quoted counts from five scopes and named none of them.
+Audited all of them, measured the 9t ones from the rasters, and fixed v17.
+
+| slide | number | unit | scope | status |
+|---|---|---|---|---|
+| 10 | 113,556,364 | returns | 10 map squares | body said "nine", notes said "ten" — FIXED to ten |
+| 11 | 5.6 M | at-ground unassigned returns | 4 map squares | correct, scope now stated |
+| 12 (in figure) | 190,855,059 | discarded returns | 165 of 177 squares, Venango Mar-2020 block | correct, scope still only in the figure |
+| 15 | 13.8% no measurement | share of cells | NOT 9t | WRONG — replaced with measured 45.2% |
+| 16 | 13,746,698 | recovered ground returns | 9t | correct, verified, scope now stated |
+| 17 | 13.8% → 8.2% | DEM void rate | SMRF experiment, 2 other tiles, writers.gdal | WRONG — replaced with 45.2% → 41.7% |
+| 17 | "about a quarter of the holes close" | — | 9t | WRONG — it is 7.8%, about one in thirteen |
+| 21 | 44,371,436 / 2,857,002 | cells | 9t @ 0.5 m | both correct, verified, grid now stated |
+
+**Measured today** from `data/9t/results/recovered_ground_9t/`:
+vendor ground returns 54,703,309; recovered ground returns **13,746,698**;
+cells with vendor ground **44,371,436**; cells without **36,628,564** (45.2%);
+void cells a recovered return fills **2,857,002** → 45.2% to 41.7%, which is
+**7.8%** of the void, not a quarter.
+
+**Why 13.8% was wrong here.** It is the DEM void rate from the SMRF
+reclassification on two different tiles (15.99%→9.97%, 12.36%→6.27%), gridded
+with `writers.gdal`, which leaves real voids. The 9t surfaces on slides 15-17
+are TIN-based and measure **0.00% void both ways** — slide 20 already says so.
+The bullet and the figure were describing different rasters.
+
+**Also this pass.** Slide 14 takes
+`figures_30to45min/v6/where_ground_stops_by_flight_block_excl2011_9t.png`,
+which drops the Venango 2011-09 row (6 squares, scan angle never populated, so
+its bar meant "cannot be checked" among bars that mean a measured angle).
+Slide 57 notes gain the 128 m patch and 30 m jitter. Built from the user's own
+v15, so their edits carry. 80 slides in, 80 out.
+
+**Still open.** Slide 12's 190.9 M is block-scoped and that scope lives only
+inside the PNG, so it needs the figure regenerated to say so. The ten audited
+map squares are still not named anywhere — `_classify_nonground_returns_9t.py`
+takes them from `--tiles` and the iteration doc records only the count.
+
+---
+
 ## 2026-09-21 — corn rows are not the vendor cut, and 0.5 m is finer than the data
 
 **1. Does the 18 deg cut explain the corn rows?** Sampled
