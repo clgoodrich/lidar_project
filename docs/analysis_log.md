@@ -5,6 +5,63 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-21 — the clipped returns, isolated exactly, and the cut confirmed absolute
+
+Asked for an overlay of what the vendor actually clipped. Defined precisely:
+in the delivered LAZ, **|scan angle| >= 18 deg**, **final return of its pulse**,
+**not classification 2**.
+
+| | returns |
+|---|---|
+| inside the 9t bounding box | 84,684,419 |
+| past 18 deg | 13,276,401 (15.7%) |
+| ...and a final return | 10,699,770 |
+| ...and not class 2 = **clipped** | **10,699,770** |
+| ...within 15 cm of the bare-earth surface | 10,163,382 (**95.0%**) |
+| **class 2 past 18 deg** | **0** |
+
+Two numbers settle the story. The clipped count is **identical** to the
+past-18-and-final count, and class 2 past 18 deg is **exactly zero** — not
+approximately, not rounded. Of 13.3 million returns past the threshold, not one
+was called ground. And 95% of the final ones sit within 15 cm of the ground
+surface, so they demonstrably reached the dirt.
+
+Footprint 3,033,665 cells, **0.758 km2, 3.7% of the tile**.
+
+    clipped_final_count_9t_0p5m.tif              1.9 MB
+    clipped_final_nearground_count_9t_0p5m.tif   1.9 MB
+
+**Two bugs found on the way, both worth recording.**
+
+*Tile selection.* A header overlap test written with `>` and `<` counts a tile
+that merely touches the bounding-box edge. Seven of sixteen do exactly that and
+contribute no points, which is why a first pass returned zero. Strictly
+positive overlap on both axes is required; nine tiles qualify.
+
+*Scan angle units.* LAS point format 6 stores scan angle as a signed short in
+**0.006 degree** units, not degrees. Reading it as degrees understates the
+threshold by 167x and selects essentially every point. The raw cut is 3000.
+
+**Also, separately:** splitting the plain missing-ground mask by whether any
+pulse terminated in the cell shows how little of it is recoverable —
+
+| | cells | km2 | of tile |
+|---|---|---|---|
+| no vendor ground | 36,628,564 | 9.157 | 45.2% |
+| ...no final return at all | 33,419,428 | 8.355 | **41.3%** |
+| ...a pulse terminated here | 3,209,136 | 0.802 | 4.0% |
+| ...terminated within 15 cm of ground | 2,368,735 | 0.592 | 2.9% |
+
+So the cross-hatch in the plain mask is 41.3% canopy where nothing came back at
+all, and only about 3% is ground the laser reached and the vendor declined to
+label.
+
+Scripts:
+- `notebooks/wellsight_v2/s7_analysis/_clipped_final_returns_9t.py`
+- `notebooks/wellsight_v2/s7_analysis/_missing_ground_by_final_return_9t.py`
+
+---
+
 ## 2026-09-21 — v15, and the missing-ground overlay
 
 **Units.** Hectares gone from the deck. Pads in km², pits in m² — straight
