@@ -103,6 +103,7 @@ from _port_v17_user_edits import (  # noqa: E402
     V17_DELETED_SLIDES, V17_EDITS, V17_NOTE_APPENDS, V17_NOTE_REPLACE,
     V17_RETIRED_NOTES,
 )
+from _side_text_613590_roads import ROAD_SIDE_TEXT  # noqa: E402
 from _nisar_broad_statements import (  # noqa: E402
     NISAR_ANCHOR, NISAR_EDITS, NISAR_NEW_BULLETS, NISAR_NOTE, NISAR_TITLE,
 )
@@ -524,6 +525,41 @@ def main() -> int:
         a, b, wd, ht = swap_figure(hits[0], png, "contain")
         print(f"  {tl[:40]:42s} {a} -> {b}  "
               f"{wd/914400:.2f}x{ht/914400:.2f} in")
+
+    # ---- 2a4. side text for the three 613590 road slides ----------------
+    # The captions came off the top of those PNGs; they go back as slide text
+    # in the left column, which is where they belong.
+    from pptx.dml.color import RGBColor
+    from pptx.util import Pt
+    print()
+    for tl, (kicker, bullets) in ROAD_SIDE_TEXT.items():
+        hits = [s for s in slides if title_of(s).strip() == tl]
+        if len(hits) != 1:
+            raise SystemExit(f"expected one {tl!r}, found {len(hits)}")
+        box = next((sh for sh in hits[0].shapes
+                    if sh.has_text_frame
+                    and sh.text_frame.text.strip().startswith(tl)), None)
+        if box is None:
+            raise SystemExit(f"no title box on {tl!r}")
+        tf = box.text_frame
+        if kicker in tf.text:
+            print(f"  side text already there: {tl[:44]}")
+            continue
+        tf.word_wrap = True
+        for text, size, bold, colour, space in (
+                [("", 8, False, 0x54_5C_63, 0),
+                 (kicker, 16, True, 0x14_1A_1F, 10)]
+                + [(BULLET + b, 13, False, 0x54_5C_63, 8) for b in bullets]):
+            para = tf.add_paragraph()
+            para.space_after = Pt(space)
+            run = para.add_run()
+            run.text = text
+            run.font.size = Pt(size)
+            run.font.bold = bold
+            run.font.color.rgb = RGBColor(colour >> 16, (colour >> 8) & 255,
+                                          colour & 255)
+            run.font.name = "Calibri"
+        print(f"  side text +{len(bullets)} bullets: {tl[:44]}")
 
     # ---- 2b2. the block-split key on the outcome slides -----------------
     print()

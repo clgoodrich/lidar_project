@@ -190,14 +190,10 @@ def main() -> int:
     axes[0].set_title("Shaded relief\nwhat the eye gets", loc="left",
                       fontsize=14, fontweight="bold", color=INK, pad=8)
 
-    lr = read(LRM, b)
-    # A 98th-percentile symmetric stretch washed the dish out: one strong
-    # cell at the window edge set the range and everything else went white.
-    # Stretch on the window's own 3-97 percentile instead.
-    v0, v1 = np.nanpercentile(lr, (3, 97))
-    axes[1].imshow(lr, cmap="Greys_r", vmin=v0, vmax=v1, extent=ext)
-    axes[1].set_title("Local relief\nthe hillside subtracted", loc="left",
-                      fontsize=14, fontweight="bold", color=INK, pad=8)
+    # The local-relief panel that used to sit here is gone. Its raster was
+    # still being drawn into axes[1] after its title was removed, which put
+    # terrain behind the dimensioned panel; that panel is meant to be the
+    # shapes on nothing, so the numbers read.
 
     for ax in axes[:2]:
         draw_poly(ax, rim_g, OUTLINE, 2.4)
