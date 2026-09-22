@@ -182,15 +182,27 @@ def main() -> int:
     ax.set_ylim(0, 100)
     ax.axis("off")
 
+    # Card 1 is the only BLOCK-WIDE number on the slide; cards 2 and 3 are 9t
+    # alone. Without the per-square rate the audience cannot see that 191
+    # million over 165 squares and 113.5 million over ten squares describe the
+    # same survey, and they conclude one of the two is wrong.
+    per_sq = f["lost"] / max(f["cut_squares"], 1) / 1e6
     block(ax, 0, 98, 100, 22.5, f"{f['lost']/1e6:,.0f} million",
           "returns that hit the ground and were not called ground",
-          GONE, note=f"{f['cut_squares']} of {f['squares']} map squares, "
-                     f"all cut at exactly {f['cut_deg']:.0f}°")
+          GONE, note=f"across the whole flight block: {f['cut_squares']} of "
+                     f"{f['squares']} map squares, all cut at exactly "
+                     f"{f['cut_deg']:.0f}°  —  {per_sq:.2f} M per square")
+    # "of our training area" invited the reading "of every cell in 9t", which
+    # would be 45%. The denominator is the cells a return actually landed in --
+    # 51.5 M of the 81 M cells in the tile. The other 29.5 M were never
+    # sampled at 0.5 m at all, which is a grid-spacing matter, not a cut.
     block(ax, 0, 72, 100, 22.5, f"{f['void_before']:.1f}%",
-          "of our training area has no ground measurement under it", GONE)
+          "of the ground the laser reached has no ground measurement on it",
+          GONE, note="9t only, of the 51.5 M cells a return landed in")
     block(ax, 0, 46, 100, 22.5, f"{f['void_after']:.1f}%",
           "after we classify the ground ourselves, keeping every angle", FOUND,
-          note=f"{f['closed']/1e6:.1f} M cells filled in")
+          note=f"{f['closed']/1e6:.1f} M of those 7.1 M holes filled in "
+               f"— two in five")
 
     ax.add_patch(FancyBboxPatch((0, 0.5), 100, 18,
                                 boxstyle="round,pad=0.0,rounding_size=1.4",
