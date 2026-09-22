@@ -103,6 +103,32 @@ DST = HERE / "WellSight_Presentation v18.pptx"
 FIGDIR = HERE / "figures_30to45min"
 PLANVIEW = FIGDIR / "v6/median_pit_plan_view_9t_05.png"
 SPLITKEY = FIGDIR / "v6/block_split_key_9t.png"
+PITDETAIL = FIGDIR / "v6/pit_probability_detail_880x480m_9t_05.png"
+RID = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
+
+PITDETAIL_AFTER = "Outcome – Pits"
+PITDETAIL_TITLE = "Outcome – Pits, up close"
+PITDETAIL_NOTE = (
+    "The same thing as the slide before, given a whole slide so it can "
+    "actually be read.\n\n"
+    "880 by 480 metres of ground. Grey underneath is the shaded terrain. The "
+    "bright colour is the model's probability that a pixel is a pit floor "
+    "— dark purple is low, orange and yellow are high. Anything under "
+    "0.05 is left off entirely so the terrain shows through.\n\n"
+    "Blue outlines are the pit floors we drew by hand. They are the answer "
+    "key, not a model output.\n\n"
+    "What to look at: nearly every blue outline has a bright core sitting "
+    "inside it, and the bright cores are small and sharp rather than smeared. "
+    "The model is not painting the whole hillside amber and hoping.\n\n"
+    "And the ground here was never used for training. Every pixel on this "
+    "slide was predicted by whichever of the five models had this block held "
+    "out, so none of them had seen this terrain when they made the "
+    "prediction. 30 annotated floors are in view.\n\n"
+    "If asked about the faint marks away from the outlines: those are the "
+    "model responding weakly to other hollows. That is what the probability "
+    "cut-off is for, and it is why we report a threshold rather than a "
+    "picture."
+)
 
 #: The outcome slides keep their probability maps untouched and gain a small
 #: key in the left margin showing which blocks were train, validation and test.
@@ -395,6 +421,62 @@ def main() -> int:
             tf.text = tf.text.rstrip() + "\n\n" + KEY_NOTE
         print(f"  {tl}: key added at {kw:.2f} x {kw/ar:.2f} in")
 
+    # ---- 2b3. a full-slide pit probability map, inserted after Outcome Pits
+    # The outcome slide gives probability half a slide beside the RRIM, which
+    # is too small to read anything but "some blobs exist". This adds a second
+    # slide that is nothing but the surface, at 880 x 480 m, every pixel
+    # out-of-fold. Cloned from the slide it follows so it inherits the theme;
+    # only text shapes are copied, because a deep-copied picture element
+    # points at a relationship the new slide does not own.
+    src = [s for s in slides if title_of(s).strip() == PITDETAIL_AFTER]
+    if len(src) != 1:
+        raise SystemExit(f"expected one {PITDETAIL_AFTER!r}, found {len(src)}")
+    src = src[0]
+    had_detail = any(title_of(s).strip() == PITDETAIL_TITLE for s in slides)
+    if had_detail:
+        print(f"\n  {PITDETAIL_TITLE!r} already present, not re-added")
+    else:
+        import copy as _copy
+        new = prs.slides.add_slide(src.slide_layout)
+        for shp in src.shapes:
+            if shp.shape_type == 13:
+                continue
+            new.shapes._spTree.append(_copy.deepcopy(shp._element))
+        for shp in list(new.shapes):
+            if not shp.has_text_frame:
+                continue
+            t = shp.text_frame.text.strip()
+            if t.split("\n")[0] == title_of(src).strip():
+                for p in shp.text_frame.paragraphs:
+                    if p.runs:
+                        p.runs[0].text = PITDETAIL_TITLE
+                        for r in p.runs[1:]:
+                            r._r.getparent().remove(r._r)
+                        break
+        with Image.open(PITDETAIL) as im:
+            ar = im.size[0] / im.size[1]
+        # Fit by HEIGHT. The slide is 7.5 in tall and the title takes the
+        # top, so a full-width placement would run 0.35 in off the bottom.
+        ph, top = 5.95, 1.22
+        pw = min(12.45, ph * ar)
+        ph = pw / ar
+        new.shapes.add_picture(str(PITDETAIL),
+                               Emu(int((13.33 - pw) / 2 * 914400)),
+                               Emu(int(top * 914400)),
+                               width=Emu(int(pw * 914400)),
+                               height=Emu(int(ph * 914400)))
+        new.notes_slide.notes_text_frame.text = PITDETAIL_NOTE
+        # move it from the end into position directly after its source
+        lst = prs.slides._sldIdLst
+        ids = list(lst)
+        at = next(i for i, sid in enumerate(ids)
+                  if prs.part.rels[sid.get(RID)].target_part is src.part)
+        lst.remove(ids[-1])
+        lst.insert(at + 1, ids[-1])
+        print(f"\n  inserted {PITDETAIL_TITLE!r} after {PITDETAIL_AFTER!r}")
+        print(f"     {PITDETAIL.name} at {pw:.2f} x {ph:.2f} in")
+        slides = list(prs.slides)
+
     # ---- 2c. speaker-note additions -------------------------------------
     print()
     for tl, marker, text in NOTE_APPENDS:
@@ -423,8 +505,10 @@ def main() -> int:
 
     # ---- verify ----------------------------------------------------------
     out = list(Presentation(DST).slides)
-    if len(out) != n_before:
-        raise SystemExit(f"slide count {n_before} -> {len(out)}; not intended")
+    expect = n_before + (0 if had_detail else 1)
+    if len(out) != expect:
+        raise SystemExit(f"slide count {n_before} -> {len(out)}, expected "
+                         f"{expect}; not intended")
     stale = []
     for i, s in enumerate(out, 1):
         txt = "\n".join(sh.text_frame.text for sh in s.shapes
