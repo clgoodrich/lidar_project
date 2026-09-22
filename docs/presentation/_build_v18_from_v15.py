@@ -96,6 +96,9 @@ from _annotation_slides_9t_only import (  # noqa: E402
     ANNOTATION_EDITS, ANNOTATION_STALE,
 )
 from _speaker_note_additions import NOTE_APPENDS  # noqa: E402
+from _nisar_broad_statements import (  # noqa: E402
+    NISAR_ANCHOR, NISAR_EDITS, NISAR_NEW_BULLETS, NISAR_NOTE, NISAR_TITLE,
+)
 
 HERE = Path(__file__).resolve().parent
 SRC = HERE / "WellSight_Presentation v15.pptx"
@@ -231,6 +234,7 @@ EDITS = [
 ]
 
 EDITS += ANNOTATION_EDITS
+EDITS += NISAR_EDITS
 
 #: title -> figure. Position and box are inherited from the picture replaced.
 #: "fit" reflows the height to the new aspect instead of stretching.
@@ -476,6 +480,41 @@ def main() -> int:
         print(f"\n  inserted {PITDETAIL_TITLE!r} after {PITDETAIL_AFTER!r}")
         print(f"     {PITDETAIL.name} at {pw:.2f} x {ph:.2f} in")
         slides = list(prs.slides)
+
+    # ---- 2b4. the NISAR slide gains two capability bullets ---------------
+    # Everything already on that slide is about whether the instrument works.
+    # Nothing said what it would be FOR, which is the half a reviewer funds.
+    ns = [s for s in slides if title_of(s).strip() == NISAR_TITLE]
+    if len(ns) != 1:
+        raise SystemExit(f"expected one {NISAR_TITLE!r}, found {len(ns)}")
+    ns = ns[0]
+    body = None
+    last = None
+    for sh in ns.shapes:
+        if not sh.has_text_frame:
+            continue
+        for p in sh.text_frame.paragraphs:
+            if p.text.strip() == NISAR_ANCHOR.strip() and p.runs:
+                body, last = sh, p
+    if body is None:
+        raise SystemExit(f"anchor bullet not found on the NISAR slide:\n  "
+                         f"{NISAR_ANCHOR}")
+    if NISAR_NEW_BULLETS[0][:30] in body.text_frame.text:
+        print(f"\n  {NISAR_TITLE}: capability bullets already present")
+    else:
+        import copy as _copy
+        for text in NISAR_NEW_BULLETS:
+            new_p = _copy.deepcopy(last._p)          # inherits the styling
+            last._p.addnext(new_p)
+            from pptx.text.text import _Paragraph
+            para = _Paragraph(new_p, last._parent)
+            para.runs[0].text = "•  " + text
+            for r in para.runs[1:]:
+                r._r.getparent().remove(r._r)
+            last = para
+        print(f"\n  {NISAR_TITLE}: +{len(NISAR_NEW_BULLETS)} capability "
+              "bullets")
+    ns.notes_slide.notes_text_frame.text = NISAR_NOTE
 
     # ---- 2c. speaker-note additions -------------------------------------
     print()
