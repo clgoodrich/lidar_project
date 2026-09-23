@@ -476,21 +476,30 @@ write-up). Deferred refinements from that same advice:
   non-DEM-derived well list (DEP permit coordinates) before any further
   validation against "known wells".** Audit past work that used this layer as
   ground truth.
-- **[DONE 2026-09-23] Part 2 re-derived on the single-ICP DoD.**
-  `_icp_change_classify_9t.py --source singleicp`. Sigma 0.1119 → 0.0784 m,
-  detection threshold 0.235 m (was a ~0.4 m floor), observed/null 6.4x → 20.6x
-  patches and 28.2x → 93.1x area. Reliable non-erosional set shrank 16 patches
-  / 2.65 ha → **11 patches / 1.58 ha** — Part 2's extra patches were bias
-  blocks. Use the `_9t_singleicp` tagged outputs; the untagged Part 2 rasters
-  are superseded. See [[icp_change_9t]] Part 4.
+- **[DONE 2026-09-23] Part 2 re-derived on the single-ICP DoD, then
+  reviewed.** `_icp_change_classify_9t.py --source singleicp`. The review
+  replaced the grid-pinned Gaussian null with IAAFT surrogates and the point
+  channel null with a same-shape null. Result: change is real in aggregate
+  (240 patches vs 90 +/- 7 from noise) but **no non-erosional patch is
+  individually separable from noise** (cutoff 7,888 m²). Channel enrichment is
+  1.13x, not 1.36x. See [[icp_change_9t]] Part 4.
 - **[DONE 2026-09-23] Destriping applied.** Row-median std 0.0726 m → 3.2e-5 m;
-  destripe + 400 m edge-preserving high-pass takes sigma 0.1119 → 0.0784 m, a
-  30% gain (the 22% estimate was row+col means alone).
-- **Manual triage of the 11 reliable non-erosional patches (added 2026-09-23).**
-  The crops in `top_changes_9t_singleicp.png` still show dipoles (#267, #899,
-  #1530) — the two surveys resolving the same road cut differently. #20 and
-  #391 are coherent rectangular fills and are the two worth checking first. No
-  patch is quoted as a finding until this is done.
+  destripe + 400 m edge-preserving high-pass takes sigma 0.1119 → 0.0784 m.
+- **Band-wise destripe of the 9t DoD (added 2026-09-23) — do this next.**
+  The global row/column median destripe leaves north-south streaks confined to
+  east-west bands, with seams between bands (`change_classified_9t_singleicp.png`).
+  Likely the main reason no patch clears the IAAFT null. Detect the seams, take
+  column medians per band, then re-run the null. See [[icp_change_9t]] Part 4,
+  finding 3.
+- **Manual triage of the 22 non-erosional patches against imagery (added
+  2026-09-23).** Now the only route to trusting any single patch, since the
+  DoD statistics cannot. Start with #20 and #391 (coherent rectangular fills,
+  no paired cut). #267, #899, #1530 look like dipoles across road cuts. Crops
+  in `top_changes_9t_singleicp.png`.
+- **Re-fetch the four 2006-08 tiles (added 2026-09-23).** `002958, 002959,
+  003111, 003112` exist only on F:, which is not mounted. The ICP rebuild is
+  not reproducible and the older-survey density under each patch cannot be
+  measured until they are back. Public, USGS 3DEP.
 - **[SUPERSEDED] Rebuild the 9t DoD — the shipped one fails its own
   reconstruct test.** `dem_diff_2m.tif` covers 99.97% of 9t while the
   `dem_new_2m.tif` it was supposedly built from covers 44.4%, and

@@ -17,15 +17,19 @@ Classes:
   anthropogenic off-channel, gentle slope -- grading, pads, cuts, fills
   ambiguous     fails to satisfy any rule cleanly
 
-Outputs (data/derivatives/experiments/icp/change_9t/):
-  dod_9t_destriped_2m.tif   DoD after row/column median destriping
-  change_patches_9t.gpkg    every patch, attributed and classified
-  change_classified_9t.png  overview: destripe effect + classified patches
-  top_changes_9t.png        crops of the largest non-erosional changes
-  _classify_9t.json         summary numbers
+Outputs (data/_experiments/icp/change_9t/, <tag> = 9t_singleicp by default):
+  dod_<tag>_destriped_2m.tif                  DoD after row/column median destripe
+  dod_<tag>_highpass_2m.tif                   + 400 m background removed
+  change_class_<tag>_2m.tif                   every patch, 1 fluvial 2 mass wasting 3 non-erosional
+  change_class_reliable_<tag>_2m.tif          only patches above the IAAFT null cutoff
+  dod_<tag>_nonerosional_{allpatches,reliable}_2m.tif
+  change_patches_<tag>.gpkg                   every patch, attributed and classified
+  change_classified_<tag>.png                 overview: destripe effect + classes
+  top_changes_<tag>.png                       crops of the largest non-erosional patches
+  _classify_<tag>.json                        summary numbers
 
 Run:
-  python notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py
+  python notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py [--source singleicp|original]
 """
 from __future__ import annotations
 
@@ -71,8 +75,10 @@ STEEP_DEG = 18.0        # above this, mass wasting is plausible
 ROAD_BUF_M = 30.0       # "road-adjacent" distance
 BG_BLOCK = 8            # background estimate: block-median downsample factor
 BG_RADIUS = 12          # ... then median filter radius, in coarse cells
-BG_WIN_M = (2 * BG_RADIUS + 1) * BG_BLOCK * RES   # ~200 m effective window
-N_NULL = 8              # Monte-Carlo null simulations
+BG_WIN_M = (2 * BG_RADIUS + 1) * BG_BLOCK * RES   # 400 m effective window
+N_NULL = 32             # Monte-Carlo null simulations (was 8 before 2026-09-23)
+N_PLACE = 200           # random placements per patch in the channel-test null
+IAAFT_ITERS = 12        # spectrum/histogram alternations per surrogate
 
 # Which DoD to classify -> (input filename, output tag).
 # 'singleicp' is the 2026-07-31 rebuild (one ICP solve across all four
@@ -109,6 +115,22 @@ def write(path, arr):
     print(f"  wrote {path}")
 
 
+def savefig_safe(fig, path, **kw):
+    """Save to a temp name, then swap it in. On Windows a viewer, indexer or
+    scanner can briefly hold the target, and a direct overwrite then fails with
+    OSError 22 (seen 2026-09-23). The temp file is never contended."""
+    import os, time
+    tmp = path.with_name(path.stem + "_tmp_writing" + path.suffix)
+    fig.savefig(tmp, **kw)
+    for attempt in range(10):
+        try:
+            os.replace(tmp, path)
+            return
+        except OSError:
+            time.sleep(1.0 + attempt)
+    raise OSError(f"could not replace {path}; new figure left at {tmp}")
+
+
 def destripe(d, n_iter=3):
     """Remove per-row and per-column MEDIAN offsets.
 
@@ -140,8 +162,8 @@ def highpass(d, block=BG_BLOCK, radius=BG_RADIUS):
     filter -> bilinear upsample, which is orders of magnitude faster than a
     direct large-window median and equivalent for a slowly-varying field.
 
-    Window is ~200 m, well above any plausible earthwork, so real pads and cuts
-    survive. This CANNOT distinguish a genuine 200 m+ change from bias -- that
+    Window is 400 m, well above any plausible earthwork, so real pads and cuts
+    survive. This CANNOT distinguish a genuine 400 m+ change from bias -- that
     is an accepted cost, documented in the write-up.
     """
     m = np.isfinite(d)
@@ -176,7 +198,7 @@ def main() -> int:
     trend_amp = float(np.nanstd(ds - dd))
     print(f"  high-pass: sigma {s_ds:.4f} -> {s1:.4f} m   "
           f"(removed broad field of std {trend_amp:.4f} m, "
-          f"sigma={BG_WIN_M:.0f} m)")
+          f"window {BG_WIN_M:.0f} m)")
     write(OUT / f"dod_{TAG}_destriped_2m.tif", ds)
     write(OUT / f"dod_{TAG}_highpass_2m.tif", dd)
 
@@ -214,22 +236,54 @@ def main() -> int:
     # independent sample per ~1300 m2), so thresholding it produces sizeable blobs
     # even with no real change at all. Comparing against a synthetic field with a
     # matched autocorrelation is the only way to know what the patch counts mean.
+    #
+    # Until 2026-09-23 the null was a Gaussian-smoothed white field whose
+    # smoothing sigma was grid-searched over 3.0..13.5 px to match the ACF. That
+    # was wrong twice over. The measured ACF is not Gaussian: it drops 1.0 ->
+    # 0.58 at lag 1 (a nugget) and still holds 0.18 at lag 8 (a long tail), so
+    # no single sigma fits it. And the search floor was 3.0 px, where the fit
+    # was pinned -- the unconstrained best was 1.75 px, at which the null makes
+    # NO patches at all. The reliability cutoff was therefore set by the grid
+    # floor, not the data.
+    #
+    # Fix: IAAFT surrogates (iterative amplitude-adjusted Fourier transform,
+    # Schreiber & Schmitz 1996). Each surrogate keeps BOTH the residual's own
+    # Fourier amplitude spectrum (so its ACF, by Wiener-Khinchin) AND its exact
+    # value distribution, and scrambles everything else.
+    #
+    # A plain phase-randomised surrogate is not enough. It keeps the ACF but
+    # makes the values Gaussian, and a Gaussian field with this ACF produced
+    # ZERO patches >= 200 m2 in 32 runs. That only rules out Gaussian noise.
+    # The artifacts that matter here -- dipoles across terrain edges, ground
+    # classification differences -- are heavy-tailed, and the tails are what
+    # clear a 3-sigma threshold. IAAFT keeps the tails.
+    #
+    # Both the spectrum and the histogram still contain the real change, so
+    # the null is conservative: it asks whether the extreme values are more
+    # spatially clustered than their own ACF and distribution imply.
     rng = np.random.default_rng(0)
 
-    def _acf(a, ax, L=26):
+    def _acf(a, ax, L=9):
         a = a - a.mean(); var = (a * a).mean()
         return np.array([(a * np.roll(a, l, axis=ax)).mean() / var
                          for l in range(L)])
 
     resid = np.nan_to_num(dd - m1)
-    tgt = (_acf(resid, 0) + _acf(resid, 1)) / 2
-    best = None
-    for cand in np.arange(3.0, 14.0, 0.5):
-        f = ndi.gaussian_filter(rng.standard_normal((N, N)).astype(np.float32), cand)
-        err = float(np.abs((_acf(f, 0) + _acf(f, 1)) / 2 - tgt).mean())
-        if best is None or err < best[1]:
-            best = (cand, err)
-    acf_sigma, acf_err = best
+    acf_obs = (_acf(resid, 0) + _acf(resid, 1)) / 2
+    amp = np.abs(np.fft.rfft2(resid))
+
+    sorted_vals = np.sort(resid.ravel())
+
+    def _surrogate(n_iter=IAAFT_ITERS):
+        # start from a random shuffle of the real values
+        x = rng.permutation(resid.ravel()).reshape(N, N)
+        for _ in range(n_iter):
+            X = np.fft.rfft2(x)                       # impose the spectrum
+            x = np.fft.irfft2(amp * X / np.maximum(np.abs(X), 1e-12), s=(N, N))
+            r = np.empty(N * N, np.int64)             # impose the histogram
+            r[np.argsort(x, axis=None)] = np.arange(N * N)
+            x = sorted_vals[r].reshape(N, N)
+        return x.astype(np.float32)
 
     def _segment(field, sigma):
         m = np.abs(field - np.median(field)) > SIG_K * sigma
@@ -241,18 +295,21 @@ def main() -> int:
 
     null = []
     for _ in range(N_NULL):
-        f = ndi.gaussian_filter(rng.standard_normal((N, N)).astype(np.float32),
-                                acf_sigma)
-        f *= s1 / (1.4826 * np.median(np.abs(f - np.median(f))))
+        f = _surrogate()   # IAAFT keeps the real values; no rescale
         c = _segment(f, s1)
         null.append((len(c), c.sum() * RES * RES / 1e4,
                      c.max() * RES * RES if len(c) else 0))
     n_null = np.array([x[0] for x in null])
     a_null = np.array([x[1] for x in null])
     mx_null = np.array([x[2] for x in null])
+    # Cutoff = the largest patch noise produced in ANY of the N_NULL fields, so
+    # roughly a 1-in-(N_NULL+1) chance that noise alone yields one patch this
+    # big somewhere in the 20 km2 block.
     reliable_area = float(mx_null.max())
-    print(f"  null (matched ACF sigma {acf_sigma:.1f} px, err {acf_err:.3f}, "
-          f"{N_NULL} sims):")
+    acf_sur = (_acf(f, 0) + _acf(f, 1)) / 2
+    acf_err = float(np.abs(acf_sur - acf_obs).mean())
+    print(f"  null (IAAFT surrogate, ACF err {acf_err:.4f} over lags "
+          f"0-8, {N_NULL} sims):")
     print(f"    noise alone -> {n_null.mean():.0f}+/-{n_null.std():.0f} patches, "
           f"{a_null.mean():.2f} ha, largest {mx_null.mean():.0f} m2 "
           f"(max {reliable_area:.0f})")
@@ -334,7 +391,9 @@ def main() -> int:
                "row_median_std_before": row_before,
                "row_median_std_after": row_after,
                "threshold_m": float(thr), "n_patches": len(gdf),
-               "null": {"acf_sigma_px": float(acf_sigma), "acf_err": float(acf_err),
+               "null": {"method": "iaaft_surrogate", "iaaft_iters": IAAFT_ITERS,
+                        "acf_observed_lags0to8": [round(float(v), 4) for v in acf_obs],
+                        "acf_err": acf_err,
                         "n_sims": N_NULL,
                         "patches_mean": float(n_null.mean()),
                         "patches_std": float(n_null.std()),
@@ -356,7 +415,8 @@ def main() -> int:
           f"vs NULL {n_null.mean():.0f} / {a_null.mean():.2f} ha  ->  "
           f"{len(gdf) / n_null.mean():.1f}x patches, "
           f"{(gdf.area_m2.sum() / 1e4) / a_null.mean():.1f}x area."
-          f"  The change is real.")
+          f"  In aggregate the change exceeds the null; see the reliable "
+          f"flag for individual patches.")
 
     rel = gdf[gdf.reliable]
     print(f"\n  class           all  reliable   area (ha)   |vol| (m3)")
@@ -369,19 +429,48 @@ def main() -> int:
               f"{gr.area_m2.sum() / 1e4:8.2f}   {gr.abs_volume_m3.sum():10.0f}")
 
     # Does REAL change actually concentrate near channels? This tests the
-    # fluvial rule itself rather than assuming it. 63% of the block area is
-    # within CHANNEL_BUF_M of a channel, so that is the null expectation.
-    summary["channel_fraction"] = {}
-    for lab, sel in (("all patches", gdf), ("reliable only", rel)):
+    # fluvial rule itself rather than assuming it.
+    #
+    # The null must be a PATCH, not a point. A patch counts as near a channel
+    # if ANY of its pixels is within CHANNEL_BUF_M, and a 3,000 m2 patch
+    # reaches much further than a pixel. Before 2026-09-23 the null was the
+    # block-area fraction within the buffer (a point null), which overstated
+    # enrichment. Now each patch's own footprint is dropped at N_PLACE random
+    # positions and the hit rate is averaged.
+    point_null = float((chan_dist <= CHANNEL_BUF_M).mean())
+    objs_l = ndi.find_objects(lbl)
+    shape_null = {}
+    for pid in gdf.patch_id:
+        sl = objs_l[pid - 1]
+        rr, cc = np.nonzero(lbl[sl] == pid)
+        r0 = rng.integers(0, N - rr.max(), N_PLACE)
+        c0 = rng.integers(0, N - cc.max(), N_PLACE)
+        hits = chan_dist[rr[None, :] + r0[:, None],
+                         cc[None, :] + c0[:, None]].min(axis=1) <= CHANNEL_BUF_M
+        shape_null[pid] = float(hits.mean())
+    gdf["chan_null_p"] = gdf.patch_id.map(shape_null)
+    summary["channel_fraction"] = {"point_null": round(point_null, 3)}
+    for lab, sel in (("all patches", gdf), ("reliable only", gdf[gdf.reliable])):
         if len(sel):
             near = float((sel.chan_dist_m <= CHANNEL_BUF_M).mean())
-            summary["channel_fraction"][lab] = round(near, 3)
+            exp = float(sel.chan_null_p.mean())
+            z = (near - exp) / np.sqrt(
+                (sel.chan_null_p * (1 - sel.chan_null_p)).sum()) * len(sel)
+            summary["channel_fraction"][lab] = dict(
+                observed=round(near, 3), shape_null=round(exp, 3),
+                enrichment=round(near / exp, 3), z=round(float(z), 2))
             print(f"  {lab:14s}: {100 * near:4.0f}% within {CHANNEL_BUF_M:.0f} m "
-                  f"of a channel   (63% of block area is -> "
-                  f"enrichment {near / 0.63:.2f}x)")
+                  f"of a channel.  Same-shape null {100 * exp:4.1f}% -> "
+                  f"enrichment {near / exp:.2f}x, z = {z:.1f}   "
+                  f"(point null {100 * point_null:.0f}% would say "
+                  f"{near / point_null:.2f}x)")
 
-    nonero = rel[rel.cls == "anthropogenic"]
-    print(f"\n  top non-erosional changes (by |volume|):")
+    # ALL off-channel gentle-slope patches, not just reliable ones. Under the
+    # IAAFT null none of them may be individually reliable, and an empty list
+    # helps nobody triage. Each row and crop carries its reliable flag instead.
+    nonero = gdf[gdf.cls == "anthropogenic"]
+    print(f"\n  top non-erosional changes (by |volume|; "
+          f"{int(nonero.reliable.sum())} of {len(nonero)} individually reliable):")
     for _, r in nonero.head(12).iterrows():
         cx, cy = r.geometry.centroid.x, r.geometry.centroid.y
         print(f"   #{r.patch_id:4d} {r['sign']:4s} {r.mean_dz_m:+.2f} m  "
@@ -416,9 +505,13 @@ def main() -> int:
                 transform=TF, fill=0, dtype="uint8"))
 
     cmap = {0: (0, 0, 0, 0),                 # transparent where no change
-            1: (44, 127, 184, 255),          # fluvial      blue
-            2: (217, 95, 14, 255),           # mass wasting orange
-            3: (215, 25, 28, 255)}           # anthropogenic red
+            1: (31, 95, 168, 255),           # fluvial      blue   #1F5FA8
+            2: (217, 119, 6, 255),           # mass wasting amber  #D97706
+            3: (163, 21, 21, 255)}           # anthropogenic dark red #A31515
+    # Palette = the repo's validated lost/found set. dataviz validate_palette.js
+    # --pairs all, light: worst pair #A31515/#D97706 dE 21.1 deutan, 22.6
+    # normal, tritan 18.9, all >= 3:1 contrast. The previous blue/orange/red
+    # FAILED (orange/red dE 10.3 normal, 6.7 deutan), 2026-09-23.
     for name, arr in ((f"change_class_{TAG}_2m.tif", cls_r),
                       (f"change_class_reliable_{TAG}_2m.tif", rel_r)):
         p = OUT / name
@@ -431,20 +524,23 @@ def main() -> int:
                           CLASS_3="anthropogenic")
         print(f"  wrote {p}  ({int((arr > 0).sum())} px)")
 
-    # Elevation change restricted to the reliable NON-erosional patches -- this
-    # is the "where is the non-fluvial change, and how big" layer.
-    ne = np.where(rel_r == CODE["anthropogenic"], dd, np.nan).astype(np.float32)
-    write(OUT / f"dod_{TAG}_nonerosional_2m.tif", ne)
-    print(f"    ({int(np.isfinite(ne).sum())} px, "
-          f"range {np.nanmin(ne):+.2f}..{np.nanmax(ne):+.2f} m)")
+    # Elevation change restricted to NON-erosional patches -- the "where is the
+    # non-fluvial change, and how big" layer. Written twice, and the name says
+    # which: every patch, and only those above the null's reliability cutoff.
+    for which, src in (("allpatches", cls_r), ("reliable", rel_r)):
+        ne = np.where(src == CODE["anthropogenic"], dd, np.nan).astype(np.float32)
+        write(OUT / f"dod_{TAG}_nonerosional_{which}_2m.tif", ne)
+        n_ne = int(np.isfinite(ne).sum())
+        print(f"    ({n_ne} px" + (f", range {np.nanmin(ne):+.2f}.."
+                                   f"{np.nanmax(ne):+.2f} m)" if n_ne else ")"))
 
     # ---- 5. figures ----
     ls = LightSource(azdeg=315, altdeg=45)
     hs = ls.hillshade(np.nan_to_num(dem, nan=float(np.nanmean(dem))),
                       vert_exag=2, dx=RES, dy=RES)
     norm = TwoSlopeNorm(vmin=-5 * s1, vcenter=0.0, vmax=5 * s1)
-    COL = {"fluvial": "#2c7fb8", "mass_wasting": "#d95f0e",
-           "anthropogenic": "#d7191c"}
+    COL = {"fluvial": "#1F5FA8", "mass_wasting": "#D97706",   # validated,
+           "anthropogenic": "#A31515"}                          # see cmap
 
     ext = (BBOX[0], BBOX[2], BBOX[1], BBOX[3])   # map coords for every panel
     fig, ax = plt.subplots(1, 4, figsize=(25, 6.6))
@@ -470,10 +566,11 @@ def main() -> int:
     ax[3].set_title(f"{len(gdf)} change patches >= {MIN_AREA_M2:.0f} m2, classified")
     for a in ax:
         a.set_xticks([]); a.set_yticks([])
-    fig.suptitle("9t  2006-2008 -> 2019 change: artifact removal and classification")
-    fig.tight_layout()
+    fig.suptitle("9t  2006-2008 -> 2019 change: artifact removal and classification",
+                 y=0.995)
+    fig.tight_layout(rect=(0, 0, 1, 0.94))   # leave room for the suptitle
     p = OUT / f"change_classified_{TAG}.png"
-    fig.savefig(p, dpi=130, bbox_inches="tight"); plt.close(fig)
+    savefig_safe(fig, p, dpi=130, bbox_inches="tight"); plt.close(fig)
     print(f"\n  wrote {p}")
 
     # crops of the top non-erosional patches
@@ -490,6 +587,7 @@ def main() -> int:
             a.imshow(np.where(np.abs(dd[sl] - m1) > thr, dd[sl], np.nan),
                      cmap="RdBu_r", norm=norm, alpha=0.75)
             a.set_title(f"#{r.patch_id} {r['sign']} {r.mean_dz_m:+.2f} m  "
+                        f"[{'reliable' if r.reliable else 'within noise'}]  "
                         f"{r.area_m2:.0f} m2\nslope {r.slope_deg:.0f} deg, "
                         f"chan {r.chan_dist_m:.0f} m, road {r.road_dist_m:.0f} m",
                         fontsize=9)
@@ -497,10 +595,13 @@ def main() -> int:
         for a in axs.ravel()[len(top):]:
             a.axis("off")
         fig.suptitle("Largest non-erosional (off-channel, gentle-slope) changes, "
-                     "2006-2008 -> 2019", fontsize=13)
+                     "2006-2008 -> 2019\n"
+                     f"{int(top.reliable.sum())} of {len(top)} shown clear the "
+                     f"IAAFT null (>= {reliable_area:.0f} m2). The rest are "
+                     "unvalidated.", fontsize=13)
         fig.tight_layout()
         p = OUT / f"top_changes_{TAG}.png"
-        fig.savefig(p, dpi=120, bbox_inches="tight"); plt.close(fig)
+        savefig_safe(fig, p, dpi=120, bbox_inches="tight"); plt.close(fig)
         print(f"  wrote {p}")
 
     jp = OUT / f"_classify_{TAG}.json"

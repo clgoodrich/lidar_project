@@ -143,6 +143,14 @@ and would mislead anyone reading it directly.
 
 # Part 2 — Where the non-erosional change actually is (2026-07-26)
 
+> **Correction 2026-09-23 (see Part 4).** Two results in this Part do not
+> survive review. The "reliable above 712 m²" cutoff came from a Gaussian null
+> whose smoothing was grid-searched and fitted poorly. The cutoff reflects the
+> search grid, not the data. Under an IAAFT null, noise alone makes patches up
+> to 7,888 m². The channel enrichment (1.20x / 1.34x) was measured against a
+> point null. Against a same-shape patch null it is about 1.1x. The DoD this
+> Part classified is also superseded (Part 3).
+
 Script: `notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py`.
 
 ## Removing the artifacts, in three stages
@@ -471,26 +479,28 @@ QC scripts (scratchpad, not repo-tracked): `_qc_icp_rebuild_9t.py`,
 
 Part 3 left Part 2's products stale. Part 2 destriped and classified
 `dod_9t_2m.tif`, the four-solve mosaic. That DoD carried 0.103 m of per-tile
-stepping which Part 3 removed. The destripe/high-pass stack was therefore tuned
-against an artifact geometry that no longer exists, and the 16 "reliable
-non-erosional patches" were not trustworthy. This pass re-runs the same
-classification on `dod_9t_singleicp_2m.tif`.
+stepping, which Part 3 removed at the source. This pass re-runs the
+classification on `dod_9t_singleicp_2m.tif`. A review of the whole process in
+the same pass then found two flaws in the statistics. Both are fixed here.
 
 No new ICP solve. No new data. The 2006-2008 survey and the 2026-07-31
 alignment are unchanged.
 
 ## What changed in the code
 
-`notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py` now takes
-`--source`. It picks the input DoD and tags every output, so the two runs
-cannot overwrite each other.
+`notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py`:
 
-| `--source` | input | output tag |
-|---|---|---|
-| `original` | `dod_9t_2m.tif` | `9t` (the Part 2 names) |
-| `singleicp` **(default)** | `dod_9t_singleicp_2m.tif` | `9t_singleicp` |
+| change | why |
+|---|---|
+| `--source {original,singleicp}`, default `singleicp` | picks the input DoD and tags every output, so the two runs cannot overwrite each other |
+| null model: Gaussian-ACF fit → **IAAFT surrogates** | the old fit was pinned at its grid floor (finding 1) |
+| null runs 8 → **32** | the cutoff is a maximum over runs, and 8 is too few to pin a maximum |
+| channel test: point null → **same-shape patch null** | the point null overstated enrichment (finding 2) |
+| non-erosional raster written twice, `_allpatches_` and `_reliable_` | the reliable-only one is now empty, and an empty layer helps nobody triage |
+| top-changes figure shows every non-erosional patch, each flagged `reliable` or `within noise` | same reason |
 
-Every parameter is identical to Part 2. Only the input differs.
+Destripe, high-pass, threshold, class rules and every other parameter are
+unchanged from Part 2.
 
 ## Artifact removal
 
@@ -501,104 +511,180 @@ Every parameter is identical to Part 2. Only the input differs.
 | + 400 m edge-preserving background | **0.0784 m** | 0.087 m |
 
 Row-median std goes 0.0726 m → 3.2e-5 m. The broad field removed has std
-0.0261 m, against 0.057 m in Part 2 — less than half. That is the expected
-consequence of Part 3: most of what the high-pass used to remove was the
-per-tile blocks, and those are gone at the source now.
+0.0261 m, against 0.057 m in Part 2. Most of what the high-pass used to remove
+was the per-tile blocks. Those are gone at the source now.
 
-Detection threshold (3 sigma of the high-passed field) is **0.235 m**, down
-from Part 2's ~0.4 m floor.
+The detection threshold (3 sigma of the high-passed field) is **0.235 m**.
+Part 2's was about 0.26 m.
 
-## The null still says the change is real
+## Review finding 1 — the null model set the cutoff, not the data
 
-Same Monte-Carlo null — a synthetic Gaussian field with matched
-autocorrelation, pushed through the identical pipeline. The matched ACF sigma
-is now **3.0 px**, against 4.0 px in Part 2. The residual is less spatially
-correlated because the blocky bias is gone.
+Part 2 decided which patches were "reliable" with a Monte-Carlo null. It
+smoothed white noise with a Gaussian. It grid-searched the smoothing sigma over
+3.0 to 13.5 px to match the DoD's autocorrelation (ACF). On the single-ICP DoD
+the search landed on **3.0 px, the floor of the grid**.
 
-| | patches >= 200 m2 | area | largest patch |
+The measured ACF does not have a Gaussian shape.
+
+| lag (px) | 0 | 1 | 2 | 4 | 8 |
+|---|---|---|---|---|---|
+| ACF | 1.00 | 0.58 | 0.43 | 0.29 | 0.18 |
+
+It drops by almost half at lag 1 and still holds 0.18 at lag 8. No single
+Gaussian fits both the drop and the tail. With the floor removed the best fit
+moves to 1.75 px. At 1.75 px the null produces **zero** patches. So the cutoff
+could be anywhere from 0 m² to 420 m², depending on where the grid started.
+
+**Fix.** IAAFT surrogates (iterative amplitude-adjusted Fourier transform,
+Schreiber & Schmitz 1996, see `literature/CITATIONS.md`). Each surrogate keeps
+the residual's own Fourier amplitude spectrum, and so its ACF. It also keeps
+the exact value distribution. Everything else is scrambled. The ACF match is
+0.017 mean absolute error over lags 0 to 8, with no model to fit.
+
+A plain phase-randomised surrogate was tried first. It keeps the ACF exactly
+but makes the values Gaussian. It also produced zero patches in 32 runs. That
+only rules out Gaussian noise. The artifacts that matter here, such as dipoles
+across terrain edges, are heavy-tailed. The tails are what clear 3 sigma.
+IAAFT keeps the tails.
+
+IAAFT is deliberately conservative. The spectrum and the histogram both still
+contain the real change. So the test asks one question. Are the extreme values
+more clustered in space than their own ACF and distribution imply?
+
+| | patches >= 200 m² | area | largest patch |
 |---|---|---|---|
-| **observed** | **240** | **26.15 ha** | see gpkg |
-| noise-only (8 sims) | 11.6 +/- 3.6 | 0.28 ha | 331 m2 (max 420) |
-| ratio | **20.6x** | **93.1x** | — |
+| **observed** | **240** | **26.15 ha** | — |
+| IAAFT null (32 runs) | 90 ± 7 | 5.99 ha | mean 4,420 m², max **7,888 m²** |
+| ratio | **2.7x** | **4.4x** | — |
 
-Part 2 got 6.4x patches and 28.2x area. The cleaner DoD roughly tripled the
-signal-to-null ratio even though the raw patch count fell 367 → 240.
+**In aggregate the change is real.** 240 patches against 90 ± 7 is about 21
+standard deviations. About 150 patches and 20 ha are more than rearranged
+noise can make.
 
-Reliability cutoff: noise never produced a patch above **420 m2** (Part 2:
-712 m2), so that is the new cutoff. 138 of 240 patches clear it.
+**Individually, almost none of it is separable from noise.** Noise alone made
+a patch as large as 7,888 m². Only **3 of 240** patches are that large. All 3
+are fluvial. **No non-erosional patch clears the cutoff.** The largest, #836,
+is 3,324 m². That is smaller than the typical largest noise patch.
 
-## Channel enrichment holds, and is slightly stronger
+The truth lies between the two nulls. The Gaussian surrogate is too lenient
+because it cannot make heavy-tailed artifacts. IAAFT is too strict because its
+spectrum contains the real change. The per-patch cutoff cannot be pinned down
+from the DoD alone. Trust in a single patch has to come from independent
+evidence, such as manual triage against imagery.
 
-63% of the block lies within 40 m of a channel, so that is the random-placement
-expectation.
+Part 2's "reliable above 712 m²" cutoff came from the same pinned Gaussian
+search. It has the same flaw.
 
-| set | within 40 m of a channel | enrichment |
-|---|---|---|
-| all patches | 86% | 1.36x |
-| **reliable only** | **88%** | **1.39x** |
+## Review finding 2 — the channel test used the wrong null
 
-Part 2 had 75% / 84% (1.20x / 1.34x). The fluvial rule is better supported on
-the cleaner field, and the reliable set is still the more enriched one, which
-is what a working cutoff should do.
+A patch counts as "near a channel" if **any** of its pixels is within 40 m.
+Part 2 compared that to the fraction of block **area** within 40 m (63%). That
+is a point null. A 3,000 m² patch reaches much further than a point, so the
+point null overstated enrichment.
+
+The fix drops each patch's own footprint at 200 random positions. It then
+averages the hit rate.
+
+| set | observed | same-shape null | enrichment | z | point null would say |
+|---|---|---|---|---|---|
+| all 240 patches | 86% | 75.7% | **1.13x** | 3.7 | 1.36x |
+| 3 reliable patches | 100% | 96.3% | 1.04x | 0.3 | 1.59x |
+
+Change does concentrate toward channels. The effect is real (z = 3.7) but
+small, **1.13x rather than 1.36x**. The "reliable" row means nothing at n = 3.
+Part 2 claimed enrichment strengthens in the reliable set. That claim does not
+hold up.
+
+The fluvial label is weakly supported in aggregate. It does not identify the
+cause of any single patch.
+
+## Review finding 3 — the striping left over is band-local
+
+`change_classified_9t_singleicp.png` shows it plainly. After destripe and
+high-pass, short north-south streaks remain. Each set is confined to one
+east-west band, and sharp seams separate the bands.
+
+The destripe subtracts one median per row and one per column, each taken over
+the full 4.5 km. A streak that exists in one band and not the next cannot be
+removed that way. The reported "row-median std 0.0726 → 3.2e-5 m" only shows
+that the destripe removed what it was designed to remove. It does not show the
+striping is gone.
+
+This is the most likely reason no patch clears the null. The streaks are
+coherent and heavy-tailed. They feed both the IAAFT spectrum and its tails, and
+they raise the cutoff. **Not fixed in this pass.** The fix is a band-wise
+destripe: find the band seams, then take column medians within each band.
+Top of the deferred list.
 
 ## Results
 
-| class | patches | reliable | area (ha) | \|volume\| (m3) |
-|---|---|---|---|---|
-| fluvial | 206 | 121 | 21.28 | 83,978 |
-| mass wasting | 12 | 6 | 0.37 | 2,928 |
-| **anthropogenic (non-erosional)** | 22 | **11** | **1.58** | **8,879** |
+| class | patches | reliable (IAAFT) |
+|---|---|---|
+| fluvial | 206 | 3 |
+| mass wasting | 12 | 0 |
+| non-erosional ("anthropogenic" in the code) | 22 | **0** |
 
-Fluvial is 86% of patches and 92% of area. That is the expected outcome for a
-forested Appalachian block over 11-13 years, and it is a stronger result than
-Part 2's 75%.
+"Anthropogenic" is a rule, not evidence. It means off-channel (> 40 m) and
+gentle (< 18°). Nothing in the rule positively detects human activity.
 
-The non-erosional residue shrank: **22 patches against Part 2's 87, 11 reliable
-against 16**, over a 2,025 ha block. Part 2's extra 65 patches were the per-tile
-bias blocks being segmented as change.
-
-### The 11 reliable non-erosional changes
+### The largest non-erosional patches — all unvalidated
 
 Coordinates are EPSG:6346. `well` is distance to the nearest point in
 `well_head_pts_reprojected.gpkg`.
 
-| id | type | mean dz | area m2 | \|vol\| m3 | slope | chan | road | well | centroid |
+| id | type | mean dz | area m² | \|vol\| m³ | slope | chan | road | well | centroid |
 |---|---|---|---|---|---|---|---|---|---|
-| 267 | cut | −1.11 | 3,016 | 3,354 | 10.1 deg | 50 m | **2 m** | 75 m | 623978, 4596537 |
-| 836 | fill | +0.43 | 3,324 | 1,434 | 13.6 deg | 48 m | 27 m | 122 m | 623000, 4595196 |
-| 899 | cut | −0.83 | 1,568 | 1,295 | 7.8 deg | 51 m | **0 m** | 64 m | 620120, 4595109 |
-| 20 | fill | +0.32 | 2,180 | 693 | 17.2 deg | 62 m | **0 m** | 339 m | 623622, 4597396 |
-| 1530 | cut | −0.59 | 836 | 493 | 16.2 deg | 69 m | **0 m** | 195 m | 621586, 4593365 |
-| 391 | fill | +0.31 | 1,516 | 462 | 0.7 deg | 62 m | 38 m | 269 m | 621643, 4596163 |
-| 109 | fill | +0.36 | 820 | 298 | 17.5 deg | 72 m | 35 m | 102 m | 623828, 4597130 |
-| 786 | cut | −0.34 | 744 | 249 | 1.0 deg | 57 m | 24 m | 61 m | 621682, 4595313 |
-| 519 | cut | −0.35 | 668 | 237 | 17.9 deg | 62 m | 44 m | 48 m | 623867, 4595718 |
-| 114 | fill | +0.34 | 696 | 238 | 9.7 deg | 135 m | 30 m | **18 m** | 623915, 4597127 |
-| 329 | fill | +0.30 | 428 | 127 | 8.0 deg | 79 m | **0 m** | 26 m | 623763, 4596332 |
+| 267 | cut | −1.11 | 3,016 | 3,354 | 10.1° | 50 m | 2 m | 75 m | 623978, 4596537 |
+| 836 | fill | +0.43 | 3,324 | 1,434 | 13.6° | 48 m | 27 m | 122 m | 623000, 4595196 |
+| 899 | cut | −0.83 | 1,568 | 1,295 | 7.8° | 51 m | 0 m | 64 m | 620120, 4595109 |
+| 20 | fill | +0.32 | 2,180 | 693 | 17.2° | 62 m | 0 m | 339 m | 623622, 4597396 |
+| 1530 | cut | −0.59 | 836 | 493 | 16.2° | 69 m | 0 m | 195 m | 621586, 4593365 |
+| 391 | fill | +0.31 | 1,516 | 462 | 0.7° | 62 m | 38 m | 269 m | 621643, 4596163 |
+| 109 | fill | +0.36 | 820 | 298 | 17.5° | 72 m | 35 m | 102 m | 623828, 4597130 |
+| 786 | cut | −0.34 | 744 | 249 | 1.0° | 57 m | 24 m | 61 m | 621682, 4595313 |
+| 519 | cut | −0.35 | 668 | 237 | 17.9° | 62 m | 44 m | 48 m | 623867, 4595718 |
+| 114 | fill | +0.34 | 696 | 237 | 9.7° | 135 m | 30 m | 18 m | 623915, 4597127 |
 
-The top entry is the clearest single result in this line of work. Patch 267 is
-a 3,016 m2 cut averaging −1.11 m, 2 m from a mapped road. Its magnitude is 2.3x
-the largest non-erosional patch Part 2 found.
-
-Road proximity remains the dominant association: 4 of 11 sit directly on a
-mapped road (0 m) and 9 of 11 lie within 35 m. Road maintenance, regrading and
-skid-trail work explain the set better than well activity does.
-
-**Inspected, and the dipole problem has not gone away.** In
-`top_changes_9t_singleicp.png`, #267 and #899 are each a blue lobe with a red
-core, and #1530 straddles a pair of linear terrain edges. Those are the two
-surveys resolving the same feature differently, not change. #20 and #391 look
-different — coherent, roughly rectangular fills on gentle ground with no paired
-cut — and are the two most likely to be genuine earthworks. No patch in this set
-is quoted as a finding until the triage below is done.
+The crops in `top_changes_9t_singleicp.png` show the problem. #267, #899 and
+#1530 are red/blue dipoles across linear terrain edges. That is the two
+surveys resolving the same road cut differently, not change. #20 and #391 look
+different. They are coherent, roughly rectangular fills on gentle ground with
+no paired cut. They are the best candidates for a real earthwork. They are
+still within noise statistically.
 
 ## The wells negative is unchanged
 
 Nothing here revisits it. `well_dist_m` is an attribute, not a test. Part 3
-showed that any DoD test against `well_head_pts_reprojected.gpkg` is circular —
-those are 861 pits hand-digitised on the 2019 DEM, and the 2006-2008 survey
-resolves only 72% of their depth at 7x lower density. **These 11 patches are
-candidate recent earthworks, not candidate wells.** None is presented as a well.
+showed that any DoD test against `well_head_pts_reprojected.gpkg` is circular.
+**No patch here is a candidate well.**
+
+## What the review checked and found sound
+
+- **ICP alignment.** One solve, converged, fitness 0.967. The displacement is
+  evaluated at the centroid, not read off the raw translation column. The
+  slope-stratified sigma implies about 0.10 m planimetric residual (Part 3).
+  That also rules out a flipped or shifted older raster. A 1 m grid offset
+  would add about 0.7 m of error on 35° ground. The 30–90° bin shows 0.27 m.
+- **CRS and units.** EPSG:2271 is forced on the 2006-08 read. Z uses the US
+  survey foot.
+- **Sign convention.** DoD = 2019 − 2006/08, so positive means fill. Figure
+  colours and the `sign` field agree.
+- **Destripe and high-pass.** They use medians, so real patches do not drag
+  the correction. The 400 m window is well above any earthwork.
+
+## What the review could not check
+
+- **Local density of the older survey under each patch.** A sparse older TIN
+  smooths small relief, and that shows up as false change. The raw 2006-08 LAZ
+  tiles live only on `F:\lidar_project\consolidated\lidar_all\`, which is not
+  mounted. The clouds under `data/_experiments/icp/<tile>/` are 5 m
+  voxel-thinned, so they cannot measure density. A TIN-facet proxy (share of
+  planar 3x3 windows) was tried. It read zero everywhere, the 2019 DEM
+  included, so it cannot tell the surveys apart.
+- **The ICP rebuild is not reproducible today**, for the same reason. The four
+  tiles are public. They are
+  `USGS_LPC_PA_STATEWIDE_N_2006_2008_*_{002958,002959,003111,003112}.laz` and
+  can be re-fetched from USGS 3DEP.
 
 ## Outputs
 
@@ -608,30 +694,41 @@ All EPSG:6346, 2 m, 2250x2250, aligned to every other 9t raster, in
 | file | content |
 |---|---|
 | `dod_9t_singleicp_destriped_2m.tif` | DoD after row/column median destripe |
-| `dod_9t_singleicp_highpass_2m.tif` | + 400 m background removed — the field the patches are cut from |
-| `change_class_9t_singleicp_2m.tif` | all 240 patches: 1 fluvial, 2 mass wasting, 3 anthropogenic; nodata 0, colour table embedded |
-| `change_class_reliable_9t_singleicp_2m.tif` | same, >=420 m2 only — the trustworthy set |
-| `dod_9t_singleicp_nonerosional_2m.tif` | dz in metres, masked to reliable non-erosional patches (3,949 px, −3.99 .. +2.87 m) |
+| `dod_9t_singleicp_highpass_2m.tif` | + 400 m background removed. The patches are cut from this field |
+| `change_class_9t_singleicp_2m.tif` | all 240 patches: 1 fluvial, 2 mass wasting, 3 non-erosional. nodata 0, colour table embedded |
+| `change_class_reliable_9t_singleicp_2m.tif` | same, >= 7,888 m² only (3 fluvial patches) |
+| `dod_9t_singleicp_nonerosional_allpatches_2m.tif` | dz in metres over all 22 non-erosional patches (4,738 px, −3.99 .. +2.87 m). Unvalidated |
+| `dod_9t_singleicp_nonerosional_reliable_2m.tif` | same, reliable only. **Empty**, because none clears the null |
 | `change_patches_9t_singleicp.gpkg` | layer `change_patches`, every patch attributed |
 | `change_classified_9t_singleicp.png` | destripe effect + classified overview |
-| `top_changes_9t_singleicp.png` | hillshade crops of the largest non-erosional patches |
-| `_classify_9t_singleicp.json` | every number above |
+| `top_changes_9t_singleicp.png` | hillshade crops of the largest non-erosional patches, each flagged |
+| `_classify_9t_singleicp.json` | every number above, including the ACF and both channel nulls |
 
-The Part 2 rasters (`*_9t_*`, no `singleicp`) are left in place and are
-superseded. Do not use them.
+The Part 2 rasters (`*_9t_*` without `singleicp`) are superseded. Do not use
+them.
 
-Class colours are blue / orange / red. No red-green pair carries meaning in
-any figure here.
+Class colours are the repo's validated lost/found set: fluvial `#1F5FA8`,
+mass wasting `#D97706`, non-erosional `#A31515`. dataviz validator, `--pairs all`:
+worst pair ΔE 21.1 deutan, 22.6 normal. The old blue/orange/red failed (orange
+vs red ΔE 10.3 normal, 6.7 deutan) and was replaced in this pass. The DoD ramp
+is red–blue diverging. No red–green pair carries meaning in any figure here.
+
+QC script (scratchpad, not tracked): `_qc_icp_classify_9t_singleicp.py`.
 
 ## Reproduce
 ```
 python notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py --source singleicp
 ```
+Seeded (`default_rng(0)`). Runtime is about 4 minutes, most of it the 32 IAAFT
+surrogates.
 
 ## Deferred
-- Manual triage of the 11 reliable non-erosional patches. The crops show the
-  dipoles are still present (#267, #899, #1530). #20 and #391 are the two worth
-  checking first.
+- **Band-wise destripe** (finding 3). Detect the band seams, then remove
+  column medians within each band. Re-run the IAAFT null after it.
+- Manual triage of the 22 non-erosional patches against imagery, starting with
+  #20 and #391. This is now the only route to trusting a single patch.
+- Re-fetch the four 2006-08 tiles, so the rebuild is reproducible and the
+  density check can run.
 - Vegetation / canopy masking before differencing.
 - A non-DEM-derived well list (DEP permit coordinates), so a wells test can be
   run at all.

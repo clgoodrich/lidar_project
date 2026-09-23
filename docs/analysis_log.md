@@ -5,7 +5,79 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-23 -- review of the 9t change process: the per-patch reliability test did not hold
+
+Reviewed the whole ICP change chain end to end. It covered the rebuild script,
+the classification script, and today's earlier run (the entry below). The
+alignment, CRS handling, units, sign convention and destripe all check out.
+Two statistical flaws did not.
+
+**1. The null set the cutoff, not the data.** The Gaussian-smoothed noise null
+grid-searched its sigma over 3.0 to 13.5 px and landed on 3.0, the grid floor.
+The measured ACF is not Gaussian. It is 1.00, 0.58, 0.43, 0.29, 0.18 at lags
+0, 1, 2, 4, 8. The unconstrained best fit is 1.75 px, and there the null makes
+zero patches. So the 420 m² cutoff reported below was an accident of the grid.
+Part 2's 712 m² cutoff has the same flaw.
+
+Replaced with IAAFT surrogates (Schreiber & Schmitz 1996, cited in
+`literature/CITATIONS.md`, PDF in `literature/papers/`). They keep the ACF and
+the exact value distribution. A phase-randomised surrogate was tried first and
+rejected. It makes the values Gaussian and also produced zero patches, which
+only rules out Gaussian noise. Runs raised from 8 to 32.
+
+| | old null (sigma pinned 3.0) | IAAFT, 32 runs |
+|---|---|---|
+| noise patches | 11.6 +/- 3.6 | 90 +/- 7 |
+| noise area | 0.28 ha | 5.99 ha |
+| observed / null, patches | 20.6x | **2.7x** |
+| reliability cutoff | 420 m² | **7,888 m²** |
+| reliable non-erosional | 11 | **0** |
+
+In aggregate the change is real, about 21 sd above the null. Individually only
+3 of 240 patches clear the cutoff, all fluvial. No non-erosional patch does.
+The 11 "reliable non-erosional patches" in the entry below are withdrawn.
+
+**2. The channel test used a point null.** A patch is near a channel if any
+pixel is within 40 m, so a big patch reaches further than a point. With a
+same-shape null (each patch footprint dropped at 200 random positions),
+enrichment is **1.13x (z = 3.7)**, not 1.36x. Part 2's "enrichment strengthens
+in the reliable set" claim does not hold.
+
+**3. Leftover striping is band-local (found, not fixed).** After destripe and
+high-pass, north-south streaks remain inside east-west bands, with seams between
+them. The global per-row/per-column medians cannot remove that. It likely
+inflates the null and is the next thing to fix (band-wise destripe).
+
+Also fixed in this pass: the class palette. Blue/orange/red failed the dataviz
+validator (orange vs red ΔE 10.3 normal, 6.7 deutan). It is replaced by the
+repo's validated set #1F5FA8 / #D97706 / #A31515 (worst ΔE 21.1 deutan, 22.6
+normal, `--pairs all`). Also fixed: an overprinted suptitle, and figure saves
+failing with OSError 22 when something briefly held the PNG. Figures now write
+to a temp name and swap in.
+
+Could not check the density of the older survey under each patch. The raw
+2006-08 LAZ is only on F:, which is not mounted. The repo copies are 5 m
+voxel-thinned. A TIN-facet proxy read zero everywhere and was dropped. The ICP
+rebuild is not reproducible until the four tiles are re-fetched.
+
+Script changes in `_icp_change_classify_9t.py` (IAAFT null, N_NULL 32, shape
+null, both non-erosional rasters, flagged figure). New files in
+`data/_experiments/icp/change_9t/`:
+`dod_9t_singleicp_nonerosional_allpatches_2m.tif`,
+`dod_9t_singleicp_nonerosional_reliable_2m.tif` (empty). Removed the untagged
+`dod_9t_singleicp_nonerosional_2m.tif` from the first run, which it replaces.
+Every other `_9t_singleicp` output was regenerated in place.
+
+Write-up: `docs/iterations/icp_change_9t.md` Part 4, rewritten in place; Part 2
+carries a correction note.
+
+---
+
 ## 2026-09-23 -- 9t change classification re-derived on the single-ICP DoD
+
+> **Superseded the same day** by the review entry above. The null model
+> and cutoff here were flawed, and the 11 reliable non-erosional patches
+> are withdrawn.
 
 Part 3 (2026-07-31) rebuilt the 9t DoD with ONE ICP solve and flagged Part 2's
 classification as stale: it was tuned against per-tile bias blocks that the
