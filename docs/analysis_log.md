@@ -5,6 +5,26 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-23 -- operating-point Phase 3: policy sweep, and a reproducibility bug in the CV split
+
+The user asked for a sweep across every Phase 3 option. Script: `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`. Write-up: `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`.
+
+**Bug found first.** The CV scripts draw inner val from `sorted(set(block_id))`. 209 pits and 345 pads have no block, so the set holds NaN. That makes the draw process-dependent. Fold 2's training log shows 64 inner-val pits; re-draws gave 63 and 61. Matching logged counts leaves 2-6 candidate sets in 8 of 10 folds, so the real sets cannot be recovered. Held-out folds are unaffected, because they come from the saved assignment CSV. Training scripts are not changed; the fix is logged in BACKLOG.
+
+**Response.** All fitting moved to leave-one-fold-out. For fold k, the proposal cutoff, the Platt calibrator and every policy rule are fitted on the other four folds' held-out blocks. Phases 1-2 were rerun. That supersedes the numbers in the entry below. Pit ranked AP 0.823 -> 0.818 and pad 0.744 -> 0.745. Blob ECE after Platt is now 0.03-0.04. SMRF at IoU 0.5 is now -0.143 (t -3.33, all five folds negative), against -0.085 before. The size depends on the proposal cutoff; the direction does not.
+
+**Sweep.** Cost ratio r 0.5-128, review budget 2-50 candidates/km², conformal recall target 0.60-0.95, and F-β with β 0.5-4. All are scored on the same held-out candidates, with today's F1/F2/deployed pixel cutoffs as reference rows.
+- Every family lands on the same ranked curve. Today's pixel cutoffs sit below it.
+- At equal effort, the deployed pad cutoff 0.70 gives recall 0.640 and precision 0.556. A ranked cut gives 0.822 and 0.717.
+- The deployed pit cutoff 0.60 gives 0.809 and 0.695, against 0.881 and 0.759.
+- The conformal rule meets its block-mean target to within 0.009. The budget is the most stable across folds: pads at 30/km² range 0.628-0.674.
+- Cost-ratio regret is 1-18%.
+No policy is chosen. That is the user's call.
+
+Palette: lost/found plus sky `#5FB4E0`, validated with `--pairs all` (worst pair ΔE 21.1 deutan). Outputs: `data/9t/results/operating_point/policy_sweep_*` and `data/9t/results/operating_point/figures/policy_sweep_*`. Literature: Elkan 2001 added; Angelopoulos 2022 moved to adopted.
+
+---
+
 ## 2026-09-23 -- operating-point plan, Phases 0-2: threshold-free PR and calibration
 
 The user asked how to choose precision against recall without hand-set cutoffs. Plan written to `docs/iterations/operating_point_policy_plan.md`. Phases 0-2 run. Phase 3 waits on one user decision.

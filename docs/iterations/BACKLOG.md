@@ -4,13 +4,16 @@ Live list of deferred ideas and open follow-ups. Check this before proposing new
 
 ## Operating point: choose precision against recall by policy, not by hand (added 2026-09-23) — OPEN
 
-Plan: `docs/iterations/operating_point_policy_plan.md`. Phases 0–2 are done. Results: `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md`.
+Plan: `docs/iterations/operating_point_policy_plan.md`. Phases 0–2 are done. Phase 3 is swept. Results: `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md` and `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`.
 
-- **Phase 3 needs one user decision:** the cost ratio, a review budget (K candidates per km²), or a conformal recall guarantee. Recommended: the review budget. The FROC table already gives recall at each budget.
+- **Phase 3 needs one user decision:** the cost ratio, a review budget (K candidates per km²), or a conformal recall guarantee. All are swept. Recommended: the review budget, which is the most stable across folds and needs no labels on a new tile.
+- **CV inner-val split is not reproducible (bug, found 2026-09-23).** `_pit_unet_cv5.py` and `_pad_unet_cv5.py` build `rest = sorted(set(man.block_id.unique()) - set(held_blocks))`. 209 pits and 345 pads have no block, so the set holds NaN, and NaN makes both set order and `sorted()` process-dependent. Fold 2 logged 64 inner-val pits; re-draws gave 63 and 61. Proposed one-line fix: drop NaN before sorting. That changes future splits, so it needs a decision before the next CV retrain. Evaluation now uses leave-one-fold-out fitting and does not depend on it.
+- **Features with no block are never scored by CV.** That is 209 of 712 pits and 345 of 995 pads. The LEADERBOARD headings say "all 712 pits" and "all 995 pads", but 503 and 650 are scored. Check whether these features sit off the block grid, and fix the headings.
+- **The deployed pad cutoff is the worst operating point measured.** At the same 41 candidates/km², a ranked cut gives recall 0.822 and precision 0.717, against 0.640 and 0.556.
 - **The deployed cutoffs disagree with CV.** `notebooks/wellsight_v2/s4_infer/_postfilter_tile_candidates.py` uses pit 0.60, pad 0.70, and minimum areas of 20 and 300 m². 158 of 712 annotated pit floors (22%) are smaller than 20 m². Not changed yet. Escalated to the user. Phase 3 replaces all four.
 - **Cut the ranked list, not the pixel map.** Raising the pixel cutoff shrinks blobs until they miss IoU, so pit precision falls above cutoff 0.58. Any operating point should be a rank cut at a fixed proposal cutoff.
-- **Calibrate with Platt before any cost-based cut.** Raw blob ECE is 0.16–0.20. After Platt it is 0.04–0.05. Isotonic overfits pits (log loss 0.683 against 0.485).
-- **SMRF may outline pits worse at IoU 0.5.** Ranked ΔAP is −0.085. The block bootstrap CI excludes zero, but the paired t is only −1.77. A second seed per arm would settle it.
+- **Calibrate with Platt before any cost-based cut.** Raw blob ECE is 0.17–0.20. After a leave-one-fold-out Platt fit it is 0.03–0.04. Isotonic has worse log loss on every model.
+- **SMRF outlines pits worse at IoU 0.5.** Ranked ΔAP is −0.143, with all five folds negative (t −3.33). The size depends on the proposal cutoff (−0.085 under the first run's cutoffs). A second seed per arm would pin down the size.
 - **Phase 4 test to run first:** does the road α bump (0.60 → 0.72) change the ranked-list AP, or only the calibration? The pixel intercepts here (−0.7 to −1.9) show α is shifting scores. It needs pit/pad per-pixel records like these for the road model.
 - **Phase 5 is the biggest bias fix.** Every precision is a lower bound until detections are reviewed blind and stratified by score.
 - **Save logits, not only one class probability,** in future CV runs. Then a true softmax temperature can be fitted.

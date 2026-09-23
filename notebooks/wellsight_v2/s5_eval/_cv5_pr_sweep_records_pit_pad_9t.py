@@ -12,6 +12,11 @@ never saved:
     the inner-val and held-out splits, so scores can be calibrated on inner val
     and checked on held-out
 
+NOTE (2026-09-23): the inner-val rows are recorded but no longer used. The
+inner-val split cannot be reproduced (NaN block ids make `sorted(set(...))`
+process-dependent), so all fitting downstream is leave-one-fold-out on the
+held-out rows. See `_cv5_pr_calibration_pit_pad_9t.py`.
+
 This script only records. `_cv5_pr_calibration_pit_pad_9t.py` does the analysis.
 No training and no GPU. It reads the five fold probability rasters that
 `_pit_unet_cv5.py` / `_pad_unet_cv5.py` already wrote, rebuilds each fold's

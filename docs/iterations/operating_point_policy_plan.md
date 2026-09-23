@@ -1,8 +1,9 @@
 # Operating-point policy plan: choosing precision against recall without hand-picked cutoffs
 
 **Date:** 2026-09-23
-**Status:** Phases 0–2 done. Phases 3–6 are not started. Phase 3 needs one decision from the user.
+**Status:** Phases 0–2 done. Phase 3 is swept, and its policy choice is pending with the user. Phases 4–6 are not started.
 **Phase 1–2 results:** `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md`
+**Phase 3 sweep:** `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`
 
 ## The problem
 
@@ -31,7 +32,7 @@ Every other value is either derived from data or searched by cross-validation.
 | 0 | Inventory every hand-set value | grep | **done** (below) |
 | 1 | Threshold-free model comparison: AP, FROC, block bootstrap, paired tests | CPU, saved fold rasters | **done** |
 | 2 | Calibrate scores so a score means a probability | CPU, saved fold rasters | **done** |
-| 3 | Set the operating point from a stated policy | **one user decision** | not started |
+| 3 | Set the operating point from a stated policy | **one user decision** | **swept 2026-09-23; choice pending** |
 | 4 | Search training weights by nested CV; test whether the α bump was only a threshold shift | GPU | not started |
 | 5 | Blind, stratified review of detections to measure precision without annotation gaps | analyst time | not started |
 | 6 | Learn pit/pad/road fusion weights by stacked logistic regression | CPU | not started |
@@ -48,7 +49,9 @@ Only one of these is chosen, and it is recorded here once chosen.
 3. **Recall guarantee.** Conformal risk control picks the cutoff that holds recall at or above a stated target.
    The guarantee holds in finite samples.
 
-Recommended: the review budget. It matches how candidates are used in the field.
+Recommended: the review budget. It matches how candidates are used in the field. The sweep also shows it is the most stable across folds, and it needs no labels on a new tile.
+
+**Chosen policy:** _not yet chosen._
 
 ## Phase 0: inventory of hand-set values
 

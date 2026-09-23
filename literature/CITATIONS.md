@@ -52,7 +52,8 @@ is the source of record.
 | Zadrozny & Elkan | 2002 | Isotonic-regression calibration | **Adopted** — isotonic calibration of blob scores, fit on inner val | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `zadrozny_elkan_2002_isotonic_calibration.pdf` |
 | Niculescu-Mizil & Caruana | 2005 | When Platt vs isotonic calibration works | Why both calibrators are compared, and why isotonic needs more data | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `niculescu_mizil_caruana_2005_predicting_good_probabilities.pdf` |
 | Naeini, Cooper & Hauskrecht | 2015 | Expected calibration error (ECE) | **Adopted** — ECE on held-out blobs and pixels | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `naeini_2015_bayesian_binning_ece.pdf` |
-| Angelopoulos et al. | 2022 | Conformal risk control | *Candidate* — Phase 3 recall-guarantee policy option | `docs/iterations/operating_point_policy_plan.md` | ✓ `angelopoulos_2022_conformal_risk_control.pdf` |
+| Angelopoulos et al. | 2022 | Conformal risk control | **Adopted** — recall-guarantee policy in the Phase 3 sweep | `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`; `data/9t/results/operating_point/policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv` | ✓ `angelopoulos_2022_conformal_risk_control.pdf` |
+| Elkan | 2001 | Cost-sensitive decision threshold p* = C_FP/(C_FP+C_FN) | **Adopted** — cost-ratio policy in the Phase 3 sweep | `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`; `data/9t/results/operating_point/policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv` | ✓ `elkan_2001_foundations_cost_sensitive_learning.pdf` |
 
 ---
 
@@ -382,6 +383,13 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 ### Angelopoulos, Bates, Fisch, Lei & Schuster 2022 — conformal risk control
 - **Citation:** Angelopoulos, A.N., Bates, S., Fisch, A., Lei, L., Schuster, T. (2022). "Conformal Risk Control." arXiv:2208.02814 (v4, 2025); *ICLR 2024*.
 - **About:** Picks a cutoff on calibration data so that the expected value of a chosen loss stays below a target. The guarantee holds in finite samples.
-- **Candidate use:** Phase 3 option 3. It would pick the cutoff that holds recall at or above a stated target.
-- **Generated:** `docs/iterations/operating_point_policy_plan.md`.
+- **Used for:** The recall-guarantee family in the Phase 3 sweep. The loss per calibration block is the share of its annotated features missed. The rule is the highest cut whose (n × mean loss + 1)/(n + 1) is ≤ 1 − ρ. Calibration blocks are the other four folds' held-out blocks. Held-out block-mean recall met the target to within 0.009.
+- **Generated:** `docs/iterations/operating_point_policy_plan.md`; `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`; `data/9t/results/operating_point/policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv`; `data/9t/results/operating_point/figures/policy_sweep_promise_check_conformal_cost_regret_budget_heldout_cv5_iou0p30_pit_pad_9t.png`; `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`.
 - **Source:** https://arxiv.org/abs/2208.02814 — local copy `literature/papers/angelopoulos_2022_conformal_risk_control.pdf`.
+
+### Elkan 2001 — the cost-sensitive decision threshold
+- **Citation:** Elkan, C. (2001). "The Foundations of Cost-Sensitive Learning." *Proc. IJCAI 2001*, 973–978.
+- **About:** With calibrated probabilities, the cost-minimising decision is to act when p ≥ C_FP / (C_FP + C_FN). The threshold follows from the costs alone, with no tuning.
+- **Used for:** The cost-ratio family in the Phase 3 sweep. The rule keeps a candidate when its Platt-calibrated p ≥ 1/(1 + r), where r = C_FN/C_FP. It is checked by regret against the best cut in hindsight.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`; `data/9t/results/operating_point/policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv`; `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`.
+- **Source:** https://cseweb.ucsd.edu/~elkan/rescale.pdf — local copy `literature/papers/elkan_2001_foundations_cost_sensitive_learning.pdf`.

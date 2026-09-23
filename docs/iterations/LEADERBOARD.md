@@ -91,15 +91,19 @@ See [[pit_optimize]].
 
 ### Threshold-free ranking, pit and pad CV5, ann712 — 2026-09-23
 
-**Use this table to compare models.** It needs no cutoff. Candidates are each fold's blobs at a proposal cutoff chosen on inner val for recall alone. They are ranked by score. AP is the area under the held-out precision-recall curve (VOC envelope). Brackets are the 95% block bootstrap. Full write-up: `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md`.
+**Use this table to compare models.** It needs no cutoff. Candidates are each fold's blobs at a proposal cutoff chosen for recall alone, leave-one-fold-out (on the other four folds' held-out blocks; inner val is not reproducible, see the write-up). They are ranked by score. AP is the area under the held-out precision-recall curve (VOC envelope). Brackets are the 95% block bootstrap. Full write-up: `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md`.
 
 | Model | ranked AP @IoU 0.3 | per-fold sd | ranked AP @IoU 0.5 | recall ceiling @0.3 | recall at 10 FP/km² @0.3 |
 |---|---|---|---|---|---|
-| pit, vendor ground (`pit/unet_cv5`) | **0.823** [0.787–0.857] | 0.052 | 0.650 [0.600–0.703] | 0.940 | 0.893 |
-| pit, SMRF ground (`pit/unet_cv5_smrf`) | **0.820** [0.778–0.862] | 0.036 | 0.565 [0.513–0.620] | 0.930 | 0.881 |
-| pad, vendor ground (`pad/unet_cv5`) | **0.744** [0.702–0.789] | 0.042 | 0.592 [0.542–0.646] | 0.906 | 0.771 |
+| pit, vendor ground (`pit/unet_cv5`) | **0.818** [0.778–0.857] | 0.051 | 0.637 [0.580–0.697] | 0.946 | 0.903 |
+| pit, SMRF ground (`pit/unet_cv5_smrf`) | **0.818** [0.780–0.856] | 0.038 | 0.495 [0.430–0.564] | 0.934 | 0.869 |
+| pad, vendor ground (`pad/unet_cv5`) | **0.745** [0.703–0.789] | 0.035 | 0.582 [0.532–0.634] | 0.900 | 0.774 |
 
 Numbers come from `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`. Precision counts unannotated real features as false, so every AP here is a lower bound. Do not compare these with the pixel-cutoff-sweep APs in the same JSON. Those mix outlining with ranking.
+
+SMRF against vendor, paired: no difference at IoU 0.3. At IoU 0.5, SMRF is 0.143 lower, with all five folds negative (t −3.33).
+
+Operating points for these models, and how today's pixel cutoffs compare with ranked cuts at the same effort: `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`.
 
 ### Pits, 5-fold cross-validated — all 712 pits, ann712, 2026-09-17
 

@@ -19,6 +19,11 @@ by score. Walking down the list traces the curve.
             (Everingham et al. 2010).
   FROC      recall against false positives per km2 of held-out ground
             (Chakraborty 1989). Phase 3's review-budget policy reads from it.
+  CI        95% block bootstrap, resampling 375 m blocks within each fold.
+            Blocks are the unit the folds were split on, so resampling pits
+            would understate the spread (pits cluster on pads).
+  paired    vendor vs SMRF ground: per-fold AP difference, paired t, and a
+            paired bootstrap on the same resampled blocks.
 
 SECONDARY -- the pixel-cutoff sweep, 0.05 to 0.95. Kept, and clearly labelled,
 because it was the first design and it shows something useful. Raising the
@@ -26,23 +31,20 @@ cutoff shrinks blobs to their cores, so they stop matching the annotated
 outline. Pit precision peaks near cutoff 0.58 and then FALLS. The sweep curve
 therefore mixes outlining with ranking. Raising the pixel cutoff is the wrong
 lever for precision.
-  CI        95% block bootstrap, resampling 375 m blocks within each fold.
-            Blocks are the unit the folds were split on, so resampling pits
-            would understate the spread (pits cluster on pads).
-  paired    vendor vs SMRF ground: per-fold AP difference, paired t, and a
-            paired bootstrap on the same resampled blocks.
 
 Phase 2 asks whether a score means a probability. Two levels:
 
-  object    candidate blobs at a PROPOSAL cutoff, chosen per fold on inner val
-            as the cutoff with the highest inner-val recall (ties -> higher
-            cutoff). Recall is the only criterion, so this cutoff decides what
-            reaches the ranked list, not the precision/recall balance. Each
-            blob's score is its mean probability (as in the CV scripts). A
-            Platt fit (Platt 1999) and an isotonic fit (Zadrozny & Elkan 2002)
-            are trained on inner-val blobs and checked on held-out blobs.
+  object    candidate blobs at a PROPOSAL cutoff: for fold k, the cutoff with
+            the highest recall pooled over the OTHER four folds' held-out
+            blocks (ties -> higher cutoff). Recall is the only criterion, so
+            this cutoff decides what reaches the ranked list, not the
+            precision/recall balance. Each blob's score is its mean probability
+            (as in the CV scripts). A Platt fit (Platt 1999) and an isotonic fit
+            (Zadrozny & Elkan 2002) are trained on the other four folds'
+            held-out blobs and checked on fold k's.
   pixel     the raw floor/pad probability against the label raster. A Platt fit
-            on logit(p) is temperature scaling (Guo et al. 2017) plus a bias
+            on logit(p), again trained on the other four folds' held-out
+            pixels, is temperature scaling (Guo et al. 2017) plus a bias
             term. Only one class probability was saved, so the full softmax
             temperature cannot be fitted. The fitted slope says whether the
             net is over- or under-confident; the intercept shows how far focal
@@ -53,6 +55,22 @@ Phase 2 asks whether a score means a probability. Two levels:
 
 Both calibrators are monotone, so neither changes AP. They change what a score
 MEANS, which Phase 3's cost-ratio policy needs.
+
+WHY LEAVE-ONE-FOLD-OUT, NOT INNER VAL
+-------------------------------------
+The first run fitted everything on each fold's inner-val blocks. That split
+cannot be reproduced. The manifests hold features with no block (209 pits, 345
+pads), so the CV scripts' `sorted(set(block_id))` contains NaN. NaN's hash is
+per-object and sorting around it depends on input order, so the inner-val draw
+changes between processes. The pit training log shows 64 inner-val pits in
+fold 2, and a re-draw gives 63 or 61. Matching the logged counts leaves 2-6
+candidate sets in 8 of 10 folds, so the true sets cannot be recovered. A
+re-drawn "inner val" can therefore include blocks the fold's model trained on.
+
+Fold k's other-fold held-out blocks were each scored by a model that never saw
+them. Fitting on them is clean and reproducible, and it never reads fold k's
+labels. It assumes the five fold models behave alike. That is also the honest
+deployment case, where a calibrator fitted on known ground meets a new tile.
 
 KNOWN BIAS, STATED
 ------------------
@@ -225,16 +243,23 @@ def paired_compare(summary, boot_store, names):
 
 
 def proposal_thr(counts: pd.DataFrame, k: int) -> tuple[float, float]:
-    """Fold k's proposal cutoff: highest INNER-VAL recall at IoU 0.3, ties -> higher.
+    """Fold k's proposal cutoff: highest recall pooled over the OTHER folds'
+    held-out blocks, at IoU 0.3, ties -> higher.
 
     Recall is the only criterion. This cutoff decides which blobs reach the
     ranked list. It does not set the precision/recall balance -- the rank
-    cut in Phase 3 does that. Held-out data are never read here.
+    cut in Phase 3 does that. Fold k's own labels are never read here.
     """
-    v = counts[(counts.split == "val") & (counts.tau == 0.3) & (counts.fold == k)]
-    r = (v.tp_gt / v.n_gt).to_numpy()
+    h = counts[(counts.split == "heldout") & (counts.tau == 0.3) & (counts.fold != k)]
+    g = h.groupby("thr")[["tp_gt", "n_gt"]].sum()
+    r = (g.tp_gt / g.n_gt).to_numpy()
     best = r.max()
-    return float(v.thr.to_numpy()[np.isclose(r, best)].max()), float(best)
+    return float(g.index.to_numpy()[np.isclose(r, best)].max()), float(best)
+
+
+def calibration_blobs(objs: pd.DataFrame, k: int, thr: float) -> pd.DataFrame:
+    """The other four folds' held-out blobs at fold k's proposal cutoff."""
+    return objs[(objs.split == "heldout") & (objs.fold != k) & np.isclose(objs.thr, thr)]
 
 
 def ranked_curves(order_w: np.ndarray, tp: np.ndarray, n_gt: np.ndarray,
@@ -282,8 +307,8 @@ def phase1_ranked(names):
         bidx = {(int(f), int(b)): i for i, (f, b) in enumerate(blocks)}
         props[name] = {k: proposal_thr(counts, k) for k in range(K)}
         summary[name] = {"proposal_thr_per_fold": {k: v[0] for k, v in props[name].items()},
-                         "inner_val_recall_at_proposal": {k: round(v[1], 4)
-                                                          for k, v in props[name].items()}}
+                         "other_folds_recall_at_proposal": {k: round(v[1], 4)
+                                                            for k, v in props[name].items()}}
         for tau in (0.3, 0.5):
             sel_o, ngt_b = [], np.zeros(len(blocks))
             for k in range(K):
@@ -468,8 +493,8 @@ def phase2_objects(name):
     pooled_y = []
     for k in range(K):
         t_prop, best = proposal_thr(counts, k)
-        o = objs[(objs.fold == k) & np.isclose(objs.thr, t_prop)]
-        ov, oh = o[o.split == "val"], o[o.split == "heldout"]
+        ov = calibration_blobs(objs, k, t_prop)
+        oh = objs[(objs.fold == k) & (objs.split == "heldout") & np.isclose(objs.thr, t_prop)]
         xv, yv = ov.score.to_numpy(), ov.is_tp.to_numpy(int)
         xh, yh = oh.score.to_numpy(), oh.is_tp.to_numpy(int)
         lr, a, b = fit_platt(xv, yv)
@@ -480,8 +505,8 @@ def phase2_objects(name):
             pooled[m].append(ph[m])
         pooled_y.append(yh)
         n_gt = int(held[(held.fold == k) & np.isclose(held.thr, t_prop)].n_gt.sum())
-        per = dict(fold=k, proposal_thr=t_prop, inner_val_recall_at_proposal=round(best, 4),
-                   n_val_blobs=len(ov), n_heldout_blobs=len(oh), heldout_tp=int(yh.sum()),
+        per = dict(fold=k, proposal_thr=t_prop, other_folds_recall_at_proposal=round(best, 4),
+                   n_calibration_blobs=len(ov), n_heldout_blobs=len(oh), heldout_tp=int(yh.sum()),
                    heldout_recall_at_proposal=round(yh.sum() / n_gt, 4),
                    platt_slope=round(a, 3), platt_intercept=round(b, 3))
         for m in pooled:
@@ -501,7 +526,11 @@ def phase2_objects(name):
 
 
 def phase2_pixels(name):
-    """Pixel reliability of the raw probability, and a Platt fit on inner val."""
+    """Pixel reliability of the raw probability, and a leave-one-fold-out Platt fit.
+
+    Every fold's held-out pixels are sampled first. Fold k's calibrator is then
+    fitted on the other four folds' samples, each scored by its own model.
+    """
     cv = MODELS[name]
     man = normalize_ids(pd.read_csv(cv.MANIFEST))
     mdir = {"pit": path_for("models") / "pit" / "unet_cv5",
@@ -516,29 +545,26 @@ def phase2_pixels(name):
         lab = r.read(1)
         tf = r.transform
     rng = np.random.default_rng(SEED)
-    per_fold, ph_all, yh_all, raw_all = [], [], [], []
+    samp = {}
     for k in range(K):
         held_blocks = sorted(man.loc[man.fold == k, "block_id"].unique())
-        rest = sorted(set(man.block_id.unique()) - set(held_blocks))
-        r2 = np.random.default_rng(cv.CV_SEED + 1000 * k)
-        rest_shuf = list(r2.permutation(rest))
-        n_val = max(1, int(round(cv.INNER_VAL_FRAC * len(rest_shuf))))
-        val_blocks = sorted(rest_shuf[:n_val])
         with rasterio.open(mdir / f"fold{k}" / prob_name.format(k=k)) as r:
             prob = r.read(1)
-        samp = {}
-        for s, bids in (("val", val_blocks), ("heldout", held_blocks)):
-            m = _rasterize([(g, 1) for g in blocks[blocks.block_id.isin(bids)].geometry],
-                           out_shape=prob.shape, transform=tf, fill=0,
-                           dtype="uint8").astype(bool)
-            m &= (lab != 255) & (prob >= 0)
-            idx = np.flatnonzero(m)
-            if len(idx) > PIX_SAMPLE:
-                idx = rng.choice(idx, PIX_SAMPLE, replace=False)
-            samp[s] = (prob.ravel()[idx].astype(float), (lab.ravel()[idx] == 1).astype(int))
+        m = _rasterize([(g, 1) for g in blocks[blocks.block_id.isin(held_blocks)].geometry],
+                       out_shape=prob.shape, transform=tf, fill=0, dtype="uint8").astype(bool)
+        m &= (lab != 255) & (prob >= 0)
+        idx = np.flatnonzero(m)
+        if len(idx) > PIX_SAMPLE:
+            idx = rng.choice(idx, PIX_SAMPLE, replace=False)
+        samp[k] = (prob.ravel()[idx].astype(float), (lab.ravel()[idx] == 1).astype(int))
         del prob
-        lr, a, b = fit_platt(*samp["val"])
-        xh, yh = samp["heldout"]
+    per_fold, ph_all, yh_all, raw_all = [], [], [], []
+    for k in range(K):
+        xc = np.concatenate([samp[j][0] for j in range(K) if j != k])
+        yc = np.concatenate([samp[j][1] for j in range(K) if j != k])
+        sub = rng.choice(len(xc), min(len(xc), PIX_SAMPLE), replace=False)
+        lr, a, b = fit_platt(xc[sub], yc[sub])
+        xh, yh = samp[k]
         ph = lr.predict_proba(logit(xh)[:, None])[:, 1]
         e_raw, _ = ece(xh, yh, N_BINS_PIX, equal_count=False)
         e_pl, _ = ece(ph, yh, N_BINS_PIX, equal_count=False)
@@ -618,7 +644,7 @@ def fig_curves(curves, summary, kind, source):
     if source == "ranked":
         head = ("Precision against recall, candidates ranked by score"
                 if kind == "pr" else "Recall against false alarms per km2, candidates ranked by score")
-        foot = ("Candidates are the blobs at each fold's proposal cutoff (highest inner-val recall). "
+        foot = ("Candidates are the blobs at each fold's proposal cutoff (highest recall on the other folds). "
                 "Precision counts unannotated real features as false, so it is a lower bound. "
                 "Brackets: 95% block bootstrap.")
     else:
@@ -646,15 +672,15 @@ def fig_reliability(rels, level, names):
         for m, rows in rels[name].items():
             mp, my, _ = zip(*rows)
             ax.plot(mp, my, color=CAL_COL[m], lw=2, marker=CAL_MRK[m], ms=5,
-                    label={"raw": "raw score", "platt": "Platt, fit on inner val",
-                           "isotonic": "isotonic, fit on inner val"}[m])
+                    label={"raw": "raw score", "platt": "Platt, fit on other folds",
+                           "isotonic": "isotonic, fit on other folds"}[m])
         _style(ax)
         ax.set_xlim(0, 1); ax.set_ylim(0, 1)
         ax.set_xlabel("mean predicted probability in bin", color=INK, fontsize=9)
         ax.set_ylabel("observed hit rate in bin", color=INK, fontsize=9)
         ax.set_title(name, color=INK, fontsize=10, loc="left")
         ax.legend(fontsize=7, frameon=False, loc="upper left", labelcolor=INK)
-    what = ("candidate blobs at the inner-val proposal cutoff, 10 equal-count bins"
+    what = ("candidate blobs at the proposal cutoff, 10 equal-count bins"
             if level == "object" else "pixels, 15 equal-width bins")
     fig.suptitle(f"Does a score mean a probability? Held-out {what}", color=INK,
                  fontsize=10, x=0.01, ha="left")

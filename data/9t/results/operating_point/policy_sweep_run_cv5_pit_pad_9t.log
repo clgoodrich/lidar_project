@@ -1,0 +1,68 @@
+== pit ==
+  pit cost      0.5: R 0.684 [0.639-0.730] P 0.823 cand/km2  25.8 FP/km2   4.6 fold R 0.560-0.780 regret 0.046 (17.6%)
+  pit cost        1: R 0.841 [0.808-0.872] P 0.782 cand/km2  33.5 FP/km2   7.3 fold R 0.760-0.901 regret 0.044 (12.5%)
+  pit cost        2: R 0.891 [0.861-0.918] P 0.745 cand/km2  37.2 FP/km2   9.5 fold R 0.869-0.921 regret 0.048 (10.0%)
+  pit cost        4: R 0.922 [0.899-0.945] P 0.698 cand/km2  41.1 FP/km2  12.4 fold R 0.883-0.941 regret 0.064 (9.8%)
+  pit cost        8: R 0.938 [0.919-0.958] P 0.657 cand/km2  44.4 FP/km2  15.2 fold R 0.903-0.960 regret 0.068 (7.4%)
+  pit cost       16: R 0.944 [0.926-0.962] P 0.620 cand/km2  47.4 FP/km2  18.0 fold R 0.913-0.960 regret 0.121 (9.0%)
+  pit cost       32: R 0.946 [0.928-0.964] P 0.611 cand/km2  48.2 FP/km2  18.7 fold R 0.913-0.970 regret 0.113 (5.1%)
+  pit cost       64: R 0.946 [0.928-0.964] P 0.611 cand/km2  48.2 FP/km2  18.7 fold R 0.913-0.970 regret 0.113 (2.9%)
+  pit cost      128: R 0.946 [0.928-0.964] P 0.611 cand/km2  48.2 FP/km2  18.7 fold R 0.913-0.970 regret 0.113 (1.5%)
+  pit budget      2: R 0.058 [0.038-0.079] P 0.967 cand/km2   1.9 FP/km2   0.1 fold R 0.050-0.070
+  pit budget      5: R 0.147 [0.111-0.185] P 0.937 cand/km2   4.9 FP/km2   0.3 fold R 0.131-0.180
+  pit budget     10: R 0.284 [0.233-0.334] P 0.894 cand/km2   9.9 FP/km2   1.1 fold R 0.253-0.340
+  pit budget     15: R 0.417 [0.367-0.468] P 0.875 cand/km2  14.8 FP/km2   1.9 fold R 0.374-0.490
+  pit budget     20: R 0.541 [0.491-0.592] P 0.845 cand/km2  19.9 FP/km2   3.1 fold R 0.505-0.630
+  pit budget     25: R 0.664 [0.613-0.712] P 0.833 cand/km2  24.8 FP/km2   4.1 fold R 0.604-0.780
+  pit budget     30: R 0.781 [0.739-0.822] P 0.814 cand/km2  29.9 FP/km2   5.6 fold R 0.723-0.900
+  pit budget     40: R 0.909 [0.881-0.935] P 0.717 cand/km2  39.4 FP/km2  11.1 fold R 0.869-0.970
+  pit budget     50: R 0.946 [0.928-0.964] P 0.629 cand/km2  46.8 FP/km2  17.4 fold R 0.913-0.970
+  pit recall    0.6: R 0.646 [0.597-0.692] P 0.833 cand/km2  24.1 FP/km2   4.0 fold R 0.530-0.750 block-mean R 0.613
+  pit recall    0.7: R 0.738 [0.694-0.779] P 0.810 cand/km2  28.3 FP/km2   5.4 fold R 0.590-0.861 block-mean R 0.693
+  pit recall   0.75: R 0.785 [0.744-0.826] P 0.801 cand/km2  30.5 FP/km2   6.1 fold R 0.650-0.870 block-mean R 0.743
+  pit recall    0.8: R 0.829 [0.797-0.861] P 0.787 cand/km2  32.8 FP/km2   7.0 fold R 0.730-0.911 block-mean R 0.791
+  pit recall   0.85: R 0.879 [0.846-0.908] P 0.761 cand/km2  35.9 FP/km2   8.6 fold R 0.840-0.921 block-mean R 0.851
+  pit recall    0.9: R 0.924 [0.901-0.948] P 0.709 cand/km2  40.6 FP/km2  11.8 fold R 0.883-0.950 block-mean R 0.915
+  pit recall   0.95: R 0.946 [0.928-0.964] P 0.611 cand/km2  48.2 FP/km2  18.7 fold R 0.913-0.970 block-mean R 0.941 infeasible 5
+  pit fbeta     0.5: R 0.759 [0.717-0.803] P 0.808 cand/km2  29.2 FP/km2   5.6 fold R 0.650-0.881
+  pit fbeta       1: R 0.857 [0.824-0.887] P 0.764 cand/km2  34.9 FP/km2   8.2 fold R 0.780-0.911
+  pit fbeta       2: R 0.926 [0.903-0.949] P 0.687 cand/km2  41.9 FP/km2  13.1 fold R 0.883-0.950
+  pit fbeta       3: R 0.934 [0.913-0.955] P 0.652 cand/km2  44.6 FP/km2  15.5 fold R 0.883-0.960
+  pit fbeta       4: R 0.940 [0.922-0.959] P 0.632 cand/km2  46.3 FP/km2  17.1 fold R 0.913-0.960
+== pad ==
+  pad cost      0.5: R 0.563 [0.515-0.607] P 0.792 cand/km2  25.5 FP/km2   5.3 fold R 0.419-0.654 regret 0.031 (9.2%)
+  pad cost        1: R 0.743 [0.701-0.782] P 0.750 cand/km2  35.5 FP/km2   8.9 fold R 0.667-0.815 regret 0.035 (7.5%)
+  pad cost        2: R 0.842 [0.808-0.873] P 0.702 cand/km2  42.9 FP/km2  12.8 fold R 0.814-0.885 regret 0.040 (6.3%)
+  pad cost        4: R 0.888 [0.856-0.916] P 0.653 cand/km2  48.7 FP/km2  16.9 fold R 0.864-0.923 regret 0.051 (5.8%)
+  pad cost        8: R 0.900 [0.873-0.925] P 0.587 cand/km2  54.9 FP/km2  22.7 fold R 0.879-0.931 regret 0.111 (8.4%)
+  pad cost       16: R 0.900 [0.873-0.925] P 0.575 cand/km2  56.1 FP/km2  23.9 fold R 0.879-0.931 regret 0.114 (5.3%)
+  pad cost       32: R 0.900 [0.873-0.925] P 0.575 cand/km2  56.1 FP/km2  23.9 fold R 0.879-0.931 regret 0.112 (3.0%)
+  pad cost       64: R 0.900 [0.873-0.925] P 0.575 cand/km2  56.1 FP/km2  23.9 fold R 0.879-0.931 regret 0.112 (1.6%)
+  pad cost      128: R 0.900 [0.873-0.925] P 0.575 cand/km2  56.1 FP/km2  23.9 fold R 0.879-0.931 regret 0.112 (0.8%)
+  pad budget      2: R 0.048 [0.030-0.067] P 0.912 cand/km2   1.9 FP/km2   0.2 fold R 0.038-0.054
+  pad budget      5: R 0.128 [0.101-0.156] P 0.954 cand/km2   4.8 FP/km2   0.2 fold R 0.115-0.140
+  pad budget     10: R 0.238 [0.202-0.278] P 0.871 cand/km2   9.8 FP/km2   1.3 fold R 0.223-0.264
+  pad budget     15: R 0.354 [0.310-0.397] P 0.858 cand/km2  14.8 FP/km2   2.1 fold R 0.346-0.364
+  pad budget     20: R 0.460 [0.411-0.505] P 0.831 cand/km2  19.8 FP/km2   3.4 fold R 0.450-0.470
+  pad budget     25: R 0.558 [0.512-0.601] P 0.807 cand/km2  24.8 FP/km2   4.8 fold R 0.546-0.569
+  pad budget     30: R 0.648 [0.602-0.689] P 0.778 cand/km2  29.8 FP/km2   6.6 fold R 0.628-0.674
+  pad budget     40: R 0.803 [0.763-0.839] P 0.722 cand/km2  39.9 FP/km2  11.1 fold R 0.783-0.853
+  pad budget     50: R 0.889 [0.858-0.917] P 0.640 cand/km2  49.8 FP/km2  17.9 fold R 0.864-0.923
+  pad recall    0.6: R 0.617 [0.570-0.661] P 0.792 cand/km2  27.9 FP/km2   5.8 fold R 0.496-0.723 block-mean R 0.609
+  pad recall    0.7: R 0.700 [0.657-0.741] P 0.763 cand/km2  32.9 FP/km2   7.8 fold R 0.566-0.792 block-mean R 0.697
+  pad recall   0.75: R 0.740 [0.698-0.780] P 0.747 cand/km2  35.5 FP/km2   9.0 fold R 0.667-0.831 block-mean R 0.750
+  pad recall    0.8: R 0.798 [0.760-0.834] P 0.724 cand/km2  39.5 FP/km2  10.9 fold R 0.736-0.869 block-mean R 0.798
+  pad recall   0.85: R 0.845 [0.810-0.877] P 0.705 cand/km2  42.9 FP/km2  12.7 fold R 0.814-0.900 block-mean R 0.844
+  pad recall    0.9: R 0.897 [0.869-0.922] P 0.586 cand/km2  54.8 FP/km2  22.7 fold R 0.876-0.931 block-mean R 0.889 infeasible 4
+  pad recall   0.95: R 0.900 [0.873-0.925] P 0.575 cand/km2  56.1 FP/km2  23.9 fold R 0.879-0.931 block-mean R 0.891 infeasible 5
+  pad fbeta     0.5: R 0.700 [0.655-0.741] P 0.758 cand/km2  33.1 FP/km2   8.0 fold R 0.566-0.792
+  pad fbeta       1: R 0.843 [0.808-0.875] P 0.709 cand/km2  42.6 FP/km2  12.4 fold R 0.814-0.869
+  pad fbeta       2: R 0.886 [0.856-0.914] P 0.652 cand/km2  48.7 FP/km2  17.0 fold R 0.841-0.931
+  pad fbeta       3: R 0.895 [0.866-0.922] P 0.631 cand/km2  50.8 FP/km2  18.7 fold R 0.864-0.931
+  pad fbeta       4: R 0.895 [0.866-0.922] P 0.625 cand/km2  51.3 FP/km2  19.2 fold R 0.864-0.931
+
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.json
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\figures\policy_sweep_recall_vs_candidates_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.png
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\figures\policy_sweep_precision_vs_recall_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.png
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\figures\policy_sweep_promise_check_conformal_cost_regret_budget_heldout_cv5_iou0p30_pit_pad_9t.png

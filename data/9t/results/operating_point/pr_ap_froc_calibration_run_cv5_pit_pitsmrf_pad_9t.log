@@ -1,12 +1,12 @@
 == Phase 1a (headline): ranked candidate list ==
-    pit IoU 0.3: ranked AP 0.823 [0.787, 0.857]  per-fold 0.830 sd 0.052  ceiling 0.940
-    pit IoU 0.5: ranked AP 0.650 [0.600, 0.703]  per-fold 0.653 sd 0.078  ceiling 0.789
-    pit_smrf IoU 0.3: ranked AP 0.820 [0.778, 0.862]  per-fold 0.831 sd 0.036  ceiling 0.930
-    pit_smrf IoU 0.5: ranked AP 0.565 [0.513, 0.620]  per-fold 0.572 sd 0.060  ceiling 0.734
-    pad IoU 0.3: ranked AP 0.744 [0.702, 0.789]  per-fold 0.759 sd 0.042  ceiling 0.906
-    pad IoU 0.5: ranked AP 0.592 [0.542, 0.646]  per-fold 0.607 sd 0.064  ceiling 0.760
-  paired SMRF-vendor IoU 0.3: {'delta_AP_smrf_minus_vendor': -0.0031, 'per_fold_delta': [0.0536, -0.0218, 0.022, -0.0177, -0.0325], 'paired_t_df4': 0.05, 'paired_bootstrap_ci95': [-0.0314, 0.0264], 'share_of_replicates_smrf_better': 0.418}
-  paired SMRF-vendor IoU 0.5: {'delta_AP_smrf_minus_vendor': -0.0851, 'per_fold_delta': [0.0897, -0.1308, -0.1304, -0.0661, -0.1689], 'paired_t_df4': -1.77, 'paired_bootstrap_ci95': [-0.1351, -0.0278], 'share_of_replicates_smrf_better': 0.001}
+    pit IoU 0.3: ranked AP 0.818 [0.778, 0.857]  per-fold 0.833 sd 0.051  ceiling 0.946
+    pit IoU 0.5: ranked AP 0.637 [0.580, 0.697]  per-fold 0.652 sd 0.090  ceiling 0.795
+    pit_smrf IoU 0.3: ranked AP 0.818 [0.780, 0.856]  per-fold 0.829 sd 0.038  ceiling 0.934
+    pit_smrf IoU 0.5: ranked AP 0.495 [0.430, 0.564]  per-fold 0.500 sd 0.131  ceiling 0.686
+    pad IoU 0.3: ranked AP 0.745 [0.703, 0.789]  per-fold 0.757 sd 0.035  ceiling 0.900
+    pad IoU 0.5: ranked AP 0.582 [0.532, 0.634]  per-fold 0.593 sd 0.060  ceiling 0.748
+  paired SMRF-vendor IoU 0.3: {'delta_AP_smrf_minus_vendor': 0.0003, 'per_fold_delta': [0.0428, -0.0623, 0.0134, -0.0277, 0.0137], 'paired_t_df4': -0.22, 'paired_bootstrap_ci95': [-0.0279, 0.029], 'share_of_replicates_smrf_better': 0.474}
+  paired SMRF-vendor IoU 0.5: {'delta_AP_smrf_minus_vendor': -0.1425, 'per_fold_delta': [-0.076, -0.1643, -0.062, -0.1379, -0.317], 'paired_t_df4': -3.33, 'paired_bootstrap_ci95': [-0.1996, -0.0851], 'share_of_replicates_smrf_better': 0.0}
 == Phase 1b (secondary): pixel-cutoff sweep ==
   pit: MATCH at 0.30 on every fold
     IoU 0.3: AP 0.667 [0.621, 0.714]  per-fold sd 0.053  max R 0.946
@@ -20,21 +20,21 @@
   paired SMRF-vendor IoU 0.3: {'delta_AP_smrf_minus_vendor': 0.0119, 'per_fold_delta': [0.0305, -0.0213, 0.0235, -0.0058, 0.0686], 'paired_t_df4': 1.23, 'paired_bootstrap_ci95': [-0.0123, 0.0397], 'share_of_replicates_smrf_better': 0.827}
   paired SMRF-vendor IoU 0.5: {'delta_AP_smrf_minus_vendor': 0.0042, 'per_fold_delta': [0.0393, -0.0576, 0.0511, 0.0056, -0.0166], 'paired_t_df4': 0.22, 'paired_bootstrap_ci95': [-0.0301, 0.0375], 'share_of_replicates_smrf_better': 0.565}
 == Phase 2: calibration ==
-  pit object: {'raw': {'ECE': 0.1832, 'brier': 0.1984, 'nll': 0.5871}, 'platt': {'ECE': 0.0506, 'brier': 0.1568, 'nll': 0.4847}, 'isotonic': {'ECE': 0.0717, 'brier': 0.1601, 'nll': 0.6831}}  base rate 0.6191
-  pit_smrf object: {'raw': {'ECE': 0.2015, 'brier': 0.2037, 'nll': 0.5985}, 'platt': {'ECE': 0.0393, 'brier': 0.1565, 'nll': 0.4787}, 'isotonic': {'ECE': 0.05, 'brier': 0.1611, 'nll': 0.5677}}  base rate 0.6223
-  pad object: {'raw': {'ECE': 0.1567, 'brier': 0.2233, 'nll': 0.6361}, 'platt': {'ECE': 0.0523, 'brier': 0.1776, 'nll': 0.5348}, 'isotonic': {'ECE': 0.0353, 'brier': 0.1805, 'nll': 0.5856}}  base rate 0.5855
-    pit pixel fold 0: slope 2.489 (T 0.40) intercept -0.894  ECE raw 0.0257 -> platt 0.0001
-    pit pixel fold 1: slope 2.491 (T 0.40) intercept -1.189  ECE raw 0.0337 -> platt 0.0001
-    pit pixel fold 2: slope 2.416 (T 0.41) intercept -0.708  ECE raw 0.0236 -> platt 0.0002
-    pit pixel fold 3: slope 2.484 (T 0.40) intercept -0.991  ECE raw 0.0286 -> platt 0.0001
-    pit pixel fold 4: slope 2.540 (T 0.39) intercept -1.008  ECE raw 0.0306 -> platt 0.0002
-  pit pixel pooled: {'raw': {'ECE_all': 0.02842, 'ECE_p_ge_0p05': 0.0873, 'brier': 0.0014}, 'platt': {'ECE_all': 0.00016, 'ECE_p_ge_0p05': 0.0684, 'brier': 0.00046}}
-    pad pixel fold 0: slope 2.621 (T 0.38) intercept -1.706  ECE raw 0.1215 -> platt 0.0039
-    pad pixel fold 1: slope 2.283 (T 0.44) intercept -1.663  ECE raw 0.1239 -> platt 0.0080
-    pad pixel fold 2: slope 2.492 (T 0.40) intercept -1.941  ECE raw 0.1329 -> platt 0.0070
-    pad pixel fold 3: slope 2.135 (T 0.47) intercept -1.495  ECE raw 0.1161 -> platt 0.0042
-    pad pixel fold 4: slope 2.244 (T 0.45) intercept -1.870  ECE raw 0.1097 -> platt 0.0079
-  pad pixel pooled: {'raw': {'ECE_all': 0.12071, 'ECE_p_ge_0p05': 0.1642, 'brier': 0.05715}, 'platt': {'ECE_all': 0.00303, 'ECE_p_ge_0p05': 0.0165, 'brier': 0.03228}}
+  pit object: {'raw': {'ECE': 0.1994, 'brier': 0.202, 'nll': 0.5952}, 'platt': {'ECE': 0.0429, 'brier': 0.1597, 'nll': 0.4923}, 'isotonic': {'ECE': 0.0452, 'brier': 0.1646, 'nll': 0.5438}}  base rate 0.611
+  pit_smrf object: {'raw': {'ECE': 0.1986, 'brier': 0.2089, 'nll': 0.6095}, 'platt': {'ECE': 0.0289, 'brier': 0.1644, 'nll': 0.4986}, 'isotonic': {'ECE': 0.0479, 'brier': 0.1659, 'nll': 0.5228}}  base rate 0.6065
+  pad object: {'raw': {'ECE': 0.173, 'brier': 0.2238, 'nll': 0.6373}, 'platt': {'ECE': 0.0312, 'brier': 0.1736, 'nll': 0.5222}, 'isotonic': {'ECE': 0.0237, 'brier': 0.1737, 'nll': 0.5376}}  base rate 0.5747
+    pit pixel fold 0: slope 2.486 (T 0.40) intercept -0.688  ECE raw 0.0257 -> platt 0.0002
+    pit pixel fold 1: slope 2.417 (T 0.41) intercept -0.764  ECE raw 0.0337 -> platt 0.0002
+    pit pixel fold 2: slope 2.481 (T 0.40) intercept -0.850  ECE raw 0.0237 -> platt 0.0003
+    pit pixel fold 3: slope 2.475 (T 0.40) intercept -0.721  ECE raw 0.0286 -> platt 0.0001
+    pit pixel fold 4: slope 2.450 (T 0.41) intercept -0.778  ECE raw 0.0306 -> platt 0.0002
+  pit pixel pooled: {'raw': {'ECE_all': 0.02842, 'ECE_p_ge_0p05': 0.0878, 'brier': 0.0014}, 'platt': {'ECE_all': 8e-05, 'ECE_p_ge_0p05': 0.0452, 'brier': 0.00045}}
+    pad pixel fold 0: slope 2.320 (T 0.43) intercept -1.648  ECE raw 0.1218 -> platt 0.0028
+    pad pixel fold 1: slope 2.268 (T 0.44) intercept -1.647  ECE raw 0.1237 -> platt 0.0081
+    pad pixel fold 2: slope 2.353 (T 0.42) intercept -1.646  ECE raw 0.1330 -> platt 0.0049
+    pad pixel fold 3: slope 2.407 (T 0.42) intercept -1.668  ECE raw 0.1160 -> platt 0.0052
+    pad pixel fold 4: slope 2.360 (T 0.42) intercept -1.653  ECE raw 0.1099 -> platt 0.0024
+  pad pixel pooled: {'raw': {'ECE_all': 0.1208, 'ECE_p_ge_0p05': 0.1644, 'brier': 0.05713}, 'platt': {'ECE_all': 0.00153, 'ECE_p_ge_0p05': 0.0071, 'brier': 0.03214}}
 
 wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json
 wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\pr_froc_curve_points_ranked_candidates_heldout_cv5_pit_pitsmrf_pad_9t.csv
