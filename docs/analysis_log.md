@@ -5,6 +5,71 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-23 -- 9t change classification re-derived on the single-ICP DoD
+
+Part 3 (2026-07-31) rebuilt the 9t DoD with ONE ICP solve and flagged Part 2's
+classification as stale: it was tuned against per-tile bias blocks that the
+rebuild removed at the source. This pass re-runs it on the right input. No new
+ICP solve, no new data -- the older survey is still
+USGS_LPC_PA_STATEWIDE_N_2006_2008 tiles 002958/002959/003111/003112
+(EPSG:2271 forced, US survey feet), the newer is USGS_LPC_PA_WesternPA_2019_D20.
+
+`_icp_change_classify_9t.py` now takes `--source {original,singleicp}`, which
+selects the input DoD and tags every output. Default is `singleicp`. All other
+parameters are unchanged from Part 2, so the two runs are directly comparable.
+
+| | Part 2 (four-solve DoD) | this pass (single-ICP DoD) |
+|---|---|---|
+| raw robust sigma | 0.136 m | 0.1119 m |
+| after destripe | 0.107 m | 0.0845 m |
+| after 400 m high-pass | 0.087 m | **0.0784 m** |
+| broad field removed (std) | 0.057 m | 0.0261 m |
+| detection threshold | ~0.4 m floor | **0.235 m** |
+| matched ACF sigma (null) | 4.0 px | 3.0 px |
+| patches >= 200 m2 | 367 | 240 |
+| null patches | 57 +/- 5 | 11.6 +/- 3.6 |
+| observed / null, patches | 6.4x | **20.6x** |
+| observed / null, area | 28.2x | **93.1x** |
+| reliability cutoff | 712 m2 | 420 m2 |
+| channel enrichment (reliable) | 1.34x | 1.39x |
+| fluvial / mass wasting / anthropogenic | 275 / 5 / 87 | 206 / 12 / 22 |
+| reliable anthropogenic | 16 patches, 2.65 ha | **11 patches, 1.58 ha** |
+
+The patch count fell but the signal-to-null ratio tripled. Part 2's extra 65
+non-erosional patches were bias blocks being segmented as change.
+
+Largest reliable non-erosional patch: #267, a 3,016 m2 cut averaging -1.11 m at
+623978, 4596537 (EPSG:6346), 2 m from a mapped road. That is 2.3x the largest
+Part 2 found. 4 of the 11 sit directly on a mapped road and 9 of 11 within 35 m,
+so road maintenance and skid-trail work remains the best explanation for the set.
+
+Inspected the crops rather than trusting the table: #267, #899 and #1530 are
+still red/blue dipoles across linear terrain edges, which is the two surveys
+resolving the same road cut differently, not change. #20 and #391 are coherent
+rectangular fills with no paired cut and are the two most likely to be real.
+Nothing from this set is quoted as a finding yet.
+
+No wells claim. Part 3 established that any DoD test against
+`well_head_pts_reprojected.gpkg` is circular -- those are 861 pits digitised on
+the 2019 DEM, and the sparse 2006-08 survey resolves only 72% of their depth.
+`well_dist_m` is carried as an attribute only. These 11 are candidate recent
+earthworks, not candidate wells.
+
+Outputs in `data/_experiments/icp/change_9t/`:
+`dod_9t_singleicp_destriped_2m.tif`, `dod_9t_singleicp_highpass_2m.tif`,
+`change_class_9t_singleicp_2m.tif`, `change_class_reliable_9t_singleicp_2m.tif`,
+`dod_9t_singleicp_nonerosional_2m.tif`, `change_patches_9t_singleicp.gpkg`,
+`change_classified_9t_singleicp.png`, `top_changes_9t_singleicp.png`,
+`_classify_9t_singleicp.json`. Part 2's untagged rasters are left in place and
+are superseded.
+
+Write-up: `docs/iterations/icp_change_9t.md` Part 4.
+Reproduce: `python notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py --source singleicp`
+
+Large-file audit run after the write: no >100 MB file is unignored.
+
+---
+
 ## 2026-09-22 -- the anticipated-questions document brought onto the audited numbers
 
 `docs/presentation/anticipated_questions_and_answers.md` was written 2026-09-21

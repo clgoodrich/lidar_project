@@ -476,15 +476,21 @@ write-up). Deferred refinements from that same advice:
   non-DEM-derived well list (DEP permit coordinates) before any further
   validation against "known wells".** Audit past work that used this layer as
   ground truth.
-- **[STALE 2026-07-31] Part 2 outputs derive from the superseded DoD.**
-  `change_class_9t_2m.tif`, `change_class_reliable_9t_2m.tif`,
-  `dod_9t_nonerosional_2m.tif`, `change_patches_9t.gpkg`. The destripe/
-  high-pass stack was tuned against blocky artifacts that no longer exist;
-  re-derive on `dod_9t_singleicp_2m.tif` before trusting the 16 "reliable
-  non-erosional patches".
-- **Destriping is the only lever left on the 9t DoD.** Row-mean std 0.0786 m
-  (3.7x the column-mean std); removing row+col means takes sigma 0.1119 →
-  0.0877 m, a 22% gain.
+- **[DONE 2026-09-23] Part 2 re-derived on the single-ICP DoD.**
+  `_icp_change_classify_9t.py --source singleicp`. Sigma 0.1119 → 0.0784 m,
+  detection threshold 0.235 m (was a ~0.4 m floor), observed/null 6.4x → 20.6x
+  patches and 28.2x → 93.1x area. Reliable non-erosional set shrank 16 patches
+  / 2.65 ha → **11 patches / 1.58 ha** — Part 2's extra patches were bias
+  blocks. Use the `_9t_singleicp` tagged outputs; the untagged Part 2 rasters
+  are superseded. See [[icp_change_9t]] Part 4.
+- **[DONE 2026-09-23] Destriping applied.** Row-median std 0.0726 m → 3.2e-5 m;
+  destripe + 400 m edge-preserving high-pass takes sigma 0.1119 → 0.0784 m, a
+  30% gain (the 22% estimate was row+col means alone).
+- **Manual triage of the 11 reliable non-erosional patches (added 2026-09-23).**
+  The crops in `top_changes_9t_singleicp.png` still show dipoles (#267, #899,
+  #1530) — the two surveys resolving the same road cut differently. #20 and
+  #391 are coherent rectangular fills and are the two worth checking first. No
+  patch is quoted as a finding until this is done.
 - **[SUPERSEDED] Rebuild the 9t DoD — the shipped one fails its own
   reconstruct test.** `dem_diff_2m.tif` covers 99.97% of 9t while the
   `dem_new_2m.tif` it was supposedly built from covers 44.4%, and

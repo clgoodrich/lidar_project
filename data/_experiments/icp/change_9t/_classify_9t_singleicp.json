@@ -1,0 +1,204 @@
+{
+  "sigma_raw": 0.11193702392578124,
+  "sigma_destriped": 0.08446107130050659,
+  "sigma_highpass": 0.07842890140414238,
+  "broad_field_std_removed": 0.02614843286573887,
+  "bg_window_m": 400.0,
+  "row_median_std_before": 0.07263699918985367,
+  "row_median_std_after": 3.246326741646044e-05,
+  "threshold_m": 0.23528670421242714,
+  "n_patches": 240,
+  "null": {
+    "acf_sigma_px": 3.0,
+    "acf_err": 0.13101787865161896,
+    "n_sims": 8,
+    "patches_mean": 11.625,
+    "patches_std": 3.5685256059050494,
+    "area_ha_mean": 0.28085,
+    "largest_m2_mean": 331.0,
+    "largest_m2_max": 420.0
+  },
+  "observed_over_null": {
+    "patches": 20.65,
+    "area": 93.11
+  },
+  "reliable_area_m2": 420.0,
+  "min_area_m2": 200.0,
+  "params": {
+    "channel_loga": 4.0,
+    "channel_buf_m": 40.0,
+    "steep_deg": 18.0,
+    "road_buf_m": 30.0
+  },
+  "by_class": {
+    "fluvial": {
+      "n": 206,
+      "n_reliable": 121,
+      "area_ha": 21.28,
+      "abs_vol_m3": 83977.6
+    },
+    "mass_wasting": {
+      "n": 12,
+      "n_reliable": 6,
+      "area_ha": 0.37,
+      "abs_vol_m3": 2927.9
+    },
+    "anthropogenic": {
+      "n": 22,
+      "n_reliable": 11,
+      "area_ha": 1.58,
+      "abs_vol_m3": 8879.3
+    }
+  },
+  "channel_fraction": {
+    "all patches": 0.858,
+    "reliable only": 0.877
+  },
+  "top_anthropogenic": [
+    {
+      "patch_id": 267,
+      "sign": "cut",
+      "mean_dz_m": -1.112,
+      "area_m2": 3016.0,
+      "abs_volume_m3": 3353.5,
+      "slope_deg": 10.1,
+      "chan_dist_m": 50.4,
+      "road_dist_m": 2.0,
+      "well_dist_m": 74.7,
+      "x": 623977.7,
+      "y": 4596536.8
+    },
+    {
+      "patch_id": 836,
+      "sign": "fill",
+      "mean_dz_m": 0.431,
+      "area_m2": 3324.0,
+      "abs_volume_m3": 1434.1,
+      "slope_deg": 13.6,
+      "chan_dist_m": 48.1,
+      "road_dist_m": 27.2,
+      "well_dist_m": 121.5,
+      "x": 623000.5,
+      "y": 4595196.0
+    },
+    {
+      "patch_id": 899,
+      "sign": "cut",
+      "mean_dz_m": -0.826,
+      "area_m2": 1568.0,
+      "abs_volume_m3": 1294.7,
+      "slope_deg": 7.8,
+      "chan_dist_m": 50.6,
+      "road_dist_m": 0.0,
+      "well_dist_m": 63.7,
+      "x": 620120.3,
+      "y": 4595108.7
+    },
+    {
+      "patch_id": 20,
+      "sign": "fill",
+      "mean_dz_m": 0.318,
+      "area_m2": 2180.0,
+      "abs_volume_m3": 693.1,
+      "slope_deg": 17.2,
+      "chan_dist_m": 62.0,
+      "road_dist_m": 0.0,
+      "well_dist_m": 338.6,
+      "x": 623621.8,
+      "y": 4597396.5
+    },
+    {
+      "patch_id": 1530,
+      "sign": "cut",
+      "mean_dz_m": -0.59,
+      "area_m2": 836.0,
+      "abs_volume_m3": 493.3,
+      "slope_deg": 16.2,
+      "chan_dist_m": 69.0,
+      "road_dist_m": 0.0,
+      "well_dist_m": 195.0,
+      "x": 621586.2,
+      "y": 4593364.7
+    },
+    {
+      "patch_id": 391,
+      "sign": "fill",
+      "mean_dz_m": 0.305,
+      "area_m2": 1516.0,
+      "abs_volume_m3": 462.2,
+      "slope_deg": 0.7,
+      "chan_dist_m": 62.5,
+      "road_dist_m": 37.9,
+      "well_dist_m": 268.7,
+      "x": 621642.9,
+      "y": 4596163.0
+    },
+    {
+      "patch_id": 109,
+      "sign": "fill",
+      "mean_dz_m": 0.363,
+      "area_m2": 820.0,
+      "abs_volume_m3": 297.6,
+      "slope_deg": 17.5,
+      "chan_dist_m": 71.5,
+      "road_dist_m": 34.9,
+      "well_dist_m": 102.0,
+      "x": 623827.6,
+      "y": 4597130.3
+    },
+    {
+      "patch_id": 786,
+      "sign": "cut",
+      "mean_dz_m": -0.335,
+      "area_m2": 744.0,
+      "abs_volume_m3": 249.2,
+      "slope_deg": 1.0,
+      "chan_dist_m": 57.3,
+      "road_dist_m": 24.0,
+      "well_dist_m": 60.7,
+      "x": 621682.2,
+      "y": 4595313.5
+    },
+    {
+      "patch_id": 519,
+      "sign": "cut",
+      "mean_dz_m": -0.355,
+      "area_m2": 668.0,
+      "abs_volume_m3": 237.4,
+      "slope_deg": 17.9,
+      "chan_dist_m": 62.3,
+      "road_dist_m": 43.7,
+      "well_dist_m": 48.2,
+      "x": 623867.0,
+      "y": 4595717.7
+    },
+    {
+      "patch_id": 114,
+      "sign": "fill",
+      "mean_dz_m": 0.34,
+      "area_m2": 696.0,
+      "abs_volume_m3": 236.9,
+      "slope_deg": 9.7,
+      "chan_dist_m": 135.4,
+      "road_dist_m": 29.7,
+      "well_dist_m": 18.0,
+      "x": 623914.9,
+      "y": 4597126.7
+    },
+    {
+      "patch_id": 329,
+      "sign": "fill",
+      "mean_dz_m": 0.297,
+      "area_m2": 428.0,
+      "abs_volume_m3": 127.3,
+      "slope_deg": 8.0,
+      "chan_dist_m": 78.6,
+      "road_dist_m": 0.0,
+      "well_dist_m": 25.6,
+      "x": 623762.9,
+      "y": 4596331.7
+    }
+  ],
+  "source_dod": "dod_9t_singleicp_2m.tif",
+  "tag": "9t_singleicp"
+}

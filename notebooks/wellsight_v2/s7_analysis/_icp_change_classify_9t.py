@@ -29,6 +29,7 @@ Run:
 """
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -72,6 +73,17 @@ BG_BLOCK = 8            # background estimate: block-median downsample factor
 BG_RADIUS = 12          # ... then median filter radius, in coarse cells
 BG_WIN_M = (2 * BG_RADIUS + 1) * BG_BLOCK * RES   # ~200 m effective window
 N_NULL = 8              # Monte-Carlo null simulations
+
+# Which DoD to classify -> (input filename, output tag).
+# 'singleicp' is the 2026-07-31 rebuild (one ICP solve across all four
+# 2006-2008 tiles); 'original' is the superseded 2026-05-21 product whose four
+# independent solves left 0.103 m of per-tile stepping. Outputs are tagged so
+# the two runs never overwrite each other.
+SOURCES = {
+    "original":  ("dod_9t_2m.tif", "9t"),
+    "singleicp": ("dod_9t_singleicp_2m.tif", "9t_singleicp"),
+}
+SRC_DOD, TAG = SOURCES["singleicp"]
 
 
 def robust(v):
@@ -146,7 +158,8 @@ def highpass(d, block=BG_BLOCK, radius=BG_RADIUS):
 def main() -> int:
     print("== 9t change classification ==")
 
-    dod = to_grid(OUT / "dod_9t_2m.tif")
+    dod = to_grid(OUT / SRC_DOD)
+    print(f"  source DoD: {SRC_DOD}   output tag: {TAG}")
     ok = np.isfinite(dod)
     m0, s0 = robust(dod[ok])
 
@@ -164,8 +177,8 @@ def main() -> int:
     print(f"  high-pass: sigma {s_ds:.4f} -> {s1:.4f} m   "
           f"(removed broad field of std {trend_amp:.4f} m, "
           f"sigma={BG_WIN_M:.0f} m)")
-    write(OUT / "dod_9t_destriped_2m.tif", ds)
-    write(OUT / "dod_9t_highpass_2m.tif", dd)
+    write(OUT / f"dod_{TAG}_destriped_2m.tif", ds)
+    write(OUT / f"dod_{TAG}_highpass_2m.tif", dd)
 
     # ---- 2. context rasters ----
     dem = to_grid(NINE_T / "dem_breached_9t_1m.tif")
@@ -311,7 +324,7 @@ def main() -> int:
 
     gdf = gpd.GeoDataFrame(recs, geometry=geoms, crs=CRS)
     gdf = gdf.sort_values("abs_volume_m3", ascending=False).reset_index(drop=True)
-    gpkg = OUT / "change_patches_9t.gpkg"
+    gpkg = OUT / f"change_patches_{TAG}.gpkg"
     gdf.to_file(gpkg, layer="change_patches", driver="GPKG")
     print(f"  wrote {gpkg}")
 
@@ -406,8 +419,8 @@ def main() -> int:
             1: (44, 127, 184, 255),          # fluvial      blue
             2: (217, 95, 14, 255),           # mass wasting orange
             3: (215, 25, 28, 255)}           # anthropogenic red
-    for name, arr in (("change_class_9t_2m.tif", cls_r),
-                      ("change_class_reliable_9t_2m.tif", rel_r)):
+    for name, arr in ((f"change_class_{TAG}_2m.tif", cls_r),
+                      (f"change_class_reliable_{TAG}_2m.tif", rel_r)):
         p = OUT / name
         with rasterio.open(p, "w", driver="GTiff", height=N, width=N, count=1,
                            dtype="uint8", crs=CRS, transform=TF, nodata=0,
@@ -421,7 +434,7 @@ def main() -> int:
     # Elevation change restricted to the reliable NON-erosional patches -- this
     # is the "where is the non-fluvial change, and how big" layer.
     ne = np.where(rel_r == CODE["anthropogenic"], dd, np.nan).astype(np.float32)
-    write(OUT / "dod_9t_nonerosional_2m.tif", ne)
+    write(OUT / f"dod_{TAG}_nonerosional_2m.tif", ne)
     print(f"    ({int(np.isfinite(ne).sum())} px, "
           f"range {np.nanmin(ne):+.2f}..{np.nanmax(ne):+.2f} m)")
 
@@ -459,7 +472,7 @@ def main() -> int:
         a.set_xticks([]); a.set_yticks([])
     fig.suptitle("9t  2006-2008 -> 2019 change: artifact removal and classification")
     fig.tight_layout()
-    p = OUT / "change_classified_9t.png"
+    p = OUT / f"change_classified_{TAG}.png"
     fig.savefig(p, dpi=130, bbox_inches="tight"); plt.close(fig)
     print(f"\n  wrote {p}")
 
@@ -486,14 +499,23 @@ def main() -> int:
         fig.suptitle("Largest non-erosional (off-channel, gentle-slope) changes, "
                      "2006-2008 -> 2019", fontsize=13)
         fig.tight_layout()
-        p = OUT / "top_changes_9t.png"
+        p = OUT / f"top_changes_{TAG}.png"
         fig.savefig(p, dpi=120, bbox_inches="tight"); plt.close(fig)
         print(f"  wrote {p}")
 
-    (OUT / "_classify_9t.json").write_text(json.dumps(summary, indent=2))
-    print(f"  wrote {OUT / '_classify_9t.json'}")
+    jp = OUT / f"_classify_{TAG}.json"
+    summary["source_dod"] = SRC_DOD
+    summary["tag"] = TAG
+    jp.write_text(json.dumps(summary, indent=2))
+    print(f"  wrote {jp}")
     return 0
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--source", choices=sorted(SOURCES), default="singleicp",
+                    help="which DoD to classify (default: singleicp, the "
+                         "2026-07-31 one-solve rebuild; 'original' is the "
+                         "superseded 2026-05-21 four-solve mosaic)")
+    SRC_DOD, TAG = SOURCES[ap.parse_args().source]
     raise SystemExit(main())

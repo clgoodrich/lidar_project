@@ -464,3 +464,174 @@ QC scripts (scratchpad, not repo-tracked): `_qc_icp_rebuild_9t.py`,
   `change_class_reliable_9t_2m.tif`, `dod_9t_nonerosional_2m.tif` and
   `change_patches_9t.gpkg` all derive from the superseded DoD.
 - A non-DEM-derived well list, so the wells test stops being circular.
+
+---
+
+# Part 4 — Classification re-derived on the single-ICP DoD (2026-09-23)
+
+Part 3 left Part 2's products stale. Part 2 destriped and classified
+`dod_9t_2m.tif`, the four-solve mosaic. That DoD carried 0.103 m of per-tile
+stepping which Part 3 removed. The destripe/high-pass stack was therefore tuned
+against an artifact geometry that no longer exists, and the 16 "reliable
+non-erosional patches" were not trustworthy. This pass re-runs the same
+classification on `dod_9t_singleicp_2m.tif`.
+
+No new ICP solve. No new data. The 2006-2008 survey and the 2026-07-31
+alignment are unchanged.
+
+## What changed in the code
+
+`notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py` now takes
+`--source`. It picks the input DoD and tags every output, so the two runs
+cannot overwrite each other.
+
+| `--source` | input | output tag |
+|---|---|---|
+| `original` | `dod_9t_2m.tif` | `9t` (the Part 2 names) |
+| `singleicp` **(default)** | `dod_9t_singleicp_2m.tif` | `9t_singleicp` |
+
+Every parameter is identical to Part 2. Only the input differs.
+
+## Artifact removal
+
+| stage | robust sigma | Part 2 equivalent |
+|---|---|---|
+| raw DoD | 0.1119 m | 0.136 m |
+| + row/column median destripe | **0.0845 m** | 0.107 m |
+| + 400 m edge-preserving background | **0.0784 m** | 0.087 m |
+
+Row-median std goes 0.0726 m → 3.2e-5 m. The broad field removed has std
+0.0261 m, against 0.057 m in Part 2 — less than half. That is the expected
+consequence of Part 3: most of what the high-pass used to remove was the
+per-tile blocks, and those are gone at the source now.
+
+Detection threshold (3 sigma of the high-passed field) is **0.235 m**, down
+from Part 2's ~0.4 m floor.
+
+## The null still says the change is real
+
+Same Monte-Carlo null — a synthetic Gaussian field with matched
+autocorrelation, pushed through the identical pipeline. The matched ACF sigma
+is now **3.0 px**, against 4.0 px in Part 2. The residual is less spatially
+correlated because the blocky bias is gone.
+
+| | patches >= 200 m2 | area | largest patch |
+|---|---|---|---|
+| **observed** | **240** | **26.15 ha** | see gpkg |
+| noise-only (8 sims) | 11.6 +/- 3.6 | 0.28 ha | 331 m2 (max 420) |
+| ratio | **20.6x** | **93.1x** | — |
+
+Part 2 got 6.4x patches and 28.2x area. The cleaner DoD roughly tripled the
+signal-to-null ratio even though the raw patch count fell 367 → 240.
+
+Reliability cutoff: noise never produced a patch above **420 m2** (Part 2:
+712 m2), so that is the new cutoff. 138 of 240 patches clear it.
+
+## Channel enrichment holds, and is slightly stronger
+
+63% of the block lies within 40 m of a channel, so that is the random-placement
+expectation.
+
+| set | within 40 m of a channel | enrichment |
+|---|---|---|
+| all patches | 86% | 1.36x |
+| **reliable only** | **88%** | **1.39x** |
+
+Part 2 had 75% / 84% (1.20x / 1.34x). The fluvial rule is better supported on
+the cleaner field, and the reliable set is still the more enriched one, which
+is what a working cutoff should do.
+
+## Results
+
+| class | patches | reliable | area (ha) | \|volume\| (m3) |
+|---|---|---|---|---|
+| fluvial | 206 | 121 | 21.28 | 83,978 |
+| mass wasting | 12 | 6 | 0.37 | 2,928 |
+| **anthropogenic (non-erosional)** | 22 | **11** | **1.58** | **8,879** |
+
+Fluvial is 86% of patches and 92% of area. That is the expected outcome for a
+forested Appalachian block over 11-13 years, and it is a stronger result than
+Part 2's 75%.
+
+The non-erosional residue shrank: **22 patches against Part 2's 87, 11 reliable
+against 16**, over a 2,025 ha block. Part 2's extra 65 patches were the per-tile
+bias blocks being segmented as change.
+
+### The 11 reliable non-erosional changes
+
+Coordinates are EPSG:6346. `well` is distance to the nearest point in
+`well_head_pts_reprojected.gpkg`.
+
+| id | type | mean dz | area m2 | \|vol\| m3 | slope | chan | road | well | centroid |
+|---|---|---|---|---|---|---|---|---|---|
+| 267 | cut | −1.11 | 3,016 | 3,354 | 10.1 deg | 50 m | **2 m** | 75 m | 623978, 4596537 |
+| 836 | fill | +0.43 | 3,324 | 1,434 | 13.6 deg | 48 m | 27 m | 122 m | 623000, 4595196 |
+| 899 | cut | −0.83 | 1,568 | 1,295 | 7.8 deg | 51 m | **0 m** | 64 m | 620120, 4595109 |
+| 20 | fill | +0.32 | 2,180 | 693 | 17.2 deg | 62 m | **0 m** | 339 m | 623622, 4597396 |
+| 1530 | cut | −0.59 | 836 | 493 | 16.2 deg | 69 m | **0 m** | 195 m | 621586, 4593365 |
+| 391 | fill | +0.31 | 1,516 | 462 | 0.7 deg | 62 m | 38 m | 269 m | 621643, 4596163 |
+| 109 | fill | +0.36 | 820 | 298 | 17.5 deg | 72 m | 35 m | 102 m | 623828, 4597130 |
+| 786 | cut | −0.34 | 744 | 249 | 1.0 deg | 57 m | 24 m | 61 m | 621682, 4595313 |
+| 519 | cut | −0.35 | 668 | 237 | 17.9 deg | 62 m | 44 m | 48 m | 623867, 4595718 |
+| 114 | fill | +0.34 | 696 | 238 | 9.7 deg | 135 m | 30 m | **18 m** | 623915, 4597127 |
+| 329 | fill | +0.30 | 428 | 127 | 8.0 deg | 79 m | **0 m** | 26 m | 623763, 4596332 |
+
+The top entry is the clearest single result in this line of work. Patch 267 is
+a 3,016 m2 cut averaging −1.11 m, 2 m from a mapped road. Its magnitude is 2.3x
+the largest non-erosional patch Part 2 found.
+
+Road proximity remains the dominant association: 4 of 11 sit directly on a
+mapped road (0 m) and 9 of 11 lie within 35 m. Road maintenance, regrading and
+skid-trail work explain the set better than well activity does.
+
+**Inspected, and the dipole problem has not gone away.** In
+`top_changes_9t_singleicp.png`, #267 and #899 are each a blue lobe with a red
+core, and #1530 straddles a pair of linear terrain edges. Those are the two
+surveys resolving the same feature differently, not change. #20 and #391 look
+different — coherent, roughly rectangular fills on gentle ground with no paired
+cut — and are the two most likely to be genuine earthworks. No patch in this set
+is quoted as a finding until the triage below is done.
+
+## The wells negative is unchanged
+
+Nothing here revisits it. `well_dist_m` is an attribute, not a test. Part 3
+showed that any DoD test against `well_head_pts_reprojected.gpkg` is circular —
+those are 861 pits hand-digitised on the 2019 DEM, and the 2006-2008 survey
+resolves only 72% of their depth at 7x lower density. **These 11 patches are
+candidate recent earthworks, not candidate wells.** None is presented as a well.
+
+## Outputs
+
+All EPSG:6346, 2 m, 2250x2250, aligned to every other 9t raster, in
+`data/_experiments/icp/change_9t/`:
+
+| file | content |
+|---|---|
+| `dod_9t_singleicp_destriped_2m.tif` | DoD after row/column median destripe |
+| `dod_9t_singleicp_highpass_2m.tif` | + 400 m background removed — the field the patches are cut from |
+| `change_class_9t_singleicp_2m.tif` | all 240 patches: 1 fluvial, 2 mass wasting, 3 anthropogenic; nodata 0, colour table embedded |
+| `change_class_reliable_9t_singleicp_2m.tif` | same, >=420 m2 only — the trustworthy set |
+| `dod_9t_singleicp_nonerosional_2m.tif` | dz in metres, masked to reliable non-erosional patches (3,949 px, −3.99 .. +2.87 m) |
+| `change_patches_9t_singleicp.gpkg` | layer `change_patches`, every patch attributed |
+| `change_classified_9t_singleicp.png` | destripe effect + classified overview |
+| `top_changes_9t_singleicp.png` | hillshade crops of the largest non-erosional patches |
+| `_classify_9t_singleicp.json` | every number above |
+
+The Part 2 rasters (`*_9t_*`, no `singleicp`) are left in place and are
+superseded. Do not use them.
+
+Class colours are blue / orange / red. No red-green pair carries meaning in
+any figure here.
+
+## Reproduce
+```
+python notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py --source singleicp
+```
+
+## Deferred
+- Manual triage of the 11 reliable non-erosional patches. The crops show the
+  dipoles are still present (#267, #899, #1530). #20 and #391 are the two worth
+  checking first.
+- Vegetation / canopy masking before differencing.
+- A non-DEM-derived well list (DEP permit coordinates), so a wells test can be
+  run at all.
