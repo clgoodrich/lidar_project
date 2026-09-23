@@ -5,6 +5,26 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-23 -- operating-point plan, Phases 0-2: threshold-free PR and calibration
+
+The user asked how to choose precision against recall without hand-set cutoffs. Plan written to `docs/iterations/operating_point_policy_plan.md`. Phases 0-2 run. Phase 3 waits on one user decision.
+
+**Phase 0, inventory.** Every hand-set value in the pit, pad and road pipeline is listed in the plan doc. The finding to escalate: the deployed filter `notebooks/wellsight_v2/s4_infer/_postfilter_tile_candidates.py` uses pit 0.60, pad 0.70 and minimum areas of 20/300 m². CV selected pit 0.35-0.60 and pad 0.50-0.65, with minimum areas of 4/100 m². 158 of 712 annotated pit floors are under 20 m². The defaults were not changed.
+
+**Recorder.** `notebooks/wellsight_v2/s5_eval/_cv5_pr_sweep_records_pit_pad_9t.py` re-polygonizes each fold's saved probability raster at cutoffs 0.05-0.95 in steps of 0.025. It records per-block counts and per-blob rows for inner val and held-out, for pit, pit_smrf and pad. At cutoff 0.30 it reproduces the CV5 held-out counts exactly on every fold. That took 35 min on CPU.
+
+**Design change mid-run.** Sweeping the pixel cutoff turned out to measure outlining as well as ranking. Pit precision peaks at 0.71 near cutoff 0.58 and falls to 0.45 by 0.875, because blobs shrink below IoU 0.3. The headline became the ranked candidate list at a proposal cutoff. That cutoff is the inner-val recall maximum, with ties going higher. The sweep is kept as a labelled secondary result.
+
+**Phase 1.** Ranked AP at IoU 0.3: pit 0.823 [0.787-0.857], pit SMRF 0.820, pad 0.744 [0.702-0.789]. At 10 false positives per km², pit recall is 0.893. SMRF against vendor at IoU 0.5: ΔAP -0.085. The paired block bootstrap gives [-0.135, -0.028]. The paired t (df 4) is -1.77. This is suggestive, not established.
+
+**Phase 2.** Raw blob scores are not probabilities, with ECE 0.16-0.20. Platt on inner val brings held-out ECE to 0.04-0.05. Isotonic overfits pits. Pixel Platt slope is about 2.5 (T about 0.4), so the network is under-confident. Intercepts run from -0.7 to -1.9, which is focal α inflating positives. A raw pixel 0.5 is about 36% floor for pits and 17% for pads. Calibrated 50% sits at raw 0.57-0.62 for pits and 0.66-0.70 for pads. Those bands contain the deployed 0.60/0.70.
+
+**Literature logged** in `literature/CITATIONS.md`: Everingham 2010, Chakraborty 1989 (cite-only), Platt 1999, Zadrozny & Elkan 2002, Niculescu-Mizil & Caruana 2005, Naeini 2015, Angelopoulos 2022. The Guo 2017 row moved from candidate to adopted.
+
+Outputs: `data/9t/results/operating_point/` (5.5 MB, nothing near 100 MB) and its `figures/` subfolder. The palette is the lost/found set, re-validated with `--pairs all`.
+
+---
+
 ## 2026-09-23 -- v19 deck: more of the map, plainer results
 
 Feedback after presenting v18. The maps were never shown bare, and the results

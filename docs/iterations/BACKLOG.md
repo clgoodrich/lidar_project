@@ -2,6 +2,19 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## Operating point: choose precision against recall by policy, not by hand (added 2026-09-23) — OPEN
+
+Plan: `docs/iterations/operating_point_policy_plan.md`. Phases 0–2 are done. Results: `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md`.
+
+- **Phase 3 needs one user decision:** the cost ratio, a review budget (K candidates per km²), or a conformal recall guarantee. Recommended: the review budget. The FROC table already gives recall at each budget.
+- **The deployed cutoffs disagree with CV.** `notebooks/wellsight_v2/s4_infer/_postfilter_tile_candidates.py` uses pit 0.60, pad 0.70, and minimum areas of 20 and 300 m². 158 of 712 annotated pit floors (22%) are smaller than 20 m². Not changed yet. Escalated to the user. Phase 3 replaces all four.
+- **Cut the ranked list, not the pixel map.** Raising the pixel cutoff shrinks blobs until they miss IoU, so pit precision falls above cutoff 0.58. Any operating point should be a rank cut at a fixed proposal cutoff.
+- **Calibrate with Platt before any cost-based cut.** Raw blob ECE is 0.16–0.20. After Platt it is 0.04–0.05. Isotonic overfits pits (log loss 0.683 against 0.485).
+- **SMRF may outline pits worse at IoU 0.5.** Ranked ΔAP is −0.085. The block bootstrap CI excludes zero, but the paired t is only −1.77. A second seed per arm would settle it.
+- **Phase 4 test to run first:** does the road α bump (0.60 → 0.72) change the ranked-list AP, or only the calibration? The pixel intercepts here (−0.7 to −1.9) show α is shifting scores. It needs pit/pad per-pixel records like these for the road model.
+- **Phase 5 is the biggest bias fix.** Every precision is a lower bound until detections are reviewed blind and stratified by score.
+- **Save logits, not only one class probability,** in future CV runs. Then a true softmax temperature can be fitted.
+
 ## Grid resolution: 0.5 m may be finer than the data supports (added 2026-09-21) — OPEN
 
 Measured on 9t, from `count_vendorground_9t_0p5m.tif`:

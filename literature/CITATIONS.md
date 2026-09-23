@@ -27,7 +27,7 @@ is the source of record.
 | Savitzky & Golay | 1964 | Least-squares polynomial smoothing/differentiation | 2D SavGol quadratic residual (detrends slope+curvature) | `savgol_resid_*` in `_build_extra_channels.py` | ✓ `savitzky_golay_1964.pdf` |
 | Wood | 1996 | Multiscale quadratic-surface DEM geomorphometry | Basis for local quadratic land-surface fitting (SavGol residual, curvature) | `savgol_resid_*`, `profile_curv` in `_build_extra_channels.py` | cite-only |
 | Soille | 2004 | Mathematical morphology (top-hat transform) | White/black top-hat cut/fill bench channels | `tophat_white/black` in `_build_extra_channels.py` | cite-only |
-| Guo et al. | 2017 | Temperature scaling / calibration | *Candidate* — calibrate `pit_prob_floor` | `docs/iterations/pit_refinement_options.md` | ✓ `guo_2017_calibration_temperature_scaling.pdf` |
+| Guo et al. | 2017 | Temperature scaling / calibration | **Adopted 2026-09-23** — pixel-level Platt fit on logit(p) (temperature + bias) for pit/pad CV5 | `docs/iterations/pit_refinement_options.md`; `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `guo_2017_calibration_temperature_scaling.pdf` |
 | Mukhoti et al. | 2020 | Focal loss is under-confident | *Candidate* — diagnosis of low pit probabilities | `docs/iterations/pit_refinement_options.md` | ✓ `mukhoti_2020_calibrating_focal_loss.pdf` |
 | Wang et al. | 2019 | Test-time augmentation | *Candidate* — D4 TTA at pit inference | `docs/iterations/pit_refinement_options.md` | ✓ `wang_2019_test_time_augmentation.pdf` |
 | Salehi et al. | 2017 | Tversky loss | *Candidate* — recall-weighted region term | `docs/iterations/pit_refinement_options.md` | ✓ `salehi_2017_tversky_loss.pdf` |
@@ -46,6 +46,13 @@ is the source of record.
 | Archaeoscape | 2024 | ALS archaeology benchmark dataset | Cited as existing; **no numbers quoted** (PDF would not extract) | `docs/iterations/benchmark_context_what_counts_as_good.md` | ✓ `archaeoscape_2024_als_archaeology_benchmark.pdf` |
 | Wiedemann et al. | 1998 | Empirical evaluation of road extraction: completeness / correctness / quality on a buffer match | **Adopted** — the scoring triple for the 613590 out-of-domain road test | `notebooks/wellsight_v2/s5_eval/_score_road_pred_vs_roads_shp_613590.py` | cite-only |
 | Schreiber & Schmitz | 1996 | IAAFT surrogate data (keeps spectrum AND value distribution) | Null model for the 9t change-patch reliability cutoff | `notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py`; `data/_experiments/icp/change_9t/_classify_9t_singleicp.json` | ✓ `schreiber_schmitz_1996_iaaft_improved_surrogate_data.pdf` |
+| Everingham et al. | 2010 | PASCAL VOC: average precision with the precision envelope | **Adopted** — threshold-free AP for pit/pad CV5 model comparison | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `everingham_2010_pascal_voc_average_precision.pdf` |
+| Chakraborty | 1989 | FROC: detection recall against false positives per unit | **Adopted** — recall vs FP/km² curve for pit/pad CV5 | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | cite-only |
+| Platt | 1999 | Sigmoid (logistic) calibration of classifier scores | **Adopted** — Platt calibration of blob and pixel scores, fit on inner val | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `platt_1999_probabilistic_outputs_svm.pdf` |
+| Zadrozny & Elkan | 2002 | Isotonic-regression calibration | **Adopted** — isotonic calibration of blob scores, fit on inner val | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `zadrozny_elkan_2002_isotonic_calibration.pdf` |
+| Niculescu-Mizil & Caruana | 2005 | When Platt vs isotonic calibration works | Why both calibrators are compared, and why isotonic needs more data | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `niculescu_mizil_caruana_2005_predicting_good_probabilities.pdf` |
+| Naeini, Cooper & Hauskrecht | 2015 | Expected calibration error (ECE) | **Adopted** — ECE on held-out blobs and pixels | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `naeini_2015_bayesian_binning_ece.pdf` |
+| Angelopoulos et al. | 2022 | Conformal risk control | *Candidate* — Phase 3 recall-guarantee policy option | `docs/iterations/operating_point_policy_plan.md` | ✓ `angelopoulos_2022_conformal_risk_control.pdf` |
 
 ---
 
@@ -167,7 +174,7 @@ change is actually made.
 - **Citation:** Guo, C., Pleiss, G., Sun, Y., Weinberger, K.Q. (2017). "On Calibration of Modern Neural Networks." *Proc. ICML 2017*, PMLR 70: 1321–1330. arXiv:1706.04599.
 - **About:** Modern deep nets are badly miscalibrated. Fitting a single scalar temperature `T` on a validation set and dividing the logits by it before softmax fixes most of it. Monotonic, so accuracy and ranking are untouched.
 - **Candidate use:** Put `pit_prob_floor` on a calibrated scale so a stated threshold means what a reader assumes, and so thresholds transfer between tiles. Explicitly cannot change recall at a re-tuned threshold.
-- **Generated:** `docs/iterations/pit_refinement_options.md` (Fix A).
+- **Generated:** `docs/iterations/pit_refinement_options.md` (Fix A). **Used 2026-09-23.** Only the floor-class probability was saved per fold, so the full softmax temperature cannot be fitted. A Platt fit on logit(p) is used instead. Its slope is 1/T and its intercept is a bias term. See `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`.
 - **Local PDF:** `literature/papers/guo_2017_calibration_temperature_scaling.pdf`.
 
 ### Mukhoti, Kulharia, Sanyal, Golodetz, Torr & Dokania 2020 — Focal loss and calibration
@@ -324,3 +331,57 @@ change is actually made.
 - **Used for:** The Monte-Carlo null behind the per-patch reliability cutoff in the 9t 2006-08 → 2019 change classification (2026-09-23). It replaced a Gaussian-smoothed noise field whose smoothing was grid-searched and pinned at the grid floor. A plain phase-randomised surrogate was tried first and rejected. It makes the values Gaussian, and the DoD's artifacts are heavy-tailed, so it produced zero noise patches and a meaningless cutoff.
 - **Generated:** `notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py`; `data/_experiments/icp/change_9t/_classify_9t_singleicp.json`; `change_class_reliable_9t_singleicp_2m.tif`; `dod_9t_singleicp_nonerosional_reliable_2m.tif`; `docs/iterations/icp_change_9t.md` Part 4.
 - **Source:** https://arxiv.org/abs/chao-dyn/9909041 — local copy `literature/papers/schreiber_schmitz_1996_iaaft_improved_surrogate_data.pdf`.
+
+
+## Operating-point plan, Phases 1–2 (added 2026-09-23)
+
+All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`. Results are in `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md`.
+
+### Everingham, Van Gool, Williams, Winn & Zisserman 2010 — PASCAL VOC average precision
+- **Citation:** Everingham, M., Van Gool, L., Williams, C.K.I., Winn, J., Zisserman, A. (2010). "The PASCAL Visual Object Classes (VOC) Challenge." *International Journal of Computer Vision* 88: 303–338. doi:10.1007/s11263-009-0275-4.
+- **About:** The benchmark that fixed how detection is scored. AP is the area under the precision-recall curve. Precision at each recall is replaced by the best precision at that recall or higher.
+- **Used for:** The threshold-free AP that compares pit and pad CV5 models. Our curve comes from a cutoff sweep, not one ranked list. Blobs merge and split as the cutoff moves.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`; `data/9t/results/operating_point/figures/pr_curve_heldout_cv5_iou0p30_iou0p50_pit_pitsmrf_pad_9t.png`.
+- **Source:** http://host.robots.ox.ac.uk/pascal/VOC/pubs/everingham10.pdf — local copy `literature/papers/everingham_2010_pascal_voc_average_precision.pdf`.
+
+### Chakraborty 1989 — FROC analysis
+- **Citation:** Chakraborty, D.P. (1989). "Maximum likelihood analysis of free-response receiver operating characteristic (FROC) data." *Medical Physics* 16(4): 561–568. doi:10.1118/1.596358.
+- **About:** Detection tasks where a reader can mark any number of locations. The curve plots the share of true lesions found against false marks per image.
+- **Used for:** Recall against false positives per km² of held-out ground. The Phase 3 review-budget policy reads its cutoff from this curve.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`; `data/9t/results/operating_point/figures/froc_recall_vs_fp_per_km2_heldout_cv5_iou0p30_iou0p50_pit_pitsmrf_pad_9t.png`.
+- **Source:** https://doi.org/10.1118/1.596358 — cite-only (Wiley paywall, 403).
+
+### Platt 1999 — sigmoid calibration
+- **Citation:** Platt, J.C. (1999). "Probabilistic Outputs for Support Vector Machines and Comparisons to Regularized Likelihood Methods." In Smola, A., Bartlett, P., Schölkopf, B., Schuurmans, D. (eds.), *Advances in Large Margin Classifiers*, MIT Press, 61–74.
+- **About:** Fits a two-parameter logistic curve that maps raw scores to probabilities, on held-back data.
+- **Used for:** Calibrating blob scores and pixel probabilities. It is fit on inner val and checked on held-out.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`; `data/9t/results/operating_point/figures/reliability_object_level_heldout_cv5_raw_platt_isotonic_pit_pit_smrf_pad_9t.png`; `data/9t/results/operating_point/figures/reliability_pixel_level_heldout_cv5_raw_platt_pit_pad_9t.png`.
+- **Source:** preprint at https://home.cs.colorado.edu/~mozer/Teaching/syllabi/6622/papers/Platt1999.pdf — local copy `literature/papers/platt_1999_probabilistic_outputs_svm.pdf` (preprint, not the book chapter).
+
+### Zadrozny & Elkan 2002 — isotonic calibration
+- **Citation:** Zadrozny, B., Elkan, C. (2002). "Transforming Classifier Scores into Accurate Multiclass Probability Estimates." *Proc. KDD 2002*, 694–699. doi:10.1145/775047.775151.
+- **About:** Isotonic regression as a calibrator. It fits any monotone step function, so it assumes no curve shape.
+- **Used for:** The second blob-score calibrator, beside Platt.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`; `data/9t/results/operating_point/figures/reliability_object_level_heldout_cv5_raw_platt_isotonic_pit_pit_smrf_pad_9t.png`.
+- **Source:** http://www.cs.columbia.edu/~djhsu/coms4771-f25/handouts/zadrozny2002kdd.pdf — local copy `literature/papers/zadrozny_elkan_2002_isotonic_calibration.pdf`.
+
+### Niculescu-Mizil & Caruana 2005 — Platt versus isotonic
+- **Citation:** Niculescu-Mizil, A., Caruana, R. (2005). "Predicting Good Probabilities With Supervised Learning." *Proc. ICML 2005*, 625–632. doi:10.1145/1102351.1102430.
+- **About:** Compares calibrators across many learners. Isotonic overfits when calibration data are scarce. Platt is safer with small sets.
+- **Used for:** The reason both calibrators are reported. Our inner-val sets hold only a few hundred blobs per fold, which is small for isotonic.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`.
+- **Source:** https://www.cs.cornell.edu/~alexn/papers/calibration.icml05.crc.rev3.pdf — local copy `literature/papers/niculescu_mizil_caruana_2005_predicting_good_probabilities.pdf`.
+
+### Naeini, Cooper & Hauskrecht 2015 — expected calibration error
+- **Citation:** Naeini, M.P., Cooper, G.F., Hauskrecht, M. (2015). "Obtaining Well Calibrated Probabilities Using Bayesian Binning." *Proc. AAAI 2015*, 2901–2907.
+- **About:** Defines ECE. It is the bin-weighted gap between mean predicted probability and observed frequency.
+- **Used for:** ECE on held-out blobs (10 equal-count bins) and pixels (15 equal-width bins).
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`.
+- **Source:** https://ojs.aaai.org/index.php/AAAI/article/download/9602/9461 — local copy `literature/papers/naeini_2015_bayesian_binning_ece.pdf`.
+
+### Angelopoulos, Bates, Fisch, Lei & Schuster 2022 — conformal risk control
+- **Citation:** Angelopoulos, A.N., Bates, S., Fisch, A., Lei, L., Schuster, T. (2022). "Conformal Risk Control." arXiv:2208.02814 (v4, 2025); *ICLR 2024*.
+- **About:** Picks a cutoff on calibration data so that the expected value of a chosen loss stays below a target. The guarantee holds in finite samples.
+- **Candidate use:** Phase 3 option 3. It would pick the cutoff that holds recall at or above a stated target.
+- **Generated:** `docs/iterations/operating_point_policy_plan.md`.
+- **Source:** https://arxiv.org/abs/2208.02814 — local copy `literature/papers/angelopoulos_2022_conformal_risk_control.pdf`.

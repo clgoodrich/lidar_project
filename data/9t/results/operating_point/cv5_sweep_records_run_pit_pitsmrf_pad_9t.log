@@ -1,0 +1,24 @@
+== pit ==
+  pit fold 0 done (2.0 min)
+  pit fold 1 done (4.0 min)
+  pit fold 2 done (5.9 min)
+  pit fold 3 done (7.8 min)
+  pit fold 4 done (9.8 min)
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\cv5_sweep_counts_per_block_pit_thr0p05to0p95_9t.csv
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\cv5_sweep_objects_pit_thr0p05to0p95_9t.csv.gz
+== pit_smrf ==
+  pit_smrf fold 0 done (1.9 min)
+  pit_smrf fold 1 done (3.7 min)
+  pit_smrf fold 2 done (5.4 min)
+  pit_smrf fold 3 done (7.2 min)
+  pit_smrf fold 4 done (9.0 min)
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\cv5_sweep_counts_per_block_pit_smrf_thr0p05to0p95_9t.csv
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\cv5_sweep_objects_pit_smrf_thr0p05to0p95_9t.csv.gz
+== pad ==
+  pad fold 0 done (2.6 min)
+  pad fold 1 done (5.6 min)
+  pad fold 2 done (8.3 min)
+  pad fold 3 done (10.7 min)
+  pad fold 4 done (12.6 min)
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\cv5_sweep_counts_per_block_pad_thr0p05to0p95_9t.csv
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\operating_point\cv5_sweep_objects_pad_thr0p05to0p95_9t.csv.gz

@@ -89,6 +89,18 @@ The post-proc row is a **point-level metric** (6 m centroid tolerance), val-tune
 and test-frozen. It was not part of the 07-27 reeval and is not row-comparable.
 See [[pit_optimize]].
 
+### Threshold-free ranking, pit and pad CV5, ann712 — 2026-09-23
+
+**Use this table to compare models.** It needs no cutoff. Candidates are each fold's blobs at a proposal cutoff chosen on inner val for recall alone. They are ranked by score. AP is the area under the held-out precision-recall curve (VOC envelope). Brackets are the 95% block bootstrap. Full write-up: `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md`.
+
+| Model | ranked AP @IoU 0.3 | per-fold sd | ranked AP @IoU 0.5 | recall ceiling @0.3 | recall at 10 FP/km² @0.3 |
+|---|---|---|---|---|---|
+| pit, vendor ground (`pit/unet_cv5`) | **0.823** [0.787–0.857] | 0.052 | 0.650 [0.600–0.703] | 0.940 | 0.893 |
+| pit, SMRF ground (`pit/unet_cv5_smrf`) | **0.820** [0.778–0.862] | 0.036 | 0.565 [0.513–0.620] | 0.930 | 0.881 |
+| pad, vendor ground (`pad/unet_cv5`) | **0.744** [0.702–0.789] | 0.042 | 0.592 [0.542–0.646] | 0.906 | 0.771 |
+
+Numbers come from `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json`. Precision counts unannotated real features as false, so every AP here is a lower bound. Do not compare these with the pixel-cutoff-sweep APs in the same JSON. Those mix outlining with ranking.
+
 ### Pits, 5-fold cross-validated — all 712 pits, ann712, 2026-09-17
 
 **Current.** `_pit_unet_cv5.py` re-run on the ann712 split, 57.3 min, five folds,
