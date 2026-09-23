@@ -5,6 +5,46 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-23 -- v19 deck: more of the map, plainer results
+
+Feedback after presenting v18. The maps were never shown bare, and the results
+section was too dense to speak to. v19 lives in its own folder,
+`docs/presentation/v19_maps_and_plain_results/`. v18 was copied, not edited.
+
+**Map section, five new slides after the RRIM slides.** A zoom from the whole
+9t tile to one pit, then a pit, a pad, a road, and one well site with all three.
+RRIM only (`data/9t/derived/05/rrim_openness_9t_05.tif`, raw bytes via
+`read_rrim`). No outlines. Examples are picked by rule, not by eye: median and
+percentile depth for pits, median and percentile area for pads, the
+75th-percentile road window, and the median pad holding a pit and a road.
+Selections are in `figures/_closeup_selection_9t.json`. Color meanings were
+checked against `_make_rrim.py`: teal concave, gray flat, yellow convex, red
+steep.
+
+**Results section rebuilt.** One slide defines found, matched and search area.
+Each detector then gets the same layout: three numbers, one takeaway, one small
+measurement line. There is a side-by-side table, a native chart for the
+architecture comparison, one slide for the second tile, and a three-line
+summary. The superseded v18 results slides moved to a Backup appendix,
+unchanged. No new analysis. Found and flagged counts were re-derived from the
+per-fold CSVs: pits 467 of 503 from 738 flags, pads 593 of 650 from 1,010. They
+match the audited rates.
+
+**Caught while building.** v18 slide 66's map has "146 found, recall 0.954"
+baked in, against the slide's audited 139 of 153 (0.911). v19's main flow uses
+a number-free map. The backup copy still carries the conflict, and the README
+flags it. Pads picked from "no pit drawn" all show a pit-like ring, likely
+undrawn pits. The notes say so.
+
+Palettes: schematic `#1F5FA8/#D97706/#A31515` (validated set, amber 2.99:1 on
+`#F7F8F6`, relieved by labels). Chart `#4E8FE6/#1F5FA8`, every check passing,
+worst dE 16.3. pptx validator: all passed against v18.
+
+Deck (~113 MB) is gitignored in the same change. Builders, figures and README
+are tracked.
+
+---
+
 ## 2026-09-23 -- review of the 9t change process: the per-patch reliability test did not hold
 
 Reviewed the whole ICP change chain end to end. It covered the rebuild script,

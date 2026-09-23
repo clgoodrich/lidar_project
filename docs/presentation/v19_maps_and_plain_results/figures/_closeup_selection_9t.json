@@ -1,0 +1,133 @@
+{
+  "pit_typical": {
+    "pit_outside_id": 554,
+    "pit_inside_id": 113,
+    "cx": 621617.7995538823,
+    "cy": 4594360.160154333,
+    "depth_m": 0.43902587890625,
+    "rim_area_m2": 188.11519168063748,
+    "rule": "joint nearest median depth + rim area",
+    "population": {
+      "n": 486,
+      "median_depth_m": 0.42842864990234375,
+      "p20_depth_m": 0.181121826171875,
+      "p90_depth_m": 0.8924942016601562,
+      "median_rim_area_m2": 183.1119430322084
+    }
+  },
+  "pit_deeper": {
+    "pit_outside_id": 38,
+    "pit_inside_id": 26,
+    "cx": 622076.6943185632,
+    "cy": 4595407.633489912,
+    "depth_m": 0.8933258056640625,
+    "rim_area_m2": 190.9160438282502,
+    "rule": "depth nearest 90th pct",
+    "population": {
+      "n": 486,
+      "median_depth_m": 0.42842864990234375,
+      "p20_depth_m": 0.181121826171875,
+      "p90_depth_m": 0.8924942016601562,
+      "median_rim_area_m2": 183.1119430322084
+    }
+  },
+  "pit_shallower": {
+    "pit_outside_id": 639,
+    "pit_inside_id": 488,
+    "cx": 620892.3302905739,
+    "cy": 4594258.557765019,
+    "depth_m": 0.181121826171875,
+    "rim_area_m2": 122.12544654863714,
+    "rule": "depth nearest 20th pct",
+    "population": {
+      "n": 486,
+      "median_depth_m": 0.42842864990234375,
+      "p20_depth_m": 0.181121826171875,
+      "p90_depth_m": 0.8924942016601562,
+      "median_rim_area_m2": 183.1119430322084
+    }
+  },
+  "pad_typical": {
+    "pad_id": 591,
+    "area_m2": 1772.4096315922936,
+    "cx": 621949.4068513872,
+    "cy": 4596738.391714922,
+    "rule": "area nearest 50th pct of pads with no pit",
+    "n_pool": 308
+  },
+  "pad_large": {
+    "pad_id": 831,
+    "area_m2": 2558.9023770291315,
+    "cx": 620581.718384342,
+    "cy": 4594482.36613668,
+    "rule": "area nearest 85th pct of pads with no pit",
+    "n_pool": 308
+  },
+  "pad_small": {
+    "pad_id": 970,
+    "area_m2": 1282.8571820765792,
+    "cx": 623637.1717034891,
+    "cy": 4596131.954356491,
+    "rule": "area nearest 20th pct of pads with no pit",
+    "n_pool": 308
+  },
+  "roads_context": {
+    "cx": 620250.0,
+    "cy": 4595850.0,
+    "road_m_in_window": 1175.2921795107927,
+    "rule": "300 m window at 75th pct road length, 15x15 grid"
+  },
+  "road_bold": {
+    "id": null,
+    "length_m": 234.16700960795916,
+    "cx": 621069.4809211465,
+    "cy": 4596626.758426339,
+    "rule": "median-length line of bold_roads.shp",
+    "n_pool": 8
+  },
+  "road_faint": {
+    "id": null,
+    "length_m": 118.74728195146308,
+    "cx": 621321.0682584895,
+    "cy": 4596863.809515469,
+    "rule": "median-length line of faint_roads.shp",
+    "n_pool": 21
+  },
+  "well_site": {
+    "pad_id": 243,
+    "area_m2": 1644.8855456090826,
+    "n_pits": 1,
+    "n_roads": 1,
+    "cx": 621309.5494764461,
+    "cy": 4595626.154966986,
+    "rule": "pad with >=1 pit and >=1 road, area nearest median",
+    "n_pool": 229
+  },
+  "zoom_sequence": {
+    "half_widths_m": [
+      2250.0,
+      500.0,
+      125.0,
+      25.0
+    ],
+    "centres": [
+      [
+        621750.0,
+        4595250.0
+      ],
+      [
+        621312.2257571941,
+        4595613.157162999
+      ],
+      [
+        621312.2257571941,
+        4595613.157162999
+      ],
+      [
+        621312.2257571941,
+        4595613.157162999
+      ]
+    ],
+    "lands_on": "first pit floor on the well-site pad"
+  }
+}
