@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-26 -- NISAR GCOV: pads against their forest ring, 9t
+
+The user asked what NISAR can do, then asked for the first pad-scale test. Script: `notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py`. Write-up: `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`.
+
+- **Asked for an RRIM from NISAR.** It cannot be made. The GCOV/GUNW files hold no elevation beyond a 1 km reference grid, and repeat-pass InSAR at a 35 m baseline gives no usable height.
+- **Design.** 10 m pad-core pixels, with centres at least 5 m inside the pad, are compared with a 20-60 m forest ring that keeps 10 m clear of pads and roads. Values are averaged as linear gamma-0. 650 of 995 pads hold a core pixel.
+- **Registration.** The canopy/HV correlation peaks at dx -10, dy -5 m, so the beta radar sits about one pixel off the lidar. Both the as-delivered and the aligned runs are kept.
+- **Control.** The January image separates open ground from closed canopy only weakly: HV AUC 0.62-0.64 and HH 0.55-0.56.
+- **Result.** Pads are slightly darker, mostly in HH: -0.44 dB as delivered and -0.28 dB aligned. Open pads are -0.8 to -0.9 dB, and are darker than their ring 66-70% of the time. Grown-over pads are about equal to forest in HV. The signal is the clearing, and it is too weak to detect pads alone.
+- **Next.** Leaf-on or fall granule, multi-date averaging, and registration against a sharp target. All three are added to BACKLOG.
+
+---
+
 ## 2026-09-23 -- operating-point Phase 3: policy sweep, and a reproducibility bug in the CV split
 
 The user asked for a sweep across every Phase 3 option. Script: `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`. Write-up: `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`.

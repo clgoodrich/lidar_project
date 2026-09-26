@@ -1,0 +1,23 @@
+GCOV window (470, 470), valid 1.000, looks median 5.3
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_10m\nisar_gcov_hh_gamma0_db_20260120_9t_10m.tif
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_10m\nisar_gcov_hv_gamma0_db_20260120_9t_10m.tif
+registration: rho at 0,0 = 0.138; best 0.162 at dx=-10 dy=-5
+pads 995; with >=1 core pixel and ring 650; too small for a core pixel 345
+{
+ "n_open_px": 31966,
+ "n_closed_px": 39572,
+ "hh_open_median_db": -8.404453538262755,
+ "hh_closed_median_db": -8.015789209520609,
+ "hh_auc_closed_gt_open": 0.55268518125,
+ "hv_open_median_db": -16.760848361207973,
+ "hv_closed_median_db": -15.837597070651647,
+ "hv_auc_closed_gt_open": 0.6201657875
+}
+                   group  n_pads  hh_median_diff_db  hh_share_pad_brighter  hh_wilcoxon_p  hh_auc_pad_gt_ring                             hh_median_diff_ci  hv_median_diff_db  hv_share_pad_brighter  hv_wilcoxon_p  hv_auc_pad_gt_ring                               hv_median_diff_ci  ratio_median_diff_db  ratio_share_pad_brighter  ratio_wilcoxon_p  ratio_auc_pad_gt_ring                          ratio_median_diff_ci
+0               all pads     650          -0.444729               0.367692   3.603594e-14            0.377349    [-0.5591604024071567, -0.2979029269844311]          -0.118149               0.460000       0.002037            0.461986  [-0.19776481778082644, -0.0021348650446915917]             -0.236573                  0.430769          0.000005               0.428604   [-0.4138855105238335, -0.10703089029302477]
+1     open (<25% canopy)      76          -0.861232               0.250000   2.447987e-05            0.299861    [-1.1551576012468847, -0.4786850865973314]          -0.305554               0.342105       0.020092            0.417071     [-0.5002711294747826, -0.16246238033776628]             -0.533747                  0.421053          0.014747               0.414474    [-0.8420882199717372, 0.14117749255341216]
+2  partly grown (25-50%)     269          -0.491366               0.390335   2.402062e-05            0.392877   [-0.7148887861668722, -0.20854910476150046]          -0.169093               0.431227       0.000409            0.433479    [-0.35214927785780503, -0.01631864963818863]             -0.186557                  0.442379          0.086322               0.456268  [-0.35955427910886506, -0.02125480771690585]
+3      grown over (>50%)     305          -0.304836               0.377049   7.289165e-07            0.384875  [-0.49958356891247035, -0.18731893067542238]           0.028506               0.514754       0.904726            0.496942     [-0.11616421840129476, 0.11863756988741692]             -0.337219                  0.422951          0.000105               0.405257    [-0.503572206570972, -0.08809886882867346]
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\nisar\nisar_gcov_pad_vs_forest_ring20to60m_per_pad_hh_hv_20260120_asdelivered_9t.csv
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\nisar\nisar_gcov_pad_vs_forest_ring20to60m_summary_hh_hv_20260120_asdelivered_9t.json
+  wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\nisar\figures\nisar_gcov_pad_vs_forest_ring20to60m_hh_hv_by_2019_canopy_20260120_asdelivered_9t.png

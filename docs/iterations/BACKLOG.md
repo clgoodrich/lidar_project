@@ -215,6 +215,10 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - ~~**Test n / dataset-era mixing**~~ **FIXED 2026-07-02**: all four instance evals re-run on the current 65/93 test split with same-era checkpoints (pad_05 Mask R-CNN retrained same day, best = ep 3); LEADERBOARD is now single-era with old numbers quarantined in a legacy block. Still open: report binomial CIs (n = 65/93 is still small).
 - **DEP-well 0.42 recall lacks a null model**: compute random-point matching rate at 25 m before citing it.
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
+- **NISAR GCOV pad test, follow-ups (added 2026-09-26).** See `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`. The single January beta image gives a faint pad signal: open pads are about 0.8 dB darker in HH. The open/closed control is also weak (HV AUC 0.62). To do:
+  - repeat on a leaf-on or fall snow-free GCOV granule
+  - average several dates to beat speckle
+  - measure the ~10 m E / 5 m N beta misregistration against a sharp target, not canopy correlation
 - **Barlow builder**: pin EDI package revisions at fetch time (currently auto-newest → provenance drift); fix flow-accum nodata→0 leak (`np.clip` turns nodata into log1p(0)=0 valid values); document the vertical-datum assumption (all three epochs ellipsoidal — constant offsets are absorbed by the DoD median-bias correction, but say so); curvature is profile (WBT) vs Barlow's ArcGIS standard curvature — a deliberate, documented deviation to keep.
 
 ## Pit/pad scoring + annotation (added 2026-08-04)

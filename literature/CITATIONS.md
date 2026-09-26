@@ -393,3 +393,11 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** The cost-ratio family in the Phase 3 sweep. The rule keeps a candidate when its Platt-calibrated p ≥ 1/(1 + r), where r = C_FN/C_FP. It is checked by regret against the best cut in hindsight.
 - **Generated:** `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`; `data/9t/results/operating_point/policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv`; `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`.
 - **Source:** https://cseweb.ucsd.edu/~elkan/rescale.pdf — local copy `literature/papers/elkan_2001_foundations_cost_sensitive_learning.pdf`.
+
+### Small 2011 — radiometric terrain correction (gamma-0)
+- **Citation:** Small, D. (2011). "Flattening Gamma: Radiometric Terrain Correction for SAR Imagery." *IEEE Transactions on Geoscience and Remote Sensing* 49(8), 3081–3093. doi:10.1109/TGRS.2011.2120616.
+- **About:** Normalises SAR backscatter by the true illuminated area from a DEM, rather than by an ellipsoid. Slopes facing toward and away from the radar then become comparable.
+- **Used for:** NISAR GCOV delivers RTC gamma-0 by this method. It is why pads on hillsides can be compared with their forest ring in the NISAR pad test. Backscatter is averaged in linear power before conversion to dB.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py`; `data/9t/derived/nisar_10m/nisar_gcov_hh_gamma0_db_20260120_9t_10m.tif`; `data/9t/derived/nisar_10m/nisar_gcov_hv_gamma0_db_20260120_9t_10m.tif`; `data/9t/results/nisar/`; `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`.
+- **Source:** https://doi.org/10.1109/TGRS.2011.2120616 — cite-only (paywalled IEEE).
+- **Data note:** the GCOV granule's own metadata names its terrain model as the NISAR DEM v1.2 (doi:10.5067/NIDEM-1), built from Copernicus DEM GLO-30 2023_1 (doi:10.5270/ESA-c5d3d65). The Copernicus licence terms apply to any redistribution.
