@@ -15,6 +15,7 @@ The user asked for a short new deck for a conversation about working in Pennsylv
 - County outlines come from the US Census cartographic boundary file cb_2023_us_county_5m, fetched to `data/_source/reference/census_boundaries/`. The .zip is already gitignored.
 - Palette: `#D97706,#1F5FA8,#5FB4E0`, all pairs checked, worst ΔE 23.3 deutan. Each well group also has its own marker shape. The older `docs/figures/study_area_context.png` pairs red with green, so it was not reused.
 - Slide 3 reuses `rrim_zoom_sequence_tile_to_pit_9t_05.png` from v19. No new analysis.
+- The user wanted a real PowerPoint, not a web deck. `docs/presentation/pa_trip_4slide/_build_pa_4slide_deck.py` (python-pptx) writes `docs/presentation/pa_trip_4slide/Orphaned_Wells_Pennsylvania_problem_and_area_4slides.pptx`, with the same four slides and speaker notes. It passed the pptx validator and a LibreOffice render check.
 
 ---
 
