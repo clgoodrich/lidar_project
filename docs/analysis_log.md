@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-27 -- 4-slide Pennsylvania deck: problem and area, not results
+
+The user asked for a short new deck for a conversation about working in Pennsylvania. After a first draft, they said the focus should be the problem and the area, not the statistics. The deck is a claude.ai Slides artifact, private until shared: https://claude.ai/artifact/WMXNUhxco6dYUZGcrqUu5G. Its slides are the problem, the area, how lidar sees a well site, and what we want to do there.
+
+- New script: `docs/presentation/pa_trip_4slide/_build_pa_area_figures.py`.
+  - `docs/presentation/pa_trip_4slide/figures/pa_counties_venango_mckean_drake_well_locator.png` shows the PA counties, with Venango and McKean filled and the Drake Well site marked.
+  - `docs/presentation/pa_trip_4slide/figures/dep_wells_by_status_on_hillshade_9t.png` shows every DEP record in 9t: 171 orphan or abandoned, 271 plugged and 616 active. 10 never-drilled records are not shown.
+- County outlines come from the US Census cartographic boundary file cb_2023_us_county_5m, fetched to `data/_source/reference/census_boundaries/`. The .zip is already gitignored.
+- Palette: `#D97706,#1F5FA8,#5FB4E0`, all pairs checked, worst ΔE 23.3 deutan. Each well group also has its own marker shape. The older `docs/figures/study_area_context.png` pairs red with green, so it was not reused.
+- Slide 3 reuses `rrim_zoom_sequence_tile_to_pit_9t_05.png` from v19. No new analysis.
+
+---
+
 ## 2026-09-26 -- NISAR GCOV: pads against their forest ring, 9t
 
 The user asked what NISAR can do, then asked for the first pad-scale test. Script: `notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py`. Write-up: `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`.
