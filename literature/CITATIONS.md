@@ -38,6 +38,8 @@ is the source of record.
 | Fiorucci et al. | 2022 | IoU is the wrong measure for small discrete objects; centroid-based measures | **Adopted** — replaced the pit/pad IoU sweep with centroid matching in the AGU abstract | `notebooks/wellsight_v2/s5_eval/_cv5_centroid_precision_pit_pad_9t.py`; `_match_rules_pit_pad_9t.py`; `docs/agu_abstract_2026.md` | cite-only |
 | Lidberg et al. | 2024 | Hunting pits from national ALS with U-Net; centroid scoring | **Adopted** — the closest published analogue; its recall/precision/F1 protocol is now ours, and its Table 1 is our comparison band | `docs/iterations/centroid_matching_pit_pad_9t.md` | ✓ `lidberg_2024_hunting_pits_als_deep_learning.pdf` |
 | Suh et al. | 2021 | U-Net on lidar for relict charcoal hearths | *Candidate* — closest published analogue; motivates VAT/SVF channels | `docs/iterations/pit_refinement_options.md` | cite-only |
+| Richards | 2009 | Remote Sensing with Imaging Radar (Springer), ch. 3 imaging geometry | Slant-range, layover, foreshortening and shadow conditions in the SAR geometry simulator | `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py`; `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html` | cite-only |
+| Small | 2011 | Flattening gamma: radiometric terrain correction for SAR imagery (IEEE TGRS 49(8):3081) | Illuminated-area weighting and layover/shadow handling in the simulated backscatter | same as Richards 2009 | cite-only |
 | Zakšek et al. | 2011 | Sky-View Factor | *Candidate* — new channel, pending redundancy check vs `openness_pos` | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Guyot et al. | 2018 | Multi-visualization CNN for buried structures | *Candidate* — supports the channel-stack approach | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Verschoof-van der Vaart & Lambers | 2019 | WODAN, R-CNN on lidar | Benchmark context | `docs/iterations/benchmark_context_what_counts_as_good.md` | cite-only |
@@ -399,5 +401,13 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **About:** Normalises SAR backscatter by the true illuminated area from a DEM, rather than by an ellipsoid. Slopes facing toward and away from the radar then become comparable.
 - **Used for:** NISAR GCOV delivers RTC gamma-0 by this method. It is why pads on hillsides can be compared with their forest ring in the NISAR pad test. Backscatter is averaged in linear power before conversion to dB.
 - **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py`; `data/9t/derived/nisar_10m/nisar_gcov_hh_gamma0_db_20260120_9t_10m.tif`; `data/9t/derived/nisar_10m/nisar_gcov_hv_gamma0_db_20260120_9t_10m.tif`; `data/9t/results/nisar/`; `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`.
+- **Also used for (2026-09-29):** illuminated-area weighting of backscatter in the SAR geometry simulator, `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py` -> `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html`.
 - **Source:** https://doi.org/10.1109/TGRS.2011.2120616 — cite-only (paywalled IEEE).
 - **Data note:** the GCOV granule's own metadata names its terrain model as the NISAR DEM v1.2 (doi:10.5067/NIDEM-1), built from Copernicus DEM GLO-30 2023_1 (doi:10.5270/ESA-c5d3d65). The Copernicus licence terms apply to any redistribution.
+
+### Richards 2009 — imaging radar geometry
+- **Citation:** Richards, J. A. (2009). *Remote Sensing with Imaging Radar*. Springer, Berlin. doi:10.1007/978-3-642-02020-9.
+- **About:** Textbook on SAR. Chapter 3 derives slant range and the relief distortions: foreshortening, layover and shadow.
+- **Used for:** The layover (slope toward radar > θ), shadow (slope away > 90° − θ) and slant-range mapping rules in the SAR geometry simulator.
+- **Generated:** `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py`; `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html`.
+- **Source:** https://doi.org/10.1007/978-3-642-02020-9 — cite-only (paywalled book).

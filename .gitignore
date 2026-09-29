@@ -191,3 +191,6 @@ docs/presentation/WellSight_Presentation_v18_notes_pages.pdf
 # docs/presentation/v19_maps_and_plain_results/_build_v19_from_v18.py, ~118 MB,
 # over GitHub's 100 MB limit. The builder and figures are tracked; the deck is output.
 docs/presentation/v19_maps_and_plain_results/*.pptx
+
+# heavy RRIM deliverables (>100 MB, regenerable) -- added 2026-09-29 after large-file audit
+deliverables/*.tif

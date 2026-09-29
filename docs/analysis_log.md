@@ -5,6 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-29 -- SAR geometry simulator on 613590 (side path)
+
+The user asked for an interactive HTML tool that shows layover, foreshortening and shadow on one of our lidar chunks. Write-up: `docs/iterations/sar_geometry_simulator_613590.md`.
+
+- **Site.** A relief scan of the six 1 m area DEMs picked the steepest window, in 613590 (166.5 m relief in 600 m). The scene is an 800 m window at row 3700, col 400.
+- **Synthetic peak.** Real PA slopes top out near 37° at the 99th percentile. Shadow at θ = 40° needs back-slopes over 50°. The user asked for all three effects, and to invent terrain if none existed. So a 260 m peak with 62° faces and a 22° apron was added to the real DEM. The tool labels it synthetic. The real-only scene is kept as a second option.
+- **Outputs.** The script is `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py`. The layers are `data/613590/derived/1m/clips/dem_real_sargeom_scene_800m_613590_1m.tif` and `data/613590/derived/1m/clips/dem_synthetic_peak260m_face62deg_on_real_sargeom_scene_800m_613590_1m.tif`. The tool is `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html`, published privately at https://claude.ai/artifact/LvXZH2uhAdbmdrVuosN5tU.
+- **Default result.** At heading 348°, right-looking, θ 40°, the scene is 1.5% layover, 5.1% passive layover, 4.9% shadow and 7.0% foreshortened.
+
+---
+
 ## 2026-09-27 -- 4-slide Pennsylvania deck: problem and area, not results
 
 The user asked for a short new deck for a conversation about working in Pennsylvania. After a first draft, they said the focus should be the problem and the area, not the statistics. The deck is a claude.ai Slides artifact, private until shared: https://claude.ai/artifact/WMXNUhxco6dYUZGcrqUu5G. Its slides are the problem, the area, how lidar sees a well site, and what we want to do there.

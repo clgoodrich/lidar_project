@@ -1,0 +1,479 @@
+<title>Radar Geometry Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Class palette = the repo's validated lost/found trio, reused.
+   validate_palette.js --pairs all, light surface: worst pair #A31515 vs #D97706
+   dE 21.1 deutan, 22.6 normal; all >= 3:1. Dark surface fails contrast for
+   #A31515/#1F5FA8, so every class also carries a text label and passive
+   layover a hatch pattern (second encoding). Classes are drawn over a grey
+   hillshade, not the page surface. */
+:root{
+  --bg:#F3F4F2; --panel:#FFFFFF; --ink:#16212B; --ink2:#4A5763; --muted:#7A8590;
+  --rule:#D9DDDF; --accent:#2E4A62; --terrain:#C9CFD2; --field:#EEF0EF;
+  --layover:#D97706; --shadow:#A31515; --fore:#1F5FA8;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --sans:"Archivo",system-ui,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11171C; --panel:#182027; --ink:#E6EAED; --ink2:#AEB8C0; --muted:#7F8B95;
+    --rule:#2A343C; --accent:#9CB8CF; --terrain:#33404A; --field:#1F2830; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11171C; --panel:#182027; --ink:#E6EAED; --ink2:#AEB8C0; --muted:#7F8B95;
+  --rule:#2A343C; --accent:#9CB8CF; --terrain:#33404A; --field:#1F2830; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;padding-inline:16px;padding-block:18px 32px;margin:0}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-size:24px;font-weight:700;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.sub{color:var(--ink2);margin:2px 0 0;max-width:70ch}
+.layout{display:grid;grid-template-columns:290px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+aside{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:14px}
+.grp{display:flex;flex-direction:column;gap:8px}
+.grp h2{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0;font-weight:600}
+label.row{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;font-size:13px}
+label.row input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--accent)}
+.val{font-family:var(--mono);font-size:12px;color:var(--ink);font-variant-numeric:tabular-nums}
+select,button{font:inherit;font-size:13px;color:var(--ink);background:var(--field);border:1px solid var(--rule);border-radius:4px;padding:5px 8px}
+button{cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--panel);border-color:var(--accent)}
+.presets{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.presets button{font-size:12px;text-align:left;padding:5px 6px}
+.crit{font-family:var(--mono);font-size:12px;background:var(--field);border-radius:4px;padding:8px;display:flex;flex-direction:column;gap:3px}
+main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.views{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.views{grid-template-columns:1fr}}
+figure{margin:0;background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+figcaption b{font-size:14px;font-weight:600}
+canvas{width:100%;height:auto;display:block;border-radius:3px;background:var(--field)}
+#mapc{cursor:crosshair}
+.hint{font-size:12px;color:var(--muted);font-family:var(--mono);min-height:1.4em}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:2px;display:inline-block;border:1px solid rgba(0,0,0,.25)}
+.sw.hatch{background:repeating-linear-gradient(45deg,var(--layover) 0 3px,rgba(217,119,6,.25) 3px 6px)}
+.pct{font-family:var(--mono);color:var(--ink2);font-variant-numeric:tabular-nums}
+.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:800px){.notes{grid-template-columns:1fr}}
+.note{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:12px 14px;font-size:13px}
+.note h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
+.note p{margin:4px 0;color:var(--ink2);max-width:65ch}
+.foot{font-size:12px;color:var(--muted);max-width:110ch}
+.foot code{font-family:var(--mono);font-size:11.5px}
+.tag{font-size:11px;font-family:var(--mono);padding:2px 6px;border-radius:3px;background:var(--field);color:var(--ink2);border:1px solid var(--rule)}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <h1>Radar Geometry Lab</h1>
+    <p class="sub">A side-looking radar measures distance, not position. Steep terrain breaks that mapping in three ways. Change the look angle and direction to see where each one happens on a western Pennsylvania lidar DEM.</p>
+  </div>
+  <label class="grp" style="gap:4px"><span class="tag" id="scenetag">scene</span>
+    <select id="scene" aria-label="Terrain scene"></select>
+  </label>
+</header>
+
+<div class="layout">
+<aside>
+  <div class="grp">
+    <h2>Sensor presets (approximate)</h2>
+    <div class="presets" id="presets"></div>
+  </div>
+  <div class="grp">
+    <h2>Viewing geometry</h2>
+    <label class="row">Incidence angle θ <span class="val" id="thetaV"></span>
+      <input type="range" id="theta" min="10" max="80" step="1" value="40"></label>
+    <label class="row">Flight heading <span class="val" id="headingV"></span>
+      <input type="range" id="heading" min="0" max="359" step="1" value="348"></label>
+    <div class="seg" role="group" aria-label="Look side">
+      <button id="sideR" aria-pressed="true">Right-looking</button>
+      <button id="sideL" aria-pressed="false">Left-looking</button>
+    </div>
+    <div class="crit" id="crit"></div>
+  </div>
+  <div class="grp">
+    <h2>Terrain and sensor</h2>
+    <label class="row">Vertical exaggeration <span class="val" id="veV"></span>
+      <input type="range" id="ve" min="1" max="4" step="0.1" value="1"></label>
+    <label class="row">Slant-range resolution <span class="val" id="drV"></span>
+      <input type="range" id="dr" min="1" max="15" step="0.5" value="3"></label>
+    <label class="row">Foreshortening flag, compression below <span class="val" id="fsV"></span>
+      <input type="range" id="fs" min="0.1" max="0.9" step="0.05" value="0.5"></label>
+    <label class="row">Speckle looks (0 = off) <span class="val" id="looksV"></span>
+      <input type="range" id="looks" min="0" max="16" step="1" value="0"></label>
+  </div>
+  <div class="grp">
+    <h2>Profile line</h2>
+    <label class="row">Azimuth offset from centre <span class="val" id="profV"></span>
+      <input type="range" id="prof" min="-560" max="560" step="2" value="0"></label>
+    <span class="hint" style="font-family:var(--sans)">Or click the map.</span>
+  </div>
+</aside>
+
+<main>
+  <div class="views">
+    <figure>
+      <figcaption><b>Map: where each distortion falls</b><label><input type="checkbox" id="showcls" checked> classes</label></figcaption>
+      <canvas id="mapc" width="800" height="800" aria-label="Hillshade map with layover, shadow and foreshortening classes"></canvas>
+      <div class="legend" id="legend"></div>
+      <div class="hint" id="maphint">Hover for values. Click to move the profile line.</div>
+    </figure>
+    <figure>
+      <figcaption><b>Simulated radar image</b>
+        <select id="view" aria-label="Image geometry">
+          <option value="slant">Slant range (as recorded)</option>
+          <option value="ground">Ground range, flat-Earth projection</option>
+          <option value="geocoded">Terrain-geocoded with the DEM</option>
+        </select></figcaption>
+      <canvas id="sarc" width="800" height="800" aria-label="Simulated radar backscatter image"></canvas>
+      <div class="hint" id="sarhint"></div>
+    </figure>
+  </div>
+  <figure>
+    <figcaption><b>Range profile along the look direction</b><span class="hint" id="profhint"></span></figcaption>
+    <canvas id="profc" width="1600" height="720" aria-label="Terrain profile with radar rays, wavefronts and slant-range mapping"></canvas>
+    <div class="hint">Grey rays arrive at θ. Dashed lines are wavefronts, i.e. equal slant range. Every ground point drops to the bin where the radar files it. Crossing lines mean layover. Bunched lines mean foreshortening. Missing lines mean shadow.</div>
+  </figure>
+  <div class="notes">
+    <div class="note"><h3><span class="sw" style="background:var(--fore)"></span>Foreshortening</h3>
+      <p>A slope facing the radar is closer at the top than at the bottom.</p>
+      <p>Its whole length is squeezed into a few range bins, so it looks short and bright.</p>
+      <p>It happens when the slope toward the radar is below θ. It is strongest as the slope nears θ.</p></div>
+    <div class="note"><h3><span class="sw" style="background:var(--layover)"></span>Layover</h3>
+      <p>When the slope toward the radar is steeper than θ, the top is reached before the bottom.</p>
+      <p>The image order flips. The peak appears on the near-range side of its own base.</p>
+      <p>Hatched cells are passive layover. They are flat ground that shares range bins with the slope, so their signal is mixed.</p></div>
+    <div class="note"><h3><span class="sw" style="background:var(--shadow)"></span>Shadow</h3>
+      <p>A slope facing away that is steeper than 90° − θ is never lit.</p>
+      <p>Ground behind a high ridge can also fall in shadow.</p>
+      <p>These cells return nothing but noise. Low θ gives more layover. High θ gives more shadow.</p></div>
+  </div>
+  <p class="foot" id="foot"></p>
+</main>
+</div>
+
+<script>
+"use strict";
+const SCENES = /*__SCENES__*/null;
+const D2R = Math.PI/180;
+const PRESETS = [
+  {name:"Sentinel-1 asc.", h:348, side:"R", th:39},
+  {name:"Sentinel-1 desc.", h:192, side:"R", th:39},
+  {name:"NISAR asc.", h:348, side:"L", th:40},
+  {name:"NISAR desc.", h:192, side:"L", th:40},
+  {name:"ERS-1/2 (23°)", h:348, side:"R", th:23},
+  {name:"Steep look (55°)", h:348, side:"R", th:55},
+];
+const CLS = {NONE:0, FORE:1, LAY:2, PASSIVE:3, SHADOW:4, OUT:255};
+const $ = id => document.getElementById(id);
+const st = {scene:"synthetic", theta:40, heading:348, side:"R", ve:1, dr:3, fs:0.5, looks:0, prof:0, view:"slant", showcls:true};
+
+// ---------- scene decode ----------
+const cache = {};
+function loadScene(key){
+  if (cache[key]) return cache[key];
+  const s = SCENES[key], bin = atob(s.b64), u8 = new Uint8Array(bin.length);
+  for (let i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i);
+  const q = new Uint16Array(u8.buffer), z = new Float32Array(q.length);
+  for (let i=0;i<q.length;i++) z[i]=q[i]/100;          // height above scene minimum, m
+  return cache[key] = {...s, z};
+}
+
+// ---------- geometry engine ----------
+let G = null;   // results of the last compute
+function hillshade(sc, ve){
+  const n=sc.n, r=sc.res, z=sc.z, out=new Float32Array(n*n);
+  const az=315*D2R, el=45*D2R, lx=Math.sin(az)*Math.cos(el), ly=Math.cos(az)*Math.cos(el), lz=Math.sin(el);
+  for (let i=0;i<n;i++) for (let j=0;j<n;j++){
+    const jm=Math.max(j-1,0), jp=Math.min(j+1,n-1), im=Math.max(i-1,0), ip=Math.min(i+1,n-1);
+    const gx=ve*(z[i*n+jp]-z[i*n+jm])/((jp-jm)*r), gy=ve*(z[im*n+j]-z[ip*n+j])/((ip-im)*r); // gy: +north
+    const nrm=Math.hypot(gx,gy,1);
+    out[i*n+j]=Math.max(0,(-gx*lx-gy*ly+lz)/nrm);
+  }
+  return out;
+}
+function rng(seed){ return ()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+function compute(){
+  const sc = loadScene(st.scene), n=sc.n, res=sc.res, ve=st.ve;
+  const th=st.theta*D2R, sn=Math.sin(th), cs=Math.cos(th), cot=cs/sn;
+  const phi=(st.heading+(st.side==="R"?90:-90))*D2R, h=st.heading*D2R;
+  const Lx=Math.sin(phi), Ly=Math.cos(phi), Ax=Math.sin(h), Ay=Math.cos(h);
+  const M=Math.ceil(n*Math.SQRT2)+2, half=M/2, cx=n*res/2, cy=n*res/2;
+  const Zr=new Float32Array(M*M).fill(NaN);
+  // resample the DEM onto a (azimuth k, ground range m) grid
+  for (let k=0;k<M;k++){ const v=(k-half+.5)*res;
+    for (let m=0;m<M;m++){ const u=(m-half+.5)*res;
+      const E=cx+u*Lx+v*Ax, N=cy+u*Ly+v*Ay, fj=E/res-.5, fi=n-N/res-.5;
+      if (fj<0||fi<0||fj>n-1||fi>n-1) continue;
+      const j0=Math.min(Math.floor(fj),n-2), i0=Math.min(Math.floor(fi),n-2), a=fj-j0, b=fi-i0, z=sc.z;
+      Zr[k*M+m]=ve*((1-a)*(1-b)*z[i0*n+j0]+a*(1-b)*z[i0*n+j0+1]+(1-a)*b*z[(i0+1)*n+j0]+a*b*z[(i0+1)*n+j0+1]);
+    }}
+  const R=new Float32Array(M*M).fill(NaN), K=new Float32Array(M*M), C=new Float32Array(M*M), cls=new Uint8Array(M*M).fill(CLS.OUT);
+  let rMin=Infinity, rMax=-Infinity;
+  for (let i=0;i<M*M;i++){ if (Number.isNaN(Zr[i])) continue; const r=(i%M)*res*sn-Zr[i]*cs; R[i]=r; if(r<rMin)rMin=r; if(r>rMax)rMax=r; }
+  const dr=st.dr, tol=dr*0.5, B=Math.ceil((rMax-rMin)/dr)+2, S=new Float32Array(M*B);
+  const shadow=new Uint8Array(M), fwd=new Float32Array(M), bwd=new Float32Array(M);
+  for (let k=0;k<M;k++){
+    const o=k*M; let m0=-1, m1=-1;
+    for (let m=0;m<M;m++) if(!Number.isNaN(Zr[o+m])){ if(m0<0)m0=m; m1=m; }
+    if (m0<0 || m1-m0<2) continue;
+    // shadow sweep from near range: running ray-height horizon
+    let H=-Infinity;
+    for (let m=m0;m<=m1;m++){ const z=Zr[o+m]; shadow[m]= z < H-1e-3 ? 1:0; H=Math.max(H,z)-res*cot; }
+    // range ambiguity: running max from near side, running min from far side (lit cells only)
+    let rm=-Infinity; for (let m=m0;m<=m1;m++){ fwd[m]=rm; if(!shadow[m]) rm=Math.max(rm,R[o+m]); }
+    rm=Infinity; for (let m=m1;m>=m0;m--){ bwd[m]=rm; if(!shadow[m]) rm=Math.min(rm,R[o+m]); }
+    for (let m=m0;m<=m1;m++){
+      const i=o+m, mp=Math.min(m+1,m1), mm=Math.max(m-1,m0);
+      const dzdu=(Zr[o+mp]-Zr[o+mm])/((mp-mm)*res);
+      const zu=k<M-1?Zr[i+M]:NaN, zd=k>0?Zr[i-M]:NaN;
+      const dzdv=(!Number.isNaN(zu)&&!Number.isNaN(zd))?(zu-zd)/(2*res):0;
+      const kk=(sn-cs*dzdu)/sn; K[i]=kk;
+      let c=CLS.NONE;
+      if (shadow[m]) c=CLS.SHADOW;
+      else if (kk<0) c=CLS.LAY;
+      else if (R[i]<fwd[m]-tol || R[i]>bwd[m]+tol) c=CLS.PASSIVE;
+      else if (kk<st.fs) c=CLS.FORE;
+      cls[i]=c;
+      // backscatter: cos(local incidence) x surface-area factor; radar direction (-sin th, 0, cos th)
+      const nrm=Math.hypot(dzdu,dzdv,1), cl=(dzdu*sn+cs)/nrm;
+      const e = (shadow[m]||cl<=0) ? 0 : cl*nrm;  // = dzdu*sn+cs, lit area projected on the beam
+      C[i]=e;
+      const f=(R[i]-rMin)/dr, b0=Math.floor(f), w=f-b0;
+      S[k*B+b0]+=e*(1-w); S[k*B+b0+1]+=e*w;
+    }
+  }
+  // speckle: gamma(L) multiplicative noise per bin, fixed seed so it does not flicker
+  if (st.looks>0){ const r=rng(7); const L=st.looks;
+    for (let i=0;i<S.length;i++){ let g=0; for(let l=0;l<L;l++) g-=Math.log(1-r()); S[i]*=g/L; } }
+  const ref = cs*dr/(res*sn);            // flat-terrain energy per bin
+  // class stats over the scene
+  const cnt=[0,0,0,0,0]; let tot=0;
+  for (let i=0;i<cls.length;i++) if(cls[i]!==CLS.OUT){ cnt[cls[i]]++; tot++; }
+  let zmed; { const zs=Array.from(Zr).filter(x=>!Number.isNaN(x)).sort((a,b)=>a-b); zmed=zs[zs.length>>1]; }
+  G={sc,n,res,M,half,Lx,Ly,Ax,Ay,cx,cy,sn,cs,cot,Zr,R,K,C,cls,S,B,rMin,rMax,dr,ref,cnt,tot,zmed,phi};
+}
+
+// map-frame (i,j) -> rotated (k,m)
+function toKM(i,j){
+  const E=(j+.5)*G.res, N=(G.n-i-.5)*G.res, dx=E-G.cx, dy=N-G.cy;
+  const u=dx*G.Lx+dy*G.Ly, v=dx*G.Ax+dy*G.Ay;
+  return [Math.round(v/G.res+G.half-.5), Math.round(u/G.res+G.half-.5)];
+}
+function sampleS(k,r){
+  const f=(r-G.rMin)/G.dr, b=Math.floor(f);
+  if (k<0||k>=G.M||b<0||b>=G.B-1) return 0;
+  const w=f-b; return G.S[k*G.B+b]*(1-w)+G.S[k*G.B+b+1]*w;
+}
+const toGray = v => { const db = v>0 ? 10*Math.log10(v/G.ref) : -99; return Math.max(0,Math.min(255, (db+14)/26*255)); };
+
+// ---------- drawing ----------
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const hex = h => [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+let HS=null, HSkey="";
+const off = document.createElement("canvas"), offc = off.getContext("2d");
+
+function drawMap(){
+  const {n}=G, key=st.scene+"|"+st.ve;
+  if (HSkey!==key){ HS=hillshade(G.sc,st.ve); HSkey=key; }
+  off.width=n; off.height=n; const img=offc.createImageData(n,n), d=img.data;
+  const cL=hex(css("--layover")), cS=hex(css("--shadow")), cF=hex(css("--fore"));
+  for (let i=0;i<n;i++) for (let j=0;j<n;j++){
+    const p=(i*n+j)*4, g=40+200*HS[i*n+j]; let rgb=[g,g,g], a=0, col=null;
+    if (st.showcls){ const [k,m]=toKM(i,j); const c=(k>=0&&m>=0&&k<G.M&&m<G.M)?G.cls[k*G.M+m]:255;
+      if (c===CLS.LAY){col=cL;a=.85;}
+      else if (c===CLS.PASSIVE){col=cL;a=((i+j)>>1)%3===0?.9:.22;}
+      else if (c===CLS.SHADOW){col=cS;a=.8;}
+      else if (c===CLS.FORE){col=cF;a=.65;} }
+    if (col) rgb=rgb.map((v,t)=>v*(1-a)+col[t]*a);
+    d[p]=rgb[0]; d[p+1]=rgb[1]; d[p+2]=rgb[2]; d[p+3]=255;
+  }
+  offc.putImageData(img,0,0);
+  const c=$("mapc"), x=c.getContext("2d"), W=c.width, s=W/n;
+  x.imageSmoothingEnabled=false; x.drawImage(off,0,0,W,W);
+  // profile line
+  const vOff=st.prof, sx=(G.cx+vOff*G.Ax)/G.res*s, sy=(n-(G.cy+vOff*G.Ay)/G.res)*s, Lpx=W*0.75;
+  x.save(); x.strokeStyle="#fff"; x.lineWidth=5; x.globalAlpha=.8;
+  const lx=G.Lx*Lpx, ly=-G.Ly*Lpx;
+  x.beginPath(); x.moveTo(sx-lx,sy-ly); x.lineTo(sx+lx,sy+ly); x.stroke();
+  x.strokeStyle="#111"; x.lineWidth=2; x.globalAlpha=1; x.setLineDash([10,6]); x.stroke(); x.restore();
+  // compass + arrows
+  arrowBox(x, W, G.Ax, G.Ay, G.Lx, G.Ly);
+  scaleBar(x, W, s/G.res);
+}
+function scaleBar(x,W,pxPerM){
+  const len=200*pxPerM, x0=24, y0=W-28; x.save(); x.fillStyle="rgba(255,255,255,.88)"; x.fillRect(x0-10,y0-34,len+20,48);
+  x.fillStyle="#16212B"; x.fillRect(x0,y0,len,6); x.font="600 17px Archivo, sans-serif"; x.textAlign="left"; x.fillText("200 m",x0,y0-12); x.restore();
+}
+function arrow(x,x0,y0,dx,dy,len,col,lab){
+  const x1=x0+dx*len, y1=y0-dy*len; x.strokeStyle=col; x.fillStyle=col; x.lineWidth=3;
+  x.beginPath(); x.moveTo(x0,y0); x.lineTo(x1,y1); x.stroke();
+  const a=Math.atan2(y1-y0,x1-x0); x.beginPath(); x.moveTo(x1,y1);
+  x.lineTo(x1-14*Math.cos(a-.4),y1-14*Math.sin(a-.4)); x.lineTo(x1-14*Math.cos(a+.4),y1-14*Math.sin(a+.4)); x.fill();
+  x.font="600 20px Archivo, sans-serif"; x.textAlign="center"; x.textBaseline="middle";
+  x.fillText(lab, x1+dx*18, y1-dy*18);
+}
+function arrowBox(x,W,Ax,Ay,Lx,Ly){
+  const bx=W-110, by=110; x.save(); x.fillStyle="rgba(255,255,255,.88)";
+  x.beginPath(); x.arc(bx,by,96,0,2*Math.PI); x.fill();
+  arrow(x,bx,by,Ax,Ay,52,"#16212B","flight");
+  arrow(x,bx,by,Lx,Ly,52,"#8A4A00","look");
+  x.fillStyle="#4A5763"; x.font="500 15px Archivo, sans-serif"; x.fillText("north up",bx,by+78); x.restore();
+}
+
+function drawSAR(){
+  const c=$("sarc"), x=c.getContext("2d"), W=c.width, Hh=c.height;
+  x.fillStyle=css("--field"); x.fillRect(0,0,W,Hh);
+  if (st.view==="slant"){
+    const {M,B}=G; off.width=B; off.height=M; const img=offc.createImageData(B,M), d=img.data;
+    const flip = st.side==="L";   // keep the image unmirrored: near range sits on the sensor side
+    for (let k=0;k<M;k++) for (let b=0;b<B;b++){
+      const g=toGray(G.S[k*B+b]), row=M-1-k, col=flip?B-1-b:b, p=(row*B+col)*4;
+      d[p]=d[p+1]=d[p+2]=g; d[p+3]=255; }
+    offc.putImageData(img,0,0);
+    const wm=B*G.dr, hm=M*G.res, s=Math.min(W/wm,Hh/hm), dw=wm*s, dh=hm*s;
+    x.imageSmoothingEnabled=true; x.drawImage(off,(W-dw)/2,(Hh-dh)/2,dw,dh);
+    x.fillStyle=css("--ink"); x.font="600 20px Archivo, sans-serif"; x.textAlign="left";
+    x.fillText(flip?"← far range      near range":"near range      far range →", 16, Hh-14);
+    x.save(); x.translate(22,Hh/2); x.rotate(-Math.PI/2); x.textAlign="center"; x.fillText("azimuth (flight) →",0,0); x.restore();
+    $("sarhint").textContent=`${B} slant bins × ${G.dr} m, ${M} azimuth lines × ${G.res} m. Not north-up. Brightness: −14 to +12 dB relative to flat ground.`;
+  } else {
+    const n=G.n; off.width=n; off.height=n; const img=offc.createImageData(n,n), d=img.data;
+    const zref=G.zmed;
+    for (let i=0;i<n;i++) for (let j=0;j<n;j++){
+      const [k,m]=toKM(i,j), p=(i*n+j)*4;
+      let r; if (st.view==="ground") r=m*G.res*G.sn - zref*G.cs; else r=G.R[k*G.M+m];
+      const g=toGray(sampleS(k,r)); d[p]=d[p+1]=d[p+2]=g; d[p+3]=255; }
+    offc.putImageData(img,0,0); x.imageSmoothingEnabled=false; x.drawImage(off,0,0,W,Hh);
+    arrowBox(x,W,G.Ax,G.Ay,G.Lx,G.Ly);
+    $("sarhint").textContent = st.view==="ground"
+      ? "North-up. Each pixel assumes the ground sits at the scene median height. Peaks lean toward the radar."
+      : "North-up. Each pixel is looked up at its true slant range from the DEM. Layover smears, shadow stays dark.";
+  }
+}
+
+function drawProfile(){
+  const c=$("profc"), x=c.getContext("2d"), W=c.width, Hh=c.height;
+  x.fillStyle=css("--panel"); x.fillRect(0,0,W,Hh);
+  const {M,res,Zr,R,cls,sn,cs}=G, k=Math.round(st.prof/res+G.half-.5), o=k*M;
+  let m0=-1,m1=-1; for(let m=0;m<M;m++) if(!Number.isNaN(Zr[o+m])){ if(m0<0)m0=m; m1=m; }
+  if (m0<0){ $("profhint").textContent="Line is outside the scene."; return; }
+  // metric frame, equal x/z scale so angles are true
+  let zlo=Infinity,zhi=-Infinity; for(let m=m0;m<=m1;m++){zlo=Math.min(zlo,Zr[o+m]);zhi=Math.max(zhi,Zr[o+m]);}
+  const u0=m0*res, u1=m1*res, padL=60, padR=40, top=40, stripH=34, stripGap=100;
+  const profH=Hh-top-stripH-stripGap-40;
+  const s=Math.min((W-padL-padR)/(u1-u0), profH/Math.max(zhi-zlo+60,1));
+  const X=u=>padL+(u-u0)*s, Y=z=>top+profH-(z-zlo)*s;
+  const ink=css("--ink"), muted=css("--muted"), cL=css("--layover"), cS=css("--shadow"), cF=css("--fore");
+  const colOf=c=>c===CLS.LAY||c===CLS.PASSIVE?cL:c===CLS.SHADOW?cS:c===CLS.FORE?cF:ink;
+  // wavefronts: u sn - z cs = r0
+  x.save(); x.beginPath(); x.rect(padL,0,W-padL-padR,top+profH); x.clip();
+  x.strokeStyle=muted; x.globalAlpha=.45; x.setLineDash([4,6]); x.lineWidth=1;
+  const step=Math.max(G.dr*Math.ceil(20/G.dr),10);
+  const rA=u0*sn-(zhi+200)*cs, rB=u1*sn-zlo*cs;
+  for (let r0=Math.ceil(rA/step)*step;r0<=rB;r0+=step){
+    const zA=zlo-50, zB=zhi+300; x.beginPath(); x.moveTo(X((r0+zA*cs)/sn),Y(zA)); x.lineTo(X((r0+zB*cs)/sn),Y(zB)); x.stroke(); }
+  // rays: direction (sn, -cs), traced until they hit terrain
+  x.setLineDash([]); x.globalAlpha=.7; x.strokeStyle=muted; x.lineWidth=1.2;
+  const zTop=zhi+40;
+  for (let t=0;t<=26;t++){
+    const uStart=u0-(zTop-zlo)*G.cot*1.0+t*(u1-u0+(zTop-zlo)*G.cot)/26;
+    let uHit=null;
+    for (let m=m0;m<=m1;m++){ const u=m*res, zr=zTop-(u-uStart)*G.cot; if(u>=uStart && Zr[o+m]>=zr){ uHit=u; break; } }
+    if (uHit===null) continue;
+    x.beginPath(); x.moveTo(X(uStart),Y(zTop)); x.lineTo(X(uHit),Y(zTop-(uHit-uStart)*G.cot)); x.stroke();
+  }
+  x.restore();
+  // terrain fill
+  x.fillStyle=css("--terrain"); x.beginPath(); x.moveTo(X(u0),top+profH);
+  for(let m=m0;m<=m1;m++) x.lineTo(X(m*res),Y(Zr[o+m])); x.lineTo(X(u1),top+profH); x.fill();
+  // terrain line, coloured by class; passive layover dashed
+  x.lineWidth=4; x.lineCap="round";
+  for(let m=m0;m<m1;m++){ const c1=cls[o+m]; x.strokeStyle=colOf(c1); x.setLineDash(c1===CLS.PASSIVE?[3,4]:[]);
+    x.beginPath(); x.moveTo(X(m*res),Y(Zr[o+m])); x.lineTo(X((m+1)*res),Y(Zr[o+m+1])); x.stroke(); }
+  x.setLineDash([]);
+  // slant-range strip, same metres-per-pixel as the profile
+  const sy=top+profH+stripGap, rs=G.rMin, rw=(G.rMax-G.rMin)*s, sx0=padL+((u1-u0)*s-rw)/2;
+  const XR=r=>sx0+(r-rs)*s;
+  for(let b=0;b<G.B-1;b++){ const g=toGray(G.S[k*G.B+b]); x.fillStyle=`rgb(${g},${g},${g})`;
+    x.fillRect(XR(G.rMin+b*G.dr),sy,Math.max(G.dr*s,1)+.5,stripH); }
+  x.strokeStyle=ink; x.lineWidth=1; x.strokeRect(sx0,sy,rw,stripH);
+  // connectors ground point -> slant bin
+  const every=Math.max(1,Math.round(6/res)); x.lineWidth=1.3;
+  for(let m=m0;m<=m1;m+=every){ const c1=cls[o+m]; if(c1===CLS.SHADOW) continue;
+    x.strokeStyle=colOf(c1); x.globalAlpha=c1===CLS.NONE?.28:.75;
+    x.beginPath(); x.moveTo(X(m*res),Y(Zr[o+m])); x.lineTo(XR(R[o+m]),sy); x.stroke(); }
+  x.globalAlpha=1;
+  // labels
+  x.fillStyle=ink; x.font="600 22px Archivo, sans-serif"; x.textAlign="left";
+  x.fillText(`radar ← near range`,padL,26); x.textAlign="right"; x.fillText(`far range →`,W-padR,26);
+  x.textAlign="left"; x.font="500 20px Archivo, sans-serif";
+  x.fillText(`what the radar records on this line (slant range, ${G.dr} m bins)`,sx0,sy+stripH+26);
+  x.fillStyle=muted; x.font="18px IBM Plex Mono, monospace";
+  x.fillText(`θ = ${st.theta}°   VE ${st.ve}×   1:1 scale   ${Math.round((u1-u0))} m ground`,padL,top+profH+30);
+  const cc=[0,0,0,0,0]; for(let m=m0;m<=m1;m++) if(cls[o+m]<5) cc[cls[o+m]]++;
+  const tt=m1-m0+1, pc=v=>(100*v/tt).toFixed(0)+"%";
+  $("profhint").textContent=`this line: layover ${pc(cc[2])} · passive ${pc(cc[3])} · shadow ${pc(cc[4])} · foreshortened ${pc(cc[1])}`;
+}
+
+function drawLegend(){
+  const pc=i=>(100*G.cnt[i]/G.tot).toFixed(1)+"%";
+  $("legend").innerHTML=
+    `<span><i class="sw" style="background:var(--layover)"></i>Layover <b class="pct">${pc(2)}</b></span>`+
+    `<span><i class="sw hatch"></i>Passive layover <b class="pct">${pc(3)}</b></span>`+
+    `<span><i class="sw" style="background:var(--shadow)"></i>Shadow <b class="pct">${pc(4)}</b></span>`+
+    `<span><i class="sw" style="background:var(--fore)"></i>Foreshortened &lt;${st.fs} <b class="pct">${pc(1)}</b></span>`;
+}
+
+function readouts(){
+  $("thetaV").textContent=st.theta+"°"; $("headingV").textContent=st.heading+"°";
+  $("veV").textContent=st.ve.toFixed(1)+"×"; $("drV").textContent=st.dr+" m";
+  $("fsV").textContent=st.fs.toFixed(2); $("looksV").textContent=st.looks||"off";
+  $("profV").textContent=st.prof+" m";
+  $("sideR").setAttribute("aria-pressed",st.side==="R"); $("sideL").setAttribute("aria-pressed",st.side==="L");
+  const look=((st.heading+(st.side==="R"?90:-90))%360+360)%360;
+  $("crit").innerHTML=`<span>look azimuth ${look}°</span><span>layover: facing slope &gt; ${st.theta}°</span><span>foreshort.: facing &lt; ${st.theta}°</span><span>shadow: back slope &gt; ${90-st.theta}°</span>`;
+  const sc=SCENES[st.scene]; $("scenetag").textContent=st.scene==="synthetic"?"synthetic peak":"real lidar";
+  $("foot").innerHTML=`Scene: ${sc.label}. ${sc.note} Source DEM <code>${sc.source}</code>, ${sc.size_m} m window at rows/cols ${sc.window_rowcol.join(", ")}, ${sc.crs}, bounds ${sc.bounds.join(", ")}. Shown at ${sc.res} m. Model: far-field plane wave, flat Earth over the scene, backscatter ∝ cos(local incidence) × illuminated area. No volume scattering, no antenna pattern, no multipath. Preset headings and angles are approximate mid-swath values.`;
+}
+
+let pending=false;
+function update(recompute=true){
+  if (pending) return; pending=true;
+  requestAnimationFrame(()=>{ pending=false; if(recompute) compute(); readouts(); drawLegend(); drawMap(); drawSAR(); drawProfile(); });
+}
+
+// ---------- wiring ----------
+for (const [k,v] of Object.entries(SCENES)){ const o=document.createElement("option"); o.value=k; o.textContent=v.label; $("scene").appendChild(o); }
+$("scene").onchange=e=>{ st.scene=e.target.value; update(); };
+for (const p of PRESETS){ const b=document.createElement("button"); b.textContent=p.name;
+  b.onclick=()=>{ st.heading=p.h; st.side=p.side; st.theta=p.th; $("heading").value=p.h; $("theta").value=p.th; update(); };
+  $("presets").appendChild(b); }
+const num=(id,key,parse=Number)=>$(id).addEventListener("input",e=>{ st[key]=parse(e.target.value); update(); });
+num("theta","theta"); num("heading","heading"); num("ve","ve"); num("dr","dr"); num("fs","fs"); num("looks","looks"); num("prof","prof");
+$("sideR").onclick=()=>{st.side="R";update();}; $("sideL").onclick=()=>{st.side="L";update();};
+$("view").onchange=e=>{ st.view=e.target.value; update(false); };
+$("showcls").onchange=e=>{ st.showcls=e.target.checked; update(false); };
+function mapIJ(ev){ const c=$("mapc"), r=c.getBoundingClientRect();
+  return [Math.floor((ev.clientY-r.top)/r.height*G.n), Math.floor((ev.clientX-r.left)/r.width*G.n)]; }
+$("mapc").addEventListener("click",ev=>{ const [i,j]=mapIJ(ev);
+  const E=(j+.5)*G.res-G.cx, N=(G.n-i-.5)*G.res-G.cy, v=E*G.Ax+N*G.Ay;
+  st.prof=Math.round(v/2)*2; $("prof").value=st.prof; update(false); });
+const NAMES=["normal","foreshortened","layover","passive layover","shadow"];
+$("mapc").addEventListener("mousemove",ev=>{ const [i,j]=mapIJ(ev); if(i<0||j<0||i>=G.n||j>=G.n) return;
+  const [k,m]=toKM(i,j), idx=k*G.M+m, c=G.cls[idx];
+  const z=G.sc.zmin+G.sc.z[i*G.n+j];
+  $("maphint").textContent=`${z.toFixed(1)} m · ${NAMES[c]??"—"} · range compression ${Number.isFinite(G.K[idx])?G.K[idx].toFixed(2):"—"}`; });
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>update(false));
+update();
+</script>
