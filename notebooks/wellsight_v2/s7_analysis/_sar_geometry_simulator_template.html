@@ -75,7 +75,7 @@ canvas{width:100%;height:auto;display:block;border-radius:3px;background:var(--f
 <header>
   <div>
     <h1>Radar Geometry Lab</h1>
-    <p class="sub">A side-looking radar measures distance, not position. Steep terrain breaks that mapping in three ways. Change the look angle and direction to see where each one happens on a western Pennsylvania lidar DEM.</p>
+    <p class="sub">A side-looking radar measures distance, not position. Steep terrain breaks that mapping in three ways. The radar flies along a track off to one side of the scene. Change its altitude, look angle and direction to see where each distortion happens on a western Pennsylvania lidar DEM.</p>
   </div>
   <label class="grp" style="gap:4px"><span class="tag" id="scenetag">scene</span>
     <select id="scene" aria-label="Terrain scene"></select>
@@ -94,6 +94,8 @@ canvas{width:100%;height:auto;display:block;border-radius:3px;background:var(--f
       <input type="range" id="theta" min="10" max="80" step="1" value="40"></label>
     <label class="row">Flight heading <span class="val" id="headingV"></span>
       <input type="range" id="heading" min="0" max="359" step="1" value="348"></label>
+    <label class="row">Platform altitude <span class="val" id="altV"></span>
+      <input type="range" id="alt" min="0" max="1000" step="1" value="900"></label>
     <div class="seg" role="group" aria-label="Look side">
       <button id="sideR" aria-pressed="true">Right-looking</button>
       <button id="sideL" aria-pressed="false">Left-looking</button>
@@ -138,10 +140,22 @@ canvas{width:100%;height:auto;display:block;border-radius:3px;background:var(--f
       <div class="hint" id="sarhint"></div>
     </figure>
   </div>
+  <div class="views">
+    <figure>
+      <figcaption><b>Plan view: flight track, swath and scene</b></figcaption>
+      <canvas id="planc" width="800" height="520" aria-label="Plan view of the flight track, imaged swath and scene location"></canvas>
+      <div class="hint">North up, to scale. The radar images the scene from the flight track, off to one side.</div>
+    </figure>
+    <figure>
+      <figcaption><b>Cross-track view: why the scene is off to the side</b></figcaption>
+      <canvas id="sidec" width="800" height="520" aria-label="Cross-track side view of platform, nadir, line of sight and incidence angle"></canvas>
+      <div class="hint">A side-looking radar never images its own nadir. θ is measured at the ground. The look angle is measured at the sensor.</div>
+    </figure>
+  </div>
   <figure>
     <figcaption><b>Range profile along the look direction</b><span class="hint" id="profhint"></span></figcaption>
     <canvas id="profc" width="1600" height="720" aria-label="Terrain profile with radar rays, wavefronts and slant-range mapping"></canvas>
-    <div class="hint">Grey rays arrive at θ. Dashed lines are wavefronts, i.e. equal slant range. Every ground point drops to the bin where the radar files it. Crossing lines mean layover. Bunched lines mean foreshortening. Missing lines mean shadow.</div>
+    <div class="hint">Grey rays come from the radar on the flight-track side. Dashed lines are wavefronts, which are lines of equal slant range. Every ground point drops to the bin where the radar files it. Crossing lines mean layover. Bunched lines mean foreshortening. Missing lines mean shadow.</div>
   </figure>
   <div class="notes">
     <div class="note"><h3><span class="sw" style="background:var(--fore)"></span>Foreshortening</h3>
@@ -164,18 +178,25 @@ canvas{width:100%;height:auto;display:block;border-radius:3px;background:var(--f
 <script>
 "use strict";
 const SCENES = /*__SCENES__*/null;
-const D2R = Math.PI/180;
+const D2R = Math.PI/180, RE = 6371000;
+// Approximate mid-swath values. inc = illustrative swath incidence range.
 const PRESETS = [
-  {name:"Sentinel-1 asc.", h:348, side:"R", th:39},
-  {name:"Sentinel-1 desc.", h:192, side:"R", th:39},
-  {name:"NISAR asc.", h:348, side:"L", th:40},
-  {name:"NISAR desc.", h:192, side:"L", th:40},
-  {name:"ERS-1/2 (23°)", h:348, side:"R", th:23},
-  {name:"Steep look (55°)", h:348, side:"R", th:55},
+  {name:"Sentinel-1 asc.",   h:348, side:"R", th:39, alt:693,  inc:[29,46]},
+  {name:"Sentinel-1 desc.",  h:192, side:"R", th:39, alt:693,  inc:[29,46]},
+  {name:"NISAR asc.",        h:348, side:"L", th:40, alt:747,  inc:[33,47]},
+  {name:"NISAR desc.",       h:192, side:"L", th:40, alt:747,  inc:[33,47]},
+  {name:"ERS-1/2 (23°)",     h:348, side:"R", th:23, alt:785,  inc:[20,26]},
+  {name:"Steep look (55°)",  h:348, side:"R", th:55, alt:693,  inc:[50,60]},
+  {name:"UAVSAR airborne",   h:348, side:"L", th:45, alt:12.5, inc:[25,65]},
+  {name:"Low airborne 1.5 km", h:0, side:"R", th:45, alt:1.5,  inc:[30,60]},
 ];
 const CLS = {NONE:0, FORE:1, LAY:2, PASSIVE:3, SHADOW:4, OUT:255};
 const $ = id => document.getElementById(id);
-const st = {scene:"synthetic", theta:40, heading:348, side:"R", ve:1, dr:3, fs:0.5, looks:0, prof:0, view:"slant", showcls:true};
+const st = {scene:"synthetic", theta:40, heading:348, side:"R", alt:693, inc:[29,46], ve:1, dr:3, fs:0.5, looks:0, prof:0, view:"slant", showcls:true};
+const ALT_MIN=0.5, ALT_MAX=800;
+const altFromSlider = v => ALT_MIN*Math.pow(ALT_MAX/ALT_MIN, v/1000);
+const sliderFromAlt = a => Math.round(1000*Math.log(a/ALT_MIN)/Math.log(ALT_MAX/ALT_MIN));
+const fmtD = m => m>=10000 ? (m/1000).toFixed(0)+" km" : m>=1000 ? (m/1000).toFixed(1)+" km" : m.toFixed(0)+" m";
 
 // ---------- scene decode ----------
 const cache = {};
@@ -188,14 +209,24 @@ function loadScene(key){
   return cache[key] = {...s, z};
 }
 
+// ---------- orbit geometry (spherical Earth) ----------
+// Given incidence at the ground and platform altitude, return the look angle at
+// the sensor, the Earth-central angle, the ground distance from the nadir track
+// and the slant range.
+function orbitGeom(thetaDeg, altM){
+  const th=thetaDeg*D2R, Rs=RE+altM, look=Math.asin(RE*Math.sin(th)/Rs), beta=th-look;
+  const R0 = beta>1e-9 ? RE*Math.sin(beta)/Math.sin(look) : altM/Math.cos(th);
+  return {th, look, beta, ground:RE*beta, R0, alt:altM};
+}
+
 // ---------- geometry engine ----------
-let G = null;   // results of the last compute
+let G = null;
 function hillshade(sc, ve){
   const n=sc.n, r=sc.res, z=sc.z, out=new Float32Array(n*n);
   const az=315*D2R, el=45*D2R, lx=Math.sin(az)*Math.cos(el), ly=Math.cos(az)*Math.cos(el), lz=Math.sin(el);
   for (let i=0;i<n;i++) for (let j=0;j<n;j++){
     const jm=Math.max(j-1,0), jp=Math.min(j+1,n-1), im=Math.max(i-1,0), ip=Math.min(i+1,n-1);
-    const gx=ve*(z[i*n+jp]-z[i*n+jm])/((jp-jm)*r), gy=ve*(z[im*n+j]-z[ip*n+j])/((ip-im)*r); // gy: +north
+    const gx=ve*(z[i*n+jp]-z[i*n+jm])/((jp-jm)*r), gy=ve*(z[im*n+j]-z[ip*n+j])/((ip-im)*r);
     const nrm=Math.hypot(gx,gy,1);
     out[i*n+j]=Math.max(0,(-gx*lx-gy*ly+lz)/nrm);
   }
@@ -205,12 +236,13 @@ function rng(seed){ return ()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imu
 
 function compute(){
   const sc = loadScene(st.scene), n=sc.n, res=sc.res, ve=st.ve;
-  const th=st.theta*D2R, sn=Math.sin(th), cs=Math.cos(th), cot=cs/sn;
+  const og = orbitGeom(st.theta, st.alt*1000), R0=og.R0;
+  const th=og.th, sn=Math.sin(th), cs=Math.cos(th);
   const phi=(st.heading+(st.side==="R"?90:-90))*D2R, h=st.heading*D2R;
   const Lx=Math.sin(phi), Ly=Math.cos(phi), Ax=Math.sin(h), Ay=Math.cos(h);
   const M=Math.ceil(n*Math.SQRT2)+2, half=M/2, cx=n*res/2, cy=n*res/2;
   const Zr=new Float32Array(M*M).fill(NaN);
-  // resample the DEM onto a (azimuth k, ground range m) grid
+  // resample the DEM onto an (azimuth k, ground range m) grid centred on the scene
   for (let k=0;k<M;k++){ const v=(k-half+.5)*res;
     for (let m=0;m<M;m++){ const u=(m-half+.5)*res;
       const E=cx+u*Lx+v*Ax, N=cy+u*Ly+v*Ay, fj=E/res-.5, fi=n-N/res-.5;
@@ -218,53 +250,57 @@ function compute(){
       const j0=Math.min(Math.floor(fj),n-2), i0=Math.min(Math.floor(fi),n-2), a=fj-j0, b=fi-i0, z=sc.z;
       Zr[k*M+m]=ve*((1-a)*(1-b)*z[i0*n+j0]+a*(1-b)*z[i0*n+j0+1]+(1-a)*b*z[(i0+1)*n+j0]+a*b*z[(i0+1)*n+j0+1]);
     }}
-  const R=new Float32Array(M*M).fill(NaN), K=new Float32Array(M*M), C=new Float32Array(M*M), cls=new Uint8Array(M*M).fill(CLS.OUT);
+  let zc; { const zs=Array.from(Zr).filter(x=>!Number.isNaN(x)).sort((a,b)=>a-b); zc=zs[zs.length>>1]; }
+  // Local frame: the radar sits at horizontal offset us (toward the flight track)
+  // and height zr, so the scene centre sees incidence theta at slant range R0.
+  const us=-R0*sn, zr=zc+R0*cs;
+  const uOf = m => (m-half+.5)*res;
+  const R=new Float32Array(M*M).fill(NaN), K=new Float32Array(M*M), cls=new Uint8Array(M*M).fill(CLS.OUT);
   let rMin=Infinity, rMax=-Infinity;
-  for (let i=0;i<M*M;i++){ if (Number.isNaN(Zr[i])) continue; const r=(i%M)*res*sn-Zr[i]*cs; R[i]=r; if(r<rMin)rMin=r; if(r>rMax)rMax=r; }
+  for (let i=0;i<M*M;i++){ if (Number.isNaN(Zr[i])) continue;
+    const r=Math.hypot(uOf(i%M)-us, zr-Zr[i])-R0; R[i]=r; if(r<rMin)rMin=r; if(r>rMax)rMax=r; }
   const dr=st.dr, tol=dr*0.5, B=Math.ceil((rMax-rMin)/dr)+2, S=new Float32Array(M*B);
-  const shadow=new Uint8Array(M), fwd=new Float32Array(M), bwd=new Float32Array(M);
+  const shadow=new Uint8Array(M), fwd=new Float64Array(M), bwd=new Float64Array(M), rr=new Float64Array(M);
   for (let k=0;k<M;k++){
     const o=k*M; let m0=-1, m1=-1;
     for (let m=0;m<M;m++) if(!Number.isNaN(Zr[o+m])){ if(m0<0)m0=m; m1=m; }
     if (m0<0 || m1-m0<2) continue;
-    // shadow sweep from near range: running ray-height horizon
-    let H=-Infinity;
-    for (let m=m0;m<=m1;m++){ const z=Zr[o+m]; shadow[m]= z < H-1e-3 ? 1:0; H=Math.max(H,z)-res*cot; }
+    for (let m=m0;m<=m1;m++) rr[m]=Math.hypot(uOf(m)-us, zr-Zr[o+m])-R0;
+    // shadow: p is hidden if a nearer cell has a smaller depression angle (sits above the ray to p)
+    let tmin=Infinity;
+    for (let m=m0;m<=m1;m++){ const t=(zr-Zr[o+m])/(uOf(m)-us); shadow[m]= t > tmin*(1+1e-10) ? 1:0; if(t<tmin) tmin=t; }
     // range ambiguity: running max from near side, running min from far side (lit cells only)
-    let rm=-Infinity; for (let m=m0;m<=m1;m++){ fwd[m]=rm; if(!shadow[m]) rm=Math.max(rm,R[o+m]); }
-    rm=Infinity; for (let m=m1;m>=m0;m--){ bwd[m]=rm; if(!shadow[m]) rm=Math.min(rm,R[o+m]); }
+    let rm=-Infinity; for (let m=m0;m<=m1;m++){ fwd[m]=rm; if(!shadow[m]) rm=Math.max(rm,rr[m]); }
+    rm=Infinity; for (let m=m1;m>=m0;m--){ bwd[m]=rm; if(!shadow[m]) rm=Math.min(rm,rr[m]); }
     for (let m=m0;m<=m1;m++){
       const i=o+m, mp=Math.min(m+1,m1), mm=Math.max(m-1,m0);
-      const dzdu=(Zr[o+mp]-Zr[o+mm])/((mp-mm)*res);
+      const dzdu=(Zr[o+mp]-Zr[o+mm])/((mp-mm)*res), drdu=(rr[mp]-rr[mm])/((mp-mm)*res);
       const zu=k<M-1?Zr[i+M]:NaN, zd=k>0?Zr[i-M]:NaN;
       const dzdv=(!Number.isNaN(zu)&&!Number.isNaN(zd))?(zu-zd)/(2*res):0;
-      const kk=(sn-cs*dzdu)/sn; K[i]=kk;
+      const dx=uOf(m)-us, dz=zr-Zr[i], ra=Math.hypot(dx,dz), sl=dx/ra, cl=dz/ra;  // local sin/cos of incidence
+      const kk=drdu/sl; K[i]=kk;
       let c=CLS.NONE;
       if (shadow[m]) c=CLS.SHADOW;
       else if (kk<0) c=CLS.LAY;
-      else if (R[i]<fwd[m]-tol || R[i]>bwd[m]+tol) c=CLS.PASSIVE;
+      else if (rr[m]<fwd[m]-tol || rr[m]>bwd[m]+tol) c=CLS.PASSIVE;
       else if (kk<st.fs) c=CLS.FORE;
       cls[i]=c;
-      // backscatter: cos(local incidence) x surface-area factor; radar direction (-sin th, 0, cos th)
-      const nrm=Math.hypot(dzdu,dzdv,1), cl=(dzdu*sn+cs)/nrm;
-      const e = (shadow[m]||cl<=0) ? 0 : cl*nrm;  // = dzdu*sn+cs, lit area projected on the beam
-      C[i]=e;
+      // backscatter: cos(local incidence) x surface area = lit area projected on the beam
+      const e = shadow[m] ? 0 : Math.max(0, dzdu*sl+cl);
       const f=(R[i]-rMin)/dr, b0=Math.floor(f), w=f-b0;
       S[k*B+b0]+=e*(1-w); S[k*B+b0+1]+=e*w;
     }
   }
-  // speckle: gamma(L) multiplicative noise per bin, fixed seed so it does not flicker
   if (st.looks>0){ const r=rng(7); const L=st.looks;
     for (let i=0;i<S.length;i++){ let g=0; for(let l=0;l<L;l++) g-=Math.log(1-r()); S[i]*=g/L; } }
-  const ref = cs*dr/(res*sn);            // flat-terrain energy per bin
-  // class stats over the scene
+  const ref = cs*dr/(res*sn);            // flat-terrain energy per bin at scene centre
   const cnt=[0,0,0,0,0]; let tot=0;
   for (let i=0;i<cls.length;i++) if(cls[i]!==CLS.OUT){ cnt[cls[i]]++; tot++; }
-  let zmed; { const zs=Array.from(Zr).filter(x=>!Number.isNaN(x)).sort((a,b)=>a-b); zmed=zs[zs.length>>1]; }
-  G={sc,n,res,M,half,Lx,Ly,Ax,Ay,cx,cy,sn,cs,cot,Zr,R,K,C,cls,S,B,rMin,rMax,dr,ref,cnt,tot,zmed,phi};
+  const halfW=n*res/2, incAt=u=>Math.atan2(u-us, zr-zc)/D2R;
+  G={sc,n,res,M,half,Lx,Ly,Ax,Ay,cx,cy,sn,cs,Zr,R,K,cls,S,B,rMin,rMax,dr,ref,cnt,tot,zc,us,zr,R0,og,uOf,
+     incNear:incAt(-halfW), incFar:incAt(halfW)};
 }
 
-// map-frame (i,j) -> rotated (k,m)
 function toKM(i,j){
   const E=(j+.5)*G.res, N=(G.n-i-.5)*G.res, dx=E-G.cx, dy=N-G.cy;
   const u=dx*G.Lx+dy*G.Ly, v=dx*G.Ax+dy*G.Ay;
@@ -277,11 +313,61 @@ function sampleS(k,r){
 }
 const toGray = v => { const db = v>0 ? 10*Math.log10(v/G.ref) : -99; return Math.max(0,Math.min(255, (db+14)/26*255)); };
 
-// ---------- drawing ----------
+// ---------- drawing helpers ----------
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const hex = h => [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+// Flight track teal. validate_palette.js --pairs all with the three class colours,
+// light surface: worst pair #009AA0 vs #D97706 dE 15.7 protan, 17.9 normal (vs #1F5FA8).
+// Also carries a dashed line, chevrons and a text label.
+const TRACK = "#009AA0";
 let HS=null, HSkey="";
 const off = document.createElement("canvas"), offc = off.getContext("2d");
+
+function pill(x, text, cxp, cyp, font="600 17px Archivo, sans-serif", fg="#16212B"){
+  x.save(); x.font=font; const w=x.measureText(text).width+16, fs=parseInt(font.match(/(\d+)px/)[1]), h=fs+12;
+  cxp=Math.min(Math.max(cxp,w/2+4),x.canvas.width-w/2-4); cyp=Math.min(Math.max(cyp,h/2+4),x.canvas.height-h/2-4);
+  x.fillStyle="rgba(255,255,255,.92)"; x.beginPath(); x.roundRect(cxp-w/2, cyp-h/2, w, h, 5); x.fill();
+  x.fillStyle=fg; x.textAlign="center"; x.textBaseline="middle"; x.fillText(text,cxp,cyp+1); x.restore();
+}
+function arrowHead(x,x1,y1,a,sz,col){ x.fillStyle=col; x.beginPath(); x.moveTo(x1,y1);
+  x.lineTo(x1-sz*Math.cos(a-.42),y1-sz*Math.sin(a-.42)); x.lineTo(x1-sz*Math.cos(a+.42),y1-sz*Math.sin(a+.42)); x.fill(); }
+function arrow(x,x0,y0,dx,dy,len,col,lab){
+  const x1=x0+dx*len, y1=y0-dy*len; x.strokeStyle=col; x.lineWidth=3;
+  x.beginPath(); x.moveTo(x0,y0); x.lineTo(x1,y1); x.stroke(); arrowHead(x,x1,y1,Math.atan2(y1-y0,x1-x0),14,col);
+  x.fillStyle=col; x.font="600 18px Archivo, sans-serif"; x.textAlign="center"; x.textBaseline="middle";
+  x.fillText(lab, x1+dx*20, y1-dy*20);
+}
+// North-up map overlays: flight track (true position if on-map, else a marker on the
+// sensor-side edge), compass, scale bar. pxPerM converts metres to canvas px.
+function mapOverlays(x, W, pxPerM){
+  const c=W/2, tdx=-G.Lx, tdy=G.Ly;               // canvas direction toward the track
+  const g=G.og.ground, onMap = g*pxPerM < W/2-40;
+  let px, py;
+  if (onMap){ px=c+tdx*g*pxPerM; py=c+tdy*g*pxPerM; }
+  else { const t=(W/2-34)/Math.max(Math.abs(tdx),Math.abs(tdy)); px=c+tdx*t; py=c+tdy*t; }
+  const ax=G.Ax, ay=-G.Ay;
+  x.save();
+  x.beginPath(); x.moveTo(px-ax*2*W,py-ay*2*W); x.lineTo(px+ax*2*W,py+ay*2*W);
+  x.strokeStyle="rgba(255,255,255,.9)"; x.lineWidth=9; x.stroke();
+  x.strokeStyle=TRACK; x.lineWidth=4; x.setLineDash(onMap?[]:[16,9]); x.stroke(); x.setLineDash([]);
+  // chevrons along the track show flight direction
+  for (const s of [-0.3,0,0.3]){ const qx=px+ax*s*W, qy=py+ay*s*W; arrowHead(x,qx+ax*12,qy+ay*12,Math.atan2(ay,ax),20,TRACK); }
+  const lab = onMap ? `flight track (nadir), ${fmtD(g)} from centre` : `flight track ${fmtD(g)} this way (off map)`;
+  pill(x, lab, px-tdx*42, py-tdy*42, "600 17px Archivo, sans-serif", TRACK);
+  x.restore();
+  // compass on the far-range side
+  let bx=c+G.Lx*W*0.31, by=c-G.Ly*W*0.31; bx=Math.min(Math.max(bx,100),W-100); by=Math.min(Math.max(by,100),W-100);
+  x.save(); x.fillStyle="rgba(255,255,255,.88)"; x.beginPath(); x.arc(bx,by,88,0,2*Math.PI); x.fill();
+  arrow(x,bx,by,G.Ax,G.Ay,48,TRACK,"flight");
+  arrow(x,bx,by,G.Lx,G.Ly,48,"#8A4A00","look");
+  x.fillStyle="#4A5763"; x.font="500 14px Archivo, sans-serif"; x.textAlign="center"; x.fillText("north up",bx,by+72); x.restore();
+  // scale bar in the corner farthest from compass and track marker
+  const len=200*pxPerM, corners=[[24,W-28],[W-24-len,W-28],[24,52],[W-24-len,52]];
+  let best=corners[0], bd=-1;
+  for (const [sx,sy] of corners){ const d=Math.min(Math.hypot(sx+len/2-bx,sy-by),Math.hypot(sx+len/2-px,sy-py)); if(d>bd){bd=d;best=[sx,sy];} }
+  const [sx,sy]=best; x.save(); x.fillStyle="rgba(255,255,255,.88)"; x.fillRect(sx-10,sy-34,len+20,48);
+  x.fillStyle="#16212B"; x.fillRect(sx,sy,len,6); x.font="600 16px Archivo, sans-serif"; x.textAlign="left"; x.fillText("200 m",sx,sy-12); x.restore();
+}
 
 function drawMap(){
   const {n}=G, key=st.scene+"|"+st.ve;
@@ -301,34 +387,12 @@ function drawMap(){
   offc.putImageData(img,0,0);
   const c=$("mapc"), x=c.getContext("2d"), W=c.width, s=W/n;
   x.imageSmoothingEnabled=false; x.drawImage(off,0,0,W,W);
-  // profile line
   const vOff=st.prof, sx=(G.cx+vOff*G.Ax)/G.res*s, sy=(n-(G.cy+vOff*G.Ay)/G.res)*s, Lpx=W*0.75;
   x.save(); x.strokeStyle="#fff"; x.lineWidth=5; x.globalAlpha=.8;
   const lx=G.Lx*Lpx, ly=-G.Ly*Lpx;
   x.beginPath(); x.moveTo(sx-lx,sy-ly); x.lineTo(sx+lx,sy+ly); x.stroke();
   x.strokeStyle="#111"; x.lineWidth=2; x.globalAlpha=1; x.setLineDash([10,6]); x.stroke(); x.restore();
-  // compass + arrows
-  arrowBox(x, W, G.Ax, G.Ay, G.Lx, G.Ly);
-  scaleBar(x, W, s/G.res);
-}
-function scaleBar(x,W,pxPerM){
-  const len=200*pxPerM, x0=24, y0=W-28; x.save(); x.fillStyle="rgba(255,255,255,.88)"; x.fillRect(x0-10,y0-34,len+20,48);
-  x.fillStyle="#16212B"; x.fillRect(x0,y0,len,6); x.font="600 17px Archivo, sans-serif"; x.textAlign="left"; x.fillText("200 m",x0,y0-12); x.restore();
-}
-function arrow(x,x0,y0,dx,dy,len,col,lab){
-  const x1=x0+dx*len, y1=y0-dy*len; x.strokeStyle=col; x.fillStyle=col; x.lineWidth=3;
-  x.beginPath(); x.moveTo(x0,y0); x.lineTo(x1,y1); x.stroke();
-  const a=Math.atan2(y1-y0,x1-x0); x.beginPath(); x.moveTo(x1,y1);
-  x.lineTo(x1-14*Math.cos(a-.4),y1-14*Math.sin(a-.4)); x.lineTo(x1-14*Math.cos(a+.4),y1-14*Math.sin(a+.4)); x.fill();
-  x.font="600 20px Archivo, sans-serif"; x.textAlign="center"; x.textBaseline="middle";
-  x.fillText(lab, x1+dx*18, y1-dy*18);
-}
-function arrowBox(x,W,Ax,Ay,Lx,Ly){
-  const bx=W-110, by=110; x.save(); x.fillStyle="rgba(255,255,255,.88)";
-  x.beginPath(); x.arc(bx,by,96,0,2*Math.PI); x.fill();
-  arrow(x,bx,by,Ax,Ay,52,"#16212B","flight");
-  arrow(x,bx,by,Lx,Ly,52,"#8A4A00","look");
-  x.fillStyle="#4A5763"; x.font="500 15px Archivo, sans-serif"; x.fillText("north up",bx,by+78); x.restore();
+  mapOverlays(x, W, s/G.res);
 }
 
 function drawSAR(){
@@ -341,86 +405,177 @@ function drawSAR(){
       const g=toGray(G.S[k*B+b]), row=M-1-k, col=flip?B-1-b:b, p=(row*B+col)*4;
       d[p]=d[p+1]=d[p+2]=g; d[p+3]=255; }
     offc.putImageData(img,0,0);
-    const wm=B*G.dr, hm=M*G.res, s=Math.min(W/wm,Hh/hm), dw=wm*s, dh=hm*s;
-    x.imageSmoothingEnabled=true; x.drawImage(off,(W-dw)/2,(Hh-dh)/2,dw,dh);
-    x.fillStyle=css("--ink"); x.font="600 20px Archivo, sans-serif"; x.textAlign="left";
-    x.fillText(flip?"← far range      near range":"near range      far range →", 16, Hh-14);
-    x.save(); x.translate(22,Hh/2); x.rotate(-Math.PI/2); x.textAlign="center"; x.fillText("azimuth (flight) →",0,0); x.restore();
-    $("sarhint").textContent=`${B} slant bins × ${G.dr} m, ${M} azimuth lines × ${G.res} m. Not north-up. Brightness: −14 to +12 dB relative to flat ground.`;
+    const wm=B*G.dr, hm=M*G.res, s=Math.min((W-150)/wm,(Hh-60)/hm), dw=wm*s, dh=hm*s, x0=(W-dw)/2, y0=(Hh-dh)/2-10;
+    x.imageSmoothingEnabled=true; x.drawImage(off,x0,y0,dw,dh);
+    // the flight track runs parallel to the near-range edge
+    const tx = flip ? x0+dw+34 : x0-34;
+    x.save(); x.strokeStyle=TRACK; x.lineWidth=4; x.setLineDash([16,9]);
+    x.beginPath(); x.moveTo(tx,y0+dh); x.lineTo(tx,y0+14); x.stroke(); x.setLineDash([]);
+    arrowHead(x,tx,y0,-Math.PI/2,22,TRACK);
+    x.translate(tx+(flip?26:-26),y0+dh/2); x.rotate(flip?Math.PI/2:-Math.PI/2);
+    x.fillStyle=TRACK; x.font="600 17px Archivo, sans-serif"; x.textAlign="center"; x.textBaseline="middle";
+    x.fillText(`flight track, ${fmtD(G.og.ground)} to this side`,0,0); x.restore();
+    x.fillStyle=css("--ink"); x.font="600 18px Archivo, sans-serif"; x.textBaseline="alphabetic";
+    x.textAlign=flip?"right":"left"; x.fillText("near range",flip?x0+dw:x0,y0+dh+26);
+    x.textAlign=flip?"left":"right"; x.fillText("far range",flip?x0:x0+dw,y0+dh+26);
+    $("sarhint").textContent=`${B} slant bins × ${G.dr} m, ${M} azimuth lines × ${G.res} m. Flight direction is up. Not north-up. Brightness −14 to +12 dB relative to flat ground.`;
   } else {
     const n=G.n; off.width=n; off.height=n; const img=offc.createImageData(n,n), d=img.data;
-    const zref=G.zmed;
     for (let i=0;i<n;i++) for (let j=0;j<n;j++){
       const [k,m]=toKM(i,j), p=(i*n+j)*4;
-      let r; if (st.view==="ground") r=m*G.res*G.sn - zref*G.cs; else r=G.R[k*G.M+m];
+      const r = st.view==="ground" ? Math.hypot(G.uOf(m)-G.us, G.zr-G.zc)-G.R0 : G.R[k*G.M+m];
       const g=toGray(sampleS(k,r)); d[p]=d[p+1]=d[p+2]=g; d[p+3]=255; }
     offc.putImageData(img,0,0); x.imageSmoothingEnabled=false; x.drawImage(off,0,0,W,Hh);
-    arrowBox(x,W,G.Ax,G.Ay,G.Lx,G.Ly);
+    mapOverlays(x,W,W/(n*G.res));
     $("sarhint").textContent = st.view==="ground"
-      ? "North-up. Each pixel assumes the ground sits at the scene median height. Peaks lean toward the radar."
+      ? "North-up. Each pixel assumes the ground sits at the scene median height. Peaks lean toward the flight track."
       : "North-up. Each pixel is looked up at its true slant range from the DEM. Layover smears, shadow stays dark.";
   }
+}
+
+// Plan view: flight track, swath and scene, to scale in km, north up.
+function drawPlan(){
+  const c=$("planc"), x=c.getContext("2d"), W=c.width, H=c.height;
+  x.fillStyle=css("--field"); x.fillRect(0,0,W,H);
+  const incN=Math.min(st.inc[0],st.theta), incF=Math.max(st.inc[1],st.theta);
+  const gN=orbitGeom(incN,st.alt*1000).ground, gF=orbitGeom(incF,st.alt*1000).ground, g=G.og.ground;
+  const E=Math.max(gF*0.55, 400);                 // half-length of the drawn track
+  const T=[-G.Lx*g,-G.Ly*g], A=[G.Ax,G.Ay], L=[G.Lx,G.Ly];
+  const P=(a,b)=>[T[0]+A[0]*a+L[0]*b, T[1]+A[1]*a+L[1]*b];
+  const pts=[P(-E,0),P(E,0),P(-E,gN),P(E,gN),P(-E,gF),P(E,gF),[0,0]];
+  let x0=Math.min(...pts.map(p=>p[0])), x1=Math.max(...pts.map(p=>p[0])), y0=Math.min(...pts.map(p=>p[1])), y1=Math.max(...pts.map(p=>p[1]));
+  const pad=60, s=Math.min((W-2*pad)/(x1-x0),(H-2*pad)/(y1-y0));
+  const X=e=>pad+(e-x0)*s+((W-2*pad)-(x1-x0)*s)/2, Y=nn=>H-pad-(nn-y0)*s-((H-2*pad)-(y1-y0)*s)/2;
+  const ink=css("--ink"), muted=css("--muted");
+  // swath
+  const sw=[P(-E,gN),P(E,gN),P(E,gF),P(-E,gF)];
+  x.fillStyle=css("--accent"); x.globalAlpha=.16; x.beginPath(); sw.forEach((p,i)=>i?x.lineTo(X(p[0]),Y(p[1])):x.moveTo(X(p[0]),Y(p[1]))); x.fill(); x.globalAlpha=1;
+  const sm=P(E*0.62,(gN+gF)/2); x.fillStyle=muted; x.font="500 23px Archivo, sans-serif"; x.textAlign="center"; x.fillText("imaged swath (illustrative)",X(sm[0]),Y(sm[1]));
+  // track
+  x.strokeStyle=TRACK; x.lineWidth=4; x.beginPath(); x.moveTo(X(P(-E,0)[0]),Y(P(-E,0)[1])); x.lineTo(X(P(E,0)[0]),Y(P(E,0)[1])); x.stroke();
+  const tip=P(E,0), ang=Math.atan2(-A[1],A[0]); arrowHead(x,X(tip[0]),Y(tip[1]),ang,20,TRACK);
+  const tl=P(-E*0.7,0); pill(x,`flight track, heading ${st.heading}°`,X(tl[0])-L[0]*40,Y(tl[1])+L[1]*40,"600 23px Archivo, sans-serif",TRACK);
+  // platform + line of sight to the scene
+  x.fillStyle=TRACK; x.beginPath(); x.arc(X(T[0]),Y(T[1]),9,0,2*Math.PI); x.fill();
+  x.strokeStyle="#8A4A00"; x.lineWidth=2.5; x.setLineDash([8,6]); x.beginPath(); x.moveTo(X(T[0]),Y(T[1])); x.lineTo(X(0),Y(0)); x.stroke(); x.setLineDash([]);
+  arrowHead(x,X(0)-L[0]*10,Y(0)+L[1]*10,Math.atan2(-L[1],L[0]),16,"#8A4A00");
+  pill(x,`${fmtD(g)} across-track`,(X(T[0])+X(0))/2,(Y(T[1])+Y(0))/2,"600 23px IBM Plex Mono, monospace");
+  // scene (enlarged so it is visible)
+  const sz=Math.max(G.n*G.res*s,12);
+  x.strokeStyle=ink; x.lineWidth=2.5; x.fillStyle="#D97706"; x.fillRect(X(0)-sz/2,Y(0)-sz/2,sz,sz); x.strokeRect(X(0)-sz/2,Y(0)-sz/2,sz,sz);
+  x.fillStyle=ink; x.font="600 23px Archivo, sans-serif"; x.textAlign="center";
+  x.fillText(sz>12?"scene":"scene (800 m, enlarged)",X(0)+L[0]*50,Y(0)-L[1]*50-sz/2*0);
+  // north + scale bar
+  x.fillStyle=ink; x.font="600 23px Archivo, sans-serif"; x.textAlign="left"; x.fillText("N ↑",16,26);
+  const nice=[0.1,0.2,0.5,1,2,5,10,20,50,100,200,500].map(k=>k*1000).find(m=>m*s>W*0.18)||500000;
+  x.fillRect(16,H-22,nice*s,5); x.fillText(fmtD(nice),16,H-30);
+}
+
+// Cross-track side view, to scale, spherical Earth.
+function drawSide(){
+  const c=$("sidec"), x=c.getContext("2d"), W=c.width, H=c.height;
+  x.fillStyle=css("--field"); x.fillRect(0,0,W,H);
+  const alt=st.alt*1000, og=G.og;
+  const incF=Math.max(st.inc[1],st.theta), incN=Math.min(st.inc[0],st.theta);
+  const bF=orbitGeom(incF,alt).beta, bN=orbitGeom(incN,alt).beta;
+  const gp=b=>[RE*Math.sin(b), RE*Math.cos(b)-RE];          // ground point at Earth-central angle b
+  const sat=[0,alt], scn=gp(og.beta), fr=gp(bF), nr=gp(bN);
+  const xs=[-0.08*fr[0],fr[0]*1.08,0], ys=[alt*1.12, Math.min(fr[1],0)-alt*0.05];
+  const x0=Math.min(...xs), x1=Math.max(...xs), y0=Math.min(...ys), y1=Math.max(...ys);
+  const pad=40, s=Math.min((W-2*pad)/(x1-x0),(H-2*pad)/(y1-y0));
+  const ox=pad+((W-2*pad)-(x1-x0)*s)/2, oy=H-pad-((H-2*pad)-(y1-y0)*s)/2;
+  const X=v=>ox+(v-x0)*s, Y=v=>oy-(v-y0)*s;
+  const ink=css("--ink"), muted=css("--muted");
+  // Earth surface
+  x.fillStyle=css("--terrain"); x.beginPath();
+  const bA=-0.1*bF-1e-9, bB=bF*1.15+1e-9;
+  for (let t=0;t<=80;t++){ const p=gp(bA+(bB-bA)*t/80); t?x.lineTo(X(p[0]),Y(p[1])):x.moveTo(X(p[0]),Y(p[1])); }
+  x.lineTo(W,H); x.lineTo(0,H); x.closePath(); x.fill();
+  // beam wedge
+  x.fillStyle=css("--accent"); x.globalAlpha=.16; x.beginPath(); x.moveTo(X(sat[0]),Y(sat[1])); x.lineTo(X(nr[0]),Y(nr[1])); x.lineTo(X(fr[0]),Y(fr[1])); x.fill(); x.globalAlpha=1;
+  // nadir
+  x.strokeStyle=muted; x.lineWidth=1.5; x.setLineDash([6,6]); x.beginPath(); x.moveTo(X(0),Y(alt)); x.lineTo(X(0),Y(0)); x.stroke(); x.setLineDash([]);
+  // line of sight
+  x.strokeStyle="#8A4A00"; x.lineWidth=3; x.beginPath(); x.moveTo(X(sat[0]),Y(sat[1])); x.lineTo(X(scn[0]),Y(scn[1])); x.stroke();
+  // local vertical at the scene and the incidence arc
+  const up=[Math.sin(og.beta),Math.cos(og.beta)], vl=60/s;
+  x.strokeStyle=ink; x.lineWidth=1.5; x.beginPath(); x.moveTo(X(scn[0]),Y(scn[1])); x.lineTo(X(scn[0]+up[0]*vl),Y(scn[1]+up[1]*vl)); x.stroke();
+  const aUp=Math.atan2(-up[1],up[0]), aLos=Math.atan2(-(sat[1]-scn[1]),sat[0]-scn[0]);
+  x.beginPath(); x.arc(X(scn[0]),Y(scn[1]),42,Math.min(aUp,aLos),Math.max(aUp,aLos)); x.stroke();
+  // look-angle arc at the sensor
+  const aDown=Math.PI/2, aLook=Math.atan2(-(scn[1]-sat[1]),scn[0]-sat[0]);
+  x.beginPath(); x.arc(X(0),Y(alt),48,Math.min(aDown,aLook),Math.max(aDown,aLook)); x.stroke();
+  // platform
+  x.fillStyle=TRACK; x.fillRect(X(0)-9,Y(alt)-7,18,14); x.fillRect(X(0)-26,Y(alt)-3,52,6);
+  // labels
+  x.font="600 23px Archivo, sans-serif"; x.fillStyle=ink; x.textAlign="left";
+  x.fillText(`platform on the flight track, ${fmtD(alt)} up`,X(0)+14,Y(alt)-16);
+  x.fillText(`look ${(og.look/D2R).toFixed(1)}°`,X(0)+18,Y(alt)+62);
+  x.fillText(`θ ${st.theta}° incidence`,X(scn[0])+14,Y(scn[1])-50);
+  x.fillText("scene",X(scn[0])+8,Y(scn[1])+20);
+  x.fillText("nadir",X(0)+8,Y(0)+20);
+  const mid=[(sat[0]+scn[0])/2,(sat[1]+scn[1])/2]; pill(x,`slant range ${fmtD(og.R0)}`,X(mid[0])+70,Y(mid[1]),"600 21px IBM Plex Mono, monospace");
+  const gm=gp(og.beta/2); pill(x,`ground ${fmtD(og.ground)}`,X(gm[0]),Y(gm[1])+34,"600 21px IBM Plex Mono, monospace");
+  x.fillStyle=muted; x.font="500 19px Archivo, sans-serif"; x.fillText("to scale, Earth curvature included",16,22);
 }
 
 function drawProfile(){
   const c=$("profc"), x=c.getContext("2d"), W=c.width, Hh=c.height;
   x.fillStyle=css("--panel"); x.fillRect(0,0,W,Hh);
-  const {M,res,Zr,R,cls,sn,cs}=G, k=Math.round(st.prof/res+G.half-.5), o=k*M;
+  const {M,res,Zr,R,cls,us,zr,R0,uOf}=G, k=Math.round(st.prof/res+G.half-.5), o=k*M;
   let m0=-1,m1=-1; for(let m=0;m<M;m++) if(!Number.isNaN(Zr[o+m])){ if(m0<0)m0=m; m1=m; }
   if (m0<0){ $("profhint").textContent="Line is outside the scene."; return; }
-  // metric frame, equal x/z scale so angles are true
   let zlo=Infinity,zhi=-Infinity; for(let m=m0;m<=m1;m++){zlo=Math.min(zlo,Zr[o+m]);zhi=Math.max(zhi,Zr[o+m]);}
-  const u0=m0*res, u1=m1*res, padL=60, padR=40, top=40, stripH=34, stripGap=100;
+  const u0=uOf(m0), u1=uOf(m1), padL=60, padR=40, top=48, stripH=34, stripGap=100;
   const profH=Hh-top-stripH-stripGap-40;
   const s=Math.min((W-padL-padR)/(u1-u0), profH/Math.max(zhi-zlo+60,1));
   const X=u=>padL+(u-u0)*s, Y=z=>top+profH-(z-zlo)*s;
   const ink=css("--ink"), muted=css("--muted"), cL=css("--layover"), cS=css("--shadow"), cF=css("--fore");
   const colOf=c=>c===CLS.LAY||c===CLS.PASSIVE?cL:c===CLS.SHADOW?cS:c===CLS.FORE?cF:ink;
-  // wavefronts: u sn - z cs = r0
-  x.save(); x.beginPath(); x.rect(padL,0,W-padL-padR,top+profH); x.clip();
+  x.save(); x.beginPath(); x.rect(padL,top-10,W-padL-padR,profH+10); x.clip();
+  // wavefronts: circles of equal range around the radar
   x.strokeStyle=muted; x.globalAlpha=.45; x.setLineDash([4,6]); x.lineWidth=1;
-  const step=Math.max(G.dr*Math.ceil(20/G.dr),10);
-  const rA=u0*sn-(zhi+200)*cs, rB=u1*sn-zlo*cs;
-  for (let r0=Math.ceil(rA/step)*step;r0<=rB;r0+=step){
-    const zA=zlo-50, zB=zhi+300; x.beginPath(); x.moveTo(X((r0+zA*cs)/sn),Y(zA)); x.lineTo(X((r0+zB*cs)/sn),Y(zB)); x.stroke(); }
-  // rays: direction (sn, -cs), traced until they hit terrain
-  x.setLineDash([]); x.globalAlpha=.7; x.strokeStyle=muted; x.lineWidth=1.2;
-  const zTop=zhi+40;
+  let rlo=Infinity, rhi=-Infinity; for(let m=m0;m<=m1;m++){ rlo=Math.min(rlo,R[o+m]); rhi=Math.max(rhi,R[o+m]); }
+  const step=Math.max(G.dr*Math.ceil(20/G.dr),10), zA=zlo-50, zB=zhi+300;
+  for (let r0=Math.ceil((rlo-300)/step)*step; r0<=rhi+50; r0+=step){ const Rr=R0+r0; x.beginPath();
+    for (let t=0;t<=24;t++){ const z=zA+(zB-zA)*t/24, dz=z-zr, q=Rr*Rr-dz*dz; if(q<0) continue; const u=us+Math.sqrt(q); t?x.lineTo(X(u),Y(z)):x.moveTo(X(u),Y(z)); }
+    x.stroke(); }
+  // rays from the radar, traced until they hit terrain
+  x.setLineDash([]); x.globalAlpha=.7; x.lineWidth=1.2;
+  const zTop=zhi+60, span=(zTop-zlo)*Math.tan(G.og.th);
   for (let t=0;t<=26;t++){
-    const uStart=u0-(zTop-zlo)*G.cot*1.0+t*(u1-u0+(zTop-zlo)*G.cot)/26;
+    const uP=u0-span+t*(u1-u0+span)/26, sl=(zTop-zr)/(uP-us);   // ray slope dz/du (negative)
     let uHit=null;
-    for (let m=m0;m<=m1;m++){ const u=m*res, zr=zTop-(u-uStart)*G.cot; if(u>=uStart && Zr[o+m]>=zr){ uHit=u; break; } }
+    for (let m=m0;m<=m1;m++){ const u=uOf(m); if(u<uP) continue; if(Zr[o+m]>=zTop+(u-uP)*sl){ uHit=u; break; } }
     if (uHit===null) continue;
-    x.beginPath(); x.moveTo(X(uStart),Y(zTop)); x.lineTo(X(uHit),Y(zTop-(uHit-uStart)*G.cot)); x.stroke();
+    x.beginPath(); x.moveTo(X(uP),Y(zTop)); x.lineTo(X(uHit),Y(zTop+(uHit-uP)*sl)); x.stroke();
   }
   x.restore();
-  // terrain fill
   x.fillStyle=css("--terrain"); x.beginPath(); x.moveTo(X(u0),top+profH);
-  for(let m=m0;m<=m1;m++) x.lineTo(X(m*res),Y(Zr[o+m])); x.lineTo(X(u1),top+profH); x.fill();
-  // terrain line, coloured by class; passive layover dashed
+  for(let m=m0;m<=m1;m++) x.lineTo(X(uOf(m)),Y(Zr[o+m])); x.lineTo(X(u1),top+profH); x.fill();
   x.lineWidth=4; x.lineCap="round";
   for(let m=m0;m<m1;m++){ const c1=cls[o+m]; x.strokeStyle=colOf(c1); x.setLineDash(c1===CLS.PASSIVE?[3,4]:[]);
-    x.beginPath(); x.moveTo(X(m*res),Y(Zr[o+m])); x.lineTo(X((m+1)*res),Y(Zr[o+m+1])); x.stroke(); }
+    x.beginPath(); x.moveTo(X(uOf(m)),Y(Zr[o+m])); x.lineTo(X(uOf(m+1)),Y(Zr[o+m+1])); x.stroke(); }
   x.setLineDash([]);
-  // slant-range strip, same metres-per-pixel as the profile
   const sy=top+profH+stripGap, rs=G.rMin, rw=(G.rMax-G.rMin)*s, sx0=padL+((u1-u0)*s-rw)/2;
   const XR=r=>sx0+(r-rs)*s;
   for(let b=0;b<G.B-1;b++){ const g=toGray(G.S[k*G.B+b]); x.fillStyle=`rgb(${g},${g},${g})`;
     x.fillRect(XR(G.rMin+b*G.dr),sy,Math.max(G.dr*s,1)+.5,stripH); }
   x.strokeStyle=ink; x.lineWidth=1; x.strokeRect(sx0,sy,rw,stripH);
-  // connectors ground point -> slant bin
   const every=Math.max(1,Math.round(6/res)); x.lineWidth=1.3;
   for(let m=m0;m<=m1;m+=every){ const c1=cls[o+m]; if(c1===CLS.SHADOW) continue;
     x.strokeStyle=colOf(c1); x.globalAlpha=c1===CLS.NONE?.28:.75;
-    x.beginPath(); x.moveTo(X(m*res),Y(Zr[o+m])); x.lineTo(XR(R[o+m]),sy); x.stroke(); }
+    x.beginPath(); x.moveTo(X(uOf(m)),Y(Zr[o+m])); x.lineTo(XR(R[o+m]),sy); x.stroke(); }
   x.globalAlpha=1;
-  // labels
-  x.fillStyle=ink; x.font="600 22px Archivo, sans-serif"; x.textAlign="left";
-  x.fillText(`radar ← near range`,padL,26); x.textAlign="right"; x.fillText(`far range →`,W-padR,26);
+  // radar / flight-track marker on the near-range side
+  x.fillStyle=TRACK; x.fillRect(12,14,14,22); arrowHead(x,6,25,Math.PI,12,TRACK);
+  x.font="600 20px Archivo, sans-serif"; x.textAlign="left"; x.textBaseline="middle";
+  x.fillText(`radar and flight track this way: ${fmtD(G.og.ground)} across-track, ${fmtD(G.og.R0)} slant, ${fmtD(G.og.alt)} up`,36,26);
+  x.textBaseline="alphabetic"; x.fillStyle=ink; x.textAlign="right"; x.fillText("far range →",W-padR,26);
   x.textAlign="left"; x.font="500 20px Archivo, sans-serif";
   x.fillText(`what the radar records on this line (slant range, ${G.dr} m bins)`,sx0,sy+stripH+26);
   x.fillStyle=muted; x.font="18px IBM Plex Mono, monospace";
-  x.fillText(`θ = ${st.theta}°   VE ${st.ve}×   1:1 scale   ${Math.round((u1-u0))} m ground`,padL,top+profH+30);
+  x.fillText(`θ ${G.incNear.toFixed(2)}° near → ${G.incFar.toFixed(2)}° far   VE ${st.ve}×   1:1 scale   ${Math.round(u1-u0)} m ground`,padL,top+profH+30);
   const cc=[0,0,0,0,0]; for(let m=m0;m<=m1;m++) if(cls[o+m]<5) cc[cls[o+m]]++;
   const tt=m1-m0+1, pc=v=>(100*v/tt).toFixed(0)+"%";
   $("profhint").textContent=`this line: layover ${pc(cc[2])} · passive ${pc(cc[3])} · shadow ${pc(cc[4])} · foreshortened ${pc(cc[1])}`;
@@ -432,35 +587,42 @@ function drawLegend(){
     `<span><i class="sw" style="background:var(--layover)"></i>Layover <b class="pct">${pc(2)}</b></span>`+
     `<span><i class="sw hatch"></i>Passive layover <b class="pct">${pc(3)}</b></span>`+
     `<span><i class="sw" style="background:var(--shadow)"></i>Shadow <b class="pct">${pc(4)}</b></span>`+
-    `<span><i class="sw" style="background:var(--fore)"></i>Foreshortened &lt;${st.fs} <b class="pct">${pc(1)}</b></span>`;
+    `<span><i class="sw" style="background:var(--fore)"></i>Foreshortened &lt;${st.fs} <b class="pct">${pc(1)}</b></span>`+
+    `<span><i class="sw" style="background:repeating-linear-gradient(90deg,${TRACK} 0 6px,transparent 6px 9px)"></i>Flight track</span>`;
 }
 
 function readouts(){
   $("thetaV").textContent=st.theta+"°"; $("headingV").textContent=st.heading+"°";
+  $("altV").textContent=fmtD(st.alt*1000);
   $("veV").textContent=st.ve.toFixed(1)+"×"; $("drV").textContent=st.dr+" m";
   $("fsV").textContent=st.fs.toFixed(2); $("looksV").textContent=st.looks||"off";
   $("profV").textContent=st.prof+" m";
   $("sideR").setAttribute("aria-pressed",st.side==="R"); $("sideL").setAttribute("aria-pressed",st.side==="L");
-  const look=((st.heading+(st.side==="R"?90:-90))%360+360)%360;
-  $("crit").innerHTML=`<span>look azimuth ${look}°</span><span>layover: facing slope &gt; ${st.theta}°</span><span>foreshort.: facing &lt; ${st.theta}°</span><span>shadow: back slope &gt; ${90-st.theta}°</span>`;
+  const look=((st.heading+(st.side==="R"?90:-90))%360+360)%360, og=G.og;
+  $("crit").innerHTML=`<span>look azimuth ${look}°</span><span>track offset ${fmtD(og.ground)}</span><span>slant range ${fmtD(og.R0)}</span>`+
+    `<span>look angle at sensor ${(og.look/D2R).toFixed(1)}°</span><span>θ across scene ${G.incNear.toFixed(2)}–${G.incFar.toFixed(2)}°</span>`+
+    `<span>layover: facing slope &gt; θ</span><span>shadow: back slope &gt; 90° − θ</span>`;
   const sc=SCENES[st.scene]; $("scenetag").textContent=st.scene==="synthetic"?"synthetic peak":"real lidar";
-  $("foot").innerHTML=`Scene: ${sc.label}. ${sc.note} Source DEM <code>${sc.source}</code>, ${sc.size_m} m window at rows/cols ${sc.window_rowcol.join(", ")}, ${sc.crs}, bounds ${sc.bounds.join(", ")}. Shown at ${sc.res} m. Model: far-field plane wave, flat Earth over the scene, backscatter ∝ cos(local incidence) × illuminated area. No volume scattering, no antenna pattern, no multipath. Preset headings and angles are approximate mid-swath values.`;
+  $("foot").innerHTML=`Scene: ${sc.label}. ${sc.note} Source DEM <code>${sc.source}</code>, ${sc.size_m} m window at rows/cols ${sc.window_rowcol.join(", ")}, ${sc.crs}, bounds ${sc.bounds.join(", ")}. Shown at ${sc.res} m. Model: point-source radar at the true slant range and offset (spherical Earth for the orbit, flat over the 800 m scene), backscatter ∝ cos(local incidence) × illuminated area. No volume scattering, no antenna pattern, no multipath. Preset headings, angles, altitudes and swaths are approximate.`;
 }
 
 let pending=false;
 function update(recompute=true){
   if (pending) return; pending=true;
-  requestAnimationFrame(()=>{ pending=false; if(recompute) compute(); readouts(); drawLegend(); drawMap(); drawSAR(); drawProfile(); });
+  requestAnimationFrame(()=>{ pending=false; if(recompute) compute(); readouts(); drawLegend(); drawMap(); drawSAR(); drawPlan(); drawSide(); drawProfile(); });
 }
 
 // ---------- wiring ----------
 for (const [k,v] of Object.entries(SCENES)){ const o=document.createElement("option"); o.value=k; o.textContent=v.label; $("scene").appendChild(o); }
 $("scene").onchange=e=>{ st.scene=e.target.value; update(); };
 for (const p of PRESETS){ const b=document.createElement("button"); b.textContent=p.name;
-  b.onclick=()=>{ st.heading=p.h; st.side=p.side; st.theta=p.th; $("heading").value=p.h; $("theta").value=p.th; update(); };
+  b.onclick=()=>{ Object.assign(st,{heading:p.h, side:p.side, theta:p.th, alt:p.alt, inc:p.inc});
+    $("heading").value=p.h; $("theta").value=p.th; $("alt").value=sliderFromAlt(p.alt); update(); };
   $("presets").appendChild(b); }
 const num=(id,key,parse=Number)=>$(id).addEventListener("input",e=>{ st[key]=parse(e.target.value); update(); });
 num("theta","theta"); num("heading","heading"); num("ve","ve"); num("dr","dr"); num("fs","fs"); num("looks","looks"); num("prof","prof");
+num("alt","alt",v=>altFromSlider(Number(v)));
+$("alt").value=sliderFromAlt(st.alt);
 $("sideR").onclick=()=>{st.side="R";update();}; $("sideL").onclick=()=>{st.side="L";update();};
 $("view").onchange=e=>{ st.view=e.target.value; update(false); };
 $("showcls").onchange=e=>{ st.showcls=e.target.checked; update(false); };
@@ -473,7 +635,7 @@ const NAMES=["normal","foreshortened","layover","passive layover","shadow"];
 $("mapc").addEventListener("mousemove",ev=>{ const [i,j]=mapIJ(ev); if(i<0||j<0||i>=G.n||j>=G.n) return;
   const [k,m]=toKM(i,j), idx=k*G.M+m, c=G.cls[idx];
   const z=G.sc.zmin+G.sc.z[i*G.n+j];
-  $("maphint").textContent=`${z.toFixed(1)} m · ${NAMES[c]??"—"} · range compression ${Number.isFinite(G.K[idx])?G.K[idx].toFixed(2):"—"}`; });
+  $("maphint").textContent=`${z.toFixed(1)} m · ${NAMES[c]??"—"} · range compression ${c!==255?G.K[idx].toFixed(2):"—"}`; });
 matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>update(false));
 update();
 </script>
