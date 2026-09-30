@@ -146,18 +146,17 @@ def load_stack():
     return idx, inten, tf, shape
 
 
-# Raster names spell out season, dates and track so a file listing reads on its own.
-RASTER_METRIC_NAME = {"leafoff_fall": "fall_leafoff_mean_oct_nov2025_db",
-                      "winter": "winter_mean_dec2025_jan2026_db",
-                      "leafon": "summer_leafon_mean_jun_sep2026_db",
-                      "change_leafon_vs_fall": "change_summer_leafon_minus_fall_leafoff_db"}
+# Short raster names: polarization, season, track. Values are season-mean dB, as delivered
+# (no shift to the lidar); the change raster is summer mean minus fall mean, in dB.
+RASTER_METRIC_NAME = {"leafoff_fall": "fall_2025", "winter": "winter_2025_26",
+                      "leafon": "summer_2026", "change_leafon_vs_fall": "change_summer_minus_fall"}
 
 
 def raster_name(metric: str, track: int, direction: str, tag: str) -> str:
-    """metric is '<pol>_<season key>', e.g. 'hv_leafon'."""
+    """metric is '<pol>_<season key>', e.g. 'hv_leafon'. Only as-delivered rasters are written."""
+    assert tag == "asdelivered", tag
     pol, key = metric.split("_", 1)
-    look = {"A": "ascending", "D": "descending"}[direction]
-    return f"nisar_gslc_{pol}_{RASTER_METRIC_NAME[key]}_track{track:03d}_{look}_{tag}_9t_5m.tif"
+    return f"nisar_{pol}_{RASTER_METRIC_NAME[key]}_track{track:03d}_9t_5m.tif"
 
 
 def season_of(d: str):

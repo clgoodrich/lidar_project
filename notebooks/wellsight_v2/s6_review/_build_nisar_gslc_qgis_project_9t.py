@@ -35,12 +35,10 @@ SEASON_LABEL = {"leafoff_fall": "fall leaf-off mean (Oct-Nov 2025)",
                 "winter": "winter mean (Dec 2025-Jan 2026)",
                 "leafon": "summer leaf-on mean (Jun-Sep 2026)",
                 "change_leafon_vs_fall": "change, leaf-on minus fall"}
-TRACK_LABEL = {"track162_ascending": "track 162 ascending", "track090_ascending": "track 090 ascending",
-               "track026_descending": "track 026 descending"}
-FILE_METRIC = {"leafoff_fall": "fall_leafoff_mean_oct_nov2025_db",
-               "winter": "winter_mean_dec2025_jan2026_db",
-               "leafon": "summer_leafon_mean_jun_sep2026_db",
-               "change_leafon_vs_fall": "change_summer_leafon_minus_fall_leafoff_db"}
+TRACK_LABEL = {"track162": "track 162 ascending", "track090": "track 090 ascending",
+               "track026": "track 026 descending"}
+FILE_METRIC = {"leafoff_fall": "fall_2025", "winter": "winter_2025_26",
+               "leafon": "summer_2026", "change_leafon_vs_fall": "change_summer_minus_fall"}
 ORDER = ["change_leafon_vs_fall", "leafon", "winter", "leafoff_fall"]
 
 
@@ -104,10 +102,10 @@ def main():
     first = True
     for track in TRACK_LABEL:
         g_t = g_nisar.addGroup(TRACK_LABEL[track])
-        g_t.setExpanded(track == "track162_ascending")
+        g_t.setExpanded(track == "track162")
         for metric in ORDER:
             for pol in ("hv", "hh"):
-                f = os.path.join(NISAR_DIR, f"nisar_gslc_{pol}_{FILE_METRIC[metric]}_{track}_asdelivered_9t_5m.tif")
+                f = os.path.join(NISAR_DIR, f"nisar_{pol}_{FILE_METRIC[metric]}_{track}_9t_5m.tif")
                 lyr = QgsRasterLayer(f, f"{pol.upper()} {SEASON_LABEL[metric]}", "gdal")
                 assert lyr.isValid(), f
                 (diverging if metric.startswith("change") else grey)(lyr)
@@ -116,9 +114,9 @@ def main():
                     first_raster, first = lyr, False
                 node = g_t.addLayer(lyr)
                 # show one layer to start: track 162 HV leaf-on
-                on = track == "track162_ascending" and pol == "hv" and metric == "leafon"
+                on = track == "track162" and pol == "hv" and metric == "leafon"
                 node.setItemVisibilityChecked(on)
-        g_t.setItemVisibilityChecked(track == "track162_ascending")
+        g_t.setItemVisibilityChecked(track == "track162")
 
     g_base = root.addGroup("lidar base")
     hs = QgsRasterLayer(HILLSHADE, "hillshade 9t 1 m (2019 lidar)", "gdal")

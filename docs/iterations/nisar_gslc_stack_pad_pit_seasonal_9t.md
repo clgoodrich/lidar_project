@@ -162,11 +162,12 @@ Logged in `docs/iterations/BACKLOG.md`.
 In `data/9t/derived/nisar_gslc_5m/` (gitignored by the `data/**/derived/**` rule):
 - `nisar_gslc_hh_hv_complex_<yyyymmdd>_t<track><A|D>_9t_5m.tif`: 32 windows of complex HH and HV.
 - `nisar_gslc_window_index_9t_5m.csv`: track, frame, collection, bandwidth, centre frequency and valid fraction for each window.
-- `nisar_gslc_<pol>_<season>_mean_<dates>_db_track<NNN>_<ascending|descending>_asdelivered_9t_5m.tif`: per-track season means in dB.
-  - `<season>_mean_<dates>` is `fall_leafoff_mean_oct_nov2025`, `winter_mean_dec2025_jan2026` or `summer_leafon_mean_jun_sep2026`.
-  - Example: `nisar_gslc_hv_summer_leafon_mean_jun_sep2026_db_track162_ascending_asdelivered_9t_5m.tif`
-- `nisar_gslc_<pol>_change_summer_leafon_minus_fall_leafoff_db_track<NNN>_<ascending|descending>_asdelivered_9t_5m.tif`: per-track seasonal change in dB.
-- Renamed 2026-09-30 from the older `..._mean_db_t162A_...` names. The renames are logged in `docs/MOVES.csv` with phase `nisar_readable_names`.
+- `nisar_<pol>_<season>_track<NNN>_9t_5m.tif`: per-track season means in dB, as delivered (not shifted to the lidar).
+  - `<season>` is `fall_2025` (Oct-Nov), `winter_2025_26` (Dec-Jan) or `summer_2026` (Jun-Sep, leaf-on).
+  - Tracks 162 and 090 are ascending. Track 026 is descending.
+  - Example: `nisar_hv_summer_2026_track162_9t_5m.tif`
+- `nisar_<pol>_change_summer_minus_fall_track<NNN>_9t_5m.tif`: summer mean minus fall mean, in dB.
+- Renamed twice on 2026-09-30, first from `..._mean_db_t162A_...` and then to these short names. Both passes are logged in `docs/MOVES.csv`, with phases `nisar_readable_names` and `nisar_short_names`.
 
 In `data/9t/results/nisar/`:
 - `nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_9t_5m.csv` and `.json`

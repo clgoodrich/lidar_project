@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-30 -- NISAR season rasters shortened again
+
+The user asked for easier names than the previous pass.
+
+- **New pattern.** `nisar_<pol>_<season>_track<NNN>_9t_5m.tif`. Example: `nisar_hv_summer_2026_track162_9t_5m.tif`
+- **Dropped from the name.**
+  - `gslc`, since the folder is `nisar_gslc_5m`.
+  - `mean_db` and the month ranges, since every raster is a season mean in dB.
+  - `ascending`/`descending`, since the track number fixes the direction.
+  - `asdelivered`, since only as-delivered rasters are ever written. `raster_name()` now asserts that.
+- **Moves.** 48 files, including sidecars. Phase `nisar_short_names` in `docs/MOVES.csv`. Ledger `docs/_ledgers/nisar_gslc_short_names_proposed_moves.csv`.
+- **Checked.** The QGIS project rebuilt and reloads with 28 valid layers.
+
 ## 2026-09-30 -- NISAR GSLC season rasters renamed to readable names
 
 The user asked for file names that read like the QGIS layer names.
