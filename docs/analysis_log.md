@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-30 -- NISAR GSLC season rasters renamed to readable names
+
+The user asked for file names that read like the QGIS layer names.
+
+- **New pattern.** `nisar_gslc_<pol>_<season>_mean_<dates>_db_track<NNN>_<ascending|descending>_asdelivered_9t_5m.tif`
+  - Example: `nisar_gslc_hv_summer_leafon_mean_jun_sep2026_db_track162_ascending_asdelivered_9t_5m.tif`
+  - The change rasters are `..._change_summer_leafon_minus_fall_leafoff_db_track...`
+- **How.** 24 rasters and their `.aux.xml` sidecars were moved together with `tools/apply_moves.py`.
+  - Ledger: `docs/_ledgers/nisar_gslc_readable_names_proposed_moves.csv`
+  - `docs/MOVES.csv` phase is `nisar_readable_names`, so `--undo --phase nisar_readable_names` reverses it.
+- **Code.** `_nisar_gslc_stack_pad_pit_seasonal_9t.py` now writes these names through `raster_name()`. The QGIS project builder reads them.
+- **Bug fixed.** The white-halo outline from the previous pass crashed QGIS's python, so the halo never saved. The top outline is now built directly with `QgsSimpleFillSymbolLayer.create`. The project was rebuilt and reloads with 28 valid layers.
+
 ## 2026-09-30 -- NISAR GSLC stack as a QGIS project draped on the lidar DEM
 
 The user asked for the GSLC stack as a QGIS surface.

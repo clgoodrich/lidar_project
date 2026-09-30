@@ -15,11 +15,11 @@ Colours: blue #1F5FA8 / orange #D97706 are the validated lost/found pair
 (validate_palette.py --mode light --pairs all, worst-pair dE 21.1 deutan).
 Pads and pits also differ by line style (solid vs dashed), so never colour alone.
 """
-import glob, os, re, sys
+import os
 import numpy as np
 from qgis.core import (Qgis, QgsApplication, QgsProject, QgsRasterLayer, QgsVectorLayer,
     QgsSingleBandGrayRenderer, QgsContrastEnhancement, QgsSingleBandPseudoColorRenderer,
-    QgsRasterShader, QgsColorRampShader, QgsFillSymbol, QgsRasterDemTerrainProvider,
+    QgsRasterShader, QgsColorRampShader, QgsFillSymbol, QgsSimpleFillSymbolLayer, QgsRasterDemTerrainProvider,
     QgsCoordinateReferenceSystem, QgsReferencedRectangle)
 from qgis.PyQt.QtGui import QColor
 
@@ -35,8 +35,12 @@ SEASON_LABEL = {"leafoff_fall": "fall leaf-off mean (Oct-Nov 2025)",
                 "winter": "winter mean (Dec 2025-Jan 2026)",
                 "leafon": "summer leaf-on mean (Jun-Sep 2026)",
                 "change_leafon_vs_fall": "change, leaf-on minus fall"}
-TRACK_LABEL = {"t162A": "track 162 ascending", "t090A": "track 090 ascending",
-               "t026D": "track 026 descending"}
+TRACK_LABEL = {"track162_ascending": "track 162 ascending", "track090_ascending": "track 090 ascending",
+               "track026_descending": "track 026 descending"}
+FILE_METRIC = {"leafoff_fall": "fall_leafoff_mean_oct_nov2025_db",
+               "winter": "winter_mean_dec2025_jan2026_db",
+               "leafon": "summer_leafon_mean_jun_sep2026_db",
+               "change_leafon_vs_fall": "change_summer_leafon_minus_fall_leafoff_db"}
 ORDER = ["change_leafon_vs_fall", "leafon", "winter", "leafoff_fall"]
 
 
@@ -75,8 +79,9 @@ def outline(layer, colour, dashed):
     # white halo underneath so the outline stays visible on the blue/orange change ramp
     sym = QgsFillSymbol.createSimple({"color": "0,0,0,0", "outline_color": "255,255,255,230",
         "outline_width": "1.1", "outline_style": "solid"})
-    top = QgsFillSymbol.createSimple({"color": "0,0,0,0", "outline_color": colour,
-        "outline_width": "0.5", "outline_style": "dash" if dashed else "solid"}).symbolLayer(0).clone()
+    # build the top layer directly: cloning out of a temporary symbol crashes QGIS on GC
+    top = QgsSimpleFillSymbolLayer.create({"color": "0,0,0,0", "outline_color": colour,
+        "outline_width": "0.5", "outline_style": "dash" if dashed else "solid"})
     sym.appendSymbolLayer(top)
     layer.renderer().setSymbol(sym)
 
@@ -95,17 +100,14 @@ def main():
         outline(v, colour, dashed)
         proj.addMapLayer(v, False); g_ann.addLayer(v)
 
-    files = sorted(glob.glob(os.path.join(NISAR_DIR, "nisar_gslc_*_mean_db_t*_asdelivered_9t_5m.tif")))
-    assert len(files) == 24, len(files)
-    pat = re.compile(r"nisar_gslc_(hh|hv)_(.+)_mean_db_(t\d{3}[AD])_asdelivered")
     g_nisar = root.addGroup("NISAR L-band GSLC, 5 m, as delivered (no shift)")
     first = True
-    for track in ("t162A", "t090A", "t026D"):
+    for track in TRACK_LABEL:
         g_t = g_nisar.addGroup(TRACK_LABEL[track])
-        g_t.setExpanded(track == "t162A")
+        g_t.setExpanded(track == "track162_ascending")
         for metric in ORDER:
             for pol in ("hv", "hh"):
-                f = next(p for p in files if pat.search(os.path.basename(p)).groups() == (pol, metric, track))
+                f = os.path.join(NISAR_DIR, f"nisar_gslc_{pol}_{FILE_METRIC[metric]}_{track}_asdelivered_9t_5m.tif")
                 lyr = QgsRasterLayer(f, f"{pol.upper()} {SEASON_LABEL[metric]}", "gdal")
                 assert lyr.isValid(), f
                 (diverging if metric.startswith("change") else grey)(lyr)
@@ -114,9 +116,9 @@ def main():
                     first_raster, first = lyr, False
                 node = g_t.addLayer(lyr)
                 # show one layer to start: track 162 HV leaf-on
-                on = track == "t162A" and pol == "hv" and metric == "leafon"
+                on = track == "track162_ascending" and pol == "hv" and metric == "leafon"
                 node.setItemVisibilityChecked(on)
-        g_t.setItemVisibilityChecked(track == "t162A")
+        g_t.setItemVisibilityChecked(track == "track162_ascending")
 
     g_base = root.addGroup("lidar base")
     hs = QgsRasterLayer(HILLSHADE, "hillshade 9t 1 m (2019 lidar)", "gdal")

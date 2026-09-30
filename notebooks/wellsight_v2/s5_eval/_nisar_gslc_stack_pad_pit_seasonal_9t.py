@@ -146,6 +146,20 @@ def load_stack():
     return idx, inten, tf, shape
 
 
+# Raster names spell out season, dates and track so a file listing reads on its own.
+RASTER_METRIC_NAME = {"leafoff_fall": "fall_leafoff_mean_oct_nov2025_db",
+                      "winter": "winter_mean_dec2025_jan2026_db",
+                      "leafon": "summer_leafon_mean_jun_sep2026_db",
+                      "change_leafon_vs_fall": "change_summer_leafon_minus_fall_leafoff_db"}
+
+
+def raster_name(metric: str, track: int, direction: str, tag: str) -> str:
+    """metric is '<pol>_<season key>', e.g. 'hv_leafon'."""
+    pol, key = metric.split("_", 1)
+    look = {"A": "ascending", "D": "descending"}[direction]
+    return f"nisar_gslc_{pol}_{RASTER_METRIC_NAME[key]}_track{track:03d}_{look}_{tag}_9t_5m.tif"
+
+
 def season_of(d: str):
     for s, (a, b) in SEASONS.items():
         if a <= d <= b:
@@ -391,7 +405,7 @@ def main() -> int:
             if num not in L or (den and den not in L):
                 continue
             v = (db(L[num]) - (db(L[den]) if den else 0.0)).reshape(shape)
-            with rasterio.open(SRC / f"nisar_gslc_{m}_mean_db_t{t:03d}{d}_{tag}_9t_5m.tif", "w", **prof) as dst:
+            with rasterio.open(SRC / raster_name(m, t, d, tag), "w", **prof) as dst:
                 dst.write(v.astype(np.float32), 1)
             n_written += 1
     print(f"wrote {n_written} rasters to {SRC}")
