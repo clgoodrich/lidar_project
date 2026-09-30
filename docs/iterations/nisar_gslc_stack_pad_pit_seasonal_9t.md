@@ -178,10 +178,19 @@ In `data/9t/results/nisar/figures/`:
 
 Figure colours: features are `#1F5FA8` circles and decoys are `#D97706` squares. That is the lost/found pair, with worst all-pairs ΔE 21.1 for deuteranopia. The maps use greyscale, and PuOr (purple to orange, no green) for signed change.
 
+QGIS project, added 2026-09-30:
+- `qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz` holds all 24 season rasters.
+  - There is one group per track, and it opens on track 162 HV leaf-on.
+  - Season means are grey. Seasonal change is blue-white-orange, centred on each raster's own median.
+  - Pads have solid blue outlines and pits have dashed orange outlines. Both have a white halo.
+  - The 9t lidar DEM is the project terrain. View > 3D Map View drapes the visible radar layer on it.
+- Built by `notebooks/wellsight_v2/s6_review/_build_nisar_gslc_qgis_project_9t.py`, run with QGIS's own python.
+
 ## Reproduce
 
 ```bash
 python notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py            # ~40 min, ~1-2 GB transferred
 python notebooks/wellsight_v2/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py
 python notebooks/wellsight_v2/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py --force-best-shift
+"C:/Program Files/QGIS 3.40.10/bin/python-qgis-ltr.bat" notebooks/wellsight_v2/s6_review/_build_nisar_gslc_qgis_project_9t.py
 ```

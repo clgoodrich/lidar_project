@@ -5,6 +5,22 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-09-30 -- NISAR GSLC stack as a QGIS project draped on the lidar DEM
+
+The user asked for the GSLC stack as a QGIS surface.
+
+- **Project.** `qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz` holds 24 as-delivered rasters.
+  - The rasters are 3 tracks by HH/HV by 4 metrics. The metrics are the fall, winter and leaf-on means, plus leaf-on minus fall.
+  - Pads and pits sit on top. The hillshade sits underneath.
+- **Terrain.** `data/9t/derived/1m/dem_9t_1m.tif` is the project terrain, so the 3D map view drapes the radar on the lidar surface.
+- **Styling.**
+  - Season means use a grey 2-98% stretch.
+  - Change uses `#1F5FA8` / white / `#D97706`, centred on each raster's median. The tile median differs by track.
+  - Outlines have a white halo and differ by line style, so colour is never the only cue.
+- **Start view.** The annotations run far past 9t, so the project opens on the NISAR window.
+- **QC.** The project reloads with 28 layers, none invalid, and the terrain provider points at the DEM. Test renders are fine.
+- **Script.** `notebooks/wellsight_v2/s6_review/_build_nisar_gslc_qgis_project_9t.py`
+
 ## 2026-09-29 -- SAR geometry simulator on 613590 (side path)
 
 The user asked for an interactive HTML tool that shows layover, foreshortening and shadow on one of our lidar chunks. Write-up: `docs/iterations/sar_geometry_simulator_613590.md`.
