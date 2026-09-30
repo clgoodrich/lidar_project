@@ -215,6 +215,11 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - ~~**Test n / dataset-era mixing**~~ **FIXED 2026-07-02**: all four instance evals re-run on the current 65/93 test split with same-era checkpoints (pad_05 Mask R-CNN retrained same day, best = ep 3); LEADERBOARD is now single-era with old numbers quarantined in a legacy block. Still open: report binomial CIs (n = 65/93 is still small).
 - **DEP-well 0.42 recall lacks a null model**: compute random-point matching rate at 25 m before citing it.
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
+- **NISAR GSLC stack follow-ups (added 2026-09-30).** See `docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md`. Against same-shape decoys, pads are 0.2–0.4 dB darker. Pits show about −0.4 dB only when the data are shifted onto the lidar. The shift comes from a weak canopy correlation, ρ ≤ 0.07. To do:
+  - register each track against point targets (pumpjacks, tanks, buildings) found in the lidar DSM. This decides whether the pit signal is real.
+  - add March–April GSLCs when released. That is the flooded-forest HH double-bounce test for water-filled pits.
+  - coherence from the saved complex windows (reappraisal option 2); no new download needed.
+  - re-run the GCOV pad test with decoys. Its −0.44 dB includes a pad-size effect.
 - **NISAR GCOV pad test, follow-ups (added 2026-09-26).** See `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`. The single January beta image gives a faint pad signal: open pads are about 0.8 dB darker in HH. The open/closed control is also weak (HV AUC 0.62). To do:
   - repeat on a leaf-on or fall snow-free GCOV granule
   - average several dates to beat speckle

@@ -1,0 +1,488 @@
+{
+ "n_dates_by_track_season": [
+  {
+   "track": 26,
+   "direction": "D",
+   "season": "leafoff_fall",
+   "n": 1
+  },
+  {
+   "track": 26,
+   "direction": "D",
+   "season": "leafon",
+   "n": 5
+  },
+  {
+   "track": 26,
+   "direction": "D",
+   "season": "winter",
+   "n": 2
+  },
+  {
+   "track": 90,
+   "direction": "A",
+   "season": "leafoff_fall",
+   "n": 1
+  },
+  {
+   "track": 90,
+   "direction": "A",
+   "season": "leafon",
+   "n": 8
+  },
+  {
+   "track": 90,
+   "direction": "A",
+   "season": "winter",
+   "n": 1
+  },
+  {
+   "track": 162,
+   "direction": "A",
+   "season": "leafoff_fall",
+   "n": 3
+  },
+  {
+   "track": 162,
+   "direction": "A",
+   "season": "leafon",
+   "n": 7
+  },
+  {
+   "track": 162,
+   "direction": "A",
+   "season": "winter",
+   "n": 3
+  }
+ ],
+ "registration": [
+  {
+   "track": 26,
+   "rho_unshifted": 0.048620537495937574,
+   "best_dx": 10,
+   "best_dy": -10,
+   "rho_best": 0.06839309644214117,
+   "peak_inside_search": true,
+   "applied": false
+  },
+  {
+   "track": 90,
+   "rho_unshifted": 0.016024525702785303,
+   "best_dx": -15,
+   "best_dy": -5,
+   "rho_best": 0.04684203436589561,
+   "peak_inside_search": true,
+   "applied": false
+  },
+  {
+   "track": 162,
+   "rho_unshifted": 0.020767662154655264,
+   "best_dx": -10,
+   "best_dy": -5,
+   "rho_best": 0.0631488727854733,
+   "peak_inside_search": true,
+   "applied": false
+  }
+ ],
+ "shift_applied_m": {
+  "26": [
+   0.0,
+   0.0
+  ],
+  "90": [
+   0.0,
+   0.0
+  ],
+  "162": [
+   0.0,
+   0.0
+  ]
+ },
+ "seasons": {
+  "leafoff_fall": [
+   "2025-10-01",
+   "2025-11-30"
+  ],
+  "winter": [
+   "2025-12-01",
+   "2026-01-31"
+  ],
+  "leafon": [
+   "2026-06-01",
+   "2026-09-30"
+  ]
+ },
+ "n_decoys": 5,
+ "tile_median_change_leafon_minus_fall_db": {
+  "26_hh": 3.7762598991394043,
+  "26_hv": 4.172348976135254,
+  "90_hh": 1.9068646430969238,
+  "90_hv": 2.9402570724487305,
+  "162_hh": 1.2440595626831055,
+  "162_hv": 1.9277667999267578
+ },
+ "control": [
+  {
+   "track": 26,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -9.230192184448242,
+   "closed_median_db": -8.569735527038574,
+   "auc_closed_gt_open": 0.5384318232536316
+  },
+  {
+   "track": 26,
+   "metric": "hh_winter",
+   "open_median_db": -7.230665683746338,
+   "closed_median_db": -6.706874847412109,
+   "auc_closed_gt_open": 0.5403845310211182
+  },
+  {
+   "track": 26,
+   "metric": "hh_leafon",
+   "open_median_db": -5.261919021606445,
+   "closed_median_db": -4.958953857421875,
+   "auc_closed_gt_open": 0.5371723771095276
+  },
+  {
+   "track": 26,
+   "metric": "hh_change_leafon_vs_fall",
+   "open_median_db": 3.9715211391448975,
+   "closed_median_db": 3.6753344535827637,
+   "auc_closed_gt_open": 0.484286367893219
+  },
+  {
+   "track": 26,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -15.145479202270508,
+   "closed_median_db": -14.479732513427734,
+   "auc_closed_gt_open": 0.5386062264442444
+  },
+  {
+   "track": 26,
+   "metric": "hv_winter",
+   "open_median_db": -13.593610763549805,
+   "closed_median_db": -12.84261703491211,
+   "auc_closed_gt_open": 0.5579786896705627
+  },
+  {
+   "track": 26,
+   "metric": "hv_leafon",
+   "open_median_db": -10.74795913696289,
+   "closed_median_db": -10.410955429077148,
+   "auc_closed_gt_open": 0.5418686866760254
+  },
+  {
+   "track": 26,
+   "metric": "hv_change_leafon_vs_fall",
+   "open_median_db": 4.53143310546875,
+   "closed_median_db": 4.108537673950195,
+   "auc_closed_gt_open": 0.48046156764030457
+  },
+  {
+   "track": 90,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -6.904689311981201,
+   "closed_median_db": -6.895824432373047,
+   "auc_closed_gt_open": 0.49931594729423523
+  },
+  {
+   "track": 90,
+   "metric": "hh_winter",
+   "open_median_db": -7.128100872039795,
+   "closed_median_db": -7.157143592834473,
+   "auc_closed_gt_open": 0.49637579917907715
+  },
+  {
+   "track": 90,
+   "metric": "hh_leafon",
+   "open_median_db": -4.866674423217773,
+   "closed_median_db": -5.059882164001465,
+   "auc_closed_gt_open": 0.49467021226882935
+  },
+  {
+   "track": 90,
+   "metric": "hh_change_leafon_vs_fall",
+   "open_median_db": 1.9652585983276367,
+   "closed_median_db": 1.973748803138733,
+   "auc_closed_gt_open": 0.5004050135612488
+  },
+  {
+   "track": 90,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -13.668813705444336,
+   "closed_median_db": -13.270343780517578,
+   "auc_closed_gt_open": 0.5192099809646606
+  },
+  {
+   "track": 90,
+   "metric": "hv_winter",
+   "open_median_db": -15.708578109741211,
+   "closed_median_db": -15.202749252319336,
+   "auc_closed_gt_open": 0.5307753086090088
+  },
+  {
+   "track": 90,
+   "metric": "hv_leafon",
+   "open_median_db": -10.397794723510742,
+   "closed_median_db": -10.420827865600586,
+   "auc_closed_gt_open": 0.5145424604415894
+  },
+  {
+   "track": 90,
+   "metric": "hv_change_leafon_vs_fall",
+   "open_median_db": 2.9591784477233887,
+   "closed_median_db": 2.951211929321289,
+   "auc_closed_gt_open": 0.4995534121990204
+  },
+  {
+   "track": 162,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -7.4761223793029785,
+   "closed_median_db": -7.32858943939209,
+   "auc_closed_gt_open": 0.517525851726532
+  },
+  {
+   "track": 162,
+   "metric": "hh_winter",
+   "open_median_db": -8.187499046325684,
+   "closed_median_db": -7.999127388000488,
+   "auc_closed_gt_open": 0.5197314620018005
+  },
+  {
+   "track": 162,
+   "metric": "hh_leafon",
+   "open_median_db": -6.162130355834961,
+   "closed_median_db": -6.1373701095581055,
+   "auc_closed_gt_open": 0.5150327086448669
+  },
+  {
+   "track": 162,
+   "metric": "hh_change_leafon_vs_fall",
+   "open_median_db": 1.1773197650909424,
+   "closed_median_db": 1.28035306930542,
+   "auc_closed_gt_open": 0.5067943334579468
+  },
+  {
+   "track": 162,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -13.10721206665039,
+   "closed_median_db": -12.983738899230957,
+   "auc_closed_gt_open": 0.5133987069129944
+  },
+  {
+   "track": 162,
+   "metric": "hv_winter",
+   "open_median_db": -14.672863960266113,
+   "closed_median_db": -14.465516090393066,
+   "auc_closed_gt_open": 0.5214173197746277
+  },
+  {
+   "track": 162,
+   "metric": "hv_leafon",
+   "open_median_db": -10.973371505737305,
+   "closed_median_db": -10.958993911743164,
+   "auc_closed_gt_open": 0.5165184140205383
+  },
+  {
+   "track": 162,
+   "metric": "hv_change_leafon_vs_fall",
+   "open_median_db": 1.7825264930725098,
+   "closed_median_db": 1.9939265251159668,
+   "auc_closed_gt_open": 0.5162323713302612
+  }
+ ],
+ "results": [
+  {
+   "features": "pad",
+   "metric": "hh_leafoff_fall",
+   "n": 647,
+   "median_feature_minus_ring_db": -0.2663176953792572,
+   "median_decoy_minus_ring_db": -0.13946326076984406,
+   "median_excess_db": -0.13401666283607483,
+   "excess_ci_lo": -0.18305746465921402,
+   "excess_ci_hi": -0.07192922383546829,
+   "auc_feature_gt_decoy": 0.4494040906429291,
+   "wilcoxon_p_excess": 1.604280400226244e-05
+  },
+  {
+   "features": "pad",
+   "metric": "hh_winter",
+   "n": 647,
+   "median_feature_minus_ring_db": -0.4496767520904541,
+   "median_decoy_minus_ring_db": -0.15262453258037567,
+   "median_excess_db": -0.2788555324077606,
+   "excess_ci_lo": -0.33370351791381836,
+   "excess_ci_hi": -0.2102854654192926,
+   "auc_feature_gt_decoy": 0.3920438885688782,
+   "wilcoxon_p_excess": 5.355254839386774e-16
+  },
+  {
+   "features": "pad",
+   "metric": "hh_leafon",
+   "n": 647,
+   "median_feature_minus_ring_db": -0.32067060470581055,
+   "median_decoy_minus_ring_db": -0.09563270956277847,
+   "median_excess_db": -0.22929956018924713,
+   "excess_ci_lo": -0.2906034056097269,
+   "excess_ci_hi": -0.17618897951906567,
+   "auc_feature_gt_decoy": 0.38174229860305786,
+   "wilcoxon_p_excess": 6.717528370591264e-21
+  },
+  {
+   "features": "pad",
+   "metric": "hh_change_leafon_vs_fall",
+   "n": 647,
+   "median_feature_minus_ring_db": -0.06200766563415527,
+   "median_decoy_minus_ring_db": 0.0454358272254467,
+   "median_excess_db": -0.09760777465999126,
+   "excess_ci_lo": -0.15390642965212464,
+   "excess_ci_hi": -0.041067934036254965,
+   "auc_feature_gt_decoy": 0.4444153904914856,
+   "wilcoxon_p_excess": 8.383568484423406e-06
+  },
+  {
+   "features": "pad",
+   "metric": "hv_leafoff_fall",
+   "n": 647,
+   "median_feature_minus_ring_db": -0.18774159252643585,
+   "median_decoy_minus_ring_db": -0.113311767578125,
+   "median_excess_db": -0.06510702660307288,
+   "excess_ci_lo": -0.1243845671415329,
+   "excess_ci_hi": -0.004536956548690796,
+   "auc_feature_gt_decoy": 0.465137779712677,
+   "wilcoxon_p_excess": 0.0029058421070307927
+  },
+  {
+   "features": "pad",
+   "metric": "hv_winter",
+   "n": 647,
+   "median_feature_minus_ring_db": -0.21785099804401398,
+   "median_decoy_minus_ring_db": -0.13040797412395477,
+   "median_excess_db": -0.10593923926353455,
+   "excess_ci_lo": -0.1599782258272171,
+   "excess_ci_hi": -0.045476317405700684,
+   "auc_feature_gt_decoy": 0.4492589235305786,
+   "wilcoxon_p_excess": 8.218483278239239e-05
+  },
+  {
+   "features": "pad",
+   "metric": "hv_leafon",
+   "n": 647,
+   "median_feature_minus_ring_db": -0.24983565509319305,
+   "median_decoy_minus_ring_db": -0.04580847546458244,
+   "median_excess_db": -0.20265928423032165,
+   "excess_ci_lo": -0.2540181465446949,
+   "excess_ci_hi": -0.16100788116455078,
+   "auc_feature_gt_decoy": 0.3822154104709625,
+   "wilcoxon_p_excess": 3.954323395788228e-20
+  },
+  {
+   "features": "pad",
+   "metric": "hv_change_leafon_vs_fall",
+   "n": 647,
+   "median_feature_minus_ring_db": -0.10483900457620621,
+   "median_decoy_minus_ring_db": 0.06152280047535896,
+   "median_excess_db": -0.16013145446777344,
+   "excess_ci_lo": -0.216848224401474,
+   "excess_ci_hi": -0.09261226654052734,
+   "auc_feature_gt_decoy": 0.4243236482143402,
+   "wilcoxon_p_excess": 5.904372162121344e-09
+  },
+  {
+   "features": "pit",
+   "metric": "hh_leafoff_fall",
+   "n": 506,
+   "median_feature_minus_ring_db": -0.22252455353736877,
+   "median_decoy_minus_ring_db": -0.3835604190826416,
+   "median_excess_db": 0.18261881824582815,
+   "excess_ci_lo": 0.06855657696723938,
+   "excess_ci_hi": 0.34863593499176165,
+   "auc_feature_gt_decoy": 0.5525625944137573,
+   "wilcoxon_p_excess": 0.0007532624935699646
+  },
+  {
+   "features": "pit",
+   "metric": "hh_winter",
+   "n": 506,
+   "median_feature_minus_ring_db": -0.22634470462799072,
+   "median_decoy_minus_ring_db": -0.31469249725341797,
+   "median_excess_db": 0.17633769661188126,
+   "excess_ci_lo": -0.009896788746118546,
+   "excess_ci_hi": 0.3747994899749756,
+   "auc_feature_gt_decoy": 0.5325883626937866,
+   "wilcoxon_p_excess": 0.05276168481911117
+  },
+  {
+   "features": "pit",
+   "metric": "hh_leafon",
+   "n": 506,
+   "median_feature_minus_ring_db": -0.19810521602630615,
+   "median_decoy_minus_ring_db": -0.17657041549682617,
+   "median_excess_db": -0.023021778091788292,
+   "excess_ci_lo": -0.11713814735412598,
+   "excess_ci_hi": 0.08826863765716553,
+   "auc_feature_gt_decoy": 0.5067298412322998,
+   "wilcoxon_p_excess": 0.681506380151693
+  },
+  {
+   "features": "pit",
+   "metric": "hh_change_leafon_vs_fall",
+   "n": 506,
+   "median_feature_minus_ring_db": 0.08816786110401154,
+   "median_decoy_minus_ring_db": 0.19361189752817154,
+   "median_excess_db": -0.17167075537145138,
+   "excess_ci_lo": -0.31873381420155056,
+   "excess_ci_hi": 0.039292462170124054,
+   "auc_feature_gt_decoy": 0.46221694350242615,
+   "wilcoxon_p_excess": 0.029462200731810283
+  },
+  {
+   "features": "pit",
+   "metric": "hv_leafoff_fall",
+   "n": 506,
+   "median_feature_minus_ring_db": -0.28800520300865173,
+   "median_decoy_minus_ring_db": -0.36343733966350555,
+   "median_excess_db": 0.08637899160385132,
+   "excess_ci_lo": -0.0513861633837223,
+   "excess_ci_hi": 0.23229132443666425,
+   "auc_feature_gt_decoy": 0.5250462293624878,
+   "wilcoxon_p_excess": 0.13349140031001713
+  },
+  {
+   "features": "pit",
+   "metric": "hv_winter",
+   "n": 506,
+   "median_feature_minus_ring_db": -0.27376335859298706,
+   "median_decoy_minus_ring_db": -0.3179103434085846,
+   "median_excess_db": 0.055248722434043884,
+   "excess_ci_lo": -0.04261811077594757,
+   "excess_ci_hi": 0.18748136200010762,
+   "auc_feature_gt_decoy": 0.5194791555404663,
+   "wilcoxon_p_excess": 0.2384158922708174
+  },
+  {
+   "features": "pit",
+   "metric": "hv_leafon",
+   "n": 506,
+   "median_feature_minus_ring_db": -0.18118762969970703,
+   "median_decoy_minus_ring_db": -0.13632114231586456,
+   "median_excess_db": -0.06521526537835598,
+   "excess_ci_lo": -0.19607113301753998,
+   "excess_ci_hi": 0.017727211117744446,
+   "auc_feature_gt_decoy": 0.476224422454834,
+   "wilcoxon_p_excess": 0.06014429542220332
+  },
+  {
+   "features": "pit",
+   "metric": "hv_change_leafon_vs_fall",
+   "n": 506,
+   "median_feature_minus_ring_db": -0.035465873777866364,
+   "median_decoy_minus_ring_db": 0.19626156240701675,
+   "median_excess_db": -0.14611513167619705,
+   "excess_ci_lo": -0.23580095656216143,
+   "excess_ci_hi": 0.02636277675628662,
+   "auc_feature_gt_decoy": 0.4561060070991516,
+   "wilcoxon_p_excess": 0.0049595561420926
+  }
+ ]
+}

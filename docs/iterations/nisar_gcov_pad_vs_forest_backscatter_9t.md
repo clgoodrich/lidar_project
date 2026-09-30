@@ -2,6 +2,8 @@
 
 **Date:** 2026-09-26
 **Status:** done. First test of the pad-scale claim in `docs/nisar_lidar_supplement_proposal.md`.
+
+> **Caveat added 2026-09-30.** This test compared a few pad pixels with hundreds of ring pixels. Radar brightness is right-skewed, so a small-pixel mean sits below a large-pixel mean even over the same ground. Part of the −0.44 dB below is therefore a pad-size effect, not a pad signal. The follow-up `docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md` adds same-shape decoys to remove it. Against decoys, pads are 0.2–0.4 dB darker. The positive control here is per pixel, so it is unaffected.
 **Script:** `notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py`
 
 ## Goal

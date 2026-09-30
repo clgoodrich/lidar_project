@@ -1,0 +1,109 @@
+          date   collection  track direction  frame
+0   2025-10-28         beta    162         A     23
+1   2025-11-04         beta     90         A     22
+2   2025-11-09         beta    162         A     23
+3   2025-11-12         beta     26         D     68
+4   2025-11-21         beta    162         A     23
+5   2025-12-03         beta    162         A     23
+6   2025-12-18         beta     26         D     67
+7   2025-12-18         beta     26         D     68
+8   2025-12-30         beta     26         D     68
+9   2026-01-08         beta    162         A     23
+10  2026-01-15         beta     90         A     22
+11  2026-01-20         beta    162         A     23
+12  2026-06-20  provisional     90         A     22
+13  2026-06-25  provisional    162         A     23
+14  2026-06-28  provisional     26         D     68
+15  2026-07-02  provisional     90         A     22
+16  2026-07-07  provisional    162         A     23
+17  2026-07-14  provisional     90         A     22
+18  2026-07-19  provisional    162         A     23
+19  2026-07-22  provisional     26         D     67
+20  2026-07-26  provisional     90         A     22
+21  2026-08-12  provisional    162         A     23
+22  2026-08-15  provisional     26         D     67
+23  2026-08-15  provisional     26         D     68
+24  2026-08-19  provisional     90         A     22
+25  2026-08-24  provisional    162         A     23
+26  2026-08-27  provisional     26         D     67
+27  2026-08-27  provisional     26         D     68
+28  2026-08-31  provisional     90         A     22
+29  2026-09-05  provisional    162         A     23
+30  2026-09-05  provisional    162         A     23
+31  2026-09-08  provisional     26         D     68
+32  2026-09-12  provisional     90         A     22
+33  2026-09-17  provisional    162         A     23
+34  2026-09-20  provisional     26         D     67
+35  2026-09-20  provisional     26         D     68
+36  2026-09-24  provisional     90         A     22
+window (EPSG:32617) (np.float64(619295.0), np.float64(4592800.0), np.float64(624200.0), np.float64(4597705.0))
+  NISAR_L2_PR_GSLC_003_162_A_023_4005_DHDH_A_20251028T101550_2... valid 1.000 (42 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20251028_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_004_090_A_022_4005_DHDH_A_20251104T102337_2... valid 1.000 (34 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20251104_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_004_162_A_023_4005_DHDH_A_20251109T101551_2... valid 1.000 (42 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20251109_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_005_026_D_068_4005_DHDH_A_20251112T001723_2... valid 1.000 (39 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20251112_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_005_162_A_023_4005_DHDH_A_20251121T101551_2... valid 1.000 (46 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20251121_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_006_162_A_023_4005_DHDH_A_20251203T101552_2... valid 1.000 (41 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20251203_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_008_026_D_067_4005_DHDH_A_20251218T001651_2... valid 0.104 (55 s)
+  NISAR_L2_PR_GSLC_008_026_D_068_4005_DHDH_A_20251218T001725_2... valid 1.000 (36 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20251218_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_009_026_D_068_4005_DHDH_A_20251230T001725_2... valid 1.000 (39 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20251230_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_009_162_A_023_4005_DHDH_A_20260108T101553_2... valid 1.000 (44 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260108_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_010_090_A_022_4005_DHDH_A_20260115T102340_2... valid 1.000 (43 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260115_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_010_162_A_023_4005_DHDH_A_20260120T101554_2... valid 1.000 (46 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260120_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_023_090_A_022_4005_DHDH_A_20260620T102339_2... valid 1.000 (49 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260620_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_023_162_A_023_4005_DHDH_A_20260625T101553_2... valid 1.000 (50 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260625_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_024_026_D_068_4005_DHDH_A_20260628T001724_2... valid 1.000 (45 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260628_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_024_090_A_022_4005_DHDH_A_20260702T102338_2... valid 1.000 (43 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260702_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_024_162_A_023_4005_DHDH_A_20260707T101553_2... valid 1.000 (46 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260707_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_025_090_A_022_4005_DHDH_A_20260714T102338_2... valid 1.000 (39 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260714_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_025_162_A_023_4005_DHDH_A_20260719T101552_2... valid 1.000 (48 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260719_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_026_026_D_067_4005_DHDH_A_20260722T001649_2... valid 0.000 (52 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260722_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_026_090_A_022_4005_DHDH_A_20260726T102337_2... valid 1.000 (43 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260726_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_027_162_A_023_4005_DHDH_A_20260812T101551_2... valid 1.000 (43 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260812_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_028_026_D_067_4005_DHDH_A_20260815T001648_2... valid 0.017 (54 s)
+  NISAR_L2_PR_GSLC_028_026_D_068_4005_DHDH_A_20260815T001722_2... valid 1.000 (44 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260815_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_028_090_A_022_4005_DHDH_A_20260819T102336_2... valid 1.000 (47 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260819_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_028_162_A_023_4005_DHDH_A_20260824T101550_2... valid 1.000 (49 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260824_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_029_026_D_067_4005_DHDH_A_20260827T001648_2... valid 0.322 (53 s)
+  NISAR_L2_PR_GSLC_029_026_D_068_4005_DHDH_A_20260827T001722_2... valid 1.000 (40 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260827_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_029_090_A_022_4005_DHDH_A_20260831T102336_2... valid 1.000 (37 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260831_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_029_162_A_023_4005_DHDH_A_20260905T101550_2... valid 1.000 (46 s)
+  NISAR_L2_PR_GSLC_029_162_A_023_4005_DHDH_A_20260905T101550_2... valid 1.000 (43 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260905_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_030_026_D_068_4005_DHDH_A_20260908T001721_2... valid 1.000 (38 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260908_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_030_090_A_022_4005_DHDH_A_20260912T102335_2... valid 1.000 (43 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260912_t090A_9t_5m.tif
+  NISAR_L2_PR_GSLC_030_162_A_023_4005_DHDH_A_20260917T101550_2... valid 1.000 (48 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260917_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_031_026_D_067_4005_DHDH_A_20260920T001648_2... valid 0.348 (56 s)
+  NISAR_L2_PR_GSLC_031_026_D_068_4005_DHDH_A_20260920T001722_2... valid 1.000 (39 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260920_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_031_090_A_022_4005_DHDH_A_20260924T102335_2... valid 1.000 (40 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260924_t090A_9t_5m.tif
+index C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_window_index_9t_5m.csv

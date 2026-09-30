@@ -17,6 +17,30 @@ The user asked for an interactive HTML tool that shows layover, foreshortening a
 
 ---
 
+## 2026-09-30 -- NISAR reappraisal, then a 31-date GSLC stack over 9t at 5 m
+
+The user asked for a reappraisal of the NISAR options as a SAR and western-PA expert, then said to proceed.
+
+**Reappraisal.** Individual-pit InSAR was dropped. A pit is about one pixel, forest decorrelation forces averaging over tens of metres, and no Venango process is known to move old well sites at InSAR-visible rates. The main motion signals here are seasonal frost and swelling, and creep on colluvial slopes. The ranking chosen was a brightness stack first, coherence second, and cluster-scale motion third, as a null test and slope-hazard map. Lidar change detection is the tool for pit collapse.
+
+**New data found.** CMR lists a provisional collection, 2026-06-20 to 2026-09-24, adding 25 GSLC, 25 GCOV and 20 GUNW granules over 9t. They span three tracks: 090 ascending, 162 ascending and 026 descending.
+
+**Windowed fetch.** `notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py` reads only the chunks covering 9t, over HTTPS range requests.
+- Each GSLC file is 22.6 GB, in 512 x 512 gzip chunks. Each saved window is about 9.3 MB.
+- 32 date-and-track windows were fetched, with no failures. 2026-07-22 on track 026D has no valid pixels and is dropped.
+- Mode 4005: 40 MHz, 1.239 GHz, 5 m posting.
+
+**Stack analysis.** `notebooks/wellsight_v2/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py`, write-up `docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md`.
+- **Size-effect artifact caught.** A trial without decoys showed pits -2.4 dB and pads -1.5 dB in seasonal change against their rings. Yet open and closed canopy did not differ per pixel (AUC 0.48-0.52). The cause is the skewed mean of a few pixels against hundreds. The fix was 5 same-shape decoys per feature on background 150-600 m away. The earlier GCOV pad result carries the same bias, and its doc now has a caveat.
+- **Control.** Open and closed canopy barely separate at 5 m (AUC 0.50-0.56). L-band hardly sees leaves.
+- **Registration.** No track reaches rho 0.10. The best shifts are ascending (-10..-15, -5) m and descending (+10, -10) m. Track 162 matches its earlier GCOV offset. The primary run uses the data as delivered, and a `--force-best-shift` run is kept as a sensitivity check.
+- **Pads against decoys.** -0.2 dB as delivered and -0.3 to -0.4 dB aligned, in every season. The best AUC is 0.285.
+- **Pits against decoys.** Null as delivered. About -0.4 dB (AUC 0.36-0.38) only when aligned, so the result depends on alignment.
+- **Seasonal change adds nothing** at L-band.
+- **Next** (added to BACKLOG): point-target registration from the lidar DSM, spring dates for water-filled pits, and coherence from the saved complex windows.
+
+---
+
 ## 2026-09-27 -- 4-slide Pennsylvania deck: problem and area, not results
 
 The user asked for a short new deck for a conversation about working in Pennsylvania. After a first draft, they said the focus should be the problem and the area, not the statistics. The deck is a claude.ai Slides artifact, private until shared: https://claude.ai/artifact/WMXNUhxco6dYUZGcrqUu5G. Its slides are the problem, the area, how lidar sees a well site, and what we want to do there.
