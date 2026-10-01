@@ -118,11 +118,8 @@ def save_fig(fig, path, dpi=200):
     return False
 
 
-def main():
-    OUT.mkdir(parents=True, exist_ok=True)
-    line = gpd.read_file(LINE, layer="test_line").to_crs(CRS).geometry.union_all()
-    if line.geom_type == "MultiLineString":
-        line = LineString([c for g in line.geoms for c in g.coords])
+def run_line(line, n):
+    """All figures and the profile table for one line; n is its 1-based number in the gpkg."""
     (x0, y0), (x1, y1) = line.coords[0], line.coords[-1]
     bearing = (np.degrees(np.arctan2(x1 - x0, y1 - y0)) + 360) % 360
     compass = lambda b: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW",
@@ -170,7 +167,7 @@ def main():
                          "nisar_hv_summer2026_t162_db": np.interp(d, nd, hv),
                          "nisar_hh_summer2026_t162_db": np.interp(d, nd, hh),
                          "zone": [zone(v) for v in d]})
-    stem = "cross_section_test_line_dem_dsm_nisar_summer2026_t162_with_pads_pits_roads_9t_1m"
+    stem = f"cross_section_test_line{n}_dem_dsm_nisar_summer2026_t162_with_pads_pits_roads_9t_1m"
     prof.to_csv(OUT / f"{stem}.csv", index=False)
 
     # ---------- figure ----------
@@ -192,7 +189,9 @@ def main():
     ax.legend(loc="lower right", frameon=False, fontsize=9, labelcolor=INK)
     for a_, b_ in floor_sp:
         i = np.argmin(np.abs(d - (a_ + b_) / 2))
-        ax.annotate("pit floor", (d[i], ground[i]), xytext=(0, -28), textcoords="offset points",
+        y0, y1 = ax.get_ylim()
+        dy = -28 if (ground[i] - y0) / (y1 - y0) > 0.15 else 30  # flip above when the ground hugs the axis
+        ax.annotate("pit floor", (d[i], ground[i]), xytext=(0, dy), textcoords="offset points",
                     ha="center", color=INK, fontsize=9, arrowprops=dict(arrowstyle="-", color=INK, lw=0.8))
 
     bx.step(nd, hv, where="mid", color=GROUND, lw=1.6)
@@ -204,7 +203,7 @@ def main():
     bx.set_xlim(0, line.length)
 
     relief = np.nanmax(ground) - np.nanmin(ground)
-    fig.suptitle("Cross section along the test line, 9t", x=0.06, ha="left", fontsize=13, color=INK)
+    fig.suptitle(f"Cross section along test line {n}, 9t", x=0.06, ha="left", fontsize=13, color=INK)
     ax.set_title(f"{line.length:.0f} m long, ground relief {relief:.1f} m. "
                  "Lidar 2019 at 1 m. NISAR is the Jun–Sep 2026 mean on track 162, 5 m pixels, not shifted to the lidar.",
                  loc="left", fontsize=9, color="#5B6168")
@@ -243,19 +242,20 @@ def main():
     gx.set_ylabel("Ground (m)")
     gx.set_xlabel(f"Distance along line (m), {compass((bearing + 180) % 360)} → {compass(bearing)}")
     gx.set_xlim(0, line.length)
-    fig.suptitle("Local relief along the test line, 9t", x=0.06, ha="left", fontsize=13, color=INK)
+    fig.suptitle(f"Local relief along test line {n}, 9t", x=0.06, ha="left", fontsize=13, color=INK)
     lx.set_title("2019 lidar at 1 m. LRM is the DEM minus its moving average, so the hillslope is removed. "
                  "Below zero is lower than its surroundings.", loc="left", fontsize=9, color="#5B6168")
     fig.text(0.06, 0.01, f"Roads are centrelines in the annotations, so their width here is an assumed "
              f"±{ROAD_HALF_WIDTH_M:g} m. The pit bar is the whole pit including its rim. The solid part is the pit floor.",
              fontsize=8.5, color="#5B6168")
     fig.subplots_adjust(left=0.11, right=0.9, top=0.9, bottom=0.1)
-    lstem = "cross_section_test_line_lrm_11m_25m_with_pads_pits_roads_9t_1m"
+    lstem = f"cross_section_test_line{n}_lrm_11m_25m_with_pads_pits_roads_9t_1m"
     save_fig(fig, OUT / "figures" / f"{lstem}.png", dpi=200)
     print("wrote", OUT / "figures" / f"{lstem}.png")
-    for name, (a_, b_) in [("pit floor", floor_sp[0])] if floor_sp else []:
+    for name, (a_, b_) in [("pit floor", f) for f in floor_sp]:
         sel = (d >= a_) & (d <= b_)
-        print(f"{name}: lrm25 min {np.nanmin(lrm[25][sel]):.2f} m, lrm11 min {np.nanmin(lrm[11][sel]):.2f} m")
+        print(f"{name} {a_:.0f}-{b_:.0f} m: lrm25 min {np.nanmin(lrm[25][sel]):.2f} m, lrm11 min {np.nanmin(lrm[11][sel]):.2f} m, "
+              f"canopy max {np.nanmax((top - ground)[sel]):.1f} m")
     for name, sp in (("pad", pad_sp), ("road", road_sp)):
         for a_, b_ in sp:
             sel = (d >= a_) & (d <= b_)
@@ -304,23 +304,37 @@ def main():
     lx.set_ylabel("LRM (m)")
     fx.set_xlabel(f"Distance along line (m), {compass((bearing + 180) % 360)} → {compass(bearing)}")
     fx.tick_params(labelbottom=True)
-    fig.text(left / fig_w, 1 - 0.3 / fig_h, "Cross section along the test line at true scale, 9t",
+    fig.text(left / fig_w, 1 - 0.3 / fig_h, f"Cross section along test line {n} at true scale, 9t",
              fontsize=13, color=INK, va="top")
     fig.text(left / fig_w, 1 - 0.58 / fig_h, "No exaggeration: 1 m across equals 1 m up in both panels. "
              "Grid squares are 5 m by 5 m (1 m tall in the LRM panel). 2019 lidar at 1 m.",
              fontsize=9, color="#5B6168", va="top")
-    tstem = "cross_section_test_line_true_scale_1to1_dem_dsm_lrm_with_pads_pits_roads_9t_1m"
+    tstem = f"cross_section_test_line{n}_true_scale_1to1_dem_dsm_lrm_with_pads_pits_roads_9t_1m"
     save_fig(fig, OUT / "figures" / f"{tstem}.png", dpi=220)
     print("wrote", OUT / "figures" / f"{tstem}.png", f"({fig_w:.1f} x {fig_h:.1f} in)")
 
     # line in the lidar CRS, for QGIS
-    gpd.GeoDataFrame({"length_m": [round(line.length, 2)], "bearing_deg": [round(bearing, 1)]},
-                     geometry=[line], crs=CRS).to_file(OUT / "test_line_cross_section_epsg6346_9t.gpkg",
-                                                       layer="test_line", driver="GPKG")
-    print(f"line {line.length:.1f} m, bearing {bearing:.0f} deg; pads {pad_sp}; pits {pit_sp}; "
+    print(f"line {n}: {line.length:.1f} m, bearing {bearing:.0f} deg; pads {pad_sp}; pits {pit_sp}; "
           f"floors {floor_sp}; roads {[round(r, 1) for r in road_d]}")
     print(f"ground {np.nanmin(ground):.2f}-{np.nanmax(ground):.2f} m; nan ground {np.isnan(ground).sum()}")
     print("wrote", png); print("wrote", OUT / f"{stem}.csv")
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    g = gpd.read_file(LINE, layer="test_line").to_crs(CRS)
+    lines = []
+    for geom in g.geometry:
+        # each feature is its own line; a multipart feature is joined in drawing order
+        if geom.geom_type == "MultiLineString":
+            geom = LineString([c for part in geom.geoms for c in part.coords])
+        lines.append(geom)
+    for n, line in enumerate(lines, start=1):
+        run_line(line, n)
+    gpd.GeoDataFrame({"line": range(1, len(lines) + 1),
+                      "length_m": [round(l.length, 2) for l in lines]},
+                     geometry=lines, crs=CRS).to_file(OUT / "test_lines_cross_section_epsg6346_9t.gpkg",
+                                                      layer="test_lines", driver="GPKG")
 
 
 if __name__ == "__main__":

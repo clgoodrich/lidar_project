@@ -5,6 +5,18 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Second test line, cross sections now per line
+
+The user added a second line to `test_line_cross_section.gpkg`.
+
+- **Bug fixed.** The script unioned all features into one line, so line 2 would have joined line 1 into a zig-zag. It now runs per feature, and the outputs carry `line1` / `line2`.
+  - Line 1's outputs were renamed with `git mv`. The QGIS line export is now `test_lines_cross_section_epsg6346_9t.gpkg` with a `line` column.
+- **Line 2.** 178.7 m, SW to NE. It crosses two pads, two pits and one road.
+  - Pit 2 is the clearest pit on either line. The floor LRM is −0.79 m and the rim +0.47 m.
+  - Pit 1 lies under 15 m canopy and is shallower, at −0.56 m.
+  - The road trough is −0.2 m.
+- **Figure fix.** A pit-floor label now flips above the ground line when the ground hugs the bottom axis.
+
 ## 2026-10-01 -- Test-line cross section at true scale
 
 The user asked for no vertical or horizontal exaggeration.
