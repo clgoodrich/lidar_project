@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Fourth test line, true-scale figure only
+
+- **Line 4.** 353.7 m, NW to SE. It crosses three roads, at 42.9, 188.4 and 301.2 m. The ground climbs 76 m, about a 21% grade.
+- **Output.** Only the true-scale figure was asked for: `data/9t/results/cross_sections/figures/cross_section_test_line4_true_scale_1to1_dem_dsm_lrm_with_pads_pits_roads_9t_1m.png`. The profile CSV is also written.
+- **Script.**
+  - `--line N` and `--figures` were added.
+  - `save_fig` now prints only the files it actually writes.
+  - The true-scale grid scales with line length.
+  - A thin LRM panel labels only zero.
+
 ## 2026-10-01 -- Third test line, across a road
 
 The user added line 3, which is 41.9 m, NNE to SSW. It crosses one road at 22.7 m.

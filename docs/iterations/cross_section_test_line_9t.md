@@ -96,6 +96,19 @@ A third line, 41.9 m long, bearing 204° (NNE to SSW). It crosses one road centr
   - The assumed ±2.5 m road band (20.2 – 25.2 m) covers the tread, the shoulder and the toe.
 - This is the same concave-corner effect as on line 1's pad. A road cut toe can look like a 0.4 m linear hollow on the LRM.
 
+## Line 4, added 2026-10-01 (true-scale figure only)
+
+The user asked for only the true-scale figure for this line.
+- Line 4 is 353.7 m long, bearing 139° (NW to SE). It crosses three road centrelines, at 42.9, 188.4 and 301.2 m, and no pads or pits.
+- Ground climbs 76 m along it, so the average grade is about 21%. Each road shows at true scale as a short flat bench cut into the slope.
+- **New options:**
+  - `--line N` runs only the chosen lines, and can be repeated.
+  - `--figures {elevation,lrm,true_scale}` picks which figures to write.
+  - The profile CSV is always written.
+- **True-scale grid scales with length.** It is 5 m under 150 m, 10 m under 400 m, and 25 m beyond.
+  - A very thin LRM panel labels only its zero line, and the subtitle states its ±range.
+  - The line 2 true-scale figure was made before this rule, so it still has a 5 m grid.
+
 ## Outputs
 
 - Figure: `data/9t/results/cross_sections/figures/cross_section_test_line1_dem_dsm_nisar_summer2026_t162_with_pads_pits_roads_9t_1m.png`

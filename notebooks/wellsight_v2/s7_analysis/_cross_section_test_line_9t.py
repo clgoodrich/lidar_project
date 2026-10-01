@@ -20,6 +20,7 @@ Ground #2B2F36 and canopy #8E959B are neutral inks, not categories.
 
   python notebooks/wellsight_v2/s7_analysis/_cross_section_test_line_9t.py
 """
+import argparse
 from pathlib import Path
 
 import geopandas as gpd
@@ -105,12 +106,22 @@ def draw_feature_strip(fx, others, pad_sp, pit_sp, floor_sp, road_sp):
         fx.spines[sp_].set_visible(False)
 
 
+# figure kind -> filename marker; --figures picks which are written
+FIGURE_KINDS = {"elevation": "_dem_dsm_nisar_", "lrm": "_lrm_11m_25m_", "true_scale": "_true_scale_1to1_"}
+WANTED = set(FIGURE_KINDS)
+
+
 def save_fig(fig, path, dpi=200):
     """Save, retrying briefly: an image viewer holding the PNG open makes Windows refuse the write."""
     import time
+    if not any(FIGURE_KINDS[k] in Path(path).name for k in WANTED):
+        plt.close(fig)
+        return False
     for _ in range(5):
         try:
             fig.savefig(path, dpi=dpi, facecolor="white")
+            plt.close(fig)
+            print("wrote", path)
             return True
         except OSError:
             time.sleep(1.0)
@@ -251,7 +262,6 @@ def run_line(line, n):
     fig.subplots_adjust(left=0.11, right=0.9, top=0.9, bottom=0.1)
     lstem = f"cross_section_test_line{n}_lrm_11m_25m_with_pads_pits_roads_9t_1m"
     save_fig(fig, OUT / "figures" / f"{lstem}.png", dpi=200)
-    print("wrote", OUT / "figures" / f"{lstem}.png")
     for name, (a_, b_) in [("pit floor", f) for f in floor_sp]:
         sel = (d >= a_) & (d <= b_)
         print(f"{name} {a_:.0f}-{b_:.0f} m: lrm25 min {np.nanmin(lrm[25][sel]):.2f} m, lrm11 min {np.nanmin(lrm[11][sel]):.2f} m, "
@@ -263,7 +273,8 @@ def run_line(line, n):
 
     # ---------- true-scale figure: 1 m across = 1 m up, no exaggeration ----------
     # Axes are placed in inches so each panel's height/width equals its data range ratio exactly.
-    W_IN, GRID_M = 10.0, 5.0
+    W_IN = 10.0
+    GRID_M = 5.0 if line.length < 150 else 10.0 if line.length < 400 else 25.0  # keep squares readable on long lines
     in_per_m = W_IN / line.length
     e_lo = np.floor((np.nanmin(ground) - 1) / GRID_M) * GRID_M
     e_hi = np.ceil((np.nanmax(top) + 1) / GRID_M) * GRID_M
@@ -288,7 +299,8 @@ def run_line(line, n):
         axis.spines[["top", "right"]].set_visible(False)
         axis.tick_params(labelbottom=False)
     ex.set_yticks(np.arange(e_lo, e_hi + 1e-9, 10.0))
-    lx.set_yticks([-l_hi, 0, l_hi])  # 1 m minor grid stays; labels only at the ends and zero
+    # 1 m minor grid stays; a panel too thin for three labels gets only the zero line labelled
+    lx.set_yticks([-l_hi, 0, l_hi] if h_lrm >= 0.35 else [0])
     fx.set_xlim(0, line.length)
     draw_feature_strip(fx, (ex, lx), pad_sp, pit_sp, floor_sp, road_sp)
     ex.fill_between(d, ground, top, where=np.isfinite(top), color=CANOPY, alpha=0.25, lw=0)
@@ -307,20 +319,28 @@ def run_line(line, n):
     fig.text(left / fig_w, 1 - 0.3 / fig_h, f"Cross section along test line {n} at true scale, 9t",
              fontsize=13, color=INK, va="top")
     fig.text(left / fig_w, 1 - 0.58 / fig_h, "No exaggeration: 1 m across equals 1 m up in both panels. "
-             "Grid squares are 5 m by 5 m (1 m tall in the LRM panel). 2019 lidar at 1 m.",
+             f"Grid squares are {GRID_M:g} m by {GRID_M:g} m (1 m tall in the LRM panel, which spans ±{l_hi:g} m). "
+             "2019 lidar at 1 m.",
              fontsize=9, color="#5B6168", va="top")
     tstem = f"cross_section_test_line{n}_true_scale_1to1_dem_dsm_lrm_with_pads_pits_roads_9t_1m"
     save_fig(fig, OUT / "figures" / f"{tstem}.png", dpi=220)
-    print("wrote", OUT / "figures" / f"{tstem}.png", f"({fig_w:.1f} x {fig_h:.1f} in)")
 
     # line in the lidar CRS, for QGIS
     print(f"line {n}: {line.length:.1f} m, bearing {bearing:.0f} deg; pads {pad_sp}; pits {pit_sp}; "
           f"floors {floor_sp}; roads {[round(r, 1) for r in road_d]}")
     print(f"ground {np.nanmin(ground):.2f}-{np.nanmax(ground):.2f} m; nan ground {np.isnan(ground).sum()}")
-    print("wrote", png); print("wrote", OUT / f"{stem}.csv")
+    print("wrote", OUT / f"{stem}.csv")
 
 
 def main():
+    global WANTED
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--line", type=int, action="append",
+                    help="1-based line number in the gpkg; repeat for several. Default: every line.")
+    ap.add_argument("--figures", nargs="+", choices=sorted(FIGURE_KINDS), default=sorted(FIGURE_KINDS),
+                    help="which figures to write. Default: all three.")
+    args = ap.parse_args()
+    WANTED = set(args.figures)
     OUT.mkdir(parents=True, exist_ok=True)
     g = gpd.read_file(LINE, layer="test_line").to_crs(CRS)
     lines = []
@@ -330,6 +350,8 @@ def main():
             geom = LineString([c for part in geom.geoms for c in part.coords])
         lines.append(geom)
     for n, line in enumerate(lines, start=1):
+        if args.line and n not in args.line:
+            continue
         run_line(line, n)
     gpd.GeoDataFrame({"line": range(1, len(lines) + 1),
                       "length_m": [round(l.length, 2) for l in lines]},
