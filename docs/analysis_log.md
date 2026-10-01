@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Cross section along the user's test line, 9t
+
+The user drew `test_line_cross_section.gpkg` in QGIS and asked for a cross section with roads, pits and pads marked. Write-up: `docs/iterations/cross_section_test_line_9t.md`.
+
+- **Line.** 111.3 m, SSW to NNE, drawn in EPSG:4326 and reprojected to EPSG:6346 before sampling.
+- **Panels.** The lidar ground and surface top are on top. A feature strip is in the middle, and the NISAR summer HH/HV on track 162 is at the bottom. The radar has its own panel, not a second y-axis.
+- **Crossed.** Pit 9.8–31.5 m (floor 16.1–22.8 m), pad 17.5–46.1 m, road centreline at 80.1 m.
+- **Assumption.** Roads have no width in the annotations, so each crossing is drawn ±2.5 m.
+- **First draft.** It shaded the spans full-height. The pit sits on the pad, so the overlap made muddy colours, and the end labels collided. Spans moved to their own strip, and the surfaces got a legend.
+
 ## 2026-09-30 -- NISAR season rasters shortened again
 
 The user asked for easier names than the previous pass.

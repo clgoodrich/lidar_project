@@ -1,0 +1,209 @@
+"""Cross section along the user's test line over 9t, with pads, pits and roads marked.
+
+Line: test_line_cross_section.gpkg (repo root, layer test_line), drawn in EPSG:4326 and
+reprojected to the lidar CRS EPSG:6346 (NAD83(2011) UTM 17N).
+
+Top panel: 2019 lidar ground (1 m DEM) and first-return top (1 m DSM), sampled every 0.25 m
+with bilinear interpolation.
+Bottom panel: NISAR L-band summer 2026 mean backscatter (track 162), HH and HV, at its own
+5 m pixels. Separate panel, never a second y-axis.
+
+Feature spans come from qgis/annotations/annotations_proj.gpkg:
+  pads  = plat, pits = pit_outside (whole pit incl. rim), pit floor = pit_inside,
+  roads = roads centrelines. Roads have no width in the annotations, so each crossing is
+  drawn as the centreline +/- ROAD_HALF_WIDTH_M (an assumption, stated on the figure).
+
+Palette: pad #1F5FA8, pit #D97706, road #A31515 (lost/found trio).
+dataviz validate_palette.js --mode light --pairs all: worst pair #A31515/#D97706
+dE 21.1 deutan, 22.6 normal, all >= 3:1. Each band also has its own hatch and a direct label.
+Ground #2B2F36 and canopy #8E959B are neutral inks, not categories.
+
+  python notebooks/wellsight_v2/s7_analysis/_cross_section_test_line_9t.py
+"""
+from pathlib import Path
+
+import geopandas as gpd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import rasterio
+from scipy.ndimage import map_coordinates
+from shapely.geometry import LineString, Point
+from shapely.ops import transform as shp_transform
+from pyproj import Transformer
+
+REPO = Path(__file__).resolve().parents[3]
+LINE = REPO / "test_line_cross_section.gpkg"
+ANN = REPO / "qgis" / "annotations" / "annotations_proj.gpkg"
+DEM = REPO / "data" / "9t" / "derived" / "1m" / "dem_9t_1m.tif"
+DSM = REPO / "data" / "9t" / "derived" / "1m" / "dsm_9t_1m.tif"
+NISAR = REPO / "data" / "9t" / "derived" / "nisar_gslc_5m"
+OUT = REPO / "data" / "9t" / "results" / "cross_sections"
+CRS = "EPSG:6346"
+STEP_M = 0.25
+ROAD_HALF_WIDTH_M = 2.5
+
+PAD, PIT, ROAD = "#1F5FA8", "#D97706", "#A31515"
+GROUND, CANOPY, INK = "#2B2F36", "#8E959B", "#2B2F36"
+
+
+def sample(path, xs, ys, order=1):
+    with rasterio.open(path) as src:
+        a = src.read(1).astype("float64")
+        if src.nodata is not None:
+            a[a == src.nodata] = np.nan
+        inv = ~src.transform
+        cols, rows = inv * (np.asarray(xs), np.asarray(ys))
+        # pixel centres sit at +0.5
+        return map_coordinates(a, [rows - 0.5, cols - 0.5], order=order, mode="nearest", cval=np.nan)
+
+
+def spans(line, geoms):
+    """(start, end) distances along the line for each polygon it crosses."""
+    out = []
+    for g in geoms:
+        hit = line.intersection(g)
+        if hit.is_empty:
+            continue
+        parts = getattr(hit, "geoms", [hit])
+        for p in parts:
+            if p.length > 0:
+                d = sorted(line.project(Point(c)) for c in p.coords)
+                out.append((d[0], d[-1]))
+    return sorted(out)
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    line = gpd.read_file(LINE, layer="test_line").to_crs(CRS).geometry.union_all()
+    if line.geom_type == "MultiLineString":
+        line = LineString([c for g in line.geoms for c in g.coords])
+    (x0, y0), (x1, y1) = line.coords[0], line.coords[-1]
+    bearing = (np.degrees(np.arctan2(x1 - x0, y1 - y0)) + 360) % 360
+    compass = lambda b: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW",
+                         "WSW", "W", "WNW", "NW", "NNW"][int((b + 11.25) % 360 // 22.5)]
+
+    d = np.arange(0, line.length + 1e-9, STEP_M)
+    pts = [line.interpolate(v) for v in d]
+    xs, ys = np.array([p.x for p in pts]), np.array([p.y for p in pts])
+    ground, top = sample(DEM, xs, ys), sample(DSM, xs, ys)
+
+    box = tuple(line.buffer(50).bounds)
+    read = lambda lyr: gpd.read_file(ANN, layer=lyr, bbox=box).to_crs(CRS)
+    pads, pits, floors, roads = read("plat"), read("pit_outside"), read("pit_inside"), read("roads")
+    pad_sp, pit_sp, floor_sp = spans(line, pads.geometry), spans(line, pits.geometry), spans(line, floors.geometry)
+    road_d = []
+    for g in roads.geometry:
+        hit = line.intersection(g)
+        for p in getattr(hit, "geoms", [hit]):
+            if not p.is_empty and p.geom_type == "Point":
+                road_d.append(line.project(p))
+    road_sp = [(max(0, r - ROAD_HALF_WIDTH_M), min(line.length, r + ROAD_HALF_WIDTH_M)) for r in sorted(road_d)]
+
+    # NISAR summer 2026, track 162, at its own 5 m pixels
+    with rasterio.open(NISAR / "nisar_hv_summer_2026_track162_9t_5m.tif") as src:
+        ncrs = src.crs
+    tr = Transformer.from_crs(CRS, ncrs, always_xy=True)
+    nline = shp_transform(tr.transform, line)
+    nd = np.arange(0, nline.length + 1e-9, STEP_M)
+    npts = [nline.interpolate(v) for v in nd]
+    nx, ny = [p.x for p in npts], [p.y for p in npts]
+    hv = sample(NISAR / "nisar_hv_summer_2026_track162_9t_5m.tif", nx, ny, order=0)
+    hh = sample(NISAR / "nisar_hh_summer_2026_track162_9t_5m.tif", nx, ny, order=0)
+    nd = nd * line.length / nline.length  # same distance axis as the lidar
+
+    def zone(v):
+        z = []
+        if any(a <= v <= b for a, b in pad_sp): z.append("pad")
+        if any(a <= v <= b for a, b in floor_sp): z.append("pit_floor")
+        elif any(a <= v <= b for a, b in pit_sp): z.append("pit_rim_or_wall")
+        if any(a <= v <= b for a, b in road_sp): z.append("road")
+        return "+".join(z) or "background"
+    prof = pd.DataFrame({"distance_m": d, "x_epsg6346": xs, "y_epsg6346": ys,
+                         "ground_dem_m": ground, "surface_dsm_m": top,
+                         "canopy_height_m": top - ground,
+                         "nisar_hv_summer2026_t162_db": np.interp(d, nd, hv),
+                         "nisar_hh_summer2026_t162_db": np.interp(d, nd, hh),
+                         "zone": [zone(v) for v in d]})
+    stem = "cross_section_test_line_dem_dsm_nisar_summer2026_t162_with_pads_pits_roads_9t_1m"
+    prof.to_csv(OUT / f"{stem}.csv", index=False)
+
+    # ---------- figure ----------
+    plt.rcParams.update({"font.size": 10, "axes.edgecolor": "#8E959B", "axes.labelcolor": INK,
+                         "xtick.color": INK, "ytick.color": INK})
+    fig, (ax, fx, bx) = plt.subplots(3, 1, figsize=(12, 8), sharex=True,
+                                     gridspec_kw={"height_ratios": [3, 0.75, 1.3], "hspace": 0.1})
+    rows = [("pad", PAD, "\\\\\\", pad_sp),
+            ("pit, incl. rim", PIT, "///", pit_sp),
+            (f"road (±{ROAD_HALF_WIDTH_M:g} m)", ROAD, "xx", road_sp)]
+    # feature track: one row per class, colour + hatch + row label, so never colour alone
+    for i, (name, c, h, sp) in enumerate(rows):
+        yb = len(rows) - 1 - i
+        fx.broken_barh([(a_, b_ - a_) for a_, b_ in sp], (yb + 0.15, 0.7), facecolor=c, alpha=0.25,
+                       edgecolor=c, hatch=h, lw=1.0)
+        if name.startswith("pit"):
+            fx.broken_barh([(a_, b_ - a_) for a_, b_ in floor_sp], (yb + 0.15, 0.7), facecolor=c, lw=0)
+            for a_, b_ in floor_sp:
+                fx.text((a_ + b_) / 2, yb + 0.5, "floor", ha="center", va="center", color="white",
+                        fontsize=8.5, fontweight="bold")
+        # thin edge guides through the other two panels
+        for a_, b_ in sp:
+            for axis in (ax, bx):
+                for v in (a_, b_):
+                    axis.axvline(v, color=c, lw=1.0, ls=(0, (3, 2)), zorder=0)
+    fx.set_ylim(0, len(rows))
+    fx.set_yticks([len(rows) - 1 - i + 0.5 for i in range(len(rows))], [r[0] for r in rows])
+    fx.tick_params(axis="y", length=0)
+    for sp_ in ("top", "right", "left"):
+        fx.spines[sp_].set_visible(False)
+    for axis in (ax, bx):
+        axis.grid(axis="y", color="#E3E5E8", lw=0.6)
+        axis.spines[["top", "right"]].set_visible(False)
+
+    ax.fill_between(d, ground, top, where=np.isfinite(top), color=CANOPY, alpha=0.25, lw=0)
+    ax.plot(d, top, color=CANOPY, lw=1.2, label="surface top: canopy, brush, structures (lidar DSM)")
+    ax.plot(d, ground, color=GROUND, lw=2, label="ground (lidar DEM)")
+    lo, hi = np.nanmin(ground), np.nanmax(top)
+    ax.set_ylim(lo - 1, hi + 1)
+    ax.set_ylabel("Elevation (m, NAVD88)")
+    ax.legend(loc="lower right", frameon=False, fontsize=9, labelcolor=INK)
+    for a_, b_ in floor_sp:
+        i = np.argmin(np.abs(d - (a_ + b_) / 2))
+        ax.annotate("pit floor", (d[i], ground[i]), xytext=(0, -28), textcoords="offset points",
+                    ha="center", color=INK, fontsize=9, arrowprops=dict(arrowstyle="-", color=INK, lw=0.8))
+
+    bx.step(nd, hv, where="mid", color=GROUND, lw=1.6)
+    bx.step(nd, hh, where="mid", color=CANOPY, lw=1.6, ls="--")
+    bx.text(nd[-1] + 0.6, hv[-1], "HV", va="center", color=INK, fontsize=9)
+    bx.text(nd[-1] + 0.6, hh[-1], "HH (dashed)", va="center", color=INK, fontsize=9)
+    bx.set_ylabel("NISAR summer\nbackscatter (dB)")
+    bx.set_xlabel(f"Distance along line (m), {compass((bearing + 180) % 360)} → {compass(bearing)}")
+    bx.set_xlim(0, line.length)
+
+    relief = np.nanmax(ground) - np.nanmin(ground)
+    fig.suptitle("Cross section along the test line, 9t", x=0.06, ha="left", fontsize=13, color=INK)
+    ax.set_title(f"{line.length:.0f} m long, ground relief {relief:.1f} m. "
+                 "Lidar 2019 at 1 m. NISAR is the Jun–Sep 2026 mean on track 162, 5 m pixels, not shifted to the lidar.",
+                 loc="left", fontsize=9, color="#5B6168")
+    fig.text(0.06, 0.01, f"Roads are centrelines in the annotations, so their width here is an assumed "
+             f"±{ROAD_HALF_WIDTH_M:g} m. The pit bar is the whole pit including its rim. The solid part is the pit floor.",
+             fontsize=8.5, color="#5B6168")
+    fig.subplots_adjust(left=0.11, right=0.9, top=0.9, bottom=0.1)
+    png = OUT / "figures" / f"{stem}.png"
+    png.parent.mkdir(exist_ok=True)
+    fig.savefig(png, dpi=200, facecolor="white")
+
+    # line in the lidar CRS, for QGIS
+    gpd.GeoDataFrame({"length_m": [round(line.length, 2)], "bearing_deg": [round(bearing, 1)]},
+                     geometry=[line], crs=CRS).to_file(OUT / "test_line_cross_section_epsg6346_9t.gpkg",
+                                                       layer="test_line", driver="GPKG")
+    print(f"line {line.length:.1f} m, bearing {bearing:.0f} deg; pads {pad_sp}; pits {pit_sp}; "
+          f"floors {floor_sp}; roads {[round(r, 1) for r in road_d]}")
+    print(f"ground {np.nanmin(ground):.2f}-{np.nanmax(ground):.2f} m; nan ground {np.isnan(ground).sum()}")
+    print("wrote", png); print("wrote", OUT / f"{stem}.csv")
+
+
+if __name__ == "__main__":
+    main()
