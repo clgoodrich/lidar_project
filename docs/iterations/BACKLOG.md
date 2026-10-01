@@ -8,6 +8,8 @@ See `docs/iterations/road_driving_surface_watershed_9t.md`.
 - Flat-ground roads have no break to find. Try a cross-slope or micro-relief test, or the 0.5 m CHM canopy gap as a weak constraint.
 - Tune the ring distance and slope threshold against hand-traced driving surfaces at 20–30 stations. No width truth exists yet.
 - Junctions and switchbacks merge into blobs. Split them by nearest centreline if per-segment polygons are needed.
+- Find why the baseline rerun after adding the pad modes gains 0.47 ha in ~120 m² slivers (109.4 → 109.9 ha). The inputs are unchanged.
+- Hybrid pads: try band 1 m and 3 m. Pads come out 8% smaller than drawn at 2 m. Seed pads from the pad model when moving to a county without annotations.
 
 ## Operating point: choose precision against recall by policy, not by hand (added 2026-09-23) — OPEN
 

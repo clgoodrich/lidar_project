@@ -45,7 +45,7 @@ The **limit flag** marks a transect side whose run reached the 6 m ring.
 | | Value |
 |---|---|
 | Road length | 206.1 km |
-| Polygon area | 109.4 ha |
+| Polygon area | 109.4 ha (109.9 ha on the later rerun, see Limits) |
 | Transects | 41,214 |
 | No road at the centreline point | 94 (0.2%) |
 | Width, median (10th–90th percentile) | 5.5 m (2.5 – 9.5 m) |
@@ -73,12 +73,53 @@ Test-line crossings, with width measured along the test line (it may cross at an
 - **The 2.5 m low tail** comes mostly from places where the centreline sits off the tread. A steep pixel then stops the flood early.
 - **Canopy gap is narrower than the tread.** On line 3 the opening is about 3 m, against a 5.3 m tread. Branches overhang the tread edges.
 
+## Pads as a third class: the hybrid variant (added 2026-10-01)
+
+In the baseline the road flood spills onto well pads. A pad is a large flat bench with no slope break between it and the road.
+The user asked to merge the two fixes on offer, "pads as a barrier" and "pads as their own class". The merged rule is `--pad-mode hybrid`:
+
+| Zone | Seed | Effect |
+|---|---|---|
+| Pad core: the annotated pad shrunk by 2 m | pad | The road can never enter. Pad seeds override the >25° seeds, so pits on a pad stay pad. |
+| Band within ±2 m of the drawn pad edge | none | The road, pad and background floods compete. The line lands on the strongest slope break. |
+| Beyond the pad outline + 2 m, away from roads | background | A pad cannot grow more than 2 m past its outline. |
+
+The labels are 1 road and 2 pad. Pad polygons go to a second layer, `pad_surface`.
+
+Both runs below use the same code version (see the note under Limits).
+
+| | Baseline (`--pad-mode none`) | Hybrid, band 2 m |
+|---|---|---|
+| Road polygon area | 109.9 ha | 95.5 ha |
+| Road area on annotated pads | 14.8 ha (13.4%) | 0.8 ha (0.8%) |
+| Pads with more than 25% covered by road | 98 of 650 | 0 of 650 |
+| Capped transects within 8 m of a pad | 17.5% | 15.0% |
+| Capped transects elsewhere | 17.1% | 17.1% |
+| Median road width, both edges found | 4.75 m | 4.75 m |
+| Pad surface area vs annotated | — | 105.8 ha vs 115.2 ha |
+| Pad IoU vs annotation, median (p10) | — | 0.87 (0.82) |
+
+Transect stations that fall on a pad core are skipped in the width stats for both runs: 4,223 of 41,214. A road centreline drawn across a pad is pad there, by construction.
+
+**Reading it.**
+- **The road now stops at the pad.** The overlap falls from 14.8 ha to 0.8 ha. The rest sits in the 2 m band, where the terrain gave the edge to the road.
+- **Capping near pads drops to the background rate.** The extra caps in the baseline were pad leaks.
+- **Terrain-fitted pads are about 8% smaller than the drawn ones.** On the six worst pads in the before/after figure, the blue edge sits on the bench edge, just inside the dotted outline. The outlines appear drawn slightly generously, which the band lets the terrain correct.
+- **Where a road runs along a pad edge,** the line between them is the stronger slope break in the band, or about mid-band if there is none.
+
+Hybrid outputs:
+- `data/9t/results/road/driving_surface/road_driving_surface_watershed_bg6m_slope25deg_padhybrid_band2m_full_9t_05.gpkg`, with layers `driving_surface`, `pad_surface` and `transect_widths_every5m`
+- `data/9t/derived/05/road_driving_surface_watershed_bg6m_slope25deg_padhybrid_band2m_full_9t_05_mask.tif`, with values 1 road and 2 pad (gitignored)
+- `data/9t/results/road/driving_surface/figures/road_driving_surface_watershed_bg6m_slope25deg_padhybrid_band2m_full_9t_05_pads_baseline_flooded_most_before_after_on_hillshade.png`
+- The summary JSON, transect CSV and test-line crossings, with the same stem
+
 ## Limits
 
 - No measured road widths exist for 9t, so only the test-line crossings check the edges.
 - The 0.5 m DEM may be finer than the point density supports (BACKLOG "Grid resolution"). Slope breaks are softer than in the field.
 - The 6 m ring and the 25° threshold are judgement calls and have not been tuned.
 - Junctions and switchbacks overlap their neighbours' corridors. They come out as one blob.
+- **Unexplained drift.** Rerunning the baseline after adding the pad modes gives 109.9 ha, against 109.4 ha before. The difference is 0.47 ha, all added, in slivers of about 120 m². The annotations are unchanged since 2026-08-18, so the cause is in the code. It is not found yet (BACKLOG).
 
 ## Outputs
 
@@ -108,4 +149,5 @@ Figure colours:
 ```bash
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pilot
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py
+python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pad-mode hybrid --pad-band-m 2
 ```

@@ -5,6 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Road watershed with pads as a third class (hybrid)
+
+The user wanted to merge "pads as a barrier" and "pads as their own class". `--pad-mode hybrid --pad-band-m 2`:
+- Pad cores, shrunk by 2 m, are pad seeds.
+- The ±2 m band at the drawn edge is left to the terrain.
+- A pad cannot grow more than 2 m past its outline.
+
+| | Baseline | Hybrid |
+|---|---|---|
+| Road on annotated pads | 14.8 ha (13.4%) | 0.8 ha (0.8%) |
+| Pads over 25% covered by road | 98 | 0 |
+| Road area | 109.9 ha | 95.5 ha |
+| Capped transects near pads | 17.5% | 15.0%, the same as the 17.1% background rate elsewhere |
+
+- **Terrain-fitted pads.** 105.8 ha against 115.2 ha annotated, with median IoU 0.87.
+- **Open item.** The baseline rerun gained 0.47 ha (109.4 → 109.9) in ~120 m² slivers with unchanged inputs. The cause is not found yet. It is logged in BACKLOG. Both comparison runs use the same code.
+- **Write-up.** `docs/iterations/road_driving_surface_watershed_9t.md`
+
 ## 2026-10-01 -- Road driving-surface polygons by seeded watershed, 9t
 
 The user asked for a fill algorithm to block out full road polygons, and chose the driving surface only. Write-up: `docs/iterations/road_driving_surface_watershed_9t.md`.
