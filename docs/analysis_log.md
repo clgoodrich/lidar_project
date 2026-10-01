@@ -5,6 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Test-line cross section redone on the LRM
+
+The user asked for the test-line cross section on the local relief model.
+
+- **Inputs.** `lrm_25_9t_1m.tif` and `lrm_11_9t_1m.tif`, so 25 m and 11 m moving-mean windows.
+- **Pit.** The floor is −0.74 m (25 m window) and the downhill rim is +1.2 m.
+- **Strongest low is on the pad.** It is −1.11 m at about 40 m, at the inside corner of the pad bench against the cut slope. That is an LRM artefact of a concave break, not a pit.
+  - It is worth remembering when reading LRM-based pit detections on benched pads.
+- **Road.** A faint trough of −0.1 to −0.3 m.
+- **Script.** The same `_cross_section_test_line_9t.py`. The feature strip is now a shared function, and the profile CSV gains `lrm_11m_m` and `lrm_25m_m`.
+
 ## 2026-10-01 -- Cross section along the user's test line, 9t
 
 The user drew `test_line_cross_section.gpkg` in QGIS and asked for a cross section with roads, pits and pads marked. Write-up: `docs/iterations/cross_section_test_line_9t.md`.

@@ -40,6 +40,9 @@ ANN = REPO / "qgis" / "annotations" / "annotations_proj.gpkg"
 DEM = REPO / "data" / "9t" / "derived" / "1m" / "dem_9t_1m.tif"
 DSM = REPO / "data" / "9t" / "derived" / "1m" / "dsm_9t_1m.tif"
 NISAR = REPO / "data" / "9t" / "derived" / "nisar_gslc_5m"
+# Local relief model = DEM minus an N-pixel moving mean (_build_derivatives.py). At 1 m, N pixels = N metres.
+LRM = {11: REPO / "data" / "9t" / "derived" / "1m" / "lrm_11_9t_1m.tif",
+       25: REPO / "data" / "9t" / "derived" / "1m" / "lrm_25_9t_1m.tif"}
 OUT = REPO / "data" / "9t" / "results" / "cross_sections"
 CRS = "EPSG:6346"
 STEP_M = 0.25
@@ -73,6 +76,33 @@ def spans(line, geoms):
                 d = sorted(line.project(Point(c)) for c in p.coords)
                 out.append((d[0], d[-1]))
     return sorted(out)
+
+
+def draw_feature_strip(fx, others, pad_sp, pit_sp, floor_sp, road_sp):
+    """One row per class with colour + hatch + row label; dashed edge guides on the other panels."""
+    rows = [("pad", PAD, "\\\\\\", pad_sp),
+            ("pit, incl. rim", PIT, "///", pit_sp),
+            (f"road (±{ROAD_HALF_WIDTH_M:g} m)", ROAD, "xx", road_sp)]
+    # feature track: one row per class, colour + hatch + row label, so never colour alone
+    for i, (name, c, h, sp) in enumerate(rows):
+        yb = len(rows) - 1 - i
+        fx.broken_barh([(a_, b_ - a_) for a_, b_ in sp], (yb + 0.15, 0.7), facecolor=c, alpha=0.25,
+                       edgecolor=c, hatch=h, lw=1.0)
+        if name.startswith("pit"):
+            fx.broken_barh([(a_, b_ - a_) for a_, b_ in floor_sp], (yb + 0.15, 0.7), facecolor=c, lw=0)
+            for a_, b_ in floor_sp:
+                fx.text((a_ + b_) / 2, yb + 0.5, "floor", ha="center", va="center", color="white",
+                        fontsize=8.5, fontweight="bold")
+        # thin edge guides through the other two panels
+        for a_, b_ in sp:
+            for axis in others:
+                for v in (a_, b_):
+                    axis.axvline(v, color=c, lw=1.0, ls=(0, (3, 2)), zorder=0)
+    fx.set_ylim(0, len(rows))
+    fx.set_yticks([len(rows) - 1 - i + 0.5 for i in range(len(rows))], [r[0] for r in rows])
+    fx.tick_params(axis="y", length=0)
+    for sp_ in ("top", "right", "left"):
+        fx.spines[sp_].set_visible(False)
 
 
 def main():
@@ -135,29 +165,7 @@ def main():
                          "xtick.color": INK, "ytick.color": INK})
     fig, (ax, fx, bx) = plt.subplots(3, 1, figsize=(12, 8), sharex=True,
                                      gridspec_kw={"height_ratios": [3, 0.75, 1.3], "hspace": 0.1})
-    rows = [("pad", PAD, "\\\\\\", pad_sp),
-            ("pit, incl. rim", PIT, "///", pit_sp),
-            (f"road (±{ROAD_HALF_WIDTH_M:g} m)", ROAD, "xx", road_sp)]
-    # feature track: one row per class, colour + hatch + row label, so never colour alone
-    for i, (name, c, h, sp) in enumerate(rows):
-        yb = len(rows) - 1 - i
-        fx.broken_barh([(a_, b_ - a_) for a_, b_ in sp], (yb + 0.15, 0.7), facecolor=c, alpha=0.25,
-                       edgecolor=c, hatch=h, lw=1.0)
-        if name.startswith("pit"):
-            fx.broken_barh([(a_, b_ - a_) for a_, b_ in floor_sp], (yb + 0.15, 0.7), facecolor=c, lw=0)
-            for a_, b_ in floor_sp:
-                fx.text((a_ + b_) / 2, yb + 0.5, "floor", ha="center", va="center", color="white",
-                        fontsize=8.5, fontweight="bold")
-        # thin edge guides through the other two panels
-        for a_, b_ in sp:
-            for axis in (ax, bx):
-                for v in (a_, b_):
-                    axis.axvline(v, color=c, lw=1.0, ls=(0, (3, 2)), zorder=0)
-    fx.set_ylim(0, len(rows))
-    fx.set_yticks([len(rows) - 1 - i + 0.5 for i in range(len(rows))], [r[0] for r in rows])
-    fx.tick_params(axis="y", length=0)
-    for sp_ in ("top", "right", "left"):
-        fx.spines[sp_].set_visible(False)
+    draw_feature_strip(fx, (ax, bx), pad_sp, pit_sp, floor_sp, road_sp)
     for axis in (ax, bx):
         axis.grid(axis="y", color="#E3E5E8", lw=0.6)
         axis.spines[["top", "right"]].set_visible(False)
@@ -194,6 +202,51 @@ def main():
     png = OUT / "figures" / f"{stem}.png"
     png.parent.mkdir(exist_ok=True)
     fig.savefig(png, dpi=200, facecolor="white")
+
+    # ---------- LRM figure: same line, local relief instead of elevation ----------
+    lrm = {k: sample(v, xs, ys) for k, v in LRM.items()}
+    for k, v in lrm.items():
+        prof[f"lrm_{k}m_m"] = v
+    prof.to_csv(OUT / f"{stem}.csv", index=False)
+    fig, (lx, fx, gx) = plt.subplots(3, 1, figsize=(12, 7.6), sharex=True,
+                                     gridspec_kw={"height_ratios": [3, 0.75, 1.1], "hspace": 0.1})
+    draw_feature_strip(fx, (lx, gx), pad_sp, pit_sp, floor_sp, road_sp)
+    for axis in (lx, gx):
+        axis.grid(axis="y", color="#E3E5E8", lw=0.6)
+        axis.spines[["top", "right"]].set_visible(False)
+    lx.axhline(0, color="#8E959B", lw=0.8)
+    lx.fill_between(d, 0, lrm[25], where=lrm[25] < 0, color=GROUND, alpha=0.12, lw=0)
+    lx.plot(d, lrm[25], color=GROUND, lw=2, label="LRM, 25 m window (pad and pit scale)")
+    lx.plot(d, lrm[11], color=CANOPY, lw=1.4, ls="--", label="LRM, 11 m window (rim and small-feature scale)")
+    m = np.nanmax(np.abs([lrm[11], lrm[25]])) * 1.15
+    lx.set_ylim(-m, m)
+    lx.set_ylabel("Local relief (m)\nabove / below the local mean")
+    lx.legend(loc="upper center", bbox_to_anchor=(0.62, 1.0), frameon=False, fontsize=9, labelcolor=INK)
+    for a_, b_ in floor_sp:
+        i = np.argmin(np.abs(d - (a_ + b_) / 2))
+        lx.annotate("pit floor", (d[i], lrm[25][i]), xytext=(0, -26), textcoords="offset points",
+                    ha="center", color=INK, fontsize=9, arrowprops=dict(arrowstyle="-", color=INK, lw=0.8))
+    gx.plot(d, ground, color=GROUND, lw=1.6)
+    gx.set_ylabel("Ground (m)")
+    gx.set_xlabel(f"Distance along line (m), {compass((bearing + 180) % 360)} → {compass(bearing)}")
+    gx.set_xlim(0, line.length)
+    fig.suptitle("Local relief along the test line, 9t", x=0.06, ha="left", fontsize=13, color=INK)
+    lx.set_title("2019 lidar at 1 m. LRM is the DEM minus its moving average, so the hillslope is removed. "
+                 "Below zero is lower than its surroundings.", loc="left", fontsize=9, color="#5B6168")
+    fig.text(0.06, 0.01, f"Roads are centrelines in the annotations, so their width here is an assumed "
+             f"±{ROAD_HALF_WIDTH_M:g} m. The pit bar is the whole pit including its rim. The solid part is the pit floor.",
+             fontsize=8.5, color="#5B6168")
+    fig.subplots_adjust(left=0.11, right=0.9, top=0.9, bottom=0.1)
+    lstem = "cross_section_test_line_lrm_11m_25m_with_pads_pits_roads_9t_1m"
+    fig.savefig(OUT / "figures" / f"{lstem}.png", dpi=200, facecolor="white")
+    print("wrote", OUT / "figures" / f"{lstem}.png")
+    for name, (a_, b_) in [("pit floor", floor_sp[0])] if floor_sp else []:
+        sel = (d >= a_) & (d <= b_)
+        print(f"{name}: lrm25 min {np.nanmin(lrm[25][sel]):.2f} m, lrm11 min {np.nanmin(lrm[11][sel]):.2f} m")
+    for name, sp in (("pad", pad_sp), ("road", road_sp)):
+        for a_, b_ in sp:
+            sel = (d >= a_) & (d <= b_)
+            print(f"{name}: lrm25 range {np.nanmin(lrm[25][sel]):.2f}..{np.nanmax(lrm[25][sel]):.2f} m")
 
     # line in the lidar CRS, for QGIS
     gpd.GeoDataFrame({"length_m": [round(line.length, 2)], "bearing_deg": [round(bearing, 1)]},
