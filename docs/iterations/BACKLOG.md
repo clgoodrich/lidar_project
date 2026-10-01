@@ -2,6 +2,13 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## Road driving-surface watershed (added 2026-10-01) — OPEN
+See `docs/iterations/road_driving_surface_watershed_9t.md`.
+- 15% of transects reach the 6 m ring on one side, meaning no slope break was found there. Decide whether to fall back to a fixed half-width on capped sides or leave them flagged.
+- Flat-ground roads have no break to find. Try a cross-slope or micro-relief test, or the 0.5 m CHM canopy gap as a weak constraint.
+- Tune the ring distance and slope threshold against hand-traced driving surfaces at 20–30 stations. No width truth exists yet.
+- Junctions and switchbacks merge into blobs. Split them by nearest centreline if per-segment polygons are needed.
+
 ## Operating point: choose precision against recall by policy, not by hand (added 2026-09-23) — OPEN
 
 Plan: `docs/iterations/operating_point_policy_plan.md`. Phases 0–2 are done. Phase 3 is swept. Results: `docs/iterations/cv5_threshold_free_pr_and_calibration_pit_pad_9t.md` and `docs/iterations/operating_point_policy_sweep_pit_pad_9t.md`.

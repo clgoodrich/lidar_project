@@ -411,3 +411,17 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** The layover (slope toward radar > θ), shadow (slope away > 90° − θ) and slant-range mapping rules in the SAR geometry simulator.
 - **Generated:** `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py`; `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html`.
 - **Source:** https://doi.org/10.1007/978-3-642-02020-9 — cite-only (paywalled book).
+
+### Beucher & Meyer 1993 — marker-controlled watershed
+- **Citation:** Beucher, S., & Meyer, F. (1993). "The morphological approach to segmentation: the watershed transformation." In E. R. Dougherty (Ed.), *Mathematical Morphology in Image Processing* (pp. 433–481). Marcel Dekker, New York.
+- **About:** Segmentation by flooding a gradient image from chosen markers. Regions grow only from the markers, and boundaries form where floods from different markers meet.
+- **Used for:** Road driving-surface polygons in 9t. The road markers are the centrelines and the background markers are the 6 m ring plus slopes over 25°. The flooded image is the change of slope.
+- **Generated:** `notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py`; `data/9t/results/road/driving_surface/road_driving_surface_watershed_bg6m_slope25deg_full_9t_05.gpkg`; `data/9t/derived/05/road_driving_surface_watershed_bg6m_slope25deg_full_9t_05_mask.tif`; `docs/iterations/road_driving_surface_watershed_9t.md`.
+- **Source:** cite-only (book chapter, not open access).
+
+### Vincent & Soille 1991 — watershed by immersion
+- **Citation:** Vincent, L., & Soille, P. (1991). "Watersheds in digital spaces: an efficient algorithm based on immersion simulations." *IEEE Transactions on Pattern Analysis and Machine Intelligence* 13(6), 583–598. doi:10.1109/34.87344.
+- **About:** The priority-queue flooding algorithm behind most watershed implementations, including `skimage.segmentation.watershed`.
+- **Used for:** The flooding step of the road driving-surface segmentation above.
+- **Generated:** same files as Beucher & Meyer 1993 above.
+- **Source:** https://doi.org/10.1109/34.87344 — cite-only (paywalled IEEE).

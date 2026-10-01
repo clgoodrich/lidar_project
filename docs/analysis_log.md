@@ -5,6 +5,23 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Road driving-surface polygons by seeded watershed, 9t
+
+The user asked for a fill algorithm to block out full road polygons, and chose the driving surface only. Write-up: `docs/iterations/road_driving_surface_watershed_9t.md`.
+
+- **Method.** A marker-controlled watershed on the change of slope, |∇ slope|, from the 0.5 m DEM (Beucher & Meyer 1993).
+  - Road seeds are the centrelines.
+  - Background seeds are the 6 m ring plus any pixel steeper than 25°.
+- **Pilot first.** Run on the test-line windows (31.9 km of road), then on all of 9t (206.1 km, 1 min).
+- **Results.**
+  - 109.4 ha of polygon.
+  - Median width 5.5 m (p10–p90 2.5–9.5 m), or 5.0 m where both edges were found.
+  - 15.4% of transects capped on one side and 1.9% on both.
+- **Check.** Test line 3 gives 20.1–25.4 m, against a shoulder at about 20 m and a cut-bank toe at about 25 m from the cross section.
+  - Flat-ground crossings (lines 1 and 2) are capped, not measured.
+- **Citations.** Beucher & Meyer 1993 and Vincent & Soille 1991 were added to `literature/CITATIONS.md`, both cite-only.
+- **Backlog.** Follow-ups were added under "Road driving-surface watershed".
+
 ## 2026-10-01 -- Fourth test line, true-scale figure only
 
 - **Line 4.** 353.7 m, NW to SE. It crosses three roads, at 42.9, 188.4 and 301.2 m. The ground climbs 76 m, about a 21% grade.

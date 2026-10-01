@@ -1,0 +1,67 @@
+{
+  "scope": "pilot_testlines",
+  "params": {
+    "smooth_sigma_px": 1.0,
+    "bg_dist_m": 6.0,
+    "slope_bg_deg": 25.0,
+    "hole_max_m2": 4.0,
+    "transect_step_m": 5.0,
+    "dem": "data\\9t\\derived\\05\\dem_9t_05.tif"
+  },
+  "road_km_in_area": 31.85,
+  "polygon_area_ha": 17.46,
+  "transects": 6367,
+  "transects_no_road_at_centreline": 40,
+  "width_m_median": 5.75,
+  "width_m_p10_p90": [
+    2.75,
+    9.5
+  ],
+  "share_hit_limit_one_side": 0.159,
+  "share_hit_limit_both_sides": 0.019,
+  "median_width_where_no_limit_hit": 5.0,
+  "test_line_crossings": [
+    {
+      "line": 1,
+      "centreline_at_m": 80.1,
+      "polygon_from_m": 76.1,
+      "polygon_to_m": 83.9,
+      "width_along_line_m": 7.8
+    },
+    {
+      "line": 2,
+      "centreline_at_m": 97.7,
+      "polygon_from_m": 93.9,
+      "polygon_to_m": 103.7,
+      "width_along_line_m": 9.8
+    },
+    {
+      "line": 3,
+      "centreline_at_m": 22.7,
+      "polygon_from_m": 20.1,
+      "polygon_to_m": 25.4,
+      "width_along_line_m": 5.3
+    },
+    {
+      "line": 4,
+      "centreline_at_m": 42.9,
+      "polygon_from_m": 40.4,
+      "polygon_to_m": 45.8,
+      "width_along_line_m": 5.4
+    },
+    {
+      "line": 4,
+      "centreline_at_m": 188.4,
+      "polygon_from_m": 184.8,
+      "polygon_to_m": 191.6,
+      "width_along_line_m": 6.9
+    },
+    {
+      "line": 4,
+      "centreline_at_m": 301.2,
+      "polygon_from_m": 296.5,
+      "polygon_to_m": 303.9,
+      "width_along_line_m": 7.4
+    }
+  ]
+}
