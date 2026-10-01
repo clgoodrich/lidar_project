@@ -84,10 +84,22 @@ The script now runs once per feature. Before this it merged every feature into o
 - **The road is a faint −0.2 m trough** again.
 - **No cut-bench low on these pads.** Line 2 runs more along the slope, so there is no strong inside corner like the −1.1 m one on line 1.
 
+## Line 3, added 2026-10-01
+
+A third line, 41.9 m long, bearing 204° (NNE to SSW). It crosses one road centreline at 22.7 m and no pads or pits.
+
+- **The road shows a full cut-and-fill profile.**
+  - The downhill edge is a raised fill shoulder, +0.48 m on the LRM at about 20 m.
+  - The tread is nearly flat at about 427.8 m.
+  - The uphill toe is a −0.40 m low at about 25 m, where the cut slope meets the tread. That is where a ditch would run.
+- **The canopy gap marks the open tread.** The DSM drops to the ground from about 20.7 to 23.8 m, so the opening is about 3 m wide.
+  - The assumed ±2.5 m road band (20.2 – 25.2 m) covers the tread, the shoulder and the toe.
+- This is the same concave-corner effect as on line 1's pad. A road cut toe can look like a 0.4 m linear hollow on the LRM.
+
 ## Outputs
 
 - Figure: `data/9t/results/cross_sections/figures/cross_section_test_line1_dem_dsm_nisar_summer2026_t162_with_pads_pits_roads_9t_1m.png`
-- Each figure below exists for `line1` and `line2`. Line 1's files were renamed from `cross_section_test_line_...` with `git mv`.
+- Each figure below exists for `line1`, `line2` and `line3`. Line 1's files were renamed from `cross_section_test_line_...` with `git mv`.
 - True-scale figure: `data/9t/results/cross_sections/figures/cross_section_test_line1_true_scale_1to1_dem_dsm_lrm_with_pads_pits_roads_9t_1m.png`
 - LRM figure: `data/9t/results/cross_sections/figures/cross_section_test_line1_lrm_11m_25m_with_pads_pits_roads_9t_1m.png`
 - Profile table, one row per 0.25 m, with a zone column and both LRMs: `data/9t/results/cross_sections/cross_section_test_line1_dem_dsm_nisar_summer2026_t162_with_pads_pits_roads_9t_1m.csv`

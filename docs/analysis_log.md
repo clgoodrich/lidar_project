@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Third test line, across a road
+
+The user added line 3, which is 41.9 m, NNE to SSW. It crosses one road at 22.7 m.
+
+- **Road profile.** The fill shoulder is +0.48 m and the tread is flat. The uphill cut toe is a −0.40 m low, the likely ditch line.
+- **Canopy gap.** The DSM is open over about 3 m of tread, from 20.7 to 23.8 m. The assumed ±2.5 m road band fits it.
+- **Figure fix.** The LRM legend now uses `loc="best"`, because it sat on the curve.
+- **Outputs.** `data/9t/results/cross_sections/figures/cross_section_test_line3_*.png` and `data/9t/results/cross_sections/cross_section_test_line3_*.csv`
+
 ## 2026-10-01 -- Second test line, cross sections now per line
 
 The user added a second line to `test_line_cross_section.gpkg`.

@@ -233,7 +233,7 @@ def run_line(line, n):
     m = np.nanmax(np.abs([lrm[11], lrm[25]])) * 1.15
     lx.set_ylim(-m, m)
     lx.set_ylabel("Local relief (m)\nabove / below the local mean")
-    lx.legend(loc="upper center", bbox_to_anchor=(0.62, 1.0), frameon=False, fontsize=9, labelcolor=INK)
+    lx.legend(loc="best", frameon=False, fontsize=9, labelcolor=INK)
     for a_, b_ in floor_sp:
         i = np.argmin(np.abs(d - (a_ + b_) / 2))
         lx.annotate("pit floor", (d[i], lrm[25][i]), xytext=(0, -26), textcoords="offset points",
