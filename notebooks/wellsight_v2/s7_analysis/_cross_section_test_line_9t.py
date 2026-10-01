@@ -105,6 +105,19 @@ def draw_feature_strip(fx, others, pad_sp, pit_sp, floor_sp, road_sp):
         fx.spines[sp_].set_visible(False)
 
 
+def save_fig(fig, path, dpi=200):
+    """Save, retrying briefly: an image viewer holding the PNG open makes Windows refuse the write."""
+    import time
+    for _ in range(5):
+        try:
+            fig.savefig(path, dpi=dpi, facecolor="white")
+            return True
+        except OSError:
+            time.sleep(1.0)
+    print(f"WARNING: could not write {path} (open in another program?); skipped")
+    return False
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     line = gpd.read_file(LINE, layer="test_line").to_crs(CRS).geometry.union_all()
@@ -201,7 +214,7 @@ def main():
     fig.subplots_adjust(left=0.11, right=0.9, top=0.9, bottom=0.1)
     png = OUT / "figures" / f"{stem}.png"
     png.parent.mkdir(exist_ok=True)
-    fig.savefig(png, dpi=200, facecolor="white")
+    save_fig(fig, png, dpi=200)
 
     # ---------- LRM figure: same line, local relief instead of elevation ----------
     lrm = {k: sample(v, xs, ys) for k, v in LRM.items()}
@@ -238,7 +251,7 @@ def main():
              fontsize=8.5, color="#5B6168")
     fig.subplots_adjust(left=0.11, right=0.9, top=0.9, bottom=0.1)
     lstem = "cross_section_test_line_lrm_11m_25m_with_pads_pits_roads_9t_1m"
-    fig.savefig(OUT / "figures" / f"{lstem}.png", dpi=200, facecolor="white")
+    save_fig(fig, OUT / "figures" / f"{lstem}.png", dpi=200)
     print("wrote", OUT / "figures" / f"{lstem}.png")
     for name, (a_, b_) in [("pit floor", floor_sp[0])] if floor_sp else []:
         sel = (d >= a_) & (d <= b_)
@@ -247,6 +260,58 @@ def main():
         for a_, b_ in sp:
             sel = (d >= a_) & (d <= b_)
             print(f"{name}: lrm25 range {np.nanmin(lrm[25][sel]):.2f}..{np.nanmax(lrm[25][sel]):.2f} m")
+
+    # ---------- true-scale figure: 1 m across = 1 m up, no exaggeration ----------
+    # Axes are placed in inches so each panel's height/width equals its data range ratio exactly.
+    W_IN, GRID_M = 10.0, 5.0
+    in_per_m = W_IN / line.length
+    e_lo = np.floor((np.nanmin(ground) - 1) / GRID_M) * GRID_M
+    e_hi = np.ceil((np.nanmax(top) + 1) / GRID_M) * GRID_M
+    l_hi = np.ceil(np.nanmax(np.abs([lrm[11], lrm[25]])) + 0.5)
+    h_elev, h_lrm, h_strip = (e_hi - e_lo) * in_per_m, 2 * l_hi * in_per_m, 0.75
+    left, right, top_m, bot, gap = 1.5, 1.9, 0.85, 0.75, 0.32
+    fig_h = top_m + h_elev + gap + h_lrm + gap + h_strip + bot
+    fig_w = left + W_IN + right
+    fig = plt.figure(figsize=(fig_w, fig_h))
+    def place(y0, h):
+        return fig.add_axes([left / fig_w, y0 / fig_h, W_IN / fig_w, h / fig_h])
+    y = bot
+    fx = place(y, h_strip); y += h_strip + gap
+    lx = place(y, h_lrm); y += h_lrm + gap
+    ex = place(y, h_elev)
+    for axis, lo_, hi_ in ((ex, e_lo, e_hi), (lx, -l_hi, l_hi)):
+        axis.set_xlim(0, line.length); axis.set_ylim(lo_, hi_)
+        axis.set_aspect("equal", adjustable="box")
+        axis.set_xticks(np.arange(0, line.length + 1e-9, GRID_M), minor=True)
+        axis.set_yticks(np.arange(lo_, hi_ + 1e-9, 1.0 if axis is lx else GRID_M), minor=True)
+        axis.grid(which="both", color="#E3E5E8", lw=0.5)
+        axis.spines[["top", "right"]].set_visible(False)
+        axis.tick_params(labelbottom=False)
+    ex.set_yticks(np.arange(e_lo, e_hi + 1e-9, 10.0))
+    lx.set_yticks([-l_hi, 0, l_hi])  # 1 m minor grid stays; labels only at the ends and zero
+    fx.set_xlim(0, line.length)
+    draw_feature_strip(fx, (ex, lx), pad_sp, pit_sp, floor_sp, road_sp)
+    ex.fill_between(d, ground, top, where=np.isfinite(top), color=CANOPY, alpha=0.25, lw=0)
+    ex.plot(d, top, color=CANOPY, lw=1.0)
+    ex.plot(d, ground, color=GROUND, lw=1.6)
+    ex.text(line.length + 1, top[-1] + 1.2, "surface top\n(lidar DSM)", va="bottom", color=INK, fontsize=8.5)
+    ex.text(line.length + 1, ground[-1] - 1.2, "ground\n(lidar DEM)", va="top", color=INK, fontsize=8.5)
+    ex.set_ylabel("Elevation (m)")
+    lx.axhline(0, color="#8E959B", lw=0.6)
+    lx.plot(d, lrm[25], color=GROUND, lw=1.4)
+    lx.plot(d, lrm[11], color=CANOPY, lw=1.0, ls="--")
+    lx.text(line.length + 1, 0.4, "LRM 25 m (solid)\nLRM 11 m (dashed)", va="center", color=INK, fontsize=8.5)
+    lx.set_ylabel("LRM (m)")
+    fx.set_xlabel(f"Distance along line (m), {compass((bearing + 180) % 360)} → {compass(bearing)}")
+    fx.tick_params(labelbottom=True)
+    fig.text(left / fig_w, 1 - 0.3 / fig_h, "Cross section along the test line at true scale, 9t",
+             fontsize=13, color=INK, va="top")
+    fig.text(left / fig_w, 1 - 0.58 / fig_h, "No exaggeration: 1 m across equals 1 m up in both panels. "
+             "Grid squares are 5 m by 5 m (1 m tall in the LRM panel). 2019 lidar at 1 m.",
+             fontsize=9, color="#5B6168", va="top")
+    tstem = "cross_section_test_line_true_scale_1to1_dem_dsm_lrm_with_pads_pits_roads_9t_1m"
+    save_fig(fig, OUT / "figures" / f"{tstem}.png", dpi=220)
+    print("wrote", OUT / "figures" / f"{tstem}.png", f"({fig_w:.1f} x {fig_h:.1f} in)")
 
     # line in the lidar CRS, for QGIS
     gpd.GeoDataFrame({"length_m": [round(line.length, 2)], "bearing_deg": [round(bearing, 1)]},

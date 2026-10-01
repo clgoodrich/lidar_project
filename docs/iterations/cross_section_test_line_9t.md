@@ -58,9 +58,18 @@ The user asked for the same line on the LRM.
 - **The road is a faint shallow trough,** about 0.2–0.3 m.
 - The 11 m window gives smaller values everywhere. It follows narrower features and averages less of the bench edge in.
 
+## True-scale version, added 2026-10-01
+
+The user asked for the cross section with no vertical or horizontal exaggeration.
+- Both data panels are drawn 1 m across to 1 m up. Each axes box is sized in inches from its data range, so the ratio is exact.
+- The grid is 5 m squares in the elevation panel. The LRM panel uses a 1 m grid.
+- At true scale the 19 m rise over 111 m reads as a gentle slope. The pad and pit benches are only small steps.
+- The LRM's ±1.2 m is nearly flat at true scale. The exaggerated figures above are needed to read it.
+
 ## Outputs
 
 - Figure: `data/9t/results/cross_sections/figures/cross_section_test_line_dem_dsm_nisar_summer2026_t162_with_pads_pits_roads_9t_1m.png`
+- True-scale figure: `data/9t/results/cross_sections/figures/cross_section_test_line_true_scale_1to1_dem_dsm_lrm_with_pads_pits_roads_9t_1m.png`
 - LRM figure: `data/9t/results/cross_sections/figures/cross_section_test_line_lrm_11m_25m_with_pads_pits_roads_9t_1m.png`
 - Profile table, one row per 0.25 m, with a zone column and both LRMs: `data/9t/results/cross_sections/cross_section_test_line_dem_dsm_nisar_summer2026_t162_with_pads_pits_roads_9t_1m.csv`
 - The line in EPSG:6346: `data/9t/results/cross_sections/test_line_cross_section_epsg6346_9t.gpkg`

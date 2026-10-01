@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Test-line cross section at true scale
+
+The user asked for no vertical or horizontal exaggeration.
+
+- **Figure.** `data/9t/results/cross_sections/figures/cross_section_test_line_true_scale_1to1_dem_dsm_lrm_with_pads_pits_roads_9t_1m.png`
+- **Panels.** Elevation (ground and DSM) and LRM (11 m and 25 m), each placed in inches so 1 m across equals 1 m up. The feature strip sits below.
+- **Checked.** The render measures 13.4 px per metre on both axes.
+- **Reading it.** At true scale the pit and pad are small benches on a gentle slope, and the LRM is nearly flat.
+- **Script fix.** `save_fig()` retries a PNG that is locked by an open image viewer, and skips it with a warning if it stays locked.
+
 ## 2026-10-01 -- Test-line cross section redone on the LRM
 
 The user asked for the test-line cross section on the local relief model.
