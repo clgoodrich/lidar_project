@@ -1,0 +1,22 @@
+{
+  "params": {
+    "flat_seed_deg": 5.0,
+    "steep_seed_deg": 15.0,
+    "smooth_sigma_px": 1.0,
+    "dem": "data\\9t\\derived\\05\\dem_9t_05.tif"
+  },
+  "tile_ha": 2025.0,
+  "flat_area_ha": 1433.0,
+  "flat_share_of_tile": 0.708,
+  "polygons": 11492,
+  "polygons_over_100m2": 449,
+  "largest_polygon_ha": 1230.2,
+  "annotated_centreline_km": 206.0,
+  "annotated_centreline_km_inside_flat": 186.8,
+  "annotated_pad_area_ha": 115.1,
+  "annotated_pad_area_inside_flat_ha": 84.1,
+  "seeded_hybrid_road_plus_pad_ha": 201.2,
+  "seeded_hybrid_area_inside_flat_share": 0.809,
+  "flat_area_within_6m_of_road_or_2m_of_pad_ha": 250.4,
+  "flat_area_elsewhere_ha": 1182.6
+}

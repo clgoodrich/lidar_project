@@ -188,6 +188,41 @@ Outputs, in `data/9t/results/road/driving_surface/`:
 - The mask is `data/9t/derived/05/road_driving_surface_watershed_bg6m_slope25deg_padmerged_band2m_full_9t_05_mask.tif` (gitignored).
 - The road-width stats near pads do not apply in this mode. A transect across a road that meets a pad runs on into the pad, and 47% of those stations hit the limit.
 
+## No seeds at all: flat-surface fill from the terrain alone (added 2026-10-02)
+
+The user asked what happens with no shapefile seeds at all. Script: `notebooks/wellsight_v2/s2_labels/_flat_surface_watershed_seedless_9t.py`.
+
+| Setting | Value | Why |
+|---|---|---|
+| Flat seeds | slope < 5° | Median slope on the seeded road fill is 5.0° |
+| Steep seeds | slope ≥ 15° | 90th percentile on the seeded road fill is 12.4° |
+| Flooded raster | change of slope, as in the seeded runs | |
+| Corridor, pad limits | none | |
+
+A slope check came first. Slope barely separates roads from the rest of 9t. The road fill has a median of 5.0°, the rest of the tile 7.1°, and 35% of the whole tile is under 5°.
+
+| | Value |
+|---|---|
+| Filled | 1,433 ha, 71% of the 2,025 ha tile |
+| Largest single polygon | 1,230 ha |
+| Annotated centreline inside the fill | 186.8 of 206.0 km |
+| Annotated pad area inside the fill | 84.1 of 115.1 ha |
+| Seeded hybrid road + pad area inside the fill | 81% |
+| Fill within 6 m of a road or 2 m of a pad | 250 ha |
+| Fill elsewhere | 1,183 ha |
+
+**Reading it.**
+- 9t is mostly plateau. Without seeds the fill takes the ridgetops and gentle slopes as one sheet.
+- On the plateau a road is not separable from the ground around it by flatness. It sits inside the sheet.
+- On hillsides the roads do come out as their own strips, cut off by their cut banks and fill slopes (test lines 3 and 4 in the figure).
+- So the seeds are what make the result a road map. The terrain alone finds flat benches, and roads are one kind of bench.
+
+Outputs:
+- `data/9t/results/road/driving_surface/flat_surface_watershed_seedless_flat5deg_steep15deg_9t_05.gpkg`, layer `flat_surface`, with `area_m2` and `touches_annotated_road_or_pad`
+- `data/9t/results/road/driving_surface/flat_surface_watershed_seedless_flat5deg_steep15deg_9t_05_summary.json`
+- `data/9t/results/road/driving_surface/figures/flat_surface_watershed_seedless_flat5deg_steep15deg_9t_05_overview_and_test_lines_on_hillshade.png`
+- `data/9t/derived/05/flat_surface_watershed_seedless_flat5deg_steep15deg_9t_05_mask.tif` (gitignored)
+
 ## Limits
 
 - No measured road widths exist for 9t, so only the test-line crossings check the edges.
@@ -231,4 +266,5 @@ python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pad-mode merged
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py --merged
+python notebooks/wellsight_v2/s2_labels/_flat_surface_watershed_seedless_9t.py
 ```

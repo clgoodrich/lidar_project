@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-02 -- Flat-surface fill with no seeds, 9t
+
+The user asked for the fill with no shapefile seeds. Flat seeds are slope < 5° and steep seeds are slope ≥ 15°, with no corridor.
+- **Slope check first.** The road fill has a median of 5.0°, the rest of 9t 7.1°. 35% of the tile is under 5°.
+- **Result.** 1,433 ha filled, 71% of the tile. One polygon is 1,230 ha.
+- **Coverage.** The fill holds 186.8 of 206 km of annotated centreline and 84 of 115 ha of annotated pad. But 1,183 ha of it is away from any road or pad.
+- **Reading.** On the plateau, roads sit inside the flat sheet. On hillsides, roads come out as separate strips. The seeds are what make it a road map.
+- **Write-up.** `docs/iterations/road_driving_surface_watershed_9t.md`, section "No seeds at all".
+
 ## 2026-10-02 -- Road watershed: one class for roads and pads (merged)
 
 The user asked to fill without separating roads from pads. New `--pad-mode merged` uses the hybrid seeds with one shared label.
