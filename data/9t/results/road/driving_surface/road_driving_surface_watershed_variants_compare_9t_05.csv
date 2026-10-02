@@ -1,0 +1,5 @@
+variant,file_tag,annotated_centreline_km,annotated_pad_area_ha,road_area_ha,annotated_centreline_km_inside_road_polygon,annotated_centreline_km_inside_road_or_pad,road_area_more_than_6m_from_annotated_centreline_ha,road_area_on_annotated_pads_ha,share_road_edges_capped,median_width_both_edges_found_m,pad_area_ha,pad_area_outside_annotated_pads_ha,annotated_pad_area_covered_ha,pad_iou_vs_annotation_median,pad_iou_vs_annotation_p10
+"reference: band 2 m, corridor 6 m",bg6m_slope25deg_padhybrid_band2m,206.0,115.15,95.45,183.9,205.0,0.06,0.79,0.093,4.75,105.78,2.66,103.12,0.871,0.818
+pad band 4 m,bg6m_slope25deg_padhybrid_band4m,206.0,115.15,97.5,186.2,205.0,0.42,2.17,0.097,4.75,92.96,3.44,89.52,0.748,0.647
+corridor 8 m,bg8m_slope25deg_padhybrid_band2m,206.0,115.15,112.53,183.9,205.0,4.14,0.85,0.08,5.5,106.23,2.97,103.26,0.869,0.815
+model seeds,bg6m_slope25deg_padhybrid_band2m_seedmodel_roadthr0p20_padthr0p45,206.0,115.15,72.42,129.1,180.6,3.51,1.68,0.085,4.5,221.35,119.03,102.32,0.796,0.678

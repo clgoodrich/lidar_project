@@ -27,6 +27,13 @@ Pad modes (--pad-mode)
           * a pad may not grow beyond its outline + PAD_BAND_M (pixels past that revert to none).
           Output labels: 1 road, 2 pad.
 
+Seed source (--seed-source)
+  annotation  road seeds from the annotated centrelines, pads from the annotated plats (default).
+  model       road seeds = skeleton of road_unet_1m road_prob >= ROAD_SEED_THR (upsampled to 0.5 m);
+              pads = pad_unet pad_prob >= PAD_SEED_THR, then the hybrid core/band rule on that mask.
+              Implies --pad-mode hybrid. This is what a county without annotations would get. On 9t
+              both models saw most of the tile in training, so the result is optimistic here.
+
 QC
   * transects across every centreline every TRANSECT_STEP_M; width = contiguous road run
     through the centreline point. `hit_limit` marks a run that reaches the BG_DIST_M ring,
@@ -61,6 +68,8 @@ DEM = REPO / "data" / "9t" / "derived" / "05" / "dem_9t_05.tif"
 HILLSHADE = REPO / "data" / "9t" / "derived" / "05" / "hillshade_9t_05.tif"
 ANN = REPO / "qgis" / "annotations" / "annotations_proj.gpkg"
 TEST_LINES = REPO / "test_line_cross_section.gpkg"
+ROAD_PROB = REPO / "data" / "9t" / "models" / "road" / "unet_1m" / "road_prob.tif"   # 1 m
+PAD_PROB = REPO / "data" / "9t" / "models" / "pad" / "unet" / "pad_prob.tif"         # 0.5 m
 DERIVED = REPO / "data" / "9t" / "derived" / "05"
 RESULTS = REPO / "data" / "9t" / "results" / "road" / "driving_surface"
 CRS = "EPSG:6346"
@@ -74,6 +83,11 @@ TILE_PX, HALO_PX = 2000, 40
 PAD_M = 80.0               # pilot window margin around each test line
 PAD_BAND_M = 2.0           # hybrid pad mode: unseeded band either side of the drawn pad edge
 PAD_MODE = "none"          # set from --pad-mode
+SEED_SOURCE = "annotation" # set from --seed-source
+ROAD_SEED_THR = 0.20       # road operating point (LEADERBOARD: held-out recall_clean 0.982)
+PAD_SEED_THR = 0.45        # pad operating point (LEADERBOARD: held-out recall 0.918)
+ROAD_SEED_MIN_M2 = 50.0    # drop specks before skeletonizing
+PAD_SEED_MIN_M2 = 100.0    # smallest annotated pad is 261 m2
 
 ROAD, CENTRE, TESTLINE = "#A31515", "#2B2F36", "#1F5FA8"
 PAD, BASELINE = "#1F5FA8", "#8E959B"   # pad = lost/found blue; baseline = neutral grey ink
@@ -85,6 +99,8 @@ def make_tag():
     t = f"bg{BG_DIST_M:g}m_slope{SLOPE_BG_DEG:g}deg"
     if PAD_MODE == "hybrid":
         t += f"_padhybrid_band{PAD_BAND_M:g}m"
+    if SEED_SOURCE == "model":
+        t += f"_seedmodel_roadthr{ROAD_SEED_THR:.2f}_padthr{PAD_SEED_THR:.2f}"
     return t.replace(".", "p")
 
 
@@ -109,21 +125,33 @@ def burn(geoms, shape_, transform):
                      all_touched=False, dtype=np.uint8).astype(bool)
 
 
-def segment_tile(dem, transform, res, roads, pads=None):
-    """Return (label uint8: 0 none, 1 road, 2 pad; centreline raster bool) for one tile."""
+def segment_tile(dem, transform, res, roads, pads=None, centre_r=None, padfull_r=None):
+    """Return (label uint8: 0 none, 1 road, 2 pad; centreline raster bool) for one tile.
+    centre_r / padfull_r: raster seeds (model mode), used instead of the roads / pads geometries."""
     shape_ = dem.shape
-    use_pads = PAD_MODE == "hybrid" and pads is not None and not pads.empty
-    if roads.empty and not use_pads:
-        return np.zeros(shape_, np.uint8), np.zeros(shape_, bool)
-    centre = burn(roads.geometry, shape_, transform) if not roads.empty else np.zeros(shape_, bool)
-    if not roads.empty:
-        centre |= rasterize(((g, 1) for g in roads.geometry), out_shape=shape_, transform=transform,
-                            all_touched=True, dtype=np.uint8).astype(bool)
+    if centre_r is not None:
+        centre = centre_r.copy()
+        use_pads = PAD_MODE == "hybrid" and padfull_r is not None and padfull_r.any()
+        if not centre.any() and not use_pads:
+            return np.zeros(shape_, np.uint8), centre
+    else:
+        use_pads = PAD_MODE == "hybrid" and pads is not None and not pads.empty
+        if roads.empty and not use_pads:
+            return np.zeros(shape_, np.uint8), np.zeros(shape_, bool)
+        centre = burn(roads.geometry, shape_, transform) if not roads.empty else np.zeros(shape_, bool)
+        if not roads.empty:
+            centre |= rasterize(((g, 1) for g in roads.geometry), out_shape=shape_, transform=transform,
+                                all_touched=True, dtype=np.uint8).astype(bool)
     dist = distance_transform_edt(~centre) * res if centre.any() else np.full(shape_, np.inf)
     edge, slope_deg, valid = edge_and_slope(dem, res)
     corridor = dist <= BG_DIST_M
     steep = slope_deg >= SLOPE_BG_DEG
-    if use_pads:
+    if use_pads and padfull_r is not None:
+        pad_full = padfull_r
+        pad_core = distance_transform_edt(pad_full) * res > PAD_BAND_M
+        pad_dist = distance_transform_edt(~pad_full) * res
+        pad_outer = pad_dist <= PAD_BAND_M
+    elif use_pads:
         pad_core = burn(pads.geometry.buffer(-PAD_BAND_M), shape_, transform)
         pad_outer = burn(pads.geometry.buffer(PAD_BAND_M), shape_, transform)
         pad_full = burn(pads.geometry, shape_, transform)
@@ -157,8 +185,9 @@ def segment_tile(dem, transform, res, roads, pads=None):
     return out, centre
 
 
-def run_area(src, roads, win, pads=None):
-    """Segment one window (rasterio Window) in tiles with a halo. Returns mask, centre, transform."""
+def run_area(src, roads, win, pads=None, seeds=None):
+    """Segment one window (rasterio Window) in tiles with a halo. Returns mask, centre, transform.
+    seeds: optional (centre, pad_full) bool rasters on the full DEM grid (model mode)."""
     res = src.res[0]
     out = np.zeros((int(win.height), int(win.width)), np.uint8)
     cen = np.zeros_like(out, bool)
@@ -177,11 +206,39 @@ def run_area(src, roads, win, pads=None):
             tb = box(*rasterio.windows.bounds(tw, src.transform))
             sub = roads[roads.intersects(tb)]
             psub = pads[pads.intersects(tb)] if pads is not None else None
-            m, c = segment_tile(dem, t, res, sub, psub)
+            if seeds is not None:
+                sl = (slice(rr0, rr1), slice(cc0, cc1))
+                m, c = segment_tile(dem, t, res, sub, psub, seeds[0][sl], seeds[1][sl])
+            else:
+                m, c = segment_tile(dem, t, res, sub, psub)
             ir, ic = r0 + tr - rr0, c0 + tc - cc0
             out[tr:tr + h, tc:tc + w] = m[ir:ir + h, ic:ic + w]
             cen[tr:tr + h, tc:tc + w] = c[ir:ir + h, ic:ic + w]
     return out, cen, src.window_transform(win)
+
+
+def model_seeds(shape_, res):
+    """Road skeleton and pad mask from the road and pad model probabilities, on the 0.5 m grid."""
+    from scipy.ndimage import label as cc
+    from skimage.morphology import skeletonize
+
+    def drop_small(m, min_m2):
+        lab, _ = cc(m)
+        keep = np.bincount(lab.ravel()) * res * res >= min_m2
+        keep[0] = False
+        return keep[lab]
+
+    with rasterio.open(ROAD_PROB) as r:
+        rp = r.read(1)
+    rp = np.repeat(np.repeat(rp, 2, axis=0), 2, axis=1)[:shape_[0], :shape_[1]]
+    road_m = drop_small(rp >= ROAD_SEED_THR, ROAD_SEED_MIN_M2)
+    centre = skeletonize(road_m)
+    with rasterio.open(PAD_PROB) as r:
+        pp = r.read(1)
+    pad_full = binary_fill_holes(drop_small(pp >= PAD_SEED_THR, PAD_SEED_MIN_M2))
+    print(f"model seeds: road mask {road_m.sum() * res * res / 1e4:.1f} ha, skeleton about "
+          f"{centre.sum() * res / 1000:.1f} km, pad mask {pad_full.sum() * res * res / 1e4:.1f} ha")
+    return centre, pad_full
 
 
 def transect_widths(mask, transform, roads, clip_geom):
@@ -226,13 +283,18 @@ def transect_widths(mask, transform, roads, clip_geom):
 
 
 def main():
-    global PAD_MODE, PAD_BAND_M
+    global PAD_MODE, PAD_BAND_M, BG_DIST_M, SEED_SOURCE
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--pilot", action="store_true", help="only windows around the user's test lines")
     ap.add_argument("--pad-mode", choices=["none", "hybrid"], default="none")
     ap.add_argument("--pad-band-m", type=float, default=PAD_BAND_M)
+    ap.add_argument("--bg-dist-m", type=float, default=BG_DIST_M, help="road corridor half-width")
+    ap.add_argument("--seed-source", choices=["annotation", "model"], default="annotation")
     args = ap.parse_args()
     PAD_MODE, PAD_BAND_M = args.pad_mode, args.pad_band_m
+    BG_DIST_M, SEED_SOURCE = args.bg_dist_m, args.seed_source
+    if SEED_SOURCE == "model":
+        PAD_MODE = "hybrid"
     TAG = make_tag()
     RESULTS.mkdir(parents=True, exist_ok=True)
     (RESULTS / "figures").mkdir(exist_ok=True)
@@ -251,7 +313,8 @@ def main():
         else:
             area = tile_box
         win = rasterio.windows.from_bounds(*area.bounds, transform=src.transform).round_offsets().round_lengths()
-        labels, centre, tf = run_area(src, roads, win, pads if PAD_MODE == "hybrid" else None)
+        seeds = model_seeds((src.height, src.width), src.res[0]) if SEED_SOURCE == "model" else None
+        labels, centre, tf = run_area(src, roads, win, pads if PAD_MODE == "hybrid" else None, seeds)
         mask = (labels == 1).astype(np.uint8)
         prof = src.profile
 
@@ -300,6 +363,8 @@ def main():
         "share_hit_limit_one_side": round(float((found.hit_limit_left ^ found.hit_limit_right).mean()), 3),
         "share_hit_limit_both_sides": round(float((found.hit_limit_left & found.hit_limit_right).mean()), 3),
         "median_width_where_no_limit_hit": round(float(found[~found.hit_limit_any].width_m.median()), 2),
+        "seed_source": SEED_SOURCE,
+        "seed_thresholds": {"road": ROAD_SEED_THR, "pad": PAD_SEED_THR} if SEED_SOURCE == "model" else None,
         "pad_mode": PAD_MODE, "pad_band_m": PAD_BAND_M if PAD_MODE == "hybrid" else None,
         "transects_on_pad_core_skipped": int(tw.station_in_pad_core.sum()),
         "share_hit_limit_any_near_pads_8m": round(float(found[found.near_pad_8m].hit_limit_any.mean()), 3),

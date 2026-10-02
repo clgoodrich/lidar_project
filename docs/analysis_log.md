@@ -5,6 +5,22 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-01 -- Road watershed: shapefile versus terrain, three shifts
+
+The user asked how much the result leans on their shapefiles, then asked for three variants, each run independently from the hybrid reference.
+New switches: `--bg-dist-m` and `--seed-source model`. Comparison script: `notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py`.
+
+| | Reference | Band 4 m | Corridor 8 m | Model seeds |
+|---|---|---|---|---|
+| Road area | 95.5 ha | 97.5 ha | 112.5 ha | 72.4 ha |
+| Pad area (annotated 115.2) | 105.8 ha | 93.0 ha | 106.2 ha | 221.4 ha |
+| Pad IoU median | 0.87 | 0.75 | 0.87 | 0.80 |
+
+- **Corridor 8 m.** 74% of stations with both edges found stay put. 25% widen by more than 0.5 m. This corrects the earlier "terrain sets 91% of edges" estimate to about 74%.
+- **Band 4 m.** Pads shrink onto the bench. Road on pads rises from 0.8 to 2.2 ha.
+- **Model seeds.** These cover 88% of the annotated centreline. The pad model adds 119 ha outside the annotations. The run is in-sample on 9t, so the numbers are optimistic.
+- **Write-up.** `docs/iterations/road_driving_surface_watershed_9t.md`, section "Shapefile versus terrain".
+
 ## 2026-10-01 -- Road watershed with pads as a third class (hybrid)
 
 The user wanted to merge "pads as a barrier" and "pads as their own class". `--pad-mode hybrid --pad-band-m 2`:

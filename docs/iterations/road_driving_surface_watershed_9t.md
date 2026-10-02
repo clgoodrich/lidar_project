@@ -113,6 +113,55 @@ Hybrid outputs:
 - `data/9t/results/road/driving_surface/figures/road_driving_surface_watershed_bg6m_slope25deg_padhybrid_band2m_full_9t_05_pads_baseline_flooded_most_before_after_on_hillshade.png`
 - The summary JSON, transect CSV and test-line crossings, with the same stem
 
+## Shapefile versus terrain: three shifts (added 2026-10-01)
+
+The user asked how much of the result comes from their shapefiles and how much from the terrain. Three variants were run, each changing one thing from the hybrid reference (band 2 m, corridor 6 m).
+Comparison script: `notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py`.
+
+| | Reference | Pad band 4 m | Corridor 8 m | Model seeds |
+|---|---|---|---|---|
+| Road area | 95.5 ha | 97.5 ha | 112.5 ha | 72.4 ha |
+| Annotated centreline inside road or pad (of 206 km) | 205.0 km | 205.0 km | 205.0 km | 180.6 km |
+| Road area more than 6 m from an annotated centreline | 0.1 ha | 0.4 ha | 4.1 ha | 3.5 ha |
+| Road on annotated pads | 0.8 ha | 2.2 ha | 0.9 ha | 1.7 ha |
+| Road edges capped | 9.3% | 9.7% | 8.0% | 8.5% |
+| Median width, both edges found | 4.75 m | 4.75 m | 5.5 m | 4.5 m |
+| Pad area (annotated 115.2 ha) | 105.8 ha | 93.0 ha | 106.2 ha | 221.4 ha |
+| Pad area outside annotated pads | 2.7 ha | 3.4 ha | 3.0 ha | 119.0 ha |
+| Pad IoU vs annotation, median (p10) | 0.87 (0.82) | 0.75 (0.65) | 0.87 (0.82) | 0.80 (0.68) |
+
+**Corridor 8 m.** The station widths were compared one by one (`road_driving_surface_watershed_corridor6m_vs_8m_station_widths_9t_05.csv`).
+- Of the 30,653 stations with both edges found at 6 m, 74% stay within 0.25 m at 8 m.
+- 25% widen by more than 0.5 m, and 19% by more than 2 m.
+- So a "found" edge is not always a terrain edge. Where the slope break is weak, the meeting line of the floods depends on where the background seed sits.
+- This corrects the earlier estimate that the terrain sets 91% of road edges. The terrain-stable share is about 74% of stations. The rest depend on the corridor.
+- Of the stations capped at 6 m, 52% are capped again at 8 m. They are flat ground, and the road spreads to whatever limit is set.
+
+**Pad band 4 m.**
+- Pads shrink further, to 93.0 ha. The median IoU against the drawn outlines drops to 0.75.
+- The pad floods stop on the bench edge. The drawn outlines appear to include part of the cut and fill slopes.
+- Road on pads rises from 0.8 to 2.2 ha. Capped transects near pads rise from 15% to 21%. With a smaller pad core, the road takes the band on pad edges with no slope break.
+
+**Model seeds.** Road seeds are the skeleton of `road_unet_1m` at prob ≥ 0.20, and pads are `pad_unet` at prob ≥ 0.45. No shapefile is used as a seed.
+- The models cover 88% of the annotated centreline (180.6 of 206 km) as road or pad.
+- Annotated pad area covered is 102.3 ha, about the same as with annotation seeds (103.1 ha).
+- The pad model claims 119 ha outside annotated pads. This is the 2× over-claim already on the LEADERBOARD. Some of it may be unannotated pads.
+- **Caveat.** Both models trained on most of 9t. These numbers are in-sample and optimistic. They show the mechanics, not what a new county would get.
+
+**Reading it.**
+- Your centrelines decide where the roads are, and the terrain decides most road widths. About a quarter of the widths still lean on the 6 m corridor.
+- Your pad outlines decide most of the pad area. Giving the terrain more say (band 4 m) shrinks pads onto the flat bench and lets roads creep onto weak pad edges.
+- Model seeds can replace the road shapefile fairly well on 9t. The pad model is too loose to replace the pad shapefile without a stricter threshold.
+
+Variant outputs, in `data/9t/results/road/driving_surface/`:
+- `road_driving_surface_watershed_bg6m_slope25deg_padhybrid_band4m_full_9t_05.gpkg`
+- `road_driving_surface_watershed_bg8m_slope25deg_padhybrid_band2m_full_9t_05.gpkg`
+- `road_driving_surface_watershed_bg6m_slope25deg_padhybrid_band2m_seedmodel_roadthr0p20_padthr0p45_full_9t_05.gpkg`
+- `road_driving_surface_watershed_variants_compare_9t_05.csv`
+- `road_driving_surface_watershed_corridor6m_vs_8m_station_widths_9t_05.csv`
+- `figures/road_driving_surface_watershed_variants_compare_crossings_and_pads_on_hillshade_9t_05.png`
+- Each run also has its summary JSON, transect CSV and test-line crossings, with the same stem. Mask rasters are in `data/9t/derived/05/` (gitignored).
+
 ## Limits
 
 - No measured road widths exist for 9t, so only the test-line crossings check the edges.
@@ -150,4 +199,8 @@ Figure colours:
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pilot
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pad-mode hybrid --pad-band-m 2
+python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pad-mode hybrid --pad-band-m 4
+python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pad-mode hybrid --bg-dist-m 8
+python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --seed-source model
+python notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py
 ```
