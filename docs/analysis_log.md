@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-02 -- Road watershed: one class for roads and pads (merged)
+
+The user asked to fill without separating roads from pads. New `--pad-mode merged` uses the hybrid seeds with one shared label.
+- **Area.** Merged is 202.3 ha, against 201.2 ha for the hybrid road plus pad. IoU 0.995.
+- **The difference.** 1.1 ha, all extra in merged, as ~2 m strips past a road's downhill edge where a pad sits alongside.
+- **What is flooded.** The fill runs on change of slope, not elevation or the LRM, so downhill ground is not skipped.
+- **Write-up.** `docs/iterations/road_driving_surface_watershed_9t.md`, section "One class for roads and pads".
+
 ## 2026-10-01 -- Road watershed: shapefile versus terrain, three shifts
 
 The user asked how much the result leans on their shapefiles, then asked for three variants, each run independently from the hybrid reference.

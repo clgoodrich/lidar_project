@@ -162,6 +162,32 @@ Variant outputs, in `data/9t/results/road/driving_surface/`:
 - `figures/road_driving_surface_watershed_variants_compare_crossings_and_pads_on_hillshade_9t_05.png`
 - Each run also has its summary JSON, transect CSV and test-line crossings, with the same stem. Mask rasters are in `data/9t/derived/05/` (gitignored).
 
+## One class for roads and pads: merged mode (added 2026-10-02)
+
+The user asked to stop separating roads and pads and just let the fill run. `--pad-mode merged` uses the hybrid seeds and limits, but road and pad seeds carry one label.
+
+**What is flooded.** The fill runs over the change-of-slope raster, not over elevation or the LRM.
+- Flat ground has a low value whether it sits high or low on the hillside. A tilted road tread floods as easily as a level pad.
+- Uphill or downhill does not matter. A depression fill on the DEM would fill only pits and hollows, and would skip a hillside road.
+- An LRM fill has the same problem. The LRM is relative to a moving mean, so cut-bank toes read as basins and fill shoulders as rims.
+
+| | Hybrid, road + pad | Merged, one class |
+|---|---|---|
+| Area | 201.2 ha | 202.3 ha |
+| Only in this version | 0.0 ha | 1.1 ha |
+| Agreement (IoU) | 0.995 | |
+
+- The footprint barely changes. Splitting the classes moves only the road and pad boundary, not the outer edge.
+- The 1.1 ha extra is in 322 patches over 10 m², each 150 m² at most.
+- In the six largest, a pad sits next to a road. The merged fill takes a strip of about 2 m past the road's downhill edge, inside the pad band. In hybrid mode the background wins that strip.
+
+Outputs, in `data/9t/results/road/driving_surface/`:
+- `road_driving_surface_watershed_bg6m_slope25deg_padmerged_band2m_full_9t_05.gpkg`, with layers `driving_surface` (the one-class fill) and `transect_widths_every5m`
+- `road_driving_surface_watershed_bg6m_slope25deg_padmerged_band2m_vs_padhybrid_band2m_full_9t_05_summary.json`
+- `figures/road_driving_surface_watershed_bg6m_slope25deg_padmerged_band2m_vs_padhybrid_band2m_largest_differences_on_hillshade_9t_05.png`
+- The mask is `data/9t/derived/05/road_driving_surface_watershed_bg6m_slope25deg_padmerged_band2m_full_9t_05_mask.tif` (gitignored).
+- The road-width stats near pads do not apply in this mode. A transect across a road that meets a pad runs on into the pad, and 47% of those stations hit the limit.
+
 ## Limits
 
 - No measured road widths exist for 9t, so only the test-line crossings check the edges.
@@ -203,4 +229,6 @@ python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pad-mode hybrid --bg-dist-m 8
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --seed-source model
 python notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py
+python notebooks/wellsight_v2/s2_labels/_road_driving_surface_watershed_9t.py --pad-mode merged
+python notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py --merged
 ```

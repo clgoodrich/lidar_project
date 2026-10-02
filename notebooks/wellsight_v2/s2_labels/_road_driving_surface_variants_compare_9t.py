@@ -13,6 +13,7 @@ Outputs
   data/9t/results/road/driving_surface/figures/road_driving_surface_watershed_variants_compare_crossings_and_pads_on_hillshade_9t_05.png
 
   python notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py
+  python notebooks/wellsight_v2/s2_labels/_road_driving_surface_variants_compare_9t.py --merged   # one-class fill vs hybrid
 """
 import json
 from pathlib import Path
@@ -157,5 +158,51 @@ def main():
     print("wrote", out)
 
 
+
+
+def merged_vs_hybrid():
+    """One-class fill (--pad-mode merged) against the hybrid road + pad union: where do they differ?"""
+    ref = VARIANTS["reference: band 2 m, corridor 6 m"]
+    mtag = "bg6m_slope25deg_padmerged_band2m"
+    hyb = load(ref, "driving_surface").geometry.union_all().union(load(ref, "pad_surface").geometry.union_all())
+    mer = load(mtag, "driving_surface").geometry.union_all()
+    only_m, only_h = mer.difference(hyb), hyb.difference(mer)
+    out = {"merged_area_ha": round(mer.area / 1e4, 2), "hybrid_road_plus_pad_area_ha": round(hyb.area / 1e4, 2),
+           "only_in_merged_ha": round(only_m.area / 1e4, 2), "only_in_hybrid_ha": round(only_h.area / 1e4, 2),
+           "agreement_iou": round(mer.intersection(hyb).area / mer.union(hyb).area, 4)}
+    pieces = gpd.GeoDataFrame(geometry=[g for d in (only_m, only_h) for g in getattr(d, "geoms", [d])], crs=CRS)
+    pieces["src"] = ["merged"] * len(getattr(only_m, "geoms", [only_m])) + ["hybrid"] * len(getattr(only_h, "geoms", [only_h]))
+    pieces["area_m2"] = pieces.area
+    out["difference_patches_over_10m2"] = int((pieces.area_m2 > 10).sum())
+    out["largest_difference_patches_m2"] = [round(a, 1) for a in pieces.area_m2.nlargest(6)]
+    print(json.dumps(out, indent=2))
+    with open(RES / f"{PRE}{mtag}_vs_padhybrid_band2m_full_9t_05_summary.json", "w") as fh:
+        json.dump(out, fh, indent=2)
+    pick = pieces.nlargest(6, "area_m2")
+    fig, axs = plt.subplots(2, 3, figsize=(13.2, 9.8), squeeze=False, gridspec_kw={"hspace": 0.2})
+    with rasterio.open(HILLSHADE) as hs:
+        for ax, (_, r) in zip(axs.ravel(), pick.iterrows()):
+            c = r.geometry.centroid
+            half = 30.0
+            bb = (c.x - half, c.y - half, c.x + half, c.y + half)
+            w = rasterio.windows.from_bounds(*bb, transform=hs.transform)
+            ax.imshow(hs.read(1, window=w, boundless=True), cmap="gray",
+                      extent=(bb[0], bb[2], bb[1], bb[3]), interpolation="nearest")
+            cl = box(*bb)
+            gpd.GeoSeries([hyb], crs=CRS).clip(cl).boundary.plot(ax=ax, color="#1F5FA8", lw=1.7)
+            gpd.GeoSeries([mer], crs=CRS).clip(cl).boundary.plot(ax=ax, color="#D97706", lw=1.7, linestyle="--")
+            ax.set_xlim(bb[0], bb[2]); ax.set_ylim(bb[1], bb[3]); ax.set_xticks([]); ax.set_yticks([])
+            ax.set_title(f"{r.area_m2:.0f} m² only in {r.src}", fontsize=9.5, color=INK, loc="left")
+    fig.suptitle("One-class fill against roads and pads filled separately: the six largest differences",
+                 x=0.02, ha="left", fontsize=12, color=INK)
+    fig.text(0.02, 0.012, "Solid blue: road and pad filled as separate classes (hybrid), outer edge.  "
+             "Dashed orange: one class for both (merged).", fontsize=8.5, color=MUTED)
+    fig.subplots_adjust(left=0.02, right=0.98, top=0.93, bottom=0.05, wspace=0.05)
+    fp = RES / "figures" / f"{PRE}{mtag}_vs_padhybrid_band2m_largest_differences_on_hillshade_9t_05.png"
+    fig.savefig(fp, dpi=170, facecolor="white")
+    print("wrote", fp)
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    merged_vs_hybrid() if "--merged" in sys.argv else main()

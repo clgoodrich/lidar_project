@@ -26,6 +26,8 @@ Pad modes (--pad-mode)
             background floods compete there and the line lands on whatever slope break exists.
           * a pad may not grow beyond its outline + PAD_BAND_M (pixels past that revert to none).
           Output labels: 1 road, 2 pad.
+  merged  the same seeds and limits as hybrid, but road and pad seeds carry ONE label, so the
+          fill does not separate roads from pads. Output label: 1 disturbed flat surface.
 
 Seed source (--seed-source)
   annotation  road seeds from the annotated centrelines, pads from the annotated plats (default).
@@ -97,8 +99,8 @@ PAD, BASELINE = "#1F5FA8", "#8E959B"   # pad = lost/found blue; baseline = neutr
 
 def make_tag():
     t = f"bg{BG_DIST_M:g}m_slope{SLOPE_BG_DEG:g}deg"
-    if PAD_MODE == "hybrid":
-        t += f"_padhybrid_band{PAD_BAND_M:g}m"
+    if PAD_MODE in ("hybrid", "merged"):
+        t += f"_pad{PAD_MODE}_band{PAD_BAND_M:g}m"
     if SEED_SOURCE == "model":
         t += f"_seedmodel_roadthr{ROAD_SEED_THR:.2f}_padthr{PAD_SEED_THR:.2f}"
     return t.replace(".", "p")
@@ -131,11 +133,11 @@ def segment_tile(dem, transform, res, roads, pads=None, centre_r=None, padfull_r
     shape_ = dem.shape
     if centre_r is not None:
         centre = centre_r.copy()
-        use_pads = PAD_MODE == "hybrid" and padfull_r is not None and padfull_r.any()
+        use_pads = PAD_MODE in ("hybrid", "merged") and padfull_r is not None and padfull_r.any()
         if not centre.any() and not use_pads:
             return np.zeros(shape_, np.uint8), centre
     else:
-        use_pads = PAD_MODE == "hybrid" and pads is not None and not pads.empty
+        use_pads = PAD_MODE in ("hybrid", "merged") and pads is not None and not pads.empty
         if roads.empty and not use_pads:
             return np.zeros(shape_, np.uint8), np.zeros(shape_, bool)
         centre = burn(roads.geometry, shape_, transform) if not roads.empty else np.zeros(shape_, bool)
@@ -165,7 +167,7 @@ def segment_tile(dem, transform, res, roads, pads=None, centre_r=None, padfull_r
     pad_ring = pad_outer & (pad_dist >= PAD_BAND_M - res) & ~corridor
     markers[mask & (road_ring | pad_ring | steep)] = 2                # background
     markers[centre & ~steep & mask & ~pad_core] = 1                   # road
-    markers[pad_core & mask] = 3                                      # pad (overrides steep)
+    markers[pad_core & mask] = 3 if PAD_MODE == "hybrid" else 1      # pad (overrides steep); merged: same label as road
     lab = watershed(edge, markers, mask=mask)
     pad = (lab == 3) & pad_outer
     road = lab == 1
@@ -286,7 +288,7 @@ def main():
     global PAD_MODE, PAD_BAND_M, BG_DIST_M, SEED_SOURCE
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--pilot", action="store_true", help="only windows around the user's test lines")
-    ap.add_argument("--pad-mode", choices=["none", "hybrid"], default="none")
+    ap.add_argument("--pad-mode", choices=["none", "hybrid", "merged"], default="none")
     ap.add_argument("--pad-band-m", type=float, default=PAD_BAND_M)
     ap.add_argument("--bg-dist-m", type=float, default=BG_DIST_M, help="road corridor half-width")
     ap.add_argument("--seed-source", choices=["annotation", "model"], default="annotation")
@@ -314,7 +316,7 @@ def main():
             area = tile_box
         win = rasterio.windows.from_bounds(*area.bounds, transform=src.transform).round_offsets().round_lengths()
         seeds = model_seeds((src.height, src.width), src.res[0]) if SEED_SOURCE == "model" else None
-        labels, centre, tf = run_area(src, roads, win, pads if PAD_MODE == "hybrid" else None, seeds)
+        labels, centre, tf = run_area(src, roads, win, pads if PAD_MODE != "none" else None, seeds)
         mask = (labels == 1).astype(np.uint8)
         prof = src.profile
 
@@ -365,7 +367,7 @@ def main():
         "median_width_where_no_limit_hit": round(float(found[~found.hit_limit_any].width_m.median()), 2),
         "seed_source": SEED_SOURCE,
         "seed_thresholds": {"road": ROAD_SEED_THR, "pad": PAD_SEED_THR} if SEED_SOURCE == "model" else None,
-        "pad_mode": PAD_MODE, "pad_band_m": PAD_BAND_M if PAD_MODE == "hybrid" else None,
+        "pad_mode": PAD_MODE, "pad_band_m": PAD_BAND_M if PAD_MODE != "none" else None,
         "transects_on_pad_core_skipped": int(tw.station_in_pad_core.sum()),
         "share_hit_limit_any_near_pads_8m": round(float(found[found.near_pad_8m].hit_limit_any.mean()), 3),
         "share_hit_limit_any_away_from_pads": round(float(found[~found.near_pad_8m].hit_limit_any.mean()), 3),

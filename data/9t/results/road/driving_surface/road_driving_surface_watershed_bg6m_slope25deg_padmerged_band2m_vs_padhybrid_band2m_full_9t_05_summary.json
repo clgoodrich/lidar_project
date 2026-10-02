@@ -1,0 +1,16 @@
+{
+  "merged_area_ha": 202.32,
+  "hybrid_road_plus_pad_area_ha": 201.23,
+  "only_in_merged_ha": 1.1,
+  "only_in_hybrid_ha": 0.0,
+  "agreement_iou": 0.9946,
+  "difference_patches_over_10m2": 322,
+  "largest_difference_patches_m2": [
+    153.8,
+    145.5,
+    138.5,
+    124.5,
+    103.8,
+    98.0
+  ]
+}
