@@ -229,7 +229,7 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - **NISAR GSLC stack follow-ups (added 2026-09-30).** See `docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md`. Against same-shape decoys, pads are 0.2–0.4 dB darker. Pits show about −0.4 dB only when the data are shifted onto the lidar. The shift comes from a weak canopy correlation, ρ ≤ 0.07. To do:
   - register each track against point targets (pumpjacks, tanks, buildings) found in the lidar DSM. This decides whether the pit signal is real.
   - add March–April GSLCs when released. That is the flooded-forest HH double-bounce test for water-filled pits.
-  - coherence from the saved complex windows (reappraisal option 2); no new download needed.
+  - ~~coherence from the saved complex windows (reappraisal option 2)~~ **DONE 2026-10-05**: null at pit scale (`docs/iterations/nisar_gslc_interferogram_pits_9t.md`). Tile coherence 0.50 HH in snow-free 12-day pairs, which suits cluster or slope motion (option 3).
   - re-run the GCOV pad test with decoys. Its −0.44 dB includes a pad-size effect.
 - **NISAR GCOV pad test, follow-ups (added 2026-09-26).** See `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`. The single January beta image gives a faint pad signal: open pads are about 0.8 dB darker in HH. The open/closed control is also weak (HV AUC 0.62). To do:
   - repeat on a leaf-on or fall snow-free GCOV granule

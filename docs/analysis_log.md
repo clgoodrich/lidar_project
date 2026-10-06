@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-05 -- NISAR interferograms at well pits, 9t
+
+The user asked to try interferograms on sample well pits. This is option 2 of the 2026-09-30 reappraisal, built from the saved GSLC windows with no new download.
+- **Interferograms.** 21 same-track pairs, at most 24 days apart. GSLC is already phase-flattened, and a spectrum check shows no fringe ramp. Coherence and phase use 3 x 3 pixels.
+- **Coherence.** The tile median is 0.50 HH and 0.42 HV. The best pair is track 090, 2026-09-12 to 09-24, at 0.68. Mid-winter is 0.35.
+- **Pits against decoys (506 pits).** The coherence excess is +0.0001 HH as delivered and -0.005 when shifted. The sign flips with registration, at about 1% of coherence. The open-pit HV +0.014 vanishes when shifted.
+- **Motion.** Single-pair noise is about 7.5 mm for both pits and decoys. Pooled, pit motion relative to ring is -0.3 mm (CI -0.6 to +0.2).
+- **Verdict.** Null at pit scale, as the reappraisal predicted. Tile coherence is good enough for cluster or slope motion work (option 3).
+- **Write-up.** `docs/iterations/nisar_gslc_interferogram_pits_9t.md`
+
 ## 2026-10-02 -- Flat-surface fill with no seeds, 9t
 
 The user asked for the fill with no shapefile seeds. Flat seeds are slope < 5° and steep seeds are slope ≥ 15°, with no corridor.

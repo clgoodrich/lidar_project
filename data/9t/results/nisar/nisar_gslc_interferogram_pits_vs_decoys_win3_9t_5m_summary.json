@@ -1,0 +1,57 @@
+{
+  "window_px": 3,
+  "pairs": 21,
+  "pits": 506,
+  "registration": "as delivered",
+  "shift_m": {},
+  "hh": {
+    "tile_coherence_median_over_pairs": 0.495,
+    "pit_coherence_median": 0.468,
+    "ring_coherence_median": 0.466,
+    "coh_excess_pooled_per_pit_median": 0.0001,
+    "coh_excess_pooled_ci95": [
+      -0.0042,
+      0.0051
+    ],
+    "coh_excess_pooled_wilcoxon_p": 0.7460904121398926,
+    "coh_excess_open_pits_cover_lt_0p3_median": 0.012,
+    "n_open_pits": 97,
+    "coh_excess_closed_pits_cover_gt_0p7_median": -0.0037,
+    "n_closed_pits": 160,
+    "los_excess_mm_pooled_median": -0.31,
+    "los_excess_mm_pooled_ci95": [
+      -0.6303,
+      0.2352
+    ],
+    "single_pair_los_pit_minus_ring_abs_mm_median": 7.59,
+    "single_pair_los_decoy_abs_mm_median": 7.43
+  },
+  "hv": {
+    "tile_coherence_median_over_pairs": 0.42,
+    "pit_coherence_median": 0.419,
+    "ring_coherence_median": 0.418,
+    "coh_excess_pooled_per_pit_median": 0.0024,
+    "coh_excess_pooled_ci95": [
+      -0.0015,
+      0.0059
+    ],
+    "coh_excess_pooled_wilcoxon_p": 0.05774034932255745,
+    "coh_excess_open_pits_cover_lt_0p3_median": 0.0137,
+    "n_open_pits": 97,
+    "coh_excess_closed_pits_cover_gt_0p7_median": -0.0048,
+    "n_closed_pits": 160,
+    "los_excess_mm_pooled_median": 0.05,
+    "los_excess_mm_pooled_ci95": [
+      -0.3611,
+      0.443
+    ],
+    "single_pair_los_pit_minus_ring_abs_mm_median": 10.18,
+    "single_pair_los_decoy_abs_mm_median": 9.91
+  },
+  "best_pair_hh": {
+    "track": 90,
+    "d1": "2026-09-12",
+    "d2": "2026-09-24",
+    "tile_coherence_median": 0.676
+  }
+}

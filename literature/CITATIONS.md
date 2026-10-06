@@ -425,3 +425,17 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** The flooding step of the road driving-surface segmentation above.
 - **Generated:** same files as Beucher & Meyer 1993 above.
 - **Source:** https://doi.org/10.1109/34.87344 — cite-only (paywalled IEEE).
+
+### Touzi et al. 1999 — coherence estimation and its bias
+- **Citation:** Touzi, R., Lopes, A., Bruniquel, J., & Vachon, P. W. (1999). "Coherence estimation for SAR imagery." *IEEE Transactions on Geoscience and Remote Sensing* 37(1), 135–149. doi:10.1109/36.739146.
+- **About:** The sample coherence estimator over a moving window, and its upward bias when the number of looks is small and true coherence is low.
+- **Used for:** Coherence at well pits from NISAR GSLC pairs over 9t, with a 3 x 3 (9-look) window. The bias is why pits are compared with rings and same-shape decoys under the same window, not read as absolute values.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_gslc_interferogram_pits_9t.py`; `data/9t/results/nisar/nisar_gslc_interferogram_pits_vs_decoys_win3_9t_5m_summary.json`; `data/9t/derived/nisar_gslc_5m/nisar_interferogram_coherence_hh_win3_t090A_20260912_20260924_9t_5m.tif`; `docs/iterations/nisar_gslc_interferogram_pits_9t.md`.
+- **Source:** https://doi.org/10.1109/36.739146 — cite-only (paywalled IEEE).
+
+### Zebker & Villasenor 1992 — decorrelation in interferometric radar echoes
+- **Citation:** Zebker, H. A., & Villasenor, J. (1992). "Decorrelation in interferometric radar echoes." *IEEE Transactions on Geoscience and Remote Sensing* 30(5), 950–959. doi:10.1109/36.175330.
+- **About:** Sources of interferometric decorrelation: baseline, temporal change, and volume scattering in vegetation.
+- **Used for:** Reading the seasonal coherence over 9t (0.68 in a September pair, 0.35 in mid-winter) and the expectation that canopy and snow lower coherence.
+- **Generated:** same files as Touzi et al. 1999 above.
+- **Source:** https://doi.org/10.1109/36.175330 — cite-only (paywalled IEEE).

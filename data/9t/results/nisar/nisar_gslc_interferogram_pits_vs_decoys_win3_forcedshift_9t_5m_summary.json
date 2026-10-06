@@ -1,0 +1,70 @@
+{
+  "window_px": 3,
+  "pairs": 21,
+  "pits": 506,
+  "registration": "best canopy shift per track",
+  "shift_m": {
+    "26": [
+      10.0,
+      -10.0
+    ],
+    "90": [
+      -15.0,
+      -5.0
+    ],
+    "162": [
+      -10.0,
+      -5.0
+    ]
+  },
+  "hh": {
+    "tile_coherence_median_over_pairs": 0.495,
+    "pit_coherence_median": 0.459,
+    "ring_coherence_median": 0.467,
+    "coh_excess_pooled_per_pit_median": -0.0047,
+    "coh_excess_pooled_ci95": [
+      -0.0091,
+      0.0009
+    ],
+    "coh_excess_pooled_wilcoxon_p": 0.004667936824262142,
+    "coh_excess_open_pits_cover_lt_0p3_median": -0.0042,
+    "n_open_pits": 97,
+    "coh_excess_closed_pits_cover_gt_0p7_median": -0.005,
+    "n_closed_pits": 160,
+    "los_excess_mm_pooled_median": 0.09,
+    "los_excess_mm_pooled_ci95": [
+      -0.4226,
+      0.4952
+    ],
+    "single_pair_los_pit_minus_ring_abs_mm_median": 7.67,
+    "single_pair_los_decoy_abs_mm_median": 7.35
+  },
+  "hv": {
+    "tile_coherence_median_over_pairs": 0.42,
+    "pit_coherence_median": 0.412,
+    "ring_coherence_median": 0.419,
+    "coh_excess_pooled_per_pit_median": -0.005,
+    "coh_excess_pooled_ci95": [
+      -0.0081,
+      -0.0009
+    ],
+    "coh_excess_pooled_wilcoxon_p": 0.006199883297085762,
+    "coh_excess_open_pits_cover_lt_0p3_median": -0.0021,
+    "n_open_pits": 97,
+    "coh_excess_closed_pits_cover_gt_0p7_median": -0.0038,
+    "n_closed_pits": 160,
+    "los_excess_mm_pooled_median": 0.32,
+    "los_excess_mm_pooled_ci95": [
+      -0.3529,
+      0.9112
+    ],
+    "single_pair_los_pit_minus_ring_abs_mm_median": 10.41,
+    "single_pair_los_decoy_abs_mm_median": 9.9
+  },
+  "best_pair_hh": {
+    "track": 90,
+    "d1": "2026-09-12",
+    "d2": "2026-09-24",
+    "tile_coherence_median": 0.676
+  }
+}
