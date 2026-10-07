@@ -439,3 +439,24 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** Reading the seasonal coherence over 9t (0.68 in a September pair, 0.35 in mid-winter) and the expectation that canopy and snow lower coherence.
 - **Generated:** same files as Touzi et al. 1999 above.
 - **Source:** https://doi.org/10.1109/36.175330 — cite-only (paywalled IEEE).
+
+### Ferretti, Prati & Rocca 2001 — permanent scatterers
+- **Citation:** Ferretti, A., Prati, C., & Rocca, F. (2001). "Permanent scatterers in SAR interferometry." *IEEE Transactions on Geoscience and Remote Sensing* 39(1), 8–20. doi:10.1109/36.898661.
+- **About:** Points that keep a stable echo over a long SAR stack. They are picked by the amplitude dispersion index D_A = std / mean of amplitude, with D_A < 0.25.
+- **Used for:** The steel test at DEP wells in 9t. A steady bright target is D_A < 0.25 and at least 6 dB above its surroundings.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_gslc_steel_scatterers_dep_wells_9t.py`; `docs/iterations/nisar_gslc_well_applications_steel_change_motion_9t.md`; `data/9t/results/nisar/nisar_gslc_steady_bright_targets_da0p25_bright6db_r15m_summary_9t_5m.json`.
+- **Source:** https://doi.org/10.1109/36.898661 — cite-only (paywalled IEEE).
+
+### Berardino et al. 2002 — small-baseline InSAR time series
+- **Citation:** Berardino, P., Fornaro, G., Lanari, R., & Sansosti, E. (2002). "A new algorithm for surface deformation monitoring based on small baseline differential SAR interferograms." *IEEE Transactions on Geoscience and Remote Sensing* 40(11), 2375–2383. doi:10.1109/TGRS.2002.803792.
+- **About:** Ground displacement time series from many short-baseline, multilooked interferograms.
+- **Used for:** The summer slope-motion stack in 9t, a simple chain version: consecutive 12–24 day pairs, 25 m multilook, cumulative phase.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_gslc_slope_motion_summer_stack_9t.py`; `docs/iterations/nisar_gslc_well_applications_steel_change_motion_9t.md`; `data/9t/results/nisar/nisar_gslc_slope_motion_summer2026_hh_ml5_25m_lp1000m_coh0p45_summary_9t.json`.
+- **Source:** https://doi.org/10.1109/TGRS.2002.803792 — cite-only (paywalled IEEE).
+
+### De Zan et al. 2014 — soil moisture and interferometric phase
+- **Citation:** De Zan, F., Parizzi, A., Prats-Iraola, P., & López-Dekker, P. (2014). "A SAR interferometric model for soil moisture." *IEEE Transactions on Geoscience and Remote Sensing* 52(1), 418–425. doi:10.1109/TGRS.2013.2241069.
+- **About:** A change in soil moisture shifts the interferometric phase, not only the coherence. The shift can look like millimetres of motion.
+- **Used for:** Reading the summer slope signal in 9t. East- and west-facing steep slopes move in opposite directions, against downslope creep. A moisture phase is one likely cause.
+- **Generated:** same files as Berardino et al. 2002 above.
+- **Source:** https://doi.org/10.1109/TGRS.2013.2241069 — cite-only (paywalled IEEE).

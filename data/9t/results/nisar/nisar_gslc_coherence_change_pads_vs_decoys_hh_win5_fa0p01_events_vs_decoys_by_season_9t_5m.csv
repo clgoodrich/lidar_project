@@ -1,0 +1,3 @@
+season,threshold,n_pad_pairs,pad_events,expected_from_decoys,decoy_rate,p_more_than_decoys
+snowfree,-0.181,12331,143,123.5,0.01,0.045
+winter,-0.152,1298,13,13.1,0.0101,0.55

@@ -1,0 +1,4 @@
+aspect,n_pixels_25m,asc_mean_mm,ci95_block500m
+west_facing,136,-4.3,"[-7.24, -0.81]"
+east_facing,686,4.93,"[3.97, 5.79]"
+north_or_south_facing,179,-1.39,"[-3.95, 1.13]"

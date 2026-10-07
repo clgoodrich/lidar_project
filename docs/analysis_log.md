@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-07 -- NISAR for wells: steel, pad change, slope motion, 9t
+
+The user asked for all three options from the 2026-10-05 answer. Same 31 GSLC windows, no new download.
+- **Steel.** Steady bright targets (D_A < 0.25, ≥ 6 dB above the 250 m median) within 15 m of DEP wells. 1.3% of active, 1.1% of plugged and 1.7% of abandoned wells have one, against 0.3–1.0% of matched decoys. Wells are about 0.1 dB brighter than decoys (AUC 0.53–0.56). Active wells are no brighter than abandoned ones, so this is not pumpjacks. There is no registration peak.
+- **Pad change.** HH coherence at 25 m, pad core minus ring, against each pad's own median. The threshold is the 1% decoy level. Snow-free: 143 pad events against 123.5 expected (p = 0.045). Winter: 13 against 13.1. Active-well pads flag no more often (1.13% vs 1.15%). Only one in-window plug date (2025-10-12), before the stack, so DEP can't validate this.
+- **Slope motion.** Summer chains at 25 m with the 1 km trend removed. Tracks 090 and 162 agree weakly on slopes (r = 0.12 steep, 0.09 moderate) and not on flat ground (r = 0.00). But steep east-facing slopes read +4.9 mm and west-facing −4.3 mm. That is the opposite of downslope creep. A soil-moisture phase or a DEM error is more likely. Track 026 is 1% coherent. No DEP well is flagged (0.4 expected).
+- **Escalate.** The NISAR phase sign is not confirmed. The only landslide shapefile on disk is in Antarctica.
+- **Write-up.** `docs/iterations/nisar_gslc_well_applications_steel_change_motion_9t.md`.
+
 ## 2026-10-05 -- NISAR interferograms at well pits, 9t
 
 The user asked to try interferograms on sample well pits. This is option 2 of the 2026-09-30 reappraisal, built from the saved GSLC windows with no new download.
