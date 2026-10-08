@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-08 -- NISAR: all published GSLC dates fetched, bright-target point layer, pit-test bias found
+
+- **Fetch.** Three new GSLC dates over 9t: 2026-09-29 (t162), 2026-10-02 (t026), 2026-10-06 (t090). CMR has no other GSLC collection, so this is every published date: 35 windows, 34 usable. There are no regular 12-day dates before 2026-06-20. The run is appended to `data/9t/results/nisar/nisar_gslc_window_fetch_run_9t.log`.
+- **Bright targets.** New script `notebooks/wellsight_v2/s5_eval/_nisar_bright_targets_9t.py`. It writes `data/9t/results/nisar/nisar_bright_targets_points_9t.gpkg` (layer `candidate_bright_targets`) and `nisar_bright_targets_summary_9t.json`. 331 targets, 8 on two tracks. 4.9% are at a DEP well against 3.8% of random spots, so they are not drawn to wells. Write-up in section 4 of `docs/iterations/nisar_wells_steel_pads_slopes_9t.md`.
+- **Pit-test bias.** The user asked if the shapefiles bias the NISAR picks. In `_nisar_gslc_interferogram_pits_9t.py` the pit ring skips pits and roads but not pads. 47% of the 723 pits lie inside a pad and 71% within 30 m of one. Decoy cores keep 20 m from every feature, so their rings are mostly forest. Pit and decoy contrasts are therefore taken against different ground, which pushes the pit result toward zero. Not yet re-run; added to BACKLOG. Registration is picked by canopy correlation, so it is not biased by the pits. Slope motion uses no shapefile.
+
+---
+
 ## 2026-10-07 -- NISAR for wells: steel, pad change, slope motion, 9t
 
 The user asked for all three options from the 2026-10-05 answer. Same 31 GSLC windows, no new download.

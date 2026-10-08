@@ -237,6 +237,8 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
     - re-run slope motion with a longer snow-free stack (2027) and test for a soil-moisture phase.
     - check the top candidate pad events against imagery or DEP inspection records. Re-draw pad decoys on open ground.
     - steel needs finer pixels or more dates. Retry when the full NISAR archive gives 60+ dates per track.
+    - (2026-10-08) pit interferogram test: pit rings fall on pads, decoy rings on forest. Keep pads out of the pit ring, or draw each pit's decoys in the same setting (pad or forest). Re-run before trusting the pit-scale null.
+    - (2026-10-08) check the 8 two-track bright targets in `nisar_bright_targets_points_9t.gpkg` against imagery. Find out why track 090 gives six times more targets than track 162.
 - **NISAR GCOV pad test, follow-ups (added 2026-09-26).** See `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`. The single January beta image gives a faint pad signal: open pads are about 0.8 dB darker in HH. The open/closed control is also weak (HV AUC 0.62). To do:
   - repeat on a leaf-on or fall snow-free GCOV granule
   - average several dates to beat speckle

@@ -124,6 +124,35 @@
 - Track 026 has too few coherent pixels to act as the independent check.
 - Per pair the noise is about 6 mm. Summed over 6–7 pairs it is 15 mm. A single well site would have to move several centimetres in a summer to show.
 
+## 4. Bright targets anywhere (added 2026-10-08)
+
+**Question.** The steel test only scored DEP wells. This one maps every bright, steady target the stack finds, near a well or not.
+
+**Data.** 34 usable dates after the 2026-10-08 fetch: 9 on track 026, 11 on track 090 and 14 on track 162.
+
+**Method.**
+- Same rule as the steel test: D_A < 0.25 and at least 6 dB above the 250 m median.
+- Each connected group of such pixels on one track becomes one point, at its brightest pixel.
+- Points from different tracks within 15 m are one target. The tracks are only registered to about 15 m.
+- Each target gets its nearest DEP well (any status), and its distance to the nearest annotated pad and road.
+- Context is the first match: `at_well` (within 15 m of a DEP well), `on_pad`, `on_road`, else `elsewhere`.
+- Chance baseline: 20,000 random spots on valid lidar-covered pixels, given the same context.
+
+**Results.** 331 targets. 323 are seen on one track and 8 on two. Track 090 holds 318 of the 373 SBT pixels.
+
+| Context | Targets | Share (inside lidar) | Share of random spots |
+|---|---|---|---|
+| At a DEP well | 17 | 4.9% | 3.8% |
+| On a pad | 35 | 10.2% | 14.6% |
+| On a road | 55 | 17.2% | 20.4% |
+| Elsewhere | 224 | 67.7% | 61.2% |
+
+**Reading it.**
+- Bright targets are not drawn to wells, pads or roads. Their shares are close to chance.
+- Track 090 finds six times more targets than track 162 with fewer dates. Most single-track targets are likely noise in D_A, or ground facing that track's radar.
+- The 8 two-track targets are the ones worth a look. 7 of them sit 30–80 m from active wells, and 5 are under open sky. They could be tanks or equipment off the pad. That is a guess until imagery is checked.
+- All 331 are candidates for metal. None is a well location.
+
 ## What this means for the wells
 
 - L-band at 5 m does not see well steel through the canopy in 31 beta dates.
@@ -141,6 +170,9 @@ In `data/9t/results/nisar/`:
   - `nisar_steel_by_status_9t.csv`
   - `nisar_steel_by_canopy_9t.csv`
   - `nisar_steel_summary_9t.json`
+- Bright targets:
+  - `nisar_bright_targets_points_9t.gpkg`, layer `candidate_bright_targets`
+  - `nisar_bright_targets_summary_9t.json`
 - Pad change:
   - `nisar_pad_change_events_9t.gpkg`, layer `candidate_pad_events`
   - `nisar_pad_change_per_pair_9t.csv`
@@ -184,4 +216,5 @@ Figure colours:
 python notebooks/wellsight_v2/s5_eval/_nisar_steel_9t.py
 python notebooks/wellsight_v2/s5_eval/_nisar_pad_change_9t.py
 python notebooks/wellsight_v2/s5_eval/_nisar_slope_motion_9t.py
+python notebooks/wellsight_v2/s5_eval/_nisar_bright_targets_9t.py
 ```
