@@ -137,31 +137,31 @@
 
 In `data/9t/results/nisar/`:
 - Steel:
-  - `nisar_gslc_steady_bright_targets_da0p25_bright6db_r15m_at_dep_wells_9t_5m.gpkg`, layer `dep_wells_sbt`
-  - `nisar_gslc_steady_bright_targets_da0p25_bright6db_r15m_dep_wells_vs_decoys_by_status_9t_5m.csv`
-  - `nisar_gslc_steady_bright_targets_da0p25_bright6db_r15m_dep_wells_vs_decoys_by_status_and_canopy_9t_5m.csv`
-  - `nisar_gslc_steady_bright_targets_da0p25_bright6db_r15m_summary_9t_5m.json`
+  - `nisar_steel_wells_9t.gpkg`, layer `dep_wells_sbt`
+  - `nisar_steel_by_status_9t.csv`
+  - `nisar_steel_by_canopy_9t.csv`
+  - `nisar_steel_summary_9t.json`
 - Pad change:
-  - `nisar_gslc_coherence_change_pads_vs_decoys_hh_win5_fa0p01_candidate_disturbance_events_9t_5m.gpkg`, layer `candidate_pad_events`
-  - `nisar_gslc_coherence_change_pads_vs_decoys_hh_win5_fa0p01_per_pad_per_pair_9t_5m.csv`
-  - `nisar_gslc_coherence_change_pads_vs_decoys_hh_win5_fa0p01_events_vs_decoys_by_season_9t_5m.csv`
-  - `nisar_gslc_coherence_change_pads_vs_decoys_hh_win5_fa0p01_summary_9t_5m.json`
+  - `nisar_pad_change_events_9t.gpkg`, layer `candidate_pad_events`
+  - `nisar_pad_change_all_9t.csv`
+  - `nisar_pad_change_by_season_9t.csv`
+  - `nisar_pad_change_summary_9t.json`
 - Slope motion:
-  - `nisar_gslc_slope_motion_summer2026_hh_ml5_25m_lp1000m_coh0p45_at_dep_wells_9t.gpkg`, layer `dep_wells_los_summer2026`
-  - `nisar_gslc_slope_motion_summer2026_hh_ml5_25m_lp1000m_coh0p45_track_agreement_by_slope_9t.csv`
-  - `nisar_gslc_slope_motion_summer2026_hh_ml5_25m_lp1000m_coh0p45_spread_by_slope_9t.csv`
-  - `nisar_gslc_slope_motion_summer2026_hh_ml5_25m_lp1000m_coh0p45_steep_slope_displacement_by_aspect_9t.csv`
-  - `nisar_gslc_slope_motion_summer2026_hh_ml5_25m_lp1000m_coh0p45_summary_9t.json`
+  - `nisar_slope_motion_wells_9t.gpkg`, layer `dep_wells_los_summer2026`
+  - `nisar_slope_motion_tracks_9t.csv`
+  - `nisar_slope_motion_spread_9t.csv`
+  - `nisar_slope_motion_aspect_9t.csv`
+  - `nisar_slope_motion_summary_9t.json`
 
 In `data/9t/results/nisar/figures/`:
-- `nisar_gslc_steady_bright_targets_da0p25_bright6db_r15m_dep_wells_vs_decoys_and_shift_9t_5m.png`
-- `nisar_gslc_coherence_change_pads_vs_decoys_hh_win5_fa0p01_anomaly_hist_by_season_9t_5m.png`
-- `nisar_gslc_coherence_change_pads_vs_decoys_hh_win5_fa0p01_top_snowfree_events_timeseries_and_chips_9t_5m.png`
-- `nisar_gslc_slope_motion_summer2026_hh_ml5_25m_lp1000m_coh0p45_maps_and_track_agreement_9t.png`
+- `nisar_steel_9t.png`
+- `nisar_pad_change_hist_9t.png`
+- `nisar_pad_change_top_events_9t.png`
+- `nisar_slope_motion_9t.png`
 
 In `data/9t/derived/nisar_gslc_5m/` (gitignored):
-- `nisar_gslc_steady_bright_targets_da0p25_bright6db_track_count_9t_5m.tif` (0–3 tracks)
-- `nisar_los_displacement_mm_summer2026_t{026,090,162}_hh_ml5_lp1000m_9t_25m.tif`
+- `nisar_steel_count_9t.tif` (0–3 tracks)
+- `nisar_slope_motion_t{026,090,162}_9t.tif`
 
 Figure colours:
 - Wells and pads use the lost/found palette `#1F5FA8` / `#D97706` / `#A31515`, with greys for controls.
@@ -181,7 +181,7 @@ Figure colours:
 ## Reproduce
 
 ```bash
-python notebooks/wellsight_v2/s5_eval/_nisar_gslc_steel_scatterers_dep_wells_9t.py
-python notebooks/wellsight_v2/s5_eval/_nisar_gslc_coherence_change_pads_9t.py
-python notebooks/wellsight_v2/s5_eval/_nisar_gslc_slope_motion_summer_stack_9t.py
+python notebooks/wellsight_v2/s5_eval/_nisar_steel_9t.py
+python notebooks/wellsight_v2/s5_eval/_nisar_pad_change_9t.py
+python notebooks/wellsight_v2/s5_eval/_nisar_slope_motion_9t.py
 ```

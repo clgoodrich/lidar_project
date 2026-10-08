@@ -23,7 +23,7 @@ forest give different brightness.
 Registration: the hit rate of active wells is recomputed with the stack shifted -20..+20 m.
 A clear peak away from zero is a point-target estimate of the radar-to-lidar offset.
 
-  python notebooks/wellsight_v2/s5_eval/_nisar_gslc_steel_scatterers_dep_wells_9t.py
+  python notebooks/wellsight_v2/s5_eval/_nisar_steel_9t.py
 """
 import importlib
 import json
@@ -216,24 +216,24 @@ def main():
                median_hit_rate_over_shifts=round(float(np.median(grid)), 3))
     print("registration", reg)
 
-    stem = f"nisar_gslc_steady_bright_targets_da{str(DA_MAX).replace('.', 'p')}_bright{int(BRIGHT_DB)}db_r{int(R_M)}m"
+    stem = "nisar_steel"
     w_out = w[["PERMIT_NUM", "WELL_STATU", "group", "OPERATOR", "cover", "n_tracks_sbt", "bright_max_db",
                "da_min", "geometry"]]
-    w_out.to_file(OUT / f"{stem}_at_dep_wells_9t_5m.gpkg", layer="dep_wells_sbt", driver="GPKG")
-    res.to_csv(OUT / f"{stem}_dep_wells_vs_decoys_by_status_9t_5m.csv", index=False)
-    by_cov.to_csv(OUT / f"{stem}_dep_wells_vs_decoys_by_status_and_canopy_9t_5m.csv", index=False)
+    w_out.to_file(OUT / f"{stem}_wells_9t.gpkg", layer="dep_wells_sbt", driver="GPKG")
+    res.to_csv(OUT / f"{stem}_by_status_9t.csv", index=False)
+    by_cov.to_csv(OUT / f"{stem}_by_canopy_9t.csv", index=False)
     summ = dict(params=dict(da_max=DA_MAX, bright_db=BRIGHT_DB, radius_m=R_M, background_m=BG_M,
                             n_decoy=N_DECOY, seed=SEED),
                 tracks={str(t): dict(n_dates=int(m["n"]), sbt_pixels=int(m["sbt"].sum())) for t, m in maps.items()},
                 by_status=rows, by_status_and_canopy=by_cov.to_dict("records"), registration=reg,
                 registration_grid_rows_dy_cols_dx=dict(shifts=list(shifts), hit_rate=grid.round(3).tolist()))
-    json.dump(summ, open(OUT / f"{stem}_summary_9t_5m.json", "w"), indent=2, default=float)
+    json.dump(summ, open(OUT / f"{stem}_summary_9t.json", "w"), indent=2, default=float)
 
     # SBT count raster (0-3 tracks), gitignored derived
     cnt = np.sum([m["sbt"] for m in maps.values()], axis=0).astype(np.uint8)
     prof = dict(driver="GTiff", height=shape[0], width=shape[1], count=1, dtype="uint8", crs=CRS,
                 transform=tf, compress="deflate")
-    with rasterio.open(DER / f"{stem.replace('_r15m', '')}_track_count_9t_5m.tif", "w", **prof) as d:
+    with rasterio.open(DER / f"{stem}_count_9t.tif", "w", **prof) as d:
         d.write(cnt, 1)
 
     # figure: hit rates by group (wells vs decoys), and the registration grid
@@ -259,7 +259,7 @@ def main():
     fig.suptitle(f"NISAR HH steady bright targets (D_A < {DA_MAX}, ≥ {BRIGHT_DB:.0f} dB above 250 m background), 9t",
                  fontsize=11)
     fig.tight_layout()
-    fig.savefig(FIG / f"{stem}_dep_wells_vs_decoys_and_shift_9t_5m.png", dpi=150)
+    fig.savefig(FIG / f"{stem}_9t.png", dpi=150)
     print("done", stem)
 
 

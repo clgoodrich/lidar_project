@@ -22,7 +22,7 @@ bootstrap for the confidence interval (neighbouring pixels are not independent).
 Track 026 is descending. Its correlation with the ascending tracks is reported too; for
 downslope motion its sign depends on slope aspect, so it is a weaker check.
 
-  python notebooks/wellsight_v2/s5_eval/_nisar_gslc_slope_motion_summer_stack_9t.py
+  python notebooks/wellsight_v2/s5_eval/_nisar_slope_motion_9t.py
 """
 import importlib
 import json
@@ -205,13 +205,13 @@ def main():
                         n_wells_steep=int((wc.slope_deg_25m >= 15).sum()), n_wells_flat=int((wc.slope_deg_25m < 5).sum()))
     print(well_summary)
 
-    stem = f"nisar_gslc_slope_motion_summer2026_hh_ml{ML}_25m_lp{int(LP_M)}m_coh{str(COH_MIN).replace('.', 'p')}"
-    res.to_csv(OUT / f"{stem}_track_agreement_by_slope_9t.csv", index=False)
-    aspect.to_csv(OUT / f"{stem}_steep_slope_displacement_by_aspect_9t.csv", index=False)
-    spread.to_csv(OUT / f"{stem}_spread_by_slope_9t.csv", index=False)
+    stem = "nisar_slope_motion"
+    res.to_csv(OUT / f"{stem}_tracks_9t.csv", index=False)
+    aspect.to_csv(OUT / f"{stem}_aspect_9t.csv", index=False)
+    spread.to_csv(OUT / f"{stem}_spread_9t.csv", index=False)
     cols = ["PERMIT_NUM", "WELL_STATU", "OPERATOR", "slope_deg_25m", *[f"los_mm_t{t:03d}" for t in disp],
             "los_mm_asc_mean", "both_asc_same_sign_gt2sd", "geometry"]
-    w[cols].to_file(OUT / f"{stem}_at_dep_wells_9t.gpkg", layer="dep_wells_los_summer2026", driver="GPKG")
+    w[cols].to_file(OUT / f"{stem}_wells_9t.gpkg", layer="dep_wells_los_summer2026", driver="GPKG")
     json.dump(dict(params=dict(ml=ML, lp_m=LP_M, coh_min=COH_MIN, summer_from=SUMMER_FROM, block_m=BLOCK_M, B=B),
                    tracks={str(k): v for k, v in span.items()}, agreement=res.to_dict("records"),
                    spread=spread.to_dict("records"),
@@ -220,7 +220,7 @@ def main():
     prof = dict(driver="GTiff", height=shp25[0], width=shp25[1], count=1, dtype="float32", crs=CRS,
                 transform=tf25, nodata=np.nan, compress="deflate")
     for t, d in disp.items():
-        with rasterio.open(DER / f"nisar_los_displacement_mm_summer2026_t{t:03d}_hh_ml{ML}_lp{int(LP_M)}m_9t_25m.tif",
+        with rasterio.open(DER / f"{stem}_t{t:03d}_9t.tif",
                            "w", **prof) as o:
             o.write(d.astype(np.float32), 1)
 
@@ -268,7 +268,7 @@ def main():
         f"Expected by chance: {well_summary['expected_by_chance']}",
     ]), va="top", fontsize=10, family="monospace")
     fig.suptitle("NISAR L-band summer 2026 line-of-sight displacement, 25 m, 1 km trend removed, 9t", fontsize=12)
-    fig.savefig(FIG / f"{stem}_maps_and_track_agreement_9t.png", dpi=140, bbox_inches="tight")
+    fig.savefig(FIG / f"{stem}_9t.png", dpi=140, bbox_inches="tight")
     print("done", stem)
 
 

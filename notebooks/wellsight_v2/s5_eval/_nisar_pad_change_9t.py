@@ -18,7 +18,7 @@ Decoys: N_DECOY same-shape copies per pad on background 150-600 m away, with the
 Threshold: the anomaly at which only FA_RATE of decoy pairs fall below it, per season.
 Pad pairs below that are candidate disturbance events. The decoys give the expected count.
 
-  python notebooks/wellsight_v2/s5_eval/_nisar_gslc_coherence_change_pads_9t.py
+  python notebooks/wellsight_v2/s5_eval/_nisar_pad_change_9t.py
 """
 import importlib
 import json
@@ -133,18 +133,18 @@ def main():
     plug = j[j.PERMIT_NUM == "121-39189"]
     plug_pad = int(plug["pad"].iloc[0]) if len(plug) else None
 
-    stem = f"nisar_gslc_coherence_change_pads_vs_decoys_hh_win{WIN}_fa{str(FA_RATE).replace('.', 'p')}"
-    df.to_csv(OUT / f"{stem}_per_pad_per_pair_9t_5m.csv", index=False)
-    res.to_csv(OUT / f"{stem}_events_vs_decoys_by_season_9t_5m.csv", index=False)
+    stem = "nisar_pad_change"
+    df.to_csv(OUT / f"{stem}_all_9t.csv", index=False)
+    res.to_csv(OUT / f"{stem}_by_season_9t.csv", index=False)
     gdf = gpd.GeoDataFrame(ev.drop(columns=["kind", "copy", "flag"]), geometry=pads.geometry.values[ev.pad], crs=CRS)
-    gdf.to_file(OUT / f"{stem}_candidate_disturbance_events_9t_5m.gpkg", layer="candidate_pad_events", driver="GPKG")
+    gdf.to_file(OUT / f"{stem}_events_9t.gpkg", layer="candidate_pad_events", driver="GPKG")
     json.dump(dict(params=dict(win=WIN, core_m=CORE_M, ring_m=RING, n_decoy=N_DECOY, fa_rate=FA_RATE, seed=SEED),
                    n_pads_used=len(sets), n_pairs=len(pairs), by_season=out_rows,
                    pads_with_2plus_events=int((rep >= 2).sum()),
                    plugged_121_39189_pad=plug_pad,
                    plugged_121_39189_pad_events=ev[ev.pad == plug_pad][["track", "d1", "d2", "anomaly"]].to_dict("records")
                    if plug_pad is not None else None),
-              open(OUT / f"{stem}_summary_9t_5m.json", "w"), indent=2, default=float)
+              open(OUT / f"{stem}_summary_9t.json", "w"), indent=2, default=float)
 
     # figure 1: anomaly distributions, pads vs decoys, per season
     fig, ax = plt.subplots(1, 2, figsize=(11, 4.2), sharey=True)
@@ -160,7 +160,7 @@ def main():
     ax[0].set_ylabel("density")
     ax[0].legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(FIG / f"{stem}_anomaly_hist_by_season_9t_5m.png", dpi=150)
+    fig.savefig(FIG / f"{stem}_hist_9t.png", dpi=150)
 
     # figure 2: time series and chips for the four strongest snow-free events
     top = ev[ev.season == "snowfree"].drop_duplicates("pad").head(4)
@@ -191,7 +191,7 @@ def main():
         ax[0, 0].set_ylabel("pad core coherence (decoys as grey crosses)")
         fig.suptitle("Candidate disturbance events: strongest snow-free coherence drops on pads", fontsize=11)
         fig.tight_layout()
-        fig.savefig(FIG / f"{stem}_top_snowfree_events_timeseries_and_chips_9t_5m.png", dpi=150)
+        fig.savefig(FIG / f"{stem}_top_events_9t.png", dpi=150)
     print("done", stem)
 
 

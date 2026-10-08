@@ -231,7 +231,7 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
   - add March–April GSLCs when released. That is the flooded-forest HH double-bounce test for water-filled pits.
   - ~~coherence from the saved complex windows (reappraisal option 2)~~ **DONE 2026-10-05**: null at pit scale (`docs/iterations/nisar_gslc_interferogram_pits_9t.md`). Tile coherence 0.50 HH in snow-free 12-day pairs, which suits cluster or slope motion (option 3).
   - re-run the GCOV pad test with decoys. Its −0.44 dB includes a pad-size effect.
-  - **Steel, pad change and slope motion tried 2026-10-07** (`docs/iterations/nisar_gslc_well_applications_steel_change_motion_9t.md`). No usable well signal yet. Open items from it:
+  - **Steel, pad change and slope motion tried 2026-10-07** (`docs/iterations/nisar_wells_steel_pads_slopes_9t.md`). No usable well signal yet. Open items from it:
     - confirm the NISAR GSLC phase sign from the product specification. The summer slope signal flips meaning on it.
     - get a PA landslide inventory (PAGS) for 9t. The one on disk is in Antarctica.
     - re-run slope motion with a longer snow-free stack (2027) and test for a soil-moisture phase.
