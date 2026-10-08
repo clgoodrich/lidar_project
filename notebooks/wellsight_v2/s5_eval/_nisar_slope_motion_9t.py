@@ -220,7 +220,7 @@ def main():
     prof = dict(driver="GTiff", height=shp25[0], width=shp25[1], count=1, dtype="float32", crs=CRS,
                 transform=tf25, nodata=np.nan, compress="deflate")
     for t, d in disp.items():
-        with rasterio.open(DER / f"{stem}_t{t:03d}_9t.tif",
+        with rasterio.open(DER / f"{stem}_los_mm_t{t:03d}_9t.tif",
                            "w", **prof) as o:
             o.write(d.astype(np.float32), 1)
 
@@ -268,7 +268,7 @@ def main():
         f"Expected by chance: {well_summary['expected_by_chance']}",
     ]), va="top", fontsize=10, family="monospace")
     fig.suptitle("NISAR L-band summer 2026 line-of-sight displacement, 25 m, 1 km trend removed, 9t", fontsize=12)
-    fig.savefig(FIG / f"{stem}_9t.png", dpi=140, bbox_inches="tight")
+    fig.savefig(FIG / f"{stem}_maps_9t.png", dpi=140, bbox_inches="tight")
     print("done", stem)
 
 

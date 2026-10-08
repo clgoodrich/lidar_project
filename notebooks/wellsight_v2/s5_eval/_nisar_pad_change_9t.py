@@ -134,7 +134,7 @@ def main():
     plug_pad = int(plug["pad"].iloc[0]) if len(plug) else None
 
     stem = "nisar_pad_change"
-    df.to_csv(OUT / f"{stem}_all_9t.csv", index=False)
+    df.to_csv(OUT / f"{stem}_per_pair_9t.csv", index=False)
     res.to_csv(OUT / f"{stem}_by_season_9t.csv", index=False)
     gdf = gpd.GeoDataFrame(ev.drop(columns=["kind", "copy", "flag"]), geometry=pads.geometry.values[ev.pad], crs=CRS)
     gdf.to_file(OUT / f"{stem}_events_9t.gpkg", layer="candidate_pad_events", driver="GPKG")
@@ -160,7 +160,7 @@ def main():
     ax[0].set_ylabel("density")
     ax[0].legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(FIG / f"{stem}_hist_9t.png", dpi=150)
+    fig.savefig(FIG / f"{stem}_anomaly_hist_9t.png", dpi=150)
 
     # figure 2: time series and chips for the four strongest snow-free events
     top = ev[ev.season == "snowfree"].drop_duplicates("pad").head(4)

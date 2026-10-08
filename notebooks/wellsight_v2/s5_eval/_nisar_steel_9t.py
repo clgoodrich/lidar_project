@@ -233,7 +233,7 @@ def main():
     cnt = np.sum([m["sbt"] for m in maps.values()], axis=0).astype(np.uint8)
     prof = dict(driver="GTiff", height=shape[0], width=shape[1], count=1, dtype="uint8", crs=CRS,
                 transform=tf, compress="deflate")
-    with rasterio.open(DER / f"{stem}_count_9t.tif", "w", **prof) as d:
+    with rasterio.open(DER / f"{stem}_track_count_9t.tif", "w", **prof) as d:
         d.write(cnt, 1)
 
     # figure: hit rates by group (wells vs decoys), and the registration grid
@@ -259,7 +259,7 @@ def main():
     fig.suptitle(f"NISAR HH steady bright targets (D_A < {DA_MAX}, ≥ {BRIGHT_DB:.0f} dB above 250 m background), 9t",
                  fontsize=11)
     fig.tight_layout()
-    fig.savefig(FIG / f"{stem}_9t.png", dpi=150)
+    fig.savefig(FIG / f"{stem}_hit_rate_by_status_9t.png", dpi=150)
     print("done", stem)
 
 

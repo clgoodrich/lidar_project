@@ -143,7 +143,7 @@ In `data/9t/results/nisar/`:
   - `nisar_steel_summary_9t.json`
 - Pad change:
   - `nisar_pad_change_events_9t.gpkg`, layer `candidate_pad_events`
-  - `nisar_pad_change_all_9t.csv`
+  - `nisar_pad_change_per_pair_9t.csv`
   - `nisar_pad_change_by_season_9t.csv`
   - `nisar_pad_change_summary_9t.json`
 - Slope motion:
@@ -154,14 +154,14 @@ In `data/9t/results/nisar/`:
   - `nisar_slope_motion_summary_9t.json`
 
 In `data/9t/results/nisar/figures/`:
-- `nisar_steel_9t.png`
-- `nisar_pad_change_hist_9t.png`
+- `nisar_steel_hit_rate_by_status_9t.png`
+- `nisar_pad_change_anomaly_hist_9t.png`
 - `nisar_pad_change_top_events_9t.png`
-- `nisar_slope_motion_9t.png`
+- `nisar_slope_motion_maps_9t.png`
 
 In `data/9t/derived/nisar_gslc_5m/` (gitignored):
-- `nisar_steel_count_9t.tif` (0–3 tracks)
-- `nisar_slope_motion_t{026,090,162}_9t.tif`
+- `nisar_steel_track_count_9t.tif` (0–3 tracks)
+- `nisar_slope_motion_los_mm_t{026,090,162}_9t.tif`
 
 Figure colours:
 - Wells and pads use the lost/found palette `#1F5FA8` / `#D97706` / `#A31515`, with greys for controls.
