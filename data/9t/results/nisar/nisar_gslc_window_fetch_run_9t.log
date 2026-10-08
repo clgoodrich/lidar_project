@@ -107,3 +107,56 @@ wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5
   NISAR_L2_PR_GSLC_031_090_A_022_4005_DHDH_A_20260924T102335_2... valid 1.000 (40 s)
 wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260924_t090A_9t_5m.tif
 index C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_window_index_9t_5m.csv
+
+=== run 2026-10-08 ===
+          date   collection  track direction  frame
+0   2025-10-28         beta    162         A     23
+1   2025-11-04         beta     90         A     22
+2   2025-11-09         beta    162         A     23
+3   2025-11-12         beta     26         D     68
+4   2025-11-21         beta    162         A     23
+5   2025-12-03         beta    162         A     23
+6   2025-12-18         beta     26         D     67
+7   2025-12-18         beta     26         D     68
+8   2025-12-30         beta     26         D     68
+9   2026-01-08         beta    162         A     23
+10  2026-01-15         beta     90         A     22
+11  2026-01-20         beta    162         A     23
+12  2026-06-20  provisional     90         A     22
+13  2026-06-25  provisional    162         A     23
+14  2026-06-28  provisional     26         D     68
+15  2026-07-02  provisional     90         A     22
+16  2026-07-07  provisional    162         A     23
+17  2026-07-14  provisional     90         A     22
+18  2026-07-19  provisional    162         A     23
+19  2026-07-22  provisional     26         D     67
+20  2026-07-26  provisional     90         A     22
+21  2026-08-12  provisional    162         A     23
+22  2026-08-15  provisional     26         D     67
+23  2026-08-15  provisional     26         D     68
+24  2026-08-19  provisional     90         A     22
+25  2026-08-24  provisional    162         A     23
+26  2026-08-27  provisional     26         D     67
+27  2026-08-27  provisional     26         D     68
+28  2026-08-31  provisional     90         A     22
+29  2026-09-05  provisional    162         A     23
+30  2026-09-05  provisional    162         A     23
+31  2026-09-08  provisional     26         D     68
+32  2026-09-12  provisional     90         A     22
+33  2026-09-17  provisional    162         A     23
+34  2026-09-20  provisional     26         D     67
+35  2026-09-20  provisional     26         D     68
+36  2026-09-24  provisional     90         A     22
+37  2026-09-29  provisional    162         A     23
+38  2026-10-02  provisional     26         D     67
+39  2026-10-02  provisional     26         D     68
+40  2026-10-06  provisional     90         A     22
+window (EPSG:32617) (np.float64(619295.0), np.float64(4592800.0), np.float64(624200.0), np.float64(4597705.0))
+  NISAR_L2_PR_GSLC_031_162_A_023_4005_DHDH_A_20260929T101550_2... valid 1.000 (45 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20260929_t162A_9t_5m.tif
+  NISAR_L2_PR_GSLC_032_026_D_067_4005_DHDH_A_20261002T001648_2... valid 0.228 (73 s)
+  NISAR_L2_PR_GSLC_032_026_D_068_4005_DHDH_A_20261002T001722_2... valid 1.000 (50 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261002_t026D_9t_5m.tif
+  NISAR_L2_PR_GSLC_032_090_A_022_4005_DHDH_A_20261006T102335_2... valid 1.000 (41 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261006_t090A_9t_5m.tif
+index C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_gslc_5m\nisar_gslc_window_index_9t_5m.csv
