@@ -5,6 +5,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-09 -- NISAR re-geocoding plan; slope look direction corrected
+
+- **Plan, not code.** `docs/iterations/nisar_regeocode_plan_9t.md` re-places RSLC samples on the 9t lidar bare earth. It was built from file layouts read remotely: 41 RSLC granules over 9t (12 beta, 29 provisional). Each GSLC has `metadata/radarGrid` cubes (500 m grid, 21 heights) that map ground (x, y, h) to radar time and range, so no orbit solver is needed for the main path. The GSLC is ellipsoid- and topography-flattened with a Copernicus-based DEM. Stage 0 (lidar-simulated radar match) is a decision gate. V1 must reproduce NASA's GSLC before the lidar heights are trusted. The lidar DEM is NAVD88 (Geoid12B), so it needs about 34 m of geoid conversion.
+- **Correction.** NISAR is left-looking. Over 9t, tracks 090 and 162 (ascending) look west and track 026 (descending) looks east. The 2026-10-07 slope aspect test assumed the ascending radar looks east. Corrected, the measured pattern (east-facing +4.9 mm, west-facing −4.3 mm) matches downslope creep, if positive means toward the satellite. Noted in `docs/iterations/nisar_wells_steel_pads_slopes_9t.md`. The script still carries the wrong comment and labels. Fix listed in BACKLOG.
+
+---
+
 ## 2026-10-08 -- NISAR: all published GSLC dates fetched, bright-target point layer, pit-test bias found
 
 - **Fetch.** Three new GSLC dates over 9t: 2026-09-29 (t162), 2026-10-02 (t026), 2026-10-06 (t090). CMR has no other GSLC collection, so this is every published date: 35 windows, 34 usable. There are no regular 12-day dates before 2026-06-20. The run is appended to `data/9t/results/nisar/nisar_gslc_window_fetch_run_9t.log`.

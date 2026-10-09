@@ -8,7 +8,7 @@
 |---|---|---|
 | 1. Steel | Do bright, steady radar targets sit at DEP wells? | No. Hit rates are 1–2% at wells and 0.3–1% at decoys. Wells are 0.1 dB brighter than decoys, but active wells are no brighter than abandoned ones. |
 | 2. Pad change | Do pads lose coherence in some pairs more often than decoys? | Barely. 143 snow-free events against 124 expected. Pads with active wells flag no more often than other pads. |
-| 3. Slope motion | Is there motion on slopes, and at wells? | There is a weak shared signal on slopes in both ascending tracks. Its direction by aspect does not match downslope creep. No well stands out. |
+| 3. Slope motion | Is there motion on slopes, and at wells? | There is a weak shared signal on slopes in both ascending tracks. Its direction by aspect matches downslope creep if positive means toward the satellite (corrected 2026-10-09, the radar looks west). No well stands out. |
 
 ## Data
 
@@ -90,6 +90,7 @@
 - Cumulative phase = sum of the pair phases. LOS displacement in mm, positive toward the satellite. Pixels with mean coherence < 0.45 are masked.
 - Real motion appears in both ascending tracks (090 and 162). Noise does not. So the test is the correlation between them, with a 500 m block bootstrap.
 - Aspect test on steep slopes. The ascending radar looks east. Downslope creep on a west-facing slope moves toward the satellite. On an east-facing slope it moves away.
+  - **Correction 2026-10-09.** This is wrong. NISAR is left-looking. The GSLC LOS vectors over 9t put the satellite to the east on both ascending tracks (east component +0.60 to +0.70), so they look **west**. Creep on an east-facing slope moves toward the satellite. See `docs/iterations/nisar_regeocode_plan_9t.md`.
 
 **Results.**
 
@@ -117,6 +118,7 @@
 **Reading it.**
 - The two ascending tracks share something on slopes and nothing on flat ground. That part is real.
 - It is not downslope creep, as measured. East-facing slopes move toward the satellite and west-facing slopes move away. Creep would do the opposite.
+  - **Correction 2026-10-09.** Reversed. With the radar looking west, this pattern **matches** downslope creep, if positive means toward the satellite. That sign is still unconfirmed, so the reading now rests on it.
 - If the NISAR phase sign is the reverse of what this script assumes, the pattern would fit creep. But it would be about 20 mm/yr on every steep slope in the tile. That is far more than the regional creep in Venango is expected to be.
 - More likely explanations:
   - a soil-moisture phase (De Zan et al. 2014), since east- and west-facing slopes dry differently through the summer
