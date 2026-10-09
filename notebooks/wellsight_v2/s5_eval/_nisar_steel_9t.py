@@ -82,7 +82,7 @@ def sbt_maps(idx, stack, shape):
         bg = median_filter(np.where(ok, mdb, np.nanmedian(mdb)), size=k)
         bright = mdb - bg
         sbt = ok & (da < DA_MAX) & (bright >= BRIGHT_DB)
-        out[int(t)] = dict(sbt=sbt, da=da, bright=bright, n=len(g), ok=ok)
+        out[int(t)] = dict(sbt=sbt, da=da, bright=bright, bg=bg, n=len(g), ok=ok)
         print(f"track {t}: {len(g)} dates, SBT pixels {sbt.sum()} ({sbt[ok].mean():.4%} of valid)")
     return out
 

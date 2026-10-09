@@ -26,6 +26,7 @@ from pathlib import Path
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+import rasterio
 from scipy.ndimage import label
 from scipy.sparse.csgraph import connected_components
 from scipy.spatial import cKDTree
@@ -56,6 +57,20 @@ def track_points(maps, tf):
     return pd.DataFrame(rows)
 
 
+def write_layers(maps, tf, shape):
+    """The per-track rasters the SBT rule reads, so a target can be checked by eye."""
+    for t, m in maps.items():
+        bands = {"mean_hh_db": m["bright"] + m["bg"], "above_250m_median_db": m["bright"],
+                 "amplitude_dispersion": m["da"], "steady_bright_target": m["sbt"].astype(np.float32)}
+        path = steel.DER / f"nisar_bright_targets_layers_t{t:03d}_9t.tif"
+        with rasterio.open(path, "w", driver="GTiff", height=shape[0], width=shape[1], count=len(bands),
+                           dtype="float32", crs=CRS, transform=tf, nodata=np.nan, compress="deflate") as dst:
+            for i, (name, a) in enumerate(bands.items(), 1):
+                dst.write(np.where(m["ok"], a, np.nan).astype(np.float32), i)
+                dst.set_band_description(i, name)
+        print("wrote", path)
+
+
 def merge_tracks(p):
     """Join points from different tracks within MERGE_M into one target."""
     xy = p[["x", "y"]].values
@@ -74,6 +89,7 @@ def main():
     idx, stack, tf, shape = ifg.load_complex()
     maps = steel.sbt_maps(idx, stack, shape)
     n_dates = {int(t): int(m["n"]) for t, m in maps.items()}
+    write_layers(maps, tf, shape)
     p = track_points(maps, tf)
     tg = merge_tracks(p)
     g = gpd.GeoDataFrame(tg, geometry=gpd.points_from_xy(tg.x, tg.y), crs=CRS).drop(columns=["x", "y"])

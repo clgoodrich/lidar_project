@@ -173,6 +173,7 @@ In `data/9t/results/nisar/`:
 - Bright targets:
   - `nisar_bright_targets_points_9t.gpkg`, layer `candidate_bright_targets`
   - `nisar_bright_targets_summary_9t.json`
+  - `data/9t/derived/nisar_gslc_5m/nisar_bright_targets_layers_t{026,090,162}_9t.tif` (gitignored, regenerable). Bands: 1 `mean_hh_db` (mean HH power over all dates), 2 `above_250m_median_db` (band 1 minus its 250 m median, the brightness the rule uses), 3 `amplitude_dispersion` (D_A), 4 `steady_bright_target` (1 where D_A < 0.25 and band 2 ≥ 6 dB).
 - Pad change:
   - `nisar_pad_change_events_9t.gpkg`, layer `candidate_pad_events`
   - `nisar_pad_change_per_pair_9t.csv`
