@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-09 -- NISAR Stage 1: RSLC windows over 9t fetched
+
+- **Run.** `notebooks/wellsight_v2/s1_build/_fetch_nisar_rslc_window_9t.py`. One RSLC per usable GSLC date, matched on cycle, track and frame. The radar window comes from the RSLC's own geolocation grid, fitted as a plane per height layer near 9t (worst residual 2.5 m in range), padded by 64 samples.
+- **Result.** 34 windows: 9 / 11 / 14 on tracks 026 / 090 / 162. Each is about 1,530 x 1,750–1,940 samples and 41–47 MB, 1.5 GB in all, gitignored. One 502 server error on 2026-01-08 cleared on retry. 2026-07-22 track 026 lies past its frame's end, and it was already the unusable GSLC date.
+- **Catch.** 2026-09-05 track 162 has RSLC versions `_001` and `_002`, and the later one overwrote the earlier. The script now keeps the version matching the GSLC (`_001`) and refetched it.
+- **Note.** Timing-correction tables are only in the GSLC, so Stage 3 reads them there.
+- **Outputs.** `data/9t/derived/nisar_rslc_window/nisar_rslc_window_<date>_t<track><A|D>_9t.h5`, index `data/9t/derived/nisar_rslc_window/nisar_rslc_window_index_9t.csv`, log `data/9t/results/nisar/nisar_rslc_window_fetch_run_9t.log`. Plan doc and BACKLOG updated.
+
 ## 2026-10-09 -- NISAR Stage 0: GSLC placement is off by 8-12 m, away from the satellite
 
 - **Run.** `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py`. A bare-earth radar image was simulated from the 1 m lidar DEM by area projection (Small 2011). Look and along-track vectors came from each track's GSLC radarGrid cubes. The simulation was matched against mean HH dB on 4 x 4 blocks of 1.1 km, searching ±30 m at 1 m steps.

@@ -1,6 +1,6 @@
-# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stage 0 done)
+# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stages 0 and 1 done)
 
-Written 2026-10-09. Stage 0 ran on 2026-10-09 and the gate failed, so Stages 1–3 are needed. Results are in the Stage 0 section.
+Written 2026-10-09. Stage 0 ran on 2026-10-09 and the gate failed, so Stages 1–3 are needed. Stage 1 (RSLC fetch) finished the same day. Results are under each stage.
 
 ## Goal
 
@@ -121,6 +121,19 @@ Output
 - Index: `data/9t/derived/nisar_rslc_window/nisar_rslc_window_index_9t.csv`
 - Run time: about 1 minute per date, the same as the GSLC fetch.
 
+### Stage 1 result (2026-10-09): all 34 usable dates held
+
+Script `notebooks/wellsight_v2/s1_build/_fetch_nisar_rslc_window_9t.py`. Log `data/9t/results/nisar/nisar_rslc_window_fetch_run_9t.log`.
+
+- 34 RSLC windows, one per usable GSLC date: 9 on track 026, 11 on 090, 14 on 162. 24 are provisional and 10 are beta.
+- Files: `data/9t/derived/nisar_rslc_window/nisar_rslc_window_<yyyymmdd>_t<track><A|D>_9t.h5`, about 1,530 x 1,750–1,940 samples, 41–47 MB each, 1.5 GB in all. Gitignored by the existing `data/**/derived/**` rule.
+- Index: `data/9t/derived/nisar_rslc_window/nisar_rslc_window_index_9t.csv`. It holds the window offsets, the plane-fit residual and the size.
+- **Changed from the plan.** The window comes from the RSLC's own `metadata/geolocationGrid`, not the GSLC cubes. That grid is small and chunked per height, so it reads in seconds. A GSLC cube takes minutes. Near 9t the inverse is fitted as a plane per height layer. Its worst residual is 2.5 m in range, far inside the 64-sample pad.
+- **Versions.** 2026-09-05 track 162 has two RSLC versions, `_001` and `_002`. The script keeps the one matching the GSLC we hold (`_001`), so V1 compares like with like.
+- Skipped: 5 granules on track 026 frame 067 whose date uses frame 068 in the GSLC index. 2026-07-22 track 026 fails because 9t lies past the end of its frame. Its GSLC has 0% valid pixels over 9t too, so it was already the unusable date.
+- **Not in the RSLC.** The solid-earth-tide and ionosphere timing tables are only in the GSLC (`timingCorrections`). Stage 3 reads them from the matching GSLC.
+- Each file also keeps the orbit (26 state vectors), attitude, the Doppler centroid table (185 x 109), `referenceTerrainHeight`, the processing run configuration and the identification group.
+
 ## Stage 2. Geometry library
 
 File `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`. Plain numpy and scipy, with no ISCE3, because ISCE3 does not run on Windows.
@@ -213,7 +226,7 @@ Outputs, in `data/9t/derived/nisar_slc_lidar_5m/`, gitignored in the same change
 | Step | Work | Risk |
 |---|---|---|
 | Stage 0 | done 2026-10-09 | gate failed, go on |
-| Stage 1 fetch | 1–2 hours, mostly download | low |
+| Stage 1 fetch | done 2026-10-09 | 34 of 34 usable dates |
 | Stage 2 library + C0 | half a session | low, the cubes do the hard part |
 | Stage 3 + V1 | half to two sessions | **this is where conventions bite** |
 | V2, V3, figure, docs | half a session | low |

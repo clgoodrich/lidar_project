@@ -1,0 +1,49 @@
+41 RSLC granules; 5 have no matching GSLC in the index and are skipped:
+  skip NISAR_L1_PR_RSLC_008_026_D_067_4005_DHDH_A_20251218T001651_20251218T001726_X05009_N_F_J_001
+  skip NISAR_L1_PR_RSLC_028_026_D_067_4005_DHDH_A_20260815T001648_20260815T001723_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_029_026_D_067_4005_DHDH_A_20260827T001648_20260827T001723_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_031_026_D_067_4005_DHDH_A_20260920T001648_20260920T001723_P05023_F_F_J_001
+  skip NISAR_L1_PR_RSLC_032_026_D_067_4005_DHDH_A_20261002T001648_20261002T001723_P05023_N_F_J_001
+wrote nisar_rslc_window_20251028_t162A_9t.h5  1544 x 1936  59 s
+wrote nisar_rslc_window_20251104_t090A_9t.h5  1529 x 1752  60 s
+wrote nisar_rslc_window_20251109_t162A_9t.h5  1545 x 1937  74 s
+wrote nisar_rslc_window_20251112_t026D_9t.h5  1509 x 1784  71 s
+wrote nisar_rslc_window_20251121_t162A_9t.h5  1545 x 1936  83 s
+wrote nisar_rslc_window_20251203_t162A_9t.h5  1545 x 1937  63 s
+wrote nisar_rslc_window_20251218_t026D_9t.h5  1509 x 1784  104 s
+wrote nisar_rslc_window_20251230_t026D_9t.h5  1510 x 1784  63 s
+FAIL NISAR_L1_PR_RSLC_009_162_A_023_4005_DHDH_A_20260108T101553_20260108T101628_X05009_N_F_J_001 HTTPError('502 Server Error: Bad Gateway for url: https://nisar.asf.earthdatacloud.nasa.gov/login?code=g4QI3IcwAqvP8xqhr58uMQbTTNEL_j2nFHrH8X5h9vfnsZYMuHf5VdwvIArlFd10z3n0gbXGacNIIXNW6JPoUnrAfVPyx19SvdNlaEc71cY-6Wg3i_k&state=%2FNISAR%2FNISAR_L1_RSLC_BETA_V1%2FNISAR_L1_PR_RSLC_009_162_A_023_4005_DHDH_A_20260108T101553_20260108T101628_X05009_N_F_J_001%2FNISAR_L1_PR_RSLC_009_162_A_023_4005_DHDH_A_20260108T101553_20260108T101628_X05009_N_F_J_001.h5')
+wrote nisar_rslc_window_20260115_t090A_9t.h5  1529 x 1752  68 s
+wrote nisar_rslc_window_20260120_t162A_9t.h5  1544 x 1937  70 s
+wrote nisar_rslc_window_20260620_t090A_9t.h5  1529 x 1752  63 s
+wrote nisar_rslc_window_20260625_t162A_9t.h5  1544 x 1937  68 s
+wrote nisar_rslc_window_20260628_t026D_9t.h5  1510 x 1784  65 s
+wrote nisar_rslc_window_20260702_t090A_9t.h5  1529 x 1752  59 s
+wrote nisar_rslc_window_20260707_t162A_9t.h5  1545 x 1936  68 s
+wrote nisar_rslc_window_20260714_t090A_9t.h5  1529 x 1752  55 s
+wrote nisar_rslc_window_20260719_t162A_9t.h5  1545 x 1937  70 s
+FAIL NISAR_L1_PR_RSLC_026_026_D_067_4005_DHDH_A_20260722T001649_20260722T001724_P05023_N_F_J_001 RuntimeError('window 54791:56301, 24181:25966 leaves the swath 54720 x 54729')
+wrote nisar_rslc_window_20260726_t090A_9t.h5  1529 x 1752  55 s
+wrote nisar_rslc_window_20260812_t162A_9t.h5  1544 x 1936  60 s
+wrote nisar_rslc_window_20260815_t026D_9t.h5  1510 x 1784  72 s
+wrote nisar_rslc_window_20260819_t090A_9t.h5  1529 x 1752  53 s
+wrote nisar_rslc_window_20260824_t162A_9t.h5  1545 x 1937  56 s
+wrote nisar_rslc_window_20260827_t026D_9t.h5  1510 x 1784  56 s
+wrote nisar_rslc_window_20260831_t090A_9t.h5  1529 x 1752  70 s
+wrote nisar_rslc_window_20260905_t162A_9t.h5  1545 x 1937  66 s
+wrote nisar_rslc_window_20260905_t162A_9t.h5  1545 x 1937  58 s
+wrote nisar_rslc_window_20260908_t026D_9t.h5  1510 x 1784  58 s
+wrote nisar_rslc_window_20260912_t090A_9t.h5  1529 x 1752  50 s
+wrote nisar_rslc_window_20260917_t162A_9t.h5  1545 x 1937  57 s
+wrote nisar_rslc_window_20260920_t026D_9t.h5  1510 x 1784  58 s
+wrote nisar_rslc_window_20260924_t090A_9t.h5  1529 x 1752  51 s
+wrote nisar_rslc_window_20260929_t162A_9t.h5  1544 x 1937  59 s
+wrote nisar_rslc_window_20261002_t026D_9t.h5  1510 x 1785  69 s
+wrote nisar_rslc_window_20261006_t090A_9t.h5  1529 x 1752  71 s
+index C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_rslc_window\nisar_rslc_window_index_9t.csv 34 files
+wrote nisar_rslc_window_20260108_t162A_9t.h5  1544 x 1937  69 s
+FAIL NISAR_L1_PR_RSLC_026_026_D_067_4005_DHDH_A_20260722T001649_20260722T001724_P05023_N_F_J_001 RuntimeError('window 54791:56301, 24181:25966 leaves the swath 54720 x 54729')
+index C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_rslc_window\nisar_rslc_window_index_9t.csv 35 files
+FAIL NISAR_L1_PR_RSLC_026_026_D_067_4005_DHDH_A_20260722T001649_20260722T001724_P05023_N_F_J_001 RuntimeError('window 54791:56301, 24181:25966 leaves the swath 54720 x 54729')
+wrote nisar_rslc_window_20260905_t162A_9t.h5  1545 x 1937  69 s
+index C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_rslc_window\nisar_rslc_window_index_9t.csv 34 files
