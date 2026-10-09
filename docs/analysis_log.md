@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-09 -- NISAR Stage 0: GSLC placement is off by 8-12 m, away from the satellite
+
+- **Run.** `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py`. A bare-earth radar image was simulated from the 1 m lidar DEM by area projection (Small 2011). Look and along-track vectors came from each track's GSLC radarGrid cubes. The simulation was matched against mean HH dB on 4 x 4 blocks of 1.1 km, searching ±30 m at 1 m steps.
+- **Result.** Gate failed: 0 of 48 blocks are within ±2.5 m. Block median shift away from the satellite is 9.6 m (026), 11.9 m (090) and 9.1 m (162). Ascending tracks shift west and descending shifts east, so all are away from the satellite. Converted with tan(incidence), all three give an 8–10 m height error. The shift correlates with block canopy height (0.55–0.62).
+- **Caveat.** Correlation peaks are weak (0.12–0.37). The cross-geometry agreement carries the result. Stage 0 cannot tell a DEM that is too high from scattering inside the canopy. V2 will.
+- **Decision.** Go on to Stage 1, the RSLC window fetch. Updated `docs/iterations/nisar_regeocode_plan_9t.md`, BACKLOG and the Small 2011 entry in `literature/CITATIONS.md`.
+- **Outputs.** `data/9t/results/nisar/nisar_lidar_sim_match_shifts_9t.csv`, `nisar_lidar_sim_match_summary_9t.json`, `nisar_los_by_track_9t.json`, `nisar_lidar_sim_match_run_9t.log`, `figures/nisar_lidar_sim_match_9t.png`. Rasters `data/9t/derived/nisar_gslc_5m/nisar_lidar_sim_t{026,090,162}_9t.tif` (gitignored).
+
 ## 2026-10-09 -- NISAR re-geocoding plan; slope look direction corrected
 
 - **Plan, not code.** `docs/iterations/nisar_regeocode_plan_9t.md` re-places RSLC samples on the 9t lidar bare earth. It was built from file layouts read remotely: 41 RSLC granules over 9t (12 beta, 29 provisional). Each GSLC has `metadata/radarGrid` cubes (500 m grid, 21 heights) that map ground (x, y, h) to radar time and range, so no orbit solver is needed for the main path. The GSLC is ellipsoid- and topography-flattened with a Copernicus-based DEM. Stage 0 (lidar-simulated radar match) is a decision gate. V1 must reproduce NASA's GSLC before the lidar heights are trusted. The lidar DEM is NAVD88 (Geoid12B), so it needs about 34 m of geoid conversion.

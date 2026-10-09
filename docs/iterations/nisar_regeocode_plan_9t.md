@@ -1,6 +1,6 @@
-# Plan: re-place NISAR radar pixels on the 9t lidar ground (not started)
+# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stage 0 done)
 
-Written 2026-10-09. This is the code plan only. No pipeline code exists yet.
+Written 2026-10-09. Stage 0 ran on 2026-10-09 and the gate failed, so Stages 1–3 are needed. Results are in the Stage 0 section.
 
 ## Goal
 
@@ -70,6 +70,38 @@ Outputs
 - If every block's best shift is within ±2.5 m (half a pixel), NASA's placement is already good. Stop here, and record that the 10–15 m offset came from the weak canopy match.
 - If shifts are larger, or vary with canopy height, go on to Stage 1.
 - Either way, Stage 0's simulator is reused as the final check in V3.
+
+### Stage 0 result (2026-10-09): gate failed, go on to Stage 1
+
+Script `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py`. Radar image: band 1 (mean HH dB over all dates) of `data/9t/derived/nisar_gslc_5m/nisar_bright_targets_layers_t<track>_9t.tif`. Blocks are 4 x 4 of 1.1 km, not 1 km, so they divide the 4.5 km tile evenly.
+
+| Track | Looks | Whole-tile shift (east, north) | Away from satellite, block median (range) | Along track, block median | Implied DEM height error |
+|---|---|---|---|---|---|
+| 026 descending | east | +10, +1 m | 9.6 m (3.7–18.8) | 4.1 m | 8.3 m |
+| 090 ascending | west | −10, −3 m | 11.9 m (7.0–20.1) | −0.2 m | 9.5 m |
+| 162 ascending | west | −8, −2 m | 9.1 m (5.7–14.9) | −0.4 m | 9.7 m |
+
+- 0 of 48 blocks are within the ±2.5 m gate. No block hit the ±30 m search edge.
+- The two ascending tracks push features west and the descending track pushes them east. All three point away from the satellite. That is what a placement height that is too high does.
+- Converted with tan(incidence), the three geometries agree on a height error of 8–10 m. This makes a real height error much more likely than a coincidence.
+- The shift grows with block canopy height. The correlation is 0.55 (026), 0.60 (090) and 0.62 (162).
+- The along-track part is near zero on the ascending tracks. On 026 it is 4 m, which is not explained yet. V1 will show whether it is a timing or frame issue.
+- The match is weak in absolute terms. The best correlation is 0.12–0.37 per block. Going from no shift to the best shift raises it by about 0.04. Forest brightness adds texture that bare earth cannot predict. The agreement across three independent geometries is the strong evidence, not any single peak.
+- Two readings fit and Stage 0 cannot tell them apart. (1) NASA's DEM sits about 9 m above the ground under trees. (2) The HH energy comes from inside the canopy, not the ground. Under (2), placing on bare earth would move canopy returns to the wrong spot. V2 separates them. It compares the measured shift with Copernicus minus lidar height, and runs `--surface dsm`.
+- The DEM is NAD83(2011) and the GSLC is WGS84, about 1–1.5 m apart here. That is small next to 8–12 m.
+- This replaces the earlier 10–15 m estimate from the canopy-cover match. The size is similar, and now it has a direction.
+
+Outputs
+- `data/9t/results/nisar/nisar_lidar_sim_match_shifts_9t.csv`
+- `data/9t/results/nisar/nisar_lidar_sim_match_summary_9t.json`
+- `data/9t/results/nisar/nisar_los_by_track_9t.json` (look and along-track vectors read from the radarGrid cubes)
+- `data/9t/results/nisar/nisar_lidar_sim_match_run_9t.log`
+- `data/9t/derived/nisar_gslc_5m/nisar_lidar_sim_t026_9t.tif`, `_t090_`, `_t162_` (gitignored). Bands: simulated brightness dB, shadow fraction, layover fraction.
+- `data/9t/results/nisar/figures/nisar_lidar_sim_match_9t.png`. The palette is the lost/found set, reused as validated (`--pairs all`, worst pair ΔE 21.1 deutan). Tracks also differ by marker shape.
+
+Notes for later stages
+- A full radarGrid cube takes about 2.5 minutes to read remotely. Read only the cells over 9t. Stage 1's window step needs that.
+- The cubes also hold `alongTrackUnitVectorX/Y`. Stage 0 used them for the azimuth direction.
 
 ## Stage 1. Fetch RSLC windows
 
@@ -180,7 +212,7 @@ Outputs, in `data/9t/derived/nisar_slc_lidar_5m/`, gitignored in the same change
 
 | Step | Work | Risk |
 |---|---|---|
-| Stage 0 | half a session | low |
+| Stage 0 | done 2026-10-09 | gate failed, go on |
 | Stage 1 fetch | 1–2 hours, mostly download | low |
 | Stage 2 library + C0 | half a session | low, the cubes do the hard part |
 | Stage 3 + V1 | half to two sessions | **this is where conventions bite** |

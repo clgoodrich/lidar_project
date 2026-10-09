@@ -239,7 +239,7 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
     - steel needs finer pixels or more dates. Retry when the full NISAR archive gives 60+ dates per track.
     - (2026-10-08) pit interferogram test: pit rings fall on pads, decoy rings on forest. Keep pads out of the pit ring, or draw each pit's decoys in the same setting (pad or forest). Re-run before trusting the pit-scale null.
     - (2026-10-09) fix the look direction in `_nisar_slope_motion_9t.py` (lines 155–157 assume right-looking). Use the GSLC `losUnitVectorX/Y` cubes per pixel. The aspect result now reads as downslope creep if the phase sign is "positive = toward".
-    - (2026-10-09) re-place NISAR pixels on the lidar ground. Plan in `docs/iterations/nisar_regeocode_plan_9t.md`. Stage 0 is the gate.
+    - (2026-10-09) re-place NISAR pixels on the lidar ground. Plan in `docs/iterations/nisar_regeocode_plan_9t.md`. **Stage 0 done 2026-10-09: gate failed (0 of 48 blocks within 2.5 m, features 8–12 m away from the satellite on all 3 tracks), so go on to Stage 1 (RSLC fetch).**
     - (2026-10-08) check the 8 two-track bright targets in `nisar_bright_targets_points_9t.gpkg` against imagery. Find out why track 090 gives six times more targets than track 162.
 - **NISAR GCOV pad test, follow-ups (added 2026-09-26).** See `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`. The single January beta image gives a faint pad signal: open pads are about 0.8 dB darker in HH. The open/closed control is also weak (HV AUC 0.62). To do:
   - repeat on a leaf-on or fall snow-free GCOV granule
