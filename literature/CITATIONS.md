@@ -40,6 +40,8 @@ is the source of record.
 | Suh et al. | 2021 | U-Net on lidar for relict charcoal hearths | *Candidate* — closest published analogue; motivates VAT/SVF channels | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Richards | 2009 | Remote Sensing with Imaging Radar (Springer), ch. 3 imaging geometry | Slant-range, layover, foreshortening and shadow conditions in the SAR geometry simulator | `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py`; `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html` | cite-only |
 | Small | 2011 | Flattening gamma: radiometric terrain correction for SAR imagery (IEEE TGRS 49(8):3081) | Illuminated-area weighting and layover/shadow handling in the simulated backscatter | same as Richards 2009 | cite-only |
+| JPL / NASA | 2024 | NISAR DEM v1.2 (Copernicus GLO-30 2023_1 on the WGS84 ellipsoid), doi:10.5067/NIDEM-1 | The exact heights NASA used for the GSLC, used in check V1 of the NISAR re-placement | `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`; `data/9t/derived/nisar_dem/DEM_N41_00_W080_00_C01.tif` | data; README and licence beside the tile |
+| ISCE3 developers | 2024 | ISCE3 InSAR Scientific Computing Environment (software), github.com/isce-framework/isce3 | Conventions reproduced in the NISAR re-placement: zero-Doppler geometry, Doppler deramp/reramp around sinc interpolation, 6 x 6 spline "biquintic" DEM interpolation | `notebooks/wellsight_v2/s1_build/_nisar_geometry.py` | cite-only (software) |
 | Zakšek et al. | 2011 | Sky-View Factor | *Candidate* — new channel, pending redundancy check vs `openness_pos` | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Guyot et al. | 2018 | Multi-visualization CNN for buried structures | *Candidate* — supports the channel-stack approach | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Verschoof-van der Vaart & Lambers | 2019 | WODAN, R-CNN on lidar | Benchmark context | `docs/iterations/benchmark_context_what_counts_as_good.md` | cite-only |
@@ -403,8 +405,23 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py`; `data/9t/derived/nisar_10m/nisar_gcov_hh_gamma0_db_20260120_9t_10m.tif`; `data/9t/derived/nisar_10m/nisar_gcov_hv_gamma0_db_20260120_9t_10m.tif`; `data/9t/results/nisar/`; `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`.
 - **Also used for (2026-09-29):** illuminated-area weighting of backscatter in the SAR geometry simulator, `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py` -> `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html`.
 - **Also used for (2026-10-09):** area-projection brightness of the lidar bare-earth radar simulation in NISAR Stage 0, `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py` -> `data/9t/derived/nisar_gslc_5m/nisar_lidar_sim_t{026,090,162}_9t.tif`, `data/9t/results/nisar/nisar_lidar_sim_match_shifts_9t.csv`, `data/9t/results/nisar/figures/nisar_lidar_sim_match_9t.png`; plan `docs/iterations/nisar_regeocode_plan_9t.md`.
+- **Also used for (2026-10-10):** `layover_shadow` and `rtc_area_factor` in `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`, for the lidar-based NISAR re-placement.
 - **Source:** https://doi.org/10.1109/TGRS.2011.2120616 — cite-only (paywalled IEEE).
 - **Data note:** the GCOV granule's own metadata names its terrain model as the NISAR DEM v1.2 (doi:10.5067/NIDEM-1), built from Copernicus DEM GLO-30 2023_1 (doi:10.5270/ESA-c5d3d65). The Copernicus licence terms apply to any redistribution.
+
+### NISAR DEM v1.2 — the GSLC's own heights
+- **Citation:** Jet Propulsion Laboratory (2024). *Copernicus DEM for NISAR v1.2 (EPSG 4326).* NASA Alaska Satellite Facility DAAC. doi:10.5067/NIDEM-1. Built from Copernicus DEM GLO-30 COP-DEM_GLO-30-DGED/2023_1 (doi:10.5270/ESA-c5d3d65), converted from EGM2008 to the WGS84 ellipsoid.
+- **About:** The global DEM that NISAR processing uses to place radar pixels and remove topographic phase.
+- **Used for:** Check V1 of the NISAR re-placement. With NASA's exact heights, our copy of the GSLC can be compared with theirs like for like.
+- **Generated:** `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`; `data/9t/results/nisar/nisar_regeocode_v1_checks_9t.csv`; `docs/iterations/nisar_regeocode_plan_9t.md`. Tile `data/9t/derived/nisar_dem/DEM_N41_00_W080_00_C01.tif` (gitignored, 43 MB).
+- **Source:** https://nisar.asf.earthdatacloud.nasa.gov/NISAR/DEM/v1.2/EPSG4326/ (Earthdata login). Copernicus DEM licence terms apply to redistribution. `LICENSE.pdf` and `README.txt` are kept beside the tile.
+
+### ISCE3 — InSAR Scientific Computing Environment (software)
+- **Citation:** ISCE3 developers (2024). *ISCE3: InSAR Scientific Computing Environment, version 3.* Jet Propulsion Laboratory / California Institute of Technology. https://github.com/isce-framework/isce3
+- **About:** The open-source processor behind NISAR's L1 and L2 products, including GSLC geocoding.
+- **Used for:** ISCE3 does not run on Windows, so its conventions were rebuilt in numpy and confirmed against NASA's GSLC. They are zero-Doppler geometry from the orbit, Doppler deramp and reramp around sinc interpolation, the 6 x 6 spline that ISCE calls "biquintic", and range flattening. Each was settled by a measured comparison (plan doc, check V1), not taken from the code.
+- **Generated:** `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`; `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`.
+- **Source:** https://github.com/isce-framework/isce3 (cite-only, software).
 
 ### Richards 2009 — imaging radar geometry
 - **Citation:** Richards, J. A. (2009). *Remote Sensing with Imaging Radar*. Springer, Berlin. doi:10.1007/978-3-642-02020-9.

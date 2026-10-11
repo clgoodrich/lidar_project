@@ -5,6 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-10 -- NISAR Stage 2 and check V1: our re-placement reproduces NASA's GSLC
+
+- **Code.**
+  - `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`: orbit Hermite interpolation, zero-Doppler Newton solver, DEM sampling, timing-table lookup, 8-tap sinc, flattening, layover/shadow, terrain correction.
+  - `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --v1`: re-places RSLC windows on the GSLC 5 m grid.
+- **NASA's DEM.** The GSLC run configuration names NISAR DEM v1.2. ASF publishes it (`NISAR_DEM`, doi:10.5067/NIDEM-1), so V1 used the exact heights. Tile: `data/9t/derived/nisar_dem/DEM_N41_00_W080_00_C01.tif`.
+- **Conventions found.**
+  - Ionosphere timing corrections in range and azimuth are applied, with no extra troposphere model.
+  - The DEM is pixel-is-point and interpolated with a 6 x 6 natural cubic spline.
+  - The Doppler carrier (about 950 Hz) is removed and put back.
+  - Flattening is exp(+j4πr/λ).
+- **Results.**
+  - C0: the orbit solver and the geolocation grid agree within 1.6 cm and 5.7e-7 s.
+  - Placement: within 0.02 px, amplitude correlation 0.997–0.998, on 8 dates across 3 tracks, beta and provisional.
+  - Interferogram match: coherence 0.998, phase spread 0.012–0.015 rad, on 4 pairs.
+- **Criterion changed.** Single-date phase coherence against NASA is only 0.44–0.49. It needs the per-pixel height to agree with ISCE3's to about 1 cm, and that term cancels in interferograms. V1 is therefore scored on the interferogram match. The plan doc records this.
+- **Outputs.** `data/9t/results/nisar/nisar_regeocode_v1_checks_9t.csv`, `nisar_regeocode_v1_run_9t.log`, `nisar_regeocode_v1_sweep_9t.csv` (first sweep). Plan doc, BACKLOG and CITATIONS updated.
+
 ## 2026-10-09 -- NISAR Stage 1: RSLC windows over 9t fetched
 
 - **Run.** `notebooks/wellsight_v2/s1_build/_fetch_nisar_rslc_window_9t.py`. One RSLC per usable GSLC date, matched on cycle, track and frame. The radar window comes from the RSLC's own geolocation grid, fitted as a plane per height layer near 9t (worst residual 2.5 m in range), padded by 64 samples.

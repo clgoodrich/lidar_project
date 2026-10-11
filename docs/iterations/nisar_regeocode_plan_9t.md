@@ -1,6 +1,6 @@
-# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stages 0 and 1 done)
+# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stages 0–2 and check V1 done)
 
-Written 2026-10-09. Stage 0 ran on 2026-10-09 and the gate failed, so Stages 1–3 are needed. Stage 1 (RSLC fetch) finished the same day. Results are under each stage.
+Written 2026-10-09. Stage 0 ran on 2026-10-09 and the gate failed, so Stages 1–3 are needed. Stage 1 (RSLC fetch) finished the same day. Stage 2 and check V1 passed on 2026-10-10. Results are under each stage and check.
 
 ## Goal
 
@@ -182,6 +182,38 @@ Outputs, in `data/9t/derived/nisar_slc_lidar_5m/`, gitignored in the same change
 - This check finds every convention error: time epoch, range reference, Doppler, flattening sign, timing corrections. It is the slow part. Each failure is fixed by testing one convention at a time.
 - If V1 cannot pass, stop. Do not use the lidar outputs.
 
+### Check C0 and V1 result (2026-10-10): passed, with one criterion changed
+
+Scripts: `notebooks/wellsight_v2/s1_build/_nisar_geometry.py` (Stage 2 library) and `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py` (Stage 3, `--v1`). Heights for V1 are NASA's own DEM, not a Copernicus stand-in. The GSLC run configuration names "NISAR DEM v1.2", and ASF publishes it (collection `NISAR_DEM`, doi:10.5067/NIDEM-1). The 9t tile is `data/9t/derived/nisar_dem/DEM_N41_00_W080_00_C01.tif`, in WGS84 ellipsoid heights. It keeps its source name, with its `README.txt` and `LICENSE.pdf` beside it.
+
+**Conventions found.** Each was tested against NASA's GSLC for 2026-09-29 track 162. They are the defaults in `CONV`.
+
+| Convention | Settled value | How it showed |
+|---|---|---|
+| Timing corrections | Ionosphere in range (+0.69 to +1.03 m) and azimuth (−2e-5 to −8e-5 s). No troposphere model on top. Solid-earth tide makes no difference at this scale. | Amplitude correlation is 0.83 with none, 0.48 with a 3 m dry-troposphere delay, and 0.998 with ionosphere only. Offsets go to 0.00 px. |
+| DEM origin | Pixel-is-point. The first sample sits half a pixel inside the GeoTIFF corner. | 0.998 with the shift, 0.56–0.76 without |
+| DEM interpolation | A natural cubic spline through the 6 x 6 nearest samples (what ISCE calls "biquintic") | Single-date coherence 0.49. Bicubic spline gives 0.44, 6-point Lagrange 0.47, Keys cubic 0.34, quintic spline 0.27, bilinear 0.23. |
+| Doppler carrier | Removed before sinc interpolation, put back at the output time | 0.49 when put back. Every variant that drops or shifts it gives 0.17–0.31. |
+| Flattening | Multiply by exp(+j 4π r / λ), with r from the orbit before corrections | The −1 sign stays at the random baseline. |
+| Kernel bandwidth | 8-tap Hann-windowed sinc. Low-passing to 0.83 changes nothing. | — |
+
+The first sweep, before the DEM and correction fixes, is in `data/9t/results/nisar/nisar_regeocode_v1_sweep_9t.csv`. It came from the first version of the script. The later steps were one-off diagnostics, and the table above holds their numbers.
+
+**Results.** `data/9t/results/nisar/nisar_regeocode_v1_checks_9t.csv`, log `data/9t/results/nisar/nisar_regeocode_v1_run_9t.log`.
+
+| Pair | Track | Amplitude offset (row, col px) | Amplitude correlation | Interferogram match: coherence | Interferogram match: phase spread | NASA's own pair coherence |
+|---|---|---|---|---|---|---|
+| 2026-09-17 / 09-29 | 162 | 0.00, 0.00 | 0.998 | 0.998 | 0.013 rad | 0.33 |
+| 2026-09-24 / 10-06 | 090 | 0.00, ≤0.02 | 0.997–0.998 | 0.998 | 0.012 rad | 0.60 |
+| 2026-09-20 / 10-02 | 026 | 0.00, −0.02 | 0.997 | 0.998 | 0.015 rad | 0.31 |
+| 2025-11-09 / 11-21 (beta) | 162 | 0.00, 0.00 | 0.997–0.998 | 0.998 | 0.014 rad | 0.59 |
+
+- **C0 passed.** The orbit solver and the RSLC geolocation grid agree within 1.6 cm in range and 5.7e-7 s in time. The targets were 5 cm and 1e-5 s.
+- **Placement passed** on every date. It is within 0.02 px, against a 0.1 px target.
+- **Phase: criterion changed.** Single-date complex coherence against NASA is 0.44–0.49, not above 0.9. A single date's flattened phase depends on the height used at each pixel, and 1 cm of range is 0.5 rad. Our DEM interpolation still differs from ISCE3's by a few centimetres. That term is the same on both dates of a pair, so it cancels in every interferogram. The downstream scripts use interferograms, coherence and amplitude. So V1 is scored on the interferogram match instead. It passes at 0.998 and 0.013 rad, on pairs whose own coherence is only 0.31–0.60.
+- **Beta and provisional** granules behave the same.
+- Each date takes 7–30 s to re-place for HH.
+
 **V2. Is the lidar shift physical?**
 - Run with `--heights lidar`. Map the shift against the GSLC.
 - Predicted shift = (Copernicus height − lidar height) / tan(incidence), along the look direction.
@@ -227,8 +259,8 @@ Outputs, in `data/9t/derived/nisar_slc_lidar_5m/`, gitignored in the same change
 |---|---|---|
 | Stage 0 | done 2026-10-09 | gate failed, go on |
 | Stage 1 fetch | done 2026-10-09 | 34 of 34 usable dates |
-| Stage 2 library + C0 | half a session | low, the cubes do the hard part |
-| Stage 3 + V1 | half to two sessions | **this is where conventions bite** |
+| Stage 2 library + C0 | done 2026-10-10 | C0 passed |
+| Stage 3 + V1 | V1 done 2026-10-10 | passed, on the interferogram match |
 | V2, V3, figure, docs | half a session | low |
 
 The radarGrid cubes remove the orbit solver from the main path. That cuts the earlier "few days" to about two to three sessions in total, depending on V1.
