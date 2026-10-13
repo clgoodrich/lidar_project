@@ -1,6 +1,6 @@
-# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stages 0–3 and checks V1 and V3 done)
+# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stages 0–3 and checks V1–V3 done)
 
-Written 2026-10-09. Stage 0 ran on 2026-10-09 and the gate failed, so Stages 1–3 are needed. Stage 1 (RSLC fetch) finished the same day. Stage 2 and check V1 passed on 2026-10-10. Results are under each stage and check.
+Written 2026-10-09. Stage 0 ran on 2026-10-09 and the gate failed, so Stages 1–3 are needed. Stage 1 (RSLC fetch) finished the same day. Stage 2 and check V1 passed on 2026-10-10. Lidar heights went in on 2026-10-12. The leftover offsets were traced and fixed on 2026-10-13 (last section before "Known traps"). Results are under each stage and check.
 
 ## Goal
 
@@ -72,6 +72,8 @@ Outputs
 - Either way, Stage 0's simulator is reused as the final check in V3.
 
 ### Stage 0 result (2026-10-09): gate failed, go on to Stage 1
+
+**Re-scored 2026-10-13.** The check had a 1.3 m datum error, and the bad 2026-09-08 granule was in the track 026 mean (see "Leftover offsets", below). With both fixed, NASA's GSLC sits 11.05 / 11.50 / 8.40 m away from the satellite and 3.20 / 1.00 / 0.65 m back along track (026 / 090 / 162 block medians), with 0 of 48 blocks within 2.5 m. The table below is the original run.
 
 Script `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py`. Radar image: band 1 (mean HH dB over all dates) of `data/9t/derived/nisar_gslc_5m/nisar_bright_targets_layers_t<track>_9t.tif`. Blocks are 4 x 4 of 1.1 km, not 1 km, so they divide the 4.5 km tile evenly.
 
@@ -219,6 +221,7 @@ The first sweep, before the DEM and correction fixes, is in `data/9t/results/nis
 - Predicted shift = (Copernicus height − lidar height) / tan(incidence), along the look direction.
 - Pass: regressing the measured shift on the predicted shift gives a slope of 0.9–1.1.
 - The shift should also grow with lidar canopy height.
+- Result 2026-10-13: correlation 0.82–0.90, slope 1.03 / 1.27 / 1.18 (026 / 090 / 162). Passes on track 026 only. Details under "Leftover offsets traced and fixed".
 
 **V3. Does it match the ground better?**
 - Rerun Stage 0's match on the new stack.
@@ -230,6 +233,8 @@ The first sweep, before the DEM and correction fixes, is in `data/9t/results/nis
 - The V2 shift map. Its diverging ramp is checked with the dataviz validator using `--pairs all`.
 
 ### Stage 3 with lidar heights and check V3 (2026-10-12): offset removed on 9t
+
+**Re-scored 2026-10-13.** The V3 numbers in this section came from the check before its datum fix. With the fixed check, this stack (as placed, bad granule left out) sits 2.35 / 0.90 / 1.10 m away from the satellite and 2.40 / 0.70 / 0.40 m back along track, with 27 of 48 blocks within 2.5 m. The next section explains and fixes what was left.
 
 **Cause confirmed first.** NASA's DEM (NISAR DEM v1.2) is the Copernicus GLO-30 X-band surface model. Over forest it sits inside the canopy.
 - Against the lidar ground on 30 m cells it is a median 6.0 m higher. Under 18–25 m canopy it is 9.7 m higher, about half the canopy height.
@@ -259,7 +264,118 @@ The first sweep, before the DEM and correction fixes, is in `data/9t/results/nis
   - Track 026 keeps a 3–7 m along-track offset (block median 3.2 m). NASA's stack had it too (4.1 m), so it is not a height effect. Candidate cause: azimuth timing on that descending track.
   - Blocks under the tallest canopy now sit slightly toward the satellite. Some L-band echo comes from above the ground, as expected in forest.
 - Outputs: `data/9t/results/nisar/nisar_lidar_sim_match_shifts_lidarslc_9t.csv`, `nisar_lidar_sim_match_summary_lidarslc_9t.json`, `nisar_lidar_sim_match_lidarslc_run_9t.log`, `figures/nisar_lidar_sim_match_lidarslc_9t.png`.
-- V2 (measured against predicted shift) is not run yet. V3 answers the question it was meant to support.
+- V2 (measured against predicted shift) ran on 2026-10-13. See the next section.
+
+### Leftover offsets traced and fixed (2026-10-13)
+
+The user asked to figure out the remaining errors, test the fixes, and stop there. Four separate faults sat under the 2026-10-12 numbers. Each was found, fixed and tested on 9t.
+
+**1. The check itself had a datum error.**
+- The lidar simulation sits on the NAD83(2011) grid. The radar sits on WGS84, which ISCE3 treats as ITRF2014. The check treated the two grids as one.
+- On 9t the same point is 0.80 m west and 1.01 m north in the radar grid (ITRF2014 at the stack's mean date, 2026.39). PROJ's NAD83(2011) to "WGS 84" route is a null transform, so the check goes through ITRF2014 (EPSG:7912).
+- Fix: the check removes that offset from every shift. It also refines the best shift below 1 m with a parabola through the peak. `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py`.
+
+**2. Two NASA granules are misplaced.**
+- Track 026 on 2026-07-22 and on 2026-09-08. Each matches no other date of its track at any shift inside the window. Their amplitude correlation with the other dates is −0.01 to 0.00, against 0.23 or more for every other date. This holds on 9t, 613590 and McKean.
+- NASA's GSLC of 2026-09-08 is wrong too. Our re-placement with NASA's heights reproduces it exactly (amplitude correlation 0.997), so the fault is in NASA's RSLC or orbit.
+- 2026-09-08 was processed on the day of the pass, with an orbit file made 13 hours after it. Every other date waited a day or more. That is a likely reason, not a confirmed one.
+- Both went into earlier track 026 results. 2026-09-08 did on all three areas. 2026-07-22 did on McKean only. On 9t it had no valid pixels.
+- Fix: `BAD_DATES` and `usable()` in `notebooks/wellsight_v2/_nisar_area.py`. The check and the re-placement drop them. The other NISAR scripts do not yet (BACKLOG).
+
+**3. NASA's two processing generations sit 3.2 m apart in slant range.**
+- Beta granules (Oct 2025–Jan 2026) sit 3.2 m closer in slant range than provisional granules (Jun–Oct 2026). Track 090 gives 3.3 m, track 162 3.2 m and track 026 4.3 m. On the ground that is 4–7 m toward the satellite.
+- The external calibration file changed from `NISAR_LSAR_EXT_CAL_20250730T000000_01.yaml` (beta) to `_04.yaml` (provisional). The software release changed from X05009/X05010 to P05023. Orbit type (MOE) and dry-troposphere model (`tsx`) are the same.
+- Each track's stack mixed both generations, so every feature was smeared over 4–7 m.
+- The step is uniform. Open-canopy and closed-canopy blocks agree within 0.4 m. So it is a timing or calibration step, not tree height.
+- NASA's own GSLC stack has the same per-date offsets as ours, within 0.2 m. So it comes from NASA's data, not from our code.
+
+**4. Track 026 dates jump along the flight path.**
+- Track 026 passes at dusk, about 19:00 local. Its provisional dates sit 0 to 7.7 m back along the flight path from its beta dates. Its three beta dates agree within 0.8 m.
+- One track 090 date (2026-07-26) sits 3.9 m back. Track 162 dates agree within 1.3 m.
+- Cause not found. Candidates are NASA's provisional processing of these passes or the dusk ionosphere. NASA's own ionosphere correction for these dates is 0.2–1.0 m along track, and it does not follow the jumps.
+
+**Fix for 3 and 4: line up the dates of each track, then tie each track to the lidar.**
+- **Per date.** Every pair of dates in a track is registered by sub-pixel phase correlation of the amplitude. One offset per date is then solved by least squares, with the mean of the provisional dates held at zero. The network-of-pairs design follows Fattahi et al. (2017). Each offset goes back into the re-placement as slant range and azimuth time, on top of NASA's own corrections. Code: `network_offsets()` in `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`; `--estimate-offsets` and `--write --coreg` in `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`. Table: `data/9t/results/nisar/nisar_slc_date_offsets_9t.csv`.
+- **Per track.** One constant from check V3 on the lined-up stack, with forest echo modelled at 10% of stand height (below). Code: `--track-offsets _coreg_k010` and `--write --coreg --absolute`. Table: `data/9t/results/nisar/nisar_slc_track_offsets_9t.csv`.
+
+| Track | Per-track correction, slant range | Along the flight path |
+|---|---|---|
+| 026 | +3.87 m | 4.30 m back (−0.63 ms) |
+| 090 | +2.05 m | 0.95 m back (−0.14 ms) |
+| 162 | +2.72 m | 0.60 m back (−0.09 ms) |
+
+The corrections are measured from the provisional level. They say the provisional dates record the ground 2.0–3.9 m too far in slant range.
+
+**Forest echo height.**
+- Check V3 now takes `--kappa k`. Each simulated echo sits k × stand canopy height above the ground, with canopy height averaged over 25 m. It is then mapped back to the map the way our ground-height placement maps it.
+- k = 0.10 fits best. The match peaks there on all three tracks: 0.243 / 0.269 / 0.257, against 0.239 / 0.266 / 0.248 at k = 0. The shift also stops following canopy height: r = +0.14 / +0.13 / −0.23, against −0.23 / −0.35 / −0.42 at k = 0.
+- k = 0.25 and k = 0.5 fit worse. A first try with the raw 1 m canopy height fitted worse at every k above 0. Crown-to-crown height jumps scatter the echo, so a stand mean is used.
+- So the L-band HH echo sits about 1–2 m above the ground in this forest. That is why features under trees sat about 1–1.5 m toward the satellite. Ground heights stay right for ground targets such as wells, pads and pits.
+- On the canopy-modelled check, the provisional dates are 2.0–3.9 m long in slant range and the beta dates 0.5–1.3 m short. The newer calibration is the one further off.
+- Unit test: a uniform 20 m canopy at k = 0.5 moves the simulation 12.60 m toward the satellite on gentle synthetic terrain, against 12.53 m expected.
+
+**Tests**
+
+| | NASA's GSLC | Ours, 2026-10-12 | Final |
+|---|---|---|---|
+| Blocks within 2.5 m, bare-earth check | 0 of 48 | 27 of 48 | 40 of 48 |
+| Blocks within 5 m | 0 of 48 | 42 of 48 | 48 of 48 |
+| Worst block | 20.8 m | 7.2 m | 3.8 m |
+| Median shift, 026 / 090 / 162 | 11.3 / 11.7 / 8.4 m | 3.5 / 1.4 / 1.7 m | 2.0 / 1.5 / 1.4 m |
+| Canopy-modelled check (k = 0.10) | – | – | 1.2 / 1.0 / 1.1 m; 46 of 48 within 2.5 m |
+
+- Every column uses the fixed check with the bad granules left out.
+- The final column is not independent of the lidar, because the per-track constant came from it. Four tests are:
+  - **Held-out blocks.** A constant fitted on one checkerboard half of the blocks brings all 8 blocks of the other half within 2.5 m. That holds on every track, both ways round. The two halves' constants agree within 0.35 m.
+  - **Coherence.** It does not use the lidar. Lining dates up raises the median coherence of track 026 12-day pairs from 0.31 to 0.52, and of 24-day pairs from 0.29 to 0.53. Pairs with the 2026-07-26 track 090 date gain 0.09–0.23. No pair loses more than 0.001.
+  - **Leftover per-date offsets** on the final stack are at most 0.16 m across track and 0.09 m along it. The pair misclosure is 0.04–0.07 m.
+  - **Beta anchor.** The lidar puts track 026 4.30 m forward of its provisional mean. NASA's beta dates already sat 4.46 m forward of it. They agree within 0.16 m.
+- **Gate (every block within 2.5 m).** It is met on 46 of 48 blocks on the canopy-modelled check. Block b33 on track 090 has a flat match, 0.222 at its best shift against 0.221 at zero, so its 8.3 m is not a measurement. Block b20 on track 090 is at 2.53 m.
+
+**V2 (measured against predicted shift).** `--v2` in `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`. NASA's placement against ours (as placed) in 150 m blocks, against (NASA DEM height − lidar height) / tan(incidence).
+- Correlation 0.88 / 0.82 / 0.90 (026 / 090 / 162). Medians agree within 0.4–1.0 m.
+- Slope 1.03 / 1.27 / 1.18. The plan's band is 0.9–1.1, so V2 passes on track 026 only.
+- A slope-aware prediction (NASA's surface slope toward the satellite) made the fit worse, r 0.60–0.78. The cause of the steep slope on the ascending tracks is open. V1 already shows our geometry reproduces NASA's to 0.02 px, so it does not touch the placement.
+- Outputs: `data/9t/results/nisar/nisar_regeocode_v2_checks_9t.csv`, `data/9t/results/nisar/nisar_regeocode_v2_blocks_9t.csv`.
+
+**Outputs**
+- Stack (gitignored, rewritten in place): `data/9t/derived/nisar_slc_lidar_5m/`. Its index `nisar_slc_lidar_index_9t.csv` records the per-date and per-track offsets applied (`coreg_slant_m`, `coreg_az_s`, `track_slant_m`, `track_az_s`). It flags the bad granule (`bad_granule`). The as-placed stack comes back with `--write` alone.
+- Tables in `data/9t/results/nisar/`: `nisar_slc_date_offsets_9t.csv` (latest per-date estimate), `nisar_slc_track_offsets_9t.csv`, `nisar_slc_pair_coherence_9t.csv` (as placed and co-registered).
+- Check V3 runs in `data/9t/results/nisar/`, each as `nisar_lidar_sim_match_shifts<suffix>_9t.csv`, `nisar_lidar_sim_match_summary<suffix>_9t.json`, `nisar_lidar_sim_match<suffix>_run_9t.log` and `figures/nisar_lidar_sim_match<suffix>_9t.png`:
+  - no suffix: NASA's GSLC (Stage 0 re-scored)
+  - `_lidarslc`, `_lidarslc_prov`, `_lidarslc_beta`: ours as placed on 2026-10-12, all dates and each generation alone
+  - `_coreg`, `_coreg_prov`, `_coreg_beta`: dates lined up
+  - `_coreg_k010`, `_coreg_k025`, `_coreg_k050`: dates lined up, forest echo at 10, 25 and 50% of stand height
+  - `_coregabs`, `_coregabs_k010`: final, bare earth and forest echo at 10%
+- Run logs in `data/9t/results/nisar/`: `nisar_slc_coreg_write_run_9t.log`, `nisar_slc_date_offsets_check_run_9t.log`, `nisar_slc_pair_coherence_run_9t.log`.
+- Paper: `literature/papers/fattahi_2017_network_esd_tops_coregistration.pdf`.
+
+**Reproduce**
+
+```bash
+S1=notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py
+V3=notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py
+python $S1 --heights lidar --write                       # as placed (2026-10-12)
+python $S1 --v2 && python $S1 --coherence
+python $V3 --stack lidar                                 # also --dates provisional, --dates beta
+python $S1 --estimate-offsets
+python $S1 --heights lidar --write --coreg
+python $S1 --estimate-offsets                            # refines; the change is under 0.3 m
+python $V3 --stack lidar --kappa 0.1                     # also 0.25 and 0.5
+python $S1 --track-offsets _coreg_k010
+python $S1 --heights lidar --write --coreg --absolute
+python $V3 --stack lidar && python $V3 --stack lidar --kappa 0.1
+python $S1 --estimate-offsets && python $S1 --coherence
+```
+
+Run at most three V3 jobs at once. Five at once ran out of 64 GB of memory.
+
+**What is left**
+- The downstream tests (steel, pad change, pits, bright targets, slope motion) still read NASA's GSLC. That stack mixes both generations and holds the bad granules. They were not re-run, as asked.
+- 613590 and McKean need the RSLC fetch, lidar heights, the line-up and their own per-track constants.
+- New dates on 9t need the line-up step run again.
+- The provisional range offset and the track 026 jumps are on NASA's side. These numbers could go to the NISAR team at ASF or JPL.
+- The V2 slope on the ascending tracks (1.18–1.27) is unexplained.
 
 ## Known traps
 
@@ -267,10 +383,13 @@ The first sweep, before the DEM and correction fixes, is in `data/9t/results/nis
 2. **Time epochs** differ per file ("seconds since <date>T00:00:00"). Never mix two files' times without converting.
 3. **Doppler.** Sinc interpolation of a complex image without demodulating the Doppler centroid lowers the coherence. V1 shows it.
 4. **Flattening sign and reference.** It must match NASA's, or our interferograms will not match theirs. V1 fixes it.
-5. **Which height.** HH ground-trunk double bounce sits at ground level, so bare earth is right for wells, pads and slopes. Volume scattering sits higher in the canopy. The `--surface dsm` run shows how much that matters.
+5. **Which height.** HH ground-trunk double bounce sits at ground level, so bare earth is right for wells, pads and slopes. Volume scattering sits higher in the canopy. Measured on 2026-10-13: the echo sits at about 10% of stand height, 1–2 m up. Bare earth stays right for ground targets.
 6. **Two frames on track 026.** Use the same frame as the GSLC index.
-7. **Beta against provisional.** The 12 beta granules used older software. Run V1 on one beta date too.
+7. **Beta against provisional.** The 12 beta granules used older software. Run V1 on one beta date too. V1 passes on both, but the two generations sit 3.2 m apart in slant range (4.3 m on track 026). Never average them before lining the dates up.
 8. **Lidar edge.** The 200 m margin has no lidar. Those pixels are flagged and excluded from the tests.
+9. **Datum inside the check.** The lidar grid is NAD83(2011) and the radar grid is WGS84 (ITRF2014). They are 1.3 m apart on 9t. Compare like with like, through ITRF2014.
+10. **Bad granules.** Check every date against the rest of its track before stacking. Two NASA granules on track 026 sit far off (`BAD_DATES` in `notebooks/wellsight_v2/_nisar_area.py`).
+11. **Many checks at once.** Each V3 run needs several GB. Five at once ran out of 64 GB.
 
 ## Found while planning: slope motion look direction was wrong
 
@@ -283,6 +402,7 @@ The first sweep, before the DEM and correction fixes, is in `data/9t/results/nis
 ## Downstream after it passes
 
 - Add a `source` switch (`gslc` or `lidar`) to `load_complex` in `notebooks/wellsight_v2/s5_eval/_nisar_gslc_interferogram_pits_9t.py`. The steel, pad-change, slope-motion and bright-target scripts all load through it.
+- Make every loader drop `BAD_DATES` through `_nisar_area.usable()`. On NASA's GSLC, also never mix beta and provisional dates without lining them up first.
 - Rerun the pit test (with the pad-ring bias fixed first), steel, pad change and bright targets. Compare with the GSLC results in one table.
 
 ## Order and effort
@@ -294,7 +414,8 @@ The first sweep, before the DEM and correction fixes, is in `data/9t/results/nis
 | Stage 2 library + C0 | done 2026-10-10 | C0 passed |
 | Stage 3 + V1 | V1 done 2026-10-10 | passed, on the interferogram match |
 | Stage 3 lidar + V3 | done 2026-10-12 | offset 9–12 m down to 1.3–1.6 m; 26 of 48 blocks within 2.5 m |
-| V2, track 026 along-track offset | open | |
+| Leftover offsets, V2 | done 2026-10-13 | check datum fixed, 2 bad granules dropped, dates lined up, tracks tied to the lidar; 46 of 48 blocks within 2.5 m (canopy-modelled check); V2 slope 1.03 / 1.27 / 1.18 |
+| Downstream tests on the final stack | open | not started, as asked |
 
 The radarGrid cubes remove the orbit solver from the main path. That cuts the earlier "few days" to about two to three sessions in total, depending on V1.
 

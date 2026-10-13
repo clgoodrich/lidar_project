@@ -5,6 +5,33 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-13 -- NISAR leftover offsets on 9t traced and fixed: 46 of 48 blocks within 2.5 m
+
+- **Ask.** The user: "Figure out our solutions, test them but do not go beyond that." Doc: `docs/iterations/nisar_regeocode_plan_9t.md`, section "Leftover offsets traced and fixed".
+- **Four faults found.**
+  - The check compared the NAD83(2011) lidar grid with the WGS84 radar grid as one. On 9t they are 0.80 m west and 1.01 m north apart.
+  - Two NASA granules on track 026 (2026-07-22, 2026-09-08) are misplaced by more than the window, on all three areas. NASA's own GSLC of 2026-09-08 is wrong too.
+  - NASA's beta and provisional granules sit 3.2 m apart in slant range (4.3 m on track 026). It is uniform, not canopy. The external calibration file changed from v01 to v04 between them.
+  - Track 026 (dusk) dates jump 0–7.7 m along the flight path. One track 090 date jumps 3.9 m. Cause not found.
+- **Fixes.**
+  - Check: datum offset removed, sub-metre peak, bad granules dropped (`BAD_DATES`, `usable()` in `notebooks/wellsight_v2/_nisar_area.py`).
+  - Stack: every date pair registered and solved by least squares for one offset per date (after Fattahi et al. 2017), then one constant per track from the lidar check. `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`, `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py` (`--estimate-offsets`, `--track-offsets`, `--write --coreg --absolute`, `--coherence`, `--v2`).
+  - Check option `--kappa`: forest echo above the ground. It fits best at 10% of stand height (1–2 m up). That explains the old "toward the satellite under tall trees" pattern.
+- **Results.**
+  - Bare-earth check: 0 / 27 / 40 of 48 blocks within 2.5 m for NASA's GSLC, ours on 2026-10-12, and final. Within 5 m: 0 / 42 / 48.
+  - Canopy-modelled check, final: median 1.2 / 1.0 / 1.1 m (026 / 090 / 162), 46 of 48 within 2.5 m. One of the two misses has a flat match.
+  - Held-out blocks: the per-track constant fitted on half the blocks brings 8 of 8 of the other half within 2.5 m, on every track.
+  - Coherence, which does not use the lidar: track 026 12-day pairs rise from 0.31 to 0.52. No pair loses.
+  - Leftover per-date offsets 0.16 m at most.
+  - V2: correlation 0.82–0.90, slope 1.03 / 1.27 / 1.18. It passes on track 026 only.
+- **Not done, as asked.** Downstream tests, 613590 and McKean.
+- **Outputs.**
+  - `data/9t/results/nisar/`: `nisar_slc_date_offsets_9t.csv`, `nisar_slc_track_offsets_9t.csv`, `nisar_slc_pair_coherence_9t.csv`, `nisar_regeocode_v2_checks_9t.csv` and `nisar_regeocode_v2_blocks_9t.csv`.
+  - Check V3 runs as `nisar_lidar_sim_match_*<suffix>_9t.*` plus figures.
+  - The stack in `data/9t/derived/nisar_slc_lidar_5m/` was rewritten (gitignored).
+  - Paper `literature/papers/fattahi_2017_network_esd_tops_coregistration.pdf`.
+  - Plan doc, area-extension doc, BACKLOG and CITATIONS updated.
+
 ## 2026-10-12 -- NISAR height error fixed on 9t: lidar-height re-placement takes the offset from 10 m to 2 m
 
 - **Ask.** The user: "how do we fix the height error. That is our number one concern presently."

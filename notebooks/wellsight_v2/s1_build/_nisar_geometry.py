@@ -215,6 +215,35 @@ def flatten(slc, slant_range, wavelength, sign=+1):
     return slc * np.exp(sign * 1j * 4 * np.pi * slant_range / wavelength)
 
 
+# ---------- stack co-registration ----------
+
+def network_offsets(images, ref, upsample=50):
+    """One translation per image that lines a co-gridded stack up, solved from every pair.
+
+    images: dict key -> 2-D amplitude array. Each pair is registered by sub-pixel phase
+    correlation. The pair shifts are solved by least squares for one shift per image, with
+    the mean over the keys in ref held at zero. Returns {key: (drow, dcol)} in pixels (where
+    that image's content sits against the reference) and the rms pair misclosure in pixels.
+    """
+    from itertools import combinations
+    from skimage.registration import phase_cross_correlation
+    keys = list(images)
+    k = {key: i for i, key in enumerate(keys)}
+    rows, b = [], []
+    for a, c in combinations(keys, 2):
+        s, _, _ = phase_cross_correlation(images[a], images[c], upsample_factor=upsample)
+        row = np.zeros(len(keys))
+        row[k[c]], row[k[a]] = 1.0, -1.0
+        rows.append(row)
+        b.append(-s)                       # content of c against a (s registers c onto a)
+    con = np.zeros(len(keys))
+    con[[k[r] for r in ref]] = 1e3 / len(ref)
+    M, B = np.array(rows + [con]), np.array(b + [np.zeros(2)])
+    x, *_ = np.linalg.lstsq(M, B, rcond=None)
+    resid = M[:-1] @ x - B[:-1]
+    return {key: tuple(x[k[key]]) for key in keys}, float(np.sqrt(np.mean(resid ** 2)))
+
+
 # ---------- terrain correction and masks (Small 2011) ----------
 
 def local_incidence(dem, res, los_enu):

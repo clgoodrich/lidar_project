@@ -48,6 +48,16 @@ RESULTS = DATA / "results" / "nisar"
 # McKean takes the statewide export of the same date (2026-04, same columns).
 _DEP = path_for("data") / "_source" / "reference" / "dep_wells"
 WELLS = _DEP / ("oil_gas_locations.gpkg" if TAG == "mkf" else "venango_wells_all.gpkg")
+# NASA granules that sit far from where the rest of their track puts the ground. Each one
+# matches no other date of its track at any shift inside the window, in every area that
+# holds it (checked 2026-10-13, docs/iterations/nisar_regeocode_plan_9t.md). (date, track).
+BAD_DATES = {("2026-07-22", 26), ("2026-09-08", 26)}
+
+
+def usable(idx):
+    """Rows of a NISAR window index worth using: at least half valid and not in BAD_DATES."""
+    bad = idx.apply(lambda r: (str(r.date), int(r.track)) in BAD_DATES, axis=1)
+    return idx[(idx.valid_fraction >= 0.5) & ~bad]
 
 
 def lidar(name: str) -> Path:

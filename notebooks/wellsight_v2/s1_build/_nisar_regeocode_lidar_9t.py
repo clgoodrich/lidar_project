@@ -13,6 +13,16 @@ Conventions were settled by the V1 sweep and live in CONV; the numbers are in th
 
 Run (production, lidar heights, every date, HH and HV):
   python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --heights lidar --write
+Then line the dates of each track up (2026-10-13; beta dates sit 3.2 m off in slant range and
+dusk track 026 dates jump metres along track):
+  python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --estimate-offsets
+  python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --heights lidar --write --coreg
+  python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --estimate-offsets   # check: change near 0
+  python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --coherence          # before and after
+Then put each track on the lidar (check V3 with forest echo at 10% of stand height):
+  python notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py --stack lidar --kappa 0.1
+  python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --track-offsets _coreg_k010
+  python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --heights lidar --write --coreg --absolute
 
 Run (check V1, NASA's DEM, one pair per track plus one beta pair):
   python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --v1       20260917_t162A:20260929_t162A 20260924_t090A:20261006_t090A       20260920_t026D:20261002_t026D 20251109_t162A:20251121_t162A
@@ -224,8 +234,11 @@ def heights_for(lon, lat, X, Y, heights):
     return lidar_heights(lon, lat, X, Y)
 
 
-def make_slc(date_key, heights="nisar_dem", pols=("HH",)):
-    """One date on its GSLC 5 m grid. Returns dict of complex arrays (shape of the grid) and info."""
+def make_slc(date_key, heights="nisar_dem", pols=("HH",), coreg=(0.0, 0.0)):
+    """One date on its GSLC 5 m grid. Returns dict of complex arrays (shape of the grid) and info.
+
+    coreg: (slant range m, azimuth time s) added on top of NASA's timing corrections, from
+    the per-date offsets table (estimate_offsets). (0, 0) places the date exactly as NASA does."""
     ri = pd.read_csv(RS / "nisar_rslc_window_index_9t.csv")
     gi = pd.read_csv(GS / "nisar_gslc_window_index_9t_5m.csv")
     rrow = ri[ri.file == f"nisar_rslc_window_{date_key}_9t.h5"].iloc[0]
@@ -240,6 +253,7 @@ def make_slc(date_key, heights="nisar_dem", pols=("HH",)):
     t, r = geo.zero_doppler(rs["orbit"], P, t_gg)
     g = dict(t=t, r=r, h=h, lat=lat)
     dt, dr = corrections(rs, tim, g, set(CONV["corr"]))
+    dr, dt = dr + coreg[0], dt + coreg[1]
     lam = geo.C / grow.centre_frequency_hz
     out = {}
     for pol in pols:
@@ -298,19 +312,31 @@ def run_v1(pairs):
     return rows
 
 
-def write_stack(heights):
-    """Every RSLC date re-placed with the given heights, HH and HV, on its GSLC 5 m grid."""
+OFFSETS = RES / "nisar_slc_date_offsets_9t.csv"
+TRACK_OFFSETS = RES / "nisar_slc_track_offsets_9t.csv"
+CORE = np.s_[41:941, 41:941]     # the lidar-covered 900 x 900 cells of the 981 x 981 window
+
+
+def write_stack(heights, coreg=False, absolute=False):
+    """Every RSLC date re-placed with the given heights, HH and HV, on its GSLC 5 m grid.
+    With coreg, each date also takes its offsets from OFFSETS (see estimate_offsets). With
+    absolute, each track also takes its offset against the lidar from TRACK_OFFSETS."""
     OUTD.mkdir(parents=True, exist_ok=True)
     ri = pd.read_csv(RS / "nisar_rslc_window_index_9t.csv")
     gi = pd.read_csv(GS / "nisar_gslc_window_index_9t_5m.csv")
     tag = "lidar" if heights == "lidar" else "nisardem"
+    off = pd.read_csv(OFFSETS).set_index("file") if coreg else None
+    trk = pd.read_csv(TRACK_OFFSETS).set_index("track") if absolute else None
     rows = []
     for rrow in ri.itertuples():
         key = rrow.file.replace("nisar_rslc_window_", "").replace("_9t.h5", "")
         name = f"nisar_slc_{tag}_{key}_9t.tif"
         grow = gi[(gi.date == rrow.date) & (gi.track == rrow.track)].iloc[0]
+        bad = (str(rrow.date), int(rrow.track)) in gfetch.A.BAD_DATES
+        cs = (float(off.loc[name, "slant_m"]), float(off.loc[name, "az_s"])) if coreg and name in off.index else (0.0, 0.0)
+        ts = (float(trk.loc[rrow.track, "slant_m"]), float(trk.loc[rrow.track, "az_s"])) if absolute else (0.0, 0.0)
         t0 = time.time()
-        o, info = make_slc(key, heights=heights, pols=("HH", "HV"))
+        o, info = make_slc(key, heights=heights, pols=("HH", "HV"), coreg=(cs[0] + ts[0], cs[1] + ts[1]))
         m = grow
         tf = from_origin(m.x_first_centre - m.spacing_m / 2, m.y_first_centre + m.spacing_m / 2,
                          m.spacing_m, m.spacing_m)
@@ -326,22 +352,229 @@ def write_stack(heights):
         r.update(file=name, rslc=rrow.file, heights=heights,
                  lidar_fill_share=LAST_FILL.get("share", 0.0) if heights == "lidar" else 1.0,
                  nasa_minus_used_height_median_m=round(float(np.nanmedian(dh)), 2),
+                 coreg=bool(coreg), coreg_slant_m=cs[0], coreg_az_s=cs[1],
+                 absolute=bool(absolute), track_slant_m=ts[0], track_az_s=ts[1], bad_granule=bad,
                  seconds=round(time.time() - t0, 1))
         r.pop("Index", None)
         rows.append(r)
         pd.DataFrame(rows).to_csv(OUTD / f"nisar_slc_{tag}_index_9t.csv", index=False)
-        print(name, {k: r[k] for k in ("lidar_fill_share", "nasa_minus_used_height_median_m", "seconds")}, flush=True)
+        print(name, {k: r[k] for k in ("lidar_fill_share", "nasa_minus_used_height_median_m",
+                                       "coreg_slant_m", "coreg_az_s", "seconds")}, flush=True)
     return rows
+
+
+def radar_offsets(e, n, l, vg):
+    """Map shift (east, north m) of a date's content -> slant range (m) and azimuth time (s)
+    offsets, plus the shift away from the satellite and forward along track (m).
+    Content that sits a m away from the satellite was recorded a sin(incidence) m further in
+    slant range. Content f m forward along track was recorded f / vg s later."""
+    away = -np.array([l["east"], l["north"]]) / np.hypot(l["east"], l["north"])
+    fwd = np.array([l["along_east"], l["along_north"]]) / np.hypot(l["along_east"], l["along_north"])
+    a, f = np.linalg.solve(np.c_[away, fwd], [e, n])
+    return a * np.sin(np.radians(l["incidence_deg"])), f / vg, a, f
+
+
+def estimate_offsets():
+    """Per-date offset of the lidar-height stack against its own track, from every date pair.
+
+    Reference: the mean of each track's provisional dates. The offsets found are added to
+    those the stack already had applied, so OFFSETS always holds the total correction. Run
+    it again after --write --coreg: the change it reports should be near zero.
+    """
+    idx = gfetch.A.usable(pd.read_csv(OUTD / "nisar_slc_lidar_index_9t.csv"))
+    los = json.load(open(RES / "nisar_los_by_track_9t.json"))
+    rows = []
+    for t, g in idx.groupby("track"):
+        l = los[str(int(t))]
+        imgs = {}
+        for r in g.itertuples():
+            with rasterio.open(OUTD / r.file) as s:
+                imgs[r.file] = np.abs(s.read(1))[CORE].astype(np.float64)
+        off, rms = geo.network_offsets(imgs, list(g[g.collection == "provisional"].file))
+        for r in g.itertuples():
+            with h5py.File(RS / r.rslc, "r") as h:
+                vg = float(np.median(h["geolocationGrid/groundTrackVelocity"][:]))
+            drow, dcol = off[r.file]
+            ds, da, a, f = radar_offsets(5 * dcol, -5 * drow, l, vg)
+            s0 = float(getattr(r, "coreg_slant_m", 0.0) or 0.0)
+            a0 = float(getattr(r, "coreg_az_s", 0.0) or 0.0)
+            rows.append(dict(file=r.file, date=r.date, track=int(t), collection=r.collection,
+                             away_m=round(a, 2), forward_m=round(f, 2),
+                             slant_m=round(s0 + ds, 3), az_s=a0 + da, az_m=round((a0 + da) * vg, 2),
+                             applied_slant_m=s0, applied_az_s=a0,
+                             track_misclosure_rms_m=round(5 * rms, 2)))
+    df = pd.DataFrame(rows)
+    df.to_csv(OFFSETS, index=False)
+    print(df.to_string(index=False))
+    print("wrote", OFFSETS)
+    return df
+
+
+def track_offsets(check="_coreg_k010"):
+    """Per-track offset of the co-registered stack against the lidar, from check V3.
+
+    Reads the block shifts of `_nisar_lidar_sim_match_9t.py --stack lidar --kappa 0.1` (the
+    lidar simulation with forest echo at 10% of stand height, the best fit on 2026-10-13), takes
+    the median over blocks and turns it into slant range and azimuth time. The offsets found
+    are added to those the stack already had applied. Split-half check: the median of each
+    checkerboard half of the blocks, and how the other half fares after that correction.
+    """
+    sh = pd.read_csv(RES / f"nisar_lidar_sim_match_shifts{check}_9t.csv")
+    sh = sh[sh.block != "tile"].copy()
+    sh["half"] = (sh.block.str[1].astype(int) + sh.block.str[2].astype(int)) % 2
+    los = json.load(open(RES / "nisar_los_by_track_9t.json"))
+    idx = gfetch.A.usable(pd.read_csv(OUTD / "nisar_slc_lidar_index_9t.csv"))
+    rows = []
+    for t, g in sh.groupby("track"):
+        l = los[str(int(t))]
+        away = -np.array([l["east"], l["north"]]) / np.hypot(l["east"], l["north"])
+        back = np.array([-away[1], away[0]])          # the check's along_m axis
+        a, b = float(g.away_m.median()), float(g.along_m.median())
+        e, n = a * away + b * back
+        rr = idx[idx.track == t].iloc[0]
+        with h5py.File(RS / rr.rslc, "r") as h:
+            vg = float(np.median(h["geolocationGrid/groundTrackVelocity"][:]))
+        ds, da, _, f = radar_offsets(e, n, l, vg)
+        s0 = float(rr.get("track_slant_m", 0.0) or 0.0) if "track_slant_m" in idx else 0.0
+        a0 = float(rr.get("track_az_s", 0.0) or 0.0) if "track_az_s" in idx else 0.0
+        halves = []
+        for k in (0, 1):
+            fit, test = g[g.half == k], g[g.half != k]
+            ca, cb = fit.away_m.median(), fit.along_m.median()
+            halves.append(int((np.hypot(test.away_m - ca, test.along_m - cb) <= 2.5).sum()))
+        rows.append(dict(track=int(t), check=check, away_m=round(a, 2), back_m=round(b, 2),
+                         slant_m=round(s0 + ds, 3), az_s=a0 + da, az_m=round((a0 + da) * vg, 2),
+                         applied_slant_m=s0, applied_az_s=a0,
+                         split_half_test_blocks_within_2p5m=f"{halves[0]}/{len(g) - len(g[g.half == 0])}, "
+                                                            f"{halves[1]}/{len(g) - len(g[g.half == 1])}"))
+    df = pd.DataFrame(rows)
+    df.to_csv(TRACK_OFFSETS, index=False)
+    print(df.to_string(index=False))
+    print("wrote", TRACK_OFFSETS)
+    return df
+
+
+def pair_coherence(max_days=36):
+    """Median 5 x 5 coherence of every same-track pair up to max_days apart, on the stack as it
+    is now. Dates that sit metres apart lose coherence; lining them up should bring it back."""
+    from scipy.ndimage import uniform_filter
+    idx = gfetch.A.usable(pd.read_csv(OUTD / "nisar_slc_lidar_index_9t.csv"))
+    state = "co-registered" if "coreg" in idx and idx.coreg.any() else "as placed"
+    rows = []
+    for t, g in idx.sort_values("date").groupby("track"):
+        S = {}
+        for r in g.itertuples():
+            with rasterio.open(OUTD / r.file) as s:
+                S[r.date] = s.read(1)[CORE]
+        dates = list(S)
+        for i, d1 in enumerate(dates):
+            for d2 in dates[i + 1:]:
+                days = (pd.Timestamp(d2) - pd.Timestamp(d1)).days
+                if days > max_days:
+                    continue
+                a, b = S[d1], S[d2]
+                p = a * np.conj(b)
+                num = np.abs(uniform_filter(p.real, 5) + 1j * uniform_filter(p.imag, 5))
+                den = np.sqrt(uniform_filter(np.abs(a) ** 2, 5) * uniform_filter(np.abs(b) ** 2, 5))
+                rows.append(dict(stack=state, track=int(t), date1=d1, date2=d2, days=days,
+                                 coh5_median=round(float(np.median(num / np.maximum(den, 1e-12))), 3)))
+    new = pd.DataFrame(rows)
+    path = RES / "nisar_slc_pair_coherence_9t.csv"
+    if path.exists():
+        old = pd.read_csv(path)
+        new = pd.concat([old[old["stack"] != state], new], ignore_index=True)
+    new.to_csv(path, index=False)
+    print(new[new["stack"] == state].to_string(index=False))
+    print("wrote", path)
+    return new
+
+
+def run_v2(block=30):
+    """Check V2: is the shift between NASA's placement and ours the one the heights predict?
+
+    Both stacks place the same RSLC samples, so registering them block by block is sharp.
+    Predicted shift of NASA's content away from the satellite: (NASA DEM height - lidar height)
+    / tan(incidence), averaged over the block. Pass (plan): slope of measured on predicted
+    0.9-1.1. Runs on the stack as placed (no co-registration offsets), usable dates only.
+    """
+    from skimage.registration import phase_cross_correlation
+    li = gfetch.A.usable(pd.read_csv(OUTD / "nisar_slc_lidar_index_9t.csv"))
+    if "coreg" in li and li.coreg.any():
+        raise SystemExit("V2 needs the stack as placed: rewrite it without --coreg first")
+    gi = pd.read_csv(GS / "nisar_gslc_window_index_9t_5m.csv")
+    los = json.load(open(RES / "nisar_los_by_track_9t.json"))
+    X, Y, shape = output_grid(gi.iloc[0])
+    lon, lat = geo.utm_to_lonlat(X, Y)
+    dh = (geo.dem_heights_isce(NDEM, lon, lat, CONV["dem_half_pixel"])
+          - lidar_heights(lon, lat, X, Y)).reshape(shape)[CORE]
+    nb = 900 // block
+    rows = []
+    for t, g in li.groupby("track"):
+        l = los[str(int(t))]
+        away = -np.array([l["east"], l["north"]]) / np.hypot(l["east"], l["north"])
+        tan_i = np.tan(np.radians(l["incidence_deg"]))
+        ours = nasa = 0.0
+        for r in g.itertuples():
+            with rasterio.open(OUTD / r.file) as s:
+                ours = ours + np.abs(s.read(1))[CORE].astype(np.float64) ** 2
+            gf = gi[(gi.date == r.date) & (gi.track == r.track)].iloc[0].file
+            with rasterio.open(GS / gf) as s:
+                nasa = nasa + np.abs(s.read(1))[CORE].astype(np.float64) ** 2
+        ours, nasa = np.sqrt(ours), np.sqrt(nasa)
+        for i in range(nb):
+            for j in range(nb):
+                sl = np.s_[i * block:(i + 1) * block, j * block:(j + 1) * block]
+                s, _, _ = phase_cross_correlation(ours[sl], nasa[sl], upsample_factor=20)
+                e, n = -5 * s[1], 5 * s[0]          # where NASA puts the content, against ours
+                rows.append(dict(track=int(t), block_row=i, block_col=j,
+                                 measured_away_m=round(e * away[0] + n * away[1], 2),
+                                 measured_across_m=round(-e * away[1] + n * away[0], 2),
+                                 nasa_minus_lidar_height_m=round(float(np.mean(dh[sl])), 2),
+                                 predicted_away_m=round(float(np.mean(dh[sl])) / tan_i, 2)))
+    df = pd.DataFrame(rows)
+    df.to_csv(RES / "nisar_regeocode_v2_blocks_9t.csv", index=False)
+    out = []
+    for t, g in df.groupby("track"):
+        slope, icpt = np.polyfit(g.predicted_away_m, g.measured_away_m, 1)
+        out.append(dict(check="V2 shift against height difference", track=int(t), blocks=len(g),
+                        block_m=5 * block, slope=round(float(slope), 3), intercept_m=round(float(icpt), 2),
+                        r=round(float(np.corrcoef(g.predicted_away_m, g.measured_away_m)[0, 1]), 3),
+                        median_measured_m=round(float(g.measured_away_m.median()), 2),
+                        median_predicted_m=round(float(g.predicted_away_m.median()), 2),
+                        median_across_m=round(float(g.measured_across_m.median()), 2),
+                        passed=bool(0.9 <= slope <= 1.1)))
+    out = pd.DataFrame(out)
+    out.to_csv(RES / "nisar_regeocode_v2_checks_9t.csv", index=False)
+    print(out.to_string(index=False))
+    return out
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--heights", default="nisar_dem", choices=["nisar_dem", "lidar"])
+    ap.add_argument("--v2", action="store_true", help="check V2 on the stack as placed")
     ap.add_argument("--v1", nargs="+", help="date pairs as d1:d2, e.g. 20260917_t162A:20260929_t162A")
     ap.add_argument("--write", action="store_true", help="re-place every date (HH and HV) and write the stack")
+    ap.add_argument("--coreg", action="store_true", help="with --write: apply the per-date offsets table")
+    ap.add_argument("--absolute", action="store_true", help="with --write --coreg: apply the per-track offsets too")
+    ap.add_argument("--track-offsets", metavar="CHECK", help="per-track offsets from a V3 run, e.g. _coreg_k010")
+    ap.add_argument("--estimate-offsets", action="store_true", help="per-date offsets of the stack on disk")
+    ap.add_argument("--coherence", action="store_true", help="pair coherence of the stack on disk")
     a = ap.parse_args()
     if a.write:
-        write_stack(a.heights)
+        write_stack(a.heights, coreg=a.coreg, absolute=a.absolute)
+        return
+    if a.track_offsets:
+        track_offsets(a.track_offsets)
+        return
+    if a.estimate_offsets:
+        estimate_offsets()
+        return
+    if a.coherence:
+        pair_coherence()
+        return
+    if a.v2:
+        run_v2()
         return
     if a.heights != "nisar_dem":
         raise SystemExit("--v1 compares against NASA and runs on NASA's DEM only")

@@ -22,12 +22,27 @@ shifted at 1 m steps (25 sub-pixel offsets, each block-averaged to 5 m) and ever
 Shift sign: (dx, dy) is how far features sit in the radar image from where the lidar says they
 are, in metres east and north. "away_m" is that shift along the horizontal direction pointing
 away from the satellite. A DEM that is too high under trees pushes features away from it.
+"along_m" is the shift at right angles to that, pointing back against the flight direction.
 
-Gate (plan): every block within +-2.5 m means NASA's placement is good enough. The DEM is NAD83(2011)
-and the GSLC is WGS84. They differ by about 1-1.5 m here, so shifts under that are not resolvable.
+Gate (plan): every block within +-2.5 m means NASA's placement is good enough.
+
+Datum (fixed 2026-10-13): the simulation sits on the lidar's NAD83(2011) grid and the radar on
+WGS84 (ITRF2014). On 9t the same point is 0.80 m west and 1.01 m north in the radar grid. Shifts
+are reported in the radar's frame: that datum offset, taken at the stack's mean date, is removed.
+The best shift is refined below 1 m with a parabola through the peak and its neighbours.
+
+Canopy (--kappa k, added 2026-10-13): forest echo comes partly from inside the canopy. With k > 0
+each facet's echo is binned at the slant range of a point k x canopy height (25 m mean) above the ground,
+then mapped back to the map the way our ground-height placement does it. Elevated echo then
+lands toward the satellite in the simulation as it does in the radar. k = 0 is bare earth.
+
+Dates: NASA granules in _nisar_area.BAD_DATES are left out. --dates provisional or beta keeps
+one processing generation only (beta dates sit 3.2 m closer in slant range, see the plan doc).
 
 Run (about 20 minutes, mostly the remote cube read for the first run):
-  python notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py
+  python notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py                  # NASA's GSLC
+  python notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py --stack lidar    # our stack
+  python notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py --stack lidar --dates beta
   python notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py --figure   # figure only
 """
 from __future__ import annotations
@@ -55,11 +70,35 @@ FIG = OUT / "figures"
 LOS_JSON = OUT / f"nisar_los_by_track_{A.TAG}.json"
 # --stack lidar: match our lidar-height re-placement (Stage 3) instead of NASA's GSLC (check V3)
 STACK = "lidar" if "--stack" in sys.argv and sys.argv[sys.argv.index("--stack") + 1] == "lidar" else "gslc"
+DATES = sys.argv[sys.argv.index("--dates") + 1] if "--dates" in sys.argv else "all"   # all, provisional, beta
+KAPPA = float(sys.argv[sys.argv.index("--kappa") + 1]) if "--kappa" in sys.argv else 0.0
 SLC_LIDAR = A.DATA / "derived" / "nisar_slc_lidar_5m"
-SUF = "_lidarslc" if STACK == "lidar" else ""
 _IDX = pd.read_csv(GS / f"nisar_gslc_window_index_{A.TAG}_5m.csv")
 # tracks with at least one usable window (all of track 090's McKean windows are empty)
-TRACKS = tuple(int(t) for t in sorted(_IDX[_IDX.valid_fraction >= 0.5].track.unique()))
+TRACKS = tuple(int(t) for t in sorted(A.usable(_IDX).track.unique()))
+
+
+def stack_index():
+    """Usable dates of the chosen stack and the folder holding them."""
+    if STACK == "gslc":
+        idx, folder = _IDX, GS
+    else:
+        idx, folder = pd.read_csv(SLC_LIDAR / f"nisar_slc_lidar_index_{A.TAG}.csv"), SLC_LIDAR
+    idx = A.usable(idx)
+    return (idx if DATES == "all" else idx[idx.collection == DATES]), folder
+
+
+def _suffix():
+    if STACK == "gslc":
+        s = ""
+    else:
+        idx, _ = stack_index()
+        s = ("_coregabs" if "absolute" in idx and idx.absolute.any() else "_coreg")             if "coreg" in idx and idx.coreg.any() else "_lidarslc"
+    return s + {"all": "", "provisional": "_prov", "beta": "_beta"}[DATES] + (f"_k{round(KAPPA * 100):03d}" if KAPPA else "")
+
+
+# --figure --suffix _coreg_k010 redraws a saved run (its suffix says stack, dates and kappa)
+SUF = sys.argv[sys.argv.index("--suffix") + 1] if "--suffix" in sys.argv else _suffix()
 DS_RANGE, DS_AZ = 3.1, 4.4   # RSLC sample spacing, slant range and along track (m)
 MAX_LAG = 30                 # m
 BG_M = 250
@@ -140,8 +179,9 @@ def read_los():
     return out
 
 
-def simulate(dem, l):
-    """Area-projection brightness (ratio to flat ground) per 1 m cell, plus shadow/layover masks."""
+def simulate(dem, l, chm=None, kappa=0.0):
+    """Area-projection brightness (ratio to flat ground) per 1 m cell, plus shadow/layover masks.
+    kappa > 0: each facet's echo sits kappa x canopy height above the ground (see the docstring)."""
     gy, gx = np.gradient(np.where(np.isfinite(dem), dem, np.nan))   # rows run south: gy is -dz/dnorth
     dzdx, dzdn = gx, -gy
     nz = 1 / np.sqrt(1 + dzdx ** 2 + dzdn ** 2)
@@ -156,15 +196,22 @@ def simulate(dem, l):
     layover = foreslope > np.tan(np.radians(l["incidence_deg"]))
     rr, cc = np.mgrid[0:dem.shape[0], 0:dem.shape[1]]
     e, nn = cc + 0.5, -(rr + 0.5)
-    s = -(e * lv[0] + nn * lv[1] + np.nan_to_num(dem) * lv[2])
+    s = -(e * lv[0] + nn * lv[1] + np.nan_to_num(dem) * lv[2])            # ground, as we place pixels
+    if kappa:   # a stand echoes as a whole: canopy height averaged over 25 m, not crown by crown
+        c = np.where(np.isfinite(chm), chm, 0.0)
+        c = uniform_filter(c, 25) / np.maximum(uniform_filter(np.isfinite(chm).astype(float), 25), 1e-6)
+    s_echo = s - kappa * c * lv[2] if kappa else s                        # where the echo really is
     vdir = np.array([l["along_east"], l["along_north"]])
     vdir = vdir / np.hypot(*vdir)
     a = e * vdir[0] + nn * vdir[1]
-    si = np.floor((s - np.nanmin(s)) / DS_RANGE).astype(np.int64)
+    s0 = min(np.nanmin(s), np.nanmin(s_echo))
+    si = np.floor((s - s0) / DS_RANGE).astype(np.int64)
+    se = np.floor((s_echo - s0) / DS_RANGE).astype(np.int64)
     ai = np.floor((a - a.min()) / DS_AZ).astype(np.int64)
     key = si * (ai.max() + 1) + ai
+    key_echo = se * (ai.max() + 1) + ai
     ok = np.isfinite(dem) & np.isfinite(w)
-    tot = np.bincount(key[ok], weights=w[ok], minlength=key.max() + 1)
+    tot = np.bincount(key_echo[ok], weights=w[ok], minlength=max(key.max(), key_echo.max()) + 1)
     # flat ground: a bin covers DS_RANGE / sin(inc) of ground range, each m2 weighing l_z
     flat = DS_RANGE / lh * DS_AZ * lv[2]
     sim = tot[key] / flat
@@ -226,19 +273,45 @@ ARROW_X = 25   # arrows drawn 25 times longer than the shift
 
 
 def mean_hh_db(t):
-    """Mean HH dB over all usable dates of track t, from NASA's stack or from ours."""
-    if STACK == "gslc":
-        with rasterio.open(GS / f"nisar_bright_targets_layers_t{t:03d}_{A.TAG}.tif") as s:
-            return s.read(1)
-    idx = pd.read_csv(SLC_LIDAR / f"nisar_slc_lidar_index_{A.TAG}.csv")
-    idx = idx[(idx.track == t) & (idx.valid_fraction >= 0.5)]
+    """Mean HH power in dB over the chosen dates of track t, from NASA's stack or from ours.
+    (Before 2026-10-13 NASA's stack used the bright-target layer: all dates, bad ones too.)"""
+    idx, folder = stack_index()
+    idx = idx[idx.track == t]
     acc = None
     for f in idx.file:
-        with rasterio.open(SLC_LIDAR / f) as s:
+        with rasterio.open(folder / f) as s:
             p = np.abs(s.read(1)).astype(np.float64) ** 2
         acc = p if acc is None else acc + p
     with np.errstate(divide="ignore", invalid="ignore"):
         return (10 * np.log10(acc / len(idx))).astype(np.float32)
+
+
+def datum_offset():
+    """Where the radar grid (WGS84 = ITRF2014) puts the area centre minus where the lidar grid
+    (NAD83(2011)) puts it, east and north metres, at the mean date of the stack."""
+    from pyproj import Transformer
+    idx, _ = stack_index()
+    d = pd.to_datetime(idx.date)
+    epoch = float(np.mean(d.dt.year + (d.dt.dayofyear - 0.5) / 365.25))
+    with rasterio.open(DEM) as s:
+        crs, b = s.crs, s.bounds
+    xc, yc = (b.left + b.right) / 2, (b.bottom + b.top) / 2
+    lon, lat = Transformer.from_crs(crs, "EPSG:6318", always_xy=True).transform(xc, yc)
+    # PROJ's NAD83(2011) -> "WGS 84" is a null transform; ITRF2014 (EPSG:7912) stands in
+    lo, la, _, _ = Transformer.from_crs("EPSG:6319", "EPSG:7912", always_xy=True).transform(lon, lat, 0.0, epoch)
+    xi, yi = Transformer.from_crs("EPSG:4326", "EPSG:32617", always_xy=True).transform(lo, la)
+    return float(xi - xc), float(yi - yc), round(epoch, 2)
+
+
+def refine(sc, dx, dy):
+    """Sub-metre peak: a parabola through the best 1 m shift and its two neighbours, per axis."""
+    def vertex(m, c, p):
+        den = m - 2 * c + p
+        return 0.5 * (m - p) / den if np.isfinite(den) and den < 0 else 0.0
+    c = sc[(dx, dy)]
+    ox = vertex(sc.get((dx - 1, dy), np.nan), c, sc.get((dx + 1, dy), np.nan))
+    oy = vertex(sc.get((dx, dy - 1), np.nan), c, sc.get((dx, dy + 1), np.nan))
+    return dx + float(np.clip(ox, -0.5, 0.5)), dy + float(np.clip(oy, -0.5, 0.5))
 
 
 def figure():
@@ -268,8 +341,8 @@ def figure():
                    fontsize=7, color="black", bbox=dict(fc="white", ec="none", alpha=0.7, pad=0.5))
         a.set_title(lab, fontsize=9)
         a.set_xticks([]); a.set_yticks([])
-    ax[0].text(0.02, 0.02, f"arrow = where the radar puts features\nrelative to the lidar ground (x{ARROW_X})",
-               transform=ax[0].transAxes, fontsize=7, bbox=dict(fc="white", ec="none"))
+    fig.text(0.01, 0.012, f"Arrow = where the radar puts features relative to the lidar ground, drawn {ARROW_X} "
+             "times longer. Label = length of the shift.", fontsize=7)
     a = ax[nt]
     for t in TRACKS:
         col, mk, lab = TRACK_STYLE[t]
@@ -277,13 +350,21 @@ def figure():
         a.scatter(g.canopy_h_mean_m, g.away_m, color=col, marker=mk, s=36, label=lab.split(" (")[0],
                   edgecolor="white", linewidth=0.8)
     a.axhspan(-GATE_M, GATE_M, color="#8E959B", alpha=0.25, lw=0)
-    a.text(6.2, 0.6, "gate: within 2.5 m", fontsize=7)
+    a.text(0.02, GATE_M - 0.15, "gate: within 2.5 m", fontsize=7, va="top", transform=a.get_yaxis_transform())
     a.set_xlabel("mean canopy height in block (m, lidar)")
     a.set_ylabel("shift away from the satellite (m)")
     a.set_title("Shift against canopy height", fontsize=9)
     a.legend(fontsize=7, frameon=False)
     a.grid(alpha=0.3)
-    fig.suptitle(f"NISAR {'our lidar-height re-placement' if STACK == 'lidar' else 'GSLC'} over {A.TAG} against a lidar bare-earth radar simulation, {nblk} x {nblk} blocks of about 1.1 km",
+    import re
+    stack = {"": "NASA's GSLC", "_lidarslc": "our lidar-height placement",
+             "_coreg": "our placement, dates lined up",
+             "_coregabs": "our placement, dates lined up and each track tied to the lidar"}[
+        re.sub(r"_prov|_beta|_k\d{3}", "", SUF)]
+    k = re.search(r"_k(\d{3})", SUF)
+    sim = f"forest echo at {int(k.group(1))}% of stand height" if k else "bare earth"
+    dates = ", provisional dates only" if "_prov" in SUF else ", beta dates only" if "_beta" in SUF else ""
+    fig.suptitle(f"NISAR over {A.TAG}: {stack}{dates}, against a lidar radar simulation ({sim}). {nblk} x {nblk} blocks of about 1.1 km",
                  fontsize=10)
     fig.tight_layout(rect=(0, 0.04, 1, 1))
     FIG.mkdir(exist_ok=True)
@@ -295,6 +376,8 @@ def figure():
 def main():
     global NBLK
     los = read_los()
+    de, dn, epoch = datum_offset()
+    print(f"datum: radar grid minus lidar grid = {de:+.2f} m east, {dn:+.2f} m north at {epoch}")
     with rasterio.open(DEM) as s:
         dem = s.read(1).astype(np.float64)
         dem[dem == s.nodata] = np.nan
@@ -316,7 +399,7 @@ def main():
     chm5 = block5(np.where(np.isfinite(chm), chm, np.nan))
     for t in TRACKS:
         l = los[t]
-        sim, shadow, layover = simulate(dem, l)
+        sim, shadow, layover = simulate(dem, l, chm, KAPPA)
         sims[t] = (sim, shadow, layover)
         hh = mean_hh_db(t)
         # radar image cut to the lidar footprint, with a lag margin
@@ -346,7 +429,10 @@ def main():
             sc = scores[name]
             if not sc:   # block outside the lidar (42% of the McKean box has none)
                 continue
-            (dx_m, dy_m), best = max(sc.items(), key=lambda kv: kv[1])
+            (ix, iy), best = max(sc.items(), key=lambda kv: kv[1])
+            fx, fy = refine(sc, ix, iy)
+            # in the radar's frame: take off the NAD83 -> ITRF offset of the simulation's grid
+            dx_m, dy_m = round(fx - de, 1), round(fy - dn, 1)
             zero = sc.get((0, 0), np.nan)
             sub = (slice(ry.start - lag5, ry.stop - lag5), slice(rx.start - lag5, rx.stop - lag5))
             rows.append(dict(track=t, block=name, dx_east_m=dx_m, dy_north_m=dy_m,
@@ -355,14 +441,15 @@ def main():
                              ncc_best=round(best, 3), ncc_zero_shift=round(zero, 3),
                              canopy_h_mean_m=round(float(np.nanmean(chm5[sub])), 1),
                              canopy_cover=round(float(np.nanmean(chm5[sub] > 2)), 2),
-                             at_lag_edge=bool(max(abs(dx_m), abs(dy_m)) >= MAX_LAG)))
+                             at_lag_edge=bool(max(abs(ix), abs(iy)) >= MAX_LAG)))
         print(pd.DataFrame([r for r in rows if r["track"] == t]).to_string())
 
     df = pd.DataFrame(rows)
     df.to_csv(OUT / f"nisar_lidar_sim_match_shifts{SUF}_{A.TAG}.csv", index=False)
 
-    # sim rasters on the 5 m GSLC grid (gitignored folder; small)
-    for t, (sim, shadow, layover) in sims.items():
+    # sim rasters on the 5 m GSLC grid (gitignored folder; small). They do not depend on the
+    # stack, so only the NASA all-dates run writes them (parallel runs would collide).
+    for t, (sim, shadow, layover) in (sims.items() if STACK == "gslc" and DATES == "all" else []):
         bands = {"sim_brightness_db": 10 * np.log10(np.clip(block5(sim), 1e-6, None)),
                  "shadow_fraction": block5(shadow.astype(np.float32)),
                  "layover_fraction": block5(layover.astype(np.float32))}
@@ -378,9 +465,18 @@ def main():
         print("wrote", path)
 
     blk = df[df.block != "tile"]
+    idx, _ = stack_index()
     summ = dict(params=dict(range_bin_m=DS_RANGE, az_bin_m=DS_AZ, max_lag_m=MAX_LAG, bg_m=BG_M,
-                            blocks=f"{NBLK}x{NBLK}", gate_m=GATE_M, radar_image="mean HH dB, all dates", stack=STACK),
+                            blocks=f"{NBLK}x{NBLK}", gate_m=GATE_M, radar_image="mean HH power in dB",
+                            stack=STACK + SUF.replace("_prov", "").replace("_beta", ""), dates=DATES,
+                            dates_per_track={int(k): int(v) for k, v in idx.groupby("track").size().items()},
+                            left_out=sorted(f"{d} t{t:03d}" for d, t in A.BAD_DATES),
+                            datum_offset_removed_east_north_m=[round(de, 2), round(dn, 2)], datum_epoch=epoch,
+                            peak="1 m search, parabola refined", kappa=KAPPA),
                 los=los,
+                block_median_m={int(t): dict(away=round(float(g.away_m.median()), 2), along=round(float(g.along_m.median()), 2),
+                                             total=round(float(np.hypot(g.dx_east_m, g.dy_north_m).median()), 2))
+                                for t, g in df[df.block != "tile"].groupby("track")},
                 tile=df[df.block == "tile"].set_index("track")[["dx_east_m", "dy_north_m", "away_m",
                                                                  "ncc_best", "ncc_zero_shift"]].to_dict("index"),
                 blocks_within_gate=int((np.hypot(blk.dx_east_m, blk.dy_north_m) <= GATE_M).sum()),

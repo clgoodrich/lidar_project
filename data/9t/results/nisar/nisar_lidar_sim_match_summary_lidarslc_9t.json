@@ -6,8 +6,24 @@
     "bg_m": 250,
     "blocks": "4x4",
     "gate_m": 2.5,
-    "radar_image": "mean HH dB, all dates",
-    "stack": "lidar"
+    "radar_image": "mean HH power in dB",
+    "stack": "lidar_lidarslc",
+    "dates": "all",
+    "dates_per_track": {
+      "26": 8,
+      "90": 11,
+      "162": 14
+    },
+    "left_out": [
+      "2026-07-22 t026",
+      "2026-09-08 t026"
+    ],
+    "datum_offset_removed_east_north_m": [
+      -0.8,
+      1.01
+    ],
+    "datum_epoch": 2026.39,
+    "peak": "1 m search, parabola refined"
   },
   "los": {
     "26": {
@@ -38,34 +54,51 @@
       "along_north": 0.9412098526954651
     }
   },
-  "tile": {
+  "block_median_m": {
     "26": {
-      "dx_east_m": 1,
-      "dy_north_m": 2,
-      "away_m": 0.3,
-      "ncc_best": 0.235,
-      "ncc_zero_shift": 0.233
+      "away": 2.35,
+      "along": 2.4,
+      "total": 3.52
     },
     "90": {
-      "dx_east_m": -2,
-      "dy_north_m": 1,
-      "away_m": 1.6,
+      "away": 0.9,
+      "along": 0.7,
+      "total": 1.39
+    },
+    "162": {
+      "away": 1.1,
+      "along": 0.4,
+      "total": 1.69
+    }
+  },
+  "tile": {
+    "26": {
+      "dx_east_m": 2.4,
+      "dy_north_m": 1.3,
+      "away_m": 1.8,
+      "ncc_best": 0.248,
+      "ncc_zero_shift": 0.246
+    },
+    "90": {
+      "dx_east_m": -0.8,
+      "dy_north_m": -0.5,
+      "away_m": 0.9,
       "ncc_best": 0.271,
       "ncc_zero_shift": 0.269
     },
     "162": {
-      "dx_east_m": -2,
-      "dy_north_m": 1,
-      "away_m": 1.6,
+      "dx_east_m": -0.9,
+      "dy_north_m": -0.4,
+      "away_m": 1.0,
       "ncc_best": 0.247,
       "ncc_zero_shift": 0.244
     }
   },
-  "blocks_within_gate": 26,
+  "blocks_within_gate": 27,
   "blocks_total": 48,
   "corr_away_vs_canopy_by_track": {
-    "26": -0.32,
-    "90": -0.44,
-    "162": -0.58
+    "26": -0.35,
+    "90": -0.49,
+    "162": -0.55
   }
 }

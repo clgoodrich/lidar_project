@@ -1,0 +1,4 @@
+check,track,blocks,block_m,slope,intercept_m,r,median_measured_m,median_predicted_m,median_across_m,passed
+V2 shift against height difference,26,900,150,1.029,-0.71,0.877,8.05,8.49,0.45,True
+V2 shift against height difference,90,900,150,1.265,-2.14,0.819,9.74,9.22,0.51,False
+V2 shift against height difference,162,900,150,1.176,-1.19,0.897,5.85,6.85,0.08,False
