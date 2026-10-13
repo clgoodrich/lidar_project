@@ -1,0 +1,299 @@
+{
+  "params": {
+    "da_max": 0.25,
+    "bright_db": 6.0,
+    "radius_m": 15.0,
+    "background_m": 250.0,
+    "n_decoy": 5,
+    "seed": 20261007
+  },
+  "tracks": {
+    "26": {
+      "n_dates": 8,
+      "sbt_pixels": 897
+    },
+    "90": {
+      "n_dates": 11,
+      "sbt_pixels": 2067
+    },
+    "162": {
+      "n_dates": 14,
+      "sbt_pixels": 210
+    }
+  },
+  "by_status": [
+    {
+      "group": "active",
+      "n_wells": 617,
+      "n_decoys": 3018,
+      "canopy_cover_median": 0.5199999809265137,
+      "wells_sbt_any_track": 0.099,
+      "decoys_sbt_any_track": 0.08,
+      "odds_ratio_any": 1.27,
+      "p_any": 0.13,
+      "wells_sbt_2plus_tracks": 0.008,
+      "decoys_sbt_2plus_tracks": 0.006,
+      "odds_ratio_2plus": 1.44,
+      "p_2plus": 0.4,
+      "auc_brightness_wells_gt_decoys": 0.56,
+      "auc_steadiness_wells_gt_decoys": 0.509,
+      "p_brightness": 2.7e-06,
+      "bright_max_db_median_wells": 4.53,
+      "bright_max_db_median_decoys": 4.31
+    },
+    {
+      "group": "plugged",
+      "n_wells": 271,
+      "n_decoys": 1324,
+      "canopy_cover_median": 0.4000000059604645,
+      "wells_sbt_any_track": 0.07,
+      "decoys_sbt_any_track": 0.082,
+      "odds_ratio_any": 0.85,
+      "p_any": 0.62,
+      "wells_sbt_2plus_tracks": 0.004,
+      "decoys_sbt_2plus_tracks": 0.005,
+      "odds_ratio_2plus": 0.81,
+      "p_2plus": 1.0,
+      "auc_brightness_wells_gt_decoys": 0.505,
+      "auc_steadiness_wells_gt_decoys": 0.498,
+      "p_brightness": 0.81,
+      "bright_max_db_median_wells": 4.27,
+      "bright_max_db_median_decoys": 4.28
+    },
+    {
+      "group": "abandoned",
+      "n_wells": 174,
+      "n_decoys": 863,
+      "canopy_cover_median": 0.5199999809265137,
+      "wells_sbt_any_track": 0.08,
+      "decoys_sbt_any_track": 0.058,
+      "odds_ratio_any": 1.42,
+      "p_any": 0.3,
+      "wells_sbt_2plus_tracks": 0.006,
+      "decoys_sbt_2plus_tracks": 0.0,
+      "odds_ratio_2plus": Infinity,
+      "p_2plus": 0.17,
+      "auc_brightness_wells_gt_decoys": 0.549,
+      "auc_steadiness_wells_gt_decoys": 0.466,
+      "p_brightness": 0.042,
+      "bright_max_db_median_wells": 4.43,
+      "bright_max_db_median_decoys": 4.29
+    },
+    {
+      "group": "not_drilled",
+      "n_wells": 10,
+      "n_decoys": 50,
+      "canopy_cover_median": 0.2800000011920929,
+      "wells_sbt_any_track": 0.1,
+      "decoys_sbt_any_track": 0.1,
+      "odds_ratio_any": 1.0,
+      "p_any": 1.0,
+      "wells_sbt_2plus_tracks": 0.0,
+      "decoys_sbt_2plus_tracks": 0.0,
+      "odds_ratio_2plus": NaN,
+      "p_2plus": 1.0,
+      "auc_brightness_wells_gt_decoys": 0.568,
+      "auc_steadiness_wells_gt_decoys": 0.592,
+      "p_brightness": 0.51,
+      "bright_max_db_median_wells": 5.0,
+      "bright_max_db_median_decoys": 4.17
+    }
+  ],
+  "by_status_and_canopy": [
+    {
+      "cover": "open_cover_lt0p30",
+      "group": "active",
+      "n_wells": 232,
+      "wells_sbt_any_track": 0.108,
+      "decoys_sbt_any_track": 0.076,
+      "auc_brightness": 0.574,
+      "auc_steadiness": 0.505
+    },
+    {
+      "cover": "open_cover_lt0p30",
+      "group": "plugged",
+      "n_wells": 112,
+      "wells_sbt_any_track": 0.089,
+      "decoys_sbt_any_track": 0.103,
+      "auc_brightness": 0.531,
+      "auc_steadiness": 0.5
+    },
+    {
+      "cover": "open_cover_lt0p30",
+      "group": "abandoned",
+      "n_wells": 69,
+      "wells_sbt_any_track": 0.058,
+      "decoys_sbt_any_track": 0.065,
+      "auc_brightness": 0.574,
+      "auc_steadiness": 0.493
+    },
+    {
+      "cover": "open_cover_lt0p30",
+      "group": "not_drilled",
+      "n_wells": 5,
+      "wells_sbt_any_track": 0.0,
+      "decoys_sbt_any_track": 0.08,
+      "auc_brightness": 0.312,
+      "auc_steadiness": 0.648
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
+      "group": "active",
+      "n_wells": 385,
+      "wells_sbt_any_track": 0.094,
+      "decoys_sbt_any_track": 0.082,
+      "auc_brightness": 0.551,
+      "auc_steadiness": 0.511
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
+      "group": "plugged",
+      "n_wells": 159,
+      "wells_sbt_any_track": 0.057,
+      "decoys_sbt_any_track": 0.067,
+      "auc_brightness": 0.486,
+      "auc_steadiness": 0.495
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
+      "group": "abandoned",
+      "n_wells": 105,
+      "wells_sbt_any_track": 0.095,
+      "decoys_sbt_any_track": 0.054,
+      "auc_brightness": 0.531,
+      "auc_steadiness": 0.449
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
+      "group": "not_drilled",
+      "n_wells": 5,
+      "wells_sbt_any_track": 0.2,
+      "decoys_sbt_any_track": 0.12,
+      "auc_brightness": 0.808,
+      "auc_steadiness": 0.544
+    }
+  ],
+  "registration": {
+    "best_shift_m": [
+      5,
+      0
+    ],
+    "best_hit_rate": 0.105,
+    "zero_shift_hit_rate": 0.099,
+    "median_hit_rate_over_shifts": 0.086
+  },
+  "registration_grid_rows_dy_cols_dx": {
+    "shifts": [
+      -20,
+      -15,
+      -10,
+      -5,
+      0,
+      5,
+      10,
+      15,
+      20
+    ],
+    "hit_rate": [
+      [
+        0.065,
+        0.075,
+        0.073,
+        0.081,
+        0.071,
+        0.073,
+        0.071,
+        0.066,
+        0.055
+      ],
+      [
+        0.078,
+        0.088,
+        0.081,
+        0.086,
+        0.084,
+        0.088,
+        0.079,
+        0.081,
+        0.076
+      ],
+      [
+        0.078,
+        0.097,
+        0.094,
+        0.092,
+        0.086,
+        0.096,
+        0.096,
+        0.096,
+        0.088
+      ],
+      [
+        0.088,
+        0.091,
+        0.092,
+        0.096,
+        0.094,
+        0.096,
+        0.092,
+        0.091,
+        0.084
+      ],
+      [
+        0.092,
+        0.089,
+        0.084,
+        0.1,
+        0.099,
+        0.105,
+        0.091,
+        0.096,
+        0.083
+      ],
+      [
+        0.086,
+        0.091,
+        0.076,
+        0.088,
+        0.096,
+        0.104,
+        0.104,
+        0.092,
+        0.081
+      ],
+      [
+        0.096,
+        0.092,
+        0.079,
+        0.076,
+        0.083,
+        0.096,
+        0.094,
+        0.083,
+        0.071
+      ],
+      [
+        0.088,
+        0.079,
+        0.086,
+        0.075,
+        0.079,
+        0.073,
+        0.078,
+        0.078,
+        0.073
+      ],
+      [
+        0.086,
+        0.086,
+        0.088,
+        0.086,
+        0.081,
+        0.076,
+        0.084,
+        0.075,
+        0.071
+      ]
+    ]
+  }
+}

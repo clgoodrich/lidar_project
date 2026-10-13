@@ -1,0 +1,67 @@
+track 26: 8 dates, SBT pixels 897 (0.0932% of valid)
+track 90: 11 dates, SBT pixels 2067 (0.2148% of valid)
+track 162: 14 dates, SBT pixels 210 (0.0218% of valid)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_slc_lidar_5m\nisar_bright_targets_layers_t026_9t_slc.tif
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_slc_lidar_5m\nisar_bright_targets_layers_t090_9t_slc.tif
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_slc_lidar_5m\nisar_bright_targets_layers_t162_9t_slc.tif
+{
+  "params": {
+    "da_max": 0.25,
+    "bright_db": 6.0,
+    "bg_m": 250.0,
+    "merge_m": 15.0,
+    "near_m": 15.0
+  },
+  "dates_per_track": {
+    "26": 8,
+    "90": 11,
+    "162": 14
+  },
+  "track_points": 2486,
+  "targets": 2235,
+  "by_n_tracks": {
+    "1": 2139,
+    "2": 87,
+    "3": 9
+  },
+  "by_context": {
+    "elsewhere": 1455,
+    "on_road": 429,
+    "on_pad": 252,
+    "at_well": 99
+  },
+  "share_by_context_in_lidar": {
+    "elsewhere": 0.65,
+    "on_road": 0.195,
+    "on_pad": 0.11,
+    "at_well": 0.045
+  },
+  "share_by_context_random_spots": {
+    "elsewhere": 0.612,
+    "on_road": 0.204,
+    "on_pad": 0.146,
+    "at_well": 0.038
+  },
+  "by_context_2plus_tracks": {
+    "elsewhere": 65,
+    "on_road": 18,
+    "on_pad": 7,
+    "at_well": 6
+  }
+}
+    target_id  n_tracks     tracks  bright_db    da_min  n_px  canopy_cover  well_dist_m well_permit      well_status  pad_dist_m  road_dist_m    context
+0           1         3  26,90,162  19.442116  0.148471     7           NaN        863.4   121-27589  Plugged OG Well       808.9        112.5  elsewhere
+1           2         3  26,90,162  17.828838  0.117083    14          0.00         32.0   121-29889           Active        77.3         16.9  elsewhere
+2           3         3  26,90,162  17.732548  0.091169    34          0.16         46.8   121-29888           Active       102.8         53.2  elsewhere
+3           4         3  26,90,162  13.653763  0.104130    27          0.00         21.8   121-22567           Active        93.9         48.8  elsewhere
+4           5         3  26,90,162  11.662363  0.092983     5          0.08         44.4   121-31037  Plugged OG Well        70.6         19.4  elsewhere
+5           6         3  26,90,162  11.620913  0.158664     4          0.71        107.9   121-24810           Active        33.9         57.2  elsewhere
+6           7         3  26,90,162   9.753983  0.188293     3           NaN        911.6   121-27589  Plugged OG Well       856.6        151.8  elsewhere
+7           8         3  26,90,162   9.599647  0.094126     5          0.96         83.9   121-22338           Active        38.5         23.9  elsewhere
+8           9         3  26,90,162   8.780575  0.158331     3          1.00         46.2   121-29890           Active        17.9         14.9    on_road
+9          10         2      26,90  27.922037  0.142572     8          0.80         60.9   121-20741  Plugged OG Well        92.0         15.4  elsewhere
+10         11         2     90,162  23.240204  0.096144     9           NaN        723.6   121-23185  Plugged OG Well       844.9        207.2  elsewhere
+11         12         2     26,162  18.040705  0.186474     6           NaN        995.9   121-27589  Plugged OG Well       938.7        181.4  elsewhere
+12         13         2     90,162  18.008757  0.177095    13          0.20         75.3   121-33930  Plugged OG Well       274.7        104.1  elsewhere
+13         14         2      26,90  17.139168  0.165361     6           NaN        912.3   121-27589  Plugged OG Well       856.0        135.9  elsewhere
+14         15         2     90,162  16.678699  0.205630     2           NaN        725.8   121-23185  Plugged OG Well       820.6        175.9  elsewhere

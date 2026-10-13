@@ -1,0 +1,24 @@
+track 26: 8 dates, SBT pixels 897 (0.0932% of valid)
+track 90: 11 dates, SBT pixels 2067 (0.2148% of valid)
+track 162: 14 dates, SBT pixels 210 (0.0218% of valid)
+group
+active         617
+plugged        271
+abandoned      174
+not_drilled     10
+         group  n_wells  n_decoys  canopy_cover_median  wells_sbt_any_track  decoys_sbt_any_track  odds_ratio_any  p_any  wells_sbt_2plus_tracks  decoys_sbt_2plus_tracks  odds_ratio_2plus  p_2plus  auc_brightness_wells_gt_decoys  auc_steadiness_wells_gt_decoys  p_brightness  bright_max_db_median_wells  bright_max_db_median_decoys
+0       active      617      3018                 0.52                0.099                 0.080            1.27   0.13                   0.008                    0.006              1.44     0.40                           0.560                           0.509      0.000003                        4.53                         4.31
+1      plugged      271      1324                 0.40                0.070                 0.082            0.85   0.62                   0.004                    0.005              0.81     1.00                           0.505                           0.498      0.810000                        4.27                         4.28
+2    abandoned      174       863                 0.52                0.080                 0.058            1.42   0.30                   0.006                    0.000               inf     0.17                           0.549                           0.466      0.042000                        4.43                         4.29
+3  not_drilled       10        50                 0.28                0.100                 0.100            1.00   1.00                   0.000                    0.000               NaN     1.00                           0.568                           0.592      0.510000                        5.00                         4.17
+                 cover        group  n_wells  wells_sbt_any_track  decoys_sbt_any_track  auc_brightness  auc_steadiness
+0    open_cover_lt0p30       active      232                0.108                 0.076           0.574           0.505
+1    open_cover_lt0p30      plugged      112                0.089                 0.103           0.531           0.500
+2    open_cover_lt0p30    abandoned       69                0.058                 0.065           0.574           0.493
+3    open_cover_lt0p30  not_drilled        5                0.000                 0.080           0.312           0.648
+4  canopy_cover_ge0p30       active      385                0.094                 0.082           0.551           0.511
+5  canopy_cover_ge0p30      plugged      159                0.057                 0.067           0.486           0.495
+6  canopy_cover_ge0p30    abandoned      105                0.095                 0.054           0.531           0.449
+7  canopy_cover_ge0p30  not_drilled        5                0.200                 0.120           0.808           0.544
+registration {'best_shift_m': [5, 0], 'best_hit_rate': 0.105, 'zero_shift_hit_rate': 0.099, 'median_hit_rate_over_shifts': 0.086}
+done nisar_steel

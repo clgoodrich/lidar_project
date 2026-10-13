@@ -94,7 +94,7 @@ from _common import path_for, read_layer  # noqa: E402
 import _nisar_area as A  # noqa: E402  (--area picks 9t, 613590 or mkf)
 
 SRC = A.GSLC
-INDEX = SRC / f"nisar_gslc_window_index_{A.TAG}_5m.csv"
+INDEX = A.INDEX
 ANN = path_for("truth") / "annotations_proj.gpkg"
 CHM = A.lidar("chm")
 OUT = A.RESULTS
@@ -124,9 +124,10 @@ def db(x):
 
 def load_stack():
     idx = pd.read_csv(INDEX)
-    for f in idx.loc[idx.valid_fraction < 0.5, "file"]:
-        print(f"dropping {f}: valid fraction below 0.5")
-    idx = idx[idx.valid_fraction >= 0.5].reset_index(drop=True)
+    keep = A.usable_stack(idx)
+    for f in idx.loc[~idx.file.isin(keep.file), "file"]:
+        print(f"dropping {f}: valid fraction below 0.5 or a bad granule")
+    idx = keep.reset_index(drop=True)
     grids, bounds = set(), []
     for f in idx.file:
         with rasterio.open(SRC / f) as r:

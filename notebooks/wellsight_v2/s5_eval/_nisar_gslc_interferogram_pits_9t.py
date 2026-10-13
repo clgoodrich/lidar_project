@@ -69,7 +69,7 @@ PIT_C, DEC_C, INK, MUTED = "#1F5FA8", "#D97706", "#2B2F36", "#5B6168"
 
 def load_complex():
     idx = pd.read_csv(INDEX)
-    idx = idx[idx.valid_fraction >= 0.5].reset_index(drop=True)
+    idx = A.usable_stack(idx).reset_index(drop=True)
     stack, tf = {}, None
     for row in idx.itertuples():
         with rasterio.open(SRC / row.file) as r:

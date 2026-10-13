@@ -38,10 +38,33 @@ def _pick() -> str:
 TAG = _pick()
 if TAG not in AREAS:
     raise SystemExit(f"unknown area {TAG!r}; use one of {sorted(AREAS)}")
+
+
+def _pick_stack() -> str:
+    """`--stack slc` reads the lidar-placed SLC stack instead of NASA's GSLC (9t only so far)."""
+    if "--stack" in sys.argv:
+        i = sys.argv.index("--stack")
+        val = sys.argv[i + 1]
+        del sys.argv[i:i + 2]
+        os.environ["NISAR_STACK"] = val
+        return val
+    return os.environ.get("NISAR_STACK", "gslc")
+
+
+STACK = _pick_stack()
+if STACK not in ("gslc", "slc"):
+    raise SystemExit(f"unknown stack {STACK!r}; use gslc or slc")
+if STACK == "slc" and TAG != "9t":
+    raise SystemExit("the lidar-placed SLC stack exists for 9t only")
 DATA = path_for("data") / AREAS[TAG][0]
 D1M = DATA / "derived" / "1m"
 SFX = AREAS[TAG][1]
-GSLC = DATA / "derived" / "nisar_gslc_5m"
+GSLC = DATA / "derived" / ("nisar_slc_lidar_5m" if STACK == "slc" else "nisar_gslc_5m")
+# Window index of the stack in use. The lidar-placed stack has its own index and its outputs
+# carry the tag `9t_slc`, so they sit beside the GSLC results without overwriting them.
+INDEX = GSLC / ("nisar_slc_lidar_index_9t.csv" if STACK == "slc" else f"nisar_gslc_window_index_{TAG}_5m.csv")
+if STACK == "slc":
+    TAG = f"{TAG}_slc"
 RSLC = DATA / "derived" / "nisar_rslc_window"
 RESULTS = DATA / "results" / "nisar"
 # DEP oil and gas locations. Venango areas keep the Venango export the 9t results used;
@@ -58,6 +81,11 @@ def usable(idx):
     """Rows of a NISAR window index worth using: at least half valid and not in BAD_DATES."""
     bad = idx.apply(lambda r: (str(r.date), int(r.track)) in BAD_DATES, axis=1)
     return idx[(idx.valid_fraction >= 0.5) & ~bad]
+
+
+def usable_stack(idx):
+    """Rows to analyse: half-valid dates, and on the lidar-placed stack also not a bad granule."""
+    return usable(idx) if STACK == "slc" else idx[idx.valid_fraction >= 0.5]
 
 
 def lidar(name: str) -> Path:

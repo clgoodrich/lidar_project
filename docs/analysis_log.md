@@ -5,6 +5,21 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-13 -- NISAR well, pad and pit tests re-run on the corrected 9t stack
+
+- **Ask.** The user: "Fire away" (after the time estimate). Doc: `docs/iterations/nisar_regeocode_plan_9t.md`, section "Downstream tests re-run on the corrected 9t stack".
+- **Change.** `--stack slc` in `notebooks/wellsight_v2/_nisar_area.py` reads `data/9t/derived/nisar_slc_lidar_5m/` and tags outputs `9t_slc`. The two bad granules are skipped. No other test code changed. Brightness scale matches NASA's stack (0.2 dB).
+- **Result.**
+  - Steady bright targets: 331 to 2,235. Well hit rates 1% to 7–10%, decoys the same. Abandoned wells: odds 5.0 (p 0.063) to 1.42 (p 0.30). No well signal.
+  - Pad darkening (−0.1 to −0.28 dB) gone. All pad channels within noise.
+  - Pits: HH leaf-off fall +0.21 dB stays. HV leaf-on +0.17 dB new. Candidate leads.
+  - Pit coherence null. Pad coherence events 169 against 136 expected (p 0.004). Candidate.
+  - Slope motion: 0 of 282 wells flagged.
+- **Not done.** 613590 and McKean. Their pad and well results still use NASA's placement.
+- **Runs.** Stack test 9 minutes. At most three at once.
+
+---
+
 ## 2026-10-13 -- NISAR leftover offsets on 9t traced and fixed: 46 of 48 blocks within 2.5 m
 
 - **Ask.** The user: "Figure out our solutions, test them but do not go beyond that." Doc: `docs/iterations/nisar_regeocode_plan_9t.md`, section "Leftover offsets traced and fixed".

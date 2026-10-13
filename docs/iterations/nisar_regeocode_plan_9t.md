@@ -415,7 +415,7 @@ Run at most three V3 jobs at once. Five at once ran out of 64 GB of memory.
 | Stage 3 + V1 | V1 done 2026-10-10 | passed, on the interferogram match |
 | Stage 3 lidar + V3 | done 2026-10-12 | offset 9–12 m down to 1.3–1.6 m; 26 of 48 blocks within 2.5 m |
 | Leftover offsets, V2 | done 2026-10-13 | check datum fixed, 2 bad granules dropped, dates lined up, tracks tied to the lidar; 46 of 48 blocks within 2.5 m (canopy-modelled check); V2 slope 1.03 / 1.27 / 1.18 |
-| Downstream tests on the final stack | open | not started, as asked |
+| Downstream tests on the final stack (9t) | done 2026-10-13 | the 9t pad and well signals fall away; see "Downstream tests re-run" |
 
 The radarGrid cubes remove the orbit solver from the main path. That cuts the earlier "few days" to about two to three sessions in total, depending on V1.
 
@@ -424,3 +424,54 @@ The radarGrid cubes remove the orbit solver from the main path. That cuts the ea
 - Small, D. (2011). Flattening gamma: radiometric terrain correction for SAR imagery. IEEE TGRS 49(8), 3081–3093. Used for the area-projection terrain correction and the simulated brightness.
 - The NISAR L1 RSLC and L2 GSLC product specifications (JPL). Used for the field meanings, flattening and timing corrections. Exact document numbers to be confirmed at code time.
 - A range-Doppler geocoding reference for the optional orbit cross-check, e.g. Bamler & Hartl (1998), Synthetic aperture radar interferometry, Inverse Problems 14, R1–R54. To be confirmed at code time.
+
+
+## Downstream tests re-run on the corrected 9t stack (2026-10-13)
+
+**Ask.** The user: "Fire away". The corrected stack is `data/9t/derived/nisar_slc_lidar_5m/`. It has the lidar heights, the per-date offsets and the per-track constants, and the two bad granules are dropped.
+
+**How.** `--stack slc` on every test script. It is read in `notebooks/wellsight_v2/_nisar_area.py`. The tests then read the corrected stack and write names tagged `9t_slc`, so the NASA-placed results keep their own names. Dates 26 (2026-07-22 and 2026-09-08) are skipped through `A.usable_stack`. Nothing else in the tests changed, so every difference below comes from the placement.
+
+**Check that the stack itself is comparable.** Same date, both stacks, HH power. Mean differs by 0.2 dB, speckle spread (coefficient of variation) 1.24 against 1.24 and 1.23 against 1.32, tail ratio 16.5 against 16.9. The brightness scale is the same, so a change in a result is a change in placement.
+
+| Test | NASA placement (old) | Corrected stack (new) |
+|---|---|---|
+| Steady bright targets (track points) | 349 (331 targets) | 2,486 (2,235 targets) |
+| Wells with a steady target, abandoned / decoys | 1.7% / 0.3% (odds 5.0, p 0.063) | 8.0% / 5.8% (odds 1.42, p 0.30) |
+| Wells with a steady target, active / decoys | 1.3% / 1.0% (p 0.51) | 9.9% / 8.0% (p 0.13) |
+| Wells with a steady target, plugged / decoys | 1.1% / 0.5% (p 0.39) | 7.0% / 8.2% (p 0.62) |
+| Pads minus decoys, HH winter | −0.28 dB (CI −0.33 to −0.21) | −0.05 dB (CI −0.12 to 0.01, p 0.083) |
+| Pads minus decoys, HH leaf-on | −0.23 dB (CI −0.29 to −0.18) | +0.02 dB (CI −0.03 to 0.07) |
+| Pits minus decoys, HH leaf-off fall | +0.18 dB (p 0.0008) | +0.21 dB (CI 0.07 to 0.35, p 0.001) |
+| Pits minus decoys, HV leaf-on | −0.07 dB (p 0.06) | +0.17 dB (CI 0.12 to 0.28, p under 0.001) |
+| Pit coherence minus ring, HH | 0.000 (p 0.75) | −0.007 (p 0.069) |
+| Pad coherence events, snow-free | 143 vs 124 expected (p 0.045) | 169 vs 136 expected (p 0.004) |
+| Slope motion, tracks 090 vs 162, all slopes | r 0.072 | r 0.077 |
+| Slope motion, wells flagged | not run on this stack | 0 of 282 (0.3 expected) |
+
+**What this says.**
+- **The abandoned-well lead is gone.** Placement was hiding steadiness. With the dates lined up, steady targets are about seven times more common, at wells and at decoys alike. The odds ratio falls from 5.0 to 1.4. No well status stands apart from its decoys. The earlier hint was a small-number effect on 3 versus 15 wells.
+- **The pad darkening is gone on 9t.** The old −0.1 to −0.28 dB was in every channel with p below 0.001. On the corrected stack no pad channel clears noise. A pad is a small flat feature. A 4–7 m smear of the average blurs it with the ring around it, so the old signal may have been that blur and not a surface property. The McKean pad result used the same NASA placement. It should be treated as unconfirmed until McKean is re-run.
+- **One pit signal is steady and one is new.** HH leaf-off fall stays at +0.2 dB. HV leaf-on appears at +0.17 dB. Both are tests among 16 per area. Candidate leads. They need a test fixed in advance on fresh data.
+- **Pit coherence stays null.** Pit minus ring is within 0.01.
+- **Pad coherence events rise.** Snow-free events 169 against 136 expected, p 0.004, against p 0.045 before. The expected count rose with the pair count (21 to 23 pairs), so the excess is 33 against 20. McKean did not repeat the old excess. Candidate. Not a result.
+- **Slope motion.** The corrected stack adds track 026 pairs (7,380 flat-ground pixels against 0 before). Correlations stay at 0.02–0.08. Nothing flagged.
+
+**Not done.** 613590 and McKean. The pad and well results there still use NASA's placement. The earlier McKean abandoned-well p 0.017 and the McKean pad darkening are in that group.
+
+**Outputs** (all in `data/9t/results/nisar/`, tag `9t_slc`)
+- Stack and tests: `nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_9t_slc_5m.csv`, `nisar_steel_by_status_9t_slc.csv`, `nisar_steel_summary_9t_slc.json`, `nisar_steel_wells_9t_slc.gpkg`, `nisar_bright_targets_points_9t_slc.gpkg`, `nisar_gslc_interferogram_pits_vs_decoys_win3_9t_slc_5m_summary.json`, `nisar_pad_change_by_season_9t_slc.csv`, `nisar_pad_change_events_9t_slc.gpkg`, `nisar_slope_motion_tracks_9t_slc.csv`
+- Logs: `nisar_stack_slc_run_9t_slc.log`, `nisar_steel_slc_run_9t_slc.log`, `nisar_ifg_slc_run_9t_slc.log`, `nisar_slope_slc_run_9t_slc.log`, `nisar_bright_slc_run_9t_slc.log`, `nisar_padchg_slc_run_9t_slc.log`
+- Figures: `data/9t/results/nisar/figures/*_9t_slc_*.png`
+
+**Reproduce**
+```bash
+E=notebooks/wellsight_v2/s5_eval
+python $E/_nisar_gslc_stack_pad_pit_seasonal_9t.py --stack slc     # about 9 minutes
+python $E/_nisar_steel_9t.py --stack slc
+python $E/_nisar_gslc_interferogram_pits_9t.py --stack slc
+python $E/_nisar_slope_motion_9t.py --stack slc
+python $E/_nisar_bright_targets_9t.py --stack slc
+python $E/_nisar_pad_change_9t.py --stack slc
+```
+At most three at once. Five at once runs out of memory.
