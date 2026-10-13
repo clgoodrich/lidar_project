@@ -1,0 +1,611 @@
+===== _nisar_gslc_stack_pad_pit_seasonal_9t
+area 613590
+dropping nisar_gslc_hh_hv_complex_20260625_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260707_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260719_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260812_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260824_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260905_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260917_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260929_t162A_613590_5m.tif: valid fraction below 0.5
+season           leafoff_fall  leafon  winter
+track direction                              
+26    D                     1       5       2
+90    A                     1       8       1
+162   A                     3       0       3
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_stack_pad_pit_seasonal_9t.py:263: RuntimeWarning: Mean of empty slice
+  means[(track, season, p)] = np.nanmean(np.stack([inten[f][pi] for f in g.file]), axis=0)
+track 26: rho0 0.092, best 0.114 at (+10,-10) -> applied
+track 90: rho0 0.197, best 0.237 at (-15,-5) -> applied
+    track                    metric  open_median_db  closed_median_db  auc_closed_gt_open
+0      26           hh_leafoff_fall         -10.962            -8.218               0.623
+1      26                 hh_winter          -9.392            -6.560               0.663
+2      26                 hh_leafon          -6.322            -4.719               0.651
+3      26  hh_change_leafon_vs_fall           4.669             3.591               0.455
+4      26           hv_leafoff_fall         -17.033           -13.899               0.639
+5      26                 hv_winter         -15.642           -12.484               0.688
+6      26                 hv_leafon         -12.200           -10.531               0.665
+7      26  hv_change_leafon_vs_fall           4.736             3.346               0.440
+8      90           hh_leafoff_fall         -10.051            -5.945               0.669
+9      90                 hh_winter         -10.404            -6.609               0.653
+10     90                 hh_leafon          -7.382            -4.593               0.719
+11     90  hh_change_leafon_vs_fall           1.783             1.476               0.488
+12     90           hv_leafoff_fall         -16.829           -12.152               0.689
+13     90                 hv_winter         -18.256           -14.213               0.678
+14     90                 hv_leafon         -13.309            -9.999               0.754
+15     90  hv_change_leafon_vs_fall           2.692             2.491               0.489
+16    162           hh_leafoff_fall         -16.014           -11.832               0.695
+17    162                 hh_winter         -17.738           -12.797               0.709
+18    162           hv_leafoff_fall         -21.069           -17.509               0.694
+19    162                 hv_winter         -23.038           -18.678               0.701
+tile median leaf-on minus leaf-off (dB): {(26, 'hh'): 3.5867385864257812, (26, 'hv'): 3.5077075958251953, (90, 'hh'): 1.539830207824707, (90, 'hv'): 2.537008285522461}
+pad: 0 features with rings and decoys
+pit: 36 features with rings and decoys
+  features                    metric   n  median_feature_minus_ring_db  median_decoy_minus_ring_db  median_excess_db  excess_ci_lo  excess_ci_hi  auc_feature_gt_decoy  wilcoxon_p_excess
+0      pit           hh_leafoff_fall  36                        -0.230                      -0.236             0.005        -0.757         0.611                 0.525              0.798
+1      pit                 hh_winter  36                        -0.105                      -0.320             0.267        -0.365         0.727                 0.547              0.441
+2      pit                 hh_leafon  36                        -0.309                      -0.115             0.021        -0.578         0.459                 0.483              0.883
+3      pit  hh_change_leafon_vs_fall  36                         0.305                       0.253             0.489        -0.720         0.861                 0.504              0.692
+4      pit           hv_leafoff_fall  36                         0.067                      -0.292             0.432        -0.386         1.021                 0.568              0.220
+5      pit                 hv_winter  36                        -0.438                      -0.268             0.061        -0.285         0.409                 0.502              0.846
+6      pit                 hv_leafon  36                        -0.116                      -0.198             0.032        -0.580         0.435                 0.484              0.810
+7      pit  hv_change_leafon_vs_fall  36                        -0.099                       0.261            -0.148        -0.784         0.218                 0.463              0.279
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_stack_pad_pit_seasonal_9t.py", line 492, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_stack_pad_pit_seasonal_9t.py", line 411, in main
+    with rasterio.open(SRC / raster_name(m, t, d, tag), "w", **prof) as dst:
+                             ~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_stack_pad_pit_seasonal_9t.py", line 158, in raster_name
+    assert tag == "asdelivered", tag
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError: lidaraligned
+rc=1
+===== _nisar_gslc_interferogram_pits_9t
+    track          d1          d2  dt_days
+0      26  2025-12-18  2025-12-30       12
+1      26  2026-08-15  2026-08-27       12
+2      26  2026-08-27  2026-09-08       12
+3      26  2026-09-08  2026-09-20       12
+4      26  2026-09-20  2026-10-02       12
+5      90  2026-06-20  2026-07-02       12
+6      90  2026-07-02  2026-07-14       12
+7      90  2026-07-14  2026-07-26       12
+8      90  2026-07-26  2026-08-19       24
+9      90  2026-08-19  2026-08-31       12
+10     90  2026-08-31  2026-09-12       12
+11     90  2026-09-12  2026-09-24       12
+12     90  2026-09-24  2026-10-06       12
+13    162  2025-10-28  2025-11-09       12
+14    162  2025-11-09  2025-11-21       12
+15    162  2025-11-21  2025-12-03       12
+16    162  2026-01-08  2026-01-20       12
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_interferogram_pits_9t.py:102: RuntimeWarning: invalid value encountered in divide
+  coh = np.abs(num) / np.sqrt(p1 * p2)
+    track          d1          d2 pol  n_pits  tile_coh_median  pit_coh_median  ring_coh_median  coh_excess_median  wilcoxon_p  los_excess_mm_median  los_pit_minus_ring_abs_mm_median  los_decoy_abs_mm_median
+0      26  2025-12-18  2025-12-30  hh      36            0.415           0.404            0.410             0.0196    0.931991                  1.63                          8.850000                12.510000
+1      26  2025-12-18  2025-12-30  hv      36            0.377           0.373            0.379             0.0005    0.405148                  1.57                         18.450001                11.470000
+2      26  2026-08-15  2026-08-27  hh      36            0.414           0.384            0.416            -0.0406    0.251545                 -2.75                          9.320000                11.110000
+3      26  2026-08-15  2026-08-27  hv      36            0.404           0.409            0.409            -0.0170    0.539333                 -8.68                         10.140000                10.070000
+4      26  2026-08-27  2026-09-08  hh      36            0.336           0.338            0.347             0.0085    0.969058                 -4.53                         19.850000                29.440001
+5      26  2026-08-27  2026-09-08  hv      36            0.311           0.340            0.308             0.0169    0.300029                  2.99                         37.500000                33.779999
+6      26  2026-09-08  2026-09-20  hh      36            0.336           0.318            0.352            -0.0327    0.039295                 -3.47                         24.209999                28.870001
+7      26  2026-09-08  2026-09-20  hv      36            0.310           0.317            0.309             0.0216    0.322552                  5.65                         28.000000                29.090000
+8      26  2026-09-20  2026-10-02  hh      36            0.389           0.335            0.388            -0.0343    0.122720                 -2.35                         12.230000                10.830000
+9      26  2026-09-20  2026-10-02  hv      36            0.378           0.397            0.374             0.0060    0.489056                  3.73                         10.270000                14.720000
+10     90  2026-06-20  2026-07-02  hh      36            0.539           0.469            0.479            -0.0108    0.907355                  0.30                          5.670000                 7.390000
+11     90  2026-06-20  2026-07-02  hv      36            0.475           0.384            0.418            -0.0034    0.993810                 -0.34                          8.000000                 9.620000
+12     90  2026-07-02  2026-07-14  hh      36            0.595           0.628            0.578             0.0145    0.581292                  1.44                          4.260000                 5.310000
+13     90  2026-07-02  2026-07-14  hv      36            0.539           0.529            0.509             0.0166    0.508867                 -1.86                          6.660000                 5.450000
+14     90  2026-07-14  2026-07-26  hh      36            0.522           0.558            0.507            -0.0007    0.821959                 -0.87                          4.190000                 5.950000
+15     90  2026-07-14  2026-07-26  hv      36            0.498           0.477            0.464            -0.0063    0.750328                 -1.17                          5.660000                 6.620000
+16     90  2026-07-26  2026-08-19  hh      36            0.471           0.512            0.447             0.0607    0.088404                 -1.93                          6.560000                 7.320000
+17     90  2026-07-26  2026-08-19  hv      36            0.445           0.428            0.410             0.0369    0.122720                  1.73                          6.310000                 8.420000
+18     90  2026-08-19  2026-08-31  hh      36            0.525           0.534            0.536            -0.0177    0.423032                 -3.38                          7.010000                 5.510000
+19     90  2026-08-19  2026-08-31  hv      36            0.475           0.463            0.465            -0.0064    0.414034                  2.41                          6.210000                 6.530000
+20     90  2026-08-31  2026-09-12  hh      36            0.483           0.524            0.495             0.0331    0.156816                 -1.83                          8.600000                 7.100000
+21     90  2026-08-31  2026-09-12  hv      36            0.432           0.458            0.436             0.0511    0.134775                 -4.94                         10.070000                 9.560000
+22     90  2026-09-12  2026-09-24  hh      36            0.653           0.608            0.602            -0.0193    0.581292                 -0.02                          3.250000                 4.880000
+23     90  2026-09-12  2026-09-24  hv      36            0.587           0.544            0.541            -0.0103    0.635737                  3.66                          4.220000                 4.280000
+24     90  2026-09-24  2026-10-06  hh      36            0.610           0.575            0.573            -0.0334    0.214469                  0.15                          4.940000                 5.380000
+25     90  2026-09-24  2026-10-06  hv      36            0.546           0.533            0.536            -0.0045    0.981432                 -1.72                          2.990000                 7.180000
+26    162  2025-10-28  2025-11-09  hh      36            0.518           0.549            0.509             0.0546    0.126644                 -3.95                          9.580000                11.680000
+27    162  2025-10-28  2025-11-09  hv      36            0.494           0.470            0.496            -0.0188    0.624680                 -0.97                         10.330000                 9.350000
+28    162  2025-11-09  2025-11-21  hh      36            0.565           0.535            0.560             0.0069    0.870570                  2.57                          6.780000                 6.940000
+29    162  2025-11-09  2025-11-21  hv      36            0.503           0.518            0.509             0.0131    0.498910                 -4.11                          7.330000                12.340000
+30    162  2025-11-21  2025-12-03  hh      36            0.502           0.494            0.499            -0.0291    0.809902                  3.93                         11.660000                11.160000
+31    162  2025-11-21  2025-12-03  hv      36            0.433           0.435            0.435            -0.0147    0.956691                  5.39                         14.460000                13.240000
+32    162  2026-01-08  2026-01-20  hh      36            0.408           0.432            0.422             0.0121    0.613706                 10.75                         22.150000                20.340000
+33    162  2026-01-08  2026-01-20  hv      36            0.383           0.399            0.387            -0.0120    0.821959                -14.17                         29.850000                31.559999
+{
+  "window_px": 3,
+  "pairs": 17,
+  "pits": 36,
+  "registration": "as delivered",
+  "shift_m": {},
+  "hh": {
+    "tile_coherence_median_over_pairs": 0.502,
+    "pit_coherence_median": 0.469,
+    "ring_coherence_median": 0.465,
+    "coh_excess_pooled_per_pit_median": -0.0055,
+    "coh_excess_pooled_ci95": [
+      -0.0221,
+      0.0243
+    ],
+    "coh_excess_pooled_wilcoxon_p": 0.9938101172447205,
+    "coh_excess_open_pits_cover_lt_0p3_median": -0.0287,
+    "n_open_pits": 2,
+    "coh_excess_closed_pits_cover_gt_0p7_median": -0.0084,
+    "n_closed_pits": 19,
+    "los_excess_mm_pooled_median": -1.45,
+    "los_excess_mm_pooled_ci95": [
+      -3.1447,
+      0.6077
+    ],
+    "single_pair_los_pit_minus_ring_abs_mm_median": 8.5,
+    "single_pair_los_decoy_abs_mm_median": 9.16
+  },
+  "hv": {
+    "tile_coherence_median_over_pairs": 0.445,
+    "pit_coherence_median": 0.444,
+    "ring_coherence_median": 0.424,
+    "coh_excess_pooled_per_pit_median": 0.0075,
+    "coh_excess_pooled_ci95": [
+      -0.0077,
+      0.0254
+    ],
+    "coh_excess_pooled_wilcoxon_p": 0.3877139091491699,
+    "coh_excess_open_pits_cover_lt_0p3_median": -0.0357,
+    "n_open_pits": 2,
+    "coh_excess_closed_pits_cover_gt_0p7_median": 0.0097,
+    "n_closed_pits": 19,
+    "los_excess_mm_pooled_median": -0.33,
+    "los_excess_mm_pooled_ci95": [
+      -3.6237,
+      1.2448
+    ],
+    "single_pair_los_pit_minus_ring_abs_mm_median": 9.65,
+    "single_pair_los_decoy_abs_mm_median": 10.31
+  },
+  "best_pair_hh": {
+    "track": 90,
+    "d1": "2026-09-12",
+    "d2": "2026-09-24",
+    "tile_coherence_median": 0.653
+  }
+}
+done
+rc=0
+===== _nisar_steel_9t
+track 26: 9 dates, SBT pixels 25 (0.0026% of valid)
+track 90: 11 dates, SBT pixels 459 (0.0477% of valid)
+track 162: 6 dates, SBT pixels 1348 (0.1427% of valid)
+group
+active         285
+abandoned      279
+plugged        228
+not_drilled     20
+         group  n_wells  n_decoys  canopy_cover_median  wells_sbt_any_track  decoys_sbt_any_track  odds_ratio_any  p_any  wells_sbt_2plus_tracks  decoys_sbt_2plus_tracks  odds_ratio_2plus  p_2plus  auc_brightness_wells_gt_decoys  auc_steadiness_wells_gt_decoys  p_brightness  bright_max_db_median_wells  bright_max_db_median_decoys
+0       active      285      1396                 0.88                0.046                 0.042            1.08   0.75                   0.004                    0.005               0.7      1.0                           0.516                           0.516          0.40                        4.02                         3.98
+1      plugged      228      1105                 0.84                0.044                 0.061            0.71   0.43                   0.000                    0.005               0.0      0.6                           0.543                           0.520          0.04                        4.33                         4.13
+2    abandoned      279      1347                 0.84                0.061                 0.044            1.42   0.21                   0.000                    0.001               0.0      1.0                           0.481                           0.486          0.32                        4.00                         4.04
+3  not_drilled       20        99                 0.94                0.050                 0.040            1.25   1.00                   0.000                    0.000               NaN      1.0                           0.428                           0.496          0.31                        3.57                         3.99
+                 cover        group  n_wells  wells_sbt_any_track  decoys_sbt_any_track  auc_brightness  auc_steadiness
+0    open_cover_lt0p30       active       42                0.048                 0.056           0.542           0.496
+1    open_cover_lt0p30      plugged       39                0.000                 0.074           0.581           0.556
+2    open_cover_lt0p30    abandoned       60                0.050                 0.036           0.515           0.524
+3    open_cover_lt0p30  not_drilled        5                0.000                 0.000           0.342           0.575
+4  canopy_cover_ge0p30       active      243                0.045                 0.040           0.510           0.520
+5  canopy_cover_ge0p30      plugged      189                0.053                 0.058           0.533           0.513
+6  canopy_cover_ge0p30    abandoned      219                0.064                 0.046           0.471           0.476
+7  canopy_cover_ge0p30  not_drilled       15                0.067                 0.053           0.441           0.481
+registration {'best_shift_m': [20, 0], 'best_hit_rate': 0.07, 'zero_shift_hit_rate': 0.046, 'median_hit_rate_over_shifts': 0.046}
+done nisar_steel
+rc=0
+===== _nisar_bright_targets_9t
+track 26: 9 dates, SBT pixels 25 (0.0026% of valid)
+track 90: 11 dates, SBT pixels 459 (0.0477% of valid)
+track 162: 6 dates, SBT pixels 1348 (0.1427% of valid)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_gslc_5m\nisar_bright_targets_layers_t026_613590.tif
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_gslc_5m\nisar_bright_targets_layers_t090_613590.tif
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_gslc_5m\nisar_bright_targets_layers_t162_613590.tif
+{
+  "params": {
+    "da_max": 0.25,
+    "bright_db": 6.0,
+    "bg_m": 250.0,
+    "merge_m": 15.0,
+    "near_m": 15.0
+  },
+  "dates_per_track": {
+    "26": 9,
+    "90": 11,
+    "162": 6
+  },
+  "track_points": 1497,
+  "targets": 1305,
+  "by_n_tracks": {
+    "1": 1231,
+    "2": 74
+  },
+  "by_context": {
+    "elsewhere": 927,
+    "on_road": 331,
+    "at_well": 47
+  },
+  "share_by_context_in_lidar": {
+    "elsewhere": 0.709,
+    "on_road": 0.253,
+    "at_well": 0.037
+  },
+  "share_by_context_random_spots": {
+    "elsewhere": 0.705,
+    "on_road": 0.265,
+    "at_well": 0.03
+  },
+  "by_context_2plus_tracks": {
+    "elsewhere": 51,
+    "on_road": 21,
+    "at_well": 2
+  }
+}
+    target_id  n_tracks  tracks  bright_db    da_min  n_px  canopy_cover  well_dist_m well_permit         well_status  pad_dist_m  road_dist_m    context
+0           1         2  90,162  23.963032  0.142352    14          1.00        157.3   121-26027  DEP Abandoned List      4707.2         20.4  elsewhere
+1           2         2  90,162  23.897903  0.169063    12          1.00         43.7   121-34099           Abandoned      5219.6         26.1  elsewhere
+2           3         2  90,162  21.492994  0.180805     9           NaN        250.2   121-20359     Plugged OG Well      2661.0        509.6  elsewhere
+3           4         2  90,162  19.859720  0.148366     6          1.00        361.4   121-25810              Active      3356.3         17.1  elsewhere
+4           5         2  90,162  19.209049  0.149992     4          0.08        359.7   121-33584     Plugged OG Well      2961.9         35.4  elsewhere
+5           6         2  90,162  17.895939  0.219362     4          0.88        216.2   121-26026  DEP Abandoned List      4453.2          7.1    on_road
+6           7         2  90,162  15.255157  0.227796     5          1.00        112.2   121-05367     DEP Orphan List      2902.5        131.2  elsewhere
+7           8         2  90,162  13.443515  0.176631     2          0.44        158.7   121-36450     Plugged OG Well      2668.7        135.5  elsewhere
+8           9         2  90,162  13.046962  0.171664     4          1.00        253.4   121-23737  DEP Abandoned List      5158.8         15.6  elsewhere
+9          10         2  90,162  12.242866  0.135931     2          1.00        424.6   121-33584     Plugged OG Well      2963.9         13.2    on_road
+10         11         2  90,162  12.195970  0.207692     7          1.00         80.5   121-34102           Abandoned      5252.2         12.4    on_road
+11         12         2   26,90  11.930427  0.233900     2           NaN        339.4   121-28990     Plugged OG Well      6405.3        208.3  elsewhere
+12         13         2  90,162  11.735464  0.204930     2          1.00        256.6   121-28044              Active      4175.2         14.7    on_road
+13         14         2  90,162  11.508521  0.241219     4          0.68        231.4   121-26027  DEP Abandoned List      4889.1         15.0    on_road
+14         15         2  90,162  11.470127  0.066024     4          1.00        396.0   121-25810              Active      3389.3          9.9    on_road
+rc=0
+===== _nisar_slope_motion_9t
+    track          d1          d2  dt_days
+0      26  2026-08-15  2026-08-27       12
+1      26  2026-08-27  2026-09-08       12
+2      26  2026-09-08  2026-09-20       12
+3      26  2026-09-20  2026-10-02       12
+4      90  2026-06-20  2026-07-02       12
+5      90  2026-07-02  2026-07-14       12
+6      90  2026-07-14  2026-07-26       12
+7      90  2026-07-26  2026-08-19       24
+8      90  2026-08-19  2026-08-31       12
+9      90  2026-08-31  2026-09-12       12
+10     90  2026-09-12  2026-09-24       12
+11     90  2026-09-24  2026-10-06       12
+26 {'first': '2026-08-15', 'last': '2026-10-02', 'n_pairs': 4, 'days': 48, 'coherent_share': 0.009, 'disp_std_mm': 48.64}
+90 {'first': '2026-06-20', 'last': '2026-10-06', 'n_pairs': 8, 'days': 108, 'coherent_share': 0.639, 'disp_std_mm': 19.14}
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_slope_motion_9t.py", line 277, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_slope_motion_9t.py", line 134, in main
+    m = np.isfinite(disp[a]) & np.isfinite(disp[b]) & (slope >= lo) & (slope < hi)
+                                           ~~~~^^^
+KeyError: 162
+rc=1
+===== _nisar_lidar_sim_match_9t
+26 {'granule': 'NISAR_L2_PR_GSLC_032_026_D_068_4005_DHDH_A_20261002T001722_20261002T001756_P05023_N_F_J_001', 'east': -0.6120585374051346, 'north': 0.22340591394634282, 'up': 0.758600121541835, 'incidence_deg': 40.65905695089186, 'along_east': -0.32008942961696923, 'along_north': -0.947387337684613}
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_lidar_sim_match_9t.py", line 347, in <module>
+    figure() if "--figure" in sys.argv else main()
+                                            ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_lidar_sim_match_9t.py", line 249, in main
+    los = read_los()
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_lidar_sim_match_9t.py", line 107, in read_los
+    json.dump(out, open(LOS_JSON, "w"), indent=2)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\json\__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "C:\Python313\Lib\json\encoder.py", line 433, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "C:\Python313\Lib\json\encoder.py", line 376, in _iterencode_dict
+    raise TypeError(f'keys must be str, int, float, bool or None, '
+                    f'not {key.__class__.__name__}')
+TypeError: keys must be str, int, float, bool or None, not int64
+rc=1
+===== _nisar_gslc_stack_pad_pit_seasonal_9t (rerun)
+area 613590
+dropping nisar_gslc_hh_hv_complex_20260625_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260707_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260719_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260812_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260824_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260905_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260917_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260929_t162A_613590_5m.tif: valid fraction below 0.5
+season           leafoff_fall  leafon  winter
+track direction                              
+26    D                     1       5       2
+90    A                     1       8       1
+162   A                     3       0       3
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_stack_pad_pit_seasonal_9t.py:263: RuntimeWarning: Mean of empty slice
+  means[(track, season, p)] = np.nanmean(np.stack([inten[f][pi] for f in g.file]), axis=0)
+track 26: rho0 0.092, best 0.114 at (+10,-10) -> applied
+track 90: rho0 0.197, best 0.237 at (-15,-5) -> applied
+    track                    metric  open_median_db  closed_median_db  auc_closed_gt_open
+0      26           hh_leafoff_fall         -10.962            -8.218               0.623
+1      26                 hh_winter          -9.392            -6.560               0.663
+2      26                 hh_leafon          -6.322            -4.719               0.651
+3      26  hh_change_leafon_vs_fall           4.669             3.591               0.455
+4      26           hv_leafoff_fall         -17.033           -13.899               0.639
+5      26                 hv_winter         -15.642           -12.484               0.688
+6      26                 hv_leafon         -12.200           -10.531               0.665
+7      26  hv_change_leafon_vs_fall           4.736             3.346               0.440
+8      90           hh_leafoff_fall         -10.051            -5.945               0.669
+9      90                 hh_winter         -10.404            -6.609               0.653
+10     90                 hh_leafon          -7.382            -4.593               0.719
+11     90  hh_change_leafon_vs_fall           1.783             1.476               0.488
+12     90           hv_leafoff_fall         -16.829           -12.152               0.689
+13     90                 hv_winter         -18.256           -14.213               0.678
+14     90                 hv_leafon         -13.309            -9.999               0.754
+15     90  hv_change_leafon_vs_fall           2.692             2.491               0.489
+16    162           hh_leafoff_fall         -16.014           -11.832               0.695
+17    162                 hh_winter         -17.738           -12.797               0.709
+18    162           hv_leafoff_fall         -21.069           -17.509               0.694
+19    162                 hv_winter         -23.038           -18.678               0.701
+tile median leaf-on minus leaf-off (dB): {(26, 'hh'): 3.5867385864257812, (26, 'hv'): 3.5077075958251953, (90, 'hh'): 1.539830207824707, (90, 'hv'): 2.537008285522461}
+pad: 0 features with rings and decoys
+pit: 36 features with rings and decoys
+  features                    metric   n  median_feature_minus_ring_db  median_decoy_minus_ring_db  median_excess_db  excess_ci_lo  excess_ci_hi  auc_feature_gt_decoy  wilcoxon_p_excess
+0      pit           hh_leafoff_fall  36                        -0.230                      -0.236             0.005        -0.757         0.611                 0.525              0.798
+1      pit                 hh_winter  36                        -0.105                      -0.320             0.267        -0.365         0.727                 0.547              0.441
+2      pit                 hh_leafon  36                        -0.309                      -0.115             0.021        -0.578         0.459                 0.483              0.883
+3      pit  hh_change_leafon_vs_fall  36                         0.305                       0.253             0.489        -0.720         0.861                 0.504              0.692
+4      pit           hv_leafoff_fall  36                         0.067                      -0.292             0.432        -0.386         1.021                 0.568              0.220
+5      pit                 hv_winter  36                        -0.438                      -0.268             0.061        -0.285         0.409                 0.502              0.846
+6      pit                 hv_leafon  36                        -0.116                      -0.198             0.032        -0.580         0.435                 0.484              0.810
+7      pit  hv_change_leafon_vs_fall  36                        -0.099                       0.261            -0.148        -0.784         0.218                 0.463              0.279
+wrote 20 rasters to C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_gslc_5m
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_stack_pad_pit_seasonal_9t.py", line 493, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_stack_pad_pit_seasonal_9t.py", line 434, in main
+    img = db(L["hh_leafon"]).reshape(shape)
+             ~^^^^^^^^^^^^^
+KeyError: 'hh_leafon'
+rc=1
+===== _nisar_slope_motion_9t (rerun)
+    track          d1          d2  dt_days
+0      26  2026-08-15  2026-08-27       12
+1      26  2026-08-27  2026-09-08       12
+2      26  2026-09-08  2026-09-20       12
+3      26  2026-09-20  2026-10-02       12
+4      90  2026-06-20  2026-07-02       12
+5      90  2026-07-02  2026-07-14       12
+6      90  2026-07-14  2026-07-26       12
+7      90  2026-07-26  2026-08-19       24
+8      90  2026-08-19  2026-08-31       12
+9      90  2026-08-31  2026-09-12       12
+10     90  2026-09-12  2026-09-24       12
+11     90  2026-09-24  2026-10-06       12
+26 {'first': '2026-08-15', 'last': '2026-10-02', 'n_pairs': 4, 'days': 48, 'coherent_share': 0.009, 'disp_std_mm': 48.64}
+90 {'first': '2026-06-20', 'last': '2026-10-06', 'n_pairs': 8, 'days': 108, 'coherent_share': 0.639, 'disp_std_mm': 19.14}
+613590: no summer pairs on track(s) [162]; the 090-vs-162 test cannot run
+rc=0
+===== _nisar_lidar_sim_match_9t (rerun)
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_lidar_sim_match_9t.py", line 347, in <module>
+    figure() if "--figure" in sys.argv else main()
+                                            ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_lidar_sim_match_9t.py", line 249, in main
+    los = read_los()
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_lidar_sim_match_9t.py", line 66, in read_los
+    out = {int(k): v for k, v in json.load(open(LOS_JSON)).items()} if LOS_JSON.exists() else {}
+                                 ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\json\__init__.py", line 293, in load
+    return loads(fp.read(),
+        cls=cls, object_hook=object_hook,
+        parse_float=parse_float, parse_int=parse_int,
+        parse_constant=parse_constant, object_pairs_hook=object_pairs_hook, **kw)
+  File "C:\Python313\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Python313\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\json\decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+rc=1
+===== _nisar_gslc_stack_pad_pit_seasonal_9t (rerun 2)
+area 613590
+dropping nisar_gslc_hh_hv_complex_20260625_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260707_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260719_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260812_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260824_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260905_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260917_t162A_613590_5m.tif: valid fraction below 0.5
+dropping nisar_gslc_hh_hv_complex_20260929_t162A_613590_5m.tif: valid fraction below 0.5
+season           leafoff_fall  leafon  winter
+track direction                              
+26    D                     1       5       2
+90    A                     1       8       1
+162   A                     3       0       3
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_stack_pad_pit_seasonal_9t.py:263: RuntimeWarning: Mean of empty slice
+  means[(track, season, p)] = np.nanmean(np.stack([inten[f][pi] for f in g.file]), axis=0)
+track 26: rho0 0.092, best 0.114 at (+10,-10) -> applied
+track 90: rho0 0.197, best 0.237 at (-15,-5) -> applied
+    track                    metric  open_median_db  closed_median_db  auc_closed_gt_open
+0      26           hh_leafoff_fall         -10.962            -8.218               0.623
+1      26                 hh_winter          -9.392            -6.560               0.663
+2      26                 hh_leafon          -6.322            -4.719               0.651
+3      26  hh_change_leafon_vs_fall           4.669             3.591               0.455
+4      26           hv_leafoff_fall         -17.033           -13.899               0.639
+5      26                 hv_winter         -15.642           -12.484               0.688
+6      26                 hv_leafon         -12.200           -10.531               0.665
+7      26  hv_change_leafon_vs_fall           4.736             3.346               0.440
+8      90           hh_leafoff_fall         -10.051            -5.945               0.669
+9      90                 hh_winter         -10.404            -6.609               0.653
+10     90                 hh_leafon          -7.382            -4.593               0.719
+11     90  hh_change_leafon_vs_fall           1.783             1.476               0.488
+12     90           hv_leafoff_fall         -16.829           -12.152               0.689
+13     90                 hv_winter         -18.256           -14.213               0.678
+14     90                 hv_leafon         -13.309            -9.999               0.754
+15     90  hv_change_leafon_vs_fall           2.692             2.491               0.489
+16    162           hh_leafoff_fall         -16.014           -11.832               0.695
+17    162                 hh_winter         -17.738           -12.797               0.709
+18    162           hv_leafoff_fall         -21.069           -17.509               0.694
+19    162                 hv_winter         -23.038           -18.678               0.701
+tile median leaf-on minus leaf-off (dB): {(26, 'hh'): 3.5867385864257812, (26, 'hv'): 3.5077075958251953, (90, 'hh'): 1.539830207824707, (90, 'hv'): 2.537008285522461}
+pad: 0 features with rings and decoys
+pit: 36 features with rings and decoys
+  features                    metric   n  median_feature_minus_ring_db  median_decoy_minus_ring_db  median_excess_db  excess_ci_lo  excess_ci_hi  auc_feature_gt_decoy  wilcoxon_p_excess
+0      pit           hh_leafoff_fall  36                        -0.230                      -0.236             0.005        -0.757         0.611                 0.525              0.798
+1      pit                 hh_winter  36                        -0.105                      -0.320             0.267        -0.365         0.727                 0.547              0.441
+2      pit                 hh_leafon  36                        -0.309                      -0.115             0.021        -0.578         0.459                 0.483              0.883
+3      pit  hh_change_leafon_vs_fall  36                         0.305                       0.253             0.489        -0.720         0.861                 0.504              0.692
+4      pit           hv_leafoff_fall  36                         0.067                      -0.292             0.432        -0.386         1.021                 0.568              0.220
+5      pit                 hv_winter  36                        -0.438                      -0.268             0.061        -0.285         0.409                 0.502              0.846
+6      pit                 hv_leafon  36                        -0.116                      -0.198             0.032        -0.580         0.435                 0.484              0.810
+7      pit  hv_change_leafon_vs_fall  36                        -0.099                       0.261            -0.148        -0.784         0.218                 0.463              0.279
+wrote 20 rasters to C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_gslc_5m
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\results\nisar\figures\nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change_613590_5m.png
+rc=0
+===== _nisar_lidar_sim_match_9t (rerun 2)
+26 {'granule': 'NISAR_L2_PR_GSLC_032_026_D_068_4005_DHDH_A_20261002T001722_20261002T001756_P05023_N_F_J_001', 'east': -0.6120585374051346, 'north': 0.22340591394634282, 'up': 0.758600121541835, 'incidence_deg': 40.65905695089186, 'along_east': -0.32008942961696923, 'along_north': -0.947387337684613}
+90 {'granule': 'NISAR_L2_PR_GSLC_032_090_A_022_4005_DHDH_A_20261006T102335_20261006T102410_P05023_N_F_J_001', 'east': 0.6022867959988676, 'north': 0.1810879520785158, 'up': 0.7774688218683934, 'incidence_deg': 38.97059694048182, 'along_east': -0.31595110893222406, 'along_north': 0.9487754702568937}
+162 {'granule': 'NISAR_L2_PR_GSLC_031_162_A_023_4005_DHDH_A_20260929T101550_20260929T101625_P05023_N_F_J_001', 'east': 0.6978532765480847, 'north': 0.23163167277502233, 'up': 0.6777518517706517, 'incidence_deg': 47.331788207810874, 'along_east': -0.3386048078538351, 'along_north': 0.9409286975860067}
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_lidar_sim_match_9t.py:157: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a[:h * 5, :w * 5].reshape(h, 5, w, 5), axis=(1, 3))
+    track block  dx_east_m  dy_north_m  away_m  along_m  ncc_best  ncc_zero_shift  canopy_h_mean_m  canopy_cover  at_lag_edge
+0      26  tile         10           1     9.1      4.4     0.187           0.164             14.1          0.82        False
+1      26   b00         15           7    11.7     11.7     0.086           0.072             12.8          0.86        False
+2      26   b01         11          -5    12.0     -0.9     0.099           0.073             12.1          0.84        False
+3      26   b02         12          -6    13.3     -1.5     0.249           0.170             16.1          0.93        False
+4      26   b03         10           4     8.0      7.2     0.269           0.237             13.7          0.84        False
+5      26   b10          7          -1     6.9      1.5     0.178           0.160             13.3          0.83        False
+6      26   b11         12           2    10.6      6.0     0.139           0.101             15.2          0.90        False
+7      26   b12         12           4     9.9      7.9     0.280           0.234             17.5          0.94        False
+8      26   b13         10           0     9.4      3.4     0.121           0.091             12.7          0.82        False
+9      26   b20          7          -8     9.3     -5.1     0.318           0.295             13.6          0.72        False
+10     26   b21         12          -2    12.0      2.2     0.253           0.200             15.1          0.93        False
+11     26   b22          8          -1     7.9      1.8     0.223           0.209             15.4          0.86        False
+12     26   b23         15          -1    14.4      4.2     0.190           0.152             13.8          0.68        False
+13     26   b30         10           6     7.3      9.1     0.170           0.162             11.4          0.69        False
+14     26   b31          2          -8     4.6     -6.8     0.130           0.120             12.1          0.75        False
+15     26   b32          9           5     6.7      7.8     0.138           0.124             14.2          0.71        False
+16     26   b33         14           5    11.4      9.5     0.105           0.085             16.5          0.85        False
+    track block  dx_east_m  dy_north_m  away_m  along_m  ncc_best  ncc_zero_shift  canopy_h_mean_m  canopy_cover  at_lag_edge
+0      90  tile         -9          -1     8.9     -1.6     0.208           0.195             14.1          0.82        False
+1      90   b00        -14          -5    14.8      0.8     0.137           0.092             12.8          0.86        False
+2      90   b01         -7           1     6.4     -3.0     0.127           0.113             12.1          0.84        False
+3      90   b02        -16          -5    16.8      0.2     0.262           0.210             16.1          0.93        False
+4      90   b03        -12           2    10.9     -5.4     0.264           0.228             13.7          0.84        False
+5      90   b10        -13          -4    13.6      0.1     0.196           0.126             13.3          0.83        False
+6      90   b11        -11          -3    11.4     -0.3     0.198           0.175             15.2          0.90        False
+7      90   b12         -9           0     8.6     -2.6     0.265           0.231             17.5          0.94        False
+8      90   b13        -12          -4    12.6      0.4     0.166           0.121             12.7          0.82        False
+9      90   b20         -8          -1     7.9     -1.3     0.195           0.183             13.6          0.72        False
+10     90   b21        -16         -12    18.8      6.9     0.225           0.156             15.1          0.93        False
+11     90   b22         -7         -34    16.5     30.5     0.304           0.275             15.4          0.86         True
+12     90   b23          4          30   -12.5    -27.6     0.239           0.201             13.8          0.68         True
+13     90   b30        -13           6    10.7     -9.5     0.223           0.207             11.4          0.69        False
+14     90   b31         -6          30    -2.9    -30.5     0.216           0.192             12.1          0.75         True
+15     90   b32          6         -24     1.2     24.7     0.289           0.256             14.2          0.71        False
+16     90   b33         34          -9   -30.0     18.4     0.251           0.233             16.5          0.85         True
+    track block  dx_east_m  dy_north_m  away_m  along_m  ncc_best  ncc_zero_shift  canopy_h_mean_m  canopy_cover  at_lag_edge
+0     162  tile         -6          -1     6.0     -0.9     0.185           0.175             14.1          0.82        False
+1     162   b00         -9          -5    10.1      1.9     0.094           0.077             12.8          0.86        False
+2     162   b01         -4          -1     4.1     -0.3     0.100           0.094             12.1          0.84        False
+3     162   b02        -11          -5    12.0      1.3     0.233           0.192             16.1          0.93        False
+4     162   b03        -11          -1    10.8     -2.5     0.270           0.228             13.7          0.84        False
+5     162   b10         -9          -3     9.5      0.0     0.123           0.102             13.3          0.83        False
+6     162   b11         -9          -7    10.7      3.8     0.146           0.129             15.2          0.90        False
+7     162   b12         -9          -2     9.2     -0.9     0.247           0.208             17.5          0.94        False
+8     162   b13         -8          -4     8.9      1.3     0.137           0.089             12.7          0.82        False
+9     162   b20         -5          -1     5.1     -0.6     0.143           0.138             13.6          0.72        False
+10    162   b21        -10          -7    11.7      3.5     0.197           0.164             15.1          0.93        False
+11    162   b22         -7         -20    12.9     16.8     0.229           0.207             15.4          0.86        False
+12    162   b23         -6          26    -2.5    -26.6     0.215           0.212             13.8          0.68        False
+13    162   b30        -15           9    11.4    -13.3     0.179           0.167             11.4          0.69        False
+14    162   b31         -3          -1     3.2      0.0     0.138           0.135             12.1          0.75        False
+15    162   b32         -1         -17     6.3     15.8     0.239           0.221             14.2          0.71        False
+16    162   b33         29           2   -28.2      7.2     0.353           0.273             16.5          0.85        False
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_gslc_5m\nisar_lidar_sim_t026_613590.tif
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_gslc_5m\nisar_lidar_sim_t090_613590.tif
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_gslc_5m\nisar_lidar_sim_t162_613590.tif
+{
+  "params": {
+    "range_bin_m": 3.1,
+    "az_bin_m": 4.4,
+    "max_lag_m": 30,
+    "bg_m": 250,
+    "blocks": "4x4",
+    "gate_m": 2.5,
+    "radar_image": "mean HH dB, all dates"
+  },
+  "los": {
+    "26": {
+      "granule": "NISAR_L2_PR_GSLC_032_026_D_068_4005_DHDH_A_20261002T001722_20261002T001756_P05023_N_F_J_001",
+      "east": -0.6120585374051346,
+      "north": 0.22340591394634282,
+      "up": 0.758600121541835,
+      "incidence_deg": 40.65905695089186,
+      "along_east": -0.32008942961696923,
+      "along_north": -0.947387337684613
+    },
+    "90": {
+      "granule": "NISAR_L2_PR_GSLC_032_090_A_022_4005_DHDH_A_20261006T102335_20261006T102410_P05023_N_F_J_001",
+      "east": 0.6022867959988676,
+      "north": 0.1810879520785158,
+      "up": 0.7774688218683934,
+      "incidence_deg": 38.97059694048182,
+      "along_east": -0.31595110893222406,
+      "along_north": 0.9487754702568937
+    },
+    "162": {
+      "granule": "NISAR_L2_PR_GSLC_031_162_A_023_4005_DHDH_A_20260929T101550_20260929T101625_P05023_N_F_J_001",
+      "east": 0.6978532765480847,
+      "north": 0.23163167277502233,
+      "up": 0.6777518517706517,
+      "incidence_deg": 47.331788207810874,
+      "along_east": -0.3386048078538351,
+      "along_north": 0.9409286975860067
+    }
+  },
+  "tile": {
+    "26": {
+      "dx_east_m": 10,
+      "dy_north_m": 1,
+      "away_m": 9.1,
+      "ncc_best": 0.187,
+      "ncc_zero_shift": 0.164
+    },
+    "90": {
+      "dx_east_m": -9,
+      "dy_north_m": -1,
+      "away_m": 8.9,
+      "ncc_best": 0.208,
+      "ncc_zero_shift": 0.195
+    },
+    "162": {
+      "dx_east_m": -6,
+      "dy_north_m": -1,
+      "away_m": 6.0,
+      "ncc_best": 0.185,
+      "ncc_zero_shift": 0.175
+    }
+  },
+  "blocks_within_gate": 0,
+  "blocks_total": 48,
+  "corr_away_vs_canopy_by_track": {
+    "26": 0.35,
+    "90": -0.13,
+    "162": -0.21
+  }
+}
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\results\nisar\figures\nisar_lidar_sim_match_613590.png
+rc=0

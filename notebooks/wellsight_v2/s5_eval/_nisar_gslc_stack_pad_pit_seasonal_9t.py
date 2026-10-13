@@ -91,12 +91,13 @@ from shapely.affinity import translate
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2"))
 from _common import path_for, read_layer  # noqa: E402
+import _nisar_area as A  # noqa: E402  (--area picks 9t, 613590 or mkf)
 
-SRC = path_for("data") / "9t" / "derived" / "nisar_gslc_5m"
-INDEX = SRC / "nisar_gslc_window_index_9t_5m.csv"
+SRC = A.GSLC
+INDEX = SRC / f"nisar_gslc_window_index_{A.TAG}_5m.csv"
 ANN = path_for("truth") / "annotations_proj.gpkg"
-CHM = path_for("data") / "9t" / "derived" / "1m" / "chm_9t_1m.tif"
-OUT = path_for("results_9t") / "nisar"
+CHM = A.lidar("chm")
+OUT = A.RESULTS
 FIG = OUT / "figures"
 CRS = "EPSG:32617"
 
@@ -156,7 +157,7 @@ def raster_name(metric: str, track: int, direction: str, tag: str) -> str:
     """metric is '<pol>_<season key>', e.g. 'hv_leafon'. Only as-delivered rasters are written."""
     assert tag == "asdelivered", tag
     pol, key = metric.split("_", 1)
-    return f"nisar_{pol}_{RASTER_METRIC_NAME[key]}_track{track:03d}_9t_5m.tif"
+    return f"nisar_{pol}_{RASTER_METRIC_NAME[key]}_track{track:03d}_{A.TAG}_5m.tif"
 
 
 def season_of(d: str):
@@ -250,6 +251,7 @@ def main() -> int:
     sfx = "_forcedshift" if force else ""
     FIG.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(SEED)
+    print(f"area {A.TAG}")
     idx, inten, tf, shape = load_stack()
     idx["season"] = idx.date.map(season_of)
     counts = idx.groupby(["track", "direction", "season"]).size().unstack(fill_value=0)
@@ -373,6 +375,8 @@ def main() -> int:
         df = pd.DataFrame(rows)
         per_feature[kind] = df
         print(f"{kind}: {len(df)} features with rings and decoys")
+        if df.empty:
+            continue
         for m in metrics:
             real = df[f"{m}_feature"].to_numpy()
             dec = df[f"{m}_decoy_median"].to_numpy()
@@ -398,21 +402,22 @@ def main() -> int:
     n_written = 0
     for t in ([] if force else tracks):
         d = idx[idx.track == t].direction.iat[0]
-        tag = "lidaraligned" if shift_of[t] != (0.0, 0.0) else "asdelivered"
-        L = layers[t]
+        # rasters stay as delivered even when the statistics use a lidar shift
+        tag = "asdelivered"
+        R = {f"{p}_{s}": means[(t, s, p)].ravel() for s in SEASONS for p in ("hh", "hv") if (t, s, p) in means}
         for m, (num, den) in metrics.items():
-            if num not in L or (den and den not in L):
+            if num not in R or (den and den not in R):
                 continue
-            v = (db(L[num]) - (db(L[den]) if den else 0.0)).reshape(shape)
+            v = (db(R[num]) - (db(R[den]) if den else 0.0)).reshape(shape)
             with rasterio.open(SRC / raster_name(m, t, d, tag), "w", **prof) as dst:
                 dst.write(v.astype(np.float32), 1)
             n_written += 1
     print(f"wrote {n_written} rasters to {SRC}")
     for kind, df in per_feature.items():
-        df.to_csv(OUT / f"nisar_gslc_stack_{kind}_vs_ring_and_decoys_per_feature{sfx}_9t_5m.csv", index=False)
-    res.to_csv(OUT / f"nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season{sfx}_9t_5m.csv", index=False)
-    control.to_csv(OUT / f"nisar_gslc_stack_open_vs_closed_canopy_control_by_track{sfx}_9t_5m.csv", index=False)
-    (OUT / f"nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season{sfx}_9t_5m.json").write_text(json.dumps(dict(
+        df.to_csv(OUT / f"nisar_gslc_stack_{kind}_vs_ring_and_decoys_per_feature{sfx}_{A.TAG}_5m.csv", index=False)
+    res.to_csv(OUT / f"nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season{sfx}_{A.TAG}_5m.csv", index=False)
+    control.to_csv(OUT / f"nisar_gslc_stack_open_vs_closed_canopy_control_by_track{sfx}_{A.TAG}_5m.csv", index=False)
+    (OUT / f"nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season{sfx}_{A.TAG}_5m.json").write_text(json.dumps(dict(
         n_dates_by_track_season=counts.stack().rename("n").reset_index().to_dict("records"),
         registration=reg, shift_applied_m={int(k): v for k, v in shift_of.items()},
         seasons=SEASONS, n_decoys=N_PLACEBO,
@@ -421,7 +426,9 @@ def main() -> int:
 
     # ---- figure ----------------------------------------------------------------------------
     # map the track with the most leaf-off dates; one-date seasons are pure speckle
-    t0 = max(tracks, key=lambda t: counts.xs(t, level="track")["leafoff_fall"].sum())
+    # (among tracks that have a leaf-on mean; 613590 has a track without one)
+    t0 = max([t for t in tracks if "hh_leafon" in layers[t]],
+             key=lambda t: counts.xs(t, level="track")["leafoff_fall"].sum())
     d0 = idx[idx.track == t0].direction.iat[0]
     L = layers[t0]
     fig, ax = plt.subplots(2, 2, figsize=(16, 13))
@@ -450,6 +457,10 @@ def main() -> int:
 
     def panel(a, kind, title):
         df = per_feature[kind]
+        if df.empty:
+            a.text(0.5, 0.5, f"no annotated {kind}s in {A.TAG}", ha="center", va="center", transform=a.transAxes)
+            a.set_axis_off()
+            return
         for i, m in enumerate(shown):
             for off, col, mk, vals in ((-0.18, FEAT_C, "o", df[f"{m}_feature"]),
                                        (0.18, RING_C, "s", df[f"{m}_decoy_median"])):
@@ -474,7 +485,7 @@ def main() -> int:
     panel(ax[1, 1], "pit", f"{len(per_feature['pit'])} pits and their decoys, each against its own "
                            "10-30 m ring\nmarkers are medians, bars IQR")
     fig.tight_layout()
-    fp = FIG / f"nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change{sfx}_9t_5m.png"
+    fp = FIG / f"nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change{sfx}_{A.TAG}_5m.png"
     fig.savefig(fp, dpi=160)
     print(f"wrote {fp}")
     return 0

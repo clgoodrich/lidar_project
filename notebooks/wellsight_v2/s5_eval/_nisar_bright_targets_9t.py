@@ -38,6 +38,7 @@ ifg, st = steel.ifg, steel.st
 from _common import read_layer  # noqa: E402
 
 OUT, CRS, ANN, WELLS = steel.OUT, steel.CRS, steel.ANN, steel.WELLS
+AREA = steel.AREA
 MERGE_M = 15.0
 NEAR_M = 15.0   # "at" a well, pad or road
 N_RANDOM = 20000
@@ -62,7 +63,7 @@ def write_layers(maps, tf, shape):
     for t, m in maps.items():
         bands = {"mean_hh_db": m["bright"] + m["bg"], "above_250m_median_db": m["bright"],
                  "amplitude_dispersion": m["da"], "steady_bright_target": m["sbt"].astype(np.float32)}
-        path = steel.DER / f"nisar_bright_targets_layers_t{t:03d}_9t.tif"
+        path = steel.DER / f"nisar_bright_targets_layers_t{t:03d}_{AREA.TAG}.tif"
         with rasterio.open(path, "w", driver="GTiff", height=shape[0], width=shape[1], count=len(bands),
                            dtype="float32", crs=CRS, transform=tf, nodata=np.nan, compress="deflate") as dst:
             for i, (name, a) in enumerate(bands.items(), 1):
@@ -130,7 +131,7 @@ def main():
     g.insert(0, "target_id", range(1, len(g) + 1))
 
     stem = "nisar_bright_targets"
-    g.to_file(OUT / f"{stem}_points_9t.gpkg", layer="candidate_bright_targets", driver="GPKG")
+    g.to_file(OUT / f"{stem}_points_{AREA.TAG}.gpkg", layer="candidate_bright_targets", driver="GPKG")
     summary = dict(params=dict(da_max=steel.DA_MAX, bright_db=steel.BRIGHT_DB, bg_m=steel.BG_M,
                                merge_m=MERGE_M, near_m=NEAR_M),
                    dates_per_track=n_dates, track_points=int(len(p)), targets=int(len(g)),
@@ -139,7 +140,7 @@ def main():
                    share_by_context_in_lidar=g[in_lidar].context.value_counts(normalize=True).round(3).to_dict(),
                    share_by_context_random_spots=chance.round(3).to_dict(),
                    by_context_2plus_tracks=g[g.n_tracks >= 2].context.value_counts().to_dict())
-    json.dump(summary, open(OUT / f"{stem}_summary_9t.json", "w"), indent=2, default=int)
+    json.dump(summary, open(OUT / f"{stem}_summary_{AREA.TAG}.json", "w"), indent=2, default=int)
     print(json.dumps(summary, indent=2, default=int))
     print(g.head(15).drop(columns="geometry").to_string())
 

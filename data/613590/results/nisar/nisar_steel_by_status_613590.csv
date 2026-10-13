@@ -1,0 +1,5 @@
+group,n_wells,n_decoys,canopy_cover_median,wells_sbt_any_track,decoys_sbt_any_track,odds_ratio_any,p_any,wells_sbt_2plus_tracks,decoys_sbt_2plus_tracks,odds_ratio_2plus,p_2plus,auc_brightness_wells_gt_decoys,auc_steadiness_wells_gt_decoys,p_brightness,bright_max_db_median_wells,bright_max_db_median_decoys
+active,285,1396,0.88,0.046,0.042,1.08,0.75,0.004,0.005,0.7,1.0,0.516,0.516,0.4,4.02,3.98
+plugged,228,1105,0.84,0.044,0.061,0.71,0.43,0.0,0.005,0.0,0.6,0.543,0.52,0.04,4.33,4.13
+abandoned,279,1347,0.84,0.061,0.044,1.42,0.21,0.0,0.001,0.0,1.0,0.481,0.486,0.32,4.0,4.04
+not_drilled,20,99,0.94,0.05,0.04,1.25,1.0,0.0,0.0,,1.0,0.428,0.496,0.31,3.57,3.99

@@ -45,33 +45,62 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2"))
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2" / "s1_build"))
 from _common import path_for  # noqa: E402
+import _nisar_area as A  # noqa: E402  (--area picks 9t, 613590 or mkf)
 
-D9 = path_for("data") / "9t"
-DEM = D9 / "derived" / "1m" / "dem_9t_1m.tif"
-CHM = D9 / "derived" / "1m" / "chm_9t_1m.tif"
-GS = D9 / "derived" / "nisar_gslc_5m"
-OUT = D9 / "results" / "nisar"
+DEM = A.lidar("dem")
+CHM = A.lidar("chm")
+GS = A.GSLC
+OUT = A.RESULTS
 FIG = OUT / "figures"
-LOS_JSON = OUT / "nisar_los_by_track_9t.json"
-TRACKS = (26, 90, 162)
+LOS_JSON = OUT / f"nisar_los_by_track_{A.TAG}.json"
+_IDX = pd.read_csv(GS / f"nisar_gslc_window_index_{A.TAG}_5m.csv")
+# tracks with at least one usable window (all of track 090's McKean windows are empty)
+TRACKS = tuple(int(t) for t in sorted(_IDX[_IDX.valid_fraction >= 0.5].track.unique()))
 DS_RANGE, DS_AZ = 3.1, 4.4   # RSLC sample spacing, slant range and along track (m)
 MAX_LAG = 30                 # m
 BG_M = 250
-NBLK = 4
+NBLK = 4 if A.TAG == "9t" else None   # set from the area size in main(): blocks of about 1.1 km
 GATE_M = 2.5
 
 
+def grid_point(xc, yc, epsg):
+    """(x, y) of a UTM 17 point in the granule's zone, and the turn from that zone's grid to UTM 17's."""
+    if epsg == 32617:
+        return xc, yc, 0.0
+    from pyproj import Transformer
+    tr = Transformer.from_crs("EPSG:32617", f"EPSG:{epsg}", always_xy=True)
+    px, py = tr.transform(xc, yc)
+    qx, qy = tr.transform(xc, yc + 1000.0)       # UTM 17 grid north, seen in the other zone
+    return px, py, float(np.arctan2(qx - px, qy - py))
+
+
+def rotate(e, n, rot):
+    """East/north components in the granule zone -> UTM 17 grid components."""
+    c, s_ = np.cos(rot), np.sin(rot)
+    return float(e * c - n * s_), float(e * s_ + n * c)
+
+
 def read_los():
-    """Look vector and incidence per track at the 9t centre, from one GSLC's radarGrid cubes."""
-    out = {int(k): v for k, v in json.load(open(LOS_JSON)).items()} if LOS_JSON.exists() else {}
+    """Look vector and incidence per track at the area centre, from one GSLC's radarGrid cubes."""
+    try:
+        out = {int(k): v for k, v in json.load(open(LOS_JSON)).items()} if LOS_JSON.exists() else {}
+    except json.JSONDecodeError:   # a run that died mid-write; read the cubes again
+        out = {}
     if all(t in out for t in TRACKS):
         return out
     import h5py, fsspec  # noqa: E401
     from scipy.interpolate import RegularGridInterpolator
     import _fetch_nisar_gslc_window_9t as fetch
-    idx = pd.read_csv(GS / "nisar_gslc_window_index_9t_5m.csv")
+    idx = pd.read_csv(GS / f"nisar_gslc_window_index_{A.TAG}_5m.csv")
     q = fetch.query().set_index("granule")
-    xc, yc, hc = 621750.0, 4595250.0, 380.0   # 9t centre, a typical ellipsoid height
+    if A.TAG == "9t":
+        xc, yc, hc = 621750.0, 4595250.0, 380.0   # 9t centre, a typical ellipsoid height
+    else:
+        x0, y0, x1, y1 = A.bounds("EPSG:32617")
+        with rasterio.open(DEM) as s:
+            z = s.read(1, out_shape=(200, 200), masked=True)
+        # DEM heights are NAVD88; the geoid is about 34 m below the ellipsoid here
+        xc, yc, hc = (x0 + x1) / 2, (y0 + y1) / 2, float(np.ma.median(z)) - 34.0
     for t in [t for t in TRACKS if t not in out]:
         g = idx[idx.track == t].iloc[-1].granule
         f = fsspec.filesystem("http").open(fetch.signed_url(q.loc[g, "url"]), block_size=8 * 2**20,
@@ -79,10 +108,14 @@ def read_los():
         with h5py.File(f, "r") as h:
             rg = h["science/LSAR/GSLC/metadata/radarGrid"]
             x, y, z = rg["xCoordinates"][:], rg["yCoordinates"][:], rg["heightAboveEllipsoid"][:]
+            epsg = int(h["science/LSAR/GSLC/grids/frequencyA/projection"][()])
+            # McKean track 098 comes in UTM 18: look up the centre in that zone, then turn its
+            # vectors by the angle between the two zones' grid north (about 4 deg there)
+            px, py, rot = grid_point(xc, yc, epsg)
             # read only the 2 x 2 cube cells around the 9t centre (a full cube takes minutes remotely)
-            i0 = int(np.clip(np.searchsorted(x, xc) - 1, 0, len(x) - 2))
+            i0 = int(np.clip(np.searchsorted(x, px) - 1, 0, len(x) - 2))
             yi = np.argsort(y)
-            j = int(np.clip(np.searchsorted(y[yi], yc) - 1, 0, len(y) - 2))
+            j = int(np.clip(np.searchsorted(y[yi], py) - 1, 0, len(y) - 2))
             j0, j1 = sorted((yi[j], yi[j + 1]))
             v = {}
             for k in ("losUnitVectorX", "losUnitVectorY", "alongTrackUnitVectorX",
@@ -91,8 +124,10 @@ def read_los():
                 ys = y[j0:j1 + 1]
                 if ys[0] > ys[-1]:
                     ys, a = ys[::-1], a[:, ::-1, :]
-                v[k] = float(RegularGridInterpolator((z, ys, x[i0:i0 + 2]), a)((hc, yc, xc)))
-        e, n = v["losUnitVectorX"], v["losUnitVectorY"]
+                v[k] = float(RegularGridInterpolator((z, ys, x[i0:i0 + 2]), a)((hc, py, px)))
+        e, n = rotate(v["losUnitVectorX"], v["losUnitVectorY"], rot)
+        v["alongTrackUnitVectorX"], v["alongTrackUnitVectorY"] = rotate(
+            v["alongTrackUnitVectorX"], v["alongTrackUnitVectorY"], rot)
         out[t] = dict(granule=g, east=e, north=n, up=float(np.sqrt(1 - e * e - n * n)),
                       incidence_deg=v["incidenceAngle"],
                       along_east=v["alongTrackUnitVectorX"], along_north=v["alongTrackUnitVectorY"])
@@ -176,9 +211,13 @@ def ncc(A, B, lag5, n5):
 
 # lost/found palette reused (CLAUDE.md): dataviz validator --pairs all, worst pair dE 21.1 deutan,
 # 22.6 normal, all >= 3:1 on white. Tracks also differ by marker shape.
+# Track 098 (McKean only) adds teal #00909A: dataviz validate_palette.js --mode light --pairs all
+# on all four (2026-10-12), ALL CHECKS PASS, worst pair #00909A-#1F5FA8 dE 15.1 deutan, 15.2 normal.
+TRACK98_C = "#00909A"
 TRACK_STYLE = {26: ("#1F5FA8", "o", "track 026 (descending, looks east)"),
                90: ("#D97706", "s", "track 090 (ascending, looks west)"),
-               162: ("#A31515", "^", "track 162 (ascending, looks west)")}
+               162: ("#A31515", "^", "track 162 (ascending, looks west)"),
+               98: (TRACK98_C, "D", "track 098 (descending, looks east)")}
 ARROW_X = 25   # arrows drawn 25 times longer than the shift
 
 
@@ -186,13 +225,15 @@ def figure():
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    df = pd.read_csv(OUT / "nisar_lidar_sim_match_shifts_9t.csv")
+    df = pd.read_csv(OUT / f"nisar_lidar_sim_match_shifts_{A.TAG}.csv")
+    nblk = int(df.block[df.block != "tile"].str[1].astype(int).max()) + 1
     blk = df[df.block != "tile"]
-    with rasterio.open(D9 / "derived" / "1m" / "hillshade_9t_1m.tif") as s:
+    with rasterio.open(A.lidar("hillshade")) as s:
         hs = s.read(1, out_shape=(900, 900)).astype(float)
         b = s.bounds
-    bs = (b.right - b.left) / NBLK
-    fig, ax = plt.subplots(1, 4, figsize=(17, 4.6), gridspec_kw=dict(width_ratios=[1, 1, 1, 1.15]))
+    bs = (b.right - b.left) / nblk
+    nt = len(TRACKS)
+    fig, ax = plt.subplots(1, nt + 1, figsize=(4.25 * (nt + 1), 4.6), gridspec_kw=dict(width_ratios=[1] * nt + [1.15]))
     for k, t in enumerate(TRACKS):
         a = ax[k]
         a.imshow(hs, cmap="gray", extent=(b.left, b.right, b.bottom, b.top), alpha=0.8)
@@ -209,7 +250,7 @@ def figure():
         a.set_xticks([]); a.set_yticks([])
     ax[0].text(0.02, 0.02, f"arrow = where the radar puts features\nrelative to the lidar ground (x{ARROW_X})",
                transform=ax[0].transAxes, fontsize=7, bbox=dict(fc="white", ec="none"))
-    a = ax[3]
+    a = ax[nt]
     for t in TRACKS:
         col, mk, lab = TRACK_STYLE[t]
         g = blk[blk.track == t]
@@ -222,16 +263,17 @@ def figure():
     a.set_title("Shift grows with canopy height", fontsize=9)
     a.legend(fontsize=7, frameon=False)
     a.grid(alpha=0.3)
-    fig.suptitle("NISAR GSLC over 9t against a lidar bare-earth radar simulation, 4 x 4 blocks of 1.1 km",
+    fig.suptitle(f"NISAR GSLC over {A.TAG} against a lidar bare-earth radar simulation, {nblk} x {nblk} blocks of about 1.1 km",
                  fontsize=10)
     fig.tight_layout(rect=(0, 0.04, 1, 1))
     FIG.mkdir(exist_ok=True)
-    path = FIG / "nisar_lidar_sim_match_9t.png"
+    path = FIG / f"nisar_lidar_sim_match_{A.TAG}.png"
     fig.savefig(path, dpi=150)
     print("wrote", path)
 
 
 def main():
+    global NBLK
     los = read_los()
     with rasterio.open(DEM) as s:
         dem = s.read(1).astype(np.float64)
@@ -241,11 +283,14 @@ def main():
         chm = s.read(1).astype(np.float32)
         chm[(chm == s.nodata) | (chm < 0)] = np.nan
     # the 5 m GSLC grid: DEM cell (0,0) is at 619500, 4597500; GSLC edge at 619295, 4597705
-    with rasterio.open(GS / "nisar_bright_targets_layers_t162_9t.tif") as s:
+    with rasterio.open(GS / f"nisar_bright_targets_layers_t{TRACKS[-1]:03d}_{A.TAG}.tif") as s:
         gtf, gshape = s.transform, s.shape
+    assert dem.shape[0] == dem.shape[1], "the block layout assumes a square lidar area"
     c0 = int(round((dtf.c - gtf.c) / 5))
     r0 = int(round((gtf.f - dtf.f) / 5))
     n5 = dem.shape[0] // 5
+    if NBLK is None:
+        NBLK = max(1, round(n5 * 5 / 1125))
     lag5 = MAX_LAG // 5
     rows, sims = [], {}
     chm5 = block5(np.where(np.isfinite(chm), chm, np.nan))
@@ -253,7 +298,7 @@ def main():
         l = los[t]
         sim, shadow, layover = simulate(dem, l)
         sims[t] = (sim, shadow, layover)
-        with rasterio.open(GS / f"nisar_bright_targets_layers_t{t:03d}_9t.tif") as s:
+        with rasterio.open(GS / f"nisar_bright_targets_layers_t{t:03d}_{A.TAG}.tif") as s:
             hh = s.read(1)
         # radar image cut to the lidar footprint, with a lag margin
         R = to_db_hp(hh, "db")
@@ -280,6 +325,8 @@ def main():
                         scores[name][(5 * dx + ox, -(5 * dy + oy))] = v
         for name, ry, rx in blocks:
             sc = scores[name]
+            if not sc:   # block outside the lidar (42% of the McKean box has none)
+                continue
             (dx_m, dy_m), best = max(sc.items(), key=lambda kv: kv[1])
             zero = sc.get((0, 0), np.nan)
             sub = (slice(ry.start - lag5, ry.stop - lag5), slice(rx.start - lag5, rx.stop - lag5))
@@ -293,14 +340,14 @@ def main():
         print(pd.DataFrame([r for r in rows if r["track"] == t]).to_string())
 
     df = pd.DataFrame(rows)
-    df.to_csv(OUT / "nisar_lidar_sim_match_shifts_9t.csv", index=False)
+    df.to_csv(OUT / f"nisar_lidar_sim_match_shifts_{A.TAG}.csv", index=False)
 
     # sim rasters on the 5 m GSLC grid (gitignored folder; small)
     for t, (sim, shadow, layover) in sims.items():
         bands = {"sim_brightness_db": 10 * np.log10(np.clip(block5(sim), 1e-6, None)),
                  "shadow_fraction": block5(shadow.astype(np.float32)),
                  "layover_fraction": block5(layover.astype(np.float32))}
-        path = GS / f"nisar_lidar_sim_t{t:03d}_9t.tif"
+        path = GS / f"nisar_lidar_sim_t{t:03d}_{A.TAG}.tif"
         with rasterio.open(path, "w", driver="GTiff", height=gshape[0], width=gshape[1], count=3,
                            dtype="float32", crs="EPSG:32617", transform=gtf, nodata=np.nan,
                            compress="deflate") as dst:
@@ -321,7 +368,7 @@ def main():
                 blocks_total=int(len(blk)),
                 corr_away_vs_canopy_by_track={int(t): round(float(np.corrcoef(g.away_m, g.canopy_h_mean_m)[0, 1]), 2)
                                               for t, g in blk.groupby("track")})
-    json.dump(summ, open(OUT / "nisar_lidar_sim_match_summary_9t.json", "w"), indent=2, default=int)
+    json.dump(summ, open(OUT / f"nisar_lidar_sim_match_summary_{A.TAG}.json", "w"), indent=2, default=int)
     print(json.dumps(summ, indent=2, default=int))
     figure()
 

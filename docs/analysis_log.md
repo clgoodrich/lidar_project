@@ -5,6 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-12 -- NISAR tests re-run on 613590 and McKean
+
+- **Ask.** The user asked for "the nisar analysis for the 613590 and the mckean region". Doc: `docs/iterations/nisar_area_extension_613590_mkf.md`.
+- **Code.** New area switch `notebooks/wellsight_v2/_nisar_area.py` (`--area 9t|613590|mkf`). The fetch and all seven NISAR test scripts take it. 9t output names are unchanged.
+- **Data.**
+  - GSLC windows: 34 dates on 613590 and 45 on McKean. Usable: 613590 9 / 11 / 6 on 026 / 090 / 162. McKean 10 / 9 / 14 on 026 / 098 / 162, with 090 missing it.
+  - Track 098 comes in UTM 18. It is read there and moved to the UTM 17 grid by nearest neighbour.
+  - McKean 1 m DEM, DSM and CHM built from the 59 QL1 tiles. They cover 58% of the window.
+- **Incident.** The McKean lidar build's 20 GB merged point file filled drive C:. Downloads were paused. The file was deleted with the user's OK. The build also rewrote `data/mckean/mkf/derived/1m/slope_mkf_1m.tif` (June copy on the E: backup). Two downloads then hung on a stalled connection, so remote reads now time out.
+- **Results.**
+  - Placement: features sit 9–11 m (613590) and 12–19 m (McKean) away from the satellite. It is the Stage 0 offset again, larger under McKean's taller canopy.
+  - Pads are darker than decoys in McKean (HV winter −0.33 dB, AUC 0.41), as on 9t. This one holds across areas.
+  - Steel and bright targets give no well signal. Abandoned wells sit above decoys in all 3 areas, but only McKean passes p < 0.05 (one of 12 tests). Logged as a candidate pattern.
+  - Pit coherence is null. The pit brightness leads disagree on polarization between 9t and McKean. The 9t pad-change excess does not repeat in McKean (72 against 73).
+  - Slope motion cannot run on either area (no 090 and 162 pair).
+- **Fixes** to the stack, slope motion, lidar match and pad change scripts are listed in the doc.
+- **Outputs.** `data/613590/results/nisar/` and `data/mckean/mkf/results/nisar/` (results, figures and run logs). Windows and rasters go in `data/613590/derived/nisar_gslc_5m/` and `data/mckean/mkf/derived/nisar_gslc_5m/` (gitignored).
+
 ## 2026-10-10 -- NISAR Stage 2 and check V1: our re-placement reproduces NASA's GSLC
 
 - **Code.**

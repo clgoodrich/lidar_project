@@ -42,7 +42,8 @@ st = ifg.st
 from _common import read_layer  # noqa: E402
 
 OUT, FIG, CRS, ANN = st.OUT, st.FIG, st.CRS, st.ANN
-WELLS = HERE.parents[2] / "data" / "_source" / "reference" / "dep_wells" / "venango_wells_all.gpkg"
+AREA = st.A   # area picked with --area (9t, 613590 or mkf)
+WELLS = AREA.WELLS
 WIN, CORE_M, RING, N_DECOY, FA_RATE, SEED = 5, 5.0, (20.0, 60.0), 5, 0.01, 20261007
 # pads #1F5FA8 circles, decoys #8E959B crosses, flagged events #D97706 (lost/found palette,
 # dataviz validate_palette.js --mode light --pairs all, 2026-10-07: CVD worst #8E959B-#D97706 dE 15.0
@@ -122,7 +123,7 @@ def main():
     ev = df[(df.kind == "pad") & df.flag].copy()
     ev = ev.join(wells_on, on="pad")
     ev[["n_dep_wells", "n_active"]] = ev[["n_dep_wells", "n_active"]].fillna(0).astype(int)
-    ev["pad_area_m2"] = pads.area.values[ev.pad]
+    ev["pad_area_m2"] = pads.area.values[ev["pad"].astype(int)]
     ev["pad_events_total"] = ev.groupby("pad").pad.transform("size")
     ev = ev.sort_values("anomaly")
     print(ev[["pad", "track", "d1", "d2", "coh_core", "coh_ring", "anomaly", "n_dep_wells", "n_active",
@@ -134,17 +135,17 @@ def main():
     plug_pad = int(plug["pad"].iloc[0]) if len(plug) else None
 
     stem = "nisar_pad_change"
-    df.to_csv(OUT / f"{stem}_per_pair_9t.csv", index=False)
-    res.to_csv(OUT / f"{stem}_by_season_9t.csv", index=False)
-    gdf = gpd.GeoDataFrame(ev.drop(columns=["kind", "copy", "flag"]), geometry=pads.geometry.values[ev.pad], crs=CRS)
-    gdf.to_file(OUT / f"{stem}_events_9t.gpkg", layer="candidate_pad_events", driver="GPKG")
+    df.to_csv(OUT / f"{stem}_per_pair_{AREA.TAG}.csv", index=False)
+    res.to_csv(OUT / f"{stem}_by_season_{AREA.TAG}.csv", index=False)
+    gdf = gpd.GeoDataFrame(ev.drop(columns=["kind", "copy", "flag"]), geometry=pads.geometry.values[ev["pad"].astype(int)], crs=CRS)
+    gdf.to_file(OUT / f"{stem}_events_{AREA.TAG}.gpkg", layer="candidate_pad_events", driver="GPKG")
     json.dump(dict(params=dict(win=WIN, core_m=CORE_M, ring_m=RING, n_decoy=N_DECOY, fa_rate=FA_RATE, seed=SEED),
                    n_pads_used=len(sets), n_pairs=len(pairs), by_season=out_rows,
                    pads_with_2plus_events=int((rep >= 2).sum()),
                    plugged_121_39189_pad=plug_pad,
                    plugged_121_39189_pad_events=ev[ev.pad == plug_pad][["track", "d1", "d2", "anomaly"]].to_dict("records")
                    if plug_pad is not None else None),
-              open(OUT / f"{stem}_summary_9t.json", "w"), indent=2, default=float)
+              open(OUT / f"{stem}_summary_{AREA.TAG}.json", "w"), indent=2, default=float)
 
     # figure 1: anomaly distributions, pads vs decoys, per season
     fig, ax = plt.subplots(1, 2, figsize=(11, 4.2), sharey=True)
@@ -160,7 +161,7 @@ def main():
     ax[0].set_ylabel("density")
     ax[0].legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(FIG / f"{stem}_anomaly_hist_9t.png", dpi=150)
+    fig.savefig(FIG / f"{stem}_anomaly_hist_{AREA.TAG}.png", dpi=150)
 
     # figure 2: time series and chips for the four strongest snow-free events
     top = ev[ev.season == "snowfree"].drop_duplicates("pad").head(4)
@@ -191,7 +192,7 @@ def main():
         ax[0, 0].set_ylabel("pad core coherence (decoys as grey crosses)")
         fig.suptitle("Candidate disturbance events: strongest snow-free coherence drops on pads", fontsize=11)
         fig.tight_layout()
-        fig.savefig(FIG / f"{stem}_top_events_9t.png", dpi=150)
+        fig.savefig(FIG / f"{stem}_top_events_{AREA.TAG}.png", dpi=150)
     print("done", stem)
 
 

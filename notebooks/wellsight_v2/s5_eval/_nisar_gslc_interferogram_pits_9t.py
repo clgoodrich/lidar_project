@@ -52,8 +52,9 @@ st = importlib.import_module("_nisar_gslc_stack_pad_pit_seasonal_9t")   # paths 
 from _common import path_for, read_layer  # noqa: E402
 
 SRC, INDEX, ANN, OUT, FIG, CRS = st.SRC, st.INDEX, st.ANN, st.OUT, st.FIG, st.CRS
-HILL = path_for("data") / "9t" / "derived" / "1m" / "hillshade_9t_1m.tif"
-SHIFT_JSON = OUT / "nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_forcedshift_9t_5m.json"
+A = st.A   # area picked with --area (9t, 613590 or mkf)
+HILL = A.lidar("hillshade")
+SHIFT_JSON = OUT / f"nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_forcedshift_{A.TAG}_5m.json"
 MAX_DT_DAYS = 24
 WIN = 3
 LAMBDA_M = 299_792_458 / 1.239e9
@@ -187,7 +188,7 @@ def main():
     df = pd.DataFrame(rows)
     df["coh_excess"] = df.coh_pit_minus_ring - df.coh_decoy_minus_ring_median
     df["los_excess_mm"] = df.los_pit_minus_ring_mm - df.los_decoy_minus_ring_mm_median
-    stem = f"nisar_gslc_interferogram_pits_vs_decoys_win{WIN}{sfx}_9t_5m"
+    stem = f"nisar_gslc_interferogram_pits_vs_decoys_win{WIN}{sfx}_{A.TAG}_5m"
     df.to_csv(OUT / f"{stem}_per_pit_per_pair.csv", index=False)
 
     # per pair, and pooled per pit
@@ -243,9 +244,9 @@ def main():
                 compress="deflate", dtype="float32", nodata=np.nan)
     tag = f"t{bp.track:03d}{bp.direction}_{bp.d1.replace('-', '')}_{bp.d2.replace('-', '')}"
     if not force:
-        with rasterio.open(SRC / f"nisar_interferogram_coherence_hh_win{WIN}_{tag}_9t_5m.tif", "w", **prof) as d:
+        with rasterio.open(SRC / f"nisar_interferogram_coherence_hh_win{WIN}_{tag}_{A.TAG}_5m.tif", "w", **prof) as d:
             d.write(bcoh, 1)
-        with rasterio.open(SRC / f"nisar_interferogram_wrapped_phase_rad_hh_win{WIN}_{tag}_9t_5m.tif", "w", **prof) as d:
+        with rasterio.open(SRC / f"nisar_interferogram_wrapped_phase_rad_hh_win{WIN}_{tag}_{A.TAG}_5m.tif", "w", **prof) as d:
             d.write(np.angle(bifg).astype(np.float32), 1)
 
     # figure 1: per pair, pit and decoy coherence (minus ring), HH
@@ -274,7 +275,7 @@ def main():
     axs[0].plot([], [], "o", color=PIT_C, label="well pits (median, bar = middle half)")
     axs[0].plot([], [], "s", color=DEC_C, label="same-shape decoys on background")
     axs[0].legend(frameon=False, fontsize=8.5, loc="upper left", ncol=2)
-    fig.suptitle(f"NISAR interferograms, HH, every same-track pair over 9t: pits against decoys "
+    fig.suptitle(f"NISAR interferograms, HH, every same-track pair over {A.TAG}: pits against decoys "
                  f"({'shifted onto the lidar' if force else 'as delivered'})", x=0.02, ha="left", fontsize=12, color=INK)
     fig.text(0.02, 0.008, "Each pit has one value per pair. Its decoy value is the median of 5 decoys, "
              "so the decoy bars are narrower by construction. Pairs are sorted by track, then date (yy-mm-dd).",
@@ -327,7 +328,7 @@ def main():
                  "Coherence: black 0, white 1. Phase: one full colour cycle = 12 mm of line-of-sight motion.",
                  fontsize=8.5, color=MUTED)
         fig.subplots_adjust(left=0.05, right=0.99, top=0.95, bottom=0.03, wspace=0.04, hspace=0.06)
-        fig.savefig(FIG / f"nisar_gslc_interferogram_sample_pits_open_vs_canopy_hh_win{WIN}_{tag}_9t_5m.png",
+        fig.savefig(FIG / f"nisar_gslc_interferogram_sample_pits_open_vs_canopy_hh_win{WIN}_{tag}_{A.TAG}_5m.png",
                     dpi=160, facecolor="white")
     print("done")
 

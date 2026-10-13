@@ -1,4 +1,4 @@
-"""Pull the 9t window out of every NISAR L2 GSLC over the tile, without downloading whole files.
+"""Pull the 9t window (or 613590 / mkf with --area) out of every NISAR L2 GSLC over the tile, without downloading whole files.
 
 WHY
 ---
@@ -31,6 +31,7 @@ before it is read.
 Run:
   python notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py
   python notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py --list
+  python notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py --area 613590   (or mkf)
 """
 from __future__ import annotations
 
@@ -42,6 +43,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+import aiohttp
 import fsspec
 import geopandas as gpd
 import h5py
@@ -50,17 +52,18 @@ import pandas as pd
 import rasterio
 import requests
 from rasterio.transform import from_origin
+from rasterio.warp import Resampling, reproject, transform_bounds
 from shapely.geometry import box
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "notebooks" / "wellsight_v2"))
 from _common import path_for  # noqa: E402
+import _nisar_area as A  # noqa: E402  (--area picks 9t, 613590 or mkf)
 
 CMR = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
 COLLECTIONS = ["NISAR_L2_GSLC_BETA_V1", "NISAR_L2_GSLC_PROVISIONAL_V1"]
-BBOX = (-79.5687, 41.4797, -79.5139, 41.5195)  # 9t in lon/lat, W S E N
-HILL = path_for("data") / "9t" / "derived" / "1m" / "hillshade_9t_1m.tif"
-OUT = path_for("data") / "9t" / "derived" / "nisar_gslc_5m"
+BBOX = (-79.5687, 41.4797, -79.5139, 41.5195) if A.TAG == "9t" else A.bounds("EPSG:4326")  # W S E N
+OUT = A.GSLC
 CRS = "EPSG:32617"
 MARGIN_M = 200.0
 GRID = "science/LSAR/GSLC/grids/frequencyA"
@@ -87,8 +90,7 @@ def query() -> pd.DataFrame:
 
 
 def window_bounds() -> tuple[float, float, float, float]:
-    with rasterio.open(HILL) as r:
-        b = gpd.GeoSeries([box(*r.bounds)], crs=r.crs).to_crs(CRS).total_bounds
+    b = A.bounds(CRS)
     # snap outward to the 5 m product grid edges (multiples of 5 m)
     x0 = np.floor((b[0] - MARGIN_M) / 5) * 5
     y0 = np.floor((b[1] - MARGIN_M) / 5) * 5
@@ -110,12 +112,18 @@ def signed_url(url: str) -> str:
 
 def read_window(url: str, wb) -> dict:
     x0, y0, x1, y1 = wb
-    f = fsspec.filesystem("http").open(signed_url(url), block_size=8 * 2**20, cache_type="blockcache")
+    # a stalled connection otherwise waits forever (seen 2026-10-12)
+    http = fsspec.filesystem("http", client_kwargs={"timeout": aiohttp.ClientTimeout(total=600, sock_read=120)})
+    f = http.open(signed_url(url), block_size=8 * 2**20, cache_type="blockcache")
     with h5py.File(f, "r") as h:
         g = h[GRID]
         epsg = int(g["projection"][()])
         if f"EPSG:{epsg}" != CRS:
-            raise RuntimeError(f"unexpected EPSG {epsg}")
+            if epsg not in (32617, 32618):
+                raise RuntimeError(f"unexpected EPSG {epsg}")
+            # McKean track 098 is delivered in UTM 18: read the same area in its own zone
+            x0, y0, x1, y1 = transform_bounds(CRS, f"EPSG:{epsg}", *wb)
+            x0, y0, x1, y1 = x0 - 20, y0 - 20, x1 + 20, y1 + 20
         x = g["xCoordinates"][:]
         y = g["yCoordinates"][:]
         dx = float(g["xCoordinateSpacing"][()])
@@ -128,7 +136,7 @@ def read_window(url: str, wb) -> dict:
         mask = g["mask"][sl]
         hh = g["HH"][sl]
         hv = g["HV"][sl]
-        meta = dict(x_first_centre=float(x[ci[0]]), y_first_centre=float(y[ri[0]]),
+        meta = dict(native_epsg=epsg, x_first_centre=float(x[ci[0]]), y_first_centre=float(y[ri[0]]),
                     spacing_m=dx, ncols=len(ci), nrows=len(ri),
                     range_bandwidth_hz=float(g["rangeBandwidth"][()]),
                     centre_frequency_hz=float(g["centerFrequency"][()]))
@@ -137,6 +145,27 @@ def read_window(url: str, wb) -> dict:
     hv = np.where(bad, np.nan + 0j, hv).astype(np.complex64)
     meta["valid_fraction"] = float((~bad).mean())
     return dict(hh=hh, hv=hv, meta=meta)
+
+
+def to_utm17(w: dict, tf, epsg: int, wb):
+    """Nearest-neighbour warp of a UTM 18 window onto the 5 m UTM 17 window grid.
+
+    Nearest keeps each pixel's complex value whole, so phase is never mixed. Every date
+    of the track goes through the same warp, so its own interferograms pair pixels exactly.
+    """
+    x0, y0, x1, y1 = wb
+    dtf = from_origin(x0, y1, 5.0, 5.0)
+    shape = (int(round((y1 - y0) / 5)), int(round((x1 - x0) / 5)))
+    out = []
+    for a in (w["hh"], w["hv"]):
+        parts = []
+        for part in (a.real, a.imag):
+            d = np.full(shape, np.nan, np.float32)
+            reproject(part.astype(np.float32), d, src_transform=tf, src_crs=f"EPSG:{epsg}", src_nodata=np.nan,
+                      dst_transform=dtf, dst_crs=CRS, dst_nodata=np.nan, resampling=Resampling.nearest)
+            parts.append(d)
+        out.append((parts[0] + 1j * parts[1]).astype(np.complex64))
+    return out[0], out[1], dtf
 
 
 def main() -> int:
@@ -150,11 +179,11 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     wb = window_bounds()
     print(f"window (EPSG:32617) {wb}")
-    index_path = OUT / "nisar_gslc_window_index_9t_5m.csv"
+    index_path = OUT / f"nisar_gslc_window_index_{A.TAG}_5m.csv"
     done = pd.read_csv(index_path) if index_path.exists() else pd.DataFrame()
     rows = done.to_dict("records")
     for (date, track), grp in df.groupby(["date", "track"]):
-        name = f"nisar_gslc_hh_hv_complex_{date.replace('-', '')}_t{track:03d}{grp.direction.iat[0]}_9t_5m.tif"
+        name = f"nisar_gslc_hh_hv_complex_{date.replace('-', '')}_t{track:03d}{grp.direction.iat[0]}_{A.TAG}_5m.tif"
         path = OUT / name
         if path.exists():
             print(f"skip {name}")
@@ -178,6 +207,10 @@ def main() -> int:
         m = w["meta"]
         tf = from_origin(m["x_first_centre"] - m["spacing_m"] / 2, m["y_first_centre"] + m["spacing_m"] / 2,
                          m["spacing_m"], m["spacing_m"])
+        if f"EPSG:{m['native_epsg']}" != CRS:
+            w["hh"], w["hv"], tf = to_utm17(w, tf, m["native_epsg"], wb)
+            m.update(x_first_centre=tf.c + 2.5, y_first_centre=tf.f - 2.5, spacing_m=5.0,
+                     nrows=w["hh"].shape[0], ncols=w["hh"].shape[1])
         with rasterio.open(path, "w", driver="GTiff", width=m["ncols"], height=m["nrows"], count=2,
                            dtype="complex64", crs=CRS, transform=tf, compress="deflate") as d:
             d.write(w["hh"], 1)

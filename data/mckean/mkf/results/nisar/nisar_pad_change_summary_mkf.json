@@ -1,0 +1,38 @@
+{
+  "params": {
+    "win": 5,
+    "core_m": 5.0,
+    "ring_m": [
+      20.0,
+      60.0
+    ],
+    "n_decoy": 5,
+    "fa_rate": 0.01,
+    "seed": 20261007
+  },
+  "n_pads_used": 319,
+  "n_pairs": 25,
+  "by_season": [
+    {
+      "season": "snowfree",
+      "threshold": -0.228,
+      "n_pad_pairs": 7337,
+      "pad_events": 72,
+      "expected_from_decoys": 73.2,
+      "decoy_rate": 0.01,
+      "p_more_than_decoys": 0.57
+    },
+    {
+      "season": "winter",
+      "threshold": -0.198,
+      "n_pad_pairs": 638,
+      "pad_events": 2,
+      "expected_from_decoys": 6.4,
+      "decoy_rate": 0.0101,
+      "p_more_than_decoys": 0.99
+    }
+  ],
+  "pads_with_2plus_events": 10,
+  "plugged_121_39189_pad": null,
+  "plugged_121_39189_pad_events": null
+}

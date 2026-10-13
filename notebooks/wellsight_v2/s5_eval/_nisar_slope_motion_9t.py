@@ -46,9 +46,10 @@ st = ifg.st
 from _common import path_for  # noqa: E402
 
 OUT, FIG, CRS, DER = st.OUT, st.FIG, st.CRS, st.SRC
-SLOPE = path_for("data") / "9t" / "derived" / "1m" / "slope_9t_1m.tif"
-DEM = path_for("data") / "9t" / "derived" / "1m" / "dem_9t_1m.tif"
-WELLS = path_for("data") / "_source" / "reference" / "dep_wells" / "venango_wells_all.gpkg"
+AREA = st.A   # area picked with --area (9t, 613590 or mkf)
+SLOPE = AREA.lidar("slope")
+DEM = AREA.lidar("dem")
+WELLS = AREA.WELLS
 ML, LP_M, COH_MIN, SUMMER_FROM, BLOCK_M, B, SEED = 5, 1000.0, 0.45, "2026-06-01", 500.0, 1000, 20261007
 SLOPE_BINS = [(0, 5, "flat_lt5deg"), (5, 15, "moderate_5to15deg"), (15, 90, "steep_ge15deg")]
 MM_PER_RAD = ifg.MM_PER_RAD
@@ -118,6 +119,11 @@ def main():
                             coherent_share=round(float(np.mean(c >= COH_MIN)), 3),
                             disp_std_mm=round(float(np.nanstd(d)), 2))
         print(t, span[int(t)])
+    missing = [t for t in (90, 162) if t not in disp]
+    if missing:
+        # the test is 090 against 162; without both there is nothing to compare
+        print(f"{AREA.TAG}: no summer pairs on track(s) {missing}; the 090-vs-162 test cannot run")
+        return
 
     with rasterio.open(SLOPE) as r:
         slope = np.full(shp25, np.nan, np.float32)
@@ -206,21 +212,21 @@ def main():
     print(well_summary)
 
     stem = "nisar_slope_motion"
-    res.to_csv(OUT / f"{stem}_tracks_9t.csv", index=False)
-    aspect.to_csv(OUT / f"{stem}_aspect_9t.csv", index=False)
-    spread.to_csv(OUT / f"{stem}_spread_9t.csv", index=False)
+    res.to_csv(OUT / f"{stem}_tracks_{AREA.TAG}.csv", index=False)
+    aspect.to_csv(OUT / f"{stem}_aspect_{AREA.TAG}.csv", index=False)
+    spread.to_csv(OUT / f"{stem}_spread_{AREA.TAG}.csv", index=False)
     cols = ["PERMIT_NUM", "WELL_STATU", "OPERATOR", "slope_deg_25m", *[f"los_mm_t{t:03d}" for t in disp],
             "los_mm_asc_mean", "both_asc_same_sign_gt2sd", "geometry"]
-    w[cols].to_file(OUT / f"{stem}_wells_9t.gpkg", layer="dep_wells_los_summer2026", driver="GPKG")
+    w[cols].to_file(OUT / f"{stem}_wells_{AREA.TAG}.gpkg", layer="dep_wells_los_summer2026", driver="GPKG")
     json.dump(dict(params=dict(ml=ML, lp_m=LP_M, coh_min=COH_MIN, summer_from=SUMMER_FROM, block_m=BLOCK_M, B=B),
                    tracks={str(k): v for k, v in span.items()}, agreement=res.to_dict("records"),
                    spread=spread.to_dict("records"),
                    steep_aspect=aspect.to_dict("records"), wells=well_summary),
-              open(OUT / f"{stem}_summary_9t.json", "w"), indent=2, default=float)
+              open(OUT / f"{stem}_summary_{AREA.TAG}.json", "w"), indent=2, default=float)
     prof = dict(driver="GTiff", height=shp25[0], width=shp25[1], count=1, dtype="float32", crs=CRS,
                 transform=tf25, nodata=np.nan, compress="deflate")
     for t, d in disp.items():
-        with rasterio.open(DER / f"{stem}_los_mm_t{t:03d}_9t.tif",
+        with rasterio.open(DER / f"{stem}_los_mm_t{t:03d}_{AREA.TAG}.tif",
                            "w", **prof) as o:
             o.write(d.astype(np.float32), 1)
 
@@ -267,8 +273,8 @@ def main():
         f"Flagged by both ascending tracks (> 2 SD, same sign): {well_summary['n_flagged']}",
         f"Expected by chance: {well_summary['expected_by_chance']}",
     ]), va="top", fontsize=10, family="monospace")
-    fig.suptitle("NISAR L-band summer 2026 line-of-sight displacement, 25 m, 1 km trend removed, 9t", fontsize=12)
-    fig.savefig(FIG / f"{stem}_maps_9t.png", dpi=140, bbox_inches="tight")
+    fig.suptitle(f"NISAR L-band summer 2026 line-of-sight displacement, 25 m, 1 km trend removed, {AREA.TAG}", fontsize=12)
+    fig.savefig(FIG / f"{stem}_maps_{AREA.TAG}.png", dpi=140, bbox_inches="tight")
     print("done", stem)
 
 

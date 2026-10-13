@@ -49,8 +49,9 @@ st = ifg.st
 from _common import path_for, read_layer  # noqa: E402
 
 OUT, FIG, CRS, ANN = st.OUT, st.FIG, st.CRS, st.ANN
+AREA = st.A   # area picked with --area (9t, 613590 or mkf)
 DER = st.SRC
-WELLS = path_for("data") / "_source" / "reference" / "dep_wells" / "venango_wells_all.gpkg"
+WELLS = AREA.WELLS
 DA_MAX, BRIGHT_DB, R_M, BG_M = 0.25, 6.0, 15.0, 250.0
 N_DECOY, SEED = 5, 20261007
 GROUPS = {"active": ["Active"], "plugged": ["Plugged OG Well", "DEP Plugged"],
@@ -219,21 +220,21 @@ def main():
     stem = "nisar_steel"
     w_out = w[["PERMIT_NUM", "WELL_STATU", "group", "OPERATOR", "cover", "n_tracks_sbt", "bright_max_db",
                "da_min", "geometry"]]
-    w_out.to_file(OUT / f"{stem}_wells_9t.gpkg", layer="dep_wells_sbt", driver="GPKG")
-    res.to_csv(OUT / f"{stem}_by_status_9t.csv", index=False)
-    by_cov.to_csv(OUT / f"{stem}_by_canopy_9t.csv", index=False)
+    w_out.to_file(OUT / f"{stem}_wells_{AREA.TAG}.gpkg", layer="dep_wells_sbt", driver="GPKG")
+    res.to_csv(OUT / f"{stem}_by_status_{AREA.TAG}.csv", index=False)
+    by_cov.to_csv(OUT / f"{stem}_by_canopy_{AREA.TAG}.csv", index=False)
     summ = dict(params=dict(da_max=DA_MAX, bright_db=BRIGHT_DB, radius_m=R_M, background_m=BG_M,
                             n_decoy=N_DECOY, seed=SEED),
                 tracks={str(t): dict(n_dates=int(m["n"]), sbt_pixels=int(m["sbt"].sum())) for t, m in maps.items()},
                 by_status=rows, by_status_and_canopy=by_cov.to_dict("records"), registration=reg,
                 registration_grid_rows_dy_cols_dx=dict(shifts=list(shifts), hit_rate=grid.round(3).tolist()))
-    json.dump(summ, open(OUT / f"{stem}_summary_9t.json", "w"), indent=2, default=float)
+    json.dump(summ, open(OUT / f"{stem}_summary_{AREA.TAG}.json", "w"), indent=2, default=float)
 
     # SBT count raster (0-3 tracks), gitignored derived
     cnt = np.sum([m["sbt"] for m in maps.values()], axis=0).astype(np.uint8)
     prof = dict(driver="GTiff", height=shape[0], width=shape[1], count=1, dtype="uint8", crs=CRS,
                 transform=tf, compress="deflate")
-    with rasterio.open(DER / f"{stem}_track_count_9t.tif", "w", **prof) as d:
+    with rasterio.open(DER / f"{stem}_track_count_{AREA.TAG}.tif", "w", **prof) as d:
         d.write(cnt, 1)
 
     # figure: hit rates by group (wells vs decoys), and the registration grid
@@ -256,10 +257,10 @@ def main():
     ax[1].invert_yaxis()
     ax[1].set_title("Active-well hit rate vs shift", fontsize=11)
     plt.colorbar(im, ax=ax[1], fraction=0.046)
-    fig.suptitle(f"NISAR HH steady bright targets (D_A < {DA_MAX}, ≥ {BRIGHT_DB:.0f} dB above 250 m background), 9t",
+    fig.suptitle(f"NISAR HH steady bright targets (D_A < {DA_MAX}, ≥ {BRIGHT_DB:.0f} dB above 250 m background), {AREA.TAG}",
                  fontsize=11)
     fig.tight_layout()
-    fig.savefig(FIG / f"{stem}_hit_rate_by_status_9t.png", dpi=150)
+    fig.savefig(FIG / f"{stem}_hit_rate_by_status_{AREA.TAG}.png", dpi=150)
     print("done", stem)
 
 

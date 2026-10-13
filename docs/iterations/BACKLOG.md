@@ -240,6 +240,12 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
     - (2026-10-08) pit interferogram test: pit rings fall on pads, decoy rings on forest. Keep pads out of the pit ring, or draw each pit's decoys in the same setting (pad or forest). Re-run before trusting the pit-scale null.
     - (2026-10-09) fix the look direction in `_nisar_slope_motion_9t.py` (lines 155–157 assume right-looking). Use the GSLC `losUnitVectorX/Y` cubes per pixel. The aspect result now reads as downslope creep if the phase sign is "positive = toward".
     - (2026-10-09) re-place NISAR pixels on the lidar ground. Plan in `docs/iterations/nisar_regeocode_plan_9t.md`. **Stage 0 done 2026-10-09: gate failed (0 of 48 blocks within 2.5 m, features 8–12 m away from the satellite on all 3 tracks), so go on to Stage 1 (RSLC fetch).** **Stage 1 done 2026-10-09: 34 RSLC windows held.** **Stage 2 and V1 done 2026-10-10. Our re-placement reproduces NASA's GSLC: placement within 0.02 px, interferogram match 0.998. Next: lidar heights (geoid unit test first), then V2, V3 and the full stack.**
+    - (2026-10-12) other areas, from `docs/iterations/nisar_area_extension_613590_mkf.md`:
+      - abandoned wells beat decoys for steady bright targets in all 3 areas (p 0.063 / 0.21 / 0.017). Fix one test in advance and check it on fresh dates or a 4th area.
+      - slope motion in McKean: compare track 162 against 098 (090 misses McKean).
+      - McKean pads are annotated in two clusters only. Annotate the rest, or keep decoys inside the annotated clusters.
+      - McKean lidar covers 58% of the window. Fetch the missing B19 tiles, or build from `F:/lidar_project/consolidated/lidar_all/mckean_full.las`.
+      - steady-target counts scale with how few dates a track has. Require a minimum date count, or scale D_A, before comparing tracks or areas.
     - (2026-10-08) check the 8 two-track bright targets in `nisar_bright_targets_points_9t.gpkg` against imagery. Find out why track 090 gives six times more targets than track 162.
 - **NISAR GCOV pad test, follow-ups (added 2026-09-26).** See `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`. The single January beta image gives a faint pad signal: open pads are about 0.8 dB darker in HH. The open/closed control is also weak (HV AUC 0.62). To do:
   - repeat on a leaf-on or fall snow-free GCOV granule
