@@ -53,6 +53,10 @@ GS = A.GSLC
 OUT = A.RESULTS
 FIG = OUT / "figures"
 LOS_JSON = OUT / f"nisar_los_by_track_{A.TAG}.json"
+# --stack lidar: match our lidar-height re-placement (Stage 3) instead of NASA's GSLC (check V3)
+STACK = "lidar" if "--stack" in sys.argv and sys.argv[sys.argv.index("--stack") + 1] == "lidar" else "gslc"
+SLC_LIDAR = A.DATA / "derived" / "nisar_slc_lidar_5m"
+SUF = "_lidarslc" if STACK == "lidar" else ""
 _IDX = pd.read_csv(GS / f"nisar_gslc_window_index_{A.TAG}_5m.csv")
 # tracks with at least one usable window (all of track 090's McKean windows are empty)
 TRACKS = tuple(int(t) for t in sorted(_IDX[_IDX.valid_fraction >= 0.5].track.unique()))
@@ -221,11 +225,27 @@ TRACK_STYLE = {26: ("#1F5FA8", "o", "track 026 (descending, looks east)"),
 ARROW_X = 25   # arrows drawn 25 times longer than the shift
 
 
+def mean_hh_db(t):
+    """Mean HH dB over all usable dates of track t, from NASA's stack or from ours."""
+    if STACK == "gslc":
+        with rasterio.open(GS / f"nisar_bright_targets_layers_t{t:03d}_{A.TAG}.tif") as s:
+            return s.read(1)
+    idx = pd.read_csv(SLC_LIDAR / f"nisar_slc_lidar_index_{A.TAG}.csv")
+    idx = idx[(idx.track == t) & (idx.valid_fraction >= 0.5)]
+    acc = None
+    for f in idx.file:
+        with rasterio.open(SLC_LIDAR / f) as s:
+            p = np.abs(s.read(1)).astype(np.float64) ** 2
+        acc = p if acc is None else acc + p
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return (10 * np.log10(acc / len(idx))).astype(np.float32)
+
+
 def figure():
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    df = pd.read_csv(OUT / f"nisar_lidar_sim_match_shifts_{A.TAG}.csv")
+    df = pd.read_csv(OUT / f"nisar_lidar_sim_match_shifts{SUF}_{A.TAG}.csv")
     nblk = int(df.block[df.block != "tile"].str[1].astype(int).max()) + 1
     blk = df[df.block != "tile"]
     with rasterio.open(A.lidar("hillshade")) as s:
@@ -260,14 +280,14 @@ def figure():
     a.text(6.2, 0.6, "gate: within 2.5 m", fontsize=7)
     a.set_xlabel("mean canopy height in block (m, lidar)")
     a.set_ylabel("shift away from the satellite (m)")
-    a.set_title("Shift grows with canopy height", fontsize=9)
+    a.set_title("Shift against canopy height", fontsize=9)
     a.legend(fontsize=7, frameon=False)
     a.grid(alpha=0.3)
-    fig.suptitle(f"NISAR GSLC over {A.TAG} against a lidar bare-earth radar simulation, {nblk} x {nblk} blocks of about 1.1 km",
+    fig.suptitle(f"NISAR {'our lidar-height re-placement' if STACK == 'lidar' else 'GSLC'} over {A.TAG} against a lidar bare-earth radar simulation, {nblk} x {nblk} blocks of about 1.1 km",
                  fontsize=10)
     fig.tight_layout(rect=(0, 0.04, 1, 1))
     FIG.mkdir(exist_ok=True)
-    path = FIG / f"nisar_lidar_sim_match_{A.TAG}.png"
+    path = FIG / f"nisar_lidar_sim_match{SUF}_{A.TAG}.png"
     fig.savefig(path, dpi=150)
     print("wrote", path)
 
@@ -298,8 +318,7 @@ def main():
         l = los[t]
         sim, shadow, layover = simulate(dem, l)
         sims[t] = (sim, shadow, layover)
-        with rasterio.open(GS / f"nisar_bright_targets_layers_t{t:03d}_{A.TAG}.tif") as s:
-            hh = s.read(1)
+        hh = mean_hh_db(t)
         # radar image cut to the lidar footprint, with a lag margin
         R = to_db_hp(hh, "db")
         Rc = R[r0 - lag5:r0 + n5 + lag5, c0 - lag5:c0 + n5 + lag5]
@@ -340,7 +359,7 @@ def main():
         print(pd.DataFrame([r for r in rows if r["track"] == t]).to_string())
 
     df = pd.DataFrame(rows)
-    df.to_csv(OUT / f"nisar_lidar_sim_match_shifts_{A.TAG}.csv", index=False)
+    df.to_csv(OUT / f"nisar_lidar_sim_match_shifts{SUF}_{A.TAG}.csv", index=False)
 
     # sim rasters on the 5 m GSLC grid (gitignored folder; small)
     for t, (sim, shadow, layover) in sims.items():
@@ -360,7 +379,7 @@ def main():
 
     blk = df[df.block != "tile"]
     summ = dict(params=dict(range_bin_m=DS_RANGE, az_bin_m=DS_AZ, max_lag_m=MAX_LAG, bg_m=BG_M,
-                            blocks=f"{NBLK}x{NBLK}", gate_m=GATE_M, radar_image="mean HH dB, all dates"),
+                            blocks=f"{NBLK}x{NBLK}", gate_m=GATE_M, radar_image="mean HH dB, all dates", stack=STACK),
                 los=los,
                 tile=df[df.block == "tile"].set_index("track")[["dx_east_m", "dy_north_m", "away_m",
                                                                  "ncc_best", "ncc_zero_shift"]].to_dict("index"),
@@ -368,7 +387,7 @@ def main():
                 blocks_total=int(len(blk)),
                 corr_away_vs_canopy_by_track={int(t): round(float(np.corrcoef(g.away_m, g.canopy_h_mean_m)[0, 1]), 2)
                                               for t, g in blk.groupby("track")})
-    json.dump(summ, open(OUT / f"nisar_lidar_sim_match_summary_{A.TAG}.json", "w"), indent=2, default=int)
+    json.dump(summ, open(OUT / f"nisar_lidar_sim_match_summary{SUF}_{A.TAG}.json", "w"), indent=2, default=int)
     print(json.dumps(summ, indent=2, default=int))
     figure()
 

@@ -11,6 +11,9 @@ with the azimuth Doppler carrier removed and restored -> range phase flattening.
 
 Conventions were settled by the V1 sweep and live in CONV; the numbers are in the plan doc.
 
+Run (production, lidar heights, every date, HH and HV):
+  python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --heights lidar --write
+
 Run (check V1, NASA's DEM, one pair per track plus one beta pair):
   python notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py --v1       20260917_t162A:20260929_t162A 20260924_t090A:20261006_t090A       20260920_t026D:20261002_t026D 20251109_t162A:20251121_t162A
 """
@@ -85,9 +88,57 @@ def output_grid(row):
     return X.ravel(), Y.ravel(), (int(row.nrows), int(row.ncols))
 
 
+LIDAR_DEM = D9 / "derived" / "1m" / "dem_9t_1m.tif"      # NAD83(2011) / UTM 17N, NAVD88 (Geoid12B)
+GEOID12B = "https://cdn.proj.org/us_noaa_g2012bu0.tif"
+_LIDAR5 = {}
+
+
+def _lidar_5m():
+    """The 1 m bare earth averaged over 5 x 5 cells (one output pixel), cached."""
+    if not _LIDAR5:
+        from scipy.ndimage import uniform_filter
+        with rasterio.open(LIDAR_DEM) as s:
+            z = s.read(1, masked=True).filled(np.nan).astype(np.float64)
+            tf = s.transform
+        ok = np.isfinite(z)
+        num = uniform_filter(np.where(ok, z, 0.0), 5, mode="constant")
+        den = uniform_filter(ok.astype(np.float64), 5, mode="constant")
+        _LIDAR5.update(z=np.where(den > 0.6, num / np.maximum(den, 1e-9), np.nan), tf=tf)
+    return _LIDAR5
+
+
 def lidar_heights(lon, lat, X, Y):
-    """Placeholder until V1 passes; production heights are wired in after it."""
-    raise NotImplementedError("lidar heights are enabled only after check V1 passes")
+    """WGS84 ellipsoid height of the lidar bare earth under each output pixel.
+
+    The output grid is WGS84 / UTM 17N and NASA's heights are WGS84 ellipsoid heights. ISCE3
+    treats WGS84 as ITRF. The lidar is NAD83(2011) with NAVD88 heights. Steps:
+      1. ITRF2014 lon, lat -> NAD83(2011) lon, lat (about 1.1 m horizontally at 9t).
+      2. Sample the 5 m mean lidar DEM there (bilinear) -> NAVD88 height.
+      3. + Geoid12B N (about -33 m) -> NAD83(2011) ellipsoid height.
+      4. NAD83(2011) -> ITRF2014 in 3-D (about -1.19 m vertically at 9t).
+    PROJ's own NAD83(2011) -> "WGS 84" route is a null transform, so ITRF2014 (EPSG:7912)
+    stands in for WGS84. Pixels with no lidar take NASA's DEM and are counted in LAST_FILL.
+    """
+    from pyproj import Transformer
+    from scipy.ndimage import map_coordinates
+    to83 = Transformer.from_crs("EPSG:7912", "EPSG:6319", always_xy=True)
+    lon83, lat83, _ = to83.transform(lon, lat, np.zeros_like(lon))
+    x83, y83 = Transformer.from_crs("EPSG:6318", "EPSG:6346", always_xy=True).transform(lon83, lat83)
+    L = _lidar_5m()
+    col = (x83 - L["tf"].c) / L["tf"].a - 0.5
+    row = (y83 - L["tf"].f) / L["tf"].e - 0.5
+    navd = map_coordinates(L["z"], [row, col], order=1, mode="constant", cval=np.nan)
+    n = geo.geoid_offset(GEOID12B, lon83, lat83)
+    _, _, h = Transformer.from_crs("EPSG:6319", "EPSG:7912", always_xy=True).transform(lon83, lat83, navd + n)
+    h = np.asarray(h, dtype=np.float64)
+    fill = ~np.isfinite(h)
+    if fill.any():
+        h[fill] = geo.dem_heights_isce(NDEM, lon[fill], lat[fill], CONV["dem_half_pixel"])
+    LAST_FILL["share"] = float(fill.mean())
+    return h
+
+
+LAST_FILL = {}
 
 
 def geometry(rs, X, Y, heights):
@@ -247,13 +298,53 @@ def run_v1(pairs):
     return rows
 
 
+def write_stack(heights):
+    """Every RSLC date re-placed with the given heights, HH and HV, on its GSLC 5 m grid."""
+    OUTD.mkdir(parents=True, exist_ok=True)
+    ri = pd.read_csv(RS / "nisar_rslc_window_index_9t.csv")
+    gi = pd.read_csv(GS / "nisar_gslc_window_index_9t_5m.csv")
+    tag = "lidar" if heights == "lidar" else "nisardem"
+    rows = []
+    for rrow in ri.itertuples():
+        key = rrow.file.replace("nisar_rslc_window_", "").replace("_9t.h5", "")
+        name = f"nisar_slc_{tag}_{key}_9t.tif"
+        grow = gi[(gi.date == rrow.date) & (gi.track == rrow.track)].iloc[0]
+        t0 = time.time()
+        o, info = make_slc(key, heights=heights, pols=("HH", "HV"))
+        m = grow
+        tf = from_origin(m.x_first_centre - m.spacing_m / 2, m.y_first_centre + m.spacing_m / 2,
+                         m.spacing_m, m.spacing_m)
+        with rasterio.open(OUTD / name, "w", driver="GTiff", width=info["shape"][1], height=info["shape"][0],
+                           count=2, dtype="complex64", crs="EPSG:32617", transform=tf, compress="deflate") as d:
+            d.write(o["HH"].astype(np.complex64), 1)
+            d.write(o["HV"].astype(np.complex64), 2)
+            d.set_band_description(1, "HH")
+            d.set_band_description(2, "HV")
+        h_nasa = geo.dem_heights_isce(NDEM, *geo.utm_to_lonlat(*output_grid(grow)[:2]), CONV["dem_half_pixel"])
+        dh = h_nasa - info["h"].ravel()
+        r = grow.to_dict()
+        r.update(file=name, rslc=rrow.file, heights=heights,
+                 lidar_fill_share=LAST_FILL.get("share", 0.0) if heights == "lidar" else 1.0,
+                 nasa_minus_used_height_median_m=round(float(np.nanmedian(dh)), 2),
+                 seconds=round(time.time() - t0, 1))
+        r.pop("Index", None)
+        rows.append(r)
+        pd.DataFrame(rows).to_csv(OUTD / f"nisar_slc_{tag}_index_9t.csv", index=False)
+        print(name, {k: r[k] for k in ("lidar_fill_share", "nasa_minus_used_height_median_m", "seconds")}, flush=True)
+    return rows
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--heights", default="nisar_dem", choices=["nisar_dem", "lidar"])
     ap.add_argument("--v1", nargs="+", help="date pairs as d1:d2, e.g. 20260917_t162A:20260929_t162A")
+    ap.add_argument("--write", action="store_true", help="re-place every date (HH and HV) and write the stack")
     a = ap.parse_args()
+    if a.write:
+        write_stack(a.heights)
+        return
     if a.heights != "nisar_dem":
-        raise SystemExit("lidar heights are enabled only after V1 passes")
+        raise SystemExit("--v1 compares against NASA and runs on NASA's DEM only")
     rows = run_v1([tuple(p.split(":")) for p in a.v1])
     RES.mkdir(exist_ok=True)
     p = RES / "nisar_regeocode_v1_checks_9t.csv"

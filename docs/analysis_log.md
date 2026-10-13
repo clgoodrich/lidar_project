@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-12 -- NISAR height error fixed on 9t: lidar-height re-placement takes the offset from 10 m to 2 m
+
+- **Ask.** The user: "how do we fix the height error. That is our number one concern presently."
+- **Cause.** NASA's DEM is Copernicus GLO-30, an X-band surface. It sits a median 6 m above the lidar ground, and about half the canopy height under trees. On open flat ground it matches to −1.5 m.
+- **Code.** `lidar_heights()` and `--write` in `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`. NAVD88 + Geoid12B, then NAD83(2011) to ITRF2014. PROJ's NAD83(2011) to WGS 84 route is a null transform (would leave 1.2 m). Unit test on open ground: −0.19 m.
+- **Run.** 34 dates, HH and HV, in `data/9t/derived/nisar_slc_lidar_5m/` (gitignored).
+- **V3.** Away-from-satellite shift 9.6 / 11.9 / 9.1 m becomes 1.3 / 1.3 / 1.6 m. Blocks within 2.5 m go from 0 to 26 of 48, and within 5 m from 0 to 43. Track 026 keeps a 3 m along-track offset that NASA's stack also has.
+- **Outputs.** `data/9t/results/nisar/nisar_lidar_sim_match_shifts_lidarslc_9t.csv`, `nisar_lidar_sim_match_summary_lidarslc_9t.json`, `figures/nisar_lidar_sim_match_lidarslc_9t.png`, logs. Plan doc and BACKLOG updated.
+
 ## 2026-10-12 -- NISAR tests re-run on 613590 and McKean
 
 - **Ask.** The user asked for "the nisar analysis for the 613590 and the mckean region". Doc: `docs/iterations/nisar_area_extension_613590_mkf.md`.

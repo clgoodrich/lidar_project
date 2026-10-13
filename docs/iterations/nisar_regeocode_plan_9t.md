@@ -1,4 +1,4 @@
-# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stages 0–2 and check V1 done)
+# Plan: re-place NISAR radar pixels on the 9t lidar ground (Stages 0–3 and checks V1 and V3 done)
 
 Written 2026-10-09. Stage 0 ran on 2026-10-09 and the gate failed, so Stages 1–3 are needed. Stage 1 (RSLC fetch) finished the same day. Stage 2 and check V1 passed on 2026-10-10. Results are under each stage and check.
 
@@ -229,6 +229,38 @@ The first sweep, before the DEM and correction fixes, is in `data/9t/results/nis
 - Three sample chips side by side: NASA GSLC, ours, and the lidar hillshade.
 - The V2 shift map. Its diverging ramp is checked with the dataviz validator using `--pairs all`.
 
+### Stage 3 with lidar heights and check V3 (2026-10-12): offset removed on 9t
+
+**Cause confirmed first.** NASA's DEM (NISAR DEM v1.2) is the Copernicus GLO-30 X-band surface model. Over forest it sits inside the canopy.
+- Against the lidar ground on 30 m cells it is a median 6.0 m higher. Under 18–25 m canopy it is 9.7 m higher, about half the canopy height.
+- On fully open, flat cells (no 1 m cell taller than 1 m, slope under 3°) it matches the lidar to −1.5 m. So the datum chain is sound, and the gap is the trees.
+
+**Datum chain** (in `lidar_heights()`, `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`):
+- ITRF2014 lon, lat to NAD83(2011), then sample the 5 m mean lidar DEM, then add Geoid12B N (−33.1 m), then NAD83(2011) to ITRF2014 in 3-D (−1.19 m vertical, 1.1 m horizontal).
+- **Trap found.** PROJ's NAD83(2011) to "WGS 84" route is a null transform. It would leave the lidar 1.2 m high and 1.1 m off sideways. ITRF2014 (EPSG:7912) stands in for WGS84.
+- Unit test: on the 7 open, flat cells, NASA minus ours is a median −0.19 m (range −0.71 to +0.35).
+
+**Run.** `--heights lidar --write`. 34 dates, HH and HV, about 14 s each. Window margin outside the lidar (16%) keeps NASA's heights. NASA's heights are a median 6.4 m above the lidar ground.
+- Outputs, gitignored: `data/9t/derived/nisar_slc_lidar_5m/nisar_slc_lidar_<date>_t<track><A|D>_9t.tif`, index `nisar_slc_lidar_index_9t.csv`. Log `data/9t/results/nisar/nisar_slc_lidar_write_run_9t.log`.
+
+**V3.** `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py --stack lidar`, the Stage 0 match on our stack.
+
+| | NASA GSLC | ours, lidar heights |
+|---|---|---|
+| Block median shift away from the satellite, 026 / 090 / 162 | 9.6 / 11.9 / 9.1 m | 1.3 / 1.3 / 1.6 m |
+| Median total shift | 10.0 m | 2.2 m |
+| Blocks within 2.5 m | 0 of 48 | 26 of 48 |
+| Blocks within 5 m | 0 of 48 | 43 of 48 |
+| Shift against canopy height, correlation | +0.55 to +0.62 | −0.32 to −0.58 |
+| Match at zero shift / best | 0.15–0.19 / 0.18–0.24 | equal (0.18 / 0.25 / 0.22) |
+
+- The 8–12 m offset is gone. The gate as written (every block within 2.5 m) is not met yet.
+- **What is left.**
+  - Track 026 keeps a 3–7 m along-track offset (block median 3.2 m). NASA's stack had it too (4.1 m), so it is not a height effect. Candidate cause: azimuth timing on that descending track.
+  - Blocks under the tallest canopy now sit slightly toward the satellite. Some L-band echo comes from above the ground, as expected in forest.
+- Outputs: `data/9t/results/nisar/nisar_lidar_sim_match_shifts_lidarslc_9t.csv`, `nisar_lidar_sim_match_summary_lidarslc_9t.json`, `nisar_lidar_sim_match_lidarslc_run_9t.log`, `figures/nisar_lidar_sim_match_lidarslc_9t.png`.
+- V2 (measured against predicted shift) is not run yet. V3 answers the question it was meant to support.
+
 ## Known traps
 
 1. **Vertical datum.** NAVD88 against the ellipsoid is about 34 m. Missing it gives a 32–43 m shift. V1 does not catch it because V1 uses Copernicus heights, so it gets its own unit test. Convert one known benchmark and compare with the NGS value.
@@ -261,7 +293,8 @@ The first sweep, before the DEM and correction fixes, is in `data/9t/results/nis
 | Stage 1 fetch | done 2026-10-09 | 34 of 34 usable dates |
 | Stage 2 library + C0 | done 2026-10-10 | C0 passed |
 | Stage 3 + V1 | V1 done 2026-10-10 | passed, on the interferogram match |
-| V2, V3, figure, docs | half a session | low |
+| Stage 3 lidar + V3 | done 2026-10-12 | offset 9–12 m down to 1.3–1.6 m; 26 of 48 blocks within 2.5 m |
+| V2, track 026 along-track offset | open | |
 
 The radarGrid cubes remove the orbit solver from the main path. That cuts the earlier "few days" to about two to three sessions in total, depending on V1.
 
