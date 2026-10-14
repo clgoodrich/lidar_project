@@ -1,0 +1,39 @@
+8 GSLC windows are under half valid (area at the swath edge); their RSLC is skipped
+36 RSLC granules; 10 have no matching GSLC in the index and are skipped:
+  skip NISAR_L1_PR_RSLC_023_162_A_023_4005_DHDH_A_20260625T101553_20260625T101628_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_024_162_A_023_4005_DHDH_A_20260707T101553_20260707T101628_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_025_162_A_023_4005_DHDH_A_20260719T101552_20260719T101627_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_027_162_A_023_4005_DHDH_A_20260812T101551_20260812T101626_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_028_162_A_023_4005_DHDH_A_20260824T101550_20260824T101625_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_029_162_A_023_4005_DHDH_A_20260905T101550_20260905T101625_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_029_162_A_023_4005_DHDH_A_20260905T101550_20260905T101625_P05023_N_F_J_002
+  skip NISAR_L1_PR_RSLC_030_162_A_023_4005_DHDH_A_20260917T101550_20260917T101625_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_031_162_A_023_4005_DHDH_A_20260929T101550_20260929T101625_P05023_N_F_J_001
+  skip NISAR_L1_PR_RSLC_032_162_A_023_4005_DHDH_A_20261011T101550_20261011T101625_P05023_N_F_J_001
+wrote nisar_rslc_window_20251028_t162A_613590.h5  1544 x 1609  100 s
+have nisar_rslc_window_20251104_t090A_613590.h5
+wrote nisar_rslc_window_20251109_t162A_613590.h5  1545 x 1580  102 s
+wrote nisar_rslc_window_20251112_t026D_613590.h5  1510 x 1779  91 s
+wrote nisar_rslc_window_20251121_t162A_613590.h5  1545 x 1585  116 s
+wrote nisar_rslc_window_20251203_t162A_613590.h5  1545 x 1593  112 s
+wrote nisar_rslc_window_20251218_t026D_613590.h5  1510 x 1779  103 s
+wrote nisar_rslc_window_20251230_t026D_613590.h5  1510 x 1778  57 s
+wrote nisar_rslc_window_20260108_t162A_613590.h5  1544 x 1584  72 s
+wrote nisar_rslc_window_20260115_t090A_613590.h5  1529 x 1760  71 s
+wrote nisar_rslc_window_20260120_t162A_613590.h5  1544 x 1578  70 s
+wrote nisar_rslc_window_20260620_t090A_613590.h5  1529 x 1760  71 s
+wrote nisar_rslc_window_20260628_t026D_613590.h5  1510 x 1779  63 s
+wrote nisar_rslc_window_20260702_t090A_613590.h5  1529 x 1761  71 s
+wrote nisar_rslc_window_20260714_t090A_613590.h5  1529 x 1761  66 s
+wrote nisar_rslc_window_20260726_t090A_613590.h5  1529 x 1761  73 s
+wrote nisar_rslc_window_20260815_t026D_613590.h5  1509 x 1779  55 s
+wrote nisar_rslc_window_20260819_t090A_613590.h5  1529 x 1760  72 s
+wrote nisar_rslc_window_20260827_t026D_613590.h5  1510 x 1779  79 s
+wrote nisar_rslc_window_20260831_t090A_613590.h5  1529 x 1760  63 s
+wrote nisar_rslc_window_20260908_t026D_613590.h5  1510 x 1779  76 s
+wrote nisar_rslc_window_20260912_t090A_613590.h5  1529 x 1760  67 s
+wrote nisar_rslc_window_20260920_t026D_613590.h5  1510 x 1778  61 s
+wrote nisar_rslc_window_20260924_t090A_613590.h5  1529 x 1760  63 s
+wrote nisar_rslc_window_20261002_t026D_613590.h5  1510 x 1779  55 s
+wrote nisar_rslc_window_20261006_t090A_613590.h5  1529 x 1761  70 s
+index C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_rslc_window\nisar_rslc_window_index_613590.csv 26 files

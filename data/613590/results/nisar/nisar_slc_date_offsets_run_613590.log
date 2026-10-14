@@ -1,0 +1,29 @@
+track 162: cropped to 760 x 844 cells with data on every date
+track 162: no provisional dates, reference is the mean of all 6
+                                     file       date  track  collection  away_m  forward_m  slant_m      az_s  az_m  applied_slant_m  applied_az_s  track_misclosure_rms_m
+nisar_slc_lidar_20251112_t026D_613590.tif 2025-11-12     26        beta   -6.08       4.58   -3.959  0.000674  4.58              0.0           0.0                    0.34
+nisar_slc_lidar_20251218_t026D_613590.tif 2025-12-18     26        beta   -6.96       4.11   -4.532  0.000605  4.11              0.0           0.0                    0.34
+nisar_slc_lidar_20251230_t026D_613590.tif 2025-12-30     26        beta   -7.23       4.95   -4.710  0.000728  4.95              0.0           0.0                    0.34
+nisar_slc_lidar_20260628_t026D_613590.tif 2026-06-28     26 provisional   -0.68       4.36   -0.445  0.000642  4.36              0.0           0.0                    0.34
+nisar_slc_lidar_20260815_t026D_613590.tif 2026-08-15     26 provisional    0.13      -3.22    0.084 -0.000473 -3.22              0.0           0.0                    0.34
+nisar_slc_lidar_20260827_t026D_613590.tif 2026-08-27     26 provisional    0.15       1.21    0.095  0.000178  1.21              0.0           0.0                    0.34
+nisar_slc_lidar_20260920_t026D_613590.tif 2026-09-20     26 provisional    0.83      -3.34    0.542 -0.000491 -3.34              0.0           0.0                    0.34
+nisar_slc_lidar_20261002_t026D_613590.tif 2026-10-02     26 provisional   -0.42       0.98   -0.276  0.000144  0.98              0.0           0.0                    0.34
+nisar_slc_lidar_20251104_t090A_613590.tif 2025-11-04     90        beta   -5.63      -0.29   -3.543 -0.000043 -0.29              0.0           0.0                    0.10
+nisar_slc_lidar_20260115_t090A_613590.tif 2026-01-15     90        beta   -4.80       0.08   -3.016  0.000011  0.08              0.0           0.0                    0.10
+nisar_slc_lidar_20260620_t090A_613590.tif 2026-06-20     90 provisional   -0.59       0.47   -0.370  0.000070  0.47              0.0           0.0                    0.10
+nisar_slc_lidar_20260702_t090A_613590.tif 2026-07-02     90 provisional    0.11       0.71    0.071  0.000104  0.71              0.0           0.0                    0.10
+nisar_slc_lidar_20260714_t090A_613590.tif 2026-07-14     90 provisional    0.21       0.27    0.131  0.000040  0.27              0.0           0.0                    0.10
+nisar_slc_lidar_20260726_t090A_613590.tif 2026-07-26     90 provisional    1.02      -3.41    0.638 -0.000502 -3.41              0.0           0.0                    0.10
+nisar_slc_lidar_20260819_t090A_613590.tif 2026-08-19     90 provisional   -0.45       0.26   -0.285  0.000039  0.26              0.0           0.0                    0.10
+nisar_slc_lidar_20260831_t090A_613590.tif 2026-08-31     90 provisional   -0.13       0.28   -0.084  0.000041  0.28              0.0           0.0                    0.10
+nisar_slc_lidar_20260912_t090A_613590.tif 2026-09-12     90 provisional   -0.02       0.57   -0.014  0.000084  0.57              0.0           0.0                    0.10
+nisar_slc_lidar_20260924_t090A_613590.tif 2026-09-24     90 provisional   -0.15       0.34   -0.097  0.000049  0.34              0.0           0.0                    0.10
+nisar_slc_lidar_20261006_t090A_613590.tif 2026-10-06     90 provisional    0.02       0.51    0.010  0.000075  0.51              0.0           0.0                    0.10
+nisar_slc_lidar_20251028_t162A_613590.tif 2025-10-28    162        beta    0.14       0.14    0.106  0.000020  0.14              0.0           0.0                    0.14
+nisar_slc_lidar_20251109_t162A_613590.tif 2025-11-09    162        beta   -0.98       0.03   -0.717  0.000004  0.03              0.0           0.0                    0.14
+nisar_slc_lidar_20251121_t162A_613590.tif 2025-11-21    162        beta   -0.17       0.07   -0.121  0.000010  0.07              0.0           0.0                    0.14
+nisar_slc_lidar_20251203_t162A_613590.tif 2025-12-03    162        beta    0.01      -0.63    0.011 -0.000093 -0.63              0.0           0.0                    0.14
+nisar_slc_lidar_20260108_t162A_613590.tif 2026-01-08    162        beta    0.84       0.12    0.614  0.000018  0.12              0.0           0.0                    0.14
+nisar_slc_lidar_20260120_t162A_613590.tif 2026-01-20    162        beta    0.15       0.28    0.108  0.000041  0.28              0.0           0.0                    0.14
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\results\nisar\nisar_slc_date_offsets_613590.csv

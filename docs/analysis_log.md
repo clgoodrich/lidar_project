@@ -5,10 +5,24 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-14 -- NISAR re-placement on 613590: 31 of 48 blocks within 2.5 m; well and pit tests re-run
+
+- **Ask.** The user: "Do whatever part comes next". Doc: `docs/iterations/nisar_regeocode_plan_9t.md`, section "The fix on 613590".
+- **Code.** RSLC fetch and re-placement scripts take `--area`. Windows clip at the swath edge (track 162). The date network crops to the all-dates-valid block. `--slc` works for 613590. Two bugs fixed on the way: a reused variable name in my first crop, and a hard-coded `_9t` name in the track-offset step.
+- **Data.** 26 RSLC windows (026: 9, 090: 11, 162: 6). The 8 provisional 162 dates are outside the swath and were not fetched.
+- **Result.**
+  - Same offsets as 9t: beta 3.0-4.7 m short in slant range, along-track jumps of 3.2-3.4 m on 026 and 090.
+  - Check V3: 31 of 48 blocks within 2.5 m, 42 of 48 within 5 m. 9t was 46 of 48. Held-out blocks 3-6 of 8 (9t 8 of 8). Worst block 29.7 m. Cause not found.
+  - Tests: no well signal (abandoned odds 1.42 to 0.76). Pits brighter than decoys by +0.2 to +0.5 dB, as on 9t (nominal p 0.006-0.05, 36 pits, 8 tests). Pit coherence null.
+- **Not done.** V1 on 613590. McKean.
+- **Process.** Two fetch processes ran at once for a few minutes after I restarted with fixed code. I stopped the old one. The index and the file count agree (26).
+
+---
+
 ## 2026-10-13 -- NISAR well, pad and pit tests re-run on the corrected 9t stack
 
 - **Ask.** The user: "Fire away" (after the time estimate). Doc: `docs/iterations/nisar_regeocode_plan_9t.md`, section "Downstream tests re-run on the corrected 9t stack".
-- **Change.** `--stack slc` in `notebooks/wellsight_v2/_nisar_area.py` reads `data/9t/derived/nisar_slc_lidar_5m/` and tags outputs `9t_slc`. The two bad granules are skipped. No other test code changed. Brightness scale matches NASA's stack (0.2 dB).
+- **Change.** `--slc` in `notebooks/wellsight_v2/_nisar_area.py` reads `data/9t/derived/nisar_slc_lidar_5m/` and tags outputs `9t_slc`. The two bad granules are skipped. No other test code changed. Brightness scale matches NASA's stack (0.2 dB).
 - **Result.**
   - Steady bright targets: 331 to 2,235. Well hit rates 1% to 7–10%, decoys the same. Abandoned wells: odds 5.0 (p 0.063) to 1.42 (p 0.30). No well signal.
   - Pad darkening (−0.1 to −0.28 dB) gone. All pad channels within noise.

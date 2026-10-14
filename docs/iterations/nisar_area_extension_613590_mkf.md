@@ -9,6 +9,7 @@ All results use NASA's placement of the pixels. Stage 0 found that placement 8�
 **Found on 2026-10-13, not re-run here** (details in `docs/iterations/nisar_regeocode_plan_9t.md`, "Leftover offsets traced and fixed"):
 - Two NASA granules on track 026 are misplaced by more than the window. 2026-09-08 sits in the track 026 results of both areas. 2026-07-22 sits in McKean's.
 - NASA's beta dates (Oct 2025–Jan 2026) and provisional dates (Jun–Oct 2026) sit 3.2 m apart in slant range, 4–7 m on the ground. Every stack here mixes both.
+- **613590 re-run 2026-10-14** on a corrected stack (`nisar_regeocode_plan_9t.md`, "The fix on 613590"): no well signal (abandoned odds 0.76), pits brighter than decoys in the same direction as 9t, pit coherence null. The 613590 numbers below are the NASA-placed ones. McKean is not re-run.
 - So the multi-date results below are smeared by 4–7 m on top of the placement offset. They stand as recorded and need a re-run on corrected stacks.
 
 ## Areas

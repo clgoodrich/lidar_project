@@ -415,6 +415,7 @@ Run at most three V3 jobs at once. Five at once ran out of 64 GB of memory.
 | Stage 3 + V1 | V1 done 2026-10-10 | passed, on the interferogram match |
 | Stage 3 lidar + V3 | done 2026-10-12 | offset 9–12 m down to 1.3–1.6 m; 26 of 48 blocks within 2.5 m |
 | Leftover offsets, V2 | done 2026-10-13 | check datum fixed, 2 bad granules dropped, dates lined up, tracks tied to the lidar; 46 of 48 blocks within 2.5 m (canopy-modelled check); V2 slope 1.03 / 1.27 / 1.18 |
+| Fix on 613590 + its tests | done 2026-10-14 | 31 of 48 blocks within 2.5 m; no well signal; pits brighter in the same direction as 9t |
 | Downstream tests on the final stack (9t) | done 2026-10-13 | the 9t pad and well signals fall away; see "Downstream tests re-run" |
 
 The radarGrid cubes remove the orbit solver from the main path. That cuts the earlier "few days" to about two to three sessions in total, depending on V1.
@@ -430,7 +431,7 @@ The radarGrid cubes remove the orbit solver from the main path. That cuts the ea
 
 **Ask.** The user: "Fire away". The corrected stack is `data/9t/derived/nisar_slc_lidar_5m/`. It has the lidar heights, the per-date offsets and the per-track constants, and the two bad granules are dropped.
 
-**How.** `--stack slc` on every test script. It is read in `notebooks/wellsight_v2/_nisar_area.py`. The tests then read the corrected stack and write names tagged `9t_slc`, so the NASA-placed results keep their own names. Dates 26 (2026-07-22 and 2026-09-08) are skipped through `A.usable_stack`. Nothing else in the tests changed, so every difference below comes from the placement.
+**How.** `--slc` on every test script. It is read in `notebooks/wellsight_v2/_nisar_area.py`. The tests then read the corrected stack and write names tagged `9t_slc`, so the NASA-placed results keep their own names. Dates 26 (2026-07-22 and 2026-09-08) are skipped through `A.usable_stack`. Nothing else in the tests changed, so every difference below comes from the placement.
 
 **Check that the stack itself is comparable.** Same date, both stacks, HH power. Mean differs by 0.2 dB, speckle spread (coefficient of variation) 1.24 against 1.24 and 1.23 against 1.32, tail ratio 16.5 against 16.9. The brightness scale is the same, so a change in a result is a change in placement.
 
@@ -467,11 +468,86 @@ The radarGrid cubes remove the orbit solver from the main path. That cuts the ea
 **Reproduce**
 ```bash
 E=notebooks/wellsight_v2/s5_eval
-python $E/_nisar_gslc_stack_pad_pit_seasonal_9t.py --stack slc     # about 9 minutes
-python $E/_nisar_steel_9t.py --stack slc
-python $E/_nisar_gslc_interferogram_pits_9t.py --stack slc
-python $E/_nisar_slope_motion_9t.py --stack slc
-python $E/_nisar_bright_targets_9t.py --stack slc
-python $E/_nisar_pad_change_9t.py --stack slc
+python $E/_nisar_gslc_stack_pad_pit_seasonal_9t.py --slc     # about 9 minutes
+python $E/_nisar_steel_9t.py --slc
+python $E/_nisar_gslc_interferogram_pits_9t.py --slc
+python $E/_nisar_slope_motion_9t.py --slc
+python $E/_nisar_bright_targets_9t.py --slc
+python $E/_nisar_pad_change_9t.py --slc
 ```
 At most three at once. Five at once runs out of memory.
+
+
+## The fix on 613590 (2026-10-14)
+
+**Ask.** The user: "Do whatever part comes next". Same steps as 9t, in the same order.
+
+**Code changes.**
+- `_fetch_nisar_rslc_window_9t.py` and `_nisar_regeocode_lidar_9t.py` take `--area`. Names carry the area tag.
+- Track 162 over 613590 sits at the far-range edge of the swath. The fetch clips the window to the swath (`EDGE_OK` 300 samples). Points past the edge are NaN, written as 0 like NASA's GSLC.
+- The date network crops to the block where every date has data (760 x 844 cells on track 162). A hard zero edge shared by all dates would otherwise pin the correlation at zero shift.
+- A track with no provisional date takes the mean of all its dates as the reference.
+- `--slc` now works for 613590. Outputs carry `613590_slc`.
+
+**Data.**
+- 26 RSLC windows: track 026 9, track 090 11, track 162 6. The 8 provisional dates on track 162 are empty in the GSLC and were not fetched (the area is past the swath edge in that frame). So track 162 here is winter (beta) only.
+- The window and stack folders are gitignored: `data/613590/derived/nisar_rslc_window/` and `data/613590/derived/nisar_slc_lidar_5m/`.
+
+**Per-date offsets** (`data/613590/results/nisar/nisar_slc_date_offsets_613590.csv`). Same pattern as 9t.
+- Beta dates sit 3.0-4.7 m shorter in slant range than provisional on tracks 026 and 090.
+- Track 026 jumps along track (3.2 and 3.3 m back on 2026-08-15 and 2026-09-20). Track 090 jumps 3.4 m back on 2026-07-26. The same date jumped 3.9 m on 9t.
+- Pair misclosure 0.34 m (026), 0.10 m (090), 0.14 m (162).
+
+**Check V3, blocks within 2.5 m of the lidar ground (48 blocks, forest echo at 10% of stand height).**
+
+| | NASA (Oct 12, no datum fix) | Lidar heights + date offsets | + per-track constants |
+|---|---|---|---|
+| Blocks within 2.5 m | 0 / 48 | 9 / 48 | 31 / 48 |
+| Blocks within 5 m | - | 23 / 48 | 42 / 48 |
+| Median block error, 026 / 090 / 162 | 9.7 / 10.8 / 9.4 m away | 7.5 / 4.9 / 2.4 m | 1.7 / 1.7 / 2.2 m |
+
+**What is weaker than 9t (46 / 48).**
+- Per-track constants are fitted on this same check. Held-out blocks: 6/8 and 3/8 (026), 5/8 and 5/8 (090), 4/8 and 5/8 (162). 9t was 8/8 everywhere. The constants are less certain here.
+- The worst block is 29.7 m. The median correlation is 0.22, as on 9t (0.23), so the scatter is not from weaker correlation. Cause not found. Candidates: lower relief, or the 6-date winter-only track 162. Not tested.
+- V1 (our placement against NASA's, same DEM) was not re-run on 613590.
+
+**Downstream tests on the corrected stack.**
+
+| Test | NASA placement | Corrected stack |
+|---|---|---|
+| Steady bright targets | 1,305 | 2,954 |
+| Wells with a steady target, abandoned / decoys | 6.1% / 4.4% (odds 1.42, p 0.21) | 9.0% / 11.4% (odds 0.76, p 0.25) |
+| Wells, active / plugged (odds) | 1.08 / 0.71 | 0.85 / 0.89 |
+| Pits minus decoys, HH leaf-off fall (36 pits) | +0.01 dB | +0.38 dB (CI -0.03 to 0.77, p 0.018) |
+| Pits minus decoys, HV leaf-off fall | +0.43 dB | +0.51 dB (CI 0.16 to 0.91, p 0.006) |
+| Pits minus decoys, HH winter | +0.27 dB | +0.51 dB (CI -0.12 to 0.91, p 0.022) |
+| Pit coherence minus ring, HH | -0.006 | +0.012 (p 0.77) |
+| Slope motion | not run | not run (no summer pairs on 162) |
+
+- **Wells: no signal.** The earlier abandoned-well excess (odds 1.42) turns to 0.76. This matches 9t.
+- **Pits: the same direction as 9t.** 9t gave +0.21 dB in HH leaf-off fall. Here +0.38 dB. The p values are nominal, from 36 pits and 8 tests per area. Candidate lead, now seen on two areas. It needs a test fixed in advance on fresh data.
+- **Pit coherence: null again.**
+- Pad tests do not run here (no annotated pads).
+
+**Not done.** McKean. Its pad and well results still use NASA's placement.
+
+**Outputs** (all under `data/613590/results/nisar/`)
+- Tables: `nisar_slc_date_offsets_613590.csv`, `nisar_slc_track_offsets_613590.csv`, `nisar_lidar_sim_match_shifts_coreg_k010_613590.csv`, `nisar_lidar_sim_match_shifts_coregabs_k010_613590.csv` and the matching summaries.
+- Tests, tag `613590_slc`: `nisar_steel_by_status_613590_slc.csv`, `nisar_bright_targets_points_613590_slc.gpkg`, `nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_613590_slc_5m.csv`, `nisar_gslc_interferogram_pits_vs_decoys_win3_613590_slc_5m_summary.json`.
+- Logs: `nisar_rslc_window_fetch_run_613590.log`, `nisar_slc_write_run_613590.log`, `nisar_slc_date_offsets_run_613590.log`, `nisar_slc_coreg_write_run_613590.log`, `nisar_slc_coregabs_write_run_613590.log`, `nisar_lidar_sim_match_coreg_k010_run_613590.log`, `nisar_lidar_sim_match_coregabs_k010_run_613590.log`, and the `*_slc_run_613590_slc.log` test logs.
+- Main figure: `data/613590/results/nisar/figures/nisar_lidar_sim_match_coregabs_k010_613590.png`.
+
+**Reproduce**
+```bash
+P=notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py
+E=notebooks/wellsight_v2/s5_eval
+python notebooks/wellsight_v2/s1_build/_fetch_nisar_rslc_window_9t.py --area 613590   # about 25 minutes
+python $P --area 613590 --heights lidar --write
+python $P --area 613590 --estimate-offsets
+python $P --area 613590 --heights lidar --write --coreg
+python $E/_nisar_lidar_sim_match_9t.py --area 613590 --stack lidar --kappa 0.1
+python $P --area 613590 --track-offsets _coreg_k010
+python $P --area 613590 --heights lidar --write --coreg --absolute
+python $E/_nisar_lidar_sim_match_9t.py --area 613590 --stack lidar --kappa 0.1
+# then each test script with --area 613590 --slc
+```

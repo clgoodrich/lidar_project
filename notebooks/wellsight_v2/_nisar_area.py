@@ -41,28 +41,27 @@ if TAG not in AREAS:
 
 
 def _pick_stack() -> str:
-    """`--stack slc` reads the lidar-placed SLC stack instead of NASA's GSLC (9t only so far)."""
-    if "--stack" in sys.argv:
-        i = sys.argv.index("--stack")
-        val = sys.argv[i + 1]
-        del sys.argv[i:i + 2]
-        os.environ["NISAR_STACK"] = val
-        return val
+    """`--slc` reads the lidar-placed SLC stack instead of NASA's GSLC (9t and 613590).
+    Not `--stack`: the lidar-match script already owns that flag."""
+    if "--slc" in sys.argv:
+        sys.argv.remove("--slc")
+        os.environ["NISAR_STACK"] = "slc"
+        return "slc"
     return os.environ.get("NISAR_STACK", "gslc")
 
 
 STACK = _pick_stack()
 if STACK not in ("gslc", "slc"):
     raise SystemExit(f"unknown stack {STACK!r}; use gslc or slc")
-if STACK == "slc" and TAG != "9t":
-    raise SystemExit("the lidar-placed SLC stack exists for 9t only")
+if STACK == "slc" and TAG == "mkf":
+    raise SystemExit("the lidar-placed SLC stack exists for 9t and 613590 only")
 DATA = path_for("data") / AREAS[TAG][0]
 D1M = DATA / "derived" / "1m"
 SFX = AREAS[TAG][1]
 GSLC = DATA / "derived" / ("nisar_slc_lidar_5m" if STACK == "slc" else "nisar_gslc_5m")
 # Window index of the stack in use. The lidar-placed stack has its own index and its outputs
 # carry the tag `9t_slc`, so they sit beside the GSLC results without overwriting them.
-INDEX = GSLC / ("nisar_slc_lidar_index_9t.csv" if STACK == "slc" else f"nisar_gslc_window_index_{TAG}_5m.csv")
+INDEX = GSLC / (f"nisar_slc_lidar_index_{TAG}.csv" if STACK == "slc" else f"nisar_gslc_window_index_{TAG}_5m.csv")
 if STACK == "slc":
     TAG = f"{TAG}_slc"
 RSLC = DATA / "derived" / "nisar_rslc_window"

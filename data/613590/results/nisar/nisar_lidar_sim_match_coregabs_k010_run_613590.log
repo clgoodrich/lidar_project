@@ -1,0 +1,163 @@
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_lidar_sim_match_9t.py:233: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a[:h * 5, :w * 5].reshape(h, 5, w, 5), axis=(1, 3))
+datum: radar grid minus lidar grid = -0.80 m east, +1.01 m north at 2026.32
+    track block  dx_east_m  dy_north_m  away_m  along_m  ncc_best  ncc_zero_shift  canopy_h_mean_m  canopy_cover  at_lag_edge
+0      26  tile       -0.6         0.5    -0.7      0.3     0.216           0.212             14.1          0.82        False
+1      26   b00        0.2        -0.2     0.3     -0.1     0.128           0.127             12.8          0.86        False
+2      26   b01        0.9        -0.4     1.0     -0.1     0.135           0.135             12.1          0.84        False
+3      26   b02       -1.1        -2.0    -0.3     -2.3     0.269           0.265             16.1          0.93        False
+4      26   b03       -0.7         3.0    -1.7      2.6     0.299           0.287             13.7          0.84        False
+5      26   b10       -0.5         0.1    -0.5     -0.1     0.218           0.216             13.3          0.83        False
+6      26   b11        2.3        -0.4     2.3      0.4     0.192           0.191             15.2          0.90        False
+7      26   b12       -1.0         1.8    -1.6      1.3     0.310           0.298             17.5          0.94        False
+8      26   b13       -0.3         0.3    -0.4      0.2     0.166           0.160             12.7          0.82        False
+9      26   b20       -1.5        -3.2    -0.3     -3.5     0.342           0.339             13.6          0.72        False
+10     26   b21       -0.3        -0.3    -0.2     -0.4     0.277           0.275             15.1          0.93        False
+11     26   b22       -0.9        -1.0    -0.5     -1.2     0.232           0.230             15.4          0.86        False
+12     26   b23       -0.9        -0.7    -0.6     -1.0     0.212           0.207             13.8          0.68        False
+13     26   b30       -1.8         1.8    -2.3      1.1     0.196           0.188             11.4          0.69        False
+14     26   b31       -1.3        -4.4     0.3     -4.6     0.158           0.150             12.1          0.75        False
+15     26   b32       -0.5         1.2    -0.9      1.0     0.166           0.164             14.2          0.71        False
+16     26   b33       -0.6         6.8    -2.9      6.2     0.116           0.096             16.5          0.85        False
+    track block  dx_east_m  dy_north_m  away_m  along_m  ncc_best  ncc_zero_shift  canopy_h_mean_m  canopy_cover  at_lag_edge
+0      90  tile        0.7         0.6    -0.8     -0.4     0.283           0.281             14.1          0.82        False
+1      90   b00       -1.7        -0.1     1.7     -0.4     0.162           0.153             12.8          0.86        False
+2      90   b01        1.0         0.4    -1.1     -0.1     0.154           0.152             12.1          0.84        False
+3      90   b02        0.4        -0.2    -0.3      0.3     0.314           0.313             16.1          0.93        False
+4      90   b03       -0.3         1.7    -0.2     -1.7     0.353           0.346             13.7          0.84        False
+5      90   b10       -0.5         0.1     0.5     -0.2     0.212           0.209             13.3          0.83        False
+6      90   b11        0.1         0.3    -0.2     -0.3     0.237           0.236             15.2          0.90        False
+7      90   b12       -0.3         0.8     0.1     -0.9     0.309           0.305             17.5          0.94        False
+8      90   b13       -0.8         1.1     0.4     -1.3     0.206           0.200             12.7          0.82        False
+9      90   b20        0.4        -0.3    -0.3      0.4     0.220           0.220             13.6          0.72        False
+10     90   b21        1.6        -0.7    -1.3      1.1     0.264           0.263             15.1          0.93        False
+11     90   b22        1.7        -3.2    -0.7      3.6     0.350           0.349             15.4          0.86        False
+12     90   b23        1.9         1.7    -2.3     -1.1     0.338           0.335             13.8          0.68        False
+13     90   b30       -2.5         4.9     1.0     -5.4     0.243           0.233             11.4          0.69        False
+14     90   b31        8.9        28.4   -16.7    -24.6     0.223           0.206             12.1          0.75        False
+15     90   b32        4.0        -3.0    -3.0      4.0     0.328           0.323             14.2          0.71        False
+16     90   b33        2.1         1.3    -2.4     -0.6     0.440           0.436             16.5          0.85        False
+    track block  dx_east_m  dy_north_m  away_m  along_m  ncc_best  ncc_zero_shift  canopy_h_mean_m  canopy_cover  at_lag_edge
+0     162  tile        0.8         0.4    -0.9     -0.1     0.232           0.231             14.1          0.82        False
+1     162   b00       -2.9         1.6     2.2     -2.4     0.114           0.107             12.8          0.86        False
+2     162   b01        1.6        -1.7    -1.0      2.1     0.119           0.119             12.1          0.84        False
+3     162   b02        0.5        -1.0    -0.2      1.1     0.259           0.259             16.1          0.93        False
+4     162   b03       -0.5         1.8    -0.1     -1.9     0.304           0.297             13.7          0.84        False
+5     162   b10       -3.1        -1.9     3.5      0.8     0.133           0.128             13.3          0.83        False
+6     162   b11       -0.0        -0.2     0.1      0.2     0.163           0.162             15.2          0.90        False
+7     162   b12       -0.0         2.1    -0.7     -2.0     0.269           0.264             17.5          0.94        False
+8     162   b13       -1.2        -0.1     1.2     -0.3     0.160           0.154             12.7          0.82        False
+9     162   b20        0.4         1.7    -0.9     -1.5     0.157           0.156             13.6          0.72        False
+10    162   b21        0.4        -3.9     0.8      3.8     0.202           0.201             15.1          0.93        False
+11    162   b22        2.2        -2.3    -1.4      2.9     0.258           0.257             15.4          0.86        False
+12    162   b23        1.5        -0.1    -1.4      0.6     0.317           0.316             13.8          0.68        False
+13    162   b30       -5.2         2.2     4.2     -3.7     0.149           0.145             11.4          0.69        False
+14    162   b31       -1.8         0.0     1.7     -0.6     0.145           0.144             12.1          0.75        False
+15    162   b32        3.6        -3.5    -2.3      4.5     0.260           0.257             14.2          0.71        False
+16    162   b33       16.1         5.2   -16.9      0.1     0.485           0.447             16.5          0.85        False
+{
+  "params": {
+    "range_bin_m": 3.1,
+    "az_bin_m": 4.4,
+    "max_lag_m": 30,
+    "bg_m": 250,
+    "blocks": "4x4",
+    "gate_m": 2.5,
+    "radar_image": "mean HH power in dB",
+    "stack": "lidar_coregabs_k010",
+    "dates": "all",
+    "dates_per_track": {
+      "26": 8,
+      "90": 11,
+      "162": 6
+    },
+    "left_out": [
+      "2026-07-22 t026",
+      "2026-09-08 t026"
+    ],
+    "datum_offset_removed_east_north_m": [
+      -0.8,
+      1.01
+    ],
+    "datum_epoch": 2026.32,
+    "peak": "1 m search, parabola refined",
+    "kappa": 0.1
+  },
+  "los": {
+    "26": {
+      "granule": "NISAR_L2_PR_GSLC_032_026_D_068_4005_DHDH_A_20261002T001722_20261002T001756_P05023_N_F_J_001",
+      "east": -0.6120585374051346,
+      "north": 0.22340591394634282,
+      "up": 0.758600121541835,
+      "incidence_deg": 40.65905695089186,
+      "along_east": -0.32008942961696923,
+      "along_north": -0.947387337684613
+    },
+    "90": {
+      "granule": "NISAR_L2_PR_GSLC_032_090_A_022_4005_DHDH_A_20261006T102335_20261006T102410_P05023_N_F_J_001",
+      "east": 0.6022867959988676,
+      "north": 0.1810879520785158,
+      "up": 0.7774688218683934,
+      "incidence_deg": 38.97059694048182,
+      "along_east": -0.31595110893222406,
+      "along_north": 0.9487754702568937
+    },
+    "162": {
+      "granule": "NISAR_L2_PR_GSLC_031_162_A_023_4005_DHDH_A_20260929T101550_20260929T101625_P05023_N_F_J_001",
+      "east": 0.6978532765480847,
+      "north": 0.23163167277502233,
+      "up": 0.6777518517706517,
+      "incidence_deg": 47.331788207810874,
+      "along_east": -0.3386048078538351,
+      "along_north": 0.9409286975860067
+    }
+  },
+  "block_median_m": {
+    "26": {
+      "away": -0.45,
+      "along": -0.1,
+      "total": 1.7
+    },
+    "90": {
+      "away": -0.3,
+      "along": -0.35,
+      "total": 1.71
+    },
+    "162": {
+      "away": -0.15,
+      "along": 0.15,
+      "total": 2.22
+    }
+  },
+  "tile": {
+    "26": {
+      "dx_east_m": -0.6,
+      "dy_north_m": 0.5,
+      "away_m": -0.7,
+      "ncc_best": 0.216,
+      "ncc_zero_shift": 0.212
+    },
+    "90": {
+      "dx_east_m": 0.7,
+      "dy_north_m": 0.6,
+      "away_m": -0.8,
+      "ncc_best": 0.283,
+      "ncc_zero_shift": 0.281
+    },
+    "162": {
+      "dx_east_m": 0.8,
+      "dy_north_m": 0.4,
+      "away_m": -0.9,
+      "ncc_best": 0.232,
+      "ncc_zero_shift": 0.231
+    }
+  },
+  "blocks_within_gate": 31,
+  "blocks_total": 48,
+  "corr_away_vs_canopy_by_track": {
+    "26": -0.19,
+    "90": 0.2,
+    "162": -0.52
+  }
+}
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\results\nisar\figures\nisar_lidar_sim_match_coregabs_k010_613590.png

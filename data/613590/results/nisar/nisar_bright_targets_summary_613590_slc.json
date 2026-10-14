@@ -1,0 +1,41 @@
+{
+  "params": {
+    "da_max": 0.25,
+    "bright_db": 6.0,
+    "bg_m": 250.0,
+    "merge_m": 15.0,
+    "near_m": 15.0
+  },
+  "dates_per_track": {
+    "26": 8,
+    "90": 11,
+    "162": 6
+  },
+  "track_points": 3644,
+  "targets": 2954,
+  "by_n_tracks": {
+    "1": 2642,
+    "2": 282,
+    "3": 30
+  },
+  "by_context": {
+    "elsewhere": 2124,
+    "on_road": 758,
+    "at_well": 72
+  },
+  "share_by_context_in_lidar": {
+    "elsewhere": 0.719,
+    "on_road": 0.256,
+    "at_well": 0.025
+  },
+  "share_by_context_random_spots": {
+    "elsewhere": 0.711,
+    "on_road": 0.26,
+    "at_well": 0.029
+  },
+  "by_context_2plus_tracks": {
+    "elsewhere": 230,
+    "on_road": 80,
+    "at_well": 2
+  }
+}

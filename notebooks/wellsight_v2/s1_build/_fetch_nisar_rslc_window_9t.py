@@ -44,14 +44,15 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import _fetch_nisar_gslc_window_9t as gfetch  # noqa: E402
 
-D9 = gfetch.path_for("data") / "9t"
-OUT = D9 / "derived" / "nisar_rslc_window"
-GINDEX = D9 / "derived" / "nisar_gslc_5m" / "nisar_gslc_window_index_9t_5m.csv"
+A = gfetch.A                              # --area picks 9t, 613590 or mkf
+OUT = A.RSLC
+GINDEX = A.GSLC / f"nisar_gslc_window_index_{A.TAG}_5m.csv"
 COLLECTIONS = ["NISAR_L1_RSLC_BETA_V1", "NISAR_L1_RSLC_PROVISIONAL_V1"]
 ROOT_GRP = "science/LSAR/RSLC"
 MARGIN_M = 200.0
 FIT_M = 3000.0
 PAD = 64
+EDGE_OK = 300    # samples the box may overshoot the swath edge before a granule is refused
 COPY = ["metadata/orbit", "metadata/attitude", "metadata/processingInformation/parameters"]
 
 
@@ -106,8 +107,14 @@ def fetch_one(url, box, path):
         r1 = int(np.ceil((max(ts) - zt[0]) / dt)) + PAD
         c0 = int(np.floor((min(rs) - sr[0]) / dr)) - PAD
         c1 = int(np.ceil((max(rs) - sr[0]) / dr)) + PAD
-        if r0 < 0 or c0 < 0 or r1 > len(zt) or c1 > len(sr):
-            raise RuntimeError(f"window {r0}:{r1}, {c0}:{c1} leaves the swath {len(zt)} x {len(sr)}")
+        # The area can sit at the swath edge (track 162 over 613590). The 0-800 m height bracket
+        # alone widens the box by about 160 range samples that the area never needs, so the box
+        # may overshoot by EDGE_OK samples. Clip the padded window to the swath; sinc_interp
+        # then returns NaN for points past the edge.
+        over = max(-(r0 + PAD), -(c0 + PAD), r1 - PAD - len(zt), c1 - PAD - len(sr))
+        if over > EDGE_OK:
+            raise RuntimeError(f"box leaves the swath by {over} samples: window {r0}:{r1}, {c0}:{c1}, swath {len(zt)} x {len(sr)}")
+        r0, c0, r1, c1 = max(r0, 0), max(c0, 0), min(r1, len(zt)), min(c1, len(sr))
         hh = sw["frequencyA/HH"][r0:r1, c0:c1]
         hv = sw["frequencyA/HV"][r0:r1, c0:c1]
         # geolocation cubes cut to the window plus 2 nodes each way
@@ -154,6 +161,11 @@ def fetch_one(url, box, path):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     gi = pd.read_csv(GINDEX)
+    # a GSLC window that is mostly empty means the area sits at the swath edge in that frame
+    edge = gi[gi.valid_fraction < 0.5]
+    if len(edge):
+        print(f"{len(edge)} GSLC windows are under half valid (area at the swath edge); their RSLC is skipped")
+    gi = gi[gi.valid_fraction >= 0.5]
     q = query()
     q["key"] = list(zip(q.cycle, q.track, q.frame))
     keep = set(zip(gi.cycle, gi.track, gi.frame))
@@ -171,11 +183,11 @@ def main():
     q = q.sort_values(["date", "track"]).reset_index(drop=True)
     x0, y0, x1, y1 = gfetch.window_bounds()
     box = (x0, y0, x1, y1)     # already includes the GSLC fetch's 200 m margin
-    idx_path = OUT / "nisar_rslc_window_index_9t.csv"
+    idx_path = OUT / f"nisar_rslc_window_index_{A.TAG}.csv"
     done = pd.read_csv(idx_path) if idx_path.exists() else pd.DataFrame(columns=["file"])
     rows = done.to_dict("records")
     for _, g in q.iterrows():
-        name = f"nisar_rslc_window_{g.date.replace('-', '')}_t{g.track:03d}{g.direction}_9t.h5"
+        name = f"nisar_rslc_window_{g.date.replace('-', '')}_t{g.track:03d}{g.direction}_{A.TAG}.h5"
         if name in set(done.file):
             print("have", name)
             continue
