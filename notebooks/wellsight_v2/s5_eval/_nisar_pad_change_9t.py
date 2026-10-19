@@ -57,6 +57,49 @@ def season(d1):
     return "winter" if m in (12, 1, 2, 3) else "snowfree"
 
 
+N_PERM = 2000
+
+
+def swap_test(g, rng):
+    """Dependence-aware test that pads flag more often than decoys, for one season.
+
+    A unit is one pad with its N_DECOY decoy copies: N_DECOY + 1 whole time series over the same
+    pairs. Under the null the pad is no different from a decoy, so any of the N_DECOY + 1 series
+    could be "the pad". Each permutation picks one at random per unit, refits the threshold from
+    the other series, and counts flags. Whole series are swapped, so repeated pads, shared
+    acquisitions and the threshold fitted on the decoys are all inside the null distribution.
+    Statistic: pad flag rate minus decoy flag rate.
+    """
+    g = g.assign(series=g["copy"].where(g["copy"] >= 0, 0) + np.where(g.kind == "pad", 0, 1))
+    pairs_key = g.d1 + ">" + g.d2 + "@" + g.track.astype(str)
+    cube = (g.assign(pk=pairs_key).pivot_table(index=["pad", "series"], columns="pk", values="anomaly",
+                                               aggfunc="first"))
+    pads = sorted(cube.index.get_level_values(0).unique())
+    # a pad that found fewer than N_DECOY decoy sites keeps NaN rows for the missing ones
+    A = np.stack([cube.loc[p].reindex(range(N_DECOY + 1)).sort_index().values for p in pads])   # unit x series x pair
+    U, S, _ = A.shape
+
+    def stat(j):
+        pad = A[np.arange(U), j]
+        mask = np.ones((U, S), bool)
+        mask[np.arange(U), j] = False
+        dec = A[mask]
+        dec = dec[np.isfinite(dec)]
+        thr = np.quantile(dec, FA_RATE)
+        fa = float((dec < thr).mean())
+        pv = pad[np.isfinite(pad)]
+        return float((pv < thr).mean()) - fa
+
+    t_obs = stat(np.zeros(U, int))
+    # only a series that exists can play the pad; pick uniformly among each unit's real series
+    avail = np.isfinite(A).any(2)
+    w = avail / avail.sum(1, keepdims=True)
+    cdf = np.cumsum(w, 1)
+    null = np.array([stat((rng.random((U, 1)) > cdf).sum(1).clip(0, S - 1)) for _ in range(N_PERM)])
+    return dict(p=float((1 + (null >= t_obs).sum()) / (1 + N_PERM)), t_obs=round(t_obs, 4),
+                null95=round(float(np.quantile(null, 0.95)), 4), n_units=U)
+
+
 def main():
     FIG.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(SEED)
@@ -113,10 +156,14 @@ def main():
     for s, g in df.groupby("season"):
         n_pad, k_pad = int((g.kind == "pad").sum()), int(g[g.kind == "pad"].flag.sum())
         fa = float(g[g.kind == "decoy"].flag.mean())
+        # naive binomial: treats every pad-pair as an independent trial. Kept for comparison only.
         bt = binomtest(k_pad, n_pad, fa, alternative="greater")
+        pp = swap_test(df[df.season == s], rng)
         out_rows.append(dict(season=s, threshold=round(thr[s], 3), n_pad_pairs=n_pad, pad_events=k_pad,
                              expected_from_decoys=round(n_pad * fa, 1), decoy_rate=round(fa, 4),
-                             p_more_than_decoys=float(f"{bt.pvalue:.2g}")))
+                             p_naive_binomial=float(f"{bt.pvalue:.2g}"),
+                             p_swap_test=pp["p"], excess_rate=pp["t_obs"], excess_rate_null_95=pp["null95"],
+                             n_units=pp["n_units"]))
     res = pd.DataFrame(out_rows)
     print(res.to_string())
 

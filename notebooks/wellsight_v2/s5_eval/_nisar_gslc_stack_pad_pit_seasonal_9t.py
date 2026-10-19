@@ -143,7 +143,10 @@ def load_stack():
     for row in idx.itertuples():
         with rasterio.open(SRC / row.file) as r:
             a = r.read(window=rasterio.windows.from_bounds(x0, y0, x1, y1, r.transform))
-        inten[row.file] = (np.abs(a[0]) ** 2, np.abs(a[1]) ** 2)
+        # the writer holds 0 where the swath does not reach (NASA's convention); that is "no sample", not
+        # zero power, so it becomes NaN here and never enters a mean
+        valid = (a != 0) & np.isfinite(a)
+        inten[row.file] = tuple(np.where(valid[i], np.abs(a[i]) ** 2, np.nan) for i in (0, 1))
         assert inten[row.file][0].shape == shape, (row.file, inten[row.file][0].shape, shape)
     return idx, inten, tf, shape
 
@@ -261,7 +264,13 @@ def main() -> int:
     means = {}
     for (track, season), g in idx.groupby(["track", "season"]):
         for p, pi in (("hh", 0), ("hv", 1)):
-            means[(track, season, p)] = np.nanmean(np.stack([inten[f][pi] for f in g.file]), axis=0)
+            s = np.stack([inten[f][pi] for f in g.file])
+            n_ok = np.isfinite(s).sum(0)
+            # a pixel needs valid samples on at least half of the season's dates
+            need = max(1, int(np.ceil(0.5 * len(g))))
+            with np.errstate(all="ignore"):
+                m = np.nanmean(s, axis=0)
+            means[(track, season, p)] = np.where(n_ok >= need, m, np.nan)
     tracks = sorted(idx.track.unique())
     cover = canopy_cover(tf, shape)
     in_tile = np.isfinite(cover)

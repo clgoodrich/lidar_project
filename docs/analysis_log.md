@@ -5,6 +5,67 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-19 -- 613590 seasonal rerun: the change is the decoy draw, not the pits
+
+- **Question.** The 613590 seasonal rerun after fix 1 printed pit numbers different from the saved CSV.
+- **Test.** HEAD script and fixed script, same inputs, outputs to scratch; then the fixed script with
+  seeds 20260931 and 20260932. Write-up: `docs/iterations/nisar_review_fixes_flatten_test.md`.
+- **Result.** HEAD reproduces the saved CSV exactly. Fix 1 leaves all pit values unchanged and
+  changes the decoy draws (the valid-pixel mask the decoys sample from). Another seed moves the median
+  excess 0.2-0.3 dB and p from 0.001 to 0.13. Only the HH leaf-off fall excess (0.38-0.64 dB, p <= 0.018)
+  holds in all four runs.
+- **State.** The saved 613590 seasonal files are unchanged (a locked raster stopped the real-path
+  rerun). Scratch runs are in the session scratchpad, not in the repo. Open: average over many decoy
+  draws; free the lock and rerun on the real path.
+
+---
+
+## 2026-10-19 -- NISAR review fixes (five defects) and the flatten/gain test
+
+- **Ask.** Fix the five defects a code review raised, after checking each against the code.
+  Write-up: `docs/iterations/nisar_review_fixes_flatten_test.md`.
+- **Fixes.** (1) Zero samples are "no sample": NaN at load, validity-aware seasonal means and
+  coherence (`_nisar_gslc_stack_pad_pit_seasonal_9t.py`, `_nisar_gslc_interferogram_pits_9t.py`,
+  `_nisar_slope_motion_9t.py`). (2) `write_stack --coreg` raises when a date has no offsets row
+  (`_nisar_regeocode_lidar_9t.py`). (3) Pad-event significance by a swap test on whole pad-plus-decoy
+  series, threshold refitted each permutation (`_nisar_pad_change_9t.py`). (4) Terrain flattening
+  with the lidar area-projection simulation, bands 5-6 of the bright-target layers
+  (`_nisar_bright_targets_9t.py`), plus a four-variant test
+  (`_nisar_flatten_gain_test_9t.py`). (5) Slope-motion phase added per coherent pair only, connected
+  date chain required (`_nisar_slope_motion_9t.py`). Also fixed the `in_lidar` mask order in the
+  bright-target summary.
+- **Results.** 9t snow-free pad events 169 vs 136.4 expected: naive p 0.0037, swap-test p 0.001.
+  Fix 1 changes no 9t number and no 613590 pit number. Slope-motion spread falls 30-40%; 090-vs-162
+  r 0.077 to 0.173 on 410 pixels instead of 7,698. Flattening removes 25-30% of SBT pixels and takes
+  the opposite-look correlation from -0.06 to about 0 on 9t; the 090-vs-162 correlation falls
+  0.34 to 0.29. Per-date gain normalisation raises SBT counts 30% on 613590 track 162 (dates span 3 dB).
+- **Not changed.** Cross-track merge rule, native-chip measurement, calibration tables, epoch in
+  `lidar_heights`: in BACKLOG.
+- **Wording.** The V3 block counts (46 of 48 on 9t, 31 of 48 on 613590) measure agreement with the
+  lidar simulation, which also supplies the track offsets. They are not independent positional accuracy.
+- **Data move (same day).** Eight folders moved to `F:\lidar_project_offload\` and replaced by
+  junctions: `data\_source\lidar\{westernpa,mckean,permian,warren_forest,mckean_sw}`,
+  `data\_source\reference\nisar`, `data\_archive\{parked,superseded}`. Checked by file count and
+  bytes. C: free space went 65 GB to 134 GB. The Seagate drive must stay attached; it is the only copy.
+
+---
+
+## 2026-10-19 -- NISAR reflector framework (not executed)
+
+- **Ask.** Build a rough framework for each stage of the NISAR reflector audit.
+- **Added.** `docs/iterations/nisar_reflector_framework.md` and the isolated
+  `notebooks/wellsight_v2/nisar_reflectors/` Python interface scaffold: provenance,
+  measurement checks, native-chip metrics, persistence, association and validation.
+- **Design.** Separate detection from material identity and well association;
+  make validity, calibration, spatial uncertainty, processing lineage and short-record
+  sensitivity explicit. Existing processing and outputs are untouched by this change.
+- **Status.** Contracts and design only; no backend, CLI, processing, tests, or new
+  scientific results. Static file review only. No leaderboard update is warranted.
+- **Next.** Implement manifest adapters and bounded independent-target quality
+  checks before wiring measurement backends. See the framework for all deferred work.
+
+---
+
 ## 2026-10-14 -- NISAR re-placement on 613590: 31 of 48 blocks within 2.5 m; well and pit tests re-run
 
 - **Ask.** The user: "Do whatever part comes next". Doc: `docs/iterations/nisar_regeocode_plan_9t.md`, section "The fix on 613590".

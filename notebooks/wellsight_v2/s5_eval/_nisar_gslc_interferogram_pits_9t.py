@@ -57,6 +57,7 @@ HILL = A.lidar("hillshade")
 SHIFT_JSON = OUT / f"nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_forcedshift_{A.TAG}_5m.json"
 MAX_DT_DAYS = 24
 WIN = 3
+MIN_VALID_SHARE = 0.5   # a coherence window needs at least this share of valid samples
 LAMBDA_M = 299_792_458 / 1.239e9
 MM_PER_RAD = LAMBDA_M / (4 * np.pi) * 1000
 N_DECOY, SEED, B = 5, 20261005, 2000
@@ -94,14 +95,18 @@ def pairs_of(idx):
 
 def interferogram(s1, s2, w=WIN):
     i = s1 * np.conj(s2)
-    ok = np.isfinite(i)
+    # explicit validity: the stack holds 0 where the swath does not reach, and 0 is not a sample
+    ok = np.isfinite(i) & (s1 != 0) & (s2 != 0)
     i0 = np.where(ok, i, 0)
+    # the window sums only valid samples (uniform_filter of the mask is the valid share)
+    share = uniform_filter(ok.astype(np.float32), w)
     num = uniform_filter(i0.real, w) + 1j * uniform_filter(i0.imag, w)
     p1 = uniform_filter(np.where(ok, np.abs(s1) ** 2, 0), w)
     p2 = uniform_filter(np.where(ok, np.abs(s2) ** 2, 0), w)
     coh = np.abs(num) / np.sqrt(p1 * p2)
-    coh[~ok] = np.nan
-    num[~ok] = np.nan
+    bad = ~ok | (share < MIN_VALID_SHARE)
+    coh[bad] = np.nan
+    num[bad] = np.nan
     return coh.astype(np.float32), num.astype(np.complex64)
 
 

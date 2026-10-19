@@ -1,4 +1,4 @@
 slope_class,n_pixels_25m,asc_mean_std_mm,asc_mean_p95_abs_mm
-flat_lt5deg,1608,10.7,21.3
-moderate_5to15deg,5030,11.26,23.26
-steep_ge15deg,1060,11.56,23.82
+flat_lt5deg,71,6.61,13.41
+moderate_5to15deg,256,7.16,13.71
+steep_ge15deg,83,6.74,13.27

@@ -2,6 +2,41 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## NISAR review follow-ups (added 2026-10-19) — OPEN
+
+From `docs/iterations/nisar_review_fixes_flatten_test.md`. Not fixed in that pass.
+
+- Bright-target merge (`_nisar_bright_targets_9t.py` `merge_tracks`): links same-track points, chains
+  beyond 15 m, takes position and `da_min` from different members, drops per-track positions. Keep per-track
+  points and match across tracks only.
+- Random controls in the bright-target summary need validity on every track, targets do not. Match the eligible area.
+- Decide whether per-date gain normalisation becomes the default before `D_A`. It lifts SBT counts 30% on
+  613590 track 162 but also removes real seasonal signal.
+- Find why 613590 track 162 (beta dates) has mean HH power near -14 dB, 6 dB below every other track.
+- RSLC calibration tables are not carried through the subsetter. Read the product metadata, then measure
+  calibrated ratios by date.
+- `lidar_heights()` converts NAD83(2011) to ITRF with no epoch while `datum_offset()` uses one. Make the policy one.
+- Slope-motion rule (every pair coherent at 0.45) keeps 5% of pixels on 9t. Try a looser rule with explicit gaps.
+- Pad-change swap test assumes decoys are exchangeable with pads. Add a pad-matched decoy set (slope, aspect, distance to roads).
+- Pad-change test has never run on 613590 (0 of 995 annotated pads inside the window). Needs pad annotations there.
+
+## NISAR compact reflectors (added 2026-10-19) — FRAMEWORK ONLY
+
+Design: `docs/iterations/nisar_reflector_framework.md`. Python contracts:
+`notebooks/wellsight_v2/nisar_reflectors/`. No processing backend or tests run.
+
+- Implement frozen manifest and explicit metadata/validity adapters without importing
+  analysis modules that consume global command-line arguments.
+- Validate datum/epoch, absolute location, point impulse response and radiometric
+  conventions on 3–5 independent targets plus clutter before scaling.
+- Implement native-chip HH/HV measurements and short-record persistence sensitivity.
+- Implement constrained cross-track association, ambiguity records and arrangement
+  descriptors; avoid connected-component chaining and untested material labels.
+- Implement independent equipment truth evaluation and matched well-association
+  controls with shared support, spatial splits and exported control ledgers.
+- Keep legacy detectors as explicit baselines; the framework does not fix or replace
+  their current code. See the design for acceptance cases before execution.
+
 ## Road driving-surface watershed (added 2026-10-01) — OPEN
 See `docs/iterations/road_driving_surface_watershed_9t.md`.
 - 15% of transects reach the 6 m ring on one side, meaning no slope break was found there. Decide whether to fall back to a fixed half-width on capped sides or leave them flagged.

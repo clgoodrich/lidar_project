@@ -62,7 +62,7 @@ INK, DOT = "#2B2F36", "#1F5FA8"
 
 def multilook(s1, s2):
     i = s1 * np.conj(s2)
-    ok = np.isfinite(i)
+    ok = np.isfinite(i) & (s1 != 0) & (s2 != 0)   # 0 marks "no sample" in the stack
     i = np.where(ok, i, 0)
     p1, p2 = np.where(ok, np.abs(s1) ** 2, 0), np.where(ok, np.abs(s2) ** 2, 0)
     h, w = (i.shape[0] // ML) * ML, (i.shape[1] // ML) * ML
@@ -104,15 +104,35 @@ def main():
 
     disp, cohm, span = {}, {}, {}
     for t, g in pairs.groupby("track"):
+        # the chain must be one connected run of dates: each pair starts where the last ended
+        g = g.sort_values("d1").reset_index(drop=True)
+        broken = [(a, b) for a, b in zip(g.d2[:-1], g.d1[1:]) if a != b]
+        if broken:
+            # keep the longest connected run, report the rest as dropped
+            run, runs = [0], []
+            for k in range(1, len(g)):
+                if g.d1[k] == g.d2[k - 1]:
+                    run.append(k)
+                else:
+                    runs.append(run)
+                    run = [k]
+            runs.append(run)
+            keep = max(runs, key=len)
+            print(f"track {t}: date chain broken at {broken}; keeping the longest run of {len(keep)} of {len(g)} pairs")
+            g = g.iloc[keep].reset_index(drop=True)
         cum = np.zeros(shp25)
+        n_good = np.zeros(shp25)
         cs = []
         for p in g.itertuples():
             num, coh = multilook(stack[p.f1][0], stack[p.f2][0])
-            cum += remove_longwave(num, coh)
+            good = coh >= COH_MIN          # a pair contributes only where it is itself coherent
+            cum += np.where(good, remove_longwave(num, coh), 0.0)
+            n_good += good
             cs.append(coh)
         c = np.mean(cs, 0)
         d = -cum * MM_PER_RAD
-        d[c < COH_MIN] = np.nan
+        # every pair of the chain must be coherent at the pixel, else the sum has a gap in it
+        d[(c < COH_MIN) | (n_good < len(g))] = np.nan
         disp[int(t)], cohm[int(t)] = d, c
         span[int(t)] = dict(first=g.d1.iloc[0], last=g.d2.iloc[-1], n_pairs=len(g),
                             days=int((pd.to_datetime(g.d2.iloc[-1]) - pd.to_datetime(g.d1.iloc[0])).days),

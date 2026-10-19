@@ -27,13 +27,14 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import rasterio
-from scipy.ndimage import label
+from scipy.ndimage import label, median_filter
 from scipy.sparse.csgraph import connected_components
 from scipy.spatial import cKDTree
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 steel = importlib.import_module("_nisar_steel_9t")
+flat = importlib.import_module("_nisar_flatten_gain_test_9t")
 ifg, st = steel.ifg, steel.st
 from _common import read_layer  # noqa: E402
 
@@ -63,6 +64,15 @@ def write_layers(maps, tf, shape):
     for t, m in maps.items():
         bands = {"mean_hh_db": m["bright"] + m["bg"], "above_250m_median_db": m["bright"],
                  "amplitude_dispersion": m["da"], "steady_bright_target": m["sbt"].astype(np.float32)}
+        # bands 5-6: the same mean HH with the lidar-simulated facet area divided out (terrain
+        # flattening; shadow and layover cells NaN). A distributed-target view, see
+        # docs/iterations/nisar_flatten_gain_test.md. Bands 1-4 stay as the screen reads them.
+        af, sok = flat.sim_layers(t, tf, shape)
+        fdb = np.where(m["ok"] & sok, bands["mean_hh_db"] - 10 * np.log10(np.where(af > 0, af, np.nan)), np.nan)
+        k = int(steel.BG_M / 5) | 1
+        fbg = median_filter(np.where(np.isfinite(fdb), fdb, np.nanmedian(fdb)), size=k)
+        bands["mean_hh_flat_db"] = fdb
+        bands["above_250m_flat_db"] = fdb - fbg
         path = steel.DER / f"nisar_bright_targets_layers_t{t:03d}_{AREA.TAG}.tif"
         with rasterio.open(path, "w", driver="GTiff", height=shape[0], width=shape[1], count=len(bands),
                            dtype="float32", crs=CRS, transform=tf, nodata=np.nan, compress="deflate") as dst:
@@ -126,9 +136,9 @@ def main():
     rp = gpd.GeoSeries(gpd.points_from_xy(tf.c + (cc[k] + 0.5) * tf.a, tf.f + (rr[k] + 0.5) * tf.e), crs=CRS)
     rwd, _ = cKDTree(np.c_[w.geometry.x, w.geometry.y]).query(np.c_[rp.x, rp.y])
     chance = pd.Series(context(rwd, rp.distance(pads).values, rp.distance(roads).values)).value_counts(normalize=True)
-    in_lidar = g.canopy_cover.notna()
     g = g.sort_values(["n_tracks", "bright_db"], ascending=False).reset_index(drop=True)
     g.insert(0, "target_id", range(1, len(g) + 1))
+    in_lidar = g.canopy_cover.notna()   # after the sort: the mask must index the rows it is applied to
 
     stem = "nisar_bright_targets"
     g.to_file(OUT / f"{stem}_points_{AREA.TAG}.gpkg", layer="candidate_bright_targets", driver="GPKG")

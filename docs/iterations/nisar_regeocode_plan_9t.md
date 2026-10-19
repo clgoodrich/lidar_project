@@ -325,6 +325,7 @@ The corrections are measured from the provisional level. They say the provisiona
 | Canopy-modelled check (k = 0.10) | – | – | 1.2 / 1.0 / 1.1 m; 46 of 48 within 2.5 m |
 
 - Every column uses the fixed check with the bad granules left out.
+- These counts measure agreement with the lidar simulation, which also supplies the track offsets. They are not an independent positional accuracy. Review follow-up: `docs/iterations/nisar_review_fixes_flatten_test.md`.
 - The final column is not independent of the lidar, because the per-track constant came from it. Four tests are:
   - **Held-out blocks.** A constant fitted on one checkerboard half of the blocks brings all 8 blocks of the other half within 2.5 m. That holds on every track, both ways round. The two halves' constants agree within 0.35 m.
   - **Coherence.** It does not use the lidar. Lining dates up raises the median coherence of track 026 12-day pairs from 0.31 to 0.52, and of 24-day pairs from 0.29 to 0.53. Pairs with the 2026-07-26 track 090 date gain 0.09–0.23. No pair loses more than 0.001.

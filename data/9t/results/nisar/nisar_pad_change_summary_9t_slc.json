@@ -20,7 +20,11 @@
       "pad_events": 169,
       "expected_from_decoys": 136.4,
       "decoy_rate": 0.01,
-      "p_more_than_decoys": 0.0037
+      "p_naive_binomial": 0.0037,
+      "p_swap_test": 0.0009995002498750624,
+      "excess_rate": 0.0024,
+      "excess_rate_null_95": 0.0012,
+      "n_units": 649
     },
     {
       "season": "winter",
@@ -29,7 +33,11 @@
       "pad_events": 13,
       "expected_from_decoys": 13.1,
       "decoy_rate": 0.0101,
-      "p_more_than_decoys": 0.55
+      "p_naive_binomial": 0.55,
+      "p_swap_test": 0.5102448775612194,
+      "excess_rate": -0.0001,
+      "excess_rate_null_95": 0.0045,
+      "n_units": 649
     }
   ],
   "pads_with_2plus_events": 29,
