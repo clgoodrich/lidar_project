@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-20 -- NISAR: 7 new GSLC windows fetched; why the Jan-Jun 2026 gap exists
+
+- **Fetch.** `_nisar_gslc_window_fetch` run for 9t, 613590 and mkf. New: 9t 2 (track 162 on 2026-10-11, track 026 on 2026-10-14), 613590 2 (same dates), mkf 3 (adds track 098 on 2026-10-07). Index rows now 37 / 36 / 48. The raw windows are in each area's `derived/nisar_gslc_5m/`. They are not yet re-placed on the lidar ground (`--slc` stack) and not in any result.
+- **Catalog check (CMR, 2026-10-20).** Over 9t: 44 GSLC granules (12 beta from 2025-10-28 to 2026-01-20, 32 provisional from 2026-06-20 to 2026-10-14), 37 unique track-dates. Track 026 has 11 dates against 29 twelve-day slots. Over Pennsylvania the Feb-May provisional granules are only tracks 69, 90 and 133, and the track-90 frame (23) stops about 8 km short of 9t.
+- **Cause of the gap (ASF/Earthdata, not measured by us).** Unreleased data, not missed collection: NISAR has acquired on its plan since Sep 2025 and the Feb 2026 release was a subset (up to 8 acquisitions per track). Public provisional data starts 2026-06-17. Earlier months are released gradually over the second half of 2026. Validated reprocessing is planned for Q4 2026, so products may change. Permanent instrument gap 2026-07-27 22:03 UTC to 2026-08-10 00:55 UTC.
+- **Decision.** Hold further re-placement and re-analysis until more of the archive is released. Re-count the catalog monthly.
+
+---
+
 ## 2026-10-19 -- Stable pit/pad test: 40 decoys and a swap test, both areas
 
 - **Why.** Single-draw p-values on 613590 moved from 0.001 to 0.13 with the seed.
