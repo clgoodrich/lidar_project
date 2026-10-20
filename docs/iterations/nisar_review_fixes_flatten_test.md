@@ -152,11 +152,54 @@ Reading:
   0.001 to 0.13. Single-draw p-values on 613590 are not stable.
 - The HH leaf-off fall excess is positive in all four runs (0.38 to 0.64 dB, p 0.018 or lower). It is
   the one pit result that holds across draws. The winter, leaf-on and change rows do not.
-- The test uses five decoys per pit. Averaging over many draws (or a permutation test as in fix 3)
-  would give a stable number. Not done.
+- The test uses five decoys per pit. The next section replaces it with 40 decoys and a swap test.
 - The repo's saved 613590 seasonal files are still the old ones. The raster write hits a file locked
   by another program, so the real-path rerun waits for the lock to clear. The fixed numbers above
   come from the scratch runs.
+
+## The stable answer: 40 decoys and a swap test (2026-10-19)
+
+The single-draw test is not reliable (section above). The reliable version has two changes.
+Each feature gets 40 decoys instead of 5, and significance comes from a swap test as in fix 3:
+a feature and its decoys are forty-one series that the null treats as exchangeable. Each of
+5,000 permutations picks one series per feature, scores it against the median of the others, and takes
+the median over features. p is two-sided, floor 0.0002. Decoys are 150-600 m moves onto background,
+as before. Code: `--decoys 40` on `_nisar_gslc_stack_pad_pit_seasonal_9t.py` (defaults unchanged, so
+existing outputs are unchanged; rasters are not rewritten, which also avoids the locked file).
+
+Outputs (`..._swap40_<area>_slc_5m.csv/.json`, per-feature CSVs and a figure beside them):
+`data/613590/results/nisar/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_swap40_613590_slc_5m.csv`
+`data/9t/results/nisar/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_swap40_9t_slc_5m.csv`
+
+Median excess over decoys, dB, with swap-test p. 8 metrics per feature type, so 16 tests per area;
+a Bonferroni line is about p 0.003.
+
+| Area | Features | Metric | Excess | Swap p | Old single-draw Wilcoxon p |
+|---|---|---|---:|---:|---:|
+| 613590 | pit (36) | HH leaf-off fall | 0.40 | 0.060 | 0.000-0.018 |
+| 613590 | pit | HH winter | 0.36 | 0.084 | |
+| 613590 | pit | HH leaf-on | 0.39 | 0.021 | |
+| 613590 | pit | HV leaf-off fall | 0.52 | 0.011 | |
+| 613590 | pit | HV winter | 0.41 | 0.028 | |
+| 613590 | pit | HV leaf-on | 0.32 | 0.070 | |
+| 613590 | pit | change leaf-on vs fall, HH / HV | -0.44 / -0.20 | 0.146 / 0.509 | |
+| 9t | pit (506) | HH leaf-off fall | 0.25 | <0.001 | 0.001 |
+| 9t | pit | HV leaf-on | 0.19 | <0.001 | <0.001 |
+| 9t | pit | other six metrics | -0.10 to 0.10 | 0.058-0.466 | |
+| 9t | pad (650) | HH winter | -0.09 | 0.002 | 0.083 |
+| 9t | pad | other seven metrics | -0.04 to 0.02 | 0.098-0.909 | |
+
+Reading:
+- **613590 pits are brighter than decoys in six of eight metrics, by 0.3 to 0.5 dB, stable across
+  draws.** With 36 pits, no single metric passes the 16-test line (best p 0.011). The direction is
+  consistent. The size is stable. The proof is not there. It stays a candidate.
+- **9t pits repeat two results with proof.** HH leaf-off fall (+0.25 dB) and HV leaf-on (+0.19 dB)
+  both reach the p floor. The other six metrics are inside the null band.
+- **9t pads show nothing of size.** The one small hit (HH winter, -0.09 dB, p 0.002) is under 0.1 dB
+  and 1 of 8 pad tests. Not a finding.
+- **The old Wilcoxon p-values overstated.** They treat each feature's decoy median as a fixed number.
+  The swap test lets the decoys vary.
+- Same limit as before: this shows pits differ from decoys in backscatter, not why.
 
 ## Reproduce
 
@@ -166,6 +209,8 @@ python notebooks/wellsight_v2/s5_eval/_nisar_slope_motion_9t.py --slc
 python notebooks/wellsight_v2/s5_eval/_nisar_flatten_gain_test_9t.py --slc
 python notebooks/wellsight_v2/s5_eval/_nisar_flatten_gain_test_9t.py --slc --area 613590
 python notebooks/wellsight_v2/s5_eval/_nisar_gslc_interferogram_pits_9t.py --slc --area 613590
+python notebooks/wellsight_v2/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py --slc --area 613590 --decoys 40
+python notebooks/wellsight_v2/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py --slc --area 9t --decoys 40
 ```
 
 Scratch audits (not saved in the repo): per-date zero-pixel share and per-date median power.

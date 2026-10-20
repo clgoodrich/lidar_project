@@ -247,12 +247,46 @@ def set_value(core, rg, L, num, den):
     return f - r
 
 
+N_PERM = 5000
+
+
+def swap_test(mat, rng):
+    """Swap test over features. mat is (feature, 1 + decoys): column 0 the feature, the rest its decoys.
+
+    Null: a feature is no different from its decoys, so any of its series could be "the feature".
+    Each permutation picks one series per feature and scores it against the median of the others;
+    the statistic is the median over features. Returns observed, p (two-sided), null 95% bounds.
+    """
+    d_by_f = []
+    for row in mat:
+        r = np.asarray(row, float)
+        ok = np.isfinite(r)
+        if not ok[0] or ok.sum() < 3:
+            continue
+        v = r[ok]
+        d = np.array([v[j] - np.median(np.delete(v, j)) for j in range(len(v))])
+        d_by_f.append(d)
+    if len(d_by_f) < 10:
+        return None
+    obs = float(np.median([d[0] for d in d_by_f]))
+    picks = np.column_stack([d[rng.integers(0, len(d), N_PERM)] for d in d_by_f])
+    null = np.median(picks, axis=1)
+    return dict(n=len(d_by_f), observed=obs,
+                p_two_sided=float((1 + (np.abs(null) >= abs(obs)).sum()) / (1 + N_PERM)),
+                null_lo=float(np.percentile(null, 2.5)), null_hi=float(np.percentile(null, 97.5)))
+
+
 def main() -> int:
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument("--force-best-shift", action="store_true")
-    force = ap.parse_args().force_best_shift
-    sfx = "_forcedshift" if force else ""
+    ap.add_argument("--decoys", type=int, default=N_PLACEBO,
+                    help="decoys per feature; above the default, adds a swap test and writes _swapK outputs only")
+    args = ap.parse_args()
+    force = args.force_best_shift
+    n_decoys = args.decoys
+    swap = n_decoys != N_PLACEBO
+    sfx = ("_forcedshift" if force else "") + (f"_swap{n_decoys}" if swap else "")
     FIG.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(SEED)
     print(f"area {A.TAG}")
@@ -363,11 +397,12 @@ def main() -> int:
             ("pad", pads.geometry, pads.pad_id, pad_excl, PAD_CORE_M, PAD_RING),
             ("pit", pits.geometry, pits.index, pit_excl, 0.0, PIT_RING)):
         rows, decoys_all = [], {m: [] for m in metrics}
+        mats = {m: [] for m in metrics}
         for fid, g in zip(ids, geoms):
             core, rg = pixel_sets(g, core_m, ring, excl, tf, shape, ok_flat)
             if len(core) == 0 or len(rg) < 10:
                 continue
-            pls = placebo_sets(g, core_m, ring, excl, tf, shape, ok_flat, bg_flat, rng, N_PLACEBO)
+            pls = placebo_sets(g, core_m, ring, excl, tf, shape, ok_flat, bg_flat, rng, n_decoys, tries=12 * n_decoys)
             if not pls:
                 continue
             row = dict(id=fid, n_core=len(core), n_ring=len(rg), n_decoys=len(pls))
@@ -381,6 +416,7 @@ def main() -> int:
                         pv.append(np.nanmean(v))
                 row[f"{m}_decoy_median"] = float(np.median(pv)) if pv else np.nan
                 decoys_all[m] += pv
+                mats[m].append([row[f"{m}_feature"]] + pv)
             rows.append(row)
         df = pd.DataFrame(rows)
         per_feature[kind] = df
@@ -394,6 +430,7 @@ def main() -> int:
             if ok.sum() < 10:
                 continue
             exc = real[ok] - dec[ok]
+            sw = swap_test(mats[m], rng) if swap else None
             be = np.median(exc[rng.integers(0, ok.sum(), size=(B, ok.sum()))], axis=1)
             results.append(dict(features=kind, metric=m, n=int(ok.sum()),
                                 median_feature_minus_ring_db=float(np.median(real[ok])),
@@ -402,7 +439,8 @@ def main() -> int:
                                 excess_ci_lo=float(np.percentile(be, 2.5)),
                                 excess_ci_hi=float(np.percentile(be, 97.5)),
                                 auc_feature_gt_decoy=auc(real[ok], decoys_all[m]),
-                                wilcoxon_p_excess=float(wilcoxon(exc).pvalue)))
+                                wilcoxon_p_excess=float(wilcoxon(exc).pvalue),
+                                **({f"swap_{k}": v for k, v in sw.items()} if sw else {})))
     res = pd.DataFrame(results)
     print(res.round(3).to_string())
 
@@ -410,7 +448,7 @@ def main() -> int:
     prof = dict(driver="GTiff", height=shape[0], width=shape[1], count=1, dtype="float32",
                 crs=CRS, transform=tf, nodata=np.nan, compress="deflate")
     n_written = 0
-    for t in ([] if force else tracks):
+    for t in ([] if force or swap else tracks):
         d = idx[idx.track == t].direction.iat[0]
         # rasters stay as delivered even when the statistics use a lidar shift
         tag = "asdelivered"

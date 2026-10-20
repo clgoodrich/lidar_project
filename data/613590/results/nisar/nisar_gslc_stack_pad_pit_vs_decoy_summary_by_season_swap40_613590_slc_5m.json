@@ -1,0 +1,393 @@
+{
+ "n_dates_by_track_season": [
+  {
+   "track": 26,
+   "direction": "D",
+   "season": "leafoff_fall",
+   "n": 1
+  },
+  {
+   "track": 26,
+   "direction": "D",
+   "season": "leafon",
+   "n": 4
+  },
+  {
+   "track": 26,
+   "direction": "D",
+   "season": "winter",
+   "n": 2
+  },
+  {
+   "track": 90,
+   "direction": "A",
+   "season": "leafoff_fall",
+   "n": 1
+  },
+  {
+   "track": 90,
+   "direction": "A",
+   "season": "leafon",
+   "n": 8
+  },
+  {
+   "track": 90,
+   "direction": "A",
+   "season": "winter",
+   "n": 1
+  },
+  {
+   "track": 162,
+   "direction": "A",
+   "season": "leafoff_fall",
+   "n": 3
+  },
+  {
+   "track": 162,
+   "direction": "A",
+   "season": "leafon",
+   "n": 0
+  },
+  {
+   "track": 162,
+   "direction": "A",
+   "season": "winter",
+   "n": 3
+  }
+ ],
+ "registration": [
+  {
+   "track": 26,
+   "rho_unshifted": 0.06940882396759922,
+   "best_dx": 20,
+   "best_dy": -10,
+   "rho_best": 0.1048522734831801,
+   "peak_inside_search": false,
+   "applied": false
+  },
+  {
+   "track": 90,
+   "rho_unshifted": 0.16546628756644816,
+   "best_dx": -20,
+   "best_dy": -10,
+   "rho_best": 0.22975879875660896,
+   "peak_inside_search": false,
+   "applied": false
+  }
+ ],
+ "shift_applied_m": {
+  "26": [
+   0.0,
+   0.0
+  ],
+  "90": [
+   0.0,
+   0.0
+  ],
+  "162": [
+   0.0,
+   0.0
+  ]
+ },
+ "seasons": {
+  "leafoff_fall": [
+   "2025-10-01",
+   "2025-11-30"
+  ],
+  "winter": [
+   "2025-12-01",
+   "2026-01-31"
+  ],
+  "leafon": [
+   "2026-06-01",
+   "2026-09-30"
+  ]
+ },
+ "n_decoys": 5,
+ "tile_median_change_leafon_minus_fall_db": {
+  "26_hh": 3.209611415863037,
+  "26_hv": 3.8742847442626953,
+  "90_hh": 1.4448473453521729,
+  "90_hv": 2.467593193054199
+ },
+ "control": [
+  {
+   "track": 26,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -10.472764015197754,
+   "closed_median_db": -8.134469985961914,
+   "auc_closed_gt_open": 0.605639636516571
+  },
+  {
+   "track": 26,
+   "metric": "hh_winter",
+   "open_median_db": -8.998135566711426,
+   "closed_median_db": -6.398927688598633,
+   "auc_closed_gt_open": 0.6491270065307617
+  },
+  {
+   "track": 26,
+   "metric": "hh_leafon",
+   "open_median_db": -6.855279922485352,
+   "closed_median_db": -5.039663314819336,
+   "auc_closed_gt_open": 0.6357335448265076
+  },
+  {
+   "track": 26,
+   "metric": "hh_change_leafon_vs_fall",
+   "open_median_db": 3.703970193862915,
+   "closed_median_db": 3.2279796600341797,
+   "auc_closed_gt_open": 0.4752284288406372
+  },
+  {
+   "track": 26,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -16.540599822998047,
+   "closed_median_db": -13.778948783874512,
+   "auc_closed_gt_open": 0.6224425435066223
+  },
+  {
+   "track": 26,
+   "metric": "hv_winter",
+   "open_median_db": -15.22118854522705,
+   "closed_median_db": -12.366212844848633,
+   "auc_closed_gt_open": 0.6657387018203735
+  },
+  {
+   "track": 26,
+   "metric": "hv_leafon",
+   "open_median_db": -11.571882247924805,
+   "closed_median_db": -10.055923461914062,
+   "auc_closed_gt_open": 0.6306402087211609
+  },
+  {
+   "track": 26,
+   "metric": "hv_change_leafon_vs_fall",
+   "open_median_db": 4.789979457855225,
+   "closed_median_db": 3.7709481716156006,
+   "auc_closed_gt_open": 0.45278188586235046
+  },
+  {
+   "track": 90,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -9.63335132598877,
+   "closed_median_db": -5.967403888702393,
+   "auc_closed_gt_open": 0.6509669423103333
+  },
+  {
+   "track": 90,
+   "metric": "hh_winter",
+   "open_median_db": -10.17519760131836,
+   "closed_median_db": -6.406888008117676,
+   "auc_closed_gt_open": 0.657599151134491
+  },
+  {
+   "track": 90,
+   "metric": "hh_leafon",
+   "open_median_db": -6.917257308959961,
+   "closed_median_db": -4.661654472351074,
+   "auc_closed_gt_open": 0.6826618909835815
+  },
+  {
+   "track": 90,
+   "metric": "hh_change_leafon_vs_fall",
+   "open_median_db": 1.8587830066680908,
+   "closed_median_db": 1.393835186958313,
+   "auc_closed_gt_open": 0.47745469212532043
+  },
+  {
+   "track": 90,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -16.486589431762695,
+   "closed_median_db": -12.316621780395508,
+   "auc_closed_gt_open": 0.6671651005744934
+  },
+  {
+   "track": 90,
+   "metric": "hv_winter",
+   "open_median_db": -18.034801483154297,
+   "closed_median_db": -14.038368225097656,
+   "auc_closed_gt_open": 0.6708306670188904
+  },
+  {
+   "track": 90,
+   "metric": "hv_leafon",
+   "open_median_db": -12.784363746643066,
+   "closed_median_db": -10.004537582397461,
+   "auc_closed_gt_open": 0.718256950378418
+  },
+  {
+   "track": 90,
+   "metric": "hv_change_leafon_vs_fall",
+   "open_median_db": 2.71347713470459,
+   "closed_median_db": 2.477142333984375,
+   "auc_closed_gt_open": 0.4884239733219147
+  },
+  {
+   "track": 162,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -15.710424423217773,
+   "closed_median_db": -11.755263328552246,
+   "auc_closed_gt_open": 0.6861643195152283
+  },
+  {
+   "track": 162,
+   "metric": "hh_winter",
+   "open_median_db": -17.24254608154297,
+   "closed_median_db": -12.672101974487305,
+   "auc_closed_gt_open": 0.6976422667503357
+  },
+  {
+   "track": 162,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -20.639110565185547,
+   "closed_median_db": -17.241104125976562,
+   "auc_closed_gt_open": 0.6877111792564392
+  },
+  {
+   "track": 162,
+   "metric": "hv_winter",
+   "open_median_db": -22.661277770996094,
+   "closed_median_db": -18.42170524597168,
+   "auc_closed_gt_open": 0.6930174231529236
+  }
+ ],
+ "results": [
+  {
+   "features": "pit",
+   "metric": "hh_leafoff_fall",
+   "n": 36,
+   "median_feature_minus_ring_db": 0.12277802079916,
+   "median_decoy_minus_ring_db": -0.3887373059988022,
+   "median_excess_db": 0.3999164327979088,
+   "excess_ci_lo": 0.07548773288726807,
+   "excess_ci_hi": 0.8938318267464638,
+   "auc_feature_gt_decoy": 0.6705054044723511,
+   "wilcoxon_p_excess": 8.471510955132544e-05,
+   "swap_n": 36,
+   "swap_observed": 0.39991642720997334,
+   "swap_p_two_sided": 0.060187962407518496,
+   "swap_null_lo": -0.44763659502350495,
+   "swap_null_hi": 0.388273911003489
+  },
+  {
+   "features": "pit",
+   "metric": "hh_winter",
+   "n": 36,
+   "median_feature_minus_ring_db": 0.01952548697590828,
+   "median_decoy_minus_ring_db": -0.31693337857723236,
+   "median_excess_db": 0.35503313690423965,
+   "excess_ci_lo": 0.113582492840942,
+   "excess_ci_hi": 0.6497548371553421,
+   "auc_feature_gt_decoy": 0.6270254850387573,
+   "wilcoxon_p_excess": 0.004597575025400147,
+   "swap_n": 36,
+   "swap_observed": 0.35503312945365906,
+   "swap_p_two_sided": 0.08398320335932813,
+   "swap_null_lo": -0.39788532853126524,
+   "swap_null_hi": 0.4042726877029053
+  },
+  {
+   "features": "pit",
+   "metric": "hh_leafon",
+   "n": 36,
+   "median_feature_minus_ring_db": 0.10065221786499023,
+   "median_decoy_minus_ring_db": -0.2321486473083496,
+   "median_excess_db": 0.39072682708501816,
+   "excess_ci_lo": -0.061676472425460815,
+   "excess_ci_hi": 0.7146944105625153,
+   "auc_feature_gt_decoy": 0.5958719135802469,
+   "wilcoxon_p_excess": 0.03343982470687479,
+   "swap_n": 36,
+   "swap_observed": 0.39072682708501816,
+   "swap_p_two_sided": 0.021395720855828835,
+   "swap_null_lo": -0.3325638514012098,
+   "swap_null_hi": 0.33473751172423305
+  },
+  {
+   "features": "pit",
+   "metric": "hh_change_leafon_vs_fall",
+   "n": 36,
+   "median_feature_minus_ring_db": -0.19481956958770752,
+   "median_decoy_minus_ring_db": 0.22864001989364624,
+   "median_excess_db": -0.44148436188697815,
+   "excess_ci_lo": -0.8134134635329247,
+   "excess_ci_hi": -0.016353070735931396,
+   "auc_feature_gt_decoy": 0.399170524691358,
+   "wilcoxon_p_excess": 0.02096025293576531,
+   "swap_n": 36,
+   "swap_observed": -0.44148436188697815,
+   "swap_p_two_sided": 0.14557088582283542,
+   "swap_null_lo": -0.5791023302823305,
+   "swap_null_hi": 0.6055283851921551
+  },
+  {
+   "features": "pit",
+   "metric": "hv_leafoff_fall",
+   "n": 36,
+   "median_feature_minus_ring_db": 0.2130427360534668,
+   "median_decoy_minus_ring_db": -0.30444882810115814,
+   "median_excess_db": 0.518315277993679,
+   "excess_ci_lo": -0.021535079926252365,
+   "excess_ci_hi": 1.142925202846527,
+   "auc_feature_gt_decoy": 0.6517939567565918,
+   "wilcoxon_p_excess": 0.0024800077080726624,
+   "swap_n": 36,
+   "swap_observed": 0.5183152798563242,
+   "swap_p_two_sided": 0.011397720455908818,
+   "swap_null_lo": -0.38380235692020503,
+   "swap_null_hi": 0.41314032403752204
+  },
+  {
+   "features": "pit",
+   "metric": "hv_winter",
+   "n": 36,
+   "median_feature_minus_ring_db": -0.009191037155687809,
+   "median_decoy_minus_ring_db": -0.31158922612667084,
+   "median_excess_db": 0.40900245029479265,
+   "excess_ci_lo": -0.14887968450784683,
+   "excess_ci_hi": 0.6197780966758728,
+   "auc_feature_gt_decoy": 0.6002122163772583,
+   "wilcoxon_p_excess": 0.05559759485186078,
+   "swap_n": 36,
+   "swap_observed": 0.40900242794305086,
+   "swap_p_two_sided": 0.027594481103779243,
+   "swap_null_lo": -0.3380116445478052,
+   "swap_null_hi": 0.3656428732909261
+  },
+  {
+   "features": "pit",
+   "metric": "hv_leafon",
+   "n": 36,
+   "median_feature_minus_ring_db": -0.06586742401123047,
+   "median_decoy_minus_ring_db": -0.14269256591796875,
+   "median_excess_db": 0.3175349235534668,
+   "excess_ci_lo": -0.04624295234680176,
+   "excess_ci_hi": 0.601362943649292,
+   "auc_feature_gt_decoy": 0.5944058641975308,
+   "wilcoxon_p_excess": 0.023890959797427058,
+   "swap_n": 36,
+   "swap_observed": 0.3175349235534668,
+   "swap_p_two_sided": 0.07018596280743851,
+   "swap_null_lo": -0.3208348199725151,
+   "swap_null_hi": 0.357379838824272
+  },
+  {
+   "features": "pit",
+   "metric": "hv_change_leafon_vs_fall",
+   "n": 36,
+   "median_feature_minus_ring_db": -0.015425443649291992,
+   "median_decoy_minus_ring_db": 0.1689116358757019,
+   "median_excess_db": -0.19836962223052979,
+   "excess_ci_lo": -0.7502636909484863,
+   "excess_ci_hi": 0.431751012802124,
+   "auc_feature_gt_decoy": 0.44837962962962963,
+   "wilcoxon_p_excess": 0.307420506287599,
+   "swap_n": 36,
+   "swap_observed": -0.19836962223052979,
+   "swap_p_two_sided": 0.5088982203559288,
+   "swap_null_lo": -0.5287350609898567,
+   "swap_null_hi": 0.5509558707475654
+  }
+ ]
+}

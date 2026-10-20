@@ -5,6 +5,18 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-19 -- Stable pit/pad test: 40 decoys and a swap test, both areas
+
+- **Why.** Single-draw p-values on 613590 moved from 0.001 to 0.13 with the seed.
+- **What.** `--decoys 40` added to `_nisar_gslc_stack_pad_pit_seasonal_9t.py`: 40 decoys per feature,
+  swap test (5,000 permutations, whole series swapped, median over features). Defaults unchanged.
+  Outputs carry `_swap40`. Write-up: `docs/iterations/nisar_review_fixes_flatten_test.md`.
+- **Result.** 613590 pits: +0.3 to +0.5 dB in six of eight metrics, swap p 0.011-0.084, none past the
+  16-test line. 9t pits: HH leaf-off fall +0.25 dB and HV leaf-on +0.19 dB, p < 0.001. 9t pads: nothing
+  of size (HH winter -0.09 dB, p 0.002). Old Wilcoxon p-values overstated.
+
+---
+
 ## 2026-10-19 -- 613590 seasonal rerun: the change is the decoy draw, not the pits
 
 - **Question.** The 613590 seasonal rerun after fix 1 printed pit numbers different from the saved CSV.
