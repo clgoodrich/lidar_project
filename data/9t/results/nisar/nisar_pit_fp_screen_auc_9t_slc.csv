@@ -1,0 +1,10 @@
+metric,auc_tp_gt_fp,p_perm,median_tp,median_fp
+score,0.849,0.0002,0.637,0.565
+hh_leafoff_fall,0.559,0.3667,-0.679,-0.945
+hh_winter,0.596,0.1518,-1.058,-2.202
+hh_leafon,0.553,0.4217,-0.105,-0.726
+hh_change_leafon_vs_fall,0.481,0.765,0.47,0.345
+hv_leafoff_fall,0.587,0.1882,-1.139,-2.205
+hv_winter,0.457,0.5105,-1.01,-1.057
+hv_leafon,0.548,0.4629,-0.29,-0.387
+hv_change_leafon_vs_fall,0.419,0.2128,0.411,0.707

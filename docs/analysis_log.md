@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-20 -- NISAR as a pit false-positive screen: no help
+
+- **Test.** 90 of the 104 scored U-Net v2 pit detections on 9t (61 TP, 29 FP), eight seasonal NISAR
+  metrics each. Write-up: `docs/iterations/nisar_pit_fp_screen.md`; script
+  `notebooks/wellsight_v2/s5_eval/_nisar_pit_fp_screen_9t.py`.
+- **Result.** Best single-metric AUC 0.60 (p 0.15). Detector score AUC 0.85. CV AUC score alone 0.843,
+  score + NISAR 0.817 (permutation p 0.58). NISAR does not separate TP from FP at this sample size.
+
+---
+
 ## 2026-10-20 -- NISAR: 7 new GSLC windows fetched; why the Jan-Jun 2026 gap exists
 
 - **Fetch.** `_nisar_gslc_window_fetch` run for 9t, 613590 and mkf. New: 9t 2 (track 162 on 2026-10-11, track 026 on 2026-10-14), 613590 2 (same dates), mkf 3 (adds track 098 on 2026-10-07). Index rows now 37 / 36 / 48. The raw windows are in each area's `derived/nisar_gslc_5m/`. They are not yet re-placed on the lidar ground (`--slc` stack) and not in any result.
