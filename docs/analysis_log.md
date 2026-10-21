@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-21 -- Bright steady targets repeat across tracks more than chance
+
+- **Test.** Shifted-null coincidence count of per-track steady bright points within 15 m, 10,000 wrapped shifts. Script `notebooks/wellsight_v2/s5_eval/_nisar_bright_coincidence_9t.py --slc`; doc `docs/iterations/nisar_bright_coincidence.md`.
+- **Result.** Pairs with track 162: 6.0x (026) and 8.3x (090) chance, p 0.0001. Pair 026-090 1.4x, p 0.032. About 87% of coincidences involving 162 are not chance.
+- **Limit.** Shows stable bright objects, not steel. 090 and 162 share a look direction.
+
+---
+
 ## 2026-10-21 -- Steel test with wells snapped to lidar features: still no signal
 
 - **Why.** The user asked whether the first steel test was hurt by unreliable DEP coordinates.
