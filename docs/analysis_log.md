@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-21 -- Steel test with wells snapped to lidar features: still no signal
+
+- **Why.** The user asked whether the first steel test was hurt by unreliable DEP coordinates.
+- **Test.** 419 DEP wells moved to the nearest annotated pit or pad within 40 m (median move 13.3 m), scored against their raw positions and against 532 control features. Script `notebooks/wellsight_v2/s5_eval/_nisar_steel_snapped_9t.py`; doc `docs/iterations/nisar_steel_snapped.md`.
+- **Result.** Hit rate 0.7% snapped, 1.0% raw, 0.9% controls (p 1.0). Brightness medians equal. Snapping changes nothing.
+- **Limit.** Only 6, 318 and 36 pixels pass the rule on the three tracks, so power is low. The test rules out a strong effect only.
+
+---
+
 ## 2026-10-20 -- NISAR as a pit false-positive screen: no help
 
 - **Test.** 90 of the 104 scored U-Net v2 pit detections on 9t (61 TP, 29 FP), eight seasonal NISAR

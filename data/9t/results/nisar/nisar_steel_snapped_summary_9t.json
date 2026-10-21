@@ -1,0 +1,231 @@
+{
+  "snap_m": 40.0,
+  "r_m": 15.0,
+  "r_wide": 25.0,
+  "n_wells": 1219,
+  "n_snapped": 419,
+  "median_snap_shift_m": 13.290694916243197,
+  "n_controls": 532,
+  "comparisons": {
+    "r15_snapped_vs_controls_all": {
+      "n_a": 419,
+      "n_b": 532,
+      "hit_a": 0.007,
+      "hit_b": 0.009,
+      "odds_ratio": 0.76,
+      "p_hit": 1.0,
+      "bright_median_a": 3.67,
+      "bright_median_b": 3.72,
+      "p_bright": 0.25
+    },
+    "r15_snapped_vs_raw_all": {
+      "n_a": 419,
+      "n_b": 419,
+      "hit_a": 0.007,
+      "hit_b": 0.01,
+      "odds_ratio": 0.75,
+      "p_hit": 1.0,
+      "bright_median_a": 3.67,
+      "bright_median_b": 3.66,
+      "p_bright": 0.67
+    },
+    "r15_snapped_vs_controls_active": {
+      "n_a": 280,
+      "n_b": 532,
+      "hit_a": 0.007,
+      "hit_b": 0.009,
+      "odds_ratio": 0.76,
+      "p_hit": 1.0,
+      "bright_median_a": 3.62,
+      "bright_median_b": 3.72,
+      "p_bright": 0.14
+    },
+    "r15_snapped_vs_raw_active": {
+      "n_a": 280,
+      "n_b": 280,
+      "hit_a": 0.007,
+      "hit_b": 0.011,
+      "odds_ratio": 0.66,
+      "p_hit": 1.0,
+      "bright_median_a": 3.62,
+      "bright_median_b": 3.63,
+      "p_bright": 0.58
+    },
+    "r15_snapped_vs_controls_abandoned_or_plugged": {
+      "n_a": 139,
+      "n_b": 532,
+      "hit_a": 0.007,
+      "hit_b": 0.009,
+      "odds_ratio": 0.76,
+      "p_hit": 1.0,
+      "bright_median_a": 3.77,
+      "bright_median_b": 3.72,
+      "p_bright": 0.92
+    },
+    "r15_snapped_vs_raw_abandoned_or_plugged": {
+      "n_a": 139,
+      "n_b": 139,
+      "hit_a": 0.007,
+      "hit_b": 0.007,
+      "odds_ratio": 1.0,
+      "p_hit": 1.0,
+      "bright_median_a": 3.77,
+      "bright_median_b": 3.68,
+      "p_bright": 0.98
+    },
+    "r15_snapped_vs_controls_on_pad": {
+      "n_a": 231,
+      "n_b": 532,
+      "hit_a": 0.004,
+      "hit_b": 0.009,
+      "odds_ratio": 0.46,
+      "p_hit": 0.67,
+      "bright_median_a": 3.63,
+      "bright_median_b": 3.72,
+      "p_bright": 0.052
+    },
+    "r15_snapped_vs_raw_on_pad": {
+      "n_a": 231,
+      "n_b": 231,
+      "hit_a": 0.004,
+      "hit_b": 0.004,
+      "odds_ratio": 1.0,
+      "p_hit": 1.0,
+      "bright_median_a": 3.63,
+      "bright_median_b": 3.61,
+      "p_bright": 0.69
+    },
+    "r15_snapped_vs_controls_on_pit": {
+      "n_a": 188,
+      "n_b": 532,
+      "hit_a": 0.011,
+      "hit_b": 0.009,
+      "odds_ratio": 1.13,
+      "p_hit": 1.0,
+      "bright_median_a": 3.78,
+      "bright_median_b": 3.72,
+      "p_bright": 0.82
+    },
+    "r15_snapped_vs_raw_on_pit": {
+      "n_a": 188,
+      "n_b": 188,
+      "hit_a": 0.011,
+      "hit_b": 0.016,
+      "odds_ratio": 0.66,
+      "p_hit": 1.0,
+      "bright_median_a": 3.78,
+      "bright_median_b": 3.84,
+      "p_bright": 0.83
+    },
+    "r25_snapped_vs_controls_all": {
+      "n_a": 419,
+      "n_b": 532,
+      "hit_a": 0.021,
+      "hit_b": 0.026,
+      "odds_ratio": 0.81,
+      "p_hit": 0.68,
+      "bright_median_a": 4.64,
+      "bright_median_b": 4.7,
+      "p_bright": 0.048
+    },
+    "r25_snapped_vs_raw_all": {
+      "n_a": 419,
+      "n_b": 419,
+      "hit_a": 0.021,
+      "hit_b": 0.014,
+      "odds_ratio": 1.51,
+      "p_hit": 0.6,
+      "bright_median_a": 4.64,
+      "bright_median_b": 4.56,
+      "p_bright": 0.53
+    },
+    "r25_snapped_vs_controls_active": {
+      "n_a": 280,
+      "n_b": 532,
+      "hit_a": 0.025,
+      "hit_b": 0.026,
+      "odds_ratio": 0.95,
+      "p_hit": 1.0,
+      "bright_median_a": 4.6,
+      "bright_median_b": 4.7,
+      "p_bright": 0.049
+    },
+    "r25_snapped_vs_raw_active": {
+      "n_a": 280,
+      "n_b": 280,
+      "hit_a": 0.025,
+      "hit_b": 0.018,
+      "odds_ratio": 1.41,
+      "p_hit": 0.77,
+      "bright_median_a": 4.6,
+      "bright_median_b": 4.59,
+      "p_bright": 0.93
+    },
+    "r25_snapped_vs_controls_abandoned_or_plugged": {
+      "n_a": 139,
+      "n_b": 532,
+      "hit_a": 0.014,
+      "hit_b": 0.026,
+      "odds_ratio": 0.54,
+      "p_hit": 0.54,
+      "bright_median_a": 4.65,
+      "bright_median_b": 4.7,
+      "p_bright": 0.31
+    },
+    "r25_snapped_vs_raw_abandoned_or_plugged": {
+      "n_a": 139,
+      "n_b": 139,
+      "hit_a": 0.014,
+      "hit_b": 0.007,
+      "odds_ratio": 2.01,
+      "p_hit": 1.0,
+      "bright_median_a": 4.65,
+      "bright_median_b": 4.49,
+      "p_bright": 0.21
+    },
+    "r25_snapped_vs_controls_on_pad": {
+      "n_a": 231,
+      "n_b": 532,
+      "hit_a": 0.004,
+      "hit_b": 0.026,
+      "odds_ratio": 0.16,
+      "p_hit": 0.048,
+      "bright_median_a": 4.65,
+      "bright_median_b": 4.7,
+      "p_bright": 0.27
+    },
+    "r25_snapped_vs_raw_on_pad": {
+      "n_a": 231,
+      "n_b": 231,
+      "hit_a": 0.004,
+      "hit_b": 0.004,
+      "odds_ratio": 1.0,
+      "p_hit": 1.0,
+      "bright_median_a": 4.65,
+      "bright_median_b": 4.52,
+      "p_bright": 0.38
+    },
+    "r25_snapped_vs_controls_on_pit": {
+      "n_a": 188,
+      "n_b": 532,
+      "hit_a": 0.043,
+      "hit_b": 0.026,
+      "odds_ratio": 1.64,
+      "p_hit": 0.32,
+      "bright_median_a": 4.54,
+      "bright_median_b": 4.7,
+      "p_bright": 0.032
+    },
+    "r25_snapped_vs_raw_on_pit": {
+      "n_a": 188,
+      "n_b": 188,
+      "hit_a": 0.043,
+      "hit_b": 0.027,
+      "odds_ratio": 1.63,
+      "p_hit": 0.57,
+      "bright_median_a": 4.54,
+      "bright_median_b": 4.6,
+      "p_bright": 0.94
+    }
+  }
+}
