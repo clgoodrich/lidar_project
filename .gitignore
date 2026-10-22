@@ -194,3 +194,9 @@ docs/presentation/v19_maps_and_plain_results/*.pptx
 
 # heavy RRIM deliverables (>100 MB, regenerable) -- added 2026-09-29 after large-file audit
 deliverables/*.tif
+
+# Warren/Sheffield lidar derivatives and pumpjack pilot (regenerable, 2026-10-21)
+data/warren/derived/1m/
+data/_source/lidar/warren_sheffield/_merged_*.las
+data/warren/derived/pumpjack_pilot/
+data/9t/derived/pumpjack_pilot/

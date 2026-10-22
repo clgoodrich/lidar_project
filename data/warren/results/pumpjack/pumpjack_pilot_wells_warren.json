@@ -1,0 +1,66 @@
+[
+ {
+  "permit": "123-33508",
+  "x": 651873.3390684472,
+  "y": 4634270.342227698,
+  "spud": 1983,
+  "wtype": "OIL",
+  "tile": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\warren_sheffield\\USGS_LPC_PA_WesternPA_2019_D20_17TPG651633.laz"
+ },
+ {
+  "permit": "123-44068",
+  "x": 653046.0012704496,
+  "y": 4632388.681222402,
+  "spud": 2006,
+  "wtype": "COMB. OIL&GAS",
+  "tile": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\warren_sheffield\\USGS_LPC_PA_WesternPA_2019_D20_17TPG652632.laz"
+ },
+ {
+  "permit": "123-44862",
+  "x": 653551.0591948763,
+  "y": 4630775.166080474,
+  "spud": 2007,
+  "wtype": "OIL",
+  "tile": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\warren_sheffield\\USGS_LPC_PA_WesternPA_2019_D20_17TPG652630.laz"
+ },
+ {
+  "permit": "123-44805",
+  "x": 653097.5003399039,
+  "y": 4632095.083097557,
+  "spud": 2007,
+  "wtype": "COMB. OIL&GAS",
+  "tile": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\warren_sheffield\\USGS_LPC_PA_WesternPA_2019_D20_17TPG652632.laz"
+ },
+ {
+  "permit": "123-45801",
+  "x": 651701.0929280764,
+  "y": 4633086.646489174,
+  "spud": 2009,
+  "wtype": "OIL",
+  "tile": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\warren_sheffield\\USGS_LPC_PA_WesternPA_2019_D20_17TPG651632.laz"
+ },
+ {
+  "permit": "123-43710",
+  "x": 652018.3604105653,
+  "y": 4633853.652495787,
+  "spud": 2005,
+  "wtype": "OIL",
+  "tile": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\warren_sheffield\\USGS_LPC_PA_WesternPA_2019_D20_17TPG651633.laz"
+ },
+ {
+  "permit": "123-42974",
+  "x": 649914.3785853321,
+  "y": 4634061.80448948,
+  "spud": 2001,
+  "wtype": "OIL",
+  "tile": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\warren_sheffield\\USGS_LPC_PA_WesternPA_2019_D20_17TPG649633.laz"
+ },
+ {
+  "permit": "123-47799",
+  "x": 652609.420008406,
+  "y": 4634324.499326565,
+  "spud": 2015,
+  "wtype": "OIL",
+  "tile": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\warren_sheffield\\USGS_LPC_PA_WesternPA_2019_D20_17TPG652633.laz"
+ }
+]

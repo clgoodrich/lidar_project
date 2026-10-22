@@ -1,0 +1,15 @@
+{
+  "n_wells": 100,
+  "n_ctrl": 100,
+  "bright_x": 2.0,
+  "r_m": 40.0,
+  "wells_with_bright": 37,
+  "ctrl_with_bright": 53,
+  "share_wells": 0.37,
+  "share_ctrl": 0.53,
+  "odds_ratio": 0.52,
+  "p_fisher": 0.033,
+  "median_max_ratio_wells": 1.736842105263158,
+  "median_max_ratio_ctrl": 2.3544600938967135,
+  "p_mwu_max_ratio": 0.013
+}

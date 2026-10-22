@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-22 -- Pumpjack search in lidar: bright compact objects do not separate wells from controls
+
+- **Test.** 100 Warren DEP oil wells (spud 1980-2015) against 100 controls, bright (>= 2x canopy intensity) compact objects 2-7 m up within 40 m. Scripts `notebooks/wellsight_v2/s5_eval/_lidar_pumpjack_pilot_warren.py`, `_lidar_pumpjack_metrics_warren.py`; doc `docs/iterations/lidar_pumpjack_pilot_warren.md`.
+- **Result.** Wells 37%, same-setting controls 53% (Fisher p 0.033). The first controls fell in town (57%, p 0.007). Wells score lower, not higher.
+- **Pilot.** Warren pad 123-45801 shows objects about 6x canopy intensity. On 9t, forest hides the pads. Candidate 121-44015 is about 60 m from an annotated pad.
+- **Also.** Full 1 m derivative stack and RRIM built for the 7 Warren tiles (`data/warren/derived/1m/full/`). F: replugged; 9t raw tiles are on H:.
+- **Limit.** No pumpjack truth, raw intensity, DEP offsets. Not ruled out.
+
+---
+
 ## 2026-10-21 -- Bright steady targets repeat across tracks more than chance
 
 - **Test.** Shifted-null coincidence count of per-track steady bright points within 15 m, 10,000 wrapped shifts. Script `notebooks/wellsight_v2/s5_eval/_nisar_bright_coincidence_9t.py --slc`; doc `docs/iterations/nisar_bright_coincidence.md`.

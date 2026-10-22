@@ -1,0 +1,66 @@
+[
+ {
+  "permit": "121-44014",
+  "x": 620404.1113213473,
+  "y": 4594991.165312837,
+  "spud": 2006,
+  "wtype": "OIL",
+  "tile": "H:\\lidar_project_data_DO_NOT_DELETE\\data\\source_laz\\westernpa\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz"
+ },
+ {
+  "permit": "121-32098",
+  "x": 620724.2157124702,
+  "y": 4594657.1308770785,
+  "spud": 1982,
+  "wtype": "OIL",
+  "tile": "H:\\lidar_project_data_DO_NOT_DELETE\\data\\source_laz\\westernpa\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz"
+ },
+ {
+  "permit": "121-32092",
+  "x": 620443.4221860364,
+  "y": 4594911.973227797,
+  "spud": 1982,
+  "wtype": "OIL",
+  "tile": "H:\\lidar_project_data_DO_NOT_DELETE\\data\\source_laz\\westernpa\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz"
+ },
+ {
+  "permit": "121-32105",
+  "x": 620678.1628939791,
+  "y": 4595688.279513171,
+  "spud": 1982,
+  "wtype": "OIL",
+  "tile": "H:\\lidar_project_data_DO_NOT_DELETE\\data\\source_laz\\westernpa\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz"
+ },
+ {
+  "permit": "121-32074",
+  "x": 620205.8780484888,
+  "y": 4594666.6915902225,
+  "spud": 1982,
+  "wtype": "OIL",
+  "tile": "H:\\lidar_project_data_DO_NOT_DELETE\\data\\source_laz\\westernpa\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz"
+ },
+ {
+  "permit": "121-44015",
+  "x": 620527.5646499911,
+  "y": 4595098.061619316,
+  "spud": 2006,
+  "wtype": "OIL",
+  "tile": "H:\\lidar_project_data_DO_NOT_DELETE\\data\\source_laz\\westernpa\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz"
+ },
+ {
+  "permit": "121-32091",
+  "x": 620607.2400672936,
+  "y": 4595021.654749761,
+  "spud": 1982,
+  "wtype": "OIL",
+  "tile": "H:\\lidar_project_data_DO_NOT_DELETE\\data\\source_laz\\westernpa\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz"
+ },
+ {
+  "permit": "121-32099",
+  "x": 620849.3134998673,
+  "y": 4594775.60975809,
+  "spud": 1982,
+  "wtype": "OIL",
+  "tile": "H:\\lidar_project_data_DO_NOT_DELETE\\data\\source_laz\\westernpa\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz"
+ }
+]
