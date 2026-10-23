@@ -5,6 +5,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-23 -- NISAR steady bright targets over Warren: wells are not brighter than chance
+
+- **Data.** 49 GSLC windows over the Warren swath (tracks 26, 90, 162; 2025-10-28 to 2026-10-18), fetched with `--area warren`. Added `warren` to `_nisar_area.py`. Track 26 dates 2026-07-22 and 2026-09-08 dropped (bad granules; 09-08 is empty here).
+- **Test.** 684 DEP wells against 20,000 random pixels, target within 15 m. Script `notebooks/wellsight_v2/s5_eval/_nisar_bright_targets_wells_warren.py`.
+- **Result.** Wells 3.9% against 5.2% (p 0.16). Open ground 6.0% against 5.1% (p 0.44). Under canopy 2.2% against 5.3% (p 0.006). No target on 2+ tracks lies within 15 m of a well.
+- **Limit.** DEP offsets, no pumpjack truth, no track-to-lidar co-registration. Doc `docs/iterations/nisar_bright_targets_wells_warren.md`.
+
 ## 2026-10-22 -- Pumpjack search in lidar: bright compact objects do not separate wells from controls
 
 - **Test.** 100 Warren DEP oil wells (spud 1980-2015) against 100 controls, bright (>= 2x canopy intensity) compact objects 2-7 m up within 40 m. Scripts `notebooks/wellsight_v2/s5_eval/_lidar_pumpjack_pilot_warren.py`, `_lidar_pumpjack_metrics_warren.py`; doc `docs/iterations/lidar_pumpjack_pilot_warren.md`.

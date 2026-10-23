@@ -1,0 +1,79 @@
+{
+  "params": {
+    "da_max": 0.25,
+    "bright_db": 6.0,
+    "bg_m": 250.0,
+    "merge_m": 15.0,
+    "near_m": 15.0,
+    "open_cover_lt": 0.3
+  },
+  "dates_per_track": {
+    "26": 9,
+    "90": 23,
+    "162": 15
+  },
+  "targets": 1423,
+  "by_n_tracks": {
+    "1": 1161,
+    "2": 238,
+    "3": 24
+  },
+  "wells_in_window": 684,
+  "wells_vs_random": {
+    "all": {
+      "n_wells": 684,
+      "wells_with_target": 27,
+      "share_wells": 0.039,
+      "n_random": 20000,
+      "share_random": 0.052,
+      "odds_ratio": 0.75,
+      "p_fisher": 0.16
+    },
+    "open": {
+      "n_wells": 318,
+      "wells_with_target": 19,
+      "share_wells": 0.06,
+      "n_random": 7100,
+      "share_random": 0.051,
+      "odds_ratio": 1.19,
+      "p_fisher": 0.44
+    },
+    "canopy": {
+      "n_wells": 366,
+      "wells_with_target": 8,
+      "share_wells": 0.022,
+      "n_random": 12900,
+      "share_random": 0.053,
+      "odds_ratio": 0.4,
+      "p_fisher": 0.0057
+    }
+  },
+  "hit_by_well_status": {
+    "Abandoned": {
+      "size": 3,
+      "mean": 0.0
+    },
+    "Active": {
+      "size": 570,
+      "mean": 0.037
+    },
+    "DEP Abandoned List": {
+      "size": 7,
+      "mean": 0.0
+    },
+    "Operator Reported Not Drilled": {
+      "size": 31,
+      "mean": 0.065
+    },
+    "Plugged OG Well": {
+      "size": 57,
+      "mean": 0.018
+    },
+    "Proposed But Never Materialized": {
+      "size": 16,
+      "mean": 0.188
+    }
+  },
+  "targets_2plus_tracks_at_well": 0,
+  "targets_2plus_tracks": 262
+}

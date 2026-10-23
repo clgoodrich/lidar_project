@@ -1,4 +1,4 @@
-"""Which lidar area the NISAR scripts run on: 9t (default), 613590 or mkf (McKean).
+"""Which lidar area the NISAR scripts run on: 9t (default), 613590, mkf (McKean) or warren.
 
 Every NISAR script imports this before it builds its paths. Pick the area with
 `--area <tag>` on the command line (removed from sys.argv here, so each script's own
@@ -22,6 +22,7 @@ AREAS = {
     "9t": ("9t", "9t_1m"),
     "613590": ("613590", "613590_1m"),
     "mkf": ("mckean/mkf", "mkf_1m"),
+    "warren": ("warren", "warren_1m"),
 }
 
 
@@ -53,10 +54,10 @@ def _pick_stack() -> str:
 STACK = _pick_stack()
 if STACK not in ("gslc", "slc"):
     raise SystemExit(f"unknown stack {STACK!r}; use gslc or slc")
-if STACK == "slc" and TAG == "mkf":
+if STACK == "slc" and TAG in ("mkf", "warren"):
     raise SystemExit("the lidar-placed SLC stack exists for 9t and 613590 only")
 DATA = path_for("data") / AREAS[TAG][0]
-D1M = DATA / "derived" / "1m"
+D1M = DATA / "derived" / "1m" / ("full" if TAG == "warren" else "")
 SFX = AREAS[TAG][1]
 GSLC = DATA / "derived" / ("nisar_slc_lidar_5m" if STACK == "slc" else "nisar_gslc_5m")
 # Window index of the stack in use. The lidar-placed stack has its own index and its outputs
@@ -69,7 +70,7 @@ RESULTS = DATA / "results" / "nisar"
 # DEP oil and gas locations. Venango areas keep the Venango export the 9t results used;
 # McKean takes the statewide export of the same date (2026-04, same columns).
 _DEP = path_for("data") / "_source" / "reference" / "dep_wells"
-WELLS = _DEP / ("oil_gas_locations.gpkg" if TAG == "mkf" else "venango_wells_all.gpkg")
+WELLS = _DEP / ("oil_gas_locations.gpkg" if TAG in ("mkf", "warren") else "venango_wells_all.gpkg")
 # NASA granules that sit far from where the rest of their track puts the ground. Each one
 # matches no other date of its track at any shift inside the window, in every area that
 # holds it (checked 2026-10-13, docs/iterations/nisar_regeocode_plan_9t.md). (date, track).
@@ -83,8 +84,8 @@ def usable(idx):
 
 
 def usable_stack(idx):
-    """Rows to analyse: half-valid dates, and on the lidar-placed stack also not a bad granule."""
-    return usable(idx) if STACK == "slc" else idx[idx.valid_fraction >= 0.5]
+    """Rows to analyse: half-valid dates, and on the lidar-placed stack (and Warren) also not a bad granule."""
+    return usable(idx) if (STACK == "slc" or TAG == "warren") else idx[idx.valid_fraction >= 0.5]
 
 
 def lidar(name: str) -> Path:
