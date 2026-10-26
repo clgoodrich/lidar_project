@@ -1,0 +1,28 @@
+{
+  "tracks": [
+    26,
+    90,
+    162
+  ],
+  "pairs_per_track": {
+    "26": {
+      "coh_short": 6,
+      "coh_mid": 8,
+      "coh_long": 31
+    },
+    "90": {
+      "coh_short": 7,
+      "coh_mid": 11,
+      "coh_long": 37
+    },
+    "162": {
+      "coh_short": 11,
+      "coh_mid": 15,
+      "coh_long": 79
+    }
+  },
+  "n_features": 32,
+  "open_px": 269833,
+  "closed_px": 238121,
+  "stack": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\nisar_features_5m\\nisar_feature_stack_9t_5m.tif"
+}

@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-26 -- NISAR pad features: 303 bands scored, model beats the lidar baseline
+
+- **Built.** Nine feature products on 9t (303 bands: dual-pol, texture, spatial, amplitude, temporal, events, geometry, line-of-sight motion, coherence). Scripts `notebooks/wellsight_v2/s5_eval/_nisar_feat_*_9t.py`.
+- **Scored.** Pads against matched decoys (cover within 0.05, slope within 1 degree, 49 pixels each). 199 of 300 NISAR bands pass q < 0.05. Best single AUC 0.68.
+- **Model.** Gradient boosting, 500 m block CV. All NISAR 0.81, lidar baseline 0.57, placebo 0.50. Core 15 m: 0.96 on 139 large pads.
+- **Fixed on the way.** Coarse-bin canopy leak (cover control AUC 0.24 to 0.49), missingness leak in the model (0.91 to 0.80), unequal pad and decoy sample sizes.
+- **Open.** Road-adjacent decoys, pad size matching. Doc `docs/iterations/nisar_pad_features_scored_9t.md`.
+
 ## 2026-10-23 -- NISAR steady bright targets over Warren: wells are not brighter than chance
 
 - **Data.** 49 GSLC windows over the Warren swath (tracks 26, 90, 162; 2025-10-28 to 2026-10-18), fetched with `--area warren`. Added `warren` to `_nisar_area.py`. Track 26 dates 2026-07-22 and 2026-09-08 dropped (bad granules; 09-08 is empty here).

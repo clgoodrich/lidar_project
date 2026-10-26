@@ -494,3 +494,25 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** (1) 2026-10-12: lidar bare-earth heights (NAVD88, NAD83(2011)) turned into the WGS84 ellipsoid heights the NISAR geometry needs, with ITRF2014 standing in for WGS84. PROJ's own NAD83(2011) to "WGS 84" route is a null transform. (2) 2026-10-13: the lidar simulation grid (NAD83(2011)) sits 0.80 m east and 1.01 m south of the radar grid on 9t at epoch 2026.39. Check V3 now removes that offset.
 - **Generated:** `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py` (`lidar_heights`); `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py` (`datum_offset`); `data/9t/derived/nisar_slc_lidar_5m/`; `data/9t/results/nisar/nisar_lidar_sim_match_summary*_9t.json`; `docs/iterations/nisar_regeocode_plan_9t.md`.
 - **Source:** EPSG registry https://epsg.org/transformation_8970/ and https://geodesy.noaa.gov/GEOID/GEOID12B/ — data and standards, no PDF.
+
+### Cloude & Pottier 1997 — entropy / alpha decomposition
+- **Citation:** Cloude, S. R., & Pottier, E. (1997). "An entropy based classification scheme for land applications of polarimetric SAR." *IEEE Transactions on Geoscience and Remote Sensing* 35(1), 68-78. doi:10.1109/36.551935.
+- **About:** Eigen-decomposition of the polarimetric covariance into entropy, alpha and anisotropy.
+- **Used for:** 2026-10-26: entropy, alpha and degree-of-polarisation bands from the 2 x 2 HH/HV covariance.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_dualpol_9t.py`; `data/9t/derived/nisar_features_5m/nisar_feat_dualpol_9t_5m.tif`.
+- **Source:** cite-only, https://doi.org/10.1109/36.551935
+
+### Kim & van Zyl 2009 — radar vegetation index
+- **Citation:** Kim, Y., & van Zyl, J. (2009). "A time-series approach to estimate soil moisture using polarimetric radar data." *IEEE Transactions on Geoscience and Remote Sensing* 47(8), 2519-2527. doi:10.1109/TGRS.2009.2014944.
+- **About:** Defines the radar vegetation index (RVI) as a volume-scattering measure.
+- **Used for:** 2026-10-26: RVI and the dual-pol RVI form in the dualpol product.
+- **Generated:** same files as Cloude & Pottier 1997 above.
+- **Source:** cite-only, https://doi.org/10.1109/TGRS.2009.2014944
+
+### Touzi, Lopes & Vachon 1988 — ratio-of-averages edge detector
+- **Citation:** Touzi, R., Lopes, A., & Vachon, P. W. (1988). "Edge detection in SAR images using a constant false alarm rate ratio of averages." *IEEE Transactions on Geoscience and Remote Sensing* 26(6), 764-773. doi:10.1109/36.7708.
+- **About:** Ratio of local means across a half-window pair as a speckle-robust edge strength.
+- **Used for:** 2026-10-26: `roa_edge` band in the texture product.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_texture_9t.py`; `data/9t/derived/nisar_features_5m/nisar_feat_texture_9t_5m.tif`.
+- **Source:** cite-only, https://doi.org/10.1109/36.7708
+

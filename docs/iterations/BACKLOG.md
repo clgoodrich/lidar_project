@@ -638,3 +638,10 @@ write-up). Deferred refinements from that same advice:
 
 - **Full pad→pad rename** is partial: on-disk artifacts still use legacy `pad` names (GPKG layer `pad`, `pad_dataset_manifest.csv`, `pad_unet`). Code has back-compat aliases. Finish the rename when convenient.
 - Keep `analysis_log.md`, per-iteration docs, and `LEADERBOARD.md` current each pass (see CLAUDE.md documentation-maintenance rule).
+
+## NISAR pad features (2026-10-26)
+
+- **Road-adjacent decoys.** Score pads against decoys 30-100 m from a road to test whether the model learns a road signature. Gate for trusting the AUC 0.96 at core 15 m.
+- **Pad-size matching** of decoys, then a held-out U-Net comparison.
+- **Unbuilt products:** rain and freeze response (needs PRISM or NLDAS rain), road dead-end context, height residual and volume coherence, sub-aperture metal signature, spud-date truth for events.
+- **Warren:** needs the lidar radar simulation before the geometry product can run; no pad annotations there.

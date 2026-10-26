@@ -1,0 +1,8 @@
+{
+  "n_pads": 139,
+  "n_decoys": 1390,
+  "gate": 0.05,
+  "core_shrink_m": 15.0,
+  "baseline_auc": 0.513,
+  "passes_gate": true
+}
