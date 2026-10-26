@@ -641,7 +641,9 @@ write-up). Deferred refinements from that same advice:
 
 ## NISAR pad features (2026-10-26)
 
-- **Road-adjacent decoys.** Score pads against decoys 30-100 m from a road to test whether the model learns a road signature. Gate for trusting the AUC 0.96 at core 15 m.
+- **Done 2026-10-26:** road-adjacent decoy control (passed), rain/freeze, sub-aperture, height residual, road context, pit scoring.
 - **Pad-size matching** of decoys, then a held-out U-Net comparison.
-- **Unbuilt products:** rain and freeze response (needs PRISM or NLDAS rain), road dead-end context, height residual and volume coherence, sub-aperture metal signature, spud-date truth for events.
+- **Pit follow-up:** decoys matched on roughness would test whether NISAR sees the pit or only its surroundings. A pit set that excludes pits beside pads is only 88 pits.
+- **Freeze response** has 1-2 frozen dates per track. Revisit when a colder winter is in the stack.
+- **Per-pixel rainfall** (radar-derived or a gridded product finer than 4 km) if rain response looks worth pursuing.
 - **Warren:** needs the lidar radar simulation before the geometry product can run; no pad annotations there.

@@ -516,3 +516,23 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_texture_9t.py`; `data/9t/derived/nisar_features_5m/nisar_feat_texture_9t_5m.tif`.
 - **Source:** cite-only, https://doi.org/10.1109/36.7708
 
+### Daly et al. 2008 — PRISM climate data
+- **Citation:** Daly, C., Halbleib, M., Smith, J. I., Gibson, W. P., Doggett, M. K., Taylor, G. H., Curtis, J., & Pasteris, P. P. (2008). "Physiographically sensitive mapping of climatological temperature and precipitation across the conterminous United States." *International Journal of Climatology* 28(15), 2031-2064. doi:10.1002/joc.1688. Data: PRISM Climate Group, Oregon State University, https://prism.oregonstate.edu.
+- **About:** Method behind the 4 km PRISM daily rain and temperature grids.
+- **Used for:** 2026-10-26: daily rain and min/max temperature at the 9t centre for the rain and freeze product.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_weather_prism_daily_9t.py`; `data/9t/derived/weather/weather_prism_daily_9t.csv`; `data/9t/derived/nisar_features_5m/nisar_feat_rainfreeze_9t_5m.tif`.
+- **Source:** cite-only, https://doi.org/10.1002/joc.1688 and https://services.nacse.org/prism/data/get/us/4km/
+
+### Kohler & Linsley 1951 — antecedent precipitation index
+- **Citation:** Kohler, M. A., & Linsley, R. K. (1951). "Predicting the runoff from storm rainfall." U.S. Weather Bureau Research Paper 34.
+- **About:** Soil-wetness proxy from decayed prior rainfall.
+- **Used for:** 2026-10-26: the 10-day, 0.85-decay API that each NISAR date is regressed on.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_rain_freeze_9t.py`.
+- **Source:** cite-only.
+
+### Zebker & Villasenor 1992 — decorrelation in interferometric radar
+- **Citation:** Zebker, H. A., & Villasenor, J. (1992). "Decorrelation in interferometric radar echoes." *IEEE Transactions on Geoscience and Remote Sensing* 30(5), 950-959. doi:10.1109/36.175330.
+- **About:** Spatial-baseline and temporal decorrelation of repeat-pass InSAR.
+- **Used for:** 2026-10-26: coherence regressed on gap and |kz|, and phase regressed on kz for the height residual.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_height_resid_9t.py`; `data/9t/derived/nisar_features_5m/nisar_feat_heightresid_9t_5m.tif`.
+- **Source:** cite-only, https://doi.org/10.1109/36.175330

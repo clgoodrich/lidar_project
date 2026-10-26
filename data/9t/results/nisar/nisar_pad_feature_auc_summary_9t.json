@@ -1,8 +1,8 @@
 {
-  "n_bands": 303,
+  "n_bands": 351,
   "n_pads": 649,
   "n_candidate_px": 42485,
-  "n_q_lt_0p05": 201,
+  "n_q_lt_0p05": 227,
   "core_shrink_m": 5.0,
   "excl_m": 100.0,
   "decoy_r_px": 4,

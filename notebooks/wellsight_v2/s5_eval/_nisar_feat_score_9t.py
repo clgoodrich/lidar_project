@@ -24,10 +24,15 @@ from shapely.ops import unary_union
 
 import _nisar_feat_common as C
 
-CORE_SHRINK_M = float(os.environ.get("CORE_SHRINK_M", 5))   # larger values keep the window away from the pad edge
-EXCL_M, DECOY_R_PX, K_DECOY, B, SEED = 100.0, 4, 10, 300, 20261026
-N_DISC = 49   # pixels in a decoy disc of radius DECOY_R_PX
-SUFFIX = "" if CORE_SHRINK_M == 5 else f"_core{CORE_SHRINK_M:.0f}m"
+TARGET = os.environ.get("TARGET", "pad")                   # "pad" (995 pad polygons) or "pit" (pit_outside rims)
+BASE_CORE = 0.0 if TARGET == "pit" else 5.0
+CORE_SHRINK_M = float(os.environ.get("CORE_SHRINK_M", BASE_CORE))   # larger values keep the window away from the edge
+# decoy disc: radius 4 px (49 px) for pads; 1.5 px (9 px) for pits, whose rims cover about 8 px
+EXCL_M, DECOY_R_PX, K_DECOY, B, SEED = 100.0, (2 if TARGET == "pit" else 4), 10, 300, 20261026
+DISC_R2 = 2.25 if TARGET == "pit" else 16.0
+N_DISC = 9 if TARGET == "pit" else 49   # pixels in a decoy disc
+ROAD_NEAR = os.environ.get("ROAD_NEAR") == "1"        # decoys restricted to 30-100 m from a road (pads sit beside one)
+SUFFIX = ("" if CORE_SHRINK_M == BASE_CORE else f"_core{CORE_SHRINK_M:.0f}m") + ("_roadnear" if ROAD_NEAR else "")
 TOL_COVER, TOL_SLOPE_DEG = 0.05, 1.0
 COVER_BINS = [0, 0.25, 0.5, 0.75, 1.01]
 CLASSES = {"open": (0, 0.25), "partly": (0.25, 0.5), "grown": (0.5, 1.01)}
@@ -69,15 +74,25 @@ def main():
 
     pads = C.ifg.read_layer(C.ifg.ANN, "plat").to_crs(CRS := C.CRS)
     pits = C.ifg.read_layer(C.ifg.ANN, "pit_outside").to_crs(CRS)
+    targets = pits if TARGET == "pit" else pads
+    pads_u = pads.union_all()
     roads = C.ifg.read_layer(C.ifg.ANN, "roads").to_crs(CRS)
     wells = gpd.read_file(C.A.WELLS).to_crs(CRS)
-    excl_geom = unary_union([pads.union_all(), pits.union_all(), roads.union_all(), wells.union_all()]).buffer(EXCL_M)
+    keep = [pads.union_all(), pits.union_all(), wells.union_all()] + ([] if ROAD_NEAR else [roads.union_all()])
+    excl_geom = unary_union(keep).buffer(EXCL_M)
     excl = rasterize([(excl_geom, 1)], out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
+    if ROAD_NEAR:
+        rd = roads.union_all()
+        d_pad = np.array([g.centroid.distance(rd) for g in pads.geometry])
+        print(f"pad centroid to road: median {np.median(d_pad):.0f} m, 90th pct {np.percentile(d_pad, 90):.0f} m", flush=True)
+        far = rasterize([(rd.buffer(100), 1)], out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
+        near = rasterize([(rd.buffer(30), 1)], out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
+        excl = excl | ~far | near
 
     # pad table: core pixels, mean cover and slope
     rows = []
-    for g in pads.geometry:
-        core = g.buffer(-CORE_SHRINK_M)
+    for g in targets.geometry:
+        core = g.buffer(-CORE_SHRINK_M) if CORE_SHRINK_M else g
         px = C.st.pixel_index(core, tf, shape) if not core.is_empty else np.array([], int)
         if len(px) < 4:
             continue
@@ -86,12 +101,12 @@ def main():
             # score on the n_disc core pixels nearest the centre so a pad median has the same noise as a decoy disc
             rr, cc = np.divmod(px, shape[1])
             near = px[np.argsort((rr - np.median(rr)) ** 2 + (cc - np.median(cc)) ** 2)[:N_DISC]]
-            rows.append((px, cov, slo, near))
-    print(f"{len(rows)} of {len(pads)} pads usable", flush=True)
+            rows.append((px, cov, slo, near, g.centroid.distance(pads_u) if TARGET == "pit" else np.nan))
+    print(f"{len(rows)} of {len(targets)} {TARGET}s usable", flush=True)
 
     rng = np.random.default_rng(SEED)
     yy, xx = np.mgrid[-DECOY_R_PX:DECOY_R_PX + 1, -DECOY_R_PX:DECOY_R_PX + 1]
-    disc = np.c_[yy[yy ** 2 + xx ** 2 <= DECOY_R_PX ** 2], xx[yy ** 2 + xx ** 2 <= DECOY_R_PX ** 2]]
+    disc = np.c_[yy[yy ** 2 + xx ** 2 <= DISC_R2], xx[yy ** 2 + xx ** 2 <= DISC_R2]]
     assert len(disc) == N_DISC
     anyvalid = np.all([np.isfinite(a) for a in list(feats.values())[:3]], axis=0)
     ok = (np.isfinite(grids["cover"]) & np.isfinite(grids["slope"]) & ~excl & anyvalid)
@@ -121,6 +136,7 @@ def main():
 
     dm_px, du_px = disc_px(dec_m), disc_px(dec_u)
     pad_cover = np.array([r[1] for r in rows])
+    pad_dist = np.array([r[4] for r in rows])
     out, store = [], {}
     for name, a in feats.items():
         f = a.ravel()
@@ -141,23 +157,28 @@ def main():
             dsel = np.isin(dec_pad, np.flatnonzero(sel)) & np.isfinite(dmv)
             rec[f"auc_{cname}"] = round(auc_of(pv[sel], dmv[dsel]), 3) if sel.sum() >= 15 and dsel.sum() >= 50 else np.nan
             rec[f"n_{cname}"] = int(sel.sum())
+        if TARGET == "pit":
+            sel = good & (pad_dist >= 50)
+            dsel = np.isin(dec_pad, np.flatnonzero(sel)) & np.isfinite(dmv)
+            rec["auc_farpad"] = round(auc_of(pv[sel], dmv[dsel]), 3) if sel.sum() >= 15 and dsel.sum() >= 50 else np.nan
+            rec["n_farpad"] = int(sel.sum())
         out.append(rec)
     res = pd.DataFrame(out)
     blk = lambda px: (np.divmod(px, shape[1])[0] * 5 // 500) * 100000 + (np.divmod(px, shape[1])[1] * 5 // 500)  # noqa: E731
     names = list(store)
-    np.savez_compressed(C.FEAT_DIR / f"nisar_pad_samples_{C.A.TAG}{SUFFIX}.npz", names=names,
+    np.savez_compressed(C.FEAT_DIR / f"nisar_{TARGET}_samples_{C.A.TAG}{SUFFIX}.npz", names=names,
                         pad=np.stack([store[n][0] for n in names]), dec=np.stack([store[n][1] for n in names]),
                         dec_pad=dec_pad, pad_block=blk(np.array([int(np.median(r[0])) for r in rows])), dec_block=blk(dec_m),
-                        pad_cover=pad_cover)
+                        pad_cover=pad_cover, pad_dist=pad_dist)
     res["q"] = bh(res.p.values)
     res["dev"] = (res.auc_matched - 0.5).abs()
     res = res.sort_values("dev", ascending=False).drop(columns="dev")
-    path = C.OUT / f"nisar_pad_feature_auc_per_band_{C.A.TAG}{SUFFIX}.csv"
+    path = C.OUT / f"nisar_{TARGET}_feature_auc_per_band_{C.A.TAG}{SUFFIX}.csv"
     res.to_csv(path, index=False)
     json.dump(dict(n_bands=len(res), n_pads=len(rows), n_candidate_px=int(len(cand)),
                    n_q_lt_0p05=int((res.q < 0.05).sum()), core_shrink_m=CORE_SHRINK_M, excl_m=EXCL_M,
                    decoy_r_px=DECOY_R_PX, k_decoy=K_DECOY),
-              open(C.OUT / f"nisar_pad_feature_auc_summary_{C.A.TAG}{SUFFIX}.json", "w"), indent=2)
+              open(C.OUT / f"nisar_{TARGET}_feature_auc_summary_{C.A.TAG}{SUFFIX}.json", "w"), indent=2)
     pd.set_option("display.width", 220)
     print(res.head(25).to_string(index=False))
     print("bands with q < 0.05:", int((res.q < 0.05).sum()), "of", len(res))

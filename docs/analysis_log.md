@@ -5,6 +5,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-26 (later) -- NISAR features: road control, rain, sub-aperture, height, pits
+
+- **Road-adjacent decoys.** Decoys 30-100 m from a road. Pad model AUC 0.88 (core 5 m) and 0.96 (core 15 m), baseline 0.59 and 0.62, placebo 0.48. Pads are not recognised by road proximity. Annotated-road context alone scores 0.97-0.996 (circular), kept out of NISAR sets.
+- **New products.** Sub-aperture (15 bands), height above lidar ground and baseline decorrelation (9), rain and freeze from PRISM (22), road context (2). Spud-date truth impossible: DEP export ends 2018.
+- **Pits.** 488 pits against matched decoys: NISAR 0.91, lidar baseline 0.86, both 0.95, placebo 0.49. Dual-pol volume measures are strongest for pits (AUC 0.74), unlike pads. Doc `docs/iterations/nisar_pit_features_scored_9t.md`.
+- **Scripts.** `_weather_prism_daily_9t.py`, `_nisar_feat_subaperture_9t.py`, `_nisar_feat_height_resid_9t.py`, `_nisar_feat_rain_freeze_9t.py`, `_nisar_feat_road_context_9t.py`; scorer and model take `TARGET=pit` and `ROAD_NEAR=1`.
+
 ## 2026-10-26 -- NISAR pad features: 303 bands scored, model beats the lidar baseline
 
 - **Built.** Nine feature products on 9t (303 bands: dual-pol, texture, spatial, amplitude, temporal, events, geometry, line-of-sight motion, coherence). Scripts `notebooks/wellsight_v2/s5_eval/_nisar_feat_*_9t.py`.
