@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-27 (NISAR against Sentinel-2 optical, whole tile) -- NISAR
+
+- **Question.** The radar looks like the optical, not the terrain. Test: `notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_9t.py`. Sentinel-2 L2A from the Element 84 Earth Search STAC, scenes 2026-06-03, 2026-09-07 and 2025-10-27 (MGRS 17TPG), averaged onto the 5 m radar grid, cached in `data/9t/derived/optical_s2/` (git-ignored). 50 m block means, Spearman and R2.
+- **Errors caught and fixed during the run.** (1) Thin cirrus (SCL 10) flagged 63% of the 7 Sep scene and removed most blocks, so cirrus is now kept. (2) A 1,000 DN offset was subtracted that these scenes do not have, giving NDVI above 1. Removed. The September NDVI is saturated above 0.95 and carries no information. Numbers below are from the corrected run.
+- **Result.** HV against June NDVI: Spearman +0.47 (all), +0.35 (closed canopy), +0.66 (open ground). HH is weaker (+0.19, +0.01, +0.53). HV against NDVI(Jun) minus NDVI(Oct): +0.39. R2 of HV: optical layers 0.52, lidar layers (canopy height, cover, slope, elevation) 0.04, both 0.54. In closed canopy: optical 0.22, lidar 0.17, both 0.33. In open ground: optical 0.82, lidar 0.26.
+- **Reading.** Over the tile the radar tracks vegetation type, much more than the lidar canopy structure. Inside closed forest the optical and the ground elevation explain similar small shares (about 0.2 each, 0.33 together), so most of the radar variance there is unexplained. A shift of the optical by 4 pixels in any direction moves the correlation by 0.03 or less.
+- **Files.** `data/9t/results/nisar/nisar_vs_optical_corr_9t_slc.csv`, `data/9t/results/nisar/figures/nisar_vs_optical_window_9t_slc.png`.
+
+---
+
 ## 2026-10-27 (NISAR against canopy and terrain, whole tile) -- NISAR
 
 - **Question.** Does the NISAR date-mean backscatter follow the canopy or the ground? `notebooks/wellsight_v2/s5_eval/_nisar_vs_canopy_9t.py`, lidar-placed SLC stack, 25, 50 and 100 m block means, Spearman and partial correlations.

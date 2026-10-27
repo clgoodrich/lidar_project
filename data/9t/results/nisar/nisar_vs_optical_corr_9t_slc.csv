@@ -1,0 +1,7 @@
+subset,sar,n_blocks,spearman_canopy_height,spearman_canopy_cover,spearman_ground_slope,spearman_ground_elevation,spearman_ndvi_jun,spearman_ndvi_sep,spearman_ndvi_oct,spearman_ndvi_jun_minus_oct,spearman_ndmi_sep,spearman_nir_sep,r2_lidar_only,r2_optical_only,r2_lidar_and_optical
+all,hh,8100,-0.027,-0.068,-0.125,0.058,0.193,0.097,-0.02,0.184,-0.064,-0.131,0.025,0.416,0.421
+all,hv,8100,0.041,0.022,0.172,-0.168,0.469,0.129,-0.107,0.394,-0.013,-0.031,0.044,0.52,0.543
+closed canopy (cover > 0.8),hh,1382,-0.036,0.047,-0.081,-0.223,0.013,-0.119,-0.009,0.069,-0.226,-0.217,0.109,0.112,0.156
+closed canopy (cover > 0.8),hv,1382,0.061,0.018,0.202,-0.399,0.345,-0.001,-0.125,0.333,-0.032,-0.013,0.174,0.223,0.325
+open ground (cover < 0.25),hh,1128,0.191,0.115,-0.256,0.345,0.529,0.319,0.029,0.381,0.192,-0.154,0.266,0.807,0.814
+open ground (cover < 0.25),hv,1128,0.165,0.129,0.007,0.141,0.659,0.336,-0.018,0.492,0.184,-0.126,0.263,0.817,0.829
