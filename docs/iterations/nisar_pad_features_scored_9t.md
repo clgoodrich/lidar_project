@@ -51,6 +51,23 @@ Outputs: `data/9t/derived/nisar_features_5m/nisar_feat_<product>_9t_5m.tif` (git
 - Single bands: 227 of 351 pass q < 0.05 at core 5 m. Core 15 m: texture falls (edge effect), short-gap HH coherence on track 162 (AUC 0.24, pads less coherent) and centre-minus-surround brightness (AUC 0.25, pads darker) get stronger.
 - Result files: `data/9t/results/nisar/nisar_pad_feature_auc_per_band_9t[_core15m][_roadnear].csv`, `nisar_pad_model_auc_by_set_9t[_core15m][_roadnear].csv`, summary JSONs beside them.
 
+## Ablation (2026-10-26, `_nisar_feat_ablate_9t.py`)
+| Set | core 5 m far | core 5 m near-road | core 15 m |
+|---|---|---|---|
+| all NISAR | 0.815 | 0.884 | 0.959 |
+| without spatial | 0.779 | 0.857 | 0.957 |
+| without geometry | 0.801 | 0.880 | 0.960 |
+| without coherence | 0.824 | 0.883 | 0.960 |
+| without dual-pol | 0.825 | 0.889 | 0.963 |
+| HH bands only | 0.795 | 0.840 | 0.959 |
+| HV bands only | 0.742 | 0.829 | 0.926 |
+| ascending tracks only | 0.828 | 0.864 | 0.963 |
+| descending track only | 0.667 | 0.793 | 0.915 |
+
+- Spatial structure is the only group whose removal clearly hurts. Groups overlap, so no group is individually necessary beyond that. HH carries more than HV. Ascending tracks carry more than the descending one.
+- Pad-area terciles (core 5 m, far decoys): 0.854 / 0.806 / 0.785, smallest to largest. The signal is not confined to large pads.
+- Files: `data/9t/results/nisar/nisar_pad_ablation_auc_9t[_roadnear][_core15m].csv`.
+
 ## Limits
 - Pad size is not matched. The 15 m core keeps only large pads, which may differ from small ones in kind.
 - Registration about 10 m, unlabelled pads inside the decoy set, one area, single date window.

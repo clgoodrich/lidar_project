@@ -1,0 +1,20 @@
+feature_set,n_bands,auc,change_vs_all
+all NISAR,337,0.959,0.0
+without amp,295,0.962,0.003
+without amp_stats,305,0.957,-0.002
+without coherence,294,0.96,0.001
+without dualpol,316,0.963,0.004
+without events,322,0.959,0.0
+without geometry,323,0.96,0.001
+without heightresid,328,0.96,0.001
+without losmotion,334,0.959,0.0
+without rainfreeze,315,0.959,0.0
+without spatial,274,0.957,-0.002
+without subaperture,322,0.961,0.002
+without temporal,294,0.963,0.004
+without texture,322,0.96,0.001
+HH bands only,116,0.959,0.0
+HV bands only,96,0.926,-0.033
+no polarisation in name,128,0.954,-0.005
+descending t026 only,112,0.915,-0.044
+ascending t090 + t162 only,217,0.963,0.004

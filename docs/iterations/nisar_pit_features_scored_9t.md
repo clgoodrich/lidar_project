@@ -24,6 +24,12 @@ Same test as for pads (`docs/iterations/nisar_pad_features_scored_9t.md`), with 
 | placebo, decoy against decoy | 0.491 |
 | road context only (annotated roads, circular) | 0.999 |
 
+## Roughness-matched decoys and ablation (2026-10-26)
+- `MATCH_ROUGH=1`: decoy roughness within 0.25 of the target-roughness sd. 467 of 495 pits matched.
+- Model: baseline 0.853, all NISAR 0.911, SAR only 0.882, NISAR + baseline 0.959, placebo 0.464. Gain over baseline 0.058 (gate passes), SAR-only gain 0.029 (below gate). The baseline stayed high, so lidar separates pits by more than roughness.
+- Ablation (`_nisar_feat_ablate_9t.py`): dropping geometry costs 0.024-0.029, spatial 0.010, every other group nothing. HH-only 0.851, HV-only 0.830, ascending-only 0.872-0.878, descending-only 0.79.
+- Files: `data/9t/results/nisar/nisar_pit_model_auc_by_set_9t_roughmatch.csv`, `nisar_pit_ablation_auc_9t[_roughmatch].csv`.
+
 ## Interpretation
 - The lidar baseline alone separates pits at 0.86, because pits are depressions and roughness is not matched between pits and decoys. NISAR beats it by only 0.052 (gate 0.05, barely passed), and 0.886 without geometry is below the gate.
 - NISAR adds information beyond lidar: the pair together reaches 0.949, 0.09 above lidar alone.

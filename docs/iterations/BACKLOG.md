@@ -647,3 +647,8 @@ write-up). Deferred refinements from that same advice:
 - **Freeze response** has 1-2 frozen dates per track. Revisit when a colder winter is in the stack.
 - **Per-pixel rainfall** (radar-derived or a gridded product finer than 4 km) if rain response looks worth pursuing.
 - **Warren:** needs the lidar radar simulation before the geometry product can run; no pad annotations there.
+
+## NISAR vs lidar U-Net (added 2026-10-26) — OPEN
+
+- Held-out comparison of NISAR against the pad U-Net on the same pads and decoys, and fusion of the two. Needs U-Net per-pad scores on the decoy discs. Not built.
+- Warren: no pad annotations and no lidar radar simulation.

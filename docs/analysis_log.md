@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-26 (ablation) -- NISAR: which aspect carries the signal
+
+- **Leave-one-group-out, pads (core 5 m, far decoys, all NISAR 0.815).** Dropping spatial costs 0.036. Dropping geometry costs 0.014. Every other group costs 0.01 or less (some gain). No other single group is needed, because the groups overlap.
+- **Polarisation and track.** HH-only 0.795, HV-only 0.742, ascending tracks 090+162 0.828, descending 026 0.667. At core 15 m HH-only equals all NISAR (0.959).
+- **Pad size.** Terciles of pad area (464-1407, 1407-1905, 1905-9198 m2) score 0.854, 0.806, 0.785 against their own decoys. Small pads score highest, so the result is not a large-pad effect.
+- **Pits.** Dropping geometry costs 0.024, spatial 0.011, the rest nothing. HH-only 0.851, HV-only 0.830. Dual-pol alone is strong for pits but is not needed in the full model.
+- **Roughness-matched pit decoys** (within 0.25 of the target-roughness sd; 467 of 495 pits matched). Baseline 0.853, all NISAR 0.911, SAR only 0.882, NISAR + baseline 0.959, placebo 0.464. Gain over baseline 0.058, SAR-only gain 0.029 (below gate). Matching removed almost none of the baseline, so the baseline is not just roughness.
+- **Slip fixed.** The model script ignored `MATCH_ROUGH` in its file suffix, so its first run re-read the unmatched pit samples and rewrote `nisar_pit_model_auc_by_set_9t.csv` with identical numbers. Suffix fixed, matched run written to `..._roughmatch.csv`.
+- **Scripts.** New `_nisar_feat_ablate_9t.py`; scorer takes `MATCH_ROUGH=1` and now stores pad area. Results in `data/9t/results/nisar/nisar_{pad,pit}_ablation_auc_9t*.csv`.
+- **Not done.** Held-out comparison against the lidar U-Net and fusion on pads (needs U-Net per-pad scores on these decoys).
+
+---
+
 ## 2026-10-26 (later) -- NISAR features: road control, rain, sub-aperture, height, pits
 
 - **Road-adjacent decoys.** Decoys 30-100 m from a road. Pad model AUC 0.88 (core 5 m) and 0.96 (core 15 m), baseline 0.59 and 0.62, placebo 0.48. Pads are not recognised by road proximity. Annotated-road context alone scores 0.97-0.996 (circular), kept out of NISAR sets.

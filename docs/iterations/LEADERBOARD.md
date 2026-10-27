@@ -547,3 +547,15 @@ number) is retained in every `test_metrics.json` for continuity.
 Known-well cross-reference at that era: pit_07 327, pit_08 242, pad_05 454, pad_06 239
 of 1069 matched.
 </details>
+
+## NISAR SAR features against matched decoys (added 2026-10-26)
+
+Model AUC, gradient boosting, 5-fold block CV. Not comparable to the U-Net rows above (different task: pad or pit against matched ground, not pixel segmentation). Docs: `docs/iterations/nisar_pad_features_scored_9t.md`, `nisar_pit_features_scored_9t.md`.
+
+| Target | Decoys | all NISAR | lidar baseline | NISAR + baseline | placebo |
+|---|---|---|---|---|---|
+| Pads, core 5 m | far from roads | 0.815 | 0.574 | n/a | 0.496 |
+| Pads, core 5 m | 30-100 m from road | 0.884 | 0.590 | n/a | 0.484 |
+| Pads, core 15 m (139 large) | far from roads | 0.959 | 0.513 | n/a | 0.500 |
+| Pits | cover, slope matched | 0.910 | 0.858 | 0.949 | 0.491 |
+| Pits | cover, slope, roughness matched | 0.911 | 0.853 | 0.959 | 0.464 |
