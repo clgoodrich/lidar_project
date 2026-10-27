@@ -548,14 +548,14 @@ Known-well cross-reference at that era: pit_07 327, pit_08 242, pad_05 454, pad_
 of 1069 matched.
 </details>
 
-## NISAR SAR features against matched decoys (added 2026-10-26)
+## NISAR SAR features against matched decoys (corrected 2026-10-26)
 
-Model AUC, gradient boosting, 5-fold block CV. Not comparable to the U-Net rows above (different task: pad or pit against matched ground, not pixel segmentation). Docs: `docs/iterations/nisar_pad_features_scored_9t.md`, `nisar_pit_features_scored_9t.md`.
+The first-pass table (0.815 to 0.96) is superseded: it came from a pipeline with a block-assignment bug, unequal pixel counts, unbuffered CV and no location or rich-lidar control. Corrected model AUC, 5-fold block CV with a 250 m buffer, lidar-placed SLC stack. Not comparable to the U-Net rows above. Doc: `docs/iterations/nisar_corrected_rescoring_9t.md`.
 
-| Target | Decoys | all NISAR | lidar baseline | NISAR + baseline | placebo |
-|---|---|---|---|---|---|
-| Pads, core 5 m | far from roads | 0.815 | 0.574 | n/a | 0.496 |
-| Pads, core 5 m | 30-100 m from road | 0.884 | 0.590 | n/a | 0.484 |
-| Pads, core 15 m (139 large) | far from roads | 0.959 | 0.513 | n/a | 0.500 |
-| Pits | cover, slope matched | 0.910 | 0.858 | 0.949 | 0.491 |
-| Pits | cover, slope, roughness matched | 0.911 | 0.853 | 0.959 | 0.464 |
+| Target | Decoys | all NISAR | map x/y only | rich lidar baseline | NISAR + rich lidar | placebo |
+|---|---|---|---|---|---|---|
+| Pads (633) | anywhere, cover and slope matched | 0.635 | 0.815 | 0.917 | 0.921 | 0.477 |
+| Pads (297) | 100 to 1,500 m from the pad | 0.476 | 0.517 | 0.923 | 0.904 | 0.519 |
+| Pits (489) | cover and slope matched | 0.832 | 0.955 | 0.968 | 0.967 | 0.498 |
+
+The gate (NISAR + rich lidar beats rich lidar by 0.05) is not passed in any row.

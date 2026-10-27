@@ -5,6 +5,20 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-26 (corrected re-scoring after outside review and Codex audit) -- NISAR
+
+- **Trigger.** An outside methods review and `docs/iterations/nisar_methodology_audit_20261026.md`. Claims checked against the code and data first. Upheld: block-assignment bug (13.9% of pads in the wrong block), 76% of pads scored on fewer than 49 pixels, bad date 2026-09-08 (track 26) still in the GSLC products, study ran on GSLC and not the lidar-placed stack, labels used before the CV split, unbuffered CV, height unit and wavelength errors, no coordinate or rich-lidar control. Not upheld: the 20 MHz range-bandwidth claim (it is 40 MHz).
+- **Fixes.** Block from centroid; per-pad pixel count with same-size decoys and a finite-support rule; `usable_stack()` drops `BAD_DATES` everywhere; fold-local band filter and imputation with a 250 m train-test buffer (`C.oof_probs`); all 12 products rebuilt on `NISAR_STACK=slc` (sub-aperture copied); height residual fixed then dropped (forest median 0.1 to 0.8 m).
+- **New controls.** Rich lidar baseline (26 bands, same operators as the SAR spatial product on lidar cover, slope, roughness) and map x/y only.
+- **Results (all NISAR AUC).** Pads, decoys anywhere (633): 0.635, map x/y 0.815, rich lidar 0.917, NISAR + rich lidar 0.921. Pads, local 1,500 m decoys (297): 0.476, x/y 0.517, rich lidar 0.923, NISAR + rich 0.904. Pits (489): 0.832, x/y 0.955, rich lidar 0.968, NISAR + rich 0.967. Placebo 0.48 to 0.52. Gate over the rich baseline not passed anywhere.
+- **Attribution.** Old GSLC samples with only the new CV: 0.699 (anywhere) and 0.587 (local). So the CV change explains 64% and 53% of the drop, and the corrected data the rest.
+- **HH/HV twins.** Pads local: no HH advantage (p 0.47). Pits: HH stronger (p 5.7e-06, optimistic).
+- **Conclusion changed.** The earlier 0.71 to 0.88 pad score was mostly location, optimistic CV and mismatched sample sizes. On this tile NISAR does not add to lidar or location for pads or pits. It does not show NISAR cannot help elsewhere.
+- **Not re-run.** U-Net fusion (the audit says the U-Net sampler can read held-out pixels, so its ceiling is not leakage-free). Not built: shape-matched decoys, local-incidence matching, shifted pseudo-pad placebo, confuser clearings, DEP-status split, 613590 held-out run, repeated CV.
+- **Doc.** `docs/iterations/nisar_corrected_rescoring_9t.md`; first-pass pad and pit docs marked superseded.
+
+---
+
 ## 2026-10-26 (location control, HH/HV twins, fusion) -- NISAR
 
 - **Shuffled-label null.** Labels shuffled within 500 m blocks score 0.775 (pads, road-near decoys) and 0.800 (pits). Real 0.877 and 0.856. Location alone explains most of the early scores.

@@ -652,3 +652,17 @@ write-up). Deferred refinements from that same advice:
 
 - Held-out comparison of NISAR against the pad U-Net on the same pads and decoys, and fusion of the two. Needs U-Net per-pad scores on the decoy discs. Not built.
 - Warren: no pad annotations and no lidar radar simulation.
+
+## NISAR outstanding checks after the 2026-10-26 reviews — OPEN
+
+From the outside review and `docs/iterations/nisar_methodology_audit_20261026.md`. Not built:
+- Shape-matched decoys (translate the pad polygon onto matched ground) and matching on local incidence angle, not slope.
+- Shifted pseudo-pad placebo (pad shifted 150 to 300 m onto matched ground).
+- Confuser set: other clearings of pad size (house lots, landings, corridors) built from the lidar canopy model. This is also the pad false-positive screen.
+- Split results by DEP status (active, plugged, abandoned, orphan).
+- One frozen run on 613590, as a pre-registered held-out test.
+- Repeated shuffled StratifiedGroupKFold with a spread, and cluster-aware inference for single-band tests.
+- Retrain the pad U-Net with whole-footprint block isolation, then redo the fusion.
+- Effective looks and impulse response, RFI check, noise-floor check for HV, per-date radiometric normalisation.
+- Precision at fixed recall on a realistic candidate set, not case-control AUC.
+- Rebuild LOS motion as connected-network displacement, or keep it labelled exploratory.

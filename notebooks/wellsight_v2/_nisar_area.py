@@ -84,8 +84,8 @@ def usable(idx):
 
 
 def usable_stack(idx):
-    """Rows to analyse: half-valid dates, and on the lidar-placed stack (and Warren) also not a bad granule."""
-    return usable(idx) if (STACK == "slc" or TAG == "warren") else idx[idx.valid_fraction >= 0.5]
+    """Rows to analyse: half-valid dates that are not in BAD_DATES."""
+    return usable(idx)      # BAD_DATES are dropped on every stack (before 2026-10-26 the GSLC stack kept 2026-09-08 on track 26)
 
 
 def lidar(name: str) -> Path:

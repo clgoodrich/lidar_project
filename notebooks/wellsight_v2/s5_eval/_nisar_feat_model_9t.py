@@ -1,102 +1,93 @@
-"""Product 10: do the NISAR bands, together, separate pads from matched decoys beyond cover + slope + roughness?
+"""Product 10: do the NISAR bands, together, separate targets from matched decoys beyond lidar and location?
 
-Reads the samples dumped by _nisar_feat_score_9t.py (pad core medians, matched decoy disc medians; decoys
-share cover within 0.05 and slope within 1 degree with their pad). Gradient boosting, 5-fold CV grouped by
-500 m block so neighbours never sit in both train and test. Out-of-fold AUC per feature set, pooled over
-folds, with a block-bootstrap CI. Gate: NISAR must beat the lidar baseline by at least GATE AUC.
+Reads the samples dumped by _nisar_feat_score_9t.py. Gradient boosting, 5-fold CV grouped by 500 m block, with a
+250 m buffer between train and test rows (C.oof_probs). Band filtering and imputation happen inside each training
+fold. Reports the pooled out-of-fold AUC, the mean and spread of the five fold AUCs, and a block-bootstrap CI.
 
-Feature sets: baseline (lidar cover, slope, roughness), all NISAR bands, NISAR + baseline, and each product
-group alone. Also the open-ground pads (pad cover < 0.25) on their own.
+Feature sets: simple lidar baseline (cover, slope, roughness), rich lidar baseline (those plus the same texture
+operators the SAR spatial product uses, run on lidar grids), map x/y only (location control), all SAR bands,
+and combinations, plus each product group alone.
 
-  [CORE_SHRINK_M=15] python notebooks/wellsight_v2/s5_eval/_nisar_feat_model_9t.py
+  [TARGET=pit] [CORE_SHRINK_M=15] [ROAD_NEAR=1] [MATCH_ROUGH=1] [LOCAL_M=1500] python _nisar_feat_model_9t.py
 """
 import json
 import os
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.metrics import roc_auc_score
-from sklearn.model_selection import GroupKFold
 
 import _nisar_feat_common as C
 
 TARGET = os.environ.get("TARGET", "pad")
 CORE = float(os.environ.get("CORE_SHRINK_M", 0 if TARGET == "pit" else 5))
-SUFFIX = ("" if CORE == (0 if TARGET == "pit" else 5) else f"_core{CORE:.0f}m") + ("_roadnear" if os.environ.get("ROAD_NEAR") == "1" else "") + ("_roughmatch" if os.environ.get("MATCH_ROUGH") == "1" else "") + (f"_local{float(os.environ['LOCAL_M']):.0f}" if float(os.environ.get("LOCAL_M", 0)) else "")
+SUFFIX = (("" if CORE == (0 if TARGET == "pit" else 5) else f"_core{CORE:.0f}m") + ("_roadnear" if os.environ.get("ROAD_NEAR") == "1" else "")
+          + ("_roughmatch" if os.environ.get("MATCH_ROUGH") == "1" else "")
+          + (f"_local{float(os.environ['LOCAL_M']):.0f}" if float(os.environ.get("LOCAL_M", 0)) else ""))
 GATE, SEED, NB = 0.05, 20261026, 200
 
 
-def oof_auc(X, y, grp, open_mask):
-    p = np.full(len(y), np.nan)
-    for tr, te in GroupKFold(5).split(X, y, grp):
-        m = HistGradientBoostingClassifier(max_depth=3, learning_rate=0.06, max_iter=200, l2_regularization=1.0,
-                                           min_samples_leaf=40, class_weight="balanced", random_state=SEED)
-        m.fit(X[tr], y[tr])
-        p[te] = m.predict_proba(X[te])[:, 1]
+def score(X, y, grp, open_mask):
+    p, folds = C.oof_probs(X, y, grp)
+    fa = [roc_auc_score(y[te], p[te]) for te in folds if len(set(y[te])) == 2]
     rng = np.random.default_rng(SEED)
     ug = np.unique(grp)
     bs = []
     for _ in range(NB):
-        pick = rng.choice(ug, len(ug))
-        idx = np.concatenate([np.flatnonzero(grp == g) for g in pick])
+        idx = np.concatenate([np.flatnonzero(grp == g) for g in rng.choice(ug, len(ug))])
         if len(set(y[idx])) == 2:
             bs.append(roc_auc_score(y[idx], p[idx]))
-    ok = open_mask
-    return roc_auc_score(y, p), *np.percentile(bs, [2.5, 97.5]), roc_auc_score(y[ok], p[ok])
+    return dict(auc=roc_auc_score(y, p), ci_lo=np.percentile(bs, 2.5), ci_hi=np.percentile(bs, 97.5),
+                auc_open=roc_auc_score(y[open_mask], p[open_mask]), fold_mean=np.mean(fa), fold_sd=np.std(fa), p=p)
 
 
 def main():
-    z = np.load(C.FEAT_DIR / f"nisar_{TARGET}_samples_{C.A.TAG}{SUFFIX}.npz", allow_pickle=True)
-    names = [str(n) for n in z["names"]]
-    pad, dec, dec_pad = z["pad"], z["dec"], z["dec_pad"]
-    keep = np.isin(np.arange(pad.shape[1]), np.unique(dec_pad)) & np.isfinite(pad[names.index("control:cover")])
-    pads = np.flatnonzero(keep)
-    sel = np.flatnonzero(np.isin(dec_pad, pads))
-    X_all = np.vstack([pad[:, pads].T, dec[:, sel].T])
-    y = np.r_[np.ones(len(pads)), np.zeros(len(sel))].astype(int)
-    grp = np.r_[z["pad_block"][pads], z["dec_block"][sel]]
-    cov = np.r_[z["pad_cover"][pads], z["pad_cover"][dec_pad[sel]]]
-    open_mask = cov < 0.25
-    # missingness must not carry the label: drop bands that are >20% NaN in either class, median-impute the rest
-    nanrate = np.stack([np.isnan(X_all[y == 1]).mean(0), np.isnan(X_all[y == 0]).mean(0)])
-    good = nanrate.max(0) <= 0.20
-    print(f"dropped {int((~good).sum())} bands for missingness", flush=True)
-    names = [n for n, g in zip(names, good) if g]
-    X_all = X_all[:, good]
-    X_all = np.where(np.isnan(X_all), np.nanmedian(X_all, 0), X_all)
-    prod = np.array([n.split(":")[0] for n in names])
-    ctl = prod == "control"
-    ctx = prod == "context"          # road annotations: circular for pads, never counted as NISAR
-    sar = ~ctl & ~ctx
-    sets = {"baseline (cover, slope, rough)": ctl, "all NISAR": sar, "NISAR + baseline": sar | ctl,
-            "NISAR without geometry (SAR only)": sar & (prod != "geometry")}
+    S = C.load_samples(TARGET, SUFFIX)
+    names, X, y, grp, xy, prod = S["names"], S["X"], S["y"], S["grp"], S["xy"], S["prod"]
+    open_mask = S["cover"] < 0.25
+    ctl, lt, ctx, sar = C.feature_groups(prod)
+    geo = sar & (prod == "geometry")
+    sets = {"baseline (cover, slope, rough)": X[:, ctl],
+            "lidar rich baseline (+ texture)": X[:, ctl | lt],
+            "map x/y only": xy,
+            "rich baseline + map x/y": np.hstack([X[:, ctl | lt], xy]),
+            "all NISAR": X[:, sar],
+            "NISAR + baseline": X[:, sar | ctl],
+            "NISAR + rich baseline": X[:, sar | ctl | lt],
+            "NISAR + rich baseline + map x/y": np.hstack([X[:, sar | ctl | lt], xy]),
+            "NISAR without geometry (SAR only)": X[:, sar & ~geo]}
     if ctx.any():
-        sets.update({"road context only": ctx, "NISAR + road context": sar | ctx})
-    for g in sorted(set(prod) - {"control", "context"}):
-        sets[f"only {g}"] = prod == g
+        sets.update({"road context only": X[:, ctx], "NISAR + road context": X[:, sar | ctx]})
+    for g in sorted(set(prod[sar])):
+        sets[f"only {g}"] = X[:, prod == g]
     rows = []
-    for k, m in sets.items():
-        auc, lo, hi, auc_open = oof_auc(X_all[:, m], y, grp, open_mask)
-        rows.append(dict(feature_set=k, n_bands=int(m.sum()), auc=round(auc, 3), ci_lo=round(lo, 3), ci_hi=round(hi, 3),
-                         auc_open=round(auc_open, 3)))
+    for k, M in sets.items():
+        r = score(M, y, grp, open_mask)
+        rows.append(dict(feature_set=k, n_bands=int(M.shape[1]), auc=round(r["auc"], 3), ci_lo=round(r["ci_lo"], 3), ci_hi=round(r["ci_hi"], 3),
+                         auc_open=round(r["auc_open"], 3), fold_mean=round(r["fold_mean"], 3), fold_sd=round(r["fold_sd"], 3)))
         print(rows[-1], flush=True)
-    # placebo: the first decoy of each pad plays "pad" against the other decoys (same matching), AUC must be near 0.5
+    # placebo: the first decoy of each target plays "target" against the other decoys (same matching)
+    dec_pad, pads, sel = S["z"]["dec_pad"], S["pads"], S["sel"]
     first = np.array([np.flatnonzero(dec_pad[sel] == p)[0] for p in pads])
     yp = np.zeros(len(sel), int)
     yp[first] = 1
-    nn = sar
-    auc, lo, hi, auc_open = oof_auc(X_all[len(pads):][:, nn], yp, grp[len(pads):], open_mask[len(pads):])
-    rows.append(dict(feature_set="placebo: decoy vs decoy, all NISAR", n_bands=int(nn.sum()), auc=round(auc, 3),
-                     ci_lo=round(lo, 3), ci_hi=round(hi, 3), auc_open=round(auc_open, 3)))
+    n0 = len(pads)
+    C.CV_XY = xy[n0:]
+    r = score(X[n0:][:, sar], yp, grp[n0:], open_mask[n0:])
+    C.CV_XY = xy
+    rows.append(dict(feature_set="placebo: decoy vs decoy, all NISAR", n_bands=int(sar.sum()), auc=round(r["auc"], 3), ci_lo=round(r["ci_lo"], 3),
+                     ci_hi=round(r["ci_hi"], 3), auc_open=round(r["auc_open"], 3), fold_mean=round(r["fold_mean"], 3), fold_sd=round(r["fold_sd"], 3)))
     print(rows[-1], flush=True)
     res = pd.DataFrame(rows)
-    base = float(res.loc[0, "auc"])
-    res["gain_over_baseline"] = (res.auc - base).round(3)
-    path = C.OUT / f"nisar_{TARGET}_model_auc_by_set_{C.A.TAG}{SUFFIX}.csv"
-    res.to_csv(path, index=False)
-    json.dump(dict(n_pads=int(len(pads)), n_decoys=int(len(sel)), gate=GATE, core_shrink_m=CORE, baseline_auc=base,
-                   passes_gate=bool(res.loc[res.feature_set == "all NISAR", "gain_over_baseline"].iloc[0] >= GATE)),
+    get = lambda k: float(res.loc[res.feature_set == k, "auc"].iloc[0])  # noqa: E731
+    res["gain_over_simple_baseline"] = (res.auc - get("baseline (cover, slope, rough)")).round(3)
+    res["gain_over_rich_baseline"] = (res.auc - get("lidar rich baseline (+ texture)")).round(3)
+    res.to_csv(C.OUT / f"nisar_{TARGET}_model_auc_by_set_{C.A.TAG}{SUFFIX}.csv", index=False)
+    json.dump(dict(n_targets=int(len(pads)), n_decoys=int(len(sel)), gate=GATE, core_shrink_m=CORE, cv_buffer_m=C.CV_BUFFER_M,
+                   simple_baseline_auc=get("baseline (cover, slope, rough)"), rich_baseline_auc=get("lidar rich baseline (+ texture)"),
+                   xy_only_auc=get("map x/y only"), all_nisar_auc=get("all NISAR"),
+                   passes_gate_over_rich_baseline=bool(get("NISAR + rich baseline") - get("lidar rich baseline (+ texture)") >= GATE),
+                   passes_gate_over_rich_plus_xy=bool(get("NISAR + rich baseline + map x/y") - get("rich baseline + map x/y") >= GATE)),
               open(C.OUT / f"nisar_{TARGET}_model_summary_{C.A.TAG}{SUFFIX}.json", "w"), indent=2)
     print(res.to_string(index=False))
 

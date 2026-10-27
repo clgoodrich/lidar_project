@@ -35,7 +35,8 @@ import _nisar_feat_common as C  # noqa: E402
 import _nisar_geometry as geo  # noqa: E402
 from _nisar_feat_los_motion_9t import remove_longwave  # noqa: E402
 
-MAX_GAP_DAYS, MIN_COH, WAVELENGTH = 60, 0.35, 0.2384
+MAX_GAP_DAYS, MIN_COH = 60, 0.35
+WAVELENGTH = 299792458.0 / 1.239e9      # indexed centre frequency (nisar_gslc_window_index: 1.239 GHz), 0.2420 m
 
 
 def orbit_state(rslc_path):
@@ -97,7 +98,7 @@ def main():
             swp2 += w * p * p
             v = np.isfinite(coh)
             y, m = np.where(v, coh, 0), v.astype(np.float32)
-            ak = abs(k) * 0.01
+            ak = abs(k) / 0.01      # |kz| in units of 0.01 rad/m, so the coefficient is per 0.01 rad/m
             n += m
             sg += m * gap
             sk += m * ak
@@ -127,7 +128,6 @@ def main():
         bands["coh_kz_slope" + tag] = sol[..., 2]
         print(f"track {t}: {pairs} pairs, sign {sgn:+.0f}, forest median height {np.nanmedian(h[cover > 0.8]):.1f} m, "
               f"open median {np.nanmedian(h[cover < 0.1]):.1f} m", flush=True)
-    C.A.TAG = C.A.TAG.replace("_slc", "")      # the stack tag must not leak into the band file name
     C.write_bands("heightresid", bands, tf, shape)
 
 

@@ -1,5 +1,7 @@
 # NISAR pad-feature products and scoring (9t)
 
+> **SUPERSEDED 2026-10-26.** The headline numbers in this doc come from the first-pass pipeline (GSLC stack, unbuffered CV, unequal pixel counts, block-assignment bug, no coordinate or rich-lidar control). The corrected re-run is in `docs/iterations/nisar_corrected_rescoring_9t.md`: all NISAR 0.635 (decoys anywhere) and 0.476 (local decoys), against map x/y 0.815 and a rich lidar baseline 0.917. Read this doc for the method and the leak history, not for the results.
+
 ## Goal
 Test whether any NISAR-derived parameter separates annotated well pads from ground that is not a pad. Plan: `docs/iterations/nisar_feature_products_plan.md`. Pits are in `docs/iterations/nisar_pit_features_scored_9t.md`.
 

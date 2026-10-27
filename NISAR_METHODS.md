@@ -1,18 +1,18 @@
 # NISAR work in this repository: data, methods, results and limits
 
-Written 2026-10-26. This file is for an outside reader who wants to judge the method. It says what data we hold, what each test does, where every script and output lives, what the results are, and where the weak points are. Numbers come from the files named beside them. Nothing here has been peer reviewed.
+Written 2026-10-26, revised the same day after two outside reviews (Section 14). This file is for an outside reader who wants to judge the method. It says what data we hold, what each test does, where every script and output lives, what the results are, and where the weak points are. Numbers come from the files named beside them. Nothing here has been peer reviewed.
 
 ## 1. The question and the short answer
 
 **Question.** Does NISAR L-band radar carry a signal that identifies oil and gas well pads, pits, wells and pumpjacks in western Pennsylvania? And can it help the lidar detector we already have?
 
-**Short answer, as of 2026-10-26.**
-- NISAR shows a weak but consistent signature of pads and pits as disturbed ground. Pads are darker and smoother in HH than the forest around them. The signature is about AUC 0.71 when pads are compared with ground in their own neighbourhood (274 pads).
-- Early scores of 0.82 to 0.88 were inflated. Pads sit in different kinds of ground from where we drew comparison points, and the model learned location. A label shuffle that keeps location alone scores 0.78 to 0.80.
+**Short answer, as of 2026-10-26 (after correction).**
+- **On this tile, NISAR does not add to lidar or to location for detecting pads or pits.** After fixing the pipeline, NISAR scores 0.635 for pads against decoys drawn anywhere, and 0.476 (chance) against decoys from the pad's own neighbourhood. A classifier that sees only map coordinates scores 0.815 in the first design. A rich lidar texture baseline scores 0.92. Adding NISAR to it changes nothing.
+- The first-pass scores of 0.71 to 0.88 were wrong. They came from location, optimistic cross-validation and mismatched sample sizes (Sections 9 and 14).
 - NISAR does not identify wells, pumpjacks or steel. Every direct test of that was null.
-- The lidar U-Net separates pads from ordinary ground almost perfectly. NISAR adds nothing on that task.
-- NISAR did not help screen false positives from the lidar pit detector (gain −0.026, p 0.58). The same test for the pad detector has not been run.
-- The mechanism is untested. The statements about why HH matters are hypotheses.
+- NISAR did not help screen false positives from the lidar pit detector (gain -0.026, p 0.58). The same test for the pad detector has not been run.
+- The earlier fusion result with the lidar U-Net is not reliable. The audit says the U-Net training sampler can read held-out pixels.
+- This does not show NISAR can never help. It shows that here, with a 4.9 km tile, 5 m posting and these features, it does not.
 
 AUC here is P(target value > comparison value). 0.5 is no separation. Below 0.5 means the target is lower.
 
@@ -84,7 +84,7 @@ All iteration write-ups are in `docs/iterations/`. Results are in `data/9t/resul
 | 5 | Bright targets over 9t and Warren | `_nisar_bright_targets_9t.py`, `_nisar_bright_targets_wells_warren.py` | `nisar_bright_targets_wells_warren.md` | Warren: wells with a target 3.9% against 5.2% random (odds ratio 0.75, p 0.16). Under canopy 0.40 (p 0.006), fewer than chance. |
 | 6 | Pumpjack pilot, lidar (not NISAR) | `_lidar_pumpjack_pilot_warren.py` | commits `4da4dbe`, `3a1f2eb` | Bright compact objects do not separate wells from controls. |
 | 7 | Can NISAR screen false positives of the lidar pit detector? | `_nisar_pit_fp_screen_9t.py` | `nisar_pit_fp_screen.md` | No. 61 TP and 29 FP. Detector score alone 0.843, with NISAR 0.817 (gain −0.026, p 0.58). Low power, so it shows NISAR does not help at this effect size and does not show the effect is zero. |
-| 8 | The feature-product study (the main one) | `_nisar_feat_*_9t.py` | `nisar_feature_products_plan.md`, `nisar_pad_features_scored_9t.md`, `nisar_pit_features_scored_9t.md` | Sections 6 to 8. |
+| 8 | The feature-product study (the main one) | `_nisar_feat_*_9t.py` | `nisar_feature_products_plan.md`, `nisar_corrected_rescoring_9t.md` (current), `nisar_pad_features_scored_9t.md` and `nisar_pit_features_scored_9t.md` (first pass, superseded) | Sections 6 to 8 and 14. |
 
 ## 6. The feature-product study
 
@@ -116,8 +116,8 @@ The model keeps 337 to 340 NISAR bands after the missingness filter.
 
 ### 6.2 Scoring protocol (`_nisar_feat_score_9t.py`)
 
-1. **Target value.** For each pad, the median of the 49 core pixels nearest the pad centre. Core = the polygon shrunk by 5 m (`CORE_SHRINK_M=15` keeps only large pads). For pits, the up to 9 pixels nearest the centre, no shrink.
-2. **Decoys.** 10 per target. Each decoy is a disc with the same pixel count as the target (49 for pads, 9 for pits). Allowed only at least 100 m from any pad, pit, road or DEP well. Matched on lidar mean canopy cover within 0.05 and mean slope within 1 degree. Matching uses continuous values. Coarse bins leaked (Section 9).
+1. **Target value.** For each pad, the median over the core pixels nearest the pad centre. Core = the polygon shrunk by 5 m (`CORE_SHRINK_M=15` keeps only large pads). Each target uses the largest of 9, 16, 25, 36 or 49 pixels that fits its core (pits: 4 or 9, no shrink). The first-pass run took up to 49 pixels and let small pads use fewer, while decoys always used 49. That mismatch was fixed on 2026-10-26.
+2. **Decoys.** 10 per target. Each decoy is a disc with the same pixel count as its target, and must have the same minimum count of finite values. Allowed only at least 100 m from any pad, pit, road or DEP well. Matched on lidar mean canopy cover within 0.05 and mean slope within 1 degree. Matching uses continuous values. Coarse bins leaked (Section 9).
 3. **Decoy variants.**
    - Default: decoys anywhere on the tile.
    - `ROAD_NEAR=1`: decoys 30 to 100 m from a road, because pads sit a median 7 m from a road.
@@ -126,13 +126,15 @@ The model keeps 337 to 340 NISAR bands after the missingness filter.
 4. **Single-band statistics.** AUC with bootstrap CI, Mann-Whitney p, Benjamini-Hochberg q across bands, and the split by canopy class (open under 25%, partly 25 to 50%, grown over 50%).
 5. **Samples file.** The scorer writes `nisar_<target>_samples_9t[suffix].npz` (values, blocks, cover, area, coordinates). All model, ablation, HH/HV and fusion scripts read it.
 
-### 6.3 Model (`_nisar_feat_model_9t.py`)
+### 6.3 Model (`_nisar_feat_model_9t.py`, CV in `_nisar_feat_common.py: oof_probs`)
 
 - Histogram gradient boosting (depth 3, learning rate 0.06, 200 iterations, L2 1.0, min leaf 40, balanced class weight).
-- 5-fold CV grouped by 500 m block, so neighbours never sit in both train and test. AUC is pooled out-of-fold, with a block-bootstrap CI.
-- Bands more than 20% missing in either class are dropped. The rest are median-imputed. (Missingness itself leaked the label before this.)
-- **Gate.** NISAR AUC must exceed the lidar baseline (cover, slope, roughness) by at least 0.05.
+- 5-fold CV grouped by 500 m block (block taken from the pad centroid). Training rows within 250 m of any test row are removed. AUC is pooled out-of-fold, with a block-bootstrap CI, and the five fold AUCs are reported too.
+- Bands more than 20% missing in either **training** class are dropped, and the rest are median-imputed with training medians, inside each fold.
+- **Controls in every run.** Simple lidar baseline (cover, slope, roughness). **Rich lidar baseline** (26 bands: the same spatial operators the SAR product uses, run on lidar cover, slope and roughness, plus forest fraction at 75 m and 155 m). **Map x/y only.** Combinations with each.
+- **Gate.** NISAR + rich baseline must exceed the rich baseline by at least 0.05.
 - **Placebo.** One decoy per target plays "pad" against the other decoys. It must score about 0.5.
+- The first-pass run used the unbuffered split, global imputation, and only the simple baseline.
 
 ### 6.4 Added tests
 
@@ -144,7 +146,32 @@ The model keeps 337 to 340 NISAR bands after the missingness filter.
 
 ## 7. Results
 
-All AUCs are model AUCs from 5-fold block CV unless marked.
+### 7.0 Corrected results (current)
+
+Model AUC on the lidar-placed SLC stack, 5-fold block CV with a 250 m buffer, fold-local preprocessing. Full tables and attribution: `docs/iterations/nisar_corrected_rescoring_9t.md`.
+
+| Feature set | Pads, decoys anywhere (633) | Pads, local decoys 100 to 1,500 m (297) | Pits (489) |
+|---|---|---|---|
+| simple lidar baseline | 0.465 | 0.435 | 0.849 |
+| rich lidar baseline | 0.917 | 0.923 | 0.968 |
+| map x/y only | 0.815 | 0.517 | 0.955 |
+| **all NISAR** | **0.635** | **0.476** | **0.832** |
+| NISAR without geometry | 0.624 | 0.483 | 0.781 |
+| NISAR + rich lidar baseline | 0.921 | 0.904 | 0.967 |
+| NISAR + rich baseline + map x/y | 0.930 | 0.890 | 0.987 |
+| placebo | 0.477 | 0.519 | 0.498 |
+
+- The gate (NISAR + rich lidar beats rich lidar by 0.05) fails in every column.
+- Fold AUCs vary widely (all-NISAR fold spread 0.06 to 0.11), so a pooled AUC hides instability.
+- HH against HV twins (89 pairs): pads with local decoys show no HH advantage (strength 0.037 against 0.035, p 0.47). Pits show one (0.073 against 0.050), but pits are not separable from location once coordinates are in the model.
+- Ablation, decoys anywhere: removing any one group changes AUC by 0.012 or less.
+- Re-scoring the **old** samples with only the new CV gives 0.699 and 0.587, against the old 0.815 and 0.713. The CV change explains 64% and 53% of the drop. The corrected data explains the rest.
+- Single SAR bands still show weak differences on their own (best about 0.63 to 0.66, local decoys), but they do not carry across blocks.
+- Lidar texture is the strongest single signal: local slope variation at 3 pixels scores 0.93. Pads are smooth graded surfaces.
+
+### 7.1 to 7.6: first-pass results (superseded, kept for the record)
+
+The tables below come from the first-pass pipeline. Do not quote them. They show how the early numbers were produced and why they were wrong. All AUCs are model AUCs from 5-fold block CV unless marked.
 
 ### 7.1 Pads, by decoy design
 
@@ -203,7 +230,9 @@ On identical bands (89 twin pairs):
 
 For pads, HH is not meaningfully better than HV. The earlier "HH only 0.795, HV only 0.742" comparison used unequal band sets (HH included the HH-only sub-aperture product). For pits, HH is modestly better. The pad twin test has not been run for local decoys or core 5 m with far decoys.
 
-### 7.5 Fusion with the lidar U-Net
+### 7.5 Fusion with the lidar U-Net (not reliable)
+
+> The audit of 2026-10-26 found that the U-Net training sampler can read held-out pixels. The U-Net AUC below is not a leakage-free ceiling. Not re-run.
 
 The pad U-Net 5-fold CV (`notebooks/wellsight_v2/s3_train/_pad_unet_cv5.py`) wrote one probability raster per fold at 0.5 m. Each fold's model never saw that fold's 375 m blocks. For every pad and decoy, the score is the mean over a 10 m window of the raster of the fold that holds out the block the point lies in. Decoys in the 15 blocks with no pad were dropped. All sets use the same 3,195 rows (626 pads).
 
@@ -255,9 +284,19 @@ SAR-only sets (no geometry) score about the same as all NISAR for pads. So lidar
 | Road proximity | Pads sit a median 7 m from a road. Decoys were at least 100 m. | `ROAD_NEAR=1` decoys. The score did not fall. |
 | Location | Shuffled-label null 0.775 to 0.800. | Local decoys (`LOCAL_M`). Real pad score about 0.71. |
 | Script slip | The model script ignored `MATCH_ROUGH` in its file name, so one run re-read unmatched samples. | Suffix fixed and the matched run redone. |
+| Block assignment | Block of a pad was taken from the median of flattened pixel indices, a different block from the centroid's for 13.9% of pads. | Block from the centroid. |
+| Unequal pixel counts, still | 76% of pads had fewer than 49 core pixels, decoys always 49. The 15 m core had a median of 9. | Per-pad pixel count, same-size decoys, same finite-value rule. |
+| Bad date in default stack | `BAD_DATES` applied only to the SLC stack, so 2026-09-08 (track 26) was in every GSLC product. | Dropped on every stack. |
+| Wrong stack | The study ran on NASA's GSLC, not the lidar-placed stack. | Products rebuilt on the SLC stack. |
+| Labels before the split | Band filtering and imputation used all rows. | Done inside each training fold. |
+| Neighbouring footprints | Unbuffered GroupKFold. | 250 m train-test buffer. |
+| No location or rich-lidar control | The lidar baseline was matched on its own variables and could not fail. | Map x/y and rich lidar baseline added. |
+| Height product | Unit error, wrong wavelength, forced sign. | Fixed, then dropped (forest median 0.1 to 0.8 m). |
 | Early comparison | Pad pixels compared with many ring pixels (right-skewed brightness). | Equal pixel counts, matched decoys. |
 
 ## 10. Weak points a reviewer should press on
+
+(State after correction. Section 14 lists what the reviews raised.)
 
 - **Registration** is about 10 m, not independently confirmed.
 - **One area, one date window.** No spatial transfer test. Warren has no pad labels.
@@ -273,6 +312,7 @@ SAR-only sets (no geometry) score about the same as all NISAR for pads. So lidar
 
 ## 11. Not done
 
+- **Everything the reviews raised that is not built:** shape-matched decoys, local-incidence matching, shifted pseudo-pad placebo, confuser clearings, DEP-status split, held-out area (613590), repeated CV with a spread, cluster-aware inference. Listed in `docs/iterations/BACKLOG.md`.
 - NISAR as a false-positive screen for the **pad** detector (done for pits, null). This needs the U-Net's candidates at the tuned threshold, labelled true or false, then NISAR sampled at each one.
 - Fusion where lidar is weak: canopy-covered or old, vegetated pads.
 - Pad-size matching of decoys.
@@ -342,3 +382,15 @@ python notebooks/wellsight_v2/s5_eval/_nisar_feat_fusion_9t.py   # needs pad_xy 
 ```
 
 The scripts use a fixed seed (20261026). The samples file must come from the same environment variables as the script that reads it.
+
+## 14. Review history and corrections (2026-10-26)
+
+Two outside reviews arrived on the day this file was first written.
+1. An outside methods review (it read the scorer, model, null, fusion and the feature products).
+2. A Codex audit, `docs/iterations/nisar_methodology_audit_20261026.md`, with scripts and machine-readable results in `tmp/nisar_method_audit.py` and `tmp/nisar_boundary_audit.py`.
+
+I checked each claim against the code and data before acting. Upheld and fixed: the block-assignment bug, unequal pixel counts, bad date in the default stack, GSLC instead of the lidar-placed stack, labels used before the split, unbuffered CV, the height-product unit and wavelength errors. Added controls: rich lidar baseline and map x/y only. Not upheld: the claim that the range bandwidth is 20 MHz (it is 40 MHz, from the file index).
+
+The audit's most consequential finding was that a coordinate-only classifier (0.738) beat NISAR (0.713) on the same local-decoy samples. The corrected re-run confirms location is the larger effect. Details, attribution and the full list of what remains: `docs/iterations/nisar_corrected_rescoring_9t.md`.
+
+Issues the audit raised that are not addressed and that matter for the claims above: the LOS-motion bands are not measured displacement (zero-filled steps, disconnected gaps); season and processing release are confounded (all winter acquisitions are beta, all summer ones provisional); `skew7` and `kurt7` are not true window moments; single-band p-values assume independence; the regeocode reproduction command in Section 13 omits the lidar and write options.

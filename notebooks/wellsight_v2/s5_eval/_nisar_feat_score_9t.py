@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 import rasterio
 from rasterio.features import rasterize
+from scipy.ndimage import gaussian_filter, sobel, uniform_filter
 from scipy.stats import mannwhitneyu, rankdata
 from shapely.ops import unary_union
 
@@ -30,7 +31,8 @@ CORE_SHRINK_M = float(os.environ.get("CORE_SHRINK_M", BASE_CORE))   # larger val
 # decoy disc: radius 4 px (49 px) for pads; 1.5 px (9 px) for pits, whose rims cover about 8 px
 EXCL_M, DECOY_R_PX, K_DECOY, B, SEED = 100.0, (2 if TARGET == "pit" else 4), 10, 300, 20261026
 DISC_R2 = 2.25 if TARGET == "pit" else 16.0
-N_DISC = 9 if TARGET == "pit" else 49   # pixels in a decoy disc
+N_DISC = 9 if TARGET == "pit" else 49   # pixels in the largest decoy disc
+BINS = [4, 9] if TARGET == "pit" else [9, 16, 25, 36, 49]   # a target is scored on the largest bin that fits its core; its decoys use the same count
 ROAD_NEAR = os.environ.get("ROAD_NEAR") == "1"        # decoys restricted to 30-100 m from a road (pads sit beside one)
 MATCH_ROUGH = os.environ.get("MATCH_ROUGH") == "1"    # also match decoy roughness (pits are rough by definition)
 LOCAL_M = float(os.environ.get("LOCAL_M", 0))         # >0: decoys only 100 m to LOCAL_M from their own target (same neighbourhood)
@@ -58,11 +60,37 @@ def bh(p):
     return np.minimum(q, 1)
 
 
+def local_sd(d, w):
+    m = uniform_filter(d, w)
+    return np.sqrt(np.maximum(uniform_filter(d * d, w) - m * m, 0))
+
+
+def lidar_texture(grids):
+    """Equal-richness lidar baseline: the same kind of operators the SAR spatial product uses, run on the lidar
+    cover, slope and roughness grids, plus forest fraction at 75 m and 155 m (a small opening in forest)."""
+    out = {}
+    for key, a in grids.items():
+        bad = ~np.isfinite(a)
+        d = np.where(bad, np.nanmedian(a), a).astype(np.float64)
+        m = lambda x: np.where(bad, np.nan, x)  # noqa: E731
+        for w in (3, 7, 11, 15):
+            out[f"lidartex:{key}_sd{w}"] = m(local_sd(d, w))
+        ds = gaussian_filter(d, 1)
+        out[f"lidartex:{key}_grad"] = m(np.hypot(sobel(ds, 0), sobel(ds, 1)))
+        out[f"lidartex:{key}_dog"] = m(gaussian_filter(d, 1) - gaussian_filter(d, 4))
+        out[f"lidartex:{key}_mean15"] = m(uniform_filter(d, 15))
+        if key == "cover":
+            out["lidartex:cover_mean31"], out["lidartex:cover_sd31"] = m(uniform_filter(d, 31)), m(local_sd(d, 31))
+    return out
+
+
 def main():
     idx, stack, tf, shape = C.load()
     del stack
     grids = C.lidar_grids(tf, shape)
     feats = C.read_all()
+    # height residual dropped 2026-10-26: forest median height 0.1-0.8 m (expected metres to tens of metres) and a sign forced per track
+    feats = {k: v for k, v in feats.items() if not k.startswith("heightresid:")}
     # product 1 stack (flatness script), without its lidar bands
     p1 = C.FEAT_DIR / f"nisar_feature_stack_{C.A.TAG}_5m.tif"
     if p1.exists():
@@ -72,6 +100,7 @@ def main():
                     feats[f"amp_stats:{d}"] = r.read(i)
     # lidar controls: if one of these separates pads from matched decoys, canopy or terrain leaks through the bins
     feats["control:cover"], feats["control:slope"], feats["control:rough"] = grids["cover"], grids["slope"], grids["rough"]
+    feats.update(lidar_texture(grids))
     print(f"{len(feats)} bands", flush=True)
 
     pads = C.ifg.read_layer(C.ifg.ANN, "plat").to_crs(CRS := C.CRS)
@@ -91,26 +120,29 @@ def main():
         near = rasterize([(rd.buffer(30), 1)], out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
         excl = excl | ~far | near
 
-    # pad table: core pixels, mean cover and slope
+    # target table: core pixels, then the nb core pixels nearest the centre (nb = largest bin that fits the core)
     rows = []
     for g in targets.geometry:
         core = g.buffer(-CORE_SHRINK_M) if CORE_SHRINK_M else g
         px = C.st.pixel_index(core, tf, shape) if not core.is_empty else np.array([], int)
-        if len(px) < 4:
+        fit = [b for b in BINS if b <= len(px)]
+        if not fit:
             continue
-        cov, slo = np.nanmean(grids["cover"].ravel()[px]), np.nanmean(grids["slope"].ravel()[px])
-        rou = np.nanmean(grids["rough"].ravel()[px])
+        nb = max(fit)
+        rr, cc = np.divmod(px, shape[1])
+        near = px[np.argsort((rr - np.median(rr)) ** 2 + (cc - np.median(cc)) ** 2)[:nb]]
+        cov, slo = np.nanmean(grids["cover"].ravel()[near]), np.nanmean(grids["slope"].ravel()[near])
+        rou = np.nanmean(grids["rough"].ravel()[near])
         if np.isfinite(cov) and np.isfinite(slo) and (np.isfinite(rou) or not MATCH_ROUGH):
-            # score on the n_disc core pixels nearest the centre so a pad median has the same noise as a decoy disc
-            rr, cc = np.divmod(px, shape[1])
-            near = px[np.argsort((rr - np.median(rr)) ** 2 + (cc - np.median(cc)) ** 2)[:N_DISC]]
-            rows.append((px, cov, slo, near, g.centroid.distance(pads_u) if TARGET == "pit" else np.nan, rou, g.area, g.centroid.x, g.centroid.y))
+            rows.append((px, cov, slo, near, g.centroid.distance(pads_u) if TARGET == "pit" else np.nan, rou, g.area,
+                         g.centroid.x, g.centroid.y, nb))
     print(f"{len(rows)} of {len(targets)} {TARGET}s usable", flush=True)
 
     rng = np.random.default_rng(SEED)
     yy, xx = np.mgrid[-DECOY_R_PX:DECOY_R_PX + 1, -DECOY_R_PX:DECOY_R_PX + 1]
     disc = np.c_[yy[yy ** 2 + xx ** 2 <= DISC_R2], xx[yy ** 2 + xx ** 2 <= DISC_R2]]
     assert len(disc) == N_DISC
+    disc = disc[np.lexsort((np.arctan2(disc[:, 0], disc[:, 1]), (disc ** 2).sum(1)))]   # nearest first, so disc[:nb] is the nb-pixel disc
     anyvalid = np.all([np.isfinite(a) for a in list(feats.values())[:3]], axis=0)
     ok = (np.isfinite(grids["cover"]) & np.isfinite(grids["slope"]) & ~excl & anyvalid)
     ok[:DECOY_R_PX + 1] = ok[-DECOY_R_PX - 1:] = False
@@ -118,21 +150,32 @@ def main():
     cand = np.flatnonzero(ok.ravel())
     print(f"{len(cand)} candidate decoy pixels", flush=True)
 
-    # fine matching: decoy disc mean cover within TOL_COVER and mean slope within TOL_SLOPE_DEG of the pad core
-    def disc_px(centres):
+    # fine matching: decoy disc mean cover within TOL_COVER and mean slope within TOL_SLOPE_DEG of the target's nb pixels
+    def disc_px(centres, nb=N_DISC):
         r, c = np.divmod(centres, shape[1])
-        rr = np.clip(r[:, None] + disc[None, :, 0], 0, shape[0] - 1)
-        cc = np.clip(c[:, None] + disc[None, :, 1], 0, shape[1] - 1)
+        rr = np.clip(r[:, None] + disc[None, :nb, 0], 0, shape[0] - 1)
+        cc = np.clip(c[:, None] + disc[None, :nb, 1], 0, shape[1] - 1)
         return rr * shape[1] + cc
 
-    cand_cov = np.nanmean(grids["cover"].ravel()[disc_px(cand)], 1)
-    cand_slo = np.nanmean(grids["slope"].ravel()[disc_px(cand)], 1)
+    def vals(f, centres, nbs):
+        """Median of f over each centre's own nb-pixel disc."""
+        v = f[disc_px(centres)]
+        v[np.arange(N_DISC)[None, :] >= nbs[:, None]] = np.nan
+        out = np.nanmedian(v, 1)
+        out[np.isfinite(v).sum(1) < np.minimum(4, nbs)] = np.nan      # same finite-support rule as the targets
+        return out
+
     cx, cy = rasterio.transform.xy(tf, *np.divmod(cand, shape[1]))
     cx, cy = np.asarray(cx), np.asarray(cy)
-    cand_rou = np.nanmean(grids["rough"].ravel()[disc_px(cand)], 1)
+    cstat = {}
+    for nb in sorted({r[9] for r in rows}):
+        ix = disc_px(cand, nb)
+        cstat[nb] = tuple(np.nanmean(grids[k].ravel()[ix], 1) for k in ("cover", "slope", "rough"))
+        del ix
     tol_rou = 0.25 * np.nanstd([r[5] for r in rows])      # a quarter of the spread of target roughness
     dec_m, dec_pad = [], []
     for k, r in enumerate(rows):
+        cand_cov, cand_slo, cand_rou = cstat[r[9]]
         okm = (np.abs(cand_cov - r[1]) <= TOL_COVER) & (np.abs(cand_slo - r[2]) <= TOL_SLOPE_DEG)
         if MATCH_ROUGH:
             okm &= np.abs(cand_rou - r[5]) <= tol_rou
@@ -147,14 +190,15 @@ def main():
     print(f"{len(set(dec_pad))} of {len(rows)} pads have matched decoys", flush=True)
     dec_u = rng.choice(cand, len(rows) * K_DECOY)
 
-    dm_px, du_px = disc_px(dec_m), disc_px(dec_u)
+    dec_nb = np.array([rows[k][9] for k in dec_pad])
+    du_nb = np.repeat([r[9] for r in rows], K_DECOY)
     pad_cover = np.array([r[1] for r in rows])
     pad_dist = np.array([r[4] for r in rows])
     out, store = [], {}
     for name, a in feats.items():
         f = a.ravel()
         pv = np.array([np.nanmedian(f[r[3]]) if np.isfinite(f[r[3]]).sum() >= 4 else np.nan for r in rows])
-        dmv, duv = np.nanmedian(f[dm_px], 1), np.nanmedian(f[du_px], 1)
+        dmv, duv = vals(f, dec_m, dec_nb), vals(f, dec_u, du_nb)
         store[name] = (pv, dmv)
         good = np.isfinite(pv) & np.isin(np.arange(len(rows)), dec_pad)
         if good.sum() < 30 or np.isfinite(dmv).sum() < 100:
@@ -178,10 +222,13 @@ def main():
         out.append(rec)
     res = pd.DataFrame(out)
     blk = lambda px: (np.divmod(px, shape[1])[0] * 5 // 500) * 100000 + (np.divmod(px, shape[1])[1] * 5 // 500)  # noqa: E731
+    pr, pc = rasterio.transform.rowcol(tf, [r[7] for r in rows], [r[8] for r in rows])   # block of the centroid, not a median of flat pixel indices
+    pad_block = (np.clip(pr, 0, shape[0] - 1) * 5 // 500) * 100000 + (np.clip(pc, 0, shape[1] - 1) * 5 // 500)
     names = list(store)
     np.savez_compressed(C.FEAT_DIR / f"nisar_{TARGET}_samples_{C.A.TAG}{SUFFIX}.npz", names=names,
                         pad=np.stack([store[n][0] for n in names]), dec=np.stack([store[n][1] for n in names]),
-                        dec_pad=dec_pad, pad_block=blk(np.array([int(np.median(r[0])) for r in rows])), dec_block=blk(dec_m),
+                        dec_pad=dec_pad, pad_block=pad_block, dec_block=blk(dec_m),
+                        pad_n=np.array([r[9] for r in rows]), dec_n=dec_nb,
                         pad_cover=pad_cover, pad_dist=pad_dist, pad_area=np.array([r[6] for r in rows]),
                         pad_xy=np.array([[r[7], r[8]] for r in rows]),
                         dec_xy=np.array(rasterio.transform.xy(tf, *np.divmod(dec_m, shape[1]))).T)
