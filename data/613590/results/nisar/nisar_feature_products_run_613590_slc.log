@@ -1,0 +1,214 @@
+=== dualpol 09:26:55
+track 26: 8 dates
+track 90: 11 dates
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_dualpol_9t.py:39: RuntimeWarning: invalid value encountered in divide
+  p1, p2 = l1 / tr, l2 / tr
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_dualpol_9t.py:46: RuntimeWarning: invalid value encountered in divide
+  "rvi" + tag: m(4 * c22 / tr), "rfdi" + tag: m((c11 - c22) / tr), "ent" + tag: m(ent),
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_dualpol_9t.py:47: RuntimeWarning: invalid value encountered in divide
+  "alpha" + tag: m(alpha), "dop" + tag: m((l1 - l2) / tr),
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_dualpol_9t.py:48: RuntimeWarning: invalid value encountered in divide
+  "rho" + tag: m(np.abs(c12) / np.sqrt(c11 * c22)), "phi" + tag: m(np.angle(c12))})
+track 162: 6 dates
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_dualpol_613590_slc_5m.tif (21 bands)
+=== texture 09:27:05
+track 26: 8 dates
+track 90: 11 dates
+track 162: 6 dates
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_texture_613590_slc_5m.tif (15 bands)
+=== spatial 09:27:15
+track 26: 8 dates
+track 90: 11 dates
+track 162: 6 dates
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_spatial_613590_slc_5m.tif (63 bands)
+=== amp_trend 09:27:32
+track 26: 8 dates, span 324 days
+track 90: 11 dates, span 336 days
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_amp_trend_9t.py:30: RuntimeWarning: All-NaN slice encountered
+  bands["med" + tag] = m(np.nanmedian(y, 0))
+C:\Python313\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1617: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a,
+track 162: 6 dates, span 84 days
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_amp_613590_slc_5m.tif (36 bands)
+=== temporal 09:39:54
+track 26: 8 dates
+track 90: 11 dates
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_temporal_9t.py:38: RuntimeWarning: invalid value encountered in divide
+  bands[f"da_{k}" + tag] = m(a[i].std(0) / a[i].mean(0))
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_temporal_9t.py:39: RuntimeWarning: invalid value encountered in divide
+  bands[f"cvp_{k}" + tag] = m(pw[i].std(0) / pw[i].mean(0))
+C:\Python313\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1617: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a,
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_temporal_9t.py:42: RuntimeWarning: All-NaN slice encountered
+  bands[f"range_{k}" + tag] = m(np.nanmax(d[i], 0) - np.nanmin(d[i], 0))
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_temporal_9t.py:44: RuntimeWarning: Mean of empty slice
+  bands["ratio_mean" + tag] = m(np.nanmean(r, 0))
+C:\Python313\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:2015: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_temporal_9t.py:46: RuntimeWarning: Mean of empty slice
+  x, y = d[0] - np.nanmean(d[0], 0), d[1] - np.nanmean(d[1], 0)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_temporal_9t.py:48: RuntimeWarning: invalid value encountered in divide
+  bands["rho_t" + tag] = m(np.abs((c[0] * np.conj(c[1])).sum(0)) / np.sqrt(pw[0].sum(0) * pw[1].sum(0)))
+track 162: 6 dates
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_temporal_613590_slc_5m.tif (43 bands)
+=== events 09:45:49
+track 26: 8 dates
+track 90: 11 dates
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_events_9t.py:39: RuntimeWarning: All-NaN slice encountered
+  med = np.nanmedian(y, 0)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_events_9t.py:40: RuntimeWarning: All-NaN slice encountered
+  mad = np.nanmedian(np.abs(y - med), 0)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_events_9t.py:46: RuntimeWarning: All-NaN slice encountered
+  bands["z_max" + tag] = m(np.nanmax(z, 0))
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_events_9t.py:47: RuntimeWarning: All-NaN slice encountered
+  bands["z_min" + tag] = m(np.nanmin(z, 0))
+track 162: 6 dates
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_events_613590_slc_5m.tif (15 bands)
+=== geometry 09:45:59
+track 26: 8 dates, usable 83.9%
+track 90: 11 dates, usable 84.1%
+track 162: 6 dates, usable 83.7%
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_geometry_9t.py:54: RuntimeWarning: Mean of empty slice
+  bands["flat_diff_desc_asc"] = fl[t] - np.nanmean([fl[a] for a in asc], 0)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_geometry_613590_slc_5m.tif (14 bands)
+=== los_motion 09:47:11
+track 26: 4 pairs, usable 58.8%
+track 90: 8 pairs, usable 61.0%
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_interferogram_pits_9t.py:106: RuntimeWarning: invalid value encountered in divide
+  coh = np.abs(num) / np.sqrt(p1 * p2)
+track 162: 4 pairs, usable 45.4%
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_losmotion_613590_slc_5m.tif (12 bands)
+=== coherence 09:47:20
+track 26 hh: 8 dates, 28 pairs
+track 26 hv: 8 dates, 28 pairs
+track 90 hh: 11 dates, 55 pairs
+track 90 hv: 11 dates, 55 pairs
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_interferogram_pits_9t.py:106: RuntimeWarning: invalid value encountered in divide
+  coh = np.abs(num) / np.sqrt(p1 * p2)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_coherence_9t.py:84: RuntimeWarning: Mean of empty slice
+  bands[k + tag] = np.nanmean(cube[sel], 0)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_coherence_9t.py:91: RuntimeWarning: Mean of empty slice
+  bands[k + tag] = np.nanmean(cube[sel], 0)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_coherence_9t.py:99: RuntimeWarning: Mean of empty slice
+  bands["closure" + tag] = np.nanmean(np.stack(clo), 0)
+track 162 hh: 6 dates, 15 pairs
+track 162 hv: 6 dates, 15 pairs
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_coherence_613590_slc_5m.tif (42 bands)
+=== rain_freeze 09:47:55
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_rain_freeze_9t.py", line 75, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_rain_freeze_9t.py", line 52, in main
+    api, frozen = api_and_frozen(g.date)
+                  ~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_rain_freeze_9t.py", line 28, in api_and_frozen
+    w = pd.read_csv(W, parse_dates=["date"]).set_index("date")
+        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "C:\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "C:\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ~~~~~~~~~~^
+        f,
+        ^^
+    ...<6 lines>...
+        storage_options=self.options.get("storage_options", None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+        handle,
+    ...<3 lines>...
+        newline="",
+    )
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\613590\\derived\\weather\\weather_prism_daily_9t.csv'
+FAILED rain_freeze
+=== road_context 09:48:01
+3690 road lines, 1953 dead ends
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feat_context_613590_slc_5m.tif (2 bands)
+=== flatness 09:49:04
+track 26: 8 dates, pairs {'coh_short': 3, 'coh_mid': 4, 'coh_long': 21}
+track 90: 11 dates, pairs {'coh_short': 7, 'coh_mid': 11, 'coh_long': 37}
+C:\Python313\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:2015: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+C:\Python313\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1617: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a,
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_gslc_interferogram_pits_9t.py:106: RuntimeWarning: invalid value encountered in divide
+  coh = np.abs(num) / np.sqrt(p1 * p2)
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_features_vs_flatness_9t.py:86: RuntimeWarning: Mean of empty slice
+  return ({k: (np.nanmean(np.stack(v), 0) if v else None) for k, v in acc.items()},
+track 162: 6 dates, pairs {'coh_short': 4, 'coh_mid': 4, 'coh_long': 7}
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\613590\derived\nisar_features_5m\nisar_feature_stack_613590_slc_5m.tif
+    setting             feature   n_px  rho_slope  rho_rough  n_flat  n_steep  auc_steep_gt_flat
+open_lt0p30     hv_mean_db_t026 137322      0.316      0.317    9388    17717              0.791
+open_lt0p30     hh_mean_db_t162 135823      0.299      0.297    9615    17843              0.790
+open_lt0p30     hv_mean_db_t090 137322      0.293      0.292    9657    17701              0.775
+open_lt0p30     hv_mean_db_t162 135823      0.284      0.280    9677    17852              0.779
+open_lt0p30     hh_mean_db_t026 137322      0.282      0.285    9681    17643              0.774
+open_lt0p30     hh_mean_db_t090 137322      0.221      0.218    9537    17704              0.734
+open_lt0p30      coh_short_t026 137322      0.193      0.191    9469    17852              0.706
+open_lt0p30        coh_mid_t026 137322      0.174      0.173    9739    17607              0.677
+open_lt0p30      coh_decay_t026 137322      0.151      0.149    9582    17788              0.660
+open_lt0p30       coh_long_t026 137322      0.144      0.142    9662    17756              0.657
+open_lt0p30      coh_decay_t090 137322      0.138      0.130    9597    17777              0.673
+open_lt0p30      coh_short_t090 137322      0.125      0.116    9497    17709              0.684
+open_lt0p30        coh_mid_t090 137322      0.123      0.117    9608    17754              0.672
+open_lt0p30          hh_da_t026 137322     -0.113     -0.112    9649    17729              0.378
+open_lt0p30 hv_minus_hh_db_t162 135823     -0.113     -0.113    9567    17849              0.386
+open_lt0p30  hh_p90_p10_db_t026 137322     -0.090     -0.090    9630    17659              0.406
+open_lt0p30   diff_t090_t162_db 135823     -0.090     -0.091    9598    17822              0.425
+open_lt0p30       coh_long_t090 137322      0.084      0.077    9448    17754              0.635
+open_lt0p30      coh_short_t162 136049      0.081      0.078    9649    17875              0.597
+open_lt0p30      coh_decay_t162 136013      0.080      0.078    9614    17875              0.580
+open_lt0p30      hh_std_db_t026 137322     -0.078     -0.078    9564    17941              0.417
+open_lt0p30    diff_t026_asc_db 137322     -0.077     -0.072    9608    17722              0.418
+open_lt0p30          hh_da_t162 135823     -0.068     -0.066    9600    17866              0.427
+open_lt0p30 hv_minus_hh_db_t090 137322      0.066      0.070    9581    17741              0.530
+open_lt0p30        coh_mid_t162 136309      0.060      0.057    9684    17930              0.570
+open_lt0p30  hh_p90_p10_db_t162 135823     -0.046     -0.045    9707    17766              0.451
+open_lt0p30      hh_std_db_t162 135823     -0.044     -0.043    9674    17741              0.452
+open_lt0p30          hh_da_t090 137322     -0.042     -0.042    9613    17806              0.443
+open_lt0p30  hh_p90_p10_db_t090 137322     -0.033     -0.034    9594    17770              0.457
+open_lt0p30 hv_minus_hh_db_t026 137322     -0.032     -0.033    9532    17805              0.445
+open_lt0p30      hh_std_db_t090 137322     -0.027     -0.027    9587    17772              0.467
+open_lt0p30       coh_long_t162 136013      0.004      0.002    9669    17624              0.523
+=== subaperture 09:57:00
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_subaperture_9t.py", line 119, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s5_eval\_nisar_feat_subaperture_9t.py", line 87, in main
+    idx = pd.read_csv(rg.OUTD / "nisar_slc_lidar_index_9t.csv")
+  File "C:\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "C:\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "C:\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ~~~~~~~~~~^
+        f,
+        ^^
+    ...<6 lines>...
+        storage_options=self.options.get("storage_options", None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Python313\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+        handle,
+    ...<3 lines>...
+        newline="",
+    )
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\613590\\derived\\nisar_slc_lidar_5m\\nisar_slc_lidar_index_9t.csv'
+FAILED subaperture
+=== DONE 09:57:04

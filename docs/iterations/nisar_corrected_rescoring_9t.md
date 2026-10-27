@@ -1,5 +1,7 @@
 # NISAR feature study, corrected and re-scored (9t, 2026-10-26)
 
+> Update 2026-10-27: `skew7` and `kurt7` were fixed and every design re-scored. All numbers below moved by 0.005 or less (pads, decoys anywhere: all NISAR 0.640; local decoys 0.479; pits 0.829; placebo 0.482, 0.527, 0.495). The follow-up checks are in `nisar_checks_9t.md`. Most of the limits listed at the end of this doc are addressed there.
+
 This doc **supersedes the headline numbers** in `nisar_pad_features_scored_9t.md` and `nisar_pit_features_scored_9t.md`. Those docs keep their first-pass numbers, marked as superseded.
 
 ## Why re-run
@@ -84,9 +86,9 @@ The new CV accounts for about half to two thirds of the drop (64% and 53%). The 
 - No shifted pseudo-pad placebo, no confuser set (other clearings), no DEP-status split, no held-out area (613590), no repeated CV with a spread over seeds.
 - Sample-level inference is still unreliable: single-band p-values and the signed-rank test across bands assume independence.
 - The registration is about 10 m and not independently confirmed.
-- **The fusion with the pad U-Net is not re-run and should not be quoted.** The audit says the U-Net sampler can read held-out pixels, so its near-1.0 AUC is not a leakage-free ceiling (`_nisar_feat_fusion_9t.py` now carries that warning).
+- **The fusion with the pad U-Net** was redone on 2026-10-27 with an isolated retrain (`nisar_checks_9t.md`, section 7). NISAR adds nothing to it.
 - The LOS-motion bands are not measured displacement (zero-filled steps, disconnected gaps). Treat them as exploratory predictors. Season and processing release are confounded (all winter acquisitions are beta, all summer ones provisional).
-- `skew7` and `kurt7` are moments of a demeaned residual image, not window central moments. Rename before quoting.
+- `skew7` and `kurt7` were moments of a demeaned residual image, not window central moments. Fixed 2026-10-27.
 
 ## Files
 

@@ -8,7 +8,7 @@ Feature sets: simple lidar baseline (cover, slope, roughness), rich lidar baseli
 operators the SAR spatial product uses, run on lidar grids), map x/y only (location control), all SAR bands,
 and combinations, plus each product group alone.
 
-  [TARGET=pit] [CORE_SHRINK_M=15] [ROAD_NEAR=1] [MATCH_ROUGH=1] [LOCAL_M=1500] python _nisar_feat_model_9t.py
+  [TARGET=pit] [CORE_SHRINK_M=15] [ROAD_NEAR=1] [MATCH_ROUGH=1] [SHAPE=1] [INC_MATCH=1] [PLACEBO=1] [LOCAL_M=1500] python _nisar_feat_model_9t.py
 """
 import json
 import os
@@ -21,9 +21,7 @@ import _nisar_feat_common as C
 
 TARGET = os.environ.get("TARGET", "pad")
 CORE = float(os.environ.get("CORE_SHRINK_M", 0 if TARGET == "pit" else 5))
-SUFFIX = (("" if CORE == (0 if TARGET == "pit" else 5) else f"_core{CORE:.0f}m") + ("_roadnear" if os.environ.get("ROAD_NEAR") == "1" else "")
-          + ("_roughmatch" if os.environ.get("MATCH_ROUGH") == "1" else "")
-          + (f"_local{float(os.environ['LOCAL_M']):.0f}" if float(os.environ.get("LOCAL_M", 0)) else ""))
+SUFFIX = C.suffix(TARGET)
 GATE, SEED, NB = 0.05, 20261026, 200
 
 

@@ -49,8 +49,8 @@ rainfreeze,rainfreeze:frozen_hh_t162,rainfreeze:frozen_hv_t162,0.522,0.435,0.022
 spatial,spatial:sd3_hh_t026,spatial:sd3_hv_t026,0.567,0.518,0.067,0.018,True
 spatial,spatial:sd11_hh_t026,spatial:sd11_hv_t026,0.665,0.492,0.165,0.008,True
 spatial,spatial:sd15_hh_t026,spatial:sd15_hv_t026,0.639,0.446,0.139,0.054,True
-spatial,spatial:skew7_hh_t026,spatial:skew7_hv_t026,0.568,0.527,0.068,0.027,True
-spatial,spatial:kurt7_hh_t026,spatial:kurt7_hv_t026,0.522,0.487,0.022,0.013,True
+spatial,spatial:skew7_hh_t026,spatial:skew7_hv_t026,0.562,0.477,0.062,0.023,True
+spatial,spatial:kurt7_hh_t026,spatial:kurt7_hv_t026,0.516,0.503,0.016,0.003,True
 spatial,spatial:grad_hh_t026,spatial:grad_hv_t026,0.588,0.489,0.088,0.011,True
 spatial,spatial:dog_hh_t026,spatial:dog_hv_t026,0.535,0.545,0.035,0.045,False
 spatial,spatial:aniso_hh_t026,spatial:aniso_hv_t026,0.547,0.497,0.047,0.003,True
@@ -59,8 +59,8 @@ spatial,spatial:glcm_hom_hh_t026,spatial:glcm_hom_hv_t026,0.404,0.481,0.096,0.01
 spatial,spatial:sd3_hh_t090,spatial:sd3_hv_t090,0.631,0.597,0.131,0.097,True
 spatial,spatial:sd11_hh_t090,spatial:sd11_hv_t090,0.759,0.709,0.259,0.209,True
 spatial,spatial:sd15_hh_t090,spatial:sd15_hv_t090,0.766,0.708,0.266,0.208,True
-spatial,spatial:skew7_hh_t090,spatial:skew7_hv_t090,0.526,0.539,0.026,0.039,False
-spatial,spatial:kurt7_hh_t090,spatial:kurt7_hv_t090,0.503,0.539,0.003,0.039,False
+spatial,spatial:skew7_hh_t090,spatial:skew7_hv_t090,0.537,0.509,0.037,0.009,True
+spatial,spatial:kurt7_hh_t090,spatial:kurt7_hv_t090,0.512,0.533,0.012,0.033,False
 spatial,spatial:grad_hh_t090,spatial:grad_hv_t090,0.636,0.613,0.136,0.113,True
 spatial,spatial:dog_hh_t090,spatial:dog_hv_t090,0.512,0.551,0.012,0.051,False
 spatial,spatial:aniso_hh_t090,spatial:aniso_hv_t090,0.509,0.532,0.009,0.032,False
@@ -69,8 +69,8 @@ spatial,spatial:glcm_hom_hh_t090,spatial:glcm_hom_hv_t090,0.345,0.389,0.155,0.11
 spatial,spatial:sd3_hh_t162,spatial:sd3_hv_t162,0.652,0.583,0.152,0.083,True
 spatial,spatial:sd11_hh_t162,spatial:sd11_hv_t162,0.723,0.674,0.223,0.174,True
 spatial,spatial:sd15_hh_t162,spatial:sd15_hv_t162,0.696,0.646,0.196,0.146,True
-spatial,spatial:skew7_hh_t162,spatial:skew7_hv_t162,0.525,0.497,0.025,0.003,True
-spatial,spatial:kurt7_hh_t162,spatial:kurt7_hv_t162,0.532,0.464,0.032,0.036,False
+spatial,spatial:skew7_hh_t162,spatial:skew7_hv_t162,0.487,0.464,0.013,0.036,False
+spatial,spatial:kurt7_hh_t162,spatial:kurt7_hv_t162,0.533,0.458,0.033,0.042,False
 spatial,spatial:grad_hh_t162,spatial:grad_hv_t162,0.649,0.654,0.149,0.154,False
 spatial,spatial:dog_hh_t162,spatial:dog_hv_t162,0.524,0.529,0.024,0.029,False
 spatial,spatial:aniso_hh_t162,spatial:aniso_hv_t162,0.521,0.571,0.021,0.071,False

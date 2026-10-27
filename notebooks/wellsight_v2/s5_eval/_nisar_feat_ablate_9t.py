@@ -19,9 +19,7 @@ import _nisar_feat_common as C
 TARGET = os.environ.get("TARGET", "pad")
 BASE = 0 if TARGET == "pit" else 5
 CORE = float(os.environ.get("CORE_SHRINK_M", BASE))
-SUFFIX = (("" if CORE == BASE else f"_core{CORE:.0f}m") + ("_roadnear" if os.environ.get("ROAD_NEAR") == "1" else "")
-          + ("_roughmatch" if os.environ.get("MATCH_ROUGH") == "1" else "")
-          + (f"_local{float(os.environ['LOCAL_M']):.0f}" if float(os.environ.get("LOCAL_M", 0)) else ""))
+SUFFIX = C.suffix(TARGET)
 
 
 def main():

@@ -1,10 +1,10 @@
 feature_set,n_bands,auc
-HH twins,89,0.449
-HV twins,89,0.478
-HH + HV twins,178,0.469
+HH twins,89,0.455
+HV twins,89,0.473
+HH + HV twins,178,0.482
 lidar baseline,3,0.435
-HH twins + baseline,92,0.456
-HV twins + baseline,92,0.442
-HH + HV twins + baseline,181,0.459
-"shuffled labels within block, HH + HV twins (20 runs): mean",178,0.444
-shuffled labels: max,178,0.478
+HH twins + baseline,92,0.465
+HV twins + baseline,92,0.429
+HH + HV twins + baseline,181,0.467
+"shuffled labels within block, HH + HV twins (20 runs): mean",178,0.445
+shuffled labels: max,178,0.473

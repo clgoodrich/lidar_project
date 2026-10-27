@@ -1,0 +1,10 @@
+feature_set,subset,n_pads,auc
+all NISAR,pads in the local design,297,0.626
+all NISAR,pads not in the local design,336,0.653
+all NISAR,all,633,0.64
+rich lidar baseline,pads in the local design,297,0.935
+rich lidar baseline,pads not in the local design,336,0.902
+rich lidar baseline,all,633,0.917
+map x/y only,pads in the local design,297,0.768
+map x/y only,pads not in the local design,336,0.858
+map x/y only,all,633,0.815

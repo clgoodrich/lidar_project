@@ -1,0 +1,21 @@
+status,n_pads,n_decoys,feature_set,auc,ci_lo,ci_hi
+all,633,6330,all NISAR,0.64,0.524,0.714
+all,633,6330,rich lidar baseline,0.917,0.793,0.985
+all,633,6330,NISAR + rich baseline,0.921,0.821,0.989
+all,633,6330,map x/y only,0.815,0.653,0.933
+abandoned,77,770,all NISAR,0.657,0.499,0.794
+abandoned,77,770,rich lidar baseline,0.921,0.786,0.992
+abandoned,77,770,NISAR + rich baseline,0.929,0.752,0.995
+abandoned,77,770,map x/y only,0.85,0.585,0.972
+active,326,3260,all NISAR,0.625,0.516,0.713
+active,326,3260,rich lidar baseline,0.912,0.764,0.988
+active,326,3260,NISAR + rich baseline,0.916,0.771,0.991
+active,326,3260,map x/y only,0.805,0.604,0.919
+no well recorded,133,1330,all NISAR,0.616,0.53,0.7
+no well recorded,133,1330,rich lidar baseline,0.92,0.823,0.99
+no well recorded,133,1330,NISAR + rich baseline,0.918,0.768,0.989
+no well recorded,133,1330,map x/y only,0.807,0.578,0.942
+plugged,86,860,all NISAR,0.71,0.596,0.802
+plugged,86,860,rich lidar baseline,0.931,0.844,0.987
+plugged,86,860,NISAR + rich baseline,0.938,0.848,0.99
+plugged,86,860,map x/y only,0.82,0.636,0.911

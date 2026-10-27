@@ -2,7 +2,7 @@
 
 Bands (suffix _{pol}_tNNN):
   sd3, sd11, sd15     local std of the dB image at 3, 11 and 15 pixels (multi-scale contrast)
-  skew7, kurt7        local skewness and excess kurtosis of dB, 7 x 7
+  skew7, kurt7        local skewness and excess kurtosis of dB inside each 7 x 7 window (true window central moments)
   grad                Sobel gradient magnitude of dB (smoothed 1 px)
   dog                 difference of Gaussians of dB, sigma 1 minus sigma 4 (centre vs surround)
   aniso               structure-tensor coherence of the dB gradient, 7 x 7 (1 = one dominant edge direction,
@@ -27,11 +27,13 @@ def local_sd(d, w):
 
 
 def local_moments(d, w):
-    m = uniform_filter(d, w)
-    c = d - m
-    v = uniform_filter(c * c, w)
-    s = uniform_filter(c ** 3, w) / np.maximum(v, 1e-6) ** 1.5
-    k = uniform_filter(c ** 4, w) / np.maximum(v, 1e-6) ** 2 - 3
+    """Skewness and excess kurtosis of d inside each w x w window (central moments about that window's own mean, from the
+    raw moments of d minus its global median; fixed 2026-10-27, the first version subtracted the local mean of one pixel only)."""
+    d = d.astype(np.float64) - np.nanmedian(d)
+    m1, m2, m3, m4 = (uniform_filter(d ** k, w) for k in (1, 2, 3, 4))
+    v = np.maximum(m2 - m1 ** 2, 1e-6)
+    s = (m3 - 3 * m1 * m2 + 2 * m1 ** 3) / v ** 1.5
+    k = (m4 - 4 * m1 * m3 + 6 * m1 ** 2 * m2 - 3 * m1 ** 4) / v ** 2 - 3
     return s, k
 
 

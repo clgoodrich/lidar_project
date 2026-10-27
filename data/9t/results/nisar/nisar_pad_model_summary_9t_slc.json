@@ -7,7 +7,7 @@
   "simple_baseline_auc": 0.465,
   "rich_baseline_auc": 0.917,
   "xy_only_auc": 0.815,
-  "all_nisar_auc": 0.635,
+  "all_nisar_auc": 0.64,
   "passes_gate_over_rich_baseline": false,
   "passes_gate_over_rich_plus_xy": false
 }

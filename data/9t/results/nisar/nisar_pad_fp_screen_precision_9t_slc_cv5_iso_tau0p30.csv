@@ -1,0 +1,7 @@
+ranking,base_precision,precision_at_recall_50,precision_at_recall_70,precision_at_recall_90,diff_at_recall_50_95ci,diff_at_recall_70_95ci,diff_at_recall_90_95ci
+detector score,0.401,0.764,0.687,0.613,,,
+score + rich lidar texture,0.401,0.735,0.636,0.589,-0.029 (-0.085 to +0.043),-0.051 (-0.097 to -0.018),-0.024 (-0.045 to -0.005)
+score + NISAR,0.401,0.767,0.721,0.614,+0.003 (-0.039 to +0.043),+0.034 (-0.008 to +0.064),+0.001 (-0.020 to +0.031)
+score + NISAR + rich lidar texture,0.401,0.752,0.729,0.615,-0.012 (-0.055 to +0.026),+0.042 (-0.004 to +0.067),+0.002 (-0.019 to +0.029)
+"score + NISAR, 10 PCs (logistic)",0.401,0.752,0.69,0.614,-0.012 (-0.046 to +0.007),+0.003 (-0.022 to +0.015),+0.001 (-0.013 to +0.012)
+"score + rich lidar texture, 10 PCs (logistic)",0.401,0.747,0.687,0.608,-0.017 (-0.054 to +0.009),+0.000 (-0.032 to +0.014),-0.005 (-0.026 to +0.007)

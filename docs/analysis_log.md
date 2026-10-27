@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-27 (outstanding NISAR checks, ten backlog items) -- NISAR
+
+- **Scope.** Every item of the BACKLOG list "NISAR outstanding checks". Write-up: `docs/iterations/nisar_checks_9t.md`. Pre-registration for the 613590 test: `docs/iterations/nisar_heldout_613590_prereg.md`, committed before any 613590 sample was scored.
+- **Fix.** `skew7` and `kurt7` were not window moments (first version subtracted one pixel's local mean). Corrected in `_nisar_feat_spatial_9t.py`, the spatial product rebuilt for 9t and 613590, every design re-scored. Headline moved by 0.005 or less. The refactored scorer first reproduced the committed per-band file exactly.
+- **Code.** New: `_nisar_feat_repeat_9t.py`, `_nisar_feat_status_9t.py`, `_nisar_feat_subset_9t.py`, `_nisar_feat_heldout_9t.py`, `_nisar_feat_radnorm_9t.py`, `_nisar_signal_checks_9t.py`, `_nisar_pad_fp_screen_9t.py`, `s3_train/_pad_unet_iso_cv5.py`. Scorer options SHAPE, INC_MATCH, PLACEBO, CONFUSER. `C.suffix`, `C.fit_predict`, `C.sample_values`, seeded shuffled CV in `C.oof_probs`. Scorer samples now keep their footprints.
+- **Parameters.** Shape and incidence: footprint translated onto matched ground, `sim_db` within 0.5 dB on three tracks. Placebo: 150 to 300 m, ring ground 50 m from pads, pits, wells and 15 m from roads (the strict 100 m left 30 pads). Confuser: open ground (smoothed cover < 0.30) of at least 1,000 m2, same loosened exclusion. Repeats 10, block bootstrap 400 to 500.
+- **Results.** No design passes the gate (gain over rich lidar -0.01 to +0.003 over repeats). Pit NISAR score falls from 0.829 to 0.568 with shape and incidence matching. Pseudo-pads: x/y 0.890, NISAR 0.504. Confusers: NISAR 0.80, lidar 0.99, no gain. Clustered band tests: pads 229 naive to 20 clustered, local 137 to 0. Frozen 613590 pits: NISAR 0.658, rich lidar 0.881, combined 0.865, gate failed, all three predictions held.
+- **U-Net.** Isolated retrain (157 min): recall at IoU 0.3 0.872 (F1) and 0.891 (F2), against 0.888 and 0.912. Fusion: NISAR + U-Net 0.995 against U-Net 0.999. False-positive screen: NISAR alone 0.72 TP against FP, score + NISAR 0.831 against score 0.849 at tau 0.3. Precision at 70% recall +0.034 (-0.008 to +0.061), read as noise.
+- **Signal quality.** Single-look speckle, neighbour correlation 0.38, impulse response 3.9 m by 5.7 m, occupied bandwidth 31 to 33 MHz (not 20), no RFI, per-date HV offsets sd 1.1 to 1.8 dB but normalising changes nothing.
+- **Large files.** Audit clean. New heavy outputs: `data/613590/derived/nisar_features_5m/` (git-ignored by `data/**/derived/**`), U-Net weights and rasters under `data/9t/models/pad/unet_cv5_iso/` (git-ignored by the models rules).
+
+---
+
 ## 2026-10-26 (corrected re-scoring after outside review and Codex audit) -- NISAR
 
 - **Trigger.** An outside methods review and `docs/iterations/nisar_methodology_audit_20261026.md`. Claims checked against the code and data first. Upheld: block-assignment bug (13.9% of pads in the wrong block), 76% of pads scored on fewer than 49 pixels, bad date 2026-09-08 (track 26) still in the GSLC products, study ran on GSLC and not the lidar-placed stack, labels used before the CV split, unbuffered CV, height unit and wavelength errors, no coordinate or rich-lidar control. Not upheld: the 20 MHz range-bandwidth claim (it is 40 MHz).

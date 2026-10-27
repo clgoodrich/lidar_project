@@ -90,40 +90,68 @@ CV_BUFFER_M = 250.0
 SEED_CV = 20261026
 
 
-def oof_probs(X, y, grp, xy=None, buffer_m=None):
+def suffix(target):
+    """Name tag of a scoring design, from the environment. One definition for the scorer, model, ablation and checks scripts,
+    so their file names cannot drift apart."""
+    import os
+    base = 0 if target == "pit" else 5
+    core = float(os.environ.get("CORE_SHRINK_M", base))
+    local = float(os.environ.get("LOCAL_M", 0))
+    return (("" if core == base else f"_core{core:.0f}m") + ("_roadnear" if os.environ.get("ROAD_NEAR") == "1" else "")
+            + ("_roughmatch" if os.environ.get("MATCH_ROUGH") == "1" else "")
+            + ("_confuser" if os.environ.get("CONFUSER") == "1" else "")
+            + ("_shape" if os.environ.get("SHAPE") == "1" else "") + ("_inc" if os.environ.get("INC_MATCH") == "1" else "")
+            + ("_placebo" if os.environ.get("PLACEBO") == "1" else "")
+            + (f"_local{local:.0f}" if local else ""))
+
+
+def fit_predict(Xtr, ytr, Xte):
+    """The model of every script: bands more than 20% missing in either training class are dropped, the rest are
+    median-imputed with training medians, histogram gradient boosting. Returns P(target) for Xte, or None if no band is left."""
+    from sklearn.ensemble import HistGradientBoostingClassifier
+    nr = np.stack([np.isnan(Xtr[ytr == 1]).mean(0), np.isnan(Xtr[ytr == 0]).mean(0)]).max(0)
+    good = nr <= 0.20
+    if not good.any():
+        return None
+    med = np.nanmedian(Xtr[:, good], 0)
+    fill = lambda A: np.where(np.isnan(A), med, A)  # noqa: E731
+    m = HistGradientBoostingClassifier(max_depth=3, learning_rate=0.06, max_iter=200, l2_regularization=1.0,
+                                       min_samples_leaf=40, class_weight="balanced", random_state=SEED_CV)
+    m.fit(fill(Xtr[:, good]), ytr)
+    return m.predict_proba(fill(Xte[:, good]))[:, 1]
+
+
+def oof_probs(X, y, grp, xy=None, buffer_m=None, seed=None):
     """Out-of-fold probabilities, 5-fold GroupKFold by block. Everything that looks at the labels happens inside the
     training fold: bands more than 20% missing in either training class are dropped and the rest are median-imputed
     with training medians. Training rows within buffer_m of any test row are removed so that neighbouring footprints
-    cannot sit on both sides. Returns (p, [test index arrays])."""
+    cannot sit on both sides. seed=None is the deterministic GroupKFold; an integer gives a shuffled StratifiedGroupKFold
+    (stratified on the label, grouped by block), for repeated CV. Returns (p, [test index arrays])."""
     from scipy.spatial import cKDTree
-    from sklearn.ensemble import HistGradientBoostingClassifier
-    from sklearn.model_selection import GroupKFold
+    from sklearn.model_selection import GroupKFold, StratifiedGroupKFold
     xy = CV_XY if xy is None else xy
     buffer_m = CV_BUFFER_M if buffer_m is None else buffer_m
     p = np.full(len(y), np.nan)
     folds = []
-    for tr, te in GroupKFold(5).split(X, y, grp):
+    splitter = GroupKFold(5) if seed is None else StratifiedGroupKFold(5, shuffle=True, random_state=seed)
+    for tr, te in splitter.split(X, y, grp):
         if buffer_m and xy is not None:
             d, _ = cKDTree(xy[te]).query(xy[tr])
             tr = tr[d > buffer_m]
-        Xt = X[tr]
-        nr = np.stack([np.isnan(Xt[y[tr] == 1]).mean(0), np.isnan(Xt[y[tr] == 0]).mean(0)]).max(0)
-        good = nr <= 0.20
-        if not good.any():
+        q = fit_predict(X[tr], y[tr], X[te])
+        if q is None:
             continue
-        med = np.nanmedian(Xt[:, good], 0)
-        fill = lambda A: np.where(np.isnan(A), med, A)  # noqa: E731
-        m = HistGradientBoostingClassifier(max_depth=3, learning_rate=0.06, max_iter=200, l2_regularization=1.0,
-                                           min_samples_leaf=40, class_weight="balanced", random_state=SEED_CV)
-        m.fit(fill(Xt[:, good]), y[tr])
-        p[te] = m.predict_proba(fill(X[te][:, good]))[:, 1]
+        p[te] = q
         folds.append(te)
     return p, folds
 
 
-def load_samples(target, suffix):
-    """Rows of the samples file written by _nisar_feat_score_9t.py, raw (NaN kept): names, X, y, grp, xy, cover, z."""
-    z = np.load(FEAT_DIR / f"nisar_{target}_samples_{A.TAG}{suffix}.npz", allow_pickle=True)
+def load_samples(target, suffix, tag=None):
+    """Rows of the samples file written by _nisar_feat_score_9t.py, raw (NaN kept): names, X, y, grp, xy, cover, z.
+    tag picks another area's file (e.g. "613590_slc") and leaves the module-level CV coordinates alone."""
+    path = FEAT_DIR / f"nisar_{target}_samples_{A.TAG}{suffix}.npz" if tag is None else (
+        A.path_for("data") / tag.split("_")[0] / "derived" / "nisar_features_5m" / f"nisar_{target}_samples_{tag}{suffix}.npz")
+    z = np.load(path, allow_pickle=True)
     names = [str(n) for n in z["names"]]
     dec_pad = z["dec_pad"]
     keep = np.isin(np.arange(z["pad"].shape[1]), np.unique(dec_pad)) & np.isfinite(z["pad"][names.index("control:cover")])
@@ -135,9 +163,28 @@ def load_samples(target, suffix):
     xy = np.vstack([z["pad_xy"][pads], z["dec_xy"][sel]])
     cover = np.r_[z["pad_cover"][pads], z["pad_cover"][dec_pad[sel]]]
     global CV_XY
-    CV_XY = xy
+    if tag is None:
+        CV_XY = xy
     return dict(names=names, X=X, y=y, grp=grp, xy=xy, cover=cover, z=z, pads=pads, sel=sel,
                 prod=np.array([n.split(":")[0] for n in names]))
+
+
+def sample_values(flat, z):
+    """A raster (flattened, radar grid) read on the footprints of a samples file: (value per target, value per decoy).
+    Median over each footprint, NaN when fewer than min(4, nb) pixels are finite, as in the scorer."""
+    near = z["pad_near"]
+    v = np.where(near >= 0, flat[np.clip(near, 0, None)], np.nan)
+    nb = (near >= 0).sum(1)
+    pv = np.nanmedian(v, 1)
+    pv[np.isfinite(v).sum(1) < np.minimum(4, nb)] = np.nan
+    H, W = [int(t) for t in z["grid_shape"]]
+    r, c = np.divmod(z["dec_ctr"], W)
+    o, ok = z["off_a"][z["dec_pad"]], z["valid_a"][z["dec_pad"]]
+    d = flat[np.clip(r[:, None] + o[:, :, 0], 0, H - 1) * W + np.clip(c[:, None] + o[:, :, 1], 0, W - 1)]
+    d = np.where(ok, d, np.nan)
+    dv = np.nanmedian(d, 1)
+    dv[np.isfinite(d).sum(1) < np.minimum(4, ok.sum(1))] = np.nan
+    return pv, dv
 
 
 def feature_groups(prod):

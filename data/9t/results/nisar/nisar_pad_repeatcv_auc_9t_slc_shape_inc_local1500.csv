@@ -1,0 +1,10 @@
+feature_set,repeats,auc_mean,auc_sd,auc_min,auc_max,boot_lo,boot_hi,share_ge_0p05
+rich lidar baseline,10,0.8641,0.0134,0.8398,0.8817,,,
+map x/y only,10,0.4917,0.0282,0.4406,0.5425,,,
+all NISAR,10,0.4451,0.0771,0.3421,0.6239,,,
+NISAR + rich baseline,10,0.8611,0.0145,0.8386,0.8805,,,
+rich baseline + map x/y,10,0.882,0.017,0.844,0.9051,,,
+NISAR + rich baseline + map x/y,10,0.8732,0.0186,0.8289,0.8957,,,
+gain: NISAR + rich baseline over rich baseline,10,-0.003,0.007,-0.0149,0.0059,-0.0144,0.0161,0.0
+gain: NISAR + rich + x/y over rich + x/y,10,-0.0088,0.01,-0.0248,0.0121,-0.0296,0.0048,0.0
+all NISAR minus map x/y only,10,-0.0467,0.0907,-0.1615,0.1647,-0.288,0.1408,0.1

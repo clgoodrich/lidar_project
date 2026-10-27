@@ -1,0 +1,13 @@
+{
+  "n_targets": 103,
+  "n_decoys": 1030,
+  "gate": 0.05,
+  "core_shrink_m": 5.0,
+  "cv_buffer_m": 250.0,
+  "simple_baseline_auc": 0.439,
+  "rich_baseline_auc": 0.893,
+  "xy_only_auc": 0.498,
+  "all_nisar_auc": 0.49,
+  "passes_gate_over_rich_baseline": false,
+  "passes_gate_over_rich_plus_xy": false
+}

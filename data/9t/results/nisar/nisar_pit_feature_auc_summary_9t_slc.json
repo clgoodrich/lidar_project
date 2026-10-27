@@ -2,7 +2,7 @@
   "n_bands": 365,
   "n_pads": 495,
   "n_candidate_px": 42485,
-  "n_q_lt_0p05": 222,
+  "n_q_lt_0p05": 223,
   "core_shrink_m": 0.0,
   "excl_m": 100.0,
   "decoy_r_px": 2,

@@ -1,0 +1,6 @@
+feature_set,n_bands,auc,mean_single_band_strength_raw,mean_single_band_strength_norm
+raw bands,15,0.426,0.0327,0.0317
+raw bands + rich lidar baseline,41,0.918,0.0327,0.0317
+normalised bands,15,0.44,0.0327,0.0317
+normalised bands + rich lidar baseline,41,0.912,0.0327,0.0317
+rich lidar baseline,26,0.923,0.0327,0.0317

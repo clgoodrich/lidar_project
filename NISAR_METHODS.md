@@ -6,12 +6,13 @@ Written 2026-10-26, revised the same day after two outside reviews (Section 14).
 
 **Question.** Does NISAR L-band radar carry a signal that identifies oil and gas well pads, pits, wells and pumpjacks in western Pennsylvania? And can it help the lidar detector we already have?
 
-**Short answer, as of 2026-10-26 (after correction).**
-- **On this tile, NISAR does not add to lidar or to location for detecting pads or pits.** After fixing the pipeline, NISAR scores 0.635 for pads against decoys drawn anywhere, and 0.476 (chance) against decoys from the pad's own neighbourhood. A classifier that sees only map coordinates scores 0.815 in the first design. A rich lidar texture baseline scores 0.92. Adding NISAR to it changes nothing.
+**Short answer, as of 2026-10-27 (after correction and the follow-up checks, Section 15).**
+- **On this tile, NISAR does not add to lidar or to location for detecting pads or pits.** After fixing the pipeline, NISAR scores 0.640 for pads against decoys drawn anywhere, and 0.479 (chance) against decoys from the pad's own neighbourhood. A classifier that sees only map coordinates scores 0.815 in the first design. A rich lidar texture baseline scores 0.92. Adding NISAR to it changes nothing.
 - The first-pass scores of 0.71 to 0.88 were wrong. They came from location, optimistic cross-validation and mismatched sample sizes (Sections 9 and 14).
 - NISAR does not identify wells, pumpjacks or steel. Every direct test of that was null.
-- NISAR did not help screen false positives from the lidar pit detector (gain -0.026, p 0.58). The same test for the pad detector has not been run.
-- The earlier fusion result with the lidar U-Net is not reliable. The audit says the U-Net training sampler can read held-out pixels.
+- NISAR did not help screen false positives from the lidar pit detector (gain -0.026, p 0.58), nor from the pad detector (Section 15: NISAR alone separates true from false candidates at 0.72, but score + NISAR scores below the score alone).
+- The fusion with the lidar U-Net was redone with an isolated retrain. NISAR adds nothing (0.995 against 0.999).
+- A frozen model trained on 9t pits and tested on 36 pits of tile 613590 gave the same answer (NISAR alone 0.658, no gain over lidar).
 - This does not show NISAR can never help. It shows that here, with a 4.9 km tile, 5 m posting and these features, it does not.
 
 AUC here is P(target value > comparison value). 0.5 is no separation. Below 0.5 means the target is lower.
@@ -312,11 +313,11 @@ SAR-only sets (no geometry) score about the same as all NISAR for pads. So lidar
 
 ## 11. Not done
 
-- **Everything the reviews raised that is not built:** shape-matched decoys, local-incidence matching, shifted pseudo-pad placebo, confuser clearings, DEP-status split, held-out area (613590), repeated CV with a spread, cluster-aware inference. Listed in `docs/iterations/BACKLOG.md`.
-- NISAR as a false-positive screen for the **pad** detector (done for pits, null). This needs the U-Net's candidates at the tuned threshold, labelled true or false, then NISAR sampled at each one.
-- Fusion where lidar is weak: canopy-covered or old, vegetated pads.
-- Pad-size matching of decoys.
-- HH/HV twins under local decoys.
+The checks raised by the reviews were run on 2026-10-27 (Section 15). What remains:
+- A pad held-out test on a second tile. 613590 has no annotated pad polygons.
+- The disagreement between the tile-wide pad design (NISAR 0.64) and the local-decoy design (0.48). It is not a subset effect and is not explained.
+- A calibrated HV noise floor (the RSLC windows carry no noise table), and LOS motion as connected-network displacement (kept exploratory).
+- Change detection through time, areas without lidar, fusion where lidar is weak (canopy-covered or old pads).
 - Warren pad scoring (no annotations) and Warren geometry (no lidar radar simulation).
 - Spring dates (flooded-forest double bounce) and an independent registration from point-like targets (`docs/iterations/BACKLOG.md`).
 
@@ -341,7 +342,8 @@ These are not in one folder. The feature study is in `s5_eval/` beside unrelated
   - `nisar_pad_model_auc_by_set_9t[...].csv` and `nisar_pad_model_summary_9t[...].json`
   - `nisar_pad_ablation_auc_9t[...].csv`
   - `nisar_pad_hhhv_pairs_9t_roadnear.csv`, `nisar_pad_hhhv_models_9t_roadnear.csv`, and the `nisar_pit_hhhv_*` pair
-  - `nisar_pad_fusion_auc_9t.csv`
+  - `nisar_pad_fusion_auc_9t_slc_unet_cv5[_iso].csv`
+  - 2026-10-27 checks, all `_9t_slc[...]`: `nisar_{pad,pit}_repeatcv_auc_*`, `nisar_{pad,pit}_band_cluster_tests_*`, `nisar_pad_status_auc_*`, `nisar_pad_subset_effect_auc_*`, `nisar_pad_fp_screen_{auc,precision,bands,candidates}_*_cv5_iso_tau0p{30,50}`, `nisar_radnorm_*`, `nisar_signal_checks_*`; design tags `_shape_inc`, `_placebo`, `_confuser`, `_roadnear_confuser`. 613590: `data/613590/results/nisar/nisar_pit_heldout_*_613590_slc`
   - `nisar_pit_feature_auc_per_band_9t[_roughmatch].csv`, `nisar_pit_model_auc_by_set_9t[_roughmatch].csv`, `nisar_pit_ablation_auc_9t[_roughmatch].csv`
   - earlier tests: `nisar_steel_*`, `nisar_pad_change_*`, `nisar_slope_motion_*`, `nisar_bright_targets_*`, `nisar_gslc_*`, `nisar_pit_fp_screen_*`
 - `data/warren/results/nisar/`: the Warren bright-target results.
@@ -394,3 +396,23 @@ I checked each claim against the code and data before acting. Upheld and fixed: 
 The audit's most consequential finding was that a coordinate-only classifier (0.738) beat NISAR (0.713) on the same local-decoy samples. The corrected re-run confirms location is the larger effect. Details, attribution and the full list of what remains: `docs/iterations/nisar_corrected_rescoring_9t.md`.
 
 Issues the audit raised that are not addressed and that matter for the claims above: the LOS-motion bands are not measured displacement (zero-filled steps, disconnected gaps); season and processing release are confounded (all winter acquisitions are beta, all summer ones provisional); `skew7` and `kurt7` are not true window moments; single-band p-values assume independence; the regeocode reproduction command in Section 13 omits the lidar and write options.
+
+## 15. Follow-up checks (2026-10-27)
+
+Write-up with every table: `docs/iterations/nisar_checks_9t.md`. Pre-registration of the 613590 test: `docs/iterations/nisar_heldout_613590_prereg.md`.
+
+| Check | Result |
+|---|---|
+| Decoys with the target's own footprint and matched incidence (scorer options `SHAPE=1 INC_MATCH=1`) | Pads: NISAR 0.657 (tile-wide) and 0.490 (local). Pits: NISAR falls from 0.829 to 0.568. No gain over lidar. |
+| Pad footprint moved 150 to 300 m (`PLACEBO=1`) | Pseudo-pads are found by map coordinates (0.890), not by NISAR (0.504). |
+| Decoys only from other clearings (`CONFUSER=1`) | 60 pads. NISAR 0.80, rich lidar 0.99, combined 0.99. |
+| DEP status of the well on the pad | No group shows a NISAR signal beyond lidar. 9 pads on orphan-list wells, too few to score. |
+| Frozen model on 613590 pits | NISAR 0.658, rich lidar 0.881, combined 0.865. Gate failed. All three predictions held. |
+| Repeated CV (10 repeats), block-clustered band tests | Gain over lidar -0.01 to +0.003. Significant pad bands fall from 229 (naive) to 20 (clustered), and local-decoy bands from 137 to 0. |
+| Isolated U-Net retrain | Recall at IoU 0.3 is 0.872 against 0.888 (F1). Fusion: NISAR + U-Net 0.995 against U-Net 0.999. |
+| Pad false-positive screen on U-Net candidates | NISAR alone separates true from false (0.72, tau 0.3). Score + NISAR 0.831 against score 0.849. Precision at 70% recall +0.034 (-0.008 to +0.061). |
+| Signal quality | Single-look speckle (ENL about 0.85), neighbour correlation 0.38, impulse response 3.9 m (slant range) by 5.7 m (azimuth), occupied bandwidth 31 to 33 MHz, no RFI. |
+| Per-date radiometric normalisation | HV date offsets sd 1.1 to 1.8 dB. Normalising changes no AUC by more than 0.015. |
+| LOS motion | Kept exploratory. Removing the group changes AUC by -0.005 and +0.010. |
+
+Corrected along the way: `skew7` and `kurt7` are now true window moments (headline moved by 0.005 or less). The reviewer's 20 MHz claim stays not upheld: measured occupied bandwidth is 31 to 33 MHz against a nominal 40.

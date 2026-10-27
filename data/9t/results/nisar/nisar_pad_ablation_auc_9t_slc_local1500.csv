@@ -1,22 +1,22 @@
 feature_set,n_bands,auc,fold_mean,change_vs_all
-all NISAR,337,0.476,0.472,0.0
-without amp,295,0.475,0.474,-0.001
-without amp_stats,305,0.477,0.47,0.001
-without coherence,294,0.488,0.489,0.012
-without dualpol,316,0.475,0.473,-0.001
-without events,322,0.481,0.479,0.005
-without geometry,323,0.483,0.484,0.007
-without losmotion,325,0.477,0.473,0.001
-without rainfreeze,315,0.474,0.473,-0.002
-without spatial,274,0.44,0.434,-0.036
-without subaperture,322,0.475,0.471,-0.001
-without temporal,294,0.473,0.472,-0.003
-without texture,322,0.464,0.457,-0.012
-HH bands only,116,0.46,0.456,-0.016
-HV bands only,96,0.467,0.46,-0.009
-no polarisation in name,128,0.448,0.441,-0.028
-descending t026 only,112,0.514,0.508,0.038
-ascending t090 + t162 only,217,0.432,0.444,-0.044
-"pad area 692-1348 m2 (tercile 1), all NISAR",337,0.461,,
-"pad area 1348-1785 m2 (tercile 2), all NISAR",337,0.478,,
-"pad area 1785-9198 m2 (tercile 3), all NISAR",337,0.493,,
+all NISAR,337,0.479,0.475,0.0
+without amp,295,0.481,0.481,0.002
+without amp_stats,305,0.467,0.46,-0.012
+without coherence,294,0.495,0.494,0.016
+without dualpol,316,0.493,0.489,0.014
+without events,322,0.483,0.48,0.004
+without geometry,323,0.479,0.477,0.0
+without losmotion,325,0.489,0.489,0.01
+without rainfreeze,315,0.48,0.477,0.001
+without spatial,274,0.44,0.434,-0.039
+without subaperture,322,0.484,0.48,0.005
+without temporal,294,0.484,0.484,0.005
+without texture,322,0.47,0.463,-0.009
+HH bands only,116,0.456,0.454,-0.023
+HV bands only,96,0.453,0.442,-0.026
+no polarisation in name,128,0.448,0.441,-0.031
+descending t026 only,112,0.518,0.513,0.039
+ascending t090 + t162 only,217,0.445,0.453,-0.034
+"pad area 692-1348 m2 (tercile 1), all NISAR",337,0.462,,
+"pad area 1348-1785 m2 (tercile 2), all NISAR",337,0.467,,
+"pad area 1785-9198 m2 (tercile 3), all NISAR",337,0.515,,

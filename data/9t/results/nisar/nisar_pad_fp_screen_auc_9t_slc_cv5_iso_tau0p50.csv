@@ -1,0 +1,14 @@
+feature_set,auc_mean,auc_sd,auc_min,auc_max,boot_lo,boot_hi
+"detector score, raw AUC",0.8005,0.0,,,,
+score + rich lidar texture,0.7599,0.0065,0.7492,0.7698,,
+score + NISAR,0.7506,0.013,0.7315,0.7695,,
+score + NISAR + rich lidar texture,0.7514,0.0151,0.7332,0.7768,,
+rich lidar texture alone,0.6148,0.0136,0.5994,0.644,,
+NISAR alone,0.6509,0.0105,0.6373,0.6681,,
+"score + NISAR, 10 PCs (logistic)",0.785,0.0057,0.7735,0.7921,,
+"score + rich lidar texture, 10 PCs (logistic)",0.7821,0.0089,0.7647,0.7893,,
+gain over raw score: score + rich lidar texture,-0.0406,0.0065,-0.0513,-0.0307,-0.0386,-0.0107
+gain over raw score: score + NISAR,-0.05,0.013,-0.0691,-0.031,-0.0394,-0.0133
+gain over raw score: score + NISAR + rich lidar texture,-0.0492,0.0151,-0.0673,-0.0237,-0.0384,-0.012
+"gain over raw score: score + NISAR, 10 PCs (logistic)",-0.0155,0.0057,-0.027,-0.0084,-0.019,-0.0036
+"gain over raw score: score + rich lidar texture, 10 PCs (logistic)",-0.0184,0.0089,-0.0358,-0.0112,-0.0204,-0.0053

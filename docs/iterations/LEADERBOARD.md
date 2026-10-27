@@ -548,14 +548,22 @@ Known-well cross-reference at that era: pit_07 327, pit_08 242, pad_05 454, pad_
 of 1069 matched.
 </details>
 
-## NISAR SAR features against matched decoys (corrected 2026-10-26)
+## NISAR SAR features against matched decoys (corrected 2026-10-26, checks 2026-10-27)
 
 The first-pass table (0.815 to 0.96) is superseded: it came from a pipeline with a block-assignment bug, unequal pixel counts, unbuffered CV and no location or rich-lidar control. Corrected model AUC, 5-fold block CV with a 250 m buffer, lidar-placed SLC stack. Not comparable to the U-Net rows above. Doc: `docs/iterations/nisar_corrected_rescoring_9t.md`.
 
 | Target | Decoys | all NISAR | map x/y only | rich lidar baseline | NISAR + rich lidar | placebo |
 |---|---|---|---|---|---|---|
-| Pads (633) | anywhere, cover and slope matched | 0.635 | 0.815 | 0.917 | 0.921 | 0.477 |
-| Pads (297) | 100 to 1,500 m from the pad | 0.476 | 0.517 | 0.923 | 0.904 | 0.519 |
-| Pits (489) | cover and slope matched | 0.832 | 0.955 | 0.968 | 0.967 | 0.498 |
+| Pads (633) | anywhere, cover and slope matched | 0.640 | 0.815 | 0.917 | 0.921 | 0.482 |
+| Pads (297) | 100 to 1,500 m from the pad | 0.479 | 0.517 | 0.923 | 0.906 | 0.527 |
+| Pits (489) | cover and slope matched | 0.829 | 0.955 | 0.968 | 0.967 | 0.495 |
+| Pads (516) | footprint-shaped, incidence matched | 0.657 | 0.877 | 0.907 | 0.907 | 0.478 |
+| Pads (103) | same, 100 to 1,500 m | 0.490 | 0.498 | 0.893 | 0.908 | 0.454 |
+| Pits (173) | footprint-shaped, incidence matched | 0.568 | 0.920 | 0.933 | 0.910 | 0.497 |
+| Pseudo-pads (572) | pad moved 150 to 300 m, tile-wide decoys | 0.504 | 0.890 | 0.620 | 0.639 | 0.476 |
+| Pads (60) | other clearings only | 0.801 | 0.462 | 0.990 | 0.989 | 0.469 |
+| Pits on 613590 (36), frozen 9t model | cover and slope matched | 0.658 | n/a | 0.881 | 0.865 | n/a |
 
-The gate (NISAR + rich lidar beats rich lidar by 0.05) is not passed in any row.
+The gate (NISAR + rich lidar beats rich lidar by 0.05) is not passed in any row. Repeated CV (10 repeats) gives the gain as -0.01 to +0.003. Details: `docs/iterations/nisar_checks_9t.md`. The 0.640 / 0.479 / 0.829 rows moved by 0.005 or less after the skewness and kurtosis fix of 2026-10-27.
+
+Pad U-Net with whole-window block isolation (`data/9t/models/pad/unet_cv5_iso/`): pooled held-out recall at IoU 0.3 is 0.872 (F1-selected) and 0.891 (F2-selected), against 0.888 and 0.912 for the original sampler. As a false-positive screen NISAR adds nothing to the detector score (TP against FP AUC 0.849 for the score, 0.831 with NISAR).
