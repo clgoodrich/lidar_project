@@ -68,6 +68,13 @@ Outputs: `data/9t/derived/nisar_features_5m/nisar_feat_<product>_9t_5m.tif` (git
 - Pad-area terciles (core 5 m, far decoys): 0.854 / 0.806 / 0.785, smallest to largest. The signal is not confined to large pads.
 - Files: `data/9t/results/nisar/nisar_pad_ablation_auc_9t[_roadnear][_core15m].csv`.
 
+## Location control, HH/HV twins, fusion (2026-10-26)
+- Shuffled-label null (labels shuffled within 500 m blocks): 0.775 pads (road-near), 0.800 pits. The early 0.82-0.88 pad scores were mostly location.
+- Local decoys (`LOCAL_M=750` / `1500`, 100 m to LOCAL_M from the pad): 87 / 274 pads usable, NISAR 0.695 / 0.713, placebo 0.466 / 0.490, baseline 0.504 at 1500 m.
+- HH/HV twins (89 pairs, `_nisar_feat_hhhv_9t.py`): pads road-near HH 0.847, HV 0.828, both 0.877, p 0.52. Pits HH 0.836, HV 0.788, both 0.856, p 0.002.
+- Fusion (`_nisar_feat_fusion_9t.py`): U-Net out-of-fold about 1.00, NISAR 0.749, NISAR + U-Net 0.999 on 626 pads. NISAR adds nothing on pad against ordinary ground.
+- Full description for outside readers: `NISAR_METHODS.md` in the repo root.
+
 ## Limits
 - Pad size is not matched. The 15 m core keeps only large pads, which may differ from small ones in kind.
 - Registration about 10 m, unlabelled pads inside the decoy set, one area, single date window.

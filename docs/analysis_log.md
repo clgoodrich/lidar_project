@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-26 (location control, HH/HV twins, fusion) -- NISAR
+
+- **Shuffled-label null.** Labels shuffled within 500 m blocks score 0.775 (pads, road-near decoys) and 0.800 (pits). Real 0.877 and 0.856. Location alone explains most of the early scores.
+- **Local decoys** (`LOCAL_M`, 100 m to 750 or 1500 m from their own pad). 750 m: 87 pads, NISAR 0.695, placebo 0.466. 1500 m: 274 pads, NISAR 0.713 (CI 0.63-0.83), baseline 0.504, placebo 0.490. Spatial and geometry groups still separate pads, coherence now matters (drop costs 0.046).
+- **HH/HV twins** (89 pairs). Pads, road-near: HH 0.847, HV 0.828, both 0.877, signed-rank p 0.52 (no HH advantage). Pits: 0.836 / 0.788 / 0.856, p 0.002.
+- **Fusion with the pad U-Net** (out-of-fold fold rasters, 626 pads, 3,195 rows). U-Net about 1.00, NISAR 0.749, NISAR + U-Net 0.999. U-Net is at ceiling on pad against ordinary ground, so NISAR adds nothing there.
+- **Fusion script bug fixed:** `C.A.DERIVED` does not exist, path is `C.A.DATA / "derived"`.
+- **Scripts.** `_nisar_feat_hhhv_9t.py`, `_nisar_feat_fusion_9t.py`; scorer takes `LOCAL_M`, stores pad and decoy coordinates; model and ablation file suffixes carry `_local<N>`.
+- **Doc.** New top-level `NISAR_METHODS.md` describes data, methods, results and limits for an outside reader.
+- **Not done.** NISAR as a false-positive screen for the pad detector (the pit version was null, `docs/iterations/nisar_pit_fp_screen.md`).
+
+---
+
 ## 2026-10-26 (ablation) -- NISAR: which aspect carries the signal
 
 - **Leave-one-group-out, pads (core 5 m, far decoys, all NISAR 0.815).** Dropping spatial costs 0.036. Dropping geometry costs 0.014. Every other group costs 0.01 or less (some gain). No other single group is needed, because the groups overlap.

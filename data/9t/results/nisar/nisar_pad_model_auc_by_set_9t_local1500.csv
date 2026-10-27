@@ -1,0 +1,21 @@
+feature_set,n_bands,auc,ci_lo,ci_hi,auc_open,gain_over_baseline
+"baseline (cover, slope, rough)",3,0.504,0.407,0.581,0.594,0.0
+all NISAR,340,0.713,0.629,0.83,0.743,0.209
+NISAR + baseline,343,0.705,0.601,0.832,0.766,0.201
+NISAR without geometry (SAR only),326,0.691,0.604,0.81,0.747,0.187
+road context only,2,0.996,0.988,1.0,1.0,0.492
+NISAR + road context,342,0.998,0.995,1.0,1.0,0.494
+only amp,42,0.651,0.579,0.722,0.495,0.147
+only amp_stats,32,0.627,0.548,0.715,0.587,0.123
+only coherence,43,0.537,0.465,0.637,0.59,0.033
+only dualpol,21,0.469,0.396,0.555,0.667,-0.035
+only events,15,0.557,0.516,0.607,0.641,0.053
+only geometry,14,0.589,0.496,0.701,0.507,0.085
+only heightresid,9,0.551,0.472,0.644,0.493,0.047
+only losmotion,6,0.545,0.489,0.599,0.735,0.041
+only rainfreeze,22,0.592,0.523,0.663,0.494,0.088
+only spatial,63,0.763,0.688,0.841,0.859,0.259
+only subaperture,15,0.574,0.532,0.628,0.798,0.07
+only temporal,43,0.562,0.513,0.637,0.596,0.058
+only texture,15,0.564,0.496,0.646,0.691,0.06
+"placebo: decoy vs decoy, all NISAR",340,0.49,0.459,0.523,0.511,-0.014

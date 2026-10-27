@@ -1,0 +1,8 @@
+feature_set,n_pads,n_decoys,auc
+"U-Net out-of-fold, raw score",626,2569,1.0
+"lidar baseline (cover, slope, rough)",626,2569,0.505
+all NISAR,626,2569,0.749
+U-Net + baseline,626,2569,0.999
+NISAR + baseline,626,2569,0.724
+NISAR + U-Net,626,2569,0.999
+NISAR + U-Net + baseline,626,2569,0.999

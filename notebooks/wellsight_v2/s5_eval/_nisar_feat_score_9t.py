@@ -33,7 +33,8 @@ DISC_R2 = 2.25 if TARGET == "pit" else 16.0
 N_DISC = 9 if TARGET == "pit" else 49   # pixels in a decoy disc
 ROAD_NEAR = os.environ.get("ROAD_NEAR") == "1"        # decoys restricted to 30-100 m from a road (pads sit beside one)
 MATCH_ROUGH = os.environ.get("MATCH_ROUGH") == "1"    # also match decoy roughness (pits are rough by definition)
-SUFFIX = ("" if CORE_SHRINK_M == BASE_CORE else f"_core{CORE_SHRINK_M:.0f}m") + ("_roadnear" if ROAD_NEAR else "") + ("_roughmatch" if MATCH_ROUGH else "")
+LOCAL_M = float(os.environ.get("LOCAL_M", 0))         # >0: decoys only 100 m to LOCAL_M from their own target (same neighbourhood)
+SUFFIX = ("" if CORE_SHRINK_M == BASE_CORE else f"_core{CORE_SHRINK_M:.0f}m") + ("_roadnear" if ROAD_NEAR else "") + ("_roughmatch" if MATCH_ROUGH else "") + (f"_local{LOCAL_M:.0f}" if LOCAL_M else "")
 TOL_COVER, TOL_SLOPE_DEG = 0.05, 1.0
 COVER_BINS = [0, 0.25, 0.5, 0.75, 1.01]
 CLASSES = {"open": (0, 0.25), "partly": (0.25, 0.5), "grown": (0.5, 1.01)}
@@ -103,7 +104,7 @@ def main():
             # score on the n_disc core pixels nearest the centre so a pad median has the same noise as a decoy disc
             rr, cc = np.divmod(px, shape[1])
             near = px[np.argsort((rr - np.median(rr)) ** 2 + (cc - np.median(cc)) ** 2)[:N_DISC]]
-            rows.append((px, cov, slo, near, g.centroid.distance(pads_u) if TARGET == "pit" else np.nan, rou, g.area))
+            rows.append((px, cov, slo, near, g.centroid.distance(pads_u) if TARGET == "pit" else np.nan, rou, g.area, g.centroid.x, g.centroid.y))
     print(f"{len(rows)} of {len(targets)} {TARGET}s usable", flush=True)
 
     rng = np.random.default_rng(SEED)
@@ -126,6 +127,8 @@ def main():
 
     cand_cov = np.nanmean(grids["cover"].ravel()[disc_px(cand)], 1)
     cand_slo = np.nanmean(grids["slope"].ravel()[disc_px(cand)], 1)
+    cx, cy = rasterio.transform.xy(tf, *np.divmod(cand, shape[1]))
+    cx, cy = np.asarray(cx), np.asarray(cy)
     cand_rou = np.nanmean(grids["rough"].ravel()[disc_px(cand)], 1)
     tol_rou = 0.25 * np.nanstd([r[5] for r in rows])      # a quarter of the spread of target roughness
     dec_m, dec_pad = [], []
@@ -133,6 +136,9 @@ def main():
         okm = (np.abs(cand_cov - r[1]) <= TOL_COVER) & (np.abs(cand_slo - r[2]) <= TOL_SLOPE_DEG)
         if MATCH_ROUGH:
             okm &= np.abs(cand_rou - r[5]) <= tol_rou
+        if LOCAL_M:
+            d = np.hypot(cx - r[7], cy - r[8])
+            okm &= (d >= 100) & (d <= LOCAL_M)
         p = cand[okm]
         if len(p) >= K_DECOY:
             dec_m += list(rng.choice(p, K_DECOY, replace=False))
@@ -176,7 +182,9 @@ def main():
     np.savez_compressed(C.FEAT_DIR / f"nisar_{TARGET}_samples_{C.A.TAG}{SUFFIX}.npz", names=names,
                         pad=np.stack([store[n][0] for n in names]), dec=np.stack([store[n][1] for n in names]),
                         dec_pad=dec_pad, pad_block=blk(np.array([int(np.median(r[0])) for r in rows])), dec_block=blk(dec_m),
-                        pad_cover=pad_cover, pad_dist=pad_dist, pad_area=np.array([r[6] for r in rows]))
+                        pad_cover=pad_cover, pad_dist=pad_dist, pad_area=np.array([r[6] for r in rows]),
+                        pad_xy=np.array([[r[7], r[8]] for r in rows]),
+                        dec_xy=np.array(rasterio.transform.xy(tf, *np.divmod(dec_m, shape[1]))).T)
     res["q"] = bh(res.p.values)
     res["dev"] = (res.auc_matched - 0.5).abs()
     res = res.sort_values("dev", ascending=False).drop(columns="dev")
@@ -184,7 +192,7 @@ def main():
     res.to_csv(path, index=False)
     json.dump(dict(n_bands=len(res), n_pads=len(rows), n_candidate_px=int(len(cand)),
                    n_q_lt_0p05=int((res.q < 0.05).sum()), core_shrink_m=CORE_SHRINK_M, excl_m=EXCL_M,
-                   decoy_r_px=DECOY_R_PX, k_decoy=K_DECOY, match_rough=MATCH_ROUGH),
+                   decoy_r_px=DECOY_R_PX, k_decoy=K_DECOY, match_rough=MATCH_ROUGH, local_m=LOCAL_M),
               open(C.OUT / f"nisar_{TARGET}_feature_auc_summary_{C.A.TAG}{SUFFIX}.json", "w"), indent=2)
     pd.set_option("display.width", 220)
     print(res.head(25).to_string(index=False))

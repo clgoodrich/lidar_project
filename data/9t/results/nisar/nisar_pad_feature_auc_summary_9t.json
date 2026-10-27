@@ -6,5 +6,6 @@
   "core_shrink_m": 5.0,
   "excl_m": 100.0,
   "decoy_r_px": 4,
-  "k_decoy": 10
+  "k_decoy": 10,
+  "match_rough": false
 }

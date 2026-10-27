@@ -23,7 +23,7 @@ import _nisar_feat_common as C
 
 TARGET = os.environ.get("TARGET", "pad")
 CORE = float(os.environ.get("CORE_SHRINK_M", 0 if TARGET == "pit" else 5))
-SUFFIX = ("" if CORE == (0 if TARGET == "pit" else 5) else f"_core{CORE:.0f}m") + ("_roadnear" if os.environ.get("ROAD_NEAR") == "1" else "") + ("_roughmatch" if os.environ.get("MATCH_ROUGH") == "1" else "")
+SUFFIX = ("" if CORE == (0 if TARGET == "pit" else 5) else f"_core{CORE:.0f}m") + ("_roadnear" if os.environ.get("ROAD_NEAR") == "1" else "") + ("_roughmatch" if os.environ.get("MATCH_ROUGH") == "1" else "") + (f"_local{float(os.environ['LOCAL_M']):.0f}" if float(os.environ.get("LOCAL_M", 0)) else "")
 GATE, SEED, NB = 0.05, 20261026, 200
 
 

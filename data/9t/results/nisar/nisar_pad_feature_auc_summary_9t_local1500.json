@@ -1,0 +1,12 @@
+{
+  "n_bands": 351,
+  "n_pads": 649,
+  "n_candidate_px": 42485,
+  "n_q_lt_0p05": 0,
+  "core_shrink_m": 5.0,
+  "excl_m": 100.0,
+  "decoy_r_px": 4,
+  "k_decoy": 10,
+  "match_rough": false,
+  "local_m": 1500.0
+}
