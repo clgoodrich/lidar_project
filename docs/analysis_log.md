@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-27 (NISAR against canopy and terrain, whole tile) -- NISAR
+
+- **Question.** Does the NISAR date-mean backscatter follow the canopy or the ground? `notebooks/wellsight_v2/s5_eval/_nisar_vs_canopy_9t.py`, lidar-placed SLC stack, 25, 50 and 100 m block means, Spearman and partial correlations.
+- **Result.** Over the whole tile HH and HV barely follow canopy height (|Spearman| 0.04 or less, R2 1 to 3%). In closed canopy (cover > 0.8) canopy height explains nothing (R2 0.000 to 0.009) while ground elevation and slope do (HV Spearman with elevation -0.34 to -0.44, terrain R2 0.12 to 0.20). In open ground canopy height matters more (partial correlation 0.23 to 0.35 after terrain, R2 0.06 to 0.14).
+- **Files.** `data/9t/results/nisar/nisar_vs_canopy_corr_9t_slc.csv`, `data/9t/results/nisar/figures/nisar_vs_canopy_hexbin_9t_slc.png`. Cross sections: `data/9t/results/cross_sections/figures/cross_section_line4_ground_canopy_nisar_9t.png` and `..._nisar_all_lines_hh_hv_canopy_9t.png`.
+
+---
+
 ## 2026-10-27 (outstanding NISAR checks, ten backlog items) -- NISAR
 
 - **Scope.** Every item of the BACKLOG list "NISAR outstanding checks". Write-up: `docs/iterations/nisar_checks_9t.md`. Pre-registration for the 613590 test: `docs/iterations/nisar_heldout_613590_prereg.md`, committed before any 613590 sample was scored.
