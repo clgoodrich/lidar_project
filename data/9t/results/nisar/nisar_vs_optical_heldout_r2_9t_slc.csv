@@ -1,0 +1,85 @@
+subset,target,predictors,n_blocks,n_squares,r2_heldout_ols,r2_heldout_gbm
+all,hh,canopy cover alone,8100,25,-0.086,-0.096
+all,hh,lidar (4 layers),8100,25,-0.11,-0.037
+all,hh,optical (6 layers),8100,25,0.339,0.386
+all,hh,"optical, same year (4)",8100,25,0.344,0.386
+all,hh,lidar + optical,8100,25,0.306,0.449
+all,hh,lidar + optical same year,8100,25,0.311,0.445
+all,hh,lidar + terrain gain,8100,25,0.262,0.335
+all,hv,canopy cover alone,8100,25,-0.082,-0.091
+all,hv,lidar (4 layers),8100,25,-0.133,-0.005
+all,hv,optical (6 layers),8100,25,0.443,0.547
+all,hv,"optical, same year (4)",8100,25,0.446,0.55
+all,hv,lidar + optical,8100,25,0.445,0.595
+all,hv,lidar + optical same year,8100,25,0.449,0.584
+all,hv,lidar + terrain gain,8100,25,0.15,0.27
+all,hh_flat,canopy cover alone,8100,25,-0.089,-0.11
+all,hh_flat,lidar (4 layers),8100,25,-0.08,0.023
+all,hh_flat,optical (6 layers),8100,25,0.444,0.489
+all,hh_flat,"optical, same year (4)",8100,25,0.446,0.479
+all,hh_flat,lidar + optical,8100,25,0.43,0.59
+all,hh_flat,lidar + optical same year,8100,25,0.433,0.595
+all,hh_flat,lidar + terrain gain,8100,25,-0.076,0.047
+all,hv_flat,canopy cover alone,8100,25,-0.071,-0.088
+all,hv_flat,lidar (4 layers),8100,25,-0.127,0.017
+all,hv_flat,optical (6 layers),8100,25,0.477,0.587
+all,hv_flat,"optical, same year (4)",8100,25,0.483,0.581
+all,hv_flat,lidar + optical,8100,25,0.499,0.663
+all,hv_flat,lidar + optical same year,8100,25,0.504,0.652
+all,hv_flat,lidar + terrain gain,8100,25,-0.133,0.034
+closed canopy (cover > 0.8),hh,canopy cover alone,1382,25,-0.049,-0.072
+closed canopy (cover > 0.8),hh,lidar (4 layers),1382,25,0.013,-0.056
+closed canopy (cover > 0.8),hh,optical (6 layers),1382,25,-0.022,0.023
+closed canopy (cover > 0.8),hh,"optical, same year (4)",1382,25,-0.021,0.03
+closed canopy (cover > 0.8),hh,lidar + optical,1382,25,-0.038,0.045
+closed canopy (cover > 0.8),hh,lidar + optical same year,1382,25,-0.03,0.063
+closed canopy (cover > 0.8),hh,lidar + terrain gain,1382,25,0.661,0.583
+closed canopy (cover > 0.8),hv,canopy cover alone,1382,25,-0.059,-0.088
+closed canopy (cover > 0.8),hv,lidar (4 layers),1382,25,0.073,0.075
+closed canopy (cover > 0.8),hv,optical (6 layers),1382,25,0.094,0.207
+closed canopy (cover > 0.8),hv,"optical, same year (4)",1382,25,0.099,0.211
+closed canopy (cover > 0.8),hv,lidar + optical,1382,25,0.168,0.312
+closed canopy (cover > 0.8),hv,lidar + optical same year,1382,25,0.176,0.319
+closed canopy (cover > 0.8),hv,lidar + terrain gain,1382,25,0.573,0.56
+closed canopy (cover > 0.8),hh_flat,canopy cover alone,1382,25,0.015,-0.027
+closed canopy (cover > 0.8),hh_flat,lidar (4 layers),1382,25,0.178,0.174
+closed canopy (cover > 0.8),hh_flat,optical (6 layers),1382,25,0.185,0.21
+closed canopy (cover > 0.8),hh_flat,"optical, same year (4)",1382,25,0.068,0.199
+closed canopy (cover > 0.8),hh_flat,lidar + optical,1382,25,0.257,0.323
+closed canopy (cover > 0.8),hh_flat,lidar + optical same year,1382,25,0.172,0.315
+closed canopy (cover > 0.8),hh_flat,lidar + terrain gain,1382,25,0.174,0.17
+closed canopy (cover > 0.8),hv_flat,canopy cover alone,1382,25,-0.041,-0.081
+closed canopy (cover > 0.8),hv_flat,lidar (4 layers),1382,25,0.19,0.19
+closed canopy (cover > 0.8),hv_flat,optical (6 layers),1382,25,0.163,0.239
+closed canopy (cover > 0.8),hv_flat,"optical, same year (4)",1382,25,0.101,0.266
+closed canopy (cover > 0.8),hv_flat,lidar + optical,1382,25,0.348,0.428
+closed canopy (cover > 0.8),hv_flat,lidar + optical same year,1382,25,0.325,0.427
+closed canopy (cover > 0.8),hv_flat,lidar + terrain gain,1382,25,0.206,0.215
+open ground (cover < 0.25),hh,canopy cover alone,1128,24,-0.371,-0.335
+open ground (cover < 0.25),hh,lidar (4 layers),1128,24,-0.232,-0.119
+open ground (cover < 0.25),hh,optical (6 layers),1128,24,0.704,0.585
+open ground (cover < 0.25),hh,"optical, same year (4)",1128,24,0.689,0.56
+open ground (cover < 0.25),hh,lidar + optical,1128,24,0.702,0.535
+open ground (cover < 0.25),hh,lidar + optical same year,1128,24,0.682,0.498
+open ground (cover < 0.25),hh,lidar + terrain gain,1128,24,-0.019,0.047
+open ground (cover < 0.25),hv,canopy cover alone,1128,24,-0.37,-0.306
+open ground (cover < 0.25),hv,lidar (4 layers),1128,24,-0.328,-0.237
+open ground (cover < 0.25),hv,optical (6 layers),1128,24,0.683,0.677
+open ground (cover < 0.25),hv,"optical, same year (4)",1128,24,0.645,0.663
+open ground (cover < 0.25),hv,lidar + optical,1128,24,0.69,0.65
+open ground (cover < 0.25),hv,lidar + optical same year,1128,24,0.661,0.634
+open ground (cover < 0.25),hv,lidar + terrain gain,1128,24,-0.128,-0.017
+open ground (cover < 0.25),hh_flat,canopy cover alone,1128,24,-0.386,-0.362
+open ground (cover < 0.25),hh_flat,lidar (4 layers),1128,24,-0.189,-0.096
+open ground (cover < 0.25),hh_flat,optical (6 layers),1128,24,0.716,0.534
+open ground (cover < 0.25),hh_flat,"optical, same year (4)",1128,24,0.708,0.514
+open ground (cover < 0.25),hh_flat,lidar + optical,1128,24,0.721,0.52
+open ground (cover < 0.25),hh_flat,lidar + optical same year,1128,24,0.701,0.499
+open ground (cover < 0.25),hh_flat,lidar + terrain gain,1128,24,-0.15,-0.072
+open ground (cover < 0.25),hv_flat,canopy cover alone,1128,24,-0.385,-0.329
+open ground (cover < 0.25),hv_flat,lidar (4 layers),1128,24,-0.305,-0.204
+open ground (cover < 0.25),hv_flat,optical (6 layers),1128,24,0.698,0.644
+open ground (cover < 0.25),hv_flat,"optical, same year (4)",1128,24,0.667,0.632
+open ground (cover < 0.25),hv_flat,lidar + optical,1128,24,0.695,0.63
+open ground (cover < 0.25),hv_flat,lidar + optical same year,1128,24,0.666,0.609
+open ground (cover < 0.25),hv_flat,lidar + terrain gain,1128,24,-0.277,-0.163

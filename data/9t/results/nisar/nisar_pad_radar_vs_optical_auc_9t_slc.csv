@@ -1,0 +1,41 @@
+item,auc_mean,auc_min,auc_max,note
+NISAR all bands,0.622,0.507,0.686,
+NISAR basic (6 layers),0.462,0.397,0.515,
+Sentinel-2 (22 layers),0.84,0.811,0.869,
+NISAR + Sentinel-2,0.834,0.784,0.869,
+NISAR basic + Sentinel-2,0.844,0.801,0.873,
+rich lidar (reference),0.932,0.924,0.937,
+map x/y only,0.863,0.802,0.924,
+difference: NISAR all bands minus Sentinel-2 (22 layers),-0.218,-0.304,-0.167,block-bootstrap 95% -0.259 to -0.111
+difference: NISAR basic (6 layers) minus Sentinel-2 (22 layers),-0.378,-0.424,-0.331,block-bootstrap 95% -0.503 to -0.272
+difference: NISAR + Sentinel-2 minus Sentinel-2 (22 layers),-0.006,-0.027,0.019,block-bootstrap 95% -0.020 to +0.020
+difference: NISAR basic + Sentinel-2 minus Sentinel-2 (22 layers),0.004,-0.01,0.011,block-bootstrap 95% -0.004 to +0.017
+difference: NISAR + Sentinel-2 minus NISAR all bands,0.213,0.175,0.277,block-bootstrap 95% +0.123 to +0.250
+"single layer, Sentinel-2: ndvi_jun",0.239,,,6963 rows
+"single layer, Sentinel-2: ndmi_jun",0.224,,,6963 rows
+"single layer, Sentinel-2: red_jun",0.75,,,6963 rows
+"single layer, Sentinel-2: nir_jun",0.367,,,6963 rows
+"single layer, Sentinel-2: ndvi_sep",0.657,,,6963 rows
+"single layer, Sentinel-2: ndmi_sep",0.512,,,6963 rows
+"single layer, Sentinel-2: red_sep",0.274,,,6963 rows
+"single layer, Sentinel-2: nir_sep",0.4,,,6963 rows
+"single layer, Sentinel-2: ndvi_oct",0.658,,,6963 rows
+"single layer, Sentinel-2: ndmi_oct",0.618,,,6963 rows
+"single layer, Sentinel-2: red_oct",0.389,,,6963 rows
+"single layer, Sentinel-2: nir_oct",0.606,,,6963 rows
+"single layer, Sentinel-2: ndvi_jun_minus_oct",0.238,,,6963 rows
+"single layer, Sentinel-2: ndvi_jun_box3",0.239,,,6963 rows
+"single layer, Sentinel-2: ndvi_jun_contrast",0.325,,,6963 rows
+"single layer, Sentinel-2: ndvi_jun_std5",0.791,,,6963 rows
+"single layer, Sentinel-2: ndvi_oct_box3",0.66,,,6963 rows
+"single layer, Sentinel-2: ndvi_oct_contrast",0.609,,,6963 rows
+"single layer, Sentinel-2: ndvi_oct_std5",0.715,,,6963 rows
+"single layer, Sentinel-2: ndmi_sep_box3",0.51,,,6963 rows
+"single layer, Sentinel-2: ndmi_sep_contrast",0.478,,,6963 rows
+"single layer, Sentinel-2: ndmi_sep_std5",0.763,,,6963 rows
+"single layer, radar: raw_mean_hh_t026",0.586,,,6963 rows
+"single layer, radar: raw_mean_hv_t026",0.552,,,6963 rows
+"single layer, radar: raw_mean_hh_t090",0.521,,,6963 rows
+"single layer, radar: raw_mean_hv_t090",0.529,,,6963 rows
+"single layer, radar: raw_mean_hh_t162",0.527,,,6963 rows
+"single layer, radar: raw_mean_hv_t162",0.508,,,6963 rows

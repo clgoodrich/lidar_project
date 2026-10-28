@@ -313,13 +313,14 @@ SAR-only sets (no geometry) score about the same as all NISAR for pads. So lidar
 
 ## 11. Not done
 
-The checks raised by the reviews were run on 2026-10-27 (Section 15). What remains:
-- A pad held-out test on a second tile. 613590 has no annotated pad polygons.
-- The disagreement between the tile-wide pad design (NISAR 0.64) and the local-decoy design (0.48). It is not a subset effect and is not explained.
-- A calibrated HV noise floor (the RSLC windows carry no noise table), and LOS motion as connected-network displacement (kept exploratory).
-- Change detection through time, areas without lidar, fusion where lidar is weak (canopy-covered or old pads).
+The checks raised by the reviews were run on 2026-10-27 (Section 15) and again after two outside reviews of `NISAR_FINDINGS.md` (Section 16). What remains:
+- A pad held-out test on a second tile. 613590 has no annotated pad polygons. A review package of 161 candidates is at `data/613590/results/nisar/nisar_pad_review_candidates_613590.gpkg`.
+- A registration estimate that works. The test with lidar objects and steady bright radar points was null.
+- A larger sample of pads against other clearings (60 pads, radar and Sentinel-2 tie), and pit decoys with footprint matching and incidence matching as separate factors.
+- A calibrated HV noise floor, and LOS motion as connected-network displacement (kept exploratory).
+- Change detection through time, pads that lidar cannot see at all, and old pads with known ages.
 - Warren pad scoring (no annotations) and Warren geometry (no lidar radar simulation).
-- Spring dates (flooded-forest double bounce) and an independent registration from point-like targets (`docs/iterations/BACKLOG.md`).
+- Spring dates (flooded-forest double bounce) (`docs/iterations/BACKLOG.md`).
 
 ## 12. Where things are
 
@@ -409,10 +410,28 @@ Write-up with every table: `docs/iterations/nisar_checks_9t.md`. Pre-registratio
 | DEP status of the well on the pad | No group shows a NISAR signal beyond lidar. 9 pads on orphan-list wells, too few to score. |
 | Frozen model on 613590 pits | NISAR 0.658, rich lidar 0.881, combined 0.865. Gate failed. All three predictions held. |
 | Repeated CV (10 repeats), block-clustered band tests | Gain over lidar -0.01 to +0.003. Significant pad bands fall from 229 (naive) to 20 (clustered), and local-decoy bands from 137 to 0. |
-| Isolated U-Net retrain | Recall at IoU 0.3 is 0.872 against 0.888 (F1). Fusion: NISAR + U-Net 0.995 against U-Net 0.999. |
+| Isolated U-Net retrain | Recall at IoU 0.3 is 0.872 against 0.888 for the original sampler (F1 about 0.705 for the isolated model; 0.888 is a recall, corrected 2026-10-27). Fusion: NISAR + U-Net 0.995 against U-Net 0.999. |
 | Pad false-positive screen on U-Net candidates | NISAR alone separates true from false (0.72, tau 0.3). Score + NISAR 0.831 against score 0.849. Precision at 70% recall +0.034 (-0.008 to +0.061). |
 | Signal quality | Single-look speckle (ENL about 0.85), neighbour correlation 0.38, impulse response 3.9 m (slant range) by 5.7 m (azimuth), occupied bandwidth 31 to 33 MHz, no RFI. |
 | Per-date radiometric normalisation | HV date offsets sd 1.1 to 1.8 dB. Normalising changes no AUC by more than 0.015. |
 | LOS motion | Kept exploratory. Removing the group changes AUC by -0.005 and +0.010. |
 
 Corrected along the way: `skew7` and `kurt7` are now true window moments (headline moved by 0.005 or less). The reviewer's 20 MHz claim stays not upheld: measured occupied bandwidth is 31 to 33 MHz against a nominal 40.
+
+## 16. Follow-up checks after two outside reviews (2026-10-27)
+
+Write-up with every table: `docs/iterations/nisar_followup_checks_9t.md`. Summary in `NISAR_FINDINGS.md`, Section 5.
+
+| Check | Result |
+|---|---|
+| Radar where lidar is weak (pads the U-Net missed, in canopy, lidar-weak quartile) | Gain over rich lidar +0.001, 0.000 and +0.015 (tile-wide design only; +0.003 in the local design). Gate +0.05 not met. |
+| Radar alone against Sentinel-2 alone | Matched decoys: Sentinel-2 0.840, NISAR 0.622. Other clearings (60 pads): 0.781 and 0.795. NISAR adds nothing to Sentinel-2. |
+| Why 0.64 tile-wide and 0.48 local | NISAR AUC rises with decoy distance, 0.44 (100 to 500 m) to 0.71 (over 3.5 km), like map x/y and Sentinel-2. A place effect. |
+| Terrain flattening of HV | Adding HV minus the simulated facet gain changes no score by more than 0.002. |
+| Registration from point targets | No peak. Uninformative. No shift applied. |
+| Pit drop on a fixed set of 173 pits | NISAR 0.811 (full set), 0.756 (173 pits, original decoys), 0.643 (173 pits, shape and incidence decoys). One third sample, two thirds design. |
+| Optical audit | Reflectance offset already removed in all scenes. On unseen 1 km squares optical explains 0.44 to 0.55 of HV, lidar under 0.02. In closed forest the terrain gain explains most of raw HV (held-out R2 0.57 with lidar). |
+
+Correction: the isolated pad U-Net has recall 0.872, precision 0.592 and F1 about 0.705. The 0.888 reported as its F1 in an earlier version of `NISAR_FINDINGS.md` is the original sampler's recall.
+
+Scripts (`notebooks/wellsight_v2/s5_eval/`): `_nisar_weak_lidar_9t.py`, `_nisar_radar_vs_optical_pads_9t.py`, `_nisar_optical_feats_9t.py`, `_nisar_pad_distance_bands_9t.py`, `_nisar_hvflat_9t.py`, `_nisar_registration_points_9t.py`, `_nisar_pit_fixed_subset_9t.py`, `_nisar_vs_optical_heldout_9t.py`.

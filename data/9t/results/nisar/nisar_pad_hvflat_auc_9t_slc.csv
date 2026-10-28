@@ -1,0 +1,10 @@
+feature_set,auc_mean,auc_min,auc_max,note
+rich lidar,0.932,0.924,0.937,
+all NISAR,0.615,0.563,0.664,
+all NISAR + HV flat,0.613,0.559,0.662,
+HV flat alone,0.407,0.347,0.464,
+NISAR + rich lidar,0.932,0.92,0.943,
+NISAR + HV flat + rich lidar,0.932,0.919,0.944,
+difference: all NISAR + HV flat minus all NISAR,-0.002,-0.008,0.006,block-bootstrap 95% -0.008 to +0.003
+difference: NISAR + HV flat + rich lidar minus rich lidar,0.001,-0.005,0.008,block-bootstrap 95% -0.009 to +0.018
+difference: NISAR + HV flat + rich lidar minus NISAR + rich lidar,0.0,-0.001,0.001,block-bootstrap 95% -0.001 to +0.001

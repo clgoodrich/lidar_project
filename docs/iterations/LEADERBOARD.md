@@ -567,3 +567,16 @@ The first-pass table (0.815 to 0.96) is superseded: it came from a pipeline with
 The gate (NISAR + rich lidar beats rich lidar by 0.05) is not passed in any row. Repeated CV (10 repeats) gives the gain as -0.01 to +0.003. Details: `docs/iterations/nisar_checks_9t.md`. The 0.640 / 0.479 / 0.829 rows moved by 0.005 or less after the skewness and kurtosis fix of 2026-10-27.
 
 Pad U-Net with whole-window block isolation (`data/9t/models/pad/unet_cv5_iso/`): pooled held-out recall at IoU 0.3 is 0.872 (F1-selected) and 0.891 (F2-selected), against 0.888 and 0.912 for the original sampler. As a false-positive screen NISAR adds nothing to the detector score (TP against FP AUC 0.849 for the score, 0.831 with NISAR).
+
+Follow-up checks of 2026-10-27 (`docs/iterations/nisar_followup_checks_9t.md`). Repeat-averaged probabilities, so near-chance AUCs read a little higher than the single runs above.
+
+| Check | Result |
+|---|---|
+| Pads the U-Net missed (47 of 633) | rich lidar 0.907, NISAR 0.679, NISAR + rich 0.908 (gain +0.001) |
+| Lidar-weak quartile (159 pads), tile-wide decoys | rich lidar 0.880, NISAR + rich 0.895 (gain +0.015, +0.003 to +0.036); local decoys +0.003 |
+| Pads against matched decoys, radar against Sentinel-2 | Sentinel-2 0.840, NISAR 0.622, NISAR + Sentinel-2 0.834 |
+| Pads against other clearings (60), same | Sentinel-2 0.781, NISAR 0.795, NISAR + Sentinel-2 0.809 |
+| NISAR AUC by decoy distance | 0.44 (100 to 500 m) rising to 0.71 (above 3.5 km) |
+| Pits, 173 fixed, matched decoys / shape + incidence | NISAR 0.756 / 0.643, rich lidar 0.970 / 0.923, gain -0.005 / -0.014 |
+| HV flattened by sim_db added | no score changes by more than 0.002 |
+

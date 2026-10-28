@@ -1,0 +1,4 @@
+scene,boa_offset_applied,processing_baseline,cloud_cover,thin_cirrus_pct,cloud_shadow_pct,medium_proba_pct,high_proba_pct,snow_pct
+S2A_17TPG_20260603_0_L2A,True,05.12,0.000591,0.000358,0.0,0.000177,5.6e-05,2.6e-05
+S2B_17TPG_20260907_0_L2A,True,05.12,1.098162,1.095757,4e-05,0.002119,0.000286,3e-06
+S2C_17TPG_20251027_0_L2A,True,05.11,0.001795,0.000443,0.0,0.001076,0.000276,0.000486

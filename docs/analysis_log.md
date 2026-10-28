@@ -5,6 +5,21 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-27 (NISAR follow-up checks after two outside reviews) -- NISAR
+
+- **Scope.** Seven checks asked for by the reviews, run in order. Full tables and reproduce commands: `docs/iterations/nisar_followup_checks_9t.md`. Eight new scripts in `notebooks/wellsight_v2/s5_eval/` (`_nisar_weak_lidar_9t.py`, `_nisar_radar_vs_optical_pads_9t.py`, `_nisar_optical_feats_9t.py`, `_nisar_pad_distance_bands_9t.py`, `_nisar_hvflat_9t.py`, `_nisar_registration_points_9t.py`, `_nisar_pit_fixed_subset_9t.py`, `_nisar_vs_optical_heldout_9t.py`). Results in `data/9t/results/nisar/`.
+- **Correction.** The U-Net F1 of 0.888 in `NISAR_FINDINGS.md` was the original sampler's recall. The isolated model has recall 0.872, precision 0.592, F1 about 0.705. Fixed in `NISAR_FINDINGS.md` and `NISAR_METHODS.md`.
+- **1, weak lidar.** "U-Net missed" at probability 0.3 was wrong (neighbouring pads merge into one blob, 30% looked missed). Redone at 0.5: 47 of 633 missed (7.4%). Gain of NISAR over rich lidar: +0.001 on missed pads, 0.000 in canopy, +0.015 (+0.003 to +0.036) in the lidar-weak quartile, tile-wide design only. Local design +0.003 (-0.026 to +0.029). Permuted-NISAR control gain is -0.001. Not credited, since the tile-wide design rewards place.
+- **2, radar against Sentinel-2.** Matched decoys: Sentinel-2 0.840, NISAR 0.622, NISAR + Sentinel-2 minus Sentinel-2 -0.006. Other clearings (60 pads): 0.781 and 0.795, tie.
+- **3, 0.64 against 0.48 explained.** NISAR AUC rises with decoy distance, 0.44 (100 to 500 m) to 0.71 (above 3.5 km). Map x/y rises 0.38 to 0.96, Sentinel-2 0.56 to 0.91. Place effect.
+- **4, terrain and registration.** HV flattened by `sim_db` changes no score by more than 0.002. Point-target registration test (9,592 lidar objects, steady bright radar points): no peak, uninformative. No shift applied, so the pit held-out test was not rerun.
+- **5, pit drop.** 0.811 to 0.756 from sample attrition, 0.756 to 0.643 from the decoy design (173 fixed pits).
+- **6, second-tile pad test.** Blocked by missing labels. Review package `data/613590/results/nisar/nisar_pad_review_candidates_613590.gpkg` (161 candidates) and a plan in the iteration doc.
+- **7, optical audit.** Earth Search metadata: boa offset already applied in all three scenes. June has no cirrus. Held-out R2 (1 km squares): optical 0.44 to 0.55, lidar below 0.02 over the tile. In closed forest the simulated terrain gain lifts lidar R2 from 0.07 to 0.57, so raw HV there is mostly illumination. After flattening: lidar 0.19, optical 0.16 to 0.24, both 0.35 to 0.43.
+- **Method note.** Repeat-averaged probabilities lift near-chance AUCs a little against single runs (pits shape + incidence: 0.643 here, 0.568 single run).
+
+---
+
 ## 2026-10-27 (NISAR against Sentinel-2 optical, whole tile) -- NISAR
 
 - **Question.** The radar looks like the optical, not the terrain. Test: `notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_9t.py`. Sentinel-2 L2A from the Element 84 Earth Search STAC, scenes 2026-06-03, 2026-09-07 and 2025-10-27 (MGRS 17TPG), averaged onto the 5 m radar grid, cached in `data/9t/derived/optical_s2/` (git-ignored). 50 m block means, Spearman and R2.

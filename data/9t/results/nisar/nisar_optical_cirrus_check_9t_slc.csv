@@ -1,0 +1,4 @@
+scene,cirrus_masked,cirrus_share,other_bad_share,n_blocks,spearman_hv_ndvi
+jun,False,0.0,0.0,9604,0.46
+jun,True,0.0,0.0,9604,0.46
+sep,False,0.631,0.0,9604,

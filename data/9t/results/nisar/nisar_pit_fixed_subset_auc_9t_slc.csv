@@ -1,0 +1,7 @@
+design,mode,n_pits,n_decoys,auc_rich lidar,auc_all NISAR,auc_NISAR + rich lidar,gain_over_rich,gain_ci
+first,retrained,173,1730,0.97,0.756,0.965,-0.005,-0.013 to +0.000
+first,pooled,173,1730,0.97,0.744,0.966,-0.004,-0.010 to +0.001
+_shape_inc,retrained,173,1730,0.923,0.643,0.909,-0.014,-0.037 to +0.002
+_shape_inc,pooled,173,1730,0.923,0.643,0.909,-0.014,-0.037 to +0.002
+first,own full set,489,4890,0.976,0.811,0.973,-0.003,
+_shape_inc,own full set,173,1730,0.923,0.643,0.909,-0.014,

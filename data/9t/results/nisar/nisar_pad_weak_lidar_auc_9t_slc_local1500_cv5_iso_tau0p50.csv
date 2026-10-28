@@ -1,0 +1,7 @@
+subset,n_targets,n_decoys,n_blocks,auc_rich lidar,auc_all NISAR,auc_NISAR + rich lidar,auc_permuted NISAR + rich lidar,gain_NISAR + rich lidar,gain_permuted NISAR + rich lidar,gain_net_of_permuted,gain_ci,net_gain_ci
+all,297,2970,80,0.918,0.576,0.916,0.914,-0.002,-0.005,0.003,-0.015 to +0.014,-0.007 to +0.020
+U-Net missed,17,170,29,0.914,0.572,0.917,0.911,0.002,-0.003,0.005,-0.034 to +0.059,-0.028 to +0.055
+U-Net found,280,2800,79,0.918,0.577,0.916,0.913,-0.002,-0.005,0.003,-0.015 to +0.013,-0.007 to +0.020
+lidar-weak quartile,75,750,59,0.863,0.514,0.866,0.858,0.003,-0.005,0.008,-0.026 to +0.029,-0.018 to +0.035
+covered by canopy (cover > 0.5),150,1500,68,0.956,0.653,0.949,0.951,-0.007,-0.005,-0.002,-0.021 to +0.002,-0.014 to +0.007
+weak and covered,41,410,40,0.911,0.586,0.908,0.904,-0.003,-0.006,0.003,-0.036 to +0.032,-0.028 to +0.043

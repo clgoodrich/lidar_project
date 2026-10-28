@@ -662,3 +662,12 @@ All ten items were run. Results: `docs/iterations/nisar_checks_9t.md`. None chan
 - LOS motion as connected-network displacement. Kept labelled exploratory instead.
 - Change detection through time, and areas without lidar. Never tested here.
 - Confuser test has only about 60 pads with enough matched clearing ground. More annotated pads or a looser match would give it power.
+
+## NISAR follow-up checks after the two reviews of NISAR_FINDINGS.md — DONE 2026-10-27
+All seven were run. Results: `docs/iterations/nisar_followup_checks_9t.md`. Closed: the tile-wide 0.64 against local 0.48 (a place effect, distance bands), the weak-lidar test, radar against Sentinel-2, terrain flattening of HV, the pit-drop split, the optical audit. Still open:
+- Pad held-out test on a second tile. Blocked by labels. Mark `verdict` in `data/613590/results/nisar/nisar_pad_review_candidates_613590.gpkg` (161 candidates) in QGIS and add missed pads, then write the pad version of `_nisar_feat_heldout_9t.py` (plan in the iteration doc, section 6).
+- Registration from point targets. The test with lidar objects was null and uninformative. Needs a better point set (surveyed structures, corner reflectors) or a different method.
+- Pads against other clearings, radar against Sentinel-2. 60 pads tie them. Needs more annotated pads or a looser match.
+- Pit decoys with footprint matching alone and incidence matching alone. The split inside the design step is unknown.
+- Pads that lidar cannot see at all. The labels come from lidar, so they are outside every test.
+- A split of ground and canopy energy. R2 does not give one.
