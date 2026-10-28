@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-28 (leaf-on, leaf-off and snow against NISAR dates, 9t) -- NISAR
+
+- **Ask.** Use weather logs and snow records to find the dates when trees are bare. Doc `docs/iterations/nisar_leaf_and_snow_9t.md`. Script `notebooks/wellsight_v2/s5_eval/_nisar_leaf_state_9t.py`.
+- **Data.** NOAA GHCN-Daily, Tionesta 2 SE Lake (4.9 km) and 13 other stations. Sentinel-2 NDVI of 2,684 closed-forest cells, 41 scenes.
+- **Result.** Leaf-off about late Nov to mid-April, leaf-out late April to late May, leaf-on to early October. Clean leaf-off, snow-free NISAR dates on 9t: 2025-11-21 (162), 2025-12-18 (26), 2026-01-08 (162, depth missing). None for track 90. No NISAR date between 2026-01-20 and 2026-06-20.
+- **Caution.** No clear Sentinel-2 view from 2025-10-29 to 2026-02-01, so Nov and Dec leaf state is interpolated. Not scored.
+
+---
+
 ## 2026-10-28 (pads under open sky against canopy, 9t) -- pad
 
 - **Ask.** The pit split, repeated for pads. Section added to `docs/iterations/nisar_bright_chips.md`.
