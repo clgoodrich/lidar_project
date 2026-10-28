@@ -67,15 +67,15 @@ Inputs: the cross-validated pit results at threshold 0.50, `data/9t/results/pit/
 
 | Set | n | Open | Partial | Canopy |
 |---|---|---|---|---|
-| Recorded pits, found | 447 | 73 | 321 | 53 |
+| Recorded pits, found | 447 | 70 | 327 | 50 |
 | Recorded pits, missed | 23 | 4 | 16 | 3 |
-| Predictions that match a recorded pit | 447 | 88 | 282 | 77 |
-| Predictions with no recorded pit | 241 | 60 | 129 | 52 |
+| Predictions that match a recorded pit | 447 | 87 | 285 | 75 |
+| Predictions with no recorded pit | 241 | 60 | 133 | 48 |
 | Ground, same 15 m window | | 26% | 47% | 28% |
 
-- Pits favour partial cover (72% of recorded pits against 47% of the ground). Both fully open and fully closed ground hold fewer than their share.
-- The model finds about 95% of recorded pits in every class (open 73 of 77, partial 321 of 337, canopy 53 of 56).
-- Precision is lowest in the open (59%) and under canopy (60%), higher in partial cover (69%).
+- Pits favour partial cover (73% of recorded pits against 47% of the ground). Both fully open and fully closed ground hold fewer than their share.
+- The model finds about 95% of recorded pits in every class (open 70 of 74, partial 327 of 343, canopy 50 of 53).
+- Precision is 59% in the open, 68% in partial cover and 61% under canopy.
 - The 60 unmatched predictions in the open are the ones an optical image could check.
 
 Output: `data/9t/results/pit/pit_cover_split_9t.gpkg`, layers `recorded_found`, `recorded_missed`, `predicted_matched`, `predicted_no_record`, with `cover` and `cover_class`.

@@ -8,7 +8,7 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 ## 2026-10-28 (pits under open sky against canopy, 9t) -- pit
 
 - **Ask.** Which recorded and predicted pits sit in the open and which under trees. Section added to `docs/iterations/nisar_bright_chips.md`.
-- **Result.** Of 470 recorded pits, 77 open, 337 partial, 56 canopy. Pits favour partial cover (72% against 47% of ground). Found rate about 95% in every class. 60 of 241 unmatched predictions are in the open.
+- **Result.** Of 470 recorded pits, 74 open, 343 partial, 53 canopy. Pits favour partial cover (73% against 47% of ground). Found rate about 95% in every class. 60 of 241 unmatched predictions are in the open.
 - **Output.** `data/9t/results/pit/pit_cover_split_9t.gpkg`.
 
 ---
