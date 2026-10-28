@@ -39,3 +39,23 @@ Target tables: `nisar_bright_chips_targets_<area>.csv` in the same folders.
 
 ## Reproduce
 `python notebooks/wellsight_v2/s5_eval/_nisar_bright_chips.py`
+
+## Open ground against under canopy (2026-10-28)
+Cover is the share of 1 m lidar cells above 2 m in each 5 m cell, 2019. Open is below 0.3, partial is 0.3 to 0.8, under canopy is above 0.8. Targets outside the lidar tile are left out. Ground is the lidar-covered area of each class.
+
+Targets per square kilometre, all targets:
+
+| Area | Open | Partial | Under canopy |
+|---|---|---|---|
+| 9t | 91 | 90 | 97 |
+| 613590 | 138 | 130 | 128 |
+| Warren | 38 | 94 | 95 |
+| McKean | 63 | 89 | 41 |
+
+Reading:
+- In 9t and 613590 targets fall in proportion to ground. Forest holds as many per square kilometre as open ground.
+- In Warren and McKean open ground holds fewer. McKean's denominator includes lidar outside the radar window, so its rates are rough.
+- Median brightness is about 7 dB in every class in 9t and 613590. Under-canopy targets are not weaker.
+- Cover above 2 m counts roofs as canopy. In the towns "under canopy" is largely buildings. Warren's under-canopy targets are the brightest (median 10 dB) for that reason.
+
+Table: `data/9t/results/nisar/nisar_bright_cover_split_all_areas.csv`. Tile-wide cover split is a one-off calculation, not saved as a script.

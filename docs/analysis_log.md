@@ -12,6 +12,7 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 - **Result.** Targets are mostly buildings, towns, bridges, riverbanks and graded industrial pads. 9t targets 3 to 5 sit on one bare pad that the earlier context label called "elsewhere". No lone well or pumpjack among 75 chips.
 - **Fixes during the run.** Hillshade is int16 with 0, -9999 and -32768 as no-data, stretched per chip. Sentinel-2 scene is picked per target, because one scene did not cover McKean. McKean two-track extras limited to targets inside the lidar tile.
 - **Outputs.** Sheets and target tables in `data/<area>/results/nisar/` (McKean in `data/mckean/mkf/results/nisar/`).
+- **Open against canopy.** Targets per km2 are about equal in open ground and forest in 9t and 613590 (91 vs 97, 138 vs 128), lower in the open in Warren and McKean. Brightness does not drop under canopy. Lidar cover counts roofs as canopy, so town targets read as under canopy. Table `data/9t/results/nisar/nisar_bright_cover_split_all_areas.csv`.
 
 ---
 
