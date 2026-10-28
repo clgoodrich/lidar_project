@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-28 (steady bright targets, four areas, checked on hillshade and Sentinel-2) -- NISAR
+
+- **Ask.** Find steady bright targets in McKean, Warren and 613590 and check them on the lidar hillshade and Sentinel-2. The three runs and 9t already existed (`nisar_bright_targets_*`), so no rerun. New script `notebooks/wellsight_v2/s5_eval/_nisar_bright_chips.py`. Doc `docs/iterations/nisar_bright_chips.md`.
+- **Selection.** All targets seen on three tracks (9t 9, 613590 30, Warren 24, McKean 2) plus the ten brightest two-track McKean targets inside the lidar tile.
+- **Result.** Targets are mostly buildings, towns, bridges, riverbanks and graded industrial pads. 9t targets 3 to 5 sit on one bare pad that the earlier context label called "elsewhere". No lone well or pumpjack among 75 chips.
+- **Fixes during the run.** Hillshade is int16 with 0, -9999 and -32768 as no-data, stretched per chip. Sentinel-2 scene is picked per target, because one scene did not cover McKean. McKean two-track extras limited to targets inside the lidar tile.
+- **Outputs.** Sheets and target tables in `data/<area>/results/nisar/` (McKean in `data/mckean/mkf/results/nisar/`).
+
+---
+
 ## 2026-10-27 (NISAR follow-up checks after two outside reviews) -- NISAR
 
 - **Scope.** Seven checks asked for by the reviews, run in order. Full tables and reproduce commands: `docs/iterations/nisar_followup_checks_9t.md`. Eight new scripts in `notebooks/wellsight_v2/s5_eval/` (`_nisar_weak_lidar_9t.py`, `_nisar_radar_vs_optical_pads_9t.py`, `_nisar_optical_feats_9t.py`, `_nisar_pad_distance_bands_9t.py`, `_nisar_hvflat_9t.py`, `_nisar_registration_points_9t.py`, `_nisar_pit_fixed_subset_9t.py`, `_nisar_vs_optical_heldout_9t.py`). Results in `data/9t/results/nisar/`.
