@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-28 (pads under open sky against canopy, 9t) -- pad
+
+- **Ask.** The pit split, repeated for pads. Section added to `docs/iterations/nisar_bright_chips.md`.
+- **Result.** Of 650 recorded pads, 63 open, 551 partial, 36 canopy. Found 86% open, 93% partial, 94% canopy. Precision 43%, 60%, 51%. 75 of 446 unmatched predictions are in the open.
+- **Output.** `data/9t/results/pad/pad_cover_split_9t.gpkg`.
+
+---
+
 ## 2026-10-28 (pits under open sky against canopy, 9t) -- pit
 
 - **Ask.** Which recorded and predicted pits sit in the open and which under trees. Section added to `docs/iterations/nisar_bright_chips.md`.

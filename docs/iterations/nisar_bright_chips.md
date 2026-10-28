@@ -80,3 +80,21 @@ Inputs: the cross-validated pit results at threshold 0.50, `data/9t/results/pit/
 
 Output: `data/9t/results/pit/pit_cover_split_9t.gpkg`, layers `recorded_found`, `recorded_missed`, `predicted_matched`, `predicted_no_record`, with `cover` and `cover_class`.
 Not saved as a script. Cover is lidar from 2019 and counts any surface above 2 m, including pad edges and buildings.
+
+## Pads under open sky against canopy (9t, 2026-10-28)
+Same question for pads. Recorded pads are the annotated pad polygons whose centroid lies in the 9t tile (650). Predictions are the out-of-fold pad U-Net candidates at probability 0.5 (1,044), from `_nisar_pad_fp_screen_9t.candidates()`. A pad counts as found, or a prediction as matched, at IoU 0.3 or more. Cover is the share of 1 m canopy cells above 2 m inside the polygon. Open is below 0.3, partial 0.3 to 0.8, canopy above 0.8.
+
+| Set | n | Open | Partial | Canopy |
+|---|---|---|---|---|
+| Recorded pads, found | 600 | 54 | 512 | 34 |
+| Recorded pads, missed | 50 | 9 | 39 | 2 |
+| Predictions that match a recorded pad | 598 | 57 | 500 | 41 |
+| Predictions with no recorded pad | 446 | 75 | 332 | 39 |
+
+- Found rate: open 86% (54 of 63), partial 93% (512 of 551), canopy 94% (34 of 36).
+- Precision: open 43%, partial 60%, canopy 51%.
+- Only 63 of 650 recorded pads (10%) are fully open. 551 (85%) are partial. Median cover inside a pad polygon is 0.54.
+- Cover above 2 m inside a pad is high for a cleared surface. Likely causes are regrowth on old pads, trees at drawn edges and polygons that extend past the cleared ground. Not checked.
+- The 75 unmatched predictions in the open are the ones an optical image could check.
+
+Output: `data/9t/results/pad/pad_cover_split_9t.gpkg`, layers `recorded_pads` and `predicted_pads`, with `cover`, `cover_class`, `best_iou` and `verdict`. One-off, no saved script.
