@@ -10,6 +10,7 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 - **Ask.** The pit split, repeated for pads. Section added to `docs/iterations/nisar_bright_chips.md`.
 - **Result.** Of 650 recorded pads, 63 open, 551 partial, 36 canopy. Found 86% open, 93% partial, 94% canopy. Precision 43%, 60%, 51%. 75 of 446 unmatched predictions are in the open.
 - **Output.** `data/9t/results/pad/pad_cover_split_9t.gpkg`.
+- **With a buffer.** Open pad and open ring: 30 of 650 recorded pads at 15 m, 29 at 30 m. 69 and 60 of 1,044 predictions. Columns `ring15`, `ring30` added to the same gpkg.
 
 ---
 

@@ -98,3 +98,15 @@ Same question for pads. Recorded pads are the annotated pad polygons whose centr
 - The 75 unmatched predictions in the open are the ones an optical image could check.
 
 Output: `data/9t/results/pad/pad_cover_split_9t.gpkg`, layers `recorded_pads` and `predicted_pads`, with `cover`, `cover_class`, `best_iou` and `verdict`. One-off, no saved script.
+
+### Pads open with a buffer (9t, 2026-10-28)
+A pad passes when its own cover is below 0.3 and the ring around it is also below 0.3. Ring = pad polygon buffered by 15 m or 30 m, minus the pad. Same 1 m canopy cells above 2 m.
+
+| Set | Open pad | Open pad and open 15 m ring | Open pad and open 30 m ring |
+|---|---|---|---|
+| Recorded pads (650) | 63 | 30 (27 found, 3 missed) | 29 (26 found, 3 missed) |
+| Predictions (1,044) | 132 | 69 (37 match, 32 no recorded pad) | 60 (32 match, 28 no recorded pad) |
+
+- Only 30 of 650 recorded pads (4.6%) are open with a 15 m margin. About half of the open pads have trees in the ring.
+- Median cover in the 15 m ring is 0.56 and in the 30 m ring 0.54. Most pads are surrounded by forest.
+- Output: columns `ring15` and `ring30` added to both layers of `data/9t/results/pad/pad_cover_split_9t.gpkg`. One-off, no saved script.
