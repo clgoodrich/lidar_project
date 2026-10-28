@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-10-28 (pits under open sky against canopy, 9t) -- pit
+
+- **Ask.** Which recorded and predicted pits sit in the open and which under trees. Section added to `docs/iterations/nisar_bright_chips.md`.
+- **Result.** Of 470 recorded pits, 77 open, 337 partial, 56 canopy. Pits favour partial cover (72% against 47% of ground). Found rate about 95% in every class. 60 of 241 unmatched predictions are in the open.
+- **Output.** `data/9t/results/pit/pit_cover_split_9t.gpkg`.
+
+---
+
 ## 2026-10-28 (steady bright targets, four areas, checked on hillshade and Sentinel-2) -- NISAR
 
 - **Ask.** Find steady bright targets in McKean, Warren and 613590 and check them on the lidar hillshade and Sentinel-2. The three runs and 9t already existed (`nisar_bright_targets_*`), so no rerun. New script `notebooks/wellsight_v2/s5_eval/_nisar_bright_chips.py`. Doc `docs/iterations/nisar_bright_chips.md`.

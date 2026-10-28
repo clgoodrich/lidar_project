@@ -59,3 +59,24 @@ Reading:
 - Cover above 2 m counts roofs as canopy. In the towns "under canopy" is largely buildings. Warren's under-canopy targets are the brightest (median 10 dB) for that reason.
 
 Table: `data/9t/results/nisar/nisar_bright_cover_split_all_areas.csv`. Tile-wide cover split is a one-off calculation, not saved as a script.
+
+## Pits under open sky against canopy (9t, 2026-10-28)
+Question: how many recorded and predicted pits sit in the open, where optical imagery can see them, and how many sit under trees?
+
+Inputs: the cross-validated pit results at threshold 0.50, `data/9t/results/pit/centroid_matching/pit_cv5_centroid_match_thr0p50_9t_05.gpkg`. Cover is the share of 1 m canopy cells above 2 m inside the pit polygon plus a 5 m ring (about 15 m across). Open is below 0.3, partial 0.3 to 0.8, canopy above 0.8.
+
+| Set | n | Open | Partial | Canopy |
+|---|---|---|---|---|
+| Recorded pits, found | 447 | 73 | 321 | 53 |
+| Recorded pits, missed | 23 | 4 | 16 | 3 |
+| Predictions that match a recorded pit | 447 | 88 | 282 | 77 |
+| Predictions with no recorded pit | 241 | 60 | 129 | 52 |
+| Ground, same 15 m window | | 26% | 47% | 28% |
+
+- Pits favour partial cover (72% of recorded pits against 47% of the ground). Both fully open and fully closed ground hold fewer than their share.
+- The model finds about 95% of recorded pits in every class (open 73 of 77, partial 321 of 337, canopy 53 of 56).
+- Precision is lowest in the open (59%) and under canopy (60%), higher in partial cover (69%).
+- The 60 unmatched predictions in the open are the ones an optical image could check.
+
+Output: `data/9t/results/pit/pit_cover_split_9t.gpkg`, layers `recorded_found`, `recorded_missed`, `predicted_matched`, `predicted_no_record`, with `cover` and `cover_class`.
+Not saved as a script. Cover is lidar from 2019 and counts any surface above 2 m, including pad edges and buildings.
