@@ -6,7 +6,9 @@
   "bg_window_m": 400.0,
   "row_median_std_before": 0.07263699918985367,
   "row_median_std_after": 3.246326741646044e-05,
-  "threshold_m": 0.23528670421242714,
+  "threshold": 0.23528670421242714,
+  "threshold_units": "metres",
+  "threshold_m_on_flat_ground": 0.23528670421242714,
   "n_patches": 240,
   "null": {
     "method": "iaaft_surrogate",

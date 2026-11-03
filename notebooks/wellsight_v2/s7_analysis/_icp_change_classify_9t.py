@@ -49,6 +49,7 @@ from rasterio.transform import from_origin
 from rasterio.warp import Resampling, reproject
 from scipy import ndimage as ndi
 from shapely.geometry import shape
+from shapely.ops import unary_union
 
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -85,11 +86,17 @@ IAAFT_ITERS = 12        # spectrum/histogram alternations per surrogate
 # 2006-2008 tiles); 'original' is the superseded 2026-05-21 product whose four
 # independent solves left 0.103 m of per-tile stepping. Outputs are tagged so
 # the two runs never overwrite each other.
+# 'lineadj' (2026-11-03) is the 2006-2008 surface rebuilt from the raw points with a vertical offset removed per flight pass
+# (_change_lineadj_9t.py). It lives under data/9t/derived/lidar_2006_2008, not in OUT.
 SOURCES = {
     "original":  ("dod_9t_2m.tif", "9t"),
     "singleicp": ("dod_9t_singleicp_2m.tif", "9t_singleicp"),
+    "lineadj":   ("dod_lineadj_9t_2m.tif", "9t_lineadj"),
+    "v2":        ("dod_v2_9t_2m.tif", "9t_v2"),   # _change_rebuild_v2_9t.py: per-pass horizontal shift, overlap offsets, both epochs from raw points
 }
 SRC_DOD, TAG = SOURCES["singleicp"]
+SRC_DIR = OUT
+ZSCALE = False   # divide the change field by a slope-dependent noise level before detecting (see noise_model)
 
 
 def robust(v):
@@ -129,6 +136,31 @@ def savefig_safe(fig, path, **kw):
         except OSError:
             time.sleep(1.0 + attempt)
     raise OSError(f"could not replace {path}; new figure left at {tmp}")
+
+
+def noise_model(field, slope):
+    """Noise level of the change field as a function of slope, sigma(s) = sqrt(s0^2 + (sh * tan s)^2).
+
+    Why. A horizontal registration error of sh metres turns into a vertical error of sh * tan(slope) on a slope. On 9t the robust sigma
+    of the high-passed change field is 0.062 m on gentle ground and 0.181 m above 25 degrees, and the share of cells beyond a single
+    global 0.235 m cut rises from 2.8% to 25.7%. A global threshold therefore calls steep ground changed because it is noisy.
+    Fit: robust sigma (1.4826 x MAD) in 2-degree slope bins with at least 3000 cells, then least squares on sigma^2 against tan^2(slope).
+    Returns (s0, sh, sigma_field), where sigma_field has the grid's shape.
+    """
+    ok = np.isfinite(field) & np.isfinite(slope)
+    edges = np.arange(0, 40, 2.0)
+    xs, ys = [], []
+    for a, b in zip(edges[:-1], edges[1:]):
+        m = ok & (slope >= a) & (slope < b)
+        if m.sum() >= 3000:
+            xs.append(np.tan(np.radians(float(slope[m].mean()))) ** 2)
+            ys.append(robust(field[m])[1] ** 2)
+    xs, ys = np.array(xs), np.array(ys)
+    A = np.c_[np.ones_like(xs), xs]
+    (c0, c1), *_ = np.linalg.lstsq(A, ys, rcond=None)
+    s0, sh = float(np.sqrt(max(c0, 1e-6))), float(np.sqrt(max(c1, 0.0)))
+    sig = np.sqrt(s0 ** 2 + (sh * np.tan(np.radians(np.nan_to_num(slope)))) ** 2).astype(np.float32)
+    return s0, sh, sig
 
 
 def destripe(d, n_iter=3):
@@ -180,7 +212,7 @@ def highpass(d, block=BG_BLOCK, radius=BG_RADIUS):
 def main() -> int:
     print("== 9t change classification ==")
 
-    dod = to_grid(OUT / SRC_DOD)
+    dod = to_grid(SRC_DIR / SRC_DOD)
     print(f"  source DoD: {SRC_DOD}   output tag: {TAG}")
     ok = np.isfinite(dod)
     m0, s0 = robust(dod[ok])
@@ -206,6 +238,17 @@ def main() -> int:
     dem = to_grid(NINE_T / "dem_breached_9t_1m.tif")
     gy, gx = np.gradient(dem, RES)
     slope = np.degrees(np.arctan(np.hypot(gx, gy))).astype(np.float32)
+
+    # Detection field. Metres by default. With ZSCALE it is the high-passed change divided by the slope noise level, so a cell is
+    # 'changed' when it is 3 noise-levels out FOR ITS SLOPE. Attributes (mean_dz_m, volume) stay in metres from dd.
+    det = dd
+    if ZSCALE:
+        n0, nh, sigf = noise_model(dd, slope)
+        det = (dd / sigf).astype(np.float32)
+        print(f"  slope noise model: s0 {n0:.3f} m, sh {nh:.3f} m  ->  sigma {n0:.3f} m flat, "
+              f"{float(np.sqrt(n0**2 + (nh*np.tan(np.radians(25)))**2)):.3f} m at 25 deg")
+        write(OUT / f"dod_{TAG}_z_2m.tif", det)
+    m1, s1 = robust(det[ok & np.isfinite(det)])
 
     # Channels are 1-2 px wide at 1 m. Bilinear resampling to the 2 m grid
     # averages their maxima away (observed: range 7.14 -> 4.64, so a fixed
@@ -268,7 +311,7 @@ def main() -> int:
         return np.array([(a * np.roll(a, l, axis=ax)).mean() / var
                          for l in range(L)])
 
-    resid = np.nan_to_num(dd - m1)
+    resid = np.nan_to_num(det - m1)
     acf_obs = (_acf(resid, 0) + _acf(resid, 1)) / 2
     amp = np.abs(np.fft.rfft2(resid))
 
@@ -317,7 +360,7 @@ def main() -> int:
 
     # ---- 3. segment significant change ----
     thr = SIG_K * s1
-    sig = ok & (np.abs(dd - m1) > thr)
+    sig = ok & (np.abs(det - m1) > thr)
     sig = ndi.binary_opening(sig, np.ones((3, 3)))      # drop salt-and-pepper
     sig = ndi.binary_closing(sig, np.ones((3, 3)))
     lbl, nlab = ndi.label(sig, structure=np.ones((3, 3)))
@@ -376,8 +419,10 @@ def main() -> int:
             reliable=bool(area >= reliable_area),
         ))
         sub = np.zeros_like(lbl, bool); sub[sl] = m
-        geoms.append(shape(next(g for g, v in shapes(
-            sub.astype("uint8"), mask=sub, transform=TF) if v == 1)))
+        # 8-connected like the labelling, and ALL pieces. shapes() defaults to 4-connectivity and the old code kept only the first
+        # polygon, so 12 of 240 (singleicp) and 15 of 205 (lineadj_z) outlines covered a fragment of the patch their attributes describe
+        # (outside review 2026-11-03; patch 1026 was 64 m2 of 6,032 m2). The pieces are unioned into one geometry.
+        geoms.append(unary_union([shape(g) for g, v in shapes(sub.astype("uint8"), mask=sub, transform=TF, connectivity=8) if v == 1]))
 
     gdf = gpd.GeoDataFrame(recs, geometry=geoms, crs=CRS)
     gdf = gdf.sort_values("abs_volume_m3", ascending=False).reset_index(drop=True)
@@ -390,7 +435,8 @@ def main() -> int:
                "bg_window_m": BG_WIN_M,
                "row_median_std_before": row_before,
                "row_median_std_after": row_after,
-               "threshold_m": float(thr), "n_patches": len(gdf),
+               "threshold": float(thr), "threshold_units": ("z, in slope-dependent noise levels" if ZSCALE else "metres"),
+               "threshold_m_on_flat_ground": float(thr * n0) if ZSCALE else float(thr), "n_patches": len(gdf),
                "null": {"method": "iaaft_surrogate", "iaaft_iters": IAAFT_ITERS,
                         "acf_observed_lags0to8": [round(float(v), 4) for v in acf_obs],
                         "acf_err": acf_err,
@@ -614,9 +660,15 @@ def main() -> int:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--zscale", action="store_true", help="detect on change / slope-noise-level instead of metres (outputs tagged _z)")
     ap.add_argument("--source", choices=sorted(SOURCES), default="singleicp",
                     help="which DoD to classify (default: singleicp, the "
                          "2026-07-31 one-solve rebuild; 'original' is the "
                          "superseded 2026-05-21 four-solve mosaic)")
-    SRC_DOD, TAG = SOURCES[ap.parse_args().source]
+    _a = ap.parse_args()
+    SRC_DOD, TAG = SOURCES[_a.source]
+    if _a.source in ("lineadj", "v2"):
+        SRC_DIR = ROOT / "data/9t/derived/lidar_2006_2008"
+    if _a.zscale:
+        ZSCALE, TAG = True, TAG + "_z"
     raise SystemExit(main())

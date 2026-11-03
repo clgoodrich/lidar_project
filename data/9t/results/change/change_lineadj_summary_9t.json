@@ -1,0 +1,27 @@
+{
+  "global_offset_m": -0.0296,
+  "passes": 6,
+  "pass_offset_std_m": 0.0607,
+  "global": {
+    "median": 0.0063,
+    "sigma": 0.1188,
+    "row_median_std": 0.0795,
+    "col_median_std": 0.0183,
+    "sigma_destriped": 0.0843,
+    "sigma_highpassed": 0.0783,
+    "seam_cells_row": 4623,
+    "seam_cells_col": 9505,
+    "cells_over_3sigma": 284375
+  },
+  "lineadj": {
+    "median": 0.0009,
+    "sigma": 0.0966,
+    "row_median_std": 0.0468,
+    "col_median_std": 0.016,
+    "sigma_destriped": 0.0841,
+    "sigma_highpassed": 0.0782,
+    "seam_cells_row": 2848,
+    "seam_cells_col": 9502,
+    "cells_over_3sigma": 283724
+  }
+}

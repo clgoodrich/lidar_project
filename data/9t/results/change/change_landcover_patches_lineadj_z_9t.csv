@@ -1,0 +1,206 @@
+patch_id,cls,sign,area_m2,mean_dz_m,slope_deg,nlcd_2019,nlcd_2019_name,nlcd_2006,nlcd_2006_name,share_forest_2019,share_nonforest_2019,class_changed_share
+854,fluvial,cut,6116.0,-1.061,7.7,41,deciduous forest,41,deciduous forest,0.3,0.7,0.7
+517,fluvial,cut,6944.0,-0.78,14.5,41,deciduous forest,41,deciduous forest,0.79,0.21,0.0
+255,anthropogenic,cut,3032.0,-1.11,10.0,81,pasture/hay,81,pasture/hay,0.47,0.53,0.0
+3,fluvial,cut,6604.0,-0.472,10.1,41,deciduous forest,41,deciduous forest,0.76,0.24,0.0
+45,fluvial,cut,8916.0,-0.295,4.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+942,fluvial,cut,2056.0,-0.901,12.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+618,fluvial,cut,1200.0,-1.525,30.1,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+60,fluvial,fill,5364.0,0.315,7.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+505,fluvial,fill,7508.0,0.192,5.3,41,deciduous forest,41,deciduous forest,0.55,0.45,0.26
+613,fluvial,cut,3244.0,-0.415,11.4,41,deciduous forest,41,deciduous forest,0.91,0.09,0.09
+766,anthropogenic,cut,1632.0,-0.808,7.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+65,fluvial,cut,4156.0,-0.302,4.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+373,fluvial,fill,4508.0,0.267,1.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1203,mass_wasting,fill,308.0,3.468,37.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+725,anthropogenic,fill,1864.0,0.483,13.2,41,deciduous forest,41,deciduous forest,0.85,0.15,0.0
+75,fluvial,fill,2504.0,0.344,5.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+174,fluvial,cut,9072.0,-0.09,15.7,41,deciduous forest,41,deciduous forest,0.53,0.47,0.47
+333,fluvial,fill,2224.0,0.327,7.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+39,fluvial,fill,1144.0,0.609,2.6,95,herbaceous wetland,95,herbaceous wetland,0.28,0.72,0.0
+809,fluvial,fill,1084.0,0.564,2.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+956,fluvial,fill,760.0,0.8,8.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+525,fluvial,cut,1148.0,-0.514,8.8,41,deciduous forest,41,deciduous forest,0.89,0.11,0.0
+1208,mass_wasting,fill,328.0,1.784,19.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1104,mass_wasting,cut,296.0,-1.912,20.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+711,fluvial,cut,1068.0,-0.522,11.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+356,anthropogenic,fill,1440.0,0.382,12.0,41,deciduous forest,71,herbaceous,0.89,0.11,0.99
+655,fluvial,cut,368.0,-1.456,20.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+701,fluvial,cut,576.0,-0.877,19.6,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+359,fluvial,fill,1188.0,0.41,12.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+532,anthropogenic,cut,364.0,-1.33,16.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1157,fluvial,fill,1636.0,0.283,5.6,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+1202,anthropogenic,cut,676.0,-0.667,14.3,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1072,fluvial,cut,464.0,-0.938,6.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+865,fluvial,fill,780.0,0.551,8.3,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+1018,mass_wasting,fill,344.0,1.137,19.6,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1146,fluvial,cut,812.0,-0.449,11.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+619,fluvial,cut,972.0,-0.372,10.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.14
+981,fluvial,fill,840.0,0.402,9.0,21,"developed, open",41,deciduous forest,0.45,0.55,0.55
+964,fluvial,fill,324.0,0.991,20.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.02
+242,fluvial,cut,536.0,-0.585,10.0,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+1016,fluvial,fill,384.0,0.785,11.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+66,fluvial,cut,1128.0,-0.263,5.8,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+271,fluvial,cut,996.0,-0.295,5.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+207,fluvial,cut,380.0,-0.715,8.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1061,fluvial,fill,516.0,0.506,11.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+862,fluvial,fill,504.0,0.515,2.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1053,fluvial,cut,200.0,-1.296,19.3,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1093,fluvial,fill,1248.0,0.201,4.2,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+588,fluvial,cut,596.0,-0.416,12.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+631,fluvial,fill,276.0,0.872,24.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+899,fluvial,fill,944.0,0.254,6.5,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+12,fluvial,cut,380.0,-0.603,7.5,90,woody wetland,90,woody wetland,0.0,1.0,0.0
+594,fluvial,cut,608.0,-0.373,11.3,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+756,fluvial,cut,268.0,-0.806,10.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+762,fluvial,fill,560.0,0.383,5.2,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+729,anthropogenic,fill,472.0,0.444,10.3,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1238,fluvial,cut,232.0,-0.903,10.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1187,fluvial,fill,528.0,0.39,5.9,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+540,fluvial,cut,484.0,-0.413,9.5,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+259,fluvial,fill,628.0,0.318,7.0,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+360,fluvial,fill,492.0,0.399,12.1,41,deciduous forest,71,herbaceous,0.99,0.01,1.0
+1147,fluvial,cut,252.0,-0.747,6.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1030,fluvial,fill,348.0,0.53,12.2,21,"developed, open",41,deciduous forest,0.24,0.76,0.76
+251,fluvial,cut,724.0,-0.253,15.3,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+489,fluvial,cut,300.0,-0.609,14.6,41,deciduous forest,71,herbaceous,1.0,0.0,1.0
+381,fluvial,cut,692.0,-0.263,1.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+466,fluvial,fill,288.0,0.632,14.2,41,deciduous forest,71,herbaceous,0.58,0.42,1.0
+213,fluvial,fill,248.0,0.72,19.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1076,fluvial,fill,892.0,0.194,10.6,21,"developed, open",41,deciduous forest,0.46,0.54,0.54
+1067,fluvial,cut,300.0,-0.56,8.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+364,fluvial,fill,416.0,0.396,15.8,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1232,fluvial,fill,396.0,0.405,4.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+557,fluvial,fill,228.0,0.694,6.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.47
+1177,fluvial,cut,292.0,-0.535,4.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+949,fluvial,fill,320.0,0.484,5.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+388,fluvial,fill,496.0,0.312,3.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+863,fluvial,fill,204.0,0.751,18.8,41,deciduous forest,41,deciduous forest,0.76,0.24,0.24
+737,fluvial,cut,376.0,-0.403,7.7,52,shrub,41,deciduous forest,0.0,1.0,1.0
+531,fluvial,cut,324.0,-0.467,18.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1100,fluvial,fill,252.0,0.59,5.1,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+569,fluvial,cut,428.0,-0.344,10.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+11,fluvial,cut,280.0,-0.525,6.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+577,fluvial,fill,312.0,0.47,5.0,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+277,fluvial,cut,260.0,-0.556,6.1,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+772,anthropogenic,fill,384.0,0.376,5.8,41,deciduous forest,41,deciduous forest,0.89,0.11,0.11
+501,fluvial,fill,652.0,0.221,5.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+596,fluvial,cut,400.0,-0.36,9.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+310,fluvial,cut,404.0,-0.351,9.7,52,shrub,71,herbaceous,0.03,0.97,0.97
+1223,fluvial,cut,236.0,-0.589,6.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1242,fluvial,fill,216.0,0.625,23.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+405,fluvial,fill,312.0,0.43,11.9,41,deciduous forest,71,herbaceous,1.0,0.0,1.0
+1087,fluvial,cut,516.0,-0.259,6.3,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+404,fluvial,fill,308.0,0.431,14.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+346,fluvial,fill,432.0,0.305,7.3,41,deciduous forest,41,deciduous forest,0.94,0.06,0.0
+451,fluvial,fill,292.0,0.45,9.0,41,deciduous forest,71,herbaceous,1.0,0.0,1.0
+1039,fluvial,fill,288.0,0.455,5.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1234,fluvial,cut,588.0,-0.222,9.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+188,fluvial,cut,848.0,-0.153,8.6,41,deciduous forest,41,deciduous forest,0.99,0.01,0.01
+611,fluvial,fill,284.0,0.456,8.2,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+475,fluvial,cut,348.0,-0.372,8.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+89,fluvial,fill,412.0,0.314,10.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+107,fluvial,cut,232.0,-0.557,8.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+16,fluvial,cut,256.0,-0.501,4.5,41,deciduous forest,41,deciduous forest,0.94,0.06,0.0
+873,fluvial,fill,340.0,0.372,9.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+414,anthropogenic,cut,280.0,-0.448,15.7,41,deciduous forest,71,herbaceous,1.0,0.0,1.0
+316,anthropogenic,fill,428.0,0.291,8.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+471,fluvial,fill,504.0,0.247,13.6,41,deciduous forest,71,herbaceous,1.0,0.0,0.89
+939,fluvial,cut,1776.0,-0.07,6.4,41,deciduous forest,41,deciduous forest,0.7,0.3,0.3
+362,anthropogenic,cut,440.0,-0.277,2.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+166,anthropogenic,cut,316.0,-0.381,12.9,41,deciduous forest,41,deciduous forest,0.92,0.08,0.08
+662,anthropogenic,cut,456.0,-0.263,1.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+122,anthropogenic,fill,280.0,0.421,16.6,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+76,fluvial,fill,328.0,0.35,5.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+760,anthropogenic,fill,300.0,0.381,6.9,52,shrub,41,deciduous forest,0.0,1.0,1.0
+296,fluvial,cut,244.0,-0.468,5.6,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+32,anthropogenic,fill,496.0,0.227,4.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+399,fluvial,fill,272.0,0.406,7.6,41,deciduous forest,71,herbaceous,1.0,0.0,1.0
+442,fluvial,fill,408.0,0.261,1.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+653,fluvial,cut,476.0,-0.223,11.6,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+123,anthropogenic,fill,304.0,0.346,9.8,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+279,fluvial,cut,252.0,-0.415,10.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+371,anthropogenic,fill,352.0,0.296,6.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+621,fluvial,cut,224.0,-0.454,5.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+106,fluvial,cut,680.0,-0.15,4.6,41,deciduous forest,41,deciduous forest,0.85,0.15,0.0
+1000,fluvial,fill,300.0,0.335,4.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1250,fluvial,cut,552.0,-0.181,9.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+321,fluvial,fill,264.0,0.364,3.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+112,fluvial,cut,340.0,-0.282,3.3,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+969,fluvial,fill,208.0,0.459,4.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+589,fluvial,cut,288.0,-0.331,5.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+958,fluvial,fill,240.0,0.388,11.0,41,deciduous forest,71,herbaceous,1.0,0.0,0.83
+222,fluvial,cut,224.0,-0.415,13.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+620,fluvial,fill,236.0,0.392,5.1,41,deciduous forest,71,herbaceous,1.0,0.0,1.0
+409,fluvial,cut,216.0,-0.428,14.3,41,deciduous forest,71,herbaceous,1.0,0.0,1.0
+162,fluvial,fill,220.0,0.409,10.7,21,"developed, open",21,"developed, open",0.0,1.0,0.0
+773,fluvial,cut,852.0,-0.105,5.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+495,anthropogenic,cut,204.0,-0.44,17.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+369,fluvial,fill,268.0,0.323,2.8,21,"developed, open",21,"developed, open",0.36,0.64,0.0
+1233,fluvial,fill,212.0,0.408,6.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+914,anthropogenic,cut,224.0,-0.375,5.3,41,deciduous forest,71,herbaceous,1.0,0.0,0.8
+1046,fluvial,fill,232.0,0.354,3.2,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+378,fluvial,fill,260.0,0.313,5.8,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+99,fluvial,cut,208.0,-0.391,4.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+803,anthropogenic,fill,260.0,0.311,5.3,81,pasture/hay,81,pasture/hay,0.45,0.55,0.0
+491,fluvial,cut,672.0,-0.12,9.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.26
+1171,fluvial,cut,476.0,-0.167,8.6,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1163,fluvial,fill,640.0,0.121,7.6,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+627,fluvial,cut,252.0,-0.297,5.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+201,fluvial,fill,228.0,0.324,5.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+761,fluvial,cut,220.0,-0.331,4.6,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+962,fluvial,fill,456.0,0.158,17.4,21,"developed, open",41,deciduous forest,0.25,0.75,0.75
+448,fluvial,fill,256.0,0.278,2.8,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+770,fluvial,cut,220.0,-0.313,2.4,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+88,fluvial,fill,244.0,0.28,3.8,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+33,anthropogenic,cut,248.0,-0.267,4.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+647,anthropogenic,fill,208.0,0.313,8.2,41,deciduous forest,71,herbaceous,1.0,0.0,0.73
+650,fluvial,fill,244.0,0.267,4.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+921,anthropogenic,cut,200.0,-0.324,5.3,41,deciduous forest,71,herbaceous,1.0,0.0,1.0
+771,fluvial,cut,268.0,-0.218,11.4,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+665,anthropogenic,cut,220.0,-0.248,0.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+910,fluvial,fill,684.0,0.079,13.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.48
+171,fluvial,fill,204.0,0.264,4.7,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+398,fluvial,cut,204.0,-0.254,2.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+417,fluvial,fill,200.0,0.259,2.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1068,fluvial,cut,696.0,-0.069,11.2,41,deciduous forest,41,deciduous forest,0.95,0.05,0.05
+1174,fluvial,cut,244.0,-0.193,5.5,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+951,fluvial,cut,352.0,-0.128,15.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+318,fluvial,cut,372.0,-0.119,8.7,52,shrub,71,herbaceous,0.05,0.95,0.95
+792,fluvial,cut,260.0,-0.162,4.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1257,fluvial,fill,580.0,0.07,9.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+317,fluvial,cut,212.0,-0.143,5.0,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+769,anthropogenic,cut,220.0,-0.128,5.6,71,herbaceous,41,deciduous forest,0.0,1.0,1.0
+1221,fluvial,cut,340.0,-0.08,14.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1168,fluvial,cut,228.0,-0.115,5.2,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+510,fluvial,fill,232.0,0.096,7.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+1108,fluvial,cut,388.0,-0.027,4.8,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+798,fluvial,fill,220.0,0.025,18.4,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+1186,fluvial,cut,260.0,-0.014,8.3,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+49,fluvial,cut,980.0,,4.5,41,deciduous forest,41,deciduous forest,0.87,0.13,0.0
+229,fluvial,cut,6060.0,,8.1,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+250,fluvial,cut,756.0,,5.5,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+267,fluvial,cut,420.0,,4.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+328,fluvial,cut,4660.0,,8.4,41,deciduous forest,41,deciduous forest,0.79,0.21,0.03
+440,fluvial,cut,284.0,,9.4,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+463,fluvial,cut,404.0,,8.3,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+468,fluvial,cut,856.0,,6.1,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+473,fluvial,cut,448.0,,7.2,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+493,fluvial,cut,724.0,,6.7,41,deciduous forest,41,deciduous forest,0.98,0.02,0.0
+561,fluvial,cut,252.0,,30.2,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+574,fluvial,cut,228.0,,12.5,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+590,fluvial,cut,796.0,,18.0,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+663,fluvial,cut,708.0,,34.2,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+767,fluvial,cut,812.0,,6.8,41,deciduous forest,41,deciduous forest,0.7,0.3,0.0
+779,fluvial,cut,1524.0,,9.0,90,woody wetland,90,woody wetland,0.17,0.83,0.0
+786,fluvial,cut,700.0,,14.2,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+793,fluvial,cut,788.0,,7.4,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+878,fluvial,cut,1872.0,,5.9,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+906,fluvial,cut,564.0,,3.9,41,deciduous forest,41,deciduous forest,1.0,0.0,0.0
+907,fluvial,cut,928.0,,5.3,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+973,fluvial,cut,2416.0,,8.4,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+1102,fluvial,cut,1496.0,,7.1,42,evergreen forest,42,evergreen forest,1.0,0.0,0.0
+1116,fluvial,cut,3532.0,,8.6,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+1129,fluvial,cut,2128.0,,8.5,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+1192,fluvial,cut,7220.0,,6.6,43,mixed forest,43,mixed forest,1.0,0.0,0.0
+1245,fluvial,cut,1360.0,,4.9,43,mixed forest,43,mixed forest,1.0,0.0,0.0

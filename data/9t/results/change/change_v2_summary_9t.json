@@ -1,0 +1,104 @@
+{
+  "horizontal_shift_2006_m": {
+    "all_points_east": 0.152,
+    "all_points_north": 0.218,
+    "per_pass_applied": {
+      "1600": [
+        0.101,
+        -0.063,
+        483462
+      ],
+      "1700": [
+        0.218,
+        0.339,
+        475133
+      ],
+      "1800": [
+        0.103,
+        0.446,
+        456516
+      ],
+      "1900": [
+        0.137,
+        -0.058,
+        498828
+      ],
+      "2000": [
+        0.225,
+        0.386,
+        441475
+      ],
+      "2100": [
+        0.243,
+        -0.113,
+        527397
+      ]
+    },
+    "residual_per_pass": {
+      "1600": [
+        0.005,
+        -0.003
+      ],
+      "1700": [
+        0.005,
+        -0.006
+      ],
+      "1800": [
+        0.002,
+        0.002
+      ],
+      "1900": [
+        0.001,
+        0.002
+      ],
+      "2000": [
+        0.006,
+        0.001
+      ],
+      "2100": [
+        0.003,
+        -0.001
+      ]
+    }
+  },
+  "datum_tilt_mm_per_km": {
+    "east": 2.86,
+    "north": 25.41,
+    "mean_m": -0.0313,
+    "across_tile_mm": 115.1
+  },
+  "injected_disc_1km_plus0p25": {
+    "share_removed_overlap_method": 0.002,
+    "share_removed_old_vs_2019_method": 0.124
+  },
+  "offsets_2006_overlap": {
+    "std": 0.127,
+    "n_passes": 6,
+    "n_pairs": 5,
+    "misfit_rms": 0.0
+  },
+  "offsets_2019_overlap": {
+    "std": 0.0,
+    "n_passes": 4,
+    "n_pairs": 3,
+    "misfit_rms": 0.0
+  },
+  "offsets_2006_overlap_vs_2019ref_corr": 0.758,
+  "thin_2019": {
+    "keep_fraction": 0.25,
+    "points_kept": 13675631
+  },
+  "judge": {
+    "2019_adjusted_passes": {
+      "median": -0.0151,
+      "sigma": 0.1294,
+      "row_median_std": 0.0897,
+      "col_median_std": 0.0157,
+      "sigma_destriped": 0.0797,
+      "sigma_highpassed": 0.0763,
+      "seam_cells_row": 2085,
+      "seam_cells_col": 9186,
+      "cells_over_3sigma": 277099
+    }
+  }
+}

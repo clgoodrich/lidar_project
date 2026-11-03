@@ -1,0 +1,44 @@
+{
+  "pad": {
+    "n_measured": 404,
+    "n_changed": 18,
+    "share": 0.045,
+    "kinds": {
+      "fill": 8,
+      "cut_and_fill": 7,
+      "cut": 3
+    },
+    "expected_false_assumed": 10.1,
+    "placebo_rate": 0.0404,
+    "expected_false_measured": 16.3,
+    "median_n_ctrl": 18.0
+  },
+  "road": {
+    "n_measured": 674,
+    "n_changed": 31,
+    "share": 0.046,
+    "kinds": {
+      "cut": 18,
+      "fill": 8,
+      "cut_and_fill": 5
+    },
+    "expected_false_assumed": 16.9,
+    "placebo_rate": 0.0318,
+    "expected_false_measured": 21.4,
+    "median_n_ctrl": 24.0
+  },
+  "pit": {
+    "n_measured": 438,
+    "n_changed": 120,
+    "share": 0.274,
+    "kinds": {
+      "fill": 100,
+      "cut_and_fill": 11,
+      "cut": 9
+    },
+    "expected_false_assumed": 11.0,
+    "placebo_rate": 0.0392,
+    "expected_false_measured": 17.2,
+    "median_n_ctrl": 32.0
+  }
+}
