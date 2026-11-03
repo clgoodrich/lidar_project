@@ -39,6 +39,10 @@ def main():
         P[k] = C.fit_predict(Xtr[:, m], ytr, Xte[:, m])
         rows.append(dict(feature_set=k, n_bands=int(m.sum()), auc=round(roc_auc_score(yte, P[k]), 3)))
         print(rows[-1], flush=True)
+    # per-row scores, saved so that any later check (clustered bootstrap, jackknife) can be run without refitting (outside review 2026-11-03)
+    out = C.A.path_for("data") / "613590" / "results" / "nisar"
+    sc = pd.DataFrame({"row": np.arange(len(yte)), "y": yte, "block": gte, **{k: v for k, v in P.items()}})
+    sc.to_csv(out / "nisar_pit_heldout_scores_613590_slc.csv", index=False)
     rng = np.random.default_rng(SEED)
     ug = np.unique(gte)
     where = {g: np.flatnonzero(gte == g) for g in ug}
@@ -60,7 +64,6 @@ def main():
     res = pd.DataFrame(rows)
     print(res.to_string(index=False))
     print(f"gain NISAR + rich over rich: {d_obs:+.3f} (block bootstrap 95% {lo:+.3f} to {hi:+.3f}); gate passed: {passed}")
-    out = C.A.path_for("data") / "613590" / "results" / "nisar"
     res.to_csv(out / "nisar_pit_heldout_auc_613590_slc.csv", index=False)
     json.dump(dict(n_pits=int(yte.sum()), n_decoys=int((1 - yte).sum()), n_blocks=int(len(ug)), n_bands=len(common),
                    missing_bands=missing, gain_nisar_plus_rich_over_rich=d_obs, boot_lo=float(lo), boot_hi=float(hi),

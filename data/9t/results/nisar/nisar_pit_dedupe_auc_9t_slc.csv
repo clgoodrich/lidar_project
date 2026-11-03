@@ -1,0 +1,3 @@
+rows,n_targets,n_decoys,rich lidar baseline,all NISAR,NISAR + rich baseline,gain,gain_ci_lo,gain_ci_hi
+all rows,489,4890,0.968,0.829,0.967,-0.001,,
+repeats dropped,489,4392,0.973,0.765,0.97,-0.004,-0.009,-0.0

@@ -8,6 +8,8 @@ The results do not justify adding NISAR to the lidar detector. No design we trie
 
 That is a narrower claim than "NISAR adds nothing". Some of the tests could not have shown a gain, because the lidar baseline was already near 1.0 (pads against other clearings, the U-Net fusion). The tile-wide pad design (lidar 0.93) and the held-out pit test (lidar 0.88) had room. Neither showed a gain. A small benefit is not excluded.
 
+Dropping repeated decoy locations moves the radar-alone scores (pits 0.83 to 0.77, pads with local decoys 0.48 to 0.60). It does not move the gain over lidar (pits -0.004, pads -0.008). Radar-alone scores depend on the decoy set and should not be quoted as headlines. See `docs/iterations/outside_review_response_20261103.md`, section 8.
+
 On its own the radar does carry some signal. It separates pads from other clearings at 0.80 and held-out pits from decoys at 0.658. That signal is redundant where lidar exists.
 
 The follow-up checks of 2026-10-27 tested the cases where it might matter:
@@ -22,7 +24,7 @@ The radar varies more with optical vegetation indices than with lidar canopy hei
 - **Question.** Does NISAR carry a signal that identifies well pads, pits, wells and pumpjacks, and can it help the lidar detector?
 - **Radar.** NISAR L-band (24 cm wavelength, 1.257 GHz), left-looking. No S-band data is used.
 - **Products.** L2 GSLC and SLC at 5 m, HH and HV polarisation. Tracks 26, 90 and 162, with 8, 11 and 14 dates.
-- **Area.** Tile 9t, Venango County, 4.9 km, EPSG:32617. A second tile, 613590, was used for one held-out test.
+- **Area.** Tile 9t, Venango County. The lidar tile is 4.5 km square (619500 to 624000 E, 4593000 to 4597500 N, EPSG:6346). The NISAR window cut around it is 4.9 km square (EPSG:32617). Older text that says a 4.9 km tile means the NISAR window. A second tile, 613590, was used for one held-out test.
 - **Status of the data.** Beta and provisional products. They are not validated or fully calibrated.
 - **Registration.** The radar sits about 10 m off the lidar.
 

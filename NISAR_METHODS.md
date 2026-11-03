@@ -13,7 +13,7 @@ Written 2026-10-26, revised the same day after two outside reviews (Section 14).
 - NISAR did not help screen false positives from the lidar pit detector (gain -0.026, p 0.58), nor from the pad detector (Section 15: NISAR alone separates true from false candidates at 0.72, but score + NISAR scores below the score alone).
 - The fusion with the lidar U-Net was redone with an isolated retrain. NISAR adds nothing (0.995 against 0.999).
 - A frozen model trained on 9t pits and tested on 36 pits of tile 613590 gave the same answer (NISAR alone 0.658, no gain over lidar).
-- This does not show NISAR can never help. It shows that here, with a 4.9 km tile, 5 m posting and these features, it does not.
+- This does not show NISAR can never help. It shows that here, with a 4.5 km lidar tile (4.9 km NISAR window), 5 m posting and these features, it does not.
 
 AUC here is P(target value > comparison value). 0.5 is no separation. Below 0.5 means the target is lower.
 
@@ -48,7 +48,7 @@ AUC here is P(target value > comparison value). 0.5 is no separation. Below 0.5 
 | 90 | ascending | 11 | 2025-11-04 to 2026-10-06 |
 | 162 | ascending | 15 | 2025-10-28 to 2026-10-11 |
 
-The feature scripts use 10, 11 and 15 usable dates (flagged bad dates removed in `notebooks/wellsight_v2/_nisar_area.py`, `BAD_DATES`).
+The analysis stack (lidar-placed SLC, tag `_9t_slc`) has 8, 11 and 14 usable dates on tracks 26, 90 and 162. The 10, 11 and 15 seen in older docs are the GSLC stack before the bad-date drop and the lidar placement. They are not the stack the corrected results use. Bad dates are removed in `notebooks/wellsight_v2/_nisar_area.py` (`BAD_DATES`).
 
 **What we hold locally.** We never downloaded whole granules (about 22.6 GB each). `_fetch_nisar_gslc_window_9t.py` reads only the HDF5 chunks that cover the study area through HTTPS range requests, about 40 MB per polarisation per date.
 
@@ -70,7 +70,7 @@ NASA places each GSLC pixel with a 30 m global elevation model (Copernicus-based
 
 **What we did.** `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py` (with `_nisar_geometry.py`) takes the RSLC samples and places them using the 1 m lidar bare earth. It uses the GSLC's own radar-grid cubes (`metadata/radarGrid`) to map a map position and height to a radar time and range. Plan and checks: `docs/iterations/nisar_regeocode_plan_9t.md`.
 
-**What remains.** Registration is still about 10 m. Our 5 m pixels, the 5 to 40 m pads and the 1 to 3 pixel pits are all comparable to that. The best-shift search with wells found no clear peak (best 2.4% hit rate against 1.6% median over shifts), so registration was not independently confirmed. Every result should be read as "within a registration blur of about 10 m".
+**What remains.** Before re-placement the error was about 10 m. Registration was checked internally. After re-placement on the lidar ground, 46 of 48 blocks on 9t sit within 2.5 m of the lidar-simulated position, and 31 of 48 on 613590 (worst block 29.7 m). That check uses the same lidar, so it is not independent. The independent test (steady bright points, wells) found no peak. So 9t is placed to about 1 to 3 m by an internal check, the held-out tile is worse, and neither is independently confirmed. Pits are 1 to 3 pixels, so even a few metres matters. The best-shift search with wells found no clear peak (best 2.4% hit rate against 1.6% median over shifts), so registration was not independently confirmed. Every result should be read as "within a registration blur of about 10 m".
 
 ## 5. Experiments in order, and what each found
 
@@ -299,8 +299,9 @@ SAR-only sets (no geometry) score about the same as all NISAR for pads. So lidar
 
 (State after correction. Section 14 lists what the reviews raised.)
 
-- **Registration** is about 10 m, not independently confirmed.
+- **Registration.** Registration was checked internally. After re-placement on the lidar ground, 46 of 48 blocks on 9t sit within 2.5 m of the lidar-simulated position, and 31 of 48 on 613590 (worst block 29.7 m). That check uses the same lidar, so it is not independent. The independent test (steady bright points, wells) found no peak. So 9t is placed to about 1 to 3 m by an internal check, the held-out tile is worse, and neither is independently confirmed.
 - **One area, one date window.** No spatial transfer test. Warren has no pad labels.
+- **Repeated decoys.** Dropping repeated decoy locations moves the radar-alone scores (pits 0.83 to 0.77, pads with local decoys 0.48 to 0.60). It does not move the gain over lidar (pits -0.004, pads -0.008). Radar-alone scores depend on the decoy set and should not be quoted as headlines. See `docs/iterations/outside_review_response_20261103.md`, section 8.
 - **Local decoys** cover 274 of 649 pads (pads with at least 10 matching candidates within 1,500 m). Those pads may differ from the rest. Matched decoys can also contain unannotated pads.
 - **Pad size** is not matched. Terciles of pad area (core 5 m, far decoys) score 0.854, 0.806, 0.785. Under local 750 m decoys the largest third falls to 0.53, but that is about 29 pads and noisy.
 - **Pits** sit beside pads in 82% of cases, so pit and pad signatures overlap. The lidar baseline favours pits because pits are depressions.
@@ -309,7 +310,7 @@ SAR-only sets (no geometry) score about the same as all NISAR for pads. So lidar
 - **Beta and provisional calibration** differ between dates and tracks. Per-track HV summer-versus-fall offsets range from +1.9 to +4.2 dB, which points to calibration, not season.
 - **Multiple comparisons.** 351 bands are scored. Benjamini-Hochberg q is applied to single bands only, not to model choices (which sets to report).
 - **Mechanism is untested.** HH's role is hypothesised, not shown.
-- **No held-out area.** CV is by 500 m block inside one tile.
+- **Held-out area.** CV is by 500 m block inside one tile. One frozen held-out test exists for pits only (36 pits, 8 blocks, tile 613590, `nisar_checks_9t.md` section 5). There is none for pads.
 
 ## 11. Not done
 
