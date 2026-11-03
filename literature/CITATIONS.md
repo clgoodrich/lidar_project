@@ -536,3 +536,10 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** 2026-10-26: coherence regressed on gap and |kz|, and phase regressed on kz for the height residual.
 - **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_height_resid_9t.py`; `data/9t/derived/nisar_features_5m/nisar_feat_heightresid_9t_5m.tif`.
 - **Source:** cite-only, https://doi.org/10.1109/36.175330
+
+### Dewitz 2021 — NLCD 2019 land cover products
+- **Citation:** Dewitz, J. (2021). National Land Cover Database (NLCD) 2019 Products (ver. 2.0, June 2021). U.S. Geological Survey data release. doi:10.5066/P9KZCM54.
+- **About:** 30 m land cover for the conterminous US, 2001 to 2019, one consistent legend and method across years.
+- **Used for:** 2026-11-03: 2006 and 2019 land cover under the lidar change field, so a class change between the two lidar years is not a map-version change.
+- **Generated:** `notebooks/wellsight_v2/s1_build/_fetch_nlcd_9t.py`; `data/9t/derived/landcover/nlcd_2006_landcover_9t.tif`, `nlcd_2019_landcover_9t.tif`; `notebooks/wellsight_v2/s7_analysis/_change_landcover_9t.py`.
+- **Source:** cite-only (public domain), https://www.mrlc.gov/data

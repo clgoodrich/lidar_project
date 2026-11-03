@@ -671,3 +671,12 @@ All seven were run. Results: `docs/iterations/nisar_followup_checks_9t.md`. Clos
 - Pit decoys with footprint matching alone and incidence matching alone. The split inside the design step is unknown.
 - Pads that lidar cannot see at all. The labels come from lidar, so they are outside every test.
 - A split of ground and canopy energy. R2 does not give one.
+
+## Outside review leftovers (2026-11-03)
+
+- Get the 2006-08 flight dates (USGS flight log or project metadata). Blocks any before/after test of a dated well.
+- Find the cause of the 9,186 column-seam cells in the change surface. Not 2006 passes, not 2019 passes, not tile edges, not mapped features.
+- Pit flags persist at near-equal point density (129 of 436). Test 2006 ground classification flattening berms against real settling.
+- NISAR pad transfer test on a second tile with pad labels made without the radar. Freeze and commit the model before scoring. Save per-row scores.
+- Overlap offsets use narrow overlaps in one chain. Add a loop check or cross-track tilt term.
+- Blind aerial triage of patches 899 and 1530 (old ids 899 and 1530, v2 ids 810 and 1277) against dated imagery or grading records.

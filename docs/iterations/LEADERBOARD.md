@@ -579,4 +579,6 @@ Follow-up checks of 2026-10-27 (`docs/iterations/nisar_followup_checks_9t.md`). 
 | NISAR AUC by decoy distance | 0.44 (100 to 500 m) rising to 0.71 (above 3.5 km) |
 | Pits, 173 fixed, matched decoys / shape + incidence | NISAR 0.756 / 0.643, rich lidar 0.970 / 0.923, gain -0.005 / -0.014 |
 | HV flattened by sim_db added | no score changes by more than 0.002 |
+| Repeated decoy locations dropped (2026-11-03). Pits (4,392 of 4,890 distinct) | rich lidar 0.973, NISAR 0.765 (was 0.829), NISAR + rich 0.970, gain -0.004 (-0.009 to -0.000) |
+| Same, pads with local 1,500 m decoys (2,498 of 2,970 distinct) | rich lidar 0.925, NISAR 0.601 (was 0.479), NISAR + rich 0.916, gain -0.008 (-0.025 to +0.003) |
 

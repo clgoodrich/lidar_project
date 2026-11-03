@@ -732,3 +732,24 @@ surrogates.
 - Vegetation / canopy masking before differencing.
 - A non-DEM-derived well list (DEP permit coordinates), so a wells test can be
   run at all.
+
+---
+
+# Part 5 — Review corrections and land cover (2026-11-03)
+
+Full record: `docs/iterations/outside_review_response_20261103.md`.
+
+**Withdrawn.**
+- Part 4's finding that the change exceeds noise in aggregate. Noise rises with slope (robust sigma 0.062 m flat, 0.181 m above 25 degrees) and the IAAFT null assumed it did not. On the slope-normalised, per-pass-corrected field the count is 205 patches against 339 +/- 10 from noise (0.6x). Area is 1.34x. 12 fluvial patches clear the 4,092 m2 cutoff. No non-erosional patch does.
+- Part 1's "no change at wells" and the 367-patch preliminary product. The preliminary surface is uncorrelated with the rebuilt one (r = -0.07), and the well layer is circular (Part 3). There is no valid wells test in either direction.
+
+**Added.**
+- `_change_lineadj_9t.py`: per-pass vertical offsets from `point_source_id` (six passes, std 0.061 m). It cuts the raw row-median std from 0.080 to 0.047 m. After the high-pass the noise is unchanged. It also erases any real change that spans a whole pass. Column seams (9,505 cells) are not touched.
+- `_icp_change_classify_9t.py --source lineadj --zscale`: detection on change divided by a slope noise level, sigma = sqrt(0.062^2 + (0.31 tan slope)^2). The JSON threshold is in z units.
+- Patch outlines are now 8-connected and complete. Before, 12 of 240 outlines covered a fragment.
+- `_change_features_9t.py`: slope-matched controls and a measured placebo rate. Pads 18 of 404 flagged against 4.0% placebo (about 16 by chance). Roads 31 of 674 against 3.2%.
+- `_change_landcover_9t.py`: NLCD 2006 and 2019 under the change. Forest is 96% of the tile. 22 of 26 "anthropogenic" patches are deciduous forest.
+
+**Limits.** No datum transform between GEOID03 and GEOID12B. The 2006-08 flight dates are unknown. Patches 899 (new bare patch in 2020) and 1530 (trail junction) look like real earthwork on the evidence sheet. Patches 20 and 836 do not. Patch 267 abuts the edge of the 2006 coverage. (On the v2 surface these are 810, 1277, 33, 762 and 251.)
+
+**Update 2026-11-03 (second pass).** `_change_rebuild_v2_9t.py` rebuilds both surfaces from raw points. Per-pass horizontal shift (north +0.34 to +0.45 m on passes 17, 18, 20, -0.06 to -0.11 m on the rest). Offsets from pass overlaps instead of the 2019 surface (removes 0.2% of an injected +0.25 m, 1 km change, against 12.4% for the old method). 2019 thinned to 0.68 points per m2. Datum tilt +25 mm/km north, removed by the high-pass. High-passed sigma 0.0763 m (was 0.0782). Row seam cells 2,085 (was 2,848). Column seams (9,186) unexplained. Classification `--source v2 --zscale`: 204 patches against 325 +/- 11 from noise, 12 fluvial above 3,368 m2, no non-erosional. Pit flags (129 of 436) persist at near-equal point density, so the sparse-survey explanation alone is not enough. Full table: `docs/iterations/outside_review_response_20261103.md`, sections 8 and 9.

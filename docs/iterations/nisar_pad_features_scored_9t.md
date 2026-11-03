@@ -6,7 +6,7 @@
 Test whether any NISAR-derived parameter separates annotated well pads from ground that is not a pad. Plan: `docs/iterations/nisar_feature_products_plan.md`. Pits are in `docs/iterations/nisar_pit_features_scored_9t.md`.
 
 ## Inputs
-- NISAR L2 GSLC windows, 5 m, tracks 26 / 90 / 162 (10 / 11 / 15 usable dates), HH and HV. RSLC windows (34 dates) for the sub-aperture and height products.
+- NISAR L2 GSLC windows, 5 m, tracks 26 / 90 / 162 (10 / 11 / 15 usable dates in this first pass, GSLC stack. The corrected stack has 8 / 11 / 14, see nisar_corrected_rescoring_9t.md), HH and HV. RSLC windows (34 dates) for the sub-aperture and height products.
 - 649 usable pad polygons (626 with matched decoys). Lidar slope, roughness and canopy cover on the 5 m grid.
 - PRISM daily rain and temperature at the 9t centre, 2025-09-01 to 2026-10-18 (`data/9t/derived/weather/weather_prism_daily_9t.csv`, script `_weather_prism_daily_9t.py`).
 

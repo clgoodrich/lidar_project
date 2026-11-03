@@ -39,3 +39,12 @@ Does a NISAR model trained on 9t transfer to a different tile, and does it add t
 3. One run. A technical failure may be fixed and re-run. No change of model, band set or decoy design after seeing a score.
 
 Results go to `docs/iterations/nisar_checks_9t.md`.
+
+## Addendum 2026-11-03 (after outside review). Written after the run. The original text above is unchanged.
+
+- **Decision rule contradiction.** The rule says "otherwise no gain" and, in the next bullet, that a wide interval spanning zero is "inconclusive". Both cannot hold. The intended reading was this. Gate passes if the gain is at least 0.05 and the lower bound is above 0. If the upper bound is below 0.05, the gain is excluded ("no gain"). If the interval spans 0.05, the result is inconclusive.
+- **What the run gave.** Gain -0.017. An outside re-analysis put the upper 95% bound at +0.015 (51 blocks), +0.018 (9 pit clusters), +0.006 (36 pits) and +0.017 (jackknife over the 8 blocks holding pits). All are below 0.05, so by the intended reading the result is "no gain for pits on 613590".
+- **What "frozen" covers.** Between this commit (a8a38c00) and the scoring, `_nisar_feat_common.py` was refactored (the model moved into `fit_predict`, a tag option was added to `load_samples`) and the 9t samples were regenerated after the skew and kurtosis fix. The model settings in the refactor are the same as in the pre-registration (depth 3, rate 0.06, 200 iterations, L2 1.0, leaf 40, balanced, bands over 20% missing dropped, training-median imputation). Nothing in the diff reads a 613590 label. This is a read of the diff by the same people who wrote it, so treat it as unverified by a third party.
+- **Prior exposure.** 613590 pits were scored with NISAR on 2026-10-14 and 2026-10-19, before this pre-registration. The test is less independent than "unseen tile" suggests.
+- **Test set shape.** The 36 pits sit in 8 of 51 blocks. The other 43 hold decoys only.
+- **Not saved.** The run wrote AUC tables but no per-row scores. A future run should save them.

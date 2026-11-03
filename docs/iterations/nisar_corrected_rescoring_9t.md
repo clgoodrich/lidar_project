@@ -75,7 +75,7 @@ The new CV accounts for about half to two thirds of the drop (64% and 53%). The 
 - **Pits.** NISAR alone reaches 0.832, but coordinates alone reach 0.955 and the rich lidar baseline 0.968. NISAR adds nothing to them (0.967, 0.987). Pits sit at pads, so location predicts them.
 - **Lidar sees pads trivially.** Local slope variation at 3 pixels scores 0.93. Pads are smooth graded surfaces and the decoys are not matched on that.
 - **HH.** There is no HH advantage for pads. For pits there is a modest one, but pits are not separable from location once coordinates are in the model.
-- **What this does not show.** It does not show NISAR can never help. It shows that in this 4.9 km tile, with this feature set and 5 m posting, NISAR does not add to lidar or location for pad or pit detection.
+- **What this does not show.** It does not show NISAR can never help. It shows that in this tile (4.5 km lidar, 4.9 km NISAR window), with this feature set and 5 m posting, NISAR does not add to lidar or location for pad or pit detection.
 
 ## Limits that remain
 
@@ -85,7 +85,7 @@ The new CV accounts for about half to two thirds of the drop (64% and 53%). The 
 - Decoys are not matched on local incidence angle.
 - No shifted pseudo-pad placebo, no confuser set (other clearings), no DEP-status split, no held-out area (613590), no repeated CV with a spread over seeds.
 - Sample-level inference is still unreliable: single-band p-values and the signed-rank test across bands assume independence.
-- The registration is about 10 m and not independently confirmed.
+- Registration. Registration was checked internally. After re-placement on the lidar ground, 46 of 48 blocks on 9t sit within 2.5 m of the lidar-simulated position, and 31 of 48 on 613590 (worst block 29.7 m). That check uses the same lidar, so it is not independent. The independent test (steady bright points, wells) found no peak. So 9t is placed to about 1 to 3 m by an internal check, the held-out tile is worse, and neither is independently confirmed. (Corrected 2026-11-03 after outside review. This line used to say about 10 m, which contradicted the QC in the log.)
 - **The fusion with the pad U-Net** was redone on 2026-10-27 with an isolated retrain (`nisar_checks_9t.md`, section 7). NISAR adds nothing to it.
 - The LOS-motion bands are not measured displacement (zero-filled steps, disconnected gaps). Treat them as exploratory predictors. Season and processing release are confounded (all winter acquisitions are beta, all summer ones provisional).
 - `skew7` and `kurt7` were moments of a demeaned residual image, not window central moments. Fixed 2026-10-27.

@@ -217,10 +217,10 @@ The LOS-motion bands are not measured displacement. A rebuild as connected-netwo
 
 ## Limits
 
-- One 4.9 km tile for training and scoring, plus 36 pits on a second tile. No pad could be tested on a second tile.
+- One tile (4.5 km lidar, 4.9 km NISAR window) for training and scoring, plus 36 pits on a second tile. No pad could be tested on a second tile.
 - The shape, incidence, placebo and confuser designs keep only the pads that find enough matched ground (516, 103, 572, 60 of 645). The results for those subsets are weaker evidence than the main design.
 - The placebo and the local design disagree about NISAR on real pads (0.64 against 0.48). Unresolved.
-- Registration is still about 10 m and still not independently confirmed.
+- Registration. Registration was checked internally. After re-placement on the lidar ground, 46 of 48 blocks on 9t sit within 2.5 m of the lidar-simulated position, and 31 of 48 on 613590 (worst block 29.7 m). That check uses the same lidar, so it is not independent. The independent test (steady bright points, wells) found no peak. So 9t is placed to about 1 to 3 m by an internal check, the held-out tile is worse, and neither is independently confirmed.
 - Confusers may contain unannotated pads.
 - Everything tested is NISAR in single-pass and temporal-mean features at 5 m. Change detection through time, and areas without lidar, are not tested.
 

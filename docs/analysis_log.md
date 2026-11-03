@@ -5,6 +5,52 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-03 (second pass on the review: rebuild of the change surface, NISAR duplicates and scores) -- change detection, NISAR
+
+- **Rebuild.** `notebooks/wellsight_v2/s7_analysis/_change_rebuild_v2_9t.py`. Per-pass horizontal shift of the 2006 points (all-points +0.15 m east, +0.22 m north, north +0.34 to +0.45 m on passes 17, 18, 20). Overlap-based vertical offsets (2006: 6 passes, 5 pairs, offsets +0.21 to -0.12 m). 2019 has 4 passes with offsets under 0.0001 m, so none applied. 2019 thinned to 0.68 per m2. Datum tilt +25 mm/km north. Outputs under `data/9t/derived/lidar_2006_2008/` (`dem_2006_v2_9t_2m.tif`, `dem_2019_v2_9t_2m.tif`, `dod_v2_9t_2m.tif`, `dod_v2_highpass_9t_2m.tif`) and `data/9t/results/change/change_v2_summary_9t.json`, `change_v2_offsets_9t.csv`.
+- **Result.** High-passed sigma 0.0763 m (0.0782 before). Row seam cells 2,085 (2,848). Column seam cells 9,186 (9,502), cause not found after four checks. Noise at 25 deg 0.123 m (0.157). Classification `--source v2 --zscale`: 204 patches, noise null 325 +/- 11, 12 fluvial above 3,368 m2, none non-erosional. Pads 19 of 404 flagged (about 15 by chance), roads 27 of 679 (about 20). Pits 129 of 436 flagged even at near-equal density.
+- **NISAR.** Held-out run re-done with per-row scores saved, numbers identical. De-duplicating decoys: pits all-NISAR 0.829 to 0.765, pads (local 1,500 m) 0.479 to 0.601. Gain over rich lidar unchanged in sign and size (-0.004 and -0.008). New script `notebooks/wellsight_v2/s5_eval/_nisar_feat_dedupe_9t.py`.
+- **Docs.** Tile size and dates-per-track conflicts reconciled. Evidence sheets rebuilt as `*_v2z.png`. The older sheets are stale.
+- **Left open.** Flight dates, column-seam cause, pit flags, NISAR pad held-out test.
+
+---
+
+## 2026-11-03 (outside review of the NISAR and change-detection decisions, two memos plus a Gemini memo) -- review response
+
+- **Doc.** `docs/iterations/outside_review_response_20261103.md` has every point, its status (reproduced, confirmed in code, reviewer only), the fix or disclosure, and the adopted wording.
+- **Reproduced.** Preliminary difference map against the rebuilt one r = -0.07. The slope-normalised classification gives 205 patches against a noise null of 339 +/- 10 (0.6x), 12 fluvial patches above the 4,092 m2 cutoff, 0 non-erosional. Patch outlines under 90% of attribute area: 47 of 367, 12 of 240, 15 of 205.
+- **Fixed.** Patch export is now 8-connected with all pieces unioned (0 fragments after). `threshold_m` in the z run was in z units, now `threshold`, `threshold_units`, `threshold_m_on_flat_ground`. The pad, road and pit test now matches controls on slope and measures its own placebo rate. Registration wording corrected in four docs (46 of 48 on 9t, 31 of 48 on 613590, not independently confirmed). Pre-registration addendum on the decision rule, prior exposure and the refactor. The +0.05 gate limit is stated in the NISAR write-up.
+- **Result.** Pads 18 of 404 flagged against a measured placebo 4.0% (about 16 by chance). Roads 31 of 674 against 3.2% (about 21). Both surfaces agree. Pit flags (about 27%) are unassessable. A later test at near-equal point density kept them, so the sparse-survey explanation is not enough.
+- **Withdrawn.** The claim that change exceeds noise in aggregate (Part 4). The preliminary 367-patch product and Part 1's well result.
+- **Disclosed, open.** Per-pass correction and the 400 m high-pass erase broad real change. Column seams unexplained. No vertical datum transform between GEOID03 and GEOID12B. 2006-08 flight dates unknown. No pad held-out test for NISAR.
+- **Note.** The lineadj_z outputs written at 09:25 were from our own run, started in the call that was interrupted.
+
+---
+
+## 2026-11-03 (land cover under the 2006-08 to 2019 lidar change, 9t) -- change detection
+
+- **Data.** NLCD 2006 and 2019, 30 m, from the MRLC web coverage service. Forest is 96% of the tile. Developed (open) is the pad grid and roads.
+- **Change field.** Per-pass-corrected, high-passed difference (`dod_lineadj_highpass_9t_2m.tif`). The per-pass offsets (std 0.061 m) cut the raw row-median std from 0.080 to 0.047 m. After the high-pass the sigma is unchanged (0.0783 against 0.0782), because the high-pass already removed them.
+- **Result, gentle ground (slope under 10 deg), share of cells beyond 0.235 m.** Deciduous forest 1.1% lower, 2.0% higher. Developed open 1.9% and 3.8%. Evergreen 5.6% and 23.3% (likely a ground-return artifact, not change). Woody wetland 9.7% and 6.7%.
+- **Patches.** 208 of 240 sit in forest in 2019. Of 22 "anthropogenic" patches, 19 are deciduous forest. Only 15 patches are mostly non-forest. 39 of 240 have a class change under them.
+- **Land-cover-confirmed real change.** Small. Forest to developed medium (0.09 ha) reads a median -2.7 m cut. Developed open to medium (0.18 ha) reads +0.37 m fill.
+- **Found on the way (not yet fixed).** Noise grows with slope. Robust sigma is 0.062 m on flat ground and 0.181 m above 25 deg. The share beyond the global 0.235 m cut is 2.8% flat and 25.7% steep. Fit: sigma = sqrt(0.062^2 + (0.31 tan slope)^2). The IAAFT null is stationary, so this alone can make observed exceed null. `_icp_change_classify_9t.py` now has `--source lineadj --zscale` for a slope-normalised re-run. It has not been run.
+- **Files.** `data/9t/results/change/change_landcover_9t.png`, `change_landcover_by_class_9t.csv`, `change_landcover_transitions_9t.csv`.
+- **Correction, later the same day.** The patch counts above came from fragment outlines and the pre-rebuild surface. `change_landcover_patches_9t.csv` was deleted. On the rebuilt surface (v2, complete outlines) 19 of 23 anthropogenic patches are deciduous forest and 14 of 204 patches are mostly non-forest (`change_landcover_patches_v2_z_9t.csv`, also `..._singleicp_9t.csv`, `..._lineadj_z_9t.csv`). The land-cover figure and by-class table are now drawn from the v2 high-passed surface. The slope-confound note is no longer 'not run'. See the entry above.
+
+---
+
+## 2026-11-02 (plain-language NISAR write-up with twelve figures) -- NISAR
+
+- **Ask.** A folder off the main directory with the whole NISAR story, easy to read, with a clear graphic for each point.
+- **Output.** `nisar_writeup/README.md`, `nisar_writeup/figures/` (12 PNG), `nisar_writeup/_make_figures.py`. No new analysis. Numbers are copied from `NISAR_FINDINGS.md`, this log and the CSVs, and each carries a source comment in the script.
+- **Real-data figures.** Pit 288 against the 5 m and 10 m grids, the same pit in leaf-off photo, lidar hillshade and NISAR (one date and a 34-date mean), the 37-scene calendar, the wet and dry pit tables.
+- **Palette.** `#1F5FA8`, `#D97706`, `#5FB4E0`. Dataviz validator, `--pairs all`, light surface: worst pair 23.3 deutan, 25.4 normal. Light blue is 2.25:1 on the paper, so it is always directly labelled. Grey `#8E959B` is a neutral, never a category. Marker shapes carry the meaning as well.
+- **Corrections made while writing.** The first wet and dry figure used spread bars where the standard error was computed, relabelled. Pit 512 is counted as wet from the raw lidar cross section, not from a user label. The wet and dry set is 13 pits (8 wet, 5 dry), not 12.
+- **Not done.** No commit yet. The folder and the earlier uncommitted work wait for the user's call.
+
+---
+
 ## 2026-10-28 (leaf-on, leaf-off and snow against NISAR dates, 9t) -- NISAR
 
 - **Ask.** Use weather logs and snow records to find the dates when trees are bare. Doc `docs/iterations/nisar_leaf_and_snow_9t.md`. Script `notebooks/wellsight_v2/s5_eval/_nisar_leaf_state_9t.py`.
