@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (expansion options written up with methods) -- planning, no processing
+
+- **Doc.** `docs/iterations/expansion_options_methods.md`. The user's pasted expansion list (geography, modality, task, adjacent problems, scale) with a method, a test that can fail and the risks for each item. Six items added from the project records (same-survey neighbours, drone lidar, leaf-off optical, more radar, DEP record correction, field methane).
+- **Decisions recorded.** Order of work in section 8. Shared rules in section 2 (pre-register, freeze, independent labels, block splits, placebo controls).
+- **Corrections to earlier advice.** McKean was set aside per a 2026-07 note, and the ANF QL1 collection barely overlaps Venango-adjacent wells. The cheaper same-survey test is Warren and Forest under D20.
+- **Not run.** No data fetched, no code written, nothing committed.
+- **Open.** Is McKean still set aside. Where is the thermal feature work the list mentions (none found in `docs/`).
+
+---
+
 ## 2026-11-03 (second pass on the review: rebuild of the change surface, NISAR duplicates and scores) -- change detection, NISAR
 
 - **Rebuild.** `notebooks/wellsight_v2/s7_analysis/_change_rebuild_v2_9t.py`. Per-pass horizontal shift of the 2006 points (all-points +0.15 m east, +0.22 m north, north +0.34 to +0.45 m on passes 17, 18, 20). Overlap-based vertical offsets (2006: 6 passes, 5 pairs, offsets +0.21 to -0.12 m). 2019 has 4 passes with offsets under 0.0001 m, so none applied. 2019 thinned to 0.68 per m2. Datum tilt +25 mm/km north. Outputs under `data/9t/derived/lidar_2006_2008/` (`dem_2006_v2_9t_2m.tif`, `dem_2019_v2_9t_2m.tif`, `dod_v2_9t_2m.tif`, `dod_v2_highpass_9t_2m.tif`) and `data/9t/results/change/change_v2_summary_9t.json`, `change_v2_offsets_9t.csv`.

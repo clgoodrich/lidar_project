@@ -2,6 +2,14 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+## Expansion options (added 2026-11-04) — PLANNED, NOTHING RUN
+
+Full methods: `docs/iterations/expansion_options_methods.md` (geography, modality, task, adjacent problems, scale, with an ordering table in section 8).
+
+- Order proposed. (1) Negative classes: hearths, mill dams, quarries from our own false positives. (2) DEP record correction by snapping to detections, with a shifted-record placebo. (3) Context features from out-of-fold roads and pads. (4) Historic topo and aerial labels. (5) Warren and Forest under D20 as the same-survey neighbour, with blind pad labels. (6) Magnetometer pilot and a field campaign.
+- Needs a decision. Is McKean still set aside (note dated 2026-07)? Where is the thermal feature work the pasted list mentions? No thermal work was found in `docs/`.
+- Claims to re-check before a proposal are listed in section 9 of the methods file.
+
 ## NISAR review follow-ups (added 2026-10-19) — OPEN
 
 From `docs/iterations/nisar_review_fixes_flatten_test.md`. Not fixed in that pass.
