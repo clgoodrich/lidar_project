@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) A6 recall gap, newly documented wells, 9t
+- Script `notebooks/wellsight_v2/s5_eval/_recall_gap_newly_documented_9t.py`. Doc `docs/iterations/recall_gap_newly_documented_9t.md`.
+- Result. Old 22 of 141 (0.156). New 0 of 6 (exact 95% 0 to 0.459). Difference -0.156 (Newcombe -0.225 to 0.238). Inconclusive. Only 6 new wells in the scored footprint.
+
 ## 2026-11-04 (later) drafts for A0, A1, A7, A9 and saved CV split manifests
 - Drafts. `docs/iterations/transfer_prereg_template.md`, `outreach_requests_drafts.md`, `confuser_codebook.md`, `transfer_warren_prereg.md`.
 - Script `notebooks/wellsight_v2/s3_train/_save_cv_split_manifests_9t.py` calls the trainers' own `assign_folds` and seeds. Outputs in `data/9t/results/splits/`.

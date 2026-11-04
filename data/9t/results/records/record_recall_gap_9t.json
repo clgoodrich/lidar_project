@@ -1,0 +1,84 @@
+{
+  "cohort_note": "Proxy. New includes reclassifications. Venango only. Counts are small.",
+  "pit50": {
+    "old": {
+      "k": 17,
+      "n": 141,
+      "rate": 0.121,
+      "exact95": [
+        0.072,
+        0.186
+      ]
+    },
+    "new": {
+      "k": 0,
+      "n": 6,
+      "rate": 0.0,
+      "exact95": [
+        0.0,
+        0.459
+      ]
+    },
+    "new_minus_old": {
+      "diff": -0.121,
+      "newcombe95": [
+        -0.185,
+        0.272
+      ]
+    }
+  },
+  "pad_in": {
+    "old": {
+      "k": 6,
+      "n": 141,
+      "rate": 0.043,
+      "exact95": [
+        0.016,
+        0.09
+      ]
+    },
+    "new": {
+      "k": 0,
+      "n": 6,
+      "rate": 0.0,
+      "exact95": [
+        0.0,
+        0.459
+      ]
+    },
+    "new_minus_old": {
+      "diff": -0.043,
+      "newcombe95": [
+        -0.09,
+        0.348
+      ]
+    }
+  },
+  "any": {
+    "old": {
+      "k": 22,
+      "n": 141,
+      "rate": 0.156,
+      "exact95": [
+        0.1,
+        0.227
+      ]
+    },
+    "new": {
+      "k": 0,
+      "n": 6,
+      "rate": 0.0,
+      "exact95": [
+        0.0,
+        0.459
+      ]
+    },
+    "new_minus_old": {
+      "diff": -0.156,
+      "newcombe95": [
+        -0.225,
+        0.238
+      ]
+    }
+  }
+}
