@@ -51,7 +51,7 @@ Only one of these is chosen, and it is recorded here once chosen.
 
 Recommended: the review budget. It matches how candidates are used in the field. The sweep also shows it is the most stable across folds, and it needs no labels on a new tile.
 
-**Chosen policy:** _not yet chosen._
+**Chosen policy:** review budget, 40 candidates per km² (user, 2026-11-04, default accepted).
 
 ## Phase 0: inventory of hand-set values
 

@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) user decisions recorded
+- K = 40 candidates per km² (default accepted). Annotators did not see DEP points. McKean in scope. Margin decided per experiment before scoring. Thermal work location unknown. Reviewers needed, none named. User will send outreach R1 to R3 and download the USGS 2026 CSV.
+- Updated the master plan section 6, protocol sections 2 and 4, operating-point policy, plan 3.1 and plan 4.2.
+
 ## 2026-11-04 (later) expansion plans grouped under one master plan
 - New `docs/plans/EXPANSION_MASTER_PLAN.md` with every idea in one table, order of work, data status and the decisions only the user can make. README points to it.
 - Geographic plans 3.1 to 3.6 gained an Areas and lidar list section with tile counts and sizes from the catalogue. 3.7 and 3.8 note they are not listed. Plan 5.6 notes the well databases now on disk.

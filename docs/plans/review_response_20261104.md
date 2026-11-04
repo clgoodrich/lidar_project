@@ -120,6 +120,8 @@ Then, after decisions or labels. 3.1 annotation (only if projected width is at m
 What would justify scaling up. A 7.5 pilot or a 4.6 source showing that a stated share of drawn pits are wells, with a usable interval width. Without that, more geographic transfer only measures agreement with one annotator's feature concept.
 
 ## 6. Questions that would change the plan
+**Answered 2026-11-04.** Q1 annotators did not see DEP points. Q4 K is 40 per km². Recall-loss margin is set per experiment before scoring. Still open Q2, Q3, Q5, Q6, Q7.
+
 1. Did annotators have DEP well points visible while drawing? If yes, association with annotations is partly circular.
 2. How were DEP orphan and abandoned coordinates produced, and are the 2022 to 2026 additions GNSS-located?
 3. Does any pre-1880 source give well positions over 9t with RMSE in the tens of metres or better?

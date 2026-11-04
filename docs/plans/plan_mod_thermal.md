@@ -28,7 +28,7 @@
 ## Review revisions (2026-11-04, override the text above)
 Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
 
-**Decision.** Defer.
+**Decision.** Defer. No earlier thermal work exists in the repo and the user does not recall where it lives (2026-11-04). Treat as new if revived.
 
 - Observability gate first. Landsat TIRS is 100 m native and ECOSTRESS about 70 m (reviewer figures, not read). Estimate target fraction under canopy and the detectable contrast against variability.
 - A satellite null does not stop a drone study. Without independent leak labels, any difference is a surface difference.

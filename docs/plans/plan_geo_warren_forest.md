@@ -40,6 +40,8 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 
 **Downloads and requests.** D1 now. D11 gated. R4 and R6 needed.
 
+**Scope update 2026-11-04.** McKean is in scope for the expansion (user). Use its B19 data (about 9 points per m², same program as the Forest B19 piece) as the sensor-shift arm. A 36-tile, 2.1 GB window is listed below. K is 40 per km². The recall-loss margin is set in the preregistration before scoring.
+
 ## Areas and lidar list (added 2026-11-04)
 Listed only. Nothing is downloaded. Windows are the densest 25 km² cluster of documented orphan wells in each county, chosen by well count alone. Tile URLs are in `data/_source/reference/lidar_catalogue/lidar_download_list_pilot_5km_us.csv`. Method and cautions are in `docs/plans/download_list_areas_and_lidar.md`. Measure ground density on one tile before fetching a window.
 

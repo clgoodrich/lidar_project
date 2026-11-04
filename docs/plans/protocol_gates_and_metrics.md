@@ -21,7 +21,7 @@ Most plans produce evidence about drawn terrain features. Whether a drawn featur
 4. **Secondary metric.** Recall at K scaled to target density, K = c times density, with c fixed from 9t before scoring. It separates density from ranking quality.
 5. **Complete blocks.** Score against blocks annotated in full, including blocks that hold no features. Annotation completeness is checked by a second pass on a random subset.
 6. **Agency records** are scored in the separate association analysis (section 4). Plan 3.0 scores against drawn polygons only.
-7. **K policy. User decision.** `docs/iterations/operating_point_policy_plan.md` recommends the review budget and records "not yet chosen". The 9t sweep gives 0.781 at 30 per km² (0.739 to 0.822, fold range 0.723 to 0.900) and 0.909 at 40 (0.881 to 0.935). Recall is steep in K there, so the chosen K sets how sensitive a transfer test is to density. Fix one primary K in the preregistration. Provisional proposal 40 per km² until the user chooses.
+7. **K policy. Decided 2026-11-04: 40 candidates per km².** `docs/iterations/operating_point_policy_plan.md` recommends the review budget. The 9t sweep gives 0.781 at 30 per km² (0.739 to 0.822, fold range 0.723 to 0.900) and 0.909 at 40 (0.881 to 0.935). Recall is steep in K there, so the chosen K sets how sensitive a transfer test is to density. The primary K is 40 per km², chosen by the user (the default). State it in every preregistration. 30 may be reported as a sensitivity only.
 
 ## 3. Splits, leakage and what is auditable
 **Facts checked**
@@ -55,7 +55,7 @@ The question is open and the result can move either way.
 3. **Assignment.** Assign globally across statuses, or label per-status outputs as competing proposals.
 4. **Null.** Translate the whole record set as one. Keep the count and composition of records fixed by rejecting shifts that lose records, or report each shift's retained count. A null that translates clustered records does not establish exchangeability across spatial gradients in oil development. State what it conditions on.
 5. **Statistics.** Primary radius fixed before analysis (pits 50 m, pads inside the polygon). Report excess over the null and the predictive value 1 minus null over observed, with an interval. The pre-fixed 50 m rate for active records (0.111 against 0.090) was also inside the null in the withdrawn run, so there is no working positive control for pits yet.
-6. **Positive control.** Active wells at pad level. State whether annotators had DEP well points visible while drawing. If they did, association with annotations is partly circular.
+6. **Positive control.** Active wells at pad level. The user reports (2026-11-04) that annotators did not have DEP well points visible while drawing, so association with annotations is not circular by that route. Other context the annotators saw is unrecorded. Keep that caveat.
 7. **Cohorts.** Newly documented wells (1,316 over 2022 to 2026) may carry better coordinates than 1800-sentinel records. Use excess over a cohort-specific null and stratify by coordinate source once DEP answers. 997 of 1,079 orphan-list spud dates are the 1800 sentinel.
 8. **Validation** needs independent coordinates (GNSS, NETL). Proximity excess alone never passes coordinate correction.
 

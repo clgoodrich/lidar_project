@@ -109,16 +109,22 @@ Twelve densest of the 51 listed windows (documented orphan wells in a 25 km² bl
 | Disk | C: about 108 GB free. F: about 3.0 TB free. Put lidar on F: |
 | Not yet searched | Canada, Alaska, state lidar portals, Texas and California state databases |
 
-## 6. Decisions only you can make
-| Decision | Blocks |
-|---|---|
-| **K policy.** Candidates per km² (provisional 40) and the recall loss an agency would accept | The Warren and every transfer preregistration |
-| **Did annotators see DEP well points while drawing** | Whether association with annotations is circular |
-| **McKean.** Still set aside, as a July 2026 note says | Scope of 3.1 |
-| **Where the thermal work lives.** None found in `docs/` | 4.2 |
-| **Reviewers** for confuser labels and test-block annotation | 6.3, 3.1 |
-| **Send R1 to R3** and track replies in `docs/iterations/outreach_log.md` | 4.1, 4.7, 5.6 validation |
-| **Manual download** of the USGS 2026 orphan CSV from doi:10.5066/P13FHBYG | Newest national list |
+## 6. Decisions
+**Decided 2026-11-04**
+| Decision | Answer | Effect |
+|---|---|---|
+| K policy | **40 candidates per km²** (the default) | Primary metric for every transfer test. Protocol section 2 |
+| Annotators saw DEP well points while drawing | **No** | Association of drawn features with DEP records is not circular by that route. Other context the annotators saw (roads, pads, imagery) is still unrecorded |
+| McKean | **In scope for the expansion** | Add McKean to 3.1 as the B19 (about 9 points per m²) arm. A 36-tile window is listed (2.1 GB) |
+| Margin for acceptable recall loss | **Decide per experiment, before scoring** | Each preregistration sets it. Warren needs it before any scoring |
+| Where the thermal work lives | **Unknown, even to the user** | Treated as no prior work. 4.2 stays deferred and starts from scratch if revived |
+| Reviewers | Acknowledged as needed. **No names yet** | 6.3 and 3.1 annotation stay blocked until two reviewers and an adjudicator exist |
+| Outreach requests R1 to R3 and the USGS 2026 CSV | **The user will send and download** | Track replies in `docs/iterations/outreach_log.md` |
+
+**Still open**
+- Reviewers (two plus an adjudicator).
+- The recall-loss margin for each experiment.
+- Replies from DEP, NETL and a magnetometer partner.
 
 ## 7. What has actually been run
 - **Valid.** Held-out CV recall on 9t, the NISAR negative result, the change-detection placebo, the saved split held-out lists, the county ranking and lidar listing from public data.
