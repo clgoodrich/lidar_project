@@ -21,6 +21,7 @@ The central unknown sits under all four. Whether a drawn feature is a well. On 9
 | [download_manifest.md](download_manifest.md) | Everything to download or request, with gates |
 | [download_list_areas_and_lidar.md](download_list_areas_and_lidar.md) | Areas with many old wells, well databases fetched, tile-level lidar lists |
 | [README.md](README.md) | Index of the plan files and shared rules |
+| [frameworks/README.md](frameworks/README.md) | **One execution framework per process** (37 plus a common one). Stages, scripts, paths, statistics, QC, gates, handoff |
 | 37 plan files | One per idea. Each ends with a Review revisions section that overrides the text above it |
 | `docs/iterations/expansion_options_methods.md`, `expansion_gameplan_feasibility.md` | Older source documents. Superseded in part by the protocol |
 | [adversarial_codex_review_20261104.md](adversarial_codex_review_20261104.md), [adversarial_review_claude.md](adversarial_review_claude.md) | The two reviews |

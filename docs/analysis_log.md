@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) execution framework written for every process
+- `docs/plans/frameworks/` holds `fw_00_common.md` and 37 process frameworks in three tiers (13 exhaustive, 11 full, 13 scoped). Each gives estimand, inputs with paths, stages with proposed scripts and output paths, statistical analysis plan, QC and leakage checks, gates, deliverables, failure modes, resources and handoff.
+- Existing script and path names were taken from the repo. New scripts are proposals. Items to confirm are listed per framework. Nothing was run.
+
 ## 2026-11-04 (later) user decisions recorded
 - K = 40 candidates per km² (default accepted). Annotators did not see DEP points. McKean in scope. Margin decided per experiment before scoring. Thermal work location unknown. Reviewers needed, none named. User will send outreach R1 to R3 and download the USGS 2026 CSV.
 - Updated the master plan section 6, protocol sections 2 and 4, operating-point policy, plan 3.1 and plan 4.2.

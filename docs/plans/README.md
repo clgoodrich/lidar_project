@@ -37,6 +37,7 @@ Older source documents. `docs/iterations/expansion_options_methods.md`, `docs/it
 ## Index
 ### Authoritative
 - [Protocol, gates and metrics](protocol_gates_and_metrics.md)
+- [Process frameworks (one per process, with a common framework)](frameworks/README.md)
 - [Review response](review_response_20261104.md)
 - [Download manifest](download_manifest.md)
 - [Download list: areas with many old wells, and the lidar that covers them](download_list_areas_and_lidar.md)
