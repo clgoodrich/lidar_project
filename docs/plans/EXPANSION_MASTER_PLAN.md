@@ -1,0 +1,134 @@
+# Expansion master plan
+
+**Date:** 2026-11-04
+**Status:** plan only. Nothing in the expansion has been run, except a few 9t checks that are marked below. This file is the single entry point. Everything else hangs off it.
+
+## 1. What this program is
+The 9t work detects terrain features (pits, pads, roads) in lidar over Venango County, Pennsylvania. The expansion asks four things.
+1. Does the detector still work somewhere else (geographic).
+2. Can another signal add to it (modality).
+3. Can the output do more (task, adjacent uses).
+4. Can it be scaled and checked (scale, method).
+
+The central unknown sits under all four. Whether a drawn feature is a well. On 9t only 27 of 424 annotated pits (6.4%) have a catalogued well within 25 m. Four evidence levels stay separate throughout. (a) terrain feature matched to a drawn polygon. (b) historical evidence. (c) steel anomaly. (d) confirmed well. Level (a) results say nothing about wells.
+
+## 2. How the pieces fit
+| Document | Role |
+|---|---|
+| This file | Overview, every idea, order of work, decisions needed |
+| [protocol_gates_and_metrics.md](protocol_gates_and_metrics.md) | **Authoritative.** K policy, splits, null rules, gates, field design |
+| [review_response_20261104.md](review_response_20261104.md) | What two adversarial reviews changed and what I got wrong |
+| [download_manifest.md](download_manifest.md) | Everything to download or request, with gates |
+| [download_list_areas_and_lidar.md](download_list_areas_and_lidar.md) | Areas with many old wells, well databases fetched, tile-level lidar lists |
+| [README.md](README.md) | Index of the plan files and shared rules |
+| 37 plan files | One per idea. Each ends with a Review revisions section that overrides the text above it |
+| `docs/iterations/expansion_options_methods.md`, `expansion_gameplan_feasibility.md` | Older source documents. Superseded in part by the protocol |
+| [adversarial_codex_review_20261104.md](adversarial_codex_review_20261104.md), [adversarial_review_claude.md](adversarial_review_claude.md) | The two reviews |
+
+## 3. Every idea
+| ID | Idea | Track | Decision | Data or requests | Plan |
+|---|---|---|---|---|---|
+| P1 | Reproducible splits and manifests | Foundation | Proceed, rescoped | None | [plan_prereq_splits_manifests.md](plan_prereq_splits_manifests.md) |
+| P2 | Audit set and training history | Foundation | Proceed, rescoped | None | [plan_prereq_audit_set.md](plan_prereq_audit_set.md) |
+| 3.0 | Transfer protocol | Transfer | Bounded pilot | None. Uses the saved 9t raster | [plan_geo_transfer_protocol.md](plan_geo_transfer_protocol.md) |
+| 3.1 | Warren and Forest | Transfer | Redesign as within-survey case study | Warren on disk. D1 metadata. Forest D20 window listed. B19 gated | [plan_geo_warren_forest.md](plan_geo_warren_forest.md) |
+| 3.2 | Ohio, West Virginia, New York, Kentucky | Transfer | Defer | Windows listed (NY, OH, KY, WV) | [plan_geo_appalachian_states.md](plan_geo_appalachian_states.md) |
+| 3.3 | Illinois and Michigan, low relief | Model | Redesign, slope stratification first | IL and MI windows listed, gated | [plan_geo_low_relief_midwest.md](plan_geo_low_relief_midwest.md) |
+| 3.4 | Gulf and Texas | Transfer | Defer | LA, TX, AR windows listed, gated | [plan_geo_gulf_east_texas.md](plan_geo_gulf_east_texas.md) |
+| 3.5 | Oklahoma and Kansas | Transfer | Defer | OK, KS, MO windows listed, gated | [plan_geo_oklahoma_kansas.md](plan_geo_oklahoma_kansas.md) |
+| 3.6 | California | Transfer | Defer | LA window listed | [plan_geo_california.md](plan_geo_california.md) |
+| 3.7 | Canada | Transfer | Defer | Not listed. Inventory first | [plan_geo_canada.md](plan_geo_canada.md) |
+| 3.8 | Alaska | Transfer | Defer | Not listed. Feasibility note first | [plan_geo_alaska.md](plan_geo_alaska.md) |
+| 4.1 | Magnetometry | Evidence about wells | Redesign, then pilot | R3 instrument. Era strata | [plan_mod_magnetometry.md](plan_mod_magnetometry.md) |
+| 4.2 | Thermal | Modality | Defer | None until observability gate | [plan_mod_thermal.md](plan_mod_thermal.md) |
+| 4.3 | Vegetation stress | Modality | Defer | None | [plan_mod_vegetation_stress.md](plan_mod_vegetation_stress.md) |
+| 4.4 | Methane plumes | Modality | Close for Pennsylvania after one check | D4 product guide | [plan_mod_methane_plumes.md](plan_mod_methane_plumes.md) |
+| 4.5 | Multitemporal lidar | Evidence about wells | Blocked | D1 flight dates, R7 restoration records | [plan_mod_multitemporal_lidar.md](plan_mod_multitemporal_lidar.md) |
+| 4.6 | Historic maps and aerials | Evidence about wells | Proceed as a probe, elevated | D5 to D9 | [plan_mod_historic_maps_aerials.md](plan_mod_historic_maps_aerials.md) |
+| 4.7 | Drone lidar | Evidence about wells | Proceed as a request | R2, D12 (size unknown) | [plan_mod_drone_lidar.md](plan_mod_drone_lidar.md) |
+| 4.8 | Leaf-off optical | Modality | Bounded pilot | D7, D10 gated | [plan_mod_leafoff_optical.md](plan_mod_leafoff_optical.md) |
+| 4.9 | More radar | Modality | Note only | None | [plan_mod_more_radar.md](plan_mod_more_radar.md) |
+| 5.1 | Context features | Model | Redesign, shared fold scheme | None. Retrain upstream | [plan_task_context_features.md](plan_task_context_features.md) |
+| 5.2 | Era classification | Task | Blocked | Needs 4.6 | [plan_task_era_classification.md](plan_task_era_classification.md) |
+| 5.3 | Risk ranking | Task | Defer | None | [plan_task_risk_ranking.md](plan_task_risk_ranking.md) |
+| 5.4 | Undocumented density | Task | Identifiability note only | R1 | [plan_task_undocumented_density.md](plan_task_undocumented_density.md) |
+| 5.5 | Polygon area and cost | Task | Defer | None | [plan_task_polygon_area_cost.md](plan_task_polygon_area_cost.md) |
+| 5.6 | Record association | Evidence about wells | Redesign, repair the input first | Well databases held. R1, R4 | [plan_task_record_association.md](plan_task_record_association.md) |
+| 6.1 | CO2 and geothermal screening | Adjacent | Defer | None | [plan_adj_co2_geothermal.md](plan_adj_co2_geothermal.md) |
+| 6.2 | Coal features | Adjacent | Defer | None | [plan_adj_coal_features.md](plan_adj_coal_features.md) |
+| 6.3 | Confuser classes | Model | Redesign, then pilot | R6 reviewers | [plan_adj_negative_classes.md](plan_adj_negative_classes.md) |
+| 6.4 | Hydrogen | Adjacent | Defer | None | [plan_adj_hydrogen.md](plan_adj_hydrogen.md) |
+| 6.5 | Field methane | Evidence about wells | Protocol only, with 7.5 | Instrument | [plan_adj_field_methane.md](plan_adj_field_methane.md) |
+| 6.6 | Search and rescue viewshed | Adjacent | Defer, separate project | None | [plan_adj_sar_viewshed.md](plan_adj_sar_viewshed.md) |
+| 7.1 | Self-supervised pretraining | Scale | Defer | None | [plan_scale_pretraining.md](plan_scale_pretraining.md) |
+| 7.2 | Active learning | Scale | Redesign, then defer | R6 | [plan_scale_active_learning.md](plan_scale_active_learning.md) |
+| 7.3 | Benchmark | Scale | Defer | None | [plan_scale_benchmark.md](plan_scale_benchmark.md) |
+| 7.4 | Agency tooling | Scale | Defer | None | [plan_scale_agency_tooling.md](plan_scale_agency_tooling.md) |
+| 7.5 | Field campaign | Evidence about wells | Redesign, highest value | R3, R4, a partner | [plan_scale_field_campaign.md](plan_scale_field_campaign.md) |
+
+## 4. Order of work
+Desk work first. It needs no labels, no outside party and almost no data.
+1. **Decisions.** K policy, margin basis, whether annotators saw DEP points, McKean scope, reviewers (section 6).
+2. **P1.** Make the inner split deterministic, label historical splits, specify an isolated pit trainer.
+3. **Send requests R1 to R3.** NETL, DEP coordinate provenance, magnetometer partner. Longest lead time. Drafts exist.
+4. **3.0.** Reproduce the 9t operating-point sweep from the saved raster. Project the Warren interval width by resampling 9t blocks.
+5. **4.6 search.** Look for pre-1880 map sources and 1937 to 1942 aerials. Then three more topo sheets.
+6. **5.6 repair.** Fix the association input, then rerun as exploratory.
+7. **3.3 step 4.** Slope stratification of existing recall.
+8. **4.5 step 1.** Flight dates and eligible well count.
+9. **Notes.** 4.9 radar scope, 4.4 detection limit, 5.4 identifiability.
+
+After decisions or labels. 3.1 annotation (only if the projected interval is narrow enough), 6.3 pilot, 5.1, other states.
+After outside parties. 4.7, 4.1, 7.5, 5.6 validation.
+
+What would justify scaling up. A field pilot or a historical source that shows what share of drawn pits are wells, with a usable interval. Without that, more geographic transfer only measures agreement with one annotator's idea of a feature.
+
+## 5. Where it would run and what it needs
+Twelve densest of the 51 listed windows (documented orphan wells in a 25 km² block, newest 3DEP project). Full table and cautions in the download list.
+
+| State | County | Orphans in window | Newest project | Tiles | GB |
+|---|---|---|---|---|---|
+| New York | Allegany | 1049 | NY_SouthwestNY_2017_A17 | 11 | 1.15 |
+| New York | Cattaraugus | 991 | NY_SouthwestNY_2017_A17 | 20 | 2.12 |
+| California | Los Angeles | 832 | CA_LosAngeles_B23 | 35 | 2.9 |
+| Pennsylvania | Venango | 782 | PA_WesternPA_2019_D20 | 20 | 0.81 |
+| Illinois | Cumberland | 751 | IL_8County_2020_A20 | 80 | 3.61 |
+| Kentucky | Lee | 635 | KY_WestCentral_2017_C19 | 16 | 1.68 |
+| Pennsylvania | McKean | 597 | PA_Northcentral_2019_B19 | 36 | 2.11 |
+| Illinois | Marion | 548 | IL_SouthCentral_2021_D21 | 80 | 2.56 |
+| Pennsylvania | Forest | 548 | PA_WesternPA_2019_D20 | 20 | 0.91 |
+| Pennsylvania | Warren | 500 | PA_WesternPA_2019_D20 | 15 | 0.79 |
+| Kentucky | Powell | 425 | KY_WestCentral_2017_C19 | 20 | 2.03 |
+| Ohio | Washington | 413 | OH_Statewide_Phase2_2020_B20 | 192 | 3.61 |
+
+| What | Status |
+|---|---|
+| Well databases | Downloaded. USGS national 2022, NY, KY, OK, IL, WV, OH, KS. USGS 2026 needs a manual download |
+| Lidar | **Listed, not downloaded.** 3,116 tiles over 51 windows. The recommended subset is about 106 GB. Pennsylvania about 10 GB, other Appalachian states about 41 GB |
+| Already on disk | Tile 9t (D20), Warren 7 D20 tiles (2.8 GB with the merged LAS), McKean B19 subset |
+| Disk | C: about 108 GB free. F: about 3.0 TB free. Put lidar on F: |
+| Not yet searched | Canada, Alaska, state lidar portals, Texas and California state databases |
+
+## 6. Decisions only you can make
+| Decision | Blocks |
+|---|---|
+| **K policy.** Candidates per km² (provisional 40) and the recall loss an agency would accept | The Warren and every transfer preregistration |
+| **Did annotators see DEP well points while drawing** | Whether association with annotations is circular |
+| **McKean.** Still set aside, as a July 2026 note says | Scope of 3.1 |
+| **Where the thermal work lives.** None found in `docs/` | 4.2 |
+| **Reviewers** for confuser labels and test-block annotation | 6.3, 3.1 |
+| **Send R1 to R3** and track replies in `docs/iterations/outreach_log.md` | 4.1, 4.7, 5.6 validation |
+| **Manual download** of the USGS 2026 orphan CSV from doi:10.5066/P13FHBYG | Newest national list |
+
+## 7. What has actually been run
+- **Valid.** Held-out CV recall on 9t, the NISAR negative result, the change-detection placebo, the saved split held-out lists, the county ranking and lidar listing from public data.
+- **Withdrawn.** The first record-association run and the recall-gap run. Their input dropped all 481 matched detections.
+- **Not valid as saved.** The train and validation roles in the split manifests.
+- **Invalid as written.** The Warren preregistration draft.
+
+## 8. What would change the plan
+1. A pre-1880 source that gives well positions over 9t with metre-scale error. That moves 4.6 ahead of magnetometry.
+2. DEP saying the 2022 to 2026 additions are GNSS located. That makes the recall-gap study repairable.
+3. A small Warren area. If the projected interval is wider than twice the margin, 3.1 changes before annotation.
+4. A field partner. Without one, 7.5 and 4.1 stay on paper, and everything stays at level (a).
+5. NETL declining to release the drone data. 4.7 closes.

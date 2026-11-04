@@ -34,3 +34,14 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Measure ground density and void fraction per block before anything else. Keep the unchanged zero-shot baseline.
 
 **Downloads and requests.** D13 gated.
+
+## Areas and lidar list (added 2026-11-04)
+Listed only. Nothing is downloaded. Windows are the densest 25 km² cluster of documented orphan wells in each county, chosen by well count alone. Tile URLs are in `data/_source/reference/lidar_catalogue/lidar_download_list_pilot_5km_us.csv`. Method and cautions are in `docs/plans/download_list_areas_and_lidar.md`. Measure ground density on one tile before fetching a window.
+
+Texas Pecos is West Texas, not East Texas. No East Texas county met the listing threshold in this database. Measure ground return density before anything else.
+
+| State | County | Orphans in 25 km² window | Newest project | Year (guess) | Tiles | GB | Centre lon, lat |
+|---|---|---|---|---|---|---|---|
+| Louisiana | Caddo | 142 | LA_Sabine_River_Lidar_2018_D18 | 2018 | 36 | 7.69 | -93.9433, 32.7439 |
+| Texas | Pecos | 95 | TX_WestTexas_2018_D19 | 2018 | 24 | 2.35 | -102.8184, 31.2363 |
+| Arkansas | Ouachita | 85 | AR_Ouachita_FEMA_R6_Lidar_2016_D17 | 2016 | 16 | 1.19 | -93.0892, 33.4073 |

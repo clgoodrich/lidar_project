@@ -1,5 +1,7 @@
 # Plans for future work
 
+**Start here.** [EXPANSION_MASTER_PLAN.md](EXPANSION_MASTER_PLAN.md) is the single entry point. This file is the index and shared rules.
+
 One document per problem. Each says what the problem is, what to build, and how to know it worked. Nothing here has been run. No numbers in these files are results. Facts marked **unverified** must be checked before work starts.
 
 Authoritative. `protocol_gates_and_metrics.md` wins over everything else here. See also `review_response_20261104.md` (what two adversarial reviews changed) and `download_manifest.md` (everything that must be downloaded or requested, with gates).

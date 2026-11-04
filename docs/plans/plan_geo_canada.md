@@ -32,3 +32,8 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Province comparison from actual metadata only. Licence, access and local reviewers are unverified. The Ontario-first rationale is unverified.
 
 **Downloads and requests.** None.
+
+## Areas and lidar list (added 2026-11-04)
+Listed only. Nothing is downloaded. Windows are the densest 25 km² cluster of documented orphan wells in each county, chosen by well count alone. Tile URLs are in `data/_source/reference/lidar_catalogue/lidar_download_list_pilot_5km_us.csv`. Method and cautions are in `docs/plans/download_list_areas_and_lidar.md`. Measure ground density on one tile before fetching a window.
+
+Not listed. The USGS 3DEP catalogue covers the United States only. Provincial and Alaska lidar would need their own inventory.

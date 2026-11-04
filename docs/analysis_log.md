@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) expansion plans grouped under one master plan
+- New `docs/plans/EXPANSION_MASTER_PLAN.md` with every idea in one table, order of work, data status and the decisions only the user can make. README points to it.
+- Geographic plans 3.1 to 3.6 gained an Areas and lidar list section with tile counts and sizes from the catalogue. 3.7 and 3.8 note they are not listed. Plan 5.6 notes the well databases now on disk.
+
 ## 2026-11-04 (later) well databases downloaded, lidar listed for areas with many old wells
 - Downloaded public well databases (no lidar). USGS Documented Orphaned Well Dataset 2022 (117,672 wells, 27 states), NY DEC regulated and orphaned wells, KY KGS, OK OCC RBDMS and orphan list, IL ISGS wells and borings, and paged ArcGIS exports for WV DEP (154,254), OH ODNR (238,601) and KS KGS (519,749). Ledger `data/_source/_download_ledger.csv`, provenance per folder. The USGS 2026 CSV is flagged unpublished and needs a manual browser download.
 - Ranked 3,200 counties by documented orphans and density. Venango first (4,786). Old-well counts before 1930 from NY and KY dated records.

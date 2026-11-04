@@ -32,3 +32,12 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Write the observable-target definition and its decision use first. It is a different research question.
 
 **Downloads and requests.** None.
+
+## Areas and lidar list (added 2026-11-04)
+Listed only. Nothing is downloaded. Windows are the densest 25 km² cluster of documented orphan wells in each county, chosen by well count alone. Tile URLs are in `data/_source/reference/lidar_catalogue/lidar_download_list_pilot_5km_us.csv`. Method and cautions are in `docs/plans/download_list_areas_and_lidar.md`. Measure ground density on one tile before fetching a window.
+
+Only Los Angeles County met the threshold. Its density is diluted by urban area, and the window sits in the city. Kern and Ventura were not listed and need a separate look.
+
+| State | County | Orphans in 25 km² window | Newest project | Year (guess) | Tiles | GB | Centre lon, lat |
+|---|---|---|---|---|---|---|---|
+| California | Los Angeles | 832 | CA_LosAngeles_B23 | 2025 | 35 | 2.9 | -118.2653, 34.0608 |

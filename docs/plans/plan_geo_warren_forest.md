@@ -39,3 +39,16 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Eastern Warren and Forest QL1 (B19, about 9 points per m²) is a separate sensor-shift arm, gated on the within-survey result. Forest readiness is unverified.
 
 **Downloads and requests.** D1 now. D11 gated. R4 and R6 needed.
+
+## Areas and lidar list (added 2026-11-04)
+Listed only. Nothing is downloaded. Windows are the densest 25 km² cluster of documented orphan wells in each county, chosen by well count alone. Tile URLs are in `data/_source/reference/lidar_catalogue/lidar_download_list_pilot_5km_us.csv`. Method and cautions are in `docs/plans/download_list_areas_and_lidar.md`. Measure ground density on one tile before fetching a window.
+
+Warren (7 D20 tiles) is already on disk. The Warren window below is a larger and denser block of the same D20 program. Forest has D20 and a small B19 piece. McKean is B19. Venango is the 9t reference county.
+
+| State | County | Orphans in 25 km² window | Newest project | Year (guess) | Tiles | GB | Centre lon, lat |
+|---|---|---|---|---|---|---|---|
+| Pennsylvania | Venango | 782 | PA_WesternPA_2019_D20 | 2019 | 20 | 0.81 | -79.538, 41.5056 |
+| Pennsylvania | McKean | 597 | PA_Northcentral_2019_B19 | 2019 | 36 | 2.11 | -78.5524, 41.9725 |
+| Pennsylvania | Forest | 548 | PA_WesternPA_2019_D20 | 2019 | 20 | 0.91 | -79.4834, 41.5605 |
+| Pennsylvania | Warren | 500 | PA_WesternPA_2019_D20 | 2019 | 15 | 0.79 | -79.0553, 41.7768 |
+| Pennsylvania | Butler | 104 | PA_WesternPA_2019_D20 | 2019 | 20 | 1.31 | -79.8062, 40.998 |

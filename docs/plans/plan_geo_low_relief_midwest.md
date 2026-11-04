@@ -34,3 +34,16 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Claim slope-context sensitivity, not Midwest performance. Report paired score and rank changes.
 
 **Downloads and requests.** D15 gated on step 4.
+
+## Areas and lidar list (added 2026-11-04)
+Listed only. Nothing is downloaded. Windows are the densest 25 km² cluster of documented orphan wells in each county, chosen by well count alone. Tile URLs are in `data/_source/reference/lidar_catalogue/lidar_download_list_pilot_5km_us.csv`. Method and cautions are in `docs/plans/download_list_areas_and_lidar.md`. Measure ground density on one tile before fetching a window.
+
+Do step 4 (slope stratification of existing 9t recall) before any of these are fetched.
+
+| State | County | Orphans in 25 km² window | Newest project | Year (guess) | Tiles | GB | Centre lon, lat |
+|---|---|---|---|---|---|---|---|
+| Illinois | Cumberland | 751 | IL_8County_2020_A20 | 2020 | 80 | 3.61 | -88.032, 39.3163 |
+| Illinois | Marion | 548 | IL_SouthCentral_2021_D21 | 2021 | 80 | 2.56 | -89.0027, 38.5838 |
+| Illinois | Crawford | 172 | IL_8County_2020_A20 | 2020 | 111 | 2.57 | -87.9286, 39.1525 |
+| Michigan | Charlevoix | 67 | MI_CharlevoixCounty_2018_A18 | 2018 | 56 | 0.92 | -84.7963, 45.155 |
+| Indiana | Rush | 15 | IN_Indiana_Statewide_LiDAR_2017_B17 | 2017 | 20 | 0.57 | -85.6024, 39.6431 |

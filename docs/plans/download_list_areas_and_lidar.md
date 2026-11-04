@@ -119,7 +119,7 @@ Files, all under `C:\Users\colto\Documents\GitHub\lidar_project\data\_source\ref
 - `lidar_pilot_windows_summary_us.csv`. The table below, with every project.
 - `lidar_projects_by_county_us.csv`. Every project that covers each county, with whole-county tile counts and size upper bounds.
 
-Recommended project per window (newest by flight year guess).
+Recommended project per window. The newest by year guess among projects that cover at least half of the window's tiles. A newer project that covers only a corner is listed under alternates.
 
 | Region | State | County | Orphans in 25 km² window | Newest project | Year (guess) | Tiles | GB for window | Whole county GB (upper) | Lon | Lat |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -128,7 +128,7 @@ Recommended project per window (newest by flight year guess).
 | West | California | Los Angeles | 832 | CA_LosAngeles_B23 | 2025 | 35 | 2.9 | 836 | -118.2653 | 34.0608 |
 | Appalachian | Pennsylvania | Venango | 782 | PA_WesternPA_2019_D20 | 2019 | 20 | 0.81 | 81 | -79.538 | 41.5056 |
 | Mid-continent | Illinois | Cumberland | 751 | IL_8County_2020_A20 | 2020 | 80 | 3.61 | 136 | -88.032 | 39.3163 |
-| Appalachian | Kentucky | Lee | 635 | KY_CentralEast_A23 | 2024 | 2 | 0.25 | 18 | -83.7161 | 37.6816 |
+| Appalachian | Kentucky | Lee | 635 | KY_WestCentral_2017_C19 | 2017 | 16 | 1.68 | 37 | -83.7161 | 37.6816 |
 | Appalachian | Pennsylvania | McKean | 597 | PA_Northcentral_2019_B19 | 2019 | 36 | 2.11 | 221 | -78.5524 | 41.9725 |
 | Mid-continent | Illinois | Marion | 548 | IL_SouthCentral_2021_D21 | 2021 | 80 | 2.56 | 45 | -89.0027 | 38.5838 |
 | Appalachian | Pennsylvania | Forest | 548 | PA_WesternPA_2019_D20 | 2019 | 20 | 0.91 | 55 | -79.4834 | 41.5605 |
@@ -136,8 +136,8 @@ Recommended project per window (newest by flight year guess).
 | Appalachian | Kentucky | Powell | 425 | KY_WestCentral_2017_C19 | 2017 | 20 | 2.03 | 30 | -83.7196 | 37.7407 |
 | Appalachian | Ohio | Washington | 413 | OH_Statewide_Phase2_2020_B20 | 2020 | 192 | 3.61 | 665 | -81.4441 | 39.6036 |
 | Appalachian | Ohio | Perry | 258 | OH_Statewide_Phase2_2020_B20 | 2020 | 192 | 4.19 | 376 | -82.0806 | 39.5847 |
-| Mid-continent | Missouri | Jackson | 225 | MO_FEMANRCS_2020_D20 | 2020 | 16 | 0.94 | 25 | -94.5806 | 38.9068 |
 | Mid-continent | Kansas | Neosho | 225 | KS_Statewide_2018_A18 | 2018 | 4 | 1.46 | 29 | -95.1957 | 37.5779 |
+| Mid-continent | Missouri | Jackson | 225 | KS_JACKSONCO_2006 | 2006 | 36 | 0.45 | 17 | -94.5806 | 38.9068 |
 | Appalachian | Ohio | Monroe | 198 | OH_Statewide_Phase2_2020_B20 | 2020 | 186 | 4.06 | 202 | -81.1571 | 39.6965 |
 | Appalachian | Ohio | Noble | 193 | OH_Statewide_Phase2_2020_B20 | 2020 | 192 | 3.67 | 322 | -81.4523 | 39.6487 |
 | Appalachian | Kentucky | Estill | 184 | KY_WestCentral_2017_C19 | 2017 | 20 | 1.43 | 34 | -83.8954 | 37.7333 |
@@ -173,7 +173,7 @@ Recommended project per window (newest by flight year guess).
 | West | Colorado | Logan | 26 | CO_NESEColorado_2019_C20 | 2019 | 42 | 1.99 | 179 | -103.3464 | 40.682 |
 | Mid-continent | Indiana | Rush | 15 | IN_Indiana_Statewide_LiDAR_2017_B17 | 2017 | 20 | 0.57 | 15 | -85.6024 | 39.6431 |
 | West | Nebraska | Cheyenne | 12 | NE_Statewide_D23 | 2024 | 32 | 7.47 | 781 | -103.0132 | 41.1929 |
-| West | North Dakota | McKenzie | 9 | ND_Phase11_C24 | 2026 | 12 | 0.74 | 102 | -102.8017 | 48.0135 |
+| West | North Dakota | McKenzie | 9 | ND McKenzieCo 2014 | 2014 | 25 | 0.35 | 0 | -102.8017 | 48.0135 |
 
 **Columns.** Year is the year in the project name, or the publication year if the name has none. Publication date is not flight date. Whole county GB is an upper bound because it counts tiles in the county's bounding box and a tile size is the mean of 100 sampled tiles.
 
@@ -184,16 +184,16 @@ Older or alternate projects over the same windows.
 | New York | Allegany | NY_Southwest_2_County_2016_A16 | 2016 | 16 | 2.46 |
 | California | Los Angeles | CA LosAngeles 2016 L4 | 2016 | 48 | 0.7 |
 | Pennsylvania | Venango | PA_STATEWIDE_N_2006_2008 | 2006 | 6 | 0.47 |
-| Kentucky | Lee | KY_WestCentral_2017_C19 | 2017 | 16 | 1.68 |
+| Kentucky | Lee | KY_CentralEast_A23 | 2024 | 2 | 0.25 |
 | Pennsylvania | McKean | PA_STATEWIDE_N_2006_2008 | 2006 | 6 | 0.39 |
 | Illinois | Marion | IL_5_County_2014_15 | 2014 | 87 | 0.3 |
 | Pennsylvania | Forest | PA_STATEWIDE_N_2006_2008 | 2006 | 6 | 0.49 |
 | Pennsylvania | Warren | PA_STATEWIDE_N_2006_2008 | 2006 | 6 | 0.47 |
 | Ohio | Washington | OH_SOUTH_2007 | 2007 | 20 | 0.07 |
 | Ohio | Perry | OH_SOUTH_2007 | 2007 | 15 | 0.06 |
+| Missouri | Jackson | MO_FEMANRCS_2020_D20 | 2020 | 16 | 0.94 |
 | Missouri | Jackson | MO_WestCentral_2018_D19 | 2018 | 6 | 0.21 |
 | Kansas | Neosho | Kansas_2013_LiDAR | 2013 | 4 | 0.32 |
-| Missouri | Jackson | KS_JACKSONCO_2006 | 2006 | 36 | 0.45 |
 | Ohio | Monroe | OH_SOUTH_2007 | 2007 | 20 | 0.08 |
 | Ohio | Noble | OH_SOUTH_2007 | 2007 | 15 | 0.05 |
 | Kansas | Montgomery | Kansas_2013_LiDAR | 2013 | 4 | 0.92 |
@@ -214,7 +214,7 @@ Older or alternate projects over the same windows.
 | West Virginia | Pleasants | OH_SOUTH_2007 | 2007 | 5 | 0.01 |
 | Indiana | Rush | Eastern_Indiana_QL3_Lidar | 2016 | 24 | 0.46 |
 | Nebraska | Cheyenne | NE_South_Platte_2015 | 2015 | 32 | 0.57 |
-| North Dakota | McKenzie | ND McKenzieCo 2014 | 2014 | 25 | 0.35 |
+| North Dakota | McKenzie | ND_Phase11_C24 | 2026 | 12 | 0.74 |
 
 ## 5. Budget by tier
 Recommended project only.
@@ -222,16 +222,16 @@ Recommended project only.
 | Tier | Counties | Tiles (newest project only) | GB |
 |---|---|---|---|
 | A same program as 9t (Pennsylvania) | 6 | 131 | 10.1 |
-| B Appalachian other states | 17 | 1515 | 39.7 |
-| C Mid-continent | 18 | 546 | 29.0 |
-| D Gulf, West, Great Lakes | 10 | 312 | 26.6 |
+| B Appalachian other states | 17 | 1529 | 41.1 |
+| C Mid-continent | 18 | 566 | 28.5 |
+| D Gulf, West, Great Lakes | 10 | 325 | 26.2 |
 
 - Disk. C: has about 108 GB free as of today (it was 145 GB earlier in the session). F: has about 3.0 TB free. Put every lidar set on F: and keep derivatives there.
 - Whole-county downloads are 10 to 100 times larger than a pilot window. Do not fetch a county before a window result justifies it.
 - A decompressed LAS is several times the LAZ size. The Warren tiles are 312 MB compressed and 2.8 GB with the merged LAS.
 
 ## 6. Priority order
-1. **Tier A, Pennsylvania.** Same D20 program as 9t for Warren, Forest and Butler, and B19 for McKean and Forest. The first test (3.1) uses Warren, which is already on disk. A Forest D20 window is the next listed item. Windows run from about 0.8 GB (Warren) to 2.1 GB (McKean) and 4.2 GB (Washington County PA).
+1. **Tier A, Pennsylvania.** Same D20 program as 9t for Warren, Forest and Butler, and B19 for McKean and Forest. The first test (3.1) uses Warren, which is already on disk. A Forest D20 window is the next listed item. Windows run from under 1 GB to a few GB each (see the table).
 2. **Tier B, Appalachian.** Allegany and Cattaraugus NY (the densest windows among the 51 counties listed, 1,049 and 991 orphans in 25 km²), Washington, Monroe and Noble OH, Lee, Powell and Cumberland KY, Pleasants WV. These are the best test of whether the model reaches other old-oil landscapes.
 3. **Tier C, Mid-continent.** Okmulgee, Washington and Nowata OK, Montgomery, Labette and Neosho KS, Cumberland, Marion and Crawford IL. Different terrain and well age.
 4. **Tier D.** Defer.

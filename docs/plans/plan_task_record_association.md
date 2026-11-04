@@ -40,3 +40,6 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Validation needs independent coordinates.
 
 **Downloads and requests.** R1, R4.
+
+## Record sources now on disk (added 2026-11-04)
+Public well databases with coordinates are downloaded for New York, Kentucky, Oklahoma, Illinois, West Virginia, Ohio and Kansas, plus the USGS national orphan dataset (2022). They carry different status definitions and coordinate methods, so harmonise before pooling. Paths and hashes are in `data/_source/_download_ledger.csv`. None of them gives independent GNSS positions, so none of them validates a coordinate correction.
