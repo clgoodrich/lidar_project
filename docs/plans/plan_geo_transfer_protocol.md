@@ -23,3 +23,16 @@
 **Depends on.** P1, P2.
 
 **Executor notes.** Do not retune anything on the test area. Use the existing `path_for` helper for data paths.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Bounded pilot.
+
+- K is candidates per km² of scored area. Section 2 of the protocol sets metric, reference raster and density reporting. K policy is a user decision.
+- Step 1 is deterministic. Reproduce the 9t operating-point sweep from `pit_prob_floor_outoffold_9t_05.tif` exactly before any new area.
+- Use the isolated trainer family. The original sampler can read held-out windows.
+- Preprocessing stays at 0.5 m. Fold-local normalisation.
+- The acceptance test is a readiness gate. The scientific gate is in protocol section 5.
+
+**Downloads and requests.** None

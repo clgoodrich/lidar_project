@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) two adversarial reviews evaluated and folded into the plans
+- Reviews `docs/plans/adversarial_codex_review_20261104.md` and `docs/plans/adversarial_review_claude.md`. New `docs/plans/review_response_20261104.md`, `docs/plans/protocol_gates_and_metrics.md` (authoritative), `docs/plans/download_manifest.md`.
+- Checked and reproduced. The association and recall-gap inputs dropped all 481 matched detections (dup_on_pit = 1), so both results are WITHDRAWN. The inner CV split is not reproducible across processes (NaN position, folds 0, 2 and 4 differ). The saved split manifest roles do not match the trained models. Warren tiles are the same D20 program as 9t. NETL says 63 potential well sites, not wells.
+- Every plan got a Review revisions section. Banners added to the two withdrawn result docs, the Warren prereg (invalid as written), the gameplan and the methods doc.
+- Nothing was trained or downloaded. Two small read-only checks and two page reads.
+
 ## 2026-11-04 (later) plan documents for every expansion item, nothing run
 - `docs/plans/README.md` (index and shared rules) and 37 plan files, one per item plus two prerequisites (P1 splits and manifests, P2 audit set). Each gives problem, architecture, method outline, acceptance test and executor notes. Written so another assistant can pick one up. No analysis, runs or downloads for these.
 

@@ -23,3 +23,14 @@
 **Depends on.** 7.5 for field data.
 
 **Executor notes.** Do not publish a density map.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Identifiability note only.
+
+- Withdraw reliance on the A6 recall-gap result. Its input was wrong.
+- D times p over r is valid only for distinct true wells in the same eligible population. If recall can approach zero a finite upper bound may not exist.
+- Get DEP coordinate provenance before any record-based recall.
+
+**Downloads and requests.** R1.

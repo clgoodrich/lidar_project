@@ -2,7 +2,9 @@
 
 One document per problem. Each says what the problem is, what to build, and how to know it worked. Nothing here has been run. No numbers in these files are results. Facts marked **unverified** must be checked before work starts.
 
-Source documents. `docs/iterations/expansion_options_methods.md` (methods and rules), `docs/iterations/expansion_gameplan_feasibility.md` (feasibility, phases, gates).
+Authoritative. `protocol_gates_and_metrics.md` wins over everything else here. See also `review_response_20261104.md` (what two adversarial reviews changed) and `download_manifest.md` (everything that must be downloaded or requested, with gates).
+
+Older source documents. `docs/iterations/expansion_options_methods.md`, `docs/iterations/expansion_gameplan_feasibility.md`. Both are superseded in part. Each plan ends with a **Review revisions** section that overrides the text above it.
 
 ## Rules every plan inherits
 1. **Feature is not well.** Keep four evidence levels apart. (a) terrain feature matched to a drawn polygon. (b) historical evidence. (c) steel anomaly. (d) confirmed well by record or visible wellhead. Never merge them.
@@ -11,10 +13,12 @@ Source documents. `docs/iterations/expansion_options_methods.md` (methods and ru
 4. **Unmatched is not negative.** Only independently adjudicated confusers become negatives. Keep an "uncertain" class. Freeze an audit set before mining errors.
 5. **Platt scaling is monotonic.** It cannot change recall at fixed K. Judge calibration by Brier score, log loss and calibration error. Judge ranking by recall at fixed K.
 6. **Uncertainty.** Block bootstrap, not detection bootstrap. Compare with a confidence interval for the difference and a margin set in advance.
-7. **Spatial splits with buffers.** Held-out blocks at least 500 m from adaptation blocks for a final test.
+7. **Spatial splits with derived buffers.** Buffer covers receptive field and patch support plus the range of an empirical correlogram. Windows that touch held-out ground are rejected. Normalisation is fitted inside the fold. No untouched 9t block exists, so absolute final claims need a new area.
 8. **QL2 is a nominal aggregate density.** It does not guarantee ground returns under canopy. Measure ground density per area.
-9. **Record association is proposed, not corrected.** A pad centroid is not a borehole. Coordinate improvement needs independent positions.
+9. **Record association is proposed, not corrected.** A pad centroid is not a borehole. Coordinate improvement needs independent positions. Record coordinate provenance. Use the full detector output as input, never only unmatched leftovers.
 10. **Provenance.** Hash inputs and checkpoints. Save the package list. Record the commit.
+11. **K is candidates per km².** Transfer recall is judged at one fixed K per km² of scored area, with target density reported. Never at a K equal to the annotation count.
+12. **Downloads follow the manifest.** Measure size first, pass the gate, use an own folder, hash, log provenance.
 
 ## Repo conventions
 - Python only, plain `python`. PDAL through the CLI with a pipeline JSON file.
@@ -29,6 +33,12 @@ Source documents. `docs/iterations/expansion_options_methods.md` (methods and ru
 - Write in short declaratives. No em-dashes. No prose colons or semicolons. Use they/them.
 
 ## Index
+### Authoritative
+- [Protocol, gates and metrics](protocol_gates_and_metrics.md)
+- [Review response](review_response_20261104.md)
+- [Download manifest](download_manifest.md)
+- [Codex adversarial review](adversarial_codex_review_20261104.md)
+- [Claude adversarial review](adversarial_review_claude.md)
 ### Geographic
 - [3.0 Transfer protocol](plan_geo_transfer_protocol.md)
 - [3.1 Warren and Forest](plan_geo_warren_forest.md)

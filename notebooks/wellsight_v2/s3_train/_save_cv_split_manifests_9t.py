@@ -1,7 +1,8 @@
 """Save the explicit 5-fold block splits used by the pit and pad CV trainers, and check spatial separation.
 
 The trainers rebuild folds at run time from a seed. This script calls their own assign_folds with their own seed and manifest,
-so the saved split is the one they use. It trains nothing.
+but it drops NaN block ids before shuffling and the trainers do not. Held-out lists are valid. Train and val roles do NOT match the trained models,
+and the trainers' inner split is not reproducible across processes (NaN position in a sorted set). See docs/plans/plan_prereq_splits_manifests.md. It trains nothing.
 
 Outputs (data/9t/results/splits/):
   cv_split_blocks_pit_9t.csv, cv_split_blocks_pad_9t.csv   one row per block per fold role (held_out, val, train)

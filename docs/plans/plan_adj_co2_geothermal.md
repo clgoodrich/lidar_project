@@ -22,3 +22,12 @@
 **Depends on.** 5.6.
 
 **Executor notes.** Do not claim a wellbore integrity estimate.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Define the partner decision and the subsurface information needed. A surface inventory cannot establish penetration, construction, depth or plugging records (40 CFR 146.84).
+
+**Downloads and requests.** None.

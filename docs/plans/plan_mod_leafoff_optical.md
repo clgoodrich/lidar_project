@@ -22,3 +22,12 @@
 **Depends on.** None.
 
 **Executor notes.** Do not mix missing data with negatives.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Bounded pilot.
+
+- Coverage and date table and a small predefined chip sample. Separate blank or unavailable chips from non-detection. Earlier chips were reported blank 10 of 13 times. Absence of a feature in imagery is not rejection.
+
+**Downloads and requests.** D7, D10 gated.

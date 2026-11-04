@@ -1,6 +1,6 @@
 # 3.1 Warren and Forest counties
 
-**Problem.** The 9t model was trained on one tile in Venango County. It is unknown whether it ranks well in neighbouring Warren and Forest counties, which have different lidar programs.
+**Problem.** The 9t model was trained on one tile in Venango County. It is unknown whether it ranks well in neighbouring Warren and Forest counties. The seven Warren tiles on disk are the same USGS D20 program as 9t, so this is a within-survey test. Forest lidar is unverified.
 
 **Why it matters.** It is the nearest and cheapest test of whether the model generalises. A pass justifies Phase B. A fail shows what to fix.
 
@@ -25,3 +25,17 @@
 **Depends on.** 3.0, P1, P2.
 
 **Executor notes.** Do not look at probability maps before the preregistration is committed.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Redesign as a within-survey case study.
+
+- The seven Warren tiles are the same USGS D20 program as 9t. This tests spatial transfer inside one survey, not a new sensor.
+- The area is about 7 km² (reviewer figure, not measured) against 20 km² for 9t. Before annotating, project the interval width by resampling as many 9t blocks as Warren can supply. Drop the adaptation role if the area cannot hold it. If the projected width exceeds twice the margin, change the design.
+- The Warren preregistration draft is invalid as written. K is the count of annotated features and the reference 0.928 is cutoff-based. Rewrite it from protocol section 2 before use.
+- Rebuild Warren derivatives at 0.5 m with the 9t code. The 1 m derivatives on disk break the preprocessing freeze. Report void fraction per block and thin to 9t ground density.
+- Derive the buffer. Score complete blind blocks including empty ones. Time one block of annotation first.
+- Eastern Warren and Forest QL1 (B19, about 9 points per m²) is a separate sensor-shift arm, gated on the within-survey result. Forest readiness is unverified.
+
+**Downloads and requests.** D1 now. D11 gated. R4 and R6 needed.

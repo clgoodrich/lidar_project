@@ -23,3 +23,12 @@
 **Depends on.** 3.0.
 
 **Executor notes.** This is not only a download task. It needs people with local knowledge.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Province comparison from actual metadata only. Licence, access and local reviewers are unverified. The Ontario-first rationale is unverified.
+
+**Downloads and requests.** None.

@@ -24,3 +24,13 @@
 **Depends on.** None. Low priority.
 
 **Executor notes.** Do not claim leak detection.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Observability gate first. Landsat TIRS is 100 m native and ECOSTRESS about 70 m (reviewer figures, not read). Estimate target fraction under canopy and the detectable contrast against variability.
+- A satellite null does not stop a drone study. Without independent leak labels, any difference is a surface difference.
+
+**Downloads and requests.** None until the gate passes.

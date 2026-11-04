@@ -23,3 +23,12 @@
 **Depends on.** P1, P2.
 
 **Executor notes.** Use the word "feature" throughout.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Release design after P1 and P2. State partial-label handling and licences. Datasheet draft only.
+
+**Downloads and requests.** None.

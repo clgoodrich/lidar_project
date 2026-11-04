@@ -22,3 +22,12 @@
 **Depends on.** Reviewers.
 
 **Executor notes.** Keep cost out of scope unless data arrives.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Low decision value now. A drawn footprint is not an excavation, contamination or restoration footprint. Inter-annotator IoU is a reproducibility reference, not a ceiling.
+
+**Downloads and requests.** None.

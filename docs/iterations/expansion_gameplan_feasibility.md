@@ -1,5 +1,7 @@
 # Expansion gameplan and feasibility
 
+> **Superseded in part (2026-11-04).** Gates, K policy, null definitions, split rules and the superseded list in `docs/plans/protocol_gates_and_metrics.md` win over this file. See section 15 there for the exact text that no longer applies.
+
 **Date:** 2026-11-04
 **Status:** Plan. Written to be handed off. The assistant account that wrote it ends within days, so every task below names its inputs, steps, outputs and acceptance test.
 **Companion:** `docs/iterations/expansion_options_methods.md` holds the method behind each item. This file says whether each item can be done, by whom, in what order, and how to stop.

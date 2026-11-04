@@ -2,6 +2,9 @@
 
 Plan: docs/iterations/expansion_options_methods.md, item 5.6. Write-up: docs/iterations/record_assoc_pits_9t.md.
 
+WITHDRAWN INPUT (2026-11-04). load() drops dup_on_pit == 1, which removes every matched detection, and the pad file is the unmatched leftover set.
+Do not cite results from this version. See docs/plans/protocol_gates_and_metrics.md section 4 for the input contract.
+
 What this does and does not claim.
   - A detection centroid is not a borehole. The output is a PROPOSED ASSOCIATION between a record and a nearby terrain feature.
   - Nothing here shows a coordinate is corrected. That needs independent coordinates (GNSS points, NETL sites). None are used.

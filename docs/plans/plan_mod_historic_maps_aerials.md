@@ -23,3 +23,16 @@
 **Depends on.** None.
 
 **Executor notes.** Judge labels by interpretability and positional accuracy, not by agreement with the model.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Proceed as a probe, elevated.
+
+- It is the only plausible independent evidence for pre-1880 wells, the stratum magnetometry misses.
+- The probed 1922 sheet showed no well symbols. Probe higher-yield sources first. 1870s and 1880s oil-region maps, 1860s atlases and 1937 to 1942 aerials. Their existence over 9t is unverified.
+- Each source gets a verdict. Usable here, unusable here or inconclusive. Test several dates.
+- The null is the shifted-set null inside the oil field. Radius from measured georeferencing RMSE on independent check points.
+- Keep historical positives when the lidar score is low.
+
+**Downloads and requests.** D5, D6 (search), D7 (index), then D8 and D9.

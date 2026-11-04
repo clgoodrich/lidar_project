@@ -23,3 +23,14 @@
 **Depends on.** 3.0.
 
 **Executor notes.** Report paired differences, not a pass threshold on raw score.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Redesign.
+
+- Step 4 first. Stratify existing 9t out-of-fold recall by local slope and relief. It uses no new data.
+- Insert edits only into real low-relief 9t backgrounds. A plane plus noise lacks 0.5 m interpolation texture and is out of distribution.
+- Claim slope-context sensitivity, not Midwest performance. Report paired score and rank changes.
+
+**Downloads and requests.** D15 gated on step 4.

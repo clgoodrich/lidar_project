@@ -1,5 +1,7 @@
 # Record association against held-out detections, with a shifted-record null (9t)
 
+> **WITHDRAWN as evidence (2026-11-04).** The input was wrong. The loader dropped every row with `dup_on_pit = 1`, which removed all 481 matched pit detections and kept only the 204 unmatched leftovers. The pad file is the unmatched leftover set. The one-to-one proposals are not global (197 rows, 153 unique detections). The numbers below describe unmatched candidates only. The conclusion that orphan records are not above chance does not stand. The corrected result may go either way. See `docs/plans/review_response_20261104.md` and `docs/plans/protocol_gates_and_metrics.md` section 4.
+
 **Date:** 2026-11-04
 **Script:** `notebooks/wellsight_v2/s5_eval/_record_assoc_pits_9t.py`
 **Plan item:** 5.6 in `docs/iterations/expansion_options_methods.md`

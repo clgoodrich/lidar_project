@@ -543,3 +543,24 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** 2026-11-03: 2006 and 2019 land cover under the lidar change field, so a class change between the two lidar years is not a map-version change.
 - **Generated:** `notebooks/wellsight_v2/s1_build/_fetch_nlcd_9t.py`; `data/9t/derived/landcover/nlcd_2006_landcover_9t.tif`, `nlcd_2019_landcover_9t.tif`; `notebooks/wellsight_v2/s7_analysis/_change_landcover_9t.py`.
 - **Source:** cite-only (public domain), https://www.mrlc.gov/data
+
+### NETL — Oil Creek orphan well page
+- **Citation:** National Energy Technology Laboratory. Orphan well work at Oil Creek (page). https://netl.doe.gov/node/9506. Read 2026-11-04.
+- **About:** Reports that 63 potential well sites were located on two hillsides using lidar, and that magnetic surveys need intact metal casing.
+- **Used for:** 2026-11-04: corrected "63 wells" to potential sites, and added era and casing strata to the magnetometry and field plans.
+- **Generated:** `docs/plans/plan_mod_drone_lidar.md`; `docs/plans/plan_mod_magnetometry.md`; `docs/plans/protocol_gates_and_metrics.md`.
+- **Source:** cite-only (web page). Snapshot to be saved to `literature/papers/` (manifest D3).
+
+### Kang et al. 2014 — methane from abandoned Pennsylvania wells
+- **Citation:** Kang, M., et al. (2014). Direct measurements of methane emissions from abandoned oil and gas wells in Pennsylvania. *PNAS* 111(51).
+- **About:** 19 wells, 42 measurements, mean about 0.27 kg per day per well, 3 of 19 high emitters (checked at the Princeton record 2026-11-04, paper not read).
+- **Used for:** 2026-11-04: scale check for satellite methane detection (plan 4.4).
+- **Generated:** `docs/plans/plan_mod_methane_plumes.md`; `docs/plans/protocol_gates_and_metrics.md`.
+- **Source:** to download (manifest D3). https://collaborate.princeton.edu/en/publications/direct-measurements-of-methane-emissions-from-abandoned-oil-and-g/
+
+### Hammack et al. 2023 — aeromagnetic surveys for undocumented orphaned wells
+- **Citation:** Hammack, R., Veloski, G., Sams, J., and Kohnke, A. (2023). Aeromagnetic surveys for the location of undocumented orphaned wells. *The Leading Edge* 42(12).
+- **About:** Reported by an adversarial review to find that magnetic surveys in forested Pennsylvania missed many 1860 to 1880 wells with wooden casing. **Not read.**
+- **Used for:** 2026-11-04: era strata in the magnetometry and field plans, cited as reported.
+- **Generated:** `docs/plans/plan_mod_magnetometry.md`; `docs/plans/protocol_gates_and_metrics.md`.
+- **Source:** cite-only until read (manifest D3).

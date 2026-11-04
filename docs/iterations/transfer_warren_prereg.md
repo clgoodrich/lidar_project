@@ -1,5 +1,7 @@
 # Warren County transfer pre-registration (draft, A7)
 
+> **Invalid as written (2026-11-04).** K equals the count of annotated features and the reference 0.928 is cutoff-based. Rewrite from `docs/plans/protocol_gates_and_metrics.md` section 2 before use. The Warren tiles are the same D20 program as 9t.
+
 **Status:** draft. Fill the bracketed fields and commit before looking at any Warren output. Follows `transfer_prereg_template.md`.
 
 ## 1. Question

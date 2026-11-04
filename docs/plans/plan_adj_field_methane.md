@@ -22,3 +22,12 @@
 **Depends on.** 7.5.
 
 **Executor notes.** Do not write "no leak" for a non-detection.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Protocol only, with 7.5.
+
+- Instrument-specific background and repeat protocol. A reading is not an emission rate. A non-detection is not proof of no leak.
+
+**Downloads and requests.** None.

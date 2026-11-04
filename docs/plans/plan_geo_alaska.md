@@ -22,3 +22,12 @@
 **Depends on.** Nothing. Deferred.
 
 **Executor notes.** Do not start processing until the feasibility note is approved.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Metadata-only feasibility note. Specify line-of-sight displacement, reference stability and seasonal and hydrology confounding before any well-related claim.
+
+**Downloads and requests.** None.

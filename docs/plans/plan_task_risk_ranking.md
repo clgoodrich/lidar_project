@@ -23,3 +23,12 @@
 **Depends on.** 5.6 for record linkage.
 
 **Executor notes.** Do not call a ranking validated.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- No P(well) exists, only P(feature). Define a decision and an independently measurable hazard endpoint first. Exposure layers only if a product needs them.
+
+**Downloads and requests.** None.

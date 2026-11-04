@@ -22,3 +22,12 @@
 **Depends on.** 4.6 for historic bounds.
 
 **Executor notes.** Do not treat missing historical presence as proof of a later date.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Blocked.
+
+- Wait for valid dates and 4.6. Historical absence is censored. Pads are reused, so link by identity.
+
+**Downloads and requests.** None.

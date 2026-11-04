@@ -24,3 +24,12 @@
 **Depends on.** P1, P2.
 
 **Executor notes.** Never peek at the final audit set during the loop.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Redesign, then defer.
+
+- Candidate-only sampling cannot find positives outside the proposal pool. Add random-area discovery. Keep a stopping set separate from the final audit set, which is checked once. Equal label count is not equal effort.
+
+**Downloads and requests.** None.

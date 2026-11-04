@@ -47,3 +47,14 @@ Weights, preprocessing, proposal extraction, calibration and threshold or K. Not
 
 ## 10. Amendments
 Date, what changed, why, before or after viewing output.
+
+## 11. Required fields added 2026-11-04
+Source `docs/plans/protocol_gates_and_metrics.md`.
+- Primary metric is recall at K candidates per km² of scored area. State K and its policy. State the 9t reference at the same K and the raster it comes from.
+- Report features per km² in reference and target blocks. Add a secondary at K scaled to density.
+- Score complete blind blocks, including blocks with no features.
+- State the buffer and how it was derived. State the split file and its hash. Label splits historical or future.
+- Normalisation is fitted inside the fold. Preprocessing at 0.5 m.
+- State the sampling unit and the effective sample. Seeds, site-seasons and detections are not independent.
+- State the margin and where it comes from. Readiness gates are separate from scientific gates.
+- Project the interval width before spending annotation time.

@@ -23,3 +23,15 @@
 **Depends on.** P1, P2.
 
 **Executor notes.** Verify the road checkpoints before anything else.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Redesign.
+
+- Pit and pad folds balance on different counts, so existing checkpoints cannot be stacked. Assign one block-fold scheme to pit, pad and road and retrain upstream models. Every upstream model feeding outer fold k must exclude fold k.
+- Budget runtime from measured epoch time. Backlog notes epoch time was under-reported 1.8 times.
+- Annotation context bias. Context can raise agreement with how annotators searched without raising well discovery.
+- Add sham edits, realistic backgrounds, derivatives recomputed from the edited DEM and all-pit sampling to the reliance test. No half-score rule.
+
+**Downloads and requests.** None.

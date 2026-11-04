@@ -21,3 +21,12 @@
 **Depends on.** None. Deprioritised.
 
 **Executor notes.** Do not claim that every coarse sensor fails.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Note only.
+
+- Include the 613590 held-out pit result (gain -0.017, upper 95% bounds at or below +0.018, so +0.05 is excluded) and the ceiling caveat. On 9t pits, no gain and no room cannot be told apart. Scope the conclusion to tested products, features, areas and targets. Pad evidence is 9t only.
+
+**Downloads and requests.** None.

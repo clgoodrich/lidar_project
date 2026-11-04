@@ -24,3 +24,15 @@
 **Depends on.** P1, P2, reviewers.
 
 **Executor notes.** Do not mine errors from the audit set.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Redesign, then pilot.
+
+- Pooled blind labelling. Retrain baseline, confuser-negative and equal-count random-negative arms on the same non-audit blocks, at least 3 seeds each. Pool every arm's top-K audit detections, deduplicate, label once blind to arm, then score each arm.
+- Define target morphology without model score or oil-field context. Keep possible-well and uncertain classes. Track what each arm suppresses.
+- Pilot the codebook and measure real review throughput. The 30 reviewer-hours figure is an estimate.
+- One failed run does not retire the idea.
+
+**Downloads and requests.** R6.

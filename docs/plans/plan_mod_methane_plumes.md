@@ -23,3 +23,15 @@
 **Depends on.** None. Later.
 
 **Executor notes.** Do not claim a plume belongs to a candidate well.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Close for Pennsylvania after one check.
+
+- Kang et al. (2014) measured 19 abandoned Pennsylvania wells at a mean of about 0.27 kg per day, with 3 of 19 high emitters (checked at the Princeton record).
+- A review states the Tanager 90% detection probability is 90 to 180 kg per hour. That is not yet checked. If it holds, the mean well sits about four orders below it.
+- Read the Carbon Mapper product guide, then write a one-paragraph detection-limit note and close 4.4 for Pennsylvania. Keep it deferred elsewhere.
+- A plume footprint is not a source-location uncertainty region. Observation counts do not remove selection toward known emitters.
+
+**Downloads and requests.** D4.

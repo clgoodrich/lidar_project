@@ -24,3 +24,15 @@
 **Depends on.** P1.
 
 **Executor notes.** Do not view audit labels again after freezing.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Proceed, rescoped.
+
+- Every 9t block trained or validated four of the five CV models. No untouched 9t block exists.
+- Define 9t audit blocks as excluded from all new models. They support comparisons between new models. Absolute final claims need a new area.
+- List the models that supply context features and every threshold or mining step that used each block.
+- A buffer is derived from receptive field and an empirical correlogram, not set at 500 m.
+
+**Downloads and requests.** None

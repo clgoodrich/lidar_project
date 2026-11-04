@@ -23,3 +23,12 @@
 **Depends on.** None.
 
 **Executor notes.** Do not label differences as leakage.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Choose the question first. Either morphology screening or independently labelled leakage. Without leak labels the result is a vegetation difference. Check whether DEP complaint records exist.
+
+**Downloads and requests.** None.

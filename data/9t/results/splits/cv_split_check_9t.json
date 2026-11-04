@@ -93,5 +93,5 @@
       "rows_without_block_excluded_from_cv": 345
     }
   },
-  "note": "Held-out and training blocks are adjacent in a grid, so the separation is 0 m between blocks. Features inside the scored footprint buffer can sit within 40 m of another fold's feature. Judge whether this is acceptable for the claim being made, and use a buffered split for a final test."
+  "note": "Held-out lists are valid. Train and val roles do not match the trained models (NaN dropped here, kept by the trainers, and the trainers' inner split changes between processes). Minimum cross-fold separation of 6.8 m occurs in pit folds 3 and 4. Blocks are adjacent, so a final test needs a derived buffer or a new area."
 }

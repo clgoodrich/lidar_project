@@ -1,5 +1,7 @@
 # Expansion options and methods
 
+> **Superseded in part (2026-11-04).** Gates, K policy, null definitions, split rules and the superseded list in `docs/plans/protocol_gates_and_metrics.md` win over this file. See section 15 there for the exact text that no longer applies.
+
 **Date:** 2026-11-04
 **Status:** Plan only. Nothing in this file has been run.
 **Source:** The expansion list pasted by the user on 2026-11-04, plus six items marked (added) that came from the project records.

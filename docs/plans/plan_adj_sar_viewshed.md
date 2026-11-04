@@ -22,3 +22,12 @@
 **Depends on.** None.
 
 **Executor notes.** Keep it out of well reports.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer, separate project.
+
+- Contributes nothing to well uncertainty. Keep resources separate.
+
+**Downloads and requests.** None.

@@ -1,5 +1,7 @@
 """Recall gap on newly documented wells, tile 9t (A6). Descriptive, underpowered by design.
 
+WITHDRAWN INPUT (2026-11-04). It calls ra.load() from the association script, which excludes matched detections. Do not cite its results.
+
 Question. Do wells that entered the DEP abandoned or orphan inventory after 2022-05-09 get detected less often than wells already
 on the 2022 orphan list? Proxy only. 'newly documented' includes reclassifications of wells that were already on the ground.
 Cohort is Venango. It contributes to a later region only if that region has its own dated baseline.

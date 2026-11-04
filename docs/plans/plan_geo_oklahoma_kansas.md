@@ -24,3 +24,12 @@
 **Depends on.** 3.0.
 
 **Executor notes.** Do not tune one arm harder than the others.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Optical and fusion arms need target-area labels. Matched effort is not measurable as written. Coverage and temporal-eligibility table only.
+
+**Downloads and requests.** None until the inventory exists.

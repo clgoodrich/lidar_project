@@ -23,3 +23,12 @@
 **Depends on.** P1.
 
 **Executor notes.** Match budgets exactly between arms.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Defer.
+
+- Name the comparison. Benefit at fixed annotation budget, at fixed total compute, or after counting pretraining cost. These are three questions. Baseline integrity (P1) comes first.
+
+**Downloads and requests.** None.

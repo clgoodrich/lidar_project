@@ -23,3 +23,16 @@
 **Depends on.** Acquisition dates.
 
 **Executor notes.** Establish dates first. Do not run the test on undated wells.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Blocked.
+
+- Establish flight-date bounds first. File creation dates are not flight dates.
+- Controls are eligible pads without the intervention. The existing controls exclude mapped pads, pits and roads and match slope. They are ordinary terrain.
+- Plugging is not surface restoration. Seek independently dated earthwork.
+- The 3,368 m² threshold belongs to one spatial-null procedure. Test signal recovery through the whole processing chain.
+- The saved result is 19 of 404 flagged pads against about 15.3 expected. That is not evidence of absence.
+
+**Downloads and requests.** D1. R7.

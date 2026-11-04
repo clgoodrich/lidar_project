@@ -1,12 +1,12 @@
 # 4.7 Drone lidar
 
-**Problem.** Drone lidar at Oil Creek covers 63 wells. It is denser than the state airborne survey. How much detection depends on point density is unknown.
+**Problem.** NETL reports that 63 potential well sites were located on two hillsides at Oil Creek using lidar. They are potential sites, not confirmed wells. It is denser than the state airborne survey. How much detection depends on point density is unknown.
 
 **Why it matters.** It separates the effect of density from the effect of sensor and season.
 
-**Evidence level produced.** (a), and (d) if the 63 wells are confirmed.
+**Evidence level produced.** (a). Level (d) only for sites with independent confirmation.
 
-**Inputs.** NETL point clouds and metadata, by data request (not yet made). The reason the 63 sites were chosen. If chosen for lidar visibility, they are a biased sensitivity sample.
+**Inputs.** NETL point clouds and metadata, by data request (not yet made). How the 63 potential sites were chosen and whether any were confirmed. They were found with lidar, so they are a biased sensitivity sample.
 
 **Architecture.**
 1. Data request (see `outreach_requests_drafts.md`) asking for metadata, site selection, coordinates and validation notes.
@@ -24,3 +24,14 @@
 **Depends on.** Outreach.
 
 **Executor notes.** Do not call the sample representative.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Proceed as a request.
+
+- NETL's wording is potential well sites located with lidar. Do not call them wells. Ask for selection history, coordinates, confirmation status and release terms. The page does not say the data are released.
+- Thinning measures sensitivity to retained points within that acquisition. It does not reproduce another platform's footprint, scan geometry, occlusion or ground classification.
+- Label every curve as conditional on selection by lidar visibility.
+
+**Downloads and requests.** R2. D12 gated, size unknown, goes to F:.

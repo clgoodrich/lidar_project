@@ -26,3 +26,17 @@
 **Depends on.** Outreach for GNSS data.
 
 **Executor notes.** A pad centroid is not a borehole.
+
+## Review revisions (2026-11-04, override the text above)
+Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_gates_and_metrics.md`. Acquisitions. `docs/plans/download_manifest.md`.
+
+**Decision.** Redesign. First repair the input.
+
+- The first run is withdrawn. All matched detections were dropped and the pad file held only unmatched leftovers. The proposals were not globally one-to-one.
+- Input contract, footprints, assignment, null and statistics are in protocol section 4. Mark the rerun exploratory.
+- Run a full-output analysis and a novel-candidates-only analysis separately.
+- Report predictive value (1 minus null over observed) with an interval, and a positive control (active wells at pad level).
+- Ask whether annotators saw DEP points (R4). Stratify by coordinate source once DEP answers (R1).
+- Validation needs independent coordinates.
+
+**Downloads and requests.** R1, R4.

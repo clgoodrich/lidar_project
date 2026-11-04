@@ -4,6 +4,7 @@ Live list of deferred ideas and open follow-ups. Check this before proposing new
 
 
 ## Plan documents (added 2026-11-04)
+Authoritative rules `docs/plans/protocol_gates_and_metrics.md`. Downloads `docs/plans/download_manifest.md`. Association and recall-gap results WITHDRAWN (wrong input), rerun after the input contract is fixed.
 One plan per expansion item in `docs/plans/` (index `docs/plans/README.md`). Do P1 and P2 first. Nothing in them has been run.
 
 ## Expansion options (added 2026-11-04) — PLANNED, NOTHING RUN
