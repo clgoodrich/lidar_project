@@ -1,0 +1,25 @@
+# 3.6 California
+
+**Problem.** California has many idle and orphaned wells in oil fields with visible surface activity. Administrative status cannot be read from the surface alone.
+
+**Why it matters.** It is a different setting with a strong state inventory and a large idle-well problem.
+
+**Evidence level produced.** (a) and (b). Status is a record, not an observation.
+
+**Inputs.** State well inventory and public lidar and imagery (**unverified**).
+
+**Architecture.**
+1. `docs/iterations/ca_target_definition.md` defines the observable target (for example, a pad with surface equipment visible), separate from administrative status.
+2. Align label dates with imagery dates.
+3. Many wells share a pad. Define the unit as the pad and count wells per pad.
+4. Prototype scoring using plan 3.0.
+
+**Method outline.** Define the target before collecting labels. Keep status as an attribute, not the label.
+
+**Acceptance test.** The target definition is committed. A prototype on a small area reports detection by target class.
+
+**Risks and unknowns.** This is a distinct research project. Forty hours is a prototype budget.
+
+**Depends on.** 3.0.
+
+**Executor notes.** Do not label wells as orphaned from imagery.

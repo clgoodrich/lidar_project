@@ -5,6 +5,9 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) plan documents for every expansion item, nothing run
+- `docs/plans/README.md` (index and shared rules) and 37 plan files, one per item plus two prerequisites (P1 splits and manifests, P2 audit set). Each gives problem, architecture, method outline, acceptance test and executor notes. Written so another assistant can pick one up. No analysis, runs or downloads for these.
+
 ## 2026-11-04 (later) A6 recall gap, newly documented wells, 9t
 - Script `notebooks/wellsight_v2/s5_eval/_recall_gap_newly_documented_9t.py`. Doc `docs/iterations/recall_gap_newly_documented_9t.md`.
 - Result. Old 22 of 141 (0.156). New 0 of 6 (exact 95% 0 to 0.459). Difference -0.156 (Newcombe -0.225 to 0.238). Inconclusive. Only 6 new wells in the scored footprint.

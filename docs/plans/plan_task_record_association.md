@@ -1,0 +1,28 @@
+# 5.6 Record association
+
+**Problem.** Agency well records have coordinates of uncertain accuracy. A detected feature near a record might be that well. Linking them could improve positions.
+
+**Why it matters.** Wrong coordinates waste field time.
+
+**Evidence level produced.** A proposed association. Not a corrected coordinate.
+
+**Inputs.** DEP export, held-out detections, annotated features, saved splits. Independent coordinates (GNSS points, NETL sites) are needed to test any improvement.
+
+**Status.** A first test on 9t is already written up in `docs/iterations/record_assoc_pits_9t.md`. Orphan and abandoned records were not above chance at the primary radii. Active records were above chance at small radii. Treat that as a reason to stop automatic snapping, not all association work.
+
+**Architecture.**
+1. Association against the full annotated features with a footprint-based null, as a separate script from the detector version.
+2. Pit level uses one-to-one Hungarian assignment. Pad level allows many records per pad.
+3. Primary radius fixed in the prereg. Other radii are sensitivity.
+4. Independent coordinate test when GNSS or NETL positions exist. Report position error before and after.
+5. Keep ambiguous and unmatched outcomes.
+
+**Method outline.** The null estimates chance matching, not the error of accepted matches. Within-block shifting must be defined precisely, and independent moves break clustering.
+
+**Acceptance test.** Position error with intervals against independent points.
+
+**Risks and unknowns.** Without independent coordinates nothing is validated.
+
+**Depends on.** Outreach for GNSS data.
+
+**Executor notes.** A pad centroid is not a borehole.

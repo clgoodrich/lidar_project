@@ -2,6 +2,10 @@
 
 Live list of deferred ideas and open follow-ups. Check this before proposing new directions. Recreated 2026-06-03 (the prior file was missing from disk).
 
+
+## Plan documents (added 2026-11-04)
+One plan per expansion item in `docs/plans/` (index `docs/plans/README.md`). Do P1 and P2 first. Nothing in them has been run.
+
 ## Expansion options (added 2026-11-04) — PLANNED, NOTHING RUN
 
 Full methods: `docs/iterations/expansion_options_methods.md` (geography, modality, task, adjacent problems, scale, with an ordering table in section 8).
