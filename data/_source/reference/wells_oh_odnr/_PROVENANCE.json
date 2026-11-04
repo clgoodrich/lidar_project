@@ -1,0 +1,11 @@
+{
+  "oh_odnr_wells.csv.gz": {
+    "url": "https://gis2.ohiodnr.gov/arcgis/rest/services/DOG_Services/Oilgas_Wells_10_JS_TEST/MapServer/0",
+    "accessed": "2026-11-04",
+    "rows": 238601,
+    "expected": 238601,
+    "bytes": 19358119,
+    "sha256": "164e5a0ddb1993adcab90526ba9f85e7316fb24327b6751e7f62c7c75ed282db",
+    "note": "ArcGIS REST query paged by OBJECTID, outSR 4326."
+  }
+}

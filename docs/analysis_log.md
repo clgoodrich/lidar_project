@@ -5,6 +5,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) well databases downloaded, lidar listed for areas with many old wells
+- Downloaded public well databases (no lidar). USGS Documented Orphaned Well Dataset 2022 (117,672 wells, 27 states), NY DEC regulated and orphaned wells, KY KGS, OK OCC RBDMS and orphan list, IL ISGS wells and borings, and paged ArcGIS exports for WV DEP (154,254), OH ODNR (238,601) and KS KGS (519,749). Ledger `data/_source/_download_ledger.csv`, provenance per folder. The USGS 2026 CSV is flagged unpublished and needs a manual browser download.
+- Ranked 3,200 counties by documented orphans and density. Venango first (4,786). Old-well counts before 1930 from NY and KY dated records.
+- Listed (not downloaded) 3DEP lidar over 51 counties. 51 densest 25 km2 windows, 3,116 tiles, 126.4 GB if all fetched. Download list `data/_source/reference/lidar_catalogue/lidar_download_list_pilot_5km_us.csv`. Doc `docs/plans/download_list_areas_and_lidar.md`.
+- First attempt saved an HTML page as a CSV because the ScienceBase manager URL returns a shell page. Deleted. Script now rejects HTML content.
+- C: free space is 108 GB, down from 145 GB earlier.
+
 ## 2026-11-04 (later) two adversarial reviews evaluated and folded into the plans
 - Reviews `docs/plans/adversarial_codex_review_20261104.md` and `docs/plans/adversarial_review_claude.md`. New `docs/plans/review_response_20261104.md`, `docs/plans/protocol_gates_and_metrics.md` (authoritative), `docs/plans/download_manifest.md`.
 - Checked and reproduced. The association and recall-gap inputs dropped all 481 matched detections (dup_on_pit = 1), so both results are WITHDRAWN. The inner CV split is not reproducible across processes (NaN position, folds 0, 2 and 4 differ). The saved split manifest roles do not match the trained models. Warren tiles are the same D20 program as 9t. NETL says 63 potential well sites, not wells.

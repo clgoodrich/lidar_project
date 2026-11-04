@@ -1,0 +1,11 @@
+{
+  "ks_kgs_oil_gas_wells.csv.gz": {
+    "url": "https://services.kgs.ku.edu/arcgis8/rest/services/oilgas/oilgas_wells/MapServer/0",
+    "accessed": "2026-11-04",
+    "rows": 519749,
+    "expected": 519749,
+    "bytes": 67323319,
+    "sha256": "7af50f3a32f0cfbd239c0e4d4c5606455c61dba9566356bd2ec29a84493d0f7e",
+    "note": "ArcGIS REST query paged by OBJECTID, outSR 4326."
+  }
+}

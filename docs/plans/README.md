@@ -37,6 +37,7 @@ Older source documents. `docs/iterations/expansion_options_methods.md`, `docs/it
 - [Protocol, gates and metrics](protocol_gates_and_metrics.md)
 - [Review response](review_response_20261104.md)
 - [Download manifest](download_manifest.md)
+- [Download list: areas with many old wells, and the lidar that covers them](download_list_areas_and_lidar.md)
 - [Codex adversarial review](adversarial_codex_review_20261104.md)
 - [Claude adversarial review](adversarial_review_claude.md)
 ### Geographic

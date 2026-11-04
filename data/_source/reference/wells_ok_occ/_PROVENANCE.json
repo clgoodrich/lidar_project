@@ -1,0 +1,30 @@
+{
+  "RBDMS_WELLS.zip": {
+    "url": "https://oklahoma.gov/content/dam/ok/en/occ/documents/og/esri/files/RBDMS_WELLS.zip",
+    "accessed": "2026-11-04",
+    "bytes": 45913098,
+    "sha256": "563aecedd1e94eb3c8eac901e8ba84bf21c95ca36bedda89669bd54d8d9fa309",
+    "note": "Oklahoma Corporation Commission RBDMS wells shapefile, refreshed nightly."
+  },
+  "orphan-well-list.xlsx": {
+    "url": "https://oklahoma.gov/content/dam/ok/en/occ/documents/og/ogdatafiles/orphan-well-list.xlsx",
+    "accessed": "2026-11-04",
+    "bytes": 2253085,
+    "sha256": "659b93c36f13e7d577977b09ea5f4681b4a83110bdda5e526e64f40fe3046892",
+    "note": "Oklahoma Corporation Commission orphaned wells, all districts."
+  },
+  "orphan-wells-data-dictionary.xlsx": {
+    "url": "https://oklahoma.gov/content/dam/ok/en/occ/documents/og/ogdatafiles/orphan-wells-data-dictionary.xlsx",
+    "accessed": "2026-11-04",
+    "bytes": 24121,
+    "sha256": "19ba20dd52a66d2b395c2ebfb83800ad3eded38d49a60769b6db6c696ff48e7c",
+    "note": "Data dictionary."
+  },
+  "rbdms-wells-data-dictionary.xlsx": {
+    "url": "https://oklahoma.gov/content/dam/ok/en/occ/documents/og/ogdatafiles/rbdms-wells-data-dictionary.xlsx",
+    "accessed": "2026-11-04",
+    "bytes": 24171,
+    "sha256": "87f249f0c6b0307039f18201c2109f65fd884b02c0843f50d4a406692fcd28ae",
+    "note": "Data dictionary."
+  }
+}

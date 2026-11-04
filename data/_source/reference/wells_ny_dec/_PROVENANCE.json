@@ -1,0 +1,16 @@
+{
+  "ny_oil_gas_regulated_wells_since_1860.csv": {
+    "url": "https://data.ny.gov/api/views/szye-wmt3/rows.csv?accessType=DOWNLOAD",
+    "accessed": "2026-11-04",
+    "bytes": 22633872,
+    "sha256": "74b9f6d153724bcaf58d5f6922eeedd1b717a72efc68efbe20d8ff6efc72d671",
+    "note": "NY DEC Oil, Gas and Other Regulated Wells beginning 1860, data.ny.gov szye-wmt3."
+  },
+  "ny_orphaned_wells.csv": {
+    "url": "https://data.ny.gov/api/views/vgue-bamz/rows.csv?accessType=DOWNLOAD",
+    "accessed": "2026-11-04",
+    "bytes": 915544,
+    "sha256": "901be66511941be080735d8f010b34fe3d967b97151f86b5faa65474304d5657",
+    "note": "NY DEC Orphaned Wells, data.ny.gov vgue-bamz."
+  }
+}

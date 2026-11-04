@@ -1,0 +1,178 @@
+county,total,dated,pre1930,pre1900,state
+Albany,19,17,2,1,New York
+Allegany,16449,3053,227,9,New York
+Bronx,20,11,0,0,New York
+Broome,68,40,5,3,New York
+Cattaraugus,11981,5682,296,36,New York
+Cayuga,491,409,5,4,New York
+Chautauqua,6367,5453,248,1,New York
+Chemung,234,171,2,0,New York
+Chenango,201,100,1,1,New York
+Clinton,1,1,1,1,New York
+Cortland,30,26,1,0,New York
+Delaware,39,12,0,0,New York
+Dutchess,10,7,0,0,New York
+Erie,3504,2571,624,35,New York
+Essex,3,3,0,0,New York
+Fulton,5,0,0,0,New York
+Genesee,880,795,139,7,New York
+Greene,3,2,0,0,New York
+Herkimer,14,4,2,0,New York
+Jefferson,13,12,5,5,New York
+Lewis,11,10,2,0,New York
+Livingston,457,400,46,13,New York
+Madison,144,102,2,2,New York
+Monroe,32,26,18,3,New York
+Montgomery,9,2,0,0,New York
+Nassau,4,2,0,0,New York
+New York,213,145,0,0,New York
+Niagara,16,15,3,3,New York
+Oneida,72,59,17,17,New York
+Onondaga,295,243,114,67,New York
+Ontario,348,297,88,19,New York
+Orange,21,17,0,0,New York
+Orleans,30,24,4,1,New York
+Oswego,213,128,79,37,New York
+Otsego,20,13,0,0,New York
+Queens,12,12,0,0,New York
+Richmond,2,2,0,0,New York
+Rockland,7,4,0,0,New York
+Saratoga,5,2,0,0,New York
+Schenectady,2,0,0,0,New York
+Schoharie,4,2,0,0,New York
+Schuyler,440,381,19,5,New York
+Seneca,456,312,13,13,New York
+St Lawrence,1,0,0,0,New York
+Statewide,593,16,8,2,New York
+Steuben,2069,1370,57,14,New York
+Sullivan,3,2,0,0,New York
+Tioga,125,89,1,1,New York
+Tompkins,110,90,11,3,New York
+Ulster,10,7,0,0,New York
+Warren,2,2,1,1,New York
+Washington,3,3,0,0,New York
+Wayne,38,32,4,3,New York
+Westchester,61,48,0,0,New York
+Wyoming,1147,959,55,1,New York
+Yates,161,125,7,4,New York
+ADAIR,4656,3418,11,1,Kentucky
+ALLEN,2256,1507,4,0,Kentucky
+ANDERSON,4,4,0,0,Kentucky
+BALLARD,11,9,0,0,Kentucky
+BARREN,3634,2469,14,0,Kentucky
+BATH,136,81,15,0,Kentucky
+BELL,850,726,4,1,Kentucky
+BOONE,7,4,0,0,Kentucky
+BOURBON,14,9,0,0,Kentucky
+BOYD,420,282,145,0,Kentucky
+BOYLE,6,3,1,0,Kentucky
+BRACKEN,1,0,0,0,Kentucky
+BREATHITT,1428,885,33,0,Kentucky
+BRECKINRIDGE,1097,865,8,0,Kentucky
+BULLITT,74,48,10,0,Kentucky
+BUTLER,2001,1058,1,0,Kentucky
+CALDWELL,269,201,13,0,Kentucky
+CALLOWAY,23,13,3,0,Kentucky
+CAMPBELL,6,5,0,0,Kentucky
+CARLISLE,10,8,0,0,Kentucky
+CARROLL,19,11,1,1,Kentucky
+CARTER,249,126,41,1,Kentucky
+CASEY,514,416,8,0,Kentucky
+CHRISTIAN,2850,1922,2,0,Kentucky
+CLARK,58,49,2,0,Kentucky
+CLAY,2119,1714,32,0,Kentucky
+CLINTON,7853,5760,4,1,Kentucky
+CRITTENDEN,115,79,0,0,Kentucky
+CUMBERLAND,8328,6041,7,2,Kentucky
+DAVIESS,7423,5652,58,0,Kentucky
+EDMONSON,921,625,3,0,Kentucky
+ELLIOTT,1138,529,15,0,Kentucky
+ESTILL,1622,562,22,0,Kentucky
+FAYETTE,30,18,0,0,Kentucky
+FLEMING,13,12,0,0,Kentucky
+FLOYD,4089,3012,645,1,Kentucky
+FRANKLIN,8,6,2,2,Kentucky
+FULTON,13,10,0,0,Kentucky
+GALLATIN,51,30,0,0,Kentucky
+GARRARD,48,41,0,0,Kentucky
+GRANT,131,99,0,0,Kentucky
+GRAVES,30,29,0,0,Kentucky
+GRAYSON,711,508,17,0,Kentucky
+GREEN,2598,1814,5,0,Kentucky
+GREENUP,325,218,17,0,Kentucky
+HANCOCK,2064,1175,7,0,Kentucky
+HARDIN,326,251,1,0,Kentucky
+HARLAN,598,504,2,0,Kentucky
+HARRISON,7,5,0,0,Kentucky
+HART,1193,771,0,0,Kentucky
+HENDERSON,8155,6087,17,0,Kentucky
+HENRY,31,12,5,2,Kentucky
+HICKMAN,6,6,0,0,Kentucky
+HOPKINS,3179,2721,13,0,Kentucky
+JACKSON,204,116,1,0,Kentucky
+JEFFERSON,50,12,3,1,Kentucky
+JESSAMINE,8,7,1,0,Kentucky
+JOHNSON,3784,1749,442,0,Kentucky
+KENTON,10,6,0,0,Kentucky
+KNOTT,2836,2348,50,0,Kentucky
+KNOX,1752,1313,4,0,Kentucky
+LARUE,189,108,7,0,Kentucky
+LAUREL,285,183,5,0,Kentucky
+LAWRENCE,3998,2228,444,1,Kentucky
+LEE,6387,3603,393,0,Kentucky
+LESLIE,1348,1051,2,0,Kentucky
+LETCHER,1999,1669,0,0,Kentucky
+LEWIS,77,32,2,0,Kentucky
+LINCOLN,762,198,1,0,Kentucky
+LIVINGSTON,5,5,0,0,Kentucky
+LOGAN,592,457,22,0,Kentucky
+LYON,5,4,1,0,Kentucky
+MADISON,62,22,1,0,Kentucky
+MAGOFFIN,5322,2575,230,0,Kentucky
+MARION,120,92,0,0,Kentucky
+MARSHALL,9,3,0,0,Kentucky
+MARTIN,2231,1745,137,9,Kentucky
+MASON,12,11,0,0,Kentucky
+MCCRACKEN,16,11,0,0,Kentucky
+MCCREARY,447,329,1,1,Kentucky
+MCLEAN,4141,3160,21,0,Kentucky
+MEADE,569,455,11,0,Kentucky
+MENIFEE,279,158,85,0,Kentucky
+MERCER,14,8,0,0,Kentucky
+METCALFE,4462,3423,2,0,Kentucky
+MONROE,2600,1854,4,0,Kentucky
+MONTGOMERY,65,49,1,0,Kentucky
+MORGAN,511,338,49,0,Kentucky
+MUHLENBERG,4968,3668,10,0,Kentucky
+NELSON,62,45,2,0,Kentucky
+NICHOLAS,7,6,0,0,Kentucky
+OHIO,6287,3431,135,0,Kentucky
+OLDHAM,68,56,0,0,Kentucky
+OWEN,37,28,4,0,Kentucky
+OWSLEY,249,151,38,0,Kentucky
+PENDLETON,13,6,0,0,Kentucky
+PERRY,1765,1481,2,0,Kentucky
+PIKE,7111,6167,22,7,Kentucky
+POWELL,1374,719,30,0,Kentucky
+PULASKI,762,478,5,0,Kentucky
+ROBERTSON,4,2,0,0,Kentucky
+ROCKCASTLE,74,41,2,0,Kentucky
+ROWAN,304,138,11,0,Kentucky
+RUSSELL,1660,1247,2,0,Kentucky
+SCOTT,18,13,0,0,Kentucky
+SHELBY,18,14,2,0,Kentucky
+SIMPSON,423,280,0,0,Kentucky
+SPENCER,16,14,0,0,Kentucky
+TAYLOR,420,247,7,0,Kentucky
+TODD,742,542,5,0,Kentucky
+TRIGG,33,19,0,0,Kentucky
+TRIMBLE,2,1,0,0,Kentucky
+UNION,3788,2546,5,0,Kentucky
+WARREN,5042,3142,86,1,Kentucky
+WASHINGTON,6,4,0,0,Kentucky
+WAYNE,1598,992,5,1,Kentucky
+WAYNE-WV,2,2,1,0,Kentucky
+WEBSTER,3091,2309,8,0,Kentucky
+WHITLEY,2074,1602,10,0,Kentucky
+WOLFE,1269,877,14,0,Kentucky
+WOODFORD,10,8,0,0,Kentucky

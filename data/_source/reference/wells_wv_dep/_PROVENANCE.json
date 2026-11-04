@@ -1,0 +1,11 @@
+{
+  "wv_dep_all_wells.csv.gz": {
+    "url": "https://tagis.dep.wv.gov/arcgis/rest/services/WVDEP_enterprise/oil_gas/MapServer/7",
+    "accessed": "2026-11-04",
+    "rows": 154254,
+    "expected": 154254,
+    "bytes": 13576496,
+    "sha256": "b82ba36d4079bfeb4d48cf2b2641db3c77b785ac23d8f7d6ab670d3ede7f2481",
+    "note": "ArcGIS REST query paged by OBJECTID, outSR 4326."
+  }
+}

@@ -3,6 +3,8 @@
 **Date:** 2026-11-04
 **Status:** plan only. Nothing here has been downloaded or requested. Sizes marked **estimate** are guesses from related files. Sizes marked **measure** must be taken from the provider's listing or API before any bulk fetch. Anything marked **unverified** has not been seen to exist.
 
+**Update 2026-11-04.** Area lists, well databases already fetched and tile-level lidar lists are in `docs/plans/download_list_areas_and_lidar.md`. Items D11, D13, D14 and D15 below are now answered by those lists. C: has about 108 GB free today, not 145 GB.
+
 ## 1. Rules for every download
 1. **Measure first.** Get the file count and byte size from the provider's API, a HEAD request or a listing. Write them in the table below before fetching. The TNM Access API answers from this machine.
 2. **Gate first.** Each row names the condition that must hold before it is fetched. Do not fetch deferred items.

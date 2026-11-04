@@ -564,3 +564,11 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** 2026-11-04: era strata in the magnetometry and field plans, cited as reported.
 - **Generated:** `docs/plans/plan_mod_magnetometry.md`; `docs/plans/protocol_gates_and_metrics.md`.
 - **Source:** cite-only until read (manifest D3).
+
+### Merrill et al. — United States Documented Orphaned Well Database
+- **Citation:** Grove, C. A., and Merrill, M. (2022). United States Documented Unplugged Orphaned Oil and Gas Well Dataset. U.S. Geological Survey data release. doi:10.5066/P91PJETI. Update 2026 (Merrill, Varela, Gianoutsos), doi:10.5066/P13FHBYG.
+- **About:** State-reported unplugged orphaned wells with coordinates. 117,672 wells in 27 states (2022). 130,121 wells in 28 states (2026). CC0.
+- **Used for:** 2026-11-04: ranked counties by documented orphan wells and density to choose areas for the lidar download list.
+- **Generated:** `data/_source/reference/wells_us_orphan_2022/area_orphan_counts_by_county_us.csv`; `docs/plans/download_list_areas_and_lidar.md`.
+- **Source:** cite-only (public domain), https://doi.org/10.5066/P91PJETI. 2026 CSV needs a manual download.
+

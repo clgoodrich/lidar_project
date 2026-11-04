@@ -1,0 +1,16 @@
+folder,file,mb,rows,accessed,sha,path
+wells_il_isgs,IL_WELLS_Borings_Location_Pt.zip,21.5,,2026-11-04,dc3d2b6ea5,data/_source/reference/wells_il_isgs/IL_WELLS_Borings_Location_Pt.zip
+wells_ks_kgs,ks_kgs_oil_gas_wells.csv.gz,67.3,519749,2026-11-04,7af50f3a32,data/_source/reference/wells_ks_kgs/ks_kgs_oil_gas_wells.csv.gz
+wells_ky_kgs,kyog_dd.zip,17.0,,2026-11-04,c87ca3311d,data/_source/reference/wells_ky_kgs/kyog_dd.zip
+wells_ky_kgs,kyog_info.txt,0.0,,2026-11-04,11d1be9b26,data/_source/reference/wells_ky_kgs/kyog_info.txt
+wells_ny_dec,ny_oil_gas_regulated_wells_since_1860.csv,22.6,,2026-11-04,74b9f6d153,data/_source/reference/wells_ny_dec/ny_oil_gas_regulated_wells_since_1860.csv
+wells_ny_dec,ny_orphaned_wells.csv,0.9,,2026-11-04,901be66511,data/_source/reference/wells_ny_dec/ny_orphaned_wells.csv
+wells_oh_odnr,oh_odnr_wells.csv.gz,19.4,238601,2026-11-04,164e5a0ddb,data/_source/reference/wells_oh_odnr/oh_odnr_wells.csv.gz
+wells_ok_occ,RBDMS_WELLS.zip,45.9,,2026-11-04,563aecedd1,data/_source/reference/wells_ok_occ/RBDMS_WELLS.zip
+wells_ok_occ,orphan-well-list.xlsx,2.3,,2026-11-04,659b93c36f,data/_source/reference/wells_ok_occ/orphan-well-list.xlsx
+wells_ok_occ,orphan-wells-data-dictionary.xlsx,0.0,,2026-11-04,19ba20dd52,data/_source/reference/wells_ok_occ/orphan-wells-data-dictionary.xlsx
+wells_ok_occ,rbdms-wells-data-dictionary.xlsx,0.0,,2026-11-04,87f249f0c6,data/_source/reference/wells_ok_occ/rbdms-wells-data-dictionary.xlsx
+wells_us_orphan_2022,US_orphaned_wells.csv,22.2,,2026-11-04,231ba0154d,data/_source/reference/wells_us_orphan_2022/US_orphaned_wells.csv
+wells_us_orphan_2022,US_orphaned_wells.xml,0.1,,2026-11-04,d293b94c8f,data/_source/reference/wells_us_orphan_2022/US_orphaned_wells.xml
+wells_us_orphan_2026,US_orphaned_wells_2026.xml,0.1,,2026-11-04,196f39dc27,data/_source/reference/wells_us_orphan_2026/US_orphaned_wells_2026.xml
+wells_wv_dep,wv_dep_all_wells.csv.gz,13.6,154254,2026-11-04,b82ba36d40,data/_source/reference/wells_wv_dep/wv_dep_all_wells.csv.gz

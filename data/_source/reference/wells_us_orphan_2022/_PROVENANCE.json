@@ -1,0 +1,16 @@
+{
+  "US_orphaned_wells.csv": {
+    "url": "https://www.sciencebase.gov/catalog/file/get/62ebd67bd34eacf539724c56?f=__disk__11%2Fe9%2F27%2F11e927c652d995f46129f282b400063b5d262369",
+    "accessed": "2026-11-04",
+    "bytes": 22186424,
+    "sha256": "231ba0154dbc2c7a10b7d3ef46b71f76b0994d6f266200f72d95f2b4016aabd5",
+    "note": "USGS United States Documented Unplugged Orphaned Oil and Gas Well Dataset, 2022, doi:10.5066/P91PJETI. 117,672 wells, 27 states."
+  },
+  "US_orphaned_wells.xml": {
+    "url": "https://www.sciencebase.gov/catalog/file/get/62ebd67bd34eacf539724c56?f=__disk__bc%2F7f%2F67%2Fbc7f67cf8c35dbff08f1148c0681b67fca6b26d3",
+    "accessed": "2026-11-04",
+    "bytes": 60397,
+    "sha256": "d293b94c8f6fcb88e08ad0e7d326673ebf1208a18aa8a26fe5468f29e461bc35",
+    "note": "Metadata for the 2022 release."
+  }
+}

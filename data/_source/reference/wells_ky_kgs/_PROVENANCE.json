@@ -1,0 +1,16 @@
+{
+  "kyog_dd.zip": {
+    "url": "https://kgs.uky.edu/ogdata/kyog_dd.zip",
+    "accessed": "2026-11-04",
+    "bytes": 16968600,
+    "sha256": "c87ca3311dde9c03d134faa354921defa2fb70b0f3acec35936f0a0806febc2c",
+    "note": "Kentucky Geological Survey oil and gas well location shapefile, 162,166 locations. Copyright KGS, University of Kentucky. Acknowledge KGS."
+  },
+  "kyog_info.txt": {
+    "url": "https://kgs.uky.edu/ogdata/kyog_info.txt",
+    "accessed": "2026-11-04",
+    "bytes": 5524,
+    "sha256": "11d1be9b26dbf08015feef715ea26010821cad640a62985b78557c8d48be3519",
+    "note": "Metadata for the KGS shapefile."
+  }
+}
