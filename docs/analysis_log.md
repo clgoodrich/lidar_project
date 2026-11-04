@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (record association against held-out detections, shifted-record null) -- 9t, plan item 5.6
+
+- **Script and doc.** `notebooks/wellsight_v2/s5_eval/_record_assoc_pits_9t.py`, `docs/iterations/record_assoc_pits_9t.md`. Outputs in `data/9t/results/records/`.
+- **Setup.** 204 held-out pit detections (cutoff 0.50) and 323 pad polygons against 1,068 DEP wells in 9t by status. Null is 300 shifts of 200 to 500 m. Records limited to 250 m cells that hold a detection.
+- **Result.** Orphan or abandoned records (90 at pit level, 126 at pad level) match no better than chance at any radius. Active records exceed chance for pits at 10 and 25 m and inside pad polygons. Plugged records exceed chance for pads. Power is low and no independent coordinates were used, so no coordinate is shown to be corrected.
+- **Next.** Repeat on the full annotated pits and pads, add independent coordinates.
+
+---
+
 ## 2026-11-04 (expansion options written up with methods) -- planning, no processing
 
 - **Doc.** `docs/iterations/expansion_options_methods.md`. The user's pasted expansion list (geography, modality, task, adjacent problems, scale) with a method, a test that can fail and the risks for each item. Six items added from the project records (same-survey neighbours, drone lidar, leaf-off optical, more radar, DEP record correction, field methane).

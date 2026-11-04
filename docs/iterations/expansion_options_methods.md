@@ -440,6 +440,8 @@ NISAR gave no gain over lidar at pit or pad scale. A re-test needs a new reason,
 
 **Risks.** A wrong snap makes a record look better and hides a real error. Keep the original position beside the new one.
 
+**First result (2026-11-04).** Run on 9t against held-out detections. Orphan and abandoned records were not distinguishable from the shifted-record null at any radius. Active records were. The test has low power and no independent coordinates. See `docs/iterations/record_assoc_pits_9t.md`. Next step is to repeat it on the full annotated features and to add independent coordinates.
+
 **Effort.** S for the association. M if independent coordinates must be collected.
 
 ## 6. Adjacent problems
