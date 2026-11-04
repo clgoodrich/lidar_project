@@ -695,3 +695,11 @@ All seven were run. Results: `docs/iterations/nisar_followup_checks_9t.md`. Clos
 - NISAR pad transfer test on a second tile with pad labels made without the radar. Freeze and commit the model before scoring. Save per-row scores.
 - Overlap offsets use narrow overlaps in one chain. Add a loop check or cross-track tilt term.
 - Blind aerial triage of patches 899 and 1530 (old ids 899 and 1530, v2 ids 810 and 1277) against dated imagery or grading records.
+
+## Third review follow-ups (added 2026-11-04) — OPEN
+Source. `docs/plans/adversarial_codex_review_revised_20261104.md`, checked in `docs/plans/review_response_20261104.md` section 8.
+- Lidar listing scripts (`notebooks/wellsight_v2/s1_build/_list_lidar_pilot_windows_us.py`, `_list_lidar_by_county_us.py`). Paginate. Separate successful-empty, failed and incomplete. Keep an asset table and an asset-to-window table. Store tile geometries and compute union coverage of the window. Warn at exactly 200 results.
+- Rebuild the cover and recommended-project columns from geometry, not tile counts.
+- Archival rebuild of the operating-point sweep from the per-fold object tables (3.0).
+- Quantify the leakage from full-window reads and shared normalisation by an isolated pit retrain (P1).
+- Specify distinct-well accounting for 5.4.

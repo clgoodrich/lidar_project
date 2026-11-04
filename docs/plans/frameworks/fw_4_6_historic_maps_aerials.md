@@ -111,3 +111,7 @@ Search 6 hours, probe 8 hours, georeferencing 6 hours per source, digitising 10 
 
 ## 14. Documentation updates
 New docs above, `literature/CITATIONS.md` (each source), `analysis_log.md`, master plan (4.6 and 5.2).
+
+## Review revision 2 (third review, 2026-11-04)
+Source readiness depends on provenance, dates, legibility, coverage and total positional uncertainty, never on agreement with lidar or DEP. Association is a separate later outcome.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

@@ -90,3 +90,7 @@ Protocol 8 hours. Field about 1 to 2 days per site with two people. Processing 1
 
 ## 14. Documentation updates
 Protocol, results doc, `literature/CITATIONS.md` (Hammack, NETL page), `analysis_log.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Unknown dates (1800 sentinel) are their own stratum, not early era. Magnetometry detects ferromagnetic material of any kind, so pilot with known targets, metal confusers and blanks. Record identity status apart from the outcome.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

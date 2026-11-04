@@ -35,3 +35,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Label every curve as conditional on selection by lidar visibility.
 
 **Downloads and requests.** R2. D12 gated, size unknown, goes to F:.
+
+## Review revision 2 (third review, 2026-11-04)
+Report a paired response curve over retained ground density. No universal threshold and no cross-platform equivalence claim.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

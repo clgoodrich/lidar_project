@@ -137,3 +137,9 @@ C: has about 108 GB free. F: has about 3.0 TB free. Heavy products go on F:.
 ## 12. Risk register template
 | Risk | Likelihood | Effect | Mitigation | Owner |
 |---|---|---|---|---|
+
+## Revision 2 (third review, 2026-11-04)
+- One decision threshold in the statistic's units serves both success and failure. The band between is inconclusive. Margins come from the burden tradeoff, never from variance or fold spread.
+- Block bootstrap suits block-sampled maps. A weighted field sample or a design with few independent clusters needs inference matched to its design.
+- Lidar catalogue totals are discovery estimates. Verify union coverage from tile geometries before a total becomes a budget.
+- QC addition. Any query helper must separate successful-empty, failed and incomplete results, and must paginate and compare the returned total with the count retrieved.

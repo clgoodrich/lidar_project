@@ -137,3 +137,7 @@ Setup and tests 6 to 8 hours. GPU for S6 is unknown until measured. Disk under 5
 
 ## 14. Documentation updates
 `docs/iterations/cv_split_recovery_9t.md`, `analysis_log.md`, `BACKLOG.md` (remove the NaN item), `LEADERBOARD.md` (S6 rows), master plan status.
+
+## Review revision 2 (third review, 2026-11-04)
+Historical inner roles stay unknown. Identical block lists alone do not certify no leakage. Add a window-level exclusion test and a check that every fitted preprocessing object came from training blocks only.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

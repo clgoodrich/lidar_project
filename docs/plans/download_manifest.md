@@ -29,7 +29,7 @@
 | ID | What | Plan | Source | Size | Gate | Verify before fetch |
 |---|---|---|---|---|---|---|
 | D1 | USGS 3DEP project metadata and flight-date fields for the 2006 to 2008 and 2019 surveys over 9t and Warren | 4.5, P2, 3.1 | TNM Access API, project XML | under 10 MB, measure | none | Which metadata field holds acquisition dates. File creation dates do not count |
-| D2 | Older DEP oil and gas location releases (dated snapshots) | 5.4, A6 | PASDA and DEP archives | measure each, probably under 100 MB | after D3 reply, to see if useful | Whether snapshots finer than 4 years exist. **Unverified** |
+| D2 | Older DEP oil and gas location releases (dated snapshots) | 5.4, A6 | PASDA and DEP archives | measure each, probably under 100 MB | after the R1 reply (DEP coordinate provenance), to see if useful | Whether snapshots finer than 4 years exist. **Unverified** |
 | D3 | Literature PDFs and page snapshots, listed in section 7 | all | publishers, agency sites | under 100 MB total | none | Open access or cite-only |
 | D4 | Carbon Mapper product guide and a Pennsylvania plume subset | 4.4 | carbonmapper.org | under 100 MB | none | Detection-limit table. Needed to decide whether 4.4 closes |
 | D5 | Three more historic topo sheets, different dates and scales | 4.6 | USGS TNM (31 sheets listed over 9t) | about 10 MB each, **estimate**, about 30 MB | none | Pick the earliest sheet and one 1:24,000 sheet. Check neatline cover of 9t. The one probed sheet cut 9t at its north neatline |
@@ -60,8 +60,8 @@
 | R1 | Coordinate provenance for DEP orphan and abandoned records, and any GNSS-surveyed wells | DEP Orphan and Abandoned Well Program | 5.6, A6, 5.4 | Draft in `docs/iterations/outreach_requests_drafts.md`. Also ask about the 1800 spud sentinel and the 2022 to 2026 additions |
 | R2 | NETL drone lidar, selection history of the sites, coordinates and any field confirmation | NETL | 4.7, 5.6 | NETL's page says "63 potential well sites were located on two hillsides using LiDAR data". Not 63 wells. Not confirmed. Do not repeat "63 wells" |
 | R3 | Magnetometer loan or partner | university geophysics, survey | 4.1 | Instrument, base station, training |
-| R4 | Whether annotators had DEP well points visible while drawing | the user | 5.6 | Decides whether association with annotations is circular |
-| R5 | Whether McKean is still set aside, and where the thermal work lives | the user | 3.1 scope, 4.2 | Open since July 2026 |
+| R4 | Whether annotators had DEP well points visible while drawing | the user | 5.6 | **Answered 2026-11-04. No.** Other annotation context is unrecorded |
+| R5 | Whether McKean is still set aside, and where the thermal work lives | the user | 3.1 scope, 4.2 | **Answered 2026-11-04.** McKean is in scope. The thermal work location is unknown |
 | R6 | Reviewers for confuser labels and annotation of the test blocks | the user | 6.3, 3.1 | Two reviewers per candidate, plus an adjudicator |
 | R7 | Surface restoration records, not only plug dates | DEP | 4.5 | Plug dates do not show earthwork |
 

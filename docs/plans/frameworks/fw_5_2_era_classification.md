@@ -53,3 +53,7 @@ Needs 4.6 output.
 
 ## 14. Documentation updates
 Audit doc, `analysis_log.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Sentinel dates and historical absence are not era labels. Build a small identity-resolved dated subset through 4.6.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

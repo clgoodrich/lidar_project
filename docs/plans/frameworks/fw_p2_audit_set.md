@@ -107,3 +107,7 @@ Inventory 8 to 12 hours (reading scripts and logs). Guard and tests 3 hours. No 
 
 ## 14. Documentation updates
 `audit_set_history.md`, `analysis_log.md`, master plan, README rule 7.
+
+## Review revision 2 (third review, 2026-11-04)
+Inventory every use of each 9t block in model selection. Reserve a separate final area for absolute claims.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

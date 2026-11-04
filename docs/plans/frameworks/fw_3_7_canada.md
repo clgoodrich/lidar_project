@@ -22,3 +22,7 @@ Inputs. Provincial data (unverified). Risks. Licensing, access, record completen
 
 ## 6. Documentation updates
 Inventory doc, `literature/CITATIONS.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Metadata and access inventory only.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

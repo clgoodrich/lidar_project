@@ -105,7 +105,7 @@ Twelve densest of the 51 listed windows (documented orphan wells in a 25 km² bl
 | What | Status |
 |---|---|
 | Well databases | Downloaded. USGS national 2022, NY, KY, OK, IL, WV, OH, KS. USGS 2026 needs a manual download |
-| Lidar | **Listed, not downloaded.** 3,116 tiles over 51 windows. The recommended subset is about 106 GB. Pennsylvania about 10 GB, other Appalachian states about 41 GB |
+| Lidar | **Listed, not downloaded. Coverage not verified.** 3,116 tiles over 51 windows. The recommended subset is about 106 GB. Pennsylvania about 10 GB, other Appalachian states about 41 GB |
 | Already on disk | Tile 9t (D20), Warren 7 D20 tiles (2.8 GB with the merged LAS), McKean B19 subset |
 | Disk | C: about 108 GB free. F: about 3.0 TB free. Put lidar on F: |
 | Not yet searched | Canada, Alaska, state lidar portals, Texas and California state databases |
@@ -128,7 +128,8 @@ Twelve densest of the 51 listed windows (documented orphan wells in a 25 km² bl
 - Replies from DEP, NETL and a magnetometer partner.
 
 ## 7. What has actually been run
-- **Valid.** Held-out CV recall on 9t, the NISAR negative result, the change-detection placebo, the saved split held-out lists, the county ranking and lidar listing from public data.
+- **Valid with caveats.** The saved split held-out lists. The NISAR negative result and the change-detection placebo, each within its tested scope. The county ranking from public databases (counts, not coordinate accuracy). CV recall on 9t is a historical diagnostic. Full-window reads and shared normalisation leak by an amount not measured.
+- **Discovery only.** The lidar listing. Its cover figures are tile-count ratios and the listing scripts do not paginate or separate failed queries from empty ones. The 106 GB total is an estimate.
 - **Withdrawn.** The first record-association run and the recall-gap run. Their input dropped all 481 matched detections.
 - **Not valid as saved.** The train and validation roles in the split manifests.
 - **Invalid as written.** The Warren preregistration draft.

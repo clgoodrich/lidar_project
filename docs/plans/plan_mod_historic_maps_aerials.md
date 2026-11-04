@@ -36,3 +36,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Keep historical positives when the lidar score is low.
 
 **Downloads and requests.** D5, D6 (search), D7 (index), then D8 and D9.
+
+## Review revision 2 (third review, 2026-11-04)
+Source readiness depends on provenance, dates, legibility, coverage and total positional uncertainty, never on agreement with lidar or DEP. Association is a separate later outcome.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

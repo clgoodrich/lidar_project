@@ -38,3 +38,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Acceptance. Identical block lists across 3 fresh processes. Hashes recorded.
 
 **Downloads and requests.** None
+
+## Review revision 2 (third review, 2026-11-04)
+Historical inner roles stay unknown. Identical block lists alone do not certify no leakage. Add a window-level exclusion test and a check that every fitted preprocessing object came from training blocks only.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

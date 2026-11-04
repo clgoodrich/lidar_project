@@ -57,3 +57,7 @@ One county per state is a case study. The Ohio 2006 and 2007 projects use about 
 | Kentucky | Clinton | 89 | KY_CentralEast_A23 | 2024 | 16 | 1.5 | -85.1928, 36.8012 |
 | West Virginia | Pleasants | 49 | OH_Statewide_Phase2_2020_B20 | 2020 | 19 | 0.17 | -81.2344, 39.3705 |
 | Tennessee | Overton | 34 | TN_27_County_QL2_LiDAR_Cumberland_Plateau_BAA | 2023 | 17 | 1.54 | -85.1976, 36.4202 |
+
+## Review revision 2 (third review, 2026-11-04)
+The catalogue is discovery only. Repair completeness (pagination, failed versus empty queries, asset-to-window table, union coverage) before selecting a county. One county does not represent a state.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

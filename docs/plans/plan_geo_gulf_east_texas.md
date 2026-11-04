@@ -45,3 +45,7 @@ Texas Pecos is West Texas, not East Texas. No East Texas county met the listing 
 | Louisiana | Caddo | 142 | LA_Sabine_River_Lidar_2018_D18 | 2018 | 36 | 7.69 | -93.9433, 32.7439 |
 | Texas | Pecos | 95 | TX_WestTexas_2018_D19 | 2018 | 24 | 2.35 | -102.8184, 31.2363 |
 | Arkansas | Ouachita | 85 | AR_Ouachita_FEMA_R6_Lidar_2016_D17 | 2016 | 16 | 1.19 | -93.0892, 33.4073 |
+
+## Review revision 2 (third review, 2026-11-04)
+Pecos is not East Texas. Vegetation, acquisition and industrial setting shift together. Define observable targets first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

@@ -22,3 +22,7 @@ Inputs. SAR archive listings, a list of legacy wells. Risks. Decorrelation, seas
 
 ## 6. Documentation updates
 Note, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Motion is not well integrity. Write the observability and stable-reference note first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

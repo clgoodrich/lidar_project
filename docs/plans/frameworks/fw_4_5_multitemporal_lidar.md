@@ -95,3 +95,7 @@ Dates 3 hours. Eligibility and controls 10 hours. Recovery 12 hours with compute
 
 ## 14. Documentation updates
 `plugging_change_9t.md`, `outside_review_response_20261103.md` follow-ups, `analysis_log.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Success and failure use one threshold δ_rate in rate units. The 0.16 to 0.22 m height floor is a separate measurement spec. Show recovery of a specified physical change through the full chain first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

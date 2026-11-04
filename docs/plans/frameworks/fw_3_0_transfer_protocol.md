@@ -119,3 +119,7 @@ Scorer and tests 8 hours. Inference wrapper 6 hours. Inference per area is minut
 
 ## 14. Documentation updates
 `transfer_protocol.md`, `transfer_reproduce_9t.md`, `analysis_log.md`, master plan, README rule 11.
+
+## Review revision 2 (third review, 2026-11-04)
+Split the reference in two. Archival. Rebuild the sweep from the per-fold object tables, cutoffs, fold areas and tie rules. Do not use the uint8 mosaic (DN / 254), which changes scores and ties. New baseline. One declared deployment policy on isolated, fold-local-normalised predictions. A global top-K and a per-fold-area floor differ, so match the sweep's rule in the archival check. The old 9t estimate is a historical diagnostic.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

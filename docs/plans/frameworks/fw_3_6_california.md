@@ -24,3 +24,7 @@ Inputs. CalGEM data, public lidar and imagery (unverified). Risks. Urban terrain
 
 ## 6. Documentation updates
 `ca_target_definition.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Urban removal and burial break the terrain-feature proxy. State an observable target first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

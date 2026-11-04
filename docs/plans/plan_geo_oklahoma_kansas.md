@@ -55,3 +55,7 @@ Kansas statewide tiles are large (about 400 MB each) and few cover a window.
 | Oklahoma | Tulsa | 73 | OK_Statewide_D22 | 2024 | 11 | 1.13 | -95.8425, 35.8932 |
 | Oklahoma | Pawnee | 71 | OK_Statewide_D22 | 2024 | 16 | 2.12 | -96.6727, 36.2276 |
 | Oklahoma | Creek | 61 | OK_Statewide_D22 | 2024 | 20 | 1.95 | -96.2885, 35.8882 |
+
+## Review revision 2 (third review, 2026-11-04)
+Verify coverage and target morphology before any data expansion.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

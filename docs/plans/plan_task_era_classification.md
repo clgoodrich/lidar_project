@@ -31,3 +31,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Wait for valid dates and 4.6. Historical absence is censored. Pads are reused, so link by identity.
 
 **Downloads and requests.** None.
+
+## Review revision 2 (third review, 2026-11-04)
+Sentinel dates and historical absence are not era labels. Build a small identity-resolved dated subset through 4.6.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

@@ -106,3 +106,7 @@ Inventory 6 hours. Edits and reliance 12 hours. Retraining GPU unknown until mea
 
 ## 14. Documentation updates
 `context_*` docs, `LEADERBOARD.md`, `analysis_log.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+One threshold δ_gain, based on downstream value, serves both success and failure. Specify common folds and all cross-fitting before retraining.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

@@ -47,3 +47,7 @@ Do step 4 (slope stratification of existing 9t recall) before any of these are f
 | Illinois | Crawford | 172 | IL_8County_2020_A20 | 2020 | 111 | 2.57 | -87.9286, 39.1525 |
 | Michigan | Charlevoix | 67 | MI_CharlevoixCounty_2018_A18 | 2018 | 56 | 0.92 | -84.7963, 45.155 |
 | Indiana | Rush | 15 | IN_Indiana_Statewide_LiDAR_2017_B17 | 2017 | 20 | 0.57 | -85.6024, 39.6431 |
+
+## Review revision 2 (third review, 2026-11-04)
+Slope differences are associations. Controlled edits need realistic backgrounds, recomputed derivatives and sham edits.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

@@ -36,3 +36,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - The saved result is 19 of 404 flagged pads against about 15.3 expected. That is not evidence of absence.
 
 **Downloads and requests.** D1. R7.
+
+## Review revision 2 (third review, 2026-11-04)
+Success and failure use one threshold δ_rate in rate units. The 0.16 to 0.22 m height floor is a separate measurement spec. Show recovery of a specified physical change through the full chain first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

@@ -53,3 +53,7 @@ Instrument and training.
 
 ## 14. Documentation updates
 Protocol, `analysis_log.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Concentration is not flux. Non-detection is conditional on the instrument, visit and weather.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

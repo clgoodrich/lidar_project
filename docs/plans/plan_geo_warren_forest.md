@@ -54,3 +54,7 @@ Warren (7 D20 tiles) is already on disk. The Warren window below is a larger and
 | Pennsylvania | Forest | 548 | PA_WesternPA_2019_D20 | 2019 | 20 | 0.91 | -79.4834, 41.5605 |
 | Pennsylvania | Warren | 500 | PA_WesternPA_2019_D20 | 2019 | 15 | 0.79 | -79.0553, 41.7768 |
 | Pennsylvania | Butler | 104 | PA_WesternPA_2019_D20 | 2019 | 20 | 1.31 | -79.8062, 40.998 |
+
+## Review revision 2 (third review, 2026-11-04)
+Set the margin from missed-feature burden at K=40, not fold spread. Forecast interval width over plausible target density and clustering, not by resampling 9t only. Native target data is primary and thinning is a separate arm. McKean is a joint geography and acquisition contrast. Verify footprint coverage from tile geometries first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

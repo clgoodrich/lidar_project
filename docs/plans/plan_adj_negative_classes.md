@@ -36,3 +36,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - One failed run does not retire the idea.
 
 **Downloads and requests.** R6.
+
+## Review revision 2 (third review, 2026-11-04)
+Prespecify both the useful confuser reduction and the acceptable recall loss. Adjudicate the union of each arm's top-K, blind to arm.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

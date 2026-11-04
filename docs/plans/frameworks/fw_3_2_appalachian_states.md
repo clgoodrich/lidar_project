@@ -60,3 +60,7 @@ County per state. Reviewers.
 
 ## 14. Documentation updates
 Inventory doc, per-state docs, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+The catalogue is discovery only. Repair completeness (pagination, failed versus empty queries, asset-to-window table, union coverage) before selecting a county. One county does not represent a state.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

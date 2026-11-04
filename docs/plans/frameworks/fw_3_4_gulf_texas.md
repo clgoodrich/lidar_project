@@ -53,3 +53,7 @@ East Texas county choice.
 
 ## 14. Documentation updates
 Doc, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Pecos is not East Texas. Vegetation, acquisition and industrial setting shift together. Define observable targets first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

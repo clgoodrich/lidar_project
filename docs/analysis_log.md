@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) third adversarial review checked and folded into the protocol
+- `docs/plans/adversarial_codex_review_revised_20261104.md`. Nine findings, all accepted after checks. Verified the per-fold sweep, the uint8 mosaic (DN / 254), the overlapping 5.1 and 4.5 gates, the lidar cover rows, the listing script limits and the Tanager threshold.
+- Edited in place: protocol sections 2 to 6, 9, 10, 13, new section 16. Master plan, manifest, 5.6 plan, 23 plans and frameworks, `fw_00_common.md`, response doc section 8, BACKLOG, CITATIONS.
+- Nothing was run, trained or downloaded.
+
+## 2026-11-04 (later) AGU poster layout drafted (44 x 44 in, model predictions only)
+- New `docs/poster_agu_layout_draft.md`. Grid, eight content boxes, hero figure plan, type and colour spec. No change detection or NISAR content.
+- Flagged that the AGU abstract v17 numbers (93%/94%, ann503 era) differ from the ann712 CV5 leaderboard numbers. User to pick one set. Nothing was built or run.
+
 ## 2026-11-04 (later) execution framework written for every process
 - `docs/plans/frameworks/` holds `fw_00_common.md` and 37 process frameworks in three tiers (13 exhaustive, 11 full, 13 scoped). Each gives estimand, inputs with paths, stages with proposed scripts and output paths, statistical analysis plan, QC and leakage checks, gates, deliverables, failure modes, resources and handoff.
 - Existing script and path names were taken from the repo. New scripts are proposals. Items to confirm are listed per framework. Nothing was run.

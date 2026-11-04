@@ -123,3 +123,7 @@ S0 to S3 about 12 to 16 hours. No GPU. Validation depends on R1 and R2.
 
 ## 14. Documentation updates
 `record_assoc_9t_v2.md`, `analysis_log.md`, master plan, 5.4 and A6 plans (point to the new result).
+
+## Review revision 2 (third review, 2026-11-04)
+Rename the statistic normalised excess association. Link PPV comes from adjudicated sampling with ambiguous outcomes kept. Coordinate correction needs paired error on independently surveyed identities. A pad-level positive control does not validate a different cohort.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

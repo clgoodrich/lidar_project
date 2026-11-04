@@ -101,3 +101,7 @@ S1 and S2 about 6 hours, no GPU. S3 to S4 about 12 hours plus minutes of GPU. Il
 
 ## 14. Documentation updates
 `low_relief_sensitivity_9t.md`, `analysis_log.md`, master plan, BACKLOG.
+
+## Review revision 2 (third review, 2026-11-04)
+Slope differences are associations. Controlled edits need realistic backgrounds, recomputed derivatives and sham edits.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

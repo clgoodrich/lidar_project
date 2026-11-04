@@ -103,3 +103,7 @@ Pilot 6 reviewer-hours. Labelling 2 hours per 20 candidates per reviewer (pilot 
 
 ## 14. Documentation updates
 Codebook revision, `confuser_retrain_9t.md`, `LEADERBOARD.md`, `analysis_log.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Prespecify both the useful confuser reduction and the acceptable recall loss. Adjudicate the union of each arm's top-K, blind to arm.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

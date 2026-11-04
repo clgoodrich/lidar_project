@@ -1,5 +1,7 @@
 # Download list. Areas with many old wells, and the lidar that covers them
 
+> **Caveat from the third review (2026-11-04).** This list is for discovery. The cover figures are tile-count ratios, not area covered. The listing scripts do not paginate (max 200 per query), return an empty result after repeated failure, and drop duplicate URLs across windows. Repair these and verify union coverage from tile geometries before any total becomes a download budget. See protocol section 16 item 5 and `docs/iterations/BACKLOG.md`.
+
 **Date:** 2026-11-04
 **Status:** well databases are downloaded. Lidar is **listed only**. No point cloud has been downloaded. Sizes come from the USGS catalogue API and the files themselves.
 Extends `download_manifest.md` (items D11, D13, D14, D15 now point here).

@@ -37,3 +37,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Three to five sites test practicality, not sensitivity.
 
 **Downloads and requests.** R3. Hammack and NETL page snapshot (D3).
+
+## Review revision 2 (third review, 2026-11-04)
+Unknown dates (1800 sentinel) are their own stratum, not early era. Magnetometry detects ferromagnetic material of any kind, so pilot with known targets, metal confusers and blanks. Record identity status apart from the outcome.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

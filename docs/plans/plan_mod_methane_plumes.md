@@ -35,3 +35,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - A plume footprint is not a source-location uncertainty region. Observation counts do not remove selection toward known emitters.
 
 **Downloads and requests.** D4.
+
+## Review revision 2 (third review, 2026-11-04)
+The Tanager threshold is checked (90 to 180 kg/h at 90% detection, stated conditions). The closure covers routine screening of ordinary small wells only. It does not bound rare large emitters.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

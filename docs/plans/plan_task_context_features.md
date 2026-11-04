@@ -35,3 +35,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Add sham edits, realistic backgrounds, derivatives recomputed from the edited DEM and all-pit sampling to the reliance test. No half-score rule.
 
 **Downloads and requests.** None.
+
+## Review revision 2 (third review, 2026-11-04)
+One threshold δ_gain, based on downstream value, serves both success and failure. Specify common folds and all cross-fitting before retraining.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

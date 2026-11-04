@@ -572,3 +572,9 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Generated:** `data/_source/reference/wells_us_orphan_2022/area_orphan_counts_by_county_us.csv`; `docs/plans/download_list_areas_and_lidar.md`.
 - **Source:** cite-only (public domain), https://doi.org/10.5066/P91PJETI. 2026 CSV needs a manual download.
 
+### Carbon Mapper — Tanager methane performance specifications
+- **Citation:** Carbon Mapper. Tanager methane performance specifications. https://carbonmapper.org/articles/tanager-methane-performance-specifications (checked 2026-11-04).
+- **About:** 90% probability of detection at 90 to 180 kg per hour under 3 m/s wind, 35 degree solar zenith, 25% albedo and 30 m GSD. The range varies with imaging mode.
+- **Used for:** 2026-11-04: closing routine satellite screening of individual small wells (plan 4.4) against Kang et al. 2014 emission rates.
+- **Generated:** `docs/plans/protocol_gates_and_metrics.md` section 9.
+- **Source:** cite-only web page.

@@ -36,3 +36,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - The acceptance test is a readiness gate. The scientific gate is in protocol section 5.
 
 **Downloads and requests.** None
+
+## Review revision 2 (third review, 2026-11-04)
+Split the reference in two. Archival. Rebuild the sweep from the per-fold object tables, cutoffs, fold areas and tie rules. Do not use the uint8 mosaic (DN / 254), which changes scores and ties. New baseline. One declared deployment policy on isolated, fold-local-normalised predictions. A global top-K and a per-fold-area floor differ, so match the sweep's rule in the archival check. The old 9t estimate is a historical diagnostic.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

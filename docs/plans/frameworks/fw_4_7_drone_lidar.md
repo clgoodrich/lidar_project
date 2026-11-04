@@ -94,3 +94,7 @@ About 10 hours once data arrive. Disk unknown (possibly tens of GB). GPU minutes
 
 ## 14. Documentation updates
 Provenance doc, density doc, `literature/CITATIONS.md`, `analysis_log.md`, master plan.
+
+## Review revision 2 (third review, 2026-11-04)
+Report a paired response curve over retained ground density. No universal threshold and no cross-platform equivalence claim.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

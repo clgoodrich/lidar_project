@@ -124,3 +124,7 @@ Inventory and blocks 8 hours. Derivatives 6 hours plus compute. Annotation unkno
 
 ## 14. Documentation updates
 New iteration docs above, `analysis_log.md`, master plan, `LEADERBOARD.md` (transfer rows), `BACKLOG.md`.
+
+## Review revision 2 (third review, 2026-11-04)
+Set the margin from missed-feature burden at K=40, not fold spread. Forecast interval width over plausible target density and clustering, not by resampling 9t only. Native target data is primary and thinning is a separate arm. McKean is a joint geography and acquisition contrast. Verify footprint coverage from tile geometries first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

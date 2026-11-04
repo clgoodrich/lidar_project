@@ -36,3 +36,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - A buffer is derived from receptive field and an empirical correlogram, not set at 500 m.
 
 **Downloads and requests.** None
+
+## Review revision 2 (third review, 2026-11-04)
+Inventory every use of each 9t block in model selection. Reserve a separate final area for absolute claims.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

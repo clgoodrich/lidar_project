@@ -41,3 +41,7 @@ Only Los Angeles County met the threshold. Its density is diluted by urban area,
 | State | County | Orphans in 25 km² window | Newest project | Year (guess) | Tiles | GB | Centre lon, lat |
 |---|---|---|---|---|---|---|---|
 | California | Los Angeles | 832 | CA_LosAngeles_B23 | 2025 | 35 | 2.9 | -118.2653, 34.0608 |
+
+## Review revision 2 (third review, 2026-11-04)
+Urban removal and burial break the terrain-feature proxy. State an observable target first.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.

@@ -35,11 +35,15 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - The first run is withdrawn. All matched detections were dropped and the pad file held only unmatched leftovers. The proposals were not globally one-to-one.
 - Input contract, footprints, assignment, null and statistics are in protocol section 4. Mark the rerun exploratory.
 - Run a full-output analysis and a novel-candidates-only analysis separately.
-- Report predictive value (1 minus null over observed) with an interval, and a positive control (active wells at pad level).
-- Ask whether annotators saw DEP points (R4). Stratify by coordinate source once DEP answers (R1).
+- Report normalised excess association with an interval, and a positive control (active wells at pad level). It is not link precision. Link PPV needs adjudicated sampling (protocol section 4 rule 5).
+- Annotators did not see DEP points (answered 2026-11-04). Other annotation context is unrecorded. Stratify by coordinate source once DEP answers (R1).
 - Validation needs independent coordinates.
 
 **Downloads and requests.** R1, R4.
 
 ## Record sources now on disk (added 2026-11-04)
 Public well databases with coordinates are downloaded for New York, Kentucky, Oklahoma, Illinois, West Virginia, Ohio and Kansas, plus the USGS national orphan dataset (2022). They carry different status definitions and coordinate methods, so harmonise before pooling. Paths and hashes are in `data/_source/_download_ledger.csv`. None of them gives independent GNSS positions, so none of them validates a coordinate correction.
+
+## Review revision 2 (third review, 2026-11-04)
+Rename the statistic normalised excess association. Link PPV comes from adjudicated sampling with ambiguous outcomes kept. Coordinate correction needs paired error on independently surveyed identities. A pad-level positive control does not validate a different cohort.
+Source. `docs/plans/protocol_gates_and_metrics.md` section 16.
