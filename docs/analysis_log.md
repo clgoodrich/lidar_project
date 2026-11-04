@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) drafts for A0, A1, A7, A9 and saved CV split manifests
+- Drafts. `docs/iterations/transfer_prereg_template.md`, `outreach_requests_drafts.md`, `confuser_codebook.md`, `transfer_warren_prereg.md`.
+- Script `notebooks/wellsight_v2/s3_train/_save_cv_split_manifests_9t.py` calls the trainers' own `assign_folds` and seeds. Outputs in `data/9t/results/splits/`.
+- Finding. 209 of 712 pit rows and 345 of 995 pad rows have no block id. The trainers never score them. That is the source of the 503 and 650 scored counts. The trainers' set difference over block ids also carries a NaN id, so fix the manifests before retraining.
+- Spatial separation. Held-out features sit at least 55 to 79 m from other-fold features in most folds, and 6.8 m in one pit fold. About 1% of held-out pits in that fold are within 40 m of another fold. Blocks are adjacent, so a final test needs a buffered split or a new area.
+
 ## 2026-11-04 (later) record association repaired, gameplan revised after second outside review
 - Script `notebooks/wellsight_v2/s5_eval/_record_assoc_pits_9t.py` now uses the scored footprint (115 pit-bearing blocks, including zero-detection blocks) for observed and shifted records. Primary radii fixed. Result unchanged. Orphan or abandoned pit 50 m 0.116 vs null 0.086 (to 0.141). Active pit 25 m 0.071 vs 0.023 (to 0.038).
 - Gameplan `docs/iterations/expansion_gameplan_feasibility.md` carries a revision section. A5 blocked, A9 first, audit-set history required, gates rewritten, schedule qualified.

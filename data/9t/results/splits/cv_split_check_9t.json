@@ -1,0 +1,97 @@
+{
+  "pit": {
+    "seed": 20260727,
+    "folds": {
+      "0": {
+        "n_held_blocks": 25,
+        "n_val_blocks": 18,
+        "n_train_blocks": 72,
+        "train_or_val_blocks_touching_held_out": 62,
+        "min_dist_held_to_other_feature_m": 72.1,
+        "share_held_features_within_40m_of_other_fold": 0.0
+      },
+      "1": {
+        "n_held_blocks": 26,
+        "n_val_blocks": 18,
+        "n_train_blocks": 71,
+        "train_or_val_blocks_touching_held_out": 73,
+        "min_dist_held_to_other_feature_m": 72.4,
+        "share_held_features_within_40m_of_other_fold": 0.0
+      },
+      "2": {
+        "n_held_blocks": 20,
+        "n_val_blocks": 19,
+        "n_train_blocks": 76,
+        "train_or_val_blocks_touching_held_out": 67,
+        "min_dist_held_to_other_feature_m": 72.1,
+        "share_held_features_within_40m_of_other_fold": 0.0
+      },
+      "3": {
+        "n_held_blocks": 23,
+        "n_val_blocks": 18,
+        "n_train_blocks": 74,
+        "train_or_val_blocks_touching_held_out": 67,
+        "min_dist_held_to_other_feature_m": 6.8,
+        "share_held_features_within_40m_of_other_fold": 0.01
+      },
+      "4": {
+        "n_held_blocks": 21,
+        "n_val_blocks": 19,
+        "n_train_blocks": 75,
+        "train_or_val_blocks_touching_held_out": 64,
+        "min_dist_held_to_other_feature_m": 6.8,
+        "share_held_features_within_40m_of_other_fold": 0.0099
+      },
+      "manifest_rows": 712,
+      "rows_without_block_excluded_from_cv": 209
+    }
+  },
+  "pad": {
+    "seed": 20260727,
+    "folds": {
+      "0": {
+        "n_held_blocks": 24,
+        "n_val_blocks": 21,
+        "n_train_blocks": 84,
+        "train_or_val_blocks_touching_held_out": 63,
+        "min_dist_held_to_other_feature_m": 79.0,
+        "share_held_features_within_40m_of_other_fold": 0.0
+      },
+      "1": {
+        "n_held_blocks": 27,
+        "n_val_blocks": 20,
+        "n_train_blocks": 82,
+        "train_or_val_blocks_touching_held_out": 84,
+        "min_dist_held_to_other_feature_m": 64.7,
+        "share_held_features_within_40m_of_other_fold": 0.0
+      },
+      "2": {
+        "n_held_blocks": 26,
+        "n_val_blocks": 21,
+        "n_train_blocks": 82,
+        "train_or_val_blocks_touching_held_out": 84,
+        "min_dist_held_to_other_feature_m": 73.4,
+        "share_held_features_within_40m_of_other_fold": 0.0
+      },
+      "3": {
+        "n_held_blocks": 27,
+        "n_val_blocks": 20,
+        "n_train_blocks": 82,
+        "train_or_val_blocks_touching_held_out": 80,
+        "min_dist_held_to_other_feature_m": 55.2,
+        "share_held_features_within_40m_of_other_fold": 0.0
+      },
+      "4": {
+        "n_held_blocks": 25,
+        "n_val_blocks": 21,
+        "n_train_blocks": 83,
+        "train_or_val_blocks_touching_held_out": 80,
+        "min_dist_held_to_other_feature_m": 55.2,
+        "share_held_features_within_40m_of_other_fold": 0.0
+      },
+      "manifest_rows": 995,
+      "rows_without_block_excluded_from_cv": 345
+    }
+  },
+  "note": "Held-out and training blocks are adjacent in a grid, so the separation is 0 m between blocks. Features inside the scored footprint buffer can sit within 40 m of another fold's feature. Judge whether this is acceptable for the claim being made, and use a buffered split for a final test."
+}
