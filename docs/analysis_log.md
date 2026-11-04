@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (feasibility and gameplan for every expansion item) -- planning, one probe
+
+- **Doc.** `docs/iterations/expansion_gameplan_feasibility.md`. Feasibility class, blocker, hours and verdict for all 36 items. Phase A to E gameplan, decision gates, handoff checklist, risk register.
+- **Measured.** GTX 1070 Ti 8 GB with CUDA PyTorch. C: 145 GB free, F: about 3.2 TB. The USGS TNM API answers and lists 31 historic topo sheets over 9t (1922 to 1967).
+- **Probe.** Oil City 1922 1:62,500 sheet cropped to 9t at `data/_source/historic_topo_probe/`. No well symbols visible in the mapped part. One sheet only. Topo labels now look low-yield. Aerials and oil-field maps are the next test.
+- **Not run.** Nothing else.
+
+---
+
 ## 2026-11-04 (record association against held-out detections, shifted-record null) -- 9t, plan item 5.6
 
 - **Script and doc.** `notebooks/wellsight_v2/s5_eval/_record_assoc_pits_9t.py`, `docs/iterations/record_assoc_pits_9t.md`. Outputs in `data/9t/results/records/`.

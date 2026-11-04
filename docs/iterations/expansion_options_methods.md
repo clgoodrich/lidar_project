@@ -317,7 +317,9 @@ The pasted list says "your ~200 labels". The repo holds 712 pits and 995 pads on
 
 **Risks.** Symbol meaning changes across sheets. Many map symbols mark wells later plugged and removed. Georeferencing error can be tens of metres.
 
-**Effort.** M. High value because it supplies independent labels without a field trip.
+**Probe (2026-11-04).** The TNM API lists 31 sheets over 9t. One sheet (Oil City 1922, 1:62,500) was cropped to 9t. No well symbols were visible in the mapped part, and the sheet's north edge runs through the tile. One sheet and one look. Topo sheets now look low-yield here. Test aerials and state geological survey oil-field maps next. See `docs/iterations/expansion_gameplan_feasibility.md`.
+
+**Effort.** M. High value only if aerials or oil-field maps show wells.
 
 ### 4.7 Drone lidar (added)
 
