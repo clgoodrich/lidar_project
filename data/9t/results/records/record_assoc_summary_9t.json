@@ -1,40 +1,40 @@
 {
   "orphan or abandoned": {
-    "n_records": 90,
-    "one_to_one_within_gate": 29,
+    "n_records": 147,
+    "one_to_one_within_gate": 30,
     "within_50m": 14,
     "median_dist_m": 50.1,
     "mean_offset_dE_dN_m": [
-      0.2,
-      2.4
+      0.6,
+      2.8
     ],
     "mean_offset_se_m": [
-      7.2,
-      6.6
+      7.1,
+      6.8
     ]
   },
   "plugged": {
-    "n_records": 110,
-    "one_to_one_within_gate": 41,
-    "within_50m": 16,
-    "median_dist_m": 59.5,
+    "n_records": 220,
+    "one_to_one_within_gate": 45,
+    "within_50m": 14,
+    "median_dist_m": 62.7,
     "mean_offset_dE_dN_m": [
       1.2,
-      0.4
+      -9.3
     ],
     "mean_offset_se_m": [
-      6.0,
-      7.4
+      6.6,
+      6.3
     ]
   },
   "active": {
-    "n_records": 278,
-    "one_to_one_within_gate": 110,
+    "n_records": 567,
+    "one_to_one_within_gate": 122,
     "within_50m": 56,
-    "median_dist_m": 49.849999999999994,
+    "median_dist_m": 52.25,
     "mean_offset_dE_dN_m": [
       -3.9,
-      1.6
+      1.0
     ],
     "mean_offset_se_m": [
       1.9,

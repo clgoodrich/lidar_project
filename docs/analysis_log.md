@@ -5,6 +5,11 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) record association repaired, gameplan revised after second outside review
+- Script `notebooks/wellsight_v2/s5_eval/_record_assoc_pits_9t.py` now uses the scored footprint (115 pit-bearing blocks, including zero-detection blocks) for observed and shifted records. Primary radii fixed. Result unchanged. Orphan or abandoned pit 50 m 0.116 vs null 0.086 (to 0.141). Active pit 25 m 0.071 vs 0.023 (to 0.038).
+- Gameplan `docs/iterations/expansion_gameplan_feasibility.md` carries a revision section. A5 blocked, A9 first, audit-set history required, gates rewritten, schedule qualified.
+- Open dependency. Both CV trainers rebuild splits at run time. Save split manifests before retraining.
+
 ## 2026-11-04 (feasibility and gameplan for every expansion item) -- planning, one probe
 
 - **Doc.** `docs/iterations/expansion_gameplan_feasibility.md`. Feasibility class, blocker, hours and verdict for all 36 items. Phase A to E gameplan, decision gates, handoff checklist, risk register.

@@ -4,6 +4,27 @@
 **Status:** Plan. Written to be handed off. The assistant account that wrote it ends within days, so every task below names its inputs, steps, outputs and acceptance test.
 **Companion:** `docs/iterations/expansion_options_methods.md` holds the method behind each item. This file says whether each item can be done, by whom, in what order, and how to stop.
 
+## Revisions after the second outside review (2026-11-04)
+These override the matching text below.
+- **A9 moves first.** A7 depends on the pre-registration template.
+- **A2 repaired and rerun.** Eligibility is the scored footprint including zero-detection blocks, identical for observed and shifted records, whole-set translation. Primary radius fixed before looking (pits 50 m, pads inside). Other radii are sensitivity only. Result unchanged (see `record_assoc_pits_9t.md`).
+- **Audit set is not untouched by default.** Before A1 calls any block untouched, list every model, threshold and negative-mining step that used it. Exclude audit blocks from later training, calibration, mining and selection, including models that supply context features. The strongest final test is a new area.
+- **A1 review package.** The existing builder is a QGIS correction package with default "keep". The blinded multi-class contact sheet is new work. Budget 2 hours per 20 candidates per reviewer, not 2 hours for 150 with two reviewers.
+- **A3.** Add sham edits, realistic terrain backgrounds, derivatives recomputed from the edited DEM, and all-pit sampling beside the detected-only subset. Drop the half-score rule. Report paired changes in score and rank.
+- **A4.** Prerequisite is an inventory of upstream checkpoints and splits. Missing road OOF models mean training, not just raster generation. Every upstream model must respect the outer fold exclusion.
+- **A5 is blocked.** No flight dates are established. Plugged between 2006 and 2019 does not put plugging between the flights. Bound acquisition dates first, drop ambiguous wells, and treat the rest as exploratory. Plugging may leave no surface change.
+- **A6.** The 1,316 count is Venango. Check overlap with inference coverage before power. Match groups on location, status and acquisition eligibility. Separate new discoveries from reclassifications.
+- **A7.** Pre-register before viewing outputs. Keep adaptation and final test areas separate. Hash checkpoints and inputs, not only the commit.
+- **A8.** Report usable here, unusable here or inconclusive. One frame is not a verdict. Test several dates and known positives, with independent check points.
+- **B3.** Platt scaling is monotonic. Report calibration separately. It cannot change top-K recall.
+- **B7.** Replace the density surface with a sensitivity and identifiability analysis until well-level precision and detection probability are supported.
+- **Training reproducibility is a dependency.** Both CV scripts (`_pit_unet_cv5.py`, `_pad_unet_cv5.py`) rebuild splits at run time. Save explicit split manifests and check spatial separation before any retraining.
+- **Gates.** Recall gap. Use a confidence interval for the difference and a prespecified non-inferiority margin, since overlapping intervals are not a test. Historical labels. Judge by independent interpretability and positional accuracy, since a low lidar score may be model failure. Confusers. Require confuser reduction and acceptable recall loss, since one failed run does not retire the idea. Field sample. Forty sites cannot give plus or minus 15 points in each of five score bins, so size the primary estimate first, then weight, cluster and allow for inaccessible sites.
+- **Schedule.** A0 to A9 total about 49 hours, over six eight-hour days before debugging. The three-day calendar is optimistic. Independent items (historical coverage checks, instrument planning) need not wait for label review.
+- **Resources.** Do not plan a county at 20 GB. Estimate from real tile sizes with decompressed clouds, derivative stacks and checkpoints. Pin the interpreter and dependencies instead of relying on plain `python`.
+- **Item notes.** 3.3 needs sham edits and real low-slope pits. 3.4 keeps an unchanged zero-shot baseline. 4.7 needs the provenance of the 63 sites and native against thinned comparisons. 5.2 treats historical absence as censored. 5.3 keeps existence, hazard and exposure separate. 7.2 needs a random audit sample that is not tuned on. 7.5 sizes the primary estimate and uses independent searches to estimate recall.
+
+
 ## 0. How to use this file
 
 1. Read section 1 for what the machine and the data can do.

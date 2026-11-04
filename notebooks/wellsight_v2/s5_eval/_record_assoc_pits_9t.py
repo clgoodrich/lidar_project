@@ -11,8 +11,10 @@ Inputs.
   - Detections: out-of-fold held-out pit detections at cutoff 0.50 (layers matched + undecided of pit_candidates_undecided_thr0p50_9t.gpkg),
     one per pit (dup_on_pit == 1 dropped). Pad candidates: pad_candidates_filtered_heldout_9t.shp.
   - Records: PA DEP Venango export (venango_wells_all.gpkg, April 2026), wells inside the tile, split by WELL_STATU.
-Coverage. Cross-validation scores only part of the tile. Records are kept only if they sit in a 250 m cell that holds at least one detection,
-  and shifted records are kept only if they land in such a cell.
+Coverage (revised 2026-11-04 after outside review). Eligibility is the scored footprint, the 115 pit-bearing 375 m CV blocks of
+  pit_blocks_9t.gpkg, including blocks where the detector found nothing. It does not depend on model output. Observed and shifted records
+  use the same rule (inside the footprint and the tile). The whole record set is translated as one, which keeps its clustering.
+  Primary radius for pits 50 m and for pads inside the polygon. Other radii are sensitivity only.
 Pit level. One-to-one assignment (Hungarian) on distance with a gate. Pad level. Many records may share a pad, distance is to the polygon.
 Null. Each record set is translated by a vector of length 200 to 500 m in a random direction, 300 times.
 
@@ -59,12 +61,22 @@ def load():
     return pits, pads, w
 
 
-def cells(xy):
-    return set(map(tuple, np.floor((xy - np.array(BB[:2])) / CELL).astype(int)))
+def footprint():
+    b = gpd.read_file(ROOT / "data/9t/derived/05/pit_blocks_9t.gpkg", layer="blocks")
+    return b[b.n_pits > 0]
+
+
+def cells(blocks):
+    """Set of (ix, iy) block indices that were scored."""
+    return set(zip(blocks.ix.astype(int), blocks.iy.astype(int)))
+
+
+BLOCK = 375.0
 
 
 def inside(xy, cov):
-    return np.array([tuple(c) in cov for c in np.floor((xy - np.array(BB[:2])) / CELL).astype(int)])
+    ij = np.floor((xy - np.array(BB[:2])) / BLOCK).astype(int)
+    return np.array([tuple(c) in cov for c in ij])
 
 
 def pit_rates(rec, det):
@@ -86,13 +98,12 @@ def one_to_one(rec, det):
 def main():
     pits, pads, w = load()
     rng = np.random.default_rng(SEED)
-    cov_pit = cells(pits)
-    padc = np.c_[pads.geometry.centroid.x.values, pads.geometry.centroid.y.values]
-    cov_pad = cells(padc)
+    fp = footprint()
+    cov_pit = cov_pad = cells(fp)
     padgeom = pads.geometry.values
     from shapely import STRtree
     ptree = STRtree(padgeom)
-    print(f"detections {len(pits)} pit, {len(pads)} pad polygons; covered cells pit {len(cov_pit)} pad {len(cov_pad)}")
+    print(f"detections {len(pits)} pit, {len(pads)} pad polygons; scored blocks {len(cov_pit)}")
 
     rows, prop, summ = [], [], {}
     for gname, stats in GROUPS.items():

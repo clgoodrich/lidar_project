@@ -46,6 +46,21 @@ Files in `data/9t/results/records/`. `record_assoc_rates_9t.csv`, `record_pit_as
 - A detection centroid is not a borehole. The proposals file lists candidate pairs. It is not a corrected coordinate set.
 - Held-out detections cover only the scored blocks, and there are only 204 of them. A recorded orphan well with no detection may be a missed pit, a well with no pit, or a record in the wrong place.
 
+## Revision 2026-11-04 (coverage repaired after outside review)
+The first run kept only records in 250 m cells that held a detection. That conditions the sample on model output and drops scored places where the detector found nothing. The script now uses the scored footprint, the 115 pit-bearing 375 m blocks of `data/9t/derived/05/pit_blocks_9t.gpkg`. Observed and shifted records follow the same rule (inside the footprint and the tile). The whole record set is translated as one, which keeps its clustering. Primary radii are fixed in advance. Pits 50 m and pads inside the polygon. Other radii are sensitivity only. The tables above are the first run and are superseded by the numbers below.
+
+Pit level, repaired. Rate against null mean (95% null interval).
+
+| Records | n | 25 m | 50 m (primary) | 100 m |
+|---|---:|---|---|---|
+| Orphan or abandoned | 147 | 0.027 vs 0.022 (0 to 0.054) | 0.116 vs 0.086 (0.038 to 0.141) | 0.327 vs 0.302 (0.213 to 0.408) |
+| Plugged | 220 | 0.023 vs 0.025 (0.003 to 0.050) | 0.077 vs 0.093 (0.046 to 0.133) | 0.273 vs 0.305 (0.237 to 0.359) |
+| Active | 567 | **0.071 vs 0.023 (0.011 to 0.038)** | 0.111 vs 0.090 (0.067 to 0.114) | 0.277 vs 0.309 (0.269 to 0.345) |
+
+Pad level, repaired, inside polygon (primary). Orphan or abandoned 0.041 vs 0.033 (0.007 to 0.070). Plugged 0.050 vs 0.022 (0 to 0.050), at the edge. Active **0.058 vs 0.021 (0.008 to 0.035)**.
+
+The conclusion is unchanged. Orphan and abandoned records are inside the null at the primary radii. Active records exceed chance at small pit radii and inside pad polygons. The larger denominators (147, 220, 567) are records in scored blocks, including blocks with no detection. This is still a proximity test with no independent coordinates. A null result on 9t stops automatic snapping. It does not stop later association work.
+
 ## Not done
 - Association against the full annotated pits and pads, which would raise power. The annotations are lidar-derived, so the result would measure agreement of records with drawn features.
 - Independent coordinates (GNSS points, NETL sites) to test whether any proposal improves a position.
