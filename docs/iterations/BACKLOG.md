@@ -696,10 +696,10 @@ All seven were run. Results: `docs/iterations/nisar_followup_checks_9t.md`. Clos
 - Overlap offsets use narrow overlaps in one chain. Add a loop check or cross-track tilt term.
 - Blind aerial triage of patches 899 and 1530 (old ids 899 and 1530, v2 ids 810 and 1277) against dated imagery or grading records.
 
-## Third review follow-ups (added 2026-11-04) — OPEN
+## Third review follow-ups (added 2026-11-04) — listing scripts and ranking DONE 2026-11-04, rest OPEN
 Source. `docs/plans/adversarial_codex_review_revised_20261104.md`, checked in `docs/plans/review_response_20261104.md` section 8.
-- Lidar listing scripts (`notebooks/wellsight_v2/s1_build/_list_lidar_pilot_windows_us.py`, `_list_lidar_by_county_us.py`). Paginate. Separate successful-empty, failed and incomplete. Keep an asset table and an asset-to-window table. Store tile geometries and compute union coverage of the window. Warn at exactly 200 results.
-- Rebuild the cover and recommended-project columns from geometry, not tile counts.
+- DONE. Lidar listing scripts (`notebooks/wellsight_v2/s1_build/_list_lidar_pilot_windows_us.py`, `_list_lidar_by_county_us.py`). Paginate. Separate successful-empty, failed and incomplete. Keep an asset table and an asset-to-window table. Store tile geometries and compute union coverage of the window. Warn at exactly 200 results.
+- DONE. Cover and recommended project rebuilt from tile geometry (`lidar_win_projects_us.csv`).
 - Archival rebuild of the operating-point sweep from the per-fold object tables (3.0).
 - Quantify the leakage from full-window reads and shared normalisation by an isolated pit retrain (P1).
 - Specify distinct-well accounting for 5.4.

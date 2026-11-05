@@ -130,27 +130,27 @@ After outside parties. 4.7, 4.1, 7.5, 5.6 validation.
 What would justify scaling up. A field pilot or a historical source that shows what share of drawn pits are wells, with a usable interval. Without that, more geographic transfer only measures agreement with one annotator's idea of a feature.
 
 ## 5. Where it would run and what it needs
-Twelve densest of the 51 listed windows (documented orphan wells in a 25 km² block, newest 3DEP project). Full table and cautions in the download list.
+Twelve densest of the 52 windows, rebuilt 2026-11-04 on the USGS 2026 well file (documented orphan wells in a 25 km² block, newest 3DEP project covering at least 95% of the window by area). Cover is the share of the window covered by the union of tile bounding boxes, an upper bound. Full tables in `data/_source/reference/lidar_catalogue/lidar_win_*.csv`.
 
-| State | County | Orphans in window | Newest project | Tiles | GB |
-|---|---|---|---|---|---|
-| New York | Allegany | 1049 | NY_SouthwestNY_2017_A17 | 11 | 1.15 |
-| New York | Cattaraugus | 991 | NY_SouthwestNY_2017_A17 | 20 | 2.12 |
-| California | Los Angeles | 832 | CA_LosAngeles_B23 | 35 | 2.9 |
-| Pennsylvania | Venango | 782 | PA_WesternPA_2019_D20 | 20 | 0.81 |
-| Illinois | Cumberland | 751 | IL_8County_2020_A20 | 80 | 3.61 |
-| Kentucky | Lee | 635 | KY_WestCentral_2017_C19 | 16 | 1.68 |
-| Pennsylvania | McKean | 597 | PA_Northcentral_2019_B19 | 36 | 2.11 |
-| Illinois | Marion | 548 | IL_SouthCentral_2021_D21 | 80 | 2.56 |
-| Pennsylvania | Forest | 548 | PA_WesternPA_2019_D20 | 20 | 0.91 |
-| Pennsylvania | Warren | 500 | PA_WesternPA_2019_D20 | 15 | 0.79 |
-| Kentucky | Powell | 425 | KY_WestCentral_2017_C19 | 20 | 2.03 |
-| Ohio | Washington | 413 | OH_Statewide_Phase2_2020_B20 | 192 | 3.61 |
+| State | County | Orphans in window | Recommended project | Tiles | GB | Cover |
+|---|---|---|---|---|---|---|
+| New York | Allegany | 1187 | NY_SouthwestNY_2017_A17 (partial) | 17 | 1.86 | 0.93 |
+| Kentucky | Lee | 1084 | KY_WestCentral_2017_C19 | 23 | 2.42 | 1.00 |
+| New York | Cattaraugus | 996 | NY_SouthwestNY_2017_A17 | 20 | 2.12 | 1.00 |
+| California | Los Angeles | 824 | CA_LosAngeles_B23 | 37 | 3.00 | 1.00 |
+| Illinois | Cumberland | 752 | IL_8County_2020_A20 | 87 | 3.79 | 1.00 |
+| Pennsylvania | McKean | 698 | PA_Northcentral_2019_B19 | 36 | 2.08 | 1.00 |
+| Pennsylvania | Butler | 636 | PA_WesternPA_2019_D20 | 21 | 1.82 | 1.00 |
+| Ohio | Washington | 559 | OH_Statewide_Phase2_2020_B20 | 204 | 3.83 | 1.00 |
+| Pennsylvania | Venango | 543 | PA_WesternPA_2019_D20 | 20 | 2.49 | 1.00 |
+| Pennsylvania | Forest | 518 | PA_WesternPA_2019_D20 | 20 | 0.95 | 1.00 |
+| Pennsylvania | Warren | 514 | PA_WesternPA_2019_D20 | 19 | 1.02 | 1.00 |
+| Oklahoma | Washington | 420 | OK_Statewide_D22 | 16 | 1.40 | 1.00 |
 
 | What | Status |
 |---|---|
-| Well databases | Downloaded. USGS national 2022, NY, KY, OK, IL, WV, OH, KS. USGS 2026 needs a manual download |
-| Lidar | **Listed, not downloaded. Coverage not verified.** 3,116 tiles over 51 windows. The recommended subset is about 106 GB. Pennsylvania about 10 GB, other Appalachian states about 41 GB |
+| Well databases | Downloaded. USGS national 2022 and 2026, NY, KY, OK, IL, WV, OH, KS. The 2026 file differs from 2022 (Illinois down 4,494, Venango down 418). Cause not known |
+| Lidar | **Listed, not downloaded.** 52 windows, 3,458 unique tiles touching a window (150.5 GB across all projects). Recommended projects: 2,792 tiles, about 126.9 GB, Pennsylvania about 13 GB. Every query was paged and returned ok. Coverage is by area from tile boxes. One window (Allegany NY) has no project at 0.95 and is marked partial |
 | Already on disk | Tile 9t (D20), Warren 7 D20 tiles (2.8 GB with the merged LAS), McKean B19 subset |
 | Disk | C: about 108 GB free. F: about 3.0 TB free. Put lidar on F: |
 | Not yet searched | Canada, Alaska, state lidar portals, Texas and California state databases |

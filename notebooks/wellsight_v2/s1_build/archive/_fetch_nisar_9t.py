@@ -28,7 +28,7 @@ import urllib.request
 import json
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from _common import ROOT, path_for  # noqa: E402
 
 DST = path_for("reference") / "nisar" / "9t"

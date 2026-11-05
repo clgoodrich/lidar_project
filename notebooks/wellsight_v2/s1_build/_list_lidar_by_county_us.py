@@ -1,4 +1,6 @@
-"""List USGS 3DEP lidar point cloud projects over high-orphan-well counties. METADATA ONLY. No point clouds are downloaded.
+"""SUPERSEDED 2026-11-04 by `_list_lidar_windows_inventory_us.py`. County-level listing from this script is discovery only. It does not paginate (max 200 per query), turns repeated failure into an empty result, drops duplicate URLs across windows, and samples five small locations per county and multiplies a sampled mean tile size by an API count. Its outputs are kept for the record and must not be used for a download budget.
+
+List USGS 3DEP lidar point cloud projects over high-orphan-well counties. METADATA ONLY. No point clouds are downloaded.
 
 For each county, probe 5 small boxes (centre and four inner points) to find which 3DEP LPC projects cover it, then for each project
 ask the TNM Access API for the number of tiles in the county box (q = project name) and a sample of 100 tiles for mean tile size and

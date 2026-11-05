@@ -1,0 +1,53 @@
+window,state,county,wells_in_window,centre_lon,centre_lat,minx,miny,maxx,maxy
+Pennsylvania_Venango,Pennsylvania,Venango,543,-79.7458,41.403,-79.7806,41.3772,-79.7109,41.4288
+Pennsylvania_McKean,Pennsylvania,McKean,698,-78.5524,41.9725,-78.5878,41.9465,-78.517,41.9986
+NewYork_Allegany,New York,Allegany,1187,-78.0753,42.0694,-78.1108,42.0433,-78.0397,42.0956
+Oklahoma_Washington,Oklahoma,Washington,420,-95.9492,36.8392,-95.9775,36.8169,-95.9209,36.8615
+Ohio_Washington,Ohio,Washington,559,-81.446,39.6053,-81.4795,39.5798,-81.4124,39.6307
+Pennsylvania_Butler,Pennsylvania,Butler,636,-79.7782,40.9755,-79.8128,40.9497,-79.7436,41.0013
+Pennsylvania_Warren,Pennsylvania,Warren,514,-79.0568,41.7772,-79.092,41.7513,-79.0216,41.8032
+Oklahoma_Okmulgee,Oklahoma,Okmulgee,150,-95.7623,35.7036,-95.7902,35.6812,-95.7343,35.7259
+Ohio_Monroe,Ohio,Monroe,215,-81.2434,39.6249,-81.2769,39.5994,-81.2098,39.6504
+Oklahoma_Nowata,Oklahoma,Nowata,175,-95.6572,36.7904,-95.6855,36.768,-95.6288,36.8128
+Missouri_Jackson,Missouri,Jackson,220,-94.5806,38.9068,-94.6101,38.8842,-94.551,38.9295
+NewYork_Cattaraugus,New York,Cattaraugus,996,-78.5102,42.0141,-78.5456,41.988,-78.4748,42.0402
+Kentucky_Lee,Kentucky,Lee,1084,-83.7049,37.6793,-83.737,37.6543,-83.6728,37.7043
+Oklahoma_Creek,Oklahoma,Creek,70,-96.2223,35.9635,-96.2504,35.9411,-96.1943,35.9859
+California_LosAngeles,California,Los Angeles,824,-118.2648,34.059,-118.2977,34.032,-118.2319,34.0859
+Pennsylvania_Forest,Pennsylvania,Forest,518,-79.472,41.557,-79.5069,41.5311,-79.437,41.5828
+Ohio_Licking,Ohio,Licking,172,-82.3761,40.0197,-82.4095,39.9944,-82.3426,40.045
+Ohio_Noble,Ohio,Noble,189,-81.4505,39.6485,-81.4841,39.623,-81.417,39.6739
+Oklahoma_Rogers,Oklahoma,Rogers,255,-95.5123,36.5539,-95.5406,36.5314,-95.484,36.5763
+Louisiana_Caddo,Louisiana,Caddo,218,-93.962,32.8519,-93.9894,32.829,-93.9345,32.8747
+NewMexico_Lea,New Mexico,Lea,68,-103.1622,32.1796,-103.1908,32.1555,-103.1336,32.2036
+Pennsylvania_Washington,Pennsylvania,Washington,73,-80.3458,40.1658,-80.3799,40.1402,-80.3117,40.1915
+Kansas_Montgomery,Kansas,Montgomery,135,-95.7764,37.0132,-95.8049,36.9909,-95.748,37.0356
+Kentucky_Ohio,Kentucky,Ohio,161,-86.9021,37.5945,-86.9333,37.5702,-86.8709,37.6188
+Oklahoma_Tulsa,Oklahoma,Tulsa,119,-95.9664,36.2722,-95.9944,36.2499,-95.9383,36.2945
+Ohio_Perry,Ohio,Perry,243,-82.0806,39.5847,-82.1139,39.5594,-82.0473,39.61
+Oklahoma_Muskogee,Oklahoma,Muskogee,114,-95.6933,35.7158,-95.7213,35.6934,-95.6654,35.7382
+Ohio_Columbiana,Ohio,Columbiana,188,-81.0371,40.8694,-81.0713,40.8438,-81.0028,40.8949
+Kentucky_Clinton,Kentucky,Clinton,121,-85.189,36.8278,-85.2203,36.803,-85.1577,36.8525
+Kentucky_Cumberland,Kentucky,Cumberland,134,-85.4217,36.6528,-85.4529,36.6281,-85.3905,36.6774
+NewMexico_Eddy,New Mexico,Eddy,72,-103.8987,32.8827,-103.9277,32.8585,-103.8697,32.9069
+Oklahoma_Kay,Oklahoma,Kay,99,-97.1845,36.9568,-97.2132,36.9342,-97.1558,36.9794
+Oklahoma_Pawnee,Oklahoma,Pawnee,96,-96.437,36.2376,-96.4652,36.2152,-96.4088,36.26
+Kentucky_Daviess,Kentucky,Daviess,125,-86.9326,37.6685,-86.9638,37.6442,-86.9013,37.6929
+Illinois_Cumberland,Illinois,Cumberland,752,-88.032,39.3163,-88.0636,39.2922,-88.0004,39.3404
+Ohio_Morgan,Ohio,Morgan,189,-81.9354,39.4736,-81.9687,39.4482,-81.902,39.4989
+Kansas_Labette,Kansas,Labette,100,-95.4691,37.2449,-95.4977,37.2225,-95.4405,37.2673
+Ohio_Jefferson,Ohio,Jefferson,131,-80.6942,40.5135,-80.7283,40.4879,-80.66,40.5391
+Ohio_Athens,Ohio,Athens,135,-81.9255,39.3389,-81.9587,39.3135,-81.8922,39.3643
+Kentucky_Powell,Kentucky,Powell,417,-83.7199,37.7393,-83.752,37.7143,-83.6878,37.7643
+Kentucky_Magoffin,Kentucky,Magoffin,322,-83.0128,37.7952,-83.0451,37.7701,-82.9805,37.8203
+Kentucky_Estill,Kentucky,Estill,205,-83.907,37.7329,-83.9391,37.708,-83.875,37.7579
+Kentucky_Green,Kentucky,Green,213,-85.5634,37.2173,-85.5948,37.1927,-85.532,37.2419
+Texas_Pecos,Texas,Pecos,191,-102.8417,31.2438,-102.8698,31.2198,-102.8135,31.2678
+WestVirginia_Pleasants,West Virginia,Pleasants,57,-81.2344,39.3705,-81.2678,39.345,-81.2009,39.396
+Colorado_Phillips,Colorado,Phillips,54,-102.1863,40.6934,-102.2181,40.6697,-102.1546,40.7171
+Arizona_Apache,Arizona,Apache,25,-109.4384,35.0969,-109.4697,35.0717,-109.4071,35.1222
+NorthDakota_McKenzie,North Dakota,McKenzie,15,-102.815,47.8195,-102.8504,47.7953,-102.7796,47.8437
+Tennessee_Fentress,Tennessee,Fentress,20,-85.0073,36.3738,-85.0385,36.3491,-84.9762,36.3986
+Wyoming_Crook,Wyoming,Crook,109,-104.7277,44.2428,-104.7619,44.2184,-104.6936,44.2672
+Indiana_Spencer,Indiana,Spencer,34,-86.8907,38.03,-86.922,38.0056,-86.8593,38.0543
+Arkansas_Ouachita,Arkansas,Ouachita,82,-93.0892,33.4073,-93.117,33.3842,-93.0613,33.4303

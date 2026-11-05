@@ -1,5 +1,7 @@
 # Download list. Areas with many old wells, and the lidar that covers them
 
+> **Superseded 2026-11-04.** The tables below were built on the 2022 well file with the old scripts. The rebuilt ranking and window lists are `data/_source/reference/wells_us_orphan_2026/area_orphan_counts_by_county_us.csv` and `data/_source/reference/lidar_catalogue/lidar_win_*_us.csv`. The master plan section 5 summarises them.
+
 > **Caveat from the third review (2026-11-04).** This list is for discovery. The cover figures are tile-count ratios, not area covered. The listing scripts do not paginate (max 200 per query), return an empty result after repeated failure, and drop duplicate URLs across windows. Repair these and verify union coverage from tile geometries before any total becomes a download budget. See protocol section 16 item 5 and `docs/iterations/BACKLOG.md`.
 
 **Date:** 2026-11-04

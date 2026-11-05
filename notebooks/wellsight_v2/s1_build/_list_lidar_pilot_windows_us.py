@@ -1,4 +1,6 @@
-"""For each high-orphan-well county, find the densest 5 km x 5 km cluster of documented orphan wells, then LIST (not download) the 3DEP lidar
+"""SUPERSEDED 2026-11-04 by `_list_lidar_windows_inventory_us.py`. Window listing from this script is discovery only. It does not paginate (max 200 per query), turns repeated failure into an empty result, drops duplicate URLs across windows, and scores coverage as a tile-count ratio, not area. Its outputs are kept for the record and must not be used for a download budget.
+
+For each high-orphan-well county, find the densest 5 km x 5 km cluster of documented orphan wells, then LIST (not download) the 3DEP lidar
 tiles that cover it. Output is a download list, nothing more.
 
 Inputs  data/_source/reference/wells_us_orphan_2022/US_orphaned_wells.csv (lon, lat per well)

@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) county ranking and lidar listing rebuilt on the 2026 well file with fixed scripts
+- New `notebooks/wellsight_v2/s1_build/_rank_orphan_counties_us.py` writes `data/_source/reference/wells_us_orphan_2026/area_orphan_counts_by_county_us.csv` (1,128 counties, 118 wells unmatched, offshore and islands). Venango 4,368, McKean 4,153, Allegany NY 3,802, Washington OK 3,351 (was 1,544), Washington OH 3,134, Butler PA 2,765 (was 866).
+- New `_tnm_common.py` and `_list_lidar_windows_inventory_us.py` replace the two old listing scripts (marked SUPERSEDED). Fixes: paged queries with ok, empty, failed and incomplete status, no silent empties, project from URL path, coverage by area of the tile-box union, real tile sizes, an asset table and an asset-to-window table.
+- Result: 52 windows, all queries ok, 3,458 unique tiles (150.5 GB), recommended 2,792 tiles about 126.9 GB. 30 of 51 recommended windows differ from the old list, partly because the 2026 data moved the densest windows. Missouri Jackson now picks the 2020 FEMA project.
+- Outputs in `data/_source/reference/lidar_catalogue/` named `lidar_win_*_us.csv`. Old tables stay for the record. Nothing was downloaded.
+
 ## 2026-11-04 (later) old wording removed from plans and frameworks after the third review
 - Replaced superseded text in place (predictive value, exact sweep reproduction, thinning to 9t density, 1800 sentinel as early era, 4.5 and 5.1 one-sided gates, 4.6 shifted-null source gate, recall-gap wording, R4 as open, the 3.2 Pleasants line) across 13 plans and 14 frameworks. Added a verdict table (section 3b) to the master plan and rewrote the P1 and 3.3 gate rows.
 - Still open. Listing-script fixes, the rebuilt county ranking on the 2026 file, unread sources (Hammack 2023, Landsat and ECOSTRESS specs). Nothing was run.

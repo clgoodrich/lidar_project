@@ -1,0 +1,97 @@
+window,state,county,project,tiles,gb,published,year_in_name,cover,query_status,recommended
+Pennsylvania_Venango,Pennsylvania,Venango,PA_STATEWIDE_N_2006_2008,8,0.57,2014-09-10,2008.0,1.0,ok,
+Pennsylvania_Venango,Pennsylvania,Venango,PA_WesternPA_2019_D20,20,2.49,2021-03-04,2019.0,1.0,ok,rec
+Pennsylvania_McKean,Pennsylvania,McKean,NY_SouthwestNY_2017_A17,5,0.608,2019-05-30,2017.0,0.122,ok,
+Pennsylvania_McKean,Pennsylvania,McKean,PA_Northcentral_2019_B19,36,2.079,2020-12-09,2019.0,1.0,ok,rec
+Pennsylvania_McKean,Pennsylvania,McKean,PA_STATEWIDE_N_2006_2008,6,0.396,2014-09-10,2008.0,1.0,ok,
+NewYork_Allegany,New York,Allegany,NY_SouthwestNY_2017_A17,17,1.862,2019-05-30,2017.0,0.933,ok,best_partial
+NewYork_Allegany,New York,Allegany,NY_Southwest_2_County_2016_A16,13,2.064,2018-02-21,2016.0,0.818,ok,
+Oklahoma_Washington,Oklahoma,Washington,OK_Statewide_D22,16,1.404,2024-08-20,,1.0,ok,rec
+Ohio_Washington,Ohio,Washington,OH_SOUTH_2007,18,0.06,2014-09-16,2007.0,1.0,ok,
+Ohio_Washington,Ohio,Washington,OH_Statewide_Phase2_2020_B20,204,3.825,2022-03-23,2020.0,1.0,ok,rec
+Pennsylvania_Butler,Pennsylvania,Butler,PA_STATEWIDE_S_2006_2008,8,0.647,2014-09-10,2008.0,1.0,ok,
+Pennsylvania_Butler,Pennsylvania,Butler,PA_WesternPA_2019_D20,21,1.825,2021-03-04,2019.0,1.0,ok,rec
+Pennsylvania_Warren,Pennsylvania,Warren,PA_STATEWIDE_N_2006_2008,7,0.55,2014-09-10,2008.0,1.0,ok,
+Pennsylvania_Warren,Pennsylvania,Warren,PA_WesternPA_2019_D20,19,1.018,2021-04-28,2019.0,1.0,ok,rec
+Oklahoma_Okmulgee,Oklahoma,Okmulgee,OK_ArkansasCacheLCimarron_D25,9,0.073,2026-09-15,,0.015,ok,
+Oklahoma_Okmulgee,Oklahoma,Okmulgee,OK_Statewide_D22,20,1.466,2024-10-16,,1.0,ok,rec
+Ohio_Monroe,Ohio,Monroe,OH_SOUTH_2007,20,0.074,2014-09-16,2007.0,1.0,ok,
+Ohio_Monroe,Ohio,Monroe,OH_Statewide_Phase2_2020_B20,204,4.191,2022-03-23,2020.0,1.0,ok,rec
+Oklahoma_Nowata,Oklahoma,Nowata,FEMA_R6_OK_Craig_Nowata_QL2_Lidar,21,0.539,2023-05-05,,1.0,ok,rec
+Missouri_Jackson,Missouri,Jackson,KS_JACKSONCO_2006,36,0.447,2014-10-01,2006.0,0.978,ok,
+Missouri_Jackson,Missouri,Jackson,KS_JOHNSONCO_2006,6,0.042,2014-10-01,2006.0,0.031,ok,
+Missouri_Jackson,Missouri,Jackson,KS_Statewide_2018_A18,2,1.147,2022-06-21,2018.0,0.903,ok,
+Missouri_Jackson,Missouri,Jackson,MO_FEMANRCS_2020_D20,16,0.942,2022-06-15,2020.0,1.0,ok,rec
+Missouri_Jackson,Missouri,Jackson,MO_WestCentral_2018_D19,6,0.21,2021-02-02,2018.0,0.205,ok,
+NewYork_Cattaraugus,New York,Cattaraugus,NY_SouthwestNY_2017_A17,20,2.117,2019-05-30,2017.0,1.0,ok,rec
+NewYork_Cattaraugus,New York,Cattaraugus,PA_Northcentral_2019_B19,23,0.968,2020-12-09,2019.0,0.357,ok,
+NewYork_Cattaraugus,New York,Cattaraugus,PA_STATEWIDE_N_2006_2008,5,0.332,2014-09-10,2008.0,0.876,ok,
+Kentucky_Lee,Kentucky,Lee,KY_CentralEast_A23,3,0.397,2024-07-23,,0.052,ok,
+Kentucky_Lee,Kentucky,Lee,KY_WestCentral_2017_C19,23,2.421,2026-02-06,2017.0,1.0,ok,rec
+Oklahoma_Creek,Oklahoma,Creek,NRCS_Dam_Rehab_Assessment,6,0.113,2016-12-07,,1.0,ok,
+Oklahoma_Creek,Oklahoma,Creek,OK_Statewide_D22,16,1.475,2024-10-16,,1.0,ok,rec
+California_LosAngeles,California,Los Angeles,CA_LosAngeles_B23,37,3.0,2025-06-13,,1.0,ok,rec
+California_LosAngeles,California,Los Angeles,USGS_LPC_CA_LosAngeles_2016_LAS_2018,55,0.863,2018-07-19,2018.0,0.997,ok,
+Pennsylvania_Forest,Pennsylvania,Forest,PA_STATEWIDE_N_2006_2008,7,0.584,2014-09-10,2008.0,1.0,ok,
+Pennsylvania_Forest,Pennsylvania,Forest,PA_WesternPA_2019_D20,20,0.946,2021-04-28,2019.0,1.0,ok,rec
+Ohio_Licking,Ohio,Licking,OH_SOUTH_2006,19,0.063,2014-09-16,2006.0,1.0,ok,
+Ohio_Licking,Ohio,Licking,OH_Statewide_Phase2_2020_B20,203,3.24,2022-12-02,2020.0,1.0,ok,rec
+Ohio_Noble,Ohio,Noble,OH_SOUTH_2007,20,0.069,2014-09-16,2007.0,1.0,ok,
+Ohio_Noble,Ohio,Noble,OH_Statewide_Phase2_2020_B20,205,4.002,2022-03-23,2020.0,1.0,ok,rec
+Oklahoma_Rogers,Oklahoma,Rogers,OK_Statewide_D22,16,1.432,2024-08-20,,1.0,ok,rec
+Louisiana_Caddo,Louisiana,Caddo,LA_Sabine_River_Lidar_2018_D18,36,9.722,2021-01-29,2018.0,1.0,ok,rec
+NewMexico_Lea,New Mexico,Lea,NM_SouthEast_2018_D19,40,0.918,2020-11-10,2018.0,1.0,ok,rec
+Pennsylvania_Washington,Pennsylvania,Washington,PA_STATEWIDE_S_2006_2008,9,0.375,2014-09-10,2008.0,1.0,ok,
+Pennsylvania_Washington,Pennsylvania,Washington,PA_WesternPA_2019_D20,20,4.288,2020-12-17,2019.0,1.0,ok,rec
+Kansas_Montgomery,Kansas,Montgomery,FEMA_R6_OK_Craig_Nowata_QL2_Lidar,10,0.287,2023-05-05,,0.382,ok,
+Kansas_Montgomery,Kansas,Montgomery,KS_Statewide_2018_A18,4,2.057,2022-06-27,2018.0,1.0,ok,rec
+Kansas_Montgomery,Kansas,Montgomery,Kansas_2013_LiDAR,4,0.611,2016-07-23,2013.0,1.0,ok,
+Kansas_Montgomery,Kansas,Montgomery,OK_Statewide_D22,3,0.142,2024-08-20,,0.01,ok,
+Kentucky_Ohio,Kentucky,Ohio,KY_WesternKY_A22,23,2.968,2023-03-22,,1.0,ok,rec
+Kentucky_Ohio,Kentucky,Ohio,NRCS_Lower_and_MiddleGreenPondRough,16,1.123,2016-08-22,,1.0,ok,
+Oklahoma_Tulsa,Oklahoma,Tulsa,OK_Woodward_FEMA_R6_Lidar_2016_D17,52,1.704,1899-12-28,2016.0,1.0,ok,rec
+Ohio_Perry,Ohio,Perry,OH_SOUTH_2007,21,0.078,2014-09-16,2007.0,1.0,ok,
+Ohio_Perry,Ohio,Perry,OH_Statewide_Phase2_2020_B20,204,4.523,2022-12-03,2020.0,1.0,ok,rec
+Oklahoma_Muskogee,Oklahoma,Muskogee,OK_ArkansasCacheLCimarron_D25,76,1.529,2026-09-15,,0.92,ok,
+Oklahoma_Muskogee,Oklahoma,Muskogee,OK_Statewide_D22,20,1.462,2024-10-16,,1.0,ok,rec
+Ohio_Columbiana,Ohio,Columbiana,OH_NORTH_2006,21,0.04,2014-09-16,2006.0,1.0,ok,
+Ohio_Columbiana,Ohio,Columbiana,OH_Statewide_Phase2_2020_B20,202,2.406,2022-12-05,2020.0,1.0,ok,rec
+Kentucky_Clinton,Kentucky,Clinton,KY_CentralEast_A23,18,1.884,2024-07-30,,1.0,ok,
+Kentucky_Clinton,Kentucky,Clinton,KY_WestCentral_2017_C19,18,1.235,2026-02-06,2017.0,1.0,ok,rec
+Kentucky_Cumberland,Kentucky,Cumberland,KY_CentralEast_A23,23,2.43,2024-07-30,,1.0,ok,rec
+NewMexico_Eddy,New Mexico,Eddy,NM_SouthEast_2018_D19,16,0.465,2020-10-14,2018.0,1.0,ok,rec
+Oklahoma_Kay,Oklahoma,Kay,NRCS_Dam_Rehab_Assessment,9,0.118,2016-12-07,,1.0,ok,
+Oklahoma_Kay,Oklahoma,Kay,OK_Statewide_D22,19,1.897,2024-08-20,,1.0,ok,rec
+Oklahoma_Pawnee,Oklahoma,Pawnee,NRCS_Dam_Rehab_Assessment,6,0.121,2016-12-07,,1.0,ok,
+Oklahoma_Pawnee,Oklahoma,Pawnee,OK_Statewide_D22,16,2.343,2024-08-20,,1.0,ok,rec
+Kentucky_Daviess,Kentucky,Daviess,KY_WesternKY_A22,17,1.327,2023-03-22,,1.0,ok,rec
+Kentucky_Daviess,Kentucky,Daviess,NRCS_Lower_and_MiddleGreenPondRough,21,0.887,2016-08-22,,1.0,ok,
+Illinois_Cumberland,Illinois,Cumberland,IL_8County_2020_A20,87,3.786,2021-05-25,2020.0,1.0,ok,rec
+Ohio_Morgan,Ohio,Morgan,OH_SOUTH_2007,22,0.081,2014-09-16,2007.0,1.0,ok,
+Ohio_Morgan,Ohio,Morgan,OH_Statewide_Phase2_2020_B20,204,13.596,2022-11-25,2020.0,1.0,ok,rec
+Kansas_Labette,Kansas,Labette,KS_Statewide_2018_A18,4,1.584,2022-04-27,2018.0,1.0,ok,rec
+Kansas_Labette,Kansas,Labette,Kansas_2013_LiDAR,4,0.307,2016-07-28,2013.0,1.0,ok,
+Ohio_Jefferson,Ohio,Jefferson,OH_NORTH_2006,18,0.064,2014-09-16,2006.0,1.0,ok,
+Ohio_Jefferson,Ohio,Jefferson,OH_Statewide_Phase2_2020_B20,203,3.769,2022-12-01,2020.0,1.0,ok,rec
+Ohio_Athens,Ohio,Athens,OH_SOUTH_2007,20,0.076,2014-09-16,2007.0,1.0,ok,
+Ohio_Athens,Ohio,Athens,OH_Statewide_Phase2_2020_B20,202,4.078,2022-12-03,2020.0,1.0,ok,rec
+Kentucky_Powell,Kentucky,Powell,KY_CentralEast_A23,6,0.832,2024-07-23,,0.269,ok,
+Kentucky_Powell,Kentucky,Powell,KY_WestCentral_2017_C19,19,1.94,2026-02-06,2017.0,1.0,ok,rec
+Kentucky_Magoffin,Kentucky,Magoffin,KY_CentralEast_A23,19,2.051,2024-07-23,,1.0,ok,rec
+Kentucky_Magoffin,Kentucky,Magoffin,KY_Eastern_2019_A19,7,0.357,2021-02-05,2019.0,0.227,ok,
+Kentucky_Magoffin,Kentucky,Magoffin,KY_Statewide_2021_A21,19,1.525,2023-01-06,2021.0,1.0,ok,
+Kentucky_Estill,Kentucky,Estill,KY_WestCentral_2017_C19,16,1.169,2026-02-06,2017.0,1.0,ok,rec
+Kentucky_Green,Kentucky,Green,KY_CentralEast_A23,19,1.981,2024-07-30,,1.0,ok,rec
+Texas_Pecos,Texas,Pecos,TX_WestTexas_2018_D19,18,1.667,2020-06-29,2018.0,1.0,ok,rec
+WestVirginia_Pleasants,West Virginia,Pleasants,OH_SOUTH_2007,8,0.022,2014-09-16,2007.0,0.328,ok,
+WestVirginia_Pleasants,West Virginia,Pleasants,OH_Statewide_Phase2_2020_B20,35,0.434,2022-03-23,2020.0,0.14,ok,
+WestVirginia_Pleasants,West Virginia,Pleasants,WV_FEMAR3_Southcentral_2018_D19,42,4.055,2021-01-29,2018.0,1.0,ok,rec
+Colorado_Phillips,Colorado,Phillips,CO_NESEColorado_2019_C20,43,2.116,2021-02-05,2019.0,1.0,ok,rec
+Arizona_Apache,Arizona,Apache,AZ_NavajoNation_D22,18,1.217,2023-07-13,,1.0,ok,rec
+NorthDakota_McKenzie,North Dakota,McKenzie,ND_Phase11_C24,8,0.538,2026-04-01,,0.596,ok,
+NorthDakota_McKenzie,North Dakota,McKenzie,USGS_LPC_ND_McKenzieCo_2014_LAS_2018,26,0.388,2018-09-26,2018.0,0.97,ok,rec
+Tennessee_Fentress,Tennessee,Fentress,USGS_LPC_TN_27County_blk1_2015_LAS_2018,17,2.917,2018-11-06,2018.0,0.995,ok,rec
+Wyoming_Crook,Wyoming,Crook,WY_FEMA_East_2019_D19,36,1.038,2020-07-21,2019.0,1.0,ok,rec
+Indiana_Spencer,Indiana,Spencer,IN_Indiana_Statewide_LiDAR_2017_B17,21,1.278,2020-10-09,2017.0,1.0,ok,rec
+Indiana_Spencer,Indiana,Spencer,Western_Indiana_LiDAR,21,0.78,2016-07-28,,1.0,ok,
+Arkansas_Ouachita,Arkansas,Ouachita,AR_Ouachita_FEMA_R6_Lidar_2016_D17,16,1.185,2018-06-15,2016.0,0.999,ok,rec
