@@ -39,7 +39,7 @@ Out. Retraining on California. Orphan labels from imagery. Wells per pad as a ta
 ## 4. Inputs
 | Input | Path | State |
 |---|---|---|
-| Frozen pad model and isolated 9t out-of-fold pad raster | `data/9t/models/pad/unet_iso_cv5/` (path to confirm, built by `s3_train/_pad_unet_iso_cv5.py`) | held, confirm |
+| Frozen pad model and isolated 9t out-of-fold pad raster | `data/9t/models/pad/unet_cv5_iso/` (written by `s3_train/_pad_unet_iso_cv5.py`, checked 2026-11-05) | held |
 | 9t pad annotations and blocks | `qgis/annotations/annotations_proj.gpkg`, `data/9t/derived/05/` | held |
 | Scorer and inference wrapper | `notebooks/wellsight_v2/s5_eval/_transfer_score.py`, `s4_infer/_transfer_infer.py` | planned in 3.0 |
 | 9t derivative builders (0.5 m) | `s1_build/_build_derivatives.py`, `_build_extra_channels.py` | held |

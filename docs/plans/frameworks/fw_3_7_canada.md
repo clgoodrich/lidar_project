@@ -37,7 +37,7 @@ Out. Retraining on Canadian data. Pooling provinces. Publishing candidate coordi
 ## 4. Inputs
 | Input | Path | State |
 |---|---|---|
-| Frozen model and 9t references | `data/9t/models/pit/unet_cv5/`, `unet_iso_cv5/` (after P1), pad equivalents | held, confirm |
+| Frozen model and 9t references | `data/9t/models/pit/unet_cv5/`, `unet_iso_cv5/` (after P1, not built yet), pad `data/9t/models/pad/unet_cv5/` and `unet_cv5_iso/` | pit isolated not built, rest held |
 | Scorer and wrapper | `notebooks/wellsight_v2/s5_eval/_transfer_score.py`, `s4_infer/_transfer_infer.py` | planned in 3.0 |
 | 9t builders | `s1_build/_build_derivatives.py`, `_build_extra_channels.py` | held |
 | Association code (after repair) | 5.6 framework scripts | planned |

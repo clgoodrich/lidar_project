@@ -136,4 +136,4 @@ Three slides. Slide 2 also mentions NISAR, so do not copy that text. Images extr
 | Slide 3 text | 467/503 pits 92.8%, 593/650 pads 91.2%, 722/735 roads 98.2%, precision 0.633 and 0.587, second tile pit recall 0.911 | Box 7 numbers. They match the ann712 CV5 F2 rows in `LEADERBOARD.md`, so these supersede the abstract |
 
 Gaps: no model-prediction overlay exists in the deck, so the hero must be built new. The pipeline text is about 9 pt at 13 in wide, far below the 32 pt floor.
-Check before use: the deck says QL2, March 2020, 9 tiles. The abstract says 2019 data. Resolve against `docs/methodology.md`.
+Resolved 2026-11-05: both are right. The USGS project is `PA_WesternPA_2019_D20`, flown leaf-off November 2019 to March 2020 (`docs/03_las_inspection_report.md:106`). On the poster write "USGS 3DEP 2019 project, flown Nov 2019 to Mar 2020". The deck's 503 pit floors and the leaderboard's 502 scored rims differ by one. 467/503 = 0.928 matches the F2 recall.

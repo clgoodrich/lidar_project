@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-05 recheck of this session's work
+- Split fix re-tested with the trainers' own `assign_folds` and fold loop. Old code over 12 fresh processes gave 5 different inner splits, none equal to the logged run (logged inner-val pits 85, 71, 64, 73, 66). New code gave one split in every run (pit inner-val pits 74, 61, 68, 76, 56). Both trainers. So any rerun will differ from the logged checkpoints in inner val, as recorded.
+- Frameworks. Checked every path the 21 rewritten frameworks mark as held. Two were wrong. The isolated pad model directory is `data/9t/models/pad/unet_cv5_iso/`, not `unet_iso_cv5/` (fixed in fw_3_6, fw_3_7, fw_7_3). No isolated pit model exists yet (P1), fw_7_3 had it as held (fixed). Confirmed from the repo: pad 197.95 ha vs about 110 ha (LEADERBOARD.md:317, tile-level and from the ann527-era sweep), empty land-cover folders, WV Pleasants 42-tile D19 window.
+- Methane inputs verified externally. Kang et al. 2014 PNAS mean 0.27 kg/day per well, median 1.3e-3 kg/day, 3 of 19 high emitters about three orders above the median. Carbon Mapper product guide gives Tanager 90% detection 90 to 180 kg/h at 3 m/s wind. Validation slides report about 200 kg/h observed. The 8,000 to 16,000 ratio stands. The high emitters (about 1.3 kg/day) are still roughly 1,500 to 3,000 times below the limit.
+- Poster: lidar date conflict resolved (2019 project flown Nov 2019 to Mar 2020).
+- Backup inventory: no backup-only row is a case-only rename of a local file.
+- Correction. The F: robocopy killed for low memory was started from this same session before /clear, not from another session as first reported.
+
 ## 2026-11-05 deferred expansion frameworks rewritten to full depth, assuming data exists
 - User directive: stop deferring, assume datasets and access exist, give the framework so it can be modified later. Seven agents rewrote 21 frameworks in `docs/plans/frameworks/` (140 to 205 lines each) with an Assumed data section tagged VERIFY: 3.2, 3.4 to 3.8, 4.2, 4.3, 4.4, 4.9, 5.2, 5.3, 5.5, 6.1, 6.2, 6.4, 6.6, 7.1 to 7.4.
 - `frameworks/README.md` tier table and `EXPANSION_MASTER_PLAN.md` section 3c updated. Gates and the section 3b verdicts are unchanged.

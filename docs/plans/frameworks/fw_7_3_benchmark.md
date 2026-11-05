@@ -37,7 +37,7 @@ Out. Road task in v1 (listed for v2). Wells, well identity and any association w
 | Audit files | `data/9t/results/splits/audit_blocks_9t_v1.csv`, `data/warren/results/transfer/audit_blocks_warren_v1.csv` | from P2 |
 | Exposure history | `docs/iterations/audit_set_history.md` | from P2 |
 | Scorer | 3.0 scorer, `notebooks/wellsight_v2/s5_eval/` (candidate extraction with `grep -rn "operating_point"`) | held, proposed |
-| Baseline models | `data/9t/models/pit/unet_cv5/`, `pad/unet_cv5/`, `pit/unet_iso_cv5/` | held, from P1 |
+| Baseline models | `data/9t/models/pit/unet_cv5/`, `pad/unet_cv5/`, `pad/unet_cv5_iso/` (held). `pit/unet_iso_cv5/` (P1 isolated pit trainer, not built yet) | partly held |
 | Uncertainty subset | 6.3 second-reviewer labels, `data/9t/results/confusers/` | from 6.3, proposed |
 | Datasheet draft | `docs/iterations/benchmark_card.md` | proposed |
 
