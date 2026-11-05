@@ -131,25 +131,6 @@ What would justify scaling up. A 7.5 pilot or a 4.6 source showing that a stated
 7. Is there a partner who can support probability-sampled area searches?
 
 ## 7. Not checked
-Warren header CRS. Warren area and block counts. Hammack et al. (2023). The Tanager detection threshold. Landsat and ECOSTRESS pixel sizes. The isolated pad comparison numbers. The 18 or 19 of 404 discrepancy. The 111 or 115 block wording. All sizes and coverage claims in the manifest.
+**Resolved 2026-11-05.** The 18 or 19 of 404 pad flags are both correct. 18 is the v1 surface (`change_features_summary_9t.json`, placebo 4.04%, 16.3 expected by chance). 19 is the v2 surface (`change_features_summary_v2_9t.json`, placebo 3.79%, 15.3 by chance). `icp_change_9t.md:750` quotes v1 and the methods text quotes v2. The pit-bearing block count is 115 (`pit_dataset_manifest.csv`), so "111" in the pit trainer docstring was stale and is fixed. Both trainers now drop NaN block ids before the inner shuffle (P1 step 1, reproduced as 8 identical splits in 8 fresh processes).
 
-## 8. Third review (`adversarial_codex_review_revised_20261104.md`)
-Checked 2026-11-04. Verified items are marked. No analysis was run.
-
-| # | Finding | Disposition | Check |
-|---|---|---|---|
-| 1 | `1 - null/observed` is not PPV | Accepted. Statistic renamed. PPV needs adjudicated sampling | Logic. Shifted records can overlap features while every observed link is right |
-| 2 | Exact reproduction of the sweep from the saved mosaic | Accepted. Archival and new baseline split | Sweep code fits per fold and floors per fold area. Mosaic is uint8, DN / 254, 255 nodata |
-| 3 | Overlapping and unit-mismatched gates, margin from fold spread | Accepted | 5.1 and 4.5 rows overlap. 4.5 mixes a rate and metres |
-| 4 | Field ambiguity bounds and the 1800 sentinel | Accepted | Sentinel listed as early era in protocol section 6 |
-| 5 | Lidar coverage ratios and listing scripts | Accepted. Catalogue is discovery only | Summary CSV rows and script lines (200 cap, failure to empty, URL dedupe). County script sampling not checked |
-| 6 | Circular historic-source gate | Accepted | The old 4.6 row used an excess over a null |
-| 7 | Mandatory thinning | Accepted. Native primary, thinning a sensitivity | Protocol section 3 rule 5 |
-| 8 | Methane closure scope | Accepted. Threshold checked | Carbon Mapper page, 90 to 180 kg/h and conditions |
-| 9 | Dependency and status contradictions | Accepted. Fixed in place | D2 gate, R4, R5, 5.6 plan line |
-
-**Unchanged.** K is 40, McKean is in scope and annotators did not see DEP points. The review does not reopen them.
-
-**Not checked.** Hammack 2023. Landsat and ECOSTRESS pixel sizes. The five-location claim about the county script. The claim that restoration eligibility is unknown for 4.5.
-
-**Follow-up work (desk only).** Listed in `docs/iterations/BACKLOG.md` under the third review.
+Still not checked. Warren header CRS. Warren area and block counts. Hammack et al. (2023). The Tanager detection threshold. Landsat and ECOSTRESS pixel sizes. The isolated pad comparison numbers. All sizes and coverage claims in the manifest.

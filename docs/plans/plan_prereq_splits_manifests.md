@@ -9,7 +9,7 @@
 **Inputs.** `notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py`, `_pad_unet_cv5.py`, the manifests in `data/9t/derived/05/`.
 
 **Architecture.**
-1. Fix the NaN handling in both trainers (drop rows with no block before building folds, and say how many).
+1. **Done 2026-11-05 (code only, no retrain).** Fix the NaN handling in both trainers (drop rows with no block before building folds, and say how many).
 2. Save explicit split files. A script `_save_cv_split_manifests_9t.py` exists and writes `data/9t/results/splits/`. Make the trainers read these files instead of rebuilding.
 3. Spatial check. Held-out and other-fold features had a minimum separation of 6.8 m in two pit folds (3 and 4). Add a buffered option and a check that fails above a stated limit.
 4. A hash of each split file recorded in the run provenance.

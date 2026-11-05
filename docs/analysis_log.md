@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-05 adversarial review (Tab 1.md) evaluated, P1 step 1 applied
+- `Tab 1.md` (repo root, untracked) has the same body as `docs/plans/adversarial_review_claude.md`, already folded into the plans (commit 72e687f, `docs/plans/review_response_20261104.md`). No new plan changes needed.
+- Re-checked its load-bearing claims. B1 numbers (27 of 424 pits within 25 m) and B4 verified. B4 reproduced: NaN block id lands at index 9 or 92 of `sorted(rest)` across fresh Python 3.13 processes.
+- Fix: `_pit_unet_cv5.py` and `_pad_unet_cv5.py` now drop NaN before the inner shuffle. 8 fresh processes give one identical permutation. Compiled only. **No retrain.** Existing checkpoints and logged cutoffs came from the old non-reproducible inner split, so a rerun of any fold will differ in validation blocks. Held-out folds are unchanged.
+- Resolved two review nits. 18 vs 19 of 404 pad flags is v1 vs v2 surface. 115 pit-bearing blocks, docstring said 111 (fixed).
+
+## 2026-11-05 backup to T7 (H:) and a record of backup-only files
+- `tools/backup_to_externals.ps1 -Only T7` ran clean: 1,346 files (2.27 GB) copied, 48,183 skipped, 0 failed, robocopy 3. Not hash-verified.
+- New `tools/backup_only_inventory.py` lists files on the mirror that are absent locally. First run: 1,794 files, 86.22 GB, nearly all under `data/`. Output `docs/backup_only_inventory.md` and `docs/_ledgers/backup_only_files_T7.csv`. Re-run after each backup.
+
 ## 2026-11-04 (later) county ranking and lidar listing rebuilt on the 2026 well file with fixed scripts
 - New `notebooks/wellsight_v2/s1_build/_rank_orphan_counties_us.py` writes `data/_source/reference/wells_us_orphan_2026/area_orphan_counts_by_county_us.csv` (1,128 counties, 118 wells unmatched, offshore and islands). Venango 4,368, McKean 4,153, Allegany NY 3,802, Washington OK 3,351 (was 1,544), Washington OH 3,134, Butler PA 2,765 (was 866).
 - New `_tnm_common.py` and `_list_lidar_windows_inventory_us.py` replace the two old listing scripts (marked SUPERSEDED). Fixes: paged queries with ok, empty, failed and incomplete status, no silent empties, project from URL path, coverage by area of the tile-box union, real tile sizes, an asset table and an asset-to-window table.
