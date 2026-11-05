@@ -112,6 +112,13 @@ Where this table and the Decision column in section 3 differ, this table wins. V
 
 Cross-cutting. The protocol was redesigned (done). The catalogue is discovery only. The review-response file records corrections but does not replace these edits.
 
+## 3c. No deferrals (decided 2026-11-05)
+The user ended the "defer" status. Every process now has a full execution framework in `frameworks/`. The 21 that were deferred or scoped (3.2, 3.4 to 3.8, 4.2, 4.3, 4.4, 4.9, 5.2, 5.3, 5.5, 6.1, 6.2, 6.4, 6.6, 7.1 to 7.4) were rewritten on the assumption that the data, access and partners exist. Each lists those assumptions in an "Assumed data" section, tagged VERIFY.
+
+What this changes. Nothing is parked for lack of a plan. Each of the 21 can be started the day its assumptions are confirmed.
+
+What this does not change. The gates and the review verdicts in section 3b stand. A framework is not a result. Three of them may end at an early, pre-specified close: 4.4 (satellite methane limit against the typical Pennsylvania leak), 4.3 question B (leak labels) and 4.2 (pad fill of a thermal pixel). Several need a decision from the user before they can start: the coal-rich test area for 6.2, a CO2 partner for 6.1, the useful-gain margin for 7.1 and 7.2, and the reviewer pair and adjudicator for 6.3, 3.1 and 7.2.
+
 ## 4. Order of work
 Desk work first. It needs no labels, no outside party and almost no data.
 1. **Decisions.** K policy, margin basis, whether annotators saw DEP points, McKean scope, reviewers (section 6).

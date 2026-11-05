@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-05 deferred expansion frameworks rewritten to full depth, assuming data exists
+- User directive: stop deferring, assume datasets and access exist, give the framework so it can be modified later. Seven agents rewrote 21 frameworks in `docs/plans/frameworks/` (140 to 205 lines each) with an Assumed data section tagged VERIFY: 3.2, 3.4 to 3.8, 4.2, 4.3, 4.4, 4.9, 5.2, 5.3, 5.5, 6.1, 6.2, 6.4, 6.6, 7.1 to 7.4.
+- `frameworks/README.md` tier table and `EXPANSION_MASTER_PLAN.md` section 3c updated. Gates and the section 3b verdicts are unchanged.
+- Checked: all 21 have the Assumed data and Gates sections, 0 em-dashes, no WellSight outside real wellsight_v2 paths. Not checked: prose colons and semicolons, and the facts inside the files. Several numbers and portal or literature names were recalled from memory by the agents and are marked VERIFY.
+- Nothing was run, downloaded or sent.
+
 ## 2026-11-05 lidar window download now saves inside the repo, not to F:
 - `_fetch_lidar_windows_us.py` default `--dest` was hardcoded `F:\lidar_project_data\lidar_us_windows`. It is now `data/_source/lidar/lidar_us_windows` under the repo root, the same drive the script runs from. `run_lidar_download.bat` comments updated. `.gitignore` gained `data/_source/lidar/lidar_us_windows/` in the same change (Large-file rule).
 - Space: full run is about 129 GB, Pennsylvania about 12.6 GB. C: had about 95 GB free on 2026-11-05, so only prefix runs fit there. Not run. Any tiles already on F: from the old default are not moved.
