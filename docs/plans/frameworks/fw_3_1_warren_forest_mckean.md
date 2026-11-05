@@ -58,7 +58,7 @@ Out. Adaptation fine-tuning (only if Arm 1 fails and the area can hold an adapta
 - Run `_project_ci_width_9t.py` with the number of test blocks and expected density. If projected width exceeds 2Δ, stop. Options. Add tiles from the Warren dense window (listed), add the Forest D20 window, or change Δ with a stated reason. Do not annotate before this passes.
 
 **S3. Rebuild derivatives at 0.5 m.**
-- Run the 9t derivative builders on the Warren LAZ with identical parameters (`_build_derivatives.py`, `_build_extra_channels.py`). Thin to 9t ground density if the Warren density differs, then grid at 0.5 m.
+- Run the 9t derivative builders on the Warren LAZ with identical parameters (`_build_derivatives.py`, `_build_extra_channels.py`). Grid native Warren points at 0.5 m. Thinning to 9t density is a separate sensitivity arm.
 - Output `data/warren/derived/05/features_pit_warren_05.tif` (add `.gitignore` rule) and a void-fraction raster. Assert channel order equals `features_pit_9t_05.tif`.
 - Time one block first and extrapolate.
 

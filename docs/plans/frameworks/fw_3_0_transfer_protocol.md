@@ -21,7 +21,7 @@ Out. Annotation (3.1), association with records (5.6), model retraining.
 - K = 40 candidates per km² of scored eligible area (user, 2026-11-04).
 - **Eligible area.** Union of complete scored blocks minus edge blocks that touch the data boundary or have void fraction above a preregistered cap.
 - **Secondary metric.** Recall at K = c times target feature density per km², c fixed from 9t.
-- Reference. 9t recall at the same K, computed from `data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif` (pads from the pad out-of-fold raster, path to confirm).
+- Reference. Two. Archival, rebuilt from the sweep's own fold object tables, cutoffs, fold areas and tie rules (`s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`). New baseline, one declared policy on isolated, fold-local-normalised out-of-fold predictions. The saved mosaic `pit_prob_floor_outoffold_9t_05.tif` is uint8 (DN / 254) and only supports a sanity check. Pad rasters, path to confirm.
 
 ## 4. Inputs
 | Input | Path | State |
@@ -57,13 +57,15 @@ P1 done. P2 done (for final claims). K = 40 per km² decided. The margin is set 
 - Outputs include the hash of every input and the preregistration.
 
 **S2. Reproduce 9t.**
-- Run S1 on the 9t out-of-fold raster, all 115 pit-bearing blocks. Compare recall at K = 30 and 40 with the operating-point sweep (0.781 at 30 with fold range 0.723 to 0.900, 0.909 at 40 with 0.881 to 0.935 interval).
-- Acceptance. Matches to three decimals. If not, find why before anything else. Write `docs/iterations/transfer_reproduce_9t.md`.
+- Archival check. Rebuild the historical statistic from the sweep's per-fold object tables (`cv5_sweep_objects_*`), fold-specific cutoffs, fold areas (budget floored per fold) and tie rules. Target 0.781 at 30 (fold range 0.723 to 0.900) and 0.909 at 40 (0.881 to 0.935). Acceptance. Matches to three decimals. Every discrepancy is explained.
+- Mosaic check. Run S1 on the uint8 mosaic as a sanity comparison only. Quantisation and seams are expected to differ. Report the gap, do not gate on it.
+- New baseline. After P1, run S1 on isolated out-of-fold predictions under one declared policy (one model or an ensemble). Compute it twice from a clean state. It must repeat exactly.
+- Write `docs/iterations/transfer_reproduce_9t.md`. Neither check is a transfer result.
 
 **S3. Inference wrapper for new areas.**
 - Script `notebooks/wellsight_v2/s4_infer/_transfer_infer.py` (new). CLI.
   `python _transfer_infer.py --area warren --tiles <list> --model <ckpt dir> --out <run_dir>`
-- Steps. Build 0.5 m derivatives with the 9t code path (`s1_build/_build_derivatives.py`, `_build_extra_channels.py`), not a different pipeline. Thin points to 9t ground density if needed. Run the frozen model over all five folds and average probabilities only if the preregistration says so (otherwise one model, named). Write probability raster and a void fraction raster.
+- Steps. Build 0.5 m derivatives with the 9t code path (`s1_build/_build_derivatives.py`, `_build_extra_channels.py`), not a different pipeline. Native target density is primary. A thinned arm is a separate sensitivity analysis. Run the frozen model over all five folds and average probabilities only if the preregistration says so (otherwise one model, named). Write probability raster and a void fraction raster.
 - Check. Channel count and order equal the 9t feature stack. Normalisation from the saved `norm_stats`. Assert no NaN band.
 
 **S4. Projected width tool.**
@@ -90,7 +92,7 @@ P1 done. P2 done (for final claims). K = 40 per km² decided. The margin is set 
 ## 9. Gates
 | Outcome | Rule | Action |
 |---|---|---|
-| Readiness | S2 reproduces the sweep exactly | Scorer certified |
+| Readiness | S2 archival check matches with every discrepancy explained, and the new baseline repeats exactly | Scorer certified |
 | Success (transfer) | Lower bound of the difference above minus Δ | Proceed to 3.2 or adaptation |
 | Failure | Upper bound below minus Δ | Error review. Do not claim transfer |
 | Inconclusive | Interval spans minus Δ, or projected width above 2Δ | Report. Change design or add blocks |

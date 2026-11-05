@@ -44,7 +44,7 @@ A partner and a safety plan. Landowner permissions. A decision on what counts as
 
 **S1. Sampling frames and draws.**
 - Script `notebooks/wellsight_v2/s6_review/_field_sample_draw.py` (new). Draw with a saved seed. Record inclusion probabilities.
-  - Arm A frame. All annotated pits and pads in audit blocks or a reserved area. Strata. Morphology type and era proxy (record date class including the 1800 sentinel, dated historic map presence). Allocation proportional with a floor of 10 per stratum.
+  - Arm A frame. All annotated pits and pads in audit blocks or a reserved area. Strata. Morphology type and era proxy (record date class with unknown dates (1800 sentinel) as their own class, dated historic map presence). Allocation proportional with a floor of 10 per stratum.
   - Arm B frame. Candidates at the frozen K, five equal-count score bands, equal allocation.
   - Arm C frame. Random 250 m by 250 m cells from the reserved area, with a buffer around Arm A and B sites. Search each cell in full.
 - Output `data/<area>/results/field/field_sample_v1.csv` frozen with hash.

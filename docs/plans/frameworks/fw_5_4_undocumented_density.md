@@ -36,7 +36,7 @@ Well-level precision and recall estimates need field data. The recall-gap result
 1. **Identifiability note** `docs/iterations/density_identifiability.md`. Write the equation, the assumptions, and a table of each term with its current evidence and what would identify it.
 2. **Sensitivity grid.** Script `s5_eval/_density_sensitivity_9t.py` (new). D from the 9t candidate count at K = 40 per km². p from 0.05 to 0.9 and r from 0.1 to 0.9. Output the implied total, missed and undocumented counts for the 9t footprint and the DEP complete population. File `data/9t/results/density/density_sensitivity_9t.csv` and a heat map (sequential single hue, labelled).
 3. **Bounds.** If r can approach 0 the total has no finite upper bound. State it.
-4. **Recall-gap redo plan.** After 5.6 is corrected: compare newly documented against previously documented wells using excess over cohort-specific nulls, stratified by DEP coordinate source.
+4. **Cohort association redo.** After 5.6 is corrected, compare newly documented against previously documented wells using normalised excess over cohort-specific nulls, stratified by DEP coordinate source. Descriptive only. It gives no recall-equivalence gate and no density input until verified denominators and coordinate error exist.
 5. **Capture-recapture (diagnostic).** Describe a two-source (records and detector) estimate and its independence assumptions. It is not automatically a lower bound.
 
 ## 7. Statistical analysis plan

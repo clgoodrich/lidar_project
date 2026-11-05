@@ -58,7 +58,7 @@ Every framework has these sections in this order.
 
 **Decision function.** For a difference with interval [lo, hi] and margin Δ.
 - Non-inferiority. Success if lo > −Δ. Failure if hi < −Δ. Else inconclusive.
-- Superiority. Success if lo > 0. Failure if hi < the smallest useful gain. Else inconclusive.
+- Superiority. Success if lo > the useful gain. Failure if hi < the same useful gain. Else inconclusive. One threshold serves both.
 - Inconclusive is reported as inconclusive. It is never described as no effect.
 
 **Multiplicity.** One primary estimand per experiment. Everything else is labelled exploratory. Radii, thresholds and cutoffs other than the preregistered one are sensitivity analyses.

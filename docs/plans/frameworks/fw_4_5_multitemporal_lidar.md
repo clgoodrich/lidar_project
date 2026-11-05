@@ -21,7 +21,7 @@ Out. Claims about plugging integrity. Surface restoration without dated earthwor
 - **Eligible plugged well.** DEP plug date strictly after the end of the 2006 to 2008 flight window for its tile and strictly before the start of the 2019 flight for its tile.
 - **Eligible control pad.** A pad with a well that was not plugged between the flights and that had the same baseline condition (active at 2006, still active or abandoned at 2019 with no plug), matched on slope, pad area and baseline disturbance.
 - **Pad-complex unit.** Analyse at pad or complex level, because several wells share a pad.
-- **Detectable floor.** Mean change that the processing chain can recover on slopes under 15 degrees (reported 0.16 to 0.22 m).
+- **Detectable floor.** Mean change that the processing chain can recover on slopes under 15 degrees (reported 0.16 to 0.22 m). This is a height specification in metres. It is separate from the rate gate.
 
 ## 4. Inputs
 | Input | Path | State |
@@ -71,8 +71,8 @@ Flight dates in hand. Eligible n known. Minimum n for a test set in the preregis
 | Outcome | Rule | Action |
 |---|---|---|
 | Readiness | Flight dates bounded and eligible n at or above the minimum | Run S2 to S5 |
-| Success | Lower bound above 0 and n meets the minimum | Report change associated with plugging |
-| Failure | Upper bound below the smallest change worth detecting | Report no detectable change at the floor |
+| Success | Lower bound above δ_rate (the useful flag-rate difference) and n meets the minimum | Report change associated with plugging |
+| Failure | Upper bound below δ_rate | Report no useful rate increase under the tested chain. Not evidence that restoration is invisible |
 | Inconclusive | Otherwise, including n below minimum | Report and say why |
 
 ## 10. Deliverables

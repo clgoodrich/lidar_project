@@ -11,7 +11,7 @@ The pit and pad models see one patch at a time. Roads, pads and neighbouring pit
 **Q1. Context reliance.** Does the pit score depend on the surrounding pad and road context?
 **Q2. Context gain.** Does a second-stage model built on out-of-fold maps raise recall at K = 40 per km² over the first stage?
 
-**Hypotheses.** Q1. Removing context changes pit scores (paired difference in score and rank), relative to sham edits. Q2. Stage 2 recall at K minus stage 1 recall at K is above 0 by at least the useful gain.
+**Hypotheses.** Q1. Removing context changes pit scores (paired difference in score and rank), relative to sham edits. Q2. Stage 2 recall at K minus stage 1 recall at K clears the useful gain δ_gain (success if the lower bound is above it, failure if the upper bound is below it).
 
 ## 2. Scope
 In. Reliance test with edits, shared fold scheme, retraining pad and road models as needed, stage-2 features and learner, leakage audit.
@@ -68,7 +68,7 @@ One block-fold scheme for all upstream models. GPU hours for retraining pad and 
 
 ## 7. Statistical analysis plan
 - Q1 primary. Paired score change (original minus context-removed) for real pits minus the same for shams, median and block bootstrap interval. Rank change likewise.
-- Q2 primary. Recall at K, stage 2 minus stage 1, paired block bootstrap over outer-fold blocks. Superiority against the smallest useful gain (user, per experiment).
+- Q2 primary. Recall at K, stage 2 minus stage 1, paired block bootstrap over outer-fold blocks. Superiority against δ_gain (user, per experiment, from downstream value and cost). One threshold serves success and failure.
 - Secondary. Calibration, feature importance (permutation importance by block resampling), gain by block feature density.
 
 ## 8. Quality control
@@ -80,8 +80,8 @@ One block-fold scheme for all upstream models. GPU hours for retraining pad and 
 ## 9. Gates
 | Outcome | Rule | Action |
 |---|---|---|
-| Success | Gain lower bound above the useful gain | Adopt stage 2. Test in 3.1 |
-| Failure | Upper bound below the useful gain | Keep stage 1 |
+| Success | Gain lower bound above δ_gain | Adopt stage 2. Test in 3.1 |
+| Failure | Upper bound below δ_gain | Keep stage 1 |
 | Inconclusive | Otherwise | Report |
 | Leakage audit failure | Any | Void the run |
 

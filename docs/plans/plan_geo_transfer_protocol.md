@@ -30,7 +30,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 **Decision.** Bounded pilot.
 
 - K is candidates per km² of scored area. Section 2 of the protocol sets metric, reference raster and density reporting. K policy is a user decision.
-- Step 1 is deterministic. Reproduce the 9t operating-point sweep from `pit_prob_floor_outoffold_9t_05.tif` exactly before any new area.
+- Step 1 is two checks. Archival. Rebuild the historical sweep from its own fold tables, cutoffs and fold areas. New baseline. Compute a clean reference with isolated training and one declared policy. The saved mosaic `pit_prob_floor_outoffold_9t_05.tif` is uint8 (DN / 254) and is not an exact record of the original scores.
 - Use the isolated trainer family. The original sampler can read held-out windows.
 - Preprocessing stays at 0.5 m. Fold-local normalisation.
 - The acceptance test is a readiness gate. The scientific gate is in protocol section 5.

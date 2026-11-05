@@ -11,7 +11,7 @@
 **Architecture.**
 1. `docs/iterations/density_identifiability.md` writes the equation, what must be known for each term, and which terms are currently unidentified.
 2. `_density_sensitivity.py` sweeps p and r over plausible ranges and writes `data/9t/results/density/density_sensitivity_9t.csv`.
-3. Recall-gap study as in `recall_gap_newly_documented_9t.md`, once more data is available. Match groups on location, status and acquisition eligibility. Separate new discoveries from reclassifications.
+3. Cohort association comparison (formerly the recall-gap study, with no recall-equivalence gate) as in `recall_gap_newly_documented_9t.md`, once more data is available. Match groups on location, status and acquisition eligibility. Separate new discoveries from reclassifications.
 4. Define the counting unit as a well, not a blob.
 
 **Method outline.** Sensitivity and identifiability first. A density surface comes only after well-level precision and detection probability are supported by field data.

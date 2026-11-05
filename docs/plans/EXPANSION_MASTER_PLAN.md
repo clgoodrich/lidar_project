@@ -22,7 +22,7 @@ The central unknown sits under all four. Whether a drawn feature is a well. On 9
 | [download_list_areas_and_lidar.md](download_list_areas_and_lidar.md) | Areas with many old wells, well databases fetched, tile-level lidar lists |
 | [README.md](README.md) | Index of the plan files and shared rules |
 | [frameworks/README.md](frameworks/README.md) | **One execution framework per process** (37 plus a common one). Stages, scripts, paths, statistics, QC, gates, handoff |
-| 37 plan files | One per idea. Each ends with a Review revisions section that overrides the text above it |
+| 37 plan files | One per idea. Review revision blocks at the end of 23 of them match the edited text above them |
 | `docs/iterations/expansion_options_methods.md`, `expansion_gameplan_feasibility.md` | Older source documents. Superseded in part by the protocol |
 | [adversarial_codex_review_20261104.md](adversarial_codex_review_20261104.md), [adversarial_review_claude.md](adversarial_review_claude.md) | The two reviews |
 
@@ -31,7 +31,7 @@ The central unknown sits under all four. Whether a drawn feature is a well. On 9
 |---|---|---|---|---|---|
 | P1 | Reproducible splits and manifests | Foundation | Proceed, rescoped | None | [plan_prereq_splits_manifests.md](plan_prereq_splits_manifests.md) |
 | P2 | Audit set and training history | Foundation | Proceed, rescoped | None | [plan_prereq_audit_set.md](plan_prereq_audit_set.md) |
-| 3.0 | Transfer protocol | Transfer | Bounded pilot | None. Uses the saved 9t raster | [plan_geo_transfer_protocol.md](plan_geo_transfer_protocol.md) |
+| 3.0 | Transfer protocol | Transfer | Bounded pilot | None. Uses the sweep's own tables, then a clean baseline | [plan_geo_transfer_protocol.md](plan_geo_transfer_protocol.md) |
 | 3.1 | Warren and Forest | Transfer | Redesign as within-survey case study | Warren on disk. D1 metadata. Forest D20 window listed. B19 gated | [plan_geo_warren_forest.md](plan_geo_warren_forest.md) |
 | 3.2 | Ohio, West Virginia, New York, Kentucky | Transfer | Defer | Windows listed (NY, OH, KY, WV) | [plan_geo_appalachian_states.md](plan_geo_appalachian_states.md) |
 | 3.3 | Illinois and Michigan, low relief | Model | Redesign, slope stratification first | IL and MI windows listed, gated | [plan_geo_low_relief_midwest.md](plan_geo_low_relief_midwest.md) |
@@ -67,12 +67,57 @@ The central unknown sits under all four. Whether a drawn feature is a well. On 9
 | 7.4 | Agency tooling | Scale | Defer | None | [plan_scale_agency_tooling.md](plan_scale_agency_tooling.md) |
 | 7.5 | Field campaign | Evidence about wells | Redesign, highest value | R3, R4, a partner | [plan_scale_field_campaign.md](plan_scale_field_campaign.md) |
 
+## 3b. Review verdicts (third review, 2026-11-04)
+Verdict is the strongest defensible next scope, not authority to execute. A bounded pilot shows feasibility or local evidence, not population validation. Source. `adversarial_codex_review_revised_20261104.md` coverage table, checked in `review_response_20261104.md` section 8.
+
+| ID | Verdict | Smallest defensible next step |
+|---|---|---|
+| P1 | Proceed | Immutable future splits, whole-window and normalisation checks. Historical roles stay unknown |
+| P2 | Proceed | Inventory every use of each 9t block. Reserve a separate final area |
+| 3.0 | Redesign | Separate the archival check from a new frozen policy |
+| 3.1 | Bounded pilot | Audit one footprint's coverage. Measure blind annotation effort before sizing |
+| 3.2 | Defer | Repair catalogue completeness first. Pick one contrast after 3.1 |
+| 3.3 | Bounded pilot | Prespecified retrospective slope diagnostic with counts and uncertainty |
+| 3.4 | Defer | Define observable targets. Audit one area's metadata |
+| 3.5 | Defer | Verify coverage and target morphology |
+| 3.6 | Defer | State an observable target and a decision use. Audit a small example set |
+| 3.7 | Defer | Metadata and access inventory only |
+| 3.8 | Defer | Observability and stable-reference note |
+| 4.1 | Redesign | Correct strata. Pilot known targets, metal confusers and blanks |
+| 4.2 | Defer | Quantify target support and detectable contrast first |
+| 4.3 | Defer | Choose morphology screening or independently labelled leakage first |
+| 4.4 | Defer | Close routine small-well screening with a scoped note. Threshold now checked |
+| 4.5 | Blocked | Date bounds and eligible site count. Then full-chain recovery |
+| 4.6 | Bounded pilot | Inspect coverage and legibility apart from lidar or DEP agreement |
+| 4.7 | Blocked | Wait for the NETL request. Check terms and metadata |
+| 4.8 | Bounded pilot | Small predefined chip set. Record acquisition and visibility apart |
+| 4.9 | Defer | Finish the narrow negative-result statement. No new imagery |
+| 5.1 | Redesign | Common folds and all cross-fitting specified before retraining |
+| 5.2 | Blocked | Small identity-resolved dated subset through 4.6 |
+| 5.3 | Defer | Name the decision and a measurable endpoint first |
+| 5.4 | Redesign | Distinct-well accounting and bounds as recall varies |
+| 5.5 | Defer | Establish a decision that needs area, and an independent reference |
+| 5.6 | Redesign | Repair the input. Rename the statistic. Adjudicate a sample for PPV |
+| 6.1 | Defer | Specify the partner decision and missing subsurface information |
+| 6.2 | Defer | Small identity audit only if a use case appears |
+| 6.3 | Bounded pilot | Blind codebook and throughput pilot before training |
+| 6.4 | Defer | Keep out of the current pipeline |
+| 6.5 | Bounded pilot | Background, repeat and calibration procedures with 7.5 |
+| 6.6 | Defer | Separate project |
+| 7.1 | Defer | Choose the estimand and cost accounting after P1 and P2 |
+| 7.2 | Defer | Random-area discovery and time-based accounting |
+| 7.3 | Defer | Datasheet after P1 and P2 |
+| 7.4 | Defer | Input validity and provenance requirements only |
+| 7.5 | Redesign | Repair outcome accounting and sampling frames. Then a partner pilot |
+
+Cross-cutting. The protocol was redesigned (done). The catalogue is discovery only. The review-response file records corrections but does not replace these edits.
+
 ## 4. Order of work
 Desk work first. It needs no labels, no outside party and almost no data.
 1. **Decisions.** K policy, margin basis, whether annotators saw DEP points, McKean scope, reviewers (section 6).
 2. **P1.** Make the inner split deterministic, label historical splits, specify an isolated pit trainer.
 3. **Send requests R1 to R3.** NETL, DEP coordinate provenance, magnetometer partner. Longest lead time. Drafts exist.
-4. **3.0.** Reproduce the 9t operating-point sweep from the saved raster. Project the Warren interval width by resampling 9t blocks.
+4. **3.0.** Archival check from the original tables, then a clean new baseline. Project the Warren interval width by resampling 9t blocks.
 5. **4.6 search.** Look for pre-1880 map sources and 1937 to 1942 aerials. Then three more topo sheets.
 6. **5.6 repair.** Fix the association input, then rerun as exploratory.
 7. **3.3 step 4.** Slope stratification of existing recall.

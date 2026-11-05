@@ -6,7 +6,7 @@
 **Blocks.** 7.5 field design.
 
 ## 1. Problem and objective
-Lidar sees the surface. Steel casing sits below it. A magnetometer can detect buried steel and give independent coordinates. NETL states that magnetics need intact metal casing and cannot see wooden or removed casing (confirmed at its page). A review cites Hammack et al. (2023) for missed 1860 to 1880 wells in forested Pennsylvania (reported, not yet read). So a null is uninformative exactly where undocumented wells are most likely.
+Lidar sees the surface. Steel casing sits below it. A magnetometer can detect buried steel and give independent coordinates. NETL states that magnetics detect ferromagnetic material (casing remnants and other oil-field metal alike) and cannot see wooden or removed casing (confirmed at its page). A review cites Hammack et al. (2023) for missed 1860 to 1880 wells in forested Pennsylvania (reported, not yet read). So a null is uninformative exactly where undocumented wells are most likely.
 
 **Objective.** A practical pilot at 3 to 5 sites that measures (a) whether an anomaly is detectable and (b) how far it sits from the borehole and from the lidar centroid, with era strata and confusers. It tests practicality, not population sensitivity.
 
@@ -15,7 +15,7 @@ In. Ground magnetometer pilot, processing, reporting, protocol for later UAV.
 Out. Population sensitivity (7.5). UAV or helicopter surveys (a separate sub-study).
 
 ## 3. Definitions
-- **Era strata.** (1) Documented steel-era well (DEP record with a post-1930 date). (2) Early-era well (1800 sentinel, or on a dated historic map). (3) Pit with no record. (4) Metal confuser (culvert, fence, buried pipe, vehicle). (5) Blank control.
+- **Era strata.** (1) Documented steel-era well (DEP record with a post-1930 date). (2) Early-era well (independently dated, for example on a historic map). (2b) Unknown-date well (1800 sentinel), its own stratum. (3) Pit with no record. (4) Metal confuser (culvert, fence, buried pipe, vehicle). (5) Blank control.
 - **Anomaly.** A residual field feature above 3 times the local noise standard deviation after removing the regional field and diurnal drift, with a dipole or monopole shape consistent with a vertical steel casing.
 - **Localisation error.** Distance from anomaly peak to the surveyed borehole or wellhead, where one is visible.
 

@@ -35,7 +35,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - Era strata for magnetometry. Wooden or removed casing is invisible.
 - Sample sizes of 43, 96 and 24 sites per estimate give plus or minus 15, 10 and 20 points under simple random sampling. Forty sites in total cannot support five score bins.
 
-**Downloads and requests.** R3, R4.
+**Downloads and requests.** R3. R4 is answered.
 
 ## Review revision 2 (third review, 2026-11-04)
 Identity status is separate from outcome. Lower bound is confirmed-well weight over total sampled weight. Upper bound is one minus definite-non-well weight over total. Ambiguous and inaccessible sites sit in the gap. Use inference suited to a weighted, clustered sample.

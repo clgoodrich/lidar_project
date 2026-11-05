@@ -12,7 +12,7 @@ Agency records have coordinates of unknown accuracy. A detected feature near a r
 
 **Objective.** A correct, preregistered association analysis with a defensible null, a positive control and a statistic that tells a crew how often a proposed link is right. Validation only with independent coordinates.
 
-**Hypotheses.** H1. DEP records of a given status sit closer to detected features than a shifted-record null. The effect is expressed as the predictive value 1 minus null over observed.
+**Hypotheses.** H1. DEP records of a given status sit closer to detected features than a shifted-record null. The effect is expressed as normalised excess association over the null. It is not link precision.
 
 ## 2. Scope
 In. 9t full detector output and full annotations. Seven other state databases held (NY, KY, OK, IL, WV, OH, KS) for later use.
@@ -26,7 +26,7 @@ Out. Coordinate correction without independent points.
 - **Statuses.** Orphan or abandoned (DEP Orphan List, DEP Abandoned List), plugged, active.
 - **Primary radius.** Pits 50 m. Pads inside the polygon. Others are sensitivity.
 - **Positive control.** Active wells at pad level.
-- **Predictive value.** PV = 1 minus null mean over observed. Interval from the null distribution.
+- **Normalised excess association.** Observed rate minus null mean, with an interval from the null distribution. It is not PPV. Link PPV comes only from blinded identity adjudication of a probability sample of accepted links, with ambiguous outcomes kept and inclusion weights.
 - **Independent coordinates.** GNSS positions or NETL surveyed sites. None held yet.
 
 ## 4. Inputs
@@ -44,7 +44,7 @@ Out. Coordinate correction without independent points.
 
 ## 5. Prerequisites and decisions
 - Annotators did not see DEP points (user, 2026-11-04). Annotation context (roads, pads, imagery) is still unrecorded. Keep the caveat.
-- Preregister the primary radius, the null and the field-use minimum predictive value.
+- Preregister the primary radius, the null and the field-use minimum link PPV (from the adjudicated sample).
 - DEP coordinate provenance changes the cohort analysis (A6) but not the 9t association.
 
 ## 6. Procedure
@@ -58,7 +58,7 @@ Out. Coordinate correction without independent points.
   3. Observed rates per status and radius.
   4. Null. Translate the whole record set as one by a vector of length 200 to 500 m in a random direction, 300 shifts, seed in the preregistration. Keep eligible records fixed. Reject and redraw shifts that move more than 10% of records outside the footprint, and report each shift's retained count. State what the null conditions on (spatial gradients in oil development and road density are only partly preserved).
   5. Global one-to-one assignment (Hungarian) across all statuses, or publish per-status outputs labelled "competing proposals".
-  6. PV and intervals.
+  6. Excess association and intervals. Link PPV from the adjudicated sample.
 - Output run folder `data/9t/results/records/<run_id>/` with `rates.csv`, `proposals.csv`, `summary.json`, figure (observed blue, null grey with 95% band and a second marker shape).
 
 **S2. Three analyses.**
@@ -69,7 +69,7 @@ Out. Coordinate correction without independent points.
 
 **S3. Positive control and power.**
 - Report whether the active-pad control exceeds the null. If it does not, the test is uninformative and the target-group result cannot be interpreted.
-- Power. Report the minimum detectable PV given the number of records and the null width.
+- Power. Report the minimum detectable excess given the number of records and the null width.
 
 **S4. Cohort stratification.**
 - Split orphan or abandoned records into those on the 2022 orphan list and newly documented ones (permit key `121-<n>` against the 2022 CSV). Cohort-specific nulls. Stratify by DEP coordinate source once R1 answers. Never compare raw match rates between cohorts.
@@ -81,7 +81,7 @@ Out. Coordinate correction without independent points.
 - With GNSS or NETL points. For each proposed association compute the position error before (record to GNSS) and after (candidate centroid to GNSS). Report paired change, wrong matches and abstentions. Proximity excess alone never passes coordinate correction.
 
 ## 7. Statistical analysis plan
-- Primary. Excess over the shifted null at the preregistered radius and PV, per status, with null-based 95% interval.
+- Primary. Excess over the shifted null at the preregistered radius, per status, with null-based 95% interval.
 - Positive control. Active at pad level, lower bound of excess above 0.
 - Secondary. Sensitivity over radii (10, 25, 50, 75, 100 m pits; inside, 25, 50 m pads).
 - Validation (when data exist). Paired position-error difference with block bootstrap over records, non-inferiority and superiority.
@@ -96,7 +96,7 @@ Out. Coordinate correction without independent points.
 ## 9. Gates
 | Outcome | Rule | Action |
 |---|---|---|
-| Positive control passes and target group PV lower bound above the field-use minimum | Association is informative | Offer proposals to a crew for a field test |
+| Positive control passes and the target group's adjudicated link PPV lower bound is above the field-use minimum | Association is informative | Offer proposals to a crew for a field test |
 | Positive control passes and target upper bound below the minimum | Records do not mark features at these radii | Stop automatic snapping on 9t. Say so. Do not stop all association work |
 | Positive control fails | Uninformative | Fix power or the null |
 | Validation | Position error improves with interval above 0 on independent points | Consider a coordinate-correction pilot |

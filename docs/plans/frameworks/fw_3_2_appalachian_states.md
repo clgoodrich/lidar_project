@@ -21,7 +21,7 @@ Out. Between-state comparison statistics.
 | Input | State |
 |---|---|
 | Well databases NY, KY, OH, WV (and PA) | downloaded (`data/_source/reference/wells_*`) |
-| Windows and tile URLs | listed: NY Allegany A17 (11 tiles, 1.15 GB), Cattaraugus A17 (20, 2.12), OH Washington B20 (192, 3.61), Monroe, Noble, Perry; KY Lee C19 (16, 1.68), Powell, Cumberland; WV Pleasants D19 (about 628 tiles over the county, window to compute) |
+| Windows and tile URLs | listed: NY Allegany A17 (11 tiles, 1.15 GB), Cattaraugus A17 (20, 2.12), OH Washington B20 (192, 3.61), Monroe, Noble, Perry; KY Lee C19 (16, 1.68), Powell, Cumberland; WV Pleasants (window listed with 19 Ohio-project tiles and a 38-tile West Virginia D19 project, the county holds about 628 D19 tiles, which project covers the window is unverified) |
 | Dated old wells | NY (since 1860), KY (completion date) |
 
 ## 5. Prerequisites and decisions

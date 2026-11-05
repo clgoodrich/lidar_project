@@ -70,7 +70,7 @@ Preregister the RMSE limit, digitiser agreement level, and the shifted-null radi
 ## 7. Statistical analysis plan
 - Georeferencing. RMSE with bootstrap interval over check points.
 - Symbol agreement. Proportion with exact interval.
-- Excess match to DEP over shifted null at the preregistered radius. Interval from the null distribution.
+- Association (separate, later outcome). Excess match to DEP over shifted null at the preregistered radius. Interval from the null distribution. It never decides source readiness.
 - Match to model candidates. Fraction of marks within the feature polygon at K = 40, exact interval.
 - Exploratory. Era of the source against feature morphology type.
 
@@ -83,7 +83,7 @@ Preregister the RMSE limit, digitiser agreement level, and the shifted-null radi
 ## 9. Gates
 | Outcome | Rule | Action |
 |---|---|---|
-| Source usable | RMSE under limit, agreement above level, interpretable symbols, excess over null lower bound above 0 | Digitise and use as level (b) evidence |
+| Source usable for a stated use | Provenance, dates and coverage known, total positional uncertainty (registration, symbol placement, borehole offset) within the use's limit, two-digitiser agreement above level, interpretable symbols | Digitise and use as level (b) evidence |
 | Source unusable here | RMSE over limit, or no interpretable symbols across several dates | Record and move on. Never generalise from one sheet |
 | Inconclusive | Coverage or interpretation insufficient | Report and test the next source |
 

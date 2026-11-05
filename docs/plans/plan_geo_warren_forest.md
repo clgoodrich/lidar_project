@@ -34,11 +34,11 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 - The seven Warren tiles are the same USGS D20 program as 9t. This tests spatial transfer inside one survey, not a new sensor.
 - The area is about 7 km² (reviewer figure, not measured) against 20 km² for 9t. Before annotating, project the interval width by resampling as many 9t blocks as Warren can supply. Drop the adaptation role if the area cannot hold it. If the projected width exceeds twice the margin, change the design.
 - The Warren preregistration draft is invalid as written. K is the count of annotated features and the reference 0.928 is cutoff-based. Rewrite it from protocol section 2 before use.
-- Rebuild Warren derivatives at 0.5 m with the 9t code. The 1 m derivatives on disk break the preprocessing freeze. Report void fraction per block and thin to 9t ground density.
+- Rebuild Warren derivatives at 0.5 m with the 9t code. The 1 m derivatives on disk break the preprocessing freeze. Report void fraction per block. Score native Warren density as the primary test. Thinning to 9t density is a separate sensitivity arm.
 - Derive the buffer. Score complete blind blocks including empty ones. Time one block of annotation first.
 - Eastern Warren and Forest QL1 (B19, about 9 points per m²) is a separate sensor-shift arm, gated on the within-survey result. Forest readiness is unverified.
 
-**Downloads and requests.** D1 now. D11 gated. R4 and R6 needed.
+**Downloads and requests.** D1 now. D11 gated. R6 needed. R4 is answered.
 
 **Scope update 2026-11-04.** McKean is in scope for the expansion (user). Use its B19 data (about 9 points per m², same program as the Forest B19 piece) as the sensor-shift arm. A 36-tile, 2.1 GB window is listed below. K is 40 per km². The recall-loss margin is set in the preregistration before scoring.
 

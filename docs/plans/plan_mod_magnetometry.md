@@ -31,7 +31,7 @@ Source. `docs/plans/review_response_20261104.md`. Rules. `docs/plans/protocol_ga
 **Decision.** Redesign, then pilot.
 
 - Magnetics need intact steel casing. NETL says wooden or removed casing is invisible (confirmed at its page). A review cites Hammack et al. (2023) for missed 1860 to 1880 wells in forested Pennsylvania. That citation is reported, not read.
-- Add era strata to the site list. Documented steel-era wells, early-era wells (1800 sentinel or on a dated map), pits with no record, metal confusers, blanks. Report P(anomaly) by stratum, never pooled.
+- Add era strata to the site list. Documented steel-era wells, early-era wells (independently dated, for example on a historic map), unknown-date wells (1800 sentinel, its own stratum), pits with no record, metal confusers, blanks. Report P(anomaly) by stratum, never pooled.
 - Add non-magnetic evidence for the early stratum (cellar walls, wood casing remnants, cable-tool debris, historic map position).
 - Record localisation error. An anomaly need not coincide with the borehole. Ground and UAV are separate sub-studies.
 - Three to five sites test practicality, not sensitivity.
