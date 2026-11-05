@@ -5,5 +5,12 @@
     "bytes": 101617,
     "sha256": "196f39dc2727eec08ea5e054f9a663b9f4b940e8cfee36fdaaa5e7f74e7807bb",
     "note": "Metadata for the same release."
+  },
+  "US_orphaned_wells_2026.csv": {
+    "url": "manual browser download by the user from doi:10.5066/P13FHBYG (ScienceBase)",
+    "accessed": "2026-11-04",
+    "bytes": 28855050,
+    "sha256": "c495657cab170cf50be27ac84b8934b0639dca863816135dd8e6fbdcc9183e2a",
+    "note": "2026 update. 130,121 rows, 28 states, 30 columns, valid CSV (checked)."
   }
 }

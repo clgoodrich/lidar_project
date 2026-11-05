@@ -5,6 +5,11 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) USGS 2026 orphan well CSV added
+- The user downloaded it by hand. Now at `data/_source/reference/wells_us_orphan_2026/US_orphaned_wells_2026.csv` (28.9 MB, 130,121 rows, 28 states, 30 columns). SHA-256 and provenance are in the folder's `_PROVENANCE.json` and `data/_source/_download_ledger.csv`.
+- Counts differ from the 2022 release. Ohio +2,202, Pennsylvania +2,102 (19,160 to 21,262), Oklahoma +4,010, Kentucky +2,943, Texas +3,144. Illinois fell by 4,494 and Kansas by 911. Venango fell from 4,786 to 4,368 while Pennsylvania rose.
+- The county ranking and lidar windows were built on 2022. They have not been rebuilt. Status definitions or de-duplication may have changed between releases.
+
 ## 2026-11-04 (later) third adversarial review checked and folded into the protocol
 - `docs/plans/adversarial_codex_review_revised_20261104.md`. Nine findings, all accepted after checks. Verified the per-fold sweep, the uint8 mosaic (DN / 254), the overlapping 5.1 and 4.5 gates, the lidar cover rows, the listing script limits and the Tanager threshold.
 - Edited in place: protocol sections 2 to 6, 9, 10, 13, new section 16. Master plan, manifest, 5.6 plan, 23 plans and frameworks, `fw_00_common.md`, response doc section 8, BACKLOG, CITATIONS.

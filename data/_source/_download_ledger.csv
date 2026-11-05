@@ -14,3 +14,4 @@ wells_us_orphan_2022,US_orphaned_wells.csv,22.2,,2026-11-04,231ba0154d,data/_sou
 wells_us_orphan_2022,US_orphaned_wells.xml,0.1,,2026-11-04,d293b94c8f,data/_source/reference/wells_us_orphan_2022/US_orphaned_wells.xml
 wells_us_orphan_2026,US_orphaned_wells_2026.xml,0.1,,2026-11-04,196f39dc27,data/_source/reference/wells_us_orphan_2026/US_orphaned_wells_2026.xml
 wells_wv_dep,wv_dep_all_wells.csv.gz,13.6,154254,2026-11-04,b82ba36d40,data/_source/reference/wells_wv_dep/wv_dep_all_wells.csv.gz
+wells_us_orphan_2026,US_orphaned_wells_2026.csv,28.9,130121,2026-11-04,c495657cab,data/_source/reference/wells_us_orphan_2026/US_orphaned_wells_2026.csv
