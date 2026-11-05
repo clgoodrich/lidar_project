@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-04 (later) old wording removed from plans and frameworks after the third review
+- Replaced superseded text in place (predictive value, exact sweep reproduction, thinning to 9t density, 1800 sentinel as early era, 4.5 and 5.1 one-sided gates, 4.6 shifted-null source gate, recall-gap wording, R4 as open, the 3.2 Pleasants line) across 13 plans and 14 frameworks. Added a verdict table (section 3b) to the master plan and rewrote the P1 and 3.3 gate rows.
+- Still open. Listing-script fixes, the rebuilt county ranking on the 2026 file, unread sources (Hammack 2023, Landsat and ECOSTRESS specs). Nothing was run.
+
 ## 2026-11-04 (later) USGS 2026 orphan well CSV added
 - The user downloaded it by hand. Now at `data/_source/reference/wells_us_orphan_2026/US_orphaned_wells_2026.csv` (28.9 MB, 130,121 rows, 28 states, 30 columns). SHA-256 and provenance are in the folder's `_PROVENANCE.json` and `data/_source/_download_ledger.csv`.
 - Counts differ from the 2022 release. Ohio +2,202, Pennsylvania +2,102 (19,160 to 21,262), Oklahoma +4,010, Kentucky +2,943, Texas +3,144. Illinois fell by 4,494 and Kansas by 911. Venango fell from 4,786 to 4,368 while Pennsylvania rose.

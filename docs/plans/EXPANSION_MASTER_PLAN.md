@@ -68,7 +68,7 @@ The central unknown sits under all four. Whether a drawn feature is a well. On 9
 | 7.5 | Field campaign | Evidence about wells | Redesign, highest value | R3, R4, a partner | [plan_scale_field_campaign.md](plan_scale_field_campaign.md) |
 
 ## 3b. Review verdicts (third review, 2026-11-04)
-Verdict is the strongest defensible next scope, not authority to execute. A bounded pilot shows feasibility or local evidence, not population validation. Source. `adversarial_codex_review_revised_20261104.md` coverage table, checked in `review_response_20261104.md` section 8.
+Where this table and the Decision column in section 3 differ, this table wins. Verdict is the strongest defensible next scope, not authority to execute. A bounded pilot shows feasibility or local evidence, not population validation. Source. `adversarial_codex_review_revised_20261104.md` coverage table, checked in `review_response_20261104.md` section 8.
 
 | ID | Verdict | Smallest defensible next step |
 |---|---|---|
