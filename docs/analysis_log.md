@@ -5,6 +5,11 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-05 lidar window download now saves inside the repo, not to F:
+- `_fetch_lidar_windows_us.py` default `--dest` was hardcoded `F:\lidar_project_data\lidar_us_windows`. It is now `data/_source/lidar/lidar_us_windows` under the repo root, the same drive the script runs from. `run_lidar_download.bat` comments updated. `.gitignore` gained `data/_source/lidar/lidar_us_windows/` in the same change (Large-file rule).
+- Space: full run is about 129 GB, Pennsylvania about 12.6 GB. C: had about 95 GB free on 2026-11-05, so only prefix runs fit there. Not run. Any tiles already on F: from the old default are not moved.
+- Copy for sharing: `lidar_download_for_drive/` at the repo root (untracked).
+
 ## 2026-11-05 adversarial review (Tab 1.md) evaluated, P1 step 1 applied
 - `Tab 1.md` (repo root, untracked) has the same body as `docs/plans/adversarial_review_claude.md`, already folded into the plans (commit 72e687f, `docs/plans/review_response_20261104.md`). No new plan changes needed.
 - Re-checked its load-bearing claims. B1 numbers (27 of 424 pits within 25 m) and B4 verified. B4 reproduced: NaN block id lands at index 9 or 92 of `sorted(rest)` across fresh Python 3.13 processes.

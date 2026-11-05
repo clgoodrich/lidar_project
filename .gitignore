@@ -203,3 +203,6 @@ data/9t/derived/pumpjack_pilot/
 data/warren/derived/nisar_gslc_5m/
 data/9t/derived/nisar_features_5m/
 data/warren/derived/nisar_features_5m/
+
+# bulk lidar tiles fetched by _fetch_lidar_windows_us.py (regenerable, up to ~129 GB)
+data/_source/lidar/lidar_us_windows/

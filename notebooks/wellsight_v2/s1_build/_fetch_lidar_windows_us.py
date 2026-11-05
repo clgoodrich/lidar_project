@@ -1,5 +1,5 @@
 """Download the recommended 3DEP lidar tiles listed in lidar_win_download_list_us.csv. Resumable, tracked, polite.
-Run     python notebooks/wellsight_v2/s1_build/_fetch_lidar_windows_us.py [--window-prefix Pennsylvania] [--dest F:\\lidar_project_data\\lidar_us_windows] [--delay 2] [--max-gb N]
+Run     python notebooks/wellsight_v2/s1_build/_fetch_lidar_windows_us.py [--window-prefix Pennsylvania] [--dest <folder>] [--delay 2] [--max-gb N]
 Status  <dest>\\download_status.csv  one row per tile (url, window, project, file, expected_bytes, got_bytes, status, attempts, updated, note)
         status is done, partial, failed or pending. Rewritten after every tile. Safe to stop (Ctrl+C) and rerun. Done tiles are skipped.
 Log     <dest>\\download_log.txt
@@ -85,7 +85,8 @@ def fetch(url, part, log):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--window-prefix", default="")
-    ap.add_argument("--dest", default=r"F:\lidar_project_data\lidar_us_windows")
+    ap.add_argument("--dest", default=str(ROOT / "data/_source/lidar/lidar_us_windows"),
+                    help="default: inside the repo, on the same drive the script runs from")
     ap.add_argument("--delay", type=float, default=2.0)
     ap.add_argument("--max-gb", type=float, default=0, help="stop after this many GB this run (0 = no limit)")
     a = ap.parse_args()
