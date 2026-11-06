@@ -1,0 +1,11 @@
+modality,layer,rows_in
+pit,matched,481
+pit,undecided,207
+pit,before_dedupe,688
+pit,after_dedupe_deployment,685
+pit,dropped_by_dedupe,3
+pit,novel_after_dedupe,204
+pad,model_geometry,1005
+pad,matched_iou>=0.30,604
+pad,unmatched,401
+pad,plat_annotations,995

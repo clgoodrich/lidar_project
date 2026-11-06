@@ -1,0 +1,18 @@
+window,tag,project,configured,tiles,window_km2,cover,query_outcome,ready_cover,note
+NewYork_Allegany,ny_alg,NY_SouthwestNY_2017_A17,True,17.0,34.20489065028419,0.8399289754390553,ok_complete,False,
+NewYork_Allegany,ny_alg,NY_Southwest_2_County_2016_A16,False,13.0,34.20489065028419,0.7317037226563936,ok_complete,,
+NewYork_Cattaraugus,ny_cat,NY_SouthwestNY_2017_A17,True,20.0,34.01119598935982,0.9924819130022537,ok_complete,True,
+NewYork_Cattaraugus,ny_cat,PA_Northcentral_2019_B19,False,23.0,34.01119598935982,0.37585351999268907,ok_complete,,
+NewYork_Cattaraugus,ny_cat,PA_STATEWIDE_N_2006_2008,False,5.0,34.01119598935982,0.7949343841202752,ok_complete,,
+Ohio_Washington,oh_wash,OH_SOUTH_2007,False,18.0,32.5422282438537,0.9807598043585267,ok_complete,,
+Ohio_Washington,oh_wash,OH_Statewide_Phase2_2020_B20,True,204.0,32.5422282438537,0.8784343358057685,ok_complete,False,
+Ohio_Monroe,oh_mon,OH_SOUTH_2007,False,20.0,32.59622808228488,0.9988301295979815,ok_complete,,
+Ohio_Monroe,oh_mon,OH_Statewide_Phase2_2020_B20,True,204.0,32.59622808228488,0.8810977824105566,ok_complete,False,
+Kentucky_Lee,ky_lee,KY_CentralEast_A23,False,3.0,31.447582832518837,0.08225165978606432,ok_complete,,
+Kentucky_Lee,ky_lee,KY_WestCentral_2017_C19,True,23.0,31.447582832518837,0.9847994191401748,ok_complete,True,
+Kentucky_Powell,ky_pow,KY_CentralEast_A23,False,6.0,31.42297689564744,0.28392540013562095,ok_complete,,
+Kentucky_Powell,ky_pow,KY_WestCentral_2017_C19,True,19.0,31.42297689564744,0.9888202725631824,ok_complete,True,
+WestVirginia_Pleasants,wv_ple,OH_SOUTH_2007,False,8.0,32.616299361166334,0.34295339736890124,ok_complete,,
+WestVirginia_Pleasants,wv_ple,OH_Statewide_Phase2_2020_B20,False,35.0,32.616299361166334,0.14093805080330785,ok_complete,,
+WestVirginia_Pleasants,wv_ple,WV_FEMAR3_Southcentral_2018_D19,True,42.0,32.616299361166334,0.9879436795331901,ok_complete,True,
+WestVirginia_Ritchie,wv_rit,,,,,,,,window not in rebuilt list

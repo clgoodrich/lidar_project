@@ -1,0 +1,21 @@
+{
+  "n_treated": 3,
+  "n_pool": 265,
+  "n_treated_matched": 3,
+  "n_controls": 9,
+  "unmatched_treated_pad_ids": [],
+  "smd_before": {
+    "slope_deg": -0.7358033566469322,
+    "area_m2": 0.0034101669555858744,
+    "rough_2006_m": -0.3909701554279595,
+    "road_dist_m": -0.38953284308315805
+  },
+  "smd_after": {
+    "slope_deg": -0.3262455147831163,
+    "area_m2": -0.3698228603260324,
+    "rough_2006_m": 0.017875297126878638,
+    "road_dist_m": NaN
+  },
+  "caliper_sd": 0.5,
+  "note": "Old controls (terrain clear of mapped features) are not used."
+}

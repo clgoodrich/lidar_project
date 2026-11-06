@@ -1,0 +1,112 @@
+{
+  "n_dated": 460,
+  "n_sentinel": 15,
+  "caveat": "Dated wells are selected by map visibility and record keeping. They may differ from sentinel wells in more than era.",
+  "features": {
+    "area_m2": {
+      "overlap_all_dated": 0.7485507246376812,
+      "overlap_by_class": {
+        "E3": 0.7485507246376812
+      },
+      "dated_q": [
+        771.6096228807428,
+        4412.877721010885
+      ],
+      "share_sentinel_inside": 0.8666666666666667
+    },
+    "perimeter_m": {
+      "overlap_all_dated": 0.6898550724637681,
+      "overlap_by_class": {
+        "E3": 0.6898550724637681
+      },
+      "dated_q": [
+        117.27629523523953,
+        301.32851481561056
+      ],
+      "share_sentinel_inside": 1.0
+    },
+    "compactness": {
+      "overlap_all_dated": 0.7695652173913042,
+      "overlap_by_class": {
+        "E3": 0.7695652173913042
+      },
+      "dated_q": [
+        0.452831026218224,
+        0.8634673696718086
+      ],
+      "share_sentinel_inside": 1.0
+    },
+    "elongation": {
+      "overlap_all_dated": 0.5789855072463768,
+      "overlap_by_class": {
+        "E3": 0.5789855072463768
+      },
+      "dated_q": [
+        1.0490901075020664,
+        3.4320863803414903
+      ],
+      "share_sentinel_inside": 1.0
+    },
+    "wells_on_pad": {
+      "overlap_all_dated": 0.7355072463768116,
+      "overlap_by_class": {
+        "E3": 0.7355072463768116
+      },
+      "dated_q": [
+        0.0,
+        2.0
+      ],
+      "share_sentinel_inside": 1.0
+    },
+    "pits_on_pad": {
+      "overlap_all_dated": 0.7876811594202898,
+      "overlap_by_class": {
+        "E3": 0.7876811594202898
+      },
+      "dated_q": [
+        0.0,
+        2.0
+      ],
+      "share_sentinel_inside": 1.0
+    },
+    "slope_mean_deg": {
+      "overlap_all_dated": 0.6768115942028985,
+      "overlap_by_class": {
+        "E3": 0.6768115942028985
+      },
+      "dated_q": [
+        4.690240111351013,
+        20.297557315826385
+      ],
+      "share_sentinel_inside": 1.0
+    },
+    "void_frac": {
+      "overlap_all_dated": 0.5543478260869565,
+      "overlap_by_class": {
+        "E3": 0.5543478260869565
+      },
+      "dated_q": [
+        0.1677814938684504,
+        0.6808349551386571
+      ],
+      "share_sentinel_inside": 1.0
+    },
+    "road_dist_m": {
+      "overlap_all_dated": 0.7282608695652173,
+      "overlap_by_class": {
+        "E3": 0.7282608695652173
+      },
+      "dated_q": [
+        0.1695770620898926,
+        58.40385444434237
+      ],
+      "share_sentinel_inside": 0.9333333333333333
+    }
+  },
+  "features_skipped": [
+    "flight_year",
+    "landcover_class",
+    "oilfield_dist_m"
+  ],
+  "share_in_support": 0.8666666666666667
+}

@@ -1,0 +1,19 @@
+{
+  "flagged_ha": 196.0671984051842,
+  "drawn_ha": 143.4523558934587,
+  "tile_ratio": 1.3667757297119767,
+  "inside_drawn_ha": 98.33963955584731,
+  "matched_overclaim_ha": 34.4830295383351,
+  "merged_outside_ha": 2.5070001601009584,
+  "unmatched_touching_ha": 3.012807934038348,
+  "false_positive_blobs_ha": 57.72472121686381,
+  "note": "Tile-level flagged area over drawn area. Not a per-pad ratio. Overlapping polygons are unioned.",
+  "n_drawn": 995,
+  "n_pred": 1005,
+  "n_matched": 603,
+  "n_merged": 17,
+  "n_split": 5,
+  "median_log_ratio_matched": 0.23696510119244757,
+  "median_area_ratio_matched": 1.2673968863634466,
+  "subtract_pits": true
+}

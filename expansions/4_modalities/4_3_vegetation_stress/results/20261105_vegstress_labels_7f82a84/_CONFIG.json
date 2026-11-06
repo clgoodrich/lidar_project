@@ -1,0 +1,27 @@
+{
+  "hm_only": true,
+  "labels": {
+    "_codes_note": "Placeholder code lists, not DEP codes. Replace with the DEP complaint types and violation codes once R1 returns (framework V0)",
+    "clean_codes": [
+      "NO_VIOLATION",
+      "COMPLIANT"
+    ],
+    "fail_below_per_class": 20,
+    "hm_auc": 0.7,
+    "leak_codes": [
+      "GAS_MIGRATION",
+      "WELL_VENTING",
+      "LEAKING_WELL"
+    ],
+    "min_leases_per_class": 15,
+    "min_per_class": 40,
+    "radius_m": 100.0,
+    "strong_sources": [
+      "measurement"
+    ],
+    "years": [
+      2006,
+      2026
+    ]
+  }
+}

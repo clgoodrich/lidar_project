@@ -1,0 +1,40 @@
+{
+  "_note": "Assumed inputs, thresholds and schema for the 7.4 agency tool. Paths are {key: path_for key, rel: relative}. Build agent, 2026-11-05. Thresholds are proposed starting values, to be fixed from 9t and 3.1 before release.",
+  "tool_version": "0.1.0-dev",
+  "input_contract_version": "1",
+  "resolution_m": 0.5,
+  "frozen_cutoff": {"pit": 0.10, "pad": 0.10, "_note": "proposal cutoff of fw_00 section 4. The final frozen value comes from 3.0"},
+  "min_area_m2": {"pit": 4.0, "pad": 4.0},
+  "k_per_km2": 40,
+  "models": {
+    "pit": {"n_classes": 3, "prob_class": 1, "patch": 256, "overlap": 64, "method": "unet_cv5 frozen policy",
+            "checkpoints": [{"key": "models", "rel": "pit/unet_cv5/fold{k}/best.pt"}], "folds": [0, 1, 2, 3, 4],
+            "state": "held. Historical, not isolated. Swap for the P1 isolated pit model when built"},
+    "pad": {"n_classes": 2, "prob_class": 1, "patch": 384, "overlap": 96, "method": "unet_cv5_iso frozen policy",
+            "checkpoints": [{"key": "models", "rel": "pad/unet_cv5_iso/fold{k}/best.pt"}], "folds": [0, 1, 2, 3, 4],
+            "state": "held"}
+  },
+  "manifest": {"key": "expansions", "rel": "7_scale/7_4_agency_tooling/results/tables/model_manifest_7_4.json"},
+  "channels": ["lrm_25", "lrm_5", "slope", "tpi_05", "openness_pos", "openness_neg", "roughness_11"],
+  "validity": {
+    "ground_density_refuse": 0.5, "ground_density_warn": 2.0,
+    "ground_share_warn_range": [0.05, 0.60],
+    "void_frac_warn": 0.452, "void_frac_refuse": 0.80,
+    "canopy_nonground_first_share_range": [0.2, 0.95],
+    "scan_angle_abs_warn": 30.0,
+    "min_tile_extent_m": 224.0,
+    "_tile_note": "largest model window (pad 384 px x 0.5 m = 192 m) plus a 32 m margin",
+    "_source": "9t void fraction 45.2% at 0.5 m (BACKLOG). Other values are proposals, VERIFY against 3.1"
+  },
+  "transfer_evidence": [
+    {"area": "9t", "path": {"key": "expansions", "rel": "3_geography/3_0_transfer_protocol/results/tables/baseline_recall_9t.json"}, "state": "from 3.0, assumed",
+     "schema": "{recall, lo, hi, truth_density_per_km2, input_class, model_sha256}"},
+    {"area": "warren", "path": {"key": "expansions", "rel": "3_geography/3_1_warren_forest_mckean/results/tables/transfer_decision_warren.json"}, "state": "from 3.1, assumed",
+     "schema": "{recall, lo, hi, truth_density_per_km2, input_class, decision in {success, failure, inconclusive}, model_sha256}"}
+  ],
+  "context_line": {"key": "docs", "rel": "iterations/LEADERBOARD.md", "pattern": "annotated pits with a catalogued well within 25 m \\| \\*\\*(\\d+) of (\\d+) \\(([\\d.]+)%\\)\\*\\*"},
+  "forbidden_words": ["confirmed", "well found", "found well", "verified well", "WellSight"],
+  "label": "candidate",
+  "evidence_level": "a",
+  "derivative_builder": "notebooks/wellsight_v2/s1_build/_build_derivatives.py"
+}

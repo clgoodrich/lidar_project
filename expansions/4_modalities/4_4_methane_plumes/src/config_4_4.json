@@ -1,0 +1,81 @@
+{
+  "_about": "Inputs for 4.4 methane. Every number carries its source. VERIFY marks a figure taken from the review or the protocol and not yet read in the primary source. Edit freely.",
+  "metric_crs": "EPSG:6346",
+  "m0": {
+    "well_emission": {
+      "mean_kg_per_day": 0.27,
+      "n_wells": 19,
+      "n_measurements": 42,
+      "n_high_emitters": 3,
+      "source": "Kang M, Kanno CM, Reid MC, Zhang X, Mauzerall DL, Celia MA, Chen Y, Onstott TC (2014). Direct measurements of methane emissions from abandoned oil and gas wells in Pennsylvania. PNAS 111(51):18173-18177. doi:10.1073/pnas.1408315111. Figures as quoted in docs/plans/protocol_gates_and_metrics.md section 9 (checked at the Princeton record 2026-11-04).",
+      "page": "VERIFY abstract and Table 1",
+      "per_well_rates_csv": {"exp": "4.4", "rel": "data/raw/kang2014_per_well_rates.csv"},
+      "per_well_rates_schema": "well_id, rate_kg_per_day (one row per well, mean over that well's measurements), n_measurements, note. Typed from Kang et al. 2014 tables or SI.",
+      "largest_measured_kg_per_day": null,
+      "largest_measured_note": "VERIFY. Fill from Kang et al. 2014 tables. null means the tail gate cannot close."
+    },
+    "detection_limits": [
+      {
+        "instrument": "Tanager (Carbon Mapper)",
+        "pod90_low_kg_per_h": 90.0,
+        "pod90_high_kg_per_h": 180.0,
+        "conditions": "90% probability of detection at 3 m/s wind, 35 degree solar zenith, 25% albedo, 30 m GSD",
+        "gsd_m": 30.0,
+        "source": "Carbon Mapper. Tanager detection limits, carbonmapper.org (checked 2026-11-04 per docs/plans/protocol_gates_and_metrics.md section 9). VERIFY against the Carbon Mapper product guide (D4)."
+      }
+    ],
+    "best_case_factor": 10.0,
+    "best_case_factor_note": "User decision, proposed default. DL divided by this factor stands for the best plausible wind and albedo.",
+    "closure_ratio": 100.0,
+    "closure_ratio_note": "User decision, proposed default. Headroom for wind, albedo and retrieval variance. A decision margin, not a variance quantity.",
+    "wells_per_footprint": {
+      "from_dep_points": {"key": "dep_wells", "rel": "venango_wells_all.gpkg"},
+      "count_mode": "distinct_locations",
+      "count_mode_note": "distinct_locations drops DEP records stacked on one placeholder coordinate. raw_records counts them all (sensitivity).",
+      "fallback_max_wells": 4,
+      "fallback_note": "Used only when the DEP points are absent. A handful of wells on one lease, per the framework."
+    },
+    "population": {
+      "documented_orphan_csv": {"key": "reference", "rel": "legacy_data/US_Documented_Orphan_Wells.csv"},
+      "documented_orphan_note": "US_Documented_Orphan_Wells.csv is PA only (2022-05-09 DEP orphan list).",
+      "abandoned_scenarios": {"low": 280000, "high": 970000},
+      "abandoned_scenarios_note": "VERIFY. Range of Pennsylvania abandoned-well estimates as cited in Kang et al. 2014. Used only to scale the tail count."
+    },
+    "tail_bootstrap_B": 2000,
+    "seed": 20261105
+  },
+  "m2": {
+    "plume_catalogue_csv": {"exp": "4.4", "rel": "data/raw/carbon_mapper_plumes_l2b.csv"},
+    "plume_schema": "plume_id, lat, lon (EPSG:4326 centroid), emission_kg_h, emission_unc_kg_h, source_unc_m (source-location uncertainty radius, NOT the plume footprint), instrument, datetime_utc (ISO), sector, qa_flag (good|review|bad), wind_source, known_before_detection (true|false|blank)",
+    "catalogue_fetch_log": {"exp": "4.4", "rel": "data/raw/carbon_mapper_fetch_log.json"},
+    "fetch_log_schema": "{reported_total: int, pages: [{page: int, status: ok|empty|failed|incomplete, n: int}]}",
+    "observations_csv": {"exp": "4.4", "rel": "data/raw/carbon_mapper_observations.csv"},
+    "observations_schema": "obs_id, instrument, datetime_utc, footprint_wkt (EPSG:4326 polygon), plume_search_done (true|false), qa_flag (good|review|bad). If non-detections are not published, opportunity cannot be computed and M3 becomes descriptive.",
+    "wells_gpkg": {"key": "dep_wells", "rel": "venango_wells_all.gpkg"},
+    "orphan_csv": {"key": "reference", "rel": "legacy_data/US_Documented_Orphan_Wells.csv"},
+    "candidate_wells_gpkg": {"key": "results_9t", "rel": "wells/candidate_wells_9t.gpkg"},
+    "candidate_note": "VERIFY name. Framework says data/9t/results/wells/ outputs, confirm names. Optional.",
+    "facilities_gpkg": {"exp": "4.4", "rel": "data/raw/active_facilities_pa.gpkg"},
+    "facilities_schema": "facility_id, facility_type (active well, compressor, gathering, landfill, coal mine vent, other), status, geometry (points or polygons, any CRS)",
+    "pads_gpkg": {"key": "truth", "rel": "annotations_proj_v2.gpkg"},
+    "pads_layer": "pad",
+    "usable_qa": ["good"],
+    "cell_m": 5000.0
+  },
+  "m3": {
+    "link_rule": "two plumes join one source when their centres lie within max(source_unc_m) of each other",
+    "near_radius_m": null,
+    "near_radius_note": "null means each source uses its own uncertainty radius. A number overrides it for the rate-ratio count.",
+    "controls_per_well": 1,
+    "control_exclusion_m": 200.0,
+    "min_repeat_dates": 2,
+    "useful_rate_ratio": 2.0,
+    "useful_rate_ratio_note": "User decision, proposed default. The ratio that would justify satellite prioritisation.",
+    "bootstrap_B": 2000,
+    "seed": 20261105
+  },
+  "m4_basins": [
+    {"basin": "pennsylvania", "metric_crs": "EPSG:6346", "note": "default"},
+    {"basin": "permian_tx", "metric_crs": "EPSG:32613", "note": "assumed. Wells from the TX RRC orphan layer. Measured rates to be found."}
+  ]
+}

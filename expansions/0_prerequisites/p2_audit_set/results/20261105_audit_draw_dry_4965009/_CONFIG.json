@@ -1,0 +1,12 @@
+{
+  "buffer_json": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\buffer_derivation_9t.json",
+  "buffer_m": "100.0",
+  "buffer_mode": "window",
+  "freeze": "False",
+  "min_per_tercile": "3",
+  "min_remaining_share": "0.6",
+  "out_dir": "None",
+  "seed": "20261104",
+  "share": "0.15",
+  "splits": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json"
+}

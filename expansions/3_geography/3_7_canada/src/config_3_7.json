@@ -1,0 +1,72 @@
+{
+  "exp_id": "3.7",
+  "written": "2026-11-05 by the build agent. Every province source is assumed (VERIFY). Portal names are starting points, not addresses. Edit freely.",
+  "prereg": {
+    "primary_estimand": "per province, recall at K=40/km2 on drawn features minus 9t reference, non-inferiority against -margin[province]. Never pooled",
+    "k_per_km2": 40,
+    "margin": null,
+    "margin_by_area": {"ab1": null, "bc1": null, "on1": null},
+    "min_ground_ppm2": 2.0,
+    "n_min_blocks": 15,
+    "void_cap": 0.9,
+    "master_seed": 3700,
+    "buffer_m": 0,
+    "assoc_radius_m": 50,
+    "lsd_uncertainty_m": {"lsd_quarter_section": 400, "lsd_legal_subdivision": 200, "lot_concession": 300},
+    "n_shifts": 999,
+    "shift_max_m": 2000,
+    "shift_min_m": 300,
+    "data_handling": null,
+    "annotation_protocol": "9t guide plus province notes, reviewer checks 20 features, two annotators on 20% of blocks, blind to records and scores"
+  },
+  "reference": {"tables": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_9t.json"}},
+  "model": {
+    "pit": {"checkpoint": {"key": "models", "rel": "pit/unet_iso_cv5/policy/best.pt"}, "sha256": null},
+    "pad": {"checkpoint": {"key": "models", "rel": "pad/unet_cv5_iso/fold0/best.pt"}, "sha256": null}
+  },
+  "provinces": {
+    "ab": {"name": "Alberta", "area": "ab1", "vertical_datum": "CGVD2013",
+           "wells": {"path": {"key": "reference", "rel": "wells_can/ab/ab_well_licences.csv"},
+                     "colmap": {"well_id": "UWI", "status_raw": "Status", "lat": "SurfLat", "lon": "SurfLon",
+                                "coord_method": "CoordSource", "spud_date": "SpudDate", "plug_date": "AbandonDate", "county": "Licensee"},
+                     "schema": "CSV. UWI, Status, Licensee, SpudDate, AbandonDate, SurfLat, SurfLon (NAD83), CoordSource (TBD)",
+                     "verify": "Download one snapshot, date and hash, count rows, check the coordinate-method field and its share",
+                     "arcgis_url": null},
+           "orphans": {"path": {"key": "reference", "rel": "wells_can/ab/ab_owa_inventory.csv"},
+                       "colmap": {"well_id": "Licence", "status_raw": "Status", "lat": "Lat", "lon": "Lon", "well_type": "SiteType"},
+                       "schema": "OWA list. Licence, Status, Lat, Lon or LSD, SiteType", "verify": "Record fields, date, count. Every row is V0"}},
+    "bc": {"name": "British Columbia", "area": "bc1", "vertical_datum": "CGVD2013",
+           "wells": {"path": {"key": "reference", "rel": "wells_can/bc/bc_er_wells.csv"},
+                     "colmap": {"well_id": "WA_NUM", "status_raw": "STATUS", "lat": "LAT", "lon": "LON",
+                                "coord_method": "LOC_METHOD", "spud_date": "SPUD_DATE"},
+                     "schema": "BC Energy Regulator wells. WA_NUM, STATUS, LAT, LON (NAD83), LOC_METHOD (TBD), SPUD_DATE",
+                     "verify": "Download, check status vocabulary and coordinate method", "arcgis_url": null},
+           "orphans": {"path": {"key": "reference", "rel": "wells_can/bc/bc_orphan_sites.csv"},
+                       "colmap": {"well_id": "SITE_ID", "status_raw": "STATUS", "lat": "LAT", "lon": "LON"},
+                       "schema": "Orphan site list. SITE_ID, STATUS, LAT, LON", "verify": "Ask for the list. Treat as V0"}},
+    "on": {"name": "Ontario", "area": "on1", "vertical_datum": "CGVD28 or CGVD2013 (record per tile)",
+           "wells": {"path": {"key": "reference", "rel": "wells_can/on/on_ogsr_wells.csv"},
+                     "colmap": {"well_id": "WELL_ID", "status_raw": "STATUS", "lat": "LAT", "lon": "LON",
+                                "coord_method": "LOC_SOURCE", "spud_date": "DRILL_DATE"},
+                     "schema": "OGSR Library export. WELL_ID, STATUS, DEPTH, DRILL_DATE, LAT, LON, LOC_SOURCE (lot and concession or GPS)",
+                     "verify": "Check for a bulk export, count pre-1930 drill dates, share located by lot and concession", "arcgis_url": null},
+           "orphans": {"path": {"key": "reference", "rel": "wells_can/on/on_orphan_list.csv"},
+                       "colmap": {"well_id": "WELL_ID", "status_raw": "STATUS", "lat": "LAT", "lon": "LON"},
+                       "schema": "Unknown. May not exist", "verify": "If none exists drop the V-ladder test for Ontario and say so"}}
+  },
+  "coord_method_map": {"gps": "surveyed", "gnss": "surveyed", "survey": "surveyed", "surveyed": "surveyed",
+                       "lsd": "lsd_legal_subdivision", "legal subdivision": "lsd_legal_subdivision",
+                       "quarter": "lsd_quarter_section", "lot": "lot_concession", "concession": "lot_concession"},
+  "inputs": {
+    "province_criteria": {"path": "data/raw/can_province_criteria.csv",
+      "schema": {"province": "ab|bc|on", "licence_ok": "bool (derived products and internal labelling allowed)", "ground_ppm2": "float measured (S1)", "coord_method_documented": "bool", "reviewer_committed": "bool", "blocks_expected": "int pilot count", "slope_sim": "float 0-1 similarity to 9t", "canopy_sim": "float 0-1", "window_lon": "float", "window_lat": "float"},
+      "verify": "Fill from S0 and S1 outputs, the licence text and the reviewer roster"},
+    "tile_probe_dir": {"path": {"key": "source", "rel": "lidar_can/{province}"},
+      "schema": "one LAZ/LAS tile per province", "verify": "Fetch one tile per province from the provincial catalogue"}
+  },
+  "areas": {
+    "ab1": {"role": "test", "crs": "EPSG:2956", "centre_lonlat": null, "lidar_dir": {"key": "source", "rel": "lidar_can/ab"}, "role_fractions": {"test": 0.8, "audit": 0.2}},
+    "bc1": {"role": "test", "crs": "EPSG:3157", "centre_lonlat": null, "lidar_dir": {"key": "source", "rel": "lidar_can/bc"}, "role_fractions": {"test": 0.8, "audit": 0.2}},
+    "on1": {"role": "test", "crs": "EPSG:2958", "centre_lonlat": null, "lidar_dir": {"key": "source", "rel": "lidar_can/on"}, "role_fractions": {"test": 0.8, "audit": 0.2}}
+  }
+}

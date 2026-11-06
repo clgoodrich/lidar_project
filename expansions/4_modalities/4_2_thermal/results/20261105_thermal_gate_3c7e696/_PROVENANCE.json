@@ -1,0 +1,54 @@
+{
+  "written": "2026-11-05T22:22:23",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "4_2_thermal/src/_thermal_gate_contrast_9t.py"
+  ],
+  "params": {
+    "delta_T_K": 1.0,
+    "_delta_T_note": "User decision, proposed default 1.0 K (framework section 3). Fix before T1",
+    "fill_share_threshold": 0.25,
+    "min_usable_scenes": 15,
+    "max_cloud_frac": 0.1,
+    "max_registration_frac_pixel": 0.5,
+    "proxy_dT_K": null,
+    "_proxy_note": "Pad minus matched clearing surface difference before dilution. null means not yet measured. The gate then reports only the break-even dT = delta_T / median fill",
+    "spread_K": null,
+    "n_offsets": 16,
+    "bootstrap_B": 2000
+  },
+  "seeds": {
+    "master": 4200
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg",
+      "bytes": 10924032,
+      "mtime": "2026-09-11T18:15:23.877075",
+      "sha256": "58e56ce98813f680aeb8550f1fc8e9143245807fbee1fdeeeef52b6c5926790b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_2_thermal\\results\\20261105_thermal_gate_3c7e696\\thermal_gate_by_pad_9t.csv",
+      "bytes": 92717,
+      "mtime": "2026-11-05T22:22:22.020091",
+      "sha256": "f3c69a80933342109bf186dd54a1dcba59af522e64d30f05d60cc3ac6fde1723"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_2_thermal\\results\\20261105_thermal_gate_3c7e696\\thermal_gate_summary_9t.json",
+      "bytes": 2072,
+      "mtime": "2026-11-05T22:22:22.021091",
+      "sha256": "d5910614957ef2b5f1f45a7cbf8a1272b32c11d3df22e1e8129a0d5f2a54e67c"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_2_thermal\\results\\20261105_thermal_gate_3c7e696\\thermal_gate_fill_vs_contrast_9t.png",
+      "bytes": 53489,
+      "mtime": "2026-11-05T22:22:23.242788",
+      "sha256": "68ff7965cd5fdfdb8ff51f37231ea40c2b138e615452bac4b5382191ab9cbdb8"
+    }
+  ]
+}

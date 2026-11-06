@@ -1,0 +1,16 @@
+{
+  "area": "warren",
+  "reference": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_3_low_relief_slope\\results\\20261105_slope_recall_5886eff\\slope_recall_blocks_9t.csv",
+  "reference_provisional": true,
+  "r0": 0.9085487077534792,
+  "phi": 10000.0,
+  "icc_rho": 0.0,
+  "reference_blocks": 115,
+  "reference_density_per_km2": 31.103381642512076,
+  "margin": null,
+  "planned_test_blocks": 71,
+  "reps": 50,
+  "B": 200,
+  "seed": 20261105,
+  "gate": "not decided (no margin)"
+}

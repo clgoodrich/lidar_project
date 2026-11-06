@@ -1,0 +1,24 @@
+{
+  "n_pads": 650,
+  "observability": {
+    "chm_open_max_m": 2.0,
+    "edge_band_m": 5.0,
+    "fail_interior_px": 1,
+    "grid_origin": [
+      0.0,
+      0.0
+    ],
+    "min_interior_px": 4,
+    "min_scenes_per_season": 3,
+    "pixels_m": [
+      10.0,
+      20.0,
+      30.0
+    ]
+  },
+  "scenes": [
+    "s2_jun_9t",
+    "s2_sep_9t",
+    "s2_oct_9t"
+  ]
+}

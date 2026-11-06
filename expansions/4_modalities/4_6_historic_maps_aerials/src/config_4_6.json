@@ -1,0 +1,162 @@
+{
+  "_about": "Assumed inputs, schemas and preregistered parameters for 4.6 historic maps and aerials. Built 2026-11-05 by the build agent. Change freely. Path specs resolve through expkit: {key, rel} uses path_for(key), {exp, rel} uses the expansion folder, {area, rel} uses data/<area>/. 'assumed': true marks an input not held on 2026-11-05 (VERIFY).",
+  "exp_id": "4.6",
+  "area": "9t",
+  "crs": "EPSG:6346",
+  "bbox_9t": [
+    619500,
+    4593000,
+    624000,
+    4597500
+  ],
+  "prereg": {
+    "rmse_limit_m": 30.0,
+    "agreement_level": 0.7,
+    "agreement_radius_m": 25.0,
+    "null_shift_min_m": 200.0,
+    "null_shift_max_m": 500.0,
+    "null_n_shifts": 300,
+    "assoc_radius_m": null,
+    "assoc_radius_note": "null means radius = measured check-point RMSE of the source (review revision 2026-11-04)",
+    "k_per_km2": 40,
+    "prob_threshold": 0.1,
+    "min_blob_m2": 4.0,
+    "min_gcp": 12,
+    "min_check": 10,
+    "min_coverage_share": 0.25,
+    "legible_px_per_20m": 8.0,
+    "master_seed": 20261105,
+    "B": 2000
+  },
+  "inputs": {
+    "source_list": {
+      "exp": "4.6",
+      "rel": "data/raw/hist_sources_9t.csv",
+      "assumed": true,
+      "schema": [
+        "source_id",
+        "title",
+        "kind",
+        "date",
+        "scale",
+        "archive",
+        "url",
+        "west",
+        "south",
+        "east",
+        "north",
+        "scan_dpi",
+        "rights",
+        "searched_on"
+      ],
+      "note": "S0 search log. One row per catalogue record. Bounds in lon/lat (EPSG:4326). kind is topo, oil_region_map, atlas, aerial or state_map"
+    },
+    "probe_dir": {
+      "key": "data",
+      "rel": "_source/historic_topo_probe"
+    },
+    "aerial_index": {
+      "exp": "4.6",
+      "rel": "data/raw/aerial_frame_index_9t.csv",
+      "assumed": true,
+      "schema": [
+        "frame_id",
+        "date",
+        "archive",
+        "path",
+        "west",
+        "south",
+        "east",
+        "north",
+        "scale"
+      ],
+      "note": "D7 index. path is the local scan if fetched, blank if index only. Bounds in lon/lat"
+    },
+    "gcp_table": {
+      "key": "data",
+      "rel": "_source/historic_topo_probe/{source}_gcp.csv",
+      "assumed": true,
+      "schema": [
+        "point_id",
+        "role",
+        "px",
+        "py",
+        "x",
+        "y",
+        "feature"
+      ],
+      "note": "role is gcp or check. px, py are pixel column and row on the scan. x, y are EPSG:6346 metres from lidar or a still-existing structure"
+    },
+    "marks_dir": {
+      "exp": "4.6",
+      "rel": "data/raw/marks",
+      "assumed": true,
+      "schema": [
+        "mark_id",
+        "source",
+        "date",
+        "digitiser",
+        "symbol",
+        "x",
+        "y"
+      ],
+      "note": "One CSV or GPKG per digitiser per source, named <source>__<digitiser>.csv. x, y in EPSG:6346"
+    },
+    "dep_wells": {
+      "key": "dep_wells",
+      "rel": "venango_wells_all.gpkg"
+    },
+    "annotations": {
+      "key": "truth",
+      "rel": "annotations_proj_v2.gpkg",
+      "layers": [
+        "pit_inside",
+        "pad"
+      ]
+    },
+    "oil_field_footprint": {
+      "exp": "4.6",
+      "rel": "data/raw/oil_field_footprint_9t.gpkg",
+      "assumed": true,
+      "note": "Polygon of the historic oil field. If missing, S5 falls back to the DEP record hull buffered 250 m and logs it"
+    },
+    "prob_raster": {
+      "area": "9t",
+      "rel": "results/pit/pit_prob_floor_oof_mosaic_9t_05.tif",
+      "assumed": true,
+      "note": "Out-of-fold pit probability mosaic. The five fold rasters under data/9t/models/pit/unet_cv5/ are held. The mosaic is not"
+    },
+    "neatlines": {
+      "assumed": true,
+      "note": "Sheet neatlines in NAD27 lon/lat (W,S,E,N), passed to S1 --neatline. Oil City 15 minute value below is an assumption from the quad grid (VERIFY on the sheet collar). With it the held 1922 sheet covers 0.51 of 9t on 2026-11-05. Without it the collar counts as cover (1.00)",
+      "oil_city_1922": [
+        -79.75,
+        41.25,
+        -79.5,
+        41.5
+      ]
+    }
+  },
+  "outputs": {
+    "tables": {
+      "exp": "4.6",
+      "rel": "results/tables"
+    },
+    "figures": {
+      "exp": "4.6",
+      "rel": "results/figures"
+    },
+    "crops": {
+      "key": "data",
+      "rel": "_source/historic_topo_probe"
+    },
+    "marks_gpkg": {
+      "area": "9t",
+      "rel": "results/historic/historic_well_marks_9t.gpkg"
+    },
+    "results_dir": {
+      "area": "9t",
+      "rel": "results/historic"
+    }
+  }
+}

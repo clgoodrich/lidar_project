@@ -1,0 +1,39 @@
+{
+  "written": "2026-11-05T22:42:47",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/3_geography/3_0_transfer_protocol/src/_transfer_ref_tables_9t.py",
+    "--task",
+    "pad"
+  ],
+  "params": {
+    "cutoff": 0.525,
+    "module_sha256": "08d3e98af5202a0e9e4929ec437d46eaf429aff36fc3da77a0f83df9f5dc0de7"
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\pad_prob_oof_mosaic_9t.tif",
+      "bytes": 242196009,
+      "mtime": "2026-11-05T22:39:00.952619",
+      "sha256": "75f80127117820ab04364a0239f58e4eee2528b01ec0fc51f59626725cc2164f"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pad_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-06-10T15:26:51.678313",
+      "sha256": "17814922f580c801f47996153739ec12c54d378bd0a8fe9a8ef8b738c61417bc"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\results\\tables\\xfer_ref_block_tables_pad_9t.json",
+      "bytes": 114025,
+      "mtime": "2026-11-05T22:42:47.639346",
+      "sha256": "c9bea992612eb3e5226e9da4fe18040a7b826bb363dcdbd4591054a4ecc0fce0"
+    }
+  ]
+}

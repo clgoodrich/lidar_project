@@ -1,0 +1,98 @@
+{
+  "written": "2026-11-05T22:18:11",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py",
+    "--splits",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/cv_splits_future_9t_v1.json",
+    "--dry-run",
+    "--out-dir",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/pit_iso"
+  ],
+  "params": {
+    "splits": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json",
+    "folds": "5",
+    "only_folds": "",
+    "epochs": "40",
+    "batch": "16",
+    "lr": "0.001",
+    "workers": "0",
+    "norm_windows": "20000",
+    "norm_read_px": "32",
+    "buffer_m": "0.0",
+    "audit_file": "None",
+    "features": "None",
+    "labels": "None",
+    "manifest": "None",
+    "blocks": "None",
+    "out_dir": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\pit_iso",
+    "dry_run": "True",
+    "measure_epoch": "False",
+    "split_sha256": "5084c5b96c4dd4dde2504025ba4bfbbe98b87052ce4be213aba38361d5ca1032"
+  },
+  "seeds": {
+    "norm_draw": "child_seed(20261105, fold)",
+    "sampler": "100 + fold"
+  },
+  "inputs": [
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json",
+      "bytes": 18847,
+      "mtime": "2026-11-05T22:12:27.970050",
+      "sha256": "5084c5b96c4dd4dde2504025ba4bfbbe98b87052ce4be213aba38361d5ca1032"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_dataset_manifest.csv",
+      "bytes": 38550,
+      "mtime": "2026-09-04T10:51:16.250295",
+      "sha256": "d630805555309d25ad3cba5d3082668c5d1a0cddc1d68edc75eb0fd421eb27e3"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-09-04T10:51:16.244983",
+      "sha256": "fad7c3fd96ada6b2c677738d9e0e8a8c5580a345d10582882ce4d62624187d52"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\0_prerequisites\\p1_splits_manifests\\results\\20261105_pit_iso_train_dry_03c772f\\pit_iso_summary.json",
+      "bytes": 2106,
+      "mtime": "2026-11-05T22:18:11.560592",
+      "sha256": "509b64c624598faf6e9840ac91a096818b61d3f9816fbd71fbdf0990df8e36d6"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\pit_iso\\fold0\\norm_stats_fold0.npz",
+      "bytes": 7008,
+      "mtime": "2026-11-05T22:17:27.924967",
+      "sha256": "c28bc53657e46e6b4e3d1540caf5070369702b8469845e82e2338bd4ba9652b5"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\pit_iso\\fold1\\norm_stats_fold1.npz",
+      "bytes": 7008,
+      "mtime": "2026-11-05T22:17:39.164701",
+      "sha256": "62c07cfbec3344f40977d41060e73d6a04c8c752f1c1f26fa68343104aaf7234"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\pit_iso\\fold2\\norm_stats_fold2.npz",
+      "bytes": 7008,
+      "mtime": "2026-11-05T22:17:48.926302",
+      "sha256": "a8b88a8f8616e72ca825f5720a0f55576ece7e3270f5296ea462bb5ecbfbcef0"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\pit_iso\\fold3\\norm_stats_fold3.npz",
+      "bytes": 7008,
+      "mtime": "2026-11-05T22:17:59.945611",
+      "sha256": "6c81e72b90df1619599f6a241ad7d4f0bcf8626598cdc62344f1ca5ddcf428ff"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\pit_iso\\fold4\\norm_stats_fold4.npz",
+      "bytes": 7008,
+      "mtime": "2026-11-05T22:18:11.126007",
+      "sha256": "363f6555263c68889e90ce917a9ceb67364650644c2f934e0c7ffde8080e8c23"
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+{
+  "exp_id": "3.5",
+  "written": "2026-11-05 by the build agent. Assumed inputs carry a schema and a VERIFY step. Edit freely.",
+  "prereg": {
+    "primary_estimand": "paired gain G = recall(F1) - recall(L1) at K=40/km2 on OK test windows (Rogers, Nowata), block resampling stratified by window",
+    "k_per_km2": 40,
+    "margin": null,
+    "delta_gain": null,
+    "model_policy": "three-seed mean probability per arm",
+    "checkpoint_sha256": null,
+    "master_seed": 3500,
+    "buffer_m": 0,
+    "void_cap": 0.9,
+    "n_min_blocks": 15,
+    "max_date_gap_years": null,
+    "registration_tol_m": null,
+    "n_trials": 12,
+    "gpu_hour_cap_per_arm": null,
+    "seeds_per_arm": 3,
+    "label_budget_fracs": [
+      0.25,
+      0.5,
+      1.0
+    ],
+    "strata": [
+      "slope_tercile"
+    ],
+    "annotation_protocol": "two blind passes (L lidar-only, O imagery-only), adjudicate by IoU 0.3, seen_in and activity fields"
+  },
+  "reference": {
+    "tables": {
+      "exp": "3.0",
+      "rel": "results/tables/xfer_ref_block_tables_9t.json"
+    }
+  },
+  "model": {
+    "pit": {
+      "checkpoint": {
+        "key": "models",
+        "rel": "pit/unet_iso_cv5/policy/best.pt"
+      },
+      "sha256": null
+    },
+    "pad": {
+      "checkpoint": {
+        "key": "models",
+        "rel": "pad/unet_cv5_iso/fold0/best.pt"
+      },
+      "sha256": null
+    }
+  },
+  "arms": {
+    "L0": "frozen 9t lidar, zero-shot",
+    "L1": "lidar-only from scratch",
+    "O1": "optical-only from scratch",
+    "F1": "lidar+optical channel concat from scratch",
+    "L2": "lidar fine-tuned from 9t (reference only)"
+  },
+  "areas": {
+    "ok_washington": {
+      "role": "train",
+      "catalogue_window": "Oklahoma_Washington",
+      "project": "OK_Statewide_D22",
+      "centre_lonlat": [
+        -95.9492,
+        36.8392
+      ],
+      "crs": "EPSG:6344",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/OK_Statewide_D22"
+      },
+      "role_fractions": {
+        "train": 0.8,
+        "val": 0.2
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ok_washington"
+      }
+    },
+    "ok_okmulgee": {
+      "role": "train",
+      "catalogue_window": "Oklahoma_Okmulgee",
+      "project": "OK_Statewide_D22",
+      "centre_lonlat": [
+        -95.7623,
+        35.7036
+      ],
+      "crs": "EPSG:6344",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/OK_Statewide_D22"
+      },
+      "role_fractions": {
+        "train": 0.8,
+        "val": 0.2
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ok_okmulgee"
+      }
+    },
+    "ok_creek": {
+      "role": "train",
+      "catalogue_window": "Oklahoma_Creek",
+      "project": "OK_Statewide_D22",
+      "centre_lonlat": [
+        -96.2223,
+        35.9635
+      ],
+      "crs": "EPSG:6343",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/OK_Statewide_D22"
+      },
+      "role_fractions": {
+        "train": 0.8,
+        "val": 0.2
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ok_creek"
+      }
+    },
+    "ok_rogers": {
+      "role": "test",
+      "catalogue_window": "Oklahoma_Rogers",
+      "project": "OK_Statewide_D22",
+      "centre_lonlat": [
+        -95.5123,
+        36.5539
+      ],
+      "crs": "EPSG:6344",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/OK_Statewide_D22"
+      },
+      "role_fractions": {
+        "test": 1.0
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ok_rogers"
+      }
+    },
+    "ok_nowata": {
+      "role": "test",
+      "catalogue_window": "Oklahoma_Nowata",
+      "project": "FEMA_R6_OK_Craig_Nowata_QL2_Lidar",
+      "centre_lonlat": [
+        -95.6572,
+        36.7904
+      ],
+      "crs": "EPSG:6344",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/FEMA_R6_OK_Craig_Nowata_QL2_Lidar"
+      },
+      "role_fractions": {
+        "test": 1.0
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ok_nowata"
+      }
+    },
+    "ks_montgomery": {
+      "role": "test_ks",
+      "catalogue_window": "Kansas_Montgomery",
+      "project": "KS_Statewide_2018_A18",
+      "centre_lonlat": [
+        -95.7764,
+        37.0132
+      ],
+      "crs": "EPSG:6344",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/KS_Statewide_2018_A18"
+      },
+      "role_fractions": {
+        "test": 1.0
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ks_montgomery"
+      }
+    },
+    "ks_labette": {
+      "role": "test_ks",
+      "catalogue_window": "Kansas_Labette",
+      "project": "KS_Statewide_2018_A18",
+      "centre_lonlat": [
+        -95.4691,
+        37.2449
+      ],
+      "crs": "EPSG:6344",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/KS_Statewide_2018_A18"
+      },
+      "role_fractions": {
+        "test": 1.0
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ks_labette"
+      }
+    },
+    "ok_kay": {
+      "role": "audit",
+      "catalogue_window": "Oklahoma_Kay",
+      "project": "OK_Statewide_D22",
+      "centre_lonlat": [
+        -97.1845,
+        36.9568
+      ],
+      "crs": "EPSG:6343",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/OK_Statewide_D22"
+      },
+      "role_fractions": {
+        "audit": 1.0
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ok_kay"
+      }
+    },
+    "ok_pawnee": {
+      "role": "audit_reserve",
+      "catalogue_window": "Oklahoma_Pawnee",
+      "project": "OK_Statewide_D22",
+      "centre_lonlat": [
+        -96.437,
+        36.2376
+      ],
+      "crs": "EPSG:6343",
+      "src_crs": null,
+      "lidar_dir": {
+        "key": "source",
+        "rel": "lidar_us_windows/OK_Statewide_D22"
+      },
+      "role_fractions": {
+        "audit": 1.0
+      },
+      "naip_dir": {
+        "exp": "3.5",
+        "rel": "data/raw/naip/ok_pawnee"
+      }
+    }
+  },
+  "inputs": {
+    "naip_index": {
+      "path": "data/raw/naip_tile_index_okks.csv",
+      "schema": {
+        "area": "str",
+        "tile": "str",
+        "url": "str",
+        "acq_date": "date",
+        "res_m": "float",
+        "bands": "int (4 = RGBN)",
+        "crs": "EPSG",
+        "cloud_flag": "bool"
+      },
+      "verify": "Query the NAIP source for window coverage and acquisition dates per tile. Own folder, hashes"
+    },
+    "lidar_dates": {
+      "path": "data/raw/lidar_flight_dates_okks.csv",
+      "schema": {
+        "area": "str",
+        "project": "str",
+        "flight_start": "date",
+        "flight_end": "date"
+      },
+      "verify": "Project metadata XML (D22 publication dates are 2024, flight dates unknown)"
+    },
+    "truth_pass_L": {
+      "path": {
+        "exp": "3.5",
+        "rel": "data/raw/labels/pass_L_{area}.gpkg"
+      },
+      "schema": {
+        "class": "pit|pad",
+        "block_id": "str",
+        "reviewer": "str",
+        "minutes": "float",
+        "geometry": "Polygon"
+      }
+    },
+    "truth_pass_O": {
+      "path": {
+        "exp": "3.5",
+        "rel": "data/raw/labels/pass_O_{area}.gpkg"
+      },
+      "schema": {
+        "class": "pit|pad",
+        "activity": "active|inactive|unclear",
+        "block_id": "str",
+        "reviewer": "str",
+        "minutes": "float",
+        "geometry": "Polygon"
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+state,county,orphans,km2,per_km2,minx,miny,maxx,maxy,orphans_2022,diff,usable_lidar,eligible_km2,flight_year,note,passes_gate,rank
+Texas,Rusk,34,2430.198467982063,0.0139906268759325,-94.985731,31.843777,-94.452513,32.407603,14,20,False,,,no paged listing yet (VERIFY),False,1
+Texas,Gregg,9,711.9530420742205,0.0126412831579161,-94.986935,32.360044,-94.579219,32.667507,44,-35,False,,,no paged listing yet (VERIFY),False,2
+Texas,Upshur,7,1537.4702803381667,0.0045529335360292,-95.15341,32.516478,-94.672708,32.904502,12,-5,False,,,no paged listing yet (VERIFY),False,3
+Texas,Smith,4,2459.4520343741883,0.0016263785363953,-95.594541,32.135474,-94.985272,32.687026,7,-3,False,,,no paged listing yet (VERIFY),False,4

@@ -34,13 +34,13 @@ Every framework has these sections in this order.
 - Seeds. One master seed per experiment written in the preregistration. Child seeds are `master + 1000 * fold + arm`. Never share one generator across folds, which caused the inner-split drift.
 - Every run writes to `data/<area>/results/<section>/<run_id>/`. `run_id` is `YYYYMMDD_<short_name>_<hash7>` with the hash of the config JSON.
 - Every run folder holds `_PROVENANCE.json` (inputs with SHA-256, checkpoints with SHA-256, split file hash, commit, interpreter, package list hash, command line, start and end time, seeds) and `_RUN.md` (what was run and why, in five lines).
-- Provenance helper. One shared function `write_provenance(run_dir, inputs, outputs, params)` in `notebooks/wellsight_v2/_provenance.py` (new). Every script in the frameworks calls it.
+- Provenance helper. One shared function `write_provenance(run_dir, inputs, outputs, params)` in `expansions/_shared/src/expkit.py` (built 2026-11-05, replaces the proposed `notebooks/wellsight_v2/_provenance.py`). Every script in the frameworks calls it. The same module holds the statistics in section 4 and the QC checks in section 5.
 - Inference and training run on the GTX 1070 Ti (8 GB). Use mixed precision as the existing trainers do. Measure epoch time on one fold before planning a retrain. The backlog notes epoch time was under-reported by 1.8 times.
 
 ## 4. Standard statistical machinery
 **Candidates and matching (feature level)**
-- Probability raster to candidates. Threshold at the lowest cutoff in the sweep (0.10), polygonise connected blobs, drop blobs under 4 m², score each blob by its mean probability. Same code as the operating-point sweep. Find it with `grep -rn "operating_point" notebooks/wellsight_v2/s5_eval/`.
-- Matching to annotated floors. Greedy by IoU, threshold 0.3, one candidate to one truth feature. A second blob inside an already-matched feature is a duplicate, not a new detection.
+- Probability raster to candidates. Threshold at the sweep's proposal cutoff per task (pit 0.35, pad 0.525), polygonise connected blobs, drop blobs under 4 m², score each blob by its mean probability. Corrected 2026-11-05 by the 3.0 build. At 0.10 blobs merge and fail IoU matching, and 9t pit recall at K=40 drops from 0.909 to 0.575. 0.10 is kept as a sensitivity only. Same code as the operating-point sweep. Find it with `grep -rn "operating_point" notebooks/wellsight_v2/s5_eval/`.
+- Matching to annotated floors. Greedy in score order (as the code that produced the 9t reference does), IoU threshold 0.3, IoU order as a sensitivity, one candidate to one truth feature. A second blob inside an already-matched feature is a duplicate, not a new detection.
 - **Recall at K.** Rank all candidates in the scored footprint by score. Keep the top K per km² of scored eligible area. Recall is matched truth features over all truth features in that footprint. Ties are broken by larger area, then by blob id. K is 40 per km² (user, 2026-11-04). Report 30 as a sensitivity only.
 - **Scored footprint.** Complete blocks, including blocks with no features. Never only blocks where the model found something.
 
@@ -54,7 +54,7 @@ Every framework has these sections in this order.
 
 **Calibration** (reported separately from ranking). Brier score, log loss, and expected calibration error with 10 equal-mass bins. Platt scaling is monotonic and cannot change recall at fixed K.
 
-**Sample size for a proportion.** n = 1.96 squared times 0.25 over d squared, per estimate, under simple random sampling. 43 gives plus or minus 15 points, 96 gives 10, 24 gives 20. Inflate by a design effect for clustering (default 1.5 until measured).
+**Sample size for a proportion.** n = 1.96 squared times 0.25 over d squared, per estimate, under simple random sampling. Rounded up, 43 gives plus or minus 15 points, 97 gives 10, 25 gives 20 (`expkit.n_for_proportion`). Inflate by a design effect for clustering (default 1.5 until measured).
 
 **Decision function.** For a difference with interval [lo, hi] and margin Δ.
 - Non-inferiority. Success if lo > −Δ. Failure if hi < −Δ. Else inconclusive.

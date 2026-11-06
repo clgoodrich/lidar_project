@@ -1,0 +1,52 @@
+{
+  "_about": "Assumed inputs, schemas and parameters for 4.7 drone lidar density ladder. Built 2026-11-05 by the build agent. Change freely. Path specs resolve through expkit: {key, rel} path_for(key)/rel, {exp, rel} the expansion folder, {area, rel} data/<area>/rel. 'assumed': true marks an input not held (VERIFY). The NETL request R2 has not been made.",
+  "exp_id": "4.7",
+  "area": "oilcreek",
+  "area_tag": "oc",
+  "crs": "EPSG:6346",
+  "ladder": {
+    "rates": [1.0, 0.5, 0.25, 0.10, 0.05, 0.02],
+    "seeds_per_rung": 5,
+    "master_seed": 20261105,
+    "ground_class": 2,
+    "density_res_m": 1.0,
+    "stack_res_m": 0.5,
+    "anchor_ground_ppsm": 2.70,
+    "anchor_note": "9t airborne ground density, measured (framework 4.7 section 3)"
+  },
+  "score": {
+    "k_per_km2": 40,
+    "prob_threshold": 0.10,
+    "min_blob_m2": 4.0,
+    "iou_match": 0.3,
+    "point_match_m": 10.0,
+    "share_of_native": [0.90, 0.75],
+    "B": 2000,
+    "prob_name": "pit_prob_floor_{sfx}.tif"
+  },
+  "inputs": {
+    "raw_las": {"key": "data", "rel": "_source/drone_netl", "glob": "*.la[sz]", "assumed": true,
+      "note": "NETL drone point clouds as received (R2). Never edited. Large, F: preferred via config/paths.toml"},
+    "provenance": {"key": "data", "rel": "_source/drone_netl/netl_drone_metadata.json", "assumed": true,
+      "schema": ["dataset_id", "platform", "sensor", "flight_height_m", "acquired", "pulse_density_ppsm", "ground_density_ppsm",
+                 "canopy_condition", "crs", "vertical_datum", "n_sites", "site_selection", "sites_confirmed", "coordinate_method", "release_terms"],
+      "note": "Reply to the R2 request transcribed to JSON. site_selection is free text. sites_confirmed is a count or null"},
+    "sites": {"key": "data", "rel": "_source/drone_netl/netl_sites_oc.gpkg", "assumed": true,
+      "schema": ["site_id", "hillside", "confirmed", "geometry"],
+      "note": "The 63 potential well sites. Points (coordinates) or polygons (drawn features). Polygons match by IoU, points by distance"},
+    "airborne_9t_score": {"area": "9t", "rel": "results/transfer/transfer_score_9t.json", "assumed": true,
+      "note": "3.0 scorer output for 9t airborne (recall at K with interval). Keys recall, lo, hi"}
+  },
+  "outputs": {
+    "native": {"area": "oilcreek", "rel": "derived/drone_native"},
+    "thinned": {"area": "oilcreek", "rel": "derived/drone_thinned"},
+    "results": {"area": "oilcreek", "rel": "results/drone"},
+    "tables": {"exp": "4.7", "rel": "results/tables"},
+    "figures": {"exp": "4.7", "rel": "results/figures"}
+  },
+  "infer": {
+    "builder": "notebooks/wellsight_v2/s1_build/_build_derivatives.py",
+    "predictor": "notebooks/wellsight_v2/s4_infer/_predict_on_tile.py",
+    "note": "The predictor reads data/<sfx>/derived/ and writes data/<sfx>/derived/inference/. Rung stacks therefore go to data/<sfx>/derived/, one sfx per rung and seed"
+  }
+}

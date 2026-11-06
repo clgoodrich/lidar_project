@@ -1,0 +1,24 @@
+{
+  "n_used": 503,
+  "n_dropped_nan": 0,
+  "n_blocks": 115,
+  "B": 2000,
+  "seed": 20261107,
+  "standardisation": {
+    "mean": {
+      "slope_25m": 9.520874354362025,
+      "relief_50m": 8.235416480608537,
+      "log_area": 3.2537706411468497,
+      "depth_m": 0.7230184869785196,
+      "void_frac": 0.45762411790408664
+    },
+    "sd": {
+      "slope_25m": 3.307119917685723,
+      "relief_50m": 4.687019545137028,
+      "log_area": 0.48802986289777145,
+      "depth_m": 0.318777585007549,
+      "void_frac": 0.11537135877937366
+    }
+  },
+  "note": "partial association with block bootstrap; not slope causation"
+}

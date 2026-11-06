@@ -1,0 +1,50 @@
+{
+  "tool_version": "0.1.0-dev",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "models": {
+    "pit": [
+      {
+        "path": "data\\9t\\models\\pit\\unet_cv5\\fold0\\best.pt",
+        "sha256": "1143a4f37c38acdc78f1fa51bc2f87ba0dd6a773dc2a4dd4b662e6e2ff0ef8e1"
+      },
+      {
+        "path": "data\\9t\\models\\pit\\unet_cv5\\fold1\\best.pt",
+        "sha256": "3fbd51e391c397ee6ff5e22a883948db98915c6ccc351addeb042c83d033872e"
+      },
+      {
+        "path": "data\\9t\\models\\pit\\unet_cv5\\fold2\\best.pt",
+        "sha256": "59fbe9d673e3679d484172e7b8802c80a3243140f85103331e1846dab63af637"
+      },
+      {
+        "path": "data\\9t\\models\\pit\\unet_cv5\\fold3\\best.pt",
+        "sha256": "f145f4ced8eccbdd076cc043603275c005601460dc966a61022a2d94157dc505"
+      },
+      {
+        "path": "data\\9t\\models\\pit\\unet_cv5\\fold4\\best.pt",
+        "sha256": "9f14ac21192756857af55a43918a9811b77760e08317cdf3a3d4255281e1e54c"
+      }
+    ],
+    "pad": [
+      {
+        "path": "data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\best.pt",
+        "sha256": "c6ec36776869925c1c2e69210f079d10b0c5dd220a3d6c598047fac124e29d44"
+      },
+      {
+        "path": "data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\best.pt",
+        "sha256": "28c408b18e05ede44a42f8d2dbee11f5bd63ddd9b66f22e7d087764270b8b331"
+      },
+      {
+        "path": "data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\best.pt",
+        "sha256": "06b7168cc92765ef32f414ce836ad0a36d4fa22fe2093d66ca6df918272eb5ff"
+      },
+      {
+        "path": "data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\best.pt",
+        "sha256": "b17d07f8cb82120a5051f6607eabc5c9b11a0e92191f2b31e2d4227e35bff248"
+      },
+      {
+        "path": "data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\best.pt",
+        "sha256": "1962cc309146d5d51f0e1a9853bac3163eb1e97aae385d2634d5f328e415975a"
+      }
+    ]
+  }
+}

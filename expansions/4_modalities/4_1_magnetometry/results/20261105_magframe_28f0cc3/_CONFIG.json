@@ -1,0 +1,16 @@
+{
+  "bbox": [
+    619500.0,
+    4593000.0,
+    624000.0,
+    4597500.0
+  ],
+  "site_frame": {
+    "max_sites": 5,
+    "min_sites": 3,
+    "min_strata": 3,
+    "pit_no_record_radius_m": 25.0,
+    "sentinel_year_max": 1800,
+    "steel_era_after_year": 1930
+  }
+}

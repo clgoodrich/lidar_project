@@ -1,0 +1,46 @@
+{
+  "written": "2026-11-05T22:25:18",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/0_prerequisites/p2_audit_set/src/_audit_exposure_ledger_9t.py",
+    "--splits",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/cv_splits_future_9t_v1.json",
+    "--out-dir",
+    "expansions/0_prerequisites/p2_audit_set/data/interim",
+    "--doc",
+    "expansions/0_prerequisites/p2_audit_set/data/interim/audit_set_history_dryrun.md"
+  ],
+  "params": {},
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json",
+      "bytes": 18847,
+      "mtime": "2026-11-05T22:12:27.970050",
+      "sha256": "5084c5b96c4dd4dde2504025ba4bfbbe98b87052ce4be213aba38361d5ca1032"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions\\0_prerequisites\\p2_audit_set\\data\\interim\\block_exposure_9t.csv",
+      "bytes": 23944,
+      "mtime": "2026-11-05T22:25:18.446474",
+      "sha256": "36fc7dda2148cd81610011d6249da7234c2b72755b9ee7dafb5dd0f763ed8c04"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p2_audit_set\\data\\interim\\block_exposure_scripts_9t.csv",
+      "bytes": 4557,
+      "mtime": "2026-11-05T22:25:18.447474",
+      "sha256": "934461945f8ad8e8bcfffa77f592ba603f4f29b496a7c8aa72c7025bf27d111e"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p2_audit_set\\data\\interim\\audit_set_history_dryrun.md",
+      "bytes": 1614,
+      "mtime": "2026-11-05T22:25:18.449475",
+      "sha256": "e8a9d9e2704b51499f3936d607c2662d956ce1a119c40657269905ebcafc6a28"
+    }
+  ]
+}

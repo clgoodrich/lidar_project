@@ -1,0 +1,47 @@
+{
+  "written": "2026-11-05T22:16:13",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_2_era_classification/src/_era_date_audit_9t.py"
+  ],
+  "params": {
+    "sentinels": [
+      "1800-01-01",
+      "1900-01-01"
+    ],
+    "first_oil_year": 1859,
+    "audit_today": "2026-11-05",
+    "spud_before_permit_gap_days": 365,
+    "fields": {
+      "spud": "SPUD_DATE",
+      "permit": "PERMIT_DAT",
+      "plug": "DATE_PLUGG"
+    }
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_date_audit_9t.csv",
+      "bytes": 1021,
+      "mtime": "2026-11-05T22:16:13.056814",
+      "sha256": "22ae0d59be93bce1cc483f324c9f4a697df93bf1c12c3549d82d99a18749195d"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_date_audit_summary_9t.json",
+      "bytes": 1745,
+      "mtime": "2026-11-05T22:16:13.062815",
+      "sha256": "73669e328aa902fc96df475a022cac479696822823068f3df758731ffb25f5e2"
+    }
+  ]
+}

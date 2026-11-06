@@ -1,0 +1,70 @@
+{
+  "evidence_level": "b",
+  "era_basis": "audit_only",
+  "venango": {
+    "n_rows": 20108,
+    "plug_before_spud": 1,
+    "spud_before_permit_gap": 160,
+    "permit_minus_spud_years": {
+      "n": 10472,
+      "median": 0.0,
+      "p05": -1.0,
+      "p95": 0.0
+    },
+    "earliest_valid_spud": 1860.0,
+    "orphan_sentinel_by_cohort": {
+      "on_2022_list": {
+        "n": 3434,
+        "n_sentinel": 1919,
+        "share": 0.5588235294117647,
+        "cp95": [
+          0.542026715030208,
+          0.5755200800816745
+        ]
+      },
+      "not_on_2022_list": {
+        "n": 1298,
+        "n_sentinel": 548,
+        "share": 0.4221879815100154,
+        "cp95": [
+          0.3951355863231331,
+          0.4495935473715781
+        ]
+      },
+      "note": "2022 CSV has no spud field. Shares are inside the 2026 export, split by 2022-list membership."
+    }
+  },
+  "9t_bbox": {
+    "n_rows": 1068,
+    "plug_before_spud": 0,
+    "spud_before_permit_gap": 7,
+    "permit_minus_spud_years": {
+      "n": 1014,
+      "median": 0.0,
+      "p05": -1.0,
+      "p95": 0.0
+    },
+    "earliest_valid_spud": 1956.0,
+    "orphan_sentinel_by_cohort": {
+      "on_2022_list": {
+        "n": 165,
+        "n_sentinel": 6,
+        "share": 0.03636363636363636,
+        "cp95": [
+          0.01345969949379674,
+          0.07746523156439264
+        ]
+      },
+      "not_on_2022_list": {
+        "n": 6,
+        "n_sentinel": 5,
+        "share": 0.8333333333333334,
+        "cp95": [
+          0.35876542100232517,
+          0.9957892554855106
+        ]
+      },
+      "note": "2022 CSV has no spud field. Shares are inside the 2026 export, split by 2022-list membership."
+    }
+  }
+}

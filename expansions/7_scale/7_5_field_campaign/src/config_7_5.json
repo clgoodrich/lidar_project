@@ -1,0 +1,38 @@
+{
+  "_note": "Assumed inputs, frames and frozen design values for 7.5. Paths are {key: path_for key, rel: relative}. Build agent, 2026-11-05. Edit freely. The partner, permissions and the primary estimand are user decisions.",
+  "master_seed": 20261105,
+  "area": "9t",
+  "crs": "EPSG:6346",
+  "inputs": {
+    "truth": {"key": "truth", "rel": "annotations_proj.gpkg", "layers": {"pit": "pit_inside", "pad": "pad"}, "state": "held"},
+    "blocks": {"key": "nine_t", "rel": "blocks_unified_9t.gpkg", "state": "held"},
+    "audit_blocks": {"key": "results_9t", "rel": "splits/audit_blocks_9t_v1.csv", "state": "from P2", "schema": "block_id, role"},
+    "reserved_area": {"key": "expansions", "rel": "7_scale/7_5_field_campaign/data/raw/field_reserved_area.gpkg", "state": "assumed",
+                      "schema": "polygon(s) of the reserved area held out from all tuning, EPSG:6346"},
+    "candidates_frozen": {"key": "expansions", "rel": "7_scale/7_5_field_campaign/data/raw/candidates_frozen_k40.csv", "state": "from P2 frozen frame, assumed",
+                          "schema": "cand_id, class, score, cx, cy, block_id (candidates kept at K = 40 per km2)"},
+    "dep_wells": {"key": "dep_wells", "rel": "venango_wells_all.gpkg", "state": "held (DEP 2026-04 export, read-only)",
+                  "spud_col": "SPUD_DATE", "id_col": "PERMIT_NUM", "pad_col": "WELL_PAD_I"},
+    "historic_marks": {"key": "expansions", "rel": "4_modalities/4_6_historic_maps_aerials/results/tables/historic_well_marks.gpkg", "state": "from 4.6, assumed",
+                       "schema": "points with source_date"},
+    "morphology": {"col": "morph_class", "default": "unclassified", "_note": "column on the annotation layer if present (well_age_morphology.md). Else one class per layer"}
+  },
+  "era_rules": {"radius_m": 50.0, "sentinel": "1800-01-01", "steel_from_year": 1930, "early_before_year": 1900,
+                "_note": "Era proxy from the nearest DEP record within the radius. The 1800 sentinel is its own stratum and is never early era. A dated historic mark makes early_map"},
+  "arm_A": {"n": 96, "floor_per_stratum": 10, "frame": "audit_or_reserved"},
+  "arm_B": {"n": 50, "n_bands": 5},
+  "arm_C": {"n_cells": 20, "cell_m": 250.0, "buffer_m": 50.0},
+  "design": {"deff": 1.5, "inaccessible_share": 0.20, "d_targets": [0.10, 0.15, 0.20], "target_width": 0.30,
+             "primary": "arm A weighted share of drawn features that are confirmed wells",
+             "_target_note": "bound width at or under the target means success (precision). There is no failure condition for a measurement"},
+  "protocol": {"search_radius_m": 15.0, "search_minutes": 30, "gnss_accuracy_m": 1.0, "datum": "NAD83(2011) EPSG:6346",
+               "methane_screen_before_approach": true, "magnetometer_pass": true, "second_search_min_sites": 10,
+               "coord_check_m": 30.0},
+  "codes": {
+    "outcome": ["confirmed_well", "steel_anomaly_only", "nothing_found", "unresolved", "inaccessible"],
+    "identity": ["confirmed_well", "definite_non_well", "ambiguous"],
+    "access": ["visited", "permission_refused", "unreachable", "weather", "safety_abort", "not_attempted"],
+    "evidence": ["wellhead", "casing", "wellbore_access", "cellar_wall", "wood_casing", "cable_tool_debris",
+                 "magnetic_anomaly", "methane_reading", "agency_record_tied_on_site", "other_feature_identified"]
+  }
+}

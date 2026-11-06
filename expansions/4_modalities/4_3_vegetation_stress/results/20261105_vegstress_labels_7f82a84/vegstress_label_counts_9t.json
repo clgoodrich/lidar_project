@@ -1,0 +1,14 @@
+{
+  "stage": "V0",
+  "hanley_mcneil": {
+    "auc": 0.7,
+    "n_per_class": 40,
+    "se": 0.05848265202806124,
+    "lower_95": 0.585376107400473,
+    "passes_floor_0p5": true,
+    "min_n_per_class_for_floor": 14,
+    "note": "Simple random sampling. Lease clustering widens this. Count independent leases too"
+  },
+  "verdict": "not_run",
+  "reason": "--hm-only. Records not read"
+}

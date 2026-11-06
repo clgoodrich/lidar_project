@@ -19,6 +19,15 @@ expansions/
 
 Program-level documents stay in `docs/plans/`: `EXPANSION_MASTER_PLAN.md` (entry point), `protocol_gates_and_metrics.md` (wins on any conflict), the reviews and the download lists. Products for a new study area go to `data/<area>/` as everywhere else. Scripts use `path_for("expansions")`.
 
+## Build status (2026-11-05)
+
+Every expansion has code in `src/`, a `config_<id>.json` naming its assumed inputs, and a passing smoke test (38 test files, 238 tests, synthetic data, CPU). Each expansion README has a build table saying which stages run on held data. Shared code is `_shared/src/expkit.py`. Cross-expansion paths are in `_shared/INTERFACES.md`. Nothing confirmatory has run. The confirmatory path waits on user decisions listed in `docs/analysis_log.md` (2026-11-05 parallel build entry).
+
+Run every test with
+```
+for f in expansions/_shared/src/test_expkit.py expansions/[0-7]_*/*/src/test_*.py; do python -m pytest -q "$f" -p no:cacheprovider; done
+```
+
 ## Frameworks
 
 **Date:** 2026-11-04

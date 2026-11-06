@@ -1,0 +1,18 @@
+{
+  "extract": {
+    "_scale_note": "Multiply stored values to get reflectance 0-1. VERIFY the held stacks (values look like reflectance already)",
+    "open_frac_min": 0.5,
+    "reflectance_scale": 1.0,
+    "ring_inner_m": 5.0,
+    "ring_outer_m": 30.0,
+    "supersample": 5
+  },
+  "n_sites": 650,
+  "pads_only": true,
+  "scenes": [
+    "s2_jun_9t",
+    "s2_sep_9t",
+    "s2_oct_9t"
+  ],
+  "sites": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg"
+}

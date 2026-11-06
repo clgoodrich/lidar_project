@@ -1,0 +1,48 @@
+{
+  "written": "2026-11-05T22:19:35",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_sensitivity_9t.py"
+  ],
+  "params": {
+    "top_n": 50,
+    "n_dirichlet": 2000,
+    "seed": 20261109,
+    "band_variant_missing": [
+      "water_wells"
+    ]
+  },
+  "seeds": {
+    "dirichlet": 20261109
+  },
+  "inputs": [],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_weight_sweep_9t.csv",
+      "bytes": 199176,
+      "mtime": "2026-11-05T22:19:32.497471",
+      "sha256": "50320d8a337edb8d817d5c1c2ddca38ea33a188860d9766fb0caa3686de84e21"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_oneout_change_9t.csv",
+      "bytes": 998,
+      "mtime": "2026-11-05T22:19:32.557019",
+      "sha256": "726f14189dfefc2902e04f39a37f854af0004e00de8bf4e09017807b12274184"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_weight_sweep_9t_site_freq.csv",
+      "bytes": 25023,
+      "mtime": "2026-11-05T22:19:32.560019",
+      "sha256": "4410aa332d84ff4ba329b1eff2115a8ae4e0488cec8c03ab4caf8436e1573ff8"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\figures\\risk_weight_sweep_9t.png",
+      "bytes": 48559,
+      "mtime": "2026-11-05T22:19:35.197860",
+      "sha256": "fff5a5a13874c30e27ff58d4ad657f44916fed8fd313d2a8e47ec3d97e30a13b"
+    }
+  ]
+}

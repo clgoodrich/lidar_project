@@ -1,0 +1,59 @@
+{
+  "_about": "Assumed inputs, schemas and preregistered parameters for 4.8 leaf-off optical. Built 2026-11-05 by the build agent. Change freely. Path specs resolve through expkit: {key, rel}, {exp, rel}, {area, rel}. 'assumed': true marks an input not held (VERIFY).",
+  "exp_id": "4.8",
+  "area": "9t",
+  "crs": "EPSG:6346",
+  "areas": {
+    "9t": [619500, 4593000, 624000, 4597500],
+    "warren": null,
+    "_warren_note": "Warren bbox not on file in the repo on 2026-11-05 (VERIFY). Coverage is computed for 9t only until it is set"
+  },
+  "prereg": {
+    "master_seed": 20261105,
+    "n_features": 60,
+    "feature_layers": ["pit_inside", "pad"],
+    "chip_half_m": 50.0,
+    "chip_px": 700,
+    "leafoff_months": [11, 12, 1, 2, 3, 4],
+    "max_offset_m": 5.0,
+    "n_intersections": 10,
+    "visible_ground_cutoff": 0.15,
+    "usable_share_gate": 0.60,
+    "blank_mean": 240.0,
+    "blank_std": 3.0,
+    "nodata_share_blank": 0.5,
+    "saturated_share_cloud": 0.30,
+    "dark_share_shadow": 0.40,
+    "exg_max_ground": 0.05,
+    "ground_brightness": [40, 230],
+    "footprint_buffer_m": 5.0
+  },
+  "sources": {
+    "pema_venango_2020": {"kind": "arcgis_export", "layer": 242, "date": null, "gsd_m": 0.15,
+      "note": "PASDA PEMAImagery2018 layer 242. URL and layers are read from notebooks/wellsight_v2/s5_eval/_pit_leafoff_geotiff_9t.py. Flight date not confirmed (VERIFY)"},
+    "pema_forest": {"kind": "arcgis_export", "layer": 110, "date": null, "gsd_m": 0.15,
+      "note": "PASDA PEMAImagery2018 layer 110, used where Venango is blank. Flight date not confirmed (VERIFY)"},
+    "naip": {"kind": "naip_stac", "years": ["20220619", "20190917", "20170515", "20150728"],
+      "note": "Dates from notebooks/wellsight_v2/s5_eval/_pit_naip_chip_9t.py. All four are leaf-on months, so NAIP is a negative control for season here"},
+    "local_mosaic": {"kind": "local", "path": {"exp": "4.8", "rel": "data/raw/leafoff_mosaic_9t.tif"}, "date": null, "assumed": true,
+      "note": "Any leaf-off orthophoto mosaic downloaded as a GeoTIFF (D10). Offline chips come from it"}
+  },
+  "inputs": {
+    "programs": {"exp": "4.8", "rel": "data/raw/leafoff_programs.csv", "assumed": true,
+      "schema": ["program", "source_id", "date_start", "date_end", "gsd_m", "bands", "access", "url", "west", "south", "east", "north"],
+      "note": "Coverage search log (S0). Bounds in lon/lat. Dates as YYYY-MM-DD, blank if unknown"},
+    "annotations": {"key": "truth", "rel": "annotations_proj_v2.gpkg"},
+    "offsets": {"exp": "4.8", "rel": "results/tables/leafoff_offsets_measured_9t.csv", "assumed": true,
+      "schema": ["source_id", "point_id", "lidar_x", "lidar_y", "image_x", "image_y"],
+      "note": "Template written by S3. A person fills image_x, image_y in QGIS"},
+    "reviews": {"exp": "4.8", "rel": "data/raw/reviews", "assumed": true,
+      "schema": ["feature_key", "source_id", "reviewer", "visible"],
+      "note": "One CSV per reviewer. visible is yes, no or cannot_tell. Reviewers are blind to lidar"}
+  },
+  "outputs": {
+    "tables": {"exp": "4.8", "rel": "results/tables"},
+    "figures": {"exp": "4.8", "rel": "results/figures"},
+    "chips": {"exp": "4.8", "rel": "data/interim/chips"},
+    "results": {"area": "9t", "rel": "results/optical"}
+  }
+}

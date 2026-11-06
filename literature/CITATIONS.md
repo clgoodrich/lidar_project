@@ -578,3 +578,104 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Used for:** 2026-11-04: closing routine satellite screening of individual small wells (plan 4.4) against Kang et al. 2014 emission rates.
 - **Generated:** `docs/plans/protocol_gates_and_metrics.md` section 9.
 - **Source:** cite-only web page.
+
+## Expansion build, 2026-11-05 (methods relied on by the parallel build of all 37 expansions)
+
+All entries below are **cite-only**. No paper was read or downloaded during the build. PDFs are still to be fetched where open access. Each "Generated" path is the code that uses the method.
+
+### Hanley and McNeil 1982 — AUC standard error
+- **Citation:** Hanley, J. A., and McNeil, B. J. (1982). The meaning and use of the area under a receiver operating characteristic (ROC) curve. *Radiology* 143(1), 29–36.
+- **Used for:** 4.3 V0 sample-size check (SE of AUC with 40 per class).
+- **Generated:** `expansions/4_modalities/4_3_vegetation_stress/src/_vegstress_label_audit_9t.py`.
+
+### Chapman 1951 — capture-recapture estimator
+- **Citation:** Chapman, D. G. (1951). Some properties of the hypergeometric distribution with applications to zoological sample censuses. *Univ. Calif. Publ. Stat.* 1, 131–160.
+- **Used for:** 5.4 capture-recapture diagnostic (not a bound).
+- **Generated:** `expansions/5_tasks/5_4_undocumented_density/src/_density_capture_recapture_9t.py`.
+
+### Klein and Moeschberger 2003 — interval-censored survival
+- **Citation:** Klein, J. P., and Moeschberger, M. L. (2003). *Survival Analysis*, 2nd ed., Springer, chapter 3.
+- **Used for:** 5.2 interval-censored log-normal AFT likelihood for well era.
+- **Generated:** `expansions/5_tasks/5_2_era_classification/src/_era_core_tools.py`.
+
+### Woebbecke et al. 1995 — excess green index
+- **Citation:** Woebbecke, D. M., Meyer, G. E., Von Bargen, K., and Mortensen, D. A. (1995). Color indices for weed identification under various soil, residue, and lighting conditions. *Trans. ASAE* 38(1), 259–269.
+- **Used for:** 4.8 visible-ground fraction in leaf-off chips.
+- **Generated:** `expansions/4_modalities/4_8_leafoff_optical/src/_leafoff_chip_status_9t.py`.
+
+### Cloude and Pottier 1997 — H/alpha decomposition
+- **Citation:** Cloude, S. R., and Pottier, E. (1997). An entropy based classification scheme for land applications of polarimetric SAR. *IEEE TGRS* 35(1), 68–78.
+- **Used for:** 4.9 polarimetric features.
+- **Generated:** `expansions/4_modalities/4_9_more_radar/src/_sar_new_features_9t.py`.
+
+### Haralick et al. 1973 — GLCM texture
+- **Citation:** Haralick, R. M., Shanmugam, K., and Dinstein, I. (1973). Textural features for image classification. *IEEE Trans. SMC* 3(6), 610–621.
+- **Used for:** 4.9 texture features.
+- **Generated:** `expansions/4_modalities/4_9_more_radar/src/_sar_new_features_9t.py`.
+
+### Oliver and Quegan 1998 — speckle statistics
+- **Citation:** Oliver, C., and Quegan, S. (1998). *Understanding Synthetic Aperture Radar Images*. Artech House.
+- **Used for:** 4.9 trigamma spread of speckle in dB for the power baseline.
+- **Generated:** `expansions/4_modalities/4_9_more_radar/src/_sar_power_baseline_9t.py`.
+
+### Holm 1979 — step-down multiple testing
+- **Citation:** Holm, S. (1979). A simple sequentially rejective multiple test procedure. *Scand. J. Stat.* 6(2), 65–70.
+- **Used for:** 4.9 adjustment across radar arms.
+- **Generated:** `expansions/4_modalities/4_9_more_radar/src/_sar_new_score_9t.py`.
+
+### Tobler 1993 — hiking function
+- **Citation:** Tobler, W. (1993). Three presentations on geographical analysis and modeling. NCGIA Technical Report 93-1.
+- **Used for:** 6.6 walk-time cost surface.
+- **Generated:** `expansions/6_adjacent/6_6_sar_viewshed/src/_sar_viewshed_tool.py`.
+
+### 40 CFR 146.84 — Class VI area of review
+- **Citation:** U.S. Code of Federal Regulations, 40 CFR 146.84, Area of review and corrective action.
+- **Used for:** 6.1 screening framing (screening only, not an area-of-review determination).
+- **Generated:** `expansions/6_adjacent/6_1_co2_geothermal/src/_co2_screen_lib.py`.
+
+### He et al. 2022 — masked autoencoders
+- **Citation:** He, K., Chen, X., Xie, S., Li, Y., Dollár, P., and Girshick, R. (2022). Masked autoencoders are scalable vision learners. *CVPR 2022*, 16000–16009.
+- **Used for:** 7.1 masked-reconstruction pretraining arm.
+- **Generated:** `expansions/7_scale/7_1_pretraining/src/_ssl_pretrain_objectives_us.py`.
+
+### van den Oord et al. 2018 — InfoNCE
+- **Citation:** van den Oord, A., Li, Y., and Vinyals, O. (2018). Representation learning with contrastive predictive coding. arXiv:1807.03748.
+- **Used for:** 7.1 cross-channel contrastive arm.
+- **Generated:** `expansions/7_scale/7_1_pretraining/src/_ssl_pretrain_objectives_us.py`.
+
+### Chen et al. 2020 — SimCLR
+- **Citation:** Chen, T., Kornblith, S., Norouzi, M., and Hinton, G. (2020). A simple framework for contrastive learning of visual representations. *ICML 2020*.
+- **Used for:** 7.1 contrastive augmentation design.
+- **Generated:** `expansions/7_scale/7_1_pretraining/src/_ssl_pretrain_objectives_us.py`.
+
+### Settles 2009 — active learning survey
+- **Citation:** Settles, B. (2009). Active learning literature survey. Computer Sciences Technical Report 1648, University of Wisconsin–Madison.
+- **Used for:** 7.2 uncertainty and diversity policies.
+- **Generated:** `expansions/7_scale/7_2_active_learning/src/_al_policies_select_9t.py`.
+
+### Horvitz and Thompson 1952 — unequal-probability estimation
+- **Citation:** Horvitz, D. G., and Thompson, D. J. (1952). A generalization of sampling without replacement from a finite universe. *JASA* 47(260), 663–685.
+- **Used for:** 7.2 discovery yield and 7.5 weighted field bounds.
+- **Generated:** `expansions/7_scale/7_2_active_learning/src/_al_curve_score_9t.py`; `expansions/7_scale/7_5_field_campaign/src/_field_analysis_bounds.py`.
+
+### Kish 1965 — effective sample size
+- **Citation:** Kish, L. (1965). *Survey Sampling*. Wiley.
+- **Used for:** 7.5 effective n for weighted Clopper-Pearson intervals.
+- **Generated:** `expansions/7_scale/7_5_field_campaign/src/_field_analysis_bounds.py`.
+
+### Clopper and Pearson 1934; Newcombe 1998 — exact and difference intervals
+- **Citation:** Clopper, C. J., and Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. *Biometrika* 26(4), 404–413. Newcombe, R. G. (1998). Interval estimation for the difference between independent proportions. *Stat. Med.* 17(8), 873–890.
+- **Used for:** shared toolkit intervals.
+- **Generated:** `expansions/_shared/src/expkit.py`.
+
+### Zadrozny and Elkan 2002 — isotonic calibration
+- **Citation:** Zadrozny, B., and Elkan, C. (2002). Transforming classifier scores into accurate multiclass probability estimates. *KDD 2002*.
+- **Used for:** 7.4 trust calibration.
+- **Generated:** `expansions/7_scale/7_4_agency_tooling/src/_agency_trust_calibrate.py`.
+
+### Gebru et al. 2021 — datasheets for datasets
+- **Citation:** Gebru, T., et al. (2021). Datasheets for datasets. *Commun. ACM* 64(12), 86–92.
+- **Used for:** 7.3 benchmark datasheet.
+- **Generated:** `expansions/7_scale/7_3_benchmark/src/_bench_card_datasheet_9t.py`.
+
+Kang et al. 2014 (above) is now also used by `expansions/4_modalities/4_4_methane_plumes/src/_methane_gate_limit_pa.py` (M0 gate). Hammack et al. 2023 remains not read.

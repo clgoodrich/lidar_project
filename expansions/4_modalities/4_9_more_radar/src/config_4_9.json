@@ -1,0 +1,261 @@
+{
+  "_about": "Assumed inputs, arm specifications and preregistered parameters for 4.9 more radar. Built 2026-11-05 by the build agent. Change freely. Path specs resolve through expkit: {key, rel}, {exp, rel}, {area, rel}. Every arm number is an assumption (VERIFY) until a catalogue check or a delivered product replaces it.",
+  "exp_id": "4.9",
+  "area": "9t",
+  "crs": "EPSG:6346",
+  "bbox_9t": [
+    619500,
+    4593000,
+    624000,
+    4597500
+  ],
+  "prereg": {
+    "delta_gain": 0.05,
+    "delta_gain_note": "prior gate value. User decision 1 in framework section 6. Source of the margin is the burden tradeoff, never fold spread",
+    "primary_arm": "A1",
+    "primary_target": "pit",
+    "master_seed": 20261105,
+    "B": 2000,
+    "n_repeats": 10,
+    "cv_buffer_m": 250.0,
+    "min_blocks_bootstrap": 15,
+    "n_permutations": 2000,
+    "power": {
+      "gains": [
+        0.0,
+        0.01,
+        0.02,
+        0.03,
+        0.04,
+        0.05,
+        0.06,
+        0.07,
+        0.08,
+        0.09,
+        0.1
+      ],
+      "rho_pair": [
+        0.9,
+        0.95,
+        0.98
+      ],
+      "rho_primary": 0.95,
+      "n_sims": 100,
+      "B_power": 200,
+      "power_needed": 0.8,
+      "calib_draws": 20,
+      "g_for_power": null,
+      "g_for_power_note": "null means delta_gain + 0.01 (framework S1 rule). With success defined as lower bound above delta, power at delta + 0.01 stays under about 0.5 unless the half-width is under 0.01, so the rule makes almost every stratum ineligible. Lead to decide (see decisions_4_9.md)"
+    },
+    "fill_cut": 0.25,
+    "lidar_weak_quantile": 0.25
+  },
+  "targets": {
+    "pit": {
+      "footprint_m2": 80.0,
+      "radius_m": 5.0,
+      "contrast_db": 1.0,
+      "contrast_note": "assumed backscatter contrast of a pit against surrounding forest (VERIFY from A1 pilot)"
+    },
+    "pad": {
+      "footprint_m2": 1500.0,
+      "radius_m": 20.0,
+      "contrast_db": 1.5,
+      "contrast_note": "assumed (VERIFY)"
+    }
+  },
+  "clutter_sd_db": 1.5,
+  "arms": {
+    "A1": {
+      "sensor": "commercial X-band spotlight",
+      "band": "X",
+      "wavelength_m": 0.031,
+      "res_az_m": 1.0,
+      "res_rg_m": 1.0,
+      "looks": 3,
+      "n_acq": 10,
+      "n_acq_independent": 5,
+      "pols": [
+        "VV"
+      ],
+      "subcell_texture": true,
+      "registration_m": 1.0,
+      "assumed": true
+    },
+    "A2": {
+      "sensor": "NISAR L-band long series",
+      "band": "L",
+      "wavelength_m": 0.24,
+      "res_az_m": 7.0,
+      "res_rg_m": 6.0,
+      "looks": 1,
+      "n_acq": 40,
+      "n_acq_independent": 20,
+      "pols": [
+        "HH",
+        "HV"
+      ],
+      "subcell_texture": false,
+      "registration_m": 5.0,
+      "assumed": true
+    },
+    "A3": {
+      "sensor": "Sentinel-1 C-band IW",
+      "band": "C",
+      "wavelength_m": 0.055,
+      "res_az_m": 20.0,
+      "res_rg_m": 5.0,
+      "looks": 1,
+      "n_acq": 120,
+      "n_acq_independent": 60,
+      "pols": [
+        "VV",
+        "VH"
+      ],
+      "subcell_texture": false,
+      "registration_m": 10.0,
+      "assumed": true
+    },
+    "A4": {
+      "sensor": "ALOS-2 PALSAR-2 fine",
+      "band": "L",
+      "wavelength_m": 0.24,
+      "res_az_m": 3.0,
+      "res_rg_m": 3.0,
+      "looks": 1,
+      "n_acq": 6,
+      "n_acq_independent": 6,
+      "pols": [
+        "HH",
+        "HV"
+      ],
+      "subcell_texture": false,
+      "registration_m": 3.0,
+      "assumed": true
+    },
+    "A5": {
+      "sensor": "SAOCOM L-band quad-pol",
+      "band": "L",
+      "wavelength_m": 0.235,
+      "res_az_m": 10.0,
+      "res_rg_m": 10.0,
+      "looks": 1,
+      "n_acq": 6,
+      "n_acq_independent": 6,
+      "pols": [
+        "HH",
+        "HV",
+        "VH",
+        "VV"
+      ],
+      "subcell_texture": false,
+      "registration_m": 10.0,
+      "assumed": true
+    }
+  },
+  "features": {
+    "glcm_window_px": 7,
+    "glcm_levels": 32,
+    "glcm_db_range": [
+      -30.0,
+      5.0
+    ],
+    "ring_inner_m": 20.0,
+    "ring_outer_m": 60.0
+  },
+  "inputs": {
+    "baseline_rows_9t": {
+      "exp": "4.9",
+      "rel": "data/processed/sar_baseline_rows_pit_9t.csv",
+      "assumed": true,
+      "schema": [
+        "row",
+        "y",
+        "block",
+        "score"
+      ],
+      "note": "Per-row out-of-fold rich lidar baseline score on the de-duplicated 9t rows. Not saved by _nisar_feat_dedupe_9t.py (it keeps only the summary). Build with _sar_new_features_9t.py --rows-only, then score with _sar_new_score_9t.py --baseline-only"
+    },
+    "baseline_rows_613590": {
+      "area": "613590",
+      "rel": "results/nisar/nisar_pit_heldout_scores_613590_slc.csv",
+      "score_col": "rich lidar baseline",
+      "note": "held. Columns row, y, block, and one score column per feature set"
+    },
+    "nisar_samples": {
+      "stack": "slc",
+      "note": "rows come from _nisar_feat_common.load_samples(target, suffix) with NISAR_STACK=slc. Pads use LOCAL_M=1500"
+    },
+    "catalogue": {
+      "exp": "4.9",
+      "rel": "data/raw/sar_catalogue_9t.csv",
+      "assumed": true,
+      "schema": [
+        "arm",
+        "scene_id",
+        "date",
+        "look_angle_deg",
+        "pol",
+        "res_m",
+        "covers_9t"
+      ],
+      "note": "Vendor and agency catalogue rows. A hit is not a product. Overrides n_acq per arm when present"
+    },
+    "fetch_manifest": {
+      "exp": "4.9",
+      "rel": "data/raw/sar_fetch_manifest.csv",
+      "assumed": true,
+      "schema": [
+        "sensor",
+        "product_id",
+        "url",
+        "filename",
+        "sha256",
+        "bytes"
+      ]
+    },
+    "scatterers": {
+      "exp": "4.9",
+      "rel": "data/raw/sar_scatterers_9t.csv",
+      "assumed": true,
+      "schema": [
+        "track",
+        "scatterer_id",
+        "sar_x",
+        "sar_y",
+        "ref_x",
+        "ref_y",
+        "ref_source"
+      ],
+      "note": "Permanent point scatterers. ref_x, ref_y from a survey or orthophoto, not from the lidar-based check used before"
+    },
+    "stack": {
+      "area": "9t",
+      "rel": "derived/sar_new/{arm}/sar_{arm}_{pol}_stack_9t.tif",
+      "assumed": true,
+      "note": "Geocoded, terrain-flattened linear power, one band per date, EPSG:6346. Optional coherence stack sar_{arm}_coh_stack_9t.tif. Optional T3 sar_{arm}_t3_9t.tif with bands T11 T22 T33 T12re T12im T13re T13im T23re T23im"
+    }
+  },
+  "outputs": {
+    "results": {
+      "area": "9t",
+      "rel": "results/sar_new"
+    },
+    "features": {
+      "area": "9t",
+      "rel": "derived/sar_new/{arm}"
+    },
+    "source": {
+      "key": "data",
+      "rel": "_source/sar_new"
+    },
+    "tables": {
+      "exp": "4.9",
+      "rel": "results/tables"
+    },
+    "figures": {
+      "area": "9t",
+      "rel": "results/sar_new/figures"
+    }
+  }
+}

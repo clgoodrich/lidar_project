@@ -23,3 +23,25 @@ Products for a new study area go to `data/<area>/` as everywhere else, not here.
 Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`). Add the import path with
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
+
+## Build status (2026-11-05)
+
+Built by the build agent. Tests. `python -m pytest -q expansions/3_geography/3_0_transfer_protocol/src/test_3_0.py -p no:cacheprovider` (9 passed).
+The synthetic test covers the framework QC case. Recall is 1.0 with all three features inside K and 0.667 with one outside.
+
+| Script | Stage | Runnable now with held data | Missing or pending |
+|---|---|---|---|
+| `src/_transfer_score_lib.py` | S1 scoring core | yes | none |
+| `src/_transfer_score_run.py` | S1 and S6 frozen harness (pit and pad) | yes, ran on the 9t pit mosaic and the pad isolated mosaic | target probability rasters and truth |
+| `src/_transfer_archival_check_9t.py` | S2 archival check | yes, ran. Pit 0.781 at 30 and 0.909 at 40 rebuilt exactly. Pad also matches | none |
+| `src/_transfer_baseline_repeat_9t.py` | S2 new baseline repeat and mosaic check | yes, ran. Pad isolated baseline repeats exactly. Pit mosaic gives 0.909 at cutoff 0.35 | isolated pit rasters (P1 S6) for the pit baseline |
+| `src/_transfer_infer_area.py` | S3 inference wrapper | dry run only | GPU run after the preregistration. Target tiles and bbox (assumed input) |
+| `src/_transfer_ci_width_9t.py` | S4 projected width | yes, ran on the archival pit pool | none |
+| `src/_transfer_prereg_fill.py` | S5 preregistration filler | yes | the user's field values (margin, policy, areas) |
+| `src/_transfer_decision_report.py` | decision report | no real target yet | a scored target run and a filled preregistration |
+| `src/_transfer_ref_tables_9t.py` | reference block tables for 3.4 to 3.8 | yes, ran (pit 115 blocks, pad 129 blocks) | rerun on the isolated pit mosaic after P1 S6 |
+| `src/config_3_0.json` | settings and assumed inputs | yes | none |
+| `src/test_3_0.py` | tests | yes | none |
+
+Results in `results/tables/`. `transfer_archival_check_9t.json`, `transfer_mosaic_check_pit_9t.json`, `transfer_baseline_repeat_pad_9t.json`, `projected_ci_width_pit_9t.csv`.
+Scorer run folders from the build are in `data/interim/runs/` in this folder. The float32 pad mosaic `data/interim/pad_prob_oof_mosaic_9t.tif` is 242 MB and sits in the ignored data folder.

@@ -1,0 +1,37 @@
+{
+  "written": "2026-11-05T22:53:23",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/7_scale/7_2_active_learning/src/_al_split_pool_stop_9t.py",
+    "--no-audit",
+    "--build-items"
+  ],
+  "params": {
+    "stopping_blocks": 20,
+    "discovery_share": 0.3,
+    "buffer_m": 0.0,
+    "_buffer_note": "derived buffer comes from P1 S4. 0 until then, stated in every run"
+  },
+  "seeds": {
+    "master": 20261105
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\blocks_unified_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-09-18T11:29:12.333623",
+      "sha256": "c53082dc480f1c4bc218246139221564a9496399e4f9ef742dd97ca0200bd4a4"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\7_scale\\7_2_active_learning\\results\\tables\\al_split_9t_v1.json",
+      "bytes": 1052,
+      "mtime": "2026-11-05T22:52:58.568362",
+      "sha256": "04f3cde35e261fbdc547964829c4aca33a30a6d6222af9cf82525099236f88e8"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "classes": {
+    "E1": [
+      1859,
+      1899
+    ],
+    "E2": [
+      1900,
+      1955
+    ],
+    "E3": [
+      1956,
+      2100
+    ],
+    "_note": "Proposed boundaries, user decision. U (sentinel) is a stratum, never a class."
+  },
+  "link": {
+    "exclude_position_only_from_primary": true,
+    "pad_radius_m": 30.0,
+    "pit_radius_m": 30.0
+  },
+  "records_only": true
+}

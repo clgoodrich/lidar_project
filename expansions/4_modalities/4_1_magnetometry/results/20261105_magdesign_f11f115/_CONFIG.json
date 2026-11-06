@@ -1,0 +1,23 @@
+{
+  "c": [
+    621750.0,
+    4595250.0
+  ],
+  "site": "demo",
+  "survey": {
+    "_pole_note": "Monopole strength p in nT m2 so that B = p / r2. Range assumed for cut casing tops. VERIFY against Hammack et al. (2023) or a measured test casing",
+    "detect_k_sigma": 3.0,
+    "grid_x_m": 20.0,
+    "grid_y_m": 20.0,
+    "line_spacing_m": 1.0,
+    "noise_sigma_nT": 1.0,
+    "pole_strength_range_nT_m2": [
+      500.0,
+      5000.0
+    ],
+    "sample_rate_hz": 10.0,
+    "sensor_height_m": 0.3,
+    "turn_time_s": 10.0,
+    "walk_speed_m_s": 0.8
+  }
+}

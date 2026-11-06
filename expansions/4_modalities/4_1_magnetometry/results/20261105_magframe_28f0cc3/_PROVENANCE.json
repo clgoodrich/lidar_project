@@ -1,0 +1,49 @@
+{
+  "written": "2026-11-05T22:14:14",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/4_modalities/4_1_magnetometry/src/_mag_site_frame_9t.py"
+  ],
+  "params": {
+    "steel_era_after_year": 1930,
+    "sentinel_year_max": 1800,
+    "pit_no_record_radius_m": 25.0,
+    "min_sites": 3,
+    "max_sites": 5,
+    "min_strata": 3
+  },
+  "seeds": {
+    "master": 20261105
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg",
+      "bytes": 10924032,
+      "mtime": "2026-09-11T18:15:23.877075",
+      "sha256": "58e56ce98813f680aeb8550f1fc8e9143245807fbee1fdeeeef52b6c5926790b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_1_magnetometry\\results\\20261105_magframe_28f0cc3\\mag_site_frame_9t.csv",
+      "bytes": 114849,
+      "mtime": "2026-11-05T22:14:14.117785",
+      "sha256": "d8118129ab27e8cce0a0132c9abe6cb1e98064f4f63479f3bd913abeba85b654"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_1_magnetometry\\results\\20261105_magframe_28f0cc3\\mag_site_frame_counts_9t.json",
+      "bytes": 411,
+      "mtime": "2026-11-05T22:14:14.117785",
+      "sha256": "6b9b20f0243460778a98753c2f56173bcc8b0ee1cbd84609a08ab60b5b0cd3d8"
+    }
+  ]
+}

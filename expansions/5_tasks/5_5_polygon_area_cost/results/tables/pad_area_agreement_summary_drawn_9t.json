@@ -1,0 +1,86 @@
+{
+  "reference": "drawn",
+  "primary": {
+    "median_r": 0.23696510119244757,
+    "median_lo": 0.19416372803273224,
+    "median_hi": 0.2851012712633018,
+    "p90_abs_r": 0.6600715521593822,
+    "p90_lo": 0.6019041391160055,
+    "p90_hi": 0.7044589082854154,
+    "n_pads": 603,
+    "n_blocks": 129,
+    "few_blocks": false
+  },
+  "delta_area": 0.2231,
+  "delta_source": "fallback ln(1.25), no cost table",
+  "decision": "inconclusive",
+  "secondary": {
+    "n": 603,
+    "mean_r": 0.22211834292119684,
+    "sd_r": 0.3377483510406164,
+    "bland_altman_log": [
+      -0.4398684251184113,
+      0.8841051109608049
+    ],
+    "ols_slope": 0.5705038472130322,
+    "ols_intercept": 3.405727305801188,
+    "mape": 0.40533482705603996,
+    "median_iou": 0.668813019211643,
+    "median_boundary_m": 3.810210048659484,
+    "median_hausdorff95_m": 10.313962989742516
+  },
+  "strata": {
+    "size_tercile": [
+      {
+        "size_tercile": "large",
+        "size": 308,
+        "median": 0.1107
+      },
+      {
+        "size_tercile": "medium",
+        "size": 239,
+        "median": 0.3467
+      },
+      {
+        "size_tercile": "small",
+        "size": 56,
+        "median": 0.5825
+      }
+    ],
+    "cover_class": [
+      {
+        "cover_class": "canopy",
+        "size": 32,
+        "median": 0.2409
+      },
+      {
+        "cover_class": "open",
+        "size": 55,
+        "median": 0.2511
+      },
+      {
+        "cover_class": "partial",
+        "size": 516,
+        "median": 0.2363
+      }
+    ]
+  },
+  "calibration_arm": {
+    "fit_A_test_B": {
+      "scale_factor": 0.7862620537416091,
+      "median_abs_r_before": 0.28536833962772523,
+      "median_abs_r_after": 0.18591110172206646,
+      "improves": true
+    },
+    "fit_B_test_A": {
+      "scale_factor": 0.7901292702865763,
+      "median_abs_r_before": 0.30039363315881834,
+      "median_abs_r_after": 0.19802228850031184,
+      "improves": true
+    },
+    "useful": true
+  },
+  "matched": 603,
+  "unmatched_reference": 392,
+  "note": "Area is level (a). It says nothing about wells."
+}

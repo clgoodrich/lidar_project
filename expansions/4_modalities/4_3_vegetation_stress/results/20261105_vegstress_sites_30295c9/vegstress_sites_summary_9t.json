@@ -1,0 +1,17 @@
+{
+  "stage": "V2",
+  "exploratory": true,
+  "n_sites": 650,
+  "n_scenes": 3,
+  "n_rows": 1950,
+  "share_site_rows_no_open_pixels": 0.19384615384615383,
+  "median_ndvi_diff_by_class": {
+    "pad": -0.0013990458766583447
+  },
+  "indices_all_nan": [
+    "ndre",
+    "evi"
+  ],
+  "anomaly_ref": "site mean over all scenes (one year only)",
+  "note": "A difference in disturbed ground, not leakage. Evidence level (a)"
+}

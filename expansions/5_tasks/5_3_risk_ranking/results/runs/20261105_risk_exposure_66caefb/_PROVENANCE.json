@@ -1,0 +1,127 @@
+{
+  "written": "2026-11-05T22:18:47",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_exposure_layers_9t.py"
+  ],
+  "params": {
+    "n_records": 1058,
+    "n_candidates_in": 685,
+    "n_sites": 1385,
+    "n_record_sites": 1058,
+    "n_candidate_sites": 327,
+    "n_records_with_surface_evidence": 394,
+    "scored_area_km2": 16.171875,
+    "k": 647,
+    "k_per_km2": 40.0,
+    "p_band_cuts": [
+      0.709,
+      0.6523333333333333,
+      0.534
+    ],
+    "p_band_counts": {
+      "record": 1058,
+      "K3": 124,
+      "K2": 97,
+      "K1": 82,
+      "below_K": 24
+    },
+    "site_resolution": "5.6_full_output",
+    "receptors_present": [
+      "roads"
+    ],
+    "missing_components": [
+      "water_wells",
+      "buildings",
+      "streams",
+      "wetlands",
+      "public_supply",
+      "protected"
+    ],
+    "e_components_used": {
+      "roads_n_100": 1
+    },
+    "distance_bands_m": [
+      50,
+      100,
+      250,
+      500
+    ],
+    "lineage": {
+      "roads_d_nearest": [
+        "roads:geometry"
+      ],
+      "roads_n_50": [
+        "roads:geometry"
+      ],
+      "roads_n_100": [
+        "roads:geometry"
+      ],
+      "roads_n_250": [
+        "roads:geometry"
+      ],
+      "roads_n_500": [
+        "roads:geometry"
+      ],
+      "P": [
+        "candidates:score",
+        "dep_wells:PERMIT_NUM",
+        "pit_blocks:n_pits",
+        "config:k_per_km2"
+      ]
+    },
+    "note": "P for candidates is an ordinal band of the feature model, conditional on the feature model. Exposure from present receptor layers only.",
+    "n_candidates_merged_into_records": 358,
+    "n_candidates_shared_by_several_records": 33
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-09-04T10:51:16.244983",
+      "sha256": "fad7c3fd96ada6b2c677738d9e0e8a8c5580a345d10582882ce4d62624187d52"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\tiger_roads\\tl_2024_42121_roads.shp",
+      "bytes": 2970348,
+      "mtime": "2024-09-16T10:07:53",
+      "sha256": "c050848f7fcfa73cc5475a2671ed397aca561892edbf35d9e50487701b82797b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\data\\processed\\risk_exposure_layers_9t.gpkg",
+      "bytes": 2400256,
+      "mtime": "2026-11-05T22:18:47.654882",
+      "sha256": "e012bad44519dfaada2d76d6ca5c8a7ccb7c6c96b1772633a95216d10dd4f078"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_exposure_sites_9t.csv",
+      "bytes": 203281,
+      "mtime": "2026-11-05T22:18:47.692394",
+      "sha256": "b273b12b7d2b21e68e9ba14d1e937ce5b8e0635ffd8d0fcceb129b53f5581d71"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_candidate_scores_9t.csv",
+      "bytes": 15499,
+      "mtime": "2026-11-05T22:18:47.669886",
+      "sha256": "6aa39de2d0cc9bffadf5faa01bf8ad9bf0b6ade2aeb59bea5381631fe63ce8b0"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_exposure_summary_9t.json",
+      "bytes": 1448,
+      "mtime": "2026-11-05T22:18:47.693394",
+      "sha256": "389af702b88cbc4e366c4cf6687eb1b523395b52cc3d601af06b86073ff94610"
+    }
+  ]
+}

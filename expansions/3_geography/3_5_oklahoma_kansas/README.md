@@ -23,3 +23,22 @@ Products for a new study area go to `data/<area>/` as everywhere else, not here.
 Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`). Add the import path with
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
+
+## Build status (2026-11-05)
+
+Built by the build agent. The shared regional-transfer code is `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py`. Expansions 3.4 to 3.8 import it. Stage commands that every region shares are its subcommands. Assumed inputs and their schemas are in `src/config_3_5.json`. A missing assumed input stops a script with a message that names the input, its schema and the VERIFY step. Decisions are in `docs/decisions_3_5.md`. Run the tests with `python -m pytest -q expansions/3_geography/3_5_oklahoma_kansas/src/test_3_5.py -p no:cacheprovider`.
+
+| Script | Stage | Runnable now | What is missing |
+|---|---|---|---|
+| `src/_okks_registry_wells.py` | registry loader and S11 hand-off rows | yes (ran, 9 windows) | nothing |
+| `src/_okks_optical_coverage.py` | S0 coverage and dates, S1 NAIP fetch with `--fetch --execute` | no | `data/raw/naip_tile_index_okks.csv`, `data/raw/lidar_flight_dates_okks.csv` |
+| `src/_okks_label_budget_9t.py` | S2 label-budget curve on 9t | plan yes (ran). Training is GPU | nothing for the plan |
+| `src/_okks_coreg_optical.py` | S3 per-block co-registration | no | 0.5 m slope (core `derive`), NAIP on the lidar grid (S4 `--resample-only`) |
+| `src/_okks_optical_stack.py` | S4 optical and fusion stacks | no | NAIP tiles, lidar stack, S3 shifts |
+| `src/_okks_blocks_roles.py` | S5 roles by slope tercile, common footprint | no | 0.5 m slope per window, S0 coverage |
+| `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py width --exp 3.5` | S6 projected width | no | 3.0 reference tables, margin |
+| `src/_okks_truth_adjudicate.py` | S7 adjudicate the two blind passes | no | pass L and pass O label files |
+| `src/_okks_modality_train.py` | S8 arms L1, O1, F1, L2 with trial ledger (GPU) | plan yes | stacks, labels, `prereg.gpu_hour_cap_per_arm` |
+| `src/_okks_modality_compare.py` | S9 paired scoring and S10 strata | no | arm probability rasters (`--infer`), truth, `prereg.delta_gain` |
+| `src/test_3_5.py` | smoke tests | yes. 6 passed |  |
+| `src/config_3_5.json` | assumed inputs, schemas, prereg values |  | user decisions are null |

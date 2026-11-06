@@ -1,0 +1,26 @@
+{
+  "assoc_radius_m": 50.0,
+  "bbox": [
+    619500.0,
+    4593000.0,
+    624000.0,
+    4597500.0
+  ],
+  "distance_bands_m": [
+    50,
+    100,
+    250,
+    500
+  ],
+  "e_components": {
+    "buildings": "n_250",
+    "protected": "inside",
+    "public_supply": "inside",
+    "roads": "n_100",
+    "streams": "d_nearest",
+    "water_wells": "n_250",
+    "wetlands": "d_nearest"
+  },
+  "k_per_km2": 40.0,
+  "stage": "risk_exposure"
+}

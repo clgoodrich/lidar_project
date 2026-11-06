@@ -1,0 +1,25 @@
+p,q_link_precision,n1_records,n2_expected_wells,links,overlap_scaled,chapman_pooled,chapman_se,chapman_stratified,heterogeneity_gap,undocumented_pooled,degenerate,label,evidence_level,analysis
+0.05,0.1,929,31.200000000000003,341,31.200000000000003,929.0,0.0,991.7700729927006,62.77007299270065,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.05,0.25,929,31.200000000000003,341,31.200000000000003,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.05,0.5,929,31.200000000000003,341,31.200000000000003,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.05,1.0,929,31.200000000000003,341,31.200000000000003,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.1,0.1,929,62.400000000000006,341,34.1,1678.82905982906,183.23391361122313,1656.9732794577685,-21.85578037129153,749.82905982906,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.1,0.25,929,62.400000000000006,341,62.400000000000006,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.1,0.5,929,62.400000000000006,341,62.400000000000006,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.1,1.0,929,62.400000000000006,341,62.400000000000006,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.2,0.1,929,124.80000000000001,341,34.1,3332.1623931623935,462.0744709945666,3264.433263816475,-67.72912934591841,2403.1623931623935,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.2,0.25,929,124.80000000000001,341,85.25,1355.4521739130437,77.55684078027527,1352.0730863505848,-3.3790875624588352,426.4521739130437,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.2,0.5,929,124.80000000000001,341,124.80000000000001,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.2,1.0,929,124.80000000000001,341,124.80000000000001,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.4,0.1,929,249.60000000000002,341,34.1,6638.8290598290605,1005.268748340976,6479.353232533889,-159.47582729517126,5709.8290598290605,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.4,0.25,929,249.60000000000002,341,85.25,2701.1217391304353,223.14231438334167,2684.786413614399,-16.33532551603639,1772.1217391304353,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.4,0.5,929,249.60000000000002,341,170.5,1357.9387755102043,52.497590129249765,1357.9212747631354,-0.01750074706887972,428.9387755102043,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.4,1.0,929,249.60000000000002,341,249.60000000000002,929.0,0.0,929.0,0.0,0.0,1,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.6,0.1,929,374.4,341,34.1,9945.495726495727,1546.1304008734169,9694.273201251302,-251.2225252444241,9016.495726495727,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.6,0.25,929,374.4,341,85.25,4046.791304347826,362.25574203106595,4017.499740878213,-29.291563469613266,3117.791304347826,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.6,0.5,929,374.4,341,170.5,2034.6967930029155,103.1611891816401,2032.4757967269593,-2.2209962759561677,1105.6967930029155,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.6,1.0,929,374.4,341,341.0,1019.8245614035088,13.073062539619317,1079.271875,59.447313596491085,90.82456140350882,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.9,0.1,929,561.6,341,34.1,14905.495726495727,2356.563283163244,14516.653154327425,-388.84257216830156,13976.495726495727,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.9,0.25,929,561.6,341,85.25,6065.295652173913,569.2060327567162,6016.569731773934,-48.72592039997926,5136.295652173913,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.9,0.5,929,561.6,341,170.5,3049.8338192419824,174.9058617860781,3044.307579672696,-5.52623956928619,2120.8338192419824,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic
+0.9,1.0,929,561.6,341,341.0,1528.877192982456,41.130083311886885,1530.5925327034884,1.715339721032251,599.8771929824561,0,"diagnostic, not a lower bound; assumes independence and closure",a,diagnostic

@@ -1,0 +1,189 @@
+{
+  "ny_dec_regulated": {
+    "raw_codes": {
+      "PA": 20608,
+      "AC": 11727,
+      "UL": 3588,
+      "IN": 2518,
+      "UM": 2378,
+      "EX": 2288,
+      "UN": 2012,
+      "NR": 631,
+      "VP": 497,
+      "RE": 329,
+      "CA": 209,
+      "TR": 209,
+      "PM": 179,
+      "DC": 101,
+      "CO": 52,
+      "PB": 39,
+      "Confidential": 31,
+      "SI": 28,
+      "AR": 16,
+      "RW": 16,
+      "PI": 14,
+      "DD": 13,
+      "DG": 8,
+      "TA": 1
+    },
+    "harmonised": {
+      "plugged": 20826,
+      "active": 11727,
+      "orphan": 7978,
+      "other": 4414,
+      "abandoned": 2547
+    }
+  },
+  "ny_dec_orphan": {
+    "raw_codes": {
+      "UL": 3588,
+      "UM": 2378,
+      "UN": 2012
+    },
+    "harmonised": {
+      "orphan": 7978
+    }
+  },
+  "oh_odnr": {
+    "raw_codes": {
+      "Plugged and Abandoned": 65012,
+      "Producing": 55873,
+      "Final Restoration": 36035,
+      "Historical Production Well": 33665,
+      "Not Drilled": 27076,
+      "Domestic Well": 5130,
+      "Unknown status": 4334,
+      "Storage Well": 3357,
+      "Dry and Abandoned": 2823,
+      "Field Inspected, Well Not Found": 1720,
+      "Orphan Well - Ready": 913,
+      "Orphan Well - Pending": 829,
+      "Active Injection": 401,
+      "Cancelled": 356,
+      "Well Permitted": 257,
+      "Well Drilled": 255,
+      "Drilling": 187,
+      "Plugged Back": 164,
+      "Lost Hole": 94,
+      "Replugged Well": 48,
+      "Location Unknown": 31,
+      "Shut in": 16,
+      "Temporary Inactive  Status 4th Year": 11,
+      "Drilled, Inactive": 6,
+      "Permit Expired": 3,
+      "Temporary Inactive  Status 1st Year": 3,
+      "Temporary Inactive Status 3rd Year": 1,
+      "Plugged Back for Water Well": 1
+    },
+    "harmonised": {
+      "plugged": 101260,
+      "active": 64761,
+      "abandoned": 36525,
+      "other": 34313,
+      "orphan": 1742
+    }
+  },
+  "wv_dep": {
+    "raw_codes": {
+      "Active Well": 66586,
+      "Plugged": 49989,
+      "Abandoned Well": 17581,
+      "Never Drilled": 15954,
+      "Shutin": 1460,
+      "Never Issued": 1219,
+      "Permit Issued": 846,
+      "Future Use": 224,
+      "Unlocatable": 161,
+      "Permit Application": 119,
+      "Duplicate API": 103,
+      "Reverted Mine Vent": 8,
+      "Under Construction": 4
+    },
+    "harmonised": {
+      "active": 66586,
+      "plugged": 49989,
+      "abandoned": 19041,
+      "other": 18638
+    }
+  },
+  "ky_kgs": {
+    "raw_codes": {
+      "D&A": 46410,
+      "OIL": 39189,
+      "GAS": 28190,
+      "LOC": 19979,
+      "TRM": 17275,
+      "SRI": 4937,
+      "None": 1452,
+      "O&G": 1075,
+      "GS": 811,
+      "WI": 687,
+      "DG": 645,
+      "IA": 491,
+      "WS": 337,
+      "SWD": 197,
+      "OB": 167,
+      "GI": 105,
+      "TRI": 63,
+      "TA": 59,
+      "WW": 27,
+      "CBM": 20,
+      "WD": 18,
+      "AB": 13,
+      "TAI": 5,
+      "CP": 5,
+      "ERI": 5,
+      "AI": 2,
+      "SI": 2
+    },
+    "harmonised": {
+      "active": 70169,
+      "abandoned": 46980,
+      "other": 27742,
+      "plugged": 17275
+    }
+  },
+  "us_orphan_2026": {
+    "raw_codes": {
+      "nan": 15638,
+      "DR": 10007,
+      "UN": 8491,
+      "Abandoned Well": 3789,
+      "Unknown Located": 3334,
+      "OR": 2335,
+      "Unknown Not Found": 2251,
+      "Unknown": 2015,
+      "OP": 523,
+      "PR": 523,
+      "PA": 519,
+      "NF": 145,
+      "FR": 109,
+      "EX": 89,
+      "CA": 12,
+      "WP": 2,
+      "dr": 2,
+      "DG": 1,
+      "SW": 1
+    },
+    "harmonised": {
+      "orphan": 49786
+    }
+  },
+  "us_orphan_2022": {
+    "raw_codes": {
+      "HP": 15493,
+      "orphan": 12695,
+      "Abandoned Well": 3594,
+      "UN": 3289,
+      "Unknown Located": 2624,
+      "Unknown": 2320,
+      "Unknown Not Found": 2085,
+      "OR": 877,
+      "OP": 802,
+      "LU": 96
+    },
+    "harmonised": {
+      "orphan": 43875
+    }
+  }
+}

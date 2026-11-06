@@ -23,3 +23,26 @@ Products for a new study area go to `data/<area>/` as everywhere else, not here.
 Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`). Add the import path with
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
+
+## Build status (2026-11-05)
+
+Built by the build agent. The shared regional-transfer code is `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py`. Expansions 3.4 to 3.8 import it. Stage commands that every region shares are its subcommands. Assumed inputs and their schemas are in `src/config_3_4.json`. A missing assumed input stops a script with a message that names the input, its schema and the VERIFY step. Decisions are in `docs/decisions_3_4.md`. Run the tests with `python -m pytest -q expansions/3_geography/3_4_gulf_texas/src/test_3_4.py -p no:cacheprovider`.
+
+| Script | Stage | Runnable now | What is missing |
+|---|---|---|---|
+| `src/_geo_transfer_core.py` | shared core for 3.4 to 3.8 (config, registry, blocks, density, candidates, scoring, agreement, training sampler, CLI) | yes | nothing. Subcommands need their inputs |
+| `src/_geo_transfer_core.py cover --exp 3.4` | S1 support. Union cover from catalogue tile boxes | yes (ran) | nothing. Tile boxes give an upper bound |
+| `src/_gulf_rrc_orphans_tx.py` | S0 RRC fetch, schema, reliability | yes on the held Permian sample (ran, 3,328 rows). Layer 2 needs `--execute` | `data/raw/rrc_layer2_url.txt`. Real field names (edit `RRC_COLMAP`) |
+| `src/_gulf_window_choice_tx.py` | S1 East Texas rule and window boxes | yes (ran). No county passes yet | `data/raw/east_tx_lidar_listing.csv` (paged listing for Gregg, Rusk, Smith, Upshur) |
+| `src/_geo_transfer_core.py density --exp 3.4 --area <a>` | S2 ground density, void, water share | no | lidar tiles under `data/_source/lidar/lidar_us_windows/<project>/` |
+| `src/_gulf_observable_depth_audit.py` | S3 observability Q0 | 9t reference yes (ran, 503 pit floors). Target no | target 0.5 m DEM (core `derive`), NLCD 2021, `prereg.observability_floor` |
+| `src/_gulf_wetland_strata.py` | S4 water mask, strata, roles | no | S2 table, NLCD 2021, NWI polygons, hydro-flattened water polygons |
+| `src/_geo_transfer_core.py width / prereg --exp 3.4` | S5 projected width and prereg draft | prereg yes. Width no | 3.0 reference block tables, `prereg.margin` |
+| `src/_geo_transfer_core.py derive / agree --exp 3.4` | S6 derivatives and label agreement | dry run yes | lidar tiles. Two annotators' polygons |
+| `src/_geo_transfer_core.py infer / score --exp 3.4` | S7 A0, and S8 C0 with `--contrast` | no | P1 isolated pit checkpoint, truth polygons, 3.0 reference tables, margin |
+| `src/_gulf_relief_norm_channels.py` | S9a relief-normalised channels | no | adaptation-window DEM and feature stack |
+| `src/_gulf_pit_adapt_train.py` | S9b A1 fine-tune (GPU) | no | S9a stack, adaptation label raster, P1 checkpoint, `prereg.delta_gain` |
+| `src/_geo_transfer_core.py score --strata-filter wet_stratum=dry,mixed` | S10 A2 wetland exclusion | no | as S7 |
+| `src/_gulf_transfer_tables.py` | S10 and S11 tables, error review, RRC hand-off | partly. The hand-off runs once S0 output exists | score JSONs from S7 to S10 |
+| `src/test_3_4.py` | smoke tests (core plus 3.4) | yes. 10 passed |  |
+| `src/config_3_4.json` | assumed inputs, schemas, prereg values |  | user decisions (margin, delta_gain, floors) are null |

@@ -1,0 +1,20 @@
+layer,path,assumed,endpoint,present,rows,rows_in_bbox,crs_source,crs_ok,median_pos_error_m,note
+dep_wells,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\dep_wells\venango_wells_all.gpkg,False,False,True,20108.0,1068.0,EPSG:6346,True,,
+candidates_full,C:\Users\colto\Documents\GitHub\lidar_project\expansions\5_tasks\5_6_record_association\data\processed\detector_output_pit_full_9t.gpkg,False,False,True,685.0,685.0,EPSG:6346,True,,
+candidates_fallback,C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\pit\centroid_matching\pit_candidates_undecided_thr0p50_9t.gpkg,False,False,True,481.0,481.0,EPSG:6346,True,,
+pit_blocks,C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\05\pit_blocks_9t.gpkg,False,False,True,144.0,144.0,EPSG:6346,True,,
+roads,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\tiger_roads\tl_2024_42121_roads.shp,False,False,True,4733.0,33.0,EPSG:4269,True,,
+counties,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\census_boundaries\cb_2023_us_county_5m.zip,False,False,True,3235.0,1.0,EPSG:4269,True,,
+water_wells,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_exposure\water_wells_venango.gpkg,True,False,False,,,,,,"missing. Assumed fw_5_3 4A. PA Groundwater Information System or county records. VERIFY source, licence, positional error."
+public_supply,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_exposure\public_supply_swpa_venango.gpkg,True,False,False,,,,,,missing. Assumed 4A. Source water protection areas. VERIFY with DEP portal.
+buildings,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_exposure\buildings_venango.gpkg,True,False,False,,,,,,"missing. Assumed 4A. Building footprints. Count only, occupancy probably absent."
+streams,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_exposure\hydrography_venango.gpkg,True,False,False,,,,,,missing. Assumed 4A. Mapped hydrography. VERIFY against lidar channels.
+wetlands,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_exposure\wetlands_venango.gpkg,True,False,False,,,,,,missing. Assumed 4A.
+protected,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_exposure\protected_areas_venango.gpkg,True,False,False,,,,,,"missing. Assumed 4A. Game lands, state forest, easements. Flag only, never a weight."
+landcover,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\PA_LandCover\landcover_venango.tif,True,False,False,,,,,,missing. Assumed 4A. The PA_LandCover folder is empty.
+dep_inspections,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_hazard\dep_inspections_venango.csv,True,True,False,,,,,,"missing. Assumed 4A. Ask DEP in R1. ENDPOINT, never an H/E/P input."
+complaints,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_hazard\dep_complaints_venango.csv,True,True,False,,,,,,missing. Assumed 4A. ENDPOINT (secondary). Correlated with E.
+field_flux,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_hazard\field_flux_pa.csv,True,True,False,,,,,,missing. Assumed 4A. Field flux by the 6.5 protocol. ENDPOINT (primary).
+subsurface_tops,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_hazard\subsurface_tops_venango.csv,True,False,False,,,,,,missing. Assumed 4A. State geological survey.
+agency_list,C:\Users\colto\Documents\GitHub\lidar_project\data\_source\reference\risk_hazard\agency_priority_venango.csv,True,False,False,,,,,,missing. Assumed. Agency default order (scenario E). VERIFY in R1.
+prereg,C:\Users\colto\Documents\GitHub\lidar_project\expansions\5_tasks\5_3_risk_ranking\docs\risk_ranking_prereg_9t.json,True,False,False,,,,,,"missing. Preregistration, written and committed before S6 opens any endpoint file."

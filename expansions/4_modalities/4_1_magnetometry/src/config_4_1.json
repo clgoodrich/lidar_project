@@ -1,0 +1,72 @@
+{
+  "_note": "Config for expansion 4.1 magnetometry. Paths are specs, never literals. {key, rel} resolves through ek.path_for(key). {exp, rel} resolves inside an expansion folder. Every item marked VERIFY is an assumption written by the build agent on 2026-11-05.",
+  "exp_id": "4.1",
+  "master_seed": 20261105,
+  "area": "9t",
+  "bbox_9t": [619500.0, 4593000.0, 624000.0, 4597500.0],
+  "crs": "EPSG:6346",
+
+  "inputs": {
+    "dep_wells": {"key": "dep_wells", "rel": "venango_wells_all.gpkg", "layer": "venango_wells_all", "state": "held"},
+    "pits": {"key": "truth", "rel": "annotations_proj_v2.gpkg", "layer": "pit_full", "state": "held"},
+    "historic_dates": {"exp": "4.1", "rel": "data/raw/historic_well_dates.csv", "state": "assumed",
+      "schema": "PERMIT_NUM or site_id, easting, northing, source, source_date (YYYY), year_built_max. Independent historic-map dating, from 4.6. VERIFY"},
+    "confusers_blanks": {"exp": "4.1", "rel": "data/raw/confusers_blanks.csv", "state": "assumed",
+      "schema": "site_id, kind (confuser|blank), easting, northing, description (culvert, fence, pipe, vehicle, open forest). EPSG:6346. VERIFY"},
+    "pilot_sites": {"exp": "4.1", "rel": "data/raw/pilot_sites.csv", "state": "assumed",
+      "schema": "site_id, stratum, easting, northing, lidar_cx, lidar_cy, why_chosen, PERMIT_NUM (optional). EPSG:6346. Chosen by people, not random. VERIFY"},
+    "line_data": {"exp": "4.1", "rel": "data/raw/{site}/mag_lines.csv", "state": "assumed",
+      "schema": "line_id, time_utc (ISO 8601), easting, northing (EPSG:6346 m), tf_nT (total field), is_repeat (0|1). One file per site. VERIFY against the instrument export"},
+    "base_station": {"exp": "4.1", "rel": "data/raw/{site}/mag_base.csv", "state": "assumed",
+      "schema": "time_utc (ISO 8601), tf_nT. Same clock as the rover. VERIFY"},
+    "grid_tif": {"exp": "4.1", "rel": "data/raw/{site}/mag_grid.tif", "state": "assumed, optional",
+      "schema": "single band total-field or residual grid in nT, EPSG:6346. Used instead of line data when given"},
+    "wellheads": {"exp": "4.1", "rel": "data/raw/wellheads_gnss.csv", "state": "assumed",
+      "schema": "site_id, easting, northing, h_acc_m, method (RTK|PPK|autonomous), visible (0|1). EPSG:6346. VERIFY"},
+    "site_identity": {"exp": "4.1", "rel": "data/raw/site_identity.csv", "state": "assumed",
+      "schema": "site_id, identity_status (confirmed_well|definite_non_well|ambiguous), casing_evidence (text), non_magnetic_evidence (text). Kept apart from the anomaly outcome. VERIFY"}
+  },
+
+  "site_frame": {
+    "steel_era_after_year": 1930,
+    "sentinel_year_max": 1800,
+    "pit_no_record_radius_m": 25.0,
+    "min_sites": 3, "max_sites": 5, "min_strata": 3
+  },
+
+  "survey": {
+    "grid_x_m": 20.0, "grid_y_m": 20.0,
+    "line_spacing_m": 1.0,
+    "sensor_height_m": 0.3,
+    "walk_speed_m_s": 0.8,
+    "sample_rate_hz": 10.0,
+    "turn_time_s": 10.0,
+    "noise_sigma_nT": 1.0,
+    "pole_strength_range_nT_m2": [500.0, 5000.0],
+    "_pole_note": "Monopole strength p in nT m2 so that B = p / r2. Range assumed for cut casing tops. VERIFY against Hammack et al. (2023) or a measured test casing",
+    "detect_k_sigma": 3.0
+  },
+
+  "processing": {
+    "despike_window": 11, "despike_k_mad": 6.0,
+    "poly_order": 1,
+    "grid_cell_m": 0.25,
+    "mask_factor": 1.5,
+    "rtp": false,
+    "inclination_deg": 67.0, "declination_deg": -9.0,
+    "_igrf_note": "Approximate western Pennsylvania main-field angles. VERIFY with IGRF-14 for the survey date",
+    "pick_k_sigma": 3.0,
+    "strong_k_sigma": 6.0,
+    "_pick_note": "3 sigma is the framework anomaly definition. The two-line support rule and strong_k_sigma are build-agent additions to control false picks",
+    "pick_window_m": 2.0,
+    "test_object": null,
+    "_test_object_note": "Per site {easting, northing}. A steel object placed at a known position. Set in the site record or here",
+    "test_object_tol_m": 1.0
+  },
+
+  "gate": {
+    "noise_target_nT": 2.0,
+    "repeat_rms_tol_nT": 3.0,
+    "match_radius_m": 5.0
+  }
+}

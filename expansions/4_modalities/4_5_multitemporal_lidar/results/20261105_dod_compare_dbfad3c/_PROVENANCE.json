@@ -1,0 +1,76 @@
+{
+  "written": "2026-11-05T22:27:59",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/4_modalities/4_5_multitemporal_lidar/src/_dod_plug_change_compare_9t.py",
+    "--placebo"
+  ],
+  "params": {
+    "compare": {
+      "delta_rate": 0.1,
+      "delta_rate_note": "User decision. The useful flag-rate difference from the decision the flag changes. Proposed default. Not from variance.",
+      "bootstrap_B": 2000,
+      "n_placebo": 200,
+      "seed": 20261105
+    },
+    "flag": {
+      "thr": 0.235,
+      "min_cover": 0.2,
+      "p_cut": 0.975,
+      "n_ctrl": 40,
+      "slope_tol": 3.0,
+      "ctrl_dist_m": [
+        150.0,
+        800.0
+      ],
+      "min_ctrl": 10
+    }
+  },
+  "seeds": {
+    "bootstrap": 20261105,
+    "flag": 20261102
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_ctrl_eade56b\\change_controls_matched_9t.gpkg",
+      "bytes": 159744,
+      "mtime": "2026-11-05T22:23:06.804066",
+      "sha256": "ed077464df0150d891441b4f4458cef76f93e1bd14bc9a57f1079198b99503f1"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\dod_v2_highpass_9t_2m.tif",
+      "bytes": 18832288,
+      "mtime": "2026-11-03T16:31:01.240576",
+      "sha256": "20a2594a2410c8429afb74657ffeb54404bc8d5441d877626e42c22ce049d120"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\dem_2019_v2_9t_2m.tif",
+      "bytes": 15836171,
+      "mtime": "2026-11-03T16:30:55.216942",
+      "sha256": "1edc5923eb3d6a5b03901884937d79b7ffb50026c1b235588f6ffe46e62ce58b"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg",
+      "bytes": 10924032,
+      "mtime": "2026-09-11T18:15:23.877075",
+      "sha256": "58e56ce98813f680aeb8550f1fc8e9143245807fbee1fdeeeef52b6c5926790b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_compare_dbfad3c\\plug_change_by_pad_9t.csv",
+      "bytes": 1026,
+      "mtime": "2026-11-05T22:25:13.452064",
+      "sha256": "65dfc5bfae27891e7d396db1e4d05d1300d67ca51d154d7d6e7c9857a8f61bd9"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_compare_dbfad3c\\plug_change_compare_9t.json",
+      "bytes": 1044,
+      "mtime": "2026-11-05T22:27:59.190020",
+      "sha256": "89ea2004472d0c0fe8dca2ec6cc0db5153d028e4c073e7e6011ffa25736be91c"
+    }
+  ]
+}

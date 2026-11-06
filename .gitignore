@@ -214,3 +214,17 @@ expansions/*/*/models/**
 !expansions/*/*/data/**/
 !expansions/*/*/models/**/
 !expansions/**/.gitkeep
+
+# Expansion build outputs (2026-11-05). Heavy rasters and model files never tracked.
+expansions/*/*/results/**/*.tif
+expansions/*/*/results/**/*.pt
+expansions/*/*/results/**/*.npz
+data/*/results/transfer/inference_05/
+data/benchmark/
+data/*/derived/05/features_reliefnorm_*/
+data/*/derived/05/features_optical_*/
+data/*/derived/05/features_fusion_*/
+data/*/derived/ca_label_packs_*/
+data/ak1/derived/ak_stack_ak1/
+data/_source/reference/wells_rrc_orphans_tx/
+data/_source/reference/wells_can/

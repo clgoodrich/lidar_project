@@ -23,3 +23,16 @@ Products for a new study area go to `data/<area>/` as everywhere else, not here.
 Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`). Add the import path with
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
+
+## Build status (2026-11-05)
+
+Tests. `python -m pytest -q expansions/6_adjacent/6_6_sar_viewshed/src/test_6_6.py -p no:cacheprovider` gives 10 passed. They include plane, wall, hill, pit, canopy block, nodata, edge and void cases, and 1,000 random sweep against brute-force pairs with zero disagreements outside half-cell tolerance.
+Real-data checks. `gridcheck` passed on 9t (`results/tables/sar_grid_check_9t.json`). A 500 m O1 benchmark on 9t took 11.6 s and 179 MB peak (scratch run).
+Not a well result. Keep it out of well reports.
+
+| Script | Stage | Runnable now | What is missing |
+|---|---|---|---|
+| `src/_sar_viewshed_tool.py` | S1 engine and CLI, S3 benchmark, grid check | yes | nothing for O0 and O1. O2 k values are starting guesses |
+| `src/_sar_viewshed_validate.py` | S4 sight-check validation | no | field sight checks `data/9t/source/sar_field/sight_checks_9t.csv` and acceptance level A |
+| `src/_sar_walk_time_validate.py` | S5 GNSS walk test | no | GNSS tracks `data/9t/source/sar_field/walk_tracks_9t.csv` and the time tolerance |
+| `src/config_6_6.json` | inputs, heights, opacity, cost, validation | yes | A and time tolerance are user decisions |

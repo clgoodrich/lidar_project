@@ -1,0 +1,33 @@
+{
+  "n_lines": 21,
+  "along_line_spacing_m": 0.08,
+  "samples_per_line": 251,
+  "n_samples": 5271,
+  "line_length_total_m": 420.0,
+  "survey_time_min": 12.083333333333334,
+  "area_m2": 400.0,
+  "area_per_hour_m2": 1986.2068965517242,
+  "site_id": "demo",
+  "centre": [
+    621750.0,
+    4595250.0
+  ],
+  "survey": {
+    "grid_x_m": 20.0,
+    "grid_y_m": 20.0,
+    "line_spacing_m": 1.0,
+    "sensor_height_m": 0.3,
+    "walk_speed_m_s": 0.8,
+    "sample_rate_hz": 10.0,
+    "turn_time_s": 10.0,
+    "noise_sigma_nT": 1.0,
+    "pole_strength_range_nT_m2": [
+      500.0,
+      5000.0
+    ],
+    "_pole_note": "Monopole strength p in nT m2 so that B = p / r2. Range assumed for cut casing tops. VERIFY against Hammack et al. (2023) or a measured test casing",
+    "detect_k_sigma": 3.0
+  },
+  "model": "vertical monopole at casing top, peak p/z^2, assumed pole strengths",
+  "note": "Design aid. Not a sensitivity estimate. Pole range VERIFY"
+}

@@ -1,0 +1,11 @@
+{
+  "G": 0.0,
+  "G_raw": -0.004273504273504258,
+  "floored_at_zero": true,
+  "source": "R recall at the budget minus at 75% of it, frozen before the policy was scored",
+  "seeds": [
+    0,
+    1,
+    2
+  ]
+}

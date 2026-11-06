@@ -1,0 +1,15 @@
+scope,field,date_class,n,share,evidence_level,analysis,era_basis
+venango,SPUD_DATE,valid,10501,0.5222299582255818,b,audit,audit_only
+venango,SPUD_DATE,sentinel_1800-01-01,8054,0.40053709966182616,b,audit,audit_only
+venango,SPUD_DATE,null,1553,0.077232942112592,b,audit,audit_only
+venango,PERMIT_DAT,valid,17316,0.8611497911279092,b,audit,audit_only
+venango,PERMIT_DAT,null,2792,0.1388502088720907,b,audit,audit_only
+venango,DATE_PLUGG,null,12958,0.6444201312910285,b,audit,audit_only
+venango,DATE_PLUGG,valid,7150,0.35557986870897157,b,audit,audit_only
+9t_bbox,SPUD_DATE,valid,1015,0.950374531835206,b,audit,audit_only
+9t_bbox,SPUD_DATE,sentinel_1800-01-01,43,0.040262172284644196,b,audit,audit_only
+9t_bbox,SPUD_DATE,null,10,0.009363295880149813,b,audit,audit_only
+9t_bbox,PERMIT_DAT,valid,1056,0.9887640449438202,b,audit,audit_only
+9t_bbox,PERMIT_DAT,null,12,0.011235955056179775,b,audit,audit_only
+9t_bbox,DATE_PLUGG,null,801,0.75,b,audit,audit_only
+9t_bbox,DATE_PLUGG,valid,267,0.25,b,audit,audit_only

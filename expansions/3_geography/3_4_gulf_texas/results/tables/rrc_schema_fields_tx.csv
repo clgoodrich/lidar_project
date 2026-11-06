@@ -1,0 +1,5 @@
+field,dtype,n_non_null,n_unique,example
+API,object,3328,3305,18900032
+status,object,3328,1,orphan_confirmed
+lon,float64,3328,3327,-101.56449373706621
+lat,float64,3328,3327,33.890807531806516

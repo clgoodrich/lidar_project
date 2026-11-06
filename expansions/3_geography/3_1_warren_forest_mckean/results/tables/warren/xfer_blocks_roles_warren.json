@@ -1,0 +1,26 @@
+{
+  "seed": 20261105,
+  "adapt_side": "north",
+  "adapt_area_km2": 3.234375,
+  "adaptation_dropped": true,
+  "buffer_m": 192.0,
+  "counts": {
+    "test": 71,
+    "audit": 22,
+    "ineligible": 19
+  },
+  "area": "warren",
+  "n_blocks": 112,
+  "density_rule": "9t_p5",
+  "density_min_per_m2": 1.905815111111111,
+  "slope_cut_points_deg": [
+    6.1662659737864525,
+    13.351826871724434
+  ],
+  "buffer_provisional": true,
+  "n_recheck": 15,
+  "eligible_km2": 13.078125,
+  "test_km2": 9.984375,
+  "median_ground_per_m2": 2.408519111111111,
+  "median_void_frac": 0.4669537777777778
+}

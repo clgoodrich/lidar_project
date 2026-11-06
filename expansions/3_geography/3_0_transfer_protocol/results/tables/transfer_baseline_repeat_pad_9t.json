@@ -1,0 +1,12 @@
+{
+ "run_a": "expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\runs\\baseline_pad\\repeat_a\\20261105_score_pad_9t_8668a9e",
+ "run_b": "expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\runs\\baseline_pad\\repeat_b\\20261105_score_pad_9t_8668a9e",
+ "json_identical": true,
+ "blocks_csv_identical": true,
+ "gate": "pass",
+ "prob": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\pad_prob_oof_mosaic_9t.tif",
+ "prob_sha256": "75f80127117820ab04364a0239f58e4eee2528b01ec0fc51f59626725cc2164f",
+ "k": 40,
+ "k_rule": "per_group",
+ "label": "new baseline"
+}

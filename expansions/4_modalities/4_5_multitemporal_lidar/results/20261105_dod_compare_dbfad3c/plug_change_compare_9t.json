@@ -1,0 +1,38 @@
+{
+  "primary": {
+    "statistic": "flag rate treated minus matched controls",
+    "estimate": 0.6666666666666666,
+    "lo": 0.0,
+    "hi": 1.0,
+    "n_treated": 3,
+    "n_controls": 6,
+    "n_clusters": 3,
+    "delta_rate": 0.1,
+    "min_n": 20,
+    "verdict": "inconclusive (n below the preregistered minimum)",
+    "bootstrap_unreliable": true
+  },
+  "secondary_mean_change_m": {
+    "estimate": -0.02249548677355051,
+    "lo": -0.22213649237528443,
+    "hi": 0.10407437803223729
+  },
+  "dose_response": {
+    "spearman_rho": -0.5,
+    "p": 0.6666666666666666,
+    "n": 3,
+    "exploratory": true
+  },
+  "placebo": {
+    "reps": 200,
+    "mean": 0.0027777777777777766,
+    "q025": -0.2222222222222222,
+    "q975": 0.3333333333333333
+  },
+  "seam_dist_median_m": {
+    "control": 220.2931668593933,
+    "treated": 36.0
+  },
+  "not_assessable": 3,
+  "reading": "Evidence level (a), terrain change. No detectable change is not no restoration or no plugging. Recovery from S3 bounds what the chain can see."
+}

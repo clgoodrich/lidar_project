@@ -1,0 +1,21 @@
+{
+  "audit_file": "None",
+  "batch": "16",
+  "blocks": "None",
+  "buffer_m": "0.0",
+  "dry_run": "True",
+  "epochs": "40",
+  "features": "None",
+  "folds": "5",
+  "labels": "None",
+  "lr": "0.001",
+  "manifest": "None",
+  "measure_epoch": "False",
+  "norm_read_px": "32",
+  "norm_windows": "20000",
+  "only_folds": "",
+  "out_dir": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\pit_iso",
+  "split_sha256": "5084c5b96c4dd4dde2504025ba4bfbbe98b87052ce4be213aba38361d5ca1032",
+  "splits": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json",
+  "workers": "0"
+}

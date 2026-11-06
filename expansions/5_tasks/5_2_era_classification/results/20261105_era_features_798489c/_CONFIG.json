@@ -1,0 +1,31 @@
+{
+  "features": {
+    "_flight_year_note": "Lidar flight year per area. VERIFY from the acquisition metadata. Constant within one tile, so it carries no information on 9t alone.",
+    "covariates": [
+      "road_dist_m",
+      "landcover_class",
+      "oilfield_dist_m",
+      "flight_year"
+    ],
+    "flight_year_9t": null,
+    "location": [
+      "easting_km",
+      "northing_km"
+    ],
+    "morphology": [
+      "area_m2",
+      "perimeter_m",
+      "compactness",
+      "elongation",
+      "wells_on_pad",
+      "pits_on_pad",
+      "slope_mean_deg",
+      "void_frac"
+    ]
+  },
+  "link": {
+    "exclude_position_only_from_primary": true,
+    "pad_radius_m": 30.0,
+    "pit_radius_m": 30.0
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "crop": [
+    4000,
+    4000,
+    600,
+    600
+  ],
+  "bands": {
+    "lrm_25": {
+      "r": 1.0,
+      "max_abs_diff": 0.0,
+      "median_abs_diff": 0.0
+    },
+    "lrm_5": {
+      "r": 0.9999999999999999,
+      "max_abs_diff": 0.0,
+      "median_abs_diff": 0.0
+    },
+    "slope": {
+      "r": 0.9967343052891559,
+      "max_abs_diff": 3.8155059814453125,
+      "median_abs_diff": 0.15993374586105347
+    },
+    "tpi_05": {
+      "r": 1.0,
+      "max_abs_diff": 0.0,
+      "median_abs_diff": 0.0
+    },
+    "openness_pos": {
+      "r": 1.0,
+      "max_abs_diff": 0.0,
+      "median_abs_diff": 0.0
+    },
+    "openness_neg": {
+      "r": 1.0,
+      "max_abs_diff": 0.0,
+      "median_abs_diff": 0.0
+    },
+    "roughness_11": {
+      "r": 1.0,
+      "max_abs_diff": 0.0,
+      "median_abs_diff": 0.0
+    }
+  }
+}

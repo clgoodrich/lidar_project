@@ -1,0 +1,54 @@
+{
+  "exp_id": "6.4",
+  "_note": "Delta on expansions/6_adjacent/6_1_co2_geothermal/src/config_6_1.json. Keys here override 6.1 (inputs and decisions are merged key by key). Anything not listed is identical to 6.1.",
+  "decisions": {
+    "partner": "hypothetical",
+    "partner_note": "No hydrogen partner is named. Declared hypothetical (decisions_6_4.md, 2026-11-05).",
+    "regime": "VERIFY. No federal hydrogen storage analogue to Class VI is assumed. Do not cite 40 CFR 146.84 for hydrogen.",
+    "pilot_field": "hypothetical (9t block extent) until a western Pennsylvania storage or depleted field is chosen"
+  },
+  "inputs": {
+    "partner_area":     {"key": "data", "rel": "_source/partners/h2_partner/field_boundary.gpkg", "state": "assumed", "optional": true,
+                         "schema": {"name": "str", "geometry": "Polygon of the pool or storage field, any CRS"}},
+    "partner_wells":    {"key": "data", "rel": "_source/partners/h2_partner/partner_wells.csv", "state": "assumed", "optional": true,
+                         "schema": {"permit": "str", "x": "float", "y": "float", "depth_ft": "float", "status": "str"}},
+    "reservoir_tops":   {"key": "data", "rel": "_source/partners/h2_partner/reservoir_seal_tops.csv", "state": "assumed",
+                         "schema": {"permit": "str (optional, blank or absent means field-wide)", "reservoir_top": "float",
+                                    "seal_top": "float", "units": "ft|m", "datum": "str (measured depth from KB, VERIFY)"}},
+    "completion_history": {"key": "data", "rel": "_source/partners/h2_partner/completion_history.csv", "state": "assumed", "optional": true,
+                         "schema": {"permit": "str", "completion_year": "int", "completion_type": "str", "last_workover_year": "int"}},
+    "casing_material":  {"key": "data", "rel": "_source/partners/h2_partner/casing_material.csv", "state": "assumed, likely absent", "optional": true,
+                         "schema": {"permit": "str", "casing_grade": "str", "cement_type": "str"}},
+    "monitor_sites":    {"key": "data", "rel": "_source/partners/h2_partner/monitor_sites.gpkg", "state": "assumed", "optional": true,
+                         "schema": {"site_name": "str", "kind": "observation well|gas survey point", "geometry": "Point"}}
+  },
+  "h2_params": {
+    "record_depth_units": "ft",
+    "depth_uncertainty_ft": 50,
+    "min_depth_coverage": 0.50
+  },
+  "profiles": {
+    "hydrogen": {
+      "extends": "co2",
+      "name": "hydrogen",
+      "screen_layer": "L7_field_boundary",
+      "out_subdir": "h2",
+      "tag": "_h2",
+      "limits_add": [
+        "Hydrogen is a small, fast-leaking molecule. A surface feature says nothing about defect size or leak pathways.",
+        "Material compatibility and cycling effects are unknown from surface data.",
+        "Penetration flags come from record depths. Records can be wrong or missing. A candidate has none."
+      ],
+      "banned_add": ["hydrogen-ready", "compatible", "suitable"],
+      "reader_questions": {
+        "Q_complete":   {"limit": 1, "zero_tolerance": true,  "text": "Does the package say how many wells exist in the field?"},
+        "Q_subsurf":    {"limit": 3, "zero_tolerance": false, "text": "Does the package say whether a candidate penetrates the reservoir or seal?"},
+        "Q_cand":       {"limit": 4, "zero_tolerance": false, "text": "Is a candidate a confirmed well?"},
+        "Q_blind":      {"limit": 6, "zero_tolerance": false, "text": "Does an empty blind zone mean there are no wells there?"},
+        "Q_h2_leak":    {"limit": 8, "zero_tolerance": true,  "text": "Does the package give a leak rate or leak pathway size for any well?"},
+        "Q_h2_material":{"limit": 9, "zero_tolerance": true,  "text": "Does the package say any well is suitable for hydrogen service?"}
+      },
+      "optional_layers": ["L8_monitor_sites"]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "written": "2026-11-05T22:31:07",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/3_geography/3_0_transfer_protocol/src/_transfer_archival_check_9t.py"
+  ],
+  "params": {},
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\results\\operating_point\\policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv",
+      "bytes": 21350,
+      "mtime": "2026-09-23T14:37:46.980892",
+      "sha256": "321bc938bff5380d0ae558cf68921be3b7efc1e57a3d5299aecce56406bd63db"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\notebooks\\wellsight_v2\\s5_eval\\_operating_point_policy_sweep_pit_pad_9t.py",
+      "bytes": 22783,
+      "mtime": "2026-09-23T14:37:42.001994",
+      "sha256": "917c2518e6ce3e98d6618a0475297d32be16bd78d2a5dba821243d5074e7e9dd"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\results\\operating_point\\cv5_sweep_objects_pit_thr0p05to0p95_9t.csv.gz",
+      "bytes": 1075292,
+      "mtime": "2026-09-23T14:01:24.349035",
+      "sha256": "0351c7bbc20db844d7609b634f078847e864a0d015443524307ab15e48e44c19"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\results\\operating_point\\cv5_sweep_objects_pad_thr0p05to0p95_9t.csv.gz",
+      "bytes": 914222,
+      "mtime": "2026-09-23T14:23:01.606395",
+      "sha256": "d9415c0dacace907f78789235af0adbc54f20a82e3894854a64d4db099ce5842"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\results\\tables\\transfer_archival_check_9t.json",
+      "bytes": 4624,
+      "mtime": "2026-11-05T22:31:07.154013",
+      "sha256": "1ff481e6b1b89c525f41a172ba4ce7a9ba66325d22b061262034d626de2c1a8c"
+    }
+  ]
+}

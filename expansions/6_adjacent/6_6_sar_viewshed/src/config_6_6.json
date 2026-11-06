@@ -1,0 +1,31 @@
+{
+  "exp_id": "6.6",
+  "area": "9t",
+  "crs": "EPSG:6346",
+  "_note": "Search and rescue viewshed tool. Not a well result. Assumed inputs are tagged. Acceptance level A and the time tolerance are user decisions (null until set).",
+  "inputs": {
+    "dem":            {"key": "nine_t", "rel": "dem_9t_05.tif", "state": "held"},
+    "dsm":            {"key": "nine_t", "rel": "dsm_9t_05.tif", "state": "held (compound CRS 6346+5703)"},
+    "chm":            {"key": "nine_t", "rel": "chm_9t_05.tif", "state": "held"},
+    "ground_density": {"key": "nine_t", "rel": "ground_density_9t_05.tif", "state": "held", "schema": "uint16, 0 means no ground return (void, interpolated DEM)"},
+    "landcover":      {"area": "9t", "rel": "derived/landcover/nlcd_2019_landcover_9t.tif", "state": "held (NLCD 2019, legend VERIFY)", "optional": true},
+    "sight_checks":   {"area": "9t", "rel": "source/sar_field/sight_checks_9t.csv", "state": "assumed",
+                       "schema": {"check_id": "str", "station_id": "str", "obs_x": "float", "obs_y": "float", "tgt_x": "float", "tgt_y": "float",
+                                  "visible": "0|1", "canopy_state": "leaf_on|leaf_off", "date": "YYYY-MM-DD", "gnss_err_m": "float",
+                                  "eye_h": "float optional", "tgt_h": "float optional"}},
+    "walk_tracks":    {"area": "9t", "rel": "source/sar_field/walk_tracks_9t.csv", "state": "assumed",
+                       "schema": {"route_id": "str", "t_s": "float seconds", "x": "float", "y": "float", "err_m": "float"}}
+  },
+  "outputs": {"results": {"area": "9t", "rel": "results/sar"}},
+  "viewshed": {"eye_height_m": 1.7, "target_height_m": 0.0, "person_height_m": 1.7, "radius_m": 1000.0,
+               "refraction_k": 0.13, "earth_radius_m": 6371000.0, "curvature": true, "canopy_height_m": 2.0,
+               "k_extinction": {"leaf_on": 0.15, "leaf_off": 0.05, "_note": "starting values per metre, VERIFY, calibrated in S4"},
+               "o2_visible_threshold": 0.5, "pocket_min_area_m2": 400.0, "ray_chunk": 256, "mask_voids": true},
+  "cost": {"tobler_a": 6.0, "tobler_b": 3.5, "tobler_c": 0.05, "resample_m": 5.0,
+           "landcover_multiplier": {"_note": "NLCD codes, time multipliers. Starting values. VERIFY and calibrate in S5.",
+                                    "11": null, "21": 1.0, "22": 1.0, "23": 1.0, "24": 1.0, "31": 1.1, "41": 1.4, "42": 1.4,
+                                    "43": 1.4, "52": 1.6, "71": 1.2, "81": 1.2, "82": 1.3, "90": 2.0, "95": 2.0, "default": 1.3}},
+  "validation": {"acceptance_A": null, "time_tolerance_rel": null, "min_stations": 20, "min_routes": 10,
+                 "B": 2000, "master_seed": 20261107, "k_grid": [0.0, 0.02, 0.05, 0.08, 0.1, 0.15, 0.2, 0.3, 0.5],
+                 "distance_bands_m": [0, 50, 100, 250, 500, 1000, 5000]}
+}

@@ -1,0 +1,66 @@
+{
+  "written": "2026-11-05T22:25:07",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "4_3_vegetation_stress/src/_vegstress_extract_sites_9t.py",
+    "--pads-only"
+  ],
+  "params": {
+    "ring_inner_m": 5.0,
+    "ring_outer_m": 30.0,
+    "supersample": 5,
+    "open_frac_min": 0.5,
+    "reflectance_scale": 1.0,
+    "_scale_note": "Multiply stored values to get reflectance 0-1. VERIFY the held stacks (values look like reflectance already)"
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg",
+      "bytes": 10924032,
+      "mtime": "2026-09-11T18:15:23.877075",
+      "sha256": "58e56ce98813f680aeb8550f1fc8e9143245807fbee1fdeeeef52b6c5926790b"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\1m\\chm_9t_1m.tif",
+      "bytes": 54748333,
+      "mtime": "2026-09-20T21:52:02.459087",
+      "sha256": "449547f87668f06941a2a2590ecf1250263290f708eb0e94fc1b34e4fcbb3629"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\optical_s2\\s2_jun_green_red_nir_swir_scl_9t_5m.tif",
+      "bytes": 4455978,
+      "mtime": "2026-10-27T14:27:11.564146",
+      "sha256": "4a272e4363c3071f88cc810f7b9b7bf6c8f4af929e839b6fd87ae0d055ba1676"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\optical_s2\\s2_sep_green_red_nir_swir_scl_9t_5m.tif",
+      "bytes": 4268253,
+      "mtime": "2026-10-27T14:27:37.152449",
+      "sha256": "ec0166f733fa187a74b911c5c0dc7a53af5a1840c54680556fc9c88142240d67"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\optical_s2\\s2_oct_green_red_nir_swir_scl_9t_5m.tif",
+      "bytes": 4472761,
+      "mtime": "2026-10-27T14:28:16.089423",
+      "sha256": "ee71d496ccc2b47c16ef0b71290bcbebe5b4f252cb17ab278d973dd577814fad"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_3_vegetation_stress\\results\\20261105_vegstress_sites_30295c9\\vegstress_by_site_9t.csv",
+      "bytes": 488477,
+      "mtime": "2026-11-05T22:25:07.595402",
+      "sha256": "12fd018a6e5657d9afccc8e19b8b13a0175b9e44fefc15ffe8002ebd1a59fea0"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_3_vegetation_stress\\results\\20261105_vegstress_sites_30295c9\\vegstress_sites_summary_9t.json",
+      "bytes": 431,
+      "mtime": "2026-11-05T22:25:07.598403",
+      "sha256": "c166ecc02840b91fbe76f89772e7ebf06ef66969bb1a237bea3e54661991346d"
+    }
+  ]
+}

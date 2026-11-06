@@ -1,0 +1,199 @@
+{
+ "check": "archival",
+ "verdict": "match",
+ "notes": [],
+ "results": {
+  "pit": {
+   "30": {
+    "rebuilt": {
+     "recall": 0.7813121272365805,
+     "recall_lo": 0.7386998086726504,
+     "recall_hi": 0.8220214285714285,
+     "recall_fold_min": 0.7227722772277227,
+     "recall_fold_max": 0.9,
+     "candidates": 483.0,
+     "n_gt": 503.0,
+     "rule_per_fold": [
+      105,
+      109,
+      84,
+      97,
+      88
+     ],
+     "fold_km2": [
+      3.515625,
+      3.65625,
+      2.8125,
+      3.234375,
+      2.953125
+     ]
+    },
+    "saved": {
+     "recall": 0.7813121272365805,
+     "recall_lo": 0.7386998086726504,
+     "recall_hi": 0.8220214285714285,
+     "recall_fold_min": 0.7227722772277227,
+     "recall_fold_max": 0.9,
+     "candidates": 483.0,
+     "n_gt": 503.0
+    },
+    "max_abs_diff": 0.0,
+    "matches_saved": true,
+    "diffs": {
+     "recall": 0.0,
+     "recall_lo": 0.0,
+     "recall_hi": 0.0,
+     "recall_fold_min": 0.0,
+     "recall_fold_max": 0.0,
+     "candidates": 0.0,
+     "n_gt": 0.0
+    },
+    "protocol_target": 0.781,
+    "matches_protocol_target": true
+   },
+   "40": {
+    "rebuilt": {
+     "recall": 0.9085487077534792,
+     "recall_lo": 0.8811659192825112,
+     "recall_hi": 0.934655650785808,
+     "recall_fold_min": 0.8686868686868687,
+     "recall_fold_max": 0.97,
+     "candidates": 637.0,
+     "n_gt": 503.0,
+     "rule_per_fold": [
+      140,
+      146,
+      112,
+      129,
+      118
+     ],
+     "fold_km2": [
+      3.515625,
+      3.65625,
+      2.8125,
+      3.234375,
+      2.953125
+     ]
+    },
+    "saved": {
+     "recall": 0.9085487077534792,
+     "recall_lo": 0.8811659192825112,
+     "recall_hi": 0.934655650785808,
+     "recall_fold_min": 0.8686868686868687,
+     "recall_fold_max": 0.97,
+     "candidates": 637.0,
+     "n_gt": 503.0
+    },
+    "max_abs_diff": 0.0,
+    "matches_saved": true,
+    "diffs": {
+     "recall": 0.0,
+     "recall_lo": 0.0,
+     "recall_hi": 0.0,
+     "recall_fold_min": 0.0,
+     "recall_fold_max": 0.0,
+     "candidates": 0.0,
+     "n_gt": 0.0
+    },
+    "protocol_target": 0.909,
+    "matches_protocol_target": true
+   }
+  },
+  "pad": {
+   "30": {
+    "rebuilt": {
+     "recall": 0.6476923076923077,
+     "recall_lo": 0.6018443152454781,
+     "recall_hi": 0.6886294078509647,
+     "recall_fold_min": 0.627906976744186,
+     "recall_fold_max": 0.6744186046511628,
+     "candidates": 541.0,
+     "n_gt": 650.0,
+     "rule_per_fold": [
+      101,
+      113,
+      109,
+      113,
+      105
+     ],
+     "fold_km2": [
+      3.375,
+      3.796875,
+      3.65625,
+      3.796875,
+      3.515625
+     ]
+    },
+    "saved": {
+     "recall": 0.6476923076923077,
+     "recall_lo": 0.6018443152454781,
+     "recall_hi": 0.6886294078509647,
+     "recall_fold_min": 0.627906976744186,
+     "recall_fold_max": 0.6744186046511628,
+     "candidates": 541.0,
+     "n_gt": 650.0
+    },
+    "max_abs_diff": 0.0,
+    "matches_saved": true,
+    "diffs": {
+     "recall": 0.0,
+     "recall_lo": 0.0,
+     "recall_hi": 0.0,
+     "recall_fold_min": 0.0,
+     "recall_fold_max": 0.0,
+     "candidates": 0.0,
+     "n_gt": 0.0
+    }
+   },
+   "40": {
+    "rebuilt": {
+     "recall": 0.803076923076923,
+     "recall_lo": 0.7629171497508852,
+     "recall_hi": 0.8394550382894836,
+     "recall_fold_min": 0.7829457364341085,
+     "recall_fold_max": 0.8527131782945736,
+     "candidates": 723.0,
+     "n_gt": 650.0,
+     "rule_per_fold": [
+      135,
+      151,
+      146,
+      151,
+      140
+     ],
+     "fold_km2": [
+      3.375,
+      3.796875,
+      3.65625,
+      3.796875,
+      3.515625
+     ]
+    },
+    "saved": {
+     "recall": 0.803076923076923,
+     "recall_lo": 0.7629171497508852,
+     "recall_hi": 0.8394550382894836,
+     "recall_fold_min": 0.7829457364341085,
+     "recall_fold_max": 0.8527131782945736,
+     "candidates": 723.0,
+     "n_gt": 650.0
+    },
+    "max_abs_diff": 0.0,
+    "matches_saved": true,
+    "diffs": {
+     "recall": 0.0,
+     "recall_lo": 0.0,
+     "recall_hi": 0.0,
+     "recall_fold_min": 0.0,
+     "recall_fold_max": 0.0,
+     "candidates": 0.0,
+     "n_gt": 0.0
+    }
+   }
+  }
+ },
+ "sweep_module": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\notebooks\\wellsight_v2\\s5_eval\\_operating_point_policy_sweep_pit_pad_9t.py",
+ "sweep_module_sha256": "917c2518e6ce3e98d6618a0475297d32be16bd78d2a5dba821243d5074e7e9dd",
+ "evidence_level": "(a) drawn feature",
+ "label": "historical diagnostic, not an unbiased baseline"
+}

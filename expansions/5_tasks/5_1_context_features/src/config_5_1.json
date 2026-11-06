@@ -1,0 +1,246 @@
+{
+  "exp_id": "5.1",
+  "note": "Paths are specs resolved by _task5_helpers.resolve. Inputs marked assumed=true are not held yet. Change freely.",
+  "seed": 20261104,
+  "n_folds": 5,
+  "k_per_km2": 40.0,
+  "k_sensitivity_per_km2": 30.0,
+  "block_m": 375.0,
+  "tile_origin": [
+    619500.0,
+    4593000.0
+  ],
+  "candidate": {
+    "cutoff": 0.1,
+    "min_area_m2": 4.0,
+    "match_iou": 0.3,
+    "prob_dn_scale": 254.0,
+    "prob_nodata_dn": 255
+  },
+  "reliance": {
+    "n_pits": 300,
+    "n_controls": 300,
+    "pit_keep_radius_m": 12.0,
+    "road_corridor_m": 3.0,
+    "road_search_m": 60.0,
+    "window_m": 128.0,
+    "sham_min_offset_m": 20.0,
+    "sham_max_offset_m": 60.0,
+    "variants": [
+      "pad",
+      "road",
+      "both",
+      "sham_pad",
+      "sham_road"
+    ],
+    "derivative_fn": "",
+    "derivative_fn_note": "module:function taking (dem ndarray, res float) and returning (C,H,W) float32 in the exact channel order the pit model reads. Empty uses the in-script FALLBACK (slope, tpi, local relief, roughness, hillshade), which is NOT the trained stack and is labelled fallback in every output.",
+    "scorer_fn": "",
+    "scorer_fn_note": "module:function taking (stack ndarray (C,H,W), fold int, checkpoint Path) and returning a (H,W) probability. Needs the P1 isolated pit checkpoint.",
+    "sham_note": "Sham offsets keep the shifted mask inside the 128 m scene, within the pit model's receptive field. A sham outside it would be trivially null."
+  },
+  "stage2": {
+    "road_thr": 0.5,
+    "pad_radii_m": [
+      25,
+      50,
+      100
+    ],
+    "pit_radii_m": [
+      50,
+      100
+    ],
+    "gbm": {
+      "max_depth": 3,
+      "n_estimators": 200,
+      "learning_rate": 0.05
+    },
+    "logit_C_grid": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "gbm_lr_grid": [
+      0.03,
+      0.05,
+      0.1
+    ],
+    "inner_folds": 4,
+    "ablation_drop": [
+      "road_dist_m",
+      "n_pit_50m",
+      "n_pit_100m"
+    ],
+    "bootstrap_B": 2000,
+    "delta_gain": null,
+    "delta_gain_note": "User decision. Recall-at-K gain in recall units that justifies deployment (from downstream value and cost). null means the decision is reported as 'no margin set'.",
+    "road_search_m": 300.0,
+    "slope_radius_m": 5.0,
+    "n_perm": 20
+  },
+  "upstream_models": {
+    "pit_cv5": {
+      "dir": "@models/pit/unet_cv5",
+      "assign": "pit_cv5_fold_assignment_9t.csv",
+      "role": "pit"
+    },
+    "pit_cv5_smrf": {
+      "dir": "@models/pit/unet_cv5_smrf",
+      "assign": "pit_cv5_fold_assignment_9t.csv",
+      "role": "pit"
+    },
+    "pad_cv5": {
+      "dir": "@models/pad/unet_cv5",
+      "assign": "pad_cv5_fold_assignment_9t.csv",
+      "role": "pad"
+    },
+    "pad_cv5_iso": {
+      "dir": "@models/pad/unet_cv5_iso",
+      "assign": "pad_cv5_fold_assignment_9t.csv",
+      "role": "pad",
+      "isolated": true
+    },
+    "road_unet_1m_recall": {
+      "dir": "@models/road/unet_1m_recall",
+      "assign": "",
+      "role": "road"
+    },
+    "road_unet_1m_recall_relabeled": {
+      "dir": "@models/road/unet_1m_recall_relabeled20260806",
+      "assign": "",
+      "role": "road"
+    },
+    "road_unet_1m": {
+      "dir": "@models/road/unet_1m",
+      "assign": "",
+      "role": "road"
+    },
+    "road_unet_05": {
+      "dir": "@models/road/unet_05",
+      "assign": "",
+      "role": "road"
+    }
+  },
+  "trainers": {
+    "pit": "@exp:p1/src/_pit_unet_iso_cv5.py",
+    "pad": "@tools/../notebooks/wellsight_v2/s3_train/_pad_unet_iso_cv5.py",
+    "road": "@exp:5.1/src/_context_road_trainer_shared.py",
+    "note": "The pit isolated trainer is P1 S3 (not built). The road trainer is a copy of _road_unet_1m_recall.py that reads the shared folds (not built, GPU). Each must accept --split-file and --fold."
+  },
+  "inputs": {
+    "pit_blocks": {
+      "path": "@nine_t/pit_blocks_9t.gpkg",
+      "hint": "375 m pit block grid, layer 'blocks', columns block_id, ix, iy, n_pits"
+    },
+    "pad_blocks": {
+      "path": "@nine_t/pad_blocks_9t.gpkg",
+      "hint": "375 m pad block grid, layer 'blocks', columns block_id, n_pads"
+    },
+    "pit_assign": {
+      "path": "@models/pit/unet_cv5/pit_cv5_fold_assignment_9t.csv",
+      "hint": "historical pit fold assignment (pit_inside_id, block_id, fold)"
+    },
+    "pad_assign": {
+      "path": "@models/pad/unet_cv5_iso/pad_cv5_fold_assignment_9t.csv",
+      "hint": "historical pad fold assignment (pad_id, block_id, fold)"
+    },
+    "annotations": {
+      "path": "@truth/annotations_proj.gpkg",
+      "hint": "layers plat (pads), pit_inside (floors), roads"
+    },
+    "dem": {
+      "path": "@nine_t/dem_9t_05.tif",
+      "hint": "0.5 m 9t DEM, EPSG:6346"
+    },
+    "features": {
+      "path": "@nine_t/features_pit_9t_05.tif",
+      "hint": "frozen 0.5 m pit stack, band 3 = slope"
+    },
+    "pit_oof": {
+      "path": "@models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
+      "hint": "uint8 OOF pit mosaic, prob = DN/254, 255 nodata. Historical pit scheme"
+    },
+    "pad_fold_prob": {
+      "path": "@models/pad/unet_cv5_iso/fold{k}/pad_prob_cvfold{k}_9t_05.tif",
+      "hint": "per-fold pad probability rasters, historical pad scheme"
+    },
+    "audit_blocks": {
+      "path": "@results_9t/splits/audit_blocks_9t_v1.csv",
+      "assumed": true,
+      "schema": "csv with column block_id (int). From P2 S2",
+      "hint": "P2 audit set. Run P2 first or pass --allow-no-audit for a provisional fold file"
+    },
+    "shared_folds": {
+      "path": "@exp:5.1/results/tables/shared_folds_9t_v1.json",
+      "hint": "S1 output. Run _context_shared_folds_9t.py"
+    },
+    "shared_training_log": {
+      "path": "@exp:5.1/models/{model}/unet_shared_cv5/fold{k}/training_blocks.json",
+      "assumed": true,
+      "schema": "json {train: [block_id], val: [block_id], held_out: [block_id]} written by the shared-scheme trainer",
+      "hint": "S3 retraining. The S6 audit reads it"
+    },
+    "road_prob_insample": {
+      "path": "@models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
+      "hint": "in-sample 1 m road probability. Provisional runs only. Not out-of-fold"
+    },
+    "isolated_pit_ckpt": {
+      "path": "@models/pit/unet_cv5_iso/fold{k}/best.pt",
+      "assumed": true,
+      "schema": "P1 isolated pit U-Net checkpoint per fold",
+      "hint": "P1 S3 isolated pit trainer (not built). Needed by S2 rescoring"
+    },
+    "stage2_features": {
+      "path": "@exp:5.1/data/processed/stage2_features_9t.parquet",
+      "hint": "S4 output. Run _context_stage2_features_9t.py"
+    },
+    "shared_pit_oof": {
+      "path": "@exp:5.1/models/pit/unet_shared_cv5/pit_prob_outoffold_shared_9t.tif",
+      "assumed": true,
+      "schema": "pit OOF mosaic on the shared scheme, same grid as features_pit_9t_05.tif, float32 or uint8 DN/254",
+      "hint": "S3 retraining on the shared scheme (GPU, not run). Use --mode provisional for the pipeline test"
+    },
+    "isolated_pit_folds": {
+      "path": "@results_9t/splits/cv_splits_future_9t_v1.json",
+      "assumed": true,
+      "schema": "json with block_to_fold {block_id: fold} for the P1 isolated pit models",
+      "hint": "P1 S2 immutable split file. Each unit is scored by the isolated model that held out its block"
+    }
+  },
+  "outputs": {
+    "inventory_csv": "@exp:5.1/results/tables/context_upstream_inventory_9t.csv",
+    "inventory_md": "@exp:5.1/results/tables/context_upstream_inventory_9t.md",
+    "shared_folds": "@exp:5.1/results/tables/shared_folds_9t_v1.json",
+    "shared_folds_provisional": "@exp:5.1/results/tables/shared_folds_9t_provisional.json",
+    "reliance_csv": "@exp:5.1/results/tables/context_reliance_paired_9t.csv",
+    "reliance_edits": "@exp:5.1/data/interim/reliance_edits",
+    "retrain_manifest": "@exp:5.1/results/tables/context_retrain_manifest_9t.json",
+    "stage2_features": "@exp:5.1/data/processed/stage2_features_9t.parquet",
+    "stage2_candidates_gpkg": "@exp:5.1/data/interim/stage2_candidates_9t.gpkg",
+    "stage2_scores": "@exp:5.1/results/tables/stage2_scores_9t.csv",
+    "leakage_audit": "@exp:5.1/results/tables/context_leakage_audit_9t.json",
+    "runs": "@exp:5.1/results",
+    "stage2_usage": "@exp:5.1/data/processed/stage2_upstream_usage_9t.json"
+  },
+  "stacking_mode": "nested",
+  "stacking_mode_note": "nested (default). Outer fold k test candidates use upstream model k. Training candidates in fold j use model (k, j), which excluded k and j, so training features are out-of-fold too. outer. Every candidate in outer fold k uses model k (meets the fw_5_1 definition, but training features are in-sample). provisional. Historical rasters (pit OOF mosaic, pad per-fold on the pad scheme, in-sample road). The S6 audit fails it by design.",
+  "upstream_rasters": {
+    "note": "Patterns. {k} outer fold, {j} inner fold. Roles pit (stage-1 score and candidates), pad, road. Nested and outer rasters are ASSUMED (S3 retraining, GPU).",
+    "pit": {
+      "outer": "@exp:5.1/models/pit/unet_shared_cv5/fold{k}/pit_prob_9t.tif",
+      "nested": "@exp:5.1/models/pit/unet_shared_cv5/nested/outer{k}_inner{j}/pit_prob_9t.tif",
+      "provisional": "@models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif"
+    },
+    "pad": {
+      "outer": "@exp:5.1/models/pad/unet_shared_cv5/fold{k}/pad_prob_9t.tif",
+      "nested": "@exp:5.1/models/pad/unet_shared_cv5/nested/outer{k}_inner{j}/pad_prob_9t.tif",
+      "provisional": "@models/pad/unet_cv5_iso/fold{k}/pad_prob_cvfold{k}_9t_05.tif"
+    },
+    "road": {
+      "outer": "@exp:5.1/models/road/unet_shared_cv5/fold{k}/road_prob_9t.tif",
+      "nested": "@exp:5.1/models/road/unet_shared_cv5/nested/outer{k}_inner{j}/road_prob_9t.tif",
+      "provisional": "@models/road/unet_1m_recall_relabeled20260806/road_prob.tif"
+    }
+  }
+}

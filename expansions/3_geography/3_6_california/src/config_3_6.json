@@ -1,0 +1,62 @@
+{
+  "exp_id": "3.6",
+  "written": "2026-11-05 by the build agent. Assumed inputs carry a schema and a VERIFY step. Edit freely.",
+  "prereg": {
+    "primary_estimand": "pad recall at K=40/km2 on E1+E2, California minus 9t isolated pad reference, non-inferiority against -margin (D-CA1)",
+    "k_per_km2": 40,
+    "margin": null,
+    "min_pad_f1": null,
+    "min_class_kappa": null,
+    "max_date_gap_months": null,
+    "max_share_over_gap": null,
+    "developed_cap": null,
+    "void_cap": 0.9,
+    "min_ground_ppm2": 2.0,
+    "n_min_blocks": 15,
+    "master_seed": 3600,
+    "buffer_m": 0,
+    "double_label_share": 0.2,
+    "n_unmatched_sample": 100,
+    "status_join_tol_m": 25,
+    "equip_height_m": [1.5, 12.0],
+    "equip_area_m2": [1.0, 400.0],
+    "equip_pad_buffer_m": 10,
+    "model_policy": "isolated pad model, one declared policy",
+    "checkpoint_sha256": null,
+    "annotation_protocol": "two annotators on 20% of blocks, one on the rest, reviewer checks 20 pads, no status or wells or model shown"
+  },
+  "pad_classes": {"E1": "equipped", "E2": "bare", "E3": "faint (lidar only, partly circular)", "E0": "uncertain"},
+  "primary_classes": ["E1", "E2"],
+  "reference": {"tables": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"}},
+  "model": {
+    "pad": {"checkpoint": {"key": "models", "rel": "pad/unet_cv5_iso/fold0/best.pt"}, "sha256": null,
+            "_note": "isolated pad model exists (5 folds). The deployment policy (one fold or ensemble) is a prereg decision"}
+  },
+  "areas": {
+    "ca1": {"role": "test", "catalogue_window": null, "project": "TBD (Kern or Ventura 3DEP, VERIFY)",
+            "centre_lonlat": null, "crs": "EPSG:6340", "src_crs": null,
+            "lidar_dir": {"key": "source", "rel": "lidar_ca/ca1_TBD"}, "role_fractions": {"test": 0.8, "audit": 0.2}},
+    "ca_la": {"role": "test_secondary", "catalogue_window": "California_LosAngeles", "project": "CA_LosAngeles_B23",
+              "centre_lonlat": [-118.2648, 34.059], "crs": "EPSG:6340", "src_crs": null,
+              "lidar_dir": {"key": "source", "rel": "lidar_us_windows/CA_LosAngeles_B23"},
+              "role_fractions": {"test": 1.0}, "note": "urban window. Developed-land share must be measured first"}
+  },
+  "inputs": {
+    "calgem_wells": {"path": {"key": "reference", "rel": "wells_ca_calgem/calgem_wells_snapshot.csv"},
+      "schema": {"API": "str", "WellStatus": "str", "WellType": "str", "OperatorName": "str", "SpudDate": "date", "PluggedDate": "date", "Latitude": "float NAD83", "Longitude": "float", "FieldName": "str", "LeaseName": "str optional", "CoordMethod": "str optional"},
+      "verify": "Download one snapshot, record date and SHA-256, count rows, list status codes, check for pad/lease and coordinate-method fields"},
+    "field_candidates": {"path": "data/raw/ca_field_candidates.csv",
+      "schema": {"field": "str", "county": "str", "lidar_project": "str", "ground_ppm2": "float measured", "date_gap_months": "float", "naip_year": "int", "developed_share": "float", "veg_cover": "float", "pad_density_per_km2": "float pilot count", "centre_lon": "float", "centre_lat": "float"},
+      "verify": "Fill from the 3DEP query for Kern and Ventura, one tile header per project, NAIP dates, NLCD developed share"},
+    "field_polygons": {"path": "data/raw/calgem_field_boundaries.gpkg",
+      "schema": {"FIELD_NAME": "str", "FIELD_CODE": "str", "geometry": "Polygon EPSG:3310"}},
+    "naip": {"path": "data/raw/naip/{area}_naip.tif", "schema": "GeoTIFF 4-band 0.6 m, EPSG:26910/26911, acquisition date in metadata"},
+    "ndsm": {"path": {"area": "{area}", "rel": "derived/05/ndsm_{area}_05.tif"},
+      "schema": "float32 height above ground (m), 0.5 m, from the 9t CHM builder on all non-ground returns"},
+    "hillshade": {"path": {"area": "{area}", "rel": "derived/05/hillshade_{area}_05.tif"}, "schema": "uint8 0.5 m"},
+    "pads_truth": {"path": {"area": "{area}", "rel": "results/transfer/ca_pads_truth_{area}.gpkg"},
+      "schema": {"truth_id": "int", "class": "E0|E1|E2|E3", "block_id": "str", "annotator": "str", "label_date": "date", "geometry": "Polygon"}},
+    "unmatched_labels": {"path": {"area": "{area}", "rel": "results/transfer/ca_unmatched_labels_{area}.csv"},
+      "schema": {"cand_id": "str", "label_a": "missed_pad|equipment_yard|building_or_road|natural|other", "label_b": "same vocabulary"}}
+  }
+}

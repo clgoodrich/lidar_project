@@ -1,0 +1,36 @@
+{
+  "rows": 704152,
+  "by_source": {
+    "oh_odnr": 238601,
+    "ky_kgs": 162166,
+    "wv_dep": 154254,
+    "us_orphan_2026": 49786,
+    "ny_dec_regulated": 47492,
+    "us_orphan_2022": 43875,
+    "ny_dec_orphan": 7978
+  },
+  "by_status": {
+    "plugged": 248616,
+    "active": 192869,
+    "orphan": 111359,
+    "other": 78842,
+    "abandoned": 72466
+  },
+  "ky_nad27_to_nad83_shift_m": {
+    "median": 7.62963814518835,
+    "p95": 15.633459238583702,
+    "max": 9456238.342007808
+  },
+  "in_window": {
+    "ny_alg": 6987,
+    "ny_cat": 5511,
+    "ky_lee": 4414,
+    "oh_wash": 2646,
+    "ky_pow": 2331,
+    "oh_mon": 985,
+    "wv_ple": 526
+  },
+  "note": "status mapping is regex rules in config_3_2.json; VERIFY against each data dictionary",
+  "output": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_2_appalachian_states\\data\\processed\\wells_status_harmonised_appal.csv.gz",
+  "output_bytes": 23916971
+}

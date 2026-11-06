@@ -1,0 +1,54 @@
+{
+  "written": "2026-11-05T22:21:16",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/4_modalities/4_5_multitemporal_lidar/src/_dod_registration_check_9t.py"
+  ],
+  "params": {
+    "stable_buffer_m": 20.0,
+    "max_slope_deg": 30.0,
+    "shift_tol_m": 0.5,
+    "bias_tol_m": 0.1,
+    "sample_cells": 400000,
+    "slope_bins": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      30
+    ]
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\dem_2006_v2_9t_2m.tif",
+      "bytes": 15832937,
+      "mtime": "2026-11-03T15:19:14.324356",
+      "sha256": "54a1dca400e7a99a0aeb0d9d954cb4150b65af351ad4e13968034911fe422f33"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\dem_2019_v2_9t_2m.tif",
+      "bytes": 15836171,
+      "mtime": "2026-11-03T16:30:55.216942",
+      "sha256": "1edc5923eb3d6a5b03901884937d79b7ffb50026c1b235588f6ffe46e62ce58b"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg",
+      "bytes": 10924032,
+      "mtime": "2026-09-11T18:15:23.877075",
+      "sha256": "58e56ce98813f680aeb8550f1fc8e9143245807fbee1fdeeeef52b6c5926790b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_reg_7a1a6d5\\dod_registration_9t.json",
+      "bytes": 1491,
+      "mtime": "2026-11-05T22:21:16.023949",
+      "sha256": "7c969d104b6c64cc797d62ff9ec0de90113b552918fa9cb088d302e2514b6464"
+    }
+  ]
+}

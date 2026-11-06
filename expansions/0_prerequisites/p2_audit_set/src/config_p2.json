@@ -1,0 +1,100 @@
+{
+  "_note": "P2 configuration. Written by the build agent 2026-11-05. Change freely. Entries under assumed_inputs are not held yet. Scripts fail with a message naming them.",
+  "draw_9t": {
+    "share": 0.15,
+    "seed": 20261104,
+    "min_per_tercile": 3,
+    "min_remaining_share": 0.6,
+    "buffer_mode": "window"
+  },
+  "exposure_uses": [
+    {
+      "name": "cv_model_roles",
+      "kind": "split_recovery",
+      "note": "per model and fold. Held-out from checkpoints. Inner roles unrecoverable, treated as used."
+    },
+    {
+      "name": "threshold_selection_inner_val",
+      "kind": "all_non_heldout_per_model",
+      "note": "F1/F2 cutoffs and best epoch chosen on unrecoverable inner val."
+    },
+    {
+      "name": "operating_point_calibration",
+      "kind": "blocks_from_csv",
+      "path_key": "results_9t",
+      "rel": "operating_point/cv5_sweep_counts_per_block_pit_thr0p05to0p95_9t.csv",
+      "column": "block_id",
+      "note": "Platt fit and proposal cutoff on other folds' held-out blocks (_cv5_pr_calibration_pit_pad_9t.py, _operating_point_policy_sweep_pit_pad_9t.py)."
+    },
+    {
+      "name": "operating_point_calibration_pad",
+      "kind": "blocks_from_csv",
+      "path_key": "results_9t",
+      "rel": "operating_point/cv5_sweep_counts_per_block_pad_thr0p05to0p95_9t.csv",
+      "column": "block_id",
+      "note": "pad counterpart"
+    },
+    {
+      "name": "review_packages_shown_to_people",
+      "kind": "unknown",
+      "note": "_build_pit_review_package.py, _pit_corrections_diff.py, road review packages. Extents not recorded. Treated as used."
+    },
+    {
+      "name": "context_models_road",
+      "kind": "all_blocks",
+      "note": "road models trained on 9t and 613590 (_road_unet_1m_recall.py)."
+    },
+    {
+      "name": "human_inspection_of_outputs",
+      "kind": "unknown",
+      "note": "QGIS reviews, figures, error analyses. Unrecorded. Treated as used."
+    }
+  ],
+  "script_grep_patterns": [
+    "held_out_blocks",
+    "block_id",
+    "pit_blocks_9t",
+    "pad_blocks_9t",
+    "cv_split"
+  ],
+  "script_grep_roots": [
+    "notebooks/wellsight_v2"
+  ],
+  "discovery": {
+    "target_km2": 20.0,
+    "seed": 20261106,
+    "assumed_inputs": {
+      "frame": {
+        "layer": "blocks",
+        "schema": {
+          "block_id": "int",
+          "role": "str (train, adapt, test, audit, ...)",
+          "geometry": "Polygon EPSG:6346"
+        },
+        "note": "Any block frame outside every training, test and audit list. 9t holds 20.25 km2 in total, so 20 km2 must come from another area.",
+        "rel": "results/transfer/{area}_blocks.gpkg",
+        "resolved_by": "ek.area_dir(area) / rel"
+      }
+    }
+  },
+  "warren": {
+    "assumed_inputs": {
+      "blocks": {
+        "layer": "blocks",
+        "schema": {
+          "block_id": "int",
+          "role": "str, rows with role == audit are reserved",
+          "geometry": "Polygon EPSG:6346"
+        },
+        "producer": "3.1 S-blocks (_warren_blocks.py in fw_3_1)",
+        "area": "warren",
+        "rel": "results/transfer/warren_blocks.gpkg"
+      }
+    },
+    "model_output_globs": [
+      "**/*prob*.tif",
+      "**/*candidates*.gpkg"
+    ],
+    "output_rel": "results/transfer/audit_blocks_warren_v1.csv"
+  }
+}

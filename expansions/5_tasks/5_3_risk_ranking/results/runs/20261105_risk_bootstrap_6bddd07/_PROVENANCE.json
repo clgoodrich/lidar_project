@@ -1,0 +1,74 @@
+{
+  "written": "2026-11-05T22:21:49",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_rank_bootstrap_9t.py"
+  ],
+  "params": {
+    "B": 2000,
+    "top_n": 50,
+    "missing_receptors": [
+      "water_wells",
+      "buildings",
+      "streams",
+      "wetlands",
+      "public_supply",
+      "protected"
+    ],
+    "summary": {
+      "median": {
+        "A": 0.9231,
+        "B": 0.9231,
+        "C": 0.8519,
+        "D": 0.8519
+      },
+      "p05": {
+        "A": 0.8868,
+        "B": 0.8868,
+        "C": 0.7857,
+        "D": 0.7544
+      },
+      "n_stable_in": {
+        "A": 46,
+        "B": 46,
+        "C": 38,
+        "D": 37
+      }
+    }
+  },
+  "seeds": {
+    "master": 20261105,
+    "rule": "child_seed(master, draw, 5)"
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_candidate_scores_9t.csv",
+      "bytes": 15499,
+      "mtime": "2026-11-05T22:18:47.669886",
+      "sha256": "6aa39de2d0cc9bffadf5faa01bf8ad9bf0b6ade2aeb59bea5381631fe63ce8b0"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_rank_stability_9t.csv",
+      "bytes": 360603,
+      "mtime": "2026-11-05T22:21:47.593973",
+      "sha256": "2ef99325768a7085c4fe7722551b38dc625555c6b6dc521a263317edba8dc977"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_site_rank_interval_9t.csv",
+      "bytes": 563907,
+      "mtime": "2026-11-05T22:21:47.647491",
+      "sha256": "42cfd3e2a0340bdf0f3db0fda944b2534e334492a5d3a6b5702b29883b27a670"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\figures\\risk_rank_stability_9t.png",
+      "bytes": 71908,
+      "mtime": "2026-11-05T22:21:49.357662",
+      "sha256": "edbaf49c749d94872ecd9441af526e3184c4ce7bba4509da313f0bc6c1580e3f"
+    }
+  ]
+}

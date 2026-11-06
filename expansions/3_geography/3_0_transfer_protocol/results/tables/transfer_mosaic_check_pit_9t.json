@@ -1,0 +1,14 @@
+{
+ "check": "mosaic",
+ "run": "expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\runs\\mosaic_check\\20261105_score_pit_9t_6ff4b6c",
+ "mosaic_recall": 0.9085487077534792,
+ "mosaic_interval": [
+  0.8798428251852543,
+  0.9344278088379292
+ ],
+ "archival_recall": 0.9085487077534792,
+ "gap": 0.0,
+ "gated": false,
+ "cutoff": 0.35,
+ "note": "uint8 DN/254 quantisation and fold seams can differ. The proposal cutoff must equal the sweep's."
+}

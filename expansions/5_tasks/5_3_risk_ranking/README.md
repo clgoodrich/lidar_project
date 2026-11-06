@@ -23,3 +23,26 @@ Products for a new study area go to `data/<area>/` as everywhere else, not here.
 Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`). Add the import path with
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
+
+## Build status (2026-11-05)
+
+Built by the build agent. Paths are repo-relative. Config is `src/config_5_3.json`. Tests are `src/test_5_3.py` (7 passed).
+
+| Script | Stage | Runnable now | What is missing |
+|---|---|---|---|
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_ranking_core.py` | library for S1 to S7 | n/a | nothing |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_io_9t.py` | shared loaders | n/a | nothing |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_data_audit_9t.py` | S0 audit | yes | 13 assumed layers are reported missing |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_exposure_layers_9t.py` | S1 sites and exposure | yes, partial | water wells, buildings, streams, wetlands, public supply, protected areas. E is roads only today |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_hazard_proxy_9t.py` | S2 hazard proxy | yes, partial | depth and formation are 100% missing in the DEP export. Subsurface tops and hydrography absent |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_scenarios_9t.py` | S3 scenarios | yes | agency list (scenario E), preregistration |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_sensitivity_9t.py` | S4 sensitivity | yes | water-well band variants skip until that layer exists |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_rank_bootstrap_9t.py` | S5 rank stability | yes | stated positional error of DEP records (30 m assumed) |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_endpoint_check_9t.py` | S6 endpoint check | no | preregistration JSON, field flux table, decision user, N and delta_enrich |
+| `expansions/5_tasks/5_3_risk_ranking/src/_risk_report_tables_9t.py` | S7 report tables | yes | endpoint result (Q1 not run) |
+
+Run order. S0, S1, S2, S3, S4, S5, S7. S6 runs only after the preregistration is written and S3 is rerun under it.
+Outputs go to `results/tables/`, `results/figures/`, `data/processed/` and run folders in `results/runs/`.
+The framework names `data/9t/results/risk/` and `notebooks/wellsight_v2/s7_analysis/`. The build keeps everything inside this expansion folder.
+
+The first runs on held data are exploratory. E holds one component (TIGER roads within 100 m). Candidate H comes from a configured prior. So scenarios A and B put only candidates in the top 50. That is a property of the rule and the missing receptors, not a finding. Every candidate row is conditional on the feature model.

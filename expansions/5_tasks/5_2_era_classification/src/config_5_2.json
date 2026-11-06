@@ -1,0 +1,81 @@
+{
+  "_about": "Config for expansion 5.2 era classification. Paths are specs resolved by _task5_helpers.resolve. Inputs marked assumed=true are not held yet. Change freely. Written 2026-11-05 by the build agent.",
+  "area": "9t",
+  "bbox_9t": [619500.0, 4593000.0, 624000.0, 4597500.0],
+  "master_seed": 20261105,
+  "dates": {
+    "sentinels": ["1800-01-01", "1900-01-01"],
+    "first_oil_year": 1859,
+    "audit_today": "2026-11-05",
+    "spud_before_permit_gap_days": 365,
+    "fields": {"spud": "SPUD_DATE", "permit": "PERMIT_DAT", "plug": "DATE_PLUGG"}
+  },
+  "era_classes": {
+    "_note": "Proposed boundaries, user decision. U (sentinel) is a stratum, never a class.",
+    "E1": [1859, 1899],
+    "E2": [1900, 1955],
+    "E3": [1956, 2100]
+  },
+  "link": {"pad_radius_m": 30.0, "pit_radius_m": 30.0, "exclude_position_only_from_primary": true},
+  "label_audit": {"n_sample": 60, "strata_col": "era_class"},
+  "features": {
+    "morphology": ["area_m2", "perimeter_m", "compactness", "elongation", "wells_on_pad", "pits_on_pad", "slope_mean_deg", "void_frac"],
+    "covariates": ["road_dist_m", "landcover_class", "oilfield_dist_m", "flight_year"],
+    "location": ["easting_km", "northing_km"],
+    "flight_year_9t": null,
+    "_flight_year_note": "Lidar flight year per area. VERIFY from the acquisition metadata. Constant within one tile, so it carries no information on 9t alone."
+  },
+  "model": {
+    "n_folds": 5,
+    "delta_era": 0.05,
+    "_delta_note": "AUC gain that would change which sites a crew visits first. Proposed, user decision.",
+    "bootstrap_B": 2000,
+    "readiness": {"min_wells": 100, "min_E1": 20, "min_E2": 20},
+    "ridge": 1.0,
+    "gbm": {"max_depth": 3, "n_estimators": 200, "learning_rate": 0.05},
+    "label_noise_p": [0.05, 0.10, 0.20],
+    "label_noise_reps": 50,
+    "min_blocks_for_bootstrap": 15
+  },
+  "support": {"q_lo": 0.01, "q_hi": 0.99, "n_bins": 20},
+  "inputs": {
+    "dep_wells": {"path": "@dep_wells/venango_wells_all.gpkg", "hint": "PA DEP Venango export, 2026-04. Read-only."},
+    "orphan_2022": {"path": "@reference/legacy_data/US_Documented_Orphan_Wells.csv", "hint": "2022-05-09 orphan list. Has no spud date field, so only membership is compared."},
+    "annotations": {"path": "@truth/annotations_proj.gpkg", "hint": "Layers plat, pit_inside, roads."},
+    "pad_blocks": {"path": "@nine_t/pad_blocks_9t.gpkg", "hint": "375 m CV blocks, layer blocks."},
+    "dem": {"path": "@nine_t/slope_9t_05.tif", "hint": "Slope raster in degrees at 0.5 m. Optional feature."},
+    "ground_density": {"path": "@nine_t/ground_density_9t_05.tif", "hint": "Ground points per cell at 0.5 m. Optional void-fraction feature."},
+    "historic_marks": {
+      "path": "@results_9t/historic/historic_well_marks_9t.gpkg",
+      "assumed": true,
+      "hint": "From 4.6 S4. Identity-resolved historic well marks. Schema below. Build 4.6 first.",
+      "schema": {"mark_id": "str", "map_id": "str", "map_date": "int year or ISO date", "permit": "str DEP PERMIT_NUM or null", "identity_basis": "record_link | wellhead_symbol | position_only", "pos_error_m": "float", "geometry": "Point EPSG:6346"}
+    },
+    "landcover": {"path": "@landcover/landcover_9t.tif", "assumed": true, "hint": "Categorical land cover raster. The landcover folders are empty today. VERIFY source.", "schema": {"band1": "uint8 class code"}},
+    "oilfield_boundary": {"path": "@reference/oil_field_boundaries/oil_fields_pa.gpkg", "assumed": true, "hint": "Mapped oil-field polygons. VERIFY source.", "schema": {"geometry": "Polygon"}},
+    "split_file": {"path": "@results_9t/splits/cv_splits_future_pit_9t_v1.csv", "assumed": true, "hint": "P1 saved split. Without it use --provisional-folds and label the run provisional.", "schema": {"block_id": "int", "fold": "int", "role": "held_out | train | inner_val | audit"}},
+    "audit_blocks": {"path": "@results_9t/splits/audit_blocks_9t_v1.csv", "assumed": true, "hint": "P2 audit blocks. Excluded from training and tuning.", "schema": {"block_id": "int"}},
+    "labels": {"path": "@exp:5.2/results/tables/era_interval_labels_9t.csv", "hint": "Written by _era_interval_labels_9t.py (S2)."},
+    "label_audit_filled": {"path": "@exp:5.2/data/interim/era_label_audit_filled_9t.csv", "assumed": true, "hint": "The S3 sheet after a second person fills audit_source_ok, audit_date_ok, audit_link_ok (yes or no)."},
+    "pairs": {"path": "@exp:5.2/results/tables/era_features_pairs_9t.csv", "hint": "Written by _era_pair_features_9t.py (S4)."},
+    "predictions": {"path": "@exp:5.2/results/tables/era_predictions_9t.csv", "hint": "Written by _era_model_arms_9t.py (S6)."}
+  },
+  "outputs": {
+    "date_audit_csv": "@exp:5.2/results/tables/era_date_audit_9t.csv",
+    "date_audit_json": "@exp:5.2/results/tables/era_date_audit_summary_9t.json",
+    "strata_csv": "@exp:5.2/results/tables/era_strata_wells_9t.csv",
+    "labels_csv": "@exp:5.2/results/tables/era_interval_labels_9t.csv",
+    "audit_sheet_csv": "@exp:5.2/data/interim/era_label_audit_sample_9t.csv",
+    "audit_score_json": "@exp:5.2/results/tables/era_label_audit_score_9t.json",
+    "labels_audited_csv": "@exp:5.2/results/tables/era_labels_audited_9t.csv",
+    "pairs_csv": "@exp:5.2/results/tables/era_features_pairs_9t.csv",
+    "pad_morph_csv": "@exp:5.2/results/tables/era_pad_morphology_9t.csv",
+    "predictions_csv": "@exp:5.2/results/tables/era_predictions_9t.csv",
+    "model_json": "@exp:5.2/results/tables/era_model_summary_9t.json",
+    "support_csv": "@exp:5.2/results/tables/era_sentinel_support_9t.csv",
+    "support_json": "@exp:5.2/results/tables/era_sentinel_support_summary_9t.json",
+    "fig_auc": "@exp:5.2/results/figures/era_auc_by_arm_9t.png",
+    "fig_interval": "@exp:5.2/results/figures/era_pred_vs_interval_9t.png",
+    "runs": "@exp:5.2/results"
+  }
+}

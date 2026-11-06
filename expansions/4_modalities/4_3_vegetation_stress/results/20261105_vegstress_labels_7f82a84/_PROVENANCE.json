@@ -1,0 +1,45 @@
+{
+  "written": "2026-11-05T22:22:30",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "4_3_vegetation_stress/src/_vegstress_label_audit_9t.py",
+    "--hm-only"
+  ],
+  "params": {
+    "radius_m": 100.0,
+    "leak_codes": [
+      "GAS_MIGRATION",
+      "WELL_VENTING",
+      "LEAKING_WELL"
+    ],
+    "clean_codes": [
+      "NO_VIOLATION",
+      "COMPLIANT"
+    ],
+    "strong_sources": [
+      "measurement"
+    ],
+    "_codes_note": "Placeholder code lists, not DEP codes. Replace with the DEP complaint types and violation codes once R1 returns (framework V0)",
+    "years": [
+      2006,
+      2026
+    ],
+    "min_per_class": 40,
+    "fail_below_per_class": 20,
+    "min_leases_per_class": 15,
+    "hm_auc": 0.7
+  },
+  "seeds": {},
+  "inputs": [],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_3_vegetation_stress\\results\\20261105_vegstress_labels_7f82a84\\vegstress_label_counts_9t.json",
+      "bytes": 394,
+      "mtime": "2026-11-05T22:22:30.439218",
+      "sha256": "1e2b2013ad69e0713cb445800a151bfd8e9cef2db5b76edc5a48daacda0fe773"
+    }
+  ]
+}

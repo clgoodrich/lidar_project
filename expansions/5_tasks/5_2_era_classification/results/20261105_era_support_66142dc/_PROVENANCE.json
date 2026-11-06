@@ -1,0 +1,38 @@
+{
+  "written": "2026-11-05T22:21:59",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_2_era_classification/src/_era_sentinel_support_9t.py"
+  ],
+  "params": {
+    "q_lo": 0.01,
+    "q_hi": 0.99,
+    "n_bins": 20
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_features_pairs_9t.csv",
+      "bytes": 183513,
+      "mtime": "2026-11-05T22:21:51.823037",
+      "sha256": "45fef5281db8270f943b5f16da156a2d04fc8c8faf2da2fcdae59232a6670031"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_sentinel_support_9t.csv",
+      "bytes": 4844,
+      "mtime": "2026-11-05T22:21:59.593111",
+      "sha256": "0ffc8336d41449c9b7d01a36a3a1398d5360bcfae7911eeaa6377ffe5161041b"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_sentinel_support_summary_9t.json",
+      "bytes": 2767,
+      "mtime": "2026-11-05T22:21:59.594111",
+      "sha256": "f48daf1032e8d0663750a53eeba3af4d6b1bd7d1270d9c3acfa3222ab8282d77"
+    }
+  ]
+}

@@ -185,6 +185,8 @@ Twelve densest of the 52 windows, rebuilt 2026-11-04 on the USGS 2026 well file 
 - **Withdrawn.** The first record-association run and the recall-gap run. Their input dropped all 481 matched detections.
 - **Not valid as saved.** The train and validation roles in the split manifests.
 - **Invalid as written.** The Warren preregistration draft.
+- **Built 2026-11-05, nothing confirmatory.** All 37 expansions have code in `expansions/<group>/<id>_<slug>/src/` with passing smoke tests. See `expansions/README.md` and `expansions/_shared/INTERFACES.md`. Cheap stages ran on held 9t data. All such outputs are exploratory. The leakage measurement is now done. Historical windows leaked into held-out or inner-val blocks in 19 to 24% of pit and 31 to 36% of pad samples (P1 S5). The isolated sampler leaks 0.
+- **Closed 2026-11-05.** 4.4 satellite screening of ordinary small Pennsylvania wells. M0 gives a detection-limit ratio of 8,000 to 16,000 (800 at best case). Only the large-leaker arm stays live.
 
 ## 8. What would change the plan
 1. A pre-1880 source that gives well positions over 9t with metre-scale error. That moves 4.6 ahead of magnetometry.

@@ -1,0 +1,31 @@
+{
+  "written": "2026-11-05T22:16:17",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_2_era_classification/src/_era_strata_wells_9t.py"
+  ],
+  "params": {
+    "marks_present": false,
+    "note": "dated_map empty until 4.6 delivers marks"
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_strata_wells_9t.csv",
+      "bytes": 125379,
+      "mtime": "2026-11-05T22:16:17.747155",
+      "sha256": "48e9d4b3cdde0ab57e5e2a2dd15c004f3823004e4671f89ed0845d2eba19c77d"
+    }
+  ]
+}

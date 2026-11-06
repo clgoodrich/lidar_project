@@ -1,0 +1,46 @@
+{
+  "written": "2026-11-05T22:21:51",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_2_era_classification/src/_era_pair_features_9t.py"
+  ],
+  "params": {
+    "notes": {
+      "landcover_class": "ASSUMED landcover raster missing",
+      "oilfield_dist_m": "ASSUMED oil-field boundary missing",
+      "flight_year": "flight year not set in config (VERIFY)"
+    }
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj.gpkg",
+      "bytes": 10588160,
+      "mtime": "2026-08-18T10:28:04.282126",
+      "sha256": "8d816579dabe1fe637c6f76388999c2931f77a60084ba6f59935531781b10396"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_pad_morphology_9t.csv",
+      "bytes": 215144,
+      "mtime": "2026-11-05T22:21:51.792526",
+      "sha256": "bd8e9d219d1ad5ae071094c0cd8b6a4ddccde89c797da073cc7a8495e1e5d166"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_features_pairs_9t.csv",
+      "bytes": 183513,
+      "mtime": "2026-11-05T22:21:51.823037",
+      "sha256": "45fef5281db8270f943b5f16da156a2d04fc8c8faf2da2fcdae59232a6670031"
+    }
+  ]
+}

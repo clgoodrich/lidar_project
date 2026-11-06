@@ -1,0 +1,59 @@
+{
+  "stage": "V1",
+  "n_pads": 650,
+  "n_pads_on_chm": 650,
+  "median_area_m2": 1645.0962766832447,
+  "median_edge_overhang_frac": 0.6090964252841247,
+  "usable_scenes_by_season": {
+    "leaf_off": 0,
+    "leaf_on": 1,
+    "shoulder": 1
+  },
+  "seasons_ok": false,
+  "per_pixel_size": {
+    "10m": {
+      "median_interior_px": 7.0,
+      "median_open_interior_px": 3.0,
+      "share_pads_ge_min": 0.4846153846153846,
+      "verdict": "inconclusive"
+    },
+    "20m": {
+      "median_interior_px": 0.0,
+      "median_open_interior_px": 0.0,
+      "share_pads_ge_min": 0.0015384615384615385,
+      "verdict": "failure"
+    },
+    "30m": {
+      "median_interior_px": 0.0,
+      "median_open_interior_px": 0.0,
+      "share_pads_ge_min": 0.0,
+      "verdict": "failure"
+    }
+  },
+  "scenes": [
+    {
+      "scene_id": "s2_jun_9t",
+      "date": "2025-06-15",
+      "season": "leaf_on",
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\optical_s2\\s2_jun_green_red_nir_swir_scl_9t_5m.tif",
+      "valid_frac": 1.0,
+      "usable": true
+    },
+    {
+      "scene_id": "s2_sep_9t",
+      "date": "2025-09-15",
+      "season": "shoulder",
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\optical_s2\\s2_sep_green_red_nir_swir_scl_9t_5m.tif",
+      "valid_frac": 0.36898523527034033,
+      "usable": false
+    },
+    {
+      "scene_id": "s2_oct_9t",
+      "date": "2025-10-15",
+      "season": "shoulder",
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\optical_s2\\s2_oct_green_red_nir_swir_scl_9t_5m.tif",
+      "valid_frac": 1.0,
+      "usable": true
+    }
+  ]
+}

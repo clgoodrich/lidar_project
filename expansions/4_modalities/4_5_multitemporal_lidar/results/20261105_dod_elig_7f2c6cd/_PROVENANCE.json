@@ -1,0 +1,60 @@
+{
+  "written": "2026-11-05T22:20:39",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/4_modalities/4_5_multitemporal_lidar/src/_dod_plug_eligibility_9t.py"
+  ],
+  "params": {
+    "date_field": "DATE_PLUGG",
+    "spud_field": "SPUD_DATE",
+    "sentinel_year_max": 1800,
+    "well_to_pad_m": 15.0,
+    "complex_link_m": 30.0,
+    "min_eligible_pads": 20,
+    "min_eligible_note": "User decision for the preregistration (power). Proposed default."
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_flight_d7d2d47\\flight_windows_9t.csv",
+      "bytes": 6310,
+      "mtime": "2026-11-05T22:20:29.365268",
+      "sha256": "9d013e76b2546e3ba2222f9dc8ba34a0166b83c5eeb4e5cff5e0853d7e3e6717"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg",
+      "bytes": 10924032,
+      "mtime": "2026-09-11T18:15:23.877075",
+      "sha256": "58e56ce98813f680aeb8550f1fc8e9143245807fbee1fdeeeef52b6c5926790b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_elig_7f2c6cd\\plug_eligible_wells_9t.csv",
+      "bytes": 152544,
+      "mtime": "2026-11-05T22:20:39.278517",
+      "sha256": "608ad0eaa8d0797178e30bc8e46c06a057d7d767d671528d4a9eeefcbb780ab9"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_elig_7f2c6cd\\plug_eligible_pads_9t.csv",
+      "bytes": 24760,
+      "mtime": "2026-11-05T22:20:39.299028",
+      "sha256": "69fc05d4a8599028e9fb796519009ea9271b2935f60b1ed641c82fa28dc4bdc0"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_elig_7f2c6cd\\plug_eligible_counts_9t.json",
+      "bytes": 739,
+      "mtime": "2026-11-05T22:20:39.302029",
+      "sha256": "2558f800d3bdf0de9294bd8d81b6e401a36432cdb72198f23dbd20ff821b95f7"
+    }
+  ]
+}

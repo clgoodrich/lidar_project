@@ -1,0 +1,54 @@
+{
+  "written": "2026-11-05T22:14:17",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/4_modalities/4_1_magnetometry/src/_mag_survey_design.py",
+    "--site-id",
+    "demo",
+    "--easting",
+    "621750",
+    "--northing",
+    "4595250"
+  ],
+  "params": {
+    "grid_x_m": 20.0,
+    "grid_y_m": 20.0,
+    "line_spacing_m": 1.0,
+    "sensor_height_m": 0.3,
+    "walk_speed_m_s": 0.8,
+    "sample_rate_hz": 10.0,
+    "turn_time_s": 10.0,
+    "noise_sigma_nT": 1.0,
+    "pole_strength_range_nT_m2": [
+      500.0,
+      5000.0
+    ],
+    "_pole_note": "Monopole strength p in nT m2 so that B = p / r2. Range assumed for cut casing tops. VERIFY against Hammack et al. (2023) or a measured test casing",
+    "detect_k_sigma": 3.0
+  },
+  "seeds": {},
+  "inputs": [],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_1_magnetometry\\results\\20261105_magdesign_f11f115\\mag_survey_lines_demo.gpkg",
+      "bytes": 118784,
+      "mtime": "2026-11-05T22:14:17.203241",
+      "sha256": "a59622ac1c9b65b1c17e48068134b84c473fc7275c255710f20aec5578887f7a"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_1_magnetometry\\results\\20261105_magdesign_f11f115\\mag_survey_design_demo.json",
+      "bytes": 974,
+      "mtime": "2026-11-05T22:14:17.205242",
+      "sha256": "5ed47871d58ff47e225111b7e3c499d5c68f6d829ab3428524b0194e08514a5a"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_1_magnetometry\\results\\20261105_magdesign_f11f115\\mag_detect_depth_demo.csv",
+      "bytes": 501,
+      "mtime": "2026-11-05T22:14:17.209242",
+      "sha256": "9337f285fe32bfdc0b7cf17d4bfaafbc0b9acc642e7316ffa0b826d1e69a68c0"
+    }
+  ]
+}

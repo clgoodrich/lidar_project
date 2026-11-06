@@ -1,0 +1,165 @@
+{
+  "evidence_level": "(a) drawn features, exploratory association",
+  "reference_caveat": "original CV5 sampler, not P1 isolated (protocol section 3)",
+  "k_per_km2": 40.0,
+  "iou_tau": 0.3,
+  "proposal_policy": "loo_max_recall",
+  "proposal_thr_per_fold": {
+    "0": 0.35,
+    "1": 0.35,
+    "2": 0.35,
+    "3": 0.35,
+    "4": 0.35
+  },
+  "frozen_target_proposal_thr": 0.35,
+  "B": 2000,
+  "seed": 20261105,
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "per_fold": [
+    {
+      "fold": 0,
+      "proposal_thr": 0.35,
+      "recall": 0.883495145631068,
+      "hits": 91,
+      "n_truth": 103,
+      "k": 141,
+      "k_per_km2": 40.0,
+      "area_km2": 3.515625,
+      "n_blocks": 25,
+      "n_candidates": 171,
+      "truth_density_per_km2": 29.297777777777778,
+      "recall_k30": 0.7475728155339806,
+      "truth_outside_blocks": 0,
+      "sec": 2.1
+    },
+    {
+      "fold": 1,
+      "proposal_thr": 0.35,
+      "recall": 0.97,
+      "hits": 97,
+      "n_truth": 100,
+      "k": 146,
+      "k_per_km2": 40.0,
+      "area_km2": 3.65625,
+      "n_blocks": 26,
+      "n_candidates": 138,
+      "truth_density_per_km2": 27.35042735042735,
+      "recall_k30": 0.91,
+      "truth_outside_blocks": 0,
+      "sec": 2.4
+    },
+    {
+      "fold": 2,
+      "proposal_thr": 0.35,
+      "recall": 0.8686868686868687,
+      "hits": 86,
+      "n_truth": 99,
+      "k": 112,
+      "k_per_km2": 40.0,
+      "area_km2": 2.8125,
+      "n_blocks": 20,
+      "n_candidates": 154,
+      "truth_density_per_km2": 35.2,
+      "recall_k30": 0.7676767676767676,
+      "truth_outside_blocks": 0,
+      "sec": 1.7
+    },
+    {
+      "fold": 3,
+      "proposal_thr": 0.35,
+      "recall": 0.91,
+      "hits": 91,
+      "n_truth": 100,
+      "k": 129,
+      "k_per_km2": 40.0,
+      "area_km2": 3.234375,
+      "n_blocks": 23,
+      "n_candidates": 165,
+      "truth_density_per_km2": 30.917874396135264,
+      "recall_k30": 0.77,
+      "truth_outside_blocks": 0,
+      "sec": 2.0
+    },
+    {
+      "fold": 4,
+      "proposal_thr": 0.35,
+      "recall": 0.9108910891089109,
+      "hits": 92,
+      "n_truth": 101,
+      "k": 118,
+      "k_per_km2": 40.0,
+      "area_km2": 2.953125,
+      "n_blocks": 21,
+      "n_candidates": 151,
+      "truth_density_per_km2": 34.2010582010582,
+      "recall_k30": 0.7326732673267327,
+      "truth_outside_blocks": 0,
+      "sec": 1.8
+    }
+  ],
+  "overall_recall": {
+    "recall": 0.9085487077534792,
+    "lo": 0.8810472296114217,
+    "hi": 0.9341860763251646,
+    "hits": 457,
+    "n_truth": 503,
+    "n_blocks": 115
+  },
+  "cut_points": {
+    "feature_slope_deg": [
+      7.673674417034788,
+      10.292385066660238
+    ],
+    "feature_relief_m": [
+      5.457051595052083,
+      9.655446370442707
+    ],
+    "block_slope_deg": [
+      6.756983783991297,
+      9.416440459162633
+    ],
+    "block_relief_m": [
+      6.548994441840278,
+      9.455879688368055
+    ]
+  },
+  "primary": {
+    "statistic": "feature-level recall, lowest minus highest slope tercile",
+    "diff": 0.005952380952380931,
+    "lo": -0.06354902022578926,
+    "hi": 0.07510921481826652,
+    "margin": null,
+    "decision": "no_margin_set"
+  },
+  "secondary": {
+    "feature_slope_tercile_low_minus_high": {
+      "diff": 0.005952380952380931,
+      "lo": -0.06354902022578926,
+      "hi": 0.07510921481826652
+    },
+    "feature_relief_tercile_low_minus_high": {
+      "diff": 0.017857142857142905,
+      "lo": -0.055286480488643874,
+      "hi": 0.08896174634621276
+    },
+    "block_slope_tercile_low_minus_high": {
+      "diff": 0.041981274539414026,
+      "lo": -0.02973445172771095,
+      "hi": 0.11518307804059716
+    },
+    "block_relief_tercile_low_minus_high": {
+      "diff": 0.04932360541115666,
+      "lo": -0.02210723448601716,
+      "hi": 0.12356052711584417
+    }
+  },
+  "n_features": 503,
+  "n_blocks": 115,
+  "n_feature_blocks_independent": 115
+}

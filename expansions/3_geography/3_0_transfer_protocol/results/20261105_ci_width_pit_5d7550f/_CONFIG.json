@@ -1,0 +1,12 @@
+{
+  "B": "400",
+  "blocks_csv": "None",
+  "density": "None",
+  "k": "40",
+  "margins": "[0.05, 0.1, 0.15]",
+  "n_blocks": "[10, 15, 20, 30, 40, 60]",
+  "out_dir": "expansions\\3_geography\\3_0_transfer_protocol\\results\\tables",
+  "reps": "200",
+  "seed": "20261107",
+  "task": "pit"
+}

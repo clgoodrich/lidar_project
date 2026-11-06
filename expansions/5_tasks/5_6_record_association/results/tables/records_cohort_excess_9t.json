@@ -1,0 +1,34 @@
+{
+  "cohort_counts": [
+    {
+      "cohort": "listed_2022",
+      "coord_source": "unstratified",
+      "n": 165
+    },
+    {
+      "cohort": "newly_documented",
+      "coord_source": "unstratified",
+      "n": 6
+    }
+  ],
+  "differences": [
+    {
+      "modality": "pit",
+      "coord_source": "unstratified",
+      "diff_norm_excess": -0.3328940598160913,
+      "lo": -0.9253564854832548,
+      "hi": 0.26262166318506497,
+      "label": "descriptive only, no recall-equivalence gate"
+    },
+    {
+      "modality": "pad",
+      "coord_source": "unstratified",
+      "diff_norm_excess": 0.006011264708638419,
+      "lo": -0.4207153479733252,
+      "hi": 0.1913475328732338,
+      "label": "descriptive only, no recall-equivalence gate"
+    }
+  ],
+  "stratified_by_coord_source": false,
+  "note": "Newly documented includes reclassifications. Venango only. Descriptive."
+}

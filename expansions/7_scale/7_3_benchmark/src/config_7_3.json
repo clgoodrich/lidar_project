@@ -1,0 +1,142 @@
+{
+  "_note": "Assumed inputs and schemas for 7.3. Paths are {key: path_for key, rel: relative path}. Edit freely. Build agent, 2026-11-05.",
+  "release_name": "terrain_v1",
+  "release_root": {
+    "key": "expansions",
+    "rel": "7_scale/7_3_benchmark/data/processed"
+  },
+  "area": "9t",
+  "crs": "EPSG:6346",
+  "resolution_m": 0.5,
+  "tile_size_m": "block",
+  "_tile_note": "one tile per 375 m block keeps split purity. The framework said 256 m tiles",
+  "inputs": {
+    "feature_stack": {
+      "key": "nine_t",
+      "rel": "features_pit_9t_05.tif",
+      "state": "held"
+    },
+    "dem": {
+      "key": "nine_t",
+      "rel": "dem_9t_05.tif",
+      "state": "held"
+    },
+    "blocks": {
+      "key": "nine_t",
+      "rel": "blocks_unified_9t.gpkg",
+      "state": "held",
+      "schema": "block_id int, geometry polygon 375 m"
+    },
+    "annotations": {
+      "key": "truth",
+      "rel": "annotations_proj.gpkg",
+      "state": "held",
+      "layers": {
+        "pit_floor": "pit_inside",
+        "pit_full": "pit_full",
+        "pad": "pad"
+      }
+    },
+    "split_future": {
+      "key": "results_9t",
+      "rel": "splits/cv_splits_future_9t_v1.json",
+      "state": "from P1",
+      "schema": "{\"folds\": [{\"fold\": int, \"train\": [block_id], \"val\": [block_id], \"heldout\": [block_id]}], \"buffer_blocks\": [block_id]}"
+    },
+    "audit_blocks": {
+      "key": "results_9t",
+      "rel": "splits/audit_blocks_9t_v1.csv",
+      "state": "from P2",
+      "schema": "block_id int, role in {comparative_audit, buffer}"
+    },
+    "split_historical": {
+      "key": "results_9t",
+      "rel": "splits/cv_split_blocks_pit_9t.csv",
+      "state": "held",
+      "schema": "fold int, role in {held_out, ...}, block_id int"
+    },
+    "second_reviewer": {
+      "key": "results_9t",
+      "rel": "confusers/second_reviewer_labels_9t.gpkg",
+      "state": "from 6.3",
+      "schema": "polygons, layer pit_inside, block_id int"
+    }
+  },
+  "baselines": {
+    "pit_unet_cv5": {
+      "task": "pit_floor",
+      "fold_raster": {
+        "key": "models",
+        "rel": "pit/unet_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"
+      },
+      "state": "held",
+      "note": "historical, not isolated",
+      "split_file": {
+        "key": "results_9t",
+        "rel": "splits/cv_split_blocks_pit_9t.csv"
+      }
+    },
+    "pad_unet_cv5_iso": {
+      "task": "pad",
+      "fold_raster": {
+        "key": "models",
+        "rel": "pad/unet_cv5_iso/fold{k}/pad_prob_cvfold{k}_9t_05.tif"
+      },
+      "state": "held",
+      "split_file": {
+        "key": "results_9t",
+        "rel": "splits/cv_split_blocks_pad_9t.csv"
+      }
+    },
+    "pit_unet_iso_cv5": {
+      "task": "pit_floor",
+      "fold_raster": {
+        "key": "models",
+        "rel": "pit/unet_iso_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"
+      },
+      "state": "from P1, not built",
+      "split_file": {
+        "key": "results_9t",
+        "rel": "splits/cv_split_blocks_pit_9t.csv"
+      }
+    },
+    "pit_unetpp_r34_imagenet": {
+      "task": "pit_floor",
+      "fold_raster": {
+        "key": "models",
+        "rel": "pit/unetpp_r34_imagenet/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"
+      },
+      "state": "assumed path, VERIFY",
+      "split_file": {
+        "key": "results_9t",
+        "rel": "splits/cv_split_blocks_pit_9t.csv"
+      }
+    },
+    "_note": "Each baseline is clipped per block from the fold raster of the fold that held that block out, read from the model's own split file. Pit and pad folds differ (protocol section 8)"
+  },
+  "n_folds": 5,
+  "scorer": {
+    "thr": 0.1,
+    "min_area_m2": 4.0,
+    "iou_thr": 0.3,
+    "k_per_km2": 40.0,
+    "B": 2000,
+    "seed": 20261105,
+    "thr_by_task": {
+      "pit_floor": 0.35,
+      "pad": 0.525
+    },
+    "_thr_note": "Per-task proposal cutoffs from the archival operating-point sweep, set by the lead 2026-11-05 to match the corrected fw_00 section 4 (3.0 build reproduced 9t pit recall 0.909 at K=40 with 0.35). 0.10 is a sensitivity only. Never tune these on the dev test."
+  },
+  "leaderboard": {
+    "margin": null,
+    "_margin_note": "user decision. Burden of one extra reviewer hour per km2. Never seed spread.",
+    "max_submissions": 3,
+    "window_days": 90
+  },
+  "licences": {
+    "lidar": "VERIFY. PA 2019 D20 3DEP. Read USGS and PASDA terms",
+    "labels": "VERIFY. CC BY 4.0 proposed. Annotator consent in writing",
+    "well_context": "VERIFY. No well coordinates or distances released unless the licence permits"
+  }
+}

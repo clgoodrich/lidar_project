@@ -1,0 +1,9 @@
+tag,state,window,role,program,union_cover,ground_per_m2,status
+ny_alg,New York,NewYork_Allegany,primary,NY_SouthwestNY_2017_A17,0.8399289754390553,,not scored
+ny_cat,New York,NewYork_Cattaraugus,companion,NY_SouthwestNY_2017_A17,0.9924819130022536,,not scored
+oh_wash,Ohio,Ohio_Washington,primary,OH_Statewide_Phase2_2020_B20,0.8784343358057685,,not scored
+oh_mon,Ohio,Ohio_Monroe,companion,OH_Statewide_Phase2_2020_B20,0.8810977824105566,,not scored
+ky_lee,Kentucky,Kentucky_Lee,primary,KY_WestCentral_2017_C19,0.9847994191401748,,not scored
+ky_pow,Kentucky,Kentucky_Powell,companion,KY_WestCentral_2017_C19,0.9888202725631824,,not scored
+wv_ple,West Virginia,WestVirginia_Pleasants,primary,WV_FEMAR3_Southcentral_2018_D19,0.98794367953319,,not scored
+wv_rit,West Virginia,WestVirginia_Ritchie,companion,,,,not scored

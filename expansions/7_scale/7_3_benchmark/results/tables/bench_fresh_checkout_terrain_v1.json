@@ -1,0 +1,25 @@
+{
+  "release": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\7_scale\\7_3_benchmark\\data\\processed\\terrain_v1",
+  "manifest_problems": [],
+  "baselines": {
+    "pit_unet_cv5": {
+      "rc": 0,
+      "identical": {
+        "baselines/pit_unet_cv5_score.json": true,
+        "baselines/pit_unet_cv5_cands.csv": true,
+        "baselines/pit_unet_cv5_blocks.csv": true
+      },
+      "stderr_tail": ""
+    },
+    "pad_unet_cv5_iso": {
+      "rc": 0,
+      "identical": {
+        "baselines/pad_unet_cv5_iso_score.json": true,
+        "baselines/pad_unet_cv5_iso_cands.csv": true,
+        "baselines/pad_unet_cv5_iso_blocks.csv": true
+      },
+      "stderr_tail": ""
+    }
+  },
+  "pass": true
+}

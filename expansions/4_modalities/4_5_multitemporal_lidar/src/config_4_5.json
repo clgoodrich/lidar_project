@@ -1,0 +1,73 @@
+{
+  "_about": "Inputs and parameters for 4.5 multitemporal lidar at plugged wells. VERIFY marks an assumed input or a proposed default. Edit freely.",
+  "crs": "EPSG:6346",
+  "area": "9t",
+  "bbox_9t": [619500.0, 4593000.0, 624000.0, 4597500.0],
+  "projects": {
+    "early": {"name": "PA_STATEWIDE_N_2006_2008", "year_lo": 2006, "year_hi": 2008,
+              "laz_dir": {"key": "data", "rel": "9t/derived/lidar_2006_2008"}, "laz_glob": "*.laz"},
+    "late": {"name": "PA_WesternPA_2019_D20", "year_lo": 2019, "year_hi": 2019,
+             "laz_dir": {"key": "source", "rel": "westernpa"}, "laz_glob": "**/USGS_LPC_PA_WesternPA_2019_D20_*.laz",
+             "tile_index": {"key": "source", "rel": "laz_tile_index.csv"}}
+  },
+  "flight_metadata_csv": {"exp": "4.5", "rel": "data/raw/flight_windows_metadata.csv"},
+  "flight_metadata_schema": "project, tile (blank = whole project), start_date (YYYY-MM-DD), end_date, source (USGS project report, XML metadata URL, page). D1. VERIFY by reading the USGS project metadata.",
+  "gps_sample_points": 400000,
+  "dems": {
+    "early": {"key": "data", "rel": "9t/derived/lidar_2006_2008/dem_2006_v2_9t_2m.tif"},
+    "late": {"key": "data", "rel": "9t/derived/lidar_2006_2008/dem_2019_v2_9t_2m.tif"},
+    "dod_highpass": {"key": "data", "rel": "9t/derived/lidar_2006_2008/dod_v2_highpass_9t_2m.tif"}
+  },
+  "dems_note": "v2 rebuild from notebooks/wellsight_v2/s7_analysis/_change_rebuild_v2_9t.py, the field behind change_features_summary_v2_9t.json. Git-ignored, regenerate with that script.",
+  "wells_gpkg": {"key": "dep_wells", "rel": "venango_wells_all.gpkg"},
+  "annotations_gpkg": {"key": "truth", "rel": "annotations_proj_v2.gpkg"},
+  "pad_layer": "pad",
+  "road_layer": "roads",
+  "pit_layer": "pit_full",
+  "restoration_csv": {"exp": "4.5", "rel": "data/raw/dep_restoration_records.csv"},
+  "restoration_schema": "permit_num, restoration_date, earthwork (true|false|unknown), source. R7. Optional. Separates plugging from dated surface restoration.",
+  "eligibility": {
+    "date_field": "DATE_PLUGG",
+    "spud_field": "SPUD_DATE",
+    "sentinel_year_max": 1800,
+    "well_to_pad_m": 15.0,
+    "complex_link_m": 30.0,
+    "min_eligible_pads": 20,
+    "min_eligible_note": "User decision for the preregistration (power). Proposed default."
+  },
+  "controls": {
+    "covariates": ["slope_deg", "area_m2", "rough_2006_m", "road_dist_m"],
+    "max_controls": 3,
+    "caliper_sd": 0.5,
+    "require_spud_before_early": true,
+    "seed": 20261105
+  },
+  "registration": {
+    "stable_buffer_m": 20.0,
+    "max_slope_deg": 30.0,
+    "shift_tol_m": 0.5,
+    "bias_tol_m": 0.10,
+    "sample_cells": 400000,
+    "slope_bins": [0, 5, 10, 15, 20, 30]
+  },
+  "flag_rule": {
+    "source": "notebooks/wellsight_v2/s7_analysis/_change_features_9t.py (THR, MIN_COVER, P_CUT, N_CTRL, SLOPE_TOL imported at run time)",
+    "ctrl_dist_m": [150.0, 800.0],
+    "min_ctrl": 10,
+    "seed": 20261102
+  },
+  "recovery": {
+    "heights_m": [0.1, 0.2, 0.3, 0.5],
+    "areas_m2": [100.0, 400.0, 1000.0],
+    "n_sites": 40,
+    "register": true,
+    "seed": 20261105
+  },
+  "compare": {
+    "delta_rate": 0.10,
+    "delta_rate_note": "User decision. The useful flag-rate difference from the decision the flag changes. Proposed default. Not from variance.",
+    "bootstrap_B": 2000,
+    "n_placebo": 200,
+    "seed": 20261105
+  }
+}

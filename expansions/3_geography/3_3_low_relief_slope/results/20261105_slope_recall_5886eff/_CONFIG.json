@@ -1,0 +1,135 @@
+{
+  "B": 2000,
+  "_doc": "Config for expansion 3.3 (low-relief slope stratification, then edits). Path specs resolve through expkit (path_for / area_dir / exp_dir). Items marked assumed are not held yet; the scripts fail with a message naming them.",
+  "_margin_note": "User decision. Loss in recall points that would change the decision to try a flat county. Set before step 1 scoring is used for a gate. null means intervals are reported with decision no_margin_set.",
+  "_proposal_note": "fw_00 section 4 says cut at 0.10. On 9t fold 0 that gives recall 0.553 before any budget against 0.922 at the archival cutoff, because low cutoffs merge blobs and fail IoU 0.3. loo_max_recall reproduces the archival sweep rule. Set fixed to use proposal_thr. Build agent decision 2026-11-05.",
+  "area_gate": {
+    "gb": 3.61,
+    "project": "IL_8County_2020_A20",
+    "tiles": 80,
+    "window": "Illinois_Cumberland"
+  },
+  "assumed": {
+    "audit_blocks": {
+      "from": "P2 S4 audit guard",
+      "schema": "CSV block_id (int), one row per audit block",
+      "spec": {
+        "exp": "p2",
+        "rel": "results/tables/audit_blocks_9t_v1.csv"
+      }
+    },
+    "derived_buffer": {
+      "from": "P1 S4 derived buffer (receptive field plus patch support plus correlogram range)",
+      "schema": "JSON {\"pit_buffer_m\": float, \"pad_buffer_m\": float}",
+      "spec": {
+        "exp": "p1",
+        "rel": "results/tables/derived_buffer_9t.json"
+      }
+    },
+    "isolated_fold_blocks": {
+      "from": "P1 saved split file",
+      "schema": "CSV block_id,fold,role with role in train/val/heldout; one row per block per fold",
+      "spec": {
+        "exp": "p1",
+        "rel": "results/tables/split_future_pit_9t.csv"
+      }
+    },
+    "isolated_pit_ckpt": {
+      "from": "P1 isolated pit trainer (not built yet)",
+      "schema": "torch checkpoint with keys state_dict, channels, mu, sd, epoch (same as data/9t/models/pit/unet_cv5/fold*/best.pt)",
+      "spec": {
+        "exp": "p1",
+        "rel": "models/pit_iso_cv5/fold{k}/best.pt"
+      }
+    }
+  },
+  "bootstrap_B": 2000,
+  "depth_ring_m": 5.0,
+  "edit": {
+    "context_margin_m": 128.0,
+    "donor_pad_m": 3.0,
+    "fallback_buffer_m": 128.0,
+    "feather_px": 3,
+    "floor_class": 1,
+    "min_spacing_m": 60.0,
+    "n_classes": 3,
+    "n_locations": 200,
+    "overlap": 64,
+    "patch": 256,
+    "seam_tolerance": 0.2,
+    "shams": [
+      "bump",
+      "ramp",
+      "flat_cut"
+    ]
+  },
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "inputs": {
+    "blocks": {
+      "path_for": "nine_t",
+      "rel": "pit_blocks_9t.gpkg"
+    },
+    "dem_05": {
+      "path_for": "nine_t",
+      "rel": "dem_9t_05.tif"
+    },
+    "dem_1m": {
+      "path_for": "nine_t_1m",
+      "rel": "dem_9t_1m.tif"
+    },
+    "features_05": {
+      "path_for": "nine_t",
+      "rel": "features_pit_9t_05.tif"
+    },
+    "fold_assignment": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/pit_cv5_fold_assignment_9t.csv"
+    },
+    "fold_ckpt": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/fold{k}/best.pt"
+    },
+    "fold_prob": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"
+    },
+    "ground_density_05": {
+      "path_for": "nine_t",
+      "rel": "ground_density_9t_05.tif"
+    },
+    "slope_1m": {
+      "path_for": "nine_t_1m",
+      "rel": "slope_9t_1m.tif"
+    },
+    "sweep_counts": {
+      "path_for": "results_9t",
+      "rel": "operating_point/cv5_sweep_counts_per_block_pit_thr0p05to0p95_9t.csv"
+    },
+    "truth_floor_layer": "pit_inside",
+    "truth_gpkg": {
+      "path_for": "truth",
+      "rel": "annotations_proj.gpkg"
+    },
+    "truth_pad_layer": "pad",
+    "truth_rim_layer": "pit_full"
+  },
+  "iou_tau": 0.3,
+  "k_per_km2": 40.0,
+  "k_sensitivity_per_km2": 30.0,
+  "margin_delta": null,
+  "master_seed": 20261105,
+  "min_blob_m2": 4.0,
+  "n_folds": 5,
+  "proposal_policy": "loo_max_recall",
+  "proposal_thr": 0.1,
+  "relief_window_m": 50,
+  "score_buffer_m": 40.0,
+  "slope_window_m": 25,
+  "void_buffer_m": 5.0
+}

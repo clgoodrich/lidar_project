@@ -1,0 +1,15 @@
+{
+  "same_transform": true,
+  "same_shape": true,
+  "crs": {
+    "dem": "6346",
+    "dsm": "6346",
+    "chm": "6346",
+    "dsm_is_compound": true
+  },
+  "chm_minus_dsm_dem_abs_p50": 0.0,
+  "chm_minus_dsm_dem_abs_p99": 0.0887451171875,
+  "chm_equals_dsm_minus_dem_share": 0.9512009203755686,
+  "void_fraction_sampled": 0.47156829833984376,
+  "verdict": "pass"
+}

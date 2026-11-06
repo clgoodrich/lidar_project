@@ -1,0 +1,41 @@
+{
+  "written": "2026-11-05T22:20:33",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_2_era_classification/src/_era_interval_labels_9t.py",
+    "--records-only"
+  ],
+  "params": {
+    "link": {
+      "pad_radius_m": 30.0,
+      "pit_radius_m": 30.0,
+      "exclude_position_only_from_primary": true
+    }
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj.gpkg",
+      "bytes": 10588160,
+      "mtime": "2026-08-18T10:28:04.282126",
+      "sha256": "8d816579dabe1fe637c6f76388999c2931f77a60084ba6f59935531781b10396"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_2_era_classification\\results\\tables\\era_interval_labels_9t.csv",
+      "bytes": 194498,
+      "mtime": "2026-11-05T22:20:33.819122",
+      "sha256": "e6a9d438bb4128553bca9a2b5cbf0f0a4c42234ec3d12c63545fb3b295fad1a0"
+    }
+  ]
+}

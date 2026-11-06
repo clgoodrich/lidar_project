@@ -1,0 +1,147 @@
+{
+  "_note": "3.0 configuration. Written by the build agent 2026-11-05. Change freely. Paths are path_for keys plus a relative part. Entries under assumed_inputs are not held. Scripts fail with a message naming them.",
+  "scoring_defaults": {
+    "k_per_km2": 40,
+    "k_sensitivity": 30,
+    "cutoff": 0.1,
+    "min_area_m2": 4.0,
+    "iou": 0.3,
+    "order": "score",
+    "dedupe": "truth_matched",
+    "k_rule": "global",
+    "B": 2000,
+    "seed": 20261105,
+    "cutoff_by_task": {
+      "pit": 0.35,
+      "pad": 0.525
+    },
+    "_cutoff_note": "Proposal cutoff. Protocol section 2 rule 1 asks for the sweep's proposal extraction. The sweep's leave-one-fold-out cutoffs are pit 0.35 in every fold and pad 0.50 to 0.55 (median 0.525). fw_00 says 0.10. At 0.10 the 9t uint8 mosaic gives recall 0.575 at K 40, at 0.35 it gives 0.909, equal to the archival 0.909. 'cutoff' 0.10 is kept as the fw_00 sensitivity."
+  },
+  "reference_9t": {
+    "pit": {
+      "prob": {
+        "key": "models",
+        "rel": "pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif"
+      },
+      "prob_iso": {
+        "key": "models",
+        "rel": "pit/unet_iso_cv5/pit_prob_floor_outoffold_iso_9t_05.tif"
+      },
+      "blocks": {
+        "key": "nine_t",
+        "rel": "pit_blocks_9t.gpkg"
+      },
+      "truth": {
+        "key": "truth",
+        "rel": "annotations_proj.gpkg",
+        "layer": "pit_inside",
+        "id": "pit_inside_id"
+      },
+      "fold_rasters": {
+        "key": "models",
+        "rel": "pit/unet_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"
+      }
+    },
+    "pad": {
+      "prob_iso": {
+        "key": "models",
+        "rel": "pad/unet_cv5_iso/pad_prob_outoffold_iso_9t_05.tif"
+      },
+      "blocks": {
+        "key": "nine_t",
+        "rel": "pad_blocks_9t.gpkg"
+      },
+      "truth": {
+        "key": "truth",
+        "rel": "annotations_proj.gpkg",
+        "layer": "pad",
+        "id": "pad_id"
+      },
+      "fold_rasters": {
+        "key": "models",
+        "rel": "pad/unet_cv5_iso/fold{k}/pad_prob_cvfold{k}_9t_05.tif"
+      },
+      "_note": "layer 'pad' resolves to 'plat' through read_layer legacy aliases, as in _pad_unet_cv5.py."
+    }
+  },
+  "archival": {
+    "budgets": [
+      30,
+      40
+    ],
+    "targets_from_protocol": {
+      "pit": {
+        "30": 0.781,
+        "40": 0.909
+      }
+    },
+    "decimals": 3
+  },
+  "ci_width": {
+    "n_blocks": [
+      10,
+      15,
+      20,
+      30,
+      40,
+      60
+    ],
+    "margins": [
+      0.05,
+      0.1,
+      0.15
+    ],
+    "reps": 200,
+    "B": 400,
+    "seed": 20261107
+  },
+  "infer": {
+    "assumed_inputs": {
+      "tiles": {
+        "key": "source",
+        "rel": "<program>/<tile>.laz",
+        "schema": "list of LAS/LAZ tile paths for the target area, given with --tiles or a text file (one path per line)"
+      },
+      "bbox": "X0,Y0,X1,Y1 in EPSG:6346, given with --bbox"
+    },
+    "res_m": 0.5,
+    "tasks": {
+      "pit": {
+        "n_classes": 3,
+        "patch": 256,
+        "overlap": 64,
+        "class_index": 1
+      },
+      "pad": {
+        "n_classes": 2,
+        "patch": 384,
+        "overlap": 96,
+        "class_index": 1
+      }
+    },
+    "policy_choices": [
+      "single_fold",
+      "fold_mean"
+    ]
+  },
+  "prereg_required": [
+    "question",
+    "area",
+    "task",
+    "evidence_level",
+    "scoring.prob",
+    "scoring.blocks",
+    "scoring.truth",
+    "scoring.k",
+    "scoring.seed",
+    "margin",
+    "margin_source",
+    "reference.run",
+    "model_policy",
+    "buffer_m",
+    "buffer_source",
+    "split_file",
+    "split_sha256",
+    "density_c"
+  ]
+}

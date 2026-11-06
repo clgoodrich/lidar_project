@@ -1,0 +1,38 @@
+{
+  "_note": "Assumed inputs, schemas and frozen parameters for 7.2. Paths are {key: path_for key, rel: relative}. Build agent, 2026-11-05. Edit freely. Parameters marked prereg are frozen after the S1 replay and before S2.",
+  "master_seed": 20261105,
+  "inputs": {
+    "blocks": {"key": "nine_t", "rel": "blocks_unified_9t.gpkg", "state": "held", "schema": "block_id int, n_feat int, geometry"},
+    "truth": {"key": "truth", "rel": "annotations_proj.gpkg", "layer": "pit_inside", "state": "held"},
+    "oof_prob": {"key": "models", "rel": "pit/unet_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif", "state": "held",
+                 "note": "historical CV5 out-of-fold rasters. Replay pool source until the P1 isolated pit model exists"},
+    "fold_blocks": {"key": "results_9t", "rel": "splits/cv_split_blocks_pit_9t.csv", "state": "held", "schema": "fold, role, block_id"},
+    "audit_blocks": {"key": "results_9t", "rel": "splits/audit_blocks_9t_v1.csv", "state": "from P2", "schema": "block_id, role"},
+    "discovery_extra_blocks": {"key": "expansions", "rel": "7_scale/7_2_active_learning/data/raw/discovery_blocks_extra.gpkg", "state": "assumed",
+                               "schema": "block_id int (unique across areas), area str, geometry. Warren non-reserved and one other D20 window"},
+    "base_labels": {"key": "nine_t", "rel": "labels_pit_9t_05.tif", "state": "held"}
+  },
+  "split": {"stopping_blocks": 20, "discovery_share": 0.30, "buffer_m": 0.0,
+            "_buffer_note": "derived buffer comes from P1 S4. 0 until then, stated in every run"},
+  "cost_minutes": {"C": 6.0, "W": 90.0, "_note": "VERIFY. Time one real block and 20 candidates before use (protocol section 13)"},
+  "budget_minutes": 3600, "B_star_share": 0.5,
+  "batch_minutes": 360, "_batch_note": "default 60 candidates x 6 minutes",
+  "policies": {
+    "R": {"pool": "C", "weight": "uniform"},
+    "U": {"pool": "C", "weight": "entropy_softmax", "temperature": 0.25},
+    "D": {"pool": "W", "weight": "uniform"},
+    "H": {"parts": [{"policy": "U", "share": 0.7}, {"policy": "D", "share": 0.3}]},
+    "B": {"pool": "C", "weight": "entropy_softmax_tile_cap", "temperature": 0.25, "tile_m": 375.0}
+  },
+  "primary": {"policy": "U", "control": "R"},
+  "G": null,
+  "_G_note": "Default G = R recall at the full budget minus R recall at 75% of the budget, read from the R curve before U is scored. User may replace",
+  "stop": {"delta": 0.01, "rounds": 2},
+  "dedupe_m": 5.0,
+  "ipw_clip_quantile": 0.95,
+  "timer": {"idle_gap_min": 5.0, "flag_short_s": 10.0, "flag_long_min": 30.0},
+  "scoring": {"k_per_km2": 40.0, "B": 2000, "thr": 0.10, "min_area_m2": 4.0, "iou_thr": 0.3},
+  "replay": {"seeds": 10, "round0_items": 60, "learner": "logistic"},
+  "trainer_cmd": null,
+  "_trainer_note": "Command template for the live retrain. Placeholders {labels} {weights} {out} {init}. Null until the P1 isolated pit trainer exists"
+}

@@ -1,0 +1,220 @@
+"""Record-association core for 5.6 (and reused by 5.3, 5.4). Library, not a script.
+
+Purpose
+    Pure functions behind the corrected association analysis of protocol section 4.
+    - dedupe(): the deployment-compatible rule for the full detector output
+    - nn_rates(), pad_rates(): share of records with a feature within r
+    - shift_null(): translate the whole record set as one, redraw shifts that lose records
+    - excess(): normalised excess association over the null, with a null-based interval. Not PPV.
+    - assign(): global one-to-one Hungarian across statuses, or per-status competing proposals
+    - mde(): minimum detectable excess (power report, S3)
+    - link_ppv_bounds(): link PPV from a blinded, weighted adjudication sample, ambiguous kept in the gap
+
+Definitions (fw_5_6 section 3)
+    normalised excess = (observed - null mean) / (1 - null mean). 0 is chance, 1 is every record matched beyond chance.
+    Its interval uses the null's 2.5 and 97.5 percentiles. It is not link precision.
+
+Inputs / outputs
+    None. Numpy arrays and GeoDataFrames in, dicts and arrays out.
+Run
+    Not runnable. Tested by expansions/5_tasks/5_6_record_association/src/test_5_6.py.
+"""
+from __future__ import annotations
+
+import numpy as np
+from scipy.optimize import linear_sum_assignment
+from scipy.spatial import cKDTree
+
+BIG = 1e9
+
+
+# ----------------------------------------------------------------------------- input contract
+def dedupe(df, rule: str = "deployment"):
+    """Deployment-compatible dedupe of the full pit output (fw_5_6 S0).
+
+    deployment  keep every matched row; drop an unmatched row whose centroid sits inside an already-drawn pit
+                (dup_on_pit == 1). The deployed pipeline would merge it into the feature it already found.
+    keep_all    keep every row (sensitivity only).
+    Expects columns 'source' in {matched, undecided} and 'dup_on_pit'.
+    """
+    if rule == "keep_all":
+        return df.copy()
+    if rule != "deployment":
+        raise ValueError(f"unknown dedupe rule {rule!r}")
+    drop = (df["source"] != "matched") & (df["dup_on_pit"].astype(int) == 1)
+    return df.loc[~drop].copy()
+
+
+# ----------------------------------------------------------------------------- rates
+def nn_dist(rec_xy: np.ndarray, det_xy: np.ndarray) -> np.ndarray:
+    if len(det_xy) == 0:
+        return np.full(len(rec_xy), np.inf)
+    d, _ = cKDTree(det_xy).query(rec_xy)
+    return d
+
+
+def nn_rates(rec_xy: np.ndarray, det_xy: np.ndarray, radii) -> dict:
+    """Share of records with any detection within r (many-to-one, the chance-matching rate)."""
+    if len(rec_xy) == 0:
+        return {r: float("nan") for r in radii}
+    d = nn_dist(rec_xy, det_xy)
+    return {r: float((d <= r).mean()) for r in radii}
+
+
+def pad_rate_fn(pad_geoms, radii):
+    """Rate function with the polygon tree built once (used inside the null loop)."""
+    from shapely import STRtree
+    tree = STRtree(np.asarray(pad_geoms))
+    return lambda xy: pad_rates(xy, None, radii, tree=tree)
+
+
+def pit_rate_fn(det_xy, radii):
+    tree = cKDTree(det_xy) if len(det_xy) else None
+
+    def f(xy):
+        if len(xy) == 0:
+            return {r: float("nan") for r in radii}
+        d = tree.query(xy)[0] if tree is not None else np.full(len(xy), np.inf)
+        return {r: float((d <= r).mean()) for r in radii}
+    return f
+
+
+def pad_rates(rec_xy: np.ndarray, pad_geoms, radii, tree=None) -> dict:
+    """Share of records inside (r = 0) or within r of a pad polygon. Many records may share one pad."""
+    from shapely import STRtree, points
+    if len(rec_xy) == 0:
+        return {r: float("nan") for r in radii}
+    tree = tree if tree is not None else STRtree(np.asarray(pad_geoms))
+    pts = points(rec_xy)
+    out = {}
+    for r in radii:
+        if r == 0:
+            idx = tree.query(pts, predicate="intersects")
+        else:
+            idx = tree.query(pts, predicate="dwithin", distance=r)
+        out[r] = float(len(np.unique(idx[0])) / len(rec_xy))
+    return out
+
+
+# ----------------------------------------------------------------------------- null
+def shift_null(rec_xy: np.ndarray, eligible, rate_fn, n_shift: int = 300, dmin: float = 200.0,
+               dmax: float = 500.0, max_loss: float = 0.10, rng=None, max_tries: int = 20):
+    """Translate the whole record set as one (protocol section 4 rule 4).
+
+    eligible(xy) -> bool mask, the same rule as the observed records (footprint and tile).
+    rate_fn(xy)  -> dict radius -> rate.
+    A shift that drops more than max_loss of the records is rejected and redrawn (up to max_tries per draw).
+    Returns dict(draws=list of rate dicts, retained=list of int, rejected=int, n_records=int).
+    What it conditions on: the record set's internal clustering and size. Gradients in oil development and
+    road density are only partly preserved by a 200 to 500 m move.
+    """
+    rng = rng if rng is not None else np.random.default_rng(0)
+    n = len(rec_xy)
+    draws, retained, rejected = [], [], 0
+    for _ in range(n_shift):
+        for _t in range(max_tries):
+            a = rng.uniform(0, 2 * np.pi)
+            m = rng.uniform(dmin, dmax)
+            sh = rec_xy + np.array([m * np.cos(a), m * np.sin(a)])
+            ok = eligible(sh)
+            if n and (1 - ok.mean()) <= max_loss:
+                draws.append(rate_fn(sh[ok]))
+                retained.append(int(ok.sum()))
+                break
+            rejected += 1
+    return {"draws": draws, "retained": retained, "rejected": rejected, "n_records": n}
+
+
+def excess(observed: float, null_vals, alpha: float = 0.05) -> dict:
+    """Normalised excess association over the null with a null-based interval. Not PPV."""
+    v = np.asarray([x for x in null_vals if np.isfinite(x)], float)
+    if not len(v) or not np.isfinite(observed):
+        return dict(observed=observed, null_mean=float("nan"), null_lo=float("nan"), null_hi=float("nan"),
+                    excess=float("nan"), excess_lo=float("nan"), excess_hi=float("nan"),
+                    norm_excess=float("nan"), norm_lo=float("nan"), norm_hi=float("nan"), n_null=int(len(v)))
+    mu = float(v.mean())
+    lo, hi = np.percentile(v, [100 * alpha / 2, 100 * (1 - alpha / 2)])
+    den = max(1 - mu, 1e-9)
+    return dict(observed=float(observed), null_mean=mu, null_lo=float(lo), null_hi=float(hi),
+                excess=float(observed - mu), excess_lo=float(observed - hi), excess_hi=float(observed - lo),
+                norm_excess=float((observed - mu) / den), norm_lo=float((observed - hi) / den),
+                norm_hi=float((observed - lo) / den), n_null=int(len(v)))
+
+
+def mde(n_records: int, null_vals, power_z: float = 0.8416, alpha: float = 0.05) -> float:
+    """Minimum detectable excess. The rate an observed set needs so its lower bound clears the null's upper
+    percentile with the stated power (binomial noise on the observed rate). NaN when there are no records."""
+    v = np.asarray(null_vals, float)
+    if n_records == 0 or not len(v):
+        return float("nan")
+    mu = float(v.mean())
+    hi = float(np.percentile(v, 100 * (1 - alpha / 2)))
+    p = min(max(hi, 1e-6), 1 - 1e-6)
+    return float((hi - mu) + power_z * np.sqrt(p * (1 - p) / n_records))
+
+
+# ----------------------------------------------------------------------------- assignment
+def hungarian(rec_xy: np.ndarray, det_xy: np.ndarray, gate: float):
+    """One-to-one assignment on distance with a gate. Returns (rec_idx, det_idx, dist)."""
+    if len(rec_xy) == 0 or len(det_xy) == 0:
+        e = np.array([], int)
+        return e, e, np.array([], float)
+    D = np.hypot(rec_xy[:, None, 0] - det_xy[None, :, 0], rec_xy[:, None, 1] - det_xy[None, :, 1])
+    C = np.where(D <= gate, D, BIG)
+    i, j = linear_sum_assignment(C)
+    ok = C[i, j] < BIG
+    return i[ok], j[ok], D[i[ok], j[ok]]
+
+
+def assign(rec_xy: np.ndarray, rec_group: np.ndarray, det_xy: np.ndarray, gate: float, mode: str = "global"):
+    """global      one Hungarian over every record of every status. A detection gets at most one record.
+    per_status  one Hungarian per status. Outputs are labelled competing proposals (a detection may appear twice).
+    Returns list of dict rows (rec_idx, det_idx, dist_m, group, proposal_type)."""
+    rows = []
+    if mode == "global":
+        i, j, d = hungarian(rec_xy, det_xy, gate)
+        for a, b, c in zip(i, j, d):
+            rows.append(dict(rec_idx=int(a), det_idx=int(b), dist_m=float(c), group=rec_group[a],
+                             proposal_type="global_one_to_one"))
+    elif mode == "per_status":
+        for g in np.unique(rec_group):
+            sel = np.flatnonzero(rec_group == g)
+            i, j, d = hungarian(rec_xy[sel], det_xy, gate)
+            for a, b, c in zip(i, j, d):
+                rows.append(dict(rec_idx=int(sel[a]), det_idx=int(b), dist_m=float(c), group=g,
+                                 proposal_type="competing_per_status"))
+    else:
+        raise ValueError(mode)
+    return rows
+
+
+# ----------------------------------------------------------------------------- adjudication
+def link_ppv_bounds(outcome, weight=None, alpha: float = 0.05) -> dict:
+    """Link PPV from a blinded adjudication sample (protocol section 4 rule 5, section 6 bounds).
+
+    outcome  per sampled link: 'correct', 'wrong' or 'ambiguous' (inaccessible counts as ambiguous)
+    weight   inverse inclusion probabilities (1 when the sample is simple random)
+    lower = correct weight / total, upper = 1 - wrong weight / total. Ambiguous sits in the gap.
+    Sampling uncertainty by Clopper-Pearson on the effective n (Kish) around each bound.
+    """
+    from scipy.stats import beta
+    o = np.asarray(outcome, dtype=object)
+    w = np.ones(len(o)) if weight is None else np.asarray(weight, float)
+    bad = set(o) - {"correct", "wrong", "ambiguous"}
+    if bad:
+        raise ValueError(f"unknown adjudication outcomes {bad}")
+    W = w.sum()
+    if W == 0:
+        return dict(n=0)
+    lower = float(w[o == "correct"].sum() / W)
+    upper = float(1 - w[o == "wrong"].sum() / W)
+    n_eff = W ** 2 / (w ** 2).sum()
+
+    def cp(p, lo_side):
+        k = p * n_eff
+        if lo_side:
+            return 0.0 if k <= 0 else float(beta.ppf(alpha / 2, k, n_eff - k + 1))
+        return 1.0 if k >= n_eff else float(beta.ppf(1 - alpha / 2, k + 1, n_eff - k))
+    return dict(n=int(len(o)), n_eff=float(n_eff), ppv_lower=lower, ppv_upper=upper,
+                ppv_lower_ci_lo=cp(lower, True), ppv_upper_ci_hi=cp(upper, False),
+                share_ambiguous=float(w[o == "ambiguous"].sum() / W))

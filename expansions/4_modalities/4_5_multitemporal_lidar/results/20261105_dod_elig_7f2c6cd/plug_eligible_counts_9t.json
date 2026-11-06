@@ -1,0 +1,30 @@
+{
+  "wells_in_box": 1068,
+  "wells_by_class": {
+    "excluded": 1057,
+    "ambiguous": 6,
+    "eligible": 5
+  },
+  "reasons": {
+    "not plugged or no plug date": 801,
+    "plugged before the early flight": 253,
+    "plug date inside a flight window": 6,
+    "plugged strictly between the flights": 5,
+    "plugged after the late flight": 3
+  },
+  "wells_on_pads_by_class": {
+    "excluded": 371,
+    "eligible": 3,
+    "ambiguous": 2
+  },
+  "pads": 995,
+  "treated_pads": 3,
+  "treated_complexes": 3,
+  "pads_with_ambiguous": 2,
+  "min_eligible_pads": 20,
+  "bounds_methods": {
+    "year_bounds": 9,
+    "year_bounds+header_upper": 4
+  },
+  "readiness": "STOP: eligible pads below the preregistered minimum"
+}

@@ -1,0 +1,8 @@
+role,task,n_blocks,area_km2,n_features,per_km2,share_blocks_empty
+devtest,pit_floor,21,2.9531,101.0,34.201,0.0
+devtest,pit_full,21,2.9531,101.0,34.201,0.0
+devtest,pad,21,2.9531,111.0,37.587,0.0
+train,pit_floor,94,13.2188,402.0,30.411,0.0
+train,pit_full,94,13.2188,405.0,30.638,0.0
+train,pad,94,13.2188,473.0,35.783,0.0532
+unassigned,(no labels),29,4.078125,,,

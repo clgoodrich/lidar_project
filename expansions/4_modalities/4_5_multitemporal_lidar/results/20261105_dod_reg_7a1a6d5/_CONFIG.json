@@ -1,0 +1,15 @@
+{
+  "bias_tol_m": 0.1,
+  "max_slope_deg": 30.0,
+  "sample_cells": 400000,
+  "shift_tol_m": 0.5,
+  "slope_bins": [
+    0,
+    5,
+    10,
+    15,
+    20,
+    30
+  ],
+  "stable_buffer_m": 20.0
+}

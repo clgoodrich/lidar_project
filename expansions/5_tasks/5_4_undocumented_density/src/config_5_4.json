@@ -1,0 +1,38 @@
+{
+  "_about": "5.4 undocumented well density. Identifiability and conditional bounds only. Never a density map. Path specs resolve through _task5_helpers.resolve.",
+  "seed": 20261105,
+  "k_per_km2": 40,
+  "k_sensitivity_per_km2": 30,
+  "block_m": 375.0,
+  "merge_radius_m": 15.0,
+  "record_merge_m": 5.0,
+  "expected_pit_rows": 685,
+  "doc_statuses_exclude": ["Operator Reported Not Drilled", "Proposed But Never Materialized"],
+  "grid": {"p_min": 0.05, "p_max": 0.90, "r_min": 0.10, "r_max": 0.90, "step": 0.05, "m_values": [1.0, 1.5, 2.0]},
+  "bootstrap_B": 2000,
+  "capture_recapture": {"radius_m": 50, "p_values": [0.05, 0.1, 0.2, 0.4, 0.6, 0.9], "q_values": [0.1, 0.25, 0.5, 1.0]},
+  "inputs": {
+    "full_pit": {"path": "@exp:5.6/data/processed/detector_output_pit_full_9t.gpkg",
+                 "hint": "Run expansions/5_tasks/5_6_record_association/src/_records_full_detector_output_9t.py (5.6 S0)."},
+    "pit_blocks": {"path": "@nine_t/pit_blocks_9t.gpkg", "hint": "375 m CV blocks with n_pits"},
+    "dep_wells": {"path": "@dep_wells/venango_wells_all.gpkg", "hint": "DEP 2026-04 Venango export, read-only"},
+    "sites": {"path": "@exp:5.4/results/tables/density_distinct_sites_9t.csv", "hint": "Run _density_distinct_wells_9t.py (S1)."},
+    "accounting": {"path": "@exp:5.4/results/tables/density_accounting_9t.json", "hint": "Run _density_distinct_wells_9t.py (S1)."},
+    "cohort_excess": {"path": "@exp:5.6/results/tables/records_cohort_excess_9t.csv", "hint": "Run 5.6 _records_cohort_strata_9t.py (S4)."},
+    "arm_b": {"path": "@exp:7.5/data/processed/arm_b_candidate_outcomes.csv", "assumed": true,
+              "schema": {"site_id": "int, matches density_distinct_sites_9t.csv site_id", "identity": "confirmed_well | definite_non_well | ambiguous", "weight": "float inverse inclusion probability", "frame_sha256": "str, hash of the top-K site table the sample was drawn from"},
+              "hint": "7.5 field campaign Arm B (score-stratified candidate sample). User-only field step."},
+    "arm_c": {"path": "@exp:7.5/data/processed/arm_c_search_outcomes.csv", "assumed": true,
+              "schema": {"area_id": "str", "well_id": "str, one row per well found by independent search", "detected": "0/1, a candidate site lies on it", "search_round": "int, 1 or 2 when repeated independent searches exist"},
+              "hint": "7.5 field campaign Arm C (probability-sampled areas searched independently). User-only field step."}
+  },
+  "outputs": {
+    "terms": "@exp:5.4/results/tables/density_identifiability_terms_9t.csv",
+    "sites": "@exp:5.4/results/tables/density_distinct_sites_9t.csv",
+    "accounting": "@exp:5.4/results/tables/density_accounting_9t.json",
+    "grid": "@exp:5.4/results/tables/density_sensitivity_9t.csv",
+    "grid_fig": "@exp:5.4/results/figures/density_sensitivity_9t.png",
+    "field_bounds": "@exp:5.4/results/tables/density_field_bounds_9t.json",
+    "capture": "@exp:5.4/results/tables/density_capture_recapture_9t.csv"
+  }
+}

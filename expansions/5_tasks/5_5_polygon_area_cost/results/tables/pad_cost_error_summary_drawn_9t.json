@@ -1,0 +1,12 @@
+{
+  "reference": "drawn",
+  "break_even_f": {
+    "0.15": 0.1706870444064773,
+    "0.25": 0.2844784073441288,
+    "0.40": 0.4551654517506062,
+    "p90_abs_area_error": 0.8788013204024273
+  },
+  "closed_form_example": "f = 0.3 and r = ln 2 move cost by 0.3 x (2 - 1) = 30%",
+  "note": "Area is level (a). Cost covers the surface term only. Nothing here speaks to wells.",
+  "cost_table": "missing"
+}

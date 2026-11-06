@@ -1,0 +1,53 @@
+{
+  "written": "2026-11-05T22:34:10",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_1_context_features/src/_context_stage2_learner_9t.py",
+    "--allow-void"
+  ],
+  "params": {
+    "k_per_km2": 40.0,
+    "B": 2000,
+    "delta_gain": null
+  },
+  "seeds": {
+    "master": 20261104
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_1_context_features\\data\\processed\\stage2_features_9t.parquet",
+      "bytes": 262136,
+      "mtime": "2026-11-05T22:27:59.584662",
+      "sha256": "f01a2495be67dbe66d0b63de0300129a21ffbd381f1f8b6b6c8c4f58f59b7030"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_1_context_features\\data\\processed\\stage2_upstream_usage_9t.json",
+      "bytes": 174569,
+      "mtime": "2026-11-05T22:27:59.661535",
+      "sha256": "18917c6eb6efbacedb7ae91701cf0f9b61110e26ca42139adc64343c45bc3a02"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_1_context_features\\results\\tables\\context_leakage_audit_9t.json",
+      "bytes": 208505,
+      "mtime": "2026-11-05T22:28:08.271972",
+      "sha256": "02720704d761629cec3f6958470c1933f1c21714f9e251689e4a8582bfbd0956"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_1_context_features\\results\\20261105_stage2_266941f\\stage2_scores.csv",
+      "bytes": 191287,
+      "mtime": "2026-11-05T22:34:10.062790",
+      "sha256": "da1ca0f45df779be050a0d7d731d3116ed7b48379a7bb01e27e3dbab7afc64b1"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_1_context_features\\results\\20261105_stage2_266941f\\stage2_summary.json",
+      "bytes": 6119,
+      "mtime": "2026-11-05T22:34:10.077794",
+      "sha256": "9fc98d4ace987f5f6b0e27b923ff12cfc95ad380ba4898994600af63c481a090"
+    }
+  ]
+}

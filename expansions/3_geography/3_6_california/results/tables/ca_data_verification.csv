@@ -1,0 +1,4 @@
+check,value,ok,detail
+usgs_2022_rows,3338,True,Idle=3173; Plugged=126; Active=36; Canceled=3
+usgs_2026_rows,2940,True,Appendix A-7: Potentially deserted or deserted=2517; Appendix A-6: Orphan=423
+calgem_present,0,False,MISSING INPUT: 3.6 input 'calgem_wells'

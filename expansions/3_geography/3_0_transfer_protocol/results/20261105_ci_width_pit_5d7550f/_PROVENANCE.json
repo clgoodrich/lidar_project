@@ -1,0 +1,27 @@
+{
+  "written": "2026-11-05T22:33:06",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/3_geography/3_0_transfer_protocol/src/_transfer_ci_width_9t.py",
+    "--task",
+    "pit",
+    "--out-dir",
+    "expansions/3_geography/3_0_transfer_protocol/results/tables"
+  ],
+  "params": {},
+  "seeds": {
+    "draw": 20261107
+  },
+  "inputs": [],
+  "outputs": [
+    {
+      "path": "expansions\\3_geography\\3_0_transfer_protocol\\results\\tables\\projected_ci_width_pit_9t.csv",
+      "bytes": 857,
+      "mtime": "2026-11-05T22:33:06.185074",
+      "sha256": "0bc96914db7245ddab1d437c8f6cd11f65ac36f3f1ab1a4f04249a955f8c0ae2"
+    }
+  ]
+}

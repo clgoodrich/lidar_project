@@ -1,0 +1,42 @@
+{
+  "written": "2026-11-05T22:39:19",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/3_geography/3_0_transfer_protocol/src/_transfer_baseline_repeat_9t.py",
+    "--task",
+    "pad",
+    "--splits",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/cv_splits_future_9t_v1.json",
+    "--runs-base",
+    "expansions/3_geography/3_0_transfer_protocol/data/interim/runs",
+    "--out-dir",
+    "expansions/3_geography/3_0_transfer_protocol/results/tables"
+  ],
+  "params": {},
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\pad_prob_oof_mosaic_9t.tif",
+      "bytes": 242196009,
+      "mtime": "2026-11-05T22:39:00.952619",
+      "sha256": "75f80127117820ab04364a0239f58e4eee2528b01ec0fc51f59626725cc2164f"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json",
+      "bytes": 18847,
+      "mtime": "2026-11-05T22:12:27.970050",
+      "sha256": "5084c5b96c4dd4dde2504025ba4bfbbe98b87052ce4be213aba38361d5ca1032"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions\\3_geography\\3_0_transfer_protocol\\results\\tables\\transfer_baseline_repeat_pad_9t.json",
+      "bytes": 656,
+      "mtime": "2026-11-05T22:39:19.710827",
+      "sha256": "2c791a401403161a2ac5bd50a52094b6fb641ddd19212c66bb70b6065df16c88"
+    }
+  ]
+}

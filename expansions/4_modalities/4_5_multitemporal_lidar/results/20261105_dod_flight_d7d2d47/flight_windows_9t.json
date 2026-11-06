@@ -1,0 +1,38 @@
+{
+  "early": {
+    "project": "PA_STATEWIDE_N_2006_2008",
+    "n_tiles": 4,
+    "window_start_min": "2006-01-01",
+    "window_end_max": "2008-12-02",
+    "methods": {
+      "year_bounds+header_upper": 4
+    },
+    "gps_sampled_first": null,
+    "gps_sampled_last": null
+  },
+  "late": {
+    "project": "PA_WesternPA_2019_D20",
+    "n_tiles": 9,
+    "window_start_min": "2019-01-01",
+    "window_end_max": "2019-12-31",
+    "methods": {
+      "year_bounds": 9
+    },
+    "gps_sampled_first": "2020-03-18",
+    "gps_sampled_last": "2020-03-18"
+  },
+  "anomalies": [
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF619593.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF619593.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF619596.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF619596.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF621593.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF621593.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF621594.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF621594.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF621596.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF621596.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF622593.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF622593.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF622594.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF622594.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "USGS_LPC_PA_WesternPA_2019_D20_17TPF622596.laz: gps_first 2020-03-18 outside nominal 2019-01-01 to 2019-12-31; USGS_LPC_PA_WesternPA_2019_D20_17TPF622596.laz: gps_last 2020-03-18 outside nominal 2019-01-01 to 2019-12-31",
+    "ALERT header says EPSG:32128 but coordinates fit EPSG:2271 (US feet)"
+  ],
+  "ALERT": "10 tiles have point dates outside the project's nominal years. Year bounds are then an assumption, not a guarantee. Read the USGS metadata (D1) before eligibility is final.",
+  "note": "Eligibility uses window_end of early tiles and window_start of late tiles. year_bounds is conservative and valid. Replace with metadata (D1) to enlarge the eligible window."
+}

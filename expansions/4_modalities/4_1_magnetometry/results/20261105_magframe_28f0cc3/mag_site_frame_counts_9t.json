@@ -1,0 +1,14 @@
+{
+  "n_wells_in_box": 1068,
+  "n_pits_in_box": 506,
+  "counts_by_stratum": {
+    "steel_era": 1024,
+    "pit_no_record": 278,
+    "unknown_date": 43,
+    "dated_pre_steel": 1
+  },
+  "early_era_needs": "independent historic date (4.6). DEP dates before 1930 are dated_pre_steel, not early era",
+  "historic_dates_given": false,
+  "confusers_given": false,
+  "pilot_check": "no pilot_sites.csv yet"
+}

@@ -1,0 +1,55 @@
+{
+  "best_case_factor": 10.0,
+  "best_case_factor_note": "User decision, proposed default. DL divided by this factor stands for the best plausible wind and albedo.",
+  "closure_ratio": 100.0,
+  "closure_ratio_note": "User decision, proposed default. Headroom for wind, albedo and retrieval variance. A decision margin, not a variance quantity.",
+  "detection_limits": [
+    {
+      "conditions": "90% probability of detection at 3 m/s wind, 35 degree solar zenith, 25% albedo, 30 m GSD",
+      "gsd_m": 30.0,
+      "instrument": "Tanager (Carbon Mapper)",
+      "pod90_high_kg_per_h": 180.0,
+      "pod90_low_kg_per_h": 90.0,
+      "source": "Carbon Mapper. Tanager detection limits, carbonmapper.org (checked 2026-11-04 per docs/plans/protocol_gates_and_metrics.md section 9). VERIFY against the Carbon Mapper product guide (D4)."
+    }
+  ],
+  "population": {
+    "abandoned_scenarios": {
+      "high": 970000,
+      "low": 280000
+    },
+    "abandoned_scenarios_note": "VERIFY. Range of Pennsylvania abandoned-well estimates as cited in Kang et al. 2014. Used only to scale the tail count.",
+    "documented_orphan_csv": {
+      "key": "reference",
+      "rel": "legacy_data/US_Documented_Orphan_Wells.csv"
+    },
+    "documented_orphan_note": "US_Documented_Orphan_Wells.csv is PA only (2022-05-09 DEP orphan list)."
+  },
+  "seed": 20261105,
+  "tail_bootstrap_B": 2000,
+  "well_emission": {
+    "largest_measured_kg_per_day": null,
+    "largest_measured_note": "VERIFY. Fill from Kang et al. 2014 tables. null means the tail gate cannot close.",
+    "mean_kg_per_day": 0.27,
+    "n_high_emitters": 3,
+    "n_measurements": 42,
+    "n_wells": 19,
+    "page": "VERIFY abstract and Table 1",
+    "per_well_rates_csv": {
+      "exp": "4.4",
+      "rel": "data/raw/kang2014_per_well_rates.csv"
+    },
+    "per_well_rates_schema": "well_id, rate_kg_per_day (one row per well, mean over that well's measurements), n_measurements, note. Typed from Kang et al. 2014 tables or SI.",
+    "source": "Kang M, Kanno CM, Reid MC, Zhang X, Mauzerall DL, Celia MA, Chen Y, Onstott TC (2014). Direct measurements of methane emissions from abandoned oil and gas wells in Pennsylvania. PNAS 111(51):18173-18177. doi:10.1073/pnas.1408315111. Figures as quoted in docs/plans/protocol_gates_and_metrics.md section 9 (checked at the Princeton record 2026-11-04)."
+  },
+  "wells_per_footprint": {
+    "count_mode": "distinct_locations",
+    "count_mode_note": "distinct_locations drops DEP records stacked on one placeholder coordinate. raw_records counts them all (sensitivity).",
+    "fallback_max_wells": 4,
+    "fallback_note": "Used only when the DEP points are absent. A handful of wells on one lease, per the framework.",
+    "from_dep_points": {
+      "key": "dep_wells",
+      "rel": "venango_wells_all.gpkg"
+    }
+  }
+}

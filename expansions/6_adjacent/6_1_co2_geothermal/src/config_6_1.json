@@ -1,0 +1,238 @@
+{
+  "exp_id": "6.1",
+  "area": "9t",
+  "crs": "EPSG:6346",
+  "_note": "Assumed inputs carry state 'assumed'. Paths resolve through expkit (key -> path_for, area -> data/<area>, exp -> expansion folder). Edit freely when real data arrive.",
+  "decisions": {
+    "partner": "hypothetical",
+    "partner_note": "No partner is named. The pilot runs on a declared hypothetical partner and every page says so (decisions_6_1.md, 2026-11-05).",
+    "regime": "40 CFR 146.84 Class VI (CO2). Geothermal regime VERIFY per state.",
+    "share_precision": "full",
+    "coarse_precision_m": 100
+  },
+  "inputs": {
+    "blocks": {
+      "area": "9t",
+      "rel": "derived/05/pit_blocks_9t.gpkg",
+      "layer": "blocks",
+      "state": "held",
+      "schema": {
+        "block_id": "int",
+        "geometry": "Polygon"
+      }
+    },
+    "ground_density": {
+      "key": "nine_t",
+      "rel": "ground_density_9t_05.tif",
+      "state": "held",
+      "schema": "uint16 ground returns per cell, nodata 0 means no ground return"
+    },
+    "chm": {
+      "key": "nine_t",
+      "rel": "chm_9t_05.tif",
+      "state": "held",
+      "schema": "float32 m, nodata -9999"
+    },
+    "annotation_status": {
+      "area": "9t",
+      "rel": "results/transfer/transfer_blocks.csv",
+      "state": "assumed (3.0 output)",
+      "optional": true,
+      "schema": {
+        "block_id": "int",
+        "annotation_status": "complete|partial|none"
+      }
+    },
+    "candidates_pit": {
+      "exp": "5.6",
+      "rel": "data/processed/detector_output_pit_full_9t.gpkg",
+      "state": "held (5.6 S0 output)",
+      "schema": {
+        "site_id": "str",
+        "score": "float 0-1",
+        "fold": "int",
+        "geometry": "Point or Polygon, EPSG:6346"
+      },
+      "id_col": "det_id"
+    },
+    "candidates_pad": {
+      "exp": "5.6",
+      "rel": "data/processed/detector_output_pad_full_9t.gpkg",
+      "state": "held (5.6 S0 output)",
+      "optional": true,
+      "schema": {
+        "site_id": "str",
+        "score": "float 0-1",
+        "fold": "int",
+        "geometry": "Point or Polygon, EPSG:6346"
+      },
+      "id_col": "det_id"
+    },
+    "proposals": {
+      "area": "9t",
+      "rel": "results/records/proposals_56_9t.csv",
+      "state": "assumed (5.6 output)",
+      "optional": true,
+      "schema": {
+        "permit": "str",
+        "site_id": "str",
+        "dist_m": "float",
+        "assoc_strength": "float",
+        "link_ppv": "float or blank"
+      }
+    },
+    "dep_wells": {
+      "key": "dep_wells",
+      "rel": "venango_wells_all.gpkg",
+      "state": "held"
+    },
+    "partner_area": {
+      "key": "data",
+      "rel": "_source/partners/co2_partner/screening_area.gpkg",
+      "state": "assumed",
+      "optional": true,
+      "schema": {
+        "name": "str",
+        "geometry": "Polygon, any CRS (reprojected)"
+      }
+    },
+    "partner_wells": {
+      "key": "data",
+      "rel": "_source/partners/co2_partner/partner_wells.csv",
+      "state": "assumed",
+      "optional": true,
+      "schema": {
+        "permit": "str",
+        "x": "float",
+        "y": "float",
+        "crs": "EPSG code column or config crs",
+        "depth_ft": "float",
+        "status": "str",
+        "plug_date": "date"
+      }
+    },
+    "target_tops": {
+      "key": "data",
+      "rel": "_source/partners/co2_partner/target_zone_tops.csv",
+      "state": "assumed",
+      "optional": true,
+      "schema": {
+        "zone": "str",
+        "top_ft": "float",
+        "base_ft": "float",
+        "datum": "str"
+      }
+    },
+    "historic": {
+      "area": "9t",
+      "rel": "results/historic/historic_symbols_9t.gpkg",
+      "state": "assumed (4.6 output)",
+      "optional": true
+    },
+    "field": {
+      "area": "9t",
+      "rel": "results/field/field_results_9t.gpkg",
+      "state": "assumed (7.5 output)",
+      "optional": true
+    }
+  },
+  "record_fields": {
+    "id": "PERMIT_NUM",
+    "status": "WELL_STATU",
+    "type": "WELL_TYPE",
+    "depth": "TOTAL_MAXI",
+    "plug_date": "DATE_PLUGG",
+    "spud_date": "SPUD_DATE",
+    "coord_source": null,
+    "storage_field": "STORAGE_FI"
+  },
+  "params": {
+    "min_ground_density_pts_m2": 2.0,
+    "max_void_frac": 0.5,
+    "canopy_height_m": 2.0,
+    "closed_canopy_share": 0.6,
+    "screen_buffer_m": 500,
+    "k_per_km2": 40,
+    "link_radius_m": 50,
+    "score_bands": [
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0001
+    ],
+    "frozen_cutoff": 0.5,
+    "sentinel_year": 1800,
+    "bootstrap_B": 2000,
+    "master_seed": 20261105,
+    "method_name": "pit/pad U-Net CV5 out-of-fold, 5.6 site resolution",
+    "method_version": "VERIFY at run time from 5.6 provenance"
+  },
+  "profiles": {
+    "co2": {
+      "name": "co2",
+      "screen_layer": "L7_screen_area",
+      "out_subdir": "",
+      "tag": "",
+      "limits": [
+        "Completeness is unknown. The inventory does not say how many wells exist.",
+        "The detector sees surface features. Wells with no surface expression are not seen.",
+        "Subsurface facts are unknown. Penetration, depth, casing, cement, plugging and integrity cannot be read from the surface.",
+        "A candidate is a possible well. Its share that are wells is unmeasured unless 7.5 Arm B reports it.",
+        "A record may be mislocated. Link proposals are not coordinate corrections.",
+        "Blind zones are listed. Candidates absent there are not evidence of absence.",
+        "Numbers on drawn features measure agreement with drawings (level a). They are not well-level recall."
+      ],
+      "banned_phrases": [
+        "complete",
+        "completeness estimate",
+        "leak",
+        "leaks",
+        "integrity",
+        "safe",
+        "risk-free",
+        "validated"
+      ],
+      "banned_on_level_a": [
+        "confirmed well",
+        "confirmed"
+      ],
+      "reader_questions": {
+        "Q_complete": {
+          "limit": 1,
+          "zero_tolerance": true,
+          "text": "Does the package say how many wells exist in the screening area?"
+        },
+        "Q_surface": {
+          "limit": 2,
+          "zero_tolerance": false,
+          "text": "Can a well with no surface expression appear as a candidate?"
+        },
+        "Q_subsurf": {
+          "limit": 3,
+          "zero_tolerance": false,
+          "text": "Does the package say whether a candidate penetrates the storage zone?"
+        },
+        "Q_cand": {
+          "limit": 4,
+          "zero_tolerance": false,
+          "text": "Is a candidate a confirmed well?"
+        },
+        "Q_record": {
+          "limit": 5,
+          "zero_tolerance": false,
+          "text": "Does a link proposal correct a record position?"
+        },
+        "Q_blind": {
+          "limit": 6,
+          "zero_tolerance": false,
+          "text": "Does an empty blind zone mean there are no wells there?"
+        }
+      },
+      "min_readers": 5,
+      "other_limits_floor": 0.8,
+      "optional_layers": []
+    }
+  }
+}

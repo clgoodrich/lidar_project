@@ -1,0 +1,36 @@
+{
+  "exp_id": "6.5",
+  "area": "9t",
+  "_note": "Field methane screening. Concentration, not flux. Every instrument value is assumed and tagged VERIFY (fw_6_5 section 4A).",
+  "inputs": {
+    "sheet": {"area": "9t", "rel": "source/field_methane/field_methane_sheet_9t.csv", "state": "assumed (crews fill it in 7.5)"},
+    "sites": {"area": "9t", "rel": "results/field/field_sites_9t.csv", "state": "assumed (7.5 output)", "optional": true,
+              "schema": {"site_id": "str", "identity_status": "confirmed well|definite non-well|ambiguous", "era_stratum": "str"}}
+  },
+  "outputs": {"results": {"area": "9t", "rel": "results/field"}},
+  "instruments": {
+    "point_sampler_assumed": {"type": "point", "units": "ppm", "detection_limit": 1.0, "span_gas_ppm": 100.0,
+                              "zero_tol": 1.0, "span_tol_rel": 0.10, "state": "VERIFY model, serial, DL and span from the manufacturer sheet"},
+    "open_path_laser_assumed": {"type": "path", "units": "ppm_m", "detection_limit": 5.0, "span_gas_ppm": null,
+                                "zero_tol": 5.0, "span_tol_rel": 0.10, "state": "VERIFY. Path-integrated, never mixed with ppm"}
+  },
+  "protocol": {
+    "background_min_s": 300, "background_upwind_m": [20, 50], "transect_m": [1, 5, 10],
+    "positions": ["wellhead", "casing", "1", "5", "10"],
+    "wind_ms": [0.5, 8.0],
+    "stop_threshold_ppm": 5000.0,
+    "_stop_note": "10% of the methane LEL (about 5% by volume). The safety reviewer sets the final value. VERIFY",
+    "repeat_visits_min": 2
+  },
+  "sheet_schema": {
+    "required": ["site_id", "visit_id", "date", "time", "crew", "instrument_id", "reading_type", "position", "value", "units",
+                 "wind_speed_ms", "wind_dir_deg", "temp_c", "pressure_hpa"],
+    "optional": ["distance_m", "stop_reason", "notes"],
+    "reading_types": ["zero", "span", "background", "screen", "stop"],
+    "_note": "One row per reading. background rows carry distance_m upwind. screen rows carry position (wellhead, casing, 1, 5, 10)."
+  },
+  "banned_phrases": ["no leak", "not leaking", "leak-free", "leak free", "does not leak", "emission rate", "emits", "flux",
+                     "kg/h", "kg/hr", "g/h", "kg per hour", "kg per day"],
+  "required_words": ["screening"],
+  "master_seed": 20261108
+}

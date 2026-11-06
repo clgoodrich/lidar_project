@@ -1,0 +1,89 @@
+{
+  "gate": {
+    "_delta_T_note": "User decision, proposed default 1.0 K (framework section 3). Fix before T1",
+    "_proxy_note": "Pad minus matched clearing surface difference before dilution. null means not yet measured. The gate then reports only the break-even dT = delta_T / median fill",
+    "bootstrap_B": 2000,
+    "delta_T_K": 1.0,
+    "fill_share_threshold": 0.25,
+    "max_cloud_frac": 0.1,
+    "max_registration_frac_pixel": 0.5,
+    "min_usable_scenes": 15,
+    "n_offsets": 16,
+    "proxy_dT_K": null,
+    "spread_K": null
+  },
+  "n_pads": 650,
+  "routes": [
+    {
+      "independent_thermal_term": false,
+      "lidar_carries": true,
+      "route": "land cover and canopy removal",
+      "testable": true
+    },
+    {
+      "independent_thermal_term": false,
+      "lidar_carries": true,
+      "route": "slope and aspect solar loading",
+      "testable": true
+    },
+    {
+      "independent_thermal_term": true,
+      "lidar_carries": false,
+      "route": "bare gravel thermal inertia",
+      "testable": true
+    },
+    {
+      "independent_thermal_term": true,
+      "lidar_carries": false,
+      "route": "soil moisture difference",
+      "testable": true
+    },
+    {
+      "_note": "gas leaves near ground temperature, no temperature term at ordinary rates (framework T0)",
+      "independent_thermal_term": false,
+      "lidar_carries": false,
+      "route": "leaking gas at ordinary flow",
+      "testable": false
+    }
+  ],
+  "sensors": [
+    {
+      "_verify": "Native 100 m, delivered 30 m, ST_B10 scale 0.00341802 and offset 149.0 K from the Landsat Collection 2 Level 2 guide. Not yet read. VERIFY",
+      "assumed_noise_K": 1.5,
+      "delivered_pixel_m": 30.0,
+      "err_band": null,
+      "lst_band": 1,
+      "lst_offset": 149.0,
+      "lst_scale": 0.00341802,
+      "name": "landsat_tirs",
+      "native_pixel_m": 100.0,
+      "scene_index": {
+        "exp": "4.2",
+        "rel": "data/raw/scene_index_landsat_9t.csv"
+      },
+      "tiepoints": {
+        "exp": "4.2",
+        "rel": "data/raw/tiepoints_landsat_9t.csv"
+      }
+    },
+    {
+      "_verify": "About 70 m (LP DAAC ECO2LSTE.002 guide, not yet read). VERIFY",
+      "assumed_noise_K": 1.5,
+      "delivered_pixel_m": 70.0,
+      "err_band": 2,
+      "lst_band": 1,
+      "lst_offset": 0.0,
+      "lst_scale": 1.0,
+      "name": "ecostress",
+      "native_pixel_m": 70.0,
+      "scene_index": {
+        "exp": "4.2",
+        "rel": "data/raw/scene_index_ecostress_9t.csv"
+      },
+      "tiepoints": {
+        "exp": "4.2",
+        "rel": "data/raw/tiepoints_ecostress_9t.csv"
+      }
+    }
+  ]
+}

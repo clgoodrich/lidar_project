@@ -1,0 +1,29 @@
+{
+  "footprint_blocks": 115,
+  "footprint_km2": 16.171875,
+  "k_per_km2": 40,
+  "K": 647,
+  "candidates_in_footprint": 685,
+  "D_blobs": 647,
+  "D_sites": 624,
+  "sites_with_several_blobs": 23,
+  "sites_on_matched_feature": 460,
+  "K30": 485,
+  "D_sites_K30": 477,
+  "D_sites_block_bootstrap": {
+    "point": 624.0,
+    "lo": 567.0,
+    "hi": 678.0,
+    "B": 2000
+  },
+  "N_doc_records": 934,
+  "N_doc_wells": 929,
+  "merge_radius_m": 15.0,
+  "record_merge_m": 5.0,
+  "doc_statuses_exclude": [
+    "Operator Reported Not Drilled",
+    "Proposed But Never Materialized"
+  ],
+  "frame_sha256": "9123ca1b59bb4dfb6e5f02a113cb6ce1e37e8cc29e0a6acd67e232c797a83ef1",
+  "note": "D counts candidate sites (evidence level a). It is not a count of wells."
+}

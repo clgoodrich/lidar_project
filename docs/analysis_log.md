@@ -5,6 +5,47 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-05 parallel build of all 37 expansions
+
+- User directive: begin the build on all expansions at once. The lead wrote the shared toolkit `expansions/_shared/src/expkit.py` (paths, run folders, provenance, seeds, QC checks, recall at K, block bootstrap, exact intervals, calibration, decision rule). Eight build agents then wrote each group's `src/` in parallel. They wrote only inside their folders, made no notebook edits, did no GPU training, made no downloads and ran no git operations.
+- Result. 37 test files, all passing on synthetic data (about 250 tests). Each expansion has a `config_<id>.json` naming every assumed input with a VERIFY tag, a `## Build status (2026-11-05)` table in its README, and dated build decisions in `docs/decisions_<id>.md`.
+- Frameworks brought to full depth: 4.8 (147 lines), 5.4 (151), 6.5 (144). The 4.9 title had already been fixed.
+- Shared fixes by the lead.
+  - `assert_crs` accepts a compound EPSG:6346 + NAVD88 CRS.
+  - `write_provenance(name=...)`.
+  - fw_00 section 4 proposal cutoff corrected from 0.10 to the per-task sweep cutoff (pit 0.35, pad 0.525). At 0.10 blobs merge and 9t pit recall at K=40 falls from 0.909 to 0.575. Matching is greedy in score order.
+  - fw_00 sample-size figures rounded up (97, 25).
+  - New `expansions/_shared/INTERFACES.md` lists the canonical cross-expansion paths. 16 config paths repointed to it (3.1, 3.2, 3.3, 4.2, 4.3, 5.2, 6.1, 6.3).
+  - New `expansions/0_prerequisites/p1_splits_manifests/src/_split_future_csv_9t.py` flattens the split JSON to block_id, fold, role.
+  - 6.1 reads the 5.6 key `det_id`.
+  - 7.3 cutoffs set to 0.35 and 0.525.
+  - `.gitignore` rules added for heavy build outputs.
+  - 19 citations added to `literature/CITATIONS.md`, all cite-only.
+- Exploratory results on held data (level (a) unless stated). Full numbers are in each expansion README.
+  - P1. Fixed split code is deterministic across 3 processes. The historical inner roles cannot be recovered. The historical sampler leaks 19 to 36% of windows. The isolated sampler leaks 0.
+  - P2. Dry-run audit draw of 17 blocks. Not frozen.
+  - 3.0. Archival recall reproduces (pit 0.909, pad 0.803 at K=40). The isolated pad baseline repeats exactly, 0.809 [0.770, 0.847]. Reference block tables written.
+  - 3.3 step 1. Pit recall by slope tercile 0.899 / 0.934 / 0.893. Low minus high +0.006 [−0.064, +0.075]. No margin set. 9t has no pit on slope under 2°.
+  - 4.4 M0. CLOSE for small-well satellite screening. Ratio 8,000 to 16,000.
+  - 4.5. Only 3 pads were plugged between flights on 9t, against a minimum of 20. Readiness STOP.
+  - 5.5. Pad area tile ratio is 1.37 (196.1 vs 143.5 ha). The review's "about 2×" does not reproduce.
+  - 5.6. Positive control passes (active records at full-output pads, excess 0.379). Orphan or abandoned at pits is 0.053 [−0.066, 0.206].
+  - 5.3. Ranking is weight-driven. Dirichlet 5th-percentile Jaccard is 0.031.
+- **CRS and data alerts escalated to the user.**
+  - Warren 1 m derivatives on disk are EPSG:26917. The Warren LAS header is NAD83(2011) UTM 17N.
+  - The 2006 to 2008 tiles label EPSG:32128 but hold US survey feet (EPSG:2271).
+  - D20 over 9t was flown 2020-03-18 (GPS time).
+  - DEP stacks 41 wells on one lease coordinate.
+  - The McKean held tiles are B19, EPSG:6350, with median ground density 3.41/m², not about 9.
+- User decisions now blocking the confirmatory path.
+  - Freeze the P2 audit set.
+  - GPU time to train the isolated pit model (P1 S3 and S6).
+  - Name a transfer policy checkpoint.
+  - Margins Δ for every experiment.
+  - The 4.9 power-rule gain.
+  - The 7.x rule that floors G at 0.
+  - Whether outputs move to the framework paths under `data/<area>/results/` or stay in the expansion folders. Stay is the default.
+
 ## 2026-11-05 expansion projects get standard directories
 
 - User directive: every expansion project gets a formatted directory, following standard directory practice.

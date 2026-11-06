@@ -1,0 +1,12 @@
+{
+  "caliper_sd": 0.5,
+  "covariates": [
+    "slope_deg",
+    "area_m2",
+    "rough_2006_m",
+    "road_dist_m"
+  ],
+  "max_controls": 3,
+  "require_spud_before_early": true,
+  "seed": 20261105
+}

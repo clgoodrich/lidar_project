@@ -1,0 +1,47 @@
+{
+  "evidence_level": "a",
+  "exploratory": "replay oracle is the annotator's own labels",
+  "stop_rule": {
+    "stop": true,
+    "reason": "plateau under 0.01 for 2 rounds",
+    "round": 2
+  },
+  "G": {
+    "G": 0.0,
+    "G_raw": -0.004273504273504258,
+    "floored_at_zero": true,
+    "source": "R recall at the budget minus at 75% of it, frozen before the policy was scored",
+    "seeds": [
+      0,
+      1,
+      2
+    ]
+  },
+  "primary": {
+    "policy": "U",
+    "control": "R",
+    "B_star_minutes": 1800.0,
+    "diff": 0.0,
+    "lo": -9.259259259259076e-05,
+    "hi": 0.007858029287664445,
+    "G": 0.0,
+    "n_seeds": 3,
+    "n_blocks": 20,
+    "permutation_p": 1.0,
+    "bootstrap_unreliable": false,
+    "decision": "inconclusive"
+  },
+  "discovery": {
+    "missed_ht": 544.7500000000002,
+    "truth_ht": 1595.7500000000002,
+    "pool_recall": 0.6586244712517624,
+    "missed_per_hour": 1.0238095238095237,
+    "pool_recall_ci95": [
+      0.5903308775791639,
+      0.7279170189153872
+    ],
+    "n_windows": 84,
+    "note": "Horvitz-Thompson with pi from the window draw. Windows pooled over seeds in replay"
+  },
+  "H3_rankings_differ": true
+}

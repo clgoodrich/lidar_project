@@ -1,0 +1,25 @@
+{
+  "written": "2026-11-05T22:14:03",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/3_geography/3_4_gulf_texas/src/_gulf_observable_depth_audit.py",
+    "--ref-only"
+  ],
+  "params": {
+    "ring_m": 5.0,
+    "layer": "pit_inside"
+  },
+  "seeds": {},
+  "inputs": [],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_4_gulf_texas\\results\\tables\\gulf_pit_depths_ref_9t.csv",
+      "bytes": 25348,
+      "mtime": "2026-11-05T22:14:03.589127",
+      "sha256": "463762c715e95d46c9ded330e684dce5e6aea9974ab0cec381e87bd6bf90ee2f"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "readiness": {
+    "n_wells": 460,
+    "by_class": {
+      "E3": 460
+    },
+    "ready": false,
+    "rule": {
+      "min_wells": 100,
+      "min_E1": 20,
+      "min_E2": 20
+    }
+  },
+  "evidence_level": "a",
+  "era_basis": "interval",
+  "status": "descriptive_only",
+  "note": "Below the readiness gate. Counts only."
+}

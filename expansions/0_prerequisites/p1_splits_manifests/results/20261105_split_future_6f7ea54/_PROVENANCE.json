@@ -1,0 +1,38 @@
+{
+  "written": "2026-11-05T22:12:27",
+  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/0_prerequisites/p1_splits_manifests/src/_split_future_write_9t.py",
+    "--out-dir",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun"
+  ],
+  "params": {
+    "content_sha256": "95d32e9b222e6064ac7ad3f42324323b73d6238c3b7605313abd7799dc1bc02e"
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_dataset_manifest.csv",
+      "bytes": 38550,
+      "mtime": "2026-09-04T10:51:16.250295",
+      "sha256": "d630805555309d25ad3cba5d3082668c5d1a0cddc1d68edc75eb0fd421eb27e3"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pad_dataset_manifest.csv",
+      "bytes": 68911,
+      "mtime": "2026-09-04T10:52:23.665026",
+      "sha256": "2146c4a927ed6e47eb4476a8fa02f5c8e36f85528ae47e88d65a6ff5f161c999"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json",
+      "bytes": 18847,
+      "mtime": "2026-11-05T22:12:27.970050",
+      "sha256": "5084c5b96c4dd4dde2504025ba4bfbbe98b87052ce4be213aba38361d5ca1032"
+    }
+  ]
+}

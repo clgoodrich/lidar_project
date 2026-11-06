@@ -1,0 +1,48 @@
+{
+  "_note": "Assumed inputs, schemas and frozen parameters for 7.1. Paths are {key: path_for key, rel: relative}. Build agent, 2026-11-05. Edit freely.",
+  "master_seed": 20261105,
+  "channels": ["lrm_25", "lrm_5", "slope", "tpi_05", "openness_pos", "openness_neg", "roughness_11"],
+  "unet_base": 32,
+  "inputs": {
+    "feature_stack_9t": {"key": "nine_t", "rel": "features_pit_9t_05.tif", "state": "held"},
+    "labels_pit_9t": {"key": "nine_t", "rel": "labels_pit_9t_05.tif", "state": "held", "schema": "uint8 0 bg, 1 floor, 2 wall, 255 nodata"},
+    "blocks_9t": {"key": "nine_t", "rel": "blocks_unified_9t.gpkg", "state": "held", "schema": "block_id int, n_feat int, geometry"},
+    "truth": {"key": "truth", "rel": "annotations_proj.gpkg", "layer": "pit_inside", "state": "held"},
+    "split_future": {"key": "results_9t", "rel": "splits/cv_splits_future_9t_v1.json", "state": "from P1",
+                     "schema": "{\"folds\": [{\"fold\": int, \"train\": [block_id], \"val\": [block_id], \"heldout\": [block_id]}]}"},
+    "split_historical": {"key": "results_9t", "rel": "splits/cv_split_blocks_pit_9t.csv", "state": "held", "schema": "fold, role, block_id"},
+    "audit_blocks": {"key": "results_9t", "rel": "splits/audit_blocks_9t_v1.csv", "state": "from P2", "schema": "block_id, role"},
+    "corpus_windows": {"key": "expansions", "rel": "7_scale/7_1_pretraining/data/raw/ssl_corpus_windows_us.csv", "state": "assumed",
+                       "schema": "window_id, stack_path (7-band 0.5 m stack, EPSG:6346 or a projected CRS in metres), ground_ppsm, laz_glob (optional), bbox (optional X0,Y0,X1,Y1)"},
+    "corpus_exclusions": [
+      {"key": "nine_t", "rel": "blocks_unified_9t.gpkg", "what": "all of 9t"},
+      {"key": "expansions", "rel": "7_scale/7_1_pretraining/data/raw/exclude_warren_footprint.gpkg", "what": "all of Warren (assumed)"},
+      {"key": "expansions", "rel": "7_scale/7_1_pretraining/data/raw/exclude_audit_buffered.gpkg", "what": "every audit block plus buffer (from P2, assumed)"}
+    ],
+    "validated_labels": {"key": "results_9t", "rel": "confusers/validated_labels_9t.gpkg", "state": "from 6.3", "schema": "polygons, layer pit_inside, columns status in {valid, invalid, undecided}"}
+  },
+  "corpus": {"chip_px": 256, "stride_px": 192, "max_nodata_frac": 0.20, "density_bins_ppsm": [0, 4, 8, 1000], "norm_sample_chips": 400},
+  "pretrain": {
+    "patch_px": 256, "batch": 16, "epochs": 20, "lr": 1e-3, "weight_decay": 1e-4,
+    "mask": {"patch_px": 16, "ratio": 0.5, "targets": ["lrm_25", "lrm_5"],
+             "_targets_note": "the stack has no raw DEM. lrm_25 is the DEM minus its 25 m smooth, the detrended elevation. lrm_5 is local relief"},
+    "contrast": {"view1": ["slope", "roughness_11", "tpi_05"], "view2": ["lrm_25", "lrm_5", "openness_pos", "openness_neg"],
+                 "_views_note": "the stack has no hillshade or curvature. view1 is the slope and texture group, view2 the relief and openness group",
+                 "embed_dim": 32, "temperature": 0.1, "pixels_per_chip": 64, "same_window_share": 0.5},
+    "combined_weights": [1.0, 1.0],
+    "seeds": [0, 1, 2],
+    "collapse_embed_std_floor": 0.01
+  },
+  "finetune": {
+    "arms": ["A0", "A1", "A2", "A3"], "optional_arms": ["A4", "A5"], "primary_arm": null,
+    "_primary_note": "user decision, named in the preregistration before any fine-tune runs",
+    "fractions": [0.05, 0.10, 0.25, 0.50, 1.00], "primary_fraction": 0.25,
+    "seeds": [0, 1, 2], "epochs": 40, "patch_px": 256, "batch": 8, "lr": 3e-4, "samples_per_epoch": 2000,
+    "n_classes": 3, "focal_alpha": [0.25, 1.0, 0.75], "focal_gamma": 2.0, "overlap_px": 64,
+    "inner_val_share_historical": 0.15
+  },
+  "scoring": {"k_per_km2": 40.0, "B": 2000, "thr": 0.10, "min_area_m2": 4.0, "iou_thr": 0.3},
+  "G": null,
+  "_G_note": "Default G = A0 recall(f=0.50) minus A0 recall(f=0.25), read from the A0 curve and frozen before any pretrained arm is scored. The user may replace it with a reviewer-hour value",
+  "runtime_bench": {"batch_sizes": [8, 16, 32], "patch_sizes": [128, 256], "steps": 50}
+}

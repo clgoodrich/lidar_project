@@ -1,0 +1,28 @@
+{
+  "area": "warren",
+  "n_tiles": 7,
+  "crs_epsg": [
+    6346
+  ],
+  "vertical_crs": [
+    "NAVD88 height - Geoid12B (m)"
+  ],
+  "las_versions": [
+    "1.4"
+  ],
+  "point_formats": [
+    6
+  ],
+  "n_points_total": 72582994,
+  "footprint_bbox_6346": [
+    649500.0,
+    4630500.0,
+    653999.99,
+    4634999.99
+  ],
+  "ground_measured": true,
+  "merged_las": null,
+  "flight_dates": "not in headers; fetch USGS project metadata (manifest D1) into assumed.flight_dates",
+  "ground_per_m2_median": 2.4233994229953653,
+  "void_frac_05_median": 0.5024497777777778
+}

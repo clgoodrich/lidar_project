@@ -1,0 +1,31 @@
+{
+  "area": "mckean",
+  "n_tiles": 59,
+  "crs_epsg": [
+    6350
+  ],
+  "vertical_crs": [
+    "NAVD88 height - Geoid12B (meters)"
+  ],
+  "las_versions": [
+    "1.4"
+  ],
+  "point_formats": [
+    6
+  ],
+  "n_points_total": 578266944,
+  "footprint_bbox_6346": [
+    697294.5022642579,
+    4644419.536125916,
+    705723.2838766328,
+    4653402.979258728
+  ],
+  "ground_measured": true,
+  "merged_las": {
+    "path": "F:\\lidar_project\\consolidated\\lidar_all\\mckean_full.las",
+    "exists": false
+  },
+  "flight_dates": "not in headers; fetch USGS project metadata (manifest D1) into assumed.flight_dates",
+  "ground_per_m2_median": 3.406233389841321,
+  "void_frac_05_median": 0.5249754067086821
+}

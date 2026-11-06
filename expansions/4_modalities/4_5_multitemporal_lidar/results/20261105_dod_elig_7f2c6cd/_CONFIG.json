@@ -1,0 +1,12 @@
+{
+  "eligibility": {
+    "complex_link_m": 30.0,
+    "date_field": "DATE_PLUGG",
+    "min_eligible_note": "User decision for the preregistration (power). Proposed default.",
+    "min_eligible_pads": 20,
+    "sentinel_year_max": 1800,
+    "spud_field": "SPUD_DATE",
+    "well_to_pad_m": 15.0
+  },
+  "windows": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261105_dod_flight_d7d2d47\\flight_windows_9t.csv"
+}

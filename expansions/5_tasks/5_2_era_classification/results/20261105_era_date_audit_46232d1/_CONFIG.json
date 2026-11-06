@@ -1,0 +1,22 @@
+{
+  "bbox_9t": [
+    619500.0,
+    4593000.0,
+    624000.0,
+    4597500.0
+  ],
+  "dates": {
+    "audit_today": "2026-11-05",
+    "fields": {
+      "permit": "PERMIT_DAT",
+      "plug": "DATE_PLUGG",
+      "spud": "SPUD_DATE"
+    },
+    "first_oil_year": 1859,
+    "sentinels": [
+      "1800-01-01",
+      "1900-01-01"
+    ],
+    "spud_before_permit_gap_days": 365
+  }
+}
