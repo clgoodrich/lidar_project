@@ -95,14 +95,14 @@ def slide1(s) -> None:
     ps = tf.paragraphs
     set_para(ps[1], "Tile 9t in Venango County, PA. 20 km² of hardwood forest with 650 mapped well pads and "
                     "506 pits from 150 years of oil drilling.")
-    set_para(ps[3], "Pads 0.3 to 0.9 dB darker than the forest around them in HV. Pit contrast of about 0.2 dB "
-                    "between seasons. Steel wellheads 6 dB or more above their surroundings.")
+    set_para(ps[3], "Any rise or fall in HH or HV backscatter, or a drop in coherence, at pads and pits compared "
+                    "with matched forest nearby. It must be larger than the date-to-date speckle scatter.")
     set_para(ps[5], "The 24 cm L-band wave passes through much of the canopy. Clearings, water and metal change "
                     "the echo, and 12-day repeats let speckle be averaged out.")
     notes(s, "About 1 minute 40 seconds. Read the question. The site is tile 9t in Venango County, 4.5 by 4.5 km of "
-             "forest with 650 pads and 506 pits mapped from lidar. I expect small signals. A pad should read a few "
-             "tenths of a dB darker than its forest ring. A pit may change by a few tenths of a dB between leaf-off "
-             "and leaf-on. A steel wellhead could be a bright, steady point at least 6 dB above its surroundings. "
+             "forest with 650 pads and 506 pits mapped from lidar. I am not assuming a size or a sign. I am looking "
+             "for any rise or fall in backscatter, or a drop in coherence, at pads and pits compared with matched "
+             "forest nearby, larger than the scatter from one date to the next. "
              "L-band is the band most likely to reach the ground through leaves.")
 
 
