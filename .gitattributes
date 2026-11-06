@@ -40,3 +40,8 @@
 *.epub   binary
 *.zip    binary
 *.qgz    binary
+
+# Frozen split and audit files are hashed byte-for-byte (P2 review P2-02).
+# CRLF conversion on checkout would break the frozen sha256, so never convert them.
+data/*/results/splits/** -text
+*.sha256 -text
