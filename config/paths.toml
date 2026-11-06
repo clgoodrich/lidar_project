@@ -76,6 +76,7 @@ results       = "data/_results"                      # shared results only
 # repo-level
 literature    = "literature"
 docs          = "docs"
+expansions    = "expansions"                         # one folder per expansion project, see expansions/README.md
 ledgers       = "docs/_ledgers"
 figures       = "docs/figures"
 qgis          = "qgis"

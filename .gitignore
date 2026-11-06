@@ -206,3 +206,11 @@ data/warren/derived/nisar_features_5m/
 
 # bulk lidar tiles fetched by _fetch_lidar_windows_us.py (regenerable, up to ~129 GB)
 data/_source/lidar/lidar_us_windows/
+
+# Expansion projects (2026-11-05). Docs, src and small results are tracked.
+# data/ and models/ contents are never tracked; .gitkeep keeps the skeleton.
+expansions/*/*/data/**
+expansions/*/*/models/**
+!expansions/*/*/data/**/
+!expansions/*/*/models/**/
+!expansions/**/.gitkeep

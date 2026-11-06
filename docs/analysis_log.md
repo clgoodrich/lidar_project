@@ -5,6 +5,18 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-05 expansion projects get standard directories
+
+- User directive: every expansion project gets a formatted directory, following standard directory practice.
+- New top-level `expansions/`, grouped by section (`0_prerequisites`, `3_geography`, `4_modalities`, `5_tasks`, `6_adjacent`, `7_scale`). One folder per expansion, 37 in all, named `<id>_<slug>`.
+- Same skeleton in every folder. `README.md`, `docs/` (plan, framework, `decisions_<id>.md`), `src/`, `data/{raw,interim,processed}/`, `models/`, `results/{figures,tables}/`. The `data/` and `models/` contents are gitignored, and `.gitkeep` files keep the empty folders.
+- 76 files moved with `tools/apply_moves.py` (phase `expansions`, ledger `docs/_ledgers/expansions_moves.csv`, logged in `docs/MOVES.csv`). Undo with `python tools/apply_moves.py --undo --phase expansions`.
+- `docs/plans/frameworks/README.md` moved to `expansions/README.md`. `fw_00_common.md` moved to `expansions/_shared/`. Program-level documents stay in `docs/plans/` (master plan, protocol, reviews, download lists).
+- Links were rewritten by `tools/scaffold_expansions.py links`. 314 relative links checked, 0 broken. The 63 `C:/...:line` links in `adversarial_codex_review_20261104.md` used that form before the move and now point at the new paths.
+- New `config/paths.toml` key `expansions`. `STRUCTURE.md` and `docs/plans/README.md` point to the new folder.
+- Gate E (`tools/verify_no_path_literals.py`) fails on older untracked notebook scripts (`_pit_void_block_scan_9t.py`, `_infer_pit_pad_613590_05.py` and others). None of the failures come from this change.
+- The log entries above this one cite `docs/plans/frameworks/` and `docs/plans/plan_*` paths. They are left unchanged because the log is append-only. `docs/MOVES.csv` maps old paths to new.
+
 ## 2026-11-05 recheck of this session's work
 - Split fix re-tested with the trainers' own `assign_folds` and fold loop. Old code over 12 fresh processes gave 5 different inner splits, none equal to the logged run (logged inner-val pits 85, 71, 64, 73, 66). New code gave one split in every run (pit inner-val pits 74, 61, 68, 76, 56). Both trainers. So any rerun will differ from the logged checkpoints in inner val, as recorded.
 - Frameworks. Checked every path the 21 rewritten frameworks mark as held. Two were wrong. The isolated pad model directory is `data/9t/models/pad/unet_cv5_iso/`, not `unet_iso_cv5/` (fixed in fw_3_6, fw_3_7, fw_7_3). No isolated pit model exists yet (P1), fw_7_3 had it as held (fixed). Confirmed from the repo: pad 197.95 ha vs about 110 ha (LEADERBOARD.md:317, tile-level and from the ann527-era sweep), empty land-cover folders, WV Pleasants 42-tile D19 window.

@@ -63,6 +63,7 @@ lidar_project/
 │   └── grids/              per-grid QGIS projects
 │
 ├── notebooks/wellsight_v2/ UNCHANGED — parents[N] depth is load-bearing
+├── expansions/            ONE FOLDER PER EXPANSION PROJECT (expansions/README.md)
 ├── docs/  literature/  tools/  tests/  ui/  roads_studio/  archive/  personal/
 ```
 

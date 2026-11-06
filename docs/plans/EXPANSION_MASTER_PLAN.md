@@ -21,7 +21,7 @@ The central unknown sits under all four. Whether a drawn feature is a well. On 9
 | [download_manifest.md](download_manifest.md) | Everything to download or request, with gates |
 | [download_list_areas_and_lidar.md](download_list_areas_and_lidar.md) | Areas with many old wells, well databases fetched, tile-level lidar lists |
 | [README.md](README.md) | Index of the plan files and shared rules |
-| [frameworks/README.md](frameworks/README.md) | **One execution framework per process** (37 plus a common one). Stages, scripts, paths, statistics, QC, gates, handoff |
+| [frameworks/README.md](../../expansions/README.md) | **One execution framework per process** (37 plus a common one). Stages, scripts, paths, statistics, QC, gates, handoff |
 | 37 plan files | One per idea. Review revision blocks at the end of 23 of them match the edited text above them |
 | `docs/iterations/expansion_options_methods.md`, `expansion_gameplan_feasibility.md` | Older source documents. Superseded in part by the protocol |
 | [adversarial_codex_review_20261104.md](adversarial_codex_review_20261104.md), [adversarial_review_claude.md](adversarial_review_claude.md) | The two reviews |
@@ -29,43 +29,43 @@ The central unknown sits under all four. Whether a drawn feature is a well. On 9
 ## 3. Every idea
 | ID | Idea | Track | Decision | Data or requests | Plan |
 |---|---|---|---|---|---|
-| P1 | Reproducible splits and manifests | Foundation | Proceed, rescoped | None | [plan_prereq_splits_manifests.md](plan_prereq_splits_manifests.md) |
-| P2 | Audit set and training history | Foundation | Proceed, rescoped | None | [plan_prereq_audit_set.md](plan_prereq_audit_set.md) |
-| 3.0 | Transfer protocol | Transfer | Bounded pilot | None. Uses the sweep's own tables, then a clean baseline | [plan_geo_transfer_protocol.md](plan_geo_transfer_protocol.md) |
-| 3.1 | Warren and Forest | Transfer | Redesign as within-survey case study | Warren on disk. D1 metadata. Forest D20 window listed. B19 gated | [plan_geo_warren_forest.md](plan_geo_warren_forest.md) |
-| 3.2 | Ohio, West Virginia, New York, Kentucky | Transfer | Defer | Windows listed (NY, OH, KY, WV) | [plan_geo_appalachian_states.md](plan_geo_appalachian_states.md) |
-| 3.3 | Illinois and Michigan, low relief | Model | Redesign, slope stratification first | IL and MI windows listed, gated | [plan_geo_low_relief_midwest.md](plan_geo_low_relief_midwest.md) |
-| 3.4 | Gulf and Texas | Transfer | Defer | LA, TX, AR windows listed, gated | [plan_geo_gulf_east_texas.md](plan_geo_gulf_east_texas.md) |
-| 3.5 | Oklahoma and Kansas | Transfer | Defer | OK, KS, MO windows listed, gated | [plan_geo_oklahoma_kansas.md](plan_geo_oklahoma_kansas.md) |
-| 3.6 | California | Transfer | Defer | LA window listed | [plan_geo_california.md](plan_geo_california.md) |
-| 3.7 | Canada | Transfer | Defer | Not listed. Inventory first | [plan_geo_canada.md](plan_geo_canada.md) |
-| 3.8 | Alaska | Transfer | Defer | Not listed. Feasibility note first | [plan_geo_alaska.md](plan_geo_alaska.md) |
-| 4.1 | Magnetometry | Evidence about wells | Redesign, then pilot | R3 instrument. Era strata | [plan_mod_magnetometry.md](plan_mod_magnetometry.md) |
-| 4.2 | Thermal | Modality | Defer | None until observability gate | [plan_mod_thermal.md](plan_mod_thermal.md) |
-| 4.3 | Vegetation stress | Modality | Defer | None | [plan_mod_vegetation_stress.md](plan_mod_vegetation_stress.md) |
-| 4.4 | Methane plumes | Modality | Close for Pennsylvania after one check | D4 product guide | [plan_mod_methane_plumes.md](plan_mod_methane_plumes.md) |
-| 4.5 | Multitemporal lidar | Evidence about wells | Blocked | D1 flight dates, R7 restoration records | [plan_mod_multitemporal_lidar.md](plan_mod_multitemporal_lidar.md) |
-| 4.6 | Historic maps and aerials | Evidence about wells | Proceed as a probe, elevated | D5 to D9 | [plan_mod_historic_maps_aerials.md](plan_mod_historic_maps_aerials.md) |
-| 4.7 | Drone lidar | Evidence about wells | Proceed as a request | R2, D12 (size unknown) | [plan_mod_drone_lidar.md](plan_mod_drone_lidar.md) |
-| 4.8 | Leaf-off optical | Modality | Bounded pilot | D7, D10 gated | [plan_mod_leafoff_optical.md](plan_mod_leafoff_optical.md) |
-| 4.9 | More radar | Modality | Note only | None | [plan_mod_more_radar.md](plan_mod_more_radar.md) |
-| 5.1 | Context features | Model | Redesign, shared fold scheme | None. Retrain upstream | [plan_task_context_features.md](plan_task_context_features.md) |
-| 5.2 | Era classification | Task | Blocked | Needs 4.6 | [plan_task_era_classification.md](plan_task_era_classification.md) |
-| 5.3 | Risk ranking | Task | Defer | None | [plan_task_risk_ranking.md](plan_task_risk_ranking.md) |
-| 5.4 | Undocumented density | Task | Identifiability note only | R1 | [plan_task_undocumented_density.md](plan_task_undocumented_density.md) |
-| 5.5 | Polygon area and cost | Task | Defer | None | [plan_task_polygon_area_cost.md](plan_task_polygon_area_cost.md) |
-| 5.6 | Record association | Evidence about wells | Redesign, repair the input first | Well databases held. R1, R4 | [plan_task_record_association.md](plan_task_record_association.md) |
-| 6.1 | CO2 and geothermal screening | Adjacent | Defer | None | [plan_adj_co2_geothermal.md](plan_adj_co2_geothermal.md) |
-| 6.2 | Coal features | Adjacent | Defer | None | [plan_adj_coal_features.md](plan_adj_coal_features.md) |
-| 6.3 | Confuser classes | Model | Redesign, then pilot | R6 reviewers | [plan_adj_negative_classes.md](plan_adj_negative_classes.md) |
-| 6.4 | Hydrogen | Adjacent | Defer | None | [plan_adj_hydrogen.md](plan_adj_hydrogen.md) |
-| 6.5 | Field methane | Evidence about wells | Protocol only, with 7.5 | Instrument | [plan_adj_field_methane.md](plan_adj_field_methane.md) |
-| 6.6 | Search and rescue viewshed | Adjacent | Defer, separate project | None | [plan_adj_sar_viewshed.md](plan_adj_sar_viewshed.md) |
-| 7.1 | Self-supervised pretraining | Scale | Defer | None | [plan_scale_pretraining.md](plan_scale_pretraining.md) |
-| 7.2 | Active learning | Scale | Redesign, then defer | R6 | [plan_scale_active_learning.md](plan_scale_active_learning.md) |
-| 7.3 | Benchmark | Scale | Defer | None | [plan_scale_benchmark.md](plan_scale_benchmark.md) |
-| 7.4 | Agency tooling | Scale | Defer | None | [plan_scale_agency_tooling.md](plan_scale_agency_tooling.md) |
-| 7.5 | Field campaign | Evidence about wells | Redesign, highest value | R3, R4, a partner | [plan_scale_field_campaign.md](plan_scale_field_campaign.md) |
+| P1 | Reproducible splits and manifests | Foundation | Proceed, rescoped | None | [plan_prereq_splits_manifests.md](../../expansions/0_prerequisites/p1_splits_manifests/docs/plan_prereq_splits_manifests.md) |
+| P2 | Audit set and training history | Foundation | Proceed, rescoped | None | [plan_prereq_audit_set.md](../../expansions/0_prerequisites/p2_audit_set/docs/plan_prereq_audit_set.md) |
+| 3.0 | Transfer protocol | Transfer | Bounded pilot | None. Uses the sweep's own tables, then a clean baseline | [plan_geo_transfer_protocol.md](../../expansions/3_geography/3_0_transfer_protocol/docs/plan_geo_transfer_protocol.md) |
+| 3.1 | Warren and Forest | Transfer | Redesign as within-survey case study | Warren on disk. D1 metadata. Forest D20 window listed. B19 gated | [plan_geo_warren_forest.md](../../expansions/3_geography/3_1_warren_forest_mckean/docs/plan_geo_warren_forest.md) |
+| 3.2 | Ohio, West Virginia, New York, Kentucky | Transfer | Defer | Windows listed (NY, OH, KY, WV) | [plan_geo_appalachian_states.md](../../expansions/3_geography/3_2_appalachian_states/docs/plan_geo_appalachian_states.md) |
+| 3.3 | Illinois and Michigan, low relief | Model | Redesign, slope stratification first | IL and MI windows listed, gated | [plan_geo_low_relief_midwest.md](../../expansions/3_geography/3_3_low_relief_slope/docs/plan_geo_low_relief_midwest.md) |
+| 3.4 | Gulf and Texas | Transfer | Defer | LA, TX, AR windows listed, gated | [plan_geo_gulf_east_texas.md](../../expansions/3_geography/3_4_gulf_texas/docs/plan_geo_gulf_east_texas.md) |
+| 3.5 | Oklahoma and Kansas | Transfer | Defer | OK, KS, MO windows listed, gated | [plan_geo_oklahoma_kansas.md](../../expansions/3_geography/3_5_oklahoma_kansas/docs/plan_geo_oklahoma_kansas.md) |
+| 3.6 | California | Transfer | Defer | LA window listed | [plan_geo_california.md](../../expansions/3_geography/3_6_california/docs/plan_geo_california.md) |
+| 3.7 | Canada | Transfer | Defer | Not listed. Inventory first | [plan_geo_canada.md](../../expansions/3_geography/3_7_canada/docs/plan_geo_canada.md) |
+| 3.8 | Alaska | Transfer | Defer | Not listed. Feasibility note first | [plan_geo_alaska.md](../../expansions/3_geography/3_8_alaska/docs/plan_geo_alaska.md) |
+| 4.1 | Magnetometry | Evidence about wells | Redesign, then pilot | R3 instrument. Era strata | [plan_mod_magnetometry.md](../../expansions/4_modalities/4_1_magnetometry/docs/plan_mod_magnetometry.md) |
+| 4.2 | Thermal | Modality | Defer | None until observability gate | [plan_mod_thermal.md](../../expansions/4_modalities/4_2_thermal/docs/plan_mod_thermal.md) |
+| 4.3 | Vegetation stress | Modality | Defer | None | [plan_mod_vegetation_stress.md](../../expansions/4_modalities/4_3_vegetation_stress/docs/plan_mod_vegetation_stress.md) |
+| 4.4 | Methane plumes | Modality | Close for Pennsylvania after one check | D4 product guide | [plan_mod_methane_plumes.md](../../expansions/4_modalities/4_4_methane_plumes/docs/plan_mod_methane_plumes.md) |
+| 4.5 | Multitemporal lidar | Evidence about wells | Blocked | D1 flight dates, R7 restoration records | [plan_mod_multitemporal_lidar.md](../../expansions/4_modalities/4_5_multitemporal_lidar/docs/plan_mod_multitemporal_lidar.md) |
+| 4.6 | Historic maps and aerials | Evidence about wells | Proceed as a probe, elevated | D5 to D9 | [plan_mod_historic_maps_aerials.md](../../expansions/4_modalities/4_6_historic_maps_aerials/docs/plan_mod_historic_maps_aerials.md) |
+| 4.7 | Drone lidar | Evidence about wells | Proceed as a request | R2, D12 (size unknown) | [plan_mod_drone_lidar.md](../../expansions/4_modalities/4_7_drone_lidar/docs/plan_mod_drone_lidar.md) |
+| 4.8 | Leaf-off optical | Modality | Bounded pilot | D7, D10 gated | [plan_mod_leafoff_optical.md](../../expansions/4_modalities/4_8_leafoff_optical/docs/plan_mod_leafoff_optical.md) |
+| 4.9 | More radar | Modality | Note only | None | [plan_mod_more_radar.md](../../expansions/4_modalities/4_9_more_radar/docs/plan_mod_more_radar.md) |
+| 5.1 | Context features | Model | Redesign, shared fold scheme | None. Retrain upstream | [plan_task_context_features.md](../../expansions/5_tasks/5_1_context_features/docs/plan_task_context_features.md) |
+| 5.2 | Era classification | Task | Blocked | Needs 4.6 | [plan_task_era_classification.md](../../expansions/5_tasks/5_2_era_classification/docs/plan_task_era_classification.md) |
+| 5.3 | Risk ranking | Task | Defer | None | [plan_task_risk_ranking.md](../../expansions/5_tasks/5_3_risk_ranking/docs/plan_task_risk_ranking.md) |
+| 5.4 | Undocumented density | Task | Identifiability note only | R1 | [plan_task_undocumented_density.md](../../expansions/5_tasks/5_4_undocumented_density/docs/plan_task_undocumented_density.md) |
+| 5.5 | Polygon area and cost | Task | Defer | None | [plan_task_polygon_area_cost.md](../../expansions/5_tasks/5_5_polygon_area_cost/docs/plan_task_polygon_area_cost.md) |
+| 5.6 | Record association | Evidence about wells | Redesign, repair the input first | Well databases held. R1, R4 | [plan_task_record_association.md](../../expansions/5_tasks/5_6_record_association/docs/plan_task_record_association.md) |
+| 6.1 | CO2 and geothermal screening | Adjacent | Defer | None | [plan_adj_co2_geothermal.md](../../expansions/6_adjacent/6_1_co2_geothermal/docs/plan_adj_co2_geothermal.md) |
+| 6.2 | Coal features | Adjacent | Defer | None | [plan_adj_coal_features.md](../../expansions/6_adjacent/6_2_coal_features/docs/plan_adj_coal_features.md) |
+| 6.3 | Confuser classes | Model | Redesign, then pilot | R6 reviewers | [plan_adj_negative_classes.md](../../expansions/6_adjacent/6_3_confuser_classes/docs/plan_adj_negative_classes.md) |
+| 6.4 | Hydrogen | Adjacent | Defer | None | [plan_adj_hydrogen.md](../../expansions/6_adjacent/6_4_hydrogen/docs/plan_adj_hydrogen.md) |
+| 6.5 | Field methane | Evidence about wells | Protocol only, with 7.5 | Instrument | [plan_adj_field_methane.md](../../expansions/6_adjacent/6_5_field_methane/docs/plan_adj_field_methane.md) |
+| 6.6 | Search and rescue viewshed | Adjacent | Defer, separate project | None | [plan_adj_sar_viewshed.md](../../expansions/6_adjacent/6_6_sar_viewshed/docs/plan_adj_sar_viewshed.md) |
+| 7.1 | Self-supervised pretraining | Scale | Defer | None | [plan_scale_pretraining.md](../../expansions/7_scale/7_1_pretraining/docs/plan_scale_pretraining.md) |
+| 7.2 | Active learning | Scale | Redesign, then defer | R6 | [plan_scale_active_learning.md](../../expansions/7_scale/7_2_active_learning/docs/plan_scale_active_learning.md) |
+| 7.3 | Benchmark | Scale | Defer | None | [plan_scale_benchmark.md](../../expansions/7_scale/7_3_benchmark/docs/plan_scale_benchmark.md) |
+| 7.4 | Agency tooling | Scale | Defer | None | [plan_scale_agency_tooling.md](../../expansions/7_scale/7_4_agency_tooling/docs/plan_scale_agency_tooling.md) |
+| 7.5 | Field campaign | Evidence about wells | Redesign, highest value | R3, R4, a partner | [plan_scale_field_campaign.md](../../expansions/7_scale/7_5_field_campaign/docs/plan_scale_field_campaign.md) |
 
 ## 3b. Review verdicts (third review, 2026-11-04)
 Where this table and the Decision column in section 3 differ, this table wins. Verdict is the strongest defensible next scope, not authority to execute. A bounded pilot shows feasibility or local evidence, not population validation. Source. `adversarial_codex_review_revised_20261104.md` coverage table, checked in `review_response_20261104.md` section 8.
