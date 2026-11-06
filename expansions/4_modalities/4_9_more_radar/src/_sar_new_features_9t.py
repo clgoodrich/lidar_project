@@ -12,6 +12,10 @@ Purpose. Two steps, either alone.
                20 to 60 m ring. Add mean coherence when a coherence stack exists, and H, alpha and the Pauli
                diagonal (T11, T22, T33 in dB) when a T3 file exists. Then sample every band on each row as the
                median inside a disc of the target radius, so decoys get the same footprint size as targets.
+Frozen rows. --rows-only writes a stamp <rows>.frozen.json (sha256 of the non-arm columns). It refuses to replace an
+existing rows file whose frozen part differs. The feature step checks the stamp before it adds arm columns and refuses
+on a mismatch. A rows file with no stamp is adopted only when it matches its --rows-only provenance hash, or when the
+user passes --adopt-frozen for rows they have checked.
 The feature list is frozen here. Feature sets are never chosen on the scoring blocks.
 Inputs.
   data/9t/derived/nisar_features_5m/nisar_<target>_samples_9t_slc*.npz (held, --rows-only)
@@ -201,19 +205,32 @@ def main(argv=None) -> int:
     ap.add_argument("--rows", default=None)
     ap.add_argument("--stack-dir", default=None)
     ap.add_argument("--features-out", default=None)
+    ap.add_argument("--adopt-frozen", action="store_true", help="stamp an existing rows file (no arm columns) as frozen")
     a = ap.parse_args(argv)
     rows_p = Path(a.rows) if a.rows else sk.ek.exp_dir("4.9") / "data" / "processed" / f"sar_rows_{a.target}_9t.csv"
+    if a.adopt_frozen:
+        df = pd.read_csv(sk.need(rows_p, "rows to stamp"))
+        if any(c.startswith("arm:") for c in df.columns):
+            raise ValueError("--adopt-frozen needs rows with no arm columns")
+        print(sk.write_stamp(rows_p, df))
+        return 0
     if a.rows_only:
         df = rows_from_nisar(a.target)
         sk.ek.assert_no_nan(df.block, "block")
         rows_p.parent.mkdir(parents=True, exist_ok=True)
+        if rows_p.exists():
+            old = pd.read_csv(rows_p)
+            if sk.frozen_hash(old) != sk.frozen_hash(df):
+                raise RuntimeError(f"{rows_p} exists and its frozen rows differ from the rebuilt ones. Refusing to overwrite.")
         df.to_csv(rows_p, index=False)
+        sk.write_stamp(rows_p, df)
         sk.prov(rows_p.parent, f"sar_rows_{a.target}", outputs=[rows_p], params={"n": len(df), "n_targets": int(df.y.sum())})
         print(rows_p, len(df), "rows,", int(df.y.sum()), "targets")
         return 0
     if not a.arm:
         raise ValueError("--arm is needed unless --rows-only")
     df = pd.read_csv(sk.need(rows_p, "frozen scoring rows (run with --rows-only first)"))
+    h0 = sk.check_frozen(rows_p, df)
     sd = Path(a.stack_dir) if a.stack_dir else sk.resolve(cfg["outputs"]["features"], arm=a.arm)
     bands, tf, res = build_features(sd, a.arm, cfg)
     fo = Path(a.features_out) if a.features_out else sk.resolve(cfg["outputs"]["features"], arm=a.arm) / f"sar_{a.arm}_features_9t.tif"
@@ -222,6 +239,8 @@ def main(argv=None) -> int:
     smp.columns = [f"arm:{a.arm}:{c}" for c in smp.columns]
     df = pd.concat([df.drop(columns=[c for c in df if c.startswith(f"arm:{a.arm}:")]), smp], axis=1)
     sk.ek.assert_rows(df, len(smp), "rows after sampling")
+    if sk.frozen_hash(df) != h0:
+        raise RuntimeError("sampling changed the frozen columns. Refusing to write")
     df.to_csv(rows_p, index=False)
     sk.prov(fo.parent, f"sar_new_features_{a.arm}", inputs=sorted(sd.glob(f"sar_{a.arm}_*_9t.tif")), outputs=[fo, rows_p],
             params={"arm": cfg["arms"][a.arm], "features": cfg["features"], "native_res_m": res, "bands": list(bands)})

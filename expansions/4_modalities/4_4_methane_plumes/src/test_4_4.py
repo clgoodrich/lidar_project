@@ -41,15 +41,76 @@ def test_m0_arithmetic_and_close(tmp_path):
     assert r["png"].exists() and (r["run_dir"] / "_PROVENANCE.json").exists()
 
 
-def test_m0_tail_fit_runs(tmp_path):
+def _rates_csv(tmp: Path, rates_kg_h: np.ndarray) -> Path:
+    p = tmp / "rates.csv"
+    pd.DataFrame({"well_id": range(len(rates_kg_h)), "rate_kg_per_day": rates_kg_h * 24}).to_csv(p, index=False)
+    return p
+
+
+def test_tail_refuses_extrapolation_4_4_01(tmp_path):
+    """4.4-01. Largest rate 0.092 kg/h against a 9 kg/h limit. The pre-fix gate said success."""
     rng = np.random.default_rng(0)
-    rates = pd.DataFrame({"well_id": range(19), "rate_kg_per_day": np.exp(rng.normal(-4, 3, 19))})
-    p = tmp_path / "rates.csv"
-    rates.to_csv(p, index=False)
-    r = M0.run(_cfg(tmp_path), out_root=tmp_path, dep_count=False, rates_csv=p)
-    tail = r["result"]["instruments"][0]["tail_fit"]
-    assert 0 <= tail["lognormal"]["p_exceed"] <= 1 and tail["n_wells_used"] == 19
-    assert r["result"]["instruments"][0]["gates"]["tail"]["verdict"] in ("success", "failure", "inconclusive")
+    r = np.exp(rng.normal(np.log(0.01), 1.0, 19))
+    r = r / r.max() * 0.092
+    res = M0.run(_cfg(tmp_path), out_root=tmp_path, dep_count=False, rates_csv=_rates_csv(tmp_path, r))
+    inst = res["result"]["instruments"][0]
+    g = inst["gates"]["tail"]
+    assert g["verdict"] == M0.NOT_IDENTIFIABLE
+    assert g["extrapolation_multiple"] == pytest.approx(9.0 / 0.092)
+    assert inst["verdict"]["small_well_attribution"] == "CLOSE"        # mean and aggregation still fail
+    # A declared multiple wide enough to allow it. The lower bound of the expected count is far below one well,
+    # so the old always-true 'lo > 0' check must not turn this into success.
+    t = inst["tail_fit"]
+    g2 = M0.gate_tail(t, None, 9.0, res["result"]["population"], max_extrapolation=1000.0)
+    lo_count = min(t["lognormal"]["lo"], t["loglogistic"]["lo"]) * max(res["result"]["population"].values())
+    assert lo_count < 1 and g2["verdict"] == "inconclusive"
+
+
+def test_tail_success_inside_data(tmp_path):
+    """Limit inside the observed range and about half the wells above it. The expected count is huge."""
+    r = np.geomspace(1.0, 100.0, 19)            # kg/h. threshold 9 kg/h sits inside the data
+    res = M0.run(_cfg(tmp_path), out_root=tmp_path, dep_count=False, rates_csv=_rates_csv(tmp_path, r))
+    g = res["result"]["instruments"][0]["gates"]["tail"]
+    assert g["extrapolation_multiple"] == pytest.approx(0.09)
+    assert g["verdict"] == "success"
+
+
+def test_tail_counts_failed_fits(monkeypatch):
+    """SH-01. A failed log-logistic fit in some draws must make that interval undefined, not be dropped."""
+    from scipy import stats
+    real, calls = stats.fisk.fit, {"n": 0}
+
+    def flaky(*a, **k):
+        calls["n"] += 1
+        if calls["n"] % 3 == 0:
+            raise RuntimeError("no convergence")
+        return real(*a, **k)
+    monkeypatch.setattr(stats.fisk, "fit", flaky)
+    t = M0.fit_tail(np.geomspace(1.0, 100.0, 19), 9.0, 30, 1)
+    assert t["loglogistic"]["undefined_share"] == pytest.approx(10 / 30)
+    assert np.isnan(t["loglogistic"]["lo"]) and np.isnan(t["loglogistic"]["hi"])
+    g = M0.gate_tail(t, None, 9.0, {"high": 970000})
+    assert g["verdict"] == "inconclusive"
+
+
+def test_rate_ratio_separation_is_inconclusive():
+    """Quasi-separation. Controls have no sources. The pre-fix Poisson fit returned a huge finite ratio."""
+    rows = []
+    for c in range(20):
+        rows.append((0.0, 0.0, 1, c, 5, 1.0 if c < 10 else 0.0))
+        rows.append((0.0, 0.0, 0, c, 5, 0.0))
+    P = pd.DataFrame(rows, columns=["x", "y_m", "is_well", "cell_id", "n_searched", "y"])
+    rr = M3.rate_ratio(P, 200, 1)
+    assert rr["separation"] and np.isnan(rr["lo"]) and np.isnan(rr["hi"])
+    assert ek_decide(rr) == "inconclusive"
+    ex = rr["exact_conditional"]                 # k = n = 10, equal exposure. lower p = 0.025 ** (1 / 10)
+    p_lo = 0.025 ** 0.1
+    assert ex["lo"] == pytest.approx(p_lo / (1 - p_lo)) and ex["hi"] == float("inf")
+
+
+def ek_decide(rr):
+    from _methane_shared_io import ek
+    return ek.decide(rr["lo"], rr["hi"], 2.0, "superiority")
 
 
 def test_wells_per_footprint_drops_stacked_records():

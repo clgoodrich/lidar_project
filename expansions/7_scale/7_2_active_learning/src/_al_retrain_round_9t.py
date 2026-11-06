@@ -3,7 +3,13 @@
 Purpose
     For one policy, gather every label it has acquired up to this round. Burn kept candidates and added
     features as pit floor (1), and rejected candidates as background (0), the hard negatives of the road
-    loop. Unsure items become ignore (255). Start from the base label raster outside the stopping set.
+    loop. Unsure items become ignore (255).
+    Review 7.2-02. The training raster starts as ignore (255) everywhere. Base labels are copied only inside
+    the declared seed blocks (config seed_label_blocks, a user decision; null refuses, [] means acquired
+    labels only). A discovery window this policy acquired is background (0) inside its block, plus the
+    features the reviewer drew there. Added features are kept per arm. An added feature counts for this
+    policy only when its centroid lies in a window this policy acquired in that round. Others are counted
+    as unattributed in the manifest and burned for no arm.
     Stopping and audit blocks are set to ignore everywhere and asserted absent from every training list.
     Write per-item inverse-probability weights (1 / pi, self-normalised, clipped at the 95th percentile,
     and an unclipped sensitivity file). Then run the trainer command from config_7_2.json with the
@@ -54,20 +60,49 @@ def gather(live: Path, policy: str, upto: int) -> pd.DataFrame:
     return pd.concat(rows, ignore_index=True)
 
 
-def burn_labels(base_lbl: Path, items_geo, lab: pd.DataFrame, added_geoms, blocks, forbidden: set, out: Path) -> dict:
+def added_for_policy(live: Path, policy: str, upto: int, items_geo, lab: pd.DataFrame):
+    """Review 7.2-02 minor. Added reviewer features of every round diff, kept only when the centroid lies in
+    a discovery window this policy acquired in that round. Returns (geoms, n_unattributed)."""
+    import geopandas as gpd
+    import pyogrio
+    g = items_geo.set_index("item_id")
+    keep, n_other = [], 0
+    for r in range(1, upto + 1):
+        dp = live / f"round_{r:02d}" / "review" / f"corrections_diff_pits_al_r{r:02d}.gpkg"
+        if not dp.exists() or "added" not in {n for n, _ in pyogrio.list_layers(str(dp))}:
+            continue
+        add = gpd.read_file(dp, layer="added")
+        wins = lab.loc[(lab["round"] == r) & lab["item_id"].astype(str).str.startswith("W"), "item_id"]
+        polys = [g.loc[i, "geometry"] for i in wins]
+        for geom in add.geometry:
+            if any(geom.centroid.within(pg) for pg in polys):
+                keep.append(geom)
+            else:
+                n_other += 1
+    return keep, n_other
+
+
+def burn_labels(base_lbl: Path, items_geo, lab: pd.DataFrame, added_geoms, blocks, forbidden: set, out: Path,
+                seed_blocks: set | None = None) -> dict:
+    """Ignore (255) everywhere, then base labels in the seed blocks only, then this policy's acquired labels."""
     import rasterio
     from rasterio.features import rasterize
     with rasterio.open(base_lbl) as r:
         ek.assert_crs(r, "EPSG:6346")
-        lbl, prof, tf = r.read(1), r.profile, r.transform
+        base, prof, tf = r.read(1), r.profile, r.transform
+    lbl = np.full_like(base, 255)
     g = items_geo.set_index("item_id")
-    def burn(geoms, val):
+    def burn(geoms, val, src=None):
         if len(geoms):
             m = rasterize([(x, 1) for x in geoms], out_shape=lbl.shape, transform=tf, fill=0).astype(bool)
-            lbl[m] = val
+            lbl[m] = val if src is None else src[m]
             return int(m.sum())
         return 0
-    n = {"reject_px": burn([g.loc[i, "geometry"] for i in lab.loc[lab["status"] == "reject", "item_id"]], 0),
+    sb = blocks[blocks["block_id"].isin(seed_blocks or set())]
+    wins = [g.loc[i, "geometry"] for i in lab.loc[lab["item_id"].astype(str).str.startswith("W"), "item_id"]]
+    n = {"seed_px": burn(list(sb.geometry), None, base),
+         "window_bg_px": burn(wins, 0),
+         "reject_px": burn([g.loc[i, "geometry"] for i in lab.loc[lab["status"] == "reject", "item_id"]], 0),
          "keep_px": burn([g.loc[i, "geometry"] for i in lab.loc[lab["status"] == "keep", "item_id"]], 1),
          "added_px": burn(list(added_geoms), 1),
          "unsure_px": burn([g.loc[i, "geometry"] for i in lab.loc[lab["status"] == "unsure", "item_id"]], 255)}
@@ -101,27 +136,31 @@ def main(argv=None) -> int:
     except FileNotFoundError as e:
         print(e, file=sys.stderr)
         return 2
+    if cfg.get("seed_label_blocks") is None:
+        print("refused. seed_label_blocks is null in config_7_2.json. Declare the round-0 seed blocks whose base "
+              "labels may train every arm ([] for acquired labels only). Review 7.2-02, a user decision",
+              file=sys.stderr)
+        return 2
+    seed_blocks = {int(b) for b in cfg["seed_label_blocks"]}
     forbidden = set(split["stopping"]) | set(split["audit"]) | set(split.get("buffer", []))
     used = set(items_geo.set_index("item_id").loc[lab["item_id"], "block_id"].astype(int))
     ek.assert_disjoint(used, forbidden, "training items vs stopping/audit/buffer blocks")
-    added = []
-    for r in range(1, a.round + 1):
-        dp = live / f"round_{r:02d}" / "review" / f"corrections_diff_pits_al_r{r:02d}.gpkg"
-        if dp.exists():
-            import pyogrio
-            if "added" in {n for n, _ in pyogrio.list_layers(str(dp))}:
-                added += list(gpd.read_file(dp, layer="added").geometry)
+    ek.assert_disjoint(seed_blocks, forbidden, "seed label blocks vs stopping/audit/buffer blocks")
+    added, n_unattr = added_for_policy(live, a.policy, a.round, items_geo, lab)
     out = live / f"round_{a.round:02d}" / f"train_{a.policy}"
     out.mkdir(parents=True, exist_ok=True)
     lbl_p = out / f"labels_{a.policy}_r{a.round:02d}.tif"
-    counts = burn_labels(base, items_geo, lab, added, blocks, forbidden, lbl_p)
+    counts = burn_labels(base, items_geo, lab, added, blocks, forbidden, lbl_p, seed_blocks)
     c = lab[lab["status"].isin(["keep", "reject"])].copy()
     c["w"] = ipw(c["pi"], cfg["ipw_clip_quantile"])
     c[["item_id", "round", "pi", "w"]].to_csv(out / f"weights_{a.policy}_r{a.round:02d}.csv", index=False)
     c["w"] = ipw(c["pi"], None)
     c[["item_id", "round", "pi", "w"]].to_csv(out / f"weights_unclipped_{a.policy}_r{a.round:02d}.csv", index=False)
     man = {"policy": a.policy, "round": a.round, "n_labels": len(lab), "status": lab["status"].value_counts().to_dict(),
-           "pixels": counts, "init": a.init, "init_sha256": ek.sha256(Path(a.init)) if a.init and Path(a.init).exists() else None}
+           "pixels": counts, "seed_label_blocks": sorted(seed_blocks), "n_added_kept": len(added),
+           "n_added_unattributed": n_unattr,
+           "label_scope": "acquired labels of this policy plus the declared seed blocks. All else ignore (255)",
+           "init": a.init, "init_sha256": ek.sha256(Path(a.init)) if a.init and Path(a.init).exists() else None}
     (out / "train_manifest.json").write_text(json.dumps(man, indent=2), encoding="utf-8")
     if not cfg.get("trainer_cmd"):
         print("inputs written. trainer_cmd is null in config_7_2.json (P1 isolated pit trainer pending). Not training.")

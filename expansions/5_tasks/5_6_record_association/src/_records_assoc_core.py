@@ -2,7 +2,8 @@
 
 Purpose
     Pure functions behind the corrected association analysis of protocol section 4.
-    - dedupe(): the deployment-compatible rule for the full detector output
+    - dedupe(): prediction-only geometric dedupe of the full detector output (no truth read, review F15)
+    - assign_det_ids(): seeded random det_id, pit from 1, pad from 1000001 (review 5.6-01)
     - nn_rates(), pad_rates(): share of records with a feature within r
     - shift_null(): translate the whole record set as one, redraw shifts that lose records
     - excess(): normalised excess association over the null, with a null-based interval. Not PPV.
@@ -29,20 +30,93 @@ BIG = 1e9
 
 
 # ----------------------------------------------------------------------------- input contract
-def dedupe(df, rule: str = "deployment"):
-    """Deployment-compatible dedupe of the full pit output (fw_5_6 S0).
+DET_ID_BASE = {"pit": 1, "pad": 1_000_001}
+DET_ID_POLICY = ("det_id = base + seeded random permutation of a prediction-only canonical order "
+                 "(cx, cy, score, area). pit base 1, pad base 1000001. Encodes neither match status nor score "
+                 "(review 5.6-01).")
 
-    deployment  keep every matched row; drop an unmatched row whose centroid sits inside an already-drawn pit
-                (dup_on_pit == 1). The deployed pipeline would merge it into the feature it already found.
-    keep_all    keep every row (sensitivity only).
-    Expects columns 'source' in {matched, undecided} and 'dup_on_pit'.
+
+def _union_find(n: int, pairs) -> np.ndarray:
+    parent = np.arange(n)
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+    for i, j in pairs:
+        ri, rj = find(int(i)), find(int(j))
+        if ri != rj:
+            parent[max(ri, rj)] = min(ri, rj)
+    roots = np.array([find(i) for i in range(n)], int)
+    return np.unique(roots, return_inverse=True)[1] if n else roots
+
+
+def canonical_order(df) -> np.ndarray:
+    """Row order from prediction-only keys: cx, cy, then score descending, then area descending.
+    No truth column is read, so the order is invariant to annotations."""
+    area = df["area_m2"].to_numpy(float) if "area_m2" in df else (
+        df.geometry.area.to_numpy() if hasattr(df, "geometry") else np.zeros(len(df)))
+    if "cx" in df:
+        x, y = df["cx"].to_numpy(float), df["cy"].to_numpy(float)
+    else:
+        c = df.geometry.centroid
+        x, y = np.round(c.x.to_numpy(), 2), np.round(c.y.to_numpy(), 2)
+    return np.lexsort((-area, -df["score"].to_numpy(float), y, x))
+
+
+def dedupe(gdf, rule: str = "geometric", gap_m: float = 2.0):
+    """Prediction-only dedupe of the full detector output (review F15).
+
+    geometric  blobs whose polygons lie within gap_m of each other form one cluster (single linkage). The
+               cluster keeps its highest-scoring member (ties by larger area, then canonical order). Only the
+               predicted geometry and score are read. No truth layer or truth-derived flag is consulted.
+    keep_all   keep every row (sensitivity).
+    'deployment' (the old rule on dup_on_pit) read already-drawn pit truth and is refused.
+    Adds n_merged (cluster size) to the kept rows.
     """
+    if rule == "deployment":
+        raise ValueError("dedupe rule 'deployment' read the truth-derived dup_on_pit flag (review F15). "
+                         "Use 'geometric' (prediction-only) or 'keep_all'.")
     if rule == "keep_all":
-        return df.copy()
-    if rule != "deployment":
+        out = gdf.copy()
+        out["n_merged"] = 1
+        return out
+    if rule != "geometric":
         raise ValueError(f"unknown dedupe rule {rule!r}")
-    drop = (df["source"] != "matched") & (df["dup_on_pit"].astype(int) == 1)
-    return df.loc[~drop].copy()
+    g = gdf.reset_index(drop=True)
+    n = len(g)
+    if n == 0:
+        out = g.copy()
+        out["n_merged"] = []
+        return out
+    geoms = g.geometry.values
+    from shapely import STRtree
+    i, j = STRtree(geoms).query(geoms, predicate="dwithin", distance=float(gap_m))
+    k = i < j
+    lab = _union_find(n, zip(i[k], j[k]))
+    canon_rank = np.empty(n, int)
+    canon_rank[canonical_order(g)] = np.arange(n)
+    area = g["area_m2"].to_numpy(float) if "area_m2" in g else g.geometry.area.to_numpy()
+    order = np.lexsort((canon_rank, -area, -g["score"].to_numpy(float), lab))
+    first = np.r_[True, lab[order][1:] != lab[order][:-1]]
+    keep = order[first]
+    sizes = np.bincount(lab)
+    out = g.iloc[np.sort(keep)].copy()
+    out["n_merged"] = sizes[lab[np.sort(keep)]]
+    return out
+
+
+def assign_det_ids(df, kind: str, seed: int) -> np.ndarray:
+    """det_id for each row of one detector file (review 5.6-01).
+    Canonical prediction-only order, then a seeded random permutation, plus the kind's base."""
+    if kind not in DET_ID_BASE:
+        raise ValueError(kind)
+    n = len(df)
+    rank = np.empty(n, int)
+    rank[canonical_order(df)] = np.arange(n)
+    perm = np.random.default_rng(int(seed)).permutation(n)
+    return DET_ID_BASE[kind] + perm[rank]
 
 
 # ----------------------------------------------------------------------------- rates
@@ -98,31 +172,58 @@ def pad_rates(rec_xy: np.ndarray, pad_geoms, radii, tree=None) -> dict:
 
 # ----------------------------------------------------------------------------- null
 def shift_null(rec_xy: np.ndarray, eligible, rate_fn, n_shift: int = 300, dmin: float = 200.0,
-               dmax: float = 500.0, max_loss: float = 0.10, rng=None, max_tries: int = 20):
+               dmax: float = 500.0, max_loss: float = 0.10, rng=None, max_tries: int = 20, wrap_bbox=None):
     """Translate the whole record set as one (protocol section 4 rule 4).
 
     eligible(xy) -> bool mask, the same rule as the observed records (footprint and tile).
     rate_fn(xy)  -> dict radius -> rate.
+    wrap_bbox    (x0, y0, x1, y1). When given the shift is toroidal. A record pushed past one edge re-enters at
+                 the opposite edge, so no record leaves the tile and every direction is accepted equally
+                 (review 5.6-02). Records then drop only where the footprint has holes inside the tile.
     A shift that drops more than max_loss of the records is rejected and redrawn (up to max_tries per draw).
-    Returns dict(draws=list of rate dicts, retained=list of int, rejected=int, n_records=int).
+    Returns dict(draws, retained, rejected, n_records, angles_tried, accepted_tried, direction).
+    direction holds the acceptance share per 45 degree sector of every attempted shift. Unequal shares mean the
+    accepted shifts favour some directions, which biases the null.
     What it conditions on: the record set's internal clustering and size. Gradients in oil development and
-    road density are only partly preserved by a 200 to 500 m move.
+    road density are only partly preserved by a 200 to 500 m move. A toroidal wrap also joins opposite edges.
     """
     rng = rng if rng is not None else np.random.default_rng(0)
+    rec_xy = np.asarray(rec_xy, float).reshape(-1, 2)
     n = len(rec_xy)
-    draws, retained, rejected = [], [], 0
+    draws, retained, rejected, tried, acc = [], [], 0, [], []
     for _ in range(n_shift):
         for _t in range(max_tries):
             a = rng.uniform(0, 2 * np.pi)
             m = rng.uniform(dmin, dmax)
             sh = rec_xy + np.array([m * np.cos(a), m * np.sin(a)])
+            if wrap_bbox is not None:
+                x0, y0, x1, y1 = wrap_bbox
+                sh[:, 0] = x0 + np.mod(sh[:, 0] - x0, x1 - x0)
+                sh[:, 1] = y0 + np.mod(sh[:, 1] - y0, y1 - y0)
             ok = eligible(sh)
+            tried.append(a)
             if n and (1 - ok.mean()) <= max_loss:
                 draws.append(rate_fn(sh[ok]))
                 retained.append(int(ok.sum()))
+                acc.append(True)
                 break
+            acc.append(False)
             rejected += 1
-    return {"draws": draws, "retained": retained, "rejected": rejected, "n_records": n}
+    return {"draws": draws, "retained": retained, "rejected": rejected, "n_records": n,
+            "direction": direction_balance(tried, acc)}
+
+
+def direction_balance(angles, accepted, n_sector: int = 8) -> dict:
+    """Acceptance share per sector of attempted shift directions, and the max-min spread."""
+    a = np.asarray(angles, float)
+    ok = np.asarray(accepted, bool)
+    if not len(a):
+        return dict(sector_accept=[], spread=float("nan"), n_tried=0)
+    sec = np.minimum((a / (2 * np.pi) * n_sector).astype(int), n_sector - 1)
+    share = [float(ok[sec == k].mean()) if (sec == k).any() else float("nan") for k in range(n_sector)]
+    fin = [x for x in share if np.isfinite(x)]
+    return dict(sector_accept=[round(x, 4) for x in share], spread=float(max(fin) - min(fin)) if fin else float("nan"),
+                n_tried=int(len(a)))
 
 
 def excess(observed: float, null_vals, alpha: float = 0.05) -> dict:
@@ -155,15 +256,40 @@ def mde(n_records: int, null_vals, power_z: float = 0.8416, alpha: float = 0.05)
 
 # ----------------------------------------------------------------------------- assignment
 def hungarian(rec_xy: np.ndarray, det_xy: np.ndarray, gate: float):
-    """One-to-one assignment on distance with a gate. Returns (rec_idx, det_idx, dist)."""
+    """One-to-one assignment on distance with a gate. Returns (rec_idx, det_idx, dist).
+
+    Memory-bounded (review 5.6 memory). A KD-tree finds the pairs within the gate. The bipartite graph of those
+    pairs splits into connected components, and each component gets its own small Hungarian. Pairs beyond the
+    gate can never be assigned, so the per-component solutions together equal the dense gated solution."""
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import connected_components
+    e = np.array([], int)
     if len(rec_xy) == 0 or len(det_xy) == 0:
-        e = np.array([], int)
         return e, e, np.array([], float)
-    D = np.hypot(rec_xy[:, None, 0] - det_xy[None, :, 0], rec_xy[:, None, 1] - det_xy[None, :, 1])
-    C = np.where(D <= gate, D, BIG)
-    i, j = linear_sum_assignment(C)
-    ok = C[i, j] < BIG
-    return i[ok], j[ok], D[i[ok], j[ok]]
+    rec_xy, det_xy = np.asarray(rec_xy, float), np.asarray(det_xy, float)
+    hits = cKDTree(det_xy).query_ball_point(rec_xy, r=float(gate))
+    ri = np.repeat(np.arange(len(rec_xy)), [len(h) for h in hits]).astype(int)
+    dj = np.array([b for h in hits for b in h], int)
+    if not len(ri):
+        return e, e, np.array([], float)
+    nr, nd = len(rec_xy), len(det_xy)
+    A = coo_matrix((np.ones(len(ri)), (ri, nr + dj)), shape=(nr + nd, nr + nd))
+    _, comp = connected_components(A, directed=False)
+    pair_comp = comp[ri]
+    out_i, out_j = [], []
+    for c in np.unique(pair_comp):
+        sel = pair_comp == c
+        rs, ds = np.unique(ri[sel]), np.unique(dj[sel])
+        D = np.hypot(rec_xy[rs, None, 0] - det_xy[None, ds, 0], rec_xy[rs, None, 1] - det_xy[None, ds, 1])
+        C = np.where(D <= gate, D, BIG)
+        a, b = linear_sum_assignment(C)
+        ok = C[a, b] < BIG
+        out_i.append(rs[a[ok]])
+        out_j.append(ds[b[ok]])
+    i, j = np.concatenate(out_i), np.concatenate(out_j)
+    o = np.argsort(i, kind="stable")
+    i, j = i[o], j[o]
+    return i, j, np.hypot(rec_xy[i, 0] - det_xy[j, 0], rec_xy[i, 1] - det_xy[j, 1])
 
 
 def assign(rec_xy: np.ndarray, rec_group: np.ndarray, det_xy: np.ndarray, gate: float, mode: str = "global"):

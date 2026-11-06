@@ -12,6 +12,9 @@ Purpose
     Step 3 (S7). For each tolerance (15, 25, 40%) the share of pads whose observed C_hat (own r, median costs) is
         within tolerance, with a Clopper-Pearson interval and a block-bootstrap interval.
     If the table has no separable area term, cost claims stop at area and the script says so.
+    Units (review 5.5-02). Every cost row needs a unit. Area costs are converted to USD per m2 and road costs to
+    USD per m (acre, ha, ft, km, mile are converted). Any other unit refuses. L_road is road_length_m from S4. If the
+    table has a road item and road length is missing the script refuses rather than use 0.
 
 Inputs (config_5_5.json)
     agreement     results/tables/pad_area_agreement_9t.csv (S4, survey) or ..._drawn_9t.csv with --reference drawn
@@ -55,8 +58,37 @@ def lognormal(lo: float, hi: float):
     return mu, (np.log(hi) - np.log(lo)) / (2 * Z95)
 
 
+# Unit check (review 5.5-02). Each item has one base unit. Known alternatives are converted, anything else refuses.
+# factor = multiply a cost in the stated unit by this to get the cost in the base unit.
+M2_PER_ACRE = 4046.8564224
+UNIT_FACTOR = {
+    "fixed_per_well": {"usd per well": 1.0},
+    "area_restoration": {"usd per m2": 1.0, "usd per ha": 1 / 1e4, "usd per acre": 1 / M2_PER_ACRE},
+    "road_restoration": {"usd per m": 1.0, "usd per km": 1 / 1e3, "usd per ft": 1 / 0.3048,
+                         "usd per mile": 1 / 1609.344},
+}
+
+
+def _norm_unit(u) -> str:
+    u = str(u).strip().lower().replace("/", " per ").replace("²", "2").replace("$", "usd")
+    u = u.replace("m^2", "m2").replace("sq m", "m2").replace("hectare", "ha").replace("acres", "acre")
+    u = u.replace("feet", "ft").replace("foot", "ft").replace("metre", "m").replace("meter", "m")
+    return " ".join(u.split())
+
+
+def unit_factor(item: str, unit) -> float:
+    if item not in UNIT_FACTOR:
+        raise SystemExit(f"COST TABLE unknown item {item!r}")
+    nu = _norm_unit(unit)
+    if nu not in UNIT_FACTOR[item]:
+        raise SystemExit(f"COST TABLE unit {unit!r} for {item} is not one of {sorted(UNIT_FACTOR[item])}. "
+                         "Fix the table or add a declared conversion.")
+    return UNIT_FACTOR[item][nu]
+
+
 def parse_costs(C: pd.DataFrame, cls: str) -> dict:
-    th.require_columns(C, ["item", "low", "high"], "cost table")
+    """Lognormal (mu, sd) per item in base units (USD per well, per m2, per m). Refuses a missing or unknown unit."""
+    th.require_columns(C, ["item", "unit", "low", "high"], "cost table")
     items = set(C["item"])
     if "area_restoration" not in items:
         raise SystemExit("COST TABLE has no separable area term (item area_restoration). Cost claims stop at area.")
@@ -65,7 +97,11 @@ def parse_costs(C: pd.DataFrame, cls: str) -> dict:
         rows = C[C["item"] == it]
         if it == "fixed_per_well" and "condition_class" in C and (rows.condition_class == cls).any():
             rows = rows[rows.condition_class == cls]
-        out[it] = lognormal(float(rows.low.iloc[0]), float(rows.high.iloc[0])) if len(rows) else (None, None)
+        if not len(rows):
+            out[it] = (None, None)
+            continue
+        f = unit_factor(it, rows.unit.iloc[0])
+        out[it] = lognormal(float(rows.low.iloc[0]) * f, float(rows.high.iloc[0]) * f)
     return out
 
 
@@ -84,7 +120,13 @@ def simulate(T: pd.DataFrame, costs: dict, draws: int, portfolio_n, seed: int):
         mu, sd = costs[key]
         return np.zeros(n) if mu is None else np.exp(rng.normal(mu, sd, n))
     A = m.A_ref.to_numpy()
-    L = m["road_length_m"].to_numpy() if "road_length_m" in m else np.zeros(len(m))
+    if costs["road_restoration"][0] is None:
+        L = np.zeros(len(m))                      # no road item in the table, so the road term is absent, not zero-length
+    else:
+        if "road_length_m" not in m or not np.isfinite(m["road_length_m"].to_numpy(float)).all():
+            raise SystemExit("ROAD LENGTH missing: the cost table has road_restoration but the agreement table has "
+                             "no finite road_length_m. Rerun _padarea_agreement_9t.py with a roads layer.")
+        L = m["road_length_m"].to_numpy(float)
     rs = draw_r(draws)
     F, ca, cr = draw_c("fixed_per_well", draws), draw_c("area_restoration", draws), draw_c("road_restoration", draws)
     med = {k: (np.exp(v[0]) if v[0] is not None else 0.0) for k, v in costs.items()}
@@ -172,7 +214,10 @@ def main(argv=None) -> int:
     costs = parse_costs(pd.read_csv(th.inp(cfg, "cost_table")), mc["default_condition_class"])
     P, port = simulate(m, costs, mc["draws"], mc["portfolio_n"], int(cfg["seed"]))
     P = th.tag(P, "a", "exploratory" if mode == "drawn" else "confirmatory_survey")
-    summary.update(cost_table=str(th.inp(cfg, "cost_table")), portfolio=port,
+    summary.update(cost_table=gt.rel(th.inp(cfg, "cost_table")), portfolio=port,
+                   cost_units=dict(fixed_per_well="USD per well", area_restoration="USD per m2",
+                                   road_restoration="USD per m"),
+                   median_road_length_m=float(m["road_length_m"].median()) if "road_length_m" in m else None,
                    tolerance=tolerance_table(P, dec["tolerances"], cfg["bootstrap_B"], int(cfg["seed"]) + 3),
                    median_f=float(P.f_area_share.median()))
     out = suffix(th.outp(cfg, "cost_error"), mode)

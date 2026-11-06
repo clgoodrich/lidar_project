@@ -1,0 +1,55 @@
+{
+  "written": "2026-11-06T11:00:40",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "_vegstress_observability_9t.py"
+  ],
+  "params": {
+    "pixels_m": [
+      10.0,
+      20.0,
+      30.0
+    ],
+    "chm_open_max_m": 2.0,
+    "edge_band_m": 5.0,
+    "min_interior_px": 4,
+    "fail_interior_px": 1,
+    "min_scenes_per_season": 3,
+    "grid_origin": [
+      0.0,
+      0.0
+    ]
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg",
+      "bytes": 10924032,
+      "mtime": "2026-09-11T18:15:23.877075",
+      "sha256": "58e56ce98813f680aeb8550f1fc8e9143245807fbee1fdeeeef52b6c5926790b"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\1m\\chm_9t_1m.tif",
+      "bytes": 54748333,
+      "mtime": "2026-09-20T21:52:02.459087",
+      "sha256": "449547f87668f06941a2a2590ecf1250263290f708eb0e94fc1b34e4fcbb3629"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_3_vegetation_stress\\results\\20261106_vegstress_observe_4bb908c\\vegstress_observability_by_pad_9t.csv",
+      "bytes": 71969,
+      "mtime": "2026-11-06T11:00:40.146676",
+      "sha256": "0c7c3f9d520d758ecc889e98f54706d167d54471dc65e3aefc70eba86b88f9d1"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_3_vegetation_stress\\results\\20261106_vegstress_observe_4bb908c\\vegstress_observability_9t.json",
+      "bytes": 1816,
+      "mtime": "2026-11-06T11:00:40.147676",
+      "sha256": "a0fd29652204e38c05c00564f76d52bc11f3bfaa47865644b8cefd93cf75cbbf"
+    }
+  ]
+}

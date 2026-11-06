@@ -24,9 +24,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
 
-Built by the build agent. The framework was rewritten to full depth the same day (151 lines). No density map is produced anywhere.
+Review fix pass. The footprint is all 144 blocks. The D bootstrap stays inside 0 to K. The 5.6 input has 677 pit rows. Tests pass (10). No density map is produced anywhere.
 
 | Script | Stage | Runnable now | Missing |
 |---|---|---|---|

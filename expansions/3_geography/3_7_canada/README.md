@@ -24,7 +24,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
+
+Review repair (2026-11-06). The shifted-set null uses a torus shift, so it is computable at 100 spread records (999 of 999 kept, 0 before). A thin null is reported as not computable. The transfer checkpoint is an explicit unset config key. Open user decisions are in `docs/decisions_3_7.md`.
 
 Built by the build agent. The shared regional-transfer code is `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py`. Expansions 3.4 to 3.8 import it. Stage commands that every region shares are its subcommands. Assumed inputs and their schemas are in `src/config_3_7.json`. A missing assumed input stops a script with a message that names the input, its schema and the VERIFY step. Decisions are in `docs/decisions_3_7.md`. Run the tests with `python -m pytest -q expansions/3_geography/3_7_canada/src/test_3_7.py -p no:cacheprovider`.
 

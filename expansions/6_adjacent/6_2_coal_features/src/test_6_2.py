@@ -152,3 +152,16 @@ def test_burn_split_reverse(world):
     assert p.hit_iou.tolist() == [True, False]
     res = S5.summarise(p, blocks, 50, 1)
     assert res["share_pits_called_mine"] == 0.5
+
+
+def test_point_records_match_iou_classes():
+    """6.2 review (SUSPECTED, verified). A point has area 0, so IoU is 0 and a pre-fix S or H point never matched."""
+    from shapely.geometry import Point
+    tol = K.load_config()["tolerance"]
+    cand = Point(0, 0).buffer(5)                     # 5 m radius candidate
+    assert K.class_match("S", cand, Point(1, 0), tol)                  # inside
+    assert K.class_match("S", cand, Point(19, 0), tol)                 # 14 m from the edge, S offset 15 m
+    assert not K.class_match("S", cand, Point(21, 0), tol)             # 16 m from the edge
+    assert K.class_match("H", cand, Point(54, 0), tol)                 # 49 m from the edge, H offset 50 m
+    assert K.class_match("W", cand, Point(4, 0), tol)                  # W has no offset, inside only
+    assert not K.class_match("W", cand, Point(6, 0), tol)

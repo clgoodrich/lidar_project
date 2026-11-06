@@ -1,0 +1,369 @@
+{
+  "evidence_level": "a",
+  "analysis": "exploratory",
+  "statistic": "normalised excess association = (observed - null mean) / (1 - null mean). Not link PPV.",
+  "counts": {
+    "pit_detections": 677,
+    "pit_novel": 196,
+    "pad_detections": 1005,
+    "pad_novel": 401,
+    "pit_footprint_blocks": 144,
+    "pad_footprint_blocks": 144,
+    "records_by_group": {
+      "orphan_abandoned": 171,
+      "plugged": 271,
+      "active": 616
+    },
+    "proposals_by_level": {
+      "pit": 560,
+      "pad": 368
+    }
+  },
+  "open_decisions": {
+    "assignment": "global",
+    "footprint": "complete_grid",
+    "null_redraw": "torus"
+  },
+  "n_shift": 300,
+  "positive_control": {
+    "spec": {
+      "group": "active",
+      "level": "pad",
+      "radius_m": 0,
+      "detector_set": "full"
+    },
+    "passed": true,
+    "row": {
+      "modality": "pad",
+      "detector_set": "full",
+      "group": "active",
+      "radius_m": 0,
+      "n_records": 616,
+      "n_detections": 1005,
+      "primary": 1,
+      "observed": 0.43994,
+      "null_mean": 0.10615,
+      "null_lo": 0.07382,
+      "null_hi": 0.15755,
+      "excess": 0.33378,
+      "excess_lo": 0.28239,
+      "excess_hi": 0.36611,
+      "norm_excess": 0.37342,
+      "norm_lo": 0.31592,
+      "norm_hi": 0.40959,
+      "n_null": 300,
+      "mde": 0.06375,
+      "shifts_rejected": 0,
+      "shifts_accepted": 300,
+      "direction_accept_spread": 0.0,
+      "null_status": "ok",
+      "seed": 20271106,
+      "evidence_level": "a",
+      "analysis": "exploratory_full_output"
+    },
+    "rule": "lower bound of normalised excess above 0. If it fails the target-group result cannot be interpreted."
+  },
+  "primary": [
+    {
+      "modality": "pit",
+      "detector_set": "full",
+      "group": "orphan_abandoned",
+      "radius_m": 50,
+      "n_records": 171,
+      "observed": 0.2807,
+      "null_mean": 0.24803,
+      "norm_excess": 0.04345,
+      "norm_lo": -0.08185,
+      "norm_hi": 0.17109,
+      "mde": 0.12476
+    },
+    {
+      "modality": "pit",
+      "detector_set": "full",
+      "group": "plugged",
+      "radius_m": 50,
+      "n_records": 271,
+      "observed": 0.24354,
+      "null_mean": 0.21262,
+      "norm_excess": 0.03927,
+      "norm_lo": -0.02343,
+      "norm_hi": 0.1031,
+      "mde": 0.07185
+    },
+    {
+      "modality": "pit",
+      "detector_set": "full",
+      "group": "active",
+      "radius_m": 50,
+      "n_records": 616,
+      "observed": 0.45292,
+      "null_mean": 0.29241,
+      "norm_excess": 0.22684,
+      "norm_lo": 0.1158,
+      "norm_hi": 0.32119,
+      "mde": 0.09495
+    },
+    {
+      "modality": "pit",
+      "detector_set": "novel",
+      "group": "orphan_abandoned",
+      "radius_m": 50,
+      "n_records": 171,
+      "observed": 0.11111,
+      "null_mean": 0.07002,
+      "norm_excess": 0.04419,
+      "norm_lo": 0.0,
+      "norm_hi": 0.08175,
+      "mde": 0.06132
+    },
+    {
+      "modality": "pit",
+      "detector_set": "novel",
+      "group": "plugged",
+      "radius_m": 50,
+      "n_records": 271,
+      "observed": 0.05904,
+      "null_mean": 0.07012,
+      "norm_excess": -0.01192,
+      "norm_lo": -0.04365,
+      "norm_hi": 0.01984,
+      "mde": 0.04482
+    },
+    {
+      "modality": "pit",
+      "detector_set": "novel",
+      "group": "active",
+      "radius_m": 50,
+      "n_records": 616,
+      "observed": 0.10227,
+      "null_mean": 0.07942,
+      "norm_excess": 0.02482,
+      "norm_lo": -0.00176,
+      "norm_hi": 0.04677,
+      "mde": 0.03482
+    },
+    {
+      "modality": "pit",
+      "detector_set": "annotated",
+      "group": "orphan_abandoned",
+      "radius_m": 50,
+      "n_records": 171,
+      "observed": 0.18713,
+      "null_mean": 0.19988,
+      "norm_excess": -0.01593,
+      "norm_lo": -0.12425,
+      "norm_hi": 0.08771,
+      "mde": 0.11577
+    },
+    {
+      "modality": "pit",
+      "detector_set": "annotated",
+      "group": "plugged",
+      "radius_m": 50,
+      "n_records": 271,
+      "observed": 0.20295,
+      "null_mean": 0.15583,
+      "norm_excess": 0.05582,
+      "norm_lo": 0.00874,
+      "norm_hi": 0.10491,
+      "mde": 0.06002
+    },
+    {
+      "modality": "pit",
+      "detector_set": "annotated",
+      "group": "active",
+      "radius_m": 50,
+      "n_records": 616,
+      "observed": 0.37338,
+      "null_mean": 0.22789,
+      "norm_excess": 0.18843,
+      "norm_lo": 0.10092,
+      "norm_hi": 0.26281,
+      "mde": 0.08304
+    },
+    {
+      "modality": "pad",
+      "detector_set": "full",
+      "group": "orphan_abandoned",
+      "radius_m": 0,
+      "n_records": 171,
+      "observed": 0.16374,
+      "null_mean": 0.11559,
+      "norm_excess": 0.05444,
+      "norm_lo": 0.0,
+      "norm_hi": 0.10927,
+      "mde": 0.07196
+    },
+    {
+      "modality": "pad",
+      "detector_set": "full",
+      "group": "plugged",
+      "radius_m": 0,
+      "n_records": 271,
+      "observed": 0.25461,
+      "null_mean": 0.10114,
+      "norm_excess": 0.17074,
+      "norm_lo": 0.12316,
+      "norm_hi": 0.21563,
+      "mde": 0.06071
+    },
+    {
+      "modality": "pad",
+      "detector_set": "full",
+      "group": "active",
+      "radius_m": 0,
+      "n_records": 616,
+      "observed": 0.43994,
+      "null_mean": 0.10615,
+      "norm_excess": 0.37342,
+      "norm_lo": 0.31592,
+      "norm_hi": 0.40959,
+      "mde": 0.06375
+    },
+    {
+      "modality": "pad",
+      "detector_set": "novel",
+      "group": "orphan_abandoned",
+      "radius_m": 0,
+      "n_records": 171,
+      "observed": 0.05263,
+      "null_mean": 0.04489,
+      "norm_excess": 0.0081,
+      "norm_lo": -0.03061,
+      "norm_hi": 0.03674,
+      "mde": 0.05462
+    },
+    {
+      "modality": "pad",
+      "detector_set": "novel",
+      "group": "plugged",
+      "radius_m": 0,
+      "n_records": 271,
+      "observed": 0.09225,
+      "null_mean": 0.03146,
+      "norm_excess": 0.06276,
+      "norm_lo": 0.03229,
+      "norm_hi": 0.08001,
+      "mde": 0.04175
+    },
+    {
+      "modality": "pad",
+      "detector_set": "novel",
+      "group": "active",
+      "radius_m": 0,
+      "n_records": 616,
+      "observed": 0.08442,
+      "null_mean": 0.03231,
+      "norm_excess": 0.05385,
+      "norm_lo": 0.03355,
+      "norm_hi": 0.06798,
+      "mde": 0.02717
+    },
+    {
+      "modality": "pad",
+      "detector_set": "annotated",
+      "group": "orphan_abandoned",
+      "radius_m": 0,
+      "n_records": 171,
+      "observed": 0.11111,
+      "null_mean": 0.06452,
+      "norm_excess": 0.0498,
+      "norm_lo": 0.00625,
+      "norm_hi": 0.08752,
+      "mde": 0.06049
+    },
+    {
+      "modality": "pad",
+      "detector_set": "annotated",
+      "group": "plugged",
+      "radius_m": 0,
+      "n_records": 271,
+      "observed": 0.18081,
+      "null_mean": 0.06199,
+      "norm_excess": 0.12667,
+      "norm_lo": 0.09441,
+      "norm_hi": 0.15736,
+      "mde": 0.04505
+    },
+    {
+      "modality": "pad",
+      "detector_set": "annotated",
+      "group": "active",
+      "radius_m": 0,
+      "n_records": 616,
+      "observed": 0.32955,
+      "null_mean": 0.0622,
+      "norm_excess": 0.28508,
+      "norm_lo": 0.23715,
+      "norm_hi": 0.30986,
+      "mde": 0.05543
+    }
+  ],
+  "null_not_complete": [],
+  "null_conditions": "Whole record set translated as one. Keeps record count and clustering. Gradients in oil development and road density only partly preserved. torus joins opposite tile edges.",
+  "detector_ids": {
+    "det_id_policy": "det_id = base + seeded random permutation of a prediction-only canonical order (cx, cy, score, area). pit base 1, pad base 1000001. Encodes neither match status nor score (review 5.6-01).",
+    "det_id_base": {
+      "pit": 1,
+      "pad": 1000001
+    },
+    "seed_pit": 20261106,
+    "seed_pad": 20261107,
+    "dedupe": {
+      "rule": "geometric",
+      "gap_m": 2.0,
+      "reads": "predicted geometry and score only. Truth columns are evaluation only."
+    },
+    "cutoff_used": 0.5,
+    "proposal_policy_pit": {
+      "task": "pit",
+      "mode": "primary",
+      "version": "fw00_s4_20261105",
+      "cutoff": 0.35,
+      "min_area_m2": 4.0,
+      "iou": 0.3,
+      "match_order": "score",
+      "blob_score": "mean",
+      "k_per_km2": 40.0,
+      "policy_hash": "5ca1e98"
+    },
+    "proposal_policy_pad": {
+      "task": "pad",
+      "mode": "primary",
+      "version": "fw00_s4_20261105",
+      "cutoff": 0.525,
+      "min_area_m2": 4.0,
+      "iou": 0.3,
+      "match_order": "score",
+      "blob_score": "mean",
+      "k_per_km2": 40.0,
+      "policy_hash": "f6d15ee"
+    },
+    "cutoff_note": "The held-out products were cut at 0.50. ek.policy_for gives 0.35 (pit) and 0.525 (pad). See docs/decisions_5_6.md, Needs user decision.",
+    "rows": {
+      "pit": 677,
+      "pad": 1005
+    },
+    "det_id_range": {
+      "pit": [
+        1,
+        677
+      ],
+      "pad": [
+        1000001,
+        1001005
+      ]
+    },
+    "files": {
+      "pit": {
+        "path": "expansions/5_tasks/5_6_record_association/data/processed/detector_output_pit_full_9t.gpkg",
+        "sha256": "e928d1ee7438b70dccf365459b428c78e85efbdd700f615ef1cbf0271815bf22"
+      },
+      "pad": {
+        "path": "expansions/5_tasks/5_6_record_association/data/processed/detector_output_pad_full_9t.gpkg",
+        "sha256": "7ea64cd324a4f43f25afc87a12f03ebb4d451d7337c846c8b30a41560658e4c9"
+      }
+    }
+  },
+  "caveat": "Annotators did not see DEP points (user, 2026-11-04). Other annotation context is unrecorded."
+}

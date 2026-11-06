@@ -2,11 +2,17 @@
 
 Purpose
     Question 1 of fw_3_3. Does out-of-fold recall depend on slope and relief? Uses no new data.
-    For each CV5 fold k, the fold-k model's floor probability raster is read only inside the
-    fold-k held-out blocks. Blobs are cut at 0.10, scored by mean probability, credited to a
-    block by representative point, and ranked within the fold. The top round(40 x held-out km2)
-    candidates are kept (per-fold budget, as in the archival sweep). Matching to annotated
-    floors is greedy one-to-one by IoU at 0.3. Each floor gets a found flag plus slope, relief,
+    For each CV5 fold k, the fold-k model's floor probability raster is read on one shared window
+    over the fold-k held-out blocks (no seam clipping, review F03). Scoring is the 3.0 reference
+    scorer through _geo_xfer_lib (review F02). Blobs are cut at ek.policy_for("pit") (0.35), scored by
+    mean probability, credited to a block by centroid, deduped, and ranked within the fold. The top
+    round(40 x held-out km2) candidates are kept (per-fold budget, as in the archival sweep). Matching
+    to annotated floors is greedy one-to-one at IoU 0.3 in score order.
+    Footprint (review G-02). The 29 pit-free 9t blocks were in no training manifest, so every fold
+    model is out of sample there. They join the held-out footprint of one fold each by the 3.0
+    round_robin rule, so the budget sees the same area a target would.
+    Audit (P2). Audit blocks are removed from the footprint through ek.require_audit. Before P2 is
+    frozen, --no-audit-list runs without it and labels the output "no audit exclusion, exploratory". Each floor gets a found flag plus slope, relief,
     area, depth and void covariates. Recall is reported per slope tercile, at the feature level
     and at the block level, with 95% block-bootstrap intervals (B = 2000). The primary statistic
     is lowest-tercile recall minus highest-tercile recall (feature level, paired draws).
@@ -27,12 +33,12 @@ Outputs (one run folder, ek.new_run)
         slope_recall_summary_9t.json      cut points, primary difference, decision, counts
         slope_recall_terciles_9t.png      figure (blue observed, grey overall)
         _CONFIG.json, _RUN.md, _PROVENANCE.json
-    The blocks CSV is also the provisional 9t reference table for 3.1 and 3.2 scoring.
+    3.1 and 3.2 no longer score against this blocks CSV. They use the 3.0 reference tables.
 
 Limits, stated
     The reference uses the original CV5 sampler (protocol section 3). Window reads can reach
     held-out ground, so 9t recall is optimistic. Swap fold_prob to the P1 isolated predictions
-    when they exist. Only pit-bearing blocks have folds, so blocks with no pits are not scored.
+    when they exist. Pit-free blocks are scored with the fold model the round_robin rule names.
     Slope differences are associations, not slope causation.
 
 Run
@@ -133,8 +139,15 @@ def fold_path(spec, k):
     return xl.resolve_path({**spec, "rel": spec["rel"].format(k=k)})
 
 
-def fold_candidates(prob_path, held_blocks, buf_m, thr, min_area):
-    """Blobs from the fold raster, read block by block (+buffer), credited by representative point."""
+def fold_candidates(prob_path, held_blocks, buf_m, policy):
+    """Blobs from the fold raster on one shared window over the held-out blocks (xl.candidates_for_blocks).
+    Each blob is credited to one block by centroid. No seam clipping or duplicates (review F03)."""
+    c = xl.candidates_for_blocks(prob_path, held_blocks, policy, halo_m=buf_m)
+    return c.rename(columns={"block_id": "src_block"}) if len(c) else c
+
+
+def fold_candidates_blockwise_old(prob_path, held_blocks, buf_m, thr, min_area):
+    """The pre-2026-11-06 blockwise reader, kept only so the seam regression test can show the defect."""
     import geopandas as gpd
     import rasterio
     from rasterio.windows import from_bounds
@@ -160,13 +173,18 @@ def fold_candidates(prob_path, held_blocks, buf_m, thr, min_area):
 def proposal_cutoffs(cfg, folds):
     """Proposal cutoff per fold.
 
+    policy_for      ek.policy_for("pit") cutoff for every fold (primary, 0.35).
     fixed           cfg proposal_thr for every fold (fw_00 section 4 text, 0.10).
     loo_max_recall  the archival rule. For fold k, the cutoff with the highest recall pooled over
                     the OTHER folds' held-out blocks at IoU 0.3, ties to the higher cutoff
                     (reuses _cv5_pr_calibration_pit_pad_9t.proposal_thr). Fold k labels unread.
     Also returns the frozen target cutoff, the same rule pooled over all folds (for 3.1 and 3.2).
     """
-    if cfg.get("proposal_policy", "fixed") == "fixed":
+    mode = cfg.get("proposal_policy", "policy_for")
+    if mode == "policy_for":                 # review F02. The one scoring policy
+        t = float(xl.policy("pit")["cutoff"])
+        return {k: t for k in folds}, t
+    if mode == "fixed":
         t = float(cfg["proposal_thr"])
         return {k: t for k in folds}, t
     from _cv5_pr_calibration_pit_pad_9t import proposal_thr
@@ -179,19 +197,19 @@ def proposal_cutoffs(cfg, folds):
     return per, frozen
 
 
-def run_folds(cfg, folds, blocks, floors, fa, cut):
+def run_folds(cfg, folds, blocks, floors, fold_of_block, cut):
     feats, per_blocks, fold_summ = [], [], []
     for k in folds:
         t0 = time.time()
-        held_ids = sorted(fa.loc[fa.fold == k, "block_id"].astype(int).unique())
+        held_ids = sorted(b for b, f in fold_of_block.items() if f == k)
         hb = blocks[blocks.block_id.isin(held_ids)].copy()
         ek.assert_rows(hb, len(held_ids), f"fold {k} held-out blocks")
         prob_path = xl.need(fold_path(cfg["inputs"]["fold_prob"], k), f"fold {k} probability raster")
-        cands = fold_candidates(prob_path, hb, cfg["score_buffer_m"], cut[k], cfg["min_blob_m2"])
-        cands["cand_id"] = np.arange(len(cands))
+        pol = xl.policy("pit", cutoff=cut[k])
+        cands = fold_candidates(prob_path, hb, cfg["score_buffer_m"], pol)
         tr = floors[floors.fold == k][["truth_id", "geometry"]]
-        summ, per, sc, st = xl.score_area(cands, tr, hb, k_per_km2=cfg["k_per_km2"], tau=cfg["iou_tau"])
-        summ30, per30, _, _ = xl.score_area(cands, tr, hb, k_per_km2=cfg["k_sensitivity_per_km2"], tau=cfg["iou_tau"])
+        summ, per, sc, st = xl.score_area(cands, tr, hb, k_per_km2=cfg["k_per_km2"], policy=pol)
+        summ30, per30, _, _ = xl.score_area(cands, tr, hb, k_per_km2=cfg["k_sensitivity_per_km2"], policy=pol)
         per["hits_k30"] = per.block_id.map(per30.set_index("block_id").hits).astype(int)
         n_lost = len(tr) - len(st)
         per["fold"] = k
@@ -277,12 +295,43 @@ def figure(tab, overall, path):
 
 
 # ----------------------------------------------------------------------------- main
+def footprint_folds(cfg, blocks, fa, fill: str, no_audit: bool):
+    """Held-out fold of every scored block, the pit-free blocks added, the audit label and audit ids.
+    Fold of a pit-bearing block comes from the historical split (ek.read_split_csv) and must agree with the
+    fold assignment. Pit-free blocks get one fold each by the 3.0 round_robin rule (review G-02).
+    Audit blocks leave the footprint (ek.require_audit, review P2-01)."""
+    sys.path.insert(0, str(HERE.parents[2] / "3_0_transfer_protocol" / "src"))
+    from _transfer_ref_tables_9t import fill_assignment
+    sp = xl.need(xl.resolve_path(cfg["inputs"]["historical_split"]), "historical CV5 split CSV")
+    sdf = ek.read_split_csv(sp)
+    h = sdf[sdf.role == "held_out"]
+    fold_of = {int(b): int(f) for b, f in zip(h.block_id, h.fold)}
+    fa_fold = fa.groupby("block_id").fold.first().astype(int).to_dict()
+    bad = {b: (f, fold_of.get(b)) for b, f in fa_fold.items() if fold_of.get(b) != f}
+    if bad:
+        raise AssertionError(f"split CSV and fold assignment disagree on blocks {list(bad)[:5]}")
+    fill_ids = sorted(set(blocks.block_id.astype(int)) - set(fold_of)) if fill == "round_robin" else []
+    fold_of.update(fill_assignment(fill_ids, "round_robin") if fill_ids else {})
+    aud = ek.require_audit(xl.resolve_path(cfg["assumed"]["audit_blocks"]["spec"]), allow_missing=no_audit)
+    if aud is None:
+        label, ids = "no audit exclusion, exploratory (P2 audit set not frozen)", set()
+    else:
+        ids = ek.audit_ids(aud, roles=("audit",))
+        label = f"P2 audit blocks excluded ({len(ids)})"
+    fold_of = {b: f for b, f in fold_of.items() if b not in ids}
+    return fold_of, fill_ids, label, ids
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--config", default=str(CFG))
     ap.add_argument("--folds", type=int, nargs="*", default=None)
     ap.add_argument("--B", type=int, default=None, help="bootstrap draws (default from config)")
     ap.add_argument("--out-base", default=None, help="parent of the run folder (default expansion results/)")
+    ap.add_argument("--no-audit-list", action="store_true",
+                    help="run before P2 is frozen. Output is labelled no audit exclusion, exploratory")
+    ap.add_argument("--fill", choices=("round_robin", "none"), default="round_robin",
+                    help="pit-free blocks join one fold each (3.0 rule, review G-02), or are left out")
     a = ap.parse_args(argv)
     cfg = xl.load_config(Path(a.config))
     B = a.B or cfg["bootstrap_B"]
@@ -305,13 +354,15 @@ def main(argv=None) -> int:
     floors = fl.merge(fa[["pit_inside_id", "block_id", "fold"]], on="pit_inside_id", how="inner")
     ek.assert_rows(floors, len(fa), "floors joined to fold assignment")
     floors = floors.rename(columns={"pit_inside_id": "truth_id"}).drop(columns="block_id")
+    fold_of_block, fill_ids, audit_label, audit_ids = footprint_folds(cfg, blocks, fa, a.fill, a.no_audit_list)
+    floors = floors[~floors.truth_id.isin(fa.loc[fa.block_id.isin(audit_ids), "pit_inside_id"])]
 
     run = ek.new_run("3.3", "slope_recall", {**cfg, "folds": folds, "B": B}, base=Path(a.out_base) if a.out_base else None,
                      why="S1 slope stratification of 9t out-of-fold recall at K=40 per km2.")
     print(f"run folder {run}")
     cut, frozen_cut = proposal_cutoffs(cfg, folds)
     print(f"proposal policy {cfg.get('proposal_policy', 'fixed')}: per fold {cut}, frozen target cutoff {frozen_cut}")
-    feat, blk, fold_summ = run_folds(cfg, folds, blocks, floors, fa, cut)
+    feat, blk, fold_summ = run_folds(cfg, folds, blocks, floors, fold_of_block, cut)
     ek.assert_no_nan(blk.block_id, "block ids")
     ek.assert_unique(feat, "truth_id")
 
@@ -337,8 +388,11 @@ def main(argv=None) -> int:
     blk["slope_mean"], blk["relief_mean"] = bs, br
     feat["slope_tercile"], cut_fs = xl.terciles(feat.slope_25m)
     feat["relief_tercile"], cut_fr = xl.terciles(feat.relief_50m)
-    blk["slope_tercile"], cut_bs = xl.terciles(blk.slope_mean)
-    blk["relief_tercile"], cut_br = xl.terciles(blk.relief_mean)
+    tb = blk.n_truth > 0                     # cut points on pit-bearing blocks, as before the G-02 fill
+    _, cut_bs = xl.terciles(blk.slope_mean[tb])
+    _, cut_br = xl.terciles(blk.relief_mean[tb])
+    blk["slope_tercile"], _ = xl.terciles(blk.slope_mean, cut_bs)
+    blk["relief_tercile"], _ = xl.terciles(blk.relief_mean, cut_br)
 
     tab, diffs = tercile_table(feat, blk, B, seed)
     overall = ek.block_bootstrap(xl.pooled_recall, list(zip(blk.hits, blk.n_truth)), B=B, seed=seed)[:3]
@@ -352,7 +406,13 @@ def main(argv=None) -> int:
     tab.to_csv(tcsv, index=False)
     png = run / "slope_recall_terciles_9t.png"
     figure(tab, overall, png)
+    pol = xl.policy("pit")
     summ = {"evidence_level": "(a) drawn features, exploratory association",
+            "policy": pol, "policy_hash": pol["policy_hash"],
+            "footprint": {"rule": a.fill, "n_blocks": int(len(blk)), "n_pit_free_blocks_added": len(fill_ids),
+                          "n_blocks_with_truth": int((blk.n_truth > 0).sum())},
+            "audit": audit_label,
+            "split_source": "historical trainer split read with ek.read_split_csv",
             "reference_caveat": "original CV5 sampler, not P1 isolated (protocol section 3)",
             "k_per_km2": cfg["k_per_km2"], "iou_tau": cfg["iou_tau"], "proposal_policy": cfg.get("proposal_policy", "fixed"),
             "proposal_thr_per_fold": cut, "frozen_target_proposal_thr": frozen_cut,

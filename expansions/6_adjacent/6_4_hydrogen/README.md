@@ -24,9 +24,12 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
 
-Tests. `python -m pytest -q expansions/6_adjacent/6_4_hydrogen/src/test_6_4.py -p no:cacheprovider` gives 6 passed.
+Tests. `python -m pytest -q expansions/6_adjacent/6_4_hydrogen/src/test_6_4.py -p no:cacheprovider` gives 8 passed.
+Review fix 6.4-01 on 2026-11-06. No held well file has a depth. `TOTAL_MAXI` is an empty string in all 20,108 rows of `venango_wells_all.gpkg`. It is also empty in `oil_gas_locations.gpkg` (223,742 rows), `wells_in_tile_enriched.gpkg` and the 2026-04 DEP shapefile. `OLDEST_FOR` and `TARGET_FOR` are empty too. The other reference files are other states or carry no depth column.
+So the run stops with `NoDepthInRecords` when depth coverage is 0. With `--allow-no-depth` it builds the package and every record reads "not computable, no depth in records". The counts sheet carries `h2_penetration_flag_not_computable`.
+Real-data check on 2026-11-06. With a placeholder tops file in scratch, 1,396 records were read. None had a depth, and the run stopped as designed.
 6.4 is a profile of the 6.1 pipeline. It adds a record-only penetration flag, an optional monitoring layer and extra count rows through hooks. No 6.1 script holds hydrogen logic.
 
 | Script | Stage | Runnable now | What is missing |

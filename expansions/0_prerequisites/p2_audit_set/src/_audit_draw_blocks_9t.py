@@ -1,7 +1,10 @@
 """P2 S1 and S5. Draw the comparative 9t audit set, add its buffer, test it, and freeze it on request.
 
 Purpose
-    1. Eligible blocks are the pit-bearing 9t blocks (feature count from the pit manifest).
+    1. Eligible blocks are the pit-bearing 9t blocks (feature count from the pit manifest). This draw frame
+       is pit-specific, so the file header says `frame=pit_bearing_blocks tasks=pit`. `load_audit(...,
+       task="pad")` refuses it. Pad trainers may still exclude these blocks from training. A pad audit set
+       needs its own draw (decisions_p2.md, needs user decision).
     2. Strata. Feature density tercile by slope tercile (3 x 3). Slope is the mean of the `slope` band of the
        0.5 m feature stack per block, read on a 5 m grid. Terciles use ranks, so ties split by block id.
     3. Allocation. Target share of eligible blocks (default 15%). Proportional to stratum size by largest
@@ -23,7 +26,7 @@ Purpose
 
 Inputs
     data/9t/derived/05/pit_dataset_manifest.csv, pit_blocks_9t.gpkg, features_pit_9t_05.tif (through the pit trainer)
-    P1 buffer file data/9t/results/splits/buffer_derivation_9t.json (--buffer-json) or --buffer-m
+    P1 buffer file data/9t/results/splits/buffer_derivation_9t.json (--buffer-json, read with ek.read_buffer("pit")) or --buffer-m
     optional P1 split file (--splits)
 
 Outputs
@@ -166,11 +169,14 @@ def split_overlap(split_path: Path, forbidden: set[int]) -> dict:
     doc = json.loads(Path(split_path).read_text(encoding="utf-8"))
     out = {}
     for task, t in doc["tasks"].items():
-        out[task] = {f: sorted(set(r["train"] + r["inner_val"]) & forbidden) for f, r in t["folds"].items()}
+        out[task] = {f: sorted(set(r["train"] + r["inner_val"] + r["held_out"]) & forbidden) for f, r in t["folds"].items()}
     return out
 
 
-def write_audit_csv(path: Path, tab, res, mode, buffer_m, seed) -> None:
+FRAME, TASKS = "pit_bearing_blocks", "pit"
+
+
+def write_audit_csv(path: Path, tab, res, mode, buffer_m, seed, frame: str = FRAME, tasks: str = TASKS) -> None:
     rows = [dict(block_id=b, role="audit", stratum=f"d{int(tab.set_index('block_id').dens_t[b])}"
                  f"s{int(tab.set_index('block_id').slope_t[b])}", area="9t") for b in res["audit"]]
     if mode == "block":
@@ -179,6 +185,7 @@ def write_audit_csv(path: Path, tab, res, mode, buffer_m, seed) -> None:
             "# Every 9t block trained or validated four of the five historical CV models.",
             "# Audit and buffer rows are excluded from all training, calibration, mining and selection.",
             f"# seed={seed} share={res['share']} buffer_m={buffer_m} buffer_mode={mode}",
+            f"# frame={frame} tasks={tasks}",
             f"# written={dt.datetime.now().isoformat(timespec='seconds')}"]
     body = pd.DataFrame(rows).to_csv(index=False, lineterminator="\n")
     path.write_text("\n".join(head) + "\n" + body, encoding="utf-8", newline="\n")
@@ -201,7 +208,7 @@ def main(argv=None) -> int:
     if a.buffer_m is None:
         if a.buffer_json is None or not a.buffer_json.exists():
             raise SystemExit("buffer missing. Give --buffer-json (P1 S4 output buffer_derivation_9t.json) or --buffer-m.")
-        a.buffer_m = float(json.loads(a.buffer_json.read_text())["buffer_m"])
+        a.buffer_m = float(ek.read_buffer(TASKS, a.buffer_json))
     import geopandas as gpd
     import _split_core_lib_9t as sc
     pit = sc.trainer("pit")
@@ -220,7 +227,7 @@ def main(argv=None) -> int:
     forbidden = set(res["audit"]) | (set(res["buffer"]) if a.buffer_mode == "block" else set())
     if a.splits:
         res["split_overlap"] = split_overlap(a.splits, forbidden)
-    res.update(buffer_m=a.buffer_m, buffer_mode=a.buffer_mode, seed=a.seed, n_eligible=len(tab))
+    res.update(buffer_m=a.buffer_m, buffer_mode=a.buffer_mode, seed=a.seed, n_eligible=len(tab), frame=FRAME, tasks=TASKS)
     if a.freeze:
         dst = ek.path_for("results_9t") / "splits" / "audit_blocks_9t_v1.csv"
         if dst.exists():

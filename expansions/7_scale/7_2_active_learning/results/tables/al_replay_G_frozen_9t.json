@@ -1,11 +1,18 @@
 {
-  "G": 0.0,
-  "G_raw": -0.004273504273504258,
-  "floored_at_zero": true,
-  "source": "R recall at the budget minus at 75% of it, frozen before the policy was scored",
+  "G": null,
+  "source": "unset",
+  "G_raw": 0.0,
+  "G_raw_note": "R recall at the budget minus at 75% of it, from the same curves that are scored. Diagnostic only. Never used as the margin and never floored",
   "seeds": [
     0,
     1,
-    2
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
   ]
 }

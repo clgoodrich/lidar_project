@@ -20,7 +20,9 @@ CFG = dk.load_cfg()
 OX, OY = 620000.0, 4594000.0
 
 
-def _las(path: Path, n=12000, seed=0):
+def _las(path: Path, n=12000, seed=0, mislabel=0.0):
+    """Ground on a gentle plane, canopy 2 to 10 m above it. mislabel = share of canopy points labelled ground (2),
+    a vendor error that a rung keeping the native class would inherit."""
     import laspy
     import pyproj
     h = laspy.LasHeader(point_format=6, version="1.4")
@@ -29,8 +31,11 @@ def _las(path: Path, n=12000, seed=0):
     rng = np.random.default_rng(seed)
     las = laspy.LasData(h)
     las.x, las.y = OX + rng.uniform(0, 60, n), OY + rng.uniform(0, 60, n)
-    las.z = 300 + rng.uniform(0, 10, n)
-    las.classification = np.where(rng.random(n) < 0.4, 2, 1).astype(np.uint8)
+    ground = rng.random(n) < 0.4
+    las.z = 300 + 0.05 * (las.x - OX) + rng.normal(0, 0.03, n) + np.where(ground, 0.0, rng.uniform(2, 10, n))
+    cls = np.where(ground, 2, 1)
+    cls[~ground & (rng.random(n) < mislabel)] = 2
+    las.classification = cls.astype(np.uint8)
     las.return_number = np.ones(n, np.uint8)
     las.number_of_returns = np.ones(n, np.uint8)
     las.write(str(path))
@@ -78,9 +83,11 @@ def test_ingest_thin_stack_curve(built):
     assert s3.main(["--las", str(las), "--density-json", str(dj), "--rates", "1.0", "0.5", "0.1", "--seeds", "2",
                     "--out", str(t / "thin")]) == 0
     lad = pd.read_csv(t / "thin" / "syn_ladder_oc.csv")
-    assert len(lad) == 5 and lad.positions_ok.all()
+    assert len(lad) == 5 and lad.positions_ok.all() and lad.nested_ok.all()
+    assert (lad.n_ground_native_class == lad.target_ground).all() and (lad.reclassified == "smrf").all()
     half = lad[lad.rate == 0.5]
-    assert np.allclose(half.retained_ground_share, 0.5, atol=1e-3)
+    # SMRF ground on a clean cloud is close to the native ground, so the retained share stays near the rate
+    assert np.allclose(half.retained_ground_share, 0.5, atol=0.05)
     # same seed reproduces, different seed differs
     import laspy
     a = laspy.read(half.path.iloc[0]); b = laspy.read(half.path.iloc[1])
@@ -119,6 +126,34 @@ def test_ingest_thin_stack_curve(built):
     (t / "air.json").write_text(json.dumps({"recall": 0.7, "lo": 0.6, "hi": 0.8}))
     assert s6.main(["--curve", str(t / "res" / "drone_density_curve_oc.csv"), "--airborne", str(t / "air.json"),
                     "--provenance", str(t / "drone_lidar_provenance_oc.json"), "--out", str(t / "res")]) == 0
+
+
+def _xyz(path):
+    import laspy
+    t = laspy.read(str(path))
+    return set(zip(np.asarray(t.X).tolist(), np.asarray(t.Y).tolist(), np.asarray(t.Z).tolist()))
+
+
+def test_ladder_nested_and_reclassified(tmp_path):
+    """Review 4.7-01. A vendor cloud with 50 % of canopy labelled ground. Each rung must reclassify, so its ground
+    count follows the true ground (about 0.4 n x rate), not the native label (about 0.7 n x rate). Rungs must nest."""
+    import _drone_thin_ladder_oc as s3
+    n = 12000
+    las = tmp_path / "bad.las"
+    _las(las, n=n, seed=4, mislabel=0.5)
+    info = dk.las_info(las)
+    rng = np.random.default_rng(4)
+    true_ground = int((rng.random(n) < 0.4).sum())          # the same draw _las made first
+    assert info["n_ground"] > 1.5 * true_ground                # the native label is badly inflated
+    df = s3.ladder(las, tmp_path / "thin", [0.5, 0.25], 2, 7, 2, 3600.0, dk.load_cfg()["ladder"]["reclass"])
+    for r in df.itertuples():
+        assert abs(r.n_ground - r.rate * true_ground) < 0.15 * r.rate * true_ground, (r.rate, r.n_ground, true_ground)
+    # nesting checked independently on the files. Same seed index, lower rung inside higher rung
+    for k in (0, 1):
+        q, h = (df[(df.rate == v) & (df.seed_idx == k)].path.iloc[0] for v in (0.25, 0.5))
+        assert _xyz(q) <= _xyz(h)
+    assert _xyz(df[df.rate == 0.5].path.iloc[0]) <= _xyz(df[df.rate == 1.0].path.iloc[0])
+    assert df.seed[df.rate < 1].nunique() == 2                  # one seed per seed index, shared across rungs
 
 
 def test_missing_input_names_r2(tmp_path):

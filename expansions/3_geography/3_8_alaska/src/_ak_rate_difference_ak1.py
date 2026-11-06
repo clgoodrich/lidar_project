@@ -1,8 +1,9 @@
 """S5b (3.8). Per-site long-term rate and seasonal amplitude, matched-pair difference E2 and E3.
 
 Purpose
-    Long-term rate. Slope (mm/yr) of end-of-season LOS (last usable date in end_of_season_month or the
-    nearest earlier thaw month, per year) across years. This removes the seasonal cycle by design.
+    Long-term rate. Slope (mm/yr) of end-of-season LOS across years. Every year's sample comes from the same
+    calendar month (the latest thaw month <= end_of_season_month present in every year), so months are never
+    mixed across years and the seasonal cycle cannot alias into the rate (2026-11-06).
     Seasonal amplitude. Peak-to-trough LOS change within each thaw season, median over years.
     E2 (primary). Per site, well-site rate minus the mean of its matched controls. Median over sites with
     a site-level bootstrap (B = 2000) and a permutation band (swap well and control labels within
@@ -37,10 +38,39 @@ ek = gt.ek
 EXP = "3.8"
 
 
+def eos_month_used(s: pd.DataFrame, eos_month: int, thaw_months: list[int]) -> int | None:
+    """The one calendar month that supplies every year's end-of-season sample (no season mixing).
+
+    The latest thaw month <= eos_month with a sample in every year. If no month covers every year, the latest
+    month with samples in at least 2 years, and years without it are dropped. None if no month has 2 years.
+    """
+    years = s["date"].dt.year.unique()
+    by_m = {m: set(s.loc[s["date"].dt.month == m, "date"].dt.year) for m in sorted(thaw_months, reverse=True)
+            if m <= eos_month}
+    for m, ys in by_m.items():
+        if len(ys) == len(years):
+            return m
+    for m, ys in by_m.items():
+        if len(ys) >= 2:
+            return m
+    return None
+
+
 def end_of_season_rate(series: pd.DataFrame, eos_month: int, thaw_months: list[int]) -> float:
+    """Slope (mm/yr) of the last LOS value per year, all taken from the SAME calendar month.
+
+    Mixing months (September one year, August the next) aliases the seasonal cycle into the rate
+    (review, 3.8 season mixing). The month is chosen by eos_month_used.
+    """
     s = series.dropna(subset=["los_mm"]).copy()
     s["date"] = pd.to_datetime(s["date"])
     s = s[s["date"].dt.month.isin(thaw_months) & (s["date"].dt.month <= eos_month)]
+    if s.empty:
+        return float("nan")
+    m = eos_month_used(s, eos_month, thaw_months)
+    if m is None:
+        return float("nan")
+    s = s[s["date"].dt.month == m]
     eos = s.sort_values("date").groupby(s["date"].dt.year).tail(1)
     if len(eos) < 2:
         return float("nan")
@@ -60,6 +90,8 @@ def seasonal_amplitude(series: pd.DataFrame, thaw_months: list[int]) -> float:
 
 def decide_two_sided(lo: float, hi: float, delta: float) -> str:
     """fw 3.8 section 10. Difference if |median| lower bound clears delta, equivalence if inside +-delta."""
+    if not (np.isfinite(lo) and np.isfinite(hi)):
+        return "inconclusive"
     if lo > delta or hi < -delta:
         return "decisive, difference"
     if lo > -delta and hi < delta:
@@ -152,11 +184,14 @@ def main(argv=None) -> int:
     for col, name in (("rate", "E2_rate_mm_yr"), ("amp", "E3_seasonal_amp_mm")):
         d = matched_diffs(pts, matches, col)
         d["cluster"] = d["site_id"].map(clus)
-        pt, lo, hi, _ = site_bootstrap_median(d, "cluster", B, int(pr["master_seed"]))
+        pt, lo, hi, draws = site_bootstrap_median(d, "cluster", B, int(pr["master_seed"]))
         plo, phi = permutation_band(d, pts, matches, col, min(B, 1000), int(pr["master_seed"]) + 1)
+        und = ek.undefined_share(draws)
         res[name] = {"median_diff": pt, "ci95": [lo, hi], "perm_band": [plo, phi], "n_sites": int(len(d)),
-                     "n_clusters": int(d["cluster"].nunique()),
-                     "decision": decide_two_sided(lo, hi, delta) if name.startswith("E2") else "exploratory"}
+                     "n_clusters": int(d["cluster"].nunique()), "undefined_share": und,
+                     "perm_band_label": "descriptive. Never used in the gate",
+                     "decision": (decide_two_sided(lo, hi, delta) if und == 0 else "inconclusive (undefined draws)")
+                     if name.startswith("E2") else "exploratory"}
         tables.append(d.assign(estimand=name))
     cr = pts[pts["kind"] == "control"]["rate"].dropna().to_numpy()
     n = res["E2_rate_mm_yr"]["n_sites"]

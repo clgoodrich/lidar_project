@@ -20,12 +20,15 @@
   "viewshed": {"eye_height_m": 1.7, "target_height_m": 0.0, "person_height_m": 1.7, "radius_m": 1000.0,
                "refraction_k": 0.13, "earth_radius_m": 6371000.0, "curvature": true, "canopy_height_m": 2.0,
                "k_extinction": {"leaf_on": 0.15, "leaf_off": 0.05, "_note": "starting values per metre, VERIFY, calibrated in S4"},
-               "o2_visible_threshold": 0.5, "pocket_min_area_m2": 400.0, "ray_chunk": 256, "mask_voids": true},
+               "o2_visible_threshold": 0.5, "pocket_min_area_m2": 400.0, "ray_chunk": 256, "mask_voids": true,
+               "_void_note": "mask_voids true makes void cells (no ground return) unknown, as targets and as obstacles on a sightline (review 6.6-02, F13)."},
   "cost": {"tobler_a": 6.0, "tobler_b": 3.5, "tobler_c": 0.05, "resample_m": 5.0,
            "landcover_multiplier": {"_note": "NLCD codes, time multipliers. Starting values. VERIFY and calibrate in S5.",
                                     "11": null, "21": 1.0, "22": 1.0, "23": 1.0, "24": 1.0, "31": 1.1, "41": 1.4, "42": 1.4,
                                     "43": 1.4, "52": 1.6, "71": 1.2, "81": 1.2, "82": 1.3, "90": 2.0, "95": 2.0, "default": 1.3}},
   "validation": {"acceptance_A": null, "time_tolerance_rel": null, "min_stations": 20, "min_routes": 10,
                  "B": 2000, "master_seed": 20261107, "k_grid": [0.0, 0.02, 0.05, 0.08, 0.1, 0.15, 0.2, 0.3, 0.5],
-                 "distance_bands_m": [0, 50, 100, 250, 500, 1000, 5000]}
+                 "distance_bands_m": [0, 50, 100, 250, 500, 1000, 5000],
+                 "walk_smooth_s": 15.0, "walk_min_disp_m": 10.0,
+                 "_walk_note": "GNSS noise handling for S5 (review 6.6-01). Centred moving average over walk_smooth_s, then points at least walk_min_disp_m apart. Build agent choice, change freely."}
 }

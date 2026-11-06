@@ -24,7 +24,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
+
+Review repair (2026-11-06). Arms are scored per class with the class policy (pits 0.35, pads 0.525). L0 is scored on pits only. L2 fine-tuning declares its re-initialised head. The gain figure shows negative gains. The transfer checkpoint is an explicit unset config key, so L0 and L2 refuse until it is set. Open user decisions are in `docs/decisions_3_5.md`.
 
 Built by the build agent. The shared regional-transfer code is `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py`. Expansions 3.4 to 3.8 import it. Stage commands that every region shares are its subcommands. Assumed inputs and their schemas are in `src/config_3_5.json`. A missing assumed input stops a script with a message that names the input, its schema and the VERIFY step. Decisions are in `docs/decisions_3_5.md`. Run the tests with `python -m pytest -q expansions/3_geography/3_5_oklahoma_kansas/src/test_3_5.py -p no:cacheprovider`.
 

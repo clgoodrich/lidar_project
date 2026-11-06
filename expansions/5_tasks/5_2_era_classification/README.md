@@ -24,10 +24,10 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
 
 Scripts sit in `src/`. Paths come from `src/config_5_2.json`. Outputs stay inside this folder. Tests run with
-`python -m pytest -q expansions/5_tasks/5_2_era_classification/src/test_5_2.py -p no:cacheprovider` (12 pass).
+`python -m pytest -q expansions/5_tasks/5_2_era_classification/src/test_5_2.py -p no:cacheprovider` (15 pass on 2026-11-06).
 
 | Script | Stage | Runnable now | What is missing |
 |---|---|---|---|
@@ -37,7 +37,7 @@ Scripts sit in `src/`. Paths come from `src/config_5_2.json`. Outputs stay insid
 | `src/_era_interval_labels_9t.py` | S2 interval labels and links | records-only yes (`--records-only`, exploratory) | 4.6 identity-resolved marks (`historic_marks`) |
 | `src/_era_label_audit_sample_9t.py` | S3 blind label audit (`draw`, `score`) | draw yes once real labels exist | a second person to fill the sheet (`label_audit_filled`) |
 | `src/_era_pair_features_9t.py` | S4 morphology and covariates | yes, run 2026-11-05 | land cover, oil-field boundary, flight year (assumed) |
-| `src/_era_model_arms_9t.py` | S5 split, S6 models, S8 figures | gate check yes, model no | 4.6 labels with 20 or more wells in E1 and E2, P1 split file, P2 audit blocks |
+| `src/_era_model_arms_9t.py` | S5 split, S6 models, S8 figures | gate check yes, model no | 4.6 labels with 20 or more wells in E1 and E2, P1 split file, P2 audit blocks. 2026-11-06 reads them with `ek.read_split_csv` and `ek.require_audit`, and reports the share of undefined AUC draws |
 | `src/_era_sentinel_support_9t.py` | S7 sentinel support | yes on records-only labels | 4.6 labels for a meaningful comparison |
 | `src/test_5_2.py` | smoke tests | yes | nothing |
 

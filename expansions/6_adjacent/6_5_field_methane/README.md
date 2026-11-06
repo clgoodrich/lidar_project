@@ -24,9 +24,10 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
 
-Tests. `python -m pytest -q expansions/6_adjacent/6_5_field_methane/src/test_6_5.py -p no:cacheprovider` gives 4 passed.
+Tests. `python -m pytest -q expansions/6_adjacent/6_5_field_methane/src/test_6_5.py -p no:cacheprovider` gives 5 passed.
+Review fix 6.5-01 on 2026-11-06. Unit and instrument errors now invalidate the visit with a reason. A ppm_m row on the point sampler, an instrument not in the registry, point and path instruments in one visit, or mixed units in one visit each set `valid` to False. The worked example sheet has no such rows, so its tables are unchanged.
 The framework was brought to full depth (`docs/fw_6_5_field_methane.md`, 144 lines). The draft protocol is `docs/methane_field_protocol.md`.
 The synthetic worked example is `results/tables/methane_example_sheet.csv`. The chain runs on it and the claim audit passes.
 

@@ -24,9 +24,11 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
 
-Tests. `python -m pytest -q expansions/6_adjacent/6_2_coal_features/src/test_6_2.py -p no:cacheprovider` gives 4 passed.
+Tests. `python -m pytest -q expansions/6_adjacent/6_2_coal_features/src/test_6_2.py -p no:cacheprovider` gives 5 passed.
+Review check on 2026-11-06. The suspected point-record bug was real. A point has no area, so the IoU rule for S and H could never match it. Point records now match by distance. The point must lie inside the candidate or within the class `offset_m` (15 m for S, 50 m for H). W has no offset, so it must lie inside. `class_match` has no caller in the pipeline yet, so no output changes.
+6.2 freezes its own coal audit blocks as a plain CSV, so `config_6_2.json` sets `reader` to `plain` for them.
 The study reuses the 6.3 code. `config_6_2.json` has the same shape as `config_6_3.json`, so the 6.3 sheet, agreement and pooled-score scripts take it with `--config`.
 Nothing runs on real data yet. The coal area has no lidar, derivatives or DEP mine layers on disk.
 

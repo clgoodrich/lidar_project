@@ -24,6 +24,24 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
+## Build status (2026-11-06)
+
+Review repair pass. Findings 5.5-01 and 5.5-02 and the circular test are fixed. Area is evidence level (a).
+
+| Script | Change | Runnable now | Missing |
+|---|---|---|---|
+| `src/_padarea_geometry_tools.py` | own one-to-one matcher. Primary rule `overlap_any`, sensitivity `iou_gate`. New `road_length` | library | nothing |
+| `src/_padarea_by_pad_9t.py` | primary match rule, IoU gate as sensitivity, `road_length_m` per pad | yes, rerun | nothing |
+| `src/_padarea_agreement_9t.py` | same, sensitivity summary added, policy stamped | drawn yes, survey no | `survey` |
+| `src/_padarea_cost_mc_9t.py` | unit check on every cost row, road term refuses without road length, repo-relative paths | break-even f yes | `cost_table` |
+| `src/test_5_5.py` | 12 tests. New oracle tests for truncation, one-to-one, road length, units | yes | nothing |
+
+Rerun on held 9t data, drawn reference.
+- Tile ratio 1.37 is unchanged. It does not depend on matching.
+- Matched pads 603 to 616. Largest matched |r| 1.18 to 2.89. Median r 0.237 to 0.238. P90 |r| 0.660 to 0.696.
+- 359 of the 392 old unmatched pads touch no model polygon. They are misses, not gate drops. Small pads matched 56 to 57.
+- Decision stays inconclusive under both rules.
+
 ## Build status (2026-11-05)
 
 Built by the build agent. All outputs stay inside this folder. Area is evidence level (a).

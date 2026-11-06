@@ -92,6 +92,51 @@ def read_block_ids(path: Path, col: str = "block_id") -> list[int]:
     return sorted(int(b) for b in df[col].unique())
 
 
+def audit_block_ids(cfg: dict, override=None, roles=("audit", "buffer"), allow_missing: bool = False):
+    """Audit block ids for this config.
+
+    inputs.audit_blocks.reader 'p2' (the 6.3 default) reads the frozen P2 file through ek.require_audit and
+    ek.audit_ids. That file starts with # header lines and has a sha256 sidecar, so plain read_csv is wrong.
+    roles ('audit', 'buffer') is the no-train set. roles ('audit',) is the sealed scoring ground.
+    A missing P2 file raises unless allow_missing. Then this returns None and the caller must label its output
+    "no audit exclusion, exploratory".
+    reader 'plain' is for 6.2, which freezes its own coal audit blocks as a plain block_id CSV.
+    """
+    spec = cfg["inputs"]["audit_blocks"]
+    if spec.get("reader", "p2") == "plain":
+        return read_block_ids(input_path(cfg, "audit_blocks", override))
+    p = Path(override) if override else resolve(spec)
+    aud = ek.require_audit(p, allow_missing=allow_missing)
+    if aud is None:
+        return None
+    return sorted(ek.audit_ids(aud, roles))
+
+
+def label_cache_ok(raster: Path, meta: Path, want: dict) -> bool:
+    """True when a derived label raster exists and its sidecar records the same sources as want."""
+    if not (Path(raster).exists() and Path(meta).exists()):
+        return False
+    try:
+        have = json.loads(Path(meta).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    return all(have.get(k) == v for k, v in want.items())
+
+
+def drop_near_truth(xy: np.ndarray, truth, dist_m: float) -> np.ndarray:
+    """Boolean keep mask. False for a point within dist_m of any truth geometry (distance 0 means inside)."""
+    import geopandas as gpd
+    xy = np.asarray(xy, float).reshape(-1, 2)
+    if not len(xy) or truth is None or not len(truth):
+        return np.ones(len(xy), bool)
+    pts = gpd.GeoSeries(gpd.points_from_xy(xy[:, 0], xy[:, 1]), crs=truth.crs)
+    near = gpd.sjoin(gpd.GeoDataFrame(geometry=pts), gpd.GeoDataFrame(geometry=truth.geometry.buffer(dist_m)),
+                     how="inner", predicate="intersects").index.unique()
+    keep = np.ones(len(xy), bool)
+    keep[np.asarray(near, int)] = False
+    return keep
+
+
 def extract_candidates(prob: np.ndarray, transform, crs: str, floor: float = 0.10, min_area: float = 4.0):
     """fw_00 section 4 rule through the trainer's own polygonize (same code as the sweep)."""
     sys.path.insert(0, str(TRAIN_DIR))

@@ -56,6 +56,7 @@ def run(cfg: dict, out_root: Path | None = None, samples_path: Path | None = Non
     sp = Path(samples_path) if samples_path else io.latest_run(io.EXP, "thermal_samples") / "thermal_samples_by_scene_9t.csv"
     s = pd.read_csv(io.need(sp, "T2 samples"))
     s = s[np.isfinite(s["lst_K"]) & ~s["partial"].astype(bool)].copy()
+    s = s[s["pair_id"].notna()]                      # T3 compares matched pairs only
     c = cfg["contrast"]
     g = cfg["gate"]
     sign = int(c["expected_sign"])
@@ -72,7 +73,7 @@ def run(cfg: dict, out_root: Path | None = None, samples_path: Path | None = Non
     byb = {b: d["diff_K"].to_numpy() for b, d in per.groupby("block_id")}
     blocks = list(byb)
     stat = lambda bl: float(np.mean(np.concatenate([byb[b] for b in bl]))) * sign  # noqa: E731
-    pt, lo, hi, _ = ek.block_bootstrap(stat, blocks, B=g["bootstrap_B"], seed=ek.child_seed(cfg["master_seed"], arm=30))
+    pt, lo, hi, dr = ek.block_bootstrap(stat, blocks, B=g["bootstrap_B"], seed=ek.child_seed(cfg["master_seed"], arm=30))
     verdict = ek.decide(lo, hi, g["delta_T_K"], "superiority")
     explo = {}
     for ls, d in m.groupby("leaf_state"):
@@ -80,6 +81,7 @@ def run(cfg: dict, out_root: Path | None = None, samples_path: Path | None = Non
     summary = {"stage": "T3", "evidence_level": "(a). A surface difference, never a leak or a well",
                "n_pairs": int(len(per)), "n_blocks": len(blocks), "n_pair_scenes": int(len(m)),
                "expected_sign": sign, "signed_contrast_K": pt, "lo": lo, "hi": hi, "delta_T_K": g["delta_T_K"],
+               "undefined_share": ek.undefined_share(dr),
                "verdict": verdict, "exploratory_by_leaf_state": explo,
                "note": "Failure means no detectable contrast at this pixel size. It does not exclude a drone signal"}
     if len(blocks) < 15:

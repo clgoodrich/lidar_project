@@ -58,3 +58,26 @@ def test_claim_audit(tmp_path):
     texts["report_summary.md"] = "Site SYN-B shows no leak. Emission rate 0.2 kg/h."
     hits = CA.audit_texts(cfg, texts)
     assert {h["phrase"] for h in hits} >= {"no leak", "emission rate", "kg/h", "missing required word 'screening'"}
+
+
+# ----------------------------------------------------------------------------- 2026-11-06 review fix 6.5-01
+def test_unit_and_instrument_errors_invalidate_visit(tmp_path):
+    """A ppm_m row on the point sampler, an unregistered instrument, and a path laser mixed into a point visit each
+    make that visit invalid with a stated reason. The untouched visit SYN-A-2 stays valid."""
+    cfg = SC.load_config()
+    s = FT.example_sheet(cfg)
+    s.loc[(s.visit_id == "SYN-A-1") & (s.reading_type == "screen") & (s.position == "1"), "units"] = "ppm_m"
+    s.loc[(s.visit_id == "SYN-B-1") & (s.reading_type == "screen"), "instrument_id"] = "mystery_meter"
+    _, val = SC.check(cfg, s)
+    v = val.set_index("visit_id")
+    assert v.loc["SYN-A-1", "valid"] == False and "units ppm_m do not match" in v.loc["SYN-A-1", "reasons"]  # noqa: E712
+    assert v.loc["SYN-B-1", "valid"] == False and "mystery_meter not in the registry" in v.loc["SYN-B-1", "reasons"]  # noqa: E712
+    assert v.loc["SYN-A-2", "valid"] == True  # noqa: E712
+    s2 = FT.example_sheet(cfg)
+    m = (s2.visit_id == "SYN-A-2") & (s2.reading_type == "screen") & (s2.position == "10")
+    s2.loc[m, "instrument_id"], s2.loc[m, "units"] = "open_path_laser_assumed", "ppm_m"
+    _, val2 = SC.check(cfg, s2)
+    r = val2.set_index("visit_id").loc["SYN-A-2"]
+    assert r["valid"] == False and "mixed in one visit" in r["reasons"]  # noqa: E712
+    bv = FT.build(cfg, s, tmp_path)["by_visit"]
+    assert (bv.loc[bv.visit_id == "SYN-A-1", "category"] == "invalid visit").all()

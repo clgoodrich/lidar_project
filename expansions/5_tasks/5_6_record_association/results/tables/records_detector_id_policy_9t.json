@@ -1,0 +1,64 @@
+{
+  "det_id_policy": "det_id = base + seeded random permutation of a prediction-only canonical order (cx, cy, score, area). pit base 1, pad base 1000001. Encodes neither match status nor score (review 5.6-01).",
+  "det_id_base": {
+    "pit": 1,
+    "pad": 1000001
+  },
+  "seed_pit": 20261106,
+  "seed_pad": 20261107,
+  "dedupe": {
+    "rule": "geometric",
+    "gap_m": 2.0,
+    "reads": "predicted geometry and score only. Truth columns are evaluation only."
+  },
+  "cutoff_used": 0.5,
+  "proposal_policy_pit": {
+    "task": "pit",
+    "mode": "primary",
+    "version": "fw00_s4_20261105",
+    "cutoff": 0.35,
+    "min_area_m2": 4.0,
+    "iou": 0.3,
+    "match_order": "score",
+    "blob_score": "mean",
+    "k_per_km2": 40.0,
+    "policy_hash": "5ca1e98"
+  },
+  "proposal_policy_pad": {
+    "task": "pad",
+    "mode": "primary",
+    "version": "fw00_s4_20261105",
+    "cutoff": 0.525,
+    "min_area_m2": 4.0,
+    "iou": 0.3,
+    "match_order": "score",
+    "blob_score": "mean",
+    "k_per_km2": 40.0,
+    "policy_hash": "f6d15ee"
+  },
+  "cutoff_note": "The held-out products were cut at 0.50. ek.policy_for gives 0.35 (pit) and 0.525 (pad). See docs/decisions_5_6.md, Needs user decision.",
+  "rows": {
+    "pit": 677,
+    "pad": 1005
+  },
+  "det_id_range": {
+    "pit": [
+      1,
+      677
+    ],
+    "pad": [
+      1000001,
+      1001005
+    ]
+  },
+  "files": {
+    "pit": {
+      "path": "expansions/5_tasks/5_6_record_association/data/processed/detector_output_pit_full_9t.gpkg",
+      "sha256": "e928d1ee7438b70dccf365459b428c78e85efbdd700f615ef1cbf0271815bf22"
+    },
+    "pad": {
+      "path": "expansions/5_tasks/5_6_record_association/data/processed/detector_output_pad_full_9t.gpkg",
+      "sha256": "7ea64cd324a4f43f25afc87a12f03ebb4d451d7337c846c8b30a41560658e4c9"
+    }
+  }
+}

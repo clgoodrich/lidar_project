@@ -3,13 +3,18 @@
 Purpose
     D is the number of distinct candidate sites at the review budget K = 40 per km² of scored eligible area, not a
     blob count. The script
-    1. takes the full pit detector output from 5.6 S0 (matched + unmatched, deployment dedupe),
-    2. keeps candidates in the eligible footprint (pit blocks with n_pits > 0, including blocks with no detection),
-    3. ranks by score, ties by larger area then det_id, and keeps the top K = round(40 x footprint km²),
+    1. takes the full pit detector output from 5.6 S0 (prediction-only geometric dedupe, review F15),
+    2. keeps candidates in the footprint. The footprint is every complete block of the grid (144 on 9t), chosen
+       without truth (review 5.4-02). The 29 zero-pit blocks have no out-of-fold pit prediction, so they add area
+       but no candidates (decisions_5_4.md, Needs user decision),
+    3. ranks by score, ties by larger area then det_id (a seeded random id), and keeps the top K = round(40 x km²),
     4. merges blobs whose centroids lie within merge_radius_m into one site (single linkage),
     5. builds N_doc from DEP records in the same footprint (statuses that imply a drilled hole), merging records within
        record_merge_m into one well,
-    6. reports D at K = 30 as a sensitivity and a block bootstrap of D over footprint blocks.
+    6. reports D at K = 30 as a sensitivity and a block bootstrap of D.
+    The bootstrap reruns steps 3 and 4 on every resample of blocks (review 5.4-01). The old bootstrap summed per-block
+    site counts after the top-K cut. A resample that repeats dense blocks then holds more than K sites, which is
+    why its interval reached 678 with K = 647. Rerunning the cut keeps every draw inside [0, K].
     The site table's SHA-256 is the frame hash that 7.5 Arm B must quote (S3 refuses a mismatch).
 
 Inputs (config_5_4.json)
@@ -36,7 +41,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "5_6_record_associa
 import _task5_helpers as th  # noqa: E402
 
 ek = th.ek
-BLOCK_KM2 = 0.375 * 0.375
+COPY_OFFSET_M = 1.0e7      # bootstrap copies of one block are moved this far apart so they never merge
 
 
 def merge_points(xy: np.ndarray, radius: float) -> np.ndarray:
@@ -59,6 +64,15 @@ def merge_points(xy: np.ndarray, radius: float) -> np.ndarray:
     return lab
 
 
+def footprint(blocks, mode: str = "complete_grid"):
+    """complete_grid = every block (no truth read). truth_bearing = n_pits > 0 (old rule, sensitivity only)."""
+    if mode == "complete_grid":
+        return blocks
+    if mode == "truth_bearing":
+        return blocks[blocks.n_pits > 0]
+    raise ValueError(f"unknown footprint {mode!r}")
+
+
 def top_k(cand: pd.DataFrame, area_km2: float, k_per_km2: float) -> pd.DataFrame:
     k = int(round(k_per_km2 * area_km2))
     c = cand.sort_values(["score", "area_m2", "det_id"], ascending=[False, False, True])
@@ -75,6 +89,35 @@ def sites_from(cand: pd.DataFrame, radius: float) -> pd.DataFrame:
     return s
 
 
+def d_of(cand: pd.DataFrame, k: int, radius: float) -> int:
+    """Distinct sites among the top k candidates (the D statistic)."""
+    c = cand.sort_values(["score", "area_m2", "det_id"], ascending=[False, False, True]).head(k)
+    if not len(c):
+        return 0
+    return int(merge_points(np.c_[c["cx"].to_numpy(), c["cy"].to_numpy()], radius).max() + 1)
+
+
+def d_bootstrap(cand: pd.DataFrame, block_ids, k: int, radius: float, B: int, seed: int, alpha: float = 0.05):
+    """Block bootstrap of D that reruns the top-K cut and the site merge on every resample (review 5.4-01).
+    Each drawn copy of a block keeps its own coordinates offset, so copies never merge. Draws lie in [0, k]."""
+    block_ids = list(block_ids)
+    by = {b: g for b, g in cand.groupby("block_id")}
+    empty = cand.iloc[:0]
+    rng = np.random.default_rng(seed)
+    draws = np.empty(B, float)
+    for t in range(B):
+        pick = rng.integers(0, len(block_ids), len(block_ids))
+        parts = []
+        for copy, j in enumerate(pick):
+            g = by.get(block_ids[j], empty)
+            if len(g):
+                g = g.assign(cx=g["cx"] + copy * COPY_OFFSET_M)
+                parts.append(g)
+        draws[t] = d_of(pd.concat(parts) if parts else empty, k, radius)
+    lo, hi = np.percentile(draws, [100 * alpha / 2, 100 * (1 - alpha / 2)])
+    return float(d_of(cand, k, radius)), float(lo), float(hi), draws
+
+
 def doc_wells(dep, footprint_ids, blocks, exclude, radius):
     d = dep[~dep.WELL_STATU.isin(exclude)].copy()
     xy = np.c_[d.x.to_numpy(), d.y.to_numpy()]
@@ -89,7 +132,7 @@ def run(cfg) -> dict:
     ek.assert_rows(pit, cfg["expected_pit_rows"], "5.6 full pit output")
     ek.assert_unique(pit, "det_id")
     blocks = th.read_vector(th.inp(cfg, "pit_blocks"), layer="blocks")
-    fp = blocks[blocks.n_pits > 0]
+    fp = footprint(blocks, cfg.get("footprint", "complete_grid"))
     fp_ids = set(fp.block_id.astype(int))
     area = len(fp) * (cfg["block_m"] / 1000.0) ** 2
     cand = pd.DataFrame(pit.drop(columns="geometry"))
@@ -103,22 +146,27 @@ def run(cfg) -> dict:
     assert sites.n_blobs.sum() == len(top), "a candidate landed in two sites"
     dep = th.load_dep(th.inp(cfg, "dep_wells"), bbox=tuple(fp.total_bounds))
     n_rec, n_doc = doc_wells(dep, fp_ids, blocks, cfg["doc_statuses_exclude"], cfg["record_merge_m"])
-    per_block = sites.groupby("block_id").size().reindex(sorted(fp_ids), fill_value=0)
-    pb = per_block.to_dict()
-    pt, lo, hi, _ = ek.block_bootstrap(lambda bl: float(sum(pb[b] for b in bl)), list(pb), B=cfg["bootstrap_B"],
-                                       seed=int(cfg["seed"]))
+    pt, lo, hi, draws = d_bootstrap(cand, sorted(fp_ids), k, cfg["merge_radius_m"], cfg["bootstrap_B"],
+                                    int(cfg["seed"]))
+    assert pt == len(sites)
     sites["rank"] = sites.max_score.rank(ascending=False, method="first").astype(int)
     sites["evidence_level"] = "a"
     out_s = th.outp(cfg, "sites")
     sites.sort_values("rank").to_csv(out_s, index=False)
-    acc = dict(footprint_blocks=len(fp), footprint_km2=area, k_per_km2=cfg["k_per_km2"], K=k,
+    acc = dict(footprint=cfg.get("footprint", "complete_grid"), footprint_blocks=len(fp), footprint_km2=area,
+               footprint_blocks_with_pit_truth=int((fp.n_pits > 0).sum()), k_per_km2=cfg["k_per_km2"], K=k,
                candidates_in_footprint=len(cand), D_blobs=len(top), D_sites=len(sites),
+               K_exceeds_candidates=bool(k > len(cand)),
                sites_with_several_blobs=int((sites.n_blobs > 1).sum()), sites_on_matched_feature=int(sites.any_matched.sum()),
-               K30=k30, D_sites_K30=len(sites30), D_sites_block_bootstrap=dict(point=pt, lo=lo, hi=hi, B=cfg["bootstrap_B"]),
+               K30=k30, D_sites_K30=len(sites30),
+               D_sites_block_bootstrap=dict(point=pt, lo=lo, hi=hi, B=cfg["bootstrap_B"], support=[0, k],
+                                            draw_max=float(draws.max()),
+                                            method="blocks resampled, top-K cut and site merge rerun per draw"),
                N_doc_records=n_rec, N_doc_wells=n_doc, merge_radius_m=cfg["merge_radius_m"],
                record_merge_m=cfg["record_merge_m"], doc_statuses_exclude=cfg["doc_statuses_exclude"],
-               frame_sha256=ek.sha256(out_s),
-               note="D counts candidate sites (evidence level a). It is not a count of wells.")
+               detector_input=th.rel(th.inp(cfg, "full_pit")), frame_sha256=ek.sha256(out_s),
+               note=("D counts candidate sites (evidence level a). It is not a count of wells. Zero-pit blocks have "
+                     "no out-of-fold pit prediction, so they add area but no candidates."))
     th.write_json(th.outp(cfg, "accounting"), acc)
     return acc
 
@@ -131,7 +179,7 @@ def main(argv=None) -> int:
     acc = run(cfg)
     for k, v in acc.items():
         print(f"{k:28s} {v}")
-    print("wrote", th.resolve(cfg["outputs"]["sites"]), "\nwrote", th.resolve(cfg["outputs"]["accounting"]))
+    print("wrote", th.rel(th.resolve(cfg["outputs"]["sites"])), "\nwrote", th.rel(th.resolve(cfg["outputs"]["accounting"])))
     return 0
 
 

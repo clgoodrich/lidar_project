@@ -15,6 +15,9 @@ Inputs
 Outputs
     expansions/3_geography/3_1_warren_forest_mckean/data/processed/<area>/05/<task>_prob_ens_<area>_05.tif  (heavy, gitignored)
     expansions/3_geography/3_1_warren_forest_mckean/results/<run_id>/_PROVENANCE.json, _RUN.md, xfer_infer_<task>_<area>.json
+    expansions/3_geography/3_1_warren_forest_mckean/results/tables/<area>/xfer_infer_record_<task>_<area>.json
+        (checkpoint lineage, provisional_cv5, prob sha256. The S7b scorer requires it and carries the
+        provisional status into every output, review F08)
 
 Run (GPU, minutes per window; not run by the build agent)
     python expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_frozen_infer_wfm.py --area warren --task pit
@@ -80,12 +83,17 @@ def main(argv=None) -> int:
     with rasterio.open(out, "w", **pr) as d:
         d.write(prob, 1)
         d.set_band_description(1, f"{a.task}_prob_{cfg['models']['policy']}")
+    ckpt = xl.tl.checkpoint_record(ckpts[0].parent.parent, "fold_mean", a.task,
+                                   provisional_reasons=["--allow-cv5 fallback to the original CV5 set"] if prov else None)
     rec = {"area": a.area, "task": a.task, "policy": cfg["models"]["policy"], "provisional_cv5": prov,
-           "ckpts": meta, "prob": str(out), "prob_mean": float(np.nanmean(prob))}
+           "provisional": bool(prov or ckpt["provisional"]), "checkpoint": ckpt,
+           "ckpts": meta, "prob": str(out), "prob_sha256": ek.sha256(out), "prob_mean": float(np.nanmean(prob))}
     (run / f"xfer_infer_{a.task}_{a.area}.json").write_text(json.dumps(rec, indent=2), encoding="utf-8")
-    ek.write_provenance(run, inputs=[feats, *ckpts], outputs=[out], params=rec, hash_limit_mb=500)
+    side = ctx["tables"] / f"xfer_infer_record_{a.task}_{a.area}.json"     # read by the S7b scorer (review F08)
+    side.write_text(json.dumps(rec, indent=2), encoding="utf-8")
+    ek.write_provenance(run, inputs=[feats, *ckpts], outputs=[out, side], params=rec, hash_limit_mb=500)
     print(json.dumps(rec, indent=2))
-    print(f"wrote {out}\n      {run}\nRun the >100 MB audit (CLAUDE.md Large-file rule) now.")
+    print(f"wrote {out}\n      {side}\n      {run}\nRun the >100 MB audit (CLAUDE.md Large-file rule) now.")
     return 0
 
 

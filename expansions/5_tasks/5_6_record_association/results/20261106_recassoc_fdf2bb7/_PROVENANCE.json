@@ -1,0 +1,313 @@
+{
+  "written": "2026-11-06T10:46:52",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_6_record_association/src/_records_assoc_v2_9t.py"
+  ],
+  "params": {
+    "seed": 20261104,
+    "tile_bbox": [
+      619500.0,
+      4593000.0,
+      624000.0,
+      4597500.0
+    ],
+    "block_origin": [
+      619500.0,
+      4593000.0
+    ],
+    "block_m": 375.0,
+    "status_groups": {
+      "orphan_abandoned": [
+        "DEP Orphan List",
+        "DEP Abandoned List"
+      ],
+      "plugged": [
+        "Plugged OG Well"
+      ],
+      "active": [
+        "Active"
+      ]
+    },
+    "positive_control": {
+      "group": "active",
+      "level": "pad",
+      "radius_m": 0,
+      "detector_set": "full"
+    },
+    "pit": {
+      "radii_m": [
+        10,
+        25,
+        50,
+        75,
+        100
+      ],
+      "primary_radius_m": 50,
+      "gate_m": 100.0,
+      "expected_predictions": 688
+    },
+    "cutoff_used": 0.5,
+    "dedupe": {
+      "rule": "geometric",
+      "gap_m": 2.0,
+      "_note": "Prediction-only (review F15). Blobs whose polygons lie within gap_m merge, the highest score is kept. 2.0 m is 4 pixels at 0.5 m. Needs user decision."
+    },
+    "det_id": {
+      "seed_pit": 20261106,
+      "seed_pad": 20261107,
+      "_note": "det_id = base + seeded permutation of a prediction-only order. pit base 1, pad base 1000001 (review 5.6-01)."
+    },
+    "pad": {
+      "radii_m": [
+        0,
+        25,
+        50
+      ],
+      "primary_radius_m": 0,
+      "match_iou": 0.3
+    },
+    "null": {
+      "n_shift": 300,
+      "shift_min_m": 200.0,
+      "shift_max_m": 500.0,
+      "max_loss": 0.1,
+      "max_tries": 20
+    },
+    "open_decisions": {
+      "assignment": "global",
+      "footprint": "complete_grid",
+      "null_redraw": "torus"
+    },
+    "adjudication": {
+      "n_sample": 60,
+      "distance_strata_m": [
+        0,
+        10,
+        25,
+        50,
+        100
+      ],
+      "field_use_min_ppv": null
+    },
+    "validation": {
+      "B": 2000,
+      "margin_m": 5.0
+    },
+    "inputs": {
+      "pit_candidates": {
+        "path": "@results_9t/pit/centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg",
+        "hint": "Built by notebooks/wellsight_v2/s5_eval/_build_undecided_pit_candidates_9t.py --thr 0.50"
+      },
+      "pad_products": {
+        "path": "@results_9t/pad/thresholds/pad_heldout_found_vs_missed_thr0p50_9t.gpkg",
+        "layer": "model_geometry",
+        "hint": "Built by notebooks/wellsight_v2/s5_eval/_pad_threshold_products_9t.py. Layer model_geometry is the full held-out pad output at 0.50."
+      },
+      "annotations": {
+        "path": "@truth/annotations_proj.gpkg",
+        "hint": "QGIS truth, layers plat and pit_inside"
+      },
+      "pit_blocks": {
+        "path": "@nine_t/pit_blocks_9t.gpkg",
+        "hint": "375 m CV blocks with n_pits"
+      },
+      "pad_blocks": {
+        "path": "@nine_t/pad_blocks_9t.gpkg",
+        "hint": "375 m CV blocks with n_pads"
+      },
+      "dep_wells": {
+        "path": "@dep_wells/venango_wells_all.gpkg",
+        "hint": "DEP 2026-04 Venango export. Read-only."
+      },
+      "orphan_2022": {
+        "path": "@reference/legacy_data/US_Documented_Orphan_Wells.csv",
+        "hint": "2022-05-09 orphan list (PA only). Keyed on API 37121nnnnn."
+      },
+      "full_pit": {
+        "path": "@exp:5.6/data/processed/detector_output_pit_full_9t.gpkg",
+        "hint": "Run _records_full_detector_output_9t.py first (S0)."
+      },
+      "full_pad": {
+        "path": "@exp:5.6/data/processed/detector_output_pad_full_9t.gpkg",
+        "hint": "Run _records_full_detector_output_9t.py first (S0)."
+      },
+      "coord_source": {
+        "path": "@dep_wells/dep_coordinate_source_venango.csv",
+        "assumed": true,
+        "schema": {
+          "PERMIT_NUM": "str, e.g. 121-12345",
+          "coord_source": "str (GPS, digitised map, survey, unknown)",
+          "coord_error_m": "float or empty"
+        },
+        "hint": "Requested from DEP in R1. Until it arrives the cohort run is unstratified."
+      },
+      "adjudication_filled": {
+        "path": "@exp:5.6/data/raw/records_link_adjudication_filled_9t.csv",
+        "assumed": true,
+        "schema": {
+          "link_id": "int",
+          "outcome": "correct | wrong | ambiguous (inaccessible counts as ambiguous)",
+          "adjudicator": "str",
+          "weight": "float, copied from the sample sheet"
+        },
+        "hint": "Blind identity adjudication of the sample drawn by _records_link_ppv_sample_9t.py --draw. User-only step."
+      },
+      "gnss_points": {
+        "path": "@reference/independent_coords/gnss_wells_9t.gpkg",
+        "assumed": true,
+        "schema": {
+          "PERMIT_NUM": "str",
+          "method": "RTK | NETL survey | other",
+          "h_acc_m": "float",
+          "geometry": "Point EPSG:6346"
+        },
+        "hint": "Independent coordinates (R1 DEP GNSS, R2 NETL). None held."
+      }
+    },
+    "other_states": {
+      "_note": "S5. Each state is a separate case study. Each needs its own detector output in the 5.6 full-output schema. None exists yet.",
+      "states": {
+        "NY": {
+          "records": "@reference/wells_ny_dec",
+          "status_col": "assumed",
+          "status_map": {},
+          "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_ny.gpkg",
+          "footprint": "@exp:5.6/data/processed/footprint_blocks_ny.gpkg"
+        },
+        "OH": {
+          "records": "@reference/wells_oh_odnr",
+          "status_col": "assumed",
+          "status_map": {},
+          "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_oh.gpkg",
+          "footprint": "@exp:5.6/data/processed/footprint_blocks_oh.gpkg"
+        },
+        "WV": {
+          "records": "@reference/wells_wv_dep",
+          "status_col": "assumed",
+          "status_map": {},
+          "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_wv.gpkg",
+          "footprint": "@exp:5.6/data/processed/footprint_blocks_wv.gpkg"
+        },
+        "KY": {
+          "records": "@reference/wells_ky_kgs",
+          "status_col": "assumed",
+          "status_map": {},
+          "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_ky.gpkg",
+          "footprint": "@exp:5.6/data/processed/footprint_blocks_ky.gpkg"
+        },
+        "OK": {
+          "records": "@reference/wells_ok_occ",
+          "status_col": "assumed",
+          "status_map": {},
+          "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_ok.gpkg",
+          "footprint": "@exp:5.6/data/processed/footprint_blocks_ok.gpkg"
+        },
+        "IL": {
+          "records": "@reference/wells_il_isgs",
+          "status_col": "assumed",
+          "status_map": {},
+          "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_il.gpkg",
+          "footprint": "@exp:5.6/data/processed/footprint_blocks_il.gpkg"
+        },
+        "KS": {
+          "records": "@reference/wells_ks_kgs",
+          "status_col": "assumed",
+          "status_map": {},
+          "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_ks.gpkg",
+          "footprint": "@exp:5.6/data/processed/footprint_blocks_ks.gpkg"
+        }
+      }
+    },
+    "outputs": {
+      "full_pit": "@exp:5.6/data/processed/detector_output_pit_full_9t.gpkg",
+      "full_pad": "@exp:5.6/data/processed/detector_output_pad_full_9t.gpkg",
+      "row_counts": "@exp:5.6/results/tables/records_detector_row_counts_9t.csv",
+      "id_policy": "@exp:5.6/results/tables/records_detector_id_policy_9t.json",
+      "runs": "@exp:5.6/results",
+      "cohort_rates": "@exp:5.6/results/tables/records_cohort_excess_9t.csv",
+      "adjudication_sheet": "@exp:5.6/data/interim/records_link_adjudication_sheet_9t.csv",
+      "ppv_summary": "@exp:5.6/results/tables/records_link_ppv_9t.json",
+      "validation": "@exp:5.6/results/tables/records_gnss_position_error_9t.csv",
+      "validation_summary": "@exp:5.6/results/tables/records_gnss_validation_9t.json",
+      "other_states": "@exp:5.6/results/tables/records_other_states_excess.csv"
+    },
+    "n_shift_used": 300
+  },
+  "seeds": {
+    "master": 20261104
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_6_record_association\\data\\processed\\detector_output_pit_full_9t.gpkg",
+      "bytes": 565248,
+      "mtime": "2026-11-06T10:45:54.998091",
+      "sha256": "e928d1ee7438b70dccf365459b428c78e85efbdd700f615ef1cbf0271815bf22"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_6_record_association\\data\\processed\\detector_output_pad_full_9t.gpkg",
+      "bytes": 5169152,
+      "mtime": "2026-11-06T10:45:55.226670",
+      "sha256": "7ea64cd324a4f43f25afc87a12f03ebb4d451d7337c846c8b30a41560658e4c9"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj.gpkg",
+      "bytes": 10588160,
+      "mtime": "2026-08-18T10:28:04.282126",
+      "sha256": "8d816579dabe1fe637c6f76388999c2931f77a60084ba6f59935531781b10396"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-09-04T10:51:16.244983",
+      "sha256": "fad7c3fd96ada6b2c677738d9e0e8a8c5580a345d10582882ce4d62624187d52"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pad_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-06-10T15:26:51.678313",
+      "sha256": "17814922f580c801f47996153739ec12c54d378bd0a8fe9a8ef8b738c61417bc"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_6_record_association\\results\\20261106_recassoc_fdf2bb7\\rates.csv",
+      "bytes": 13161,
+      "mtime": "2026-11-06T10:46:46.766347",
+      "sha256": "563331325f0b79265c066cd8aa737235c3539a468cdd41848269e5042558f667"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_6_record_association\\results\\20261106_recassoc_fdf2bb7\\null_retained.csv",
+      "bytes": 185274,
+      "mtime": "2026-11-06T10:46:46.798478",
+      "sha256": "6a1a4b476e3a3319626a5de97f539613c566c4654439ff1c06635548f231323c"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_6_record_association\\results\\20261106_recassoc_fdf2bb7\\proposals.csv",
+      "bytes": 217299,
+      "mtime": "2026-11-06T10:46:46.839407",
+      "sha256": "f5f0ea47d29b86ffab037e44830d151cca3d0af3af4607b5ed2ec7087106a3bf"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_6_record_association\\results\\20261106_recassoc_fdf2bb7\\summary.json",
+      "bytes": 9753,
+      "mtime": "2026-11-06T10:46:46.840426",
+      "sha256": "bbeea2ba5f4992efedba331d3cb15b4da799e60766eafdaa08db23ea34683a48"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_6_record_association\\results\\20261106_recassoc_fdf2bb7\\records_assoc_rates_9t.png",
+      "bytes": 197228,
+      "mtime": "2026-11-06T10:46:52.138312",
+      "sha256": "119378e6a6c76b666ba72ab20d3768b30e96a12a0fdab3ffc8a8c02ec5904196"
+    }
+  ]
+}

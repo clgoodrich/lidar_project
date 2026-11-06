@@ -92,7 +92,9 @@ def build(cfg: dict, root: Path) -> str:
     touch = {t: c.get("hidden_touch", 0) for t, c in summ["label_counts"].items()}
     md = [f"# Datasheet {cfg['release_name']}", "",
           f"Status. {'PROVISIONAL. Not for release.' if summ['provisional'] else 'Candidate release.'}",
-          "Evidence level (a) throughout. Labels are drawn terrain features. They are not wells.", "",
+          "Evidence level (a) throughout. Labels are drawn terrain features. They are not wells.",
+          f"Audit exclusion. {summ.get('audit_exclusion', 'not recorded. Export predates the label. Treat as none.')}",
+          f"Scoring policy {summ.get('policy_version', 'not recorded')} (scoring_policy.json).", "",
           "## Motivation",
           "No public benchmark exists for lidar detection of terrain features linked to old oil and gas sites.",
           "The release lets others compare methods on the same tiles and the same scorer. Funding is VERIFY.", "",

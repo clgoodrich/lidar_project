@@ -1,6 +1,8 @@
 {
   "_about": "5.5 polygon area and cost. Path specs resolve through _task5_helpers.resolve. Assumed inputs carry a schema. Area is level (a). Nothing here speaks to wells.",
   "seed": 20261105,
+  "match_rule": "overlap_any",
+  "match_rule_sensitivity": "iou_gate",
   "match_iou": 0.3,
   "merge_overlap_frac": 0.2,
   "subtract_pits": true,

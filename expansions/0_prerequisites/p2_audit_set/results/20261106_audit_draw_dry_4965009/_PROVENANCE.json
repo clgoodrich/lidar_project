@@ -1,0 +1,46 @@
+{
+  "written": "2026-11-06T10:56:57",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/0_prerequisites/p2_audit_set/src/_audit_draw_blocks_9t.py",
+    "--buffer-json",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/buffer_derivation_9t.json",
+    "--splits",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/cv_splits_future_9t_v1.json"
+  ],
+  "params": {},
+  "seeds": {
+    "draw": 20261104
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_dataset_manifest.csv",
+      "bytes": 38550,
+      "mtime": "2026-09-04T10:51:16.250295",
+      "sha256": "d630805555309d25ad3cba5d3082668c5d1a0cddc1d68edc75eb0fd421eb27e3"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-09-04T10:51:16.244983",
+      "sha256": "fad7c3fd96ada6b2c677738d9e0e8a8c5580a345d10582882ce4d62624187d52"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\0_prerequisites\\p2_audit_set\\data\\interim\\audit_blocks_9t_dryrun.csv",
+      "bytes": 707,
+      "mtime": "2026-11-06T10:56:57.175208",
+      "sha256": "df53267b57644249ee8f5148702ae4e8b48521268840681c5a4614427908a511"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\0_prerequisites\\p2_audit_set\\data\\interim\\audit_draw_9t_dryrun.json",
+      "bytes": 3048,
+      "mtime": "2026-11-06T10:56:57.176711",
+      "sha256": "bc5e9698f3129e1f7858176c0193b76b30866b9a34db133159898c4e4c816121"
+    }
+  ]
+}

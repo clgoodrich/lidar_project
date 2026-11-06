@@ -11,7 +11,8 @@ Purpose
 Inputs (config_5_1.json)
     inputs.shared_folds  -> expansions/5_tasks/5_1_context_features/results/tables/shared_folds_9t_v1.json (S1)
                             (--provisional reads shared_folds_9t_provisional.json and marks every job provisional)
-    trainers.pit|pad|road  trainer scripts. The pit isolated trainer is P1 S3 and the road copy is not built.
+    trainers.pit|pad|road  trainer scripts. The pit isolated trainer is P1 S3,
+                           expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py. The road copy is not built.
 Outputs
     outputs.retrain_manifest -> expansions/5_tasks/5_1_context_features/results/tables/context_retrain_manifest_9t.json
     Trainers write to @exp:5.1/models/<role>/unet_shared_cv5/fold<k>/ (expansion models/, not in git)
@@ -53,10 +54,29 @@ def jobs_from_folds(block_to_fold: dict[int, int], k: int, audit: list[int]) -> 
     return jobs
 
 
+# P1-06. The pit isolated trainer is expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py.
+# It takes a P1 split JSON (--splits, --only-folds, --out-dir), not this manifest. Its jobs are printed with
+# its real flags, and --execute refuses them until the shared folds are exported in the P1 split schema.
+CLI_MISMATCH = {"pit": "the P1 isolated pit trainer reads a P1 split JSON (content-hashed), not the 5.1 manifest. "
+                       "Export the shared folds in the P1 split schema first."}
+
+
+def repo_rel(p) -> str:
+    """Repo-relative POSIX path for outputs. Never an absolute path."""
+    p = Path(p)
+    try:
+        return p.resolve().relative_to(ek.REPO.resolve()).as_posix()
+    except ValueError:
+        return p.name
+
+
 def command(cfg: dict, job: dict, manifest: Path) -> list[str]:
-    tr = th.resolve(cfg["trainers"][job["role"]])
-    return [sys.executable, str(tr), "--split-file", str(manifest), "--role", job["role"], "--fold", str(job["fold"]),
-            "--out", str(th.resolve(job["out_dir"]))]
+    tr = repo_rel(th.resolve(cfg["trainers"][job["role"]]))
+    out = repo_rel(th.resolve(job["out_dir"]))
+    if job["role"] == "pit":
+        return ["python", tr, "--splits", repo_rel(manifest), "--only-folds", str(job["fold"]), "--out-dir", out]
+    return ["python", tr, "--split-file", repo_rel(manifest), "--role", job["role"], "--fold", str(job["fold"]),
+            "--out", out]
 
 
 def main(argv=None) -> int:
@@ -73,7 +93,7 @@ def main(argv=None) -> int:
     m = {int(b): int(f) for b, f in sf["block_to_fold"].items()}
     jobs = jobs_from_folds(m, int(sf["k"]), [int(x) for x in sf.get("audit_blocks", [])])
     out = th.outp(cfg, "retrain_manifest")
-    doc = dict(source=str(src), source_sha256=ek.sha256(src), provisional=bool(sf.get("provisional")),
+    doc = dict(source=repo_rel(src), source_sha256=ek.sha256(src), provisional=bool(sf.get("provisional")),
                inner_val_rule="fold (k + 1) mod K", trainers=cfg["trainers"], jobs=jobs,
                requirement="trainer rejects any window touching held_out or val blocks, fits normalisation on "
                            "train blocks only, writes training_blocks.json beside best.pt")
@@ -89,8 +109,11 @@ def main(argv=None) -> int:
             raise SystemExit("refusing to train on a provisional fold file")
         if missing:
             raise th.MissingInput(f"trainer_{missing[0]}", th.resolve(cfg["trainers"][missing[0]]), cfg["trainers"]["note"])
+        bad = sorted({j["role"] for j in jobs} & set(CLI_MISMATCH))
+        if bad:
+            raise SystemExit(f"refusing --execute for roles {bad}: " + " ".join(CLI_MISMATCH[r] for r in bad))
         for j in jobs:
-            subprocess.run(command(cfg, j, out), check=True)
+            subprocess.run([sys.executable] + command(cfg, j, out)[1:], check=True, cwd=str(ek.REPO))
     return 0
 
 

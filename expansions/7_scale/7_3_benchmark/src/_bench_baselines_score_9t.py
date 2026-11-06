@@ -102,8 +102,7 @@ def run(cfg: dict, root: Path, B: int, only: list[str] | None = None) -> pd.Data
         argv = ["--pred", *specs, "--labels", lab.relative_to(root).as_posix(), "--layer", TASK_LAYER[b["task"]],
                 "--blocks", "blocks/blocks_devtest.gpkg", "--out", f"baselines/{name}_score.json",
                 "--candidates-out", f"baselines/{name}_cands.csv", "--blocks-out", f"baselines/{name}_blocks.csv",
-                "--B", str(B), "--seed", str(sp["seed"]), "--k-per-km2", str(sp["k_per_km2"]),
-                "--thr", str(sp.get("thr_by_task", {}).get(b["task"], sp["thr"]))]
+                "--B", str(B), "--seed", str(sp["seed"]), "--task", b["task"], "--mode", sp.get("mode", "primary")]
         cmds[name] = argv
         import os
         cwd = os.getcwd()
@@ -120,7 +119,9 @@ def run(cfg: dict, root: Path, B: int, only: list[str] | None = None) -> pd.Data
                      "eval_set": f"devtest (release fold {k_dev}), out-of-fold per the model's own split", "recall": s["recall"], "lo": s["ci95"][0],
                      "hi": s["ci95"][1], "k": s["k"], "hits": s["hits"], "n_truth": s["n_truth"],
                      "n_blocks": s["n_blocks"], "truth_per_km2": s["truth_density_per_km2"],
-                     "evidence_level": "a"})
+                     "cutoff": s["policy"]["cutoff"], "match_order": s["policy"]["match_order"],
+                     "policy_version": s["policy"]["version"], "policy_hash": s["policy"]["policy_hash"],
+                     "bootstrap_undefined_share": s["bootstrap_undefined_share"], "evidence_level": "a"})
     df = pd.DataFrame(rows)
     df.to_csv(out / "baseline_scores.csv", index=False, float_format="%.10g", lineterminator="\n")
     (out / "baseline_commands.json").write_text(json.dumps(cmds, indent=2), encoding="utf-8")

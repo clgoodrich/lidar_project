@@ -12,7 +12,8 @@ Purpose
 Inputs
     results/tables/field_sample_blind_v1.csv (from _field_sample_draw_frames.py), config_7_5.json
 Outputs (expansions/7_scale/7_5_field_campaign/results/field_sheets_v1/)
-    sheet_<site_id>.md, field_entry_template_v1.csv, field_codebook_v1.json, field_waypoints_v1.gpx
+    sheet_<site_id>.md, field_entry_template_v1.csv, field_well_template_v1.csv (one row per found well),
+    field_codebook_v1.json, field_waypoints_v1.gpx
 
 Run
     python expansions/7_scale/7_5_field_campaign/src/_field_sheet_generate.py
@@ -34,6 +35,10 @@ ENTRY_COLUMNS = ["site_id", "visit_id", "search_round", "searcher_id", "date", "
                  "gnss_datum", "gnss_accuracy_m", "search_radius_m", "search_minutes", "methane_screen_ppm",
                  "magnetometer_done", "magnetic_anomaly", "evidence_codes", "outcome", "identity",
                  "identity_basis", "photos", "blind_confirmed", "notes"]
+# One row per well found during a visit (child of the visit row). Area cells can hold several wells.
+# tied_record_id is the agency permit the on-site evidence ties the well to, blank when none (review F16, 7.5-02).
+WELL_COLUMNS = ["site_id", "visit_id", "well_seq", "gnss_x", "gnss_y", "identity", "evidence_codes",
+                "tied_record_id", "notes"]
 FORBIDDEN_ON_SHEET = ("score", "stratum", "arm", "record", "permit", "dep_id", "era", "controls")
 
 SHEET = """# Field sheet {site_id}
@@ -56,6 +61,8 @@ Evidence produced here can be level (c) steel anomaly or level (d) confirmed wel
 4. Methane screen at the target before approach{mag}.
 5. Tick every evidence code seen. Photograph each one with a scale.
 6. Record the outcome and, separately, the identity status with its basis.
+7. Write one row in the well template for every well found, with its own GNSS position. A cell can hold several.
+   If on-site evidence ties a well to an agency record, write that permit number in tied_record_id.
 
 ## Evidence codes (tick all seen)
 {evidence}
@@ -76,13 +83,15 @@ Evidence produced here can be level (c) steel anomaly or level (d) confirmed wel
 
 def codebook(cfg: dict) -> dict:
     c = cfg["codes"]
-    return {"version": "field_codebook_v1", "columns": ENTRY_COLUMNS, "outcome": c["outcome"], "identity": c["identity"],
+    return {"version": "field_codebook_v1", "columns": ENTRY_COLUMNS, "well_columns": WELL_COLUMNS, "outcome": c["outcome"], "identity": c["identity"],
             "access": c["access"], "evidence": c["evidence"],
             "rules": ["identity is recorded separately from outcome",
                       "steel_anomaly_only never gives identity confirmed_well",
                       "nothing_found with unknown search sensitivity is ambiguous, not definite_non_well",
                       "an inaccessible sampled site stays in the frame as ambiguous",
-                      "search_round 2 is an independent repeat by a second searcher blind to round 1"]}
+                      "search_round 2 is an independent repeat by a second searcher blind to round 1",
+                      "every well found gets its own row in the well template, linked by visit_id",
+                      "a seeded control counts as found only when a well row names its permit in tied_record_id"]}
 
 
 def write_sheets(blind: pd.DataFrame, cfg: dict, out: Path) -> list[Path]:
@@ -109,6 +118,7 @@ def write_sheets(blind: pd.DataFrame, cfg: dict, out: Path) -> list[Path]:
     tmpl = pd.DataFrame({c: [] for c in ENTRY_COLUMNS})
     tmpl = pd.concat([tmpl, pd.DataFrame({"site_id": order["site_id"]})], ignore_index=True)
     tmpl.to_csv(out / "field_entry_template_v1.csv", index=False)
+    pd.DataFrame({c: [] for c in WELL_COLUMNS}).to_csv(out / "field_well_template_v1.csv", index=False)
     (out / "field_codebook_v1.json").write_text(json.dumps(cb, indent=2), encoding="utf-8")
     wpt = "".join(f'<wpt lat="{r.lat:.7f}" lon="{r.lon:.7f}"><name>{escape(r.site_id)}</name></wpt>' for r in order.itertuples())
     (out / "field_waypoints_v1.gpx").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="field sheets" '

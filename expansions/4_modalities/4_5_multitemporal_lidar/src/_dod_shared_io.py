@@ -167,3 +167,25 @@ def feature_mask(layers, shape, transform, dilate_cells: int):
         return np.zeros(shape, bool)
     m = rasterize(geoms, out_shape=shape, transform=transform, fill=0, default_value=1, all_touched=True).astype(bool)
     return ndi.binary_dilation(m, iterations=max(int(dilate_cells), 0)) if dilate_cells else m
+
+
+def seam_distance(field, res: float) -> np.ndarray:
+    """Distance in metres from every cell to the nearest straight survey seam (_change_seams_9t.seams) in a
+    high-passed change field. All inf when the field holds no seam."""
+    from scipy import ndimage as ndi
+    import _change_seams_9t as SE
+    sm, _ = SE.seams(field)
+    if not (sm > 0).any():
+        return np.full(field.shape, np.inf)
+    return ndi.distance_transform_edt(sm == 0) * res
+
+
+def value_at(grid, transform, geoms) -> np.ndarray:
+    """grid value at each geometry's representative point (NaN outside the grid)."""
+    res, x0, y1 = float(transform.a), float(transform.c), float(transform.f)
+    out = []
+    for g in geoms:
+        c = g.representative_point()
+        r_, c_ = int((y1 - c.y) // res), int((c.x - x0) // res)
+        out.append(float(grid[r_, c_]) if 0 <= r_ < grid.shape[0] and 0 <= c_ < grid.shape[1] else np.nan)
+    return np.array(out)

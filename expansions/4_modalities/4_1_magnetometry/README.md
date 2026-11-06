@@ -24,7 +24,7 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
 
 Built by the build agent. Every script has a docstring, an argparse CLI and a `run()` function. Tests are in `src/test_4_1.py`.
 
@@ -32,13 +32,16 @@ Built by the build agent. Every script has a docstring, an argparse CLI and a `r
 |---|---|---|---|
 | `src/_mag_shared_io.py` | helper | yes | nothing |
 | `src/config_4_1.json` | config | yes | VERIFY items. Pole strength range, IGRF angles, gate thresholds |
-| `src/_mag_site_frame_9t.py` | S0 site frame | yes, run 2026-11-05 | Historic-map dates (4.6), confusers and blanks CSV, chosen `pilot_sites.csv` |
+| `src/_mag_site_frame_9t.py` | S0 site frame | yes, rerun 2026-11-06 after the review fixes | Historic-map dates (4.6), confusers and blanks CSV, chosen `pilot_sites.csv` |
 | `src/_mag_survey_design.py` | S1 line plan and detection depth | yes, demo run 2026-11-05 | Measured pole strength for a cut casing |
 | `src/_mag_anomaly_process.py` | S3 processing and picks | no | Field data. `data/raw/<site>/mag_lines.csv` and `mag_base.csv`, or `mag_grid.tif` |
 | `src/_mag_pick_well_match.py` | S4 report, pilot gate, S5 feed forward | no | S3 output, `pilot_sites.csv`, `wellheads_gnss.csv`, `site_identity.csv` |
-| `src/test_4_1.py` | smoke test | yes | nothing. 6 tests pass |
+| `src/test_4_1.py` | smoke and regression tests | yes | nothing. 13 tests pass (2026-11-06) |
+
+Review fixes 2026-11-06. The S4 outcome crosses identity with the anomaly result. The pilot gate fails on a pick at a blank and on a missed steel-era confirmed well. See `docs/decisions_4_1.md`.
 
 Outputs written so far.
+- `expansions/4_modalities/4_1_magnetometry/results/20261106_magframe_28f0cc3/mag_site_frame_9t.csv` and `mag_site_frame_counts_9t.json` (rerun 2026-11-06)
 - `expansions/4_modalities/4_1_magnetometry/results/20261105_magframe_28f0cc3/mag_site_frame_9t.csv` and `mag_site_frame_counts_9t.json`
 - `expansions/4_modalities/4_1_magnetometry/results/20261105_magdesign_f11f115/mag_survey_lines_demo.gpkg`, `mag_survey_design_demo.json`, `mag_detect_depth_demo.csv`
 

@@ -49,6 +49,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "5_6_record_associa
 import _task5_helpers as th  # noqa: E402
 
 ek = th.ek
+
+
+def repo_rel(p) -> str:
+    """Repo-relative POSIX path for outputs. Never an absolute path."""
+    p = Path(p)
+    try:
+        return p.resolve().relative_to(ek.REPO.resolve()).as_posix()
+    except ValueError:
+        return p.name
 FEATURES = ["stage1", "road_dist_m", "pad_mean_25m", "pad_mean_50m", "pad_mean_100m",
             "n_pit_50m", "n_pit_100m", "slope", "area_m2"]
 
@@ -242,7 +251,7 @@ def build_features(cfg: dict, cands, block_fold: np.ndarray, pad_fold: np.ndarra
                 p, kind = raster_for(cfg, role, mode, k, int(bf), pfi)
                 if not p.exists():
                     raise th.MissingInput(f"upstream_rasters.{role}.{mode}", p, cfg["upstream_rasters"]["note"])
-                usage.append(dict(outer_fold=k, block_fold=int(bf), pad_fold=pfi, role=role, raster=str(p), kind=kind,
+                usage.append(dict(outer_fold=k, block_fold=int(bf), pad_fold=pfi, role=role, raster=repo_rel(p), kind=kind,
                                   n_rows=int(len(ii)), blocks=sorted({int(b) for b in block_id[ii]})))
                 with rasterio.open(p) as ds:
                     ek.assert_crs(ds)
@@ -327,7 +336,7 @@ def main(argv=None) -> int:
     table.to_parquet(out, index=False)
     gp = th.outp(cfg, "stage2_candidates_gpkg")
     cands.assign(matched_truth=cands.matched_truth.astype(str)).to_file(gp, layer="candidates", driver="GPKG")
-    th.write_json(th.outp(cfg, "stage2_usage"), dict(mode=mode, shared_folds=str(sf_path), provisional=sf.get("provisional"),
+    th.write_json(th.outp(cfg, "stage2_usage"), dict(mode=mode, shared_folds=repo_rel(sf_path), provisional=sf.get("provisional"),
                                                      n_candidates=len(cands), n_truth_by_block={str(b): int(n_truth.get(b, 0)) for b in sorted(b2f)},
                                                      block_to_fold=sf["block_to_fold"], usage=usage))
     print(f"{len(cands)} candidates, {int(cands.y.sum())} matched, {int(cands.is_dup.sum())} duplicates, "

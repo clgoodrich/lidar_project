@@ -41,13 +41,15 @@
       "key": "results_9t",
       "rel": "splits/cv_splits_future_9t_v1.json",
       "state": "from P1",
-      "schema": "{\"folds\": [{\"fold\": int, \"train\": [block_id], \"val\": [block_id], \"heldout\": [block_id]}], \"buffer_blocks\": [block_id]}"
+      "schema": "P1 wellsight.cv_splits.v1. tasks.<task>.folds.<fold> = {train, inner_val, held_out}. Read with ek.read_split(split_task)",
+      "split_task": "pit",
+      "_task_note": "Release roles come from the P1 pit folds, as the provisional release uses the pit historical split. Pad baselines stay out-of-fold through their own split file."
     },
     "audit_blocks": {
       "key": "results_9t",
       "rel": "splits/audit_blocks_9t_v1.csv",
       "state": "from P2",
-      "schema": "block_id int, role in {comparative_audit, buffer}"
+      "schema": "P2 commented CSV with .sha256 sidecar. role audit = sealed hidden test, buffer = excluded from both. Read with ek.require_audit"
     },
     "split_historical": {
       "key": "results_9t",
@@ -116,17 +118,10 @@
   },
   "n_folds": 5,
   "scorer": {
-    "thr": 0.1,
-    "min_area_m2": 4.0,
-    "iou_thr": 0.3,
-    "k_per_km2": 40.0,
     "B": 2000,
     "seed": 20261105,
-    "thr_by_task": {
-      "pit_floor": 0.35,
-      "pad": 0.525
-    },
-    "_thr_note": "Per-task proposal cutoffs from the archival operating-point sweep, set by the lead 2026-11-05 to match the corrected fw_00 section 4 (3.0 build reproduced 9t pit recall 0.909 at K=40 with 0.35). 0.10 is a sensitivity only. Never tune these on the dev test."
+    "mode": "primary",
+    "_policy_note": "Cutoff, minimum area, IoU, match order, blob score and K come only from expkit.policy_for(task) (review F02 / 7.3-01, 2026-11-06). Primary pit 0.35 and pad 0.525. 0.10 is the sensitivity mode only. The export stamps the policy into the release as scoring_policy.json. Never tune these on the dev test."
   },
   "leaderboard": {
     "margin": null,

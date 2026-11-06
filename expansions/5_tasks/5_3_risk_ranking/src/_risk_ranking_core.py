@@ -6,7 +6,8 @@ Purpose
     - receptor arrays and exposure(): nearest distance and counts or presence within distance bands
     - hazard(): H components from records and priors only, 1800 sentinel kept as its own class
     - check_lineage(): fails when any endpoint column or endpoint input reaches H, E or P
-    - rank-scaled indices, scenarios A to E, weighted-sum variant
+    - rank-scaled indices (mid-rank, missing components under a declared IndexRule), check_index(),
+      scenarios A to E with competition ranks (ties stay ties, missing keys are unrankable), weighted-sum variant
     - top_n(), jaccard(), kendall_tau()
     - enrichment() and the endpoint event rule
     - banned_phrase_hits() for written outputs
@@ -59,30 +60,36 @@ def p_bands(scores: np.ndarray, k: int, cuts=None):
 
 
 def build_sites(records, candidates, k: int, assoc_radius: float, cuts=None):
-    """One row per site. Records keep P = 1 (p_source 'record'). A candidate within assoc_radius of a record
-    is merged into that record site as surface evidence (a proposed association, flagged). Other candidates
-    are their own sites with a P band.
+    """One row per site. Records keep P = 1 (p_source 'record'). EVERY candidate within assoc_radius of a
+    record is merged into its nearest record site as surface evidence (a proposed association, flagged).
+    Review 2026-11-06: the old rule merged only each record's single nearest candidate, so a second candidate
+    beside the same record became its own undocumented site. Other candidates are their own sites with a P band.
     records     DataFrame with site keys PERMIT_NUM, x, y, WELL_STATU (+ date fields)
     candidates  DataFrame with cand_id, score, x, y, block_id
-    """
-    rec = records.copy()
-    cand = candidates.copy()
+    Record columns added: surface_evidence (0/1), assoc_cand_id (nearest merged candidate, -1 if none),
+    n_assoc_cand (how many candidates merged into this record)."""
+    rec = records.copy().reset_index(drop=True)
+    cand = candidates.copy().reset_index(drop=True)
     bands, cuts = p_bands(cand["score"].to_numpy(), k, cuts)
     cand["p_band"] = bands
     rec["surface_evidence"] = 0
     rec["assoc_cand_id"] = -1
+    rec["n_assoc_cand"] = 0
     if len(rec) and len(cand):
-        d, j = cKDTree(cand[["x", "y"]].to_numpy()).query(rec[["x", "y"]].to_numpy())
+        d, j = cKDTree(rec[["x", "y"]].to_numpy()).query(cand[["x", "y"]].to_numpy())
         hit = d <= assoc_radius
-        rec.loc[hit, "surface_evidence"] = 1
-        rec.loc[hit, "assoc_cand_id"] = cand["cand_id"].to_numpy()[j[hit]]
-        used = set(rec.loc[hit, "assoc_cand_id"].astype(int))
-        cand = cand[~cand["cand_id"].isin(used)]
+        cid = cand["cand_id"].to_numpy()
+        for r_i in np.unique(j[hit]):
+            mine = np.flatnonzero(hit & (j == r_i))
+            rec.loc[r_i, "surface_evidence"] = 1
+            rec.loc[r_i, "n_assoc_cand"] = len(mine)
+            rec.loc[r_i, "assoc_cand_id"] = int(cid[mine[np.argmin(d[mine])]])
+        cand = cand[~hit]
     r = pd.DataFrame({
         "site_id": "rec_" + rec["PERMIT_NUM"].astype(str), "x": rec["x"].to_numpy(), "y": rec["y"].to_numpy(),
         "p_source": "record", "p_band": "record", "status": rec["WELL_STATU"].to_numpy(),
         "surface_evidence": rec["surface_evidence"].to_numpy(), "assoc_cand_id": rec["assoc_cand_id"].to_numpy(),
-        "cand_score": np.nan, "block_id": rec.get("block_id", pd.Series(-1, index=rec.index)).to_numpy(),
+        "n_assoc_cand": rec["n_assoc_cand"].to_numpy(), "cand_score": np.nan, "block_id": rec.get("block_id", pd.Series(-1, index=rec.index)).to_numpy(),
         "conditional": ""})
     for c in ("SPUD_DATE", "DATE_PLUGG", "PERMIT_DAT"):
         if c in rec:
@@ -91,7 +98,7 @@ def build_sites(records, candidates, k: int, assoc_radius: float, cuts=None):
         "site_id": "cand_" + cand["cand_id"].astype(int).astype(str), "x": cand["x"].to_numpy(),
         "y": cand["y"].to_numpy(), "p_source": "feature_band", "p_band": cand["p_band"].to_numpy(),
         "status": "_undocumented_candidate", "surface_evidence": 1, "assoc_cand_id": cand["cand_id"].to_numpy(),
-        "cand_score": cand["score"].to_numpy(), "block_id": cand.get("block_id", pd.Series(-1, index=cand.index)).to_numpy(),
+        "n_assoc_cand": 0, "cand_score": cand["score"].to_numpy(), "block_id": cand.get("block_id", pd.Series(-1, index=cand.index)).to_numpy(),
         "conditional": th.CONDITIONAL})
     sites = pd.concat([r, c], ignore_index=True)
     sites["P"] = sites["p_band"].map(P_BAND_VALUE).astype(float)
@@ -193,30 +200,88 @@ def e_component_columns(e_components: dict, present: set) -> dict:
 
 
 def rank01(v: np.ndarray, direction: int = 1) -> np.ndarray:
-    """Percentile rank in [0, 1] with average ties. NaN stays NaN. direction -1 reverses."""
+    """Mid-rank percentile in (0, 1) with average ties: (rank - 0.5) / n. NaN stays NaN. direction -1 reverses.
+    Review 2026-11-06 (rank01 extremes). The old (rank - 1) / (n - 1) mapped the lowest site to exactly 0, so
+    in the scenario D product one component at its minimum zeroed the whole product whatever the others were.
+    Mid-ranks never reach 0 or 1. A single finite value, or all values tied, gives 0.5."""
     v = np.asarray(v, float)
     out = np.full(len(v), np.nan)
     ok = np.isfinite(v)
-    if ok.sum() == 0:
+    n = int(ok.sum())
+    if n == 0:
         return out
-    if ok.sum() == 1:
-        out[ok] = 0.5
-        return out
-    r = (rankdata(direction * v[ok]) - 1) / (ok.sum() - 1)
-    out[ok] = r
+    out[ok] = (rankdata(direction * v[ok]) - 0.5) / n
     return out
 
 
-def index_from(df: pd.DataFrame, cols: dict) -> np.ndarray:
-    """Mean of rank01 components, ignoring missing components per site. NaN when a site has none."""
+class IndexRule(dict):
+    """How an index treats a missing component. Declared in config and stamped into outputs.
+    rule          'unrankable' (default) or 'impute'
+    min_coverage  share of components a site must have. Below it the index is NaN (unrankable). Default 1.0,
+                  so no component is ever skipped silently
+    impute        {column: raw value} used before ranking when rule is 'impute'. Every column with a missing
+                  value must have a declared value, else the build fails"""
+
+    def __init__(self, rule: str = "unrankable", min_coverage: float = 1.0, impute: dict | None = None):
+        if rule not in ("unrankable", "impute"):
+            raise ValueError(f"unknown missing-component rule {rule!r}")
+        if not 0 < float(min_coverage) <= 1:
+            raise ValueError("min_coverage must be in (0, 1]")
+        super().__init__(rule=rule, min_coverage=float(min_coverage), impute=dict(impute or {}))
+
+    @classmethod
+    def from_cfg(cls, d: dict | None):
+        d = d or {}
+        return cls(d.get("rule", "unrankable"), d.get("min_coverage", 1.0), d.get("impute"))
+
+
+def index_from(df: pd.DataFrame, cols: dict, rule: IndexRule | None = None) -> np.ndarray:
+    """Mean of rank01 components. Review 5.3-01: a missing component is never skipped silently.
+    Under the default rule a site missing any component gets NaN (unrankable). Under 'impute' the declared raw
+    value fills the gap before ranking. min_coverage < 1 is an explicit, declared partial average."""
+    rule = rule if rule is not None else IndexRule()
     if not cols:
         return np.full(len(df), np.nan)
-    M = np.column_stack([rank01(df[c].replace([np.inf, -np.inf], np.nan).to_numpy(float), s)
-                         for c, s in cols.items()])
-    with np.errstate(invalid="ignore"):
-        cnt = np.isfinite(M).sum(1)
-        tot = np.nansum(M, 1)
-    return np.where(cnt > 0, tot / np.maximum(cnt, 1), np.nan)
+    raw = {}
+    for c in cols:
+        v = df[c].replace([np.inf, -np.inf], np.nan).to_numpy(float).copy()
+        miss = ~np.isfinite(v)
+        if rule["rule"] == "impute" and miss.any():
+            if c not in rule["impute"]:
+                raise ValueError(f"index component {c} has {int(miss.sum())} missing values and no declared "
+                                 "imputation value (IndexRule.impute)")
+            v[miss] = float(rule["impute"][c])
+        raw[c] = v
+    M = np.column_stack([rank01(raw[c], s) for c, s in cols.items()])
+    fin = np.isfinite(M)
+    cov = fin.mean(1)
+    mean = np.where(fin, M, 0.0).sum(1) / np.maximum(fin.sum(1), 1)
+    return np.where(cov >= rule["min_coverage"] - 1e-12, mean, np.nan)
+
+
+def coverage(df: pd.DataFrame, cols) -> np.ndarray:
+    """Share of the listed components each site has (finite)."""
+    cols = list(cols)
+    if not cols:
+        return np.zeros(len(df))
+    return np.column_stack([np.isfinite(df[c].replace([np.inf, -np.inf], np.nan).to_numpy(float))
+                            for c in cols]).mean(1)
+
+
+class IndexUnusable(ValueError):
+    """An index cannot rank sites (too few components or too few distinct values)."""
+
+
+def check_index(values: np.ndarray, n_components: int, min_components: int, min_distinct: int, label: str):
+    """Review 5.3-02. Raise IndexUnusable when an index has fewer than min_components components or fewer than
+    min_distinct distinct finite values (it could not order a top N without ties deciding it)."""
+    if n_components < min_components:
+        raise IndexUnusable(f"{label} has {n_components} component(s), fewer than the declared minimum "
+                            f"{min_components}")
+    v = np.asarray(values, float)
+    nd = int(len(np.unique(v[np.isfinite(v)])))
+    if nd < min_distinct:
+        raise IndexUnusable(f"{label} has {nd} distinct value(s), fewer than the declared minimum {min_distinct}")
 
 
 # ----------------------------------------------------------------------------- hazard
@@ -283,9 +348,12 @@ def hazard(sites: pd.DataFrame, cfg: dict, extra_records: pd.DataFrame | None = 
     return H, lineage, dropped
 
 
-def h_index(H: pd.DataFrame) -> np.ndarray:
-    cols = {c: 1 for c in H.columns if c.startswith("h_") and pd.api.types.is_numeric_dtype(H[c])}
-    return index_from(H, cols)
+def h_columns(H: pd.DataFrame, drop=()) -> dict:
+    return {c: 1 for c in H.columns if c.startswith("h_") and c not in drop and pd.api.types.is_numeric_dtype(H[c])}
+
+
+def h_index(H: pd.DataFrame, rule: IndexRule | None = None) -> np.ndarray:
+    return index_from(H, h_columns(H), rule)
 
 
 def check_lineage(lineage: dict, endpoint_columns, endpoint_inputs) -> None:
@@ -306,38 +374,78 @@ def check_lineage(lineage: dict, endpoint_columns, endpoint_inputs) -> None:
 
 # ----------------------------------------------------------------------------- scenarios
 def _lex_rank(keys) -> np.ndarray:
-    """Rank 1 = first. keys is a list of arrays, most important first, larger = earlier. NaN sorts last."""
-    arrs = [np.nan_to_num(np.asarray(k, float), nan=-np.inf) for k in keys]
-    order = np.lexsort([-a for a in arrs[::-1]])
-    rank = np.empty(len(order), int)
-    rank[order] = np.arange(1, len(order) + 1)
-    return rank
+    """Competition rank (1 = first, ties share the lowest rank, the next rank skips). keys is a list of arrays,
+    most important first, larger = earlier. Review 2026-11-06: ties are never broken by row order. A site with a
+    NaN in any key is unrankable and gets NaN. Returns a float array."""
+    arrs = [np.asarray(k, float) for k in keys]
+    n = len(arrs[0]) if arrs else 0
+    out = np.full(n, np.nan)
+    ok = np.ones(n, bool)
+    for a in arrs:
+        ok &= np.isfinite(a)
+    idx = np.flatnonzero(ok)
+    if not len(idx):
+        return out
+    K = np.column_stack([a[idx] for a in arrs])
+    order = np.lexsort([-K[:, c] for c in range(K.shape[1] - 1, -1, -1)])
+    Ks = K[order]
+    new = np.r_[True, np.any(Ks[1:] != Ks[:-1], axis=1)]
+    pos = np.arange(1, len(order) + 1)
+    first = np.maximum.accumulate(np.where(new, pos, 0))
+    out[idx[order]] = first
+    return out
+
+
+def tie_size(rank: np.ndarray) -> np.ndarray:
+    """How many sites share each site's rank (1 = no tie). NaN for unrankable sites."""
+    r = np.asarray(rank, float)
+    out = np.full(len(r), np.nan)
+    ok = np.isfinite(r)
+    if ok.any():
+        _, inv, cnt = np.unique(r[ok], return_inverse=True, return_counts=True)
+        out[ok] = cnt[inv]
+    return out
+
+
+def _secondary(keys):
+    """Keep the first key. Drop a later key only when it is NaN for every site (the component is absent
+    everywhere, so it cannot break any tie and ties stay ties). A later key missing for some sites only makes
+    those sites unrankable."""
+    out = [keys[0]]
+    for k in keys[1:]:
+        if np.isfinite(np.asarray(k, float)).any():
+            out.append(k)
+    return out
 
 
 def scenario_ranks(df: pd.DataFrame, agency_rank=None) -> pd.DataFrame:
-    """Scenarios as rules, not findings. df needs P, H, E and a stable tie key (site_id order).
+    """Scenarios as rules, not findings. df needs P, H, E.
     A exposure first, ties by H. B hazard first, ties by E. C documented first, then E.
     D product of rank-scaled P, H, E (conditional on the feature model, never primary).
-    E agency default, when supplied."""
+    E agency default, when supplied. Equal keys give equal ranks (reported as ties, see tie_size).
+    A site with a missing primary key is unrankable (NaN rank)."""
     P, H, E = (df[c].to_numpy(float) for c in ("P", "H", "E"))
-    tie = -np.arange(len(df), dtype=float)
     rec = (df["p_source"].to_numpy() == "record").astype(float)
     out = pd.DataFrame(index=df.index)
-    out["rank_A"] = _lex_rank([E, H, tie])
-    out["rank_B"] = _lex_rank([H, E, tie])
-    out["rank_C"] = _lex_rank([rec, E, tie])
+    out["rank_A"] = _lex_rank(_secondary([E, H]))
+    out["rank_B"] = _lex_rank(_secondary([H, E]))
+    out["rank_C"] = _lex_rank(_secondary([rec, E]))
     prod = rank01(P) * rank01(H) * rank01(E)
-    out["rank_D"] = _lex_rank([prod, tie])
+    out["rank_D"] = _lex_rank([prod])
     if agency_rank is not None:
         a = np.asarray(agency_rank, float)
-        out["rank_E"] = _lex_rank([-np.where(np.isfinite(a), a, np.inf), tie])
+        out["rank_E"] = _lex_rank([-a])
     return out
 
 
 def weighted_rank(df: pd.DataFrame, w) -> np.ndarray:
-    """Weighted-sum variant. w = (wP, wH, wE) summing to 1, on rank-scaled components. Missing -> 0."""
-    s = sum(wi * np.nan_to_num(rank01(df[c].to_numpy(float)), nan=0.0) for wi, c in zip(w, ("P", "H", "E")))
-    return _lex_rank([s, -np.arange(len(df), dtype=float)])
+    """Weighted-sum variant. w = (wP, wH, wE) summing to 1, on rank-scaled components. A component with weight
+    0 is not used. A site missing a used component is unrankable (review 5.3-01, never filled with 0)."""
+    s = np.zeros(len(df))
+    for wi, c in zip(w, ("P", "H", "E")):
+        if wi > 0:
+            s = s + wi * rank01(df[c].to_numpy(float))
+    return _lex_rank([s])
 
 
 def weight_grid(step: float = 0.1):
@@ -353,27 +461,45 @@ def weight_grid(step: float = 0.1):
 
 
 def top_set(rank: np.ndarray, n: int, ids) -> set:
+    """Sites ranked n or better. With ties at the cutoff the set holds more than n sites (ties are kept,
+    never cut by row order). Unrankable sites (NaN) are never in it."""
     ids = np.asarray(ids)
-    return set(ids[np.asarray(rank) <= n])
+    r = np.asarray(rank, float)
+    return set(ids[np.isfinite(r) & (r <= n)])
 
 
 def jaccard(a: set, b: set) -> float:
-    return len(a & b) / len(a | b) if (a or b) else 1.0
+    """NaN when both sets are empty (nothing was rankable), never a perfect 1.0."""
+    return len(a & b) / len(a | b) if (a or b) else float("nan")
 
 
 def kendall_tau(r1, r2) -> float:
-    t = kendalltau(r1, r2).statistic
+    t = kendalltau(r1, r2, nan_policy="omit").statistic
     return float(t) if np.isfinite(t) else float("nan")
 
 
 # ----------------------------------------------------------------------------- endpoint
 def endpoint_events(flux: np.ndarray, rule: dict) -> np.ndarray:
     """Event = measured rate at or above the cutoff, or the top decile of measured rates."""
+    return endpoint_events_rule(flux, rule)[0]
+
+
+def endpoint_events_rule(flux: np.ndarray, rule: dict):
+    """Returns (events, rule_used). kind 'top_decile', or 'rate_cutoff' with flux_cutoff_kg_h. When the cutoff
+    is absent and top_decile_fallback is true the top decile is used (review 2026-11-06: the fallback key was
+    never read). An absent cutoff without the fallback, or an unknown kind, raises."""
     f = np.asarray(flux, float)
-    if rule.get("kind") == "top_decile":
-        return f >= np.nanquantile(f, 0.9)
+    kind = rule.get("kind")
+    if kind == "top_decile":
+        return f >= np.nanquantile(f, 0.9), "top_decile"
+    if kind != "rate_cutoff":
+        raise ValueError(f"unknown endpoint event rule kind {kind!r}")
     cut = rule.get("flux_cutoff_kg_h")
-    return f >= cut
+    if cut is None:
+        if rule.get("top_decile_fallback"):
+            return f >= np.nanquantile(f, 0.9), "top_decile (fallback, no cutoff given)"
+        raise ValueError("endpoint rule rate_cutoff has no flux_cutoff_kg_h and no top_decile_fallback")
+    return f >= float(cut), f"rate_cutoff {float(cut)} kg/h"
 
 
 def enrichment(rank: np.ndarray, event: np.ndarray, n: int, weight=None) -> float:

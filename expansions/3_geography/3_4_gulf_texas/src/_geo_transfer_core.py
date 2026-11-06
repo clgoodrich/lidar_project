@@ -10,8 +10,9 @@ Purpose
       blocks      375 m block grid, edge flags, seeded role draw with a buffer
       density     ground density, void fraction and class shares per block from LAS/LAZ (laspy)
       observe     minimum detectable depth, 9t pit depth distribution, observable share
-      candidates  probability raster -> blobs (thr 0.10, >= 4 m2, mean prob score), greedy IoU 0.3 match
-      scoring     pooled recall at K per km2 over complete blocks, block bootstrap, area difference,
+      candidates  probability raster -> blobs under ek.policy_for(task, mode) (pit 0.35, pad 0.525, >= 4 m2,
+                  mean prob score), one-to-one greedy match in score order at IoU 0.3, 3.0 dedupe rule
+      scoring     pooled recall at K per km2 over the scored support of eligible blocks, block bootstrap, area difference,
                   paired arm difference, permutation null band (< 15 blocks), density-scaled K, ceiling
       agreement   two-annotator pad/pit F1 at IoU 0.3 and Cohen kappa on classes
       inference   frozen checkpoint inference through notebooks/wellsight_v2/s4_infer/_predict_on_tile.py
@@ -62,9 +63,10 @@ REPO = ek.REPO
 WSV2 = REPO / "notebooks" / "wellsight_v2"
 BLOCK_M = 375.0            # 9t block size, so the projected-width tool applies unchanged
 K_PER_KM2 = 40.0           # user decision 2026-11-04 (protocol section 2 rule 7)
-CAND_THR = 0.10            # lowest cutoff in the sweep (fw_00 section 4)
-MIN_BLOB_M2 = 4.0
-IOU_MATCH = 0.3
+# Proposal cutoff, minimum area, IoU and match order come ONLY from ek.policy_for(task, mode) (review F02 / G-01).
+# There is no module default cutoff. IOU_MATCH below is used for annotator agreement (polygon_f1) only.
+IOU_MATCH = ek.PROPOSAL_POLICY["iou"]
+N_MIN_BLOCKS = 15          # fw_00 section 4. Below this the bootstrap is unreliable and gates return inconclusive
 REF_9T = {"ground_density_ppm2": 2.70, "void_frac_05": 0.452}   # protocol section 3 rule 5, fw 3.4 S2
 
 # Lost/found palette from CLAUDE.md, dataviz validator --pairs all, worst pair dE 21.1 deutan / 22.6 normal.
@@ -545,48 +547,144 @@ def observable_share(depths: np.ndarray, mdd: float) -> dict:
     return {"mdd_m": mdd, "n": int(len(d)), "observable": k, "share": p, "ci95": [lo, hi]}
 
 
-# ============================================================================ candidates / matching
-def extract_candidates(prob: np.ndarray, cell: float, thr: float = CAND_THR, min_m2: float = MIN_BLOB_M2,
-                       valid: np.ndarray | None = None):
-    """Connected blobs above thr (8-connected), area >= min_m2, score = mean probability.
+# ============================================================================ policy / grid contract
+def scoring_policy(task: str | None, mode: str = "primary") -> dict:
+    """The one proposal and matching policy (ek.policy_for, review F02 / G-01). There is no default task."""
+    if not task:
+        raise ValueError("score_raster needs a task (pit, pit_floor, pit_full or pad). There is no default cutoff")
+    return ek.policy_for(task, mode)
 
-    Returns (labels int32 raster with 0 = none, DataFrame blob_id, score, area_m2, row, col).
-    Nodata (non-finite or negative) never forms a blob. valid masks ineligible ground (water, edge).
+
+_METRE = {"metre", "meter", "metres", "meters"}
+
+
+def horizontal_crs(crs):
+    """The horizontal part of a CRS (a compound CRS such as EPSG:6346 + NAVD88 height is allowed)."""
+    from pyproj import CRS
+    c = CRS.from_user_input(crs)
+    if c.is_compound:
+        subs = [s for s in c.sub_crs_list if s.is_projected or s.is_geographic]
+        if not subs:
+            raise AssertionError(f"compound CRS {c.name} has no horizontal part")
+        c = subs[0]
+    return c
+
+
+def grid_contract(crs, transform) -> dict:
+    """Review F11. Areas need a projected CRS in metres, a north-up grid and no rotation.
+
+    Non-square cells are allowed. Cell area is |a * e|, never cell * cell.
+    Returns {cell_x, cell_y, cell_area_m2}.
+    """
+    if crs is None:
+        raise AssertionError("raster has no CRS")
+    h = horizontal_crs(crs)
+    if not h.is_projected:
+        raise AssertionError(f"CRS {h.name} is not projected. Areas would be in degrees. Reproject to a metre CRS")
+    units = {(ax.unit_name or "").lower() for ax in h.axis_info}
+    if not units or not units <= _METRE:
+        raise AssertionError(f"CRS {h.name} has axis units {sorted(units)}, not metres. Reproject first")
+    t = transform
+    if t.b != 0 or t.d != 0:
+        raise AssertionError(f"rotated or sheared grid {tuple(t)[:6]} is not supported")
+    if t.a == 0 or t.e == 0 or not (np.isfinite(t.a) and np.isfinite(t.e)):
+        raise AssertionError("degenerate cell size")
+    return {"cell_x": abs(float(t.a)), "cell_y": abs(float(t.e)), "cell_area_m2": abs(float(t.a * t.e))}
+
+
+def same_grid(ref: dict, other: dict, what: str) -> None:
+    """Full grid equality. CRS, shape and the whole affine (origin, cell size, rotation). No resampling here."""
+    from pyproj import CRS
+    if tuple(ref["shape"]) != tuple(other["shape"]):
+        raise AssertionError(f"{what}: shape {tuple(other['shape'])} != probability grid {tuple(ref['shape'])}")
+    if not ref["transform"].almost_equals(other["transform"], precision=1e-9):
+        raise AssertionError(f"{what}: transform {tuple(other['transform'])[:6]} != probability grid "
+                             f"{tuple(ref['transform'])[:6]}. Origins, cell sizes and rotation must match")
+    if CRS.from_user_input(ref["crs"]) != CRS.from_user_input(other["crs"]):
+        raise AssertionError(f"{what}: CRS {other['crs']} != probability grid {ref['crs']}")
+
+
+def read_prob_grid(path: Path) -> tuple[np.ndarray, dict]:
+    """Probability raster -> (float32 with NaN nodata, grid dict). uint8 is DN / 254 with 255 nodata."""
+    import rasterio
+    with rasterio.open(path) as r:
+        a = r.read(1)
+        nd = r.nodata
+        grid = {"crs": r.crs, "transform": r.transform, "shape": a.shape}
+    if a.dtype == np.uint8:                   # mosaic convention (protocol s2)
+        p = np.where(a == (255 if nd is None else int(nd)), np.nan, a.astype(np.float32) / 254.0)
+    else:
+        p = a.astype(np.float32)
+        if nd is not None:
+            p[p == nd] = np.nan
+    p = np.where(np.isfinite(p) & (p >= 0), p, np.nan).astype(np.float32)
+    if np.isfinite(p).any() and np.nanmax(p) > 1.0 + 1e-6:
+        raise AssertionError(f"{path}: probabilities above 1")
+    return p, grid
+
+
+def read_mask_grid(path: Path, grid: dict) -> np.ndarray:
+    """A categorical eligibility mask raster on the probability grid. Nonzero and not nodata = keep."""
+    import rasterio
+    with rasterio.open(path) as r:
+        a = r.read(1)
+        same_grid(grid, {"crs": r.crs, "transform": r.transform, "shape": a.shape}, f"mask {Path(path).name}")
+        keep = (a != 0) & np.isfinite(a.astype(np.float64))
+        if r.nodata is not None:
+            keep &= a != r.nodata
+    return keep
+
+
+# ============================================================================ candidates / matching
+def extract_candidates(prob: np.ndarray, *, cell_area_m2: float, cutoff: float, min_m2: float,
+                       valid: np.ndarray | None = None):
+    """Connected blobs of prob >= cutoff, area >= min_m2, score = mean probability.
+
+    Connectivity is 4 (scipy default structure), the same as the 3.0 reference polygoniser
+    (`_threshold_common.polygonize`, ndimage.label then rasterio shapes). Nodata (NaN) and cells outside
+    `valid` never form a blob. Returns (labels int32 with 0 = none, DataFrame blob_id, score, area_m2, row, col).
     """
     from scipy import ndimage
-    p = np.where(np.isfinite(prob) & (prob >= 0), prob, 0.0)
-    m = p >= thr
+    ok = np.isfinite(prob)
     if valid is not None:
-        m &= valid
-    lab, n = ndimage.label(m, structure=np.ones((3, 3), int))
+        ok &= valid
+    p = np.where(ok, prob, 0.0)
+    lab, n = ndimage.label(p >= cutoff)
     if n == 0:
         return lab.astype(np.int32), pd.DataFrame(columns=["blob_id", "score", "area_m2", "row", "col"])
     idx = np.arange(1, n + 1)
     npx = ndimage.sum(np.ones_like(p), lab, idx)
     mean = ndimage.mean(p, lab, idx)
     com = ndimage.center_of_mass(np.ones_like(p), lab, idx)
-    df = pd.DataFrame({"blob_id": idx, "score": mean, "area_m2": npx * cell * cell,
+    df = pd.DataFrame({"blob_id": idx, "score": mean, "area_m2": npx * cell_area_m2,
                        "row": [c[0] for c in com], "col": [c[1] for c in com]})
-    keep = df["area_m2"] >= min_m2
+    keep = df["area_m2"] >= min_m2 - 1e-9
     drop = df.loc[~keep, "blob_id"].to_numpy()
     if len(drop):
         lab[np.isin(lab, drop)] = 0
     return lab.astype(np.int32), df[keep].reset_index(drop=True)
 
 
-def greedy_iou_match(cand_lab: np.ndarray, truth_lab: np.ndarray, iou_thr: float = IOU_MATCH) -> dict:
-    """Greedy by IoU, one candidate to one truth (fw_00 section 4). Returns {blob_id: truth_id}.
+def greedy_match(cand_lab: np.ndarray, truth_lab: np.ndarray, scores: dict, *, iou: float, order: str) -> dict:
+    """One-to-one greedy matching at IoU >= iou. Returns {blob_id: truth label}.
 
-    A second blob inside an already matched truth is a duplicate and stays unmatched.
+    order "score" (policy primary): pairs by candidate score descending, then IoU, then blob id. This is the
+    3.0 reference rule (`match_greedy`). order "iou" (sensitivity): IoU first, then score, then blob id.
+    Labels must be positive. 0 is background, so callers map external truth ids first (review F10).
     """
+    if order not in ("score", "iou"):
+        raise ValueError(f"match order must be score or iou, got {order}")
     m = (cand_lab > 0) & (truth_lab > 0)
     if not m.any():
         return {}
     pairs = pd.DataFrame({"c": cand_lab[m], "t": truth_lab[m]}).value_counts().rename("inter").reset_index()
-    ca = pd.Series(np.bincount(cand_lab.ravel()))
-    ta = pd.Series(np.bincount(truth_lab.ravel()))
-    pairs["iou"] = pairs["inter"] / (ca[pairs["c"]].to_numpy() + ta[pairs["t"]].to_numpy() - pairs["inter"])
-    pairs = pairs[pairs["iou"] >= iou_thr].sort_values(["iou", "c"], ascending=[False, True])
+    ca = np.bincount(cand_lab.ravel())
+    ta = np.bincount(truth_lab.ravel())
+    pairs["iou"] = pairs["inter"] / (ca[pairs["c"]] + ta[pairs["t"]] - pairs["inter"])
+    pairs = pairs[pairs["iou"] >= iou].copy()
+    pairs["s"] = pairs["c"].map(scores).astype(float)
+    keys = (["s", "iou", "c"] if order == "score" else ["iou", "s", "c"])
+    pairs = pairs.sort_values(keys, ascending=[False, False, True], kind="mergesort")
     used_c, used_t, out = set(), set(), {}
     for c, t in zip(pairs["c"], pairs["t"]):
         if c in used_c or t in used_t:
@@ -598,57 +696,94 @@ def greedy_iou_match(cand_lab: np.ndarray, truth_lab: np.ndarray, iou_thr: float
 
 
 def block_of_pixels(rows, cols, transform, blocks) -> list:
-    """Block id for each pixel centre (None outside all blocks)."""
+    """Block id for each pixel-index centroid (None outside all blocks)."""
     import geopandas as gpd
-    xs = transform.c + (np.asarray(cols) + 0.5) * transform.a
-    ys = transform.f + (np.asarray(rows) + 0.5) * transform.e
+    xs = transform.c + (np.asarray(cols, float) + 0.5) * transform.a
+    ys = transform.f + (np.asarray(rows, float) + 0.5) * transform.e
     pts = gpd.GeoDataFrame(geometry=gpd.points_from_xy(xs, ys), crs=blocks.crs)
     j = gpd.sjoin(pts, blocks[["block_id", "geometry"]], how="left", predicate="within")
     j = j[~j.index.duplicated()]
     return [None if pd.isna(v) else v for v in j["block_id"].reindex(pts.index)]
 
 
-def build_block_tables(cands: pd.DataFrame, truth_block: dict, eligible_blocks: pd.DataFrame) -> dict:
+def build_block_tables(cands: pd.DataFrame, truth_block: dict, eligible_blocks: pd.DataFrame,
+                       policy_hash: str | None = None) -> dict:
     """Per-block tables for resampling.
 
-    cands           blob_id, score, area_m2, block_id, truth_id (NaN if unmatched)
-    truth_block     {truth_id: block_id} for every truth feature (by its centroid)
-    eligible_blocks block_id, area_km2 for every COMPLETE eligible block (empty ones included)
+    cands           blob_id (numeric), score, area_m2, block_id, truth_id (None if unmatched)
+    truth_block     {truth_id: block_id} for every truth feature IN THE DENOMINATOR
+    eligible_blocks block_id, area_km2 (the scored support) for every scored block, empty ones included
+    Each table holds c, n_truth, km2 and truth_ids (the denominator truth owned by the block).
     """
     tables = {}
-    nt = pd.Series(truth_block).value_counts()
+    owned: dict = {}
+    for t, b in truth_block.items():
+        owned.setdefault(b, []).append(t)
     for b, a in zip(eligible_blocks["block_id"], eligible_blocks["area_km2"]):
         c = cands[cands["block_id"] == b][["blob_id", "score", "area_m2", "truth_id"]]
-        tables[b] = {"c": c.reset_index(drop=True), "n_truth": int(nt.get(b, 0)), "km2": float(a)}
+        ids = owned.get(b, [])
+        tables[b] = {"c": c.reset_index(drop=True), "n_truth": len(ids), "km2": float(a), "truth_ids": list(ids)}
+        if policy_hash:
+            tables[b]["policy_hash"] = policy_hash
     return tables
+
+
+def _numeric_ids(v, where: str) -> np.ndarray:
+    try:
+        return pd.to_numeric(pd.Series(v), errors="raise").to_numpy(float)
+    except (ValueError, TypeError) as e:
+        raise ValueError(f"{where}: blob_id must be numeric (the tie key is the numeric id, review F09)") from e
 
 
 def pooled_recall_at_k(tables: dict, block_list: list, k_per_km2: float = K_PER_KM2) -> float:
     """Pooled recall at K per km2 over the listed blocks (duplicates from resampling allowed).
 
-    Each copy of a block gets its own truth namespace so a duplicated block counts its hits twice,
-    as the pooled-count bootstrap requires (fw_00 section 4).
+    K = round(k_per_km2 * summed km2). Candidates rank by score desc, area desc, numeric blob id asc, then
+    draw occurrence asc (review F09: separate stable keys, never a joined string).
+    When every table carries truth_ids, a hit is credited to the truth's own block. Each drawn copy of that
+    block counts it once if any kept candidate matches it. Only denominator truth can be a hit, so recall
+    never exceeds 1 (review F10 / G-04). Without truth_ids (3.0 JSON tables) a hit is keyed by draw.
     """
     if not block_list:
         return float("nan")
-    parts, n_truth, km2 = [], 0, 0.0
+    owned = all("truth_ids" in tables[b] for b in set(block_list))
+    s, a, i, d, t = [], [], [], [], []
+    n_truth, km2 = 0, 0.0
     for j, b in enumerate(block_list):
-        t = tables[b]
-        n_truth += t["n_truth"]
-        km2 += t["km2"]
-        if len(t["c"]):
-            c = t["c"].copy()
-            c["truth_id"] = [f"{j}:{v}" if pd.notna(v) else None for v in c["truth_id"]]
-            c["blob_id"] = [f"{j}:{v}" for v in c["blob_id"]]
-            parts.append(c)
+        tb = tables[b]
+        n_truth += int(tb["n_truth"])
+        km2 += float(tb["km2"])
+        c = tb["c"]
+        if len(c):
+            s.append(c["score"].to_numpy(float))
+            a.append(c["area_m2"].to_numpy(float))
+            i.append(_numeric_ids(c["blob_id"], f"block {b}"))
+            d.append(np.full(len(c), j))
+            t.extend(c["truth_id"].tolist())
     if n_truth == 0:
         return float("nan")
-    if not parts:
+    if not s:
         return 0.0
-    c = pd.concat(parts, ignore_index=True)
-    r = ek.recall_at_k(c["score"], c["truth_id"], [None] * len(c), {"all": n_truth}, km2,
-                       k_per_km2=k_per_km2, areas=c["area_m2"], cand_ids=c["blob_id"])
-    return r["recall"]
+    s, a, i, d = (np.concatenate(x) for x in (s, a, i, d))
+    order = np.lexsort((d, i, -a, -s))
+    top = order[:int(round(k_per_km2 * km2))]
+    kept = [(int(d[k]), t[k]) for k in top if not pd.isna(t[k])]
+    if owned:
+        hit_ids = {tt for _, tt in kept}
+        hits = sum(len(hit_ids.intersection(tables[b]["truth_ids"])) for b in block_list)
+    else:
+        hits = len(set(kept))
+    if hits > n_truth:
+        raise AssertionError(f"pooled recall {hits} hits > {n_truth} truth. Matched truth lies outside the denominator")
+    return hits / n_truth
+
+
+def table_policy(tables: dict) -> str | None:
+    """The one policy hash all tables share (None for unstamped tables). Mixed hashes raise."""
+    hs = {t.get("policy_hash") for t in tables.values()}
+    if len(hs) > 1:
+        raise AssertionError(f"block tables mix scoring policies {sorted(map(str, hs))}")
+    return next(iter(hs)) if hs else None
 
 
 def density_per_km2(tables: dict, blocks: list | None = None) -> float:
@@ -670,7 +805,7 @@ def ceiling_per_block(tables: dict, k_per_km2: float = K_PER_KM2) -> pd.DataFram
 def permutation_null_band(tab_a: dict, tab_b: dict, k_per_km2: float, B: int = 2000, seed: int = 0) -> dict:
     """Null band of recall(a) - recall(b) under exchange of area labels across blocks (< 15 blocks).
 
-    Report beside the bootstrap interval with a warning. Not a confidence interval for the effect.
+    Descriptive only. It is not a confidence interval for the effect and no gate may use it.
     """
     rng = np.random.default_rng(seed)
     merged = {("a", k): v for k, v in tab_a.items()} | {("b", k): v for k, v in tab_b.items()}
@@ -681,41 +816,89 @@ def permutation_null_band(tab_a: dict, tab_b: dict, k_per_km2: float, B: int = 2
     for _ in range(B):
         perm = [keys[i] for i in rng.permutation(len(keys))]
         d.append(pooled_recall_at_k(merged, perm[:na], k_per_km2) - pooled_recall_at_k(merged, perm[na:], k_per_km2))
-    d = np.array(d)
-    lo, hi = np.nanpercentile(d, [2.5, 97.5])
-    return {"observed": float(obs), "null_lo": float(lo), "null_hi": float(hi),
-            "p_two_sided": float(np.nanmean(np.abs(d) >= abs(obs)))}
+    d = np.array(d, float)
+    und = ek.undefined_share(d)
+    lo, hi = (np.nanpercentile(d, [2.5, 97.5]) if und < 1 else (np.nan, np.nan))
+    return {"observed": float(obs), "null_lo": float(lo), "null_hi": float(hi), "undefined_share": und,
+            "p_two_sided": float(np.nanmean(np.abs(d) >= abs(obs))) if und < 1 else float("nan"),
+            "label": "permutation null band. Not an interval for the effect. Never used in a gate"}
+
+
+def _gate(lo: float, hi: float, margin: float, kind: str, n_blocks: int, undefined: float) -> tuple[str, str]:
+    """Decision plus the reason. Undefined bootstrap draws and fewer than N_MIN_BLOCKS give inconclusive."""
+    if n_blocks < N_MIN_BLOCKS:
+        return "inconclusive", (f"{n_blocks} blocks < {N_MIN_BLOCKS}. The bootstrap is unreliable and the "
+                                "permutation band is not an interval, so no gate is evaluated")
+    if undefined > 0:
+        return "inconclusive", (f"{undefined:.3f} of bootstrap draws are undefined (no truth in the resample). "
+                                "The interval is undefined (expkit SH-01)")
+    return ek.decide(lo, hi, margin, kind), "bootstrap percentile interval"
 
 
 def transfer_difference(tab_t: dict, tab_ref: dict, margin: float, k_per_km2: float = K_PER_KM2,
-                        B: int = 2000, seed: int = 0) -> dict:
-    """Primary transfer estimand. Target minus reference recall at K, independent block bootstraps."""
+                        B: int = 2000, seed: int = 0, ref_policy: dict | None = None,
+                        target_policy: dict | None = None) -> dict:
+    """Primary transfer estimand. Target minus reference recall at K, independent block bootstraps.
+
+    Reports the share of undefined draws. Any undefined draw or fewer than 15 target blocks gives inconclusive.
+    When both policies are known they must agree (ek.assert_same_policy, review F08).
+    """
+    pol_note = "reference policy not stamped in the 3.0 tables. Compatibility is assumed, not checked"
+    if ref_policy is not None and target_policy is not None:
+        ek.assert_same_policy(ref_policy, target_policy)
+        pol_note = "reference and target policies checked equal"
+    if target_policy is not None and table_policy(tab_t) not in (None, target_policy["policy_hash"]):
+        raise AssertionError("target tables were scored under a different policy than declared")
     fa = lambda bl: pooled_recall_at_k(tab_t, bl, k_per_km2)    # noqa: E731
     fb = lambda bl: pooled_recall_at_k(tab_ref, bl, k_per_km2)  # noqa: E731
-    d, lo, hi = ek.bootstrap_diff(fa, list(tab_t), fb, list(tab_ref), B=B, seed=seed)
-    pt, tlo, thi, _ = ek.block_bootstrap(fa, list(tab_t), B=B, seed=seed + 1)
+    d, lo, hi, draws = ek.bootstrap_diff(fa, list(tab_t), fb, list(tab_ref), B=B, seed=seed, return_draws=True)
+    pt, tlo, thi, tdraws = ek.block_bootstrap(fa, list(tab_t), B=B, seed=seed + 1)
+    und = ek.undefined_share(draws)
+    decision, why = _gate(lo, hi, margin, "noninferiority", len(tab_t), und)
     out = {"k_per_km2": k_per_km2, "n_blocks_target": len(tab_t), "n_blocks_ref": len(tab_ref),
            "recall_target": pt, "recall_target_ci": [tlo, thi], "recall_ref": fb(list(tab_ref)),
-           "diff": d, "diff_ci": [lo, hi], "margin": margin,
-           "decision": ek.decide(lo, hi, margin, "noninferiority"),
+           "diff": d, "diff_ci": [lo, hi], "margin": margin, "undefined_share": und,
+           "undefined_share_target": ek.undefined_share(tdraws), "decision": decision, "decision_basis": why,
+           "policy_check": pol_note, "target_policy": target_policy,
+           "multiplicity": "no correction across areas, arms or strata (needs user decision)",
            "density_target": density_per_km2(tab_t), "density_ref": density_per_km2(tab_ref)}
-    if len(tab_t) < 15:
-        out["warning"] = "fewer than 15 target blocks, bootstrap unreliable, see permutation band"
+    if len(tab_t) < N_MIN_BLOCKS:
+        out["warning"] = "fewer than 15 target blocks. Bootstrap unreliable. The permutation band is descriptive only"
         out["permutation"] = permutation_null_band(tab_t, tab_ref, k_per_km2, B=min(B, 500), seed=seed + 2)
     return out
+
+
+def assert_same_support(tab_a: dict, tab_b: dict) -> None:
+    """Paired arms must share blocks, scored area and denominator truth (review F07, arms with different masks)."""
+    if set(tab_a) != set(tab_b):
+        raise AssertionError("paired arms must be scored on identical blocks")
+    for b in tab_a:
+        ta, tb = tab_a[b], tab_b[b]
+        if not np.isclose(ta["km2"], tb["km2"], rtol=0, atol=1e-12):
+            raise AssertionError(f"paired arms differ in scored support in block {b}: {ta['km2']} vs {tb['km2']} km2")
+        if "truth_ids" in ta and "truth_ids" in tb:
+            if sorted(map(str, ta["truth_ids"])) != sorted(map(str, tb["truth_ids"])):
+                raise AssertionError(f"paired arms differ in denominator truth in block {b}")
+        elif ta["n_truth"] != tb["n_truth"]:
+            raise AssertionError(f"paired arms differ in denominator truth in block {b}")
 
 
 def paired_arm_difference(tab_arm: dict, tab_base: dict, delta_gain: float, k_per_km2: float = K_PER_KM2,
                           B: int = 2000, seed: int = 0) -> dict:
     """Paired arms on the same blocks (same resampled blocks for both). Superiority against delta_gain."""
-    if set(tab_arm) != set(tab_base):
-        raise AssertionError("paired arms must be scored on identical blocks")
-    bl = sorted(tab_arm)
+    assert_same_support(tab_arm, tab_base)
+    pa, pb = table_policy(tab_arm), table_policy(tab_base)
+    if pa and pb and pa != pb:
+        raise AssertionError("paired arms were scored under different policies")
+    bl = sorted(tab_arm, key=str)
     fa = lambda b: pooled_recall_at_k(tab_arm, b, k_per_km2)   # noqa: E731
     fb = lambda b: pooled_recall_at_k(tab_base, b, k_per_km2)  # noqa: E731
-    d, lo, hi = ek.bootstrap_diff(fa, bl, fb, bl, B=B, seed=seed, paired=True)
-    return {"gain": d, "gain_ci": [lo, hi], "delta_gain": delta_gain, "n_blocks": len(bl),
-            "decision": ek.decide(lo, hi, delta_gain, "superiority")}
+    d, lo, hi, draws = ek.bootstrap_diff(fa, bl, fb, bl, B=B, seed=seed, paired=True, return_draws=True)
+    und = ek.undefined_share(draws)
+    decision, why = _gate(lo, hi, delta_gain, "superiority", len(bl), und)
+    return {"gain": d, "gain_ci": [lo, hi], "delta_gain": delta_gain, "n_blocks": len(bl), "undefined_share": und,
+            "decision": decision, "decision_basis": why, "policy_hash": pa,
+            "multiplicity": "no correction across contrasts or areas (needs user decision)"}
 
 
 def density_scaled_k(density_target: float, density_9t: float, k_9t: float = K_PER_KM2) -> float:
@@ -723,41 +906,154 @@ def density_scaled_k(density_target: float, density_9t: float, k_9t: float = K_P
     return (k_9t / density_9t) * density_target
 
 
-def score_raster(prob_path: Path, truth, blocks, eligible_mask_fn=None, thr: float = CAND_THR) -> tuple:
+def _truth_labels(truth) -> tuple[np.ndarray, list]:
+    """Review F10. Arbitrary unique external ids (0, negatives, strings) -> internal labels 1..n."""
+    if "truth_id" not in truth.columns:
+        raise AssertionError("truth needs a truth_id column")
+    ids = truth["truth_id"]
+    if ids.isna().any():
+        raise AssertionError("truth_id has missing values")
+    dup = ids[ids.duplicated()]
+    if len(dup):
+        raise AssertionError(f"duplicate truth_id {list(dup[:5])}. Dissolve multi-part features first")
+    return np.arange(1, len(truth) + 1, dtype=np.int32), list(ids)
+
+
+def score_raster(prob_path: Path, truth, blocks, *, task: str | None = None, mode: str = "primary",
+                 eligible_mask_fn=None, mask_rasters: list | tuple = (), exclude_polygons=None,
+                 dedupe: str = "truth_matched") -> tuple:
     """Read a probability raster, extract candidates, match to truth polygons, build block tables.
 
-    truth  GeoDataFrame of truth polygons (same CRS) with a 'truth_id' column
-    blocks GeoDataFrame with block_id, area_km2 and an 'eligible' bool column (complete blocks only)
-    Returns (tables, cand DataFrame).
+    task    required. Cutoff, minimum area, IoU and match order come from ek.policy_for(task, mode)
+    truth   GeoDataFrame of truth polygons (same CRS) with a unique 'truth_id' (any hashable, 0 allowed)
+    blocks  GeoDataFrame with block_id and an 'eligible' bool column. 'area_km2' is only reported
+    masks   eligible_mask_fn(shape, transform) -> bool, mask_rasters on the identical grid (nonzero = keep),
+            exclude_polygons (for example hydro-flattened water). All of them remove scored support.
+
+    Support policy (review F07, one rule, decisions_3_4.md 2026-11-06). The scored support of a block is its
+    cells with finite probability that pass every mask. The K budget uses the support area, not the block
+    geometry. A truth feature is in the denominator only when its centroid lies in an eligible block AND on a
+    supported cell. Only denominator truth can be matched, so straddling truth is neither hit nor counted.
+    A block with zero support is dropped and listed. Candidates are extracted on supported cells only, kept
+    when their centroid lies in a scored block, matched one-to-one by the policy order, then deduplicated as in
+    3.0 (an unmatched candidate whose centroid lies inside a matched truth feature is a second piece).
+    Returns (tables, cands). cands.attrs holds the policy, the per-block support table and counts.
     """
-    import rasterio
+    import geopandas as gpd
     from rasterio.features import rasterize
-    with rasterio.open(prob_path) as r:
-        ek.assert_crs(r, blocks.crs)
-        prob = r.read(1).astype(np.float32)
-        if r.nodata is not None:
-            prob[prob == r.nodata] = np.nan
-        if r.dtypes[0] == "uint8":           # mosaic convention, DN / 254, 255 nodata (protocol s2)
-            prob = np.where(prob == 255, np.nan, prob / 254.0)
-        tf, cell = r.transform, r.res[0]
+    pol = scoring_policy(task, mode)
+    if dedupe not in ("truth_matched", "none"):
+        raise ValueError(dedupe)
+    prob, grid = read_prob_grid(prob_path)
+    gc = grid_contract(grid["crs"], grid["transform"])
+    grid_contract(blocks.crs, grid["transform"])
+    ek.assert_crs(grid["crs"], blocks.crs)
     ek.assert_crs(truth, blocks.crs)
-    elig = blocks[blocks["eligible"]]
-    valid = rasterize([(g, 1) for g in elig.geometry], out_shape=prob.shape, transform=tf, fill=0).astype(bool)
+    ek.assert_unique(blocks, "block_id")
+    if "eligible" not in blocks.columns:
+        raise AssertionError("blocks need an 'eligible' column")
+    tf, shape, cell_area = grid["transform"], prob.shape, gc["cell_area_m2"]
+
+    support = np.isfinite(prob)
+    for mp in mask_rasters:
+        support &= read_mask_grid(Path(mp), grid)
+    if exclude_polygons is not None and len(exclude_polygons):
+        ek.assert_crs(exclude_polygons, blocks.crs)
+        ex = rasterize([(g, 1) for g in exclude_polygons.geometry if g is not None and not g.is_empty],
+                       out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
+        support &= ~ex
     if eligible_mask_fn is not None:
-        valid &= eligible_mask_fn(prob.shape, tf)
-    lab, cands = extract_candidates(prob, cell, thr, valid=valid)
-    tl = rasterize([(g, int(i)) for g, i in zip(truth.geometry, truth["truth_id"])], out_shape=prob.shape,
-                   transform=tf, fill=0, dtype="int32")
-    match = greedy_iou_match(lab, tl)
-    cands["truth_id"] = cands["blob_id"].map(match)
-    cands["block_id"] = block_of_pixels(cands["row"], cands["col"], tf, blocks) if len(cands) else []
-    cents = truth.geometry.centroid
-    tj = __import__("geopandas").sjoin(__import__("geopandas").GeoDataFrame(
-        {"truth_id": truth["truth_id"].to_numpy()}, geometry=cents.to_numpy(), crs=truth.crs),
-        elig[["block_id", "geometry"]], how="inner", predicate="within")
-    truth_block = dict(zip(tj["truth_id"], tj["block_id"]))
-    cands = cands[cands["block_id"].isin(elig["block_id"])]
-    return build_block_tables(cands, truth_block, elig), cands
+        m = np.asarray(eligible_mask_fn(shape, tf))
+        if m.shape != shape:
+            raise AssertionError(f"eligible_mask_fn returned shape {m.shape}, grid is {shape}")
+        support &= m.astype(bool)
+
+    b = blocks.reset_index(drop=True)
+    blab = rasterize([(g, i + 1) for i, g in enumerate(b.geometry)], out_shape=shape, transform=tf,
+                     fill=0, dtype="int32")
+    n_cells = np.bincount(blab.ravel(), minlength=len(b) + 1)[1:]
+    n_sup = np.bincount(blab.ravel(), weights=support.ravel(), minlength=len(b) + 1)[1:]
+    geom_cells = (b.geometry.area / cell_area).to_numpy()
+    sup = pd.DataFrame({"block_id": b["block_id"].to_numpy(),
+                        "declared_km2": (b["area_km2"].to_numpy(float) if "area_km2" in b
+                                         else b.geometry.area.to_numpy() / 1e6),
+                        "geom_km2": b.geometry.area.to_numpy() / 1e6, "grid_cells": n_cells,
+                        "support_cells": n_sup.astype(int), "support_km2": n_sup * cell_area / 1e6,
+                        "support_frac": np.where(geom_cells > 0, n_sup / np.maximum(geom_cells, 1e-12), 0.0),
+                        "eligible_in": b["eligible"].astype(bool).to_numpy()})
+    sup["scored"] = sup["eligible_in"] & (sup["support_cells"] > 0)
+    sup["reason"] = np.where(~sup["eligible_in"], "ineligible in roles",
+                             np.where(sup["support_cells"] == 0, "zero valid support", "scored"))
+    scored = b[sup["scored"].to_numpy()]
+    if not len(scored):
+        raise AssertionError("no block has scored support (all eligible blocks are nodata or masked)")
+
+    lab, cands = extract_candidates(prob, cell_area_m2=cell_area, cutoff=pol["cutoff"], min_m2=pol["min_area_m2"],
+                                    valid=support)
+    cands["block_id"] = block_of_pixels(cands["row"], cands["col"], tf, scored) if len(cands) else []
+    if len(cands):
+        cands["x"] = tf.c + (cands["col"] + 0.5) * tf.a
+        cands["y"] = tf.f + (cands["row"] + 0.5) * tf.e
+        drop = cands.loc[cands["block_id"].isna(), "blob_id"].to_numpy()
+        if len(drop):                       # outside the scored footprint, as in 3.0 (filtered before matching)
+            lab[np.isin(lab, drop)] = 0
+        cands = cands[cands["block_id"].notna()].reset_index(drop=True)
+
+    labels, ext_ids = _truth_labels(truth)
+    tr = truth.reset_index(drop=True).assign(_lab=labels)
+    tr = tr[tr.geometry.notna() & ~tr.geometry.is_empty].reset_index(drop=True)
+    cen = tr.geometry.centroid
+    tj = gpd.sjoin(gpd.GeoDataFrame({"_lab": tr["_lab"].to_numpy()}, geometry=cen.to_numpy(), crs=truth.crs),
+                   scored[["block_id", "geometry"]], how="inner", predicate="within")
+    tj = tj[~tj.index.duplicated()]
+    pos = tj.index.to_numpy()
+    cc, rr = ~tf * (cen.x.to_numpy()[pos], cen.y.to_numpy()[pos])
+    rr, cc = np.floor(rr).astype(int), np.floor(cc).astype(int)
+    inside = (rr >= 0) & (rr < shape[0]) & (cc >= 0) & (cc < shape[1])
+    on_sup = np.zeros(len(tj), bool)
+    on_sup[inside] = support[rr[inside], cc[inside]]
+    tj = tj[on_sup]
+    den = tr[tr["_lab"].isin(tj["_lab"])]
+    lab2ext = dict(zip(labels.tolist(), ext_ids))
+    truth_block = {lab2ext[int(lb)]: blk for lb, blk in zip(tj["_lab"], tj["block_id"])}
+    tl = (rasterize([(g, int(lb)) for g, lb in zip(den.geometry, den["_lab"])], out_shape=shape, transform=tf,
+                    fill=0, dtype="int32") if len(den) else np.zeros(shape, np.int32))
+
+    scores = dict(zip(cands["blob_id"].astype(int), cands["score"].astype(float))) if len(cands) else {}
+    match = greedy_match(lab, tl, scores, iou=pol["iou"], order=pol["match_order"])
+    cands["truth_id"] = pd.Series([lab2ext[match[int(c)]] if int(c) in match else None for c in cands["blob_id"]],
+                                  index=cands.index, dtype=object)
+    cands["duplicate"] = False
+    if dedupe == "truth_matched" and len(cands) and match:
+        mt = den[den["_lab"].isin(set(match.values()))]
+        um = cands[cands["truth_id"].isna()]
+        if len(um) and len(mt):
+            pts = gpd.GeoDataFrame(geometry=gpd.points_from_xy(um["x"], um["y"]), crs=truth.crs, index=um.index)
+            j = gpd.sjoin(pts, mt[["geometry"]], how="inner", predicate="within")
+            cands.loc[np.unique(j.index.to_numpy()), "duplicate"] = True
+    sb = sup[sup["scored"]].rename(columns={"support_km2": "area_km2"})
+    tables = build_block_tables(cands[~cands["duplicate"]] if len(cands) else cands, truth_block, sb,
+                                pol["policy_hash"])
+    cands.attrs.update({
+        "policy": pol, "grid": {"cell_x": gc["cell_x"], "cell_y": gc["cell_y"], "crs": str(grid["crs"])},
+        "support_rule": "actual support. K budget and truth eligibility use finite, unmasked cells of eligible blocks",
+        "support": sup.to_dict("records"),
+        "dropped_blocks": sup.loc[sup["eligible_in"] & ~sup["scored"], "block_id"].tolist(),
+        "n_truth_input": int(len(truth)), "n_truth_denominator": int(len(truth_block)),
+        "n_truth_outside_support": int(len(truth) - len(truth_block)),
+        "n_duplicates_dropped": int(cands["duplicate"].sum()) if len(cands) else 0,
+        "masks": {"mask_rasters": [str(p) for p in mask_rasters],
+                  "exclude_polygons": 0 if exclude_polygons is None else int(len(exclude_polygons)),
+                  "eligible_mask_fn": eligible_mask_fn is not None}})
+    return tables, cands
+
+
+def score_attrs(cands: pd.DataFrame) -> dict:
+    """The provenance block to stamp into every score output (policy, support rule, dropped blocks, counts)."""
+    a = dict(cands.attrs)
+    sup = a.pop("support", None) or []
+    a["support_km2_by_block"] = {str(r["block_id"]): float(r["support_km2"]) for r in sup if r["scored"]}
+    return a
 
 
 # ============================================================================ agreement
@@ -803,6 +1099,65 @@ def check_checkpoint(ckpt: Path, expected_sha: str | None) -> str:
     if expected_sha and sha != expected_sha:
         raise AssertionError(f"checkpoint hash {sha[:12]} != expected {expected_sha[:12]} ({ckpt})")
     return sha
+
+
+def transfer_checkpoint(cfg: dict, task: str, exp_id: str) -> Path:
+    """The declared transfer checkpoint for a task (config model.<task>.transfer_checkpoint).
+
+    Which model is the transfer model is a user decision. Nothing in the repo produces the old default
+    pit/unet_iso_cv5/policy/best.pt. So an unset key raises DecisionMissingError and a set but missing file
+    raises MissingInputError. There is no fallback.
+    """
+    m = (cfg.get("model") or {}).get(task) or {}
+    spec = m.get("transfer_checkpoint")
+    if not spec:
+        raise DecisionMissingError(
+            f"USER DECISION MISSING: model.{task}.transfer_checkpoint is unset in config_{exp_id.replace('.', '_')}.json."
+            " Declare which frozen checkpoint is the transfer model (e.g. a P1 isolated pit policy). "
+            "See docs/decisions under Needs user decision.")
+    return require_input(resolve(spec, exp_id), f"{exp_id} transfer checkpoint for {task}",
+                         "torch best.pt with state_dict, mu, sd, channels",
+                         "the declared checkpoint must exist. Train it or correct the path")
+
+
+def init_from_checkpoint(own_state: dict, ck: dict, reinit=(), channels: list | None = None) -> tuple[dict, dict]:
+    """Review G-11. Which checkpoint tensors may be loaded into a model, with an explicit allow-list.
+
+    own_state  the new model's state_dict (anything with .shape per key)
+    ck         the checkpoint dict (state_dict, and channels when it has them)
+    reinit     key prefixes the caller declares as re-initialised (e.g. 'd1.0.' for a new first conv,
+               'out.' for a new head). Every key that cannot load must be covered, and every entry must match
+               a key that really mismatches, else this raises.
+    channels   the new input band names in order. If the first layer is loaded (not re-initialised) they must
+               equal the checkpoint's channels in name and order.
+    Returns (loadable tensors, provenance record).
+    """
+    sd0 = ck["state_dict"]
+    reinit = tuple(reinit)
+    bad = sorted(k for k in own_state if k not in sd0 or tuple(sd0[k].shape) != tuple(own_state[k].shape))
+    unexplained = [k for k in bad if not k.startswith(reinit)]
+    if unexplained:
+        raise AssertionError(f"partial checkpoint load. {unexplained[:5]} cannot load and are not in the allow-list "
+                             f"{list(reinit)}. Declare re-initialised layers explicitly")
+    unused = [r for r in reinit if not any(k.startswith(r) for k in bad)]
+    if unused:
+        raise AssertionError(f"allow-list entry {unused} matches no mismatched key. Remove it")
+    first = [k for k in own_state if k.endswith("weight") and len(tuple(getattr(own_state[k], "shape", ()))) == 4][:1]
+    first_reinit = bool(first) and first[0] in bad
+    ck_ch = ck.get("channels")
+    checked = False
+    if ck_ch is not None and channels is not None and not first_reinit:
+        if list(ck_ch) != list(channels):
+            raise AssertionError(f"channel order {list(channels)} != checkpoint {list(ck_ch)}. "
+                                 "The first layer would read bands in the wrong order")
+        checked = True
+    loadable = {k: v for k, v in sd0.items() if k in own_state and k not in bad}
+    rec = {"loaded": len(loadable), "reinitialised": bad, "allow_list": list(reinit),
+           "channels_checked": checked, "checkpoint_channels": list(ck_ch) if ck_ch is not None else None,
+           "channels": list(channels) if channels is not None else None,
+           "note": ("first layer re-initialised, band order not bound to the checkpoint" if first_reinit else
+                    "channels unchecked, the checkpoint has no channel metadata" if not checked else "channels match")}
+    return loadable, rec
 
 
 def frozen_infer(features: Path, ckpt: Path, task: str, out_dir: Path, suffix: str,
@@ -956,10 +1311,12 @@ def make_patch_dataset(sources: list[tuple[Path, Path, list]], mu, sd, patch_px:
 
 def train_unet(train_sources, val_sources, mu, sd, out_dir: Path, *, n_classes: int, patch_px: int,
                epochs: int, lr: float, alpha, seed: int, init_ckpt: Path | None = None, batch: int = 8,
-               channels: list | None = None, extra: dict | None = None) -> dict:
+               channels: list | None = None, extra: dict | None = None, reinit: tuple = ()) -> dict:
     """Train or fine-tune the repo U-Net (_dl.UNet, FocalCE, train_loop). Mixed precision on CUDA.
 
     Selection uses validation windows only. Writes best.pt with mu, sd, channels and the split hash.
+    Fine-tuning (init_ckpt) goes through init_from_checkpoint. Layers that cannot load must be listed in
+    reinit, and the load record (with the checkpoint hash) is written into best.pt as 'init_load' (G-11).
     """
     import torch
     from torch.utils.data import DataLoader
@@ -967,21 +1324,28 @@ def train_unet(train_sources, val_sources, mu, sd, out_dir: Path, *, n_classes: 
     from _dl import FocalCE, UNet, train_loop
     torch.manual_seed(seed)
     in_ch = len(mu)
+    if channels is not None and len(channels) != in_ch:
+        raise AssertionError(f"{len(channels)} channel names for {in_ch} normalisation channels")
     model = UNet(in_ch=in_ch, n_classes=n_classes, base=32)
+    init_rec = None
     if init_ckpt is not None:
         ck = torch.load(init_ckpt, map_location="cpu", weights_only=False)
-        sd0 = ck["state_dict"]
         own = model.state_dict()
-        loadable = {k: v for k, v in sd0.items() if k in own and own[k].shape == v.shape}
+        loadable, init_rec = init_from_checkpoint(own, ck, reinit=reinit, channels=channels)
+        init_rec.update({"checkpoint": str(init_ckpt), "sha256": ek.sha256(Path(init_ckpt))})
         own.update(loadable)
         model.load_state_dict(own)
+        print(f"init from {init_ckpt}: {init_rec['loaded']} tensors loaded, re-initialised {init_rec['reinitialised']}")
+    elif reinit:
+        raise AssertionError("reinit given without init_ckpt")
     tl = DataLoader(make_patch_dataset(train_sources, mu, sd, patch_px, True, seed), batch_size=batch, shuffle=True)
     vl = DataLoader(make_patch_dataset(val_sources, mu, sd, patch_px, False, seed + 1), batch_size=batch)
     names = ("bg", "floor", "wall")[:n_classes] if n_classes == 3 else tuple(f"c{c}" for c in range(n_classes))
     return train_loop(model=model, train_loader=tl, val_loader=vl, loss_fn=FocalCE(alpha), epochs=epochs, lr=lr,
                       n_classes=n_classes, out_dir=out_dir, score=lambda iou: float(np.nanmean(iou[1:])),
                       checkpoint_extra={"mu": mu.tolist(), "sd": sd.tolist(), "channels": channels or
-                                        [f"b{i}" for i in range(in_ch)], "seed": seed, **(extra or {})},
+                                        [f"b{i}" for i in range(in_ch)], "seed": seed, "init_load": init_rec,
+                                        **(extra or {})},
                       extra_iou_names=names)
 
 
@@ -1005,8 +1369,22 @@ def finish_run(run_dir: Path, inputs: list, outputs: list, params: dict, seeds: 
 
 
 # ============================================================================ figures
-def plot_recall_strata(df: pd.DataFrame, out_png: Path, title: str = "") -> Path:
-    """Recall with intervals per stratum and arm. Colour plus marker shape (colourblind rule)."""
+def span_limits(df: pd.DataFrame) -> tuple[float, float]:
+    """y limits that hold every point and interval end and zero, with a 5% margin (gains can be negative)."""
+    v = pd.concat([df["recall"], df["lo"], df["hi"]]).astype(float)
+    v = v[np.isfinite(v)]
+    lo, hi = (min(float(v.min()), 0.0), max(float(v.max()), 0.0)) if len(v) else (-1.0, 1.0)
+    pad = 0.05 * max(hi - lo, 0.1)
+    return lo - pad, hi + pad
+
+
+def plot_recall_strata(df: pd.DataFrame, out_png: Path, title: str = "", ylabel: str | None = None,
+                       ylim: tuple | None = (0, 1)) -> Path:
+    """Recall with intervals per stratum and arm. Colour plus marker shape (colourblind rule).
+
+    For differences or gains pass ylim=None. The axis then spans every point and interval end (negative
+    gains are never clipped) and a zero line is drawn.
+    """
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -1018,8 +1396,12 @@ def plot_recall_strata(df: pd.DataFrame, out_png: Path, title: str = "") -> Path
         ax.errorbar(x, g["recall"], yerr=[g["recall"] - g["lo"], g["hi"] - g["recall"]], fmt=MARKERS.get(arm, "o"),
                     color=cols[i % len(cols)], label=arm, capsize=3)
     ax.set_xticks(range(len(strata)), strata)
-    ax.set_ylabel(f"recall at K = {K_PER_KM2:.0f} per km2")
-    ax.set_ylim(0, 1)
+    ax.set_ylabel(ylabel or f"recall at K = {K_PER_KM2:.0f} per km2")
+    if ylim is not None:
+        ax.set_ylim(*ylim)
+    else:
+        ax.set_ylim(*span_limits(df))
+        ax.axhline(0, color=ek.PALETTE["grey"], lw=0.8)
     ax.set_title(title)
     ax.legend(frameon=False)
     fig.tight_layout()
@@ -1071,18 +1453,34 @@ def _cmd_density(args, cfg):
     print(f"wrote {out}")
 
 
+def eligibility_from_void(g, void_cap: float | None):
+    """Review G-13. eligible = not edge and void known and void <= cap. A block without a void value is not
+    treated as void-free (the old fillna(0)). It is ineligible when a cap is declared."""
+    g = g.copy()
+    if void_cap is None:
+        g["eligible"] = ~g["edge"].astype(bool)
+        return g
+    v = g["void_frac_05"] if "void_frac_05" in g else pd.Series(np.nan, index=g.index)
+    g["void_known"] = v.notna()
+    g["over_void_cap"] = v > float(void_cap)
+    g["eligible"] = ~g["edge"].astype(bool) & g["void_known"] & ~g["over_void_cap"]
+    return g
+
+
 def _cmd_blocks(args, cfg):
     a = cfg["areas"][args.area]
     blocks = _blocks_for_area(cfg, args.area, args.exp)
+    pr = cfg["prereg"]
+    cap = pr.get("void_cap")
     dens = area_transfer_dir(args.area) / f"xfer_density_void_{args.area}.csv"
     if dens.exists():
         blocks = blocks.merge(pd.read_csv(dens)[["block_id", "void_frac_05", "ground_ppm2"]], on="block_id", how="left")
-        blocks["over_void_cap"] = blocks["void_frac_05"] > cfg["prereg"].get("void_cap", 1.0)
-    pr = cfg["prereg"]
+    elif cap is not None:
+        raise MissingInputError(f"void cap {cap} is declared but {dens} is missing. Run 'density' first. "
+                                "Blocks with unknown void are never eligible")
     g = assign_roles(blocks, a.get("role_fractions", {"test": 1.0}), seed=int(pr.get("master_seed", 0)),
                      buffer_m=float(pr.get("buffer_m", 0.0)), strata_col=args.strata)
-    over = g["over_void_cap"].fillna(False).astype(bool) if "over_void_cap" in g else False
-    g["eligible"] = ~g["edge"] & ~over
+    g = eligibility_from_void(g, cap)
     out = area_transfer_dir(args.area) / f"xfer_blocks_roles_{args.area}.gpkg"
     g.to_file(out, driver="GPKG")
     print(g["role"].value_counts().to_string())
@@ -1108,9 +1506,8 @@ def _cmd_derive(args, cfg):
 
 
 def _cmd_infer(args, cfg):
-    a = cfg["areas"][args.area]
     m = cfg["model"][args.task]
-    ckpt = resolve(m["checkpoint"], args.exp)
+    ckpt = transfer_checkpoint(cfg, args.task, args.exp)
     feats = ek.area_dir(args.area) / "derived" / "05" / f"features_{args.area}_05.tif"
     run = ek.new_run(args.exp, f"infer_{args.task}", {"area": args.area, **m},
                      base=area_transfer_dir(args.area), why="frozen zero-shot inference")
@@ -1119,45 +1516,88 @@ def _cmd_infer(args, cfg):
     print(f"wrote {prob}")
 
 
+def read_ref_tables(path: Path) -> tuple[dict, dict | None, dict]:
+    """3.0 reference tables -> (tables for pooled_recall_at_k, policy or None, meta).
+
+    Reads the old schema (blocks only) and the new one with top-level 'policy' and 'meta' keys.
+    The 3.0 tables carry no truth ids, so pooled recall keys their hits by draw.
+    """
+    doc = json.loads(Path(path).read_text(encoding="utf-8"))
+    pol, meta = doc.get("policy"), doc.get("meta") or {}
+    tabs = {b: {"c": pd.DataFrame(v["cands"], columns=["blob_id", "score", "area_m2", "truth_id"]),
+                "n_truth": int(v["n_truth"]), "km2": float(v["km2"])}
+            for b, v in doc.items() if b not in ("policy", "meta")}
+    return tabs, pol, meta
+
+
+def reference_tables(cfg: dict, task: str, exp_id: str) -> tuple[dict, dict | None, Path]:
+    """The 3.0 reference for one task (config reference.tables_by_task.<task>). A stamped policy must be the
+    task's primary policy, so a pit reference can never be compared with pad scoring (G-13)."""
+    spec = (cfg.get("reference", {}).get("tables_by_task") or {}).get(task)
+    if spec is None:
+        raise DecisionMissingError(f"config reference.tables_by_task.{task} is unset. Name the 3.0 reference "
+                                   f"tables for {task}. A reference of another task is never used")
+    p = require_input(resolve(spec, exp_id), f"9t reference block tables ({task})",
+                      "JSON {block_id: {cands: [...], n_truth, km2}} [+ policy, meta] from 3.0")
+    tabs, pol, _ = read_ref_tables(p)
+    if pol is not None and pol.get("task") not in (None, task):
+        raise AssertionError(f"reference tables {p.name} were scored for task {pol.get('task')}, not {task}")
+    return tabs, pol, p
+
+
+def class_truth(truth, task: str):
+    """Truth for one task only. Pit scoring never sees pad truth and pad scoring never sees pits (G-13)."""
+    if "class" not in truth.columns:
+        raise AssertionError("truth needs a 'class' column (pit or pad) so each class is scored on its own truth")
+    want = "pit" if task.startswith("pit") else task
+    return truth[truth["class"].astype(str) == want].copy()
+
+
 def _cmd_score(args, cfg):
     import geopandas as gpd
     pr = cfg["prereg"]
-    blocks = gpd.read_file(require_input(area_transfer_dir(args.area) / f"xfer_blocks_roles_{args.area}.gpkg",
+    d = area_transfer_dir(args.area)
+    blocks = gpd.read_file(require_input(d / f"xfer_blocks_roles_{args.area}.gpkg",
                                          "block roles", "run the 'blocks' subcommand first"))
     blocks = blocks[blocks["role"].isin(args.roles.split(","))]
     if args.strata_filter:
         col, vals = args.strata_filter.split("=")
         blocks = blocks[blocks[col].isin(vals.split(","))]
-    truth = gpd.read_file(require_input(area_transfer_dir(args.area) / f"xfer_truth_features_{args.area}.gpkg",
+    truth = gpd.read_file(require_input(d / f"xfer_truth_features_{args.area}.gpkg",
                                         "blind truth polygons", "polygons with truth_id, class, block_id"))
-    truth = truth[truth["class"].isin(args.classes.split(","))] if "class" in truth else truth
-    tab_t, cands = score_raster(Path(args.prob), truth, blocks)
-    ref = json.loads(require_input(resolve(cfg["reference"]["tables"], args.exp), "9t reference block tables",
-                                   "JSON {block_id: {cands: [...], n_truth, km2}} from 3.0").read_text())
-    tab_ref = {b: {"c": pd.DataFrame(v["cands"]), "n_truth": v["n_truth"], "km2": v["km2"]} for b, v in ref.items()}
+    water_p = d / f"xfer_water_mask_{args.area}.gpkg"
+    water = gpd.read_file(water_p).to_crs(blocks.crs) if water_p.exists() else None
+    if water is None and "water_share" in blocks.columns:
+        raise MissingInputError(f"blocks carry water_share but the water mask {water_p} is missing. "
+                                "Rerun _gulf_wetland_strata.py. Water must leave the scored support")
     by_area = cfg["prereg"].get("margin_by_area", {})
     margin = by_area.get(args.area)
     if margin is None:   # per-area margin (Canada, one per province) wins, else the single prereg margin
         margin = need_decision(cfg, "margin", "tolerable missed-feature burden at K")
     margin = float(margin)
-    res = transfer_difference(tab_t, tab_ref, margin, B=args.B, seed=int(pr.get("master_seed", 0)))
-    res.update({"arm": args.arm, "area": args.area, "evidence_level": "(a) drawn feature",
-                "contrast_only": bool(args.contrast),
-                "density_scaled_k": density_scaled_k(res["density_target"], res["density_ref"]),
-                "ceiling_share_below_0p9": float((ceiling_per_block(tab_t)["ceiling"] < 0.9).mean())})
     run = Path(args.prob).parent
-    out = run / f"xfer_score_k40_{args.arm}_{args.area}.json"
-    out.write_text(json.dumps(res, indent=2, default=str), encoding="utf-8")
-    cands.to_csv(run / f"xfer_candidates_{args.arm}_{args.area}.csv", index=False)
-    print(json.dumps({k: res[k] for k in ("recall_target", "diff", "diff_ci", "decision")}, indent=2))
-    print(f"wrote {out}")
+    for task in [args.task]:              # one raster is one task. Score pads with the pad raster separately
+        tab_ref, ref_pol, ref_p = reference_tables(cfg, task, args.exp)
+        tab_t, cands = score_raster(Path(args.prob), class_truth(truth, task), blocks, task=task, mode=args.mode,
+                                    exclude_polygons=water)
+        pol = cands.attrs["policy"]
+        res = transfer_difference(tab_t, tab_ref, margin, B=args.B, seed=int(pr.get("master_seed", 0)),
+                                  ref_policy=ref_pol, target_policy=pol)
+        res.update({"arm": args.arm, "area": args.area, "task": task, "evidence_level": "(a) drawn feature",
+                    "contrast_only": bool(args.contrast), "reference_tables": str(ref_p),
+                    "density_scaled_k": density_scaled_k(res["density_target"], res["density_ref"]),
+                    "ceiling_share_below_0p9": float((ceiling_per_block(tab_t)["ceiling"] < 0.9).mean()),
+                    "scoring": score_attrs(cands), "water_mask": str(water_p) if water is not None else None})
+        out = run / f"xfer_score_k40_{args.arm}_{task}_{args.area}.json"
+        out.write_text(json.dumps(res, indent=2, default=str), encoding="utf-8")
+        cands.to_csv(run / f"xfer_candidates_{args.arm}_{task}_{args.area}.csv", index=False)
+        print(json.dumps({k: res[k] for k in ("task", "recall_target", "diff", "diff_ci", "decision")}, indent=2))
+        print(f"wrote {out}")
 
 
 def _cmd_width(args, cfg):
     pr = cfg["prereg"]
-    ref = json.loads(require_input(resolve(cfg["reference"]["tables"], args.exp), "9t out-of-fold block tables",
-                                   "JSON {block_id: {cands, n_truth, km2}}").read_text())
-    tab = {b: {"c": pd.DataFrame(v["cands"]), "n_truth": v["n_truth"], "km2": v["km2"]} for b, v in ref.items()}
+    tab, _, _ = reference_tables(cfg, args.task, args.exp)
     w = ek.projected_width(lambda bl: pooled_recall_at_k(tab, bl), list(tab), args.n_target, B=args.B,
                            reps=args.reps, seed=int(pr.get("master_seed", 0)))
     m = float(need_decision(cfg, "margin", "tolerable missed-feature burden at K"))
@@ -1209,11 +1649,14 @@ def main(argv=None) -> int:
             p.add_argument("--prob", required=True)
             p.add_argument("--arm", default="A0")
             p.add_argument("--roles", default="test")
-            p.add_argument("--classes", default="pit,pad")
+            p.add_argument("--task", required=True, choices=["pit", "pad"],
+                           help="task of the probability raster. Only truth of that class is scored, at its policy")
+            p.add_argument("--mode", default="primary", choices=["primary", "sensitivity"])
             p.add_argument("--strata-filter", default="", help="col=v1,v2 (e.g. wet_stratum=dry,mixed)")
             p.add_argument("--contrast", action="store_true", help="label as a contrast arm, never pooled")
             p.add_argument("--B", type=int, default=2000)
         if name == "width":
+            p.add_argument("--task", default="pit", choices=["pit", "pad"])
             p.add_argument("--n-target", type=int, required=True)
             p.add_argument("--B", type=int, default=2000)
             p.add_argument("--reps", type=int, default=50)

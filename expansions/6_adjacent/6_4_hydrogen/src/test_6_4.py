@@ -84,3 +84,44 @@ def test_h2_reader_zero_tolerance():
     a = pd.DataFrame([{"reader_id": f"R{r}", "question_id": q, "correct": 1} for r in range(6) for q in qs])
     a.loc[(a.reader_id == "R2") & (a.question_id == "Q_h2_material"), "correct"] = 0
     assert H2.RC.gate(prof, a)["gate"] == "failure"
+
+
+# ----------------------------------------------------------------------------- 2026-11-06 review fix 6.4-01
+def _world_no_depth(tmp_path):
+    import geopandas as gpd
+    w = T61.make_world(tmp_path)
+    g = gpd.read_file(w["dep_wells"])
+    g["TOTAL_MAXI"] = ""                    # the held DEP export has an empty string in every row
+    g.to_file(tmp_path / "wells_nodepth.gpkg")
+    w["dep_wells"] = tmp_path / "wells_nodepth.gpkg"
+    w["reservoir_tops"] = _tops(tmp_path)
+    return w
+
+
+def test_zero_depth_coverage_fails_loudly(tmp_path):
+    cfg = H2.merged_config()
+    prof = H2.L.load_profile(cfg, "hydrogen")
+    w = _world_no_depth(tmp_path)
+    out = tmp_path / "h2"
+    out.mkdir()
+    rh, el, er, _ = H2.hooks(cfg, w)
+    with pytest.raises(H2.NoDepthInRecords, match="depth coverage is 0"):
+        H2.RUN.run_all(cfg, prof, out, w, records_hook=rh, extra_layers=el, extra_rows=er, B=20, figure=False)
+
+
+def test_zero_depth_coverage_reported_not_dropped(tmp_path):
+    cfg = H2.merged_config()
+    prof = H2.L.load_profile(cfg, "hydrogen")
+    w = _world_no_depth(tmp_path)
+    out = tmp_path / "h2"
+    out.mkdir()
+    rh, el, er, _ = H2.hooks(cfg, w, allow_no_depth=True)
+    H2.RUN.run_all(cfg, prof, out, w, records_hook=rh, extra_layers=el, extra_rows=er, B=20, figure=False)
+    import pyogrio
+    rec = pyogrio.read_dataframe(out / "screening_package_h2_9t.gpkg", layer="L1_records")
+    assert set(rec.penetration_flag) == {"not computable, no depth in records"}
+    c = pd.read_csv(out / "screening_counts_h2_9t.csv").set_index("metric")
+    assert c.loc["h2_depth_coverage_share", "value"] == 0
+    assert c.loc["h2_penetration_flag_not_computable", "value"] == 1
+    assert "h2_penetration_flag_dropped" not in c.index
+    assert "not computable" in (out / "screening_summary_h2_9t.md").read_text()

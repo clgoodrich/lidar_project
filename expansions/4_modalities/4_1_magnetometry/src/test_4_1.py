@@ -23,7 +23,7 @@ CX, CY = 621000.0, 4595000.0
 SRC = (CX + 2.0, CY - 3.0)
 
 
-def synth(seed=0, src=SRC, p=2000.0, depth=1.0, h=0.3):
+def synth(seed=0, src=SRC, p=2000.0, depth=1.0, h=0.3, extra=()):
     rng = np.random.default_rng(seed)
     t0 = pd.Timestamp("2026-11-05T14:00:00Z")
     rows, t = [], 0.0
@@ -42,6 +42,8 @@ def synth(seed=0, src=SRC, p=2000.0, depth=1.0, h=0.3):
     drift = 0.01 * df.t                                   # about 20 nT over the survey
     regional = 52000 + 0.5 * (df.easting - CX) - 0.3 * (df.northing - CY)
     anom = design.monopole_field(df.easting - src[0], df.northing - src[1], p, depth + h)
+    for (ex, ey), ep in extra:                            # further steel objects, e.g. a test object
+        anom = anom + design.monopole_field(df.easting - ex, df.northing - ey, ep, depth + h)
     df["tf_nT"] = regional + drift + anom + rng.normal(0, 0.3, len(df))
     df.loc[100, "tf_nT"] += 500                           # one spike
     df["time_utc"] = (t0 + pd.to_timedelta(df.t, unit="s")).astype(str)
@@ -99,11 +101,103 @@ def test_match_and_gate(cfg, tmp_path):
     assert frame.validate_pilot(sites, cfg["site_frame"])["ok"]
 
 
+def _gate_case(cfg, tmp_path, w_src_p, b_src_p, w_stratum="steel_era"):
+    """Same layout as test_match_and_gate. w_src_p is the pole strength at the confirmed well, b_src_p at the
+    blank centre (0 means no source). Every site keeps a findable test object, so only the tested
+    defect can fail the gate."""
+    far = (CX + 7.0, CY - 7.0)                           # test objects sit outside the 5 m match radius
+    obj = (CX - 7.0, CY + 7.0)
+    w1 = synth(2, p=w_src_p, extra=[] if w_src_p > 0 else [(far, 2000.0)])
+    data = {"w1": w1, "c1": synth(3), "b1": synth(4, src=(CX, CY), p=b_src_p, extra=[(obj, 2000.0)])}
+    tos = {"w1": SRC if w_src_p > 0 else far, "c1": SRC, "b1": obj}
+    pr = proc.run(cfg, tmp_path, sites=list(data), data=data, test_objects=tos)
+    sites = pd.DataFrame({"site_id": ["w1", "c1", "b1"], "stratum": [w_stratum, "confuser", "blank"],
+                          "easting": [CX, SRC[0], CX], "northing": [CY, SRC[1], CY],
+                          "why_chosen": ["visible wellhead", "culvert", "open forest"]})
+    idn = pd.DataFrame({"site_id": ["w1", "c1", "b1"],
+                        "identity_status": ["confirmed_well", "definite_non_well", "definite_non_well"]})
+    return match.run(cfg, tmp_path, proc_run=pr["run_dir"], sites=sites, identity=idn)
+
+
+def test_confirmed_well_without_anomaly_is_a_miss(cfg, tmp_path):
+    """4.1-01. Pre-fix the outcome was confirmed_well_d from identity alone and the gate passed."""
+    m = _gate_case(cfg, tmp_path, w_src_p=0.0, b_src_p=0.0)
+    t = m["table"].set_index("site_id")
+    assert not t.loc["w1", "anomaly_present"]
+    assert t.loc["w1", "outcome"] == "confirmed_well_missed"
+    assert [k for k, v in m["gate"]["checks"].items() if not v] == ["confirmed_steel_wells_detected"]
+    assert m["gate"]["verdict"] == "fail"
+
+
+def test_early_era_miss_is_reported_not_failed(cfg, tmp_path):
+    m = _gate_case(cfg, tmp_path, w_src_p=0.0, b_src_p=0.0, w_stratum="early_era")
+    assert m["table"].set_index("site_id").loc["w1", "outcome"] == "confirmed_well_missed"
+    assert m["gate"]["early_or_undated_wells_missed"] == ["w1"]
+    assert m["gate"]["verdict"] == "pass"
+
+
+def test_blank_with_50nT_pick_fails_gate(cfg, tmp_path):
+    """4.1-01. A 50 nT source under the blank. B = p / r2 with r = 1.0 + 0.3 m, so p = 50 * 1.3**2."""
+    m = _gate_case(cfg, tmp_path, w_src_p=2000.0, b_src_p=50 * 1.3 ** 2)
+    t = m["table"].set_index("site_id")
+    assert t.loc["b1", "anomaly_present"] and t.loc["b1", "amplitude_nT"] > 10   # residual after regional removal
+    assert t.loc["b1", "outcome"] == "blank_with_pick"
+    assert [k for k, v in m["gate"]["checks"].items() if not v] == ["blanks_have_no_pick"]
+    assert m["gate"]["verdict"] == "fail"
+
+
+def test_outcome_table_crosses_identity_and_anomaly():
+    got = {(i, a): match.outcome_for(True, True, i, a, "steel_era")
+           for i in ("confirmed_well", "definite_non_well", "ambiguous") for a in (True, False)}
+    assert got == {("confirmed_well", True): "confirmed_well_d", ("confirmed_well", False): "confirmed_well_missed",
+                   ("definite_non_well", True): "steel_anomaly_c", ("definite_non_well", False): "nothing_found",
+                   ("ambiguous", True): "steel_anomaly_c", ("ambiguous", False): "nothing_found"}
+    assert match.outcome_for(False, True, "confirmed_well", True, "steel_era") == "inaccessible"
+    assert match.outcome_for(True, False, "confirmed_well", True, "steel_era") == "unresolved"
+
+
+def test_historic_date_after_steel_is_not_early_era():
+    """Era gap. A historic record dated 1960 must not make a well early era. Pre-fix it did."""
+    w = pd.DataFrame({"PERMIT_NUM": ["a", "b"], "SPUD_DATE": ["1955-01-01", None], "PERMIT_DAT": [None, None]})
+    hist = pd.DataFrame({"PERMIT_NUM": ["a", "b"], "year_built_max": [1960, 1890]})
+    assert frame.assign_strata(w, hist, 1930, 1800).tolist() == ["steel_era", "early_era"]
+    with pytest.raises(ValueError, match="year_built_max"):
+        frame.assign_strata(w, pd.DataFrame({"PERMIT_NUM": ["a"]}), 1930, 1800)
+
+
+def test_dated_pre_steel_is_a_valid_pilot_stratum(cfg):
+    """Era gap. assign_strata emits dated_pre_steel, so validate_pilot must accept it."""
+    sites = pd.DataFrame({"site_id": ["a", "b", "c"], "stratum": ["dated_pre_steel", "confuser", "blank"],
+                          "why_chosen": ["x", "y", "z"]})
+    assert frame.validate_pilot(sites, cfg["site_frame"])["ok"]
+
+
+def test_frame_counts_wells_from_raw_box(cfg, tmp_path):
+    """Circular assert. The well count is checked against the raw box minus counted duplicates and blanks."""
+    import geopandas as gpd
+    from shapely.geometry import Point
+    x0, y0 = cfg["bbox_9t"][0] + 100, cfg["bbox_9t"][1] + 100
+    wells = gpd.GeoDataFrame({"PERMIT_NUM": ["p1", "p1", "p2", None], "SPUD_DATE": ["1950-01-01"] * 4,
+                              "PERMIT_DAT": [None] * 4, "WELL_STATU": ["Active"] * 4},
+                             geometry=[Point(x0, y0), Point(x0 + 50, y0), Point(x0 + 100, y0), Point(x0 + 150, y0)],
+                             crs=cfg["crs"])
+    pits = gpd.GeoDataFrame({"pit_full_id": [1]}, geometry=[Point(x0 + 50, y0).buffer(2)], crs=cfg["crs"])
+    c = dict(cfg)
+    c["inputs"] = {k: (dict(v, rel="absent/x.csv") if k in ("historic_dates", "confusers_blanks", "pilot_sites")
+                       else v) for k, v in cfg["inputs"].items()}
+    r = frame.run(c, tmp_path, wells=wells, pits=pits)
+    sm = r["summary"]
+    assert sm["n_wells_in_box"] == 4 and sm["n_duplicate_permit_records_dropped"] == 1
+    assert sm["n_records_no_permit"] == 1
+    assert sorted(r["frame"].site_id[r["frame"].site_id.str.startswith("well_")]) == ["well_p1", "well_p2"]
+    assert "pit_1" not in set(r["frame"].site_id)      # the duplicate p1 record at x0+50 still screens the pit
+
+
 def test_strata_logic():
     w = pd.DataFrame({"PERMIT_NUM": ["a", "b", "c", "d", "e"],
                       "SPUD_DATE": ["1955-01-01", "1800-01-01", None, "1890-05-01", "1900-01-01"],
                       "PERMIT_DAT": [None, None, None, None, None]})
-    hist = pd.DataFrame({"PERMIT_NUM": ["e"]})
+    hist = pd.DataFrame({"PERMIT_NUM": ["e"], "year_built_max": [1895]})
     s = frame.assign_strata(w, hist, 1930, 1800).tolist()
     assert s == ["steel_era", "unknown_date", "unknown_date", "dated_pre_steel", "early_era"]
 

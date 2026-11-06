@@ -2,43 +2,167 @@
   "_note": "Expansion 4.2 thermal. Built 2026-11-05 by the build agent. Every item marked VERIFY is an assumption from docs/fw_4_2_thermal.md section 5. Path specs: {key, rel} -> path_for(key)/rel, {exp, rel} -> expansion folder. Change freely.",
   "master_seed": 4200,
   "inputs": {
-    "pads": {"key": "truth", "rel": "annotations_proj_v2.gpkg", "layer": "pad", "id_col": "pad_id"},
-    "clearings": {"exp": "4.2", "rel": "data/raw/nonpad_clearings_9t.gpkg", "layer": null, "id_col": "clearing_id",
-      "_schema": "Polygon layer, EPSG:6346, columns clearing_id (unique), clearing_type (landing|corridor|field_edge|other), optional age_band. VERIFY. The annotated non-pad disturbance layer name is not confirmed (framework section 14)"},
-    "chm": {"key": "nine_t_1m", "rel": "chm_9t_1m.tif"},
-    "dem": {"key": "nine_t_1m", "rel": "dem_9t_1m.tif"},
-    "slope": {"key": "nine_t_1m", "rel": "slope_9t_1m.tif"},
-    "nlcd": {"key": "data", "rel": "9t/derived/landcover/nlcd_2019_landcover_9t.tif"},
-    "prism": {"key": "data", "rel": "9t/derived/weather/weather_prism_daily_9t.csv"},
-    "leaf_state": {"key": "data", "rel": "9t/derived/weather/leaf_state_ndvi_curve_9t.csv"},
-    "audit_blocks": {"key": "results_9t", "rel": "splits/audit_blocks_9t_v1.csv",
-      "_schema": "CSV with column block_id ('bx_by' 375 m ids). Optional. Sites in these blocks are excluded from matching and fitting"},
-    "folds": {"exp": "4.2", "rel": "data/raw/transfer_blocks.csv",
-      "_schema": "CSV block_id, fold (from the 3.0 scorer transfer_blocks.csv). VERIFY. Without it T4 refuses unless --fallback-folds"}
+    "pads": {
+      "key": "truth",
+      "rel": "annotations_proj_v2.gpkg",
+      "layer": "pad",
+      "id_col": "pad_id"
+    },
+    "clearings": {
+      "exp": "4.2",
+      "rel": "data/raw/nonpad_clearings_9t.gpkg",
+      "layer": null,
+      "id_col": "clearing_id",
+      "_schema": "Polygon layer, EPSG:6346, columns clearing_id (unique), clearing_type (landing|corridor|field_edge|other), optional age_band. VERIFY. The annotated non-pad disturbance layer name is not confirmed (framework section 14)"
+    },
+    "chm": {
+      "key": "nine_t_1m",
+      "rel": "chm_9t_1m.tif"
+    },
+    "dem": {
+      "key": "nine_t_1m",
+      "rel": "dem_9t_1m.tif"
+    },
+    "slope": {
+      "key": "nine_t_1m",
+      "rel": "slope_9t_1m.tif"
+    },
+    "nlcd": {
+      "key": "data",
+      "rel": "9t/derived/landcover/nlcd_2019_landcover_9t.tif"
+    },
+    "prism": {
+      "key": "data",
+      "rel": "9t/derived/weather/weather_prism_daily_9t.csv"
+    },
+    "leaf_state": {
+      "key": "data",
+      "rel": "9t/derived/weather/leaf_state_ndvi_curve_9t.csv"
+    },
+    "audit_blocks": {
+      "key": "results_9t",
+      "rel": "splits/audit_blocks_9t_v1.csv",
+      "_schema": "Frozen P2 audit CSV (# header, sha256 sidecar), read only through ek.require_audit. block_id are P2 integer ids, mapped to bx_by with inputs.blocks. Missing file refuses unless --allow-no-audit, then the output is labelled exploratory"
+    },
+    "folds": {
+      "exp": "4.2",
+      "rel": "data/raw/transfer_blocks.csv",
+      "_schema": "CSV block_id, fold (from the 3.0 scorer transfer_blocks.csv). VERIFY. Without it T4 refuses unless --fallback-folds"
+    },
+    "blocks": {
+      "key": "nine_t",
+      "rel": "pit_blocks_9t.gpkg",
+      "_schema": "9t block layer 'blocks' with block_id = iy*12+ix, ix, iy (375 m from 619500, 4593000)"
+    }
   },
   "t0_routes": [
-    {"route": "land cover and canopy removal", "lidar_carries": true, "independent_thermal_term": false, "testable": true},
-    {"route": "slope and aspect solar loading", "lidar_carries": true, "independent_thermal_term": false, "testable": true},
-    {"route": "bare gravel thermal inertia", "lidar_carries": false, "independent_thermal_term": true, "testable": true},
-    {"route": "soil moisture difference", "lidar_carries": false, "independent_thermal_term": true, "testable": true},
-    {"route": "leaking gas at ordinary flow", "lidar_carries": false, "independent_thermal_term": false, "testable": false,
-      "_note": "gas leaves near ground temperature, no temperature term at ordinary rates (framework T0)"}
+    {
+      "route": "land cover and canopy removal",
+      "lidar_carries": true,
+      "independent_thermal_term": false,
+      "testable": true
+    },
+    {
+      "route": "slope and aspect solar loading",
+      "lidar_carries": true,
+      "independent_thermal_term": false,
+      "testable": true
+    },
+    {
+      "route": "bare gravel thermal inertia",
+      "lidar_carries": false,
+      "independent_thermal_term": true,
+      "testable": true
+    },
+    {
+      "route": "soil moisture difference",
+      "lidar_carries": false,
+      "independent_thermal_term": true,
+      "testable": true
+    },
+    {
+      "route": "leaking gas at ordinary flow",
+      "lidar_carries": false,
+      "independent_thermal_term": false,
+      "testable": false,
+      "_note": "gas leaves near ground temperature, no temperature term at ordinary rates (framework T0)"
+    }
   ],
   "sensors": [
-    {"name": "landsat_tirs", "native_pixel_m": 100.0, "delivered_pixel_m": 30.0,
-      "lst_scale": 0.00341802, "lst_offset": 149.0, "lst_band": 1, "err_band": null,
+    {
+      "name": "landsat_tirs",
+      "native_pixel_m": 100.0,
+      "delivered_pixel_m": 30.0,
+      "lst_scale": 0.00341802,
+      "lst_offset": 149.0,
+      "lst_band": 1,
+      "err_band": null,
       "assumed_noise_K": 1.5,
-      "scene_index": {"exp": "4.2", "rel": "data/raw/scene_index_landsat_9t.csv"},
-      "tiepoints": {"exp": "4.2", "rel": "data/raw/tiepoints_landsat_9t.csv"},
-      "_verify": "Native 100 m, delivered 30 m, ST_B10 scale 0.00341802 and offset 149.0 K from the Landsat Collection 2 Level 2 guide. Not yet read. VERIFY"},
-    {"name": "ecostress", "native_pixel_m": 70.0, "delivered_pixel_m": 70.0,
-      "lst_scale": 1.0, "lst_offset": 0.0, "lst_band": 1, "err_band": 2,
+      "scene_index": {
+        "exp": "4.2",
+        "rel": "data/raw/scene_index_landsat_9t.csv"
+      },
+      "tiepoints": {
+        "exp": "4.2",
+        "rel": "data/raw/tiepoints_landsat_9t.csv"
+      },
+      "_verify": "Native 100 m, delivered 30 m, ST_B10 scale 0.00341802 and offset 149.0 K from the Landsat Collection 2 Level 2 guide. Not yet read. VERIFY",
+      "qa_band": 2,
+      "qa_rule": {
+        "type": "bits_clear",
+        "bits": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "lst_plausible_K": [
+        200.0,
+        350.0
+      ],
+      "_qa_verify": "Landsat Collection 2 QA_PIXEL bits 0 fill, 1 dilated cloud, 2 cirrus, 3 cloud, 4 cloud shadow, 5 snow. Stack QA_PIXEL as band 2 of each scene GeoTIFF. VERIFY against the USGS Collection 2 Level 2 Science Product Guide"
+    },
+    {
+      "name": "ecostress",
+      "native_pixel_m": 70.0,
+      "delivered_pixel_m": 70.0,
+      "lst_scale": 1.0,
+      "lst_offset": 0.0,
+      "lst_band": 1,
+      "err_band": 2,
       "assumed_noise_K": 1.5,
-      "scene_index": {"exp": "4.2", "rel": "data/raw/scene_index_ecostress_9t.csv"},
-      "tiepoints": {"exp": "4.2", "rel": "data/raw/tiepoints_ecostress_9t.csv"},
-      "_verify": "About 70 m (LP DAAC ECO2LSTE.002 guide, not yet read). VERIFY"}
+      "scene_index": {
+        "exp": "4.2",
+        "rel": "data/raw/scene_index_ecostress_9t.csv"
+      },
+      "tiepoints": {
+        "exp": "4.2",
+        "rel": "data/raw/tiepoints_ecostress_9t.csv"
+      },
+      "_verify": "About 70 m (LP DAAC ECO2LSTE.002 guide, not yet read). VERIFY",
+      "qa_band": 3,
+      "qa_rule": {
+        "type": "field_in",
+        "bits": [
+          0,
+          1
+        ],
+        "good": [
+          0,
+          1
+        ]
+      },
+      "lst_plausible_K": [
+        200.0,
+        350.0
+      ],
+      "_qa_verify": "ECOSTRESS LSTE QC bits 0-1 mandatory flag, 0 best, 1 nominal, 2 cloud, 3 not produced. Stack QC as band 3 (LST 1, LST_err 2). VERIFY against the ECO2LSTE user guide for the collection version used. lst_scale 1.0 assumes an already scaled delivery (AppEEARS GeoTIFF). The raw product stores LST as uint16 with scale 0.02. The plausibility check in T2 refuses a wrong choice"
+    }
   ],
-  "_scene_index_schema": "CSV scene_id, sensor, datetime_utc (ISO), path (GeoTIFF, LST band per sensor config), cloud_frac (0-1 over the block), qc_pass (bool), optional lst_err_K",
+  "_scene_index_schema": "CSV scene_id, sensor, datetime_utc (ISO), path (GeoTIFF, LST band per sensor config), cloud_frac (0-1 over the block), qc_pass (bool), optional lst_err_K. Each scene GeoTIFF must carry the per-pixel QA band named by qa_band. Scenes without tie points passing T1 registration are not extracted",
   "_tiepoints_schema": "CSV scene_id, dx_m, dy_m (scene minus lidar edge position, metres)",
   "gate": {
     "delta_T_K": 1.0,
@@ -53,22 +177,83 @@
     "n_offsets": 16,
     "bootstrap_B": 2000
   },
-  "season_windows": {"leaf_off": [11, 12, 1, 2, 3, 4], "leaf_on": [6, 7, 8], "shoulder": [5, 9, 10]},
+  "season_windows": {
+    "leaf_off": [
+      11,
+      12,
+      1,
+      2,
+      3,
+      4
+    ],
+    "leaf_on": [
+      6,
+      7,
+      8
+    ],
+    "shoulder": [
+      5,
+      9,
+      10
+    ]
+  },
   "matching": {
     "pad_buffer_m": 30.0,
-    "continuous": ["area_m2", "chm_mean_m", "slope_deg", "aspect_sin", "aspect_cos"],
-    "exact": ["area_band"],
-    "area_bands_m2": [0, 400, 1000, 2500, 1e9],
+    "continuous": [
+      "area_m2",
+      "chm_mean_m",
+      "slope_deg",
+      "aspect_sin",
+      "aspect_cos"
+    ],
+    "exact": [
+      "area_band"
+    ],
+    "area_bands_m2": [
+      0,
+      400,
+      1000,
+      2500,
+      1000000000.0
+    ],
     "caliper_sd": 0.5,
     "n_per": 1,
     "forest_chm_min_m": 10.0,
-    "forest_shift_m": [150, 400],
+    "forest_shift_m": [
+      150,
+      400
+    ],
     "forest_tries": 60
   },
-  "extract": {"antecedent_days": 7, "supersample": 5, "partial_weight_frac": 0.95},
-  "contrast": {"expected_sign": 1, "_sign_note": "Preregistered sign of pad minus clearing. +1 means pads warmer. User decision",
-    "null_covariates": ["chm_mean_m", "slope_deg", "aspect_sin", "aspect_cos", "solar_wm2", "rain_mm"]},
-  "added_value": {"k_per_km2": 40.0, "delta_gain": 0.05,
-    "lidar_features": ["area_m2", "chm_mean_m", "slope_deg", "aspect_sin", "aspect_cos"],
-    "_delta_gain_note": "User decision. Placeholder 0.05 recall at K"}
+  "extract": {
+    "antecedent_days": 7,
+    "supersample": 5,
+    "partial_weight_frac": 0.95
+  },
+  "contrast": {
+    "expected_sign": 1,
+    "_sign_note": "Preregistered sign of pad minus clearing. +1 means pads warmer. User decision",
+    "null_covariates": [
+      "chm_mean_m",
+      "slope_deg",
+      "aspect_sin",
+      "aspect_cos",
+      "solar_wm2",
+      "rain_mm"
+    ]
+  },
+  "added_value": {
+    "k_per_km2": 40.0,
+    "delta_gain": 0.05,
+    "lidar_features": [
+      "area_m2",
+      "chm_mean_m",
+      "slope_deg",
+      "aspect_sin",
+      "aspect_cos"
+    ],
+    "_delta_gain_note": "User decision. Placeholder 0.05 recall at K",
+    "max_undefined": 0.0,
+    "_max_undefined_note": "Share of bootstrap draws allowed to be undefined (a resample with one class or no truth). 0 means any undefined draw gives an undefined interval and an inconclusive verdict (SH-01). User decision"
+  }
 }

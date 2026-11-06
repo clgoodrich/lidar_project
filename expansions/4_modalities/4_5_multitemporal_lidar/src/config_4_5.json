@@ -36,7 +36,10 @@
     "min_eligible_note": "User decision for the preregistration (power). Proposed default."
   },
   "controls": {
-    "covariates": ["slope_deg", "area_m2", "rough_2006_m", "road_dist_m"],
+    "covariates": ["slope_deg", "area_m2", "rough_2006_m", "road_dist_m", "seam_dist_m"],
+    "covariates_note": "seam_dist_m added 2026-11-06 (review 4.5-02). Distance from the pad to the nearest straight survey seam in dod_v2_highpass_9t_2m.tif.",
+    "seam_band_edges_m": [50.0],
+    "seam_band_note": "Exact-match strata on seam distance (near under 50 m, far beyond). Proposed default 2026-11-06. User decision.",
     "max_controls": 3,
     "caliper_sd": 0.5,
     "require_spud_before_early": true,
@@ -61,6 +64,9 @@
     "areas_m2": [100.0, 400.0, 1000.0],
     "n_sites": 40,
     "register": true,
+    "register_note": "Unused since 2026-11-06. S3 now runs the S4 point chain (per-pass shift and overlap offsets), not a DEM shift.",
+    "reproduce_tol_m": 0.01,
+    "reproduce_note": "RMS tolerance for the h = 0 chain against the held dod_v2_highpass_9t_2m.tif. Proposed default.",
     "seed": 20261105
   },
   "compare": {

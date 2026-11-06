@@ -1,0 +1,39 @@
+{
+  "areas": [
+    400.0
+  ],
+  "chain": "points_v2",
+  "flag": {
+    "ctrl_dist_m": [
+      150.0,
+      800.0
+    ],
+    "min_cover": 0.2,
+    "min_ctrl": 10,
+    "n_ctrl": 40,
+    "p_cut": 0.975,
+    "slope_tol": 3.0,
+    "thr": 0.235
+  },
+  "heights": [],
+  "n_sites": 9,
+  "recovery": {
+    "areas_m2": [
+      100.0,
+      400.0,
+      1000.0
+    ],
+    "heights_m": [
+      0.1,
+      0.2,
+      0.3,
+      0.5
+    ],
+    "n_sites": 40,
+    "register": true,
+    "register_note": "Unused since 2026-11-06. S3 now runs the S4 point chain (per-pass shift and overlap offsets), not a DEM shift.",
+    "reproduce_note": "RMS tolerance for the h = 0 chain against the held dod_v2_highpass_9t_2m.tif. Proposed default.",
+    "reproduce_tol_m": 0.01,
+    "seed": 20261105
+  }
+}

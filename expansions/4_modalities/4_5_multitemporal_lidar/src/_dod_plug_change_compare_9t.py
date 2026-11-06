@@ -39,7 +39,8 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _dod_shared_io as io  # noqa: E402
 from _dod_shared_io import ek  # noqa: E402
-from _dod_recovery_test_9t import seam_distance  # noqa: E402
+from _dod_shared_io import seam_distance  # noqa: E402
+from _dod_controls_matched_9t import smd  # noqa: E402
 
 
 def measure(pads, field, transform, slope, excl, params, seed: int, seam_d=None) -> pd.DataFrame:
@@ -89,6 +90,18 @@ def placebo(pool: pd.DataFrame, n_treated: int, k: int, reps: int, seed: int) ->
         d.append(pick.iloc[:n_treated].flagged.astype(float).mean() - pick.iloc[n_treated:].flagged.astype(float).mean())
     d = np.array(d)
     return {"reps": reps, "mean": float(d.mean()), "q025": float(np.quantile(d, 0.025)), "q975": float(np.quantile(d, 0.975))}
+
+
+def late_flight_date(cfg: dict, out_root: Path | None = None) -> tuple[str, str]:
+    """Late flight start from the newest S0 run. Falls back to the nominal project year with a note. The D20 tiles over
+    9t are labelled 2019 but were flown 2020-03-18 (GPS full scan, 2026-11-06), so the fallback is wrong there."""
+    d = io.latest_run("dod_flight", out_root)
+    if d is not None and (d / "flight_windows_9t.json").exists():
+        j = json.loads((d / "flight_windows_9t.json").read_text(encoding="utf-8"))
+        v = (j.get("late") or {}).get("window_start_min")
+        if v:
+            return str(v), f"S0 {d.name}"
+    return f"{cfg['projects']['late']['year_lo']}-01-01", "nominal project year (no S0 run found)"
 
 
 def gate(lo: float, hi: float, delta: float, n: int, n_min: int) -> str:
@@ -141,10 +154,12 @@ def run(cfg: dict, out_root: Path | None = None, ctrl_dir: Path | None = None, r
     n_min = int(cfg["eligibility"]["min_eligible_pads"])
     T_ = A[A.role == "treated"].copy()
     dose = {"note": "needs dates"}
+    late_flight, late_src = late_flight_date(cfg, out_root)
     if "first_eligible_plug" in T_ and T_.first_eligible_plug.notna().sum() >= 3:
-        yrs = pd.Timestamp(f"{cfg['projects']['late']['year_lo']}-01-01") - pd.to_datetime(T_.first_eligible_plug)
+        yrs = pd.Timestamp(late_flight) - pd.to_datetime(T_.first_eligible_plug)
         rho, p = spearmanr(yrs.dt.days / 365.25, T_.median_dz_m.abs())
-        dose = {"spearman_rho": float(rho), "p": float(p), "n": int(len(T_)), "exploratory": True}
+        dose = {"spearman_rho": float(rho), "p": float(p), "n": int(len(T_)), "exploratory": True,
+                "late_flight": late_flight, "late_flight_source": late_src}
     plc = {"reps": 0, "note": "no pool given"}
     if pool_pads is not None:
         Pm = measure(pool_pads.assign(match_id=-1, role="pool", complex_id=-1), field, T, slope, excl, params,
@@ -158,9 +173,12 @@ def run(cfg: dict, out_root: Path | None = None, ctrl_dir: Path | None = None, r
            "secondary_mean_change_m": {"estimate": mpt, "lo": mlo, "hi": mhi},
            "dose_response": dose, "placebo": plc,
            "seam_dist_median_m": {r: float(g.seam_dist_m.median()) for r, g in A.groupby("role")},
+           "seam_dist_smd_treated_vs_control": smd(A[A.role == "treated"].seam_dist_m.replace(np.inf, np.nan).to_numpy(float),
+                                                    A[A.role == "control"].seam_dist_m.replace(np.inf, np.nan).to_numpy(float)),
+           "seam_matched": "seam_dist_m" in cfg["controls"]["covariates"],
            "not_assessable": int((~D.assessable).sum()),
            "reading": "Evidence level (a), terrain change. No detectable change is not no restoration or no plugging. "
-                      "Recovery from S3 bounds what the chain can see."}
+                      "S3 recovery runs the same point chain that built this field."}
     js = run_dir / "plug_change_compare_9t.json"
     js.write_text(json.dumps(out, indent=2, default=float), encoding="utf-8")
     ek.write_provenance(run_dir, inputs=inputs, outputs=[csv, js], params={"compare": cp, "flag": params},

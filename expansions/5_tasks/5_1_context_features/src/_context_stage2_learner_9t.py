@@ -43,6 +43,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "5_6_record_associa
 import _task5_helpers as th  # noqa: E402
 
 ek = th.ek
+
+
+def repo_rel(p) -> str:
+    """Repo-relative POSIX path for outputs. Never an absolute path."""
+    p = Path(p)
+    try:
+        return p.resolve().relative_to(ek.REPO.resolve()).as_posix()
+    except ValueError:
+        return p.name
 FEATURES = ["stage1", "road_dist_m", "pad_mean_25m", "pad_mean_50m", "pad_mean_100m",
             "n_pit_50m", "n_pit_100m", "slope", "area_m2"]
 
@@ -231,7 +240,7 @@ def main(argv=None) -> int:
     blocks = sorted(nt)
     km2 = cfg["block_m"] ** 2 / 1e6
     B = a.B or int(s2["bootstrap_B"])
-    summary = dict(void=void, audit=str(audit_p), audit_passed=bool(audit and audit.get("passed")),
+    summary = dict(void=void, audit=repo_rel(audit_p), audit_passed=bool(audit and audit.get("passed")),
                    mode=usage.get("mode"), n_candidates=int(len(scored)), n_blocks=len(blocks),
                    n_truth=int(sum(nt.values())), evidence_level="a", analysis="exploratory" if void else "confirmatory",
                    hyperparameters=chosen, results={})

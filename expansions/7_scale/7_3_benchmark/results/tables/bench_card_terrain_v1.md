@@ -2,6 +2,8 @@
 
 Status. PROVISIONAL. Not for release.
 Evidence level (a) throughout. Labels are drawn terrain features. They are not wells.
+Audit exclusion. none. Provisional historical roles, no P2 audit set. Exploratory, not for release.
+Scoring policy fw00_s4_20261105 (scoring_policy.json).
 
 ## Motivation
 No public benchmark exists for lidar detection of terrain features linked to old oil and gas sites.

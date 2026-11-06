@@ -163,7 +163,10 @@ def test_model_end_to_end_and_support(tmp_path):
     assert s6.main(["--config", str(cp), "--provisional-folds"]) == 0
     summ = json.loads((tmp_path / "era_model_summary_9t.json").read_text())
     assert summ["status"] == "exploratory"
-    assert summ["primary"]["decision"] in {"success", "failure", "inconclusive"}
+    # By construction area encodes year and the M1 covariates are noise. M3 beats M1 by far more than
+    # delta_era 0.05, and every block holds both classes, so no draw is undefined.
+    assert summ["primary"]["decision"] == "success" and summ["primary"]["undefined_share"] == 0.0
+    assert summ["folds"]["audit"] == "no audit exclusion, exploratory"
     assert summ["secondary"]["M2"]["auc"] > 0.6      # morphology carries the synthetic signal
     pred = pd.read_csv(tmp_path / "era_predictions_9t.csv")
     assert not pred.permit.str.startswith("s").any()  # sentinel rows never predicted as training data
@@ -199,3 +202,71 @@ def test_missing_assumed_input_named():
         th.inp(cfg, "historic_marks")
     assert "historic_marks" in str(e.value)
     assert s2.build_labels is not None
+
+
+# ----------------------------------------------------------------------------- review fixes 2026-11-06
+P1_SRC = HERE.parents[2] / "0_prerequisites" / "p1_splits_manifests" / "src"
+P2_SRC = HERE.parents[2] / "0_prerequisites" / "p2_audit_set" / "src"
+
+
+def _real_p1_csv(tmp_path, monkeypatch):
+    """Split CSV written by the real P1 writer (roles train, val, heldout). 5 blocks, block b held out in fold b."""
+    sys.path.insert(0, str(P1_SRC))
+    import _split_future_csv_9t as fc
+    folds = {str(f): {"train": [b for b in range(5) if b not in (f, (f + 1) % 5)], "inner_val": [(f + 1) % 5],
+                      "held_out": [f]} for f in range(5)}
+    js = tmp_path / "cv_splits_future_9t_v1.json"
+    js.write_text(json.dumps({"tasks": {"pit": {"folds": folds}}}))
+    monkeypatch.setattr(sys, "argv", ["x", "--json", str(js), "--out-dir", str(tmp_path)])
+    fc.main()
+    return tmp_path / "cv_splits_future_pit_9t_v1.csv"
+
+
+def _real_p2_audit(tmp_path, audit=(3,), buffer=(4,)):
+    sys.path.insert(0, str(P2_SRC))
+    import _audit_draw_blocks_9t as dr
+    ids = sorted(set(audit) | set(buffer))
+    tab = pd.DataFrame({"block_id": ids, "dens_t": 1, "slope_t": 2})
+    p = tmp_path / "audit_blocks_9t_v1.csv"
+    dr.write_audit_csv(p, tab, {"audit": list(audit), "buffer": list(buffer), "share": 0.2}, "block", 100.0, 1)
+    Path(str(p) + ".sha256").write_text(f"{th.ek.sha256(p)}  {p.name}\n", encoding="utf-8")
+    return p
+
+
+def test_load_folds_reads_real_p1_csv_and_p2_audit(tmp_path, monkeypatch):
+    """P1-01 and P2-01. Pre-fix the 'held_out' filter found 0 rows of the P1 CSV and the plain read_csv of the
+    audit file raised. Expected by hand. Blocks 3 (audit) and 4 (buffer) leave, block b keeps fold b."""
+    import _era_model_arms_9t as s6
+    cfg = json.loads(json.dumps(CFG))
+    cfg["inputs"]["split_file"] = {"path": str(_real_p1_csv(tmp_path, monkeypatch))}
+    cfg["inputs"]["audit_blocks"] = {"path": str(_real_p2_audit(tmp_path))}
+    df = pd.DataFrame({"block_id": [0, 1, 2, 3, 4, 0], "x": range(6)})
+    out, info = s6.load_folds(cfg, df, provisional=False)
+    assert out.block_id.tolist() == [0, 1, 2, 0] and out.fold.astype(int).tolist() == [0, 1, 2, 0]
+    assert info["n_audit_blocks_dropped"] == 2 and info["audit"].startswith("P2 audit")
+    assert ":" not in info["split_file"]
+
+
+def test_load_folds_missing_audit(tmp_path):
+    import _era_model_arms_9t as s6
+    cfg = json.loads(json.dumps(CFG))
+    cfg["inputs"]["audit_blocks"] = {"path": str(tmp_path / "none.csv")}
+    df = pd.DataFrame({"block_id": list(range(10))})
+    with pytest.raises(FileNotFoundError):
+        s6.load_folds(cfg, df, provisional=False)
+    _, info = s6.load_folds(cfg, df, provisional=True)
+    assert info["audit"] == "no audit exclusion, exploratory"
+
+
+def test_primary_one_class_resamples_are_counted_and_inconclusive():
+    """5.2 NaN. Three blocks, one all early and two all late. A resample is one-class with probability
+    (2/3)^3 + (1/3)^3 = 1/3 (hand oracle). With no declared max_undefined the decision is inconclusive."""
+    import _era_model_arms_9t as s6
+    rng = np.random.default_rng(0)
+    pred = pd.DataFrame({"block_id": np.repeat([0, 1, 2], 10), "early": np.repeat([1.0, 0.0, 0.0], 10),
+                         "M3_score": rng.uniform(size=30), "M1_score": rng.uniform(size=30)})
+    cfg = json.loads(json.dumps(CFG))
+    cfg["model"]["bootstrap_B"] = 2000
+    r = s6.primary(pred, cfg)
+    assert abs(r["undefined_share"] - 1 / 3) < 0.04
+    assert np.isnan(r["lo"]) and r["decision"] == "inconclusive" and r["max_undefined"] == 0.0

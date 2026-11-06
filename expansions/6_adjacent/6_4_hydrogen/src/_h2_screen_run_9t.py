@@ -9,6 +9,8 @@ Purpose
       2. Optional layer L8_monitor_sites when the partner supplies sites. Else listed absent.
       3. Extra count rows (h2_*) for depth coverage, flag counts and wells just outside the field boundary.
     If fewer than min_depth_coverage of records carry a depth, the flag is dropped and the sheet says so.
+    If no record carries a depth the run stops (NoDepthInRecords). With --allow-no-depth it goes on and every
+    record and the counts sheet say "not computable, no depth in records". This is the 9t case today.
 Inputs
     Everything 6.1 reads, with partner_area replaced by the field boundary, plus
     reservoir_tops  data/_source/partners/h2_partner/reservoir_seal_tops.csv   assumed (required)
@@ -44,6 +46,13 @@ import _co2_screen_run_9t as RUN  # noqa: E402
 from _co2_screen_lib import ek  # noqa: E402
 
 CONFIG_64 = HERE / "config_6_4.json"
+NOT_COMPUTABLE = "not computable, no depth in records"
+
+
+class NoDepthInRecords(RuntimeError):
+    """Depth coverage is 0. The penetration flag cannot be computed from these records."""
+
+
 LIDAR_COLUMNS = {"score", "k_rank", "within_k", "nearest_record_m", "in_blind_zone", "ground_density_pts_m2", "void_frac"}
 
 
@@ -72,8 +81,14 @@ def read_tops(cfg: dict, override=None) -> pd.DataFrame:
     return t
 
 
-def penetration_flag(rec: pd.DataFrame, tops: pd.DataFrame, unc_ft: float, min_cov: float) -> tuple[pd.DataFrame, dict]:
-    """Record-only flag. depth_ft > reservoir_top - unc -> 'reaches reservoir (from records)'."""
+def penetration_flag(rec: pd.DataFrame, tops: pd.DataFrame, unc_ft: float, min_cov: float,
+                     allow_no_depth: bool = False) -> tuple[pd.DataFrame, dict]:
+    """Record-only flag. depth_ft > reservoir_top - unc -> 'reaches reservoir (from records)'.
+
+    Depth coverage 0 raises NoDepthInRecords. With allow_no_depth the run goes on, every record carries
+    NOT_COMPUTABLE and info['status'] says so. The held DEP export (venango_wells_all.gpkg, 20,108 rows) has an
+    empty TOTAL_MAXI in every row and no other depth column, so the 9t flag is not computable today.
+    """
     used = {"depth_ft", "record_id"}
     assert not (used & LIDAR_COLUMNS)
     r = rec.copy()
@@ -90,9 +105,18 @@ def penetration_flag(rec: pd.DataFrame, tops: pd.DataFrame, unc_ft: float, min_c
         seal = pd.Series(float(tops.seal_top.iloc[0]), index=r.index)
     depth = pd.to_numeric(r["depth_ft"], errors="coerce")
     cov = float(depth.notna().mean()) if len(r) else 0.0
-    info = {"depth_coverage": cov, "min_depth_coverage": min_cov, "dropped": cov < min_cov,
+    info = {"depth_coverage": cov, "min_depth_coverage": min_cov, "dropped": cov < min_cov, "n_records": len(r),
+            "n_with_depth": int(depth.notna().sum()), "status": "computed",
             "rule": f"depth_ft > reservoir_top - {unc_ft} ft", "source": "records only (depth_ft vs reservoir_seal_tops.csv)"}
-    if info["dropped"]:
+    if info["n_with_depth"] == 0:
+        msg = (f"depth coverage is 0 ({len(r)} records, none with a depth). Penetration flag is {NOT_COMPUTABLE}.")
+        if not allow_no_depth:
+            raise NoDepthInRecords(msg + " Pass --allow-no-depth to build the package with the flag marked so.")
+        print(f"WARNING {msg}", file=sys.stderr)
+        info["status"] = NOT_COMPUTABLE
+        r["penetration_flag"] = NOT_COMPUTABLE
+    elif info["dropped"]:
+        info["status"] = "dropped"
         r["penetration_flag"] = f"dropped. Depth coverage {cov:.2f} under {min_cov:.2f}"
     else:
         flag = np.where(depth.isna() | top.isna(), "unknown",
@@ -104,13 +128,13 @@ def penetration_flag(rec: pd.DataFrame, tops: pd.DataFrame, unc_ft: float, min_c
     return r, info
 
 
-def hooks(cfg: dict, overrides: dict):
+def hooks(cfg: dict, overrides: dict, allow_no_depth: bool = False):
     state = {}
     tops = read_tops(cfg, overrides.get("reservoir_tops"))
     hp = cfg["h2_params"]
 
     def records_hook(rec, cfg_, prof):
-        r, info = penetration_flag(rec, tops, hp["depth_uncertainty_ft"], hp["min_depth_coverage"])
+        r, info = penetration_flag(rec, tops, hp["depth_uncertainty_ft"], hp["min_depth_coverage"], allow_no_depth)
         comp = L.input_path(cfg_, "completion_history", overrides.get("completion_history"), required=False)
         if comp is not None:
             c = pd.read_csv(comp)
@@ -135,7 +159,10 @@ def hooks(cfg: dict, overrides: dict):
         info = state.get("flag", {})
         rows.append({"metric": "h2_depth_coverage_share", "value": info.get("depth_coverage", np.nan), "label": "count",
                      "level": "b", "note": "share of records with a depth"})
-        if info.get("dropped"):
+        if info.get("status") == NOT_COMPUTABLE:
+            rows.append({"metric": "h2_penetration_flag_not_computable", "value": 1, "label": "count", "level": "b",
+                         "note": f"{NOT_COMPUTABLE}. Depth field {cfg_['record_fields'].get('depth')} is empty."})
+        elif info.get("dropped"):
             rows.append({"metric": "h2_penetration_flag_dropped", "value": 1, "label": "count", "level": "b",
                          "note": "depth coverage under the floor. Flag dropped."})
         else:
@@ -161,6 +188,8 @@ def main() -> int:
     ap.add_argument("--ground-density", default=None)
     ap.add_argument("--chm", default=None)
     ap.add_argument("--B", type=int, default=None)
+    ap.add_argument("--allow-no-depth", action="store_true",
+                    help=f"build the package when no record has a depth. The flag reads '{NOT_COMPUTABLE}'")
     ap.add_argument("--reader-answers", default=None)
     ap.add_argument("--reader-template", action="store_true")
     a = ap.parse_args()
@@ -180,7 +209,7 @@ def main() -> int:
                                 "reservoir_tops": a.reservoir_tops, "monitor_sites": a.monitor_sites,
                                 "completion_history": a.completion_history}
     (out / "screen_profile_hydrogen.json").write_text(json.dumps(prof, indent=2), encoding="utf-8")
-    rh, el, er, _ = hooks(cfg, o)
+    rh, el, er, _ = hooks(cfg, o, allow_no_depth=a.allow_no_depth)
     res = RUN.run_all(cfg, prof, out, o, records_hook=rh, extra_layers=el, extra_rows=er, B=a.B)
     print(json.dumps(res, indent=2, default=str))
     return 0 if res["claim_hits"] == 0 else 1

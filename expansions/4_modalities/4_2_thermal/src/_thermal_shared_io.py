@@ -67,12 +67,58 @@ def need(path, what: str, schema: str = "", exp_id: str = EXP) -> Path:
     return p
 
 
+def run_written(run_dir: Path) -> str | None:
+    """The time a run recorded when it finished (`written` in _PROVENANCE.json), or None if it never finished."""
+    p = Path(run_dir) / "_PROVENANCE.json"
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text(encoding="utf-8")).get("written")
+    except (OSError, ValueError):
+        return None
+
+
 def latest_run(exp_id: str, short: str, base: Path | None = None) -> Path:
+    """Most recent finished run of a stage, by the time the run recorded (review 4.2-03).
+
+    Folder names end in a config hash, so sorting by name returns an arbitrary run. Runs without a
+    _PROVENANCE.json never finished and are skipped. Ties fall back to the folder name."""
     root = base if base is not None else ek.sub(exp_id, "results")
-    hits = sorted(d for d in Path(root).glob(f"*_{short}_*") if d.is_dir())
-    if not hits:
-        raise FileNotFoundError(f"MISSING INPUT run '{short}' of {exp_id} under {root}. Run that stage first")
-    return hits[-1]
+    hits = [(run_written(d), d.name, d) for d in Path(root).glob(f"*_{short}_*") if d.is_dir()]
+    done = [h for h in hits if h[0]]
+    if not done:
+        raise FileNotFoundError(f"MISSING INPUT run '{short}' of {exp_id} under {root}. Run that stage first"
+                                + (f" ({len(hits)} unfinished run folders without _PROVENANCE.json)" if hits else ""))
+    return max(done, key=lambda h: (h[0], h[1]))[2]
+
+
+def audit_exclusion(spec, allow_missing: bool = False, blocks_spec=None) -> tuple[set[str], dict]:
+    """Audit and buffer blocks of the frozen P2 set, as 375 m 'bx_by' ids (review P2-01).
+
+    Reads through ek.require_audit (handles the # header and the sha256 guard). P2 block ids are the
+    integer ids of the 9t block layer (block_id = iy * 12 + ix). They are mapped to this module's
+    'bx_by' ids through the ix and iy columns of that layer. A missing audit file raises unless
+    allow_missing, and then the caller must label its output exploratory."""
+    p = resolve(spec) if spec is not None else ek.default_audit_path()
+    aud = ek.require_audit(p, allow_missing=allow_missing)
+    if aud is None:
+        return set(), {"audit": "no audit exclusion, exploratory", "path": str(p), "exploratory": True}
+    ids = ek.audit_ids(aud, roles=("audit", "buffer"))
+    import geopandas as gpd
+    bp = need(resolve(blocks_spec) if blocks_spec else ek.path_for("nine_t") / "pit_blocks_9t.gpkg",
+              "9t block layer (maps P2 integer block ids to bx_by)", "layer blocks with block_id, ix, iy")
+    b = gpd.read_file(bp, layer="blocks")
+    for c in ("block_id", "ix", "iy"):
+        if c not in b.columns:
+            raise KeyError(f"{bp}: column {c!r} missing")
+    if not ((b.iy * 12 + b.ix) == b.block_id).all():
+        raise AssertionError(f"{bp}: block_id is not iy * 12 + ix")
+    mp = dict(zip(b.block_id.astype(int), [f"{int(x)}_{int(y)}" for x, y in zip(b.ix, b.iy)]))
+    miss = sorted(ids - set(mp))
+    if miss:
+        raise AssertionError(f"audit block ids not in the 9t block layer: {miss[:5]}")
+    return {mp[i] for i in ids}, {"audit": "audit and buffer blocks excluded", "path": str(p),
+                                  "sha256": aud.attrs.get("sha256"), "n_blocks": len(ids), "exploratory": False}
 
 
 def finish(run_dir: Path, summary: dict, inputs=(), outputs=(), params=None, seeds=None) -> dict:
@@ -284,12 +330,14 @@ def _oof_scores(X, y, folds, seed):
 
 
 def added_value(df: pd.DataFrame, base: list[str], extra: list[str], label: str, fold: str, block: str,
-                block_area_km2: dict, k_per_km2: float = 40.0, B: int = 2000, seed: int = 0) -> dict:
+                block_area_km2: dict, k_per_km2: float = 40.0, B: int = 2000, seed: int = 0,
+                max_undefined: float = 0.0) -> dict:
     """Out-of-fold ranking, lidar-only versus lidar plus extra features, same folds and blocks.
 
     Recall at K per km2 (ek.recall_at_k, truth = positive sites) and AUC, each with a paired block
     bootstrap of the difference (ek.bootstrap_diff, paired=True). Returns point, lo, hi per metric and
-    the out-of-fold scores.
+    the out-of-fold scores. Undefined draws are counted (SH-01). Their share is reported per metric, and
+    above max_undefined the interval is (NaN, NaN), which ek.decide turns into inconclusive.
     """
     from sklearn.metrics import roc_auc_score
     y = df[label].to_numpy(int)
@@ -325,8 +373,13 @@ def added_value(df: pd.DataFrame, base: list[str], extra: list[str], label: str,
     out = {"n_sites": int(len(df)), "n_pos": int(y.sum()), "n_blocks": len(blocks),
            "k_total": float(k_total), "k_saturated": bool(k_total >= len(df))}
     for name, fa, fb in (("recall_at_k", recall("_sb"), recall("_sa")), ("auc", auc("_sb"), auc("_sa"))):
-        pt, lo, hi = ek.bootstrap_diff(fa, blocks, fb, blocks, B=B, seed=seed, paired=True)
-        out[name] = {"lidar_only": float(fb(blocks)), "lidar_plus": float(fa(blocks)), "diff": pt, "lo": lo, "hi": hi}
+        pt, lo, hi, dr = ek.bootstrap_diff(fa, blocks, fb, blocks, B=B, seed=seed, paired=True,
+                                           max_undefined=max_undefined, return_draws=True)
+        out[name] = {"lidar_only": float(fb(blocks)), "lidar_plus": float(fa(blocks)), "diff": pt, "lo": lo, "hi": hi,
+                     "undefined_share": ek.undefined_share(dr), "max_undefined": max_undefined}
+        if not np.isfinite(lo):
+            out[name]["ci_note"] = (f"{ek.undefined_share(dr):.3f} of {B} draws undefined (a resample with one class or "
+                                    f"no truth), above the declared {max_undefined}. Interval undefined, verdict inconclusive")
     if len(blocks) < 15:
         out["warning"] = "fewer than 15 blocks, bootstrap unreliable (fw_00 section 4). Add a permutation interval"
     out["scores"] = d[["_sa", "_sb"]].rename(columns={"_sa": "score_lidar_only", "_sb": "score_lidar_plus"})

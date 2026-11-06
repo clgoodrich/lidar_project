@@ -2,6 +2,16 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Needs user decision
+
+- 2026-11-06. Pads have no audit set of their own. Options are a separate pad draw from the pad-bearing blocks, or one joint draw over pit or pad blocks. Until then no pad result may be reported as an audit result.
+
+## Decisions
+
+- 2026-11-06. Review fix P2-03. Window checks use the audit file's buffer. A smaller explicit buffer is refused. Made by the review-fix agent, change freely.
+- 2026-11-06. Review fix P2-03. Held-out lists are checked against the audit set too. An audit id missing from the blocks layer is an error. Made by the review-fix agent, change freely.
+- 2026-11-06. The 9t audit set is scoped to pits. Its draw frame is the pit-bearing blocks, and the header says so. A pad reader is refused. Pads may still exclude the blocks from training. Made by the review-fix agent, change freely.
+- 2026-11-06. The Warren reservation reprojects output extents before the overlap test. Made by the review-fix agent, change freely.
 - 2026-11-05. Scripts live in `src/` of this folder. The framework's `notebooks/wellsight_v2/_audit_guard.py` path is superseded by `src/_audit_guard_lib.py`. Made by the build agent, change freely.
 - 2026-11-05. The minimum of 3 audit blocks applies to each density tercile and each slope tercile, not to each of the 9 joint strata. Nine strata at 3 each needs 27 blocks, above the 17 that 15% gives. Made by the build agent, change freely.
 - 2026-11-05. Allocation across joint strata is proportional by largest remainder. Terciles use ranks, ties broken by block id. Made by the build agent, change freely.

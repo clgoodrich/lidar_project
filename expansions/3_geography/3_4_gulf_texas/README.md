@@ -24,7 +24,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
+
+Review repair (2026-11-06). The core now scores under `ek.policy_for(task)` only (pit 0.35, pad 0.525, score-order matching, 3.0 dedupe) and stamps the policy into outputs. The K budget and denominator use the actual scored support. Truth ids may be any unique value, including 0. Only denominator truth can be a hit. Pooled ties sort by numeric id then draw. Areas need metre CRS and full-affine grid matches. Partial checkpoint loads need an allow-list. The transfer checkpoint is an explicit unset config key. A parity test runs one fixture through the 3.0 scorer and this core. On the 9t pit mosaic the core gives recall 0.9165 at K 40, equal to the 3.0 scorer (old core 0.5785). On the 3.0 filled raster it gives 0.9463, equal to the current 3.0 reference tables. Result `results/tables/xfer_core_parity_recall_9t.json`. Open user decisions are listed in `docs/decisions_3_4.md`.
 
 Built by the build agent. The shared regional-transfer code is `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py`. Expansions 3.4 to 3.8 import it. Stage commands that every region shares are its subcommands. Assumed inputs and their schemas are in `src/config_3_4.json`. A missing assumed input stops a script with a message that names the input, its schema and the VERIFY step. Decisions are in `docs/decisions_3_4.md`. Run the tests with `python -m pytest -q expansions/3_geography/3_4_gulf_texas/src/test_3_4.py -p no:cacheprovider`.
 
@@ -39,9 +41,9 @@ Built by the build agent. The shared regional-transfer code is `expansions/3_geo
 | `src/_gulf_wetland_strata.py` | S4 water mask, strata, roles | no | S2 table, NLCD 2021, NWI polygons, hydro-flattened water polygons |
 | `src/_geo_transfer_core.py width / prereg --exp 3.4` | S5 projected width and prereg draft | prereg yes. Width no | 3.0 reference block tables, `prereg.margin` |
 | `src/_geo_transfer_core.py derive / agree --exp 3.4` | S6 derivatives and label agreement | dry run yes | lidar tiles. Two annotators' polygons |
-| `src/_geo_transfer_core.py infer / score --exp 3.4` | S7 A0, and S8 C0 with `--contrast` | no | P1 isolated pit checkpoint, truth polygons, 3.0 reference tables, margin |
+| `src/_geo_transfer_core.py infer / score --exp 3.4 --task pit` | S7 A0, and S8 C0 with `--contrast` | no | `model.pit.transfer_checkpoint` (user decision), truth polygons with class, margin |
 | `src/_gulf_relief_norm_channels.py` | S9a relief-normalised channels | no | adaptation-window DEM and feature stack |
-| `src/_gulf_pit_adapt_train.py` | S9b A1 fine-tune (GPU) | no | S9a stack, adaptation label raster, P1 checkpoint, `prereg.delta_gain` |
+| `src/_gulf_pit_adapt_train.py` | S9b A1 fine-tune (GPU) | no | S9a stack, adaptation label raster, `model.pit.transfer_checkpoint` (user decision), `prereg.delta_gain` |
 | `src/_geo_transfer_core.py score --strata-filter wet_stratum=dry,mixed` | S10 A2 wetland exclusion | no | as S7 |
 | `src/_gulf_transfer_tables.py` | S10 and S11 tables, error review, RRC hand-off | partly. The hand-off runs once S0 output exists | score JSONs from S7 to S10 |
 | `src/test_3_4.py` | smoke tests (core plus 3.4) | yes. 10 passed |  |

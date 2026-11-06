@@ -39,10 +39,13 @@
     "fractions": [0.05, 0.10, 0.25, 0.50, 1.00], "primary_fraction": 0.25,
     "seeds": [0, 1, 2], "epochs": 40, "patch_px": 256, "batch": 8, "lr": 3e-4, "samples_per_epoch": 2000,
     "n_classes": 3, "focal_alpha": [0.25, 1.0, 0.75], "focal_gamma": 2.0, "overlap_px": 64,
-    "inner_val_share_historical": 0.15
+    "inner_val_share_historical": 0.15,
+    "audit_model_fold": null,
+    "_audit_model_fold_note": "user decision. Which fold model scores the sealed audit blocks in --audit-once. Null refuses (review 7.1-02)"
   },
-  "scoring": {"k_per_km2": 40.0, "B": 2000, "thr": 0.10, "min_area_m2": 4.0, "iou_thr": 0.3},
+  "scoring": {"task": "pit_floor", "k_per_km2": 40.0, "B": 2000,
+              "_note": "cutoff, min area, IoU and matching come from ek.policy_for(task) via sc.load_policy (F02, 2026-11-06). The old thr 0.10 is gone. k_per_km2 is kept for pooled recall and equals the policy value"},
   "G": null,
-  "_G_note": "Default G = A0 recall(f=0.50) minus A0 recall(f=0.25), read from the A0 curve and frozen before any pretrained arm is scored. The user may replace it with a reviewer-hour value",
+  "_G_note": "User decision, set before scoring (here or in the preregistration JSON, key G). Null gives an inconclusive decision. G is never derived from the runs it judges and never floored. G_raw (A0 f=0.50 minus f=0.25) is reported as a diagnostic only (review 7.2-01, 2026-11-06)",
   "runtime_bench": {"batch_sizes": [8, 16, 32], "patch_sizes": [128, 256], "steps": 50}
 }

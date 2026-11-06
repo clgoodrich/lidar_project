@@ -17,13 +17,20 @@ Purpose
 
 Inputs (config_7_1.json)
     feature stack, pit label raster, blocks (held). Label subsets JSON from _ssl_label_subsets_9t.py.
-    Pretrained checkpoint for A1 to A3 (--init). Audit block CSV (from P2, optional until P2 exists,
-    stated in the run record). Validated labels for A4 (from 6.3, assumed).
+    Pretrained checkpoint for A1 to A3 (--init). Validated labels for A4 (from 6.3, assumed).
+    Audit block CSV from P2, read only through ek.require_audit (review 7.1-01). A missing file stops the
+    run unless --allow-no-audit. The run is then labelled "no audit exclusion, exploratory" in _CONFIG.json,
+    _PROVENANCE.json and an audit_guard column of every output table. The subsets JSON must carry the same
+    audit hash. Audit blocks are subtracted from the held-out list before prediction.
+    Training windows are redrawn every epoch with child seeds (seed, index, epoch). Validation windows stay fixed.
 Outputs
     expansions/7_scale/7_1_pretraining/results/<run_id>/ with
         best.pt (gitignored copy goes to models/ft_<arm>_f<f>_s<s>_k<fold>/), train_log.csv,
         oof_candidates_<arm>_f<f>_s<seed>_k<fold>.csv, oof_blocks_<arm>_f<f>_s<seed>_k<fold>.csv,
         _CONFIG.json, _RUN.md, _PROVENANCE.json
+    --predict-audit (review 7.1-02) loads a trained best.pt and scores the sealed audit blocks only. It needs a
+    frozen P2 audit file and writes audit_candidates_<tag>.csv and audit_blocks_<tag>.csv. It is read only by
+    _ssl_curve_score_9t.py --audit-once.
 
 Run
     python expansions/7_scale/7_1_pretraining/src/_ssl_finetune_pit_9t.py --arm A1 --fold 0 --fraction 0.25 --seed 0 \
@@ -100,8 +107,10 @@ class IsolatedPitDataset(torch.utils.data.Dataset):
     forbidden   held-out, inner-validation and audit blocks. No window pixel may fall in one
     """
 
-    def __init__(self, feat, lbl, braster, allowed, forbidden, patch, n, mu, sd, seed, augment=True):
+    def __init__(self, feat, lbl, braster, allowed, forbidden, patch, n, mu, sd, seed, augment=True, resample=True):
         self.feat, self.lbl, self.br = feat, lbl, braster
+        self.resample = resample                 # True: a fresh window per index every epoch (review 7.1 minor)
+        self._draws = np.zeros(n, dtype=np.int64)
         self.allowed, self.forbidden = np.array(sorted(allowed)), np.array(sorted(forbidden))
         self.patch, self.n, self.mu, self.sd, self.seed, self.augment = patch, n, mu, sd, seed, augment
         h = patch // 2
@@ -123,7 +132,9 @@ class IsolatedPitDataset(torch.utils.data.Dataset):
         return w.shape == (self.patch, self.patch) and not np.isin(w, self.forbidden).any()
 
     def __getitem__(self, i):
-        rng = np.random.default_rng(self.seed * 7_919 + i)
+        epoch = int(self._draws[i]) if self.resample else 0
+        self._draws[i] += 1
+        rng = np.random.default_rng([int(self.seed), int(i), epoch])      # child seed per index and epoch
         h = self.patch // 2
         for _ in range(200):
             pool = self.pit_rc if (i % 2 == 0 and len(self.pit_rc)) else self.rand_rc
@@ -182,9 +193,30 @@ def predict_blocks(model, feat_path: Path, blocks, ids, mu, sd, patch, overlap):
 
 
 # ----------------------------------------------------------------------------- driver
+NO_AUDIT = "no audit exclusion, exploratory"
+
+
+def audit_guard(audit_csv: Path | None, allow_no_audit: bool, subsets: dict | None = None,
+                allow_unfrozen: bool = False) -> dict:
+    """Audit and buffer ids through ek.require_audit. Missing raises unless allow_no_audit (review 7.1-01).
+    The subsets JSON must have been built against the same audit file."""
+    df = ek.require_audit(audit_csv, allow_missing=allow_no_audit, allow_unfrozen=allow_unfrozen)
+    if df is None:
+        g = {"guard": NO_AUDIT, "sha256": None, "audit": set(), "buffer": set()}
+    else:
+        aud = ek.audit_ids(df, ("audit",))
+        g = {"guard": "P2 audit list applied", "sha256": df.attrs.get("sha256"), "audit": aud,
+             "buffer": ek.audit_ids(df) - aud}
+    if subsets is not None and subsets.get("audit_sha256") != g["sha256"]:
+        raise AssertionError(f"label subsets were built with audit {subsets.get('audit_sha256')} but this run "
+                             f"uses {g['sha256']}. Rebuild the subsets with the same audit file")
+    return g
+
+
 def run(cfg: dict, arm: str, fold: int, fraction: float, seed: int, subsets: dict, init: Path | None, *,
         device: str = "auto", epochs: int | None = None, samples: int | None = None, batch: int | None = None,
-        audit_csv: Path | None = None, validated: Path | None = None, base_dir: Path | None = None,
+        audit_csv: Path | None = None, allow_no_audit: bool = False, allow_unfrozen: bool = False,
+        validated: Path | None = None, base_dir: Path | None = None,
         models_dir: Path | None = None) -> Path:
     import geopandas as gpd
     import rasterio
@@ -197,16 +229,19 @@ def run(cfg: dict, arm: str, fold: int, fraction: float, seed: int, subsets: dic
         raise KeyError(f"label subset {key} absent from subsets JSON")
     fobj = next(f for f in subsets["folds"] if f["fold"] == fold)
     allowed = set(subsets["subsets"][key]["blocks"])
-    audit = set()
-    if audit_csv is not None and Path(audit_csv).exists():
-        audit = set(pd.read_csv(audit_csv)["block_id"].astype(int))
+    au = audit_guard(audit_csv if audit_csv is not None else cfg_path(cfg["inputs"]["audit_blocks"]),
+                     allow_no_audit, subsets, allow_unfrozen)
+    audit = au["audit"] | au["buffer"]                    # no window pixel may touch audit or buffer
+    heldout = [int(b) for b in fobj["heldout"] if int(b) not in au["audit"]]   # sealed audit is never scored here
+    ek.assert_disjoint(set(fobj["val"]), audit, "inner validation vs audit")
     forbidden = set(fobj["heldout"]) | set(fobj["val"]) | audit
     ek.assert_disjoint(allowed, forbidden, "fine-tune allowed vs forbidden blocks")
     cs = ek.child_seed(cfg["master_seed"], fold, ARMS.index(arm)) + 100 * seed
     torch.manual_seed(cs); np.random.seed(cs % (2**32))
     run_cfg = {"arm": arm, "fold": fold, "fraction": fraction, "seed": seed, "subset_sha256": subsets["subsets"][key]["sha256"],
                "split_source": subsets["split_source"], "epochs": epochs, "samples": samples, "batch": batch,
-               "audit_guard": "P2 audit list applied" if audit else "no audit list on disk (P2 pending)"}
+               "audit_guard": au["guard"], "audit_sha256": au["sha256"],
+               "audit_excluded_from_heldout": sorted(set(fobj["heldout"]) & au["audit"])}
     rd = ek.new_run("7.1", f"ft_{arm}_f{str(fraction).replace('.', 'p')}_s{seed}_k{fold}", run_cfg, base=base_dir,
                     why="7.1 fine-tune at one label fraction.")
     inp = cfg["inputs"]
@@ -227,7 +262,7 @@ def run(cfg: dict, arm: str, fold: int, fraction: float, seed: int, subsets: dic
     gen = torch.Generator().manual_seed(cs)
     tr = IsolatedPitDataset(feat, lbl, br, allowed, forbidden, patch, samples, mu, sd, cs)
     va = IsolatedPitDataset(feat, lbl, br, set(fobj["val"]), set(fobj["heldout"]) | audit, patch,
-                            max(2, samples // 4), mu, sd, cs + 1, augment=False)
+                            max(2, samples // 4), mu, sd, cs + 1, augment=False, resample=False)
     tl = torch.utils.data.DataLoader(tr, batch_size=batch, shuffle=True, generator=gen, num_workers=0)
     vl = torch.utils.data.DataLoader(va, batch_size=batch, shuffle=False, num_workers=0)
     loss = FocalCE(ft["focal_alpha"], gamma=ft["focal_gamma"])
@@ -238,15 +273,14 @@ def run(cfg: dict, arm: str, fold: int, fraction: float, seed: int, subsets: dic
                          extra_iou_names=("bg", "floor", "wall"))
     best = torch.load(rd / "best.pt", map_location="cpu", weights_only=False)
     model.load_state_dict(best["state_dict"])
-    specs = predict_blocks(model, feat_p, blocks, fobj["heldout"], mu, sd, patch, ft["overlap_px"])
+    ek.assert_disjoint(heldout, au["audit"], "held-out prediction vs audit")
+    specs = predict_blocks(model, feat_p, blocks, heldout, mu, sd, patch, ft["overlap_px"])
     sys.path.insert(0, str(ek.REPO / "notebooks" / "wellsight_v2"))
     from _common import read_layer
     truth = read_layer(need(cfg_path(inp["truth"]), "truth"), inp["truth"]["layer"])
-    sp = cfg["scoring"]
-    summ, cands = sc.evaluate(specs, truth, blocks, thr=sp["thr"], min_area_m2=sp["min_area_m2"],
-                              iou_thr=sp["iou_thr"], k_per_km2=sp["k_per_km2"], B=0)
+    summ, cands = sc.evaluate(specs, truth, blocks, policy=sc.load_policy(cfg["scoring"]["task"]), B=0)
     tag = f"{arm}_f{str(fraction).replace('.', 'p')}_s{seed}_k{fold}"
-    for col, v in (("arm", arm), ("fraction", fraction), ("seed", seed), ("fold", fold)):
+    for col, v in (("arm", arm), ("fraction", fraction), ("seed", seed), ("fold", fold), ("audit_guard", au["guard"])):
         cands[col] = v
         summ["_blocks"][col] = v
     cands.to_csv(rd / f"oof_candidates_{tag}.csv", index=False)
@@ -263,6 +297,48 @@ def run(cfg: dict, arm: str, fold: int, fraction: float, seed: int, subsets: dic
     return rd
 
 
+def predict_audit(cfg: dict, ckpt_path: Path, audit_csv: Path | None = None, *, device: str = "auto",
+                  base_dir: Path | None = None, allow_unfrozen: bool = False) -> Path:
+    """Review 7.1-02. Score the sealed audit blocks (role 'audit') with one trained fine-tune checkpoint.
+    Needs a frozen P2 audit file. A missing file always refuses here. There is no exploratory mode."""
+    import geopandas as gpd
+    import rasterio
+    if device != "auto":
+        _dl.DEVICE = torch.device(device)
+    au = audit_guard(audit_csv if audit_csv is not None else cfg_path(cfg["inputs"]["audit_blocks"]), False,
+                     None, allow_unfrozen)
+    if not au["audit"]:
+        raise AssertionError("the audit file holds no block with role 'audit'")
+    ck = torch.load(need(ckpt_path, "fine-tune checkpoint"), map_location="cpu", weights_only=False)
+    m = UNet(in_ch=len(ck["channels"]), n_classes=cfg["finetune"]["n_classes"], base=cfg["unet_base"])
+    m.load_state_dict(ck["state_dict"])
+    inp = cfg["inputs"]
+    feat_p = need(cfg_path(inp["feature_stack_9t"]), "feature stack")
+    blocks = gpd.read_file(need(cfg_path(inp["blocks_9t"]), "blocks"))
+    blocks["block_id"] = blocks["block_id"].astype(int)
+    with rasterio.open(feat_p) as r:
+        ek.assert_crs(r, "EPSG:6346")
+    ids = sorted(au["audit"])
+    tag = f"{ck['arm']}_f{str(ck['fraction']).replace('.', 'p')}_s{ck['seed']}_k{ck['fold']}"
+    run_cfg = {"mode": "audit predictions", "checkpoint": str(ckpt_path), "checkpoint_sha256": ek.sha256(ckpt_path),
+               "audit_sha256": au["sha256"], "audit_blocks": ids}
+    rd = ek.new_run("7.1", f"audit_{tag}", run_cfg, base=base_dir, why="7.1 sealed audit predictions (7.1-02).")
+    specs = predict_blocks(m, feat_p, blocks, ids, np.asarray(ck["mu"]), np.asarray(ck["sd"]), int(ck["patch"]),
+                           cfg["finetune"]["overlap_px"])
+    sys.path.insert(0, str(ek.REPO / "notebooks" / "wellsight_v2"))
+    from _common import read_layer
+    truth = read_layer(need(cfg_path(inp["truth"]), "truth"), inp["truth"]["layer"])
+    summ, cands = sc.evaluate(specs, truth, blocks, policy=sc.load_policy(cfg["scoring"]["task"]), B=0)
+    for col, v in (("arm", ck["arm"]), ("fraction", ck["fraction"]), ("seed", ck["seed"]), ("fold", ck["fold"]),
+                   ("audit_sha256", au["sha256"])):
+        cands[col] = v
+        summ["_blocks"][col] = v
+    cands.to_csv(rd / f"audit_candidates_{tag}.csv", index=False)
+    summ["_blocks"].to_csv(rd / f"audit_blocks_{tag}.csv", index=False)
+    ek.write_provenance(rd, inputs=[feat_p, ckpt_path], outputs=[rd / f"audit_candidates_{tag}.csv"], params=run_cfg)
+    return rd
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="7.1 fine-tune at one arm, fold, fraction and seed.")
     ap.add_argument("--config", default=str(CFG))
@@ -273,6 +349,10 @@ def main(argv=None) -> int:
     ap.add_argument("--init", default=None, help="pretrained checkpoint (A1 to A3)")
     ap.add_argument("--subsets", default=str(ek.sub("7.1", "data/processed") / "ssl_label_subsets_9t.json"))
     ap.add_argument("--audit", default=None, help="P2 audit block CSV (default config inputs.audit_blocks)")
+    ap.add_argument("--allow-no-audit", action="store_true",
+                    help="run without the P2 audit file. Outputs are labelled 'no audit exclusion, exploratory'")
+    ap.add_argument("--predict-audit", default=None, metavar="BEST_PT",
+                    help="score the sealed audit blocks with this trained checkpoint (needs a frozen P2 audit)")
     ap.add_argument("--validated", default=None, help="A4 validated labels GeoPackage")
     ap.add_argument("--device", default="auto")
     ap.add_argument("--epochs", type=int, default=None)
@@ -280,11 +360,20 @@ def main(argv=None) -> int:
     ap.add_argument("--batch", type=int, default=None)
     a = ap.parse_args(argv)
     cfg = load_cfg(Path(a.config))
+    if a.predict_audit:
+        try:
+            rd = predict_audit(cfg, Path(a.predict_audit), Path(a.audit) if a.audit else None, device=a.device)
+        except (FileNotFoundError, NotImplementedError) as e:
+            print(e, file=sys.stderr)
+            return 2
+        print(f"audit predictions {rd}")
+        return 0
     try:
         subsets = json.loads(need(Path(a.subsets), "label subsets (run _ssl_label_subsets_9t.py)").read_text())
         rd = run(cfg, a.arm, a.fold, a.fraction, a.seed, subsets, Path(a.init) if a.init else None,
                  device=a.device, epochs=a.epochs, samples=a.samples, batch=a.batch,
                  audit_csv=Path(a.audit) if a.audit else cfg_path(cfg["inputs"]["audit_blocks"]),
+                 allow_no_audit=a.allow_no_audit,
                  validated=Path(a.validated) if a.validated else None)
     except (FileNotFoundError, NotImplementedError) as e:
         print(e, file=sys.stderr)

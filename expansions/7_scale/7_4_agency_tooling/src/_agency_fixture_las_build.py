@@ -40,7 +40,7 @@ EXPECTED = {
     "high_void": ("refuse", "void fraction above ceiling"),
     "single_return": ("warn", "single-return only"),
     "truncated": ("refuse", "unreadable"),
-    "feet_units": ("warn", "units in feet"),
+    "feet_units": ("refuse", "units in feet"),
 }
 
 

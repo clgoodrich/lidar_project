@@ -2,56 +2,223 @@
   "_note": "Expansion 4.3 vegetation stress. Built 2026-11-05 by the build agent. Items marked VERIFY are assumptions from docs/fw_4_3_vegetation_stress.md section 5. Path specs: {key, rel} -> path_for(key)/rel, {exp, rel} -> expansion folder. Change freely.",
   "master_seed": 4300,
   "inputs": {
-    "pads": {"key": "truth", "rel": "annotations_proj_v2.gpkg", "layer": "pad", "id_col": "pad_id"},
-    "controls": {"exp": "4.3", "rel": "data/raw/nonpad_disturbance_9t.gpkg", "layer": null, "id_col": "control_id",
-      "_schema": "Polygon layer, EPSG:6346, columns control_id (unique), control_type (landing|corridor|old_road_bed|other), optional age_band, soil_unit. VERIFY. Layer name for annotated non-pad disturbance not confirmed"},
-    "chm": {"key": "nine_t_1m", "rel": "chm_9t_1m.tif"},
-    "dem": {"key": "nine_t_1m", "rel": "dem_9t_1m.tif"},
-    "nlcd": {"key": "data", "rel": "9t/derived/landcover/nlcd_2019_landcover_9t.tif"},
-    "dep_wells": {"key": "dep_wells", "rel": "venango_wells_all.gpkg", "layer": "venango_wells_all"},
-    "records": {"exp": "4.3", "rel": "data/raw/dep_complaints_inspections_9t.csv",
-      "_schema": "CSV record_id, source (complaint|inspection|measurement), date (ISO), x, y (EPSG:6346) or lat, lon (EPSG:4326), coord_precision_m, code, description, lease_id, operator, permit_num, optional ch4_ppm. VERIFY under request R1"},
-    "audit_blocks": {"key": "results_9t", "rel": "splits/audit_blocks_9t_v1.csv", "_schema": "CSV block_id. Optional"},
-    "folds": {"exp": "4.3", "rel": "data/raw/transfer_blocks.csv", "_schema": "CSV block_id, fold from the 3.0 scorer. VERIFY"}
+    "pads": {
+      "key": "truth",
+      "rel": "annotations_proj_v2.gpkg",
+      "layer": "pad",
+      "id_col": "pad_id"
+    },
+    "controls": {
+      "exp": "4.3",
+      "rel": "data/raw/nonpad_disturbance_9t.gpkg",
+      "layer": null,
+      "id_col": "control_id",
+      "_schema": "Polygon layer, EPSG:6346, columns control_id (unique), control_type (landing|corridor|old_road_bed|other), optional age_band, soil_unit. VERIFY. Layer name for annotated non-pad disturbance not confirmed"
+    },
+    "chm": {
+      "key": "nine_t_1m",
+      "rel": "chm_9t_1m.tif"
+    },
+    "dem": {
+      "key": "nine_t_1m",
+      "rel": "dem_9t_1m.tif"
+    },
+    "nlcd": {
+      "key": "data",
+      "rel": "9t/derived/landcover/nlcd_2019_landcover_9t.tif"
+    },
+    "dep_wells": {
+      "key": "dep_wells",
+      "rel": "venango_wells_all.gpkg",
+      "layer": "venango_wells_all"
+    },
+    "records": {
+      "exp": "4.3",
+      "rel": "data/raw/dep_complaints_inspections_9t.csv",
+      "_schema": "CSV record_id, source (complaint|inspection|measurement), date (ISO), x, y (EPSG:6346) or lat, lon (EPSG:4326), coord_precision_m, code, description, lease_id, operator, permit_num, optional ch4_ppm. VERIFY under request R1"
+    },
+    "audit_blocks": {
+      "key": "results_9t",
+      "rel": "splits/audit_blocks_9t_v1.csv",
+      "_schema": "Frozen P2 audit CSV (# header, sha256 sidecar), read only through ek.require_audit. Missing refuses unless --allow-no-audit, then the output is labelled exploratory"
+    },
+    "folds": {
+      "exp": "4.3",
+      "rel": "data/raw/transfer_blocks.csv",
+      "_schema": "CSV block_id, fold from the 3.0 scorer. VERIFY"
+    },
+    "blocks": {
+      "key": "nine_t",
+      "rel": "pit_blocks_9t.gpkg",
+      "_schema": "9t block layer 'blocks' with block_id = iy*12+ix, ix, iy"
+    }
   },
   "scenes": [
-    {"scene_id": "s2_jun_9t", "date": "2025-06-15", "season": "leaf_on", "path": {"key": "data", "rel": "9t/derived/optical_s2/s2_jun_green_red_nir_swir_scl_9t_5m.tif"}},
-    {"scene_id": "s2_sep_9t", "date": "2025-09-15", "season": "shoulder", "path": {"key": "data", "rel": "9t/derived/optical_s2/s2_sep_green_red_nir_swir_scl_9t_5m.tif"}},
-    {"scene_id": "s2_oct_9t", "date": "2025-10-15", "season": "shoulder", "path": {"key": "data", "rel": "9t/derived/optical_s2/s2_oct_green_red_nir_swir_scl_9t_5m.tif"}}
+    {
+      "scene_id": "s2_jun_9t",
+      "date": "2026-06-03",
+      "season": "leaf_on",
+      "path": {
+        "key": "data",
+        "rel": "9t/derived/optical_s2/s2_jun_green_red_nir_swir_scl_9t_5m.tif"
+      },
+      "item": "S2A_17TPG_20260603_0_L2A",
+      "radiometry": null
+    },
+    {
+      "scene_id": "s2_sep_9t",
+      "date": "2026-09-07",
+      "season": "shoulder",
+      "path": {
+        "key": "data",
+        "rel": "9t/derived/optical_s2/s2_sep_green_red_nir_swir_scl_9t_5m.tif"
+      },
+      "item": "S2B_17TPG_20260907_0_L2A",
+      "radiometry": null
+    },
+    {
+      "scene_id": "s2_oct_9t",
+      "date": "2025-10-27",
+      "season": "shoulder",
+      "path": {
+        "key": "data",
+        "rel": "9t/derived/optical_s2/s2_oct_green_red_nir_swir_scl_9t_5m.tif"
+      },
+      "item": "S2C_17TPG_20251027_0_L2A",
+      "radiometry": null
+    }
   ],
-  "_scenes_note": "Held 5 m stacks, band descriptions green, red, nir, swir, scl. Dates are mid-month placeholders, VERIFY acquisition dates and whether each file is one scene or a composite. Add more scenes here (any multiband GeoTIFF with band descriptions from band_names)",
-  "scene_index": {"exp": "4.3", "rel": "data/raw/scene_index_optical_9t.csv",
-    "_schema": "Optional CSV scene_id, sensor, date, season, path, cloud_frac. Rows are added to the scenes list above"},
-  "band_names": ["blue", "green", "red", "rededge", "nir", "swir", "scl"],
-  "scl_valid": [4, 5, 6, 11],
-  "_scl_note": "Sentinel-2 L2A scene classes kept. 4 vegetation, 5 bare, 6 water, 11 snow. VERIFY, snow kept only so the mask is not empty in leaf-off scenes. Change freely",
+  "_scenes_note": "Held 5 m stacks written by notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_9t.py from Element 84 Earth Search items (ids in 'item', dates from that script). Bands were resampled onto a 5 m grid (average for reflectance, nearest for SCL), so V2 puts them back on the native 10 m and 20 m grids. The stacks carry no L2A radiometry tags. 'radiometry' must then be declared per scene as {add_offset, quantification, processing_baseline, offset_removed_upstream, source}. null makes V2 refuse. VERIFY in docs/decisions_4_3.md",
+  "scene_index": {
+    "exp": "4.3",
+    "rel": "data/raw/scene_index_optical_9t.csv",
+    "_schema": "Optional CSV scene_id, sensor, date, season, path, cloud_frac. Rows are added to the scenes list above"
+  },
+  "band_names": [
+    "blue",
+    "green",
+    "red",
+    "rededge",
+    "nir",
+    "swir",
+    "scl"
+  ],
+  "scl_valid": [
+    4,
+    5
+  ],
+  "_scl_note": "Sentinel-2 L2A scene classes kept. 4 vegetation, 5 not vegetated. Water (6), snow (11), cloud (8, 9), thin cirrus (10), cloud shadow (3), dark or topographic shadow (2), unclassified (7), saturated (1) and no data (0) are masked, and the code refuses a list that keeps any of them (review 4.3-01)",
   "labels": {
     "radius_m": 100.0,
-    "leak_codes": ["GAS_MIGRATION", "WELL_VENTING", "LEAKING_WELL"],
-    "clean_codes": ["NO_VIOLATION", "COMPLIANT"],
-    "strong_sources": ["measurement"],
+    "leak_codes": [
+      "GAS_MIGRATION",
+      "WELL_VENTING",
+      "LEAKING_WELL"
+    ],
+    "clean_codes": [
+      "NO_VIOLATION",
+      "COMPLIANT"
+    ],
+    "strong_sources": [
+      "measurement"
+    ],
     "_codes_note": "Placeholder code lists, not DEP codes. Replace with the DEP complaint types and violation codes once R1 returns (framework V0)",
-    "years": [2006, 2026],
-    "min_per_class": 40, "fail_below_per_class": 20, "min_leases_per_class": 15,
-    "hm_auc": 0.70
+    "years": [
+      2006,
+      2026
+    ],
+    "min_per_class": 40,
+    "fail_below_per_class": 20,
+    "min_leases_per_class": 15,
+    "hm_auc": 0.7,
+    "codes_status": "placeholder",
+    "visible_lookback_days": null,
+    "_visible_note": "Records count only from the first scene date minus visible_lookback_days to the last scene date. User decision. null refuses"
   },
   "observability": {
-    "pixels_m": [10.0, 20.0, 30.0],
+    "pixels_m": [
+      10.0,
+      20.0,
+      30.0
+    ],
     "chm_open_max_m": 2.0,
     "edge_band_m": 5.0,
-    "min_interior_px": 4, "fail_interior_px": 1, "min_scenes_per_season": 3,
-    "grid_origin": [0.0, 0.0]
+    "min_interior_px": 4,
+    "fail_interior_px": 1,
+    "min_scenes_per_season": 3,
+    "grid_origin": [
+      0.0,
+      0.0
+    ]
   },
   "matching": {
     "pad_buffer_m": 30.0,
-    "continuous": ["area_m2", "chm_mean_m", "aspect_sin", "aspect_cos"],
-    "exact": ["area_band"],
-    "area_bands_m2": [0, 400, 1000, 2500, 1e9],
-    "caliper_sd": 0.5, "n_per": 1
+    "continuous": [
+      "area_m2",
+      "chm_mean_m",
+      "aspect_sin",
+      "aspect_cos"
+    ],
+    "exact": [
+      "area_band"
+    ],
+    "area_bands_m2": [
+      0,
+      400,
+      1000,
+      2500,
+      1000000000.0
+    ],
+    "caliper_sd": 0.5,
+    "n_per": 1
   },
-  "extract": {"ring_inner_m": 5.0, "ring_outer_m": 30.0, "supersample": 5, "open_frac_min": 0.5,
-    "reflectance_scale": 1.0, "_scale_note": "Multiply stored values to get reflectance 0-1. VERIFY the held stacks (values look like reflectance already)"},
-  "added_value": {"k_per_km2": 40.0, "delta_gain": 0.05, "lidar_features": ["area_m2", "chm_mean_m", "aspect_sin", "aspect_cos"], "bootstrap_B": 2000},
-  "leak_test": {"covariates": ["pad_age_yr", "chm_mean_m", "open_frac"], "outer_folds": 5, "inner_folds": 3,
-    "C_grid": [0.01, 0.1, 1.0, 10.0], "delta_gain": 0.05, "bootstrap_B": 2000}
+  "extract": {
+    "ring_inner_m": 5.0,
+    "ring_outer_m": 30.0,
+    "supersample": 5,
+    "open_frac_min": 0.5,
+    "_scale_note": "Reflectance = (DN + BOA_ADD_OFFSET) / BOA_QUANTIFICATION_VALUE, read from metadata or the declared scene radiometry. The held stacks are DN 0 to 6646 (not reflectance)",
+    "allow_unmasked": false
+  },
+  "added_value": {
+    "k_per_km2": 40.0,
+    "delta_gain": 0.05,
+    "lidar_features": [
+      "area_m2",
+      "chm_mean_m",
+      "aspect_sin",
+      "aspect_cos"
+    ],
+    "bootstrap_B": 2000,
+    "max_undefined": 0.0
+  },
+  "leak_test": {
+    "covariates": [
+      "pad_age_yr",
+      "chm_mean_m",
+      "open_frac"
+    ],
+    "outer_folds": 5,
+    "inner_folds": 3,
+    "C_grid": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "delta_gain": 0.05,
+    "bootstrap_B": 2000,
+    "max_undefined": 0.0
+  },
+  "band_native_m": {
+    "blue": 10.0,
+    "green": 10.0,
+    "red": 10.0,
+    "rededge": 20.0,
+    "nir": 10.0,
+    "swir": 20.0,
+    "scl": 20.0
+  },
+  "_band_native_note": "Sentinel-2 MSI native pixel per band. B2 B3 B4 B8 10 m. B5 and B11 20 m. SCL 20 m. VERIFY",
+  "_max_undefined_note": "Share of bootstrap draws allowed to be undefined. 0 means any undefined draw gives an undefined interval and an inconclusive verdict (SH-01). User decision"
 }

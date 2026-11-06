@@ -1,0 +1,119 @@
+{
+  "written": "2026-11-06T11:14:41",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/4_modalities/4_5_multitemporal_lidar/src/_dod_recovery_test_9t.py",
+    "--heights",
+    "--areas",
+    "400"
+  ],
+  "params": {
+    "recovery": {
+      "heights_m": [
+        0.1,
+        0.2,
+        0.3,
+        0.5
+      ],
+      "areas_m2": [
+        100.0,
+        400.0,
+        1000.0
+      ],
+      "n_sites": 40,
+      "register": true,
+      "register_note": "Unused since 2026-11-06. S3 now runs the S4 point chain (per-pass shift and overlap offsets), not a DEM shift.",
+      "reproduce_tol_m": 0.01,
+      "reproduce_note": "RMS tolerance for the h = 0 chain against the held dod_v2_highpass_9t_2m.tif. Proposed default.",
+      "seed": 20261105
+    },
+    "flag": {
+      "thr": 0.235,
+      "min_cover": 0.2,
+      "p_cut": 0.975,
+      "n_ctrl": 40,
+      "slope_tol": 3.0,
+      "ctrl_dist_m": [
+        150.0,
+        800.0
+      ],
+      "min_ctrl": 10
+    }
+  },
+  "seeds": {
+    "sites": 20261105,
+    "flag": 20261102
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002958.laz",
+      "bytes": 32326043,
+      "mtime": "2026-11-02T14:23:35.755137"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002959.laz",
+      "bytes": 29321563,
+      "mtime": "2026-11-02T14:27:42.582261"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003111.laz",
+      "bytes": 31798322,
+      "mtime": "2026-11-02T14:13:29.222174"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003112.laz",
+      "bytes": 31184954,
+      "mtime": "2026-11-02T14:17:52.053004"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\dem_2019_v2_9t_2m.tif",
+      "bytes": 15836171,
+      "mtime": "2026-11-03T16:30:55.216942"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\dem_9t_05.tif",
+      "bytes": 324109032,
+      "mtime": "2026-06-09T11:38:18.531894"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\dod_v2_highpass_9t_2m.tif",
+      "bytes": 18832288,
+      "mtime": "2026-11-03T16:31:01.240576"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj_v2.gpkg",
+      "bytes": 10924032,
+      "mtime": "2026-09-11T18:15:23.877075"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261106_dod_ctrl_08f3b2d\\change_controls_matched_9t.gpkg",
+      "bytes": 143360,
+      "mtime": "2026-11-06T10:52:05.981683"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261106_dod_recov_694f2bc\\change_recovery_9t.csv",
+      "bytes": 1228,
+      "mtime": "2026-11-06T11:14:40.713378"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261106_dod_recov_694f2bc\\change_recovery_curve_9t.csv",
+      "bytes": 208,
+      "mtime": "2026-11-06T11:14:41.206201"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261106_dod_recov_694f2bc\\change_recovery_curve_9t.png",
+      "bytes": 31681,
+      "mtime": "2026-11-06T11:14:41.376142"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261106_dod_recov_694f2bc\\change_recovery_summary_9t.json",
+      "bytes": 1062,
+      "mtime": "2026-11-06T11:14:41.377650"
+    }
+  ]
+}

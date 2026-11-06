@@ -178,7 +178,12 @@ def read_records(cfg: dict, area_poly, buffer_m: float, dep_override=None, partn
 
 
 def read_candidates(cfg: dict, pit_override=None, pad_override=None):
-    """L2 candidate sites from the 5.6 well-level outputs. Points at the site centroid."""
+    """L2 candidate sites from the 5.6 well-level outputs. Points at the site centroid.
+
+    Sites are keyed by kind plus det_id (site_uid = "pit:17"). The 5.6 contract makes det_id unique across both
+    files (pits from 1, pads from 1_000_001), but files written before that contract reuse 0..n-1 in each file.
+    So the key never relies on det_id alone. When a file carries a kind column it must match the file it came from.
+    """
     import geopandas as gpd
     import pandas as pd
     parts = []
@@ -187,19 +192,24 @@ def read_candidates(cfg: dict, pit_override=None, pad_override=None):
         if p is None:
             continue
         g = read_vector(p, cfg["crs"])
-        # 5.6 S0 keys rows by det_id (cand_id restarts per source layer). Accept it as the site id.
         id_col = cfg["inputs"][name].get("id_col", "site_id")
         if id_col in g and id_col != "site_id":
             g = g.rename(columns={id_col: "site_id"})
         for col in ("site_id", "score"):
             if col not in g:
                 raise MissingInput(f"{p} lacks column '{col}' (schema {cfg['inputs'][name]['schema']})")
+        if "kind" in g:
+            bad = set(g["kind"].astype(str)) - {kind}
+            if bad:
+                raise AssertionError(f"{p} is read as kind '{kind}' but its kind column holds {sorted(bad)}")
+        sid = g["site_id"]
+        sid = sid.astype("int64").astype(str) if pd.api.types.is_numeric_dtype(sid) else sid.astype(str)
         area = g.geometry.area if g.geom_type.iloc[0] != "Point" else pd.Series(np.nan, index=g.index)
-        parts.append(gpd.GeoDataFrame({"site_id": g["site_id"].astype(str), "kind": kind,
-                                       "score": g["score"].astype(float), "area_m2": area.values},
+        parts.append(gpd.GeoDataFrame({"site_uid": kind + ":" + sid.values, "site_id": sid.values, "kind": kind,
+                                       "score": g["score"].astype(float).values, "area_m2": area.values},
                                       geometry=g.geometry.centroid.values, crs=cfg["crs"]))
     c = pd.concat(parts, ignore_index=True)
-    ek.assert_unique(c.assign(uid=c.kind + ":" + c.site_id), "uid")
+    ek.assert_unique(c, "site_uid")
     c = c[c.score >= cfg["params"]["frozen_cutoff"]].reset_index(drop=True)
     return c
 

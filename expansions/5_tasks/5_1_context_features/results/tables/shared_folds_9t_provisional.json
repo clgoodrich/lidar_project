@@ -1,11 +1,13 @@
 {
   "version": "v1",
   "provisional": true,
-  "written": "2026-11-05T22:27:21",
+  "written": "2026-11-06T10:50:32",
   "seed": 20261104,
   "k": 5,
   "rule": "greedy joint deficit on pit and pad counts, ties by seeded permutation",
   "audit_blocks": [],
+  "audit": "no audit exclusion, exploratory",
+  "audit_sha256": null,
   "n_blocks": 144,
   "folds": [
     {

@@ -33,6 +33,15 @@ import _task5_helpers as th  # noqa: E402
 ek = th.ek
 
 
+def repo_rel(p) -> str:
+    """Repo-relative POSIX path for outputs. Never an absolute path."""
+    p = Path(p)
+    try:
+        return p.resolve().relative_to(ek.REPO.resolve()).as_posix()
+    except ValueError:
+        return p.name
+
+
 def block_fold_map(assign_csv: Path) -> dict[int, int]:
     """block_id -> fold from a per-feature assignment CSV. Rows with no block id are off-tile and dropped.
     Raises if one block maps to two folds (the scheme would not be block-grouped)."""
@@ -76,7 +85,7 @@ def inventory(cfg: dict, do_hash: bool = True) -> pd.DataFrame:
     rows = []
     for name, m in models.items():
         d = th.resolve(m["dir"])
-        r = dict(model=name, role=m["role"], dir=str(d), exists=d.exists())
+        r = dict(model=name, role=m["role"], dir=repo_rel(d), exists=d.exists())
         if not d.exists():
             r.update(status="absent", must_retrain=True)
             rows.append(r)

@@ -10,7 +10,8 @@ Purpose
 Inputs
     data/<area>/results/transfer/<run_id>/pad_prob_<area>_05.tif   (core 'infer --task pad')
     data/<area>/results/transfer/xfer_blocks_roles_<area>.gpkg, ca_pads_truth_<area>.gpkg
-    config_3_6.json reference.tables (3.0 isolated pad out-of-fold block tables)
+    config_3_6.json reference.tables_by_task.pad (3.0 isolated pad out-of-fold block tables)
+    Scoring policy ek.policy_for('pad') (cutoff 0.525, score-order matching), stamped into the JSON
 Outputs
     data/<area>/results/transfer/ca_pad_recall_by_class_<area>.csv
     data/<area>/results/transfer/ca_pad_primary_<area>.json
@@ -37,8 +38,9 @@ def class_rows(prob: Path, truth, blocks, classes_sets: dict) -> tuple[list, dic
     rows, tabs_by = [], {}
     for name, cls in classes_sets.items():
         t = truth[truth["class"].isin(cls)]
-        tabs, _ = gt.score_raster(prob, t, blocks)
+        tabs, cands = gt.score_raster(prob, t, blocks, task="pad")
         tabs_by[name] = tabs
+        tabs_by["_policy"] = cands.attrs["policy"]
         ceil = gt.ceiling_per_block(tabs)
         rows.append({"set": name, "classes": "+".join(cls), "n_truth": sum(v["n_truth"] for v in tabs.values()),
                      "recall_k40": gt.pooled_recall_at_k(tabs, list(tabs)), "density_per_km2": gt.density_per_km2(tabs),
@@ -61,7 +63,7 @@ def main(argv=None) -> int:
         blocks = gpd.read_file(gt.require_input(gt.area_transfer_dir(a.area) / f"xfer_blocks_roles_{a.area}.gpkg",
                                                 "block roles"))
         truth = gpd.read_file(gt.config_input(cfg, "pads_truth", EXP, area=a.area))
-        ref = json.loads(gt.require_input(gt.resolve(cfg["reference"]["tables"]), "9t pad reference tables").read_text())
+        tab_ref, ref_pol, ref_p = gt.reference_tables(cfg, "pad", EXP)
     except (gt.MissingInputError, gt.DecisionMissingError) as e:
         print(str(e), file=sys.stderr)
         return 2
@@ -69,8 +71,10 @@ def main(argv=None) -> int:
     blocks = blocks[blocks["role"] == "test"]
     sets = {"primary": cfg["primary_classes"], "E1": ["E1"], "E2": ["E2"], "E3": ["E3"], "E0": ["E0"]}
     rows, tabs_by = class_rows(prob, truth, blocks, sets)
-    tab_ref = {b: {"c": pd.DataFrame(v["cands"]), "n_truth": v["n_truth"], "km2": v["km2"]} for b, v in ref.items()}
-    prim = gt.transfer_difference(tabs_by["primary"], tab_ref, margin, B=a.B, seed=int(cfg["prereg"]["master_seed"]))
+    pol = tabs_by.pop("_policy")
+    prim = gt.transfer_difference(tabs_by["primary"], tab_ref, margin, B=a.B, seed=int(cfg["prereg"]["master_seed"]),
+                                  ref_policy=ref_pol, target_policy=pol)
+    prim["reference_tables"] = str(ref_p)
     prim["interpretable"] = rows[0]["share_ceiling_below_0p9"] <= 0.25
     prim["density_scaled_k"] = gt.density_scaled_k(prim["density_target"], prim["density_ref"])
     if not prim["interpretable"]:

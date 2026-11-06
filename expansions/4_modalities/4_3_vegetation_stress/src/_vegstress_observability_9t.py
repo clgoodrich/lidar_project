@@ -5,7 +5,8 @@ Purpose
     grid at grid_origin. Count of those interior pixels that are open (share of 1 m CHM cells below
     chm_open_max_m at least 0.5), because an index from a pixel under canopy reads canopy. Canopy
     overhang, the share of the inner edge band (edge_band_m) with CHM above chm_open_max_m. Usable
-    scenes per season, a scene being usable when at least half its pixels carry a valid SCL class.
+    scenes per season, a scene being usable when at least half its pixels carry a valid SCL class
+    (vegetation or bare soil only, review 4.3-01). A scene without SCL is flagged scl_missing and is not usable.
     Gate per pixel size. Success when the median open interior count is at least 4 and every season has
     at least 3 usable scenes. Failure when the median is under 1. Else inconclusive.
 Inputs
@@ -123,8 +124,10 @@ def run(cfg: dict, out_root: Path | None = None, max_pads: int | None = None) ->
             rows.append(r)
     df = pd.DataFrame(rows)
     ek.assert_rows(df, len(pads), "pads to observability rows")
-    scenes["valid_frac"] = [scl_valid_frac(p, cfg["band_names"], cfg["scl_valid"]) if Path(p).exists() else np.nan
+    keep = io.scl_valid_classes(cfg)
+    scenes["valid_frac"] = [scl_valid_frac(p, cfg["band_names"], keep) if Path(p).exists() else np.nan
                             for p in scenes["path"]]
+    scenes["scl_missing"] = scenes["valid_frac"].isna()       # no SCL: unmasked, never usable here
     scenes["usable"] = scenes["valid_frac"] >= 0.5
     by_season = scenes[scenes.usable].groupby("season").size().reindex(
         sorted(set(scenes["season"]) | {"leaf_on", "leaf_off", "shoulder"}), fill_value=0).to_dict()

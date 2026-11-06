@@ -87,10 +87,15 @@ def fit_tail(rates_kg_h: np.ndarray, threshold_kg_h: float, B: int, seed: int) -
     rng = np.random.default_rng(seed)
     draws = np.array([p_exceed(r[rng.integers(0, len(r), len(r))]) for _ in range(B)])
     out = {"n_wells_used": int(len(r)), "n_nonpositive_dropped": n_nonpos, "threshold_kg_h": threshold_kg_h,
-           "largest_rate_kg_h": float(r.max())}
+           "largest_rate_kg_h": float(r.max()), "extrapolation_multiple": float(threshold_kg_h / r.max())}
     for j, name in enumerate(("lognormal", "loglogistic")):
-        lo, hi = np.nanpercentile(draws[:, j], [2.5, 97.5])
-        out[name] = {"p_exceed": (p_ln, p_ll)[j], "lo": float(lo), "hi": float(hi)}
+        # SH-01. Failed fits are counted. Any undefined draw makes the interval undefined (NaN, NaN).
+        und = ek.undefined_share(draws[:, j])
+        if und > 0:
+            lo, hi = float("nan"), float("nan")
+        else:
+            lo, hi = np.percentile(draws[:, j], [2.5, 97.5])
+        out[name] = {"p_exceed": (p_ln, p_ll)[j], "lo": float(lo), "hi": float(hi), "undefined_share": und}
     return out
 
 
@@ -104,24 +109,46 @@ def gate_aggregation(n_needed: float, wells_in_fp: float, closure: float) -> str
     return "failure" if n_needed >= closure * max(wells_in_fp, 1) else "inconclusive"
 
 
+NOT_IDENTIFIABLE = "not identifiable by extrapolation"
+
+
 def gate_tail(tail: dict | None, largest_kg_h: float | None, dl_best: float, population: dict,
-              lower_min: float = 0.0) -> dict:
-    """fw_4_4 section 10 tail row. Uses the largest population scenario so the gate errs toward PROCEED."""
+              max_extrapolation: float | None = None) -> dict:
+    """fw_4_4 section 10 tail row. Uses the largest population scenario so the gate errs toward PROCEED.
+
+    4.4-01. A fitted tail says nothing about rates far beyond the data. When the detection limit lies above
+    max_extrapolation times the largest observed rate, the verdict is 'not identifiable by extrapolation'.
+    max_extrapolation is a user decision (config m0.tail_max_extrapolation_multiple). While it is null, any
+    limit above the largest observed rate is refused the same way. Success needs the lower bound of the
+    expected exceeding count to reach one well (the old check 'lower bound > 0' was always true)."""
     if not tail or "error" in tail:
         return {"verdict": "inconclusive", "why": "per-well rates not on file" if not tail else tail["error"]}
     n_pop = max(population.values())
+    largest = largest_kg_h if largest_kg_h is not None else tail.get("largest_rate_kg_h")
+    data_max = max(v for v in (tail.get("largest_rate_kg_h"), largest_kg_h) if v is not None)
+    mult = dl_best / data_max
+    base = {"population_used": n_pop, "largest_rate_kg_h": largest, "extrapolation_multiple": mult,
+            "max_extrapolation_multiple": max_extrapolation}
+    allowed = 1.0 if max_extrapolation is None else float(max_extrapolation)
+    if mult > allowed:
+        why = (f"detection limit {dl_best:g} kg/h is {mult:.1f} times the largest observed rate {data_max:g} kg/h. "
+               + ("No extrapolation multiple is declared (user decision)." if max_extrapolation is None else
+                  f"The declared limit is {allowed:g} times."))
+        return {"verdict": NOT_IDENTIFIABLE, "why": why, **base}
     exp = {fit: {s: tail[fit][s] * n_pop for s in ("p_exceed", "lo", "hi")} for fit in ("lognormal", "loglogistic")}
+    vals = [exp[f][s] for f in exp for s in ("lo", "hi")]
+    if not all(np.isfinite(vals)):
+        return {"verdict": "inconclusive", "why": "tail bootstrap interval undefined (SH-01)", "expected_count": exp,
+                **base}
     hi_upper = max(exp[f]["hi"] for f in exp)
     lo_lower = min(exp[f]["lo"] for f in exp)
-    point = max(exp[f]["p_exceed"] for f in exp)
-    largest = largest_kg_h if largest_kg_h is not None else tail.get("largest_rate_kg_h")
-    if point >= 1 and lo_lower > lower_min:
+    if lo_lower >= 1:
         v = "success"
     elif hi_upper < 1 and largest is not None and largest < dl_best:
         v = "failure"
     else:
         v = "inconclusive"
-    return {"verdict": v, "population_used": n_pop, "expected_count": exp, "largest_rate_kg_h": largest}
+    return {"verdict": v, "expected_count": exp, **base}
 
 
 def verdict(gates: dict) -> dict:
@@ -197,7 +224,7 @@ def run(cfg: dict, out_root: Path | None = None, dep_count: bool = True, rates_c
         r_best = dl_best / mean_kg_h
         gates = {"mean": gate_mean(r_best, closure),
                  "aggregation": gate_aggregation(r_best, wpf["max"], closure),
-                 "tail": gate_tail(tail, largest_kg_h, dl_best, pop),
+                 "tail": gate_tail(tail, largest_kg_h, dl_best, pop, m0.get("tail_max_extrapolation_multiple")),
                  "aggregation_sensitivity_raw_records": gate_aggregation(r_best, wpf.get("max_raw", wpf["max"]), closure)}
         per_instrument.append({"instrument": dl["instrument"], "dl_best_kg_h": dl_best, "R_mean_stated_low": lo / mean_kg_h,
                                "R_mean_stated_high": hi / mean_kg_h, "R_mean_best_case": r_best,

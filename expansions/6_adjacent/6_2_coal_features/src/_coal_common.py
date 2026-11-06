@@ -71,10 +71,17 @@ def read_mine_layers(cfg: dict, overrides: dict | None = None):
 
 
 def class_match(cls: str, cand_geom, truth_geom, tol: dict) -> bool:
-    """Per-class tolerance from framework section 3 (re-chosen after S0, fixed before scoring)."""
+    """Per-class tolerance from framework section 3 (re-chosen after S0, fixed before scoring).
+
+    A point record has no area, so an IoU rule can never match it (review 6.2, verified 2026-11-06). For IoU
+    classes a point record (or any zero-area record) matches by distance instead. The point must lie inside the
+    candidate polygon or within the class offset_m of it (tolerance._point_rule). Without offset_m it must lie inside.
+    """
     t = tol[cls]
     if t["rule"] == "centroid":
         return cand_geom.centroid.distance(truth_geom.centroid) <= t["m"]
+    if truth_geom.area == 0:
+        return cand_geom.distance(truth_geom) <= float(t.get("offset_m", 0.0))
     inter = cand_geom.intersection(truth_geom).area
     iou = inter / (cand_geom.area + truth_geom.area - inter) if inter > 0 else 0.0
     if iou >= t["iou"]:

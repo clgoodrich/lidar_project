@@ -3,8 +3,12 @@
 Purpose
     - load_pred / load_drawn: model pad polygons and annotated pads under one boundary definition (pits removed from
       both when subtract_pits is set, so model and reference follow the same rule, fw_5_5 QC 5)
-    - per_pad: one-to-one greedy match (IoU >= 0.3, the 5.6 S0 matcher), per-pad A_hat, A_ref, IoU, log ratio,
-      merged and split flags
+    - match_one_to_one: greedy one-to-one match by descending model score (policy match_order). Rule
+      overlap_any (primary since 2026-11-06, review 5.5-01) accepts any positive overlap, so it never truncates
+      the area error. Rule iou_gate (IoU >= policy iou, 0.3) is the sensitivity. An IoU gate caps
+      |ln(A_hat / A_ref)| at ln(1 / 0.3) = 1.204 for nested shapes, so it drops exactly the pads with large area error.
+    - per_pad: per-pad A_hat, A_ref, IoU, log ratio, merged and split flags under one match rule
+    - road_length: annotated access-road length within road_window_m of each pad edge (L_road of the cost model)
     - boundary_dist: mean symmetric boundary distance and its 95th percentile (Hausdorff 95)
     - median_r_interval: block bootstrap of the median log ratio (pads in one block are one cluster)
     - area_decision: the fw_5_5 section 8 decision on the median interval and P90 |r|
@@ -23,7 +27,6 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "5_6_record_association" / "src"))
 import _task5_helpers as th  # noqa: E402
-from _records_full_detector_output_9t import match_pads  # noqa: E402
 
 ek = th.ek
 
@@ -50,6 +53,24 @@ def load_pred(cfg):
     return pred
 
 
+def load_roads(cfg):
+    """Annotated road lines, or None when the annotation file has no roads layer."""
+    import pyogrio
+    ann = th.inp(cfg, "annotations")
+    if "roads" not in [r[0] for r in pyogrio.list_layers(ann)]:
+        return None
+    return th.read_vector(ann, layer="roads")
+
+
+def rel(p) -> str:
+    """Repo-relative path for outputs (no absolute paths in written files)."""
+    p = Path(p).resolve()
+    try:
+        return p.relative_to(ek.REPO.resolve()).as_posix()
+    except ValueError:
+        return p.name
+
+
 def load_drawn(cfg):
     ann = th.inp(cfg, "annotations")
     plat = clean(th.read_vector(ann, layer="plat"))
@@ -57,9 +78,63 @@ def load_drawn(cfg):
     return plat, pits
 
 
-def per_pad(pred, ref, ref_id: str = "pad_id", iou_min: float = 0.3, merge_frac: float = 0.2) -> pd.DataFrame:
+MATCH_RULES = ("overlap_any", "iou_gate")
+
+
+def match_one_to_one(pred, ref, rule: str = "overlap_any", iou_min: float = 0.3):
+    """Greedy one-to-one, model polygons in descending score (ties by larger area, then row). Each takes the unused
+    reference pad with the highest IoU among those it overlaps with positive area. iou_gate also needs IoU >= iou_min.
+    Returns (ref row or -1, IoU) per model row."""
+    if rule not in MATCH_RULES:
+        raise ValueError(f"unknown match rule {rule!r}, expected one of {MATCH_RULES}")
+    sidx = ref.sindex
+    rg = ref.geometry.values
+    area = pred.geometry.area.to_numpy()
+    order = np.lexsort((np.arange(len(pred)), -area, -pred["score"].to_numpy()))
+    used = set()
+    tid = np.full(len(pred), -1, int)
+    best = np.zeros(len(pred))
+    for i in order:
+        g = pred.geometry.iloc[i]
+        cands = []
+        for j in sidx.query(g, predicate="intersects"):
+            if int(j) in used:
+                continue
+            inter = g.intersection(rg[j]).area
+            if inter <= 0:
+                continue
+            iou = inter / (g.area + rg[j].area - inter)
+            if rule == "iou_gate" and iou < iou_min:
+                continue
+            cands.append((iou, -int(j)))
+        if cands:
+            iou, nj = max(cands)
+            used.add(-nj)
+            tid[i], best[i] = -nj, iou
+    return tid, best
+
+
+def road_length(ref, roads, window_m: float) -> np.ndarray:
+    """Length (m) of annotated road lines inside the ring from each pad edge out to window_m (fw_5_5 L_road,
+    'access road within 30 m of the pad edge'). NaN for every pad when no road layer is held."""
+    if roads is None:
+        return np.full(len(ref), np.nan)
+    if not len(roads):
+        return np.zeros(len(ref))
+    rs = roads.sindex
+    rgeo = roads.geometry.values
+    out = np.zeros(len(ref))
+    for k, g in enumerate(ref.geometry):
+        ring = g.buffer(window_m).difference(g)
+        idx = rs.query(ring, predicate="intersects")
+        out[k] = float(sum(rgeo[j].intersection(ring).length for j in idx))
+    return out
+
+
+def per_pad(pred, ref, ref_id: str = "pad_id", iou_min: float = 0.3, merge_frac: float = 0.2,
+            rule: str = "overlap_any") -> pd.DataFrame:
     """One row per reference pad. Matched pads carry A_hat from their one-to-one model polygon."""
-    tid, iou = match_pads(pred, ref, iou_min)
+    tid, iou = match_one_to_one(pred, ref, rule, iou_min)
     mp = {int(j): i for i, j in enumerate(tid) if j >= 0}
     # merged: a model polygon covering >= merge_frac of two or more reference pads
     # split:  a reference pad covered >= merge_frac by two or more model polygons (each share of the model polygon)
@@ -81,7 +156,7 @@ def per_pad(pred, ref, ref_id: str = "pad_id", iou_min: float = 0.3, merge_frac:
                          iou=float(iou[i]) if i is not None else 0.0,
                          log_ratio=float(np.log(a_hat / a_ref)) if i is not None and a_ref > 0 else np.nan,
                          merged=int(i is not None and n_ref_hit[i] > 1), split=int(n_pred > 1),
-                         matched=int(i is not None)))
+                         matched=int(i is not None), match_rule=rule))
     T = pd.DataFrame(rows)
     T["abs_pct_err"] = (T.A_hat - T.A_ref).abs() / T.A_ref
     return T

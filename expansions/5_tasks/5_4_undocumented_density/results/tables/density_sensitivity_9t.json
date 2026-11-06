@@ -1,8 +1,8 @@
 {
-  "D_sites": 624,
-  "N_doc_wells": 929,
+  "D_sites": 656,
+  "N_doc_wells": 1052,
   "cells": 918,
-  "inconsistent_cells": 485,
+  "inconsistent_cells": 528,
   "unbounded": "As r approaches 0 the implied total grows without limit. No finite upper bound exists without a lower bound on r.",
   "label": "sensitivity, not an estimate"
 }

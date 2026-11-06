@@ -112,9 +112,10 @@ def main(argv=None) -> int:
             hb = blocks[blocks["block_id"].isin(v["test"])].assign(eligible=True, area_km2=lambda d: d.area / 1e6)
             hb["block_id"] = hb["block_id"].astype(str)
             tr = pits.assign(truth_id=range(1, len(pits) + 1))
-            tabs, _ = gt.score_raster(prob, tr, hb)
+            tabs, cands = gt.score_raster(prob, tr, hb, task="pit")
             rows.append({"fold": fold, "frac": fr, "recall_k40": gt.pooled_recall_at_k(tabs, list(tabs)),
-                         "train_features": summary[fold][fr]})
+                         "train_features": summary[fold][fr], "policy_hash": cands.attrs["policy"]["policy_hash"],
+                         "cutoff": cands.attrs["policy"]["cutoff"]})
     cp = tables / "okks_label_budget_curve_9t.csv"
     pd.DataFrame(rows).to_csv(cp, index=False)
     print(f"wrote {cp}")

@@ -1,13 +1,18 @@
 {
   "seed": 20261105,
   "adapt_side": "north",
-  "adapt_area_km2": 3.234375,
+  "adapt_area_km2": 3.9375,
   "adaptation_dropped": true,
   "buffer_m": 192.0,
   "counts": {
-    "test": 71,
-    "audit": 22,
-    "ineligible": 19
+    "test": 85,
+    "audit": 27
+  },
+  "counts_by_stratum": {
+    "low_density/audit": 5,
+    "low_density/test": 14,
+    "main/audit": 22,
+    "main/test": 71
   },
   "area": "warren",
   "n_blocks": 112,
@@ -18,9 +23,10 @@
     13.351826871724434
   ],
   "buffer_provisional": true,
+  "buffer_task": "pit",
+  "redrawn_from": "expansions/3_geography/3_1_warren_forest_mckean/results/tables/warren/xfer_blocks_roles_warren.gpkg (version of 2026-11-05)",
   "n_recheck": 15,
   "eligible_km2": 13.078125,
   "test_km2": 9.984375,
-  "median_ground_per_m2": 2.408519111111111,
-  "median_void_frac": 0.4669537777777778
+  "low_density_test_km2": 1.96875
 }

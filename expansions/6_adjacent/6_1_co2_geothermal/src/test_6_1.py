@@ -117,3 +117,90 @@ def test_reader_gate():
     assert RC.gate(prof, bad)["gate"] == "failure"
     few = ok[ok.reader_id.isin(["R0", "R1", "R2"])]
     assert RC.gate(prof, few)["gate"] == "inconclusive"
+
+
+# ----------------------------------------------------------------------------- 2026-11-06 review fixes
+def _pit_pad_files(tmp: Path, contract: bool) -> tuple[Path, Path]:
+    """5.6 S0 shaped files. Old files reuse det_id 0..n-1 in each file. The 2026-11-06 contract adds kind and
+    starts pad ids at 1_000_001. Either way pit and pad must stay separate sites."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    pit_ids = [1, 2] if contract else [0, 1]
+    pad_ids = [1_000_001, 1_000_002] if contract else [0, 1]
+    pit = gpd.GeoDataFrame({"det_id": pit_ids, "score": [0.9, 0.8], "source": ["matched", "undecided"]},
+                           geometry=[box(X0 + 18, Y0 + 48, X0 + 24, Y0 + 54), box(X0 + 120, Y0 + 20, X0 + 126, Y0 + 26)],
+                           crs=CRS)
+    pad = gpd.GeoDataFrame({"det_id": pad_ids, "score": [0.85, 0.7], "source": ["matched", "unmatched"]},
+                           geometry=[box(X0 + 140, Y0 + 40, X0 + 170, Y0 + 70), box(X0 + 210, Y0 + 10, X0 + 240, Y0 + 40)],
+                           crs=CRS)
+    if contract:
+        pit["kind"], pad["kind"] = "pit", "pad"
+    pp, dp = tmp / "pit.gpkg", tmp / "pad.gpkg"
+    pit.to_file(pp)
+    pad.to_file(dp)
+    return pp, dp
+
+
+@pytest.mark.parametrize("contract", [False, True])
+def test_pit_pad_ids_keyed_by_kind(tmp_path, contract):
+    """6.1-01. Colliding det_id 0 in the pit and the pad file must give two sites, keyed kind + det_id."""
+    cfg = L.load_config()
+    prof = L.load_profile(cfg, "co2")
+    w = make_world(tmp_path)
+    w["candidates_pit"], w["candidates_pad"] = _pit_pad_files(tmp_path, contract)
+    out = tmp_path / "run"
+    out.mkdir()
+    RUN.run_all(cfg, prof, out, w, B=20, figure=False)
+    import pyogrio
+    cand = pyogrio.read_dataframe(out / "screening_package_9t.gpkg", layer="L2_candidates")
+    want = {"pit:1", "pit:2", "pad:1000001", "pad:1000002"} if contract else {"pit:0", "pit:1", "pad:0", "pad:1"}
+    assert set(cand.site_uid) == want
+    assert "proposals" not in cfg["inputs"]          # no reader of the producer-less proposals_56_9t.csv
+
+
+def test_kind_column_must_match_file(tmp_path):
+    cfg = L.load_config()
+    pp, dp = _pit_pad_files(tmp_path, contract=True)
+    with pytest.raises(AssertionError, match="kind"):
+        L.read_candidates(cfg, pit_override=dp, pad_override=pp)     # swapped files
+
+
+def test_blind_zone_candidates_do_not_use_k(tmp_path):
+    """6.1 minor. Three eligible 100 m blocks give 0.03 km2, so K = round(40 * 0.03) = 1. The top score sits in the
+    blind block 3. Before the fix it took the only K slot. After the fix the top eligible candidate s1 gets it."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    cfg = L.load_config()
+    prof = L.load_profile(cfg, "co2")
+    w = make_world(tmp_path)
+    cand = gpd.GeoDataFrame({"site_id": ["blind", "s1", "s2"], "score": [0.99, 0.9, 0.7]},
+                            geometry=[box(X0 + 330, Y0 + 50, X0 + 336, Y0 + 56), box(X0 + 18, Y0 + 48, X0 + 24, Y0 + 54),
+                                      box(X0 + 120, Y0 + 20, X0 + 126, Y0 + 26)], crs=CRS)
+    cand.to_file(tmp_path / "cand_blind.gpkg")
+    w["candidates_pit"] = tmp_path / "cand_blind.gpkg"
+    out = tmp_path / "run"
+    out.mkdir()
+    RUN.run_all(cfg, prof, out, w, B=20, figure=False)
+    import pyogrio
+    c = pyogrio.read_dataframe(out / "screening_package_9t.gpkg", layer="L2_candidates").set_index("site_id")
+    within = c["within_k"].astype(str).isin(["True", "1"])
+    assert within.to_dict() == {"blind": False, "s1": True, "s2": False}
+    assert pd.isna(c.loc["blind", "k_rank"]) and c.loc["s1", "k_rank"] == 1
+
+
+def test_records_with_depth_zero_is_labelled(tmp_path):
+    """6.4-01 seen from 6.1. An all-empty depth field gives 0 and a note that says so."""
+    import geopandas as gpd
+    cfg = L.load_config()
+    prof = L.load_profile(cfg, "co2")
+    w = make_world(tmp_path)
+    g = gpd.read_file(w["dep_wells"])
+    g["TOTAL_MAXI"] = ""                         # as in venango_wells_all.gpkg, empty string in every row
+    g.to_file(tmp_path / "wells_nodepth.gpkg")
+    w["dep_wells"] = tmp_path / "wells_nodepth.gpkg"
+    out = tmp_path / "run"
+    out.mkdir()
+    RUN.run_all(cfg, prof, out, w, B=20, figure=False)
+    c = pd.read_csv(out / "screening_counts_9t.csv").set_index("metric")
+    assert c.loc["records_with_depth", "value"] == 0
+    assert "no depth in records" in c.loc["records_with_depth", "note"]

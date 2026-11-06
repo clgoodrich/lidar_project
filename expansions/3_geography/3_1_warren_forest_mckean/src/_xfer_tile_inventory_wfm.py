@@ -42,20 +42,34 @@ CFG = HERE.parent / "config_3_1.json"
 
 
 def footprint_6346(row: dict, src_epsg):
-    from pyproj import Transformer
+    """Tile footprint in EPSG:6346. A tile with no CRS raises (never assumed to be EPSG:6346)."""
+    from pyproj import CRS, Transformer
     from shapely.geometry import box
+    if src_epsg is None or (isinstance(src_epsg, float) and np.isnan(src_epsg)):
+        raise ValueError(f"tile {row.get('file', '?')} has no CRS in its header. Set areas.<area>.src_crs "
+                         "explicitly after checking the delivery metadata")
+    src_epsg = int(src_epsg)
+    horiz = CRS.from_epsg(src_epsg)
+    horiz = horiz.sub_crs_list[0] if horiz.is_compound else horiz
+    if not horiz.is_projected or any(abs(float(ax.unit_conversion_factor) - 1.0) > 1e-9 for ax in horiz.axis_info):
+        raise ValueError(f"tile {row.get('file', '?')} CRS EPSG:{src_epsg} is not projected in metres")
     b = box(row["minx"], row["miny"], row["maxx"], row["maxy"])
-    if src_epsg in (None, 6346):
+    if src_epsg == 6346:
         return b
     tr = Transformer.from_crs(f"EPSG:{src_epsg}", ek.DST_CRS, always_xy=True)
     from shapely.ops import transform
     return transform(lambda x, y: tr.transform(x, y), b.segmentize(50))
 
 
-def inventory(tiles, ground: bool, res: float = 0.5):
+def inventory(tiles, ground: bool, res: float = 0.5, src_crs: str | None = None):
+    """src_crs (config areas.<area>.src_crs) is used only for a tile whose header has no CRS."""
     rows = []
     for p in tiles:
         h = xl.las_header(p)
+        if h["crs_epsg"] is None and src_crs:
+            h["crs_epsg"], h["crs_source"] = int(str(src_crs).split(":")[-1]), "config src_crs"
+        else:
+            h["crs_source"] = "header" if h["crs_epsg"] is not None else "none"
         fp = footprint_6346(h, h["crs_epsg"])
         h.update({"fp_minx": fp.bounds[0], "fp_miny": fp.bounds[1], "fp_maxx": fp.bounds[2], "fp_maxy": fp.bounds[3],
                   "fp_area_m2": fp.area, "pts_per_m2_all": h["n_points"] / fp.area if fp.area else np.nan})
@@ -88,7 +102,7 @@ def main(argv=None) -> int:
     if a.max_tiles:
         tiles = tiles[: a.max_tiles]
     print(f"{a.area}: {len(tiles)} tiles")
-    df = inventory(tiles, a.ground, cfg.get("res_m", 0.5))
+    df = inventory(tiles, a.ground, cfg.get("res_m", 0.5), ctx["src_crs"])
     ek.assert_unique(df, "file")
     out = ctx["tables"] / f"xfer_tile_inventory_{a.area}.csv"
     df.to_csv(out, index=False)

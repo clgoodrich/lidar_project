@@ -8,7 +8,10 @@ Purpose
         merged_outside              area of polygons that cover two or more pads, outside those pads
         unmatched_touching          area of unmatched polygons that touch a drawn pad, outside pads
         false_positive_blobs        area of unmatched polygons that touch no drawn pad
-    and reports the per-pad log ratio r = ln(A_hat / A_drawn) for matched pads. Reference here is the annotators'
+    and reports the per-pad log ratio r = ln(A_hat / A_drawn) for matched pads. Pads are matched one to one by the
+    config match_rule (overlap_any, any positive overlap, so the area error is never truncated). The IoU >= 0.3 gate
+    is the sensitivity rule, reported in the JSON. The tile ratio does not depend on matching.
+    Each pad also gets road_length_m, the annotated road length within road_window_m of its edge. Reference here is the annotators'
     drawing (level a). It is not a survey, so this is exploratory. Pits are removed from both sides when
     subtract_pits is set. Pads are scored by held-out polygons only (one CV fold model per block).
 
@@ -70,8 +73,12 @@ def main(argv=None) -> int:
     plat, pits = gt.load_drawn(cfg)
     if cfg.get("subtract_pits"):
         pred, plat = gt.remove_pits(pred, pits), gt.remove_pits(plat, pits)
-    T = gt.per_pad(pred, plat, "pad_id", cfg["match_iou"], cfg["merge_overlap_frac"])
+    pol = ek.policy_for("pad")
+    iou = pol["iou"]
+    T = gt.per_pad(pred, plat, "pad_id", iou, cfg["merge_overlap_frac"], cfg["match_rule"])
     ek.assert_rows(T, len(plat), "one row per drawn pad")
+    Ts = gt.per_pad(pred, plat, "pad_id", iou, cfg["merge_overlap_frac"], cfg["match_rule_sensitivity"])
+    T["road_length_m"] = gt.road_length(plat, gt.load_roads(cfg), cfg["road_window_m"])
     c = plat.geometry.centroid
     blocks = th.read_vector(th.inp(cfg, "pad_blocks"), layer="blocks")
     T["block_id"] = th.block_id_of(np.c_[c.x, c.y], blocks)
@@ -85,7 +92,16 @@ def main(argv=None) -> int:
     T.to_csv(out, index=False)
     D = decompose(pred, plat, T)
     m = T[T.matched == 1]
-    D.update(n_drawn=len(plat), n_pred=len(pred), n_matched=len(m), n_merged=int(m.merged.sum()),
+    ms = Ts[Ts.matched == 1]
+    small = set(T.loc[T.size_tercile == "small", "ref_row"])
+    D.update(match_rule=cfg["match_rule"], policy=pol,
+             sensitivity=dict(match_rule=cfg["match_rule_sensitivity"], iou_min=iou, n_matched=len(ms),
+                              n_small_matched=int(ms.ref_row.isin(small).sum()),
+                              median_log_ratio_matched=float(ms.log_ratio.median()),
+                              max_abs_log_ratio=float(ms.log_ratio.abs().max())),
+             n_small=len(small), n_small_matched=int(m.ref_row.isin(small).sum()),
+             max_abs_log_ratio_matched=float(m.log_ratio.abs().max()),
+             cutoff_note=f"pad polygons are the 0.50 product; policy cutoff is {pol['cutoff']}",n_drawn=len(plat), n_pred=len(pred), n_matched=len(m), n_merged=int(m.merged.sum()),
              n_split=int(T.split.sum()), median_log_ratio_matched=float(m.log_ratio.median()),
              median_area_ratio_matched=float(np.exp(m.log_ratio.median())), subtract_pits=cfg.get("subtract_pits"))
     js = th.write_json(th.outp(cfg, "tile_decomp"), D)

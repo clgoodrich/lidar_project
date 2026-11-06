@@ -70,15 +70,27 @@ def check(cfg: dict, s: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     for i in s.index[~s.reading_type.isin(sc["reading_types"])]:
         bad(s.at[i, "visit_id"], "reading_type", f"row {i} {s.at[i, 'reading_type']}")
     inst = cfg["instruments"]
+    # Review 6.5-01. Unit and instrument errors invalidate the visit, not only the problems list.
+    visit_errs: dict = {}
+
+    def visit_err(v, reason):
+        visit_errs.setdefault(v, [])
+        if reason not in visit_errs[v]:
+            visit_errs[v].append(reason)
     for i in s.index[~s.instrument_id.isin(inst)]:
         bad(s.at[i, "visit_id"], "instrument", f"row {i} instrument {s.at[i, 'instrument_id']} not in the registry")
+        visit_err(s.at[i, "visit_id"], f"instrument {s.at[i, 'instrument_id']} not in the registry")
     known = s[s.instrument_id.isin(inst)]
     wrong_u = known[known.units != known.instrument_id.map(lambda k: inst[k]["units"])]
     for i in wrong_u.index:
         bad(s.at[i, "visit_id"], "units", f"row {i} units {s.at[i, 'units']} for {s.at[i, 'instrument_id']}")
+        visit_err(s.at[i, "visit_id"], f"units {s.at[i, 'units']} do not match instrument {s.at[i, 'instrument_id']}")
     for v, g in s.groupby("visit_id"):
         if g.instrument_id.nunique() > 1 and len({inst.get(k, {}).get("type") for k in g.instrument_id.unique()}) > 1:
             bad(v, "units", "point and path-integrated instruments mixed in one visit")
+            visit_err(v, "point and path-integrated instruments mixed in one visit")
+        if g.units.nunique() > 1:
+            visit_err(v, f"units mixed in one visit {sorted(g.units.astype(str).unique())}")
     dup = s.duplicated(["visit_id", "reading_type", "position", "ts", "instrument_id"], keep=False)
     for i in s.index[dup]:
         bad(s.at[i, "visit_id"], "duplicate", f"row {i}")
@@ -100,7 +112,7 @@ def check(cfg: dict, s: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     stop_thr = pr["stop_threshold_ppm"]
     val = []
     for v, g in s[s.reading_type.isin(["background", "screen", "stop"])].groupby("visit_id"):
-        reasons = []
+        reasons = list(visit_errs.get(v, []))
         key = (g.crew.iloc[0], g.day.iloc[0], g.instrument_id.iloc[0])
         if not cal_ok.get(key, False):
             reasons.append("calibration")
@@ -133,7 +145,8 @@ def check(cfg: dict, s: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
             if not len(stops):
                 reasons.append("stop threshold crossed without a stop row")
         for r_ in reasons:
-            bad(v, "visit", r_)
+            if r_ not in visit_errs.get(v, []):
+                bad(v, "visit", r_)
         val.append({"visit_id": v, "site_id": g.site_id.iloc[0], "date": str(g.day.iloc[0]), "valid": not reasons,
                     "reasons": "; ".join(reasons), "stopped": bool(len(stops))})
     return pd.DataFrame(probs, columns=["visit_id", "rule", "detail"]), pd.DataFrame(val)

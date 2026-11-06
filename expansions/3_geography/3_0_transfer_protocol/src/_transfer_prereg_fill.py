@@ -43,9 +43,9 @@ CFG = json.loads((HERE.parent / "config_3_0.json").read_text(encoding="utf-8"))
 LEVELS = ("(a) drawn feature", "(b) historical", "(c) steel", "(d) confirmed well")
 SECTION_FIELDS = {
     1: ["question"], 2: ["task", "candidate_unit", "scoring.footprint", "eligibility", "edge_rule"],
-    3: ["lidar", "ground_density", "evidence_level", "label_source"], 4: ["frozen", "model_policy"],
+    3: ["lidar", "ground_density", "evidence_level", "label_source"], 4: ["frozen", "model_policy", "checkpoint"],
     5: ["adaptation_area", "test_area", "audit_file", "buffer_m", "buffer_source"],
-    6: ["primary_metric", "scoring.k", "scoring.seed", "scoring.B"], 7: ["margin", "margin_source", "actions"],
+    6: ["primary_metric", "scoring.k", "scoring.cutoff", "scoring.iou", "scoring.dedupe", "scoring.seed", "scoring.B"], 7: ["margin", "margin_source", "actions"],
     8: ["labellers", "categories"], 9: ["report"], 10: [], 11: ["reference.run", "density_c", "split_file", "split_sha256",
                                                                   "planned_blocks"],
 }
@@ -56,10 +56,11 @@ def example_fields() -> dict:
         "question": "Does the 9t pit model keep its recall at K = 40 per km2 in <area>.",
         "area": "<area>", "task": "pit", "candidate_unit": "one detection per pit, second pieces dropped",
         "eligibility": "complete blocks, void fraction at most the cap, identical for observed and null",
-        "edge_rule": "blocks with any part outside valid data are dropped",
+        "edge_rule": "blocks touching the data boundary are dropped. Interior nodata counts toward the void fraction, capped by scoring.void_cap",
         "lidar": "<program, dates, tile list path>", "ground_density": "<measured per block, file path>",
         "evidence_level": "(a) drawn feature", "label_source": "<who drew, blind to scores>",
-        "frozen": "weights, 0.5 m preprocessing, proposal cutoff 0.10, min area 4 m2, matching IoU 0.3, K",
+        "frozen": "weights, 0.5 m preprocessing, ek.policy_for(task) primary policy (pit cutoff 0.35, pad 0.525), "
+                  "min area 4 m2, score-order matching at IoU 0.3, dedupe truth_matched, K 40",
         "model_policy": "single_fold:<k> or fold_mean, named before scoring",
         "adaptation_area": "<path or none>", "test_area": "<path>", "audit_file": "<P2 audit file or none>",
         "buffer_m": 100, "buffer_source": "P1 S4 buffer_derivation_9t.json",
@@ -71,9 +72,11 @@ def example_fields() -> dict:
         "report": "detection and record association reported separately",
         "reference": {"run": "<9t reference run folder>", "label": "new baseline or archival"},
         "density_c": None, "split_file": "<P1 split file>", "split_sha256": "<sha256>", "planned_blocks": 30,
+        "checkpoint": {"family": "pit/unet_iso_cv5", "lineage": "isolated", "sha256": "<{fold: sha256} of best.pt>"},
         "scoring": {"area": "<area>", "task": "pit", "prob": "<target probability raster>", "blocks": "<blocks gpkg>",
                     "truth": "<truth gpkg:layer>", "truth_id": "pit_inside_id", "footprint": None,
-                    "void": None, "void_cap": 0.5, "k": 40, "seed": 20261105, "B": 2000},
+                    "void": None, "void_cap": 0.5, "k": 40, "seed": 20261105, "B": 2000,
+                    "cutoff": 0.35, "iou": 0.3, "dedupe": "truth_matched", "order": "score", "mode": "primary"},
     }
 
 
@@ -100,6 +103,14 @@ def check(f: dict, ci_width: Path | None = None) -> list[str]:
     src = str(f.get("margin_source", "")).lower()
     if re.search(r"fold spread|variance|standard error|interval width", src):
         probs.append("margin_source names variance or fold spread. Margins come from the burden tradeoff")
+    try:                                              # review G-06. Declared policy must be the primary one
+        pol, _, _ = tl.prereg_policy(f)
+        prim = ek.policy_for(pol["task"])
+        diff = [k for k in tl.POLICY_KEYS if not tl.same_number(pol.get(k), prim.get(k))]
+        if diff and not f.get("policy_override_reason"):
+            probs.append(f"declared scoring {diff} differ from ek.policy_for({pol['task']}) and no policy_override_reason is given")
+    except (ValueError, KeyError) as e:
+        probs.append(str(e))
     if f.get("evidence_level") not in LEVELS:
         probs.append(f"evidence_level must be one of {LEVELS}")
     if ci_width and isinstance(m, (int, float)):

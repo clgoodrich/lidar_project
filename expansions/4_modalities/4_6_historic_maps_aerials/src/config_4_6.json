@@ -25,6 +25,9 @@
     "min_check": 10,
     "min_coverage_share": 0.25,
     "legible_px_per_20m": 8.0,
+    "record_date_field": "SPUD_DATE",
+    "record_sentinel_year_max": 1800,
+    "record_date_note": "S5 keeps DEP records spudded on or before the source date (review 4.6-01, 2026-11-06). 1800-01-01 is the DEP no-date sentinel.",
     "master_seed": 20261105,
     "B": 2000
   },

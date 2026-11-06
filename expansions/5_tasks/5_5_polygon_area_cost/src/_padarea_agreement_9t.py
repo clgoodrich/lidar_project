@@ -1,6 +1,8 @@
 """5.5 S4 and S5. Area agreement of model pad polygons with a reference outline, and the scale-factor calibration arm.
 
 Purpose
+    Pads are matched one to one by config match_rule (overlap_any, any positive overlap). The IoU >= 0.3 gate is a
+    sensitivity in the summary, because it caps |r| at 1.204 and drops pads with large area error (review 5.5-01).
     Per pad. A_hat, A_ref, r = ln(A_hat / A_ref), absolute percent error, IoU, mean symmetric boundary distance and
     Hausdorff 95. Bland-Altman limits on the log scale. OLS of ln A_hat on ln A_ref (slope and intercept separate
     proportional from fixed bias). Strata by size tercile and canopy cover class.
@@ -94,8 +96,10 @@ def main(argv=None) -> int:
     if cfg.get("subtract_pits"):
         pred = gt.remove_pits(pred, pits)
     ref = reference(cfg, mode, pits)
-    T = gt.per_pad(pred, ref, "pad_id", cfg["match_iou"], cfg["merge_overlap_frac"])
+    pol = ek.policy_for("pad")
+    T = gt.per_pad(pred, ref, "pad_id", pol["iou"], cfg["merge_overlap_frac"], cfg["match_rule"])
     ek.assert_rows(T, len(ref), "one row per reference pad")
+    T["road_length_m"] = gt.road_length(ref, gt.load_roads(cfg), cfg["road_window_m"])
     bd = [gt.boundary_dist(pred.geometry.iloc[int(p)], ref.geometry.iloc[int(j)], cfg["boundary_sample_m"])
           if p >= 0 else (np.nan, np.nan) for p, j in zip(T.pred_row, T.ref_row)]
     T["mean_boundary_m"], T["hausdorff95_m"] = [x[0] for x in bd], [x[1] for x in bd]
@@ -110,13 +114,20 @@ def main(argv=None) -> int:
     dec = cfg["decision"]
     delta = gt.delta_area(dec["primary_tolerance"], dec["area_share_f"], dec["delta_area_fallback"])
     prim = gt.median_r_interval(T, cfg["bootstrap_B"], int(cfg["seed"]))
+    Ts = gt.per_pad(pred, ref, "pad_id", pol["iou"], cfg["merge_overlap_frac"], cfg["match_rule_sensitivity"])
+    Ts["block_id"] = T["block_id"].to_numpy()
+    prim_s = gt.median_r_interval(Ts, cfg["bootstrap_B"], int(cfg["seed"]))
     strata = {col: T.dropna(subset=["log_ratio"]).groupby(col).log_ratio.agg(["size", "median"]).round(4)
               .reset_index().to_dict(orient="records") for col in ("size_tercile", "cover_class") if col in T}
-    summary = dict(reference=mode, primary=prim, delta_area=delta,
+    summary = dict(reference=mode, match_rule=cfg["match_rule"], policy=pol, primary=prim, delta_area=delta,
                    delta_source="ln(1 + tol / f)" if dec["area_share_f"] else "fallback ln(1.25), no cost table",
                    decision=gt.area_decision(prim, delta, dec["primary_tolerance"]), secondary=stats(T),
                    strata=strata, calibration_arm=calibration_arm(T, int(cfg["seed"]) + 5),
                    matched=int(T.matched.sum()), unmatched_reference=int((T.matched == 0).sum()),
+                   sensitivity=dict(match_rule=cfg["match_rule_sensitivity"], iou_min=pol["iou"], primary=prim_s,
+                                    decision=gt.area_decision(prim_s, delta, dec["primary_tolerance"]),
+                                    matched=int(Ts.matched.sum()),
+                                    note="An IoU gate caps |r| at ln(1/iou) for nested shapes. Not the primary."),
                    note="Area is level (a). It says nothing about wells.")
     o1, o2 = th.outp(cfg, "agreement"), th.outp(cfg, "agreement_summary")
     if mode == "drawn":

@@ -108,7 +108,13 @@ def pool(members, dedupe_m: float):
 
 
 def per_block_table(members, labels: pd.DataFrame, truth, audit_blocks, cfg: dict) -> pd.DataFrame:
-    """One row per arm x seed x block: n_confuser, n_P, n_U, hits, n_truth, km2."""
+    """One row per arm x seed x block: n_confuser, n_P, n_U, hits, n_truth, km2.
+
+    Only truth whose centroid lies in an audit block is in the denominator (review 6.3 minor, SH-02 pattern).
+    Truth outside the audit set is still matched, so a detection on it cannot claim an eligible truth instead,
+    but such a hit is never counted. A hit is counted in the block of the truth it matched, so per block
+    hits never exceed n_truth.
+    """
     conf = set(cfg["classes"]["confuser"])
     lab = labels.set_index("uid")["class"]
     missing = set(members.pooled_id) - set(lab.index)
@@ -117,17 +123,20 @@ def per_block_table(members, labels: pd.DataFrame, truth, audit_blocks, cfg: dic
     m = members.assign(cls=members.pooled_id.map(lab))
     tb = C.block_of_points(np.column_stack([truth.geometry.centroid.x, truth.geometry.centroid.y]), audit_blocks)
     truth = truth.assign(block_id=tb)
-    n_truth = truth.groupby("block_id").size()
+    eligible = truth[truth.block_id.notna()]
+    n_truth = eligible.groupby("block_id").size()
+    truth_block = dict(zip(eligible.truth_id, eligible.block_id.astype(int)))
     km2 = dict(zip(audit_blocks.block_id.astype(int), audit_blocks.area / 1e6))
     rows = []
     for (arm, seed), g in m.groupby(["arm", "seed"]):
         g = g.reset_index(drop=True)
         g["truth_id"] = C.greedy_match(truth, g, cfg["score"]["iou"], truth_id="truth_id")
+        hit_blocks = pd.Series([truth_block.get(t) for t in g.truth_id.dropna().unique()], dtype=float)
         for b in sorted(km2):
             gb = g[g.block_id == b]
             rows.append({"arm": arm, "seed": seed, "block_id": b, "km2": km2[b],
                          "n_confuser": int(gb.cls.isin(conf).sum()), "n_P": int((gb.cls == "P").sum()),
-                         "n_U": int((gb.cls == "U").sum()), "hits": int(gb.truth_id.dropna().nunique()),
+                         "n_U": int((gb.cls == "U").sum()), "hits": int((hit_blocks == b).sum()),
                          "n_truth": int(n_truth.get(b, 0))})
     return pd.DataFrame(rows)
 
@@ -215,7 +224,7 @@ def main() -> int:
     ar = cfg["area"]
     sc = cfg["score"]
     blocks = C.read_vector(C.input_path(cfg, "blocks"), cfg["crs"], layer=cfg["inputs"]["blocks"]["layer"])
-    audit = C.read_block_ids(C.input_path(cfg, "audit_blocks", a.audit_blocks))
+    audit = C.audit_block_ids(cfg, a.audit_blocks, roles=("audit",))     # sealed scoring ground only
     ab = blocks[blocks.block_id.isin(audit)].reset_index(drop=True)
     ek.assert_rows(ab, len(audit), "audit blocks found in block layer")
     mem_p = out / f"confuser_pooled_members_{ar}.gpkg"
@@ -246,7 +255,6 @@ def main() -> int:
     tspec = cfg["inputs"]["truth"]
     truth = C.read_vector(C.input_path(cfg, "truth"), cfg["crs"], layer=tspec["layer"])
     truth = truth[[tspec["id"], "geometry"]].dissolve(by=tspec["id"]).reset_index().rename(columns={tspec["id"]: "truth_id"})
-    truth = truth[truth.geometry.centroid.within(ab.union_all())].reset_index(drop=True)
     tab = per_block_table(mem, labels, truth, ab, cfg)
     tp = out / f"confuser_arm_scores_{ar}.csv"
     tab.to_csv(tp, index=False)

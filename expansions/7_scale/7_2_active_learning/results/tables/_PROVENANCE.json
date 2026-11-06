@@ -1,6 +1,6 @@
 {
-  "written": "2026-11-05T22:53:23",
-  "commit": "f3d70dc52c464e7a2beeb68874f64072e48a56e0",
+  "written": "2026-11-06T11:05:35",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
   "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
   "executable": "C:\\Python313\\python.exe",
   "platform": "Windows-11-10.0.26200-SP0",
@@ -29,9 +29,9 @@
   "outputs": [
     {
       "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\7_scale\\7_2_active_learning\\results\\tables\\al_split_9t_v1.json",
-      "bytes": 1052,
-      "mtime": "2026-11-05T22:52:58.568362",
-      "sha256": "04f3cde35e261fbdc547964829c4aca33a30a6d6222af9cf82525099236f88e8"
+      "bytes": 1058,
+      "mtime": "2026-11-06T11:04:49.855496",
+      "sha256": "44b5a4333a4f876120ef534fa18d923b7f30e8a03d041ffb653edfd4a048818a"
     }
   ]
 }

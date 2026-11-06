@@ -52,6 +52,7 @@ def weight_sweep(df, n, step, n_dir, seed):
         t = rc.top_set(r, n, ids)
         grid_member[(name, v)] = t
         rows.append(dict(kind="grid", weight=name, value=v, wP=w[0], wH=w[1], wE=w[2],
+                         n_rankable=int(np.isfinite(r).sum()), top_set_size=len(t),
                          jaccard_vs_equal=rc.jaccard(t, base), kendall_vs_equal=rc.kendall_tau(r, base_r)))
     rng = np.random.default_rng(seed)
     freq = pd.Series(0, index=ids, dtype=float)
@@ -61,28 +62,30 @@ def weight_sweep(df, n, step, n_dir, seed):
         t = rc.top_set(r, n, ids)
         freq[list(t)] += 1
         rows.append(dict(kind="dirichlet", weight="draw", value=i, wP=w[0], wH=w[1], wE=w[2],
+                         n_rankable=int(np.isfinite(r).sum()), top_set_size=len(t),
                          jaccard_vs_equal=rc.jaccard(t, base), kendall_vs_equal=np.nan))
     return pd.DataFrame(rows), grid_member, (freq / max(n_dir, 1))
 
 
-def one_out(sites, H, comps, n, agency=None):
-    base = s3.rank_all(s3.assemble(sites, H, comps), agency)
+def one_out(sites, H, comps, n, agency=None, cfg=None):
+    base = s3.rank_all(s3.assemble(sites, H, comps, cfg=cfg), agency)
     ids = base["site_id"].to_numpy()
     scen = [c[5:] for c in base.columns if c.startswith("rank_")]
     rows = []
     variants = [("E", c) for c in comps] + [("H", c) for c in H.columns if c.startswith("h_")] + [("P", "P")]
     for part, comp in variants:
         if part == "E":
-            df = s3.assemble(sites, H, comps, drop_e=(comp,))
+            df = s3.assemble(sites, H, comps, drop_e=(comp,), cfg=cfg)
         elif part == "H":
-            df = s3.assemble(sites, H, comps, drop_h=(comp,))
+            df = s3.assemble(sites, H, comps, drop_h=(comp,), cfg=cfg)
         else:
-            df = s3.assemble(sites, H, comps)
+            df = s3.assemble(sites, H, comps, cfg=cfg)
             df["P"] = np.nan
         R = s3.rank_all(df, agency)
         for s in scen:
             a, b = rc.top_set(base[f"rank_{s}"], n, ids), rc.top_set(R[f"rank_{s}"], n, ids)
-            rows.append(dict(removed_part=part, removed=comp, scenario=s, jaccard_vs_full=rc.jaccard(a, b),
+            rows.append(dict(removed_part=part, removed=comp, scenario=s, e_status=df.attrs.get("e_status"),
+                             n_rankable=int(np.isfinite(R[f"rank_{s}"]).sum()), jaccard_vs_full=rc.jaccard(a, b),
                              n_swapped=len(a - b), kendall_vs_full=rc.kendall_tau(base[f"rank_{s}"], R[f"rank_{s}"])))
     return pd.DataFrame(rows)
 
@@ -94,14 +97,14 @@ def band_variants(cfg, sites, H, comps, n, recs):
             rows.append(dict(removed_part="band", removed=f"{name} absent", scenario="all", jaccard_vs_full=np.nan,
                              n_swapped=np.nan, kendall_vs_full=np.nan))
             continue
-        base = s3.rank_all(s3.assemble(sites, H, comps))
+        base = s3.rank_all(s3.assemble(sites, H, comps, cfg=cfg))
         ids = base["site_id"].to_numpy()
         ex = recs[name].exposure(sites[["x", "y"]].to_numpy(), bands)
         for b in bands:
             ss = sites.copy()
             ss[f"{name}_n_{b}"] = ex[f"{name}_n_{b}"]
             c2 = {(f"{name}_n_{b}" if k.startswith(name + "_") else k): v for k, v in comps.items()}
-            R = s3.rank_all(s3.assemble(ss, H, c2))
+            R = s3.rank_all(s3.assemble(ss, H, c2, cfg=cfg))
             for s in [c[5:] for c in R.columns if c.startswith("rank_")]:
                 a, bb = rc.top_set(base[f"rank_{s}"], n, ids), rc.top_set(R[f"rank_{s}"], n, ids)
                 rows.append(dict(removed_part="band", removed=f"{name}_n_{b}", scenario=s,
@@ -130,7 +133,7 @@ def figure(grid_member, ids_order, path, n):
     axes[0].set_ylabel("sites ever in the top N (filled = in the top N)")
     fig.suptitle("Weighted-sum scenario sensitivity, tile 9t. Candidate rows are " + th.CONDITIONAL, fontsize=10)
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    rio.save_fig(fig, path)
     plt.close(fig)
 
 
@@ -144,7 +147,7 @@ def main(argv=None) -> int:
     sites, s1, H = s3.load_stage_inputs(cfg)
     comps = s1["e_components_used"]
     run = rio.start_run(cfg, "risk_sensitivity", "S4 sensitivity.", ["sweep_grid_step", "n_dirichlet", "master_seed"])
-    df = s3.assemble(sites, H, comps)
+    df = s3.assemble(sites, H, comps, cfg=cfg)
     n = rc.top_n_size(len(df), cfg["top_n_max"], cfg["top_n_share"])
     n_dir = a.n_dirichlet if a.n_dirichlet is not None else cfg["n_dirichlet"]
     seed = ek.child_seed(cfg["master_seed"], 0, 4)
@@ -152,7 +155,7 @@ def main(argv=None) -> int:
     sw_out = th.outp(cfg, "sweep_csv")
     sw.to_csv(sw_out, index=False)
     recs, missing = rio.receptors(cfg, names=tuple(cfg.get("band_variants", {})))
-    oo = pd.concat([one_out(sites, H, comps, n), band_variants(cfg, sites, H, comps, n, recs)], ignore_index=True)
+    oo = pd.concat([one_out(sites, H, comps, n, cfg=cfg), band_variants(cfg, sites, H, comps, n, recs)], ignore_index=True)
     oo_out = th.outp(cfg, "oneout_csv")
     oo.to_csv(oo_out, index=False)
     outs = [sw_out, oo_out]

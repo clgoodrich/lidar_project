@@ -58,3 +58,17 @@ Source `docs/plans/protocol_gates_and_metrics.md`.
 - State the sampling unit and the effective sample. Seeds, site-seasons and detections are not independent.
 - State the margin and where it comes from. Readiness gates are separate from scientific gates.
 - Project the interval width before spending annotation time.
+
+## 12. Scoring and checkpoint fields added 2026-11-06
+
+The 3.0 decision report and the 3.1 scorer read these fields and compare them with the reference tables and the target run. A mismatch stops the gate. Source: `expkit.policy_for` and `expkit.assert_same_policy` in `expansions/_shared/src/expkit.py`.
+
+- `scoring.cutoff`. Pit 0.35, pad 0.525. 0.10 is a sensitivity only.
+- `scoring.iou`. 0.3.
+- `scoring.order`. `score` (greedy in score order). `iou` is a sensitivity only.
+- `scoring.dedupe`. A second blob inside a matched feature is a duplicate.
+- `scoring.void_cap`. Largest void fraction of a complete block. Default 0.5 until the user sets it.
+- `scoring.k_per_km2`. 40. 30 is a sensitivity only.
+- `checkpoint.family`. For example `pit/unet_iso_cv5`.
+- `checkpoint.lineage`. `isolated` or `provisional`. A provisional checkpoint gives a descriptive result only.
+- `checkpoint.sha256`. Hash of every checkpoint file used.

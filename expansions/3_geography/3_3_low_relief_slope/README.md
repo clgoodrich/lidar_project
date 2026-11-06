@@ -1,6 +1,6 @@
 # 3.3. Low-relief sensitivity
 
-**Status.** Plan only. Nothing here has been run. Tier A.
+**Status.** Step 1 ran on held 9t data (2026-11-05, rerun 2026-11-06 after review fixes). Steps 2 to 5 wait for P1 and P2. Tier A.
 **Plan.** [docs/plan_geo_low_relief_midwest.md](docs/plan_geo_low_relief_midwest.md)
 **Framework.** [docs/fw_3_3_low_relief_slope.md](docs/fw_3_3_low_relief_slope.md) (stages, gates, analysis plan, handoff)
 **Decisions.** [docs/decisions_3_3.md](docs/decisions_3_3.md)
@@ -23,6 +23,23 @@ Products for a new study area go to `data/<area>/` as everywhere else, not here.
 Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`). Add the import path with
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
+
+## Build status (2026-11-06)
+
+Review fix pass (F02 F03 G-02 G-12 P1-01 P1-03 P2-01, minors). Tests. `python -m pytest -q -p no:cacheprovider expansions/3_geography/3_3_low_relief_slope/src/test_3_3.py` (11 passed).
+- S1 scores through the 3.0 reference scorer (`ek.policy_for("pit")`, 0.35 in every fold, dedupe on). Extraction runs on one shared window per fold.
+- S1 now scores all 144 blocks. The 29 pit-free blocks join one fold each (3.0 round_robin rule). The fold models never trained there.
+- S1 reads the split with `ek.read_split_csv` and the audit with `ek.require_audit`. P2 is not frozen, so the rerun used `--no-audit-list` and is labelled "no audit exclusion, exploratory".
+- S3 donors come only from pits held out in the scoring fold. The buffer is read with `ek.read_buffer`, the audit with `ek.require_audit`.
+- The S5 gate's commands name `il_cumberland`, which now exists in `config_3_1.json`.
+- The old run `results/20261105_slope_recall_5886eff/` is labelled superseded. It recorded non-canonical P1 and P2 paths.
+
+**Step 1 rerun.** `expansions/3_geography/3_3_low_relief_slope/results/20261106_slope_recall_5ed9c40/`. Evidence level (a), exploratory, no audit exclusion.
+- Pooled recall at 40 per km² 0.909 to 0.940 (473 of 503, 144 blocks, 0.920 to 0.960).
+- Feature-level slope terciles 0.899 / 0.934 / 0.893 to 0.935 / 0.940 / 0.946. Low minus high +0.006 to −0.012 (−0.063 to +0.038).
+- Block-level low minus high +0.042 to +0.038 (−0.012 to +0.089).
+- Without the pit-free blocks the new code gives 0.899 / 0.934 / 0.899 (458 of 503). So the change comes from the footprint, not the policy.
+- S2 confound checks and the S5 gate were rerun into the same folder.
 
 ## Build status (2026-11-05)
 

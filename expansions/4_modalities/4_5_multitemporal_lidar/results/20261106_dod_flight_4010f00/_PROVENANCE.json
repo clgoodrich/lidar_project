@@ -1,0 +1,94 @@
+{
+  "written": "2026-11-06T10:40:51",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/4_modalities/4_5_multitemporal_lidar/src/_dod_flight_windows_9t.py",
+    "--full-scan"
+  ],
+  "params": {
+    "full_scan": true
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002958.laz",
+      "bytes": 32326043,
+      "mtime": "2026-11-02T14:23:35.755137"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_002959.laz",
+      "bytes": 29321563,
+      "mtime": "2026-11-02T14:27:42.582261"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003111.laz",
+      "bytes": 31798322,
+      "mtime": "2026-11-02T14:13:29.222174"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\lidar_2006_2008\\USGS_LPC_PA_STATEWIDE_N_2006_2008_PA_Statewide_N_2006-2008_003112.laz",
+      "bytes": 31184954,
+      "mtime": "2026-11-02T14:17:52.053004"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619593.laz",
+      "bytes": 35929338,
+      "mtime": "2026-03-13T21:51:18"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz",
+      "bytes": 34543454,
+      "mtime": "2026-03-13T21:51:34"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF619596.laz",
+      "bytes": 37220198,
+      "mtime": "2026-03-13T21:51:46"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF621593.laz",
+      "bytes": 46957670,
+      "mtime": "2026-03-13T21:52:48"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF621594.laz",
+      "bytes": 35713259,
+      "mtime": "2026-03-13T21:53:04"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF621596.laz",
+      "bytes": 37434719,
+      "mtime": "2026-03-13T21:53:20"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF622593.laz",
+      "bytes": 40809271,
+      "mtime": "2026-03-13T21:54:36"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF622594.laz",
+      "bytes": 41335976,
+      "mtime": "2026-03-13T21:54:50"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\lidar\\westernpa\\OTHER_DATA\\USGS_LPC_PA_WesternPA_2019_D20_17TPF622596.laz",
+      "bytes": 39181855,
+      "mtime": "2026-03-13T21:55:04"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261106_dod_flight_4010f00\\flight_windows_9t.csv",
+      "bytes": 6263,
+      "mtime": "2026-11-06T10:40:51.733992"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261106_dod_flight_4010f00\\flight_windows_9t.json",
+      "bytes": 3169,
+      "mtime": "2026-11-06T10:40:51.738009"
+    }
+  ]
+}

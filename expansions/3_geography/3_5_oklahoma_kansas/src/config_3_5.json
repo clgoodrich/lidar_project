@@ -28,25 +28,27 @@
     "annotation_protocol": "two blind passes (L lidar-only, O imagery-only), adjudicate by IoU 0.3, seen_in and activity fields"
   },
   "reference": {
-    "tables": {
-      "exp": "3.0",
-      "rel": "results/tables/xfer_ref_block_tables_9t.json"
+    "tables_by_task": {
+      "pit": {
+        "exp": "3.0",
+        "rel": "results/tables/xfer_ref_block_tables_9t.json"
+      },
+      "pad": {
+        "exp": "3.0",
+        "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"
+      }
     }
   },
   "model": {
     "pit": {
-      "checkpoint": {
-        "key": "models",
-        "rel": "pit/unet_iso_cv5/policy/best.pt"
-      },
-      "sha256": null
+      "transfer_checkpoint": null,
+      "sha256": null,
+      "_note": "USER DECISION. Frozen 9t pit checkpoint for L0 and the L2 init. The old default pit/unet_iso_cv5/policy/best.pt has no producer. Code refuses until set"
     },
     "pad": {
-      "checkpoint": {
-        "key": "models",
-        "rel": "pad/unet_cv5_iso/fold0/best.pt"
-      },
-      "sha256": null
+      "transfer_checkpoint": null,
+      "sha256": null,
+      "_note": "USER DECISION. Candidate on disk {'key': 'models', 'rel': 'pad/unet_cv5_iso/fold0/best.pt'}. Not used by any 3.5 arm today"
     }
   },
   "arms": {

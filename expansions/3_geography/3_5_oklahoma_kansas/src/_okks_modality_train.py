@@ -39,6 +39,7 @@ ek = gt.ek
 EXP = "3.5"
 STACK = {"L1": "features_{a}_05.tif", "L2": "features_{a}_05.tif", "O1": "features_optical_{a}_05.tif",
          "F1": "features_fusion_{a}_05.tif"}
+LIDAR_CHANNELS = ["lrm_25", "lrm_5", "slope", "tpi_05", "openness_pos", "openness_neg", "roughness_11"]
 CLASSES = {"pit": 1, "pad": 1}   # one foreground class. Primary truth is all drawn pit and pad features
 PATCH_PX = 256
 
@@ -120,7 +121,14 @@ def main(argv=None) -> int:
         print(str(e), file=sys.stderr)
         return 2
     mu, sd = gt.fit_norm_stats_multi(tr)
-    init = gt.resolve(cfg["model"]["pit"]["checkpoint"]) if a.arm == "L2" else None
+    try:
+        init = gt.transfer_checkpoint(cfg, "pit", EXP) if a.arm == "L2" else None
+    except (gt.MissingInputError, gt.DecisionMissingError) as e:
+        print(str(e), file=sys.stderr)
+        return 2
+    # L2 fine-tunes the 3-class 9t pit model into a 2-class head. The head is re-initialised by declaration and the
+    # lidar band order must equal the checkpoint's (G-11). Other arms train from scratch.
+    l2 = {"reinit": ("out.",), "channels": LIDAR_CHANNELS} if a.arm == "L2" else {}
     led_p = ek.sub(EXP, "results/tables") / "okks_trial_ledger.csv"
     ledger = pd.read_csv(led_p).to_dict("records") if led_p.exists() else []
     spent = 0.0
@@ -132,7 +140,7 @@ def main(argv=None) -> int:
         try:
             res = gt.train_unet(tr, va, mu, sd, mroot / a.arm / f"trial{t['trial']}", n_classes=2, patch_px=PATCH_PX,
                                 epochs=t["epochs"], lr=t["lr"], alpha=[1 - t["alpha_fg"], t["alpha_fg"]],
-                                seed=master, batch=t["batch"], init_ckpt=init, extra={"arm": a.arm, "trial": t})
+                                seed=master, batch=t["batch"], init_ckpt=init, extra={"arm": a.arm, "trial": t}, **l2)
             ledger.append(ledger_row(a.arm, t, master, t0, res))
         except Exception as e:  # noqa: BLE001  failures are kept in the ledger
             ledger.append(ledger_row(a.arm, t, master, t0, None, repr(e)))
@@ -147,7 +155,7 @@ def main(argv=None) -> int:
         s = ek.child_seed(master, 0, 10 + k)
         gt.train_unet(tr, va, mu, sd, mroot / a.arm / f"seed{k}", n_classes=2, patch_px=PATCH_PX, epochs=int(best["epochs"]),
                       lr=float(best["lr"]), alpha=[1 - best["alpha_fg"], best["alpha_fg"]], seed=s,
-                      batch=int(best["batch"]), init_ckpt=init, extra={"arm": a.arm, "final_seed": k})
+                      batch=int(best["batch"]), init_ckpt=init, extra={"arm": a.arm, "final_seed": k}, **l2)
     print(f"wrote {led_p}\nfinal seeds under {mroot / a.arm}")
     return 0
 

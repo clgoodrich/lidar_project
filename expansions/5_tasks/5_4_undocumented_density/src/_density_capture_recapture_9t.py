@@ -43,6 +43,12 @@ def chapman(n1: float, n2: float, m: float) -> tuple[float, float]:
     return float(N), float(var)
 
 
+def degenerate(n1: float, n2: float, m: float) -> bool:
+    """Overlap reaches the smaller source. Chapman's variance is then 0 by construction, which is not precision,
+    so the row reports se as NaN (review minor: degenerate rows printed se = 0)."""
+    return bool(m >= min(n1, n2))
+
+
 def strata_counts(sites, wells, matched_wells, blocks_ids, rec_per_block):
     med = np.median([rec_per_block.get(b, 0) for b in blocks_ids])
     hi = {b for b in blocks_ids if rec_per_block.get(b, 0) > med}
@@ -56,7 +62,7 @@ def strata_counts(sites, wells, matched_wells, blocks_ids, rec_per_block):
 def run(cfg) -> pd.DataFrame:
     sites = pd.read_csv(th.inp(cfg, "sites"))
     blocks = th.read_vector(th.inp(cfg, "pit_blocks"), layer="blocks")
-    fp = blocks[blocks.n_pits > 0]
+    fp = dw.footprint(blocks, cfg.get("footprint", "complete_grid"))
     ids = sorted(fp.block_id.astype(int))
     dep = th.load_dep(th.inp(cfg, "dep_wells"), bbox=tuple(fp.total_bounds))
     dep = dep[~dep.WELL_STATU.isin(cfg["doc_statuses_exclude"])].copy()
@@ -64,7 +70,7 @@ def run(cfg) -> pd.DataFrame:
     dep = dep[dep.block_id.isin(ids)].reset_index(drop=True)
     lab = dw.merge_points(np.c_[dep.x, dep.y], cfg["record_merge_m"])
     wells = dep.groupby(lab).agg(x=("x", "mean"), y=("y", "mean"), block_id=("block_id", "first")).reset_index(drop=True)
-    i, j, _ = core.hungarian(np.c_[wells.x, wells.y], np.c_[sites.cx, sites.cy], cfg["capture_recapture"]["radius_m"])
+    i, j, _ = core.hungarian(np.c_[wells.x, wells.y], np.c_[sites["cx"], sites["cy"]], cfg["capture_recapture"]["radius_m"])
     matched = wells.iloc[i]
     rpb = wells.groupby("block_id").size().to_dict()
     st = strata_counts(sites, wells, matched, ids, rpb)
@@ -73,11 +79,13 @@ def run(cfg) -> pd.DataFrame:
         for q in cfg["capture_recapture"]["q_values"]:
             N, v = chapman(len(wells), len(sites) * p, len(matched) * q)
             Ns = sum(chapman(s["n1"], s["n_sites"] * p, s["overlap"] * q)[0] for s in st.values())
+            degen = degenerate(len(wells), len(sites) * p, len(matched) * q)
             rows.append(dict(p=p, q_link_precision=q, n1_records=len(wells), n2_expected_wells=len(sites) * p,
                              links=len(matched), overlap_scaled=min(len(matched) * q, len(wells), len(sites) * p),
-                             chapman_pooled=N, chapman_se=np.sqrt(max(v, 0)), chapman_stratified=Ns,
+                             chapman_pooled=N, chapman_se=float("nan") if degen else np.sqrt(max(v, 0)),
+                             chapman_stratified=Ns,
                              heterogeneity_gap=Ns - N, undocumented_pooled=N - len(wells),
-                             degenerate=int(len(matched) * q >= min(len(wells), len(sites) * p)),
+                             degenerate=int(degen),
                              label="diagnostic, not a lower bound; assumes independence and closure"))
     R = th.tag(pd.DataFrame(rows), "a", "diagnostic")
     R.attrs["strata"] = st

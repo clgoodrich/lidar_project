@@ -1,0 +1,66 @@
+{
+  "written": "2026-11-06T10:49:06",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_data_audit_9t.py"
+  ],
+  "params": {
+    "n_layers": 19
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_6_record_association\\data\\processed\\detector_output_pit_full_9t.gpkg",
+      "bytes": 565248,
+      "mtime": "2026-11-06T10:45:54.998091",
+      "sha256": "e928d1ee7438b70dccf365459b428c78e85efbdd700f615ef1cbf0271815bf22"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\results\\pit\\centroid_matching\\pit_candidates_undecided_thr0p50_9t.gpkg",
+      "bytes": 630784,
+      "mtime": "2026-08-12T16:00:15.705666",
+      "sha256": "f7e4dca556781615730be608ca840adf62580e8f2e2fd5ca589358d709b5de0c"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-09-04T10:51:16.244983",
+      "sha256": "fad7c3fd96ada6b2c677738d9e0e8a8c5580a345d10582882ce4d62624187d52"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\tiger_roads\\tl_2024_42121_roads.shp",
+      "bytes": 2970348,
+      "mtime": "2024-09-16T10:07:53",
+      "sha256": "c050848f7fcfa73cc5475a2671ed397aca561892edbf35d9e50487701b82797b"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\census_boundaries\\cb_2023_us_county_5m.zip",
+      "bytes": 2987117,
+      "mtime": "2026-09-27T12:51:46.818316",
+      "sha256": "13b2bcdd81fee8476220793dd1023c4f1d2887945b5f66eef52afa98c99d2485"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_data_audit_9t.csv",
+      "bytes": 3014,
+      "mtime": "2026-11-06T10:49:06.077558",
+      "sha256": "8dc431f9958610796caaa88e807e6c0dc4b702c8ee9fb7b48af057116368c520"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_data_missing_9t.csv",
+      "bytes": 2284,
+      "mtime": "2026-11-06T10:49:06.079559",
+      "sha256": "e7d575fe3404da2a4c6ca823623b6342cb58a1b36a72918a8d1ab1dc75a4121b"
+    }
+  ]
+}

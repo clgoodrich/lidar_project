@@ -1,6 +1,6 @@
 # 3.0. Transfer protocol
 
-**Status.** Plan only. Nothing here has been run. Tier A.
+**Status.** Built and partly run on held 9t data (2026-11-05). Review fixes 2026-11-06. No target area has been scored. Tier A.
 **Plan.** [docs/plan_geo_transfer_protocol.md](docs/plan_geo_transfer_protocol.md)
 **Framework.** [docs/fw_3_0_transfer_protocol.md](docs/fw_3_0_transfer_protocol.md) (stages, gates, analysis plan, handoff)
 **Decisions.** [docs/decisions_3_0.md](docs/decisions_3_0.md)
@@ -23,6 +23,31 @@ Products for a new study area go to `data/<area>/` as everywhere else, not here.
 Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`). Add the import path with
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
+
+## Build status (2026-11-06)
+
+Review fix pass (F02 F08 F11 G-02 G-03 G-05 G-06, minors). Tests. `python -m pytest -q -p no:cacheprovider expansions/3_geography/3_0_transfer_protocol/src/test_3_0.py` (18 passed).
+- One scoring policy. Cutoff, minimum area, IoU and match order come from `ek.policy_for(task)`. The policy dict and hash are stamped into every output. 3.1, 3.2 and 3.3 call this scorer.
+- Dedupe was inactive before this pass (NaN versus None). It now drops second pieces.
+- Edge blocks are blocks on the data boundary. Interior nodata counts toward the void fraction, capped by the preregistered `void_cap` or `void_cap_default` 0.5.
+- Grid contract. Metric CRS with an EPSG:6346 horizontal part, full affine transform, shape.
+- The reference tables now cover all 144 9t blocks. Pit-free and pad-free blocks are filled from the fold rasters, which never trained on them. Old to new pooled recall at K 40 (global / per fold). Pit 0.917 / 0.909 to 0.946 / 0.938. Pad 0.815 / 0.809 to 0.855 / 0.848.
+- The decision report and the harness check the preregistration's cutoff, IoU, dedupe, K and checkpoint. An archival, historical or provisional reference gives verdict "descriptive". Both 9t references are provisional today.
+
+| Script | Change 2026-11-06 |
+|---|---|
+| `src/_transfer_score_lib.py` | `policy`, `extract`, `score_tables`, grid checks, edge and void rule, `read_ref_tables`, `ref_block_counts`, `checkpoint_record`, `confirmatory_ok`, `prereg_policy`, `check_prereg_against` |
+| `src/_transfer_score_run.py` | policy from `policy_for`, `--checkpoint-record`, numeric flag compare, prereg check |
+| `src/_transfer_decision_report.py` | compatibility gate, tables JSON as reference, descriptive verdict |
+| `src/_transfer_prereg_fill.py` | declares cutoff 0.35, IoU, dedupe, checkpoint. Refuses a non-primary policy without a reason |
+| `src/_transfer_ref_tables_9t.py` | fills feature-free blocks, writes `policy` and `meta`, per-block `fold` |
+| `src/config_3_0.json` | `sensitivity_cutoff`, `void_cap_default`, `zero_feature_fill`, model dirs, new prereg fields |
+
+New outputs.
+- `expansions/3_geography/3_0_transfer_protocol/results/tables/xfer_ref_block_tables_9t.json` (rebuilt, 144 blocks)
+- `expansions/3_geography/3_0_transfer_protocol/results/tables/xfer_ref_block_tables_pad_9t.json` (rebuilt, 144 blocks)
+- `expansions/3_geography/3_0_transfer_protocol/data/interim/pit_prob_oof_filled_9t.tif` and `pad_prob_oof_filled_9t.tif` (gitignored)
+- Run records `expansions/3_geography/3_0_transfer_protocol/results/20261106_ref_tables_pit_4d0c29a/` and `20261106_ref_tables_pad_7e33a66/`
 
 ## Build status (2026-11-05)
 

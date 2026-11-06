@@ -190,3 +190,71 @@ def test_missing_input_names_itself(tmp_path):
     with pytest.raises(th.MissingInput) as e:
         th.inp(cfg, "audit_blocks")
     assert "audit_blocks" in e.value.args[0]
+
+
+# ----------------------------------------------------------------------------- review fixes 2026-11-06
+P2_SRC = HERE.parents[2] / "0_prerequisites" / "p2_audit_set" / "src"
+
+
+def _real_p2_audit(tmp_path, audit=(3, 7), buffer=(4,)):
+    """Audit file written by the real P2 writer (# header lines) plus the sidecar the --freeze path writes."""
+    sys.path.insert(0, str(P2_SRC))
+    import _audit_draw_blocks_9t as dr
+    ids = sorted(set(audit) | set(buffer))
+    tab = pd.DataFrame({"block_id": ids, "dens_t": 1, "slope_t": 2})
+    p = tmp_path / "audit_blocks_9t_v1.csv"
+    dr.write_audit_csv(p, tab, {"audit": list(audit), "buffer": list(buffer), "share": 0.15}, "block", 100.0, 1)
+    Path(str(p) + ".sha256").write_text(f"{ek_sha(p)}  {p.name}\n", encoding="utf-8")
+    return p
+
+
+def ek_sha(p):
+    return th.ek.sha256(p)
+
+
+def test_shared_folds_audit_read_through_p2_reader(tmp_path):
+    """P2-01. Pre-fix pd.read_csv raised ParserError on the # header. Expected ids by hand: audit 3, 7 and buffer 4."""
+    p = _real_p2_audit(tmp_path)
+    cfg = {"inputs": {"audit_blocks": {"path": str(p), "hint": "run P2"}}}
+    ids, provisional, label, sha = s1.load_audit_ids(cfg, allow_missing=False)
+    assert ids == [3, 4, 7] and provisional is False and sha == th.ek.sha256(p)
+
+
+def test_shared_folds_missing_audit_never_silently_empty(tmp_path):
+    cfg = {"inputs": {"audit_blocks": {"path": str(tmp_path / "nope.csv"), "hint": "run P2"}}}
+    with pytest.raises(th.MissingInput):
+        s1.load_audit_ids(cfg, allow_missing=False)
+    ids, provisional, label, _ = s1.load_audit_ids(cfg, allow_missing=True)
+    assert ids == [] and provisional is True and label == "no audit exclusion, exploratory"
+
+
+def test_trainer_paths_exist_p1_06():
+    """P1-06. The config named _pit_unet_iso_cv5.py, which does not exist."""
+    cfg = th.load_cfg(str(HERE / "_context_shared_folds_9t.py"))
+    pit = th.resolve(cfg["trainers"]["pit"])
+    assert pit.name == "_pit_unet_iso_train_9t.py" and pit.exists()
+
+
+def test_retrain_manifest_pit_cli_and_relative_paths(tmp_path):
+    """Pit jobs use the P1 trainer's real flags. No absolute path lands in the manifest."""
+    cfg = json.loads((HERE / "config_5_1.json").read_text(encoding="utf-8"))
+    sf = tmp_path / "folds.json"
+    sf.write_text(json.dumps({"k": 5, "provisional": True, "audit_blocks": [],
+                              "block_to_fold": {str(b): b % 5 for b in range(10)}}))
+    cfg["outputs"]["shared_folds_provisional"] = str(sf)
+    cfg["outputs"]["retrain_manifest"] = str(tmp_path / "manifest.json")
+    cp = tmp_path / "cfg.json"
+    cp.write_text(json.dumps(cfg))
+    assert s3.main(["--config", str(cp), "--provisional"]) == 0
+    doc = json.loads((tmp_path / "manifest.json").read_text())
+    job = next(j for j in doc["jobs"] if j["role"] == "pit")
+    cmd = s3.command(cfg, job, tmp_path / "manifest.json")
+    assert cmd[1] == "expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py"
+    assert "--splits" in cmd and "--only-folds" in cmd and "--split-file" not in cmd
+    assert ":" not in doc["source"] and str(th.ek.REPO) not in json.dumps(doc)
+
+
+def test_reliance_footprint_is_complete_grid():
+    """Controls come from every block, not only pit-bearing ones. Hand count. 4 blocks, 2 hold no pits."""
+    b = pd.DataFrame({"ix": [0, 1, 0, 1], "iy": [0, 0, 1, 1], "n_pits": [3, 0, 0, 1]})
+    assert s2.footprint_cells(b) == {(0, 0), (1, 0), (0, 1), (1, 1)}

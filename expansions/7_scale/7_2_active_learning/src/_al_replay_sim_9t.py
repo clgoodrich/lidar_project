@@ -74,11 +74,13 @@ def make_payload_fn(stop_c: pd.DataFrame, stop_b: pd.DataFrame):
 
     def fn(scores):
         base["score"] = scores
-        return sc.payload_from_files(base, stop_b)
+        return sc.payload_from_files(base, stop_b, strict=True)
     return fn
 
 
-def replay(cfg, items, oracle, stop_c, stop_b, split, policies, n_seeds, clip_q=None, max_rounds=200):
+def replay(cfg, items, oracle, stop_c, stop_b, split, policies, n_seeds=None, clip_q=None, max_rounds=200):
+    """n_seeds None reads config replay.seeds (10, preregistered)."""
+    n_seeds = cfg["replay"]["seeds"] if n_seeds is None else n_seeds
     clip_q = cfg["ipw_clip_quantile"] if clip_q is None else clip_q
     kpk = cfg["scoring"]["k_per_km2"]
     orc = oracle.set_index("item_id")
@@ -109,6 +111,9 @@ def replay(cfg, items, oracle, stop_c, stop_b, split, policies, n_seeds, clip_q=
                     break
                 rnd += 1
                 d = select_round(items, split, set(lab["item_id"]), [pol], cfg, rnd, seed, "replay")[pol]
+                if not len(d):
+                    break                                      # pool exhausted (nothing left to draw)
+                d["selected"] = d["selected"].astype(bool)
                 incl.append(d.assign(seed=s)[["item_id", "type", "policy", "round", "pi", "selected", "seed"]])
                 pick = d[d["selected"]].copy()
                 if not len(pick):

@@ -3,8 +3,9 @@
 Purpose
     Corrected 5.6 rules (protocol section 4). Full detector output at the frozen cutoff, matched and
     unmatched. Shifted-set null. The whole record set is translated as one by a random vector
-    (shift_min_m to shift_max_m). Shifts that move any record outside the scored footprint are rejected,
-    so the count and composition stay fixed. Statistic. The share of records with a feature within the
+    (shift_min_m to shift_max_m) with toroidal wrap-around in the footprint's bounding box, so the count
+    and composition stay fixed. A shift is rejected only if a wrapped record falls outside an irregular
+    footprint. If fewer than n_shifts shifts survive, the excess is reported as not computable. Statistic. The share of records with a feature within the
     radius (the radius is the stated uncertainty for legal-land-description records, else assoc_radius_m).
     Normalised excess = (observed - null mean) / (1 - null mean), with a 95% band from the null draws.
     It is not precision and not predictive value. Per record report the nearest drawn feature distance and
@@ -46,13 +47,23 @@ def nearest_dist(px: np.ndarray, py: np.ndarray, fx: np.ndarray, fy: np.ndarray)
 
 
 def shifted_null(px, py, radius, fx, fy, footprint, n: int, rmin: float, rmax: float, seed: int, max_tries=50):
-    """Translate the whole record set. Reject shifts that lose a record from the footprint."""
+    """Translate the whole record set as one, with toroidal wrap-around (review G-09).
+
+    A record pushed past the footprint's bounding box re-enters on the opposite side (Lotwick and Silverman
+    style torus shift), so the count and composition stay fixed and a full rectangular footprint never
+    rejects a shift. A shift is rejected only when a wrapped record lands outside an irregular footprint.
+    The old rule rejected every shift that moved any record out, which at 100 spread records kept 0 shifts.
+    Returns (null values, rejected count).
+    """
     from shapely import contains_xy
     rng = np.random.default_rng(seed)
+    x0, y0, x1, y1 = footprint.bounds
+    w, h = x1 - x0, y1 - y0
     vals, rejected = [], 0
     while len(vals) < n and rejected < n * max_tries:
         r, th = rng.uniform(rmin, rmax), rng.uniform(0, 2 * np.pi)
-        sx, sy = px + r * np.cos(th), py + r * np.sin(th)
+        sx = x0 + np.mod(px + r * np.cos(th) - x0, w)
+        sy = y0 + np.mod(py + r * np.sin(th) - y0, h)
         if not contains_xy(footprint, sx, sy).all():
             rejected += 1
             continue
@@ -60,13 +71,22 @@ def shifted_null(px, py, radius, fx, fy, footprint, n: int, rmin: float, rmax: f
     return np.array(vals), rejected
 
 
-def excess(obs: float, null: np.ndarray) -> dict:
-    m = float(np.mean(null)) if len(null) else float("nan")
-    lo, hi = (np.percentile(null, [2.5, 97.5]) if len(null) else (np.nan, np.nan))
+def excess(obs: float, null: np.ndarray, n_required: int | None = None) -> dict:
+    """Normalised excess over the shifted-set null. When fewer null draws than required were kept, the
+    status is 'not computable' and every number is NaN, never a value from a thin null."""
+    lab = "exploratory. Excess is not precision or predictive value"
+    need = len(null) if n_required is None else int(n_required)
+    if len(null) == 0 or len(null) < need:
+        return {"observed": obs, "null_mean": float("nan"), "null_band": [float("nan")] * 2,
+                "normalised_excess": float("nan"), "p_upper": float("nan"), "null_kept": int(len(null)),
+                "null_required": need, "status": f"not computable. {len(null)} of {need} shifts kept", "label": lab}
+    m = float(np.mean(null))
+    lo, hi = np.percentile(null, [2.5, 97.5])
     norm = (obs - m) / (1 - m) if m < 1 else float("nan")
     return {"observed": obs, "null_mean": m, "null_band": [float(lo), float(hi)], "normalised_excess": norm,
-            "p_upper": float((np.sum(null >= obs) + 1) / (len(null) + 1)) if len(null) else float("nan"),
-            "label": "exploratory. Excess is not precision or predictive value"}
+            "p_upper": float((np.sum(null >= obs) + 1) / (len(null) + 1)), "null_kept": int(len(null)),
+            "null_required": need, "status": "computed" if np.isfinite(norm) else "not computable. Null mean is 1",
+            "label": lab}
 
 
 def main(argv=None) -> int:
@@ -100,7 +120,8 @@ def main(argv=None) -> int:
     obs = float(np.mean(dist <= radius)) if len(rec) else float("nan")
     null, rej = shifted_null(px, py, radius, fx, fy, fp, int(pr["n_shifts"]), pr["shift_min_m"], pr["shift_max_m"],
                              int(pr["master_seed"]))
-    res = {**excess(obs, null), "n_records": int(len(rec)), "shifts_kept": int(len(null)), "shifts_rejected": int(rej)}
+    res = {**excess(obs, null, int(pr["n_shifts"])), "n_records": int(len(rec)), "shifts_kept": int(len(null)),
+           "shifts_rejected": int(rej), "shift_rule": "toroidal wrap in the footprint bounding box"}
     rec["nearest_feature_m"] = dist
     rec["radius_m"] = radius
     jp = d / f"can_blind_judgements_{area}.csv"

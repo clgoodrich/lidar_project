@@ -48,12 +48,13 @@
       "rel": "data/processed/detector_output_pit_full_9t.gpkg",
       "state": "held (5.6 S0 output)",
       "schema": {
-        "site_id": "str",
+        "det_id": "int, unique across pit and pad from the 2026-11-06 contract (pit from 1, pad from 1000001)",
+        "kind": "pit|pad (contract column, checked when present)",
         "score": "float 0-1",
-        "fold": "int",
         "geometry": "Point or Polygon, EPSG:6346"
       },
-      "id_col": "det_id"
+      "id_col": "det_id",
+      "key_rule": "sites are keyed kind + det_id, never det_id alone"
     },
     "candidates_pad": {
       "exp": "5.6",
@@ -61,25 +62,13 @@
       "state": "held (5.6 S0 output)",
       "optional": true,
       "schema": {
-        "site_id": "str",
+        "det_id": "int, unique across pit and pad from the 2026-11-06 contract (pit from 1, pad from 1000001)",
+        "kind": "pit|pad (contract column, checked when present)",
         "score": "float 0-1",
-        "fold": "int",
         "geometry": "Point or Polygon, EPSG:6346"
       },
-      "id_col": "det_id"
-    },
-    "proposals": {
-      "area": "9t",
-      "rel": "results/records/proposals_56_9t.csv",
-      "state": "assumed (5.6 output)",
-      "optional": true,
-      "schema": {
-        "permit": "str",
-        "site_id": "str",
-        "dist_m": "float",
-        "assoc_strength": "float",
-        "link_ppv": "float or blank"
-      }
+      "id_col": "det_id",
+      "key_rule": "sites are keyed kind + det_id, never det_id alone"
     },
     "dep_wells": {
       "key": "dep_wells",

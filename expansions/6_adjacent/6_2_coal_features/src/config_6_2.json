@@ -18,7 +18,8 @@
   "tolerance": {"M": {"rule": "centroid", "m": 30}, "S": {"rule": "iou", "iou": 0.3, "offset_m": 15},
                 "H": {"rule": "iou", "iou": 0.3, "fallback_centroid_m": 50, "fallback_min_ha": 1.0, "offset_m": 50},
                 "_offset_note": "offset_m is the S0 position tolerance for IoU classes. Proposed values. Re-chosen from S0.",
-                "W": {"rule": "iou", "iou": 0.3}},
+                "W": {"rule": "iou", "iou": 0.3},
+                "_point_rule": "IoU classes match a point (zero-area) record by distance. The point lies inside the candidate or within offset_m of it. W has no offset_m, so it must lie inside (2026-11-06)."},
   "audit_gate": {"min_identity_share": 0.80, "offset_percentile": 90, "_note": "Prereg values. User decision. Proposed defaults."},
   "inputs": {
     "blocks":       {"area": "greene", "rel": "derived/05/coal_blocks_greene.gpkg", "layer": "blocks", "state": "assumed (S1 --make-blocks)"},
@@ -30,7 +31,7 @@
     "pit_prob":     {"area": "greene", "rel": "results/coal/candidates/pit_prob_floor_greene_05.tif", "state": "assumed (S1 inference)"},
     "pad_prob":     {"area": "greene", "rel": "results/coal/candidates/pad_prob_greene_05.tif", "state": "assumed (S1 inference)"},
     "candidates":   {"area": "greene", "rel": "results/coal/candidates/coal_well_candidates_greene.gpkg", "layers": ["pit", "pad"], "state": "assumed (S1)"},
-    "audit_blocks": {"exp": "6.2", "rel": "results/tables/coal_audit_blocks_greene.csv", "state": "assumed (frozen by S2 before labelling)"},
+    "audit_blocks": {"exp": "6.2", "rel": "results/tables/coal_audit_blocks_greene.csv", "state": "assumed (frozen by S2 before labelling)", "reader": "plain"},
     "split_file":   {"exp": "6.2", "rel": "results/tables/coal_split_blocks_greene.csv", "state": "assumed (S4 --make-split, saved before training)"},
     "features":     {"area": "greene", "rel": "derived/05/features_pit_greene_05.tif", "state": "assumed (S1 derivatives)"},
     "labels_pit":   {"area": "greene", "rel": "derived/05/labels_coal_greene_05.tif", "state": "assumed (S4 burns from adjudicated polygons)"},

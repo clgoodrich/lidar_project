@@ -149,48 +149,164 @@ def test_corpus_pretrain_probe(tmp_path):
     assert res["n_windows"] == 2
 
 
-def test_subsets_finetune_and_curves(tmp_path):
+# columns of the real fine-tune outputs that the curve analysis reads (checked against ft.run output below)
+OOF_CAND_COLS = ["cand_id", "block_id", "score", "area_m2", "matched_truth", "arm", "fraction", "seed"]
+OOF_BLOCK_COLS = ["block_id", "n_truth", "area_km2", "arm", "fraction", "seed", "fold"]
+
+
+def _p2_audit(tmp: Path, audit, buffer=(), freeze=True) -> Path:
+    """Audit CSV written by the real P2 writer (write_audit_csv), into tmp. freeze=True adds the .sha256
+    sidecar the way P2 --freeze does, for this temp file only (the real audit set is never frozen here)."""
+    sys.path.insert(0, str(pt.ek.EXP_ROOT / "0_prerequisites" / "p2_audit_set" / "src"))
+    import _audit_draw_blocks_9t as dr
+    ids = list(audit) + list(buffer)
+    tab = pd.DataFrame({"block_id": ids, "dens_t": 0, "slope_t": 0})
+    p = tmp / "audit_blocks_9t_v1.csv"
+    dr.write_audit_csv(p, tab, {"audit": list(audit), "buffer": list(buffer), "share": 0.1}, "block", 100.0, 1)
+    if freeze:
+        Path(str(p) + ".sha256").write_text(f"{pt.ek.sha256(p)}  {p.name}\n", encoding="utf-8")
+    return p
+
+
+def test_missing_audit_refuses_unless_allowed(tmp_path):
+    """7.1-01. A missing audit file never becomes an empty set. Pre-fix code trained on silently."""
+    import pytest
+    import _ssl_label_subsets_9t as ls
+    import _ssl_finetune_pit_9t as ft
+    cfg = _cfg(tmp_path)
+    with pytest.raises(FileNotFoundError, match="audit set not frozen"):
+        ls.audit_sets(cfg)
+    with pytest.raises(ValueError, match="audit"):
+        ls.build(cfg, historical=True)
+    sub = ls.build(cfg, historical=True, audit=ls.audit_sets(cfg, allow_no_audit=True))
+    assert sub["audit_guard"] == "no audit exclusion, exploratory" and sub["audit_sha256"] is None
+    with pytest.raises(FileNotFoundError, match="audit set not frozen"):
+        ft.run(cfg, "A0", 0, 1.0, 0, sub, None, device="cpu", epochs=1, samples=2, batch=1,
+               base_dir=tmp_path / "runs", models_dir=tmp_path / "models")
+    rd = ft.run(cfg, "A0", 0, 1.0, 0, sub, None, device="cpu", epochs=1, samples=2, batch=1, allow_no_audit=True,
+                base_dir=tmp_path / "runs", models_dir=tmp_path / "models")
+    assert json.loads((rd / "_CONFIG.json").read_text())["audit_guard"] == "no audit exclusion, exploratory"
+    assert set(pd.read_csv(next(rd.glob("oof_blocks_*.csv")))["audit_guard"]) == {"no audit exclusion, exploratory"}
+
+
+def test_audit_block_absent_from_oof_and_audit_once(tmp_path):
+    """7.1-01 and 7.1-02. Audit CSV from the real P2 writer. Block 8 is sealed audit, block 7 is buffer.
+    Fold 2 holds blocks 6, 7, 8 out (historical split in _cfg), so the expected scored set is {6, 7}."""
+    import pytest
     import _ssl_label_subsets_9t as ls
     import _ssl_finetune_pit_9t as ft
     import _ssl_corpus_chips_us as cc
     import _ssl_curve_score_9t as cs
     cfg = _cfg(tmp_path)
-    sub = ls.build(cfg, historical=True)
+    ap = _p2_audit(tmp_path, [8], [7])
+    au = ls.audit_sets(cfg, ap)
+    assert au["audit"] == {8} and au["buffer"] == {7} and au["sha256"] == pt.ek.sha256(ap)
+    sub = ls.build(cfg, historical=True, audit=au)
+    assert sub["audit_excluded"] == [8] and sub["buffer_excluded"] == [7]
     for f in sub["folds"]:
+        assert not {7, 8} & set(f["train"] + f["val"]) and 8 not in f["heldout"]
+        for k in (f"{f['fold']}|0|0.5", f"{f['fold']}|0|1.0"):
+            assert not {7, 8} & set(sub["subsets"][k]["blocks"])
         a, b = set(sub["subsets"][f"{f['fold']}|0|0.5"]["blocks"]), set(sub["subsets"][f"{f['fold']}|0|1.0"]["blocks"])
         assert a <= b and not (b & set(f["heldout"]))
+    assert next(f for f in sub["folds"] if f["fold"] == 2)["heldout"] == [6, 7]
+    with pytest.raises(AssertionError, match="label subsets were built with audit"):
+        ft.run(cfg, "A0", 2, 1.0, 0, {**sub, "audit_sha256": None}, None, device="cpu", epochs=1, samples=2, batch=1,
+               audit_csv=ap, base_dir=tmp_path / "runs", models_dir=tmp_path / "models")
     cc.build_corpus(cfg, pd.read_csv(tmp_path / "windows.csv"), tmp_path / "proc")
     idx = pd.read_csv(tmp_path / "proc" / "ssl_chip_index_us.csv")
     st = np.load(tmp_path / "proc" / "ssl_norm_stats_us.npz")
     ck = pt.pretrain("A1", 0, idx, st["mu"], st["sd"], cfg, tmp_path / "A1", device="cpu", max_steps=1, batch=2, epochs=1)
     for arm, init in (("A0", None), ("A1", ck)):
-        rd = ft.run(cfg, arm, 0, 1.0, 0, sub, init, device="cpu", epochs=1, samples=2, batch=1, base_dir=tmp_path / "runs",
-                    models_dir=tmp_path / "models")
-        assert list(rd.glob("oof_candidates_*.csv")) and (rd / "_PROVENANCE.json").exists()
-    # curve analysis on fabricated out-of-fold tables (3 seeds, 3 fractions, 2 arms)
-    rng = np.random.default_rng(1)
-    fake = tmp_path / "fake"
-    for arm, lift in (("A0", 0.0), ("A1", 0.2)):
-        for f in (0.25, 0.5, 1.0):
-            for s in (0, 1, 2):
-                d = fake / f"{arm}_{f}_{s}"; d.mkdir(parents=True)
-                bl = pd.DataFrame({"block_id": range(20), "n_truth": 2, "area_km2": 0.05, "arm": arm,
-                                   "fraction": f, "seed": s, "fold": [b % 5 for b in range(20)]})
-                rows = []
-                for b in range(20):
-                    for t in range(2):
-                        hit = rng.random() < min(0.95, 0.3 + 0.4 * f + lift)
-                        rows.append({"cand_id": f"c{b}_{t}", "block_id": b, "score": rng.random(), "area_m2": 10.0,
-                                     "matched_truth": f"t{b}_{t}" if hit else None, "arm": arm, "fraction": f, "seed": s})
-                pd.DataFrame(rows).to_csv(d / f"oof_candidates_{arm}.csv", index=False)
-                bl.to_csv(d / f"oof_blocks_{arm}.csv", index=False)
-    (tmp_path / "t").mkdir(); (tmp_path / "f").mkdir()
-    res = cs.analyse(cfg, fake, "A1", 200, tmp_path / "t", tmp_path / "f")
-    assert res["primary"]["decision"] in ("success", "failure", "inconclusive")
-    assert (tmp_path / "t" / "ssl_G_frozen_9t.json").exists()
-    g1 = json.loads((tmp_path / "t" / "ssl_G_frozen_9t.json").read_text())["G"]
-    cs.analyse(cfg, fake, "A1", 50, tmp_path / "t", tmp_path / "f")
-    assert json.loads((tmp_path / "t" / "ssl_G_frozen_9t.json").read_text())["G"] == g1, "G must stay frozen"
+        rd = ft.run(cfg, arm, 2, 1.0, 0, sub, init, device="cpu", epochs=1, samples=2, batch=1, audit_csv=ap,
+                    base_dir=tmp_path / "runs", models_dir=tmp_path / "models")
+        ob = pd.read_csv(next(rd.glob("oof_blocks_*.csv")))
+        assert sorted(ob["block_id"]) == [6, 7], "the sealed audit block 8 must not be scored out of fold"
+        assert set(ob["audit_guard"]) == {"P2 audit list applied"}
+        assert set(OOF_BLOCK_COLS) <= set(ob.columns)
+        assert set(OOF_CAND_COLS) <= set(pd.read_csv(next(rd.glob("oof_candidates_*.csv"))).columns)
+        assert json.loads((rd / "_CONFIG.json").read_text())["audit_sha256"] == pt.ek.sha256(ap)
+    # 7.1-02. --audit-once scores only the sealed audit blocks, from --predict-audit outputs.
+    unfrozen = _p2_audit(tmp_path / "proc", [8], [7], freeze=False)
+    with pytest.raises(FileNotFoundError):
+        ft.predict_audit(cfg, tmp_path / "models" / "ft_A0_f1p0_s0_k2" / "best.pt", tmp_path / "none.csv", device="cpu")
+    for arm in ("A0", "A1"):
+        ft.predict_audit(cfg, tmp_path / "models" / f"ft_{arm}_f1p0_s0_k2" / "best.pt", ap, device="cpu",
+                         base_dir=tmp_path / "audit_runs")
+    ab = pd.concat([pd.read_csv(p) for p in (tmp_path / "audit_runs").rglob("audit_blocks_*.csv")])
+    assert sorted(ab["block_id"]) == [8, 8] and set(ab["audit_sha256"]) == {pt.ek.sha256(ap)}
+    cfg["finetune"]["primary_fraction"] = 1.0
+    t = tmp_path / "t"; t.mkdir()
+    with pytest.raises(cs.AuditRefused, match="no frozen hash"):
+        cs.audit_once(cfg, tmp_path / "audit_runs", "A1", 50, t, unfrozen)
+    with pytest.raises(cs.AuditRefused, match="G, finetune.audit_model_fold"):
+        cs.audit_once(cfg, tmp_path / "audit_runs", "A1", 50, t, ap)
+    assert not (t / "ssl_audit_lock.json").exists()
+    cfg["G"], cfg["finetune"]["audit_model_fold"] = 0.05, 2
+    res = cs.audit_once(cfg, tmp_path / "audit_runs", "A1", 50, t, ap)
+    assert res["n_blocks"] == 1 and res["audit_opened"] is True
+    assert res["decision"] == "void (fewer than 3 matched seeds)"
+    lock = json.loads((t / "ssl_audit_lock.json").read_text())
+    assert lock["audit_opened"] is True and lock["audit_sha256"] == pt.ek.sha256(ap)
+    with pytest.raises(cs.AuditRefused, match="already opened"):
+        cs.audit_once(cfg, tmp_path / "audit_runs", "A1", 50, t, ap)
+
+
+def test_training_windows_resample_each_epoch():
+    """7.1 minor. Pre-fix, index i drew the same window every epoch (rng seeded by index only)."""
+    import _ssl_finetune_pit_9t as ft
+    rng = np.random.default_rng(0)
+    br = np.zeros((96, 96), "int32"); br[:, 48:] = 1
+    feat, lbl = rng.normal(0, 1, (7, 96, 96)).astype("float32"), np.zeros((96, 96), "uint8")
+    mu, sd = np.zeros(7, "float32"), np.ones(7, "float32")
+    tr = ft.IsolatedPitDataset(feat, lbl, br, {0, 1}, set(), 32, 4, mu, sd, 5, augment=False)
+    e1, e2 = tr[1][0].numpy(), tr[1][0].numpy()
+    assert not np.array_equal(e1, e2), "a training window must be redrawn every epoch"
+    tr2 = ft.IsolatedPitDataset(feat, lbl, br, {0, 1}, set(), 32, 4, mu, sd, 5, augment=False)
+    assert np.array_equal(tr2[1][0].numpy(), e1), "epoch draws are reproducible from the child seed"
+    va = ft.IsolatedPitDataset(feat, lbl, br, {0, 1}, set(), 32, 4, mu, sd, 5, augment=False, resample=False)
+    assert np.array_equal(va[1][0].numpy(), va[1][0].numpy()), "validation windows stay fixed"
+
+
+def _fake_oof(root: Path, hits: dict, seeds=(0, 1, 2)):
+    """Out-of-fold tables in the ft.run schema (OOF_*_COLS) with deterministic hits. 20 blocks x 2 truth,
+    0.05 km2 each, so K = 40 per km2 x 1 km2 = 40 >= every candidate and recall = hits / 40 exactly.
+    hits[(arm, f)] = n: blocks 0 .. n-1 have both truth found, the rest none."""
+    for (arm, f), n in hits.items():
+        for s in seeds:
+            d = root / f"{arm}_{f}_{s}"; d.mkdir(parents=True)
+            pd.DataFrame({"block_id": range(20), "n_truth": 2, "area_km2": 0.05, "arm": arm, "fraction": f,
+                          "seed": s, "fold": [b % 5 for b in range(20)]}).to_csv(d / f"oof_blocks_{arm}.csv", index=False)
+            rows = [{"cand_id": f"c{b}_{t}", "block_id": b, "score": 0.5, "area_m2": 10.0,
+                     "matched_truth": f"t{b}_{t}" if b < n else None, "truth_block_id": b if b < n else None,
+                     "arm": arm, "fraction": f, "seed": s}
+                    for b in range(20) for t in range(2)]
+            pd.DataFrame(rows).to_csv(d / f"oof_candidates_{arm}.csv", index=False)
+
+
+def test_curves_G_from_config_never_floored(tmp_path):
+    """7.2-01 pattern in 7.1, with exact verdicts. A0 recall 0.50 at f = 0.25 and 0.45 at f = 0.50, so
+    G_raw = 0.45 - 0.50 = -0.05 by hand. A1 recall 0.90 at f = 0.25, diff +0.40. Per-block diff is 1 on
+    8 of 20 blocks, so the 95% bootstrap interval is about 0.40 +- 0.21, far above G = 0.05 and far below 0.8."""
+    import _ssl_curve_score_9t as cs
+    cfg = _cfg(tmp_path)
+    cfg["finetune"]["primary_fraction"] = 0.25
+    _fake_oof(tmp_path / "fake", {("A0", 0.25): 10, ("A0", 0.5): 9, ("A0", 1.0): 12,
+                                  ("A1", 0.25): 18, ("A1", 0.5): 18, ("A1", 1.0): 19})
+    t, f = tmp_path / "t", tmp_path / "f"; t.mkdir(); f.mkdir()
+    res = cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f)
+    assert res["G"]["G"] is None and abs(res["G"]["G_raw"] - (-0.05)) < 1e-12, "G_raw reported, never floored"
+    assert abs(res["primary"]["diff"] - 0.40) < 1e-12
+    assert res["primary"]["decision"] == cs.G_UNSET, "an unset G is inconclusive, never a derived margin"
+    cfg["G"] = 0.05
+    res = cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f)
+    assert res["G"]["source"].startswith("config") and res["primary"]["decision"] == "success"
+    cfg["G"] = 0.8
+    assert cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f)["primary"]["decision"] == "failure"
+    cfg["G"] = None
+    res = cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f, prereg={"G": 0.05, "_path": "prereg.json"})
+    assert res["G"]["source"].startswith("preregistration") and res["primary"]["decision"] == "success"
+    assert json.loads((t / "ssl_G_frozen_9t.json").read_text())["G_raw"] == res["G"]["G_raw"]
 
 
 def test_runtime_bench_smoke(tmp_path):

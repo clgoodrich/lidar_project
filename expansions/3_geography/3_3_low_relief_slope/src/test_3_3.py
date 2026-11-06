@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pytest
 
 HERE = Path(__file__).resolve()
 sys.path.insert(0, str(HERE.parent))
@@ -120,3 +121,82 @@ def test_seam_flags_and_gate():
     assert g["s1_decision"] == "failure" and g["release_area_test"]
     g2 = s5.gate(summ, None, False, n_flat=0)
     assert g2["s1_decision"] == "no_margin_set" and not g2["release_area_test"]
+
+
+# ----------------------------------------------------------------------------- review 2026-11-06 regressions
+def test_g12_donors_held_out_from_scoring_fold():
+    """G-12. A location scored by fold k takes donors only from fold-k held-out pits."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    rims = gpd.GeoDataFrame({"pit_inside_id": [1, 2, 3, 4, 5]}, geometry=[box(i, 0, i + 1, 1) for i in range(5)],
+                            crs="EPSG:6346")
+    pit_fold = {1: 0, 2: 1, 3: 0, 4: 2}                                       # pit 5 has no fold
+    pools = s3.donor_pools(rims, pit_fold, seed=7)
+    assert sorted(pools) == [0, 1, 2]
+    assert sorted(pools[0].pit_inside_id) == [1, 3] and list(pools[1].pit_inside_id) == [2]
+    assert all(pit_fold[int(i)] == f for f, g in pools.items() for i in g.pit_inside_id)
+
+
+def test_p2_01_audit_read_through_real_writer(tmp_path):
+    """P2-01. The P2 writer's CSV (with # header lines) is read through ek.require_audit. A plain read_csv
+    raised ParserError. A missing file raises unless the flag is set, and then the output is labelled."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    sys.path.insert(0, str(xl.ek.EXP_ROOT / "0_prerequisites" / "p2_audit_set" / "src"))
+    import _audit_draw_blocks_9t as dr
+    tab = pd.DataFrame({"block_id": [1, 2, 3], "dens_t": [0, 1, 2], "slope_t": [0, 1, 2]})
+    p = tmp_path / "audit_blocks_9t_v1.csv"
+    dr.write_audit_csv(p, tab, {"audit": [1, 3], "buffer": [2], "share": 0.15}, "block", 100.0, 20261104)
+    with pytest.raises(Exception):
+        pd.read_csv(p).block_id                                                # the pre-fix reader
+    blocks = gpd.GeoDataFrame({"block_id": [1, 2, 3, 4]}, geometry=[box(i, 0, i + 1, 1) for i in range(4)],
+                              crs="EPSG:6346")
+    g, prov, label = s3.read_audit_geom({"spec": {"abs": str(p)}}, False, blocks, allow_unfrozen=True)
+    assert prov is False and g.area == pytest.approx(3.0) and "(3)" in label    # audit 1, 3 and buffer 2
+    with pytest.raises(FileNotFoundError):
+        s3.read_audit_geom({"spec": {"abs": str(tmp_path / "missing.csv")}}, False, blocks)
+    g2, prov2, label2 = s3.read_audit_geom({"spec": {"abs": str(tmp_path / "missing.csv")}}, True, blocks)
+    assert g2 is None and prov2 is True and "exploratory" in label2
+
+
+def test_p1_03_terrain_edit_buffer_reader(tmp_path):
+    """P1-03. The P1 writer's buffer JSON is read with ek.read_buffer. The pre-fix code indexed pit_buffer_m."""
+    import importlib
+    sys.path.insert(0, str(xl.ek.EXP_ROOT / "0_prerequisites" / "p1_splits_manifests" / "src"))
+    bd = importlib.import_module("_split_buffer_derive_9t")
+    p = bd.write_buffer_json(bd.assemble({"pit": {"buffer_m": 75.0}}), tmp_path / "b.json")
+    assert s3.read_buffer_or_fallback({"spec": {"abs": str(p)}}, False, 128.0) == (75.0, False)
+    assert s3.read_buffer_or_fallback({"spec": {"abs": str(tmp_path / "no.json")}}, True, 128.0) == (128.0, True)
+
+
+def test_area_gate_commands_name_a_real_area():
+    """Minor. The gate's commands use an area that config_3_1.json defines."""
+    cmds = s5.gate_commands("il_cumberland")
+    cfg31 = xl.load_config(HERE.parents[2] / "3_1_warren_forest_mckean" / "src" / "config_3_1.json")
+    xl.area_ctx(cfg31, "il_cumberland", mkdirs=False)
+    assert all("--area il_cumberland" in c for c in cmds)
+    with pytest.raises(KeyError):
+        s5.gate_commands("nowhere")
+
+
+def test_f03_s1_fold_reader_has_no_seam_duplicates(tmp_path):
+    """F03 in 3.3 S1. A 100 x 20 m blob across two held-out blocks gives one 2,000 m2 candidate.
+    The old blockwise reader (kept for this test) gives two clipped 1,800 m2 copies."""
+    import geopandas as gpd
+    import rasterio
+    from rasterio.transform import from_origin
+    from shapely.geometry import box
+    X0, Y0 = 600000.0, 4600000.0
+    p = np.zeros((200, 400), np.float32)
+    p[80:120, 100:300] = 0.8                                                   # x 50-150, y 40-60
+    tf = from_origin(X0, Y0 + 100, 0.5, 0.5)
+    path = tmp_path / "f.tif"
+    with rasterio.open(path, "w", driver="GTiff", height=200, width=400, count=1, dtype="float32", crs="EPSG:6346",
+                       transform=tf, nodata=-1.0) as d:
+        d.write(p, 1)
+    hb = gpd.GeoDataFrame({"block_id": [0, 1]}, geometry=[box(X0, Y0, X0 + 100, Y0 + 100), box(X0 + 100, Y0, X0 + 200, Y0 + 100)],
+                          crs="EPSG:6346")
+    new = s1.fold_candidates(path, hb, 40.0, xl.policy("pit"))
+    assert len(new) == 1 and new.geometry.area.iloc[0] == pytest.approx(2000.0)
+    old = s1.fold_candidates_blockwise_old(path, hb, 40.0, 0.35, 4.0)
+    assert len(old) == 2 and sorted(old.geometry.area.round(1)) == [1800.0, 1800.0]

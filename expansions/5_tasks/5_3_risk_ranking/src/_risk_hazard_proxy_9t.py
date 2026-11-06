@@ -56,12 +56,17 @@ def build(cfg, sites: pd.DataFrame, rec: pd.DataFrame | None, tops: pd.DataFrame
         H["pathway_flag"] = np.nan
         lineage["pathway_flag"] = ["absent"]
     rc.check_lineage(lineage, cfg["endpoint_columns"], cfg["endpoint_inputs"])
-    H["H"] = rc.h_index(H)
+    rule = rc.IndexRule.from_cfg(cfg.get("index_missing", {}).get("H"))
+    H["H"] = rc.h_index(H, rule)
+    H["H_coverage"] = rc.coverage(H, rc.h_columns(H))
     ek.assert_rows(H, len(sites), "hazard vs sites")
-    summ = dict(n_sites=int(len(H)), dropped_optional=dropped, lineage=lineage,
+    summ = dict(n_sites=int(len(H)), dropped_optional=dropped, lineage=lineage, h_missing_rule=dict(rule),
+                n_unrankable_H=int(H["H"].isna().sum()),
+                n_unrankable_H_by_source=sites.assign(_u=H["H"].isna().to_numpy()).groupby("p_source")._u.sum()
+                .astype(int).to_dict(),
                 missing_share={c: round(float(H[c].isna().mean()), 4) for c in H.columns if c != "site_id"},
                 age_bracket_counts=H["age_bracket"].value_counts().to_dict(),
-                h_components=[c for c in H.columns if c.startswith("h_")],
+                h_components=list(rc.h_columns(H)),
                 note="H is an index of harm potential given existence, built from records and priors only.")
     return H, summ
 

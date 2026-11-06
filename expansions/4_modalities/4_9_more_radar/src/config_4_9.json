@@ -48,7 +48,18 @@
       "g_for_power_note": "null means delta_gain + 0.01 (framework S1 rule). With success defined as lower bound above delta, power at delta + 0.01 stays under about 0.5 unless the half-width is under 0.01, so the rule makes almost every stratum ineligible. Lead to decide (see decisions_4_9.md)"
     },
     "fill_cut": 0.25,
-    "lidar_weak_quantile": 0.25
+    "lidar_weak_quantile": 0.25,
+    "lidar_weak_quantile_note": "2026-11-06 (4.9-01). Kept for the share of targets in lidar_weak. The stratum is no longer chosen on the baseline score. See lidar_weak",
+    "lidar_weak": {
+      "covariate": null,
+      "weak_side": null,
+      "quantile": 0.25,
+      "note": "2026-11-06 (4.9-01). External lidar-weakness covariate, a rows column both arms see equally (for example base:control:cover with weak_side high). Never the baseline score. null means lidar_weak is not formed and is reported as undefined. User decision (decisions_4_9.md)"
+    },
+    "primary_stratum": "all",
+    "primary_stratum_note": "2026-11-06 (4.9-01). The framework names lidar_weak as primary, but defines it on the baseline score, which manufactures gain. Primary is all until the user fixes the lidar_weak covariate. lidar_weak is secondary",
+    "max_undefined_share": 0.0,
+    "max_undefined_share_note": "SH-01. Share of undefined bootstrap draws tolerated before the interval is undefined (inconclusive). 0 follows expkit"
   },
   "targets": {
     "pit": {

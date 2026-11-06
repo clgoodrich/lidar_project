@@ -7,6 +7,10 @@ Purpose
     aspect, clear-sky solar loading at the scene time (NOAA solar position on the site centroid, cosine
     of incidence on the mean slope and aspect), PRISM antecedent rain over antecedent_days, nearest leaf
     state from the leaf-state curve.
+    QC (review 4.2-02 and F-note). Only scenes whose tie points passed the T1 registration limit are
+    extracted. Pixels flagged by the instrument per-pixel cloud QA band are masked. A sensor without a
+    QA band refuses. LST outside a physical range after scaling refuses (catches a wrong scale).
+    --layer population extracts every pad and eligible clearing (for T4), --layer sites the matched set.
 Inputs
     sites        <run>_thermal_match_*/thermal_matched_sites_9t.gpkg (from _thermal_match_clearings_9t.py)
     T1 summary   <run>_thermal_gate_*/thermal_gate_summary_9t.json (sensor must not be 'failure')
@@ -53,8 +57,62 @@ def leaf_state_at(leaf: pd.DataFrame, day):
     return leaf.loc[i, "leaf_state"]
 
 
+def qa_bad(qa: np.ndarray, rule: dict) -> np.ndarray:
+    """True where the instrument per-pixel QA says the LST is not usable (cloud, shadow, fill).
+
+    rule type 'bits_clear' : bad if any listed bit is set (Landsat Collection 2 QA_PIXEL style).
+    rule type 'field_in'   : bits [lo, hi] form an integer field. Good if the field value is in `good`
+                             (ECOSTRESS LSTE QC mandatory flag style).
+    Non-finite QA is bad."""
+    fin = np.isfinite(qa)
+    q = np.where(fin, qa, 0).astype(np.int64)
+    t = rule.get("type")
+    if t == "bits_clear":
+        bad = np.zeros(q.shape, bool)
+        for b in rule["bits"]:
+            bad |= ((q >> int(b)) & 1).astype(bool)
+    elif t == "field_in":
+        lo, hi = rule["bits"]
+        field = (q >> int(lo)) & ((1 << (int(hi) - int(lo) + 1)) - 1)
+        bad = ~np.isin(field, rule["good"])
+    else:
+        raise ValueError(f"unknown QA rule type {t!r}")
+    return bad | ~fin
+
+
+def scene_lst(r, s_cfg: dict) -> tuple[np.ndarray, float]:
+    """Scaled LST with the per-pixel cloud QA applied (F-note). Refuses when the QA band is absent or the
+    scaled values are not physical temperatures (catches a wrong scale or offset). Returns (lst, share masked)."""
+    qb = s_cfg.get("qa_band")
+    if not qb or r.count < int(qb):
+        raise RuntimeError(f"{s_cfg['name']}: no per-pixel cloud QA band (qa_band={qb!r}, file has {r.count} bands). "
+                           "Scene-level cloud_frac does not mask cloud over a pad. Refusing")
+    lst = r.read(s_cfg["lst_band"], masked=True).astype(float).filled(np.nan) * s_cfg["lst_scale"] + s_cfg["lst_offset"]
+    bad = qa_bad(r.read(int(qb)).astype(float), s_cfg["qa_rule"])
+    fin = np.isfinite(lst)
+    lo, hi = s_cfg.get("lst_plausible_K", [200.0, 350.0])
+    v = lst[fin & ~bad]
+    if v.size and np.mean((v < lo) | (v > hi)) > 0.01:
+        raise RuntimeError(f"{s_cfg['name']}: {np.mean((v < lo) | (v > hi)):.1%} of QA-clear LST outside {lo}-{hi} K "
+                           f"after scale {s_cfg['lst_scale']} and offset {s_cfg['lst_offset']}. Check the sensor scaling")
+    share = float(np.mean(bad[fin])) if fin.any() else 1.0
+    lst[bad] = np.nan
+    return lst, share
+
+
+def registered_scenes(gate: dict, sensor: str) -> tuple[set[str], set[str]]:
+    """Review 4.2-02. Scenes with tie points inside the limit, and the scenes dropped for registration."""
+    reg = gate["sensors"][sensor].get("registration") or {}
+    if reg.get("status") != "ok":
+        raise RuntimeError(f"T1 has no registration check for {sensor} (tie points {reg.get('status')!r}). "
+                           "T2 does not extract unregistered scenes")
+    checked = set(map(str, reg.get("scenes_checked", [])))
+    over = set(map(str, reg.get("scenes_over_limit", [])))
+    return checked - over, over
+
+
 def run(cfg: dict, sensor: str, out_root: Path | None = None, sites_path: Path | None = None,
-        gate_path: Path | None = None, scene_index: Path | None = None) -> dict:
+        gate_path: Path | None = None, scene_index: Path | None = None, layer: str = "sites") -> dict:
     import geopandas as gpd
     import rasterio
     from pyproj import Transformer
@@ -65,12 +123,17 @@ def run(cfg: dict, sensor: str, out_root: Path | None = None, sites_path: Path |
     if v == "failure" or gate["t0"]["verdict"] == "failure":
         raise RuntimeError(f"T1 gate for {sensor} is {v} (T0 {gate['t0']['verdict']}). T2 is not run after a CLOSE")
     sp = Path(sites_path) if sites_path else io.latest_run(io.EXP, "thermal_match") / "thermal_matched_sites_9t.gpkg"
-    sites = gpd.read_file(io.need(sp, "matched sites"), layer="sites")
+    sites = gpd.read_file(io.need(sp, "matched sites"), layer=layer)
     ek.assert_crs(sites, "EPSG:6346")
     si = Path(scene_index) if scene_index else io.resolve(s_cfg["scene_index"])
     scenes = pd.read_csv(io.need(si, f"{sensor} scene index", cfg["_scene_index_schema"]), parse_dates=["datetime_utc"])
     g = cfg["gate"]
     scenes = scenes[scenes["qc_pass"].astype(bool) & (scenes["cloud_frac"] <= g["max_cloud_frac"])]
+    ok_reg, over_reg = registered_scenes(gate, sensor)
+    sid = scenes["scene_id"].astype(str)
+    n_no_tie = int((~sid.isin(ok_reg | over_reg)).sum())
+    n_over = int(sid.isin(over_reg).sum())
+    scenes = scenes[sid.isin(ok_reg)]
     ex = cfg["extract"]
     inp = cfg["inputs"]
     prism = pd.read_csv(io.need(io.resolve(inp["prism"]), "PRISM daily", "date, ppt, tmin, tmax"), parse_dates=["date"])
@@ -81,15 +144,15 @@ def run(cfg: dict, sensor: str, out_root: Path | None = None, sites_path: Path |
     c = sites.geometry.centroid
     lon, lat = Transformer.from_crs(6346, 4326, always_xy=True).transform(c.x.to_numpy(), c.y.to_numpy())
     asp = (np.degrees(np.arctan2(sites["aspect_sin"], sites["aspect_cos"])) + 360) % 360
-    run_dir = ek.new_run(io.EXP, SHORT, {"sensor": sensor, "sites": str(sp), "scenes": str(si), "extract": ex},
+    run_dir = ek.new_run(io.EXP, SHORT, {"sensor": sensor, "sites": str(sp), "layer": layer, "scenes": str(si), "extract": ex},
                          base=out_root, why=f"T2 extraction for {sensor}.")
-    rows = []
+    rows, qa_share = [], {}
     for _, sc in scenes.iterrows():
         path = Path(sc["path"])
         if not path.is_absolute():
             path = si.parent / path
         with rasterio.open(io.need(path, f"scene {sc['scene_id']}", "GeoTIFF, LST band per config")) as r:
-            lst = r.read(s_cfg["lst_band"], masked=True).astype(float).filled(np.nan) * s_cfg["lst_scale"] + s_cfg["lst_offset"]
+            lst, qa_share[str(sc["scene_id"])] = scene_lst(r, s_cfg)
             err = (r.read(s_cfg["err_band"], masked=True).astype(float).filled(np.nan)
                    if s_cfg.get("err_band") and r.count >= s_cfg["err_band"] else None)
             T, crs = r.transform, r.crs
@@ -114,8 +177,10 @@ def run(cfg: dict, sensor: str, out_root: Path | None = None, sites_path: Path |
     ek.assert_rows(out, len(sites) * len(scenes), "site x scene")
     out_csv = run_dir / "thermal_samples_by_scene_9t.csv"
     out.to_csv(out_csv, index=False)
-    summary = {"stage": "T2", "sensor": sensor, "n_sites": int(len(sites)), "n_scenes": int(len(scenes)),
+    summary = {"stage": "T2", "sensor": sensor, "layer": layer, "n_sites": int(len(sites)), "n_scenes": int(len(scenes)),
                "n_rows": int(len(out)), "n_partial": int(out["partial"].sum()) if len(out) else 0,
+               "n_scenes_dropped_registration": n_over, "n_scenes_without_tiepoints": n_no_tie,
+               "qa_masked_share_by_scene": qa_share,
                "n_missing_lst": int(out["lst_K"].isna().sum()) if len(out) else 0}
     (run_dir / "thermal_samples_summary_9t.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return io.finish(run_dir, summary, inputs=[sp, si, gp], outputs=[out_csv], params=ex)
@@ -129,8 +194,11 @@ def main():
     ap.add_argument("--sites", type=Path, default=None)
     ap.add_argument("--gate", type=Path, default=None)
     ap.add_argument("--scene-index", type=Path, default=None)
+    ap.add_argument("--layer", choices=("sites", "population"), default="sites",
+                    help="sites = matched set for T3, population = all pads and eligible clearings for T4")
     a = ap.parse_args()
-    print(json.dumps(run(io.load_config(a.config), a.sensor, a.out_root, a.sites, a.gate, a.scene_index), indent=1, default=str))
+    print(json.dumps(run(io.load_config(a.config), a.sensor, a.out_root, a.sites, a.gate, a.scene_index, a.layer),
+                     indent=1, default=str))
 
 
 if __name__ == "__main__":

@@ -9,75 +9,257 @@
   "min_blob_m2": 4.0,
   "block_m": 375.0,
   "res_m": 0.5,
-  "margin_delta": {"warren": null, "mckean": null, "forest": null},
+  "margin_delta": {
+    "warren": null,
+    "mckean": null,
+    "forest": null
+  },
   "_margin_note": "User decision per arm, in recall points, from the tolerable missed-feature burden at K=40. Never from fold spread. null gives decision no_margin_set.",
-  "eligibility": {"min_cover": 0.999, "max_void_frac": 0.80, "density_rule": "9t_p5",
-                  "_note": "density_rule 9t_p5 = blocks below the 5th percentile of 9t block ground density form a labelled low-density stratum (fw_3_2 section 3). A number here overrides it."},
-  "roles": {"adapt_frac": 0.25, "test_frac_of_rest": 0.75, "min_adapt_km2": 7.0, "recheck_frac": 0.20},
+  "eligibility": {
+    "min_cover": 0.999,
+    "max_void_frac": 0.8,
+    "density_rule": "9t_p5",
+    "_note": "density_rule 9t_p5 = blocks below the 5th percentile of 9t block ground density form a labelled low-density stratum (fw_3_2 section 3). A number here overrides it."
+  },
+  "roles": {
+    "adapt_frac": 0.25,
+    "test_frac_of_rest": 0.75,
+    "min_adapt_km2": 7.0,
+    "recheck_frac": 0.2
+  },
   "areas": {
     "warren": {
-      "arm": 1, "program": "PA_WesternPA_2019_D20",
-      "tiles": {"path_for": "source", "rel": "warren_sheffield/USGS_LPC_PA_WesternPA_2019_D20_17TPG*.laz"},
+      "arm": 1,
+      "program": "PA_WesternPA_2019_D20",
+      "tiles": {
+        "path_for": "source",
+        "rel": "warren_sheffield/USGS_LPC_PA_WesternPA_2019_D20_17TPG*.laz"
+      },
       "src_crs": null,
-      "slope_1m": {"area": "warren", "rel": "derived/1m/full/slope_warren_1m.tif"},
-      "dem_1m": {"area": "warren", "rel": "derived/1m/full/dem_warren_1m.tif"}
+      "slope_1m": {
+        "area": "warren",
+        "rel": "derived/1m/full/slope_warren_1m.tif"
+      },
+      "dem_1m": {
+        "area": "warren",
+        "rel": "derived/1m/full/dem_warren_1m.tif"
+      }
     },
     "mckean": {
-      "arm": 2, "program": "PA_Northcentral_2019_B19",
-      "tiles": {"path_for": "source", "rel": "mckean/USGS_LPC_PA_Northcentral_2019_B19_*.laz"},
+      "arm": 2,
+      "program": "PA_Northcentral_2019_B19",
+      "tiles": {
+        "path_for": "source",
+        "rel": "mckean/USGS_LPC_PA_Northcentral_2019_B19_*.laz"
+      },
       "src_crs": "EPSG:6350",
-      "merged_las": {"abs": "F:/lidar_project/consolidated/lidar_all/mckean_full.las"},
-      "slope_1m": {"area": "mckean", "rel": "mkf/derived/1m/slope_mkf_1m.tif"},
-      "dem_1m": {"area": "mckean", "rel": "mkf/derived/1m/dem_mkf_1m.tif"}
+      "merged_las": {
+        "abs": "F:/lidar_project/consolidated/lidar_all/mckean_full.las"
+      },
+      "slope_1m": {
+        "area": "mckean",
+        "rel": "mkf/derived/1m/slope_mkf_1m.tif"
+      },
+      "dem_1m": {
+        "area": "mckean",
+        "rel": "mkf/derived/1m/dem_mkf_1m.tif"
+      }
     },
     "forest": {
-      "arm": 1, "program": "PA_WesternPA_2019_D20",
-      "tiles": {"abs": "F:/lidar_project_data/lidar_us_windows/PA_WesternPA_2019_D20/*.laz"},
+      "arm": 1,
+      "program": "PA_WesternPA_2019_D20",
+      "tiles": {
+        "abs": "F:/lidar_project_data/lidar_us_windows/PA_WesternPA_2019_D20/*.laz"
+      },
       "src_crs": null,
-      "slope_1m": {"area": "forest", "rel": "derived/1m/slope_forest_1m.tif"},
-      "dem_1m": {"area": "forest", "rel": "derived/1m/dem_forest_1m.tif"},
+      "slope_1m": {
+        "area": "forest",
+        "rel": "derived/1m/slope_forest_1m.tif"
+      },
+      "dem_1m": {
+        "area": "forest",
+        "rel": "derived/1m/dem_forest_1m.tif"
+      },
       "_note": "assumed. Forest D20 window (20 tiles, 0.91 GB) listed in lidar_win_download_list_us.csv, not fetched. The dest folder mixes windows, so filter by the window tile list."
+    },
+    "il_cumberland": {
+      "arm": 3,
+      "program": "IL_8County_2020_A20",
+      "tiles": {
+        "path_for": "source",
+        "rel": "il_cumberland/USGS_LPC_IL_8County_2020_A20_*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "il_cumberland",
+        "rel": "derived/1m/slope_il_cumberland_1m.tif"
+      },
+      "dem_1m": {
+        "area": "il_cumberland",
+        "rel": "derived/1m/dem_il_cumberland_1m.tif"
+      },
+      "_note": "assumed. 3.3 S5 area-gate target (Illinois_Cumberland window, 80 tiles, 3.61 GB). Not fetched. Fetch is a user step."
     }
   },
   "outputs": {
-    "tables": {"exp": "3.1", "rel": "results/tables/{area}"},
-    "heavy": {"exp": "3.1", "rel": "data/processed/{area}/05"},
+    "tables": {
+      "exp": "3.1",
+      "rel": "results/tables/{area}"
+    },
+    "heavy": {
+      "exp": "3.1",
+      "rel": "data/processed/{area}/05"
+    },
     "_note": "Heavy rasters (>=100 MB) stay under the expansion data/ (gitignored). Move to data/{area}/derived/05/ once the lead adds a .gitignore rule for it."
   },
   "reference": {
-    "blocks_csv": {"exp": "3.3", "rel": "results/20261105_slope_recall_5886eff/slope_recall_blocks_9t.csv"},
-    "summary_json": {"exp": "3.3", "rel": "results/20261105_slope_recall_5886eff/slope_recall_summary_9t.json"},
-    "blocks_9t": {"path_for": "nine_t", "rel": "pit_blocks_9t.gpkg"},
-    "ground_density_9t": {"path_for": "nine_t", "rel": "ground_density_9t_05.tif"},
-    "features_9t": {"path_for": "nine_t", "rel": "features_pit_9t_05.tif"},
-    "_note": "PROVISIONAL reference. 3.3 S1 rebuilt the archival 9t out-of-fold recall at K=40 (0.909, 457/503) from the original CV5 sampler. Swap to the P1 isolated table when it exists (assumed.isolated_reference_blocks)."
+    "blocks_csv": {
+      "exp": "3.3",
+      "rel": "results/20261105_slope_recall_5886eff/slope_recall_blocks_9t.csv"
+    },
+    "summary_json": {
+      "exp": "3.3",
+      "rel": "results/20261105_slope_recall_5886eff/slope_recall_summary_9t.json"
+    },
+    "blocks_9t": {
+      "path_for": "nine_t",
+      "rel": "pit_blocks_9t.gpkg"
+    },
+    "ground_density_9t": {
+      "path_for": "nine_t",
+      "rel": "ground_density_9t_05.tif"
+    },
+    "features_9t": {
+      "path_for": "nine_t",
+      "rel": "features_pit_9t_05.tif"
+    },
+    "_note": "Scoring reference is the 3.0 reference tables (review F02 / F08). They stamp ek.policy_for, the footprint (all 144 blocks after the G-02 fill) and the checkpoint lineage. Both are provisional today (historical CV5 pit, buffer-0 pad), so 3.1 scores are descriptive until P1 isolated models exist. blocks_csv and summary_json (3.3 S1) feed only the projected-width design tool and the prereg draft.",
+    "tables": {
+      "pit": {
+        "exp": "3.0",
+        "rel": "results/tables/xfer_ref_block_tables_9t.json"
+      },
+      "pad": {
+        "exp": "3.0",
+        "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"
+      }
+    }
   },
   "models": {
-    "pit": {"cv5": {"path_for": "models", "rel": "pit/unet_cv5/fold{k}/best.pt"}, "n_classes": 3, "cls": 1, "patch": 256, "overlap": 64},
-    "pad": {"cv5": {"path_for": "models", "rel": "pad/unet_cv5/fold{k}/best.pt"}, "n_classes": 2, "cls": 1, "patch": 384, "overlap": 96},
+    "pit": {
+      "cv5": {
+        "path_for": "models",
+        "rel": "pit/unet_cv5/fold{k}/best.pt"
+      },
+      "n_classes": 3,
+      "cls": 1,
+      "patch": 256,
+      "overlap": 64
+    },
+    "pad": {
+      "cv5": {
+        "path_for": "models",
+        "rel": "pad/unet_cv5/fold{k}/best.pt"
+      },
+      "n_classes": 2,
+      "cls": 1,
+      "patch": 384,
+      "overlap": 96
+    },
     "policy": "ensemble_mean_5_folds",
     "n_folds": 5
   },
   "builders": {
-    "channels": ["lrm_25", "lrm_5", "slope", "tpi_05", "openness_pos", "openness_neg", "roughness_11"]
+    "channels": [
+      "lrm_25",
+      "lrm_5",
+      "slope",
+      "tpi_05",
+      "openness_pos",
+      "openness_neg",
+      "roughness_11"
+    ]
   },
   "assumed": {
-    "isolated_ckpt": {"spec": {"path_for": "models", "rel": "{task}/unet_iso_cv5/fold{k}/best.pt"},
-      "schema": "torch checkpoint, keys state_dict, channels, mu, sd, epoch", "from": "P1 isolated trainers"},
-    "isolated_reference_blocks": {"spec": {"exp": "p1", "rel": "results/tables/iso_oof_blocks_pit_9t.csv"},
-      "schema": "CSV block_id, n_truth, hits, hits_k30, area_km2 at K=40 under the declared policy", "from": "P1 plus 3.0 new baseline"},
-    "derived_buffer": {"spec": {"path_for": "results_9t", "rel": "splits/buffer_derivation_9t.json"},
-      "schema": "JSON {\"pit_buffer_m\": float, \"pad_buffer_m\": float}", "from": "P1 S4"},
-    "truth": {"spec": {"exp": "3.1", "rel": "data/processed/{area}/xfer_truth_features_{area}.gpkg"},
-      "schema": "GeoPackage, layers pit_inside (floors, id pit_inside_id), pit_full (rims), pad (id pad_id); EPSG:6346; complete blind annotation of test blocks", "from": "S6 blind annotation (people)"},
-    "truth_recheck": {"spec": {"exp": "3.1", "rel": "data/processed/{area}/xfer_truth_recheck_{area}.gpkg"},
-      "schema": "same layers as truth, drawn independently on the recheck blocks", "from": "S6 second annotator"},
-    "prereg": {"spec": {"exp": "3.1", "rel": "docs/prereg_xfer_{area}.md"},
-      "schema": "Markdown preregistration, committed before scoring; its SHA-256 is recorded in the score run", "from": "S5"},
-    "flight_dates": {"spec": {"exp": "3.1", "rel": "results/tables/lidar_flight_dates_wfm.csv"},
-      "schema": "CSV program, start_date, end_date, leaf_state, source_url", "from": "USGS project metadata XML (manifest D1, manual fetch)"}
+    "isolated_ckpt": {
+      "spec": {
+        "path_for": "models",
+        "rel": "{task}/unet_iso_cv5/fold{k}/best.pt"
+      },
+      "schema": "torch checkpoint, keys state_dict, channels, mu, sd, epoch",
+      "from": "P1 isolated trainers"
+    },
+    "isolated_reference_blocks": {
+      "spec": {
+        "exp": "p1",
+        "rel": "results/tables/iso_oof_blocks_pit_9t.csv"
+      },
+      "schema": "CSV block_id, n_truth, hits, hits_k30, area_km2 at K=40 under the declared policy",
+      "from": "P1 plus 3.0 new baseline"
+    },
+    "derived_buffer": {
+      "spec": {
+        "path_for": "results_9t",
+        "rel": "splits/buffer_derivation_9t.json"
+      },
+      "schema": "P1 buffer_derivation_9t.json, read with ek.read_buffer(task) (buffer_m_by_task, or buffer_m for pit)",
+      "from": "P1 S4"
+    },
+    "truth": {
+      "spec": {
+        "exp": "3.1",
+        "rel": "data/processed/{area}/xfer_truth_features_{area}.gpkg"
+      },
+      "schema": "GeoPackage, layers pit_inside (floors, id pit_inside_id), pit_full (rims), pad (id pad_id); EPSG:6346; complete blind annotation of test blocks",
+      "from": "S6 blind annotation (people)"
+    },
+    "truth_recheck": {
+      "spec": {
+        "exp": "3.1",
+        "rel": "data/processed/{area}/xfer_truth_recheck_{area}.gpkg"
+      },
+      "schema": "same layers as truth, drawn independently on the recheck blocks",
+      "from": "S6 second annotator"
+    },
+    "prereg": {
+      "spec": {
+        "exp": "3.1",
+        "rel": "docs/prereg_xfer_{area}.md"
+      },
+      "schema": "Markdown preregistration, committed before scoring; its SHA-256 is recorded in the score run",
+      "from": "S5"
+    },
+    "flight_dates": {
+      "spec": {
+        "exp": "3.1",
+        "rel": "results/tables/lidar_flight_dates_wfm.csv"
+      },
+      "schema": "CSV program, start_date, end_date, leaf_state, source_url",
+      "from": "USGS project metadata XML (manifest D1, manual fetch)"
+    }
   },
   "fallback_buffer_m": 192.0,
   "_fallback_note": "Used only with --provisional-buffer before P1 S4 exists. 192 m is the pad patch support named in protocol section 3 rule 4, not a derived buffer.",
-  "projected_width": {"densities_per_km2": [10, 25, 50, 100], "cluster_sizes": [1, 2, 4], "n_blocks": [20, 40, 60, 100], "reps": 50, "B": 200}
+  "projected_width": {
+    "densities_per_km2": [
+      10,
+      25,
+      50,
+      100
+    ],
+    "cluster_sizes": [
+      1,
+      2,
+      4
+    ],
+    "n_blocks": [
+      20,
+      40,
+      60,
+      100
+    ],
+    "reps": 50,
+    "B": 200
+  },
+  "_policy_note": "Proposal cutoff, min blob, IoU, match order and K come from ek.policy_for(task) through the 3.0 scorer. iou_tau and min_blob_m2 here mirror it and are not read by the scorer."
 }

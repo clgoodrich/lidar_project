@@ -1,0 +1,56 @@
+{
+  "written": "2026-11-06T10:47:19",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/0_prerequisites/p1_splits_manifests/src/_split_buffer_derive_9t.py",
+    "--splits",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/cv_splits_future_9t_v1.json",
+    "--out-dir",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun"
+  ],
+  "params": {},
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "bytes": 15569542,
+      "mtime": "2026-09-21T20:24:52.205526",
+      "sha256": "07680d0783af7e1349f81dfef95be9fd7feb26cfbfd79297e53d58f2a3758c46"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\labels_pit_9t_05.tif",
+      "bytes": 530919,
+      "mtime": "2026-09-04T10:51:16.210842",
+      "sha256": "6faf7597c9c3cddbd40768fd78cb822eb39eea62cf31b2b8b95f2aecb4a22cb9"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json",
+      "bytes": 18847,
+      "mtime": "2026-11-05T22:12:27.970050",
+      "sha256": "5084c5b96c4dd4dde2504025ba4bfbbe98b87052ce4be213aba38361d5ca1032"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\buffer_derivation_9t.json",
+      "bytes": 19274,
+      "mtime": "2026-11-06T10:47:18.863326",
+      "sha256": "a8f2f29e76699687ff5b8d4b46e88c2bb725f13bc221757c0337398cd3a12940"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\residual_semivariogram_9t.png",
+      "bytes": 59761,
+      "mtime": "2026-11-06T10:47:19.817698",
+      "sha256": "caf10e525d5fbcd223670519eae1738407afb2273755a9f55423028f06162ba6"
+    },
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\residual_semivariogram_pad_9t.png",
+      "bytes": 52759,
+      "mtime": "2026-11-06T10:47:19.980526",
+      "sha256": "90551821d79c10ee9ab0149f5fc2bd5933f74f7367cff343baca8d7691c9b6b7"
+    }
+  ]
+}

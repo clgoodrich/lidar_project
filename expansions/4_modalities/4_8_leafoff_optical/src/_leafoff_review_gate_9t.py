@@ -1,6 +1,7 @@
 """S5 and the gate of framework 4.8. Reviewer agreement on usable chips and the usable-share decision per source.
 
-Purpose. Per source, the usable share is usable chips over all sampled chips, with a Clopper-Pearson interval. The
+Purpose. Per source, the usable share is usable chips over judged chips, with a Clopper-Pearson interval. Judged
+chips exclude missing data (unavailable, blank, undated). Coverage, the judged share of sampled chips, is reported. The
 gate compares it with usable_share_gate (0.60). Success (fetch D10) if the lower bound is above the gate, failure
 (unusable here) if the upper bound is below it, else inconclusive. Interpretability uses the two blind reviewers
 on usable chips only. It reports Cohen's kappa over yes, no and cannot_tell, and the share judged visible by both,
@@ -28,14 +29,22 @@ MISSING = {"unavailable", "blank", "undated"}
 
 
 def gate(status: pd.DataFrame, level: float) -> dict:
+    """4.8-01. Missing data (unavailable, blank, undated) is left out of the denominator, never counted as a
+    not-usable chip. Coverage is the share of sampled chips that carry a quality judgement. With no judged chip
+    the share is undefined and the decision is inconclusive."""
     out = {}
     for sid, g in status.groupby("source_id"):
-        k, n = int((g.status == "usable").sum()), len(g)
+        judged = g[~g.status.isin(MISSING)]
+        k, n = int((judged.status == "usable").sum()), len(judged)
         p, lo, hi = lk.ek.clopper_pearson(k, n)
-        out[sid] = {"n": n, "usable": k, "share": p, "lo": lo, "hi": hi,
-                    "decision": lk.ek.decide(lo - level, hi - level, 0.0, "superiority"),
+        dec = lk.ek.decide(lo - level, hi - level, 0.0, "superiority") if n else "inconclusive"
+        out[sid] = {"n": n, "n_sampled": len(g), "n_missing": int(len(g) - n),
+                    "coverage": n / len(g) if len(g) else float("nan"),
+                    "missing_counts": g.status[g.status.isin(MISSING)].value_counts().to_dict(),
+                    "usable": k, "share": p, "lo": lo, "hi": hi, "decision": dec,
                     "action": None, "status_counts": g.status.value_counts().to_dict()}
-        out[sid]["action"] = {"success": "fetch D10", "failure": "unusable here", "inconclusive": "report, sample more"}[out[sid]["decision"]]
+        out[sid]["action"] = ({"success": "fetch D10", "failure": "unusable here", "inconclusive": "report, sample more"}[dec]
+                              if n else "no judged chip. Verify the flight date or coverage before calling the gate")
     return out
 
 

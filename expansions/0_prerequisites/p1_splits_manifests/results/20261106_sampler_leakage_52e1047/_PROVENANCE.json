@@ -1,0 +1,38 @@
+{
+  "written": "2026-11-06T11:00:36",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/0_prerequisites/p1_splits_manifests/src/_split_sampler_leakage_9t.py",
+    "--splits",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/cv_splits_future_9t_v1.json",
+    "--buffer-json",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/buffer_derivation_9t.json",
+    "--n",
+    "100000",
+    "--check-norm",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/pit_iso",
+    "--out-dir",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun"
+  ],
+  "params": {},
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\cv_splits_future_9t_v1.json",
+      "bytes": 21547,
+      "mtime": "2026-11-06T10:55:38.762987",
+      "sha256": "d070a31bda220d333b36319f2ed0cab4db89e78846072e6144d7b83a518db53a"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions\\0_prerequisites\\p1_splits_manifests\\data\\interim\\dryrun\\sampler_leakage_test_9t.json",
+      "bytes": 5048,
+      "mtime": "2026-11-06T11:00:36.514824",
+      "sha256": "1124160c3a815e75a6d6fe5512a6054fa416ae32882f22f41f5f5aa6e220736b"
+    }
+  ]
+}

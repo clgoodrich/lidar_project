@@ -119,11 +119,14 @@ def run(cfg: dict, out_root: Path | None = None, labels_dir: Path | None = None,
                 return roc_auc_score(x["y"], x[col]) if x["y"].nunique() == 2 else np.nan
             return f
         leases = list(by_lease)
-        pt, lo, hi = ek.bootstrap_diff(auc("score_cov_stress"), leases, auc("score_cov"), leases,
-                                       B=lt["bootstrap_B"], seed=seed, paired=True)
+        mu = float(lt.get("max_undefined", 0.0))
+        pt, lo, hi, dr = ek.bootstrap_diff(auc("score_cov_stress"), leases, auc("score_cov"), leases,
+                                           B=lt["bootstrap_B"], seed=seed, paired=True, max_undefined=mu,
+                                           return_draws=True)
         res[name] = {"status": "ok", "n": int(len(d)), "n_leak": int(d.y.sum()), "n_leases": len(leases),
                      "auc_cov": float(auc("score_cov")(leases)), "auc_cov_stress": float(auc("score_cov_stress")(leases)),
-                     "auc_gain": pt, "lo": lo, "hi": hi, "verdict": ek.decide(lo, hi, lt["delta_gain"], "superiority")}
+                     "auc_gain": pt, "lo": lo, "hi": hi, "undefined_share": ek.undefined_share(dr),
+                     "max_undefined": mu, "verdict": ek.decide(lo, hi, lt["delta_gain"], "superiority")}
         score_parts.append(d[["pad_id", "label", "strength", "lease_id", "score_cov", "score_cov_stress"]].assign(subset=name))
     summary = {"stage": "V4", "question": "B leak association", "covariates": covs, "stress_features": stress,
                "delta_gain": lt["delta_gain"], "results": res,

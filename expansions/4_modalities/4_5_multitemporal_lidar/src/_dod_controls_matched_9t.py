@@ -6,14 +6,19 @@ Purpose
     spudded before the end of the early window (when require_spud_before_early) and none plugged before the late flight.
     So the pad was active at the early flight and still unplugged at the late one.
     Covariates. Mean slope (late DEM), pad area, baseline roughness (std of the early DEM minus its 5 x 5 mean inside
-    the pad) and distance to the nearest mapped road. Standardised on treated plus pool.
+    the pad), distance to the nearest mapped road, and distance to the nearest straight survey seam in the high-passed
+    change field (seam_dist_m, fix 4.5-02 of 2026-11-06). Treated pads sat a median 36 m from a seam and controls
+    220 m, so seam bias could pass for change. Standardised on treated plus pool. Infinite seam distances (no seam in
+    the field) are capped at the largest finite one. Controls are also exact-matched on seam band
+    (controls.seam_band_edges_m, proposed default 50 m), because a covariate in the distance alone did not stop a
+    far-from-seam control being picked.
     Match. Nearest neighbour without replacement, 1 to max_controls per treated pad, inside a caliper of caliper_sd
     on every standardised covariate. Treated pads are matched in random order (seeded). Balance is reported as
     standardised mean differences before and after.
 
 Inputs
     plug_eligible_pads_9t.csv and plug_eligible_wells_9t.csv from the newest S1 run (or --elig-dir)
-    data/9t/derived/lidar_2006_2008/dem_2006_v2_9t_2m.tif, dem_2019_v2_9t_2m.tif (held)
+    data/9t/derived/lidar_2006_2008/dem_2006_v2_9t_2m.tif, dem_2019_v2_9t_2m.tif, dod_v2_highpass_9t_2m.tif (held)
     qgis/annotations/annotations_proj_v2.gpkg layers pad, roads (held)
 
 Outputs (run folder expansions/4_modalities/4_5_multitemporal_lidar/results/<YYYYMMDD>_dod_ctrl_<hash7>/)
@@ -39,7 +44,7 @@ import _dod_shared_io as io  # noqa: E402
 from _dod_shared_io import ek  # noqa: E402
 
 
-def pad_covariates(pads, early, late, transform, roads) -> pd.DataFrame:
+def pad_covariates(pads, early, late, transform, roads, seam_field=None) -> pd.DataFrame:
     from rasterio.features import geometry_mask
     from scipy import ndimage as ndi
     res = float(transform.a)
@@ -71,6 +76,13 @@ def pad_covariates(pads, early, late, transform, roads) -> pd.DataFrame:
         C["road_dist_m"] = [float(geom.distance(roads.geometry.iloc[tree.nearest(geom)])) for geom in pads.geometry]
     else:
         C["road_dist_m"] = np.nan
+    if seam_field is not None:
+        sd = io.value_at(io.seam_distance(seam_field, res), transform, pads.geometry)
+        fin = np.isfinite(sd)
+        cap = float(np.nanmax(np.where(fin, sd, np.nan))) if fin.any() else float(max(early.shape) * res)
+        C["seam_dist_m"] = np.where(np.isnan(sd), np.nan, np.minimum(sd, cap))
+    else:
+        C["seam_dist_m"] = np.nan
     return C
 
 
@@ -89,8 +101,9 @@ def control_pool(pads_tab: pd.DataFrame, wells_tab: pd.DataFrame, require_spud: 
     return pads_tab.pad_id.map(lambda p: p in has_well and p not in bad_pads)
 
 
-def match(Zt: np.ndarray, Zp: np.ndarray, k: int, caliper: float, rng) -> list[list[int]]:
-    """Greedy nearest neighbour without replacement. Returns, per treated row, pool row indices."""
+def match(Zt: np.ndarray, Zp: np.ndarray, k: int, caliper: float, rng, st=None, sp=None) -> list[list[int]]:
+    """Greedy nearest neighbour without replacement. Returns, per treated row, pool row indices.
+    st, sp are optional exact-match strata (a control must share its treated pad's stratum)."""
     used = np.zeros(len(Zp), bool)
     out = [[] for _ in range(len(Zt))]
     order = rng.permutation(len(Zt))
@@ -99,6 +112,8 @@ def match(Zt: np.ndarray, Zp: np.ndarray, k: int, caliper: float, rng) -> list[l
             if len(out[i]) > _round:
                 continue
             ok = ~used & np.all(np.abs(Zp - Zt[i]) <= caliper, axis=1)
+            if st is not None:
+                ok &= sp == st[i]
             if not ok.any():
                 continue
             d = np.where(ok, np.linalg.norm(Zp - Zt[i], axis=1), np.inf)
@@ -121,13 +136,22 @@ def run(cfg: dict, out_root: Path | None = None, elig_dir: Path | None = None, r
     wp = pp.parent / "plug_eligible_wells_9t.csv"
     P, Wt = pd.read_csv(pp), pd.read_csv(io.need(wp, "S1 eligible wells"))
     inputs = [pp, wp]
+    hp = None
     if rasters is None:
         pe, pl = io.resolve(cfg["dems"]["early"]), io.resolve(cfg["dems"]["late"])
         early, T, _ = io.read_raster(pe, crs)
         late, _, _ = io.read_raster(pl, crs)
         inputs += [pe, pl]
+        if "seam_dist_m" in cc["covariates"]:
+            ph = io.resolve(cfg["dems"]["dod_highpass"])
+            hp, _, _ = io.read_raster(ph, crs)
+            inputs.append(ph)
     else:
-        early, late, T = rasters
+        early, late, T = rasters[:3]
+        hp = rasters[3] if len(rasters) > 3 else None
+    if "seam_dist_m" in cc["covariates"] and hp is None:
+        raise FileNotFoundError("MISSING INPUT high-passed change field for the seam_dist_m covariate. "
+                                "Pass rasters=(early, late, T, highpass) or drop seam_dist_m from controls.covariates.")
     if layers is None:
         ga = io.resolve(cfg["annotations_gpkg"])
         pads, roads = io.read_layer(ga, cfg["pad_layer"], crs), io.read_layer(ga, cfg["road_layer"], crs)
@@ -142,7 +166,7 @@ def run(cfg: dict, out_root: Path | None = None, elig_dir: Path | None = None, r
     run_dir = ek.new_run(io.EXP, "dod_ctrl", cc, base=out_root, why="S2 matched controls (fw_4_5 section 6).")
 
     sel = pads[pads.treated | pads.pool].copy()
-    C = pad_covariates(sel, early, late, T, roads)
+    C = pad_covariates(sel, early, late, T, roads, hp)
     sel = sel.drop(columns=[c for c in C.columns if c in sel]).join(C)
     cov = [c for c in cc["covariates"] if sel[c].notna().any()]
     dropped_cov = [c for c in cc["covariates"] if c not in cov]
@@ -150,7 +174,11 @@ def run(cfg: dict, out_root: Path | None = None, elig_dir: Path | None = None, r
     Z = (sel[cov] - sel[cov].mean()) / sel[cov].std(ddof=1).replace(0, 1)
     t_idx, p_idx = np.flatnonzero(sel.treated.to_numpy()), np.flatnonzero(sel.pool.to_numpy() & ~sel.treated.to_numpy())
     rng = np.random.default_rng(int(cc["seed"]))
-    m = match(Z.to_numpy()[t_idx], Z.to_numpy()[p_idx], int(cc["max_controls"]), float(cc["caliper_sd"]), rng)
+    strata, edges = None, cc.get("seam_band_edges_m")
+    if edges and "seam_dist_m" in cov:
+        strata = np.digitize(sel.seam_dist_m.to_numpy(float), np.asarray(edges, float))
+    m = match(Z.to_numpy()[t_idx], Z.to_numpy()[p_idx], int(cc["max_controls"]), float(cc["caliper_sd"]), rng,
+              None if strata is None else strata[t_idx], None if strata is None else strata[p_idx])
     rows = []
     for mi, (ti, js) in enumerate(zip(t_idx, m)):
         if not js:
@@ -168,7 +196,11 @@ def run(cfg: dict, out_root: Path | None = None, elig_dir: Path | None = None, r
            "smd_before": {c: smd(tr[c].to_numpy(), pl_[c].to_numpy()) for c in cov},
            "smd_after": {c: smd(out[out.role == "treated"][c].to_numpy(float), out[out.role == "control"][c].to_numpy(float))
                          for c in cov} if len(out) else {},
-           "covariates_used": cov, "covariates_dropped_all_missing": dropped_cov, "caliper_sd": cc["caliper_sd"], "note": "Old controls (terrain clear of mapped features) are not used."}
+           "covariates_used": cov, "covariates_dropped_all_missing": dropped_cov, "caliper_sd": cc["caliper_sd"],
+           "seam_band_edges_m": edges if strata is not None else None,
+           "seam_dist_median_m": {"treated": float(np.nanmedian(out[out.role == "treated"].seam_dist_m)) if len(out) else None,
+                                  "control": float(np.nanmedian(out[out.role == "control"].seam_dist_m)) if len(out) else None}
+           if "seam_dist_m" in out else None, "note": "Old controls (terrain clear of mapped features) are not used."}
     js = run_dir / "change_controls_balance_9t.json"
     js.write_text(json.dumps(bal, indent=2), encoding="utf-8")
     ek.write_provenance(run_dir, inputs=inputs, outputs=[gp, js], params=cc, seeds={"match": cc["seed"]})

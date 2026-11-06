@@ -152,17 +152,42 @@ def count_near(P: pd.DataFrame, S: pd.DataFrame, radius: float | None) -> np.nda
     return y
 
 
+def exact_conditional_rr(P: pd.DataFrame, alpha: float = 0.05) -> dict:
+    """Exact conditional rate ratio (wells over controls). Given the total count n, the well count is
+    Binomial(n, p) with p = RR E_w / (RR E_w + E_c), E = summed overpasses. Clopper-Pearson on p gives the
+    interval. It stays defined under separation (zero counts in one group give a 0 or infinite bound).
+    It ignores clustering by cell, so it is reported beside the cluster bootstrap and not used for the verdict."""
+    w = P.is_well == 1
+    k, n = int(P.y[w].sum()), int(P.y.sum())
+    e_w, e_c = float(P.n_searched[w].sum()), float(P.n_searched[~w].sum())
+    if n == 0 or e_w == 0 or e_c == 0:
+        return {"rr": float("nan"), "lo": float("nan"), "hi": float("nan"), "k_wells": k, "n_total": n}
+    _, plo, phi = ek.clopper_pearson(k, n, alpha)
+    to_rr = lambda p: float("inf") if p >= 1 else p / (1 - p) * e_c / e_w  # noqa: E731
+    return {"rr": to_rr(k / n), "lo": to_rr(plo), "hi": to_rr(phi), "k_wells": k, "n_total": n}
+
+
+def _separated(D: pd.DataFrame) -> bool:
+    """Quasi-separation. One group has no events, so the Poisson MLE of the ratio is 0 or infinite."""
+    return bool(D.y[D.is_well == 1].sum() == 0 or D.y[D.is_well == 0].sum() == 0)
+
+
 def rate_ratio(P: pd.DataFrame, B: int, seed: int):
+    """Cluster bootstrap over cells. A resample with separation has no finite MLE. It is undefined (NaN),
+    counted, and by SH-01 makes the interval undefined. The exact conditional interval is reported beside it."""
     def fit(D):
-        if D.is_well.nunique() < 2 or D.y.sum() == 0:
+        if D.is_well.nunique() < 2 or D.y.sum() == 0 or _separated(D):
             return np.nan
         X = np.c_[np.ones(len(D)), D.is_well.to_numpy(float)]
         return float(np.exp(poisson_irls(X, D.y.to_numpy(float), np.log(D.n_searched.to_numpy(float)))[1]))
     groups = {c: d for c, d in P.groupby("cell_id")}
     blocks = list(groups)
-    point, lo, hi, _ = ek.block_bootstrap(lambda bl: fit(pd.concat([groups[b] for b in bl])), blocks, B=B, seed=seed)
+    point, lo, hi, draws = ek.block_bootstrap(lambda bl: fit(pd.concat([groups[b] for b in bl])), blocks, B=B,
+                                              seed=seed)
     return {"rate_ratio": point, "lo": lo, "hi": hi, "n_cells": len(blocks), "n_wells": int(P.is_well.sum()),
             "n_controls": int((P.is_well == 0).sum()), "n_sources_counted": float(P.y.sum()),
+            "separation": _separated(P), "undefined_share": ek.undefined_share(draws),
+            "exact_conditional": exact_conditional_rr(P),
             "bootstrap_unreliable": len(blocks) < 15}
 
 

@@ -24,7 +24,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
+
+Review repair (2026-11-06). Pad scoring uses the pad policy (cutoff 0.525) and the pad reference by task. The equipment rule is truth-free and compared at equal K over all candidates, so the union can lose. The pad transfer checkpoint is an explicit unset config key. Open user decisions are in `docs/decisions_3_6.md`.
 
 Built by the build agent. The shared regional-transfer code is `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py`. Expansions 3.4 to 3.8 import it. Stage commands that every region shares are its subcommands. Assumed inputs and their schemas are in `src/config_3_6.json`. A missing assumed input stops a script with a message that names the input, its schema and the VERIFY step. Decisions are in `docs/decisions_3_6.md`. Run the tests with `python -m pytest -q expansions/3_geography/3_6_california/src/test_3_6.py -p no:cacheprovider`.
 
@@ -39,6 +41,6 @@ Built by the build agent. The shared regional-transfer code is `expansions/3_geo
 | `src/_ca_pad_recall_by_class.py` | S5 primary scoring by class with ceiling | no | pad probability raster, truth, 3.0 pad reference tables, `prereg.margin` (D-CA1) |
 | `src/_ca_unmatched_sample.py` | S6 unmatched draw and summary | no | candidate table, filled label sheet |
 | `src/_ca_status_by_pad.py` | S7 status join (descriptive) | no | frozen S5 result, CalGEM snapshot |
-| `src/_ca_equipment_rule.py` | S8 equipment rule (exploratory) | no | nDSM, truth, candidates |
+| `src/_ca_equipment_rule.py` | S8 equipment rule at equal K (exploratory) | no | nDSM, truth, candidates and score JSON from core `score --task pad` |
 | `src/test_3_6.py` | smoke tests | yes. 6 passed |  |
 | `src/config_3_6.json` | assumed inputs, schemas, prereg values |  | D-CA1 to D-CA4 are null |

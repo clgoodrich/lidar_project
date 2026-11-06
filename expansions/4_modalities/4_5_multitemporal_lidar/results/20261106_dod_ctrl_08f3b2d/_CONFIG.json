@@ -1,0 +1,18 @@
+{
+  "caliper_sd": 0.5,
+  "covariates": [
+    "slope_deg",
+    "area_m2",
+    "rough_2006_m",
+    "road_dist_m",
+    "seam_dist_m"
+  ],
+  "covariates_note": "seam_dist_m added 2026-11-06 (review 4.5-02). Distance from the pad to the nearest straight survey seam in dod_v2_highpass_9t_2m.tif.",
+  "max_controls": 3,
+  "require_spud_before_early": true,
+  "seam_band_edges_m": [
+    50.0
+  ],
+  "seam_band_note": "Exact-match strata on seam distance (near under 50 m, far beyond). Proposed default 2026-11-06. User decision.",
+  "seed": 20261105
+}

@@ -57,7 +57,9 @@ def test_match_iou_one_to_one_and_duplicates():
     c["cand_id"] = [0, 1, 2]
     m = xl.match_iou(t, c)
     assert m.notna().sum() == 1                          # the second blob on pit 0 is a duplicate
-    assert m.iloc[0] == 0                                # exact overlap wins on IoU, not score
+    # G-03. Pairs are taken in score order (ek.policy_for match_order). Blob 1 (score 0.9, IoU 0.78) wins
+    # over the exact overlap (score 0.5). The pre-fix IoU-order matcher picked blob 0.
+    assert m.isna().iloc[0] and m.iloc[1] == 0
 
 
 def test_score_area_matches_toolkit_and_counts_empty_blocks():
@@ -66,7 +68,7 @@ def test_score_area_matches_toolkit_and_counts_empty_blocks():
     c = _squares([(X0 + 20, Y0 + 20), (X0 + 120, Y0 + 20), (X0 + 150, Y0 + 150)])
     c["score"] = [0.9, 0.2, 0.8]
     s, per, sc, st = xl.score_area(c, t, b, k_per_km2=50.0)      # 0.04 km2 -> K = 2
-    assert s["k"] == 2 and s["hits"] == 1 and s["n_truth"] == 3
+    assert s["k"] == 2 and s["hits"] == 1 and s["n_truth"] == 3    # kept 0.9 (hit) and 0.8 (decoy)
     assert len(per) == 4 and per.n_truth.sum() == 3 and (per.n_truth == 0).sum() == 1
     assert st.found.sum() == 1
 
@@ -89,7 +91,7 @@ def test_candidates_from_prob_and_score_transfer(tmp_path):
     for r, c in centres:
         prob[r - 4:r + 4, c - 4:c + 4] = 0.8
     tf = from_origin(X0, Y0 + 200, 0.5, 0.5)
-    cands = xl.candidates_from_prob(prob, tf, thr=0.3)
+    cands = xl.candidates_from_prob(prob, tf, policy=xl.policy("pit"))
     assert len(cands) == 4 and np.allclose(cands.score, 0.8)
     xy = [(X0 + (c + 0.0) * 0.5, Y0 + 200 - (r + 0.0) * 0.5) for r, c in centres[:3]]
     truth = _squares(xy, half=2.0)
@@ -201,3 +203,146 @@ def test_config_paths_resolve_without_literals():
     with pytest.raises(xl.MissingInput):
         xl.assumed_path(cfg, "truth", "warren")
     assert json.loads(json.dumps(cfg))["k_per_km2"] == 40.0
+
+
+# ----------------------------------------------------------------------------- review 2026-11-06 regressions
+def _write_prob(path, arr, tf, crs=ek.DST_CRS, dtype="float32"):
+    import rasterio
+    with rasterio.open(path, "w", driver="GTiff", height=arr.shape[0], width=arr.shape[1], count=1, dtype=dtype,
+                       crs=crs, transform=tf, nodata=-1.0 if dtype == "float32" else 255) as d:
+        d.write(arr.astype(dtype), 1)
+    return path
+
+
+def test_g03_same_fixture_as_3_0():
+    """G-03. The 3.0 A/B fixture (A score 0.9 IoU 0.6, B score 0.5 IoU 0.9, K = 1) gives recall 1.0 in 3.1.
+    The pre-fix 3.1 IoU-order matcher gave 0.0."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    truth = gpd.GeoDataFrame({"truth_id": [5]}, geometry=[box(X0, Y0, X0 + 10, Y0 + 10)], crs=ek.DST_CRS)
+    cands = gpd.GeoDataFrame({"score": [0.9, 0.5]}, geometry=[box(X0, Y0, X0 + 6, Y0 + 10), box(X0, Y0, X0 + 10, Y0 + 9)],
+                             crs=ek.DST_CRS)
+    blocks = gpd.GeoDataFrame({"block_id": [0]}, geometry=[box(X0, Y0, X0 + 100, Y0 + 100)], crs=ek.DST_CRS)
+    s, per, sc, st = xl.score_area(cands, truth, blocks, k_per_km2=100.0)
+    assert s["k"] == 1 and s["recall"] == 1.0
+    assert s["policy_hash"] == ek.policy_for("pit")["policy_hash"]
+
+
+@pytest.mark.parametrize("x_start,width", [(50, 100), (20, 160), (5, 250), (60, 330)])
+def test_f03_seam_blob_matches_whole_raster_oracle(tmp_path, x_start, width):
+    """F03. A 20 m tall blob crossing block seams must come out as ONE candidate, identical to extraction on
+    the whole raster (oracle), with area width x 20 m. The pre-fix blockwise reader gave one clipped
+    copy per block (for 100 x 20 m: two 1,800 m2 candidates)."""
+    import geopandas as gpd
+    from rasterio.transform import from_origin
+    from shapely.geometry import box
+    res, W, H = 0.5, 800, 200                                   # 400 m x 100 m raster
+    tf = from_origin(X0, Y0 + 100, res, res)
+    p = np.zeros((H, W), np.float32)
+    p[int(40 / res):int(60 / res), int(x_start / res):int((x_start + width) / res)] = 0.8
+    path = _write_prob(tmp_path / "p.tif", p, tf)
+    blocks = gpd.GeoDataFrame({"block_id": [0, 1, 2, 3]},
+                              geometry=[box(X0 + i * 100, Y0, X0 + (i + 1) * 100, Y0 + 100) for i in range(4)],
+                              crs=ek.DST_CRS)
+    pol = xl.policy("pit")
+    import _xfer_score_k40_wfm as sk
+    got = sk.candidates_in_blocks(path, blocks, policy=pol)
+    oracle = xl.tl.extract(p, tf, ek.DST_CRS, pol)
+    oracle["block_id"] = xl.tl.assign_blocks(oracle, blocks)
+    assert len(got) == len(oracle) == 1
+    assert got.geometry.area.iloc[0] == pytest.approx(width * 20.0)
+    assert got.geometry.iloc[0].equals(oracle.geometry.iloc[0])
+    assert got.score.iloc[0] == pytest.approx(oracle.score.iloc[0])
+    assert int(got.block_id.iloc[0]) == int(oracle.block_id.iloc[0])
+    sub = blocks[blocks.block_id.isin([int(got.block_id.iloc[0])])]          # one block alone still sees the whole blob
+    one = sk.candidates_in_blocks(path, sub, policy=pol)
+    assert len(one) == 1 and one.geometry.area.iloc[0] == pytest.approx(width * 20.0)
+
+
+def test_f11_feet_raster_refused(tmp_path):
+    import geopandas as gpd
+    from rasterio.transform import from_origin
+    from shapely.geometry import box
+    path = _write_prob(tmp_path / "ft.tif", np.zeros((10, 10), np.float32), from_origin(1000, 1000, 1.64, 1.64),
+                       crs="EPSG:2272")
+    b = gpd.GeoDataFrame({"block_id": [0]}, geometry=[box(1000, 980, 1010, 1000)], crs=ek.DST_CRS)
+    with pytest.raises(AssertionError):
+        xl.candidates_for_blocks(path, b, xl.policy("pit"))
+
+
+def test_g07_low_density_stratum_scored_or_reported(tmp_path):
+    """G-07. Low-density complete blocks enter the role draw (stratified apart) and the scorer reports them.
+    With no low-density block the record says so instead of dropping the key."""
+    import _xfer_blocks_roles_wfm as br
+    import _xfer_score_k40_wfm as sk
+    cfg = xl.load_config(HERE.parent / "config_3_1.json")
+    b = _blocks(8)
+    b["cover"] = 1.0
+    b["void_frac"] = 0.3
+    b["ground_per_m2"] = np.where(b.ix < 2, 1.0, 3.0)                       # 16 low-density blocks
+    out, meta = br.eligibility_and_roles(b, cfg, 1.9, 150.0, seed=1, strat=None)
+    low = out[out.low_density]
+    assert len(low) == 16 and not low.eligible.any()
+    assert (low.role == "test").sum() > 0                                     # pre-fix: all 'ineligible'
+    assert set(out[out.role == "test"].stratum) == {"main", "low_density"}
+    truth = _squares([(X0 + 20, Y0 + 20)])
+    rec = sk.low_density_stratum(out, lambda bb: _squares([(X0 + 20, Y0 + 20)]).assign(score=0.9), truth, xl.policy())
+    assert rec["status"] == "scored" and rec["n_blocks"] == int(((out.role == "test") & out.low_density).sum())
+    none = out.assign(low_density=False)
+    rec2 = sk.low_density_stratum(none, lambda bb: None, truth, xl.policy())
+    assert rec2 == {"status": "empty", "reason": "no block falls under the density rule", "n_low_density_blocks": 0,
+                    "roles": {}}
+
+
+def test_p1_03_buffer_from_real_p1_writer_and_zero_refused(tmp_path):
+    """P1-03. The P1 writer's JSON (assemble + write_buffer_json) is read through ek.read_buffer.
+    The pre-fix reader indexed pit_buffer_m and raised KeyError. A zero buffer is refused."""
+    import importlib
+    import _xfer_blocks_roles_wfm as br
+    sys.path.insert(0, str(ek.EXP_ROOT / "0_prerequisites" / "p1_splits_manifests" / "src"))
+    bd = importlib.import_module("_split_buffer_derive_9t")
+    p = bd.write_buffer_json(bd.assemble({"pit": {"buffer_m": 100.0}, "pad": "not derived"}), tmp_path / "buf.json")
+    cfg = xl.load_config(HERE.parent / "config_3_1.json")
+    cfg["assumed"]["derived_buffer"]["spec"] = {"abs": str(p)}
+    assert br.derived_buffer(cfg, "pit", False) == (100.0, False)
+    with pytest.raises(xl.MissingInput):
+        br.derived_buffer(cfg, "pad", False)                                  # pad has no derived buffer
+    assert br.derived_buffer(cfg, "pad", True) == (cfg["fallback_buffer_m"], True)
+    with pytest.raises(ValueError, match="positive"):
+        xl.assign_roles(_blocks(4), seed=1, buffer_m=0.0)
+
+
+def test_las_without_crs_raises():
+    import _xfer_tile_inventory_wfm as ti
+    row = {"file": "x.laz", "minx": 0, "miny": 0, "maxx": 10, "maxy": 10}
+    with pytest.raises(ValueError, match="no CRS"):
+        ti.footprint_6346(row, None)
+    with pytest.raises(ValueError, match="metres"):
+        ti.footprint_6346(row, 2272)
+    assert ti.footprint_6346(row, 6346).area == 100
+
+
+def test_f08_lineage_and_reference_guards(tmp_path):
+    """F08. Old-schema or truth-only reference tables are refused. A provisional inference record makes every
+    decision descriptive while keeping the would-be decision."""
+    import _xfer_score_k40_wfm as sk
+    old = tmp_path / "old.json"
+    old.write_text(json.dumps({"0": {"cands": [], "n_truth": 0, "km2": 0.14}}))
+    with pytest.raises(AssertionError, match="no policy stamp"):
+        sk.reference_counts(old, xl.policy(), 40, 30)
+    tr = tmp_path / "tr.json"
+    tr.write_text(json.dumps({"0": {"cands": [], "n_truth": 1, "km2": 0.14}, "policy": xl.policy(),
+                              "meta": {"footprint": "truth_bearing_blocks_only"}}))
+    with pytest.raises(AssertionError, match="G-02"):
+        sk.reference_counts(tr, xl.policy(), 40, 30)
+    sens = tmp_path / "sens.json"
+    sens.write_text(json.dumps({"0": {"cands": [], "n_truth": 1, "km2": 0.14}, "policy": ek.policy_for("pit", "sensitivity"),
+                                "meta": {"footprint": "all_blocks"}}))
+    with pytest.raises(AssertionError, match="policy mismatch"):
+        sk.reference_counts(sens, xl.policy(), 40, 30)
+    ok, why = xl.tl.confirmatory_ok({"family": "pit/unet_cv5", "lineage": "historical_cv5", "provisional": True},
+                                    {"family": "pit/unet_cv5", "lineage": "historical_cv5", "provisional": True})
+    res = {"primary": {"decision": "success"}, "k30": {"decision": "failure"}}
+    sk.apply_lineage(res, ok, why)
+    assert res["primary"] == {"decision": "descriptive", "decision_if_confirmatory": "success"}
+    assert res["provisional"] is True and res["k30"]["decision"] == "descriptive"

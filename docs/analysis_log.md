@@ -5,6 +5,38 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-06 fixes for both expansion reviews
+
+- Scope. Every finding in `docs/plans/expansion_adversarial_review_20261106.md` and `docs/plans/expansion_consolidated_review_20261106.md`. The lead fixed the shared toolkit first. Seven agents then fixed the groups in parallel, each in its own folders. No GPU training, no downloads, the audit set is not frozen.
+- Tests. 38 files, 443 passed, 0 failed (was 247). Each new test was checked to fail on the pre-fix code.
+- Shared toolkit `expansions/_shared/src/expkit.py`.
+  - The bootstrap keeps undefined draws. Any undefined draw makes the interval undefined unless the caller declares a tolerated share (SH-01).
+  - Recall cannot exceed 1. Hits on truth outside the denominator are ignored or raise (SH-02).
+  - One scoring policy `ek.policy_for` for every scorer (F02, G-01, 7.3-01).
+  - Shared readers for the split, buffer and audit files (F05, P1-01, P2-01, P1-03).
+  - Run folders are never overwritten. Provenance paths are repo-relative.
+  - `.gitattributes` keeps frozen split files byte-exact (P2-02).
+- Numbers that changed (9t, K = 40, exploratory).
+  - 3.0 reference footprint now holds all 144 blocks (G-02). The 29 pit-free and 15 pad-free blocks were in no training fold. They were scored from the existing fold rasters. Pit recall 0.917 to 0.946. Pad 0.815 to 0.855.
+  - The regional core matches the 3.0 scorer exactly. 9t pit 0.578 at cutoff 0.10 to 0.9165 at 0.35.
+  - Deduplication in 3.0 and 3.1 never ran (NaN versus None). Fixed.
+  - 3.3 slope terciles 0.935 / 0.940 / 0.946. Low minus high −0.012.
+  - 5.6 detector output deduplicates on predictions only. Pits 685 to 677, pads 1005. det_id is a seeded permutation, unique across pit and pad. Positive control 0.373. Orphan pits 0.043 [−0.082, 0.171]. Plugged pits now computable, 0.039 [−0.023, 0.103].
+  - 5.3 ranking. Missing components are no longer skipped. All 296 candidates are unrankable. Scenarios A and D are unrankable.
+  - 5.4 K 647 to 810. D 624 to 656 [578, 739].
+  - 7.3 benchmark at the policy cutoffs. Pit 0.673 to 0.911. Pad 0.063 to 0.730.
+  - 7.2 replay with 10 seeds. G is unset, so the verdict is inconclusive. G is never floored.
+  - 6.6 viewshed has an unknown state. Most 9t cells become unknown because 9t has a void fraction of 0.47.
+  - 4.4 stays CLOSE for ordinary small wells. The tail branch refuses to extrapolate.
+  - 4.3 V2 refuses. The held Sentinel-2 stacks are DN, not reflectance.
+  - 4.5 late flight date corrected to 2020-03-18.
+  - P1 at the derived buffer. Pit 100 m, pad 150 m (new). Block mode leaves 12 to 24 pit train blocks per fold.
+- Data alert. DEP `TOTAL_MAXI`, `OLDEST_FOR` and `TARGET_FOR` are empty in all four DEP exports held. 6.4 stops with "no depth in records".
+- Lead integration. 5.4 now reads `arm_c_search_areas.csv` from 7.5, so zero-well and inaccessible cells are counted. `docs/iterations/transfer_prereg_template.md` section 12 adds the scoring and checkpoint fields. `expansions/_shared/INTERFACES.md` rewritten.
+- User decisions are listed under "Needs user decision" in each `expansions/*/*/docs/decisions_<id>.md`.
+
+---
+
 ## 2026-11-06 adversarial code review of all expansions (blank-slate)
 
 - The review used the blank-slate prompt `docs/plans/expansion_code_review_blank_prompt.md` with TARGET = ALL. It was read-only. Five independent reviewers covered the groups, and the lead re-checked one blocker per group.

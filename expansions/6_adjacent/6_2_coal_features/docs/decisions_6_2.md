@@ -2,6 +2,8 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- 2026-11-06. Point (zero-area) mine records match an IoU class by distance. Inside the candidate or within the class offset_m counts. The rule is in `tolerance._point_rule`. Made by the fix agent, change freely.
+- 2026-11-06. The coal audit blocks are read with the plain reader (`inputs.audit_blocks.reader`). They are 6.2's own frozen file, not the P2 audit set. Made by the fix agent, change freely.
 - 2026-11-05. The coal test area defaults to Greene County (`area` in config). Washington or Fayette are one edit away. Made by the build agent, change freely.
 - 2026-11-05. DEP mine layer names, type fields and code map are assumed. Unmapped codes are listed and never guessed. Made by the build agent, change freely.
 - 2026-11-05. S0 position tolerances for IoU classes are proposed as 15 m for subsidence and 50 m for spoil heaps. Made by the build agent, change freely.

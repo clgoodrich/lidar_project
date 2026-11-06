@@ -65,6 +65,34 @@ def test_injection_recovers_on_synthetic_stack():
     assert abs(r["rate_rec"] - 10.0) < 1.5
 
 
+def test_injection_error_rises_with_noise():
+    """G-08. Recovery error must grow with stack noise. The old chain differenced out the noise and gave
+    the same recovered rate (2.0208) at every noise level. Mean absolute rate error over 8 seeds."""
+    err = []
+    for noise in (0.3, 3.0, 30.0):
+        e = []
+        for seed in range(8):
+            phi, coh, pairs, dates = ir.synthetic_stack(seed, n_pix=10, noise_rad=noise)
+            r = ir.run_injection(phi, coh, pairs, dates, WL, 10.0, 5.0, [5, 6, 7, 8, 9], 9, 0.0)
+            e.append(abs(r["rate_rec"] - 10.0))
+        err.append(float(np.mean(e)))
+    assert err[0] < err[1] < err[2], err
+    assert err[2] > 5 * err[0]
+
+
+def test_end_of_season_rate_never_mixes_months():
+    """3.8 season mixing. Rate 0, seasonal 20 mm. The last year has no September dates. The old rule took
+    September in two years and August in the third and found a spurious rate of about 4.7 mm/yr. All three
+    years have August, so the new rule uses August in every year. Rate 0 up to the 1-day leap-year shift."""
+    thaw = [5, 6, 7, 8, 9]
+    dates = [d for y in (2019, 2020, 2021) for d in pd.date_range(f"{y}-05-01", f"{y}-09-30", freq="12D")]
+    dates = [d for d in dates if not (d.year == 2021 and d.month == 9)]
+    s = pd.DataFrame({"date": dates, "los_mm": ir.injected_los(dates, 0.0, 20.0, thaw)})
+    assert abs(rd.end_of_season_rate(s, 9, thaw)) < 0.3
+    assert rd.eos_month_used(s.assign(date=pd.to_datetime(s["date"])), 9, thaw) == 8
+    assert rd.decide_two_sided(float("nan"), float("nan"), 2) == "inconclusive"
+
+
 def test_matching_and_diffs():
     sites = pd.DataFrame({"site_id": ["s1", "s2"], "landcover": [1, 1], "ice_class": ["h", "h"], "slope_class": ["f", "f"],
                           "wetness": [0.5, 0.9], "road_dist_m": [100, 200], "frame": ["F", "F"]})

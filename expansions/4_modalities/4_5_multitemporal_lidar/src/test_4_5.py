@@ -118,13 +118,137 @@ def test_registration_recovers_shift():
     assert np.nanstd((L - E2)[20:-20, 20:-20]) < 0.02
 
 
-def test_recovery_chain_sees_half_metre(tmp_path):
-    early, late, T = _surfaces()
-    pads = _pads()
-    sites = np.array([[X0 + 200 + 120 * i, Y1 - 200 - 120 * j] for i in range(3) for j in range(3)])
-    r = S3.run(_cfg(), out_root=tmp_path, rasters=(early, late, T), layers=[pads, None, None], sites_xy=sites)
+def test_taper_profile_has_mean_h():
+    # oracle by hand. Raised cosine flat to R/2, zero at R. Mean over the disc = (5/4 - 1/pi^2) / 2 = 0.574339
+    assert abs(S3.TAPER_MEAN - 0.5743394) < 1e-6
+    R, h = 20.0, 0.3
+    g = np.linspace(-R, R, 801)
+    X, Y = np.meshgrid(g, g)
+    inside = np.hypot(X, Y) <= R
+    z = S3.inject(X.ravel(), Y.ravel(), np.zeros(X.size), [(0.0, 0.0)], np.pi * R ** 2, h)
+    assert abs(-z[inside.ravel()].mean() - h) < 0.005
+    assert np.allclose(z[~inside.ravel()], 0.0)
+    # tapered, not a step. The edge ring carries much less than the centre
+    r = np.hypot(X.ravel(), Y.ravel())
+    assert -z[(r > 0.9 * R) & (r <= R)].mean() < 0.1 * -z[r < 0.4 * R].mean()
+
+
+def _chain_grid(monkeypatch, n=300):
+    import _change_rebuild_v2_9t as R
+    bb = (X0, Y1 - n * RES, X0 + n * RES, Y1)
+    monkeypatch.setattr(R, "BB", bb)
+    monkeypatch.setattr(R, "N", n)
+    monkeypatch.setattr(R, "RES", RES)
+    return bb
+
+
+def _points(bb, seed=3, density=0.6, pass_offset=0.08):
+    """2006 ground points of the _surfaces terrain in two overlapping passes. Pass 200 sits pass_offset high."""
+    rng = np.random.default_rng(seed)
+    w, hgt = bb[2] - bb[0], bb[3] - bb[1]
+    n = int(density * w * hgt)
+    x, y = bb[0] + rng.random(n) * w, bb[1] + rng.random(n) * hgt
+    xx, yy = x - bb[0], bb[3] - y
+    z = 300 + 0.05 * xx + 0.03 * yy + 2 * np.sin(xx / 40) * np.cos(yy / 55) + rng.normal(0, 0.03, n)
+    lab = np.where(xx < 0.6 * w, 100, 200)
+    both = (xx > 0.35 * w) & (xx < 0.6 * w) & (rng.random(n) < 0.5)
+    lab[both] = 200
+    z = z + pass_offset * (lab == 200)
+    return x, y, z, lab
+
+
+def _grid_builder(n):
+    from scipy.interpolate import LinearNDInterpolator
+
+    def build(x, y, z):
+        cs = X0 + (np.arange(n) + 0.5) * RES
+        rs = Y1 - (np.arange(n) + 0.5) * RES
+        gx, gy = np.meshgrid(cs, rs)
+        return LinearNDInterpolator(np.c_[x, y], z)(gx, gy)
+    return build
+
+
+def _ref(n):
+    yy, xx = np.mgrid[0:n, 0:n] * RES + RES / 2
+    return 300 + 0.05 * xx + 0.03 * yy + 2 * np.sin(xx / 40) * np.cos(yy / 55)
+
+
+def test_recovery_runs_the_point_chain(tmp_path, monkeypatch):
+    """S3 runs the S4 chain on points. A 0.08 m pass offset must be removed by the overlap step (no false alarms),
+    a 0.5 m tapered mound must be seen, and a held field that differs from the h = 0 chain must fail the check."""
+    from rasterio.transform import from_origin
+    n = 300
+    bb = _chain_grid(monkeypatch, n)
+    pts = _points(bb)
+    ref = _ref(n)
+    T = from_origin(X0, Y1, RES, RES)
+    d19 = ref + np.random.default_rng(5).normal(0, 0.03, ref.shape)
+    build = _grid_builder(n)
+    hp0, info = S3.point_chain(*pts, ref, d19, build)
+    assert abs(info["offset_std_m"] - 0.04) < 0.01           # two passes 0.08 apart, zero-mean gauge -> +-0.04
+    pads = _pads().iloc[:0]
+    sites = np.array([[X0 + 150 + 150 * i, Y1 - 150 - 150 * j] for i in range(3) for j in range(3)])
+    cfg = _cfg()
+    cfg["recovery"].update(heights_m=[0.5], areas_m2=[400.0])
+    r = S3.run(cfg, out_root=tmp_path, points=pts, surfaces=(ref, d19, T), layers=[pads, None, None],
+               sites_xy=sites, build_dem=build, held_field=hp0)
     cv = r["curve"][r["curve"].slope_class == "all"].set_index("height_m")
     assert cv.loc[0.5, "rate"] >= 0.7 and cv.loc[0.0, "rate"] <= 0.3
+    assert r["summary"]["reproduce_check"]["status"] == "pass"
+    assert set(r["summary"]["chain_info"]) == {"h0", "h0.5_a400"}
+    bad = S3.reproduce_check(hp0, hp0 + 0.05, 0.01)
+    assert bad["status"] == "fail" and abs(bad["rms_m"] - 0.05) < 1e-9
+
+
+def test_recovery_refuses_foreign_grid(tmp_path, monkeypatch):
+    from rasterio.transform import from_origin
+    _chain_grid(monkeypatch, 300)
+    ref = _ref(300)
+    with pytest.raises(ValueError, match="grid mismatch"):
+        S3.run(_cfg(), out_root=tmp_path, points=(np.zeros(1),) * 4,
+               surfaces=(ref, ref, from_origin(X0 + 2, Y1, RES, RES)), layers=[_pads(), None, None],
+               sites_xy=np.zeros((1, 2)))
+
+
+def _seam_field(shape, rows=(140, 290), step=0.3):
+    """A high-passed field with a +step block between two straight row seams."""
+    f = np.zeros(shape)
+    f[rows[0]:rows[1]] += step
+    return f
+
+
+def test_seam_distance_is_matched(tmp_path):
+    """Treated pads 1 and 3 sit near a seam. Pool pads in rows j = 1, 3 do too, rows j = 0, 2 sit over 100 m away.
+    With seam_dist_m matched, every control must come from the near-seam rows (review 4.5-02)."""
+    r1 = _elig(tmp_path)
+    early, late, T = _surfaces(1)
+    pads = _pads()
+    hp = _seam_field(early.shape)
+    sd = io.value_at(io.seam_distance(hp, RES), T, pads.geometry)
+    near = {i for i in range(16) if i % 4 in (1, 3)}
+    assert all(sd[i] < 40 for i in near) and all(sd[i] > 100 for i in range(16) if i not in near), sd
+    cfg = _cfg()
+    cfg["controls"].update(caliper_sd=5.0, max_controls=2)   # 4 controls from 6 near-seam pool pads (pool 0, 5 to 15)
+    r2 = S2.run(cfg, out_root=tmp_path, elig_dir=r1["run_dir"], rasters=(early, late, T, hp), layers=(pads, None))
+    import geopandas as gpd
+    M = gpd.read_file(r2["gpkg"], layer="pads")
+    ctrl = set(M[M.role == "control"].pad_id)
+    assert ctrl and ctrl <= near, ctrl
+    assert "seam_dist_m" in r2["balance"]["covariates_used"]
+    with pytest.raises(FileNotFoundError, match="seam_dist_m"):
+        S2.run(cfg, out_root=tmp_path, elig_dir=r1["run_dir"], rasters=(early, late, T), layers=(pads, None))
+
+
+def test_late_window_widened_by_sampled_gps():
+    """D20 over 9t is labelled 2019 but flew 2020-03-18. A sampled GPS date outside the year bounds must widen them."""
+    proj = {"name": "D20", "year_lo": 2019, "year_hi": 2019}
+    w = S0.tile_window({"tile": "t.laz", "scan": "sampled", "gps_first": "2020-03-18", "gps_last": "2020-03-18",
+                        "header_creation_date": "2020-11-23"}, proj, None)
+    assert (w["window_start"], w["window_end"]) == ("2019-01-01", "2020-03-18")
+    assert w["method"] == "year_bounds+gps_widened"
+    w = S0.tile_window({"tile": "t.laz", "scan": "full", "gps_first": "2020-03-18", "gps_last": "2020-03-18"},
+                       proj, None)
+    assert (w["window_start"], w["window_end"], w["method"]) == ("2020-03-18", "2020-03-18", "gps_full_scan")
 
 
 def test_controls_and_compare(tmp_path):
@@ -137,16 +261,19 @@ def test_controls_and_compare(tmp_path):
     late = late + 0.6 * m
     cfg = _cfg()
     cfg["controls"]["caliper_sd"] = 5.0
-    r2 = S2.run(cfg, out_root=tmp_path, elig_dir=r1["run_dir"], rasters=(early, late, T), layers=(pads, None))
-    assert r2["balance"]["n_treated_matched"] == 2 and r2["balance"]["n_controls"] >= 2
     import _icp_change_classify_9t as CC
     hp = CC.highpass(CC.destripe((late - early).astype(np.float32))).astype(float)
+    r2 = S2.run(cfg, out_root=tmp_path, elig_dir=r1["run_dir"], rasters=(early, late, T, hp), layers=(pads, None))
+    assert r2["balance"]["n_treated_matched"] == 2 and r2["balance"]["n_controls"] >= 2
     r4 = S4.run(cfg, out_root=tmp_path, ctrl_dir=r2["run_dir"], rasters=(hp, late, T), layers=[pads, None, None],
                 pool_pads=pads.iloc[[0, 2, 4, 5, 6, 7, 8, 9, 10, 11]])
     pr = r4["result"]["primary"]
-    assert pr["n_treated"] == 2 and pr["estimate"] > 0.5
-    assert pr["verdict"].startswith("inconclusive") or pr["verdict"] in ("success", "failure")
+    # both treated pads flagged, no control flagged, 2 clusters. Every bootstrap draw is 1.0, so lo = 1 > 0.10
+    assert pr["n_treated"] == 2 and pr["estimate"] == 1.0
+    assert (pr["lo"], pr["hi"]) == (1.0, 1.0)
+    assert pr["verdict"] == "success"
     assert r4["result"]["placebo"]["reps"] == 20
+    assert r4["result"]["seam_matched"] is True
 
 
 def test_missing_input_named(tmp_path):

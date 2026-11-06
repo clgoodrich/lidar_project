@@ -24,9 +24,11 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
 
-Tests. `python -m pytest -q expansions/6_adjacent/6_6_sar_viewshed/src/test_6_6.py -p no:cacheprovider` gives 10 passed. They include plane, wall, hill, pit, canopy block, nodata, edge and void cases, and 1,000 random sweep against brute-force pairs with zero disagreements outside half-cell tolerance.
+Tests. `python -m pytest -q expansions/6_adjacent/6_6_sar_viewshed/src/test_6_6.py -p no:cacheprovider` gives 20 passed. They include plane, wall, hill, pit, canopy block, nodata, edge and void cases, and 1,000 random sweep against brute-force pairs with zero disagreements outside half-cell tolerance.
+Review fixes on 2026-11-06. Visibility has three states, visible, hidden and unknown. Unobserved terrain on a sightline (no surface value, a void cell, or O2 canopy with no CHM value) makes the call unknown unless a known obstacle already hides the target. A void target cell is unknown. The cumulative map keeps unknown cells apart and never counts them as seen by nobody. The walk test smooths each GNSS track and thins it by displacement, so 1 Hz fixes with 2 to 3 m error give the right length. The GNSS band in sight checks is two-sided. A pair whose call flips inside the band is ambiguous and not scored. Fine to coarse cell mapping for cost and route now uses cell centres.
+Real-data rerun on 2026-11-06. 500 m viewshed from 621750, 4595250 on 9t, scratch runs. O0 visible cells 123,895 to 44. Unknown cells 0 to 1,540,127 (1,408,436 void targets that were masked before, plus 131,691 cells behind void). O1 visible cells 1,864 to 36. Unknown cells 0 to 1,410,893. Hidden pockets unchanged (16 for O0, 12 for O1). The observer stands in a void patch, so almost every ray starts across unobserved ground. Wall time 20 s for O0.
 Real-data checks. `gridcheck` passed on 9t (`results/tables/sar_grid_check_9t.json`). A 500 m O1 benchmark on 9t took 11.6 s and 179 MB peak (scratch run).
 Not a well result. Keep it out of well reports.
 

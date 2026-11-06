@@ -24,6 +24,19 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
+## Build status (2026-11-06)
+Review fixes for 4.9-01 and the 4.9 minors. Tests 11 passed.
+
+| Script | Change |
+|---|---|
+| `src/_sar_kit_4_9.py` | `lidar_weak_mask` from an external covariate. `paired_gain_boot` counts undefined draws. `paired_perm` on within-arm ranks. Frozen-row stamp and check |
+| `src/_sar_power_baseline_9t.py` | S1 strata from the covariate. lidar_weak skipped when it is unset |
+| `src/_sar_new_score_9t.py` | S5 strata from the covariate. One primary row (all). Placebo must be null. undefined_share column |
+| `src/_sar_new_features_9t.py` | S4 refuses to overwrite frozen rows that changed. `--adopt-frozen` |
+| `src/config_4_9.json` | `prereg.lidar_weak` (covariate unset), `primary_stratum`, `max_undefined_share` |
+
+No S1 or S5 result was on file, so nothing was rerun. The held 9t pit rows were stamped as frozen.
+
 ## Build status (2026-11-05)
 Built by the build agent. Arm specifications are assumptions in `src/config_4_9.json` (all VERIFY). Tests. `python -m pytest -q expansions/4_modalities/4_9_more_radar/src/test_4_9.py -p no:cacheprovider` (5 passed).
 

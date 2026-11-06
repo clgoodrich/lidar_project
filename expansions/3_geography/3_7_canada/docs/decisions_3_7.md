@@ -2,6 +2,8 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- The shifted-set null wraps records around the footprint bounding box (torus shift). Count and composition stay fixed. At 100 spread records all 999 shifts are now kept (0 before). If fewer than n_shifts survive on an irregular footprint the excess is reported as not computable with NaN values (G-09). (2026-11-06, review repair by the fix agent, change freely)
+- Province scoring inherits the fixed core (task policy, support rule, id mapping, gates). (2026-11-06, review repair by the fix agent, change freely)
 - Provincial file names and column names in the config are guesses. They are starting points to replace after S0. (2026-11-05, made by the build agent, change freely)
 - Coordinate method strings map to classes by keyword. Stated uncertainties are 400 m for quarter sections, 200 m for legal subdivisions, 300 m for lot and concession, 10 m for surveyed. (2026-11-05, made by the build agent, change freely)
 - Orphan-list rows are always V0. Regulator rows reach V1 when the method is documented and an uncertainty is set. (2026-11-05, made by the build agent, change freely)
@@ -22,3 +24,10 @@ Newest first. One line per decision, with the date and who made it.
 - Each window uses its own NAD83(2011) UTM zone (US) or NAD83(CSRS) UTM zone (Canada). Alaska uses Alaska Albers EPSG:3338. (2026-11-05, made by the build agent, change freely)
 - A uint8 probability raster is read as DN / 254 with 255 as nodata, the mosaic convention in protocol section 2. (2026-11-05, made by the build agent, change freely)
 - The training sampler rejects a whole patch that touches forbidden ground. Normalisation is fitted on training windows only. (2026-11-05, made by the build agent, change freely)
+
+## Needs user decision
+
+- Which frozen checkpoint is the transfer model per task. Config key `model.<task>.transfer_checkpoint` is null and inference and fine-tuning refuse until it is set. The old default `pit/unet_iso_cv5/policy/best.pt` has no producer. (listed 2026-11-06)
+- Multiplicity. No correction is applied across areas, arms, classes or strata. Decide a family and a correction, or declare each gate a separate question. (listed 2026-11-06)
+- Support rule alignment with 3.0. The regional core uses the actual scored support (nodata and masks shrink the K budget and the denominator). The 3.0 reference now treats interior nodata as void under a cap and keeps the full block area. Pick one rule for both. (listed 2026-11-06)
+- Undefined bootstrap draws. Any undefined draw now makes a gate inconclusive (expkit SH-01). A tolerated share (`max_undefined`) would have to be declared in the prereg. (listed 2026-11-06)

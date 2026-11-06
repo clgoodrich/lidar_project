@@ -3,7 +3,8 @@
 Purpose
     Add known LOS displacement to the unwrapped interferogram phase at control pixels (a 10-pixel
     footprint): linear ramps at inject_amplitudes_mm_yr and seasonal cycles at inject_seasonal_mm.
-    Convert to phase with the mission wavelength, run the same small-baseline inversion (S2) and the
+    Convert to phase with the mission wavelength, add it to the noisy stack, run the same small-baseline
+    inversion (S2) once (no noise-cancelling difference against an uninjected inversion, review G-08) and the
     same rate and amplitude estimators (S5b), then report recovered fraction and bias per amplitude and
     per coherence band. Readiness. The chain must recover 2 x delta (bias within 25 % of the injection).
     Results are saved before any well result is unmasked.
@@ -45,15 +46,20 @@ def los_to_phase(los_mm: np.ndarray, wavelength_m: float) -> np.ndarray:
 
 
 def run_injection(phi: np.ndarray, coh: np.ndarray, pairs, dates, wl, rate, amp, thaw, eos, coh_min) -> dict:
-    """phi, coh (n_ifg, n_pix) at the chosen control pixels. Returns recovered rate and amplitude."""
+    """phi, coh (n_ifg, n_pix) at the chosen control pixels. Returns recovered rate and amplitude.
+
+    The known signal is added to the noisy phase stack BEFORE inversion, and the rate and amplitude are read
+    from that one inversion (review G-08). The old version subtracted a no-injection inversion of the same
+    stack. The inversion is linear, so that difference equalled invert(dphi) and noise cancelled exactly.
+    Now the stack's noise and its own background motion enter the recovered values, as they will at wells.
+    """
     A = sbas_design(pairs, dates)
     inj = injected_los(dates, rate, amp, thaw)
     idx = {d: i for i, d in enumerate(dates)}
     dphi = np.array([los_to_phase(inj[idx[b]] - inj[idx[a]], wl) for a, b in pairs])
-    base = phase_to_los_mm(invert_series(phi, A, coh >= coh_min), wl).mean(axis=1)
     test = phase_to_los_mm(invert_series(phi + dphi[:, None], A, coh >= coh_min), wl).mean(axis=1)
-    diff = pd.DataFrame({"date": dates, "los_mm": test - base})
-    return {"rate_rec": end_of_season_rate(diff, eos, thaw), "amp_rec": seasonal_amplitude(diff, thaw)}
+    s = pd.DataFrame({"date": dates, "los_mm": test})
+    return {"rate_rec": end_of_season_rate(s, eos, thaw), "amp_rec": seasonal_amplitude(s, thaw)}
 
 
 def synthetic_stack(seed: int = 0, n_pix: int = 10, noise_rad: float = 0.3):

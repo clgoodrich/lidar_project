@@ -5,27 +5,28 @@ Purpose
         lower = sum w over confirmed wells / sum w
         upper = 1 - sum w over definite non-wells / sum w
     Every ambiguous and inaccessible site sits in the gap between them.
-    Sampling uncertainty.
-        - Heuristic. Clopper-Pearson on the Kish effective sample size, n_eff = (sum w)^2 / sum w^2, applied
-          to the lower bound (its lower limit) and to the upper bound (its upper limit). Within one
-          stratum weights are equal, so this reduces to Clopper-Pearson on counts, whose exact coverage
-          requires independent binomial observations. Kish substitution is not exact survey inference.
-        - Clustered. Bootstrap over clusters (lease or DEP pad), B = 2000, of both bounds. The reported
-          interval is the wider of the two.
-          Fewer than two clusters produces an inconclusive result with logical bounds [0, 1].
-          Multi-cluster coverage still requires validation against the actual sampling design.
+    Sampling uncertainty (review F04). Design-based, from the declared strata, clusters (PSUs) and pi.
+        - Variance. Linearisation (ultimate cluster) variance of each weighted bound, PSUs nested in strata.
+          A stratum taken whole (all pi = 1) adds no variance. A cluster that spans strata collapses the strata.
+        - Interval. Korn-Graubard design-based Clopper-Pearson. Effective n = R (1 - R) / v, capped at n and
+          scaled by (t_{n-1} / t_df)^2. With v = 0 the effective n is the PSU count, so copies inside one
+          cluster add nothing. The reported interval runs from the lower bound's low limit to the upper
+          bound's high limit. The Kish columns cp_lo and cp_hi stay as diagnostics only.
+        - Refusal. Fewer than two clusters, a sampled stratum with one PSU, or no degrees of freedom give
+          inconclusive with logical bounds [0, 1] and the reason in interval_method.
     Differences between strata or arms use Newcombe hybrid score intervals on the within-stratum counts
     (ek.newcombe_diff) for the lower-bound share. Era strata are always reported separately, never pooled.
     Arm B precision per score band is descriptive unless sized.
-    Arm C. Confirmed wells with no DEP record per km2 searched. Search sensitivity comes from repeated
-    independent searches (Chapman two-searcher estimate, a diagnostic) and from seeded controls (known DEP
-    wells inside drawn cells, Clopper-Pearson). Density is bounded by observed / sensitivity limits.
+    Arm C. Confirmed wells with no tied agency record per km2 searched, from the child well table. Every
+    well counts, several per cell, with or without a control in the cell. Search sensitivity comes from
+    repeated independent searches (Chapman two-searcher estimate, a diagnostic) and from seeded controls
+    (known DEP wells inside searched cells, Clopper-Pearson, counted per control well). Density is bounded by observed / sensitivity limits.
     Without either source the result is conditional on the search and says so.
     Gate. Width from the interval's low end (lower bound) to its high end (upper bound) at or under the
     target width means success (precision). Wider is inconclusive. There is no failure for a measurement.
 
 Inputs (expansions/7_scale/7_5_field_campaign/results/tables/)
-    field_results_clean_v1.csv, field_sample_key_v1.csv, field_repeat_searches_v1.csv
+    field_results_clean_v1.csv, field_sample_key_v1.csv, field_repeat_searches_v1.csv, field_wells_clean_v1.csv
 Outputs
     field_bounds_v1.csv (one row per arm, stratum and pooled arm), field_analysis_v1.json
     expansions/7_scale/7_5_field_campaign/results/figures/field_bounds_v1.png
@@ -66,37 +67,101 @@ def bounds(df: pd.DataFrame) -> dict:
             "lower_bound": float(lo_b), "upper_bound": float(hi_b), "cp_lo": float(cp_lo), "cp_hi": float(cp_hi)}
 
 
-def cluster_boot(df: pd.DataFrame, B: int, seed: int) -> tuple[float, float]:
-    cl = df.groupby("cluster_id")
-    keys = list(cl.groups)
-    parts = {k: g for k, g in cl}
-    rng = np.random.default_rng(seed)
-    los, his = [], []
-    for _ in range(B):
-        d = pd.concat([parts[keys[j]] for j in rng.integers(0, len(keys), len(keys))])
-        b = bounds(d)
-        los.append(b["lower_bound"]); his.append(b["upper_bound"])
-    return float(np.percentile(los, 2.5)), float(np.percentile(his, 97.5))
+def _unidentified(label: dict, b: dict, why: str) -> dict:
+    return {**label, **b, "var_lower": None, "var_upper": None, "n_psu": None, "df": None,
+            "interval_lo": 0.0, "interval_hi": 1.0, "width": 1.0, "gate": "inconclusive",
+            "interval_method": f"unidentified design variance. {why}",
+            "evidence_level": "[0, 1] is a logical bound, not a confidence interval"}
 
 
-def summarise(df: pd.DataFrame, label: dict, B: int, seed: int, target: float) -> dict:
+def design_variance(df: pd.DataFrame, y: np.ndarray, strat_col: str = "stratum", psu_col: str = "cluster_id") -> dict:
+    """Linearisation (ultimate cluster) variance of the weighted share R = sum w y / sum w (review F04).
+
+    PSUs are the clusters, nested in the sampling strata. A stratum whose sites all have pi = 1 was taken
+    whole and adds no sampling variance. If one cluster sits in two strata the PSUs are not nested, so the
+    strata are collapsed for the variance (one stratum, clusters as PSUs). No finite-population correction.
+        z_hi = sum over sites in PSU i of stratum h of w (y - R) / sum w
+        v = sum_h n_h / (n_h - 1) sum_i (z_hi - mean_h z)^2,   df = PSUs - strata
+    Returns ok False with a reason when the variance is not identified (a sampled stratum with one PSU).
+    """
+    w = 1.0 / df["pi"].to_numpy(float)
+    W = w.sum()
+    R = float((w * y).sum() / W)
+    d = pd.DataFrame({"h": df[strat_col].astype(str).to_numpy(), "psu": df[psu_col].astype(str).to_numpy(),
+                      "z": w * (y - R) / W, "cert": df["pi"].to_numpy(float) >= 1.0})
+    note = "strata as drawn, clusters nested"
+    if (d.groupby("psu")["h"].nunique() > 1).any():
+        d["h"] = "collapsed"
+        d["cert"] = bool(d["cert"].all())
+        note = "a cluster spans strata, so strata are collapsed for the variance"
+    if d["cert"].all():
+        return {"ok": True, "R": R, "v": 0.0, "n_psu": int(d["psu"].nunique()), "df": None, "census": True, "note": note}
+    s = d[~d["cert"]]
+    z = s.groupby(["h", "psu"])["z"].sum().reset_index()
+    nh = z.groupby("h").size()
+    one = sorted(nh[nh < 2].index)
+    if one:
+        return {"ok": False, "why": f"stratum {one[0]} has one PSU ({len(one)} such strata). Collapse strata or add clusters"}
+    v = 0.0
+    for h, g in z.groupby("h"):
+        n = len(g)
+        v += n / (n - 1) * float(((g["z"] - g["z"].mean()) ** 2).sum())
+    dof = int(len(z) - len(nh))
+    if dof < 1:
+        return {"ok": False, "why": "no degrees of freedom left for the variance"}
+    return {"ok": True, "R": R, "v": float(v), "n_psu": int(d["psu"].nunique()), "df": dof, "census": False, "note": note}
+
+
+def korn_graubard(R: float, v: float, n: int, n_psu: int, dof: int, alpha: float = 0.05) -> tuple[float, float, float]:
+    """Korn and Graubard (1998) design-based Clopper-Pearson interval for a survey share.
+    Effective n = R (1 - R) / v, capped at n, times (t_{n-1} / t_df)^2. When v = 0 (all sites agree) the
+    effective n is the number of PSUs, so copies inside one cluster add no sample size.
+    Returns (lo, hi, effective n after the df scaling)."""
+    from scipy.stats import beta, t
+    ne = R * (1 - R) / v if v > 0 else float(n_psu)
+    ne = min(ne, float(n)) * (t.ppf(1 - alpha / 2, n - 1) / t.ppf(1 - alpha / 2, dof)) ** 2
+    k = R * ne
+    lo = 0.0 if k <= 0 else float(beta.ppf(alpha / 2, k, ne - k + 1))
+    hi = 1.0 if k >= ne else float(beta.ppf(1 - alpha / 2, k + 1, ne - k))
+    return lo, hi, float(ne)
+
+
+def summarise(df: pd.DataFrame, label: dict, target: float, strat_col: str = "stratum") -> dict:
     b = bounds(df)
     if df["cluster_id"].isna().any():
         raise ValueError("every observation needs a cluster_id")
     if df["cluster_id"].nunique() < 2:
-        return {**label, **b, "boot_lo": None, "boot_hi": None,
-                "interval_lo": 0.0, "interval_hi": 1.0, "width": 1.0,
-                "gate": "inconclusive", "interval_method": "unidentified cluster variance",
-                "evidence_level": "fewer than two independent clusters; [0, 1] is a logical bound, not a confidence interval"}
-    bl, bh = cluster_boot(df, B, seed) if df["cluster_id"].nunique() > 1 else (b["cp_lo"], b["cp_hi"])
-    lo, hi = min(b["cp_lo"], bl), max(b["cp_hi"], bh)
+        return _unidentified(label, b, "fewer than two independent clusters")
+    conf = (df["identity"] == "confirmed_well").to_numpy(float)
+    up = 1.0 - (df["identity"] == "definite_non_well").to_numpy(float)
+    vl, vu = design_variance(df, conf, strat_col), design_variance(df, up, strat_col)
+    if not vl["ok"]:
+        return _unidentified(label, b, vl["why"])
+    n = len(df)
+    if vl["census"]:
+        lo, hi = b["lower_bound"], b["upper_bound"]
+        method = "census of the frame (all pi = 1). No sampling variance"
+    else:
+        lo = korn_graubard(vl["R"], vl["v"], n, vl["n_psu"], vl["df"])[0]
+        hi = korn_graubard(vu["R"], vu["v"], n, vu["n_psu"], vu["df"])[1]
+        method = f"Korn-Graubard on linearisation variance, {vl['n_psu']} PSUs, df {vl['df']}, {vl['note']}"
     width = hi - lo
-    return {**label, **b, "boot_lo": bl, "boot_hi": bh, "interval_lo": lo, "interval_hi": hi, "width": width,
-            "gate": "success (precision)" if width <= target else "inconclusive",
+    return {**label, **b, "var_lower": vl["v"], "var_upper": vu["v"], "n_psu": vl["n_psu"], "df": vl["df"],
+            "interval_lo": lo, "interval_hi": hi, "width": width,
+            "gate": "success (precision)" if width <= target else "inconclusive", "interval_method": method,
             "evidence_level": "d (confirmed) and c (steel) kept apart"}
 
 
-def sensitivity(rep: pd.DataFrame, key: pd.DataFrame, clean: pd.DataFrame) -> dict:
+def _controls(key: pd.DataFrame) -> pd.DataFrame:
+    """One row per listed control well (DEP permit) per Arm C cell."""
+    k = key[key["arm"] == "C"][["site_id", "controls"]].copy()
+    k["control_id"] = k["controls"].fillna("").astype(str).str.split(";")
+    k = k.explode("control_id")
+    k["control_id"] = k["control_id"].astype(str).str.strip()
+    return k[k["control_id"].ne("") & k["control_id"].ne("nan")][["site_id", "control_id"]]
+
+
+def sensitivity(rep: pd.DataFrame, key: pd.DataFrame, clean: pd.DataFrame, wells: pd.DataFrame | None = None) -> dict:
     out = {}
     if len(rep):
         f1 = rep["identity_r1"] == "confirmed_well"
@@ -105,28 +170,52 @@ def sensitivity(rep: pd.DataFrame, key: pd.DataFrame, clean: pd.DataFrame) -> di
         out["two_searcher"] = {"sites": int(len(rep)), "n1": n1, "n2": n2, "both": m,
                                "chapman_N": (n1 + 1) * (n2 + 1) / (m + 1) - 1,
                                "sens_searcher1": m / n2 if n2 else None, "note": "diagnostic, not a guarantee"}
-    ctl = key[(key["arm"] == "C") & key["controls"].fillna("").astype(str).ne("")]
+    ctl = _controls(key)
     if len(ctl):
-        c = ctl.merge(clean[["site_id", "identity", "evidence_codes"]], on="site_id", how="left")
-        n = int(c["controls"].astype(str).str.split(";").apply(len).sum())
-        found = int(c["evidence_codes"].fillna("").str.contains("agency_record_tied_on_site").sum())
-        p, lo, hi = ek.clopper_pearson(min(found, n), n)
-        out["seeded_controls"] = {"n_controls": n, "found": found, "sensitivity": p, "lo": lo, "hi": hi}
+        # The unit is the control well in numerator and denominator (review 7.5-02). A control counts as found
+        # when a primary-search well row in its own cell names its permit in tied_record_id.
+        searched = set(clean.loc[clean["outcome"] != "inaccessible", "site_id"])
+        cs = ctl[ctl["site_id"].isin(searched)]
+        found_pairs = set()
+        if wells is not None and len(wells):
+            wp = wells[(wells["status"] == "primary") & (wells["identity"] == "confirmed_well")]
+            found_pairs = set(zip(wp["site_id"], wp["tied_record_id"].fillna("").astype(str)))
+        n = int(len(cs))
+        found = int(sum((s, c) in found_pairs for s, c in zip(cs["site_id"], cs["control_id"])))
+        rec = {"unit": "control well", "n_controls_listed": int(len(ctl)), "n_controls": n,
+               "n_controls_unsearched": int(len(ctl) - n), "found": found}
+        if n:
+            p, lo, hi = ek.clopper_pearson(found, n)
+            rec.update(sensitivity=p, lo=lo, hi=hi)
+        out["seeded_controls"] = rec
     return out
 
 
-def arm_c_density(clean: pd.DataFrame, key: pd.DataFrame, cell_m: float, sens: dict) -> dict:
-    c = clean.merge(key[["site_id", "controls"]], on="site_id").query("arm == 'C'")
+def arm_c_density(clean: pd.DataFrame, key: pd.DataFrame, wells: pd.DataFrame | None, cell_m: float, sens: dict) -> dict:
+    """Undocumented confirmed wells per km2 searched, from the child well table (review F16).
+    Every confirmed well of the primary search counts, several per cell, in cells with or without a control.
+    A well is undocumented when no agency record is tied to it on site. Weighted ratio sum w n / sum w area."""
+    c = clean.merge(key[["site_id", "pi"]], on="site_id").query("arm == 'C'")
     if not len(c):
         return {"note": "no Arm C cells"}
     searched = c[c["outcome"] != "inaccessible"]
-    area = len(searched) * cell_m ** 2 / 1e6
-    new = int(((searched["identity"] == "confirmed_well") & searched["controls"].fillna("").astype(str).eq("")).sum())
-    res = {"cells_searched": int(len(searched)), "cells_inaccessible": int(len(c) - len(searched)), "km2": area,
-           "undocumented_confirmed": new, "per_km2_observed": new / area if area else None}
-    sc = sens.get("seeded_controls")
-    if sc and sc["lo"] > 0:
-        res["per_km2_bounds_by_sensitivity"] = [new / area / sc["hi"], new / area / sc["lo"]] if area else None
+    a_cell = cell_m ** 2 / 1e6
+    n_new = pd.Series(0, index=searched["site_id"].to_numpy())
+    if wells is not None and len(wells):
+        wp = wells[(wells["status"] == "primary") & (wells["identity"] == "confirmed_well")
+                   & wells["tied_record_id"].fillna("").astype(str).eq("")]
+        n_new = wp.groupby("site_id").size().reindex(searched["site_id"].to_numpy(), fill_value=0)
+    w = 1.0 / searched["pi"].to_numpy(float)
+    area_w = float((w * a_cell).sum())
+    new_w = float((w * n_new.to_numpy(float)).sum())
+    res = {"cells_searched": int(len(searched)), "cells_inaccessible": int(len(c) - len(searched)),
+           "cells_unresolved": int((searched["outcome"] == "unresolved").sum()),
+           "cells_zero_new_wells": int((n_new == 0).sum()), "km2": float(len(searched) * a_cell),
+           "undocumented_confirmed": int(n_new.sum()), "per_km2_observed": new_w / area_w if area_w else None,
+           "method": "weighted ratio over searched cells. Inaccessible cells leave the searched area"}
+    sc = sens.get("seeded_controls") or {}
+    if sc.get("lo", 0) > 0 and res["per_km2_observed"] is not None:
+        res["per_km2_bounds_by_sensitivity"] = [res["per_km2_observed"] / sc["hi"], res["per_km2_observed"] / sc["lo"]]
     else:
         res["conditional"] = "search sensitivity not bounded. The density is conditional on the search"
     return res
@@ -153,17 +242,17 @@ def figure(tab: pd.DataFrame, out: Path) -> None:
     plt.close(fig)
 
 
-def analyse(cfg: dict, clean: pd.DataFrame, key: pd.DataFrame, rep: pd.DataFrame, B: int, out: Path,
-            figs: Path | None = None) -> dict:
+def analyse(cfg: dict, clean: pd.DataFrame, key: pd.DataFrame, rep: pd.DataFrame, out: Path,
+            figs: Path | None = None, wells: pd.DataFrame | None = None) -> dict:
     df = clean.merge(key[["site_id", "stratum", "pi", "cluster_id", "era"]], on="site_id", how="left")
     ek.assert_rows(df, len(clean), "clean x key")
     ek.assert_no_nan(df["pi"], "pi")
     tgt = cfg["design"]["target_width"]
     rows = []
     for arm, g in df.groupby("arm"):
-        rows.append(summarise(g, {"arm": arm, "stratum": "all (weighted)"}, B, cfg["master_seed"], tgt))
+        rows.append(summarise(g, {"arm": arm, "stratum": "all (weighted)"}, tgt))
         for s, gs in g.groupby("stratum"):
-            rows.append(summarise(gs, {"arm": arm, "stratum": s}, B, cfg["master_seed"] + 1, tgt))
+            rows.append(summarise(gs, {"arm": arm, "stratum": s}, tgt))
     tab = pd.DataFrame(rows)
     tab.to_csv(out / "field_bounds_v1.csv", index=False)
     res = {"primary": cfg["design"]["primary"],
@@ -182,9 +271,9 @@ def analyse(cfg: dict, clean: pd.DataFrame, key: pd.DataFrame, rep: pd.DataFrame
                     diffs[f"{e1} minus {e2}"] = dict(zip(("diff", "lo", "hi"), ek.newcombe_diff(k1, len(g1), k2, len(g2))))
         res["era_differences_lower_bound_share"] = {"method": "Newcombe hybrid score, unweighted within-stratum counts, exploratory",
                                                     **diffs}
-    sens = sensitivity(rep, key, clean)
+    sens = sensitivity(rep, key, clean, wells)
     res["search_sensitivity"] = sens or {"note": "no repeat searches and no seeded controls. Recall is conditional only"}
-    res["arm_C"] = arm_c_density(clean, key, cfg["arm_C"]["cell_m"], sens)
+    res["arm_C"] = arm_c_density(clean, key, wells, cfg["arm_C"]["cell_m"], sens)
     (out / "field_analysis_v1.json").write_text(json.dumps(res, indent=2, default=float), encoding="utf-8")
     figure(tab, (figs or out) / "field_bounds_v1.png")
     return res
@@ -194,7 +283,6 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="7.5 S6 analysis with identity bounds.")
     ap.add_argument("--config", default=str(CFG))
     ap.add_argument("--tables", default=str(ek.sub("7.5", "results/tables")))
-    ap.add_argument("--B", type=int, default=2000)
     a = ap.parse_args(argv)
     t = Path(a.tables)
     try:
@@ -202,10 +290,12 @@ def main(argv=None) -> int:
         key = pd.read_csv(need(t / "field_sample_key_v1.csv", "sample key"))
         rp = t / "field_repeat_searches_v1.csv"
         rep = pd.read_csv(rp) if rp.exists() else pd.DataFrame()
+        wp = t / "field_wells_clean_v1.csv"
+        wells = pd.read_csv(wp, dtype={"tied_record_id": str}) if wp.exists() else None
     except FileNotFoundError as e:
         print(e, file=sys.stderr)
         return 2
-    res = analyse(load_cfg(Path(a.config)), clean, key, rep, a.B, t, ek.sub("7.5", "results/figures"))
+    res = analyse(load_cfg(Path(a.config)), clean, key, rep, t, ek.sub("7.5", "results/figures"), wells)
     print(json.dumps(res["primary_result"], indent=2, default=float))
     return 0
 

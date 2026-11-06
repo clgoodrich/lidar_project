@@ -38,7 +38,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _mag_shared_io as io  # noqa: E402
 from _mag_shared_io import ek  # noqa: E402
 
-STRATA = ["steel_era", "early_era", "unknown_date", "pit_no_record", "confuser", "blank"]
+STRATA = ["steel_era", "early_era", "dated_pre_steel", "unknown_date", "pit_no_record", "confuser", "blank"]
 
 
 def well_year(df: pd.DataFrame) -> pd.Series:
@@ -54,14 +54,19 @@ def well_year(df: pd.DataFrame) -> pd.Series:
 
 def assign_strata(wells: pd.DataFrame, historic: pd.DataFrame | None, steel_after: int, sentinel_max: int) -> pd.Series:
     """steel_era if year > steel_after. unknown_date if year missing or <= sentinel_max.
-    early_era only for a well with an independent historic date (by PERMIT_NUM). Otherwise dated_pre_steel,
-    which is not early era (its date is a DEP date, not an independent one)."""
+    early_era only for a well with an independent historic date (by PERMIT_NUM) at or before steel_after.
+    A historic record dated after steel_after says nothing about the early era and is ignored.
+    Otherwise dated_pre_steel, which is not early era (its date is a DEP date, not an independent one)."""
     y = well_year(wells)
     s = pd.Series("dated_pre_steel", index=wells.index)
     s[y > steel_after] = "steel_era"
     s[y.isna() | (y <= sentinel_max)] = "unknown_date"
     if historic is not None and len(historic) and "PERMIT_NUM" in historic and "PERMIT_NUM" in wells:
-        hist = set(historic["PERMIT_NUM"].astype(str))
+        ycol = next((c for c in ("year_built_max", "source_date") if c in historic), None)
+        if ycol is None:
+            raise ValueError("historic_dates needs year_built_max or source_date to place a well in the early era")
+        hy = pd.to_numeric(historic[ycol], errors="coerce")
+        hist = set(historic.loc[hy <= steel_after, "PERMIT_NUM"].astype(str))
         s[wells["PERMIT_NUM"].astype(str).isin(hist)] = "early_era"
     return s
 
@@ -132,20 +137,28 @@ def run(cfg: dict, out_root: Path | None = None, wells=None, pits=None) -> dict:
     historic, conf, pilot = opt("historic_dates"), opt("confusers_blanks"), opt("pilot_sites")
 
     wells["stratum"] = assign_strata(wells, historic, sf["steel_era_after_year"], sf["sentinel_year_max"])
+    n_raw, wells_all = len(wells), wells
+    permit = wells["PERMIT_NUM"].astype("string")
+    n_no_permit = int(permit.isna().sum())
+    wells = wells[permit.notna()]
+    n_dup = int(wells["PERMIT_NUM"].astype(str).duplicated().sum())
+    wells = wells[~wells["PERMIT_NUM"].astype(str).duplicated()].copy()
     w = pd.DataFrame({"site_id": "well_" + wells["PERMIT_NUM"].astype(str), "stratum": wells["stratum"],
                       "easting": wells.geometry.x, "northing": wells.geometry.y,
                       "lidar_cx": np.nan, "lidar_cy": np.nan,
                       "well_status": wells.get("WELL_STATU"), "year": well_year(wells)})
-    frames = [w, pits_no_record(pits, wells, sf["pit_no_record_radius_m"])]
+    frames = [w, pits_no_record(pits, wells_all, sf["pit_no_record_radius_m"])]
     if conf is not None:
         frames.append(conf.rename(columns={"kind": "stratum"})[["site_id", "stratum", "easting", "northing"]])
     frame = pd.concat(frames, ignore_index=True)
-    frame = frame.drop_duplicates("site_id")
+    # A site_id collision across sources (pit, confuser, well) is an error, never a silent drop.
     ek.assert_unique(frame, "site_id")
-    ek.assert_rows(frame[frame.site_id.str.startswith("well_")], len(wells.drop_duplicates("PERMIT_NUM")), "wells in frame")
+    # Counted from the raw box, not from the deduplicated table, so the check can fail.
+    ek.assert_rows(frame[frame.site_id.str.startswith("well_")], n_raw - n_no_permit - n_dup, "wells in frame")
 
     counts = frame["stratum"].value_counts().to_dict()
-    summary = {"n_wells_in_box": int(len(wells)), "n_pits_in_box": int(len(pits)), "counts_by_stratum": counts,
+    summary = {"n_wells_in_box": int(n_raw), "n_records_no_permit": n_no_permit,
+               "n_duplicate_permit_records_dropped": n_dup, "n_pits_in_box": int(len(pits)), "counts_by_stratum": counts,
                "early_era_needs": "independent historic date (4.6). DEP dates before 1930 are dated_pre_steel, not early era",
                "historic_dates_given": historic is not None, "confusers_given": conf is not None,
                "pilot_check": validate_pilot(pilot, sf) if pilot is not None else "no pilot_sites.csv yet"}

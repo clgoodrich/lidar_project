@@ -27,10 +27,10 @@
   },
   "pad_classes": {"E1": "equipped", "E2": "bare", "E3": "faint (lidar only, partly circular)", "E0": "uncertain"},
   "primary_classes": ["E1", "E2"],
-  "reference": {"tables": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"}},
+  "reference": {"tables_by_task": {"pad": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"}}},
   "model": {
-    "pad": {"checkpoint": {"key": "models", "rel": "pad/unet_cv5_iso/fold0/best.pt"}, "sha256": null,
-            "_note": "isolated pad model exists (5 folds). The deployment policy (one fold or ensemble) is a prereg decision"}
+    "pad": {"transfer_checkpoint": null, "sha256": null,
+            "_note": "USER DECISION. Isolated pad model exists (5 folds), candidate models pad/unet_cv5_iso/fold0/best.pt. One fold or an ensemble is a prereg decision. Code refuses until set"}
   },
   "areas": {
     "ca1": {"role": "test", "catalogue_window": null, "project": "TBD (Kern or Ventura 3DEP, VERIFY)",

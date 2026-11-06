@@ -13,14 +13,19 @@ Inputs
     Uses the pit task and verifies its content hash through the producer's reader.
     --historical builds a PROVISIONAL split from the held historical held-out lists. Inner validation is
     then a seeded 15% of the training blocks. It is labelled provisional and never feeds the primary claim.
+    P2 audit CSV (config inputs.audit_blocks), read only through ek.require_audit (review 7.1-01).
+    Audit and buffer blocks leave train and inner validation. Audit blocks also leave the held-out lists.
+    A missing audit file stops the run unless --allow-no-audit. The JSON is then labelled
+    "no audit exclusion, exploratory".
 Outputs
     expansions/7_scale/7_1_pretraining/data/processed/ssl_label_subsets_9t.json
-        {"split_source", "folds": [...], "subsets": {"<fold>|<seed>|<f>": {"blocks": [...], "sha256": ...}},
+        {"split_source", "audit_guard", "audit_sha256", "audit_excluded", "buffer_excluded", "folds": [...], "subsets": {"<fold>|<seed>|<f>": {"blocks": [...], "sha256": ...}},
          "empty_share": {f: share}, "dropped_fractions": [...]}
 
 Run
     python expansions/7_scale/7_1_pretraining/src/_ssl_label_subsets_9t.py
     python expansions/7_scale/7_1_pretraining/src/_ssl_label_subsets_9t.py --historical
+    python expansions/7_scale/7_1_pretraining/src/_ssl_label_subsets_9t.py --historical --allow-no-audit   (exploratory)
 """
 from __future__ import annotations
 
@@ -90,7 +95,34 @@ def subset_hash(blocks: list[int]) -> str:
     return hashlib.sha256(json.dumps(sorted(blocks)).encode()).hexdigest()
 
 
-def build(cfg: dict, historical: bool) -> dict:
+NO_AUDIT = "no audit exclusion, exploratory"
+
+
+def audit_sets(cfg: dict, audit_csv: Path | None = None, allow_no_audit: bool = False,
+               allow_unfrozen: bool = False) -> dict:
+    """P2 audit through the shared reader. Never an empty set in place of a missing file (7.1-01)."""
+    p = Path(audit_csv) if audit_csv is not None else cfg_path(cfg["inputs"]["audit_blocks"])
+    df = ek.require_audit(p, allow_missing=allow_no_audit, allow_unfrozen=allow_unfrozen)
+    if df is None:
+        return {"guard": NO_AUDIT, "sha256": None, "audit": set(), "buffer": set(), "path": str(p)}
+    aud = ek.audit_ids(df, ("audit",))
+    return {"guard": "P2 audit list applied", "sha256": df.attrs.get("sha256"), "audit": aud,
+            "buffer": ek.audit_ids(df) - aud, "path": str(p)}
+
+
+def exclude_audit(folds: list[dict], au: dict) -> list[dict]:
+    """Audit and buffer blocks never train or validate. Audit blocks are never scored as held-out."""
+    no_train = au["audit"] | au["buffer"]
+    return [{"fold": f["fold"], "train": [b for b in f["train"] if b not in no_train],
+             "val": [b for b in f["val"] if b not in no_train],
+             "heldout": [b for b in f["heldout"] if b not in au["audit"]]} for f in folds]
+
+
+def build(cfg: dict, historical: bool, audit: dict | None = None) -> dict:
+    """audit is the dict from audit_sets(). It is required (pass audit_sets(cfg, allow_no_audit=True)
+    explicitly for an exploratory run)."""
+    if audit is None:
+        raise ValueError("build() needs the audit dict from audit_sets(). It never assumes an empty audit set")
     import geopandas as gpd
     b = gpd.read_file(need(cfg_path(cfg["inputs"]["blocks_9t"]), "blocks"))
     ek.assert_unique(b, "block_id")
@@ -99,6 +131,7 @@ def build(cfg: dict, historical: bool) -> dict:
     folds = (folds_historical(cfg_path(cfg["inputs"]["split_historical"]), cfg["master_seed"],
                               ft["inner_val_share_historical"]) if historical
              else folds_future(cfg_path(cfg["inputs"]["split_future"])))
+    folds = exclude_audit(folds, audit)
     for f in folds:
         ek.assert_disjoint(f["train"], f["heldout"], f"fold {f['fold']} train/heldout")
         ek.assert_disjoint(f["val"], f["heldout"], f"fold {f['fold']} val/heldout")
@@ -117,7 +150,13 @@ def build(cfg: dict, historical: bool) -> dict:
                                                       "n_pit_blocks": int(sum(n_feat.get(x, 0) > 0 for x in ns[frac]))}
                 empty.setdefault(frac, []).append(subsets[f"{f['fold']}|{s}|{frac}"]["n_pit_blocks"] == 0)
     empty_share = {str(k): float(np.mean(v)) for k, v in empty.items()}
-    return {"split_source": "historical PROVISIONAL" if historical else "P1 future", "folds": folds,
+    for f in folds:
+        ek.assert_disjoint(f["train"] + f["val"], audit["audit"] | audit["buffer"], f"fold {f['fold']} train/val vs audit")
+        ek.assert_disjoint(f["heldout"], audit["audit"], f"fold {f['fold']} heldout vs audit")
+    return {"split_source": "historical PROVISIONAL" if historical else "P1 future", "audit_guard": audit["guard"],
+            "audit_sha256": audit["sha256"], "audit_path": audit["path"],
+            "audit_excluded": sorted(int(b) for b in audit["audit"]),
+            "buffer_excluded": sorted(int(b) for b in audit["buffer"]), "folds": folds,
             "subsets": subsets, "empty_share": empty_share,
             "dropped_fractions": [k for k, v in empty_share.items() if v > 0.20]}
 
@@ -126,15 +165,19 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Nested label subsets (7.1).")
     ap.add_argument("--config", default=str(CFG))
     ap.add_argument("--historical", action="store_true")
+    ap.add_argument("--audit", default=None, help="P2 audit CSV (default config inputs.audit_blocks)")
+    ap.add_argument("--allow-no-audit", action="store_true",
+                    help="run without the P2 audit file. The output is labelled 'no audit exclusion, exploratory'")
     ap.add_argument("--out", default=str(ek.sub("7.1", "data/processed") / "ssl_label_subsets_9t.json"))
     a = ap.parse_args(argv)
     try:
-        res = build(load_cfg(Path(a.config)), a.historical)
+        cfg = load_cfg(Path(a.config))
+        res = build(cfg, a.historical, audit_sets(cfg, Path(a.audit) if a.audit else None, a.allow_no_audit))
     except FileNotFoundError as e:
         print(e, file=sys.stderr)
         return 2
     Path(a.out).write_text(json.dumps(res, indent=1), encoding="utf-8")
-    print(json.dumps({"split_source": res["split_source"], "n_subsets": len(res["subsets"]),
+    print(json.dumps({"split_source": res["split_source"], "audit_guard": res["audit_guard"], "n_subsets": len(res["subsets"]),
                       "empty_share": res["empty_share"], "dropped": res["dropped_fractions"]}))
     return 0
 

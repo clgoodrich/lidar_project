@@ -20,13 +20,16 @@ Purpose
     transmission T = exp(-k L), L the ray length through cells with CHM above 2 m (framework definition).
     Obstacles are samples at least one cell from the observer and at least one cell short of the target, so a
     target is never hidden by its own cell. Earth curvature and refraction (k = 0.13) are applied and logged.
-    Cells with no DEM value, outside the raster or outside the radius are nodata. Void cells (no ground return,
-    interpolated DEM) are masked and counted when a ground-density raster is given.
+    Three states (review 6.6-02, F13). visible, hidden and unknown. A sample of unobserved terrain on the ray
+    (no surface value, a void cell with no ground return, or O2 canopy with no CHM value) is an unknown obstacle.
+    A known obstacle that blocks the ray gives hidden. Otherwise any unknown obstacle on the ray gives unknown.
+    A void target cell is unknown too. Cells with no DEM value, outside the raster or outside the radius are nodata.
+    The cumulative map counts an unknown cell as unknown, never as seen by nobody.
 Inputs
     data/9t/derived/05/dem_9t_05.tif, dsm_9t_05.tif, chm_9t_05.tif, ground_density_9t_05.tif (held)
     data/9t/derived/landcover/nlcd_2019_landcover_9t.tif (held, optional, for cost)
 Outputs
-    data/9t/results/sar/<run_id>/sar_viewshed_<x>_<y>_<O>.tif (1 visible, 0 hidden, 255 nodata),
+    data/9t/results/sar/<run_id>/sar_viewshed_<x>_<y>_<O>.tif (1 visible, 0 hidden, 2 unknown, 255 nodata),
     sar_viewshed_<x>_<y>_frac.tif (O2, probability of visibility), sar_pockets_<x>_<y>_<O>.gpkg,
     sar_cost_<x>_<y>.tif (seconds), sar_route_<...>.gpkg, sar_viewshed_<x>_<y>_<O>.png, _summary.json, _PROVENANCE.json
 Run
@@ -51,6 +54,8 @@ import expkit as ek  # noqa: E402
 
 DEFAULT_CONFIG = HERE / "config_6_6.json"
 NOT_WELL = "Not a well result. Search planning visibility only. Visibility is not detection probability."
+HIDDEN, VISIBLE, UNKNOWN, NODATA = 0, 1, 2, 255
+STATE_NAME = {HIDDEN: "hidden", VISIBLE: "visible", UNKNOWN: "unknown"}
 
 
 # ----------------------------------------------------------------------------- config and grid
@@ -175,6 +180,14 @@ def nearest(arr: np.ndarray, v, u):
     return out, ok
 
 
+def void_at(g: Grid, v, u, vp: dict) -> np.ndarray:
+    """True where the nearest cell is a void (no ground return). False when no void raster is loaded."""
+    if g.void is None or not vp.get("mask_voids", True):
+        return np.zeros(np.shape(v), bool)
+    m, ok = nearest(g.void, v, u)
+    return ok & m.astype(bool)
+
+
 def curvature_drop(d_m, vp: dict):
     if not vp.get("curvature", True):
         return np.zeros_like(np.asarray(d_m, float))
@@ -191,7 +204,11 @@ def _surface(g: Grid, opacity: str):
 
 # ----------------------------------------------------------------------------- brute force
 def los_profile(g: Grid, obs_xy, tgt_xy, opacity="O0", eye_h=1.7, tgt_h=0.0, k_ext=0.0, vp=None) -> dict:
-    """Brute-force line of sight. Returns visible (bool or None for nodata), transmission and the profile."""
+    """Brute-force line of sight.
+
+    state is 'visible', 'hidden' or 'unknown' (None for nodata ends). visible is True, False or None (unknown or
+    nodata). Unknown obstacles are samples of unobserved terrain between the ends (see module docstring). A known
+    obstacle that blocks gives hidden whatever the unknown samples hold."""
     vp = vp or load_config()["viewshed"]
     ov, ou = g.to_vu(*obs_xy)
     tv, tu = g.to_vu(*tgt_xy)
@@ -199,7 +216,7 @@ def los_profile(g: Grid, obs_xy, tgt_xy, opacity="O0", eye_h=1.7, tgt_h=0.0, k_e
     z0 = float(bilinear(g.dem, ov, ou)) + eye_h
     zt_g = float(bilinear(g.dem, tv, tu))
     if not np.isfinite(z0) or not np.isfinite(zt_g) or D == 0:
-        return {"visible": None, "transmission": None, "distance_m": D}
+        return {"visible": None, "state": None, "transmission": None, "p_visible": None, "distance_m": D}
     step = g.cell / 2
     n = max(int(np.ceil(D / step - 1e-9)), 1)
     t = np.arange(1, n) / n
@@ -207,19 +224,34 @@ def los_profile(g: Grid, obs_xy, tgt_xy, opacity="O0", eye_h=1.7, tgt_h=0.0, k_e
     sv, su = ov + t * (tv - ov), ou + t * (tu - ou)
     zs = bilinear(_surface(g, opacity), sv, su) - curvature_drop(d, vp)
     zt = zt_g + tgt_h - float(curvature_drop(D, vp))
-    obst = (d >= g.cell - 1e-9) & (d <= D - g.cell + 1e-9) & np.isfinite(zs)
-    tgt_slope = (zt - z0) / D
-    max_slope = float(np.max((zs[obst] - z0) / d[obst])) if obst.any() else -np.inf
-    vis = bool(tgt_slope >= max_slope)
-    T = 1.0
+    in_range = (d >= g.cell - 1e-9) & (d <= D - g.cell + 1e-9)
+    unk = ~np.isfinite(zs) | void_at(g, sv, su, vp)
+    ch = None
     if opacity == "O2":
         if g.chm is None:
             raise ValueError("O2 needs --chm")
         ch = bilinear(g.chm, sv, su)
+        unk = unk | ~np.isfinite(ch)
+    obst = in_range & ~unk
+    tgt_slope = (zt - z0) / D
+    max_slope = float(np.max((zs[obst] - z0) / d[obst])) if obst.any() else -np.inf
+    n_unknown = int((in_range & unk).sum())
+    tgt_void = bool(void_at(g, np.array([tv]), np.array([tu]), vp)[0])
+    if tgt_slope < max_slope:
+        state = "hidden"
+    elif n_unknown or tgt_void:
+        state = "unknown"
+    else:
+        state = "visible"
+    vis = {"visible": True, "hidden": False, "unknown": None}[state]
+    T = 1.0
+    if opacity == "O2":
         L = float(np.sum(np.nan_to_num(ch, nan=0.0) > vp["canopy_height_m"]) * (D / n))
         T = float(np.exp(-k_ext * L))
-    return {"visible": vis, "transmission": T, "p_visible": float(vis) * T, "distance_m": D,
-            "target_slope": tgt_slope, "max_obstacle_slope": max_slope}
+    p = None if vis is None else float(vis) * T
+    return {"visible": vis, "state": state, "transmission": T, "p_visible": p, "distance_m": D,
+            "target_slope": tgt_slope, "max_obstacle_slope": max_slope, "n_unknown_obstacles": n_unknown,
+            "target_void": tgt_void}
 
 
 # ----------------------------------------------------------------------------- radial sweep
@@ -232,7 +264,10 @@ def perimeter(R: int) -> np.ndarray:
 
 
 def viewshed(g: Grid, obs_xy, radius_m: float, opacity="O0", eye_h=1.7, tgt_h=0.0, k_ext=0.0, vp=None) -> dict:
-    """Radial sweep viewshed. Returns vis (uint8 1/0/255), frac (float32, O2 only), counts."""
+    """Radial sweep viewshed. Returns vis (uint8 1 visible, 0 hidden, 2 unknown, 255 nodata), frac (O2), counts.
+
+    Each ray carries a running maximum of known obstacle slope and a running unknown-obstacle flag. Both use the
+    same obstacle window as los_profile (one cell from the observer, one cell short of the target)."""
     vp = vp or load_config()["viewshed"]
     H, W = g.dem.shape
     ov, ou = g.to_vu(*obs_xy)
@@ -262,13 +297,22 @@ def viewshed(g: Grid, obs_xy, radius_m: float, opacity="O0", eye_h=1.7, tgt_h=0.
         drop = curvature_drop(d, vp)
         zs = bilinear(surf, sv, su) - drop
         zg = bilinear(g.dem, sv, su) + tgt_h - drop
-        s_obs = np.where((d >= g.cell - 1e-9) & np.isfinite(zs), (zs - z0) / d, -np.inf)
+        unk = ~np.isfinite(zs) | void_at(g, sv, su, vp)
+        if opacity == "O2":
+            ch_raw = bilinear(g.chm, sv, su)
+            unk = unk | ~np.isfinite(ch_raw)
+        far = d >= g.cell - 1e-9
+        s_obs = np.where(far & ~unk, (zs - z0) / d, -np.inf)
         run = np.maximum.accumulate(s_obs, axis=1)
         prior = np.full_like(run, -np.inf)
         prior[:, 2:] = run[:, :-2]                  # obstacles at least one cell (two samples) before the target
+        run_u = np.logical_or.accumulate(far & unk, axis=1)
+        prior_u = np.zeros_like(run_u)
+        prior_u[:, 2:] = run_u[:, :-2]
         v_ok = (zg - z0) / d >= prior
+        state = np.where(v_ok, np.where(prior_u, UNKNOWN, VISIBLE), HIDDEN).astype(np.uint8)
         if opacity == "O2":
-            ch = np.nan_to_num(bilinear(g.chm, sv, su), nan=0.0) > vp["canopy_height_m"]
+            ch = np.nan_to_num(ch_raw, nan=0.0) > vp["canopy_height_m"]
             cnt = np.zeros_like(d)
             cnt[:, 1:] = np.cumsum(ch, axis=1)[:, :-1]
             T = np.exp(-k_ext * cnt * 0.5 * g.cell)
@@ -286,48 +330,77 @@ def viewshed(g: Grid, obs_xy, radius_m: float, opacity="O0", eye_h=1.7, tgt_h=0.
         upd = oo < bo[ci]
         ci, oo, fi = ci[upd], oo[upd], fi[upd]
         bo[ci] = oo
-        vis.ravel()[ci] = v_ok.ravel()[fi].astype(np.uint8)
+        st = state.ravel()[fi]
+        vis.ravel()[ci] = st
         if frac is not None:
-            frac.ravel()[ci] = (v_ok.ravel()[fi] * T.ravel()[fi]).astype(np.float32)
+            frac.ravel()[ci] = np.where(st == UNKNOWN, np.nan, (st == VISIBLE) * T.ravel()[fi]).astype(np.float32)
     # observer cell and the cells inside one cell of it are visible by definition
     rr, cc = np.ogrid[:H, :W]
     dist = np.hypot(rr - ov, cc - ou) * g.cell
     near = (dist < g.cell) & np.isfinite(g.dem)
-    vis[near] = 1
+    vis[near] = VISIBLE
     if frac is not None:
         frac[near] = 1.0
     outside = (dist > radius_m) | ~np.isfinite(g.dem)
     vis[outside] = 255
     n_void = 0
     if g.void is not None and vp.get("mask_voids", True):
-        m = g.void & ~outside
+        m = g.void & ~outside & ~near & (vis != NODATA)   # a void target is unobserved ground, so unknown
         n_void = int(m.sum())
-        vis[m] = 255
+        vis[m] = UNKNOWN
         if frac is not None:
             frac[m] = np.nan
     if frac is not None:
         frac[outside] = np.nan
         if opacity == "O2":
-            vis = np.where(vis == 255, 255, (np.nan_to_num(frac) >= vp["o2_visible_threshold"]).astype(np.uint8))
-    inside = vis != 255
+            vis = np.where(np.isin(vis, (NODATA, UNKNOWN)), vis,
+                           (np.nan_to_num(frac) >= vp["o2_visible_threshold"]).astype(np.uint8))
+    inside = vis != NODATA
+    known = inside & (vis != UNKNOWN)
     return {"vis": vis.astype(np.uint8), "frac": frac, "n_cells": int(inside.sum()),
-            "n_visible": int((vis == 1).sum()), "visible_fraction": float((vis == 1).sum() / max(inside.sum(), 1)),
-            "n_void_masked": n_void, "opacity": opacity, "eye_h": eye_h, "tgt_h": tgt_h, "k_ext": k_ext,
+            "n_visible": int((vis == VISIBLE).sum()), "n_hidden": int((vis == HIDDEN).sum()),
+            "n_unknown": int((vis == UNKNOWN).sum()),
+            "visible_fraction": float((vis == VISIBLE).sum() / max(inside.sum(), 1)),
+            "unknown_fraction": float((vis == UNKNOWN).sum() / max(inside.sum(), 1)),
+            "visible_fraction_of_known": float((vis == VISIBLE).sum() / max(known.sum(), 1)),
+            "n_void_unknown": n_void, "opacity": opacity, "eye_h": eye_h, "tgt_h": tgt_h, "k_ext": k_ext,
             "radius_m": radius_m, "curvature": bool(vp.get("curvature", True)), "refraction_k": vp["refraction_k"]}
 
 
-def cumulative(g: Grid, observers, radius_m, opacity="O0", **kw) -> np.ndarray:
-    """O0/O1: number of observers that see each cell. O2: 1 - prod(1 - p)."""
+def cumulative(g: Grid, observers, radius_m, opacity="O0", **kw) -> dict:
+    """Cumulative visibility over observers, with unknown kept apart (review 6.6-02).
+
+    O0/O1. count = observers that see the cell. A cell no observer sees is 'hidden from all' only when every
+    observer's call is hidden. If any call is unknown and none is visible the cell is unknown (count NaN).
+    O2. p = 1 - prod(1 - p_i) over known calls. If any call is unknown and p is under the O2 threshold the cell
+    is unknown (p NaN).
+    Returns {"count" (float32, NaN where unknown or outside every radius), "state" (uint8 1 seen, 0 hidden from
+    all, 2 unknown, 255 outside), "n_unknown", "n_seen", "n_hidden"}."""
+    vp = kw.get("vp") or load_config()["viewshed"]
     acc = None
+    any_unk = None
+    any_in = None
     for xy in observers:
         r = viewshed(g, xy, radius_m, opacity, **kw)
+        vis = r["vis"]
+        unk = vis == UNKNOWN
+        inn = vis != NODATA
         if opacity == "O2":
-            p = np.nan_to_num(r["frac"])
-            acc = p if acc is None else 1 - (1 - acc) * (1 - p)
+            v = np.where(unk | ~inn, 0.0, np.nan_to_num(r["frac"]))
+            acc = v if acc is None else 1 - (1 - acc) * (1 - v)
         else:
-            v = (r["vis"] == 1).astype(np.int32)
+            v = (vis == VISIBLE).astype(np.float64)
             acc = v if acc is None else acc + v
-    return acc
+        any_unk = unk if any_unk is None else any_unk | unk
+        any_in = inn if any_in is None else any_in | inn
+    seen = acc >= (vp["o2_visible_threshold"] if opacity == "O2" else 1)
+    state = np.full(acc.shape, NODATA, np.uint8)
+    state[any_in] = HIDDEN
+    state[any_in & seen] = VISIBLE
+    state[any_in & ~seen & any_unk] = UNKNOWN
+    count = np.where(np.isin(state, (UNKNOWN, NODATA)), np.nan, acc).astype(np.float32)
+    return {"count": count, "state": state, "n_unknown": int((state == UNKNOWN).sum()),
+            "n_seen": int((state == VISIBLE).sum()), "n_hidden": int((state == HIDDEN).sum())}
 
 
 def hidden_pockets(vis: np.ndarray, cell: float, min_area_m2: float):
@@ -398,6 +471,14 @@ def travel_time(dem, cell, start_vu, mult, cp, target_vu=None):
     return tt, route
 
 
+def fine_to_coarse_vu(v, u, f: int):
+    """Fractional cell-centre coordinates on the fine grid to the same point on the f-times coarser grid.
+
+    Cell-centre coordinates are offset by half a cell, so the map is (v + 0.5) / f - 0.5, not v / f.
+    The old v / f put 45 of 100 random points in the wrong coarse cell at f = 10 (review 6.6 minor)."""
+    return (np.asarray(v, float) + 0.5) / f - 0.5, (np.asarray(u, float) + 0.5) / f - 0.5
+
+
 def resample_dem(g: Grid, target_m: float):
     """Block-mean resample for the cost graph. Returns (dem, cell, factor)."""
     f = max(1, int(round(target_m / g.cell)))
@@ -454,24 +535,34 @@ def write_raster(path: Path, arr, g: Grid, nodata):
     return path
 
 
+# Map palette. Visible blue, hidden orange, unknown neutral grey with "xx" hatching, nodata white paper.
+# validate_palette.py --pairs all --surface #FFFFFF "#1F5FA8,#D97706,#8E959B" (dataviz skill, 2026-11-06):
+# CVD worst all-pairs #8E959B vs #D97706 dE 15.0 protan, normal 16.9, all >= 3:1 against the paper. The chroma
+# floor check fails for the grey on purpose. Unknown is a non-category, so it is neutral and also hatched.
+# Hidden carries "...." hatching. No colour is the only cue.
+MAP_COLOURS = {HIDDEN: ek.PALETTE["orange"], VISIBLE: ek.PALETTE["blue"], UNKNOWN: ek.PALETTE["grey"], NODATA: "#FFFFFF"}
+
+
 def render(vis: np.ndarray, g: Grid, obs_xy, png: Path, title: str):
-    """Visible blue, hidden orange, masked grey (ek.PALETTE; lost/found palette worst pair dE 21.1 deutan,
-    dataviz validator --pairs all per CLAUDE.md). Hidden cells also carry hatching so colour is not the only cue."""
+    """Visible, hidden, unknown and nodata, with hatching on hidden and unknown (palette note above)."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from matplotlib.colors import ListedColormap
     from matplotlib.patches import Patch
-    show = np.where(vis == 255, 2, vis).astype(float)
+    show = np.select([vis == HIDDEN, vis == VISIBLE, vis == UNKNOWN], [0, 1, 2], 3).astype(float)
     fig, ax = plt.subplots(figsize=(6, 6))
-    ax.imshow(show, cmap=ListedColormap([ek.PALETTE["orange"], ek.PALETTE["blue"], ek.PALETTE["grey"]]),
-              vmin=0, vmax=2, interpolation="nearest")
-    ax.contourf((vis == 0).astype(float), levels=[0.5, 1.5], hatches=["...."], colors="none")
+    ax.imshow(show, cmap=ListedColormap([MAP_COLOURS[HIDDEN], MAP_COLOURS[VISIBLE], MAP_COLOURS[UNKNOWN],
+                                         MAP_COLOURS[NODATA]]), vmin=0, vmax=3, interpolation="nearest")
+    ax.contourf((vis == HIDDEN).astype(float), levels=[0.5, 1.5], hatches=["...."], colors="none")
+    ax.contourf((vis == UNKNOWN).astype(float), levels=[0.5, 1.5], hatches=["xx"], colors="none")
     ov, ou = g.to_vu(*obs_xy)
     ax.plot(ou, ov, marker="*", color=ek.PALETTE["charcoal"], markersize=14)
-    ax.legend(handles=[Patch(color=ek.PALETTE["blue"], label="visible"),
-                       Patch(facecolor=ek.PALETTE["orange"], hatch="....", label="hidden"),
-                       Patch(color=ek.PALETTE["grey"], label="masked or outside")], loc="lower right", fontsize=8)
+    ax.legend(handles=[Patch(color=MAP_COLOURS[VISIBLE], label="visible"),
+                       Patch(facecolor=MAP_COLOURS[HIDDEN], hatch="....", label="hidden"),
+                       Patch(facecolor=MAP_COLOURS[UNKNOWN], hatch="xx", label="unknown (unobserved terrain on the sightline)"),
+                       Patch(facecolor=MAP_COLOURS[NODATA], edgecolor=ek.PALETTE["charcoal"], label="no data or outside")],
+              loc="lower right", fontsize=8)
     ax.set_title(title, fontsize=9)
     ax.set_axis_off()
     fig.text(0.01, 0.01, NOT_WELL, fontsize=7)
@@ -573,9 +664,12 @@ def main() -> int:
                 gdf.to_file(p, driver="GPKG")
                 outs.append(p)
     elif a.command == "cumulative":
-        acc = cumulative(g, pts, rad, a.opacity, eye_h=eye, tgt_h=th, k_ext=k, vp=vp)
-        outs.append(write_raster(run / f"sar_cumulative_{tag}_{a.opacity}.tif", acc.astype(np.float32), g, -9999.0))
-        summ = {"n_observers": len(pts), "max": float(np.nanmax(acc))}
+        cu = cumulative(g, pts, rad, a.opacity, eye_h=eye, tgt_h=th, k_ext=k, vp=vp)
+        outs.append(write_raster(run / f"sar_cumulative_{tag}_{a.opacity}.tif", cu["count"], g, -9999.0))
+        outs.append(write_raster(run / f"sar_cumulative_state_{tag}_{a.opacity}.tif", cu["state"], g, NODATA))
+        summ = {"n_observers": len(pts), "max": float(np.nanmax(cu["count"])) if np.isfinite(cu["count"]).any() else None,
+                "n_seen": cu["n_seen"], "n_hidden_from_all": cu["n_hidden"], "n_unknown": cu["n_unknown"],
+                "state_codes": "1 seen by at least one, 0 hidden from all, 2 unknown, 255 outside"}
     else:   # cost, route
         lc = None
         lcp = input_path(cfg, "landcover", a.landcover, required=False)
@@ -588,12 +682,9 @@ def main() -> int:
                 reproject(rasterio.band(src, 1), lc, dst_transform=g.transform * g.transform.scale(f), dst_crs=g.crs,
                           resampling=Resampling.mode)
         mult = landcover_multiplier(lc, dem_c.shape, cfg["cost"])
-        sv, su = g.to_vu(*pts[0])
-        tgt = None
-        if a.command == "route":
-            tv, tu = g.to_vu(*_xy(a.target))
-            tgt = (tv / f, tu / f)
-        tt, route = travel_time(dem_c, cell_c, (sv / f, su / f), mult, cfg["cost"], tgt)
+        start = fine_to_coarse_vu(*g.to_vu(*pts[0]), f)
+        tgt = fine_to_coarse_vu(*g.to_vu(*_xy(a.target)), f) if a.command == "route" else None
+        tt, route = travel_time(dem_c, cell_c, start, mult, cfg["cost"], tgt)
         cg = Grid(dem_c, None, None, None, g.transform * g.transform.scale(f), g.crs, cell_c)
         outs.append(write_raster(run / f"sar_cost_{tag}.tif", np.where(np.isfinite(tt), tt, np.nan).astype(np.float32), cg, -9999.0))
         summ = {"cell_m": cell_c, "landcover": str(lcp) if lcp else "none (multiplier 1)"}

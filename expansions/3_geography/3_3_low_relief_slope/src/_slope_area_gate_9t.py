@@ -54,6 +54,21 @@ def gate(summary: dict, margin, user_request: bool, n_flat: int | None = None) -
     return out
 
 
+SRC31 = HERE.parents[2] / "3_1_warren_forest_mckean" / "src"
+
+
+def gate_commands(area: str) -> list[str]:
+    """3.1 commands for the gated area. The area must exist in config_3_1.json areas (review minor)."""
+    cfg31 = json.loads((SRC31 / "config_3_1.json").read_text(encoding="utf-8"))
+    if area not in cfg31["areas"]:
+        raise KeyError(f"area {area} is not in config_3_1.json areas {sorted(cfg31['areas'])}")
+    src31 = "expansions/3_geography/3_1_warren_forest_mckean/src"
+    return [f"python {src31}/_xfer_tile_inventory_wfm.py --area {area} --tiles <fetched LAZ glob>",
+            f"python {src31}/_xfer_blocks_roles_wfm.py --area {area} --provisional-buffer",
+            f"python {src31}/_xfer_projected_width_wfm.py --area {area}",
+            f"then 3.1 S3 to S8 with --area {area} (fetch is a user step, 3.61 GB, measure one tile first)"]
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--config", default=str(CFG))
@@ -73,13 +88,8 @@ def main(argv=None) -> int:
     n_flat = int((pd.read_csv(fcsv).slope_25m < FLAT_DEG).sum()) if fcsv.exists() else None
     out = gate(s, margin, a.user_request, n_flat)
     g = cfg["area_gate"]
-    src31 = "expansions/3_geography/3_1_warren_forest_mckean/src"
     out["area_window"] = g
-    out["commands_if_released"] = [
-        f"python {src31}/_xfer_tile_inventory_wfm.py --area il_cumberland --tiles <fetched LAZ glob>",
-        f"python {src31}/_xfer_blocks_roles_wfm.py --area il_cumberland",
-        f"python {src31}/_xfer_projected_width_wfm.py --area il_cumberland",
-        "then 3.1 S3 to S8 with --area il_cumberland (fetch is a user step, 3.61 GB, measure one tile first)"]
+    out["commands_if_released"] = gate_commands(g.get("area", "il_cumberland"))
     o = run / "slope_area_gate_9t.json"
     o.write_text(json.dumps(out, indent=2, default=float), encoding="utf-8")
     print(json.dumps(out, indent=2, default=float))

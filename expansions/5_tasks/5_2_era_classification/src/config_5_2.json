@@ -35,7 +35,9 @@
     "gbm": {"max_depth": 3, "n_estimators": 200, "learning_rate": 0.05},
     "label_noise_p": [0.05, 0.10, 0.20],
     "label_noise_reps": 50,
-    "min_blocks_for_bootstrap": 15
+    "min_blocks_for_bootstrap": 15,
+    "max_undefined": null,
+    "_max_undefined_note": "Share of undefined (one-class) bootstrap draws tolerated. fw_5_2 declares none, so null means 0 and any undefined draw gives inconclusive. User decision."
   },
   "support": {"q_lo": 0.01, "q_hi": 0.99, "n_bins": 20},
   "inputs": {
@@ -53,8 +55,8 @@
     },
     "landcover": {"path": "@landcover/landcover_9t.tif", "assumed": true, "hint": "Categorical land cover raster. The landcover folders are empty today. VERIFY source.", "schema": {"band1": "uint8 class code"}},
     "oilfield_boundary": {"path": "@reference/oil_field_boundaries/oil_fields_pa.gpkg", "assumed": true, "hint": "Mapped oil-field polygons. VERIFY source.", "schema": {"geometry": "Polygon"}},
-    "split_file": {"path": "@results_9t/splits/cv_splits_future_pit_9t_v1.csv", "assumed": true, "hint": "P1 saved split. Without it use --provisional-folds and label the run provisional.", "schema": {"block_id": "int", "fold": "int", "role": "held_out | train | inner_val | audit"}},
-    "audit_blocks": {"path": "@results_9t/splits/audit_blocks_9t_v1.csv", "assumed": true, "hint": "P2 audit blocks. Excluded from training and tuning.", "schema": {"block_id": "int"}},
+    "split_file": {"path": "@results_9t/splits/cv_splits_future_pit_9t_v1.csv", "assumed": true, "hint": "P1 saved split. Without it use --provisional-folds and label the run provisional.", "schema": {"block_id": "int", "fold": "int", "role": "train | val | heldout as written by P1 (ek.read_split_csv maps them to train, inner_val, held_out)"}},
+    "audit_blocks": {"path": "@results_9t/splits/audit_blocks_9t_v1.csv", "assumed": true, "hint": "P2 audit blocks. Excluded from training and tuning.", "schema": {"block_id": "int", "role": "audit | buffer"}, "reader": "ek.require_audit"},
     "labels": {"path": "@exp:5.2/results/tables/era_interval_labels_9t.csv", "hint": "Written by _era_interval_labels_9t.py (S2)."},
     "label_audit_filled": {"path": "@exp:5.2/data/interim/era_label_audit_filled_9t.csv", "assumed": true, "hint": "The S3 sheet after a second person fills audit_source_ok, audit_date_ok, audit_link_ok (yes or no)."},
     "pairs": {"path": "@exp:5.2/results/tables/era_features_pairs_9t.csv", "hint": "Written by _era_pair_features_9t.py (S4)."},

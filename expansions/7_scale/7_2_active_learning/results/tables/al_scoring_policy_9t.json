@@ -1,0 +1,12 @@
+{
+  "task": "pit_floor",
+  "mode": "primary",
+  "version": "fw00_s4_20261105",
+  "cutoff": 0.35,
+  "min_area_m2": 4.0,
+  "iou": 0.3,
+  "match_order": "score",
+  "blob_score": "mean",
+  "k_per_km2": 40.0,
+  "policy_hash": "6c1e838"
+}

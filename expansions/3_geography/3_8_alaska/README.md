@@ -24,7 +24,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
+## Build status (2026-11-06)
+
+Review repair (2026-11-06). Injection recovery now injects into the noisy stack before one inversion, so recovery error grows with noise. The end-of-season rate never mixes calendar months across years. The E2 gate reports undefined bootstrap draws. The synthetic self-test was rerun. Open user decisions are in `docs/decisions_3_8.md`.
 
 Built by the build agent. The shared regional-transfer code is `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py`. Expansions 3.4 to 3.8 import it. Stage commands that every region shares are its subcommands. Assumed inputs and their schemas are in `src/config_3_8.json`. A missing assumed input stops a script with a message that names the input, its schema and the VERIFY step. Decisions are in `docs/decisions_3_8.md`. Run the tests with `python -m pytest -q expansions/3_geography/3_8_alaska/src/test_3_8.py -p no:cacheprovider`.
 

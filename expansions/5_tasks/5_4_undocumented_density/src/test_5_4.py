@@ -103,8 +103,11 @@ def test_end_to_end_density(tmp_path):
     cp, tmp = _setup(tmp_path)
     assert dw.main(["--config", str(cp)]) == 0
     acc = json.loads((tmp / "acc.json").read_text())
-    # footprint is one block (0.140625 km2) -> K = round(40 * 0.140625) = 6
-    assert acc["K"] == 6 and acc["D_blobs"] == 6
+    # 5.4-02: footprint is both complete blocks, truth-free (0.28125 km2) -> K = round(40 * 0.28125) = 11.
+    # The old truth-bearing footprint kept only block 0 and gave K = 6.
+    assert acc["footprint_blocks"] == 2 and acc["K"] == 11 and acc["D_blobs"] == 11
+    bs = acc["D_sites_block_bootstrap"]
+    assert bs["draw_max"] <= acc["K"] and bs["hi"] <= acc["K"]
     assert acc["N_doc_records"] == 7 and acc["N_doc_wells"] == 6      # records 0 and 1 sit 3 m apart and merge
     assert sg.main(["--config", str(cp)]) == 0
     assert (tmp / "density_sensitivity_9t.png").exists()
@@ -114,3 +117,47 @@ def test_end_to_end_density(tmp_path):
     assert T.set_index("term").loc["r", "status"] == "unidentified"
     with pytest.raises(SystemExit):
         fb.main(["--config", str(cp)])          # arm_b is not held
+
+
+def test_d_bootstrap_respects_the_k_cap():
+    """5.4-01. Block 0 holds 10 separate high-score candidates, blocks 1 to 3 one low-score candidate each, K = 5.
+    The point is 5 sites. The old bootstrap summed per-block site counts after the cut, so a draw of block 0
+    four times gave 20 > K. The rerun cut can never exceed K."""
+    rows = [dict(det_id=i + 1, block_id=0, cx=100.0 * i, cy=0.0, score=0.9 - 0.01 * i, area_m2=10.0, novel=1)
+            for i in range(10)]
+    rows += [dict(det_id=20 + b, block_id=b, cx=5000.0 * b, cy=5000.0, score=0.1, area_m2=10.0, novel=1)
+             for b in (1, 2, 3)]
+    c = pd.DataFrame(rows)
+    pt, lo, hi, draws = dw.d_bootstrap(c, [0, 1, 2, 3], 5, 15.0, 400, 0)
+    assert pt == 5 and draws.max() <= 5 and hi <= 5
+    old_pb = {0: 5, 1: 0, 2: 0, 3: 0}
+    rng = np.random.default_rng(0)
+    old = [sum(old_pb[[0, 1, 2, 3][j]] for j in rng.integers(0, 4, 4)) for _ in range(400)]
+    assert max(old) > 5                          # the old method leaves the support
+    # hand value: a draw holding no copy of block 0 has at most 4 low candidates, all separate, so D = 4
+    assert draws.min() >= 4 - 0
+
+
+def test_frame_hash_guard_cannot_be_skipped():
+    B = pd.DataFrame(dict(site_id=[1, 2], identity="ambiguous", weight=1.0))
+    with pytest.raises(SystemExit):
+        fb.check_frame(B, "abc")                                   # column missing
+    with pytest.raises(SystemExit):
+        fb.check_frame(B.assign(frame_sha256=["abc", "xyz"]), "abc")   # mixed frames
+    with pytest.raises(SystemExit):
+        fb.check_frame(B.assign(frame_sha256=["", ""]), "abc")         # blank
+    fb.check_frame(B.assign(frame_sha256="abc"), "abc")
+
+
+def test_degenerate_capture_recapture_has_no_se():
+    # m reaches the smaller source: Chapman variance is 0 by construction, which is not precision
+    N, v = cr.chapman(10, 5, 5)
+    assert v == 0 and cr.degenerate(10, 5, 5) and not cr.degenerate(10, 5, 4)
+
+
+def test_footprint_is_truth_free():
+    import geopandas as gpd
+    from shapely.geometry import box
+    b = gpd.GeoDataFrame(dict(block_id=[0, 1, 2], n_pits=[3, 0, 0]), geometry=[box(0, 0, 1, 1)] * 3, crs=CRS)
+    assert len(dw.footprint(b)) == 3
+    assert len(dw.footprint(b.assign(n_pits=[0, 0, 9]))) == 3      # changing truth leaves the footprint alone

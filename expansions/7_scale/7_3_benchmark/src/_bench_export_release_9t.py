@@ -11,17 +11,18 @@ Inputs (config_7_3.json, resolved with ek.path_for)
     DEM             path_for("nine_t") / dem_9t_05.tif            (held)
     blocks          path_for("nine_t") / blocks_unified_9t.gpkg    (held)
     annotations     path_for("truth") / annotations_proj.gpkg      (held)
-    future split    path_for("results_9t") / splits/cv_splits_future_9t_v1.json   (from P1, assumed)
-    audit blocks    path_for("results_9t") / splits/audit_blocks_9t_v1.csv        (from P2, assumed)
+    future split    path_for("results_9t") / splits/cv_splits_future_9t_v1.json   (P1, read with ek.read_split)
+    audit blocks    path_for("results_9t") / splits/audit_blocks_9t_v1.csv        (P2, read with ek.require_audit)
+                    P2 role audit becomes the hidden test. P2 role buffer is excluded from both sides.
     --provisional-historical uses the held historical held-out lists instead and stamps the
-    release PROVISIONAL. A provisional release has no hidden test and must not be published.
+    release PROVISIONAL with no audit exclusion. It has no hidden test and must not be published.
 Outputs
     <release_root>/terrain_v1/ (default expansions/7_scale/7_3_benchmark/data/processed/terrain_v1/, gitignored)
         tiles/blk<id>.tif            8 bands (7 channels + DEM), float32, EPSG:6346, nodata NaN
         labels/labels_<role>.gpkg    layers pit_floor, pit_full, pad (public roles only)
         blocks/blocks_<role>.gpkg    block polygons per role
         splits/splits_terrain_v1.json
-        evaluate.py, README.md, LICENCE_SOURCES.md, manifest.csv
+        evaluate.py, scoring_policy.json (ek.policy_for per task), README.md, LICENCE_SOURCES.md, manifest.csv
     --verify re-hashes every file against manifest.csv and exits 1 on any mismatch.
 
 Run
@@ -47,6 +48,15 @@ HERE = Path(__file__).resolve().parent
 CFG = HERE / "config_7_3.json"
 PUBLIC_ROLES = ("train", "val", "devtest")
 HIDDEN_ROLES = ("test", "buffer")
+POLICY_FILE = "scoring_policy.json"     # read by evaluate.py (load_policy) in a fresh checkout
+
+
+def scoring_policy(tasks) -> dict:
+    """ek.policy_for for every released task, both modes. Stamped into the release (review 7.3-01)."""
+    pol = {"version": ek.PROPOSAL_POLICY["version"],
+           "primary": {t: ek.policy_for(t, "primary") for t in tasks},
+           "sensitivity": {t: ek.policy_for(t, "sensitivity") for t in tasks}}
+    return pol
 
 
 def load_cfg(path: Path = CFG) -> dict:
@@ -64,24 +74,29 @@ def need(path: Path, what: str) -> Path:
 
 
 # ----------------------------------------------------------------------------- roles
-def roles_from_future(split_json: Path, audit_csv: Path, devtest_fold: int) -> tuple[dict, list]:
-    """Block roles from the P1 future split and the P2 audit list.
+AUDIT_ROLE_MAP = {"audit": "test", "buffer": "buffer"}   # P2 meaning: audit = sealed hidden test,
+                                                          # buffer = excluded from both train and test
 
-    Returns ({block_id: role}, folds) where folds is the public CV list shipped to users.
+
+def roles_from_future(split_json: Path, audit_csv: Path, devtest_fold: int, task: str = "pit") -> tuple[dict, list]:
+    """Block roles from the P1 future split and the P2 audit list (review F05).
+
+    P1 is read with ek.read_split(task) (hash-checked, tasks.<task>.folds.<fold>.held_out).
+    P2 is read with ek.require_audit (commented CSV, sha256 sidecar). A missing audit file raises: a real
+    release needs a hidden test. Returns ({block_id: role}, folds), folds being the public CV list.
     """
-    sp = json.loads(need(split_json, "P1 future split").read_text())
-    au = pd.read_csv(need(audit_csv, "P2 audit blocks"))
-    roles: dict[int, str] = {}
-    for _, r in au.iterrows():
-        roles[int(r["block_id"])] = "test" if str(r["role"]).startswith("comparative") or r["role"] == "test" else "buffer"
-    for b in sp.get("buffer_blocks", []):
-        roles.setdefault(int(b), "buffer")
+    split = ek.read_split(task, need(split_json, "P1 future split"))
+    au = ek.require_audit(need(audit_csv, "P2 audit blocks"))
+    bad = set(au["role"]) - set(AUDIT_ROLE_MAP)
+    if bad:
+        raise ValueError(f"{audit_csv}: unknown P2 roles {sorted(bad)}. Expected {sorted(AUDIT_ROLE_MAP)}")
+    roles: dict[int, str] = {int(b): AUDIT_ROLE_MAP[r] for b, r in zip(au["block_id"], au["role"])}
     folds = []
-    for f in sp["folds"]:
-        held = [int(b) for b in f["heldout"] if int(b) not in roles]
-        folds.append({"fold": int(f["fold"]), "heldout": sorted(held)})
+    for f in sorted(split):
+        held = [int(b) for b in split[f]["held_out"] if int(b) not in roles]
+        folds.append({"fold": int(f), "heldout": sorted(held)})
         for b in held:
-            roles[b] = "devtest" if int(f["fold"]) == devtest_fold else "train"
+            roles[b] = "devtest" if int(f) == devtest_fold else "train"
     return roles, folds
 
 
@@ -201,10 +216,13 @@ Claims about another state or lidar vintage. Any claim that a detected feature i
 - `blocks/` block polygons by role.
 - `splits/splits_{name}.json` block roles and public folds.
 - `evaluate.py` the official scorer. K is 40 candidates per km2.
+- `scoring_policy.json` the frozen scoring policy {version}. Primary cutoffs {cutoffs}. 0.10 is a sensitivity only.
 - `manifest.csv` SHA-256 of every file.
 
+Audit exclusion. {audit}
+
 ## Score a prediction
-`python evaluate.py --pred <raster> --labels labels/labels_devtest.gpkg --layer pit_floor --blocks blocks/blocks_devtest.gpkg --out score.json`
+`python evaluate.py --task pit_floor --pred <raster> --labels labels/labels_devtest.gpkg --blocks blocks/blocks_devtest.gpkg --out score.json`
 """
 
 LICENCE = """# Source licences ({name})
@@ -231,8 +249,11 @@ def export(cfg: dict, out_root: Path, provisional: bool, max_tiles: int | None, 
     blocks["block_id"] = blocks["block_id"].astype(int)
     if provisional:
         roles, folds = roles_from_historical(cfg_path(inp["split_historical"]), devtest_fold)
+        audit_exclusion = "none. Provisional historical roles, no P2 audit set. Exploratory, not for release."
     else:
-        roles, folds = roles_from_future(cfg_path(inp["split_future"]), cfg_path(inp["audit_blocks"]), devtest_fold)
+        roles, folds = roles_from_future(cfg_path(inp["split_future"]), cfg_path(inp["audit_blocks"]), devtest_fold,
+                                         inp["split_future"].get("split_task", "pit"))
+        audit_exclusion = f"P2 audit set {cfg_path(inp['audit_blocks'])} (audit = hidden test, buffer = excluded)"
     ek.assert_no_nan(list(roles), "block ids in roles")
     root = out_root / cfg["release_name"]
     if root.exists():
@@ -252,14 +273,15 @@ def export(cfg: dict, out_root: Path, provisional: bool, max_tiles: int | None, 
             sub["feature_id"] = [f"{task}_{role}_{i:05d}" for i in range(len(sub))]
             if len(sub):
                 sub.to_file(root / "labels" / f"labels_{role}.gpkg", layer=task, driver="GPKG")
-    # leakage check 1: no hidden label anywhere in shipped files
+    # leakage check 1: no hidden label anywhere in shipped files. Every layer present is read. A read
+    # failure fails the export (review F05 minor: the old check skipped a layer on any exception).
+    import pyogrio
     for p in (root / "labels").glob("*.gpkg"):
-        for task in feats:
-            try:
-                g = gpd.read_file(p, layer=task)
-            except Exception:  # noqa: BLE001 - layer absent in that role
-                continue
-            hid = set(g["block_id"].dropna().astype(int)) & {b for b, r in roles.items() if r in HIDDEN_ROLES}
+        for task in [n for n, _ in pyogrio.list_layers(str(p))]:
+            g = gpd.read_file(p, layer=task)
+            if "block_id" not in g.columns or g["block_id"].isna().any():
+                raise AssertionError(f"{p.name} layer {task}: block_id missing. Cannot check for hidden labels.")
+            hid = set(g["block_id"].astype(int)) & {b for b, r in roles.items() if r in HIDDEN_ROLES}
             if hid:
                 raise AssertionError(f"hidden block labels in {p.name}: {sorted(hid)[:5]}")
     ndup = sum(near_duplicates_across_splits(f) for f in feats.values())
@@ -268,6 +290,7 @@ def export(cfg: dict, out_root: Path, provisional: bool, max_tiles: int | None, 
     for role, g in blocks.groupby("role"):
         g[["block_id", "role", "geometry"]].to_file(root / "blocks" / f"blocks_{role}.gpkg", driver="GPKG")
     split_obj = {"release": cfg["release_name"], "provisional": provisional, "devtest_fold": devtest_fold,
+                 "audit_exclusion": audit_exclusion,
                  "roles": {str(b): r for b, r in sorted(roles.items())}, "public_folds": folds,
                  "note": "Hidden-test labels are withheld by the maintainers."}
     (root / "splits" / f"splits_{cfg['release_name']}.json").write_text(json.dumps(split_obj, indent=2), encoding="utf-8")
@@ -281,11 +304,17 @@ def export(cfg: dict, out_root: Path, provisional: bool, max_tiles: int | None, 
             write_tile(stack, dem, r.geometry.bounds, root / "tiles" / f"blk{int(r['block_id']):04d}.tif")
             n_tiles += 1
     shutil.copyfile(HERE / "_bench_evaluate_recall_k.py", root / "evaluate.py")
+    policy = scoring_policy(list(inp["annotations"]["layers"]))
+    (root / POLICY_FILE).write_text(json.dumps(policy, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     status = "PROVISIONAL, not for release" if provisional else "candidate release"
-    (root / "README.md").write_text(README.format(name=cfg["release_name"], status=status), encoding="utf-8")
+    (root / "README.md").write_text(README.format(name=cfg["release_name"], status=status,
+                                                  audit=audit_exclusion, version=policy["version"],
+                                                  cutoffs=", ".join(f"{t} {p['cutoff']}" for t, p in
+                                                                    policy["primary"].items())), encoding="utf-8")
     (root / "LICENCE_SOURCES.md").write_text(LICENCE.format(name=cfg["release_name"], **cfg["licences"]), encoding="utf-8")
     write_manifest(root)
-    summary = {"release": str(root), "provisional": provisional, "n_tiles": n_tiles,
+    summary = {"release": str(root), "provisional": provisional, "audit_exclusion": audit_exclusion,
+               "policy_version": policy["version"], "n_tiles": n_tiles,
                "roles": pd.Series(roles).value_counts().to_dict(), "label_counts": counts,
                "near_duplicates_across_splits": ndup}
     (root / "_export_summary.json").write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")

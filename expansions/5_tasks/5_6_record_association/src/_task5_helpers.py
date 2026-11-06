@@ -101,6 +101,15 @@ def outp(cfg: dict, name: str) -> Path:
     return p
 
 
+def rel(path) -> str:
+    """Repo-relative POSIX path for anything written into an output (review minor: no absolute paths)."""
+    p = Path(path).resolve()
+    try:
+        return p.relative_to(ek.REPO.resolve()).as_posix()
+    except ValueError:
+        return p.name
+
+
 def write_json(path: Path, obj) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -116,7 +125,7 @@ def _json_default(o):
     if isinstance(o, np.ndarray):
         return o.tolist()
     if isinstance(o, Path):
-        return str(o)
+        return rel(o)
     return str(o)
 
 

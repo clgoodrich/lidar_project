@@ -1,0 +1,13 @@
+{
+  "e_components": {
+    "buildings": "n_250",
+    "protected": "inside",
+    "public_supply": "inside",
+    "roads": "n_100",
+    "streams": "d_nearest",
+    "water_wells": "n_250",
+    "wetlands": "d_nearest"
+  },
+  "primary_scenario": "A",
+  "stage": "risk_scenarios"
+}

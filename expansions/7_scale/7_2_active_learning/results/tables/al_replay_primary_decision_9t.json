@@ -4,43 +4,56 @@
   "stop_rule": {
     "stop": true,
     "reason": "plateau under 0.01 for 2 rounds",
-    "round": 2
+    "round": 2,
+    "enforced": true,
+    "rounds_run": 14,
+    "rounds_kept": 2
   },
   "G": {
-    "G": 0.0,
-    "G_raw": -0.004273504273504258,
-    "floored_at_zero": true,
-    "source": "R recall at the budget minus at 75% of it, frozen before the policy was scored",
+    "G": null,
+    "source": "unset",
+    "G_raw": 0.0,
+    "G_raw_note": "R recall at the budget minus at 75% of it, from the same curves that are scored. Diagnostic only. Never used as the margin and never floored",
     "seeds": [
       0,
       1,
-      2
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
     ]
   },
+  "n_seeds": 10,
   "primary": {
     "policy": "U",
     "control": "R",
     "B_star_minutes": 1800.0,
     "diff": 0.0,
-    "lo": -9.259259259259076e-05,
-    "hi": 0.007858029287664445,
-    "G": 0.0,
-    "n_seeds": 3,
+    "lo": -0.006410256410256388,
+    "hi": 0.004256079027355614,
+    "G": null,
+    "n_seeds": 10,
     "n_blocks": 20,
     "permutation_p": 1.0,
     "bootstrap_unreliable": false,
-    "decision": "inconclusive"
+    "stopped_before_B_star": true,
+    "read_at": "stop round (the loop stopped before B*)",
+    "decision": "inconclusive (G unset. Set G in config_7_2.json or the preregistration before scoring. G_raw is a diagnostic and is never used as the margin)"
   },
   "discovery": {
-    "missed_ht": 544.7500000000002,
-    "truth_ht": 1595.7500000000002,
-    "pool_recall": 0.6586244712517624,
-    "missed_per_hour": 1.0238095238095237,
+    "missed_ht": 355.0000000000002,
+    "truth_ht": 4213.416666666669,
+    "pool_recall": 0.915745337315322,
+    "missed_per_hour": 0.24666666666666667,
     "pool_recall_ci95": [
-      0.5903308775791639,
-      0.7279170189153872
+      0.8838652497254902,
+      0.9444663260986371
     ],
-    "n_windows": 84,
+    "n_windows": 100,
     "note": "Horvitz-Thompson with pi from the window draw. Windows pooled over seeds in replay"
   },
   "H3_rankings_differ": true

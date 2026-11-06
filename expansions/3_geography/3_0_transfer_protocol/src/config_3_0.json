@@ -3,7 +3,7 @@
   "scoring_defaults": {
     "k_per_km2": 40,
     "k_sensitivity": 30,
-    "cutoff": 0.1,
+    "sensitivity_cutoff": 0.1,
     "min_area_m2": 4.0,
     "iou": 0.3,
     "order": "score",
@@ -15,7 +15,11 @@
       "pit": 0.35,
       "pad": 0.525
     },
-    "_cutoff_note": "Proposal cutoff. Protocol section 2 rule 1 asks for the sweep's proposal extraction. The sweep's leave-one-fold-out cutoffs are pit 0.35 in every fold and pad 0.50 to 0.55 (median 0.525). fw_00 says 0.10. At 0.10 the 9t uint8 mosaic gives recall 0.575 at K 40, at 0.35 it gives 0.909, equal to the archival 0.909. 'cutoff' 0.10 is kept as the fw_00 sensitivity."
+    "_cutoff_note": "Primary proposal cutoff, matching and K come from ek.policy_for(task) (policy fw00_s4_20261105). Pit 0.35 and pad 0.525 are the sweep's leave-one-fold-out cutoffs. cutoff_by_task mirrors them for reading only and a test checks it equals policy_for. 0.10 is the fw_00 sensitivity (mode sensitivity). At 0.10 the 9t uint8 mosaic gives recall 0.575 at K 40.",
+    "void_cap_default": 0.5,
+    "_void_cap_note": "Review G-05. Interior nodata counts toward a block's void fraction. A block is dropped when the void fraction exceeds the preregistered cap, else this default. 0.5 is the preregistration example value. Needs user decision (decisions_3_0.md).",
+    "zero_feature_fill": "round_robin",
+    "_zero_feature_fill_note": "Review G-02. 9t blocks with no feature were never in any training manifest, so every fold model is out of sample there. round_robin gives block b the fold model (sorted position of b among the fill blocks) mod 5, one model per block like a held-out block. fold_mean is the sensitivity. Needs user decision."
   },
   "reference_9t": {
     "pit": {
@@ -40,6 +44,14 @@
       "fold_rasters": {
         "key": "models",
         "rel": "pit/unet_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"
+      },
+      "model_dir": {
+        "key": "models",
+        "rel": "pit/unet_cv5"
+      },
+      "historical_split": {
+        "key": "results_9t",
+        "rel": "splits/cv_split_blocks_pit_9t.csv"
       }
     },
     "pad": {
@@ -61,7 +73,19 @@
         "key": "models",
         "rel": "pad/unet_cv5_iso/fold{k}/pad_prob_cvfold{k}_9t_05.tif"
       },
-      "_note": "layer 'pad' resolves to 'plat' through read_layer legacy aliases, as in _pad_unet_cv5.py."
+      "_note": "layer 'pad' resolves to 'plat' through read_layer legacy aliases, as in _pad_unet_cv5.py.",
+      "model_dir": {
+        "key": "models",
+        "rel": "pad/unet_cv5_iso"
+      },
+      "split": {
+        "key": "expansions",
+        "rel": "0_prerequisites/p1_splits_manifests/data/interim/dryrun/cv_splits_future_9t_v1.json"
+      },
+      "provisional_reasons": [
+        "trained with buffer_m 0 (review P1-02)",
+        "fold split from the P1 dry run, not the frozen file"
+      ]
     }
   },
   "archival": {
@@ -142,6 +166,12 @@
     "buffer_source",
     "split_file",
     "split_sha256",
-    "density_c"
+    "density_c",
+    "scoring.cutoff",
+    "scoring.iou",
+    "scoring.dedupe",
+    "checkpoint.family",
+    "checkpoint.lineage",
+    "checkpoint.sha256"
   ]
 }

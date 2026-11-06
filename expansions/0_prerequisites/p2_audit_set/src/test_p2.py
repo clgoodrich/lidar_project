@@ -64,12 +64,59 @@ def test_guard_refuses_unfrozen(tmp_path):
 
 
 def test_split_file_check(tmp_path):
+    """P2-03. An audit block in held_out is a violation too. It would reach calibration and scoring."""
     aud = ag.load_audit(write_frozen(tmp_path, [5]))
     sp = tmp_path / "s.json"
     sp.write_text(json.dumps({"tasks": {"pit": {"folds": {"0": {"held_out": [5], "inner_val": [1], "train": [2]},
-                                                           "1": {"held_out": [1], "inner_val": [5], "train": [2]}}}}}))
+                                                           "1": {"held_out": [1], "inner_val": [5], "train": [2]},
+                                                           "2": {"held_out": [3], "inner_val": [1], "train": [2]}}}}}))
     v = ag.check_split_file(sp, aud)
-    assert len(v) == 1 and "fold 1 inner_val" in v[0]
+    assert len(v) == 2
+    assert any("fold 0 held_out" in x for x in v) and any("fold 1 inner_val" in x for x in v)
+
+
+def test_window_guard_applies_audit_buffer(tmp_path):
+    """P2-03. A window 1 m outside an audit block fails when the audit buffer is 100 m."""
+    from shapely.geometry import box
+    blocks = grid()
+    aud = ag.load_audit(write_frozen(tmp_path, [3], buffer_m=100.0))
+    x0, y0, x1, y1 = blocks.geometry[3].bounds                 # block 3 is x 1125..1500, y 0..375
+    near = box(x1 + 1, y0 + 10, x1 + 41, y0 + 50)              # 1 m east of block 3
+    far = box(x1 + 101, y0 + 10, x1 + 141, y0 + 50)            # 101 m east, clear of the buffer
+    with pytest.raises(ag.AuditViolation, match="within 100.0 m"):
+        ag.assert_no_audit([near], aud, "windows", blocks)
+    ag.assert_no_audit([far], aud, "windows", blocks)
+    with pytest.raises(ag.AuditViolation, match="below"):
+        ag.assert_no_audit([far], aud, "windows", blocks, buffer_m=10.0)
+
+
+def test_window_guard_refuses_audit_ids_missing_from_blocks(tmp_path):
+    """P2-03. Audit block 99 has no polygon. The check must raise, not pass."""
+    from shapely.geometry import box
+    aud = ag.load_audit(write_frozen(tmp_path, [3, 99]))
+    with pytest.raises(ag.AuditViolation, match="no polygon"):
+        ag.assert_no_audit([box(0, 0, 10, 10)], aud, "windows", grid())
+
+
+def test_committed_hash_without_git(monkeypatch):
+    """P1/P2 minor. No git binary gives None, not an exception."""
+    def no_git(*a, **k):
+        raise FileNotFoundError("git")
+    monkeypatch.setattr(ag.subprocess, "run", no_git)
+    assert ag.committed_hash(ag.ek.REPO / "README.md") is None
+
+
+def test_audit_scope_is_pit_only(tmp_path):
+    """P2 minor. The draw frame is the pit-bearing blocks. A pad reader is refused, a pit reader is not."""
+    tab = pd.DataFrame({"block_id": [1, 2, 3], "dens_t": [0, 1, 2], "slope_t": [0, 1, 2]})
+    p = tmp_path / "audit_blocks_9t_dryrun.csv"
+    dr.write_audit_csv(p, tab, {"audit": [1, 3], "buffer": [], "share": 0.15}, "window", 100.0, 20261104)
+    a = ag.load_audit(p, allow_unfrozen=True, task="pit")
+    assert a.attrs["header"]["frame"] == "pit_bearing_blocks" and a.attrs["header"]["tasks"] == "pit"
+    assert sorted(a.block_id) == [1, 3]
+    ag.load_audit(p, allow_unfrozen=True, task="pit_full")
+    with pytest.raises(ag.AuditViolation, match="drawn for tasks"):
+        ag.load_audit(p, allow_unfrozen=True, task="pad")
 
 
 def test_draw_is_seeded_stratified_and_buffered():
@@ -123,5 +170,21 @@ def test_reserve_refuses_seen_area():
     blocks.loc[[0, 1], "role"] = "audit"
     rows, probs = rw.reserve(blocks, [])
     assert list(rows.block_id) == [0, 1] and probs == []
-    _, probs = rw.reserve(blocks, [(Path("prob.tif"), box(0, 0, 10, 10))])
+    _, probs = rw.reserve(blocks, [(Path("prob.tif"), box(0, 0, 10, 10), "EPSG:6346")])
     assert probs
+    _, probs = rw.reserve(blocks, [(Path("prob.tif"), box(0, 0, 10, 10), None)])
+    assert probs and "no CRS" in probs[0]
+
+
+def test_reserve_reprojects_extents():
+    """P1/P2 minor. An output in another CRS over a reserved block is caught after reprojection."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    g = [box(600000 + ix * 375, 4500000, 600000 + (ix + 1) * 375, 4500375) for ix in range(4)]
+    blocks = gpd.GeoDataFrame({"block_id": range(4), "role": ["audit", "test", "test", "test"]}, geometry=g, crs="EPSG:6346")
+    c = gpd.GeoSeries([blocks.geometry[0].centroid.buffer(20)], crs="EPSG:6346").to_crs("EPSG:4326").iloc[0]
+    _, probs = rw.reserve(blocks, [(Path("p.tif"), box(*c.bounds), "EPSG:4326")])
+    assert len(probs) == 1 and "[0]" in probs[0]            # raw degrees would never touch UTM metres
+    c3 = gpd.GeoSeries([blocks.geometry[3].centroid.buffer(20)], crs="EPSG:6346").to_crs("EPSG:4326").iloc[0]
+    _, probs = rw.reserve(blocks, [(Path("q.tif"), box(*c3.bounds), "EPSG:4326")])
+    assert probs == []

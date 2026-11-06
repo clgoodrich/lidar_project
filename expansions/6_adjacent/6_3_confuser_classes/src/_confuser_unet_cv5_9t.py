@@ -19,8 +19,8 @@ Purpose
     Child seeds are master + 1000 * fold + (100 * arm_index + seed_index).
     Default is a dry run that writes the plan and runs every leakage assertion. --train is needed to train.
 Inputs
-    split_file    expansions/0_prerequisites/p1_splits_manifests/results/tables/split_blocks_pit_9t.csv  assumed (P1)
-    audit_blocks  expansions/0_prerequisites/p2_audit_set/results/tables/audit_blocks_9t.csv           assumed (P2)
+    split_file    data/9t/results/splits/cv_splits_future_pit_9t_v1.csv (P1 CSV, ek.read_split_csv) or the P1 JSON (ek.read_split)
+    audit_blocks  data/9t/results/splits/audit_blocks_9t_v1.csv (P2, read with ek.require_audit)           assumed (P2)
     data/9t/results/confusers/confuser_labels_adjudicated_9t.csv and confuser_sheet_key_9t.csv (S3)
     features_pit_9t_05.tif, labels_pit_9t_05.tif, pit_dataset_manifest.csv, pit_blocks_9t.gpkg (held)
 Outputs
@@ -62,15 +62,24 @@ def import_trainers():
 
 
 def read_split(cfg: dict, override=None) -> pd.DataFrame:
+    """Long split frame (fold, role, block_id) with canonical roles train / inner_val / held_out.
+
+    A .json path is the P1 split document, read with ek.read_split (hash-checked). Anything else is the P1 long
+    CSV, read with ek.read_split_csv, which maps the legacy words val and heldout. P1 role 'buffer' gets no row.
+    """
     p = C.input_path(cfg, "split_file", override)
-    s = pd.read_csv(p)
+    if p.suffix.lower() == ".json":
+        doc = ek.read_split("pit", p)
+        s = pd.DataFrame([(int(f), r, int(b)) for f, roles in doc.items() for r, ids in roles.items() for b in ids],
+                         columns=["fold", "role", "block_id"])
+    else:
+        s = ek.read_split_csv(p)
     for col in ("fold", "role", "block_id"):
         if col not in s:
             raise C.MissingInput(f"{p} lacks column {col}. Schema {cfg['inputs']['split_file']['schema']}")
     ek.assert_no_nan(s.block_id, "split block_id")
-    if set(s.role) - {"train", "inner_val", "held_out"}:
-        raise AssertionError(f"unknown split roles {set(s.role)}")
     s["block_id"] = s.block_id.astype(int)
+    s["fold"] = s.fold.astype(int)
     return s
 
 
@@ -120,26 +129,60 @@ def burn_confuser_labels(base_labels: Path, polys, out_path: Path) -> dict:
     return {"confuser_pixels": int(sel.sum()), "overlap_with_pit_pixels": int(((m == 1) & (base > 0)).sum())}
 
 
-def negative_centres(arm: str, polys, train_polys, seed: int) -> np.ndarray:
-    """confuser: polygon centroids inside training blocks. random: same count, uniform inside the same blocks."""
+def negative_centres(arm: str, polys, train_polys, seed: int, truth=None, truth_excl_m: float = 0.0) -> np.ndarray:
+    """confuser: polygon centroids inside training blocks. random: same count, uniform inside the same blocks.
+
+    Review 6.3-01. A confuser label can sit on a candidate that matched a drawn pit. No negative centre may lie
+    within truth_excl_m of any truth geometry, for either arm. Random draws that land near truth are redrawn.
+    """
     from shapely.geometry import Point
     from shapely.ops import unary_union
     tr = unary_union(list(train_polys)) if len(train_polys) else None
     if arm == "baseline" or tr is None:
         return np.zeros((0, 2))
-    cen = [(g.centroid.x, g.centroid.y) for g in polys.geometry if tr.contains(g.centroid)]
+    cen = np.array([(g.centroid.x, g.centroid.y) for g in polys.geometry if tr.contains(g.centroid)],
+                   float).reshape(-1, 2)
+    cen = cen[C.drop_near_truth(cen, truth, truth_excl_m)]
     if arm == "confuser":
-        return np.array(cen, float).reshape(-1, 2)
+        return cen
     rng = np.random.default_rng(seed)
     out = []
     tp = list(train_polys)
+    tries = 0
     while len(out) < len(cen):
+        tries += 1
+        if tries > 1000 * max(len(cen), 1):
+            raise RuntimeError("cannot place random negatives away from truth inside the training blocks")
         b = tp[int(rng.integers(len(tp)))]
         x0, y0, x1, y1 = b.bounds
         x, y = rng.uniform(x0, x1), rng.uniform(y0, y1)
-        if b.contains(Point(x, y)):
+        if b.contains(Point(x, y)) and C.drop_near_truth(np.array([[x, y]]), truth, truth_excl_m)[0]:
             out.append((x, y))
     return np.array(out, float).reshape(-1, 2)
+
+
+def truth_exclusion_m(cfg: dict) -> float:
+    """Declared radius around truth that no negative centre may enter. null in the config means jitter_m."""
+    v = cfg["train"].get("neg_truth_exclusion_m")
+    return float(cfg["train"]["jitter_m"] if v is None else v)
+
+
+def read_truth(cfg: dict):
+    spec = cfg["inputs"]["truth"]
+    return C.read_vector(C.input_path(cfg, "truth"), cfg["crs"], layer=spec.get("layer"))
+
+
+def confuser_label_raster(base_lbl: Path, polys, conf_lbl: Path) -> Path:
+    """Reuse the burned label raster only when its sidecar records the same base raster and polygons."""
+    want = {"base_sha256": ek.sha256(base_lbl),
+            "polys_sha256": ek.config_hash({"wkb": sorted(g.wkb_hex for g in polys.geometry)}),
+            "confuser_class": CONFUSER_CLASS}
+    meta = conf_lbl.with_suffix(".json")
+    if not C.label_cache_ok(conf_lbl, meta, want):
+        info = burn_confuser_labels(base_lbl, polys, conf_lbl)
+        meta.write_text(json.dumps(want | info, indent=2), encoding="utf-8")
+        print(f"burned {conf_lbl} {info}")
+    return conf_lbl
 
 
 def fold_stats(sampler, n_windows: int, n_ch: int) -> tuple[np.ndarray, np.ndarray, int]:
@@ -255,6 +298,8 @@ def main() -> int:
     ap.add_argument("--predict", action="store_true", help="write the full-tile floor probability after training")
     ap.add_argument("--split-file", default=None)
     ap.add_argument("--audit-blocks", default=None)
+    ap.add_argument("--allow-no-audit", action="store_true",
+                    help="dry run only. Plan with no P2 audit exclusion, labelled exploratory")
     ap.add_argument("--results", default=None, help="confuser results dir (default data/9t/results/confusers/)")
     a = ap.parse_args()
     cfg = C.load_config(a.config)
@@ -268,7 +313,14 @@ def main() -> int:
     folds = [int(f) for f in a.only_folds.split(",") if f.strip()] or list(range(t["folds"]))
 
     split = read_split(cfg, a.split_file)
-    audit = C.read_block_ids(C.input_path(cfg, "audit_blocks", a.audit_blocks))
+    if a.allow_no_audit and a.train:
+        raise SystemExit("--allow-no-audit is for dry runs only. Training needs the frozen P2 audit set.")
+    audit = C.audit_block_ids(cfg, a.audit_blocks, roles=("audit", "buffer"), allow_missing=a.allow_no_audit)
+    audit_note = "audit and buffer blocks excluded"
+    if audit is None:
+        audit, audit_note = [], "no audit exclusion, exploratory"
+    truth = read_truth(cfg)
+    excl_m = truth_exclusion_m(cfg)
     blocks = C.read_vector(C.input_path(cfg, "blocks"), cfg["crs"], layer=cfg["inputs"]["blocks"]["layer"])
     man = pd.read_csv(C.input_path(cfg, "manifest"))
     res_dir = C.results_dir(cfg, a.results)
@@ -298,15 +350,14 @@ def main() -> int:
         for arm in arms:
             for s in seeds:
                 p0 = ek.child_seed(t["master_seed"], k, 100 * ARM_INDEX[arm] + s)
-                neg = negative_centres(arm, polys, tr_polys, p0) if arm != "baseline" else np.zeros((0, 2))
+                neg = (negative_centres(arm, polys, tr_polys, p0, truth, excl_m) if arm != "baseline"
+                       else np.zeros((0, 2)))
                 p = plan_fold(cfg, arm, s, k, fb, pits_xy, neg, audit)
                 plan.append(p)
                 if a.train:
                     lbl = base_lbl
                     if arm == "confuser" and t["mode"] == "class":
-                        if not conf_lbl.exists():
-                            print(burn_confuser_labels(base_lbl, polys, conf_lbl))
-                        lbl = conf_lbl
+                        lbl = confuser_label_raster(base_lbl, polys, conf_lbl)
                     p.update(train_one(cfg, p, feats, lbl, blocks, fb, pits_xy, neg, audit_polys, a.predict))
     # random arm count must equal confuser arm count per fold and seed (same count, same procedure)
     pdf = pd.DataFrame(plan)
@@ -315,7 +366,8 @@ def main() -> int:
         r = pdf[pdf.arm == "random"].set_index(["fold", "seed_index"]).n_negative_centres
         assert (c == r).all(), "random-negative count differs from confuser count"
     out = ek.sub(cfg["exp_id"], "results/tables") / f"confuser_train_plan_{cfg['area']}.json"
-    out.write_text(json.dumps({"train": a.train, "config": t, "plan": plan}, indent=2, default=str), encoding="utf-8")
+    out.write_text(json.dumps({"train": a.train, "config": t, "audit_exclusion": audit_note,
+                               "neg_truth_exclusion_m": excl_m, "plan": plan}, indent=2, default=str), encoding="utf-8")
     print(pdf.to_string(index=False))
     print(f"wrote {out}")
     return 0

@@ -1,16 +1,16 @@
 {
   "strata": {
     "high_record_density": {
-      "n1": 579,
-      "n_sites": 321,
-      "overlap": 214,
-      "blocks": 52
+      "n1": 749,
+      "n_sites": 399,
+      "overlap": 262,
+      "blocks": 70
     },
     "low_record_density": {
-      "n1": 350,
-      "n_sites": 303,
-      "overlap": 127,
-      "blocks": 63
+      "n1": 303,
+      "n_sites": 257,
+      "overlap": 94,
+      "blocks": 74
     }
   },
   "radius_m": 50

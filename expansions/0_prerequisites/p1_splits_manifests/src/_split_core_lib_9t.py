@@ -47,6 +47,7 @@ TRAINER = {"pit": "_pit_unet_cv5", "pad": "_pad_unet_cv5"}
 ID_COL = {"pit": "pit_inside_id", "pad": "pad_id"}
 COUNT_COL = {"pit": "n_pits", "pad": "n_pads"}
 ROLES = ("held_out", "inner_val", "train")
+BUFFER_ROLE = "buffer"          # train blocks removed by the P1 S4 buffer (block mode). Never trained or scored.
 
 
 # ----------------------------------------------------------------------------- trainer access
@@ -125,7 +126,7 @@ def check_roles(splits: dict, expected_blocks: set[int] | None = None) -> list[s
     problems = []
     for f, roles in splits.items():
         seen: dict[int, str] = {}
-        for role in ROLES:
+        for role in ROLES + ((BUFFER_ROLE,) if BUFFER_ROLE in roles else ()):
             for b in roles[role]:
                 if b is None or (isinstance(b, float) and math.isnan(b)):
                     problems.append(f"fold {f}: NaN block in {role}")
@@ -150,7 +151,37 @@ def lists_hash(obj) -> str:
 
 
 def fold_hashes(splits: dict) -> dict:
-    return {str(f): {role: lists_hash(r[role]) for role in ROLES} for f, r in splits.items()}
+    return {str(f): {role: lists_hash(r[role]) for role in ROLES + (BUFFER_ROLE,) if role in r}
+            for f, r in splits.items()}
+
+
+def near_held_out(splits: dict, blocks_gdf, buffer_m: float) -> dict[int, list[int]]:
+    """Per fold, the train blocks that overlap the held-out ground dilated by buffer_m (positive area).
+
+    Same test as the P2 block buffer (mitre join, overlap area above 1e-6 m2). Raises if a listed block has
+    no polygon, so a missing geometry can never pass as 'far away'."""
+    g = blocks_gdf.assign(block_id=blocks_gdf.block_id.astype(int)).set_index("block_id").geometry
+    out = {}
+    for f, roles in splits.items():
+        missing = sorted((set(roles["held_out"]) | set(roles["train"])) - set(g.index))
+        if missing:
+            raise AssertionError(f"fold {f}: blocks without a polygon {missing[:10]}")
+        held = g.loc[roles["held_out"]].union_all().buffer(buffer_m, join_style="mitre")
+        out[f] = sorted(int(b) for b in roles["train"] if g.loc[b].intersection(held).area > 1e-6)
+    return out
+
+
+def apply_block_buffer(splits: dict, blocks_gdf, buffer_m: float) -> tuple[dict, dict[int, list[int]]]:
+    """Block-mode buffer. Train blocks within buffer_m of held-out ground move to role 'buffer'.
+
+    Deterministic (pure geometry, no draw). Held-out and inner-validation lists are unchanged.
+    Returns (new splits, removed ids per fold)."""
+    near = near_held_out(splits, blocks_gdf, buffer_m)
+    out = {}
+    for f, roles in splits.items():
+        rm = set(near[f])
+        out[f] = {**roles, "train": [b for b in roles["train"] if b not in rm], BUFFER_ROLE: sorted(rm)}
+    return out, near
 
 
 # ----------------------------------------------------------------------------- window geometry

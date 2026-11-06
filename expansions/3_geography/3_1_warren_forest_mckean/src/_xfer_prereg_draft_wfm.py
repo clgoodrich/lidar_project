@@ -81,9 +81,9 @@ def main(argv=None) -> int:
         blockers.append("S2 projected width not run")
     ref = xl.resolve_path(cfg["reference"]["blocks_csv"])
     ref_s = xl.resolve_path(cfg["reference"]["summary_json"])
-    prop = json.loads(ref_s.read_text()).get("frozen_target_proposal_thr") if ref_s.exists() else None
-    if "slope_recall" in str(ref):
-        blockers.append("reference is the provisional CV5 rebuild, not the P1 isolated baseline")
+    pol = xl.policy("pit")                     # review F02. The one scoring policy
+    if "slope_recall" in str(ref) or "xfer_ref_block_tables" in str(xl.resolve_path(cfg["reference"]["tables"]["pit"])):
+        blockers.append("reference tables are provisional (historical CV5 pit). Scores stay descriptive until the P1 isolated baseline")
     lines_pit, b1 = ckpt_lines(cfg, "pit")
     lines_pad, b2 = ckpt_lines(cfg, "pad")
     blockers += b1 + b2
@@ -102,8 +102,9 @@ def main(argv=None) -> int:
           f"against minus Delta. Delta = {margin if margin is not None else 'BLOCKER'}.", "",
           "## Fixed choices",
           f"- K primary 40 per km2. K = 30 sensitivity only.",
-          f"- IoU 0.3, greedy one-to-one by IoU. Blobs under {cfg['min_blob_m2']} m2 dropped. Score = mean probability.",
-          f"- Proposal cutoff {prop if prop is not None else 'BLOCKER'} (frozen from 9t, rule in the reference summary).",
+          f"- Scoring policy ek.policy_for({pol['task']}) {pol['policy_hash']}. IoU {pol['iou']}, greedy one-to-one in score order. "
+          f"Blobs under {pol['min_area_m2']} m2 dropped. Score = mean probability. Dedupe truth_matched.",
+          f"- Proposal cutoff {pol['cutoff']} (ek.policy_for, the sweep's cutoff). Declare it, the IoU, the dedupe, K and the checkpoint in the json prereg block.",
           f"- Model policy {cfg['models']['policy']}.",
           f"- Program {A['program']}. Native density primary. Thinning is a separate sensitivity arm.",
           f"- Roles seed {rj.get('seed', 'BLOCKER')}. Buffer {rj.get('buffer_m', 'BLOCKER')} m. "

@@ -9,7 +9,7 @@ Purpose
 Inputs
     candidates    data/9t/results/pit/centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg (undecided, matched)  held
     blocks        data/9t/derived/05/pit_blocks_9t.gpkg                                                                 held
-    audit_blocks  expansions/0_prerequisites/p2_audit_set/results/tables/audit_blocks_9t.csv                            assumed (P2)
+    audit_blocks  data/9t/results/splits/audit_blocks_9t_v1.csv (P2, read with ek.require_audit)                            assumed (P2)
 Outputs
     data/9t/results/confusers/confuser_sample_9t.csv (pilot: confuser_pilot_sample_9t.csv), plus .gpkg twin
     and _PROVENANCE.json beside them
@@ -68,12 +68,16 @@ def stratified_sample(cands, n_total: int, n_bands: int, seed: int, relabel_shar
     return s
 
 
-def build(cfg: dict, out_dir: Path, pilot: bool = False, overrides: dict | None = None):
+def build(cfg: dict, out_dir: Path, pilot: bool = False, overrides: dict | None = None, allow_no_audit: bool = False):
     o = overrides or {}
     sp = cfg["sample"]
     cands = load_candidates(cfg, o.get("candidates"))
     blocks = C.read_vector(C.input_path(cfg, "blocks", o.get("blocks")), cfg["crs"], layer=cfg["inputs"]["blocks"].get("layer"))
-    audit = C.read_block_ids(C.input_path(cfg, "audit_blocks", o.get("audit_blocks")))
+    audit = C.audit_block_ids(cfg, o.get("audit_blocks"), roles=("audit", "buffer"), allow_missing=allow_no_audit)
+    audit_note = "audit and buffer blocks excluded"
+    if audit is None:
+        audit, audit_note = [], "no audit exclusion, exploratory"
+        print("WARNING no P2 audit file. Sample is labelled 'no audit exclusion, exploratory'.")
     cent = np.column_stack([cands.geometry.centroid.x, cands.geometry.centroid.y])
     cands["block_id"] = C.block_of_points(cent, blocks)
     cands["cx"], cands["cy"] = cent[:, 0], cent[:, 1]
@@ -83,6 +87,7 @@ def build(cfg: dict, out_dir: Path, pilot: bool = False, overrides: dict | None 
     print(f"candidates {n0}, in audit blocks {int((~keep).sum())}, eligible {len(cands)}")
     seed = ek.child_seed(sp["master_seed"], 0, 1 if pilot else 0)
     s = stratified_sample(cands, sp["n_pilot"] if pilot else sp["n_total"], sp["n_bands"], seed, sp["relabel_share"])
+    s["audit_exclusion"] = audit_note
     ek.assert_disjoint(s.block_id.dropna().astype(int), audit, "sample vs audit blocks")
     ek.assert_unique(s, "uid")
     stem = "confuser_pilot_sample" if pilot else "confuser_sample"
@@ -104,9 +109,11 @@ def main() -> int:
     ap.add_argument("--out", default=None, help="default data/9t/results/confusers/")
     ap.add_argument("--candidates", default=None)
     ap.add_argument("--audit-blocks", default=None)
+    ap.add_argument("--allow-no-audit", action="store_true", help="exploratory only. Draw with no P2 audit exclusion")
     a = ap.parse_args()
     cfg = C.load_config(a.config)
-    csv, s = build(cfg, C.results_dir(cfg, a.out), a.pilot, {"candidates": a.candidates, "audit_blocks": a.audit_blocks})
+    csv, s = build(cfg, C.results_dir(cfg, a.out), a.pilot, {"candidates": a.candidates, "audit_blocks": a.audit_blocks},
+                   allow_no_audit=a.allow_no_audit)
     print(s.groupby("band").agg(n=("uid", "size"), N=("N_band", "first"), p=("incl_prob", "first")).to_string())
     print(f"wrote {csv}")
     return 0

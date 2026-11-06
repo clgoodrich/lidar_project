@@ -10,7 +10,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -28,7 +28,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -46,7 +46,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -64,7 +64,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -82,7 +82,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -100,7 +100,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -118,7 +118,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -136,7 +136,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -154,7 +154,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -172,7 +172,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -190,7 +190,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -208,7 +208,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -226,7 +226,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -244,7 +244,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -262,7 +262,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -280,7 +280,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 16,
       "example_seen": [
@@ -298,7 +298,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -316,7 +316,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -334,7 +334,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -352,7 +352,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -370,7 +370,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -388,7 +388,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -406,7 +406,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -424,7 +424,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -442,7 +442,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -460,7 +460,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -478,7 +478,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -496,7 +496,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -514,7 +514,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -532,7 +532,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -550,7 +550,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -568,7 +568,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -586,7 +586,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -604,7 +604,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 15,
       "example_seen": [
@@ -622,7 +622,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -640,7 +640,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -658,7 +658,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -676,7 +676,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -694,7 +694,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -712,7 +712,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -730,7 +730,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -748,7 +748,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -766,7 +766,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -784,7 +784,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -802,7 +802,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -820,7 +820,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -838,7 +838,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -856,7 +856,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -874,7 +874,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -892,7 +892,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -910,7 +910,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -928,7 +928,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 16,
       "example_seen": [
@@ -946,7 +946,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -964,7 +964,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -982,7 +982,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1000,7 +1000,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -1018,7 +1018,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1036,7 +1036,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1054,7 +1054,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -1072,7 +1072,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1090,7 +1090,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1108,7 +1108,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -1126,7 +1126,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1144,7 +1144,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1162,7 +1162,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -1180,7 +1180,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1198,7 +1198,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1216,7 +1216,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -1234,7 +1234,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1252,7 +1252,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -1270,7 +1270,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1288,7 +1288,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1306,7 +1306,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1324,7 +1324,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -1342,7 +1342,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1360,7 +1360,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1378,7 +1378,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -1396,7 +1396,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1414,7 +1414,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1432,7 +1432,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -1450,7 +1450,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1468,7 +1468,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1486,7 +1486,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -1504,7 +1504,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1522,7 +1522,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -1540,7 +1540,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 23,
       "example_seen": [
@@ -1558,7 +1558,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1576,7 +1576,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 15,
       "example_seen": [
@@ -1594,7 +1594,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1612,7 +1612,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1630,7 +1630,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -1648,7 +1648,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -1666,7 +1666,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1684,7 +1684,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -1702,7 +1702,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -1720,7 +1720,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1738,7 +1738,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -1756,7 +1756,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -1774,7 +1774,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1792,7 +1792,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -1810,7 +1810,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -1828,7 +1828,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1846,7 +1846,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -1864,7 +1864,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -1882,7 +1882,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1900,7 +1900,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -1918,7 +1918,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1936,7 +1936,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -1954,7 +1954,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -1972,7 +1972,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -1990,7 +1990,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2008,7 +2008,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2026,7 +2026,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2044,7 +2044,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2062,7 +2062,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2080,7 +2080,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -2098,7 +2098,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2116,7 +2116,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2134,7 +2134,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2152,7 +2152,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2170,7 +2170,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2188,7 +2188,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2206,7 +2206,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2224,7 +2224,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -2242,7 +2242,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2260,7 +2260,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2278,7 +2278,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2296,7 +2296,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -2314,7 +2314,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2332,7 +2332,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2350,7 +2350,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2368,7 +2368,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2386,7 +2386,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2404,7 +2404,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -2422,7 +2422,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2440,7 +2440,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2458,7 +2458,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2476,7 +2476,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2494,7 +2494,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2512,7 +2512,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2530,7 +2530,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2548,7 +2548,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -2566,7 +2566,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2584,7 +2584,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2602,7 +2602,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2620,7 +2620,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -2638,7 +2638,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2656,7 +2656,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2674,7 +2674,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2692,7 +2692,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2710,7 +2710,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2728,7 +2728,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -2746,7 +2746,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2764,7 +2764,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2782,7 +2782,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2800,7 +2800,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2818,7 +2818,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2836,7 +2836,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -2854,7 +2854,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2872,7 +2872,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -2890,7 +2890,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2908,7 +2908,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2926,7 +2926,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2944,7 +2944,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -2962,7 +2962,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -2980,7 +2980,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -2998,7 +2998,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -3016,7 +3016,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -3034,7 +3034,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -3052,7 +3052,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3070,7 +3070,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -3088,7 +3088,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -3106,7 +3106,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -3124,7 +3124,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -3142,7 +3142,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -3160,7 +3160,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -3178,7 +3178,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -3196,7 +3196,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3214,7 +3214,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -3232,7 +3232,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -3250,7 +3250,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3268,7 +3268,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -3286,7 +3286,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3304,7 +3304,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3322,7 +3322,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -3340,7 +3340,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3358,7 +3358,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3376,7 +3376,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -3394,7 +3394,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3412,7 +3412,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3430,7 +3430,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -3448,7 +3448,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3466,7 +3466,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3484,7 +3484,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -3502,7 +3502,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3520,7 +3520,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -3538,7 +3538,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3556,7 +3556,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3574,7 +3574,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3592,7 +3592,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -3610,7 +3610,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3628,7 +3628,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3646,7 +3646,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -3664,7 +3664,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3682,7 +3682,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3700,7 +3700,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -3718,7 +3718,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3736,7 +3736,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3754,7 +3754,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -3772,7 +3772,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3790,7 +3790,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3808,7 +3808,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -3826,7 +3826,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3844,7 +3844,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -3862,7 +3862,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3880,7 +3880,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3898,7 +3898,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3916,7 +3916,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -3934,7 +3934,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -3952,7 +3952,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -3970,7 +3970,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -3988,7 +3988,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4006,7 +4006,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4024,7 +4024,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -4042,7 +4042,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4060,7 +4060,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4078,7 +4078,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -4096,7 +4096,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4114,7 +4114,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4132,7 +4132,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -4150,7 +4150,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4168,7 +4168,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -4186,7 +4186,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4204,7 +4204,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4222,7 +4222,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4240,7 +4240,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -4258,7 +4258,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4276,7 +4276,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4294,7 +4294,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -4312,7 +4312,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4330,7 +4330,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4348,7 +4348,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -4366,7 +4366,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4384,7 +4384,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4402,7 +4402,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -4420,7 +4420,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4438,7 +4438,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4456,7 +4456,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -4474,7 +4474,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4492,7 +4492,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 14,
       "example_seen": [
@@ -4510,7 +4510,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4528,7 +4528,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4546,7 +4546,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4564,7 +4564,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -4582,7 +4582,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4600,7 +4600,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4618,7 +4618,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -4636,7 +4636,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4654,7 +4654,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4672,7 +4672,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -4690,7 +4690,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4708,7 +4708,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4726,7 +4726,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -4744,7 +4744,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4762,7 +4762,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4780,7 +4780,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -4798,7 +4798,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4816,7 +4816,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -4834,7 +4834,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4852,7 +4852,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 28,
       "example_seen": [
@@ -4870,7 +4870,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -4888,7 +4888,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -4906,7 +4906,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -4924,7 +4924,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -4942,7 +4942,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -4960,7 +4960,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -4978,7 +4978,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -4996,7 +4996,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5014,7 +5014,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5032,7 +5032,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5050,7 +5050,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -5068,7 +5068,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5086,7 +5086,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5104,7 +5104,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5122,7 +5122,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5140,7 +5140,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -5158,7 +5158,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5176,7 +5176,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5194,7 +5194,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5212,7 +5212,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5230,7 +5230,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5248,7 +5248,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5266,7 +5266,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -5284,7 +5284,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5302,7 +5302,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5320,7 +5320,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5338,7 +5338,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5356,7 +5356,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5374,7 +5374,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -5392,7 +5392,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5410,7 +5410,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5428,7 +5428,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5446,7 +5446,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5464,7 +5464,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -5482,7 +5482,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5500,7 +5500,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5518,7 +5518,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5536,7 +5536,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5554,7 +5554,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5572,7 +5572,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5590,7 +5590,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -5608,7 +5608,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5626,7 +5626,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5644,7 +5644,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5662,7 +5662,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5680,7 +5680,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5698,7 +5698,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -5716,7 +5716,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5734,7 +5734,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5752,7 +5752,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5770,7 +5770,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5788,7 +5788,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -5806,7 +5806,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5824,7 +5824,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5842,7 +5842,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5860,7 +5860,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5878,7 +5878,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5896,7 +5896,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5914,7 +5914,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -5932,7 +5932,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -5950,7 +5950,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -5968,7 +5968,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -5986,7 +5986,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6004,7 +6004,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6022,7 +6022,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -6040,7 +6040,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6058,7 +6058,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6076,7 +6076,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -6094,7 +6094,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6112,7 +6112,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -6130,7 +6130,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6148,7 +6148,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6166,7 +6166,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6184,7 +6184,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -6202,7 +6202,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6220,7 +6220,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6238,7 +6238,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -6256,7 +6256,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6274,7 +6274,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6292,7 +6292,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -6310,7 +6310,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6328,7 +6328,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6346,7 +6346,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 17,
       "example_seen": [
@@ -6364,7 +6364,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6382,7 +6382,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6400,7 +6400,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -6418,7 +6418,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6436,7 +6436,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -6454,7 +6454,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6472,7 +6472,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6490,7 +6490,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6508,7 +6508,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -6526,7 +6526,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6544,7 +6544,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6562,7 +6562,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -6580,7 +6580,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6598,7 +6598,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6616,7 +6616,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -6634,7 +6634,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6652,7 +6652,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6670,7 +6670,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -6688,7 +6688,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6706,7 +6706,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6724,7 +6724,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -6742,7 +6742,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6760,7 +6760,7 @@
       "block_fold": 0,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -6778,7 +6778,7 @@
       "block_fold": 0,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6796,7 +6796,7 @@
       "block_fold": 0,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6814,7 +6814,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6832,7 +6832,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -6850,7 +6850,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6868,7 +6868,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6886,7 +6886,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -6904,7 +6904,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6922,7 +6922,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6940,7 +6940,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -6958,7 +6958,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -6976,7 +6976,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -6994,7 +6994,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -7012,7 +7012,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7030,7 +7030,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7048,7 +7048,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -7066,7 +7066,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7084,7 +7084,7 @@
       "block_fold": 1,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -7102,7 +7102,7 @@
       "block_fold": 1,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7120,7 +7120,7 @@
       "block_fold": 1,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7138,7 +7138,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7156,7 +7156,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -7174,7 +7174,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7192,7 +7192,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7210,7 +7210,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -7228,7 +7228,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7246,7 +7246,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7264,7 +7264,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -7282,7 +7282,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7300,7 +7300,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7318,7 +7318,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -7336,7 +7336,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 2,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7354,7 +7354,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7372,7 +7372,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -7390,7 +7390,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 6,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7408,7 +7408,7 @@
       "block_fold": 2,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -7426,7 +7426,7 @@
       "block_fold": 2,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7444,7 +7444,7 @@
       "block_fold": 2,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7462,7 +7462,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7480,7 +7480,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -7498,7 +7498,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7516,7 +7516,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7534,7 +7534,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -7552,7 +7552,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7570,7 +7570,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7588,7 +7588,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -7606,7 +7606,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7624,7 +7624,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7642,7 +7642,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -7660,7 +7660,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7678,7 +7678,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7696,7 +7696,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -7714,7 +7714,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7732,7 +7732,7 @@
       "block_fold": 3,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -7750,7 +7750,7 @@
       "block_fold": 3,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7768,7 +7768,7 @@
       "block_fold": 3,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7786,7 +7786,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7804,7 +7804,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -7822,7 +7822,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7840,7 +7840,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7858,7 +7858,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold1\\pad_prob_cvfold1_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold1/pad_prob_cvfold1_9t_05.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 19,
       "example_seen": [
@@ -7876,7 +7876,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 4,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7894,7 +7894,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7912,7 +7912,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold2\\pad_prob_cvfold2_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold2/pad_prob_cvfold2_9t_05.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 18,
       "example_seen": [
@@ -7930,7 +7930,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 7,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -7948,7 +7948,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -7966,7 +7966,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold3\\pad_prob_cvfold3_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold3/pad_prob_cvfold3_9t_05.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 22,
       "example_seen": [
@@ -7984,7 +7984,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 3,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -8002,7 +8002,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 24,
       "example_seen": [
@@ -8020,7 +8020,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold4\\pad_prob_cvfold4_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold4/pad_prob_cvfold4_9t_05.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 20,
       "example_seen": [
@@ -8038,7 +8038,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 5,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -8056,7 +8056,7 @@
       "block_fold": 4,
       "role": "pit",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+      "raster": "data/9t/models/pit/unet_cv5/pit_prob_floor_outoffold_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 21,
       "example_seen": [
@@ -8074,7 +8074,7 @@
       "block_fold": 4,
       "role": "pad",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pad\\unet_cv5_iso\\fold0\\pad_prob_cvfold0_9t_05.tif",
+      "raster": "data/9t/models/pad/unet_cv5_iso/fold0/pad_prob_cvfold0_9t_05.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -8092,7 +8092,7 @@
       "block_fold": 4,
       "role": "road",
       "kind": "historical",
-      "raster": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob.tif",
+      "raster": "data/9t/models/road/unet_1m_recall_relabeled20260806/road_prob.tif",
       "n_blocks": 1,
       "n_outer_blocks_seen": 29,
       "example_seen": [
@@ -8106,6 +8106,6 @@
       "passed": false
     }
   ],
-  "usage_file": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_1_context_features\\data\\processed\\stage2_upstream_usage_9t.json",
+  "usage_file": "expansions/5_tasks/5_1_context_features/data/processed/stage2_upstream_usage_9t.json",
   "usage_sha256": "18917c6eb6efbacedb7ae91701cf0f9b61110e26ca42139adc64343c45bc3a02"
 }

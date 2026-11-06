@@ -226,6 +226,14 @@ def scene_score(prob: np.ndarray, transform, unit_xy, cutoff: float, min_area: f
     return s, rank, len(c)
 
 
+# ----------------------------------------------------------------------------- footprint
+def footprint_cells(blocks) -> set:
+    """Complete block footprint. Every block of the grid, not only blocks that hold drawn pits.
+    Pits can only be sampled where pits exist, but controls drawn only from pit-bearing blocks would be selected on
+    truth (review section 2 pattern 5)."""
+    return set(zip(blocks.ix.astype(int), blocks.iy.astype(int)))
+
+
 # ----------------------------------------------------------------------------- sampling
 def sample_units(floors, footprint_cells, slope_at, n_pits, n_ctrl, rng, min_sep_m=30.0,
                  origin=(619500.0, 4593000.0), size=375.0):
@@ -313,7 +321,7 @@ def main(argv=None) -> int:
     pads = th.read_vector(ann, layer="plat")
     roads = th.read_vector(ann, layer="roads")
     blocks = th.read_vector(th.inp(cfg, "pit_blocks"), layer="blocks")
-    cells = set(zip(blocks[blocks.n_pits > 0].ix.astype(int), blocks[blocks.n_pits > 0].iy.astype(int)))
+    cells = footprint_cells(blocks)
     with rasterio.open(th.inp(cfg, "features")) as fs:
         band = list(fs.descriptions).index("slope") + 1
 

@@ -10,7 +10,10 @@ Purpose
     Then the field flux table (primary) and the complaints table (secondary, if present) are read.
     Event. Measured rate at or above the preregistered cutoff (or the top decile). Enrichment is events in the
     top N over events expected in a random N, inverse inclusion weights when the table gives inclusion_prob.
-    Interval. Block bootstrap over 1 km cells (wells on one lease are one cluster), B = 2000.
+    Interval. Block bootstrap over 1 km cells (wells on one lease are one cluster), B = 2000. A resample with no
+    event or no top-N site has undefined enrichment. Its share is reported (undefined_share). Any undefined draw
+    makes the interval NaN and the decision inconclusive, unless the prereg declares max_undefined.
+    Ranks with ties keep their shared rank, so a tie at the cutoff can put more than N wells in the top set.
     Fewer than 15 events. Clopper-Pearson for the top-N event share and the base share. Decision inconclusive.
     Comparators. Random order (enrichment 1 by construction), records-only order (status then age) and the
     agency list. Agreement with the agency list is reported as agreement, never as validation.
@@ -88,7 +91,8 @@ def endpoint_table(cfg, ranks: pd.DataFrame, rule: dict) -> pd.DataFrame:
                                                     inclusion_prob=("inclusion_prob", "first"))
     f["site_id"] = "rec_" + f["PERMIT_NUM"].astype(str)
     d = ranks[ranks.p_source == "record"].merge(f[["site_id", "flux_kg_h", "inclusion_prob"]], on="site_id")
-    d["event"] = rc.endpoint_events(d["flux_kg_h"].to_numpy(), rule)
+    d["event"], used = rc.endpoint_events_rule(d["flux_kg_h"].to_numpy(), rule)
+    d.attrs["event_rule_used"] = used
     d["weight"] = 1.0 / d["inclusion_prob"].clip(lower=1e-6)
     d["cell"] = (np.floor(d.x / cfg["cluster_cell_m"]).astype(int).astype(str) + "_" +
                  np.floor(d.y / cfg["cluster_cell_m"]).astype(int).astype(str))
@@ -100,7 +104,7 @@ def enrich_stat(d: pd.DataFrame, col: str, n: int):
         sub = pd.concat([d[d.cell == c] for c in cells], ignore_index=True)
         if not len(sub):
             return np.nan
-        r = sub[col].rank(method="first").to_numpy()
+        r = sub[col].rank(method="min").to_numpy()      # ties keep one rank, never row order
         return rc.enrichment(r, sub["event"].to_numpy(), min(n, len(sub)), sub["weight"].to_numpy())
     return f
 
@@ -110,13 +114,14 @@ def analyse(d: pd.DataFrame, H: pd.DataFrame, cfg, prereg, agency_col=None, B: i
     hm = H.set_index("site_id")
     d = d.copy()
     d["rank_records_only"] = rc._lex_rank([hm.loc[d.site_id, "h_status"].to_numpy(float),
-                                           hm.loc[d.site_id, "h_age"].to_numpy(float), -np.arange(len(d), dtype=float)])
+                                           hm.loc[d.site_id, "h_age"].to_numpy(float)])
     cells = sorted(d.cell.unique())
     n_ev = int(d.event.sum())
     rows = []
     cols = [c for c in d.columns if c.startswith("rank_")]
+    max_undef = float(prereg.get("max_undefined", 0.0))   # declared in the prereg, else 0 (any undefined -> NaN)
     for c in cols:
-        r = d[c].rank(method="first").to_numpy()
+        r = d[c].rank(method="min").to_numpy()
         point = rc.enrichment(r, d.event.to_numpy(), n, d.weight.to_numpy())
         top = r <= n
         k_top, k_all = int(d.event[top].sum()), n_ev
@@ -128,9 +133,11 @@ def analyse(d: pd.DataFrame, H: pd.DataFrame, cfg, prereg, agency_col=None, B: i
             row.update(method="clopper_pearson (fewer than 15 events)", top_share=p, top_lo=lo, top_hi=hi,
                        base_share=pb, base_lo=lb, base_hi=hb, decision="inconclusive (fewer than 15 events)")
         else:
-            _, lo, hi, _ = ek.block_bootstrap(enrich_stat(d, c, n), cells, B=B, seed=prereg["seed"])
+            _, lo, hi, dr = ek.block_bootstrap(enrich_stat(d, c, n), cells, B=B, seed=prereg["seed"],
+                                               max_undefined=max_undef)
             row.update(method=f"block bootstrap over {cfg['cluster_cell_m']:.0f} m cells, B={B}",
-                       enrich_lo=lo, enrich_hi=hi)
+                       enrich_lo=lo, enrich_hi=hi, undefined_share=ek.undefined_share(dr),
+                       max_undefined_declared=max_undef)
             g = prereg.get("delta_enrich_gain")
             row["decision"] = (ek.decide(lo - 1, hi - 1, g, "superiority") if g is not None
                                else "no margin preregistered")
@@ -144,6 +151,7 @@ def analyse(d: pd.DataFrame, H: pd.DataFrame, cfg, prereg, agency_col=None, B: i
         rows.append(dict(order=f"spearman_{q}_vs_log_flux", n_wells=len(d), enrichment=np.nan, spearman=float(rho),
                          primary=False, method="secondary, exploratory"))
     out = pd.DataFrame(rows)
+    out["event_rule_used"] = d.attrs.get("event_rule_used")
     out["statement"] = "Documented wells only. Agreement with an agency list is agreement, not validation."
     return out
 

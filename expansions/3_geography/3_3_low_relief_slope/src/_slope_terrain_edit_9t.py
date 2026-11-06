@@ -11,7 +11,9 @@ Algorithm
        the S1 lowest-tercile cut, the point lies at least the derived buffer from every
        annotated floor, rim and pad, it is outside audit blocks, it has the full context margin
        inside the tile, and it is at least min_spacing_m from earlier locations.
-    2. Donors. Annotated floors with a rim. Donor patch = 0.5 m DEM around the rim plus a pad.
+    2. Donors. Annotated floors with a rim, held out from the scoring fold (review G-12). A location
+       scored by the fold-k model takes donors only from fold-k held-out pits, which that model never
+       trained on. Donor patch = 0.5 m DEM around the rim plus a pad.
        A least-squares plane is fitted to cells outside the rim. Residual = patch minus plane.
        Weight = 1 inside the rim, fading to 0 over feather_px cells outside it.
     3. Variants at each location. background (unedited). pit (target + weight x donor residual).
@@ -170,6 +172,34 @@ def outside_diff(ch_a, ch_b, touched, res=0.5):
 
 
 # ----------------------------------------------------------------------------- inputs
+def read_buffer_or_fallback(spec_entry, flag, fallback_m):
+    """P1 derived buffer via ek.read_buffer (review P1-03). flag gives a labelled provisional fallback."""
+    try:
+        return float(ek.read_buffer("pit", xl.resolve_path(spec_entry["spec"]))), False
+    except (FileNotFoundError, KeyError) as e:
+        if not flag:
+            raise xl.MissingInput(f"MISSING INPUT: P1 derived buffer\n  {e}\n  pass --provisional-buffer") from e
+        return float(fallback_m), True
+
+
+def read_audit_geom(spec_entry, flag, blocks, allow_unfrozen: bool = False):
+    """P2 audit blocks via ek.require_audit (review P2-01). Missing and flag -> None, labelled exploratory.
+    allow_unfrozen is for tests only (an unfrozen file has no committed hash)."""
+    aud = ek.require_audit(xl.resolve_path(spec_entry["spec"]), allow_missing=flag, allow_unfrozen=allow_unfrozen)
+    if aud is None:
+        return None, True, "no audit exclusion, exploratory (P2 audit set not frozen)"
+    ids = ek.audit_ids(aud)
+    return blocks[blocks.block_id.isin(ids)].geometry.union_all(), False, f"P2 audit and buffer blocks excluded ({len(ids)})"
+
+
+def donor_pools(rims_d, pit_fold: dict, seed: int) -> dict:
+    """{fold: shuffled donors whose pit is held out in that fold}. Review G-12. Pits off any fold are not donors."""
+    d = rims_d.assign(fold=rims_d.pit_inside_id.map(pit_fold))
+    d = d[d.fold.notna()].copy()
+    d["fold"] = d.fold.astype(int)
+    return {int(f): g.sample(frac=1.0, random_state=seed + int(f)).reset_index(drop=True) for f, g in d.groupby("fold")}
+
+
 def provisional_or_need(spec_entry, flag, what):
     p = xl.resolve_path(spec_entry["spec"])
     if p is not None and p.exists():
@@ -235,16 +265,12 @@ def main(argv=None) -> int:
     s1 = Path(a.s1_run) if a.s1_run else sorted(ek.sub("3.3", "results").glob("*_slope_recall_*"))[-1]
     s1s = json.loads(xl.need(s1 / "slope_recall_summary_9t.json", "3.3 S1 summary").read_text())
     cut_deg = s1s["cut_points"]["feature_slope_deg"][0]
-    prop_thr = s1s.get("frozen_target_proposal_thr", cfg["proposal_thr"])
+    pol = xl.policy("pit")                      # review F02. One scoring policy
+    prop_thr = pol["cutoff"]
 
-    buf_p, buf_prov = provisional_or_need(A["derived_buffer"], a.provisional_buffer, "P1 derived buffer")
-    buffer_m = json.loads(buf_p.read_text())["pit_buffer_m"] if buf_p else E["fallback_buffer_m"]
-    aud_p, aud_prov = provisional_or_need(A["audit_blocks"], a.no_audit_list, "P2 audit block list")
+    buffer_m, buf_prov = read_buffer_or_fallback(A["derived_buffer"], a.provisional_buffer, E["fallback_buffer_m"])
     blocks = gpd.read_file(xl.need(xl.resolve_path(I["blocks"]), "9t blocks"), layer="blocks")
-    audit_geom = None
-    if aud_p:
-        ids = pd.read_csv(aud_p).block_id.astype(int)
-        audit_geom = blocks[blocks.block_id.isin(ids)].geometry.union_all()
+    audit_geom, aud_prov, audit_label = read_audit_geom(A["audit_blocks"], a.no_audit_list, blocks)
 
     gp = xl.need(xl.resolve_path(I["truth_gpkg"]), "annotations")
     floors = read_layer(gp, I["truth_floor_layer"]).to_crs(ek.DST_CRS)
@@ -252,7 +278,6 @@ def main(argv=None) -> int:
     pads = read_layer(gp, I["truth_pad_layer"]).to_crs(ek.DST_CRS)
     excl = pd.concat([floors.geometry, rims.geometry, pads.geometry]).buffer(buffer_m).union_all()
     rims_d = rims[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
-    donors = rims_d.sample(frac=1.0, random_state=seed).reset_index(drop=True)
 
     slope, tf1 = read_masked(xl.resolve_path(I["slope_1m"]))
     s_win = nan_uniform(slope, cfg["slope_window_m"])
@@ -263,7 +288,10 @@ def main(argv=None) -> int:
         bounds = tuple(rd.bounds)
     margin = E["context_margin_m"]
     fa = pd.read_csv(xl.resolve_path(I["fold_assignment"])).dropna(subset=["block_id", "fold"])
-    fold_of_block = fa.groupby("block_id").fold.first().astype(int).to_dict()
+    sdf = ek.read_split_csv(xl.need(xl.resolve_path(I["historical_split"]), "historical CV5 split CSV"))
+    fold_of_block = {int(b): int(f) for b, f in sdf[sdf.role == "held_out"][["block_id", "fold"]].to_numpy()}
+    pit_fold = fa.set_index("pit_inside_id").fold.astype(int).to_dict()
+    donors_by_fold = donor_pools(rims_d, pit_fold, seed)
     # scored locations must sit in a block that has a held-out fold model
     include = None if a.no_score else blocks[blocks.block_id.isin(list(fold_of_block))].geometry.union_all()
     pts, tries = pick_locations(n, rng, s_win, tf1, cut_deg, excl, audit_geom, bounds, margin + 20, E["min_spacing_m"],
@@ -293,8 +321,16 @@ def main(argv=None) -> int:
     half = int(round(margin / res))
     loc_rows, score_rows = [], []
     with rasterio.open(dem_p) as rd:
+        used = {}
         for li, (x, y) in enumerate(pts):
-            d = donors.iloc[li % len(donors)]
+            hit0 = blocks[blocks.contains(gpd.points_from_xy([x], [y])[0])]
+            fold0 = fold_of_block.get(int(hit0.block_id.iloc[0])) if len(hit0) else None
+            if fold0 is None or not len(donors_by_fold.get(fold0, [])):
+                loc_rows.append({"loc_id": li, "x": x, "y": y, "skipped": "no fold, so no held-out donor"})
+                continue
+            pool = donors_by_fold[fold0]
+            d = pool.iloc[used.get(fold0, 0) % len(pool)]
+            used[fold0] = used.get(fold0, 0) + 1
             pad = E["donor_pad_m"]
             g = d.geometry
             wd = from_bounds(*g.buffer(pad).bounds, transform=rd.transform).round_offsets().round_lengths()
@@ -319,6 +355,7 @@ def main(argv=None) -> int:
             if len(hit):
                 bid = int(hit.block_id.iloc[0])
             row = {"loc_id": li, "x": x, "y": y, "block_id": bid, "donor_pit_inside_id": int(d.pit_inside_id),
+                   "donor_fold": int(pit_fold[int(d.pit_inside_id)]), "scoring_fold": fold0,
                    "amp_m": amp, "footprint_m2": float(foot.sum() * res * res), "seed": ek.child_seed(seed, li, 0),
                    "max_outside_channel_diff": od, "outside_diff_ok": bool(od <= 1e-3)}
             for k, s in ss.items():
@@ -341,7 +378,7 @@ def main(argv=None) -> int:
                 p = xl.predict_array(model, chans[v], mu, sd, patch=E["patch"], overlap=E["overlap"],
                                      n_classes=E["n_classes"])[E["floor_class"]]
                 srow[f"score_{v}"] = float(p[foot].max())
-                cands = xl.candidates_from_prob(p, tfw, ek.DST_CRS, thr=prop_thr, min_area=cfg["min_blob_m2"])
+                cands = xl.candidates_from_prob(p, tfw, ek.DST_CRS, policy=pol)
                 fp_geom = gpd.GeoSeries.from_xy([x], [y], crs=ek.DST_CRS).buffer(np.sqrt(foot.sum() * res * res / np.pi)).iloc[0]
                 rank = np.nan
                 if len(cands):
@@ -358,8 +395,11 @@ def main(argv=None) -> int:
     lcsv = run / "slope_edit_locations_9t.csv"
     locs.to_csv(lcsv, index=False)
     outs = [lcsv]
+    ok_col = locs.outside_diff_ok.fillna(True).astype(bool) if "outside_diff_ok" in locs else pd.Series(dtype=bool)
     summ = {"n_locations": len(locs), "slope_cut_deg": cut_deg, "buffer_m": buffer_m, "buffer_provisional": buf_prov,
-            "audit_provisional": aud_prov, "outside_diff_fail": int((~locs.outside_diff_ok).sum()) if len(locs) else 0,
+            "audit_provisional": aud_prov, "audit": audit_label,
+            "donor_rule": "held out from the scoring fold (review G-12)",
+            "outside_diff_fail": int((~ok_col).sum()) if len(locs) else 0,
             "model": "none" if a.no_score else ("cv5 PROVISIONAL" if a.allow_cv5 else "P1 isolated")}
     if score_rows:
         sc = pd.DataFrame(score_rows)

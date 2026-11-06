@@ -51,6 +51,7 @@ A partner and a safety plan. Landowner permissions. A decision on what counts as
 
 **S2. Sample size.**
 - Per estimate n = 1.96 squared times 0.25 over d squared under simple random sampling. 43 for plus or minus 15 points, 96 for 10, 24 for 20. Inflate by a design effect (default 1.5) and for inaccessible sites (default 20%). Forty sites in total cannot support five score bins. State the primary estimate (default Arm A overall share) and size for it. Report per-stratum results as exploratory unless sized.
+- Correction 2026-11-06 (review 7.5-01). n = 182 sizes each identity bound alone to plus or minus 10 points. It does not size the share. With 20% inaccessible in the gap the expected bound width at n = 182 is 0.407, over the 0.30 target. The target needs about 746 allocated sites under the same deff and access share. The table field_sample_size_v1.csv now gives both numbers.
 
 **S3. Protocol and sheets.**
 - Search protocol per site. GNSS position (state datum and accuracy), a standard search radius and time, photographs, magnetometer pass (4.1), methane screen (6.5), evidence checklist, searcher ID. Blinded where possible. Searchers do not see model score or record status.
@@ -68,9 +69,11 @@ A partner and a safety plan. Landowner permissions. A decision on what counts as
 
 **S7. Feed-forward.**
 - Update 5.4 (density sensitivity), 5.6 (record accuracy), 6.3 (labels) and 3.0 reference sets.
+- The 5.4 handoff is `src/_field_density_export.py`. It writes `data/processed/arm_b_candidate_outcomes.csv` and `data/processed/arm_c_search_outcomes.csv` in the 5.4 schema, plus two companion files for zero-well cells and detector links.
 
 ## 7. Statistical analysis plan
 - Primary. Arm A share of drawn features that are confirmed wells, Horvitz-Thompson weights, exact or Wilson interval, bounds for unresolved.
+- Interval method (2026-11-06, review F04). Linearisation variance with clusters as PSUs inside the sampling strata, then a Korn-Graubard interval. A sampled stratum with one PSU makes the result inconclusive.
 - Secondary. Arm B precision by score band (descriptive unless sized). Arm C wells per km² with sensitivity bounds.
 - Era strata always reported separately (magnetometry is blind to wooden or removed casing, per NETL).
 

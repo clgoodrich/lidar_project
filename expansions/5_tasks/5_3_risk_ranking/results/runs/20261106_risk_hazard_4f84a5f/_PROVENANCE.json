@@ -1,0 +1,99 @@
+{
+  "written": "2026-11-06T10:49:44",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_hazard_proxy_9t.py"
+  ],
+  "params": {
+    "n_sites": 1354,
+    "dropped_optional": {
+      "depth": "missing share 1.00",
+      "formation": "missing share 1.00",
+      "oldest_formation": "missing share 1.00"
+    },
+    "lineage": {
+      "h_status": [
+        "dep_wells:WELL_STATU",
+        "config:status_hazard_score"
+      ],
+      "h_age": [
+        "dep_wells:SPUD_DATE",
+        "config:age_bracket_score"
+      ],
+      "h_no_plug_record": [
+        "dep_wells:DATE_PLUGG"
+      ],
+      "surface_evidence_flag": [
+        "candidates:score",
+        "config:assoc_radius_m"
+      ],
+      "pathway_flag": [
+        "absent"
+      ]
+    },
+    "h_missing_rule": {
+      "rule": "unrankable",
+      "min_coverage": 1.0,
+      "impute": {}
+    },
+    "n_unrankable_H": 296,
+    "n_unrankable_H_by_source": {
+      "feature_band": 296,
+      "record": 0
+    },
+    "missing_share": {
+      "h_status": 0.0,
+      "age_bracket": 0.0,
+      "h_age": 0.0,
+      "h_no_plug_record": 0.2186,
+      "surface_evidence_flag": 0.0,
+      "pathway_flag": 1.0,
+      "H": 0.2186,
+      "H_coverage": 0.0
+    },
+    "age_bracket_counts": {
+      "1956_1984": 984,
+      "missing": 296,
+      "unknown_sentinel": 43,
+      "1985_on": 31
+    },
+    "h_components": [
+      "h_status",
+      "h_age",
+      "h_no_plug_record"
+    ],
+    "note": "H is an index of harm potential given existence, built from records and priors only."
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_exposure_sites_9t.csv",
+      "bytes": 201099,
+      "mtime": "2026-11-06T10:49:26.631460",
+      "sha256": "b9fa43fe40cec1cf7af069ad0975e0c15304db4db7f4159a7499d10e3150f624"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_hazard_proxy_9t.csv",
+      "bytes": 75436,
+      "mtime": "2026-11-06T10:49:44.301304",
+      "sha256": "15fcad4f8d01509fed2aad43d7a0b96b0379bf4c29617f7af20d120a8cab8912"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_hazard_summary_9t.json",
+      "bytes": 1332,
+      "mtime": "2026-11-06T10:49:44.303307",
+      "sha256": "17e557483f3cce1ee3067292e5940c0f35b0dc266b0c96b6dff827742290223f"
+    }
+  ]
+}

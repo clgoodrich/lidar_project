@@ -1,0 +1,51 @@
+{
+  "written": "2026-11-06T11:12:53",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/3_geography/3_0_transfer_protocol/src/_transfer_ref_tables_9t.py",
+    "--task",
+    "pad"
+  ],
+  "params": {
+    "policy": {
+      "task": "pad",
+      "mode": "primary",
+      "version": "fw00_s4_20261105",
+      "cutoff": 0.525,
+      "min_area_m2": 4.0,
+      "iou": 0.3,
+      "match_order": "score",
+      "blob_score": "mean",
+      "k_per_km2": 40.0,
+      "policy_hash": "f6d15ee"
+    },
+    "fill": "round_robin",
+    "module_sha256": "1346d84d626a668453b8a524be0f451b982392ce6de371056c0f35641bb90473"
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\pad_prob_oof_filled_9t.tif",
+      "bytes": 270185249,
+      "mtime": "2026-11-06T11:12:38.490569",
+      "sha256": "e25af3b0eca5859f6795d8d126e5ea7ae84c9e689db89e710fd8035ed3ec3d46"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pad_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-06-10T15:26:51.678313",
+      "sha256": "17814922f580c801f47996153739ec12c54d378bd0a8fe9a8ef8b738c61417bc"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\results\\tables\\xfer_ref_block_tables_pad_9t.json",
+      "bytes": 118502,
+      "mtime": "2026-11-06T11:12:53.324913",
+      "sha256": "187382d033edcb5e1a2888f4f426beb6049082a9ded0daa395c743d7648e0c0d"
+    }
+  ]
+}

@@ -135,7 +135,7 @@ def test_pipeline_runs_and_orders(synth):
     assert s1.main(c) == 0
     summ = json.loads(Path(cfg["outputs"]["exposure_summary"]).read_text())
     assert "water_wells" in summ["receptors_present"] and "buildings" in summ["missing_components"]
-    assert summ["k"] == int(round(40 * 3 * 0.140625))
+    assert summ["k"] == int(round(40 * 4 * 0.140625))        # every block of the grid, not the 3 with pits
     assert s2.main(c) == 0
     H = pd.read_csv(cfg["outputs"]["hazard_csv"])
     assert "h_depth" not in H                        # fully missing column dropped
@@ -145,7 +145,12 @@ def test_pipeline_runs_and_orders(synth):
     Path(cfg["inputs"]["prereg"]["path"]).write_text(json.dumps(prereg))
     assert s3.main(c) == 0
     R = pd.read_csv(cfg["outputs"]["ranks_csv"])
-    assert {"P", "H", "E", "p_source", "rank_A", "rank_D"} <= set(R.columns)
+    assert {"P", "H", "E", "p_source", "rank_A", "rank_D", "tie_A"} <= set(R.columns)
+    # candidates have no plugging record, so under the default rule their H is unrankable (never skipped)
+    assert R.loc[R.p_source == "feature_band", "rank_B"].isna().all()
+    assert R.loc[R.p_source == "record", "rank_B"].notna().all()
+    s3summ = json.loads(Path(cfg["outputs"]["ranks_summary"]).read_text())
+    assert s3summ["e_status"] == "ok" and s3summ["index_rules"]["H"]["rule"] == "unrankable"
     assert (R.loc[R.p_source == "feature_band", "conditional"] == th.CONDITIONAL).all()
     assert s4.main(c + ["--no-figure"]) == 0
     assert s5.main(c + ["--no-figure"]) == 0
@@ -163,3 +168,114 @@ def test_pipeline_runs_and_orders(synth):
     with pytest.raises(SystemExit, match="ORDER VIOLATION"):
         s6.main(c)
     assert s7.main(c) == 0
+
+
+# ----------------------------------------------------------------------------- review 2026-11-06 regressions
+def test_index_missing_component_is_not_skipped():
+    """5.3-01. Expected values by hand. h_a ties at 3 (mid-rank 0.5 each). Site 1 lacks h_b."""
+    df = pd.DataFrame(dict(h_a=[3.0, 3.0], h_b=[0.0, np.nan]))
+    cols = {"h_a": 1, "h_b": 1}
+    v = rc.index_from(df, cols)
+    assert v[0] == pytest.approx(0.5) and np.isnan(v[1])          # old code gave [0.5, 0.5]
+    # declared imputation: h_b missing -> 1, so h_b ranks [0.25, 0.75] and the means are [0.375, 0.625]
+    v = rc.index_from(df, cols, rc.IndexRule("impute", impute={"h_b": 1.0}))
+    assert v.tolist() == pytest.approx([0.375, 0.625])
+    # declared partial coverage: half the components is enough
+    v = rc.index_from(df, cols, rc.IndexRule(min_coverage=0.5))
+    assert v.tolist() == pytest.approx([0.5, 0.5])
+    with pytest.raises(ValueError, match="no declared"):
+        rc.index_from(df, cols, rc.IndexRule("impute"))
+
+
+def test_e_with_one_component_is_unusable():
+    """5.3-02. One 0/1 road column cannot order the top N."""
+    with pytest.raises(rc.IndexUnusable, match="1 component"):
+        rc.check_index(np.array([0, 1, 1, 0.0]), 1, 2, 3, "E")
+    with pytest.raises(rc.IndexUnusable, match="2 distinct"):
+        rc.check_index(np.array([0, 1, 1, 0.0]), 2, 2, 3, "E")
+    import _risk_scenarios_9t as s3
+    sites = pd.DataFrame(dict(site_id=["a", "b", "c"], x=0.0, y=0.0, p_source="record", p_band="record",
+                              status="Active", block_id=0, conditional="", cand_score=np.nan, P=1.0,
+                              roads_n_100=[0, 1, 1]))
+    H = pd.DataFrame(dict(site_id=["a", "b", "c"], h_status=[3, 1, 2]))
+    df = s3.assemble(sites, H, {"roads_n_100": 1}, cfg={"e_min_distinct": 2})
+    assert df.E.isna().all() and df.attrs["e_status"].startswith("unusable")
+    R = s3.rank_all(df)
+    assert R.rank_A.isna().all() and R.rank_B.tolist() == [1, 3, 2]   # B ranks by H alone, E absent everywhere
+
+
+def test_ties_are_ties_not_row_order():
+    r = rc._lex_rank([np.array([1.0, 1.0, 0.0])])
+    assert r.tolist() == [1, 1, 3]                                    # old code gave [1, 2, 3]
+    assert rc.tie_size(r).tolist() == [2, 2, 1]
+    df = pd.DataFrame(dict(P=[1.0] * 3, H=[0.5] * 3, E=[0.2, 0.2, 0.9], p_source="record"))
+    R = rc.scenario_ranks(df)
+    assert R.rank_A.tolist() == [2, 2, 1] and R.rank_B.tolist() == [2, 2, 1]
+    assert rc.top_set(R.rank_A.to_numpy(), 2, ["a", "b", "c"]) == {"a", "b", "c"}   # the tie at N is kept
+    assert np.isnan(rc.jaccard(set(), set()))                        # nothing rankable is not agreement
+
+
+def test_rank01_never_hits_zero():
+    assert rc.rank01(np.array([1.0, 2.0])).tolist() == pytest.approx([0.25, 0.75])
+    assert rc.rank01(np.array([5.0])).tolist() == [0.5]
+    p = rc.rank01(np.array([0.0, 1.0, 1.0, 1.0]))
+    assert p[0] == pytest.approx(0.125) and p[0] > 0                 # old code gave exactly 0
+
+
+def test_endpoint_fallback_key_is_read():
+    f = np.arange(1, 11, dtype=float)
+    ev, used = rc.endpoint_events_rule(f, {"kind": "rate_cutoff", "flux_cutoff_kg_h": None,
+                                           "top_decile_fallback": True})
+    assert ev.tolist() == [False] * 9 + [True] and used.startswith("top_decile")
+    with pytest.raises(ValueError):
+        rc.endpoint_events_rule(f, {"kind": "rate_cutoff", "flux_cutoff_kg_h": None})
+    assert rc.endpoint_events(f, {"kind": "rate_cutoff", "flux_cutoff_kg_h": 5}).sum() == 6
+
+
+def test_build_sites_merges_every_candidate_in_radius():
+    rec = pd.DataFrame(dict(PERMIT_NUM=["121-1"], x=[0.0], y=[0.0], WELL_STATU=["Active"]))
+    cand = pd.DataFrame(dict(cand_id=[7, 8, 9], score=[0.9, 0.8, 0.7], x=[10.0, 20.0, 500.0], y=0.0, block_id=0))
+    s, _ = rc.build_sites(rec, cand, k=3, assoc_radius=50)
+    assert sorted(s.site_id) == ["cand_9", "rec_121-1"]              # old code kept cand_8 as its own site
+    r = s.set_index("site_id").loc["rec_121-1"]
+    assert r.n_assoc_cand == 2 and r.assoc_cand_id == 7
+
+
+def test_footprint_uses_every_block(tmp_path):
+    import geopandas as gpd
+    from shapely.geometry import box
+    import _risk_io_9t as rio
+    gpd.GeoDataFrame({"block_id": [0, 1], "n_pits": [3, 0]},
+                     geometry=[box(X0, Y0, X0 + 375, Y0 + 375), box(X0 + 375, Y0, X0 + 750, Y0 + 375)],
+                     crs="EPSG:6346").to_file(tmp_path / "b.gpkg", layer="blocks", driver="GPKG")
+    cfg = {"inputs": {"pit_blocks": {"path": str(tmp_path / "b.gpkg")}}, "block_size_m": 375.0}
+    assert rio.footprint_km2(cfg) == pytest.approx(2 * 0.140625)    # old code gave 0.140625
+
+
+def test_audit_path_is_repo_relative():
+    import _risk_data_audit_9t as s0
+    cfg = {"inputs": {"x": {"path": "@exp:5.3/data/processed/never_there.gpkg"}}}
+    row, _ = s0.audit_layer("x", cfg["inputs"]["x"], cfg)
+    assert row["path"] == "expansions/5_tasks/5_3_risk_ranking/data/processed/never_there.gpkg"
+
+
+def test_enrichment_undefined_share_is_reported():
+    """All 20 events sit in one of 10 cells. A resample that misses that cell has no event, so enrichment is
+    undefined there. Oracle: replay the bootstrap index draws and count resamples without the event cell."""
+    import _risk_endpoint_check_9t as s6
+    n_cell, per = 10, 20
+    cells = [f"c{i}" for i in range(n_cell)]
+    d = pd.DataFrame(dict(site_id=[f"rec_{i}" for i in range(n_cell * per)],
+                          cell=np.repeat(cells, per), event=np.repeat(np.arange(n_cell) == 3, per),
+                          weight=1.0, flux_kg_h=1.0, rank_A=np.arange(1, n_cell * per + 1, dtype=float),
+                          H=0.5, E=0.5))
+    H = pd.DataFrame(dict(site_id=d.site_id, h_status=1.0, h_age=1.0))
+    cfg = {"top_n_share": 0.05, "min_endpoint_events": 15, "cluster_cell_m": 1000.0}
+    prereg = {"top_n": 10, "primary_scenario": "A", "seed": 11, "delta_enrich_gain": 0.5}
+    B = 200
+    out = s6.analyse(d, H, cfg, prereg, None, B=B).set_index("order")
+    rng = np.random.default_rng(11)
+    ev_ix = sorted(cells).index("c3")
+    expect = np.mean([ev_ix not in rng.integers(0, n_cell, n_cell) for _ in range(B)])
+    assert out.loc["A", "undefined_share"] == pytest.approx(expect) and expect > 0
+    assert np.isnan(out.loc["A", "enrich_lo"]) and out.loc["A", "decision"] == "inconclusive"

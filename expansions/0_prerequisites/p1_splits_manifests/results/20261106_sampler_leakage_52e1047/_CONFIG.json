@@ -1,0 +1,8 @@
+{
+  "buffer_m_by_task": {
+    "pad": 150.0,
+    "pit": 100.0
+  },
+  "n": 100000,
+  "tasks": "pit,pad"
+}

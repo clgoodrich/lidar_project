@@ -1,0 +1,16 @@
+{
+  "fill": "round_robin",
+  "policy": {
+    "blob_score": "mean",
+    "cutoff": 0.525,
+    "iou": 0.3,
+    "k_per_km2": 40.0,
+    "match_order": "score",
+    "min_area_m2": 4.0,
+    "mode": "primary",
+    "policy_hash": "f6d15ee",
+    "task": "pad",
+    "version": "fw00_s4_20261105"
+  },
+  "prob": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\pad_prob_oof_filled_9t.tif"
+}

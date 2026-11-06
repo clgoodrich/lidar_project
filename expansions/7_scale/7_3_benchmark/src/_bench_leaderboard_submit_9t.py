@@ -11,7 +11,8 @@ Purpose
 
 Inputs
     hidden-test labels and blocks (maintainer only, paths given on the command line)
-    baseline candidates and blocks CSV scored on the same hidden blocks (from the scorer)
+    baseline candidates, blocks CSV and score JSON scored on the same hidden blocks (from the scorer).
+    The submission is scored with sc.load_policy(task) and must share the baseline's policy (ek.assert_same_policy).
     submission prediction rasters (float, 0.5 m, EPSG:6346) and a one-page method note
 Outputs
     <release>/RULES.md, <release>/LEADERBOARD_<release>.md
@@ -21,8 +22,8 @@ Outputs
 Run
     python expansions/7_scale/7_3_benchmark/src/_bench_leaderboard_submit_9t.py rules
     python expansions/7_scale/7_3_benchmark/src/_bench_leaderboard_submit_9t.py submit --team T --track A \
-        --note note.md --pred p1.tif p2.tif --test-labels hidden.gpkg --layer pit_floor --test-blocks hidden_blocks.gpkg \
-        --baseline baseline_cands.csv baseline_blocks.csv --date 2026-11-05
+        --note note.md --pred p1.tif p2.tif --task pit_floor --test-labels hidden.gpkg --test-blocks hidden_blocks.gpkg \
+        --baseline baseline_cands.csv baseline_blocks.csv baseline_score.json --date 2026-11-05
     python expansions/7_scale/7_3_benchmark/src/_bench_leaderboard_submit_9t.py render
 """
 from __future__ import annotations
@@ -69,7 +70,7 @@ def load_table() -> pd.DataFrame:
     p = table_path()
     return pd.read_csv(p) if p.exists() else pd.DataFrame(
         columns=["sub_id", "team", "track", "date", "maintainer", "transductive", "pred_sha256", "recall", "lo",
-                 "hi", "diff_vs_baseline", "diff_lo", "diff_hi", "n_blocks"])
+                 "hi", "diff_vs_baseline", "diff_lo", "diff_hi", "n_blocks", "policy_hash"])
 
 
 def pred_hash(paths) -> str:
@@ -102,21 +103,26 @@ def submit(a, cfg) -> dict:
     sub_id = f"{date:%Y%m%d}_{a.team}_{h[:7]}"
     d = ek.sub("7.3", f"data/interim/submissions/{sub_id}")
     sp = cfg["scorer"]
-    s, cands = sc.evaluate([(p, None) for p in a.pred], gpd.read_file(a.test_labels, layer=a.layer),
-                           gpd.read_file(a.test_blocks), k_per_km2=sp["k_per_km2"], B=a.B, seed=sp["seed"])
+    policy = sc.load_policy(a.task, sp.get("mode", "primary"))       # review 7.3-01: one policy, never 0.10
+    base_policy = json.loads(Path(a.baseline[2]).read_text(encoding="utf-8")).get("policy")
+    if base_policy is None:
+        raise PermissionError(f"baseline score {a.baseline[2]} carries no scoring policy. Rescore the baseline.")
+    ek.assert_same_policy(policy, base_policy)
+    s, cands = sc.evaluate([(p, None) for p in a.pred], gpd.read_file(a.test_labels, layer=a.layer or a.task),
+                           gpd.read_file(a.test_blocks), policy=policy, B=a.B, seed=sp["seed"])
     cands.to_csv(d / "cands.csv", index=False)
     s["_blocks"].to_csv(d / "blocks.csv", index=False)
     sc.write_json(s, d / "score.json")
     diff = paired_diff((cands, s["_blocks"]), (pd.read_csv(a.baseline[0]), pd.read_csv(a.baseline[1])),
-                       sp["k_per_km2"], a.B, sp["seed"])
+                       policy["k_per_km2"], a.B, sp["seed"])
     row = {"sub_id": sub_id, "team": a.team, "track": a.track, "date": a.date, "maintainer": a.maintainer,
            "transductive": a.transductive, "pred_sha256": h, "recall": s["recall"], "lo": s["ci95"][0],
            "hi": s["ci95"][1], "diff_vs_baseline": diff["point"], "diff_lo": diff["lo"], "diff_hi": diff["hi"],
-           "n_blocks": s["n_blocks"]}
+           "n_blocks": s["n_blocks"], "policy_hash": policy["policy_hash"]}
     tab = pd.concat([tab, pd.DataFrame([row])], ignore_index=True)
     tab.to_csv(table_path(), index=False)
     ek.write_provenance(d, inputs=[Path(p) for p in a.pred] + [Path(a.note)], outputs=[d / "score.json"],
-                        params={"track": a.track, **sp})
+                        params={"track": a.track, **sp, "policy": policy})
     return row
 
 
@@ -153,9 +159,10 @@ def main(argv=None) -> int:
     s.add_argument("--note", required=True)
     s.add_argument("--pred", nargs="+", required=True)
     s.add_argument("--test-labels", required=True)
-    s.add_argument("--layer", default="pit_floor")
+    s.add_argument("--task", required=True, choices=sc.TASKS)
+    s.add_argument("--layer", default=None, help="default: the task name")
     s.add_argument("--test-blocks", required=True)
-    s.add_argument("--baseline", nargs=2, required=True, metavar=("CANDS", "BLOCKS"))
+    s.add_argument("--baseline", nargs=3, required=True, metavar=("CANDS", "BLOCKS", "SCORE_JSON"))
     s.add_argument("--date", default=dt.date.today().isoformat())
     s.add_argument("--maintainer", action="store_true")
     s.add_argument("--transductive", action="store_true")
@@ -167,7 +174,7 @@ def main(argv=None) -> int:
     if a.cmd == "rules":
         root.mkdir(parents=True, exist_ok=True)
         lb = cfg["leaderboard"]
-        (root / "RULES.md").write_text(RULES.format(name=cfg["release_name"], k=int(cfg["scorer"]["k_per_km2"]),
+        (root / "RULES.md").write_text(RULES.format(name=cfg["release_name"], k=int(ek.PROPOSAL_POLICY["k_per_km2"]),
                                                     cap=lb["max_submissions"], days=lb["window_days"]), encoding="utf-8")
         print(f"wrote {root / 'RULES.md'}")
     elif a.cmd == "submit":

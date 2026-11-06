@@ -11,7 +11,7 @@ Purpose
 
 Inputs
     a GeoDataFrame of blobs (geometry, score, area_m2, tile_id) per class, run metadata
-    optional known wells (any vector or CSV with x/y or lon/lat), never written to
+    optional known wells (a vector file with a CRS, or a CSV with x/y, or lon/lat with a declared CRS), never written to
 Outputs (in the run folder)
     candidates.gpkg (layers pit, pad), candidates.csv, candidates.kml (EPSG:4326 placemarks)
 
@@ -44,22 +44,56 @@ def stable_id(run_id: str, cls: str, x: float, y: float) -> str:
     return hashlib.sha256(f"{run_id}|{cls}|{x:.1f}|{y:.1f}".encode()).hexdigest()[:16]
 
 
-def read_known_wells(path: Path, crs):
-    """Read-only. Vector file, or CSV with x,y (in `crs`) or lon,lat / longitude,latitude (EPSG:4326)."""
+class InputError(ValueError):
+    """A user input that the tool refuses (exit 2), raised before any prediction runs."""
+
+
+def read_known_wells(path: Path, crs, wells_crs: str | None = None):
+    """Read-only. Vector file with a CRS, or CSV with x,y or lon,lat / longitude,latitude columns.
+
+    CSV coordinates are in `wells_crs` when given. Without it, x,y are taken to be in the run CRS `crs`.
+    lon,lat columns need an explicit `wells_crs` (for example EPSG:4326 or EPSG:4269), because the datum
+    cannot be read from a CSV. x,y values that all look like degrees in a projected run CRS are refused.
+    Rows with a missing or non-finite coordinate are refused with their row numbers.
+    """
     import geopandas as gpd
+    from pyproj import CRS
     p = Path(path)
     if p.suffix.lower() == ".csv":
         df = pd.read_csv(p)
         cols = {c.lower(): c for c in df.columns}
-        for xc, yc, src in (("x", "y", crs), ("lon", "lat", "EPSG:4326"), ("longitude", "latitude", "EPSG:4326")):
+        for xc, yc, lonlat in (("x", "y", False), ("lon", "lat", True), ("longitude", "latitude", True)):
             if xc in cols and yc in cols:
-                g = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[cols[xc]], df[cols[yc]]), crs=src)
                 break
         else:
-            raise ValueError(f"{p.name}: need x/y or lon/lat columns")
+            raise InputError(f"{p.name}: need x/y or lon/lat columns")
+        if lonlat and wells_crs is None:
+            raise InputError(f"{p.name}: lon/lat columns need an explicit --known-wells-crs (for example EPSG:4326)")
+        src = wells_crs or crs
+        xv = pd.to_numeric(df[cols[xc]], errors="coerce").to_numpy(float)
+        yv = pd.to_numeric(df[cols[yc]], errors="coerce").to_numpy(float)
+        bad = np.flatnonzero(~(np.isfinite(xv) & np.isfinite(yv)))
+        if len(bad):
+            raise InputError(f"{p.name}: {len(bad)} rows with a missing coordinate (data rows {(bad + 1).tolist()[:10]})")
+        if (not lonlat and wells_crs is None and CRS.from_user_input(crs).is_projected and len(xv)
+                and np.all(np.abs(xv) <= 180) and np.all(np.abs(yv) <= 90)):
+            raise InputError(f"{p.name}: x/y look like degrees but the run CRS is projected. "
+                             "Pass --known-wells-crs to declare them")
+        g = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(xv, yv), crs=src)
     else:
         g = gpd.read_file(p)
-    return g.to_crs(crs)
+        if g.crs is None:
+            raise InputError(f"{p.name}: vector file has no CRS")
+        if wells_crs is not None and CRS.from_user_input(wells_crs) != g.crs:
+            raise InputError(f"{p.name}: file CRS {g.crs} differs from --known-wells-crs {wells_crs}")
+        empty = g.geometry.isna() | g.geometry.is_empty
+        if empty.any():
+            raise InputError(f"{p.name}: {int(empty.sum())} features with no geometry")
+    g = g.to_crs(crs)
+    c = g.geometry.centroid
+    if not (np.isfinite(c.x) & np.isfinite(c.y)).all():
+        raise InputError(f"{p.name}: coordinates are not finite after reprojection to {crs}")
+    return g
 
 
 def nearest_known_m(cx, cy, wells) -> np.ndarray:
@@ -159,6 +193,7 @@ def main(argv=None) -> int:
     ap.add_argument("--method", default=None)
     ap.add_argument("--area-km2", type=float, required=True)
     ap.add_argument("--known-wells", default=None)
+    ap.add_argument("--known-wells-crs", default=None)
     ap.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     cfg = load_cfg(Path(a.config))
@@ -166,7 +201,11 @@ def main(argv=None) -> int:
         print(f"missing blobs {a.blobs}", file=sys.stderr)
         return 2
     b = gpd.read_file(a.blobs, layer=a.layer)
-    wells = read_known_wells(Path(a.known_wells), b.crs) if a.known_wells else None
+    try:
+        wells = read_known_wells(Path(a.known_wells), b.crs, a.known_wells_crs) if a.known_wells else None
+    except InputError as e:
+        print(f"refused: {e}", file=sys.stderr)
+        return 2
     meta = {"run_id": a.run_id, "model_id": a.model_id, "model_sha256": a.model_sha256,
             "method": a.method or cfg["models"][a.cls]["method"]}
     t = build_table(b, a.cls, meta, a.area_km2, cfg["k_per_km2"], wells)

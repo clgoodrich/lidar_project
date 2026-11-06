@@ -1,0 +1,113 @@
+{
+  "written": "2026-11-06T11:11:47",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/3_geography/3_3_low_relief_slope/src/_slope_recall_tercile_9t.py",
+    "--no-audit-list"
+  ],
+  "params": {
+    "B": 2000,
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "seeds": {
+    "master": 20261105
+  },
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_cv5_fold_assignment_9t.csv",
+      "bytes": 8552,
+      "mtime": "2026-09-17T16:37:28.342299",
+      "sha256": "392e1ed9286ce86e16cbd9193d00136733bcca16834160d73cd500d1a6bf1522"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-09-04T10:51:16.244983",
+      "sha256": "fad7c3fd96ada6b2c677738d9e0e8a8c5580a345d10582882ce4d62624187d52"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj.gpkg",
+      "bytes": 10588160,
+      "mtime": "2026-08-18T10:28:04.282126",
+      "sha256": "8d816579dabe1fe637c6f76388999c2931f77a60084ba6f59935531781b10396"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\1m\\slope_9t_1m.tif",
+      "bytes": 81036454,
+      "mtime": "2026-09-20T21:52:17.341760",
+      "sha256": "0eebebc79d6aa700f53200d4cd9b6e6f21887269fbc16fb73975555520ca48d6"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\1m\\dem_9t_1m.tif",
+      "bytes": 81027508,
+      "mtime": "2026-09-20T21:50:22.765400",
+      "sha256": "5eaf382917f10ee8f1a7da84cc1ea1a92ec5e74a484370b35aca4b7377122a57"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\fold0\\pit_prob_floor_cvfold0_9t_05.tif",
+      "bytes": 279078953,
+      "mtime": "2026-09-17T15:50:33.313607"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\fold1\\pit_prob_floor_cvfold1_9t_05.tif",
+      "bytes": 278220707,
+      "mtime": "2026-09-17T16:02:00.385749"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\fold2\\pit_prob_floor_cvfold2_9t_05.tif",
+      "bytes": 274794564,
+      "mtime": "2026-09-17T16:13:41.804825"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\fold3\\pit_prob_floor_cvfold3_9t_05.tif",
+      "bytes": 273346113,
+      "mtime": "2026-09-17T16:25:20.211261"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\fold4\\pit_prob_floor_cvfold4_9t_05.tif",
+      "bytes": 273293848,
+      "mtime": "2026-09-17T16:36:51.362706"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_3_low_relief_slope\\results\\20261106_slope_recall_5ed9c40\\slope_recall_features_9t.csv",
+      "bytes": 73252,
+      "mtime": "2026-11-06T11:11:47.065877",
+      "sha256": "fe1f733cc89d1de1931d3758e41e6e8a56b1f2dc13ac26d5e0ab94d1675dc531"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_3_low_relief_slope\\results\\20261106_slope_recall_5ed9c40\\slope_recall_blocks_9t.csv",
+      "bytes": 9300,
+      "mtime": "2026-11-06T11:11:47.068409",
+      "sha256": "e3d1567c960bb85df573ee2bd1e286ca5a2044f267f6a17355fc1ec70f1bc2fd"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_3_low_relief_slope\\results\\20261106_slope_recall_5ed9c40\\slope_recall_terciles_9t.csv",
+      "bytes": 1066,
+      "mtime": "2026-11-06T11:11:47.069419",
+      "sha256": "89e3722227e669e05e4ca98784e3b74fdac577d75f8e1d18f5aaf592b8e2028f"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_3_low_relief_slope\\results\\20261106_slope_recall_5ed9c40\\slope_recall_summary_9t.json",
+      "bytes": 4933,
+      "mtime": "2026-11-06T11:11:47.282819",
+      "sha256": "c02339d0a7e64dd1988a48175d41e2ea51e89c1aa3a6bb06f402ea1ab7de6835"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_3_low_relief_slope\\results\\20261106_slope_recall_5ed9c40\\slope_recall_terciles_9t.png",
+      "bytes": 45639,
+      "mtime": "2026-11-06T11:11:47.280926",
+      "sha256": "449f888bad4b3de683d4ece330da44a7123f5ec6762ff85d189c27526ca07fdf"
+    }
+  ]
+}

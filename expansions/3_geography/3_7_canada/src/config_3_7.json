@@ -19,10 +19,13 @@
     "data_handling": null,
     "annotation_protocol": "9t guide plus province notes, reviewer checks 20 features, two annotators on 20% of blocks, blind to records and scores"
   },
-  "reference": {"tables": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_9t.json"}},
+  "reference": {"tables_by_task": {"pit": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_9t.json"},
+                                   "pad": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"}}},
   "model": {
-    "pit": {"checkpoint": {"key": "models", "rel": "pit/unet_iso_cv5/policy/best.pt"}, "sha256": null},
-    "pad": {"checkpoint": {"key": "models", "rel": "pad/unet_cv5_iso/fold0/best.pt"}, "sha256": null}
+    "pit": {"transfer_checkpoint": null, "sha256": null,
+            "_note": "USER DECISION. The old default pit/unet_iso_cv5/policy/best.pt has no producer. Code refuses until set"},
+    "pad": {"transfer_checkpoint": null, "sha256": null,
+            "_note": "USER DECISION. Candidate on disk models pad/unet_cv5_iso/fold0/best.pt (one fold of five)"}
   },
   "provinces": {
     "ab": {"name": "Alberta", "area": "ab1", "vertical_datum": "CGVD2013",

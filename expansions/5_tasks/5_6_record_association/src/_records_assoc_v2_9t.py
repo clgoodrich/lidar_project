@@ -4,12 +4,16 @@ Purpose
     Replaces the withdrawn notebooks/wellsight_v2/s5_eval/_record_assoc_pits_9t.py (left untouched). Changes,
     following protocol section 4.
     1. Reads the full detector output from S0 (matched + unmatched), never the unmatched leftovers.
-    2. Each modality uses its own footprint (pit blocks with n_pits > 0, pad blocks with n_pads > 0), or a declared
-       intersection (open_decisions.footprint). Observed and shifted records use the same eligibility rule.
+    2. Footprint (open_decisions.footprint). complete_grid (default) is every block of the 9t grid, chosen without
+       truth. truth_bearing (pit blocks with n_pits > 0, pad blocks with n_pads > 0) and intersection are labelled
+       sensitivities. The 29 zero-pit blocks have no out-of-fold pit prediction, so under complete_grid they hold
+       records but no pit detections (decisions_5_6.md). Observed and shifted records use the same rule.
     3. Observed rates per status group and radius. Pits by distance to the nearest detection centroid. Pads inside or
        within r of a polygon (many records may share a pad).
     4. Null. The whole record set of a group is translated as one, 200 to 500 m in a random direction, 300 shifts.
-       Shifts losing more than 10% of records are redrawn. Each shift's retained count is saved.
+       Default (null_redraw torus) wraps the shift around the tile, so every direction is accepted and no record is
+       lost (review 5.6-02). reject_and_redraw (the old rule, shifts losing more than 10% are redrawn) and
+       report_retained are sensitivities. Each shift's retained count and the per-direction acceptance are saved.
     5. Proposals. Global one-to-one Hungarian across all statuses (default) or per-status competing proposals.
     6. Normalised excess association with a null-based interval. Not link PPV. Minimum detectable excess (power).
     Three analyses. full (headline), novel (unmatched only, labelled), annotated (agreement with drawings, not a
@@ -34,6 +38,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import json
 import sys
 from pathlib import Path
 
@@ -48,8 +53,9 @@ ek = th.ek
 SETS = ("full", "novel", "annotated")
 
 
-def footprint_cells(blocks, count_col: str, origin, size) -> set:
-    b = blocks[blocks[count_col] > 0]
+def footprint_cells(blocks, count_col, origin, size) -> set:
+    """Grid cells of the footprint. count_col None = every block (complete grid, no truth read)."""
+    b = blocks if count_col is None else blocks[blocks[count_col] > 0]
     c = b.geometry.centroid
     ij = th.block_cells(np.c_[c.x, c.y], origin, size)
     return set(map(tuple, ij.tolist()))
@@ -89,6 +95,32 @@ def detector_sets(pit, pad, ann_pit, ann_pad):
     }
 
 
+def footprints(cfg, pit_blocks, pad_blocks):
+    org, size = cfg["block_origin"], cfg["block_m"]
+    mode = cfg["open_decisions"]["footprint"]
+    if mode == "complete_grid":
+        cp, cd = footprint_cells(pit_blocks, None, org, size), footprint_cells(pad_blocks, None, org, size)
+    elif mode in ("truth_bearing", "intersection"):
+        cp, cd = footprint_cells(pit_blocks, "n_pits", org, size), footprint_cells(pad_blocks, "n_pads", org, size)
+        if mode == "intersection":
+            cp = cd = cp & cd
+    else:
+        raise ValueError(f"unknown footprint {mode!r}")
+    return cp, cd
+
+
+def null_settings(cfg):
+    """(max_loss, wrap_bbox) for the configured null rule."""
+    mode = cfg["open_decisions"]["null_redraw"]
+    if mode == "torus":
+        return cfg["null"]["max_loss"], tuple(cfg["tile_bbox"])
+    if mode == "reject_and_redraw":
+        return cfg["null"]["max_loss"], None
+    if mode == "report_retained":
+        return 1.0, None
+    raise ValueError(f"unknown null_redraw {mode!r}")
+
+
 def analyse(cfg, rec_xy_by_group: dict, dets: dict, elig: dict, n_shift: int):
     """Observed, null and excess for every modality x set x group x radius."""
     rows, retained = [], []
@@ -103,10 +135,10 @@ def analyse(cfg, rec_xy_by_group: dict, dets: dict, elig: dict, n_shift: int):
                 xy = xy_all[elig[mod](xy_all)] if len(xy_all) else xy_all.reshape(0, 2)
                 obs = rate_fn(xy)
                 seed = ek.child_seed(master, fold=mi * 10 + si, arm=gi)
-                max_loss = nl["max_loss"] if cfg["open_decisions"]["null_redraw"] == "reject_and_redraw" else 1.0
+                max_loss, wrap = null_settings(cfg)
                 nul = core.shift_null(xy, elig[mod], rate_fn, n_shift=n_shift, dmin=nl["shift_min_m"],
                                       dmax=nl["shift_max_m"], max_loss=max_loss,
-                                      rng=np.random.default_rng(seed), max_tries=nl["max_tries"])
+                                      rng=np.random.default_rng(seed), max_tries=nl["max_tries"], wrap_bbox=wrap)
                 for k, rk in enumerate(nul["retained"]):
                     retained.append(dict(modality=mod, detector_set=s, group=g, shift=k, retained=rk, n_records=len(xy)))
                 for r in radii:
@@ -116,7 +148,10 @@ def analyse(cfg, rec_xy_by_group: dict, dets: dict, elig: dict, n_shift: int):
                                      n_detections=len(det), primary=int(r == cfg[mod]["primary_radius_m"]),
                                      **{k: (round(x, 5) if isinstance(x, float) else x) for k, x in e.items()},
                                      mde=round(core.mde(len(xy), v), 5), shifts_rejected=nul["rejected"],
-                                     null_status="ok" if len(v) else "unattainable_under_loss_rule",
+                                     shifts_accepted=len(v),
+                                     direction_accept_spread=round(nul["direction"]["spread"], 4),
+                                     null_status="ok" if len(v) == n_shift else
+                                     ("not_computable" if not len(v) else "partial"),
                                      seed=seed))
     R = pd.DataFrame(rows)
     R["evidence_level"] = "a"
@@ -153,7 +188,8 @@ def proposals(cfg, dep_el, groups, pit, pad, mode: str):
                                      proposal_type="pad_contains_record_many_to_one")))
     Q = pd.concat(out, ignore_index=True) if out else pd.DataFrame()
     if len(Q):
-        Q.insert(0, "link_id", np.arange(len(Q)))
+        # link_id is a seeded permutation, so it carries neither record order nor score (review 5.6-01)
+        Q.insert(0, "link_id", np.random.default_rng(int(cfg["seed"]) + 61).permutation(len(Q)) + 1)
         Q["evidence_level"] = "a"
         Q["note"] = "proposed association, not a corrected coordinate; a pad centroid is not a borehole"
         pit_q = Q[(Q.level == "pit") & (Q.proposal_type == "global_one_to_one")]
@@ -198,8 +234,8 @@ def main(argv=None) -> int:
     ap.add_argument("--config")
     ap.add_argument("--n-shift", type=int)
     ap.add_argument("--assignment", choices=("global", "per_status"))
-    ap.add_argument("--footprint", choices=("per_modality", "intersection"))
-    ap.add_argument("--null-redraw", choices=("reject_and_redraw", "report_retained"))
+    ap.add_argument("--footprint", choices=("complete_grid", "truth_bearing", "intersection"))
+    ap.add_argument("--null-redraw", choices=("torus", "reject_and_redraw", "report_retained"))
     a = ap.parse_args(argv)
     cfg = th.load_cfg(__file__, a.config)
     if a.assignment:
@@ -212,10 +248,7 @@ def main(argv=None) -> int:
     org, size, bbox = cfg["block_origin"], cfg["block_m"], cfg["tile_bbox"]
 
     pit, pad, ann_pit, ann_pad, pit_blocks, pad_blocks, dep = load_inputs(cfg)
-    cp = footprint_cells(pit_blocks, "n_pits", org, size)
-    cd = footprint_cells(pad_blocks, "n_pads", org, size)
-    if cfg["open_decisions"]["footprint"] == "intersection":
-        cp = cd = cp & cd
+    cp, cd = footprints(cfg, pit_blocks, pad_blocks)
     elig = {"pit": make_eligible(cp, bbox, org, size), "pad": make_eligible(cd, bbox, org, size)}
     dep["group"] = th.status_group(dep.WELL_STATU, cfg["status_groups"])
     dep = dep[dep.group != "other"].reset_index(drop=True)
@@ -249,8 +282,12 @@ def main(argv=None) -> int:
                               row=pcr.iloc[0].to_dict() if len(pcr) else None,
                               rule="lower bound of normalised excess above 0. If it fails the target-group result cannot be interpreted."),
         primary=prim.to_dict(orient="records"),
-        null_unattainable=R.loc[R.null_status != "ok", ["modality", "detector_set", "group"]].drop_duplicates().to_dict(orient="records"),
-        null_conditions="Whole record set translated as one. Keeps record count and clustering. Gradients in oil development and road density only partly preserved.",
+        null_not_complete=R.loc[R.null_status != "ok", ["modality", "detector_set", "group", "null_status",
+                                                        "shifts_accepted"]].drop_duplicates().to_dict(orient="records"),
+        null_conditions=("Whole record set translated as one. Keeps record count and clustering. Gradients in oil "
+                         "development and road density only partly preserved. torus joins opposite tile edges."),
+        detector_ids=(json.loads(th.resolve(cfg["outputs"]["id_policy"]).read_text())
+                      if th.resolve(cfg["outputs"]["id_policy"]).exists() else None),
         caveat="Annotators did not see DEP points (user, 2026-11-04). Other annotation context is unrecorded.")
     files = {"rates": run / "rates.csv", "ret": run / "null_retained.csv", "prop": run / "proposals.csv",
              "sum": run / "summary.json", "fig": run / "records_assoc_rates_9t.png"}

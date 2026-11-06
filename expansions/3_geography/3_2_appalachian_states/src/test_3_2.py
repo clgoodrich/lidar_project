@@ -127,3 +127,16 @@ def test_config_shapes_match_31():
     for t, a in CFG["areas"].items():
         assert {"window", "role", "pair", "tiles"} <= set(a), t
         assert CFG["areas"][a["pair"]]["pair"] == t
+
+
+def test_f02_32_scores_through_3_0_policy(tmp_path):
+    """F02 / F08 for 3.2. The stage runner reuses the 3.1 scorer, which calls the 3.0 reference scorer.
+    The reference is the 3.0 tables and the old 0.10 cutoff is refused."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    import _xfer_score_k40_wfm as sk
+    assert xl.resolve_path(CFG["reference"]["tables"]["pit"]).name == "xfer_ref_block_tables_9t.json"
+    b = gpd.GeoDataFrame({"block_id": [0]}, geometry=[box(0, 0, 10, 10)], crs=ek.DST_CRS)
+    with pytest.raises(ValueError, match="differs from policy cutoff"):
+        sk.candidates_in_blocks(tmp_path / "unused.tif", b, 0.10, 4.0)
+    assert xl.policy("pit") == ek.policy_for("pit")

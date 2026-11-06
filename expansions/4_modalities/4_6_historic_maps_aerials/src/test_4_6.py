@@ -114,13 +114,20 @@ def test_marks_merge_and_compare(tmp_path):
     assert s4.main(["--source", "syn", "--marks-dir", str(d), "--out-gpkg", str(gpk), "--out", str(tmp_path)]) == 0
     agr = json.loads((tmp_path / "hist_marks_agreement_syn_9t.json").read_text())
     assert agr["n_pairs"] == 6 and agr["n_marks"] == 15
+    # pairs are units. 9 units (6 pairs, 3 single marks). A draw holds a ~ Bin(9, 2/3) pairs and agreement 2a/(9+a).
+    # P(a <= 2) = 0.008 and P(a <= 3) = 0.042, so the 2.5 % point is a = 3, i.e. 6/12 = 0.5 (Clopper-Pearson on
+    # 12 of 15 marks gave 0.519, counting pair members twice)
+    assert agr["agreement"] == 0.8 and agr["agreement_lo"] == 0.5 and agr["n_units"] == 9
     m = gpd.read_file(gpk, layer="marks")
     assert len(m) == 9 and (m.adjudicated == "agreed").sum() == 6
     ann = tmp_path / "ann.gpkg"
     gpd.GeoDataFrame({"pit_inside_id": [1]}, geometry=[box(*(base[0] - 3), *(base[0] + 3))], crs=CFG["crs"]).to_file(ann, layer="pit_inside")
     gpd.GeoDataFrame({"pad_id": [1]}, geometry=[box(*(base[1] - 30), *(base[1] + 30))], crs=CFG["crs"]).to_file(ann, layer="pad")
     dep = tmp_path / "dep.gpkg"
-    gpd.GeoDataFrame({"PERMIT_NUM": range(6)}, geometry=gpd.points_from_xy(base[:6, 0] + 3, base[:6, 1]), crs=CFG["crs"]).to_file(dep)
+    # records 0 to 3 drilled before the 1939 source, 4 after it, 5 has the 1800 no-date sentinel
+    spud = pd.to_datetime(["1890-01-01", "1901-05-01", "1920-01-01", "1939-06-01", "1950-01-01", "1800-01-01"])
+    gpd.GeoDataFrame({"PERMIT_NUM": range(6), "SPUD_DATE": spud}, geometry=gpd.points_from_xy(base[:6, 0] + 3, base[:6, 1]),
+                     crs=CFG["crs"]).to_file(dep)
     fp = tmp_path / "fp.gpkg"
     gpd.GeoDataFrame(geometry=[box(X0 - 1000, Y0 - 1000, X1 + 1000, Y1 + 1000)], crs=CFG["crs"]).to_file(fp)
     prob = np.zeros((450, 450), "float32")
@@ -133,13 +140,26 @@ def test_marks_merge_and_compare(tmp_path):
     assert s5.main(["--source", "syn", "--marks", str(gpk), "--annotations", str(ann), "--dep", str(dep),
                     "--footprint", str(fp), "--prob", str(pt), "--n-shifts", "40", "--out", str(tmp_path)]) == 0
     res = json.loads((tmp_path / "hist_marks_compare_syn_9t.json").read_text())
-    assert res["dep_association"]["observed"] == 6 and res["dep_association"]["excess"] > 0
+    # by hand. Only records 0 to 3 existed by 1939, so 4 marks have a record within 12 m (6 without the filter)
+    assert res["dep_association"]["observed"] == 4 and res["dep_association"]["excess"] > 0
+    assert res["record_date_filter"] == {"source_date": "1939", "field": "SPUD_DATE", "n_records_in_window": 6,
+                                         "n_existed_by_date": 4, "n_unknown_date": 1, "n_after_date": 1}
+    assert res["dep_association_with_unknown_dates"]["observed"] == 5
     assert res["topk"]["in_topk"][0] > 0
     (tmp_path / "syn_crop_9t.json").write_text(json.dumps({"cover_share_9t": 0.9}))
     (tmp_path / "hist_georef_syn_9t.json").write_text(json.dumps({"rmse_m": 12.0, "rmse_hi": 15.0, "verdict": "within limit"}))
     assert s6.main(["--sources", "syn", "--tables", str(tmp_path), "--crops", str(tmp_path)]) == 0
     v = pd.read_csv(tmp_path / "hist_source_verdicts_9t.csv")
     assert v.verdict.iloc[0] in {"inconclusive", "usable here"}
+
+
+def test_source_date_refuses_missing_or_mixed():
+    import _hist_marks_vs_records_9t as s5
+    assert s5.source_date(["1922", "1922"]) == (pd.Timestamp("1922-12-31"), True)
+    with pytest.raises(ValueError, match="one value"):
+        s5.source_date(["1922", "1939"])
+    with pytest.raises(ValueError, match="one value"):
+        s5.source_date([None, ""])
 
 
 def test_neatline_and_aerial_probe(tmp_path):

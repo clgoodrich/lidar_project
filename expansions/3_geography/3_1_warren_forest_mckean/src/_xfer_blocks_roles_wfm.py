@@ -6,7 +6,8 @@ Purpose
     0.5 m void fraction, and the mean 1 m slope. A block is eligible when it is complete
     (cover >= min_cover), its void fraction is at or under the cap, and its ground density is
     at or above the rule. Blocks under the density rule form a labelled low-density stratum,
-    never a silent drop. Roles come from a seeded draw (assign_roles in _geo_xfer_lib).
+    never a silent drop. They enter the role draw (stratified apart) so the scorer has low-density test
+    blocks to report, but they never enter the primary statistic (review G-07). Roles come from a seeded draw (assign_roles in _geo_xfer_lib).
     Adaptation is one contiguous strip at least the derived buffer from test and audit, and
     is dropped when the strip is under min_adapt_km2. Test and audit are stratified by slope
     tercile. A seeded 20% of test blocks is marked for the independent completeness recheck.
@@ -16,8 +17,9 @@ Inputs
     tiles           config areas.<area>.tiles (read only with --density las)
     slope           config areas.<area>.slope_1m (optional; stratification falls back to none)
     9t reference    data/9t/derived/05/ground_density_9t_05.tif and pit_blocks_9t.gpkg (density rule 9t_p5)
-    assumed         P1 derived buffer (assumed.derived_buffer). --provisional-buffer uses
-                    fallback_buffer_m and labels the output provisional.
+    assumed         P1 derived buffer, read with ek.read_buffer(task) (review P1-03). --provisional-buffer
+                    uses fallback_buffer_m and labels the output provisional.
+    --from-roles    redraw roles from an existing roles GeoPackage's measured columns, without a LAS pass
 
 Outputs
     expansions/3_geography/3_1_warren_forest_mckean/results/tables/<area>/xfer_blocks_roles_<area>.gpkg  (layer blocks)
@@ -109,6 +111,83 @@ def ref_density_p5(cfg) -> float:
     return float(np.nanpercentile(d, 5))
 
 
+def derived_buffer(cfg, task: str, provisional: bool) -> tuple[float, bool]:
+    """P1 derived buffer through ek.read_buffer (review P1-03). --provisional-buffer falls back, labelled."""
+    try:
+        p = xl.resolve_path(cfg["assumed"]["derived_buffer"]["spec"])
+        return float(ek.read_buffer(task, p)), False
+    except (FileNotFoundError, KeyError) as e:
+        if not provisional:
+            raise xl.MissingInput(f"MISSING INPUT: P1 derived buffer for task {task}\n  {e}\n"
+                                  "  pass --provisional-buffer for a labelled provisional draw") from e
+        return float(cfg["fallback_buffer_m"]), True
+
+
+def eligibility_and_roles(blocks, cfg, dmin: float, buffer_m: float, seed: int, strat: str | None):
+    """Eligibility flags and the seeded role draw.
+
+    complete, void_ok, low_density as measured. 'eligible' is the PRIMARY stratum (complete, void_ok, not low
+    density). Low-density blocks that are complete and void_ok enter the role draw too, stratified apart, so the
+    low-density stratum has test blocks to score (review G-07). They never enter the primary statistic."""
+    E, R = cfg["eligibility"], cfg["roles"]
+    b = blocks.copy()
+    b["complete"] = b.cover >= E["min_cover"]
+    b["low_density"] = (b.ground_per_m2 < dmin).fillna(False).astype(bool)
+    b["void_ok"] = b.void_frac.isna() | (b.void_frac <= E["max_void_frac"])
+    b["eligible"] = b.complete & b.void_ok & ~b.low_density
+    b["role_pool"] = b.complete & b.void_ok
+    b["stratum"] = np.where(b.low_density, "low_density", "main")
+    # main strata sort first, in the old tercile order, so the main-stratum draw is unchanged by adding
+    # the low-density blocks (same seed, same rng sequence). Low-density strata are drawn after them.
+    b["_strat"] = np.where(b.low_density, "1_low", "0_main") + ("_" + b[strat].astype(str) if strat else "")
+    b, meta = xl.assign_roles(b, seed=seed, buffer_m=buffer_m, test_frac_of_rest=R["test_frac_of_rest"],
+                              adapt_frac=R["adapt_frac"], min_adapt_km2=R["min_adapt_km2"], strat_col="_strat",
+                              eligible_col="role_pool")
+    b = b.drop(columns="_strat")
+    rng = np.random.default_rng(ek.child_seed(seed, 0, 7))
+    test_ids = b.loc[(b.role == "test") & b.eligible, "block_id"].to_numpy()
+    n_re = int(np.ceil(R["recheck_frac"] * len(test_ids)))
+    b["recheck"] = b.block_id.isin(rng.choice(test_ids, n_re, replace=False) if n_re else [])
+    ek.assert_unique(b, "block_id")
+    ek.assert_no_nan(b.block_id, "block ids")
+    ek.assert_disjoint(b.block_id[b.role == "test"], b.block_id[b.role == "audit"], "test vs audit")
+    meta["counts_by_stratum"] = {f"{s}/{r}": int(n) for (s, r), n in b.groupby(["stratum", "role"]).size().items()}
+    return b, meta
+
+
+def redraw_from_roles(a, cfg, ctx) -> int:
+    """Redraw roles with this version from an existing roles file's measured columns. No LAS pass."""
+    import geopandas as gpd
+    old = gpd.read_file(a.from_roles, layer="blocks")
+    keep = [c for c in ("block_id", "ix", "iy", "cover", "ground_per_m2", "void_frac", "slope_mean", "slope_tercile",
+                        "geometry") if c in old]
+    blocks = old[keep].copy()
+    rule = cfg["eligibility"]["density_rule"]
+    dmin = ref_density_p5(cfg) if rule == "9t_p5" else float(rule)
+    buffer_m, buf_prov = derived_buffer(cfg, a.task, a.provisional_buffer)
+    seed = a.seed if a.seed is not None else cfg["master_seed"]
+    strat = "slope_tercile" if "slope_tercile" in blocks and (blocks.slope_tercile >= 0).any() else None
+    blocks, meta = eligibility_and_roles(blocks, cfg, dmin, buffer_m, seed, strat)
+    gp = ctx["tables"] / f"xfer_blocks_roles_{a.area}.gpkg"
+    blocks.to_file(gp, layer="blocks", driver="GPKG")
+    au = ctx["tables"] / f"xfer_audit_blocks_{a.area}_v1.csv"
+    blocks.loc[blocks.role == "audit", ["block_id"]].to_csv(au, index=False)
+    cuts = (xl.terciles(blocks.slope_mean.where(blocks.cover >= cfg["eligibility"]["min_cover"]))[1]
+            if "slope_mean" in blocks and blocks.slope_mean.notna().any() else None)
+    meta.update({"area": a.area, "n_blocks": int(len(blocks)), "density_rule": rule, "density_min_per_m2": dmin,
+                 "slope_cut_points_deg": cuts,
+                 "buffer_provisional": buf_prov, "buffer_task": a.task, "seed": seed, "redrawn_from": str(a.from_roles),
+                 "n_recheck": int(blocks.recheck.sum()),
+                 "eligible_km2": float(blocks.geometry[blocks.eligible].area.sum() / 1e6),
+                 "test_km2": float(blocks.geometry[(blocks.role == "test") & blocks.eligible].area.sum() / 1e6),
+                 "low_density_test_km2": float(blocks.geometry[(blocks.role == "test") & blocks.low_density].area.sum() / 1e6)})
+    js = ctx["tables"] / f"xfer_blocks_roles_{a.area}.json"
+    js.write_text(json.dumps(meta, indent=2, default=float), encoding="utf-8")
+    print(json.dumps(meta, indent=2, default=float))
+    print(f"wrote {gp}\n      {au}\n      {js}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--config", default=str(CFG))
@@ -117,10 +196,15 @@ def main(argv=None) -> int:
     ap.add_argument("--seed", type=int, default=None, help="role seed (goes in the prereg); default master_seed")
     ap.add_argument("--provisional-buffer", action="store_true")
     ap.add_argument("--rows-per-strip", type=int, default=4)
+    ap.add_argument("--task", default="pit", help="task whose P1 buffer applies (ek.read_buffer)")
+    ap.add_argument("--from-roles", default=None,
+                    help="redraw roles from an existing roles GeoPackage's measured columns (no LAS pass)")
     a = ap.parse_args(argv)
     cfg = xl.load_config(Path(a.config))
     ctx = xl.area_ctx(cfg, a.area)
     res, bm = cfg.get("res_m", 0.5), cfg.get("block_m", 375.0)
+    if a.from_roles:
+        return redraw_from_roles(a, cfg, ctx)
     inv_p = xl.need(ctx["tables"] / f"xfer_tile_inventory_{a.area}.csv", f"S0 inventory for {a.area}",
                     "run _xfer_tile_inventory_wfm.py first")
     inv = pd.read_csv(inv_p)
@@ -135,13 +219,7 @@ def main(argv=None) -> int:
     blocks = blocks[blocks.cover > 0].reset_index(drop=True)
     print(f"{a.area}: {len(blocks)} blocks touch the tile union ({cover.area / 1e6:.2f} km2)")
 
-    try:
-        buf_p = xl.assumed_path(cfg, "derived_buffer")
-        buffer_m, buf_prov = float(json.loads(buf_p.read_text())["pit_buffer_m"]), False
-    except xl.MissingInput:
-        if not a.provisional_buffer:
-            raise
-        buffer_m, buf_prov = float(cfg["fallback_buffer_m"]), True
+    buffer_m, buf_prov = derived_buffer(cfg, a.task, a.provisional_buffer)
 
     if a.density == "las":
         tiles = [t for t in ctx["tiles"] if t.name in set(inv.file)]
@@ -162,35 +240,21 @@ def main(argv=None) -> int:
         blocks["slope_mean"], blocks["slope_tercile"], cuts, strat = np.nan, -1, None, None
         print(f"  no slope raster at {slope_p}; roles not stratified")
 
-    E = cfg["eligibility"]
-    rule = E["density_rule"]
+    rule = cfg["eligibility"]["density_rule"]
     dmin = ref_density_p5(cfg) if rule == "9t_p5" else float(rule)
-    blocks["complete"] = blocks.cover >= E["min_cover"]
-    blocks["low_density"] = blocks.ground_per_m2 < dmin
-    blocks["void_ok"] = blocks.void_frac.isna() | (blocks.void_frac <= E["max_void_frac"])
-    blocks["eligible"] = blocks.complete & blocks.void_ok & ~blocks.low_density.fillna(False)
-    blocks["stratum"] = np.where(blocks.low_density.fillna(False), "low_density", "main")
     seed = a.seed if a.seed is not None else cfg["master_seed"]
-    R = cfg["roles"]
-    blocks, meta = xl.assign_roles(blocks, seed=seed, buffer_m=buffer_m, test_frac_of_rest=R["test_frac_of_rest"],
-                                   adapt_frac=R["adapt_frac"], min_adapt_km2=R["min_adapt_km2"], strat_col=strat)
-    rng = np.random.default_rng(ek.child_seed(seed, 0, 7))
-    test_ids = blocks.loc[blocks.role == "test", "block_id"].to_numpy()
-    n_re = int(np.ceil(R["recheck_frac"] * len(test_ids)))
-    blocks["recheck"] = blocks.block_id.isin(rng.choice(test_ids, n_re, replace=False) if n_re else [])
-    ek.assert_unique(blocks, "block_id")
-    ek.assert_no_nan(blocks.block_id, "block ids")
-    ek.assert_disjoint(blocks.block_id[blocks.role == "test"], blocks.block_id[blocks.role == "audit"], "test vs audit")
+    blocks, meta = eligibility_and_roles(blocks, cfg, dmin, buffer_m, seed, strat)
 
     gp = ctx["tables"] / f"xfer_blocks_roles_{a.area}.gpkg"
     blocks.to_file(gp, layer="blocks", driver="GPKG")
     au = ctx["tables"] / f"xfer_audit_blocks_{a.area}_v1.csv"
     blocks.loc[blocks.role == "audit", ["block_id"]].to_csv(au, index=False)
     meta.update({"area": a.area, "n_blocks": int(len(blocks)), "density_rule": rule, "density_min_per_m2": dmin,
-                 "slope_cut_points_deg": cuts, "buffer_provisional": buf_prov, "seed": seed,
+                 "slope_cut_points_deg": cuts, "buffer_provisional": buf_prov, "buffer_task": a.task, "seed": seed,
                  "n_recheck": int(blocks.recheck.sum()),
                  "eligible_km2": float(blocks.geometry[blocks.eligible].area.sum() / 1e6),
-                 "test_km2": float(blocks.geometry[blocks.role == "test"].area.sum() / 1e6),
+                 "test_km2": float(blocks.geometry[(blocks.role == "test") & blocks.eligible].area.sum() / 1e6),
+                 "low_density_test_km2": float(blocks.geometry[(blocks.role == "test") & blocks.low_density].area.sum() / 1e6),
                  "median_ground_per_m2": float(blocks.ground_per_m2.median()) if a.density == "las" else None,
                  "median_void_frac": float(blocks.void_frac.median()) if a.density == "las" else None})
     js = ctx["tables"] / f"xfer_blocks_roles_{a.area}.json"

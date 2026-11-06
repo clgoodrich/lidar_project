@@ -1,0 +1,52 @@
+{
+ "date": "2026-11-06",
+ "check": "regional core gt.score_raster(task='pit') against the 3.0 reference on the same 9t raster, blocks and truth",
+ "policy": {
+  "task": "pit",
+  "mode": "primary",
+  "version": "fw00_s4_20261105",
+  "cutoff": 0.35,
+  "min_area_m2": 4.0,
+  "iou": 0.3,
+  "match_order": "score",
+  "blob_score": "mean",
+  "k_per_km2": 40.0,
+  "policy_hash": "5ca1e98"
+ },
+ "target_abs_diff": 0.02,
+ "old_core_recall_k40_mosaic": 0.5785288270377733,
+ "old_core_note": "HEAD a0b91cd core, cutoff 0.10, 8-connected, IoU order, truth id 0 unmatchable",
+ "review_values": {
+  "cutoff_0p10": 0.5746,
+  "cutoff_0p35": 0.9085
+ },
+ "mosaic_115_blocks": {
+  "prob": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\models\\pit\\unet_cv5\\pit_prob_floor_outoffold_9t_05.tif",
+  "ref_table_recall_k40": 0.9165009940357853,
+  "gt_recall_k40_dedupe_truth_matched": 0.9165009940357853,
+  "gt_recall_k40_dedupe_none": 0.9165009940357853,
+  "gt_recall_k40_sensitivity_0p10_iou_order": 0.5805168986083499,
+  "gt_blocks_truth_matched": 115,
+  "gt_n_truth_truth_matched": 503,
+  "gt_km2_truth_matched": 16.171875,
+  "ref_3_0_scorer_now_recall_k40": 0.9165009940357853,
+  "ref_3_0_archival_mosaic_recall": 0.9085487077534792
+ },
+ "filled_144_blocks_current_3_0_tables": {
+  "prob": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\3_geography\\3_0_transfer_protocol\\data\\interim\\pit_prob_oof_filled_9t.tif",
+  "gt_recall_k40": 0.9463220675944334,
+  "gt_blocks": 144,
+  "gt_km2": 20.25,
+  "gt_n_truth": 503,
+  "gt_n_cands": 827,
+  "gt_dups": 1,
+  "ref_recall_k40": 0.9463220675944334,
+  "ref_meta_global_k40": 0.9463220675944334,
+  "ref_blocks": 144,
+  "ref_n_cands": 827,
+  "abs_diff": 0.0,
+  "policy_match": true
+ },
+ "truth": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\qgis\\annotations\\annotations_proj.gpkg:pit_inside",
+ "blocks": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_blocks_9t.gpkg"
+}

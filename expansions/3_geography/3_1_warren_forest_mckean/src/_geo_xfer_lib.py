@@ -4,15 +4,16 @@ Purpose
     The thin, generic pieces every geographic transfer stage needs. Each stage script in
     this folder (and in 3.2 / 3.3) imports this module and adds only its own CLI.
     Written against fw_00_common.md section 4 and docs/plans/protocol_gates_and_metrics.md
-    sections 2, 3 and 5. It does not depend on the 3.0 scorer (built in parallel).
+    sections 2, 3 and 5. Extraction, matching and ranking are the 3.0 scorer's (review F02 / G-03).
 
 What is here
     config      load_config, resolve_path, need (clear "missing input" failure)
     lidar       las_header, ground_grid (chunked laspy pass, optional reprojection)
     blocks      make_blocks, cover_fraction, grid_stats_per_block, raster_mean_per_block,
                 terciles, assign_roles (seeded, stratified, buffered)
-    candidates  candidates_from_prob (reuses _pit_unet_cv5.polygonize), match_iou
-    scoring     score_area (recall at K per km2 over complete blocks), pooled_recall,
+    candidates  policy, candidates_from_prob, candidates_for_blocks (shared window, no seam clipping),
+                match_iou. All call the 3.0 reference scorer (_transfer_score_lib, ek.policy_for)
+    scoring     score_area (3.0 score_tables over complete blocks), pooled_recall,
                 diff_vs_reference (block bootstrap + decision), permutation_p,
                 superblock_ids, density_scaled_k
     inference   load_ckpt, check_channels, ensemble_prob (wraps _dl.predict_full_tile),
@@ -44,11 +45,16 @@ for _p in (NB, NB / "s1_build", NB / "s3_train", NB / "s4_infer", NB / "s5_eval"
 
 CRS = ek.DST_CRS                 # EPSG:6346
 BLOCK_M = 375.0                  # 9t block side (fw_00 section 4)
-PROPOSAL_THR = 0.10              # lowest sweep cutoff (fw_00 section 4)
-MIN_BLOB_M2 = 4.0
-IOU_TAU = 0.3
-K_PRIMARY = 40.0                 # candidates per km2 (user decision 2026-11-04)
-K_SENSITIVITY = 30.0
+sys.path.insert(0, str(HERE.parents[2] / "3_0_transfer_protocol" / "src"))
+import _transfer_score_lib as tl  # noqa: E402  (the one reference scorer, review F02 / G-03)
+
+# Proposal cutoff, matching and K come from ek.policy_for(task) via tl.policy (pit 0.35, pad 0.525, score-order
+# matching). 0.10 is only the fw_00 sensitivity cutoff. These constants mirror the policy for old callers.
+SENSITIVITY_THR = tl.CUTOFF
+MIN_BLOB_M2 = float(ek.PROPOSAL_POLICY["min_area_m2"])
+IOU_TAU = float(ek.PROPOSAL_POLICY["iou"])
+K_PRIMARY = float(ek.PROPOSAL_POLICY["k_per_km2"])        # candidates per km2 (user decision 2026-11-04)
+K_SENSITIVITY = float(ek.PROPOSAL_POLICY["k_sensitivity_per_km2"])
 
 
 class MissingInput(FileNotFoundError):
@@ -365,6 +371,9 @@ def assign_roles(blocks, *, seed: int, buffer_m: float, test_frac_of_rest: float
     If the strip is under min_adapt_km2 the adaptation role is dropped and every eligible
     block goes to test or audit. Test and audit are a seeded draw stratified by strat_col.
     """
+    if not np.isfinite(buffer_m) or buffer_m <= 0:
+        # review minor. A zero buffer lets adaptation blocks touch test blocks. Read it with ek.read_buffer(task).
+        raise ValueError(f"buffer_m must be a positive derived buffer, got {buffer_m}")
     rng = np.random.default_rng(seed)
     b = blocks.copy()
     b["role"] = np.where(b[eligible_col].astype(bool), "pool", "ineligible")
@@ -403,100 +412,138 @@ def assign_roles(blocks, *, seed: int, buffer_m: float, test_frac_of_rest: float
     return b, meta
 
 
-# ----------------------------------------------------------------------------- candidates
-def candidates_from_prob(prob, transform, crs=CRS, thr: float = PROPOSAL_THR, min_area: float = MIN_BLOB_M2):
-    """Probability raster -> blobs scored by mean probability. Reuses the CV5 polygonize."""
-    from _pit_unet_cv5 import polygonize  # same code as the operating-point sweep
-    g = polygonize(np.asarray(prob, dtype=np.float32), transform, crs, thr, min_area=min_area)
-    g = g.reset_index(drop=True)
-    g["area_m2"] = g.geometry.area
-    return g
+# ----------------------------------------------------------------------------- candidates (3.0 reference scorer)
+def policy(task: str = "pit", mode: str = "primary", **override) -> dict:
+    """ek.policy_for(task, mode) through the 3.0 scorer (review F02). Every 3.1 / 3.2 / 3.3 score uses it."""
+    return tl.policy(task, mode, **override)
 
 
-def match_iou(truth, cands, tau: float = IOU_TAU, truth_id: str = "truth_id", cand_id: str = "cand_id"):
-    """Greedy one-to-one matching by IoU (fw_00 section 4). Ties by higher score, then cand id.
+def candidates_from_prob(prob, transform, crs=CRS, thr: float | None = None, min_area: float | None = None,
+                         *, policy: dict | None = None):
+    """Probability array -> blobs scored by mean probability. The 3.0 extraction (`tl.candidates`).
+    Give a policy dict (preferred) or an explicit cutoff."""
+    pol = policy
+    if pol is None and thr is None:
+        raise ValueError("candidates_from_prob needs a policy (xl.policy(task)) or an explicit cutoff")
+    if pol is not None:
+        g = tl.candidates(np.asarray(prob, dtype=np.float32), transform, crs, thr, policy=pol)
+    else:
+        g = tl.candidates(np.asarray(prob, dtype=np.float32), transform, crs, float(thr),
+                          MIN_BLOB_M2 if min_area is None else float(min_area))
+    return g.reset_index(drop=True)
 
-    Returns a Series indexed like cands: the matched truth id, or NaN. A second blob on an
-    already-matched feature stays unmatched (a duplicate, not a new detection).
-    """
+
+def candidates_for_blocks(prob_path: Path, blocks, policy: dict, halo_m: float = 40.0):
+    """Candidates whose centroid lies in `blocks`, extracted on one shared window (review F03).
+
+    The window covers all blocks plus a halo. While any above-cutoff cell touches a window side that is not
+    the raster edge, the halo doubles. So no connected blob is clipped, and the result equals extraction on
+    the whole raster (the oracle). Each candidate goes to one block by the 3.0 rule (centroid)."""
+    import geopandas as gpd
+    import rasterio
+    from rasterio.windows import Window, from_bounds
+    if not len(blocks):
+        return gpd.GeoDataFrame({"score": [], "area_m2": [], "cand_id": [], "block_id": []}, geometry=[], crs=CRS)
+    cut = float(policy["cutoff"])
+    with rasterio.open(prob_path) as r:
+        tl.assert_metric_crs(r.crs)
+        full = Window(0, 0, r.width, r.height)
+        x0, y0, x1, y1 = blocks.total_bounds
+        h = float(halo_m)
+        while True:
+            w = from_bounds(x0 - h, y0 - h, x1 + h, y1 + h, transform=r.transform).round_offsets().round_lengths()
+            w = w.intersection(full)
+            a = r.read(1, window=w)
+            p = tl.decode_prob(a, r.nodata)
+            m = np.nan_to_num(p, nan=0.0) >= cut
+            touch = ((w.row_off > 0 and m[0].any()) or (w.col_off > 0 and m[:, 0].any())
+                     or (w.row_off + w.height < r.height and m[-1].any())
+                     or (w.col_off + w.width < r.width and m[:, -1].any()))
+            if not touch or (w.width == r.width and w.height == r.height):
+                break
+            h *= 2
+        tf, crs = r.window_transform(w), r.crs
+    c = tl.extract(p, tf, crs, policy)
+    if not len(c):
+        c["block_id"] = []
+        return c
+    eb = blocks[["block_id", "geometry"]].copy()
+    c["block_id"] = tl.assign_blocks(c, eb)
+    c = c[c.block_id.notna()].reset_index(drop=True)
+    c["block_id"] = c.block_id.astype(int)
+    c["cand_id"] = np.arange(len(c))
+    return c
+
+
+def match_iou(truth, cands, tau: float = IOU_TAU, truth_id: str = "truth_id", cand_id: str = "cand_id",
+              order: str = "score"):
+    """Greedy one-to-one matching at IoU >= tau, pairs in candidate score order (policy match_order).
+    The 3.0 matcher (`tl.match_greedy`). Returns a Series indexed like cands: matched truth id or NaN.
+    A second blob on an already-matched feature stays unmatched."""
     out = pd.Series(np.nan, index=cands.index, dtype=object)
     if len(truth) == 0 or len(cands) == 0:
         return out
-    ti, ci = cands.sindex.query(truth.geometry, predicate="intersects")
-    pairs = []
-    tg, cg = truth.geometry.to_numpy(), cands.geometry.to_numpy()
-    for a, c in zip(ti, ci):
-        inter = tg[a].intersection(cg[c]).area
-        u = tg[a].area + cg[c].area - inter
-        iou = inter / u if u > 0 else 0.0
-        if iou >= tau:
-            pairs.append((iou, float(cands["score"].iat[c]), -int(cands[cand_id].iat[c]), a, c))
-    pairs.sort(reverse=True)
-    used_t, used_c = set(), set()
-    tids = truth[truth_id].to_numpy()
-    for _, _, _, a, c in pairs:
-        if a in used_t or c in used_c:
-            continue
-        used_t.add(a); used_c.add(c)
-        out.iat[c] = tids[a]
+    t = truth.rename(columns={truth_id: "truth_id"}) if truth_id != "truth_id" else truth
+    m, _ = tl.match_greedy(t.reset_index(drop=True), cands.reset_index(drop=True), tau, order)
+    for i, v in enumerate(m):
+        if v is not None:
+            out.iat[i] = v
     return out
 
 
 def _assign_block(gdf, blocks):
-    import geopandas as gpd
-    pts = gpd.GeoDataFrame(geometry=gdf.geometry.representative_point(), crs=gdf.crs, index=gdf.index)
-    j = gpd.sjoin(pts, blocks[["block_id", "geometry"]], how="left", predicate="within")
-    j = j[~j.index.duplicated(keep="first")]
-    return j["block_id"].reindex(gdf.index)
+    """Block of each geometry by the 3.0 rule (centroid)."""
+    return tl.assign_blocks(gdf, blocks)
 
 
-def score_area(cands, truth, blocks, *, k_per_km2: float = K_PRIMARY, tau: float = IOU_TAU,
-               truth_id: str = "truth_id"):
-    """Recall at K per km2 over a complete scored footprint.
+def score_area(cands, truth, blocks, *, k_per_km2: float | None = None, tau: float | None = None,
+               truth_id: str = "truth_id", policy: dict | None = None, task: str = "pit",
+               dedupe: str = "truth_matched"):
+    """Recall at K per km2 over a complete scored footprint, by the 3.0 core (`tl.score_tables`).
 
-    blocks  the eligible scored blocks (every one, including blocks with no truth)
+    blocks  the scored blocks (every one, including blocks with no truth). All are treated as eligible here.
     cands   blobs with score, geometry (cand_id added if absent)
     truth   features with truth_id, geometry
-    Candidates and truth are credited by representative point to a block. A hit is credited
-    to the truth feature's block. K = round(k_per_km2 * area), ties by larger area, then id.
-    Returns (summary dict, per-block DataFrame, scored cands, scored truth).
-    """
-    cands = cands.copy()
-    if "cand_id" not in cands:
-        cands["cand_id"] = np.arange(len(cands))
-    if "area_m2" not in cands:
-        cands["area_m2"] = cands.geometry.area
-    cands["block_id"] = _assign_block(cands, blocks) if len(cands) else pd.Series(dtype=float)
-    cands = cands[cands.block_id.notna()].copy()
-    truth = truth.copy()
-    ek.assert_unique(truth, truth_id)
-    truth["block_id"] = _assign_block(truth, blocks) if len(truth) else pd.Series(dtype=float)
-    truth = truth[truth.block_id.notna()].copy()
-    cands["matched"] = match_iou(truth, cands, tau=tau, truth_id=truth_id) if len(cands) else []
-    area_km2 = float(blocks.geometry.area.sum() / 1e6)
-    order = cands.sort_values(["score", "area_m2", "cand_id"], ascending=[False, False, True])
-    k = int(round(k_per_km2 * area_km2))
-    kept_ids = set(order.cand_id.head(k))
-    cands["kept"] = cands.cand_id.isin(kept_ids)
-    hit_ids = set(cands.loc[cands.kept, "matched"].dropna())
-    truth["found"] = truth[truth_id].isin(hit_ids)
-    n_by_block = {int(b): 0 for b in blocks.block_id}
-    n_by_block.update(truth.groupby("block_id").size().astype(int).to_dict())
-    # cross-check with the shared toolkit (same ordering, same K)
-    ref = ek.recall_at_k(cands.score.to_numpy(), cands.matched.tolist(), cands.block_id.to_numpy(),
-                         n_by_block, area_km2, k_per_km2=k_per_km2, areas=cands.area_m2.to_numpy(),
-                         cand_ids=cands.cand_id.to_numpy())
+    policy  ek.policy_for(task) by default. tau overrides its IoU (sensitivity only).
+    Candidates and truth go to a block by centroid. Hits are credited to the truth feature's block.
+    K = round(k_per_km2 * area), ties by larger area, then id. Second pieces of a matched feature are dropped.
+    Returns (summary dict, per-block DataFrame, scored cands, scored truth)."""
+    pol = dict(policy) if policy is not None else tl.policy(task)
+    if tau is not None and not tl.same_number(tau, pol["iou"]):
+        pol = tl.policy(pol["task"], pol["mode"] if pol["mode"] != "custom" else "primary", iou=float(tau))
+    k = float(pol["k_per_km2"] if k_per_km2 is None else k_per_km2)
+    b = blocks.copy()
+    b["eligible"] = True
+    t = truth.rename(columns={truth_id: "truth_id"}) if truth_id != "truth_id" else truth.copy()
+    c = cands.copy()
+    if "cand_id" not in c:
+        c["cand_id"] = np.arange(len(c))
+    if "area_m2" not in c:
+        c["area_m2"] = c.geometry.area
+    for col in ("block_id", "matched", "duplicate", "kept"):
+        if col in c:
+            c = c.drop(columns=col)
+    core = tl.score_tables(c, t, b, pol, k_per_km2=k, dedupe=dedupe)
+    ranked, keep, tab, st = core["ranked"], core["keep"], core["tab"], core["truth"]
+    ranked = ranked.assign(kept=keep)
+    hit_ids = set(m for m, kk in zip(ranked.matched, keep) if kk and not pd.isna(m))
+    st = st.assign(found=st.truth_id.isin(hit_ids))
+    area_km2 = core["area_km2"]
+    n_by_block = dict(zip(tab.block_id, tab.n_truth))
+    ref = ek.recall_at_k(ranked.score.to_numpy(), ranked.matched.tolist(), ranked.block_id.to_numpy(), n_by_block,
+                         area_km2, k_per_km2=k, areas=ranked.area_m2.to_numpy(), cand_ids=ranked.cand_id.to_numpy(),
+                         eligible_truth=set(st.truth_id))
     if ref["hits"] != len(hit_ids):
         raise AssertionError(f"recall_at_k mismatch {ref['hits']} vs {len(hit_ids)}")
-    per = pd.DataFrame({"block_id": list(n_by_block)})
-    per["n_truth"] = per.block_id.map(n_by_block).astype(int)
-    per["hits"] = per.block_id.map(truth[truth.found].groupby("block_id").size()).fillna(0).astype(int)
-    per["n_kept"] = per.block_id.map(cands[cands.kept].groupby("block_id").size()).fillna(0).astype(int)
-    per["area_km2"] = per.block_id.map(dict(zip(blocks.block_id, blocks.geometry.area / 1e6)))
-    summ = {"recall": ref["recall"], "hits": ref["hits"], "n_truth": ref["n_truth"], "k": k,
-            "k_per_km2": k_per_km2, "area_km2": area_km2, "n_blocks": int(len(blocks)),
-            "n_candidates": int(len(cands)), "truth_density_per_km2": ref["n_truth"] / area_km2 if area_km2 else np.nan}
-    return summ, per, cands, truth
+    per = tab.rename(columns={"kept": "n_kept"})[["block_id", "n_truth", "hits", "n_kept", "area_km2"]]
+    summ = {"recall": ref["recall"], "hits": ref["hits"], "n_truth": ref["n_truth"], "k": ref["k"],
+            "k_per_km2": k, "area_km2": area_km2, "n_blocks": int(len(b)), "n_candidates": int(len(core["cands_all"])),
+            "n_duplicates_dropped": int(core["cands_all"].duplicate.sum()),
+            "truth_density_per_km2": ref["n_truth"] / area_km2 if area_km2 else np.nan,
+            "policy_hash": pol["policy_hash"]}
+    if truth_id != "truth_id":
+        st = st.rename(columns={"truth_id": truth_id})
+    return summ, per, ranked, st
 
 
 def pooled_recall(rows) -> float:

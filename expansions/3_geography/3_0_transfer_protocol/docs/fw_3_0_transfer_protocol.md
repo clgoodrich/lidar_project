@@ -46,9 +46,9 @@ P1 done. P2 done (for final claims). K = 40 per km² decided. The margin is set 
   `python _transfer_score.py --prob <raster> --footprint <gpkg> --truth <gpkg:layer> --blocks <gpkg> --k 40 --prereg <md> --out <run_dir>`
 - Steps.
   1. Read footprint and blocks. Assert CRS 6346. Derive eligible area in km².
-  2. Polygonise the probability raster within the footprint (cutoff 0.10, min 4 m², mean-probability score).
+  2. Polygonise the probability raster once over the whole raster at the `ek.policy_for(task)` cutoff (pit 0.35, pad 0.525), min 4 m², mean-probability score. 0.10 is the sensitivity (amended 2026-11-06, review F02).
   3. Dedupe candidates that are second pieces of one feature (centroid inside an already matched truth feature).
-  4. Rank and keep the top K times area. Greedy IoU matching at 0.3.
+  4. Greedy one-to-one matching at IoU 0.3 in candidate score order, then rank and keep the top K times area (amended 2026-11-06).
   5. Per block counts (candidates kept, truth, matched).
   6. Pooled recall. Block bootstrap (B = 2000, seed from preregistration). Density per km².
   7. Secondary recall at K = c times density.

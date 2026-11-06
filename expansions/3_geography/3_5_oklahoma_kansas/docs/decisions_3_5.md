@@ -2,6 +2,11 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- Arms are scored per class. Pits use the pit policy and pit truth. Pads use the pad policy and pad truth. L0 (a pit model) is scored on pits only (F02, G-13). (2026-11-06, review repair by the fix agent, change freely)
+- The label-budget curve scores with task pit (policy cutoff 0.35) and stamps the policy hash per row (F02). (2026-11-06, review repair by the fix agent, change freely)
+- L2 fine-tunes with the head re-initialised by declaration (`out.`) and the 7 lidar channel names checked against the checkpoint (G-11). (2026-11-06, review repair by the fix agent, change freely)
+- The paired-gain figure no longer fixes the axis at 0 to 1. Negative gains and their intervals are drawn, with a zero line. (2026-11-06, review repair by the fix agent, change freely)
+- Paired arms must share the scored support per block. Arms with different masks raise instead of pairing (F07). (2026-11-06, review repair by the fix agent, change freely)
 - OK status codes are mapped from the held RBDMS data dictionary. NE means no evidence at location, not new. (2026-11-05, made by the build agent, change freely)
 - OK RBDMS has no coordinate-method field. Footage calls are labelled footage, else the count of quarter calls. (2026-11-05, made by the build agent, change freely)
 - Creek, Kay and Pawnee are in UTM zone 14 (EPSG:6343), not 15 as the framework assumed. Each window keeps its own zone. (2026-11-05, made by the build agent, change freely)
@@ -26,3 +31,11 @@ Newest first. One line per decision, with the date and who made it.
 - Each window uses its own NAD83(2011) UTM zone (US) or NAD83(CSRS) UTM zone (Canada). Alaska uses Alaska Albers EPSG:3338. (2026-11-05, made by the build agent, change freely)
 - A uint8 probability raster is read as DN / 254 with 255 as nodata, the mosaic convention in protocol section 2. (2026-11-05, made by the build agent, change freely)
 - The training sampler rejects a whole patch that touches forbidden ground. Normalisation is fitted on training windows only. (2026-11-05, made by the build agent, change freely)
+
+## Needs user decision
+
+- Which frozen checkpoint is the transfer model per task. Config key `model.<task>.transfer_checkpoint` is null and inference and fine-tuning refuse until it is set. The old default `pit/unet_iso_cv5/policy/best.pt` has no producer. (listed 2026-11-06)
+- Multiplicity. No correction is applied across areas, arms, classes or strata. Decide a family and a correction, or declare each gate a separate question. (listed 2026-11-06)
+- Support rule alignment with 3.0. The regional core uses the actual scored support (nodata and masks shrink the K budget and the denominator). The 3.0 reference now treats interior nodata as void under a cap and keeps the full block area. Pick one rule for both. (listed 2026-11-06)
+- Undefined bootstrap draws. Any undefined draw now makes a gate inconclusive (expkit SH-01). A tolerated share (`max_undefined`) would have to be declared in the prereg. (listed 2026-11-06)
+- A pooled pit-and-pad primary for the one-foreground-class arms needs one declared cutoff for the merged class. Until then G is reported per class. (listed 2026-11-06)

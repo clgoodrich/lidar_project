@@ -5,7 +5,8 @@ Purpose
     Sites. Documented DEP wells in the 9t bbox (P = 1, p_source 'record') plus detector candidates with no
     record within the association radius (P = K-rank tercile band at K = 40 per km2 of scored area, p_source
     'feature_band', P(feature) and never P(well)). A candidate near a record is merged into that record site
-    as surface evidence, flagged as a proposed association. Unresolved multi-well pads stay one site.
+    as surface evidence, flagged as a proposed association. Every candidate within the radius merges, not only
+    the nearest one. K uses the area of every block of the grid. Unresolved multi-well pads stay one site.
     Exposure. For each present receptor class, distance to the nearest receptor and counts (points) or
     presence (lines, polygons) within 50, 100, 250, 500 m. Water wells count with their positional error
     buffer (and a strict count without it). Protected areas and public supply give an inside flag, never a
@@ -56,7 +57,7 @@ def build(cfg, strict: bool = False):
         sites[c] = ex[c].to_numpy()
     comps = rc.e_component_columns(cfg["e_components"], set(recs))
     lineage = {c: [f"{next(n for n in recs if c.startswith(n + '_'))}:geometry"] for c in ex.columns}
-    lineage["P"] = ["candidates:score", "dep_wells:PERMIT_NUM", "pit_blocks:n_pits", "config:k_per_km2"]
+    lineage["P"] = ["candidates:score", "dep_wells:PERMIT_NUM", "pit_blocks:geometry", "config:k_per_km2"]
     rc.check_lineage(lineage, cfg["endpoint_columns"], cfg["endpoint_inputs"])
     summ = dict(n_records=int(len(rec)), n_candidates_in=int(len(cand)),
                 n_sites=int(len(sites)), n_record_sites=int((sites.p_source == "record").sum()),
@@ -69,9 +70,11 @@ def build(cfg, strict: bool = False):
                 note=("P for candidates is an ordinal band of the feature model, " + th.CONDITIONAL +
                       ". Exposure from present receptor layers only."))
     # identity check: sites in equals records plus unmerged candidates
-    merged = sites.loc[(sites.p_source == "record") & (sites.surface_evidence == 1), "assoc_cand_id"]
-    summ["n_candidates_merged_into_records"] = int(merged.nunique())
-    summ["n_candidates_shared_by_several_records"] = int((merged.value_counts() > 1).sum())
+    rs = sites[sites.p_source == "record"]
+    summ["n_candidates_merged_into_records"] = int(rs["n_assoc_cand"].sum())
+    summ["n_records_with_several_candidates"] = int((rs["n_assoc_cand"] > 1).sum())
+    summ["merge_rule"] = "every candidate within assoc_radius_m of a record joins its nearest record"
+    summ["footprint_rule"] = "all blocks of the grid (not n_pits > 0)"
     ek.assert_rows(sites, len(rec) + len(cand) - summ["n_candidates_merged_into_records"], "sites")
     summ["_cand"] = cand
     return sites, recs, summ

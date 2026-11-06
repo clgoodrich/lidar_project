@@ -4,10 +4,15 @@ Purpose. Same model family and CV as the NISAR result. fit_predict and oof_probs
 notebooks/wellsight_v2/s5_eval/_nisar_feat_common.py (histogram gradient boosting, band dropping and median
 imputation inside the training fold, 5-fold GroupKFold by block, training rows within 250 m of a test row removed).
 Repeat 0 is the deterministic GroupKFold. Repeats 1 to n are StratifiedGroupKFold with child seeds. Scores are the
-mean out-of-fold probability over repeats. Then per arm and stratum (all, lidar_weak by baseline score)
-  gain       AUC(baseline + arm) - AUC(baseline), paired block bootstrap B = 2000 (same blocks for both)
-  perm       paired permutation interval when fewer than 15 blocks
-  placebo    the arm's columns permuted within block, scored the same way
+mean out-of-fold probability over repeats. Then per arm and stratum
+  strata     all, and lidar_weak from an external covariate (prereg.lidar_weak). Never from the baseline score,
+             which would hand any second score a gain by regression to the mean (4.9-01). Unset covariate means
+             lidar_weak is reported as undefined. One primary row only (prereg.primary_stratum, now all).
+  gain       AUC(baseline + arm) - AUC(baseline), paired block bootstrap B = 2000 (same blocks for both).
+             Undefined draws are counted (undefined_share) and above prereg.max_undefined_share give inconclusive.
+  perm       paired permutation interval when fewer than 15 blocks, on within-arm ranks
+  placebo    the arm's columns permuted within block, scored the same way. gain_net = gain - placebo gain.
+             The arm decision is success only when the placebo interval is null (its lower bound at or below 0).
   decision   success if lo > delta, failure if hi < delta and the stratum is eligible in S1, else inconclusive
   holm       Holm-adjusted one-sided p (gain > 0) over the exploratory arms, shown beside each interval
 --heldout fits on all 9t rows, freezes, and scores the 613590 rows. That test is confirmatory.
@@ -65,21 +70,67 @@ def permute_within_block(X: np.ndarray, blocks: np.ndarray, seed: int) -> np.nda
 
 def gain_row(y, sb, sa, blocks, cfg, seed, label) -> dict:
     pr = cfg["prereg"]
-    bt = sk.paired_gain_boot(y, sb, sa, blocks, pr["B"], seed)
+    bt = sk.paired_gain_boot(y, sb, sa, blocks, pr["B"], seed, pr.get("max_undefined_share", 0.0))
+    defined = np.isfinite(bt["lo"])
+    fin = bt["draws"][np.isfinite(bt["draws"])]
     r = {"set": label, "n_targets": int(y.sum()), "n_decoys": int((1 - y).sum()), "n_blocks": bt["n_blocks"], "n_target_blocks": bt["n_target_blocks"],
          "auc_base": sk.auc(y, sb), "auc_arm": sk.auc(y, sa), "gain": bt["gain"], "lo": bt["lo"], "hi": bt["hi"],
-         "p_gain_le_0": float((bt["draws"] <= 0).mean()) if len(bt["draws"]) else np.nan,
+         "undefined_share": bt["undefined_share"],
+         "p_gain_le_0": float((fin <= 0).mean()) if defined and len(fin) else np.nan,
          "bootstrap_unreliable": bt["n_target_blocks"] < pr["min_blocks_bootstrap"]}
     if r["bootstrap_unreliable"]:
         r.update(sk.paired_perm(y, sb, sa, blocks, pr["n_permutations"], seed + 1))
     return r
 
 
-def decide(r: dict, delta: float, eligible: bool | None) -> str:
+def decide(r: dict, delta: float, eligible: bool | None, placebo: dict | None = None) -> str:
     d = sk.ek.decide(r["lo"], r["hi"], delta, "superiority")
+    if d == "success" and placebo is not None and not (np.isfinite(placebo["lo"]) and placebo["lo"] <= 0):
+        return "inconclusive (placebo not null)"
     if d == "failure" and eligible is False:
         return "inconclusive (stratum not eligible, no room)"
     return d
+
+
+def make_strata(y, df: pd.DataFrame, pr: dict) -> tuple[dict, dict]:
+    """Row masks per stratum and the reason a stratum is undefined. Never uses the baseline score (4.9-01)."""
+    spec = pr.get("lidar_weak") or {}
+    col = spec.get("covariate")
+    if col and ("score" in col.lower() or col.startswith("arm:")):
+        raise ValueError(f"lidar_weak covariate {col!r} is a score or arm column. Use an external covariate")
+    cov = df[col].to_numpy(float) if col and col in df else None
+    m, why = sk.lidar_weak_mask(y, cov, spec)
+    strata = {"all": np.ones(len(y), bool)}
+    undefined = {}
+    if m is None:
+        undefined["lidar_weak"] = why
+    else:
+        strata["lidar_weak"] = m
+    return strata, undefined
+
+
+def score_strata(y, sb, sa, sp, grp, strata: dict, cfg: dict, elig: dict, arm: str, k: int, primary_arm: bool,
+                 n0: int = 0) -> list[dict]:
+    """Arm and placebo rows for every stratum. The arm decision needs a null placebo. Exactly one primary row."""
+    pr = cfg["prereg"]
+    rows = []
+    for sname, m in strata.items():
+        pair = {}
+        for kind, s in (("placebo", sp), ("arm", sa)):
+            r = gain_row(y[m], sb[m], s[m], grp[m], cfg, sk.ek.child_seed(pr["master_seed"], k, n0 + len(rows)),
+                         f"{arm}:{sname}:{kind}")
+            r.update(arm=arm, stratum=sname, kind=kind,
+                     primary=bool(primary_arm and kind == "arm" and sname == pr.get("primary_stratum", "all")))
+            e = [v["eligible"] for kk, v in elig.items() if kk.endswith(f":{sname}")]
+            r["eligible"] = any(e) if e else None
+            pair[kind] = r
+        pl, ar = pair["placebo"], pair["arm"]
+        ar["placebo_gain"] = pl["gain"]
+        ar["gain_net"] = ar["gain"] - pl["gain"]
+        ar["decision"] = decide(ar, pr["delta_gain"], ar["eligible"], pl)
+        pl["decision"] = "placebo"
+        rows += [ar, pl]
+    return rows
 
 
 def main(argv=None) -> int:
@@ -100,6 +151,7 @@ def main(argv=None) -> int:
     proc = sk.ek.exp_dir("4.9") / "data" / "processed"
     rp = sk.need(Path(a.rows) if a.rows else proc / f"sar_rows_{a.target}_9t.csv", "frozen rows (S4 --rows-only)")
     df = pd.read_csv(rp)
+    sk.check_frozen(rp, df)
     sk.ek.assert_unique(df, "row")
     sk.ek.assert_no_nan(df.block, "block")
     y, grp, xy = df.y.to_numpy(int), df.block.to_numpy(), df[["x", "ym"]].to_numpy(float)
@@ -118,8 +170,9 @@ def main(argv=None) -> int:
     out = Path(a.out) if a.out else sk.resolve(cfg["outputs"]["results"])
     ep = Path(a.eligibility) if a.eligibility else out / "sar_power_eligibility_9t.json"
     elig = json.loads(ep.read_text())["strata"] if ep.exists() else {}
-    cut = np.quantile(sb[y == 1], pr["lidar_weak_quantile"])
-    strata = {"all": np.ones(len(y), bool), "lidar_weak": (y == 0) | (sb <= cut)}
+    strata, undefined = make_strata(y, df, pr)
+    for sname, why in undefined.items():
+        print(f"stratum {sname} undefined: {why}")
     rows = []
     for k, arm in enumerate(a.arms):
         ac = [c for c in df if c.startswith(f"arm:{arm}:")]
@@ -129,16 +182,15 @@ def main(argv=None) -> int:
         Xp = np.hstack([Xb, permute_within_block(df[ac].to_numpy(float), grp, sk.ek.child_seed(pr["master_seed"], 0, 900 + k))])
         sa = oof_mean(C, Xa, y, grp, xy, pr["cv_buffer_m"], a.repeats, pr["master_seed"])
         sp = oof_mean(C, Xp, y, grp, xy, pr["cv_buffer_m"], a.repeats, pr["master_seed"])
-        for sname, m in strata.items():
-            for kind, s in (("arm", sa), ("placebo", sp)):
-                r = gain_row(y[m], sb[m], s[m], grp[m], cfg, sk.ek.child_seed(pr["master_seed"], k, len(rows)), f"{arm}:{sname}:{kind}")
-                r.update(arm=arm, stratum=sname, kind=kind, primary=bool(arm == pr["primary_arm"] and a.target == pr["primary_target"] and kind == "arm"))
-                e = [v["eligible"] for kk, v in elig.items() if kk.endswith(f":{sname}")]
-                r["eligible"] = any(e) if e else None
-                r["decision"] = decide(r, pr["delta_gain"], r["eligible"]) if kind == "arm" else "placebo"
-                rows.append(r)
+        rows += score_strata(y, sb, sa, sp, grp, strata, cfg, elig, arm, k,
+                             arm == pr["primary_arm"] and a.target == pr["primary_target"], n0=len(rows))
+        for sname, why in undefined.items():
+            rows.append({"set": f"{arm}:{sname}:arm", "arm": arm, "stratum": sname, "kind": "arm", "primary": False,
+                         "decision": f"undefined ({why})"})
     tab = pd.DataFrame(rows)
-    expl = tab[(tab.kind == "arm") & ~tab.primary]
+    if int(tab.primary.sum()) > 1:
+        raise AssertionError("more than one primary row")
+    expl = tab[(tab.kind == "arm") & ~tab.primary & tab.p_gain_le_0.notna()]
     adj = sk.holm(dict(zip(expl.set, expl.p_gain_le_0))) if len(expl) else {}
     tab["holm_p"] = tab.set.map(adj)
     tab["label"] = np.where(tab.primary, "primary", np.where(tab.kind == "arm", "exploratory", "placebo"))
@@ -164,7 +216,7 @@ def main(argv=None) -> int:
         pd.DataFrame(hrows).to_csv(hf, index=False)
         outs.append(hf)
     sk.prov(out, "sar_new_score_9t", inputs=[rp, ep], outputs=outs, params=pr, seeds={"master": pr["master_seed"]})
-    print(tab[["set", "gain", "lo", "hi", "decision", "holm_p"]].to_string(index=False))
+    print(tab[["set", "gain", "lo", "hi", "undefined_share", "decision", "holm_p"]].to_string(index=False))
     return 0
 
 

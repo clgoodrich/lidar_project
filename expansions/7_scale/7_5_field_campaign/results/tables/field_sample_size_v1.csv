@@ -1,4 +1,4 @@
-d,n_srs,n_with_deff,deff,n_with_deff_and_access,inaccessible_share
-0.1,97,145,1.5,182,0.2
-0.15,43,65,1.5,82,0.2
-0.2,25,37,1.5,47,0.2
+d,n_srs,n_with_deff,deff,n_with_deff_and_access,inaccessible_share,bound_width_at_that_n,n_with_gap,target_width,n_for_target_width
+0.1,97,145,1.5,182,0.2,0.407,unreachable (gap alone reaches 2d),0.3,746
+0.15,43,65,1.5,82,0.2,0.509,746,0.3,746
+0.2,25,37,1.5,47,0.2,0.609,193,0.3,746

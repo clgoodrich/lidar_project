@@ -1,0 +1,6 @@
+{
+  "lag_m": 25.0,
+  "max_m": 2000.0,
+  "step_m": 5.0,
+  "tasks": "pit,pad"
+}

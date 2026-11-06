@@ -1,0 +1,22 @@
+{
+  "compare": {
+    "bootstrap_B": 2000,
+    "delta_rate": 0.1,
+    "delta_rate_note": "User decision. The useful flag-rate difference from the decision the flag changes. Proposed default. Not from variance.",
+    "n_placebo": 200,
+    "seed": 20261105
+  },
+  "ctrl": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_5_multitemporal_lidar\\results\\20261106_dod_ctrl_08f3b2d\\change_controls_matched_9t.gpkg",
+  "flag": {
+    "ctrl_dist_m": [
+      150.0,
+      800.0
+    ],
+    "min_cover": 0.2,
+    "min_ctrl": 10,
+    "n_ctrl": 40,
+    "p_cut": 0.975,
+    "slope_tol": 3.0,
+    "thr": 0.235
+  }
+}

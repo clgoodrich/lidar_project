@@ -2,9 +2,14 @@
 
 Purpose
     For each site (pad or matched control) and each scene. NDVI and NDMI from the bands present (NDRE and
-    EVI are NaN when red edge or blue is absent, as in the held Sentinel-2 stacks). Area-weighted mean
+    EVI are NaN when red edge or blue is absent, as in the held Sentinel-2 stacks). Review 4.3-01. DN are
+    converted to reflectance with the L2A quantification and BOA offset read from the stack metadata or a
+    declared scene radiometry (refuses otherwise). Indices are computed on the native grid of their
+    coarsest band (NDVI and EVI 10 m, NDMI and NDRE 20 m). A 5 m stack must be a block copy of native
+    pixels. SCL keeps vegetation and bare soil only (water, snow, cloud and shadow masked). A stack
+    without SCL refuses unless extract.allow_unmasked. Area-weighted mean
     over interior pixels that carry a valid SCL class and whose open share (1 m CHM below 2 m, averaged
-    onto the scene grid) is at least open_frac_min. Same index over a ring ring_inner_m to ring_outer_m
+    onto the native grid) is at least open_frac_min. Same index over a ring ring_inner_m to ring_outer_m
     outside the site, clear of every site. Difference site minus ring. Stress anomaly is that difference
     minus the site's own mean difference in the same season of other years. With one year only, the
     reference is the site's mean over all scenes and anomaly_ref says so.
@@ -35,15 +40,48 @@ SHORT = "vegstress_sites"
 INDICES = ("ndvi", "ndmi", "ndre", "evi")
 
 
-def read_scene(path: str, names: list[str], scale: float):
+INDEX_GRID_M = {"ndvi": 10.0, "evi": 10.0, "ndmi": 20.0, "ndre": 20.0}   # coarsest native band of each index
+
+
+def read_scene(path: str, cfg: dict, declared: dict | None = None):
+    """One L2A stack as reflectance on its native grids (review 4.3-01).
+
+    Radiometry from the stack metadata or a declared dict (refuses otherwise). SCL keeps only the
+    configured classes, never water, snow, cloud or shadow. A stack without SCL refuses unless
+    extract.allow_unmasked, and is then marked unmasked. Bands are put back on their native 10 m and 20 m
+    grids (a 5 m stack must be a block copy of native pixels, else refuse).
+    Returns ({grid_m: (bands, valid, transform)}, crs, info)."""
     import rasterio
+    ex = cfg["extract"]
     with rasterio.open(path) as r:
         desc = [d.lower() if d else "" for d in r.descriptions]
-        bands = {n: r.read(desc.index(n) + 1).astype(float) for n in names if n in desc}
-        T, crs, shape = r.transform, r.crs, (r.height, r.width)
-    scl = bands.pop("scl", None)
-    bands = {k: v * scale for k, v in bands.items()}
-    return bands, scl, T, crs, shape
+        stack = {n: r.read(desc.index(n) + 1).astype(float) for n in cfg["band_names"] if n in desc}
+        tags, T, crs, res = r.tags(), r.transform, r.crs, float(r.res[0])
+        if abs(r.res[0] - r.res[1]) > 1e-6:
+            raise RuntimeError(f"{path}: non-square pixels {r.res}")
+    rad = radiometry_for(tags, declared)
+    scl = stack.pop("scl", None)
+    if scl is None:
+        if not ex.get("allow_unmasked", False):
+            raise RuntimeError(f"{path}: no SCL band. Cloud, shadow, water and snow cannot be masked. Refusing "
+                               "(set extract.allow_unmasked to run unmasked and labelled so)")
+        valid, masked = np.isfinite(next(iter(stack.values()))), False
+    else:
+        valid, masked = np.isin(scl, io.scl_valid_classes(cfg)), True
+    nat = cfg["band_native_m"]
+    for k in stack:
+        if k not in nat:
+            raise KeyError(f"band {k!r} has no native resolution in band_native_m")
+        if res > nat[k] + 1e-6:
+            raise RuntimeError(f"{path}: stack pixel {res} m is coarser than {k} native {nat[k]} m")
+    stack = {k: io.to_reflectance(v, rad) for k, v in stack.items()}
+    io.check_reflectance(stack, valid)
+    grids = io.native_grids(stack, res, T, nat, valid, grids_m=sorted({float(nat[k]) for k in stack}))
+    return grids, crs, {"radiometry": rad, "scl_masked": masked, "stack_res_m": res}
+
+
+def radiometry_for(tags, declared):
+    return io.radiometry(tags, declared)
 
 
 def open_share(chm_path: Path, T, crs, shape, open_max: float) -> np.ndarray:
@@ -79,7 +117,7 @@ def anomalies(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def run(cfg: dict, out_root: Path | None = None, sites_path: Path | None = None, pads_only: bool = False,
-        max_sites: int | None = None) -> dict:
+        max_sites: int | None = None, layer: str = "sites") -> dict:
     import geopandas as gpd
     ex, o = cfg["extract"], cfg["observability"]
     if pads_only:
@@ -94,33 +132,42 @@ def run(cfg: dict, out_root: Path | None = None, sites_path: Path | None = None,
     else:
         sp = Path(sites_path) if sites_path else io.latest_run("vegstress_match") / "vegstress_matched_sites_9t.gpkg"
         sites = gpd.read_file(io.need(sp, "matched sites (run _vegstress_match_controls_9t.py or pass --pads-only)"),
-                              layer="sites")
+                              layer=layer)
     ek.assert_crs(sites, "EPSG:6346")
     if max_sites:
         sites = sites.head(max_sites)
     chm = io.need(io.resolve(cfg["inputs"]["chm"]), "CHM raster")
     scenes = scene_list(cfg)
-    run_dir = ek.new_run(io.EXP, SHORT, {"extract": ex, "sites": str(sp), "pads_only": pads_only, "n_sites": len(sites),
+    run_dir = ek.new_run(io.EXP, SHORT, {"extract": ex, "sites": str(sp), "layer": layer, "pads_only": pads_only,
+                                          "n_sites": len(sites),
                                           "scenes": scenes.scene_id.tolist()}, base=out_root, why="V2 index extraction.")
-    rows = []
+    rows, scene_info = [], {}
+    declared = {s["scene_id"]: s.get("radiometry") for s in cfg["scenes"]}
     for _, sc in scenes.iterrows():
-        bands, scl, T, crs, shape = read_scene(io.need(sc["path"], f"scene {sc['scene_id']}"), cfg["band_names"],
-                                               ex["reflectance_scale"])
-        idx = io.indices(bands)
-        valid = np.isin(scl, cfg["scl_valid"]) if scl is not None else np.ones(shape, bool)
-        opn = open_share(chm, T, crs, shape, o["chm_open_max_m"])
-        interior_ok = valid & (opn >= ex["open_frac_min"])
+        grids, crs, info = read_scene(io.need(sc["path"], f"scene {sc['scene_id']}"), cfg,
+                                      declared.get(sc["scene_id"]) or sc.get("radiometry"))
+        scene_info[sc["scene_id"]] = info
+        per_grid = {}
+        for gm, (bands, valid, T) in grids.items():
+            opn = open_share(chm, T, crs, valid.shape, o["chm_open_max_m"])
+            per_grid[gm] = (io.indices(bands), valid, valid & (opn >= ex["open_frac_min"]), T)
         g = sites.to_crs(crs)
         blocker = g.geometry.buffer(ex["ring_inner_m"]).union_all()
         for k, geom in enumerate(g.geometry):
             ring = geom.buffer(ex["ring_outer_m"]).difference(blocker)
             r = {"site_id": sites["site_id"].iloc[k], "site_class": sites["site_class"].iloc[k],
                  "pair_id": sites["pair_id"].iloc[k], "block_id": sites["block_id"].iloc[k],
-                 "scene_id": sc["scene_id"], "date": sc["date"], "season": sc["season"]}
+                 "scene_id": sc["scene_id"], "date": sc["date"], "season": sc["season"],
+                 "scl_masked": info["scl_masked"]}
             for ix in INDICES:
-                a = io.weighted_mean(idx[ix], T, geom, mask=interior_ok, ss=ex["supersample"])
-                b = (io.weighted_mean(idx[ix], T, ring, mask=valid, ss=ex["supersample"]) if not ring.is_empty
-                     else {"mean": np.nan, "n_px": 0})
+                gm = INDEX_GRID_M[ix]
+                if gm not in per_grid:
+                    a, b = {"mean": np.nan, "n_px": 0}, {"mean": np.nan, "n_px": 0}
+                else:
+                    idx, valid, interior_ok, T = per_grid[gm]
+                    a = io.weighted_mean(idx[ix], T, geom, mask=interior_ok, ss=ex["supersample"])
+                    b = (io.weighted_mean(idx[ix], T, ring, mask=valid, ss=ex["supersample"]) if not ring.is_empty
+                         else {"mean": np.nan, "n_px": 0})
                 r[f"{ix}_site"], r[f"{ix}_ring"], r[f"{ix}_diff"] = a["mean"], b["mean"], a["mean"] - b["mean"]
                 if ix == "ndvi":
                     r["n_px_site"], r["n_px_ring"] = a["n_px"], b["n_px"]
@@ -134,6 +181,9 @@ def run(cfg: dict, out_root: Path | None = None, sites_path: Path | None = None,
                "median_ndvi_diff_by_class": df.groupby("site_class")["ndvi_diff"].median().to_dict(),
                "indices_all_nan": [ix for ix in INDICES if df[f"{ix}_site"].isna().all()],
                "anomaly_ref": df["anomaly_ref"].iloc[0] if len(df) else None,
+               "layer": layer, "scenes_unmasked": [k for k, v in scene_info.items() if not v["scl_masked"]],
+               "radiometry_by_scene": {k: v["radiometry"] for k, v in scene_info.items()},
+               "index_grid_m": INDEX_GRID_M,
                "note": "A difference in disturbed ground, not leakage. Evidence level (a)"}
     out_j.write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")
     return io.finish(run_dir, summary, inputs=[sp, chm] + [Path(p) for p in scenes.path], outputs=[out_c, out_j], params=ex)
@@ -146,8 +196,10 @@ def main():
     ap.add_argument("--sites", type=Path, default=None)
     ap.add_argument("--pads-only", action="store_true")
     ap.add_argument("--max-sites", type=int, default=None)
+    ap.add_argument("--layer", choices=("sites", "population"), default="sites",
+                    help="sites = matched set, population = every pad and eligible control (for V3)")
     a = ap.parse_args()
-    s = run(io.load_config(a.config), a.out_root, a.sites, a.pads_only, a.max_sites)
+    s = run(io.load_config(a.config), a.out_root, a.sites, a.pads_only, a.max_sites, a.layer)
     print(json.dumps({k: v for k, v in s.items()}, indent=1, default=str))
 
 

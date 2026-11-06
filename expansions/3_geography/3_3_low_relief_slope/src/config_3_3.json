@@ -5,9 +5,9 @@
   "k_per_km2": 40.0,
   "k_sensitivity_per_km2": 30.0,
   "iou_tau": 0.3,
-  "proposal_thr": 0.10,
-  "proposal_policy": "loo_max_recall",
-  "_proposal_note": "fw_00 section 4 says cut at 0.10. On 9t fold 0 that gives recall 0.553 before any budget against 0.922 at the archival cutoff, because low cutoffs merge blobs and fail IoU 0.3. loo_max_recall reproduces the archival sweep rule. Set fixed to use proposal_thr. Build agent decision 2026-11-05.",
+  "proposal_thr": 0.1,
+  "proposal_policy": "policy_for",
+  "_proposal_note": "Review F02. Primary is ek.policy_for('pit') (0.35 in every fold, which equals the archival leave-one-fold-out cutoff). loo_max_recall and fixed (proposal_thr 0.10, the fw_00 sensitivity) are sensitivities only. Changed 2026-11-06.",
   "min_blob_m2": 4.0,
   "margin_delta": null,
   "_margin_note": "User decision. Loss in recall points that would change the decision to try a flat county. Set before step 1 scoring is used for a gate. null means intervals are reported with decision no_margin_set.",
@@ -18,34 +18,91 @@
   "depth_ring_m": 5.0,
   "void_buffer_m": 5.0,
   "inputs": {
-    "fold_prob": {"path_for": "models", "rel": "pit/unet_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"},
-    "fold_assignment": {"path_for": "models", "rel": "pit/unet_cv5/pit_cv5_fold_assignment_9t.csv"},
-    "sweep_counts": {"path_for": "results_9t", "rel": "operating_point/cv5_sweep_counts_per_block_pit_thr0p05to0p95_9t.csv"},
-    "fold_ckpt": {"path_for": "models", "rel": "pit/unet_cv5/fold{k}/best.pt"},
-    "blocks": {"path_for": "nine_t", "rel": "pit_blocks_9t.gpkg"},
-    "truth_gpkg": {"path_for": "truth", "rel": "annotations_proj.gpkg"},
+    "fold_prob": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"
+    },
+    "fold_assignment": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/pit_cv5_fold_assignment_9t.csv"
+    },
+    "sweep_counts": {
+      "path_for": "results_9t",
+      "rel": "operating_point/cv5_sweep_counts_per_block_pit_thr0p05to0p95_9t.csv"
+    },
+    "fold_ckpt": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/fold{k}/best.pt"
+    },
+    "blocks": {
+      "path_for": "nine_t",
+      "rel": "pit_blocks_9t.gpkg"
+    },
+    "truth_gpkg": {
+      "path_for": "truth",
+      "rel": "annotations_proj.gpkg"
+    },
     "truth_floor_layer": "pit_inside",
     "truth_rim_layer": "pit_full",
     "truth_pad_layer": "pad",
-    "slope_1m": {"path_for": "nine_t_1m", "rel": "slope_9t_1m.tif"},
-    "dem_1m": {"path_for": "nine_t_1m", "rel": "dem_9t_1m.tif"},
-    "dem_05": {"path_for": "nine_t", "rel": "dem_9t_05.tif"},
-    "features_05": {"path_for": "nine_t", "rel": "features_pit_9t_05.tif"},
-    "ground_density_05": {"path_for": "nine_t", "rel": "ground_density_9t_05.tif"}
+    "slope_1m": {
+      "path_for": "nine_t_1m",
+      "rel": "slope_9t_1m.tif"
+    },
+    "dem_1m": {
+      "path_for": "nine_t_1m",
+      "rel": "dem_9t_1m.tif"
+    },
+    "dem_05": {
+      "path_for": "nine_t",
+      "rel": "dem_9t_05.tif"
+    },
+    "features_05": {
+      "path_for": "nine_t",
+      "rel": "features_pit_9t_05.tif"
+    },
+    "ground_density_05": {
+      "path_for": "nine_t",
+      "rel": "ground_density_9t_05.tif"
+    },
+    "historical_split": {
+      "path_for": "results_9t",
+      "rel": "splits/cv_split_blocks_pit_9t.csv"
+    }
   },
   "assumed": {
-    "isolated_pit_ckpt": {"spec": {"path_for": "models", "rel": "pit/unet_iso_cv5/fold{k}/best.pt"},
+    "isolated_pit_ckpt": {
+      "spec": {
+        "path_for": "models",
+        "rel": "pit/unet_iso_cv5/fold{k}/best.pt"
+      },
       "schema": "torch checkpoint with keys state_dict, channels, mu, sd, epoch (same as data/9t/models/pit/unet_cv5/fold*/best.pt)",
-      "from": "P1 isolated pit trainer (not built yet)"},
-    "isolated_fold_blocks": {"spec": {"path_for": "results_9t", "rel": "splits/cv_splits_future_pit_9t_v1.csv"},
-      "schema": "CSV block_id,fold,role with role in train/val/heldout; one row per block per fold",
-      "from": "P1 saved split file"},
-    "audit_blocks": {"spec": {"path_for": "results_9t", "rel": "splits/audit_blocks_9t_v1.csv"},
-      "schema": "CSV block_id (int), one row per audit block",
-      "from": "P2 S4 audit guard"},
-    "derived_buffer": {"spec": {"path_for": "results_9t", "rel": "splits/buffer_derivation_9t.json"},
-      "schema": "JSON {\"pit_buffer_m\": float, \"pad_buffer_m\": float}",
-      "from": "P1 S4 derived buffer (receptive field plus patch support plus correlogram range)"}
+      "from": "P1 isolated pit trainer (not built yet)"
+    },
+    "isolated_fold_blocks": {
+      "spec": {
+        "path_for": "results_9t",
+        "rel": "splits/cv_splits_future_pit_9t_v1.csv"
+      },
+      "schema": "P1 split CSV block_id,fold,role, read with ek.read_split_csv (roles train/inner_val/held_out)",
+      "from": "P1 saved split file"
+    },
+    "audit_blocks": {
+      "spec": {
+        "path_for": "results_9t",
+        "rel": "splits/audit_blocks_9t_v1.csv"
+      },
+      "schema": "P2 audit CSV with # header and sha256 sidecar, read with ek.require_audit / ek.read_audit",
+      "from": "P2 S4 audit guard"
+    },
+    "derived_buffer": {
+      "spec": {
+        "path_for": "results_9t",
+        "rel": "splits/buffer_derivation_9t.json"
+      },
+      "schema": "P1 buffer_derivation_9t.json, read with ek.read_buffer(task)",
+      "from": "P1 S4 derived buffer (receptive field plus patch support plus correlogram range)"
+    }
   },
   "edit": {
     "n_locations": 200,
@@ -57,14 +114,19 @@
     "overlap": 64,
     "n_classes": 3,
     "floor_class": 1,
-    "shams": ["bump", "ramp", "flat_cut"],
-    "seam_tolerance": 0.20,
+    "shams": [
+      "bump",
+      "ramp",
+      "flat_cut"
+    ],
+    "seam_tolerance": 0.2,
     "fallback_buffer_m": 128.0
   },
   "area_gate": {
     "window": "Illinois_Cumberland",
     "project": "IL_8County_2020_A20",
     "tiles": 80,
-    "gb": 3.61
+    "gb": 3.61,
+    "area": "il_cumberland"
   }
 }

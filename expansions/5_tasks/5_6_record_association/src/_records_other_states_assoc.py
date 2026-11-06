@@ -57,6 +57,18 @@ def read_records(path: Path):
     return gpd.read_file(path)
 
 
+def check_metric_crs(crs, label: str):
+    """Radii and 200 to 500 m shifts are in metres. Refuse a geographic or non-metre CRS (review minor)."""
+    if crs is None:
+        raise SystemExit(f"CRS MISSING [{label}]: no CRS, so distances in metres are undefined.")
+    if not crs.is_projected:
+        raise SystemExit(f"CRS NOT PROJECTED [{label}]: {crs.to_string()} is geographic. Reproject to a metric UTM CRS.")
+    units = {ax.unit_name.lower() for ax in crs.axis_info}
+    if not units <= {"metre", "meter"}:
+        raise SystemExit(f"CRS UNITS [{label}]: {crs.to_string()} uses {sorted(units)}, not metres.")
+    return crs
+
+
 def run_state(st: str, spec: dict, cfg: dict, n_shift: int):
     import geopandas as gpd
     if spec.get("status_col") in (None, "", "assumed") or not spec.get("status_map"):
@@ -69,9 +81,13 @@ def run_state(st: str, spec: dict, cfg: dict, n_shift: int):
     rec = read_records(find_records(th.resolve(spec["records"])))
     det = gpd.read_file(det_p)
     fp = gpd.read_file(fp_p)
-    crs = det.crs
+    crs = check_metric_crs(det.crs, f"{st}.detector_full_pit")
+    if rec.crs is None:
+        raise SystemExit(f"CRS MISSING [{st}.records]: the well file has no CRS. Declare it before running.")
     rec = rec.to_crs(crs)
-    fpu = fp.geometry.union_all()
+    if fp.crs is None:
+        raise SystemExit(f"CRS MISSING [{st}.footprint]: the footprint has no CRS.")
+    fpu = fp.to_crs(crs).geometry.union_all()
     rec["group"] = th.status_group(rec[spec["status_col"]], spec["status_map"])
     r = cfg["pit"]["primary_radius_m"]
     rate = core.pit_rate_fn(np.c_[det["cx"], det["cy"]], [r])

@@ -5,9 +5,11 @@ Purpose
     The table gives stratum, anomaly present or absent, amplitude, signal to noise, localisation error to the
     surveyed wellhead and to the lidar centroid. Outcome (confirmed well d, steel anomaly c, nothing found,
     unresolved, inaccessible) is recorded apart from identity status (confirmed_well, definite_non_well,
-    ambiguous). Steel alone is never identity. Summaries are per stratum and are never pooled.
+    ambiguous) and crossed with it (OUTCOME_TABLE). A confirmed well with no anomaly is a miss. A blank with a
+    pick is a false pick. Steel alone is never identity. Summaries are per stratum and are never pooled.
     Pilot gate (framework section 9). Pass needs every site's noise below target, every repeat-line RMS within
-    tolerance, and every confuser site not labelled a well. Any missing check makes the gate incomplete.
+    tolerance, every confuser site not labelled a well, no pick at any blank, and an anomaly at every confirmed
+    well in a steel-casing stratum. Any missing check makes the gate incomplete.
     3 to 5 sites test practicality. Nothing here is a sensitivity estimate.
     Feed forward (S5). Realised noise, survey area per hour from the S1 design, strata that need
     non-magnetic evidence.
@@ -44,6 +46,29 @@ from _mag_shared_io import ek  # noqa: E402
 EVIDENCE_EARLY = ["unknown_date", "early_era", "dated_pre_steel"]
 
 
+# 4.1-01. Outcome = identity crossed with the magnetometer result. Identity alone never sets it.
+OUTCOME_TABLE = {
+    ("confirmed_well", True): "confirmed_well_d",        # independent identity and a steel anomaly agree
+    ("confirmed_well", False): "confirmed_well_missed",  # a known well with no anomaly. A miss
+    ("definite_non_well", True): "steel_anomaly_c",      # steel that is not a well (confuser)
+    ("definite_non_well", False): "nothing_found",
+    ("ambiguous", True): "steel_anomaly_c",
+    ("ambiguous", False): "nothing_found",
+}
+
+
+def outcome_for(accessible: bool, processed: bool, identity: str, anomaly: bool, stratum: str) -> str:
+    if not accessible:
+        return "inaccessible"
+    if not processed:
+        return "unresolved"
+    if identity not in {k for k, _ in OUTCOME_TABLE}:
+        raise ValueError(f"unknown identity_status {identity!r}")
+    if stratum == "blank" and anomaly:
+        return "blank_with_pick"                         # a pick where nothing was buried. A false pick
+    return OUTCOME_TABLE[(identity, anomaly)]
+
+
 def site_outcomes(sites: pd.DataFrame, picks: dict, qcs: dict, wellheads: pd.DataFrame | None,
                   identity: pd.DataFrame | None, radius: float) -> pd.DataFrame:
     wh = wellheads.set_index("site_id") if wellheads is not None and len(wellheads) else None
@@ -75,17 +100,7 @@ def site_outcomes(sites: pd.DataFrame, picks: dict, qcs: dict, wellheads: pd.Dat
                 r["err_to_lidar_m"] = float(np.hypot(pk.easting - s.lidar_cx, pk.northing - s.lidar_cy))
         ids = idn.loc[sid, "identity_status"] if idn is not None and sid in idn.index else "ambiguous"
         r["identity_status"] = ids
-        if not access:
-            out = "inaccessible"
-        elif not r["processed"]:
-            out = "unresolved"
-        elif ids == "confirmed_well":
-            out = "confirmed_well_d"
-        elif hit:
-            out = "steel_anomaly_c"
-        else:
-            out = "nothing_found"
-        r["outcome"] = out
+        r["outcome"] = outcome_for(access, r["processed"], ids, bool(hit), s.stratum)
         q = qcs.get(sid, {})
         r["noise_sigma_nT"] = q.get("noise_sigma_nT")
         r["repeat_rms_nT"] = q.get("repeat_rms_nT")
@@ -125,6 +140,16 @@ def pilot_gate(t: pd.DataFrame, gc: dict) -> dict:
                                              and (conf.outcome != "confirmed_well_d").all())
     if (conf.identity_status == "ambiguous").any():
         missing.append("confuser identity not recorded")
+    # 4.1-01. The magnetometer has to agree with identity. A pick at a blank is a false pick. A confirmed well in
+    # a steel-casing stratum with no anomaly is a miss. Early or undated strata can lack steel (wood casing,
+    # pulled casing), so a miss there is reported, not failed.
+    blanks = pr[pr.stratum == "blank"]
+    if len(t[t.stratum == "blank"]) == 0:
+        missing.append("no blank site")
+    checks["blanks_have_no_pick"] = bool(~(blanks.anomaly_present.fillna(False).astype(bool)).any())
+    steel = pr[(pr.identity_status == "confirmed_well") & ~pr.stratum.isin(EVIDENCE_EARLY)]
+    checks["confirmed_steel_wells_detected"] = bool(steel.anomaly_present.fillna(False).astype(bool).all())
+    early_missed = pr[(pr.outcome == "confirmed_well_missed") & pr.stratum.isin(EVIDENCE_EARLY)]
     to = pr.test_object_found
     if to.isna().any():
         missing.append("test object not placed at " + ",".join(pr.site_id[to.isna()]))
@@ -136,6 +161,7 @@ def pilot_gate(t: pd.DataFrame, gc: dict) -> dict:
     else:
         v = "pass"
     return {"verdict": v, "checks": checks, "missing": missing, "thresholds": gc,
+            "early_or_undated_wells_missed": early_missed.site_id.tolist(),
             "action": {"pass": "Proceed to 7.5 with magnetics as one evidence type",
                        "fail": "Record. Drop magnetics from 7.5 or change instrument",
                        "incomplete": "Fill the missing checks before calling the gate"}[v],
@@ -145,7 +171,8 @@ def pilot_gate(t: pd.DataFrame, gc: dict) -> dict:
 def feed_forward(t: pd.DataFrame, designs: dict) -> dict:
     pr = t[t.processed]
     aph = [d.get("area_per_hour_m2") for d in designs.values() if d.get("area_per_hour_m2")]
-    weak = sorted(set(t.stratum[(t.stratum.isin(EVIDENCE_EARLY)) & (t.outcome == "nothing_found")]))
+    weak = sorted(set(t.stratum[(t.stratum.isin(EVIDENCE_EARLY))
+                                & t.outcome.isin(["nothing_found", "confirmed_well_missed"])]))
     return {"realised_noise_nT": {"min": pr.noise_sigma_nT.min(), "max": pr.noise_sigma_nT.max()},
             "area_per_hour_m2": {"min": min(aph), "max": max(aph)} if aph else None,
             "strata_needing_non_magnetic_evidence": sorted(set(weak) | {"early_era", "unknown_date"}),

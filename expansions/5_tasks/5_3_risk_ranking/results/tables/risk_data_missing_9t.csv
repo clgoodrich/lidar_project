@@ -40,7 +40,6 @@ dep_wells,STORAGE_FI,0.9991
 dep_wells,SITE_ID,0.0
 dep_wells,SITE_NAME,0.0
 dep_wells,PERMIT_D_1,0.4763
-candidates_full,cand_id,0.0
 candidates_full,score,0.0
 candidates_full,area_m2,0.0
 candidates_full,near_pit_m,0.0
@@ -50,11 +49,12 @@ candidates_full,thr_used,0.0
 candidates_full,cx,0.0
 candidates_full,cy,0.0
 candidates_full,source,0.0
-candidates_full,status,0.7022
-candidates_full,block_id,0.0
+candidates_full,n_merged,0.0
 candidates_full,novel,0.0
-candidates_full,det_id,0.0
 candidates_full,dedupe_rule,0.0
+candidates_full,det_id,0.0
+candidates_full,kind,0.0
+candidates_full,block_id,0.0
 candidates_full,evidence_level,0.0
 candidates_fallback,cand_id,0.0
 candidates_fallback,score,0.0

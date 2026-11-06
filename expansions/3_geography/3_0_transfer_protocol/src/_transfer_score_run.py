@@ -8,6 +8,9 @@ Purpose
     figure, `_CONFIG.json`, `_RUN.md` and `_PROVENANCE.json` with the hash of every input, the
     preregistration and the scoring module.
     Pads (S6) use the same scorer with the pad raster and pad truth (`--task pad`). Roads are out of scope.
+    The proposal cutoff, minimum area, IoU and match order come from ek.policy_for(task). An explicit flag
+    overrides one and marks the policy 'custom'. With --prereg the run is checked against the declared
+    cutoff, IoU, dedupe, K and checkpoint after scoring (review G-06), and any difference stops it.
 
 Inputs
     --prob      probability raster (float 0-1, or uint8 DN / 254 with 255 nodata)
@@ -40,7 +43,8 @@ ek = tl.ek
 CFG = json.loads((HERE.parent / "config_3_0.json").read_text(encoding="utf-8"))
 
 SCORE_KEYS = ("prob", "blocks", "truth", "truth_id", "footprint", "void", "void_cap", "k", "seed", "B", "k_rule",
-              "order", "dedupe", "density_c", "cutoff", "min_area", "iou", "groups", "area", "task")
+              "order", "dedupe", "density_c", "cutoff", "min_area", "iou", "groups", "area", "task", "mode",
+              "checkpoint_record")
 
 
 def groups_from_split(path: Path, task: str) -> dict:
@@ -83,7 +87,7 @@ def resolve(a: argparse.Namespace) -> dict:
         pr["density_c"] = full["density_c"]          # the secondary's c is a top-level prereg field
     pr = {k: v for k, v in pr.items() if v is not None}
     for k, v in flags.items():
-        if k in pr and str(pr[k]) != str(v):
+        if k in pr and not tl.same_number(pr[k], v):
             raise SystemExit(f"--{k} {v} disagrees with the preregistration ({pr[k]}). The preregistration wins. Refusing.")
     return {**pr, **flags}
 
@@ -101,6 +105,12 @@ def run(s: dict, out_base: Path | None = None, prereg: Path | None = None, write
     if not truth_path.exists():
         raise SystemExit(f"input missing: truth = {truth_path}")
     task = s.get("task", "pit")
+    ckpt = None
+    if s.get("checkpoint_record"):
+        rec = json.loads(Path(s["checkpoint_record"]).read_text(encoding="utf-8"))
+        ckpt = rec.get("checkpoint", rec)
+        if rec.get("prob_sha256") and rec["prob_sha256"] != ek.sha256(Path(s["prob"])):
+            raise SystemExit("checkpoint record names a different probability raster (sha256 differs)")
     groups = groups_from_split(Path(s["groups"]), task) if s.get("groups") else None
     k_rule = s.get("k_rule", d["k_rule"])
     if k_rule == "per_group" and not groups:
@@ -109,11 +119,16 @@ def run(s: dict, out_base: Path | None = None, prereg: Path | None = None, write
                    truth_id=s.get("truth_id"), footprint_path=Path(s["footprint"]) if s.get("footprint") else None,
                    void_path=Path(s["void"]) if s.get("void") else None,
                    void_cap=float(s["void_cap"]) if s.get("void_cap") is not None else None,
-                   cutoff=float(s.get("cutoff", d["cutoff_by_task"].get(task, d["cutoff"]))), min_area=float(s.get("min_area", d["min_area_m2"])),
-                   iou=float(s.get("iou", d["iou"])), order=s.get("order", d["order"]),
+                   cutoff=float(s["cutoff"]) if s.get("cutoff") is not None else None,
+                   min_area=float(s["min_area"]) if s.get("min_area") is not None else None,
+                   iou=float(s["iou"]) if s.get("iou") is not None else None, order=s.get("order"),
                    dedupe=s.get("dedupe", d["dedupe"]), k_rule=k_rule, group_of_block=groups,
                    density_c=float(s["density_c"]) if s.get("density_c") is not None else None,
-                   B=int(s.get("B", d["B"])), seed=int(s.get("seed", d["seed"])))
+                   B=int(s.get("B", d["B"])), seed=int(s.get("seed", d["seed"])), task=task,
+                   mode=s.get("mode", "primary"), checkpoint=ckpt)
+    if prereg:                                   # review G-06. The run must equal what was declared.
+        tl.check_prereg_against(tl.read_prereg(prereg), res["summary"]["policy"], res["summary"]["scorer"]["dedupe"],
+                                ckpt, "this scoring run")
     area = s["area"]
     base = out_base or (ek.area_dir(area) / "results" / "transfer")
     rd = ek.new_run("3.0", f"score_{task}_{area}", {**{k: str(v) for k, v in s.items()}, "module": tl.module_sha256()},
@@ -156,6 +171,9 @@ def main(argv=None) -> int:
     ap.add_argument("--density-c", dest="density_c", type=float); ap.add_argument("--cutoff", type=float)
     ap.add_argument("--min-area", dest="min_area", type=float); ap.add_argument("--iou", type=float)
     ap.add_argument("--groups", help="P1 split file for per-group K")
+    ap.add_argument("--mode", choices=("primary", "sensitivity"))
+    ap.add_argument("--checkpoint-record", dest="checkpoint_record",
+                    help="inference record JSON from _transfer_infer_area.py (checkpoint lineage)")
     ap.add_argument("--out-base", type=Path, default=None, help="parent of the run folder")
     ap.add_argument("--write-candidates", action="store_true")
     a = ap.parse_args(argv)

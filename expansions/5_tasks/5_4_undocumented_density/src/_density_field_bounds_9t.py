@@ -36,6 +36,16 @@ ek = th.ek
 MAP = {"confirmed_well": "correct", "definite_non_well": "wrong", "ambiguous": "ambiguous"}
 
 
+def check_frame(B: pd.DataFrame, expected: str) -> None:
+    """Every Arm B row must quote the S1 site-table hash (review minor: the guard was skippable when the column was
+    missing, blank or mixed)."""
+    if "frame_sha256" not in B:
+        raise SystemExit("FRAME MISSING: arm_b has no frame_sha256 column (schema in config_5_4.json)")
+    got = set(B.frame_sha256.astype(str).str.strip())
+    if got != {expected}:
+        raise SystemExit(f"FRAME MISMATCH: arm_b quotes {sorted(got)[:3]}, density_accounting_9t.json has {expected}")
+
+
 def p_bounds(B: pd.DataFrame) -> dict:
     th.require_columns(B, ["site_id", "identity", "weight"], "arm_b")
     bad = set(B.identity) - set(MAP)
@@ -44,13 +54,21 @@ def p_bounds(B: pd.DataFrame) -> dict:
     return core.link_ppv_bounds(B.identity.map(MAP).to_numpy(), B.weight.to_numpy())
 
 
-def r_bounds(C: pd.DataFrame) -> dict:
+def r_bounds(C: pd.DataFrame, areas: pd.DataFrame | None = None) -> dict:
+    """Detector recall from wells found by independent search. Cells with no well add no recall trials,
+    but they are sampled cells, so the area counts come from arm_c_search_areas.csv when it is held."""
     th.require_columns(C, ["area_id", "well_id", "detected"], "arm_c")
     wells = C.drop_duplicates("well_id")
     k, n = int(wells.detected.sum()), int(len(wells))
     pt, lo, hi = ek.clopper_pearson(k, n) if n else (float("nan"),) * 3
     repeated = "search_round" in C and C.search_round.nunique() > 1
-    return dict(k=k, n=n, r=pt, r_lo=lo, r_hi=hi, n_areas=int(C.area_id.nunique()),
+    if areas is not None:
+        th.require_columns(areas, ["area_id", "searched"], "arm_c_areas")
+        n_areas, n_inacc = int(areas.searched.astype(int).sum()), int((areas.searched.astype(int) == 0).sum())
+    else:
+        n_areas, n_inacc = int(C.area_id.nunique()), None   # undercount: cells with no well are invisible
+    return dict(k=k, n=n, r=pt, r_lo=lo, r_hi=hi, n_areas=n_areas, n_areas_inaccessible=n_inacc,
+                n_areas_source="arm_c_search_areas" if areas is not None else "well rows only (undercount)",
                 search_sensitivity_bounded=bool(repeated),
                 label="conditional on independent search" if not repeated else "search repeated")
 
@@ -73,10 +91,11 @@ def main(argv=None) -> int:
     cfg = th.load_cfg(__file__, a.config)
     acc = json.loads(th.inp(cfg, "accounting").read_text())
     B = pd.read_csv(th.inp(cfg, "arm_b"))
-    if "frame_sha256" in B and B.frame_sha256.nunique() == 1 and B.frame_sha256.iloc[0] != acc["frame_sha256"]:
-        raise SystemExit("FRAME MISMATCH: arm_b was drawn from a different site table than density_accounting_9t.json")
+    check_frame(B, acc["frame_sha256"])
     C = pd.read_csv(th.inp(cfg, "arm_c"))
-    pb, rb = p_bounds(B), r_bounds(C)
+    ap_ = th.inp(cfg, "arm_c_areas", must_exist=False) if "arm_c_areas" in cfg["inputs"] else None
+    A = pd.read_csv(ap_) if ap_ is not None and Path(ap_).exists() else None
+    pb, rb = p_bounds(B), r_bounds(C, A)
     tb = total_bounds(int(acc["D_sites"]), pb, rb, cfg["grid"]["m_values"])
     tb["undocumented_lower"] = tb["total_lower"] - acc["N_doc_wells"]
     tb["undocumented_upper"] = tb["total_upper"] - acc["N_doc_wells"]

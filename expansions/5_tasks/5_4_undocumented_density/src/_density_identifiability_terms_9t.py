@@ -34,10 +34,10 @@ def terms(cfg) -> pd.DataFrame:
         bs = acc["D_sites_block_bootstrap"]
         rows.append(dict(term="D", status="identified", value=acc["D_sites"],
                          range=f"block bootstrap {bs['lo']:.0f} to {bs['hi']:.0f}", evidence_level="a",
-                         source=str(th.resolve(cfg["outputs"]["accounting"])),
+                         source=th.rel(th.resolve(cfg["outputs"]["accounting"])),
                          identifies_it="Distinct sites at K = 40 per km² (done)"))
         rows.append(dict(term="N_doc", status="identified_conditional", value=acc["N_doc_wells"], range="",
-                         evidence_level="b", source=str(th.resolve(cfg["outputs"]["accounting"])),
+                         evidence_level="b", source=th.rel(th.resolve(cfg["outputs"]["accounting"])),
                          identifies_it="DEP coordinate provenance (R1) to confirm the 5 m merge and footprint scope"))
     else:
         rows.append(dict(term="D", status="unidentified", value="", range="", evidence_level="a", source="",
@@ -45,10 +45,10 @@ def terms(cfg) -> pd.DataFrame:
     if fb:
         p, r = fb["p"], fb["r"]
         rows.append(dict(term="p", status="bounded", value="", range=f"{p['ppv_lower_ci_lo']:.3f} to {p['ppv_upper_ci_hi']:.3f}",
-                         evidence_level="d", source=str(fb_p), identifies_it="7.5 Arm B (done)"))
+                         evidence_level="d", source=th.rel(fb_p), identifies_it="7.5 Arm B (done)"))
         rows.append(dict(term="r", status="bounded" if r["r_lo"] > 0 else "bounded_below_by_zero",
                          value="", range=f"{r['r_lo']:.3f} to {r['r_hi']:.3f} ({r['label']})", evidence_level="d",
-                         source=str(fb_p), identifies_it="7.5 Arm C, repeated searches for sensitivity"))
+                         source=th.rel(fb_p), identifies_it="7.5 Arm C, repeated searches for sensitivity"))
     else:
         rows.append(dict(term="p", status="unidentified", value="", range="0 to 1", evidence_level="",
                          source="", identifies_it="7.5 Arm B score-stratified field sample with identity status"))
@@ -58,7 +58,7 @@ def terms(cfg) -> pd.DataFrame:
                      evidence_level="", source="", identifies_it="Field counts of wells per confirmed site"))
     coh = th.has(cfg, "cohort_excess")
     rows.append(dict(term="cohort_excess", status="descriptive_only" if coh else "not_run", value="", range="",
-                     evidence_level="a", source=str(th.resolve(cfg["inputs"]["cohort_excess"]["path"])) if coh else "",
+                     evidence_level="a", source=th.rel(th.resolve(cfg["inputs"]["cohort_excess"]["path"])) if coh else "",
                      identifies_it="Not a density input. No recall-equivalence gate (protocol section 5)"))
     return pd.DataFrame(rows)
 

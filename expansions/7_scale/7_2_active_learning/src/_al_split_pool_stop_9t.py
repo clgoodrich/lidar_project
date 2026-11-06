@@ -71,14 +71,13 @@ def build_items(cfg: dict, blocks, split: dict, folds: pd.DataFrame, truth, prob
     """prob_fn(k) -> path of the fold-k out-of-fold raster. Each block is read from its own held-out fold."""
     held = folds[folds["role"].astype(str).str.startswith("held")].dropna(subset=["block_id"])
     fold_of = dict(zip(held["block_id"].astype(int), held["fold"].astype(int)))
-    sp = cfg["scoring"]
     want = sorted(set(split["pool"]) | set(split["stopping"]) | set(split["discovery"]))
     specs = {}
     for b in want:
         if b in fold_of:
             specs.setdefault(fold_of[b], []).append(b)
-    s, c = sc.evaluate([(prob_fn(k), bl) for k, bl in sorted(specs.items())], truth, blocks, thr=sp["thr"],
-                       min_area_m2=sp["min_area_m2"], iou_thr=sp["iou_thr"], k_per_km2=sp["k_per_km2"], B=0, keep_geometry=True)
+    s, c = sc.evaluate([(prob_fn(k), bl) for k, bl in sorted(specs.items())], truth, blocks,
+                       policy=sc.load_policy(cfg["scoring"]["task"]), B=0, keep_geometry=True)   # F02 shared policy
     c["tile_id"] = c["block_id"]
     # shape feature for the replay re-ranker. 1 for a disc, lower for elongated or ragged blobs
     c["circ"] = (4 * np.pi * c.geometry.area / np.maximum(c.geometry.length, 1e-9) ** 2).round(5)
@@ -105,7 +104,8 @@ def build_items(cfg: dict, blocks, split: dict, folds: pd.DataFrame, truth, prob
                       "n_truth_block": [ntb(b) for b in win["block_id"]],
                       "n_missed_block": [ntb(b) - int(matched_by_block.get(b, 0)) for b in win["block_id"]]})],
         ignore_index=True)
-    stop_c = c[c["block_id"].isin(split["stopping"])][["cand_id", "block_id", "score", "area_m2", "circ", "matched_truth", "cx", "cy"]]
+    keep = ["cand_id", "block_id", "score", "area_m2", "circ", "matched_truth"] +         [k for k in ("truth_block_id",) if k in c.columns] + ["cx", "cy"]        # 7.3 scorer 2 block-local matching
+    stop_c = c[c["block_id"].isin(split["stopping"])][keep]
     stop_b = s["_blocks"][s["_blocks"]["block_id"].isin(split["stopping"])]
     ek.assert_rows(stop_b, len(split["stopping"]), "stopping blocks scored")
     import geopandas as gpd
@@ -120,7 +120,8 @@ def main(argv=None) -> int:
     import geopandas as gpd
     ap = argparse.ArgumentParser(description="7.2 S0 split and item tables.")
     ap.add_argument("--config", default=str(CFG))
-    ap.add_argument("--no-audit", action="store_true", help="P2 audit list absent. Stamped in the split")
+    ap.add_argument("--no-audit", action="store_true",
+                    help="allow a missing P2 audit file. The split is stamped 'no audit exclusion, exploratory'")
     ap.add_argument("--build-items", action="store_true")
     ap.add_argument("--out", default=str(ek.sub("7.2", "results/tables")))
     a = ap.parse_args(argv)
@@ -131,13 +132,15 @@ def main(argv=None) -> int:
         blocks = gpd.read_file(need(cfg_path(inp["blocks"]), "blocks"))
         blocks["block_id"] = blocks["block_id"].astype(int)
         ek.assert_crs(blocks, "EPSG:6346")
-        audit = set() if a.no_audit else set(pd.read_csv(need(cfg_path(inp["audit_blocks"]), "P2 audit blocks"))["block_id"].astype(int))
+        adf = ek.require_audit(cfg_path(inp["audit_blocks"]), allow_missing=a.no_audit)   # never plain read_csv (P2-01)
+        audit = ek.audit_ids(adf) if adf is not None else set()                            # audit and buffer rows
         ex_p = cfg_path(inp["discovery_extra_blocks"])
         extra = gpd.read_file(ex_p) if ex_p.exists() else None
         folds = pd.read_csv(need(cfg_path(inp["fold_blocks"]), "fold lists"))
         held = folds[folds["role"].astype(str).str.startswith("held")].dropna(subset=["block_id"])
         split = make_split(blocks, audit, cfg, extra, eligible=set(held["block_id"].astype(int)))
-        split["audit_source"] = "none on disk (P2 pending)" if a.no_audit else str(cfg_path(inp["audit_blocks"]))
+        split["audit_source"] = ("no audit exclusion, exploratory" if adf is None else
+                                 f"{cfg_path(inp['audit_blocks'])} sha256 {adf.attrs.get('sha256')}")
         sp = out / "al_split_9t_v1.json"
         sp.write_text(json.dumps(split, indent=1), encoding="utf-8")
         (out / "al_split_9t_v1.sha256").write_text(ek.sha256(sp) + "\n", encoding="utf-8")
@@ -153,6 +156,8 @@ def main(argv=None) -> int:
             r["oracle"].to_csv(out / "al_oracle_9t.csv", index=False)
             r["stop_cands"].to_csv(out / "al_stop_cands_9t.csv", index=False)
             r["stop_blocks"].to_csv(out / "al_stop_blocks_9t.csv", index=False)
+            (out / "al_scoring_policy_9t.json").write_text(json.dumps(sc.load_policy(cfg["scoring"]["task"]), indent=2),
+                                                          encoding="utf-8")
             print(r["items"]["type"].value_counts().to_dict())
     except FileNotFoundError as e:
         print(e, file=sys.stderr)

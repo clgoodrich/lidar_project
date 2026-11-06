@@ -70,7 +70,8 @@ def main(argv=None) -> int:
     si = pd.read_csv(opt(cfg, "site_interval_csv")) if opt(cfg, "site_interval_csv") else None
     outs = []
     for s in s3["scenarios"]:
-        t = ranks[ranks[f"rank_{s}"] <= n].sort_values(f"rank_{s}")[COLS + [f"rank_{s}"]].copy()
+        t = ranks[ranks[f"rank_{s}"] <= n].sort_values([f"rank_{s}", "site_id"])[
+            COLS + [f"rank_{s}"] + ([f"tie_{s}"] if f"tie_{s}" in ranks else [])].copy()
         t.insert(0, "scenario", s)
         if si is not None:
             t = t.merge(si[si.scenario == s][["site_id", "rank_lo", "rank_hi", "topn_freq", "stable_in"]],
@@ -81,16 +82,20 @@ def main(argv=None) -> int:
     split = []
     for s in s3["scenarios"]:
         for src in ("record", "feature_band"):
-            sub = ranks[ranks.p_source == src].sort_values(f"rank_{s}").head(n)[COLS].copy()
+            sub = ranks[ranks.p_source == src].copy()
+            sub["rank_in_list"] = rc._lex_rank([-sub[f"rank_{s}"].to_numpy(float)])
+            sub["tie_in_list"] = rc.tie_size(sub["rank_in_list"].to_numpy())
+            sub = sub[sub.rank_in_list <= n].sort_values(["rank_in_list", "site_id"])[
+                COLS + ["rank_in_list", "tie_in_list"]]
             sub.insert(0, "list", f"{s}_{src}_only")
-            sub["rank_in_list"] = range(1, len(sub) + 1)
             split.append(sub)
     o = rd / "risk_topn_split_9t.csv"
     pd.concat(split, ignore_index=True).to_csv(o, index=False)
     outs.append(o)
     summ = dict(top_n=n, n_sites=int(len(ranks)), scenarios=s3["scenarios"], primary=s3["primary"],
                 p_source_counts=ranks.p_source.value_counts().to_dict(),
-                missing_components=s3.get("missing_components"),
+                missing_components=s3.get("missing_components"), e_status=s3.get("e_status"),
+                index_rules=s3.get("index_rules"), scenario_report=s3.get("scenario_report"),
                 between_scenario_jaccard=s3.get("top_n_jaccard_between_scenarios"),
                 stages_run={k: opt(cfg, k) is not None for k in
                             ("exposure_csv", "hazard_csv", "ranks_csv", "sweep_csv", "stability_csv", "endpoint_csv")},
@@ -108,6 +113,7 @@ def main(argv=None) -> int:
                                    for s, v in summ["bootstrap_jaccard"].items()}
         else:
             summ["q2_decision"] = "no stability floor set (user decision)"
+    summ["stages_run"] = {k: bool(v) for k, v in summ["stages_run"].items()}
     if opt(cfg, "endpoint_csv"):
         summ["endpoint"] = pd.read_csv(opt(cfg, "endpoint_csv")).to_dict("records")
     else:

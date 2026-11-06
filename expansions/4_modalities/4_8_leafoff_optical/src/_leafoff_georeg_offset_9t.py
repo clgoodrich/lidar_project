@@ -1,8 +1,8 @@
 """S3 of framework 4.8. Georegistration offset of each optical source at road intersections from the lidar roads.
 
 Purpose. Two modes.
-  --template  Find road intersections in the annotated roads layer (line endpoints and crossings shared by two or
-              more lines), keep the ones inside 9t, draw n_intersections (10) at random with the master seed, and
+  --template  Find road intersections in the annotated roads layer (true junctions where three or more road
+              arms meet. End-to-end joints of one road are dropped), keep the ones inside 9t, draw n_intersections (10) at random with the master seed, and
               write a measurement sheet per source. A person fills image_x and image_y in QGIS by clicking the
               intersection centre on the photo, blind to everything but the photo and the lidar road line.
   default     Read the filled sheet and report per source the median, maximum and RMSE of the offset in metres,
@@ -30,25 +30,41 @@ import _leafoff_kit_4_8 as lk
 
 
 def intersections(lines, bbox, snap: float = 0.5) -> np.ndarray:
-    """Nodes where two or more road lines meet (shared endpoints or crossings), deduplicated at snap metres."""
+    """True road junctions. A node's degree is the number of road arms that leave it. A line contributes one arm
+    at its own endpoint and two where the node lies inside it. Only nodes of degree three or more are kept
+    (T, X and star junctions). Two lines that simply meet end to end (degree two) are pass-through joints of
+    one road, not intersections, and are dropped (4.8-01 minor). Nodes are deduplicated at snap metres."""
     from shapely import get_coordinates
+    from shapely.geometry import Point
     from shapely.strtree import STRtree
-    pts = Counter()
+    lines = list(lines)
+    cand = {}
     for g in lines:
         c = get_coordinates(g)
         for p in (c[0], c[-1]):
-            pts[(round(p[0] / snap), round(p[1] / snap))] += 1
+            cand.setdefault((round(p[0] / snap), round(p[1] / snap)), (float(p[0]), float(p[1])))
     tree = STRtree(lines)
     for i, g in enumerate(lines):
         for j in tree.query(g):
             if j <= i:
                 continue
-            x = g.intersection(lines[j])
-            for p in get_coordinates(x):
-                pts[(round(p[0] / snap), round(p[1] / snap))] += 2
-    xy = np.array([(k[0] * snap, k[1] * snap) for k, n in pts.items() if n >= 2])
-    if not len(xy):
-        return xy.reshape(0, 2)
+            for p in get_coordinates(g.intersection(lines[j])):
+                cand.setdefault((round(p[0] / snap), round(p[1] / snap)), (float(p[0]), float(p[1])))
+    keep = []
+    for x, y in cand.values():
+        pt = Point(x, y)
+        deg = 0
+        for j in tree.query(pt.buffer(snap)):
+            g = lines[j]
+            if g.distance(pt) > snap:
+                continue
+            c = get_coordinates(g)
+            closed = np.hypot(*(c[0] - c[-1])) <= snap
+            at_end = min(np.hypot(c[0][0] - x, c[0][1] - y), np.hypot(c[-1][0] - x, c[-1][1] - y)) <= snap
+            deg += 1 if (at_end and not closed) else 2
+        if deg >= 3:
+            keep.append((x, y))
+    xy = np.array(keep, float).reshape(-1, 2)
     x0, y0, x1, y1 = bbox
     return xy[(xy[:, 0] >= x0) & (xy[:, 0] <= x1) & (xy[:, 1] >= y0) & (xy[:, 1] <= y1)]
 

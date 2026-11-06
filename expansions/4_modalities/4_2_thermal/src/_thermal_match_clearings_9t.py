@@ -10,10 +10,12 @@ Inputs
     pads        truth/annotations_proj_v2.gpkg layer pad (held)
     clearings   expansions/4_modalities/4_2_thermal/data/raw/nonpad_clearings_9t.gpkg (assumed, see config)
     chm, dem    nine_t_1m/chm_9t_1m.tif, dem_9t_1m.tif (held, full 9t)
-    audit       expansions/4_modalities/4_2_thermal/data/raw/audit_blocks_9t.csv (optional)
+    audit       frozen P2 audit set (results_9t/splits/audit_blocks_9t_v1.csv) through ek.require_audit, mapped
+                to bx_by with the 9t block layer. Missing file refuses unless --allow-no-audit (exploratory)
 Outputs (expansions/4_modalities/4_2_thermal/results/<YYYYMMDD>_thermal_match_<hash7>/)
     thermal_matched_sites_9t.gpkg (layer sites, columns site_id, site_class pad|clearing|forest, pair_id,
-    block_id, covariates), thermal_match_pairs_9t.csv, thermal_match_summary_9t.json, provenance
+    block_id, covariates, population=matched. Layer population, every pad and eligible clearing unmatched,
+    population=unmatched, for T4), thermal_match_pairs_9t.csv, thermal_match_summary_9t.json, provenance
 Run
     python expansions/4_modalities/4_2_thermal/src/_thermal_match_clearings_9t.py [--clearings PATH]
 """
@@ -84,8 +86,30 @@ def forest_controls(pads, cov_pads, chm: Path, mcfg: dict, rng, id_col: str):
     return gpd.GeoDataFrame(rows, geometry="geometry", crs=pads.crs) if rows else None
 
 
+def population_layer(pads, clear, cp_, cc_, pairs, pin: str, cin: str):
+    """Review 4.2-01. Every pad and every eligible clearing, unmatched. Matching on the lidar covariates
+    makes lidar uninformative by construction, so T4 measures added value on this population instead."""
+    import geopandas as gpd
+    pair_of_pad = {t: f"pair_{t}" for t in pairs["treated_id"]}
+    pair_of_clear = {c: f"pair_{t}" for t, c in zip(pairs["treated_id"], pairs["control_id"])}
+    a = pads[[pin, "geometry", "block_id"]].rename(columns={pin: "src_id"}).merge(
+        cp_.rename(columns={"id": "src_id"}), on="src_id", how="left")
+    a["site_id"], a["site_class"] = [f"pad_{i}" for i in a["src_id"]], "pad"
+    a["pair_id"] = a["src_id"].map(pair_of_pad)
+    b = clear[[cin, "geometry", "block_id"]].rename(columns={cin: "src_id"}).merge(
+        cc_.rename(columns={"id": "src_id"}), on="src_id", how="left")
+    b["site_id"], b["site_class"] = [f"clearing_{i}" for i in b["src_id"]], "clearing"
+    b["pair_id"] = b["src_id"].map(pair_of_clear)
+    g = gpd.GeoDataFrame(pd.concat([a, b], ignore_index=True), geometry="geometry", crs=pads.crs)
+    g["src_id"] = g["src_id"].astype(str)
+    g["population"] = "unmatched"
+    g["lst_read"] = False
+    ek.assert_unique(g, "site_id")
+    return g
+
+
 def run(cfg: dict, out_root: Path | None = None, clearings_path: Path | None = None, pads_path: Path | None = None,
-        max_pads: int | None = None) -> dict:
+        max_pads: int | None = None, allow_no_audit: bool = False) -> dict:
     import geopandas as gpd
     inp, m = cfg["inputs"], cfg["matching"]
     pin, cin = inp["pads"], inp["clearings"]
@@ -98,8 +122,7 @@ def run(cfg: dict, out_root: Path | None = None, clearings_path: Path | None = N
     if max_pads:
         pads = pads.head(max_pads)
     dem = io.need(io.resolve(inp["dem"]), "DEM raster", "single band, metres, EPSG:6346")
-    audit = io.resolve(inp.get("audit_blocks"))
-    audit_ids = set(pd.read_csv(audit)["block_id"].astype(str)) if audit and audit.exists() else set()
+    audit_ids, audit_info = io.audit_exclusion(inp.get("audit_blocks"), allow_no_audit, inp.get("blocks"))
     run_dir = ek.new_run(io.EXP, SHORT, {"matching": m, "pads": str(pp), "clearings": str(cp), "n_pads": len(pads)},
                          base=out_root, why="Matched clearings and forest controls, drawn before LST is read.")
     n_clear0 = len(clear)
@@ -139,10 +162,13 @@ def run(cfg: dict, out_root: Path | None = None, clearings_path: Path | None = N
     ek.assert_unique(sites, "site_id")
     ek.assert_no_nan(sites["block_id"], "block_id")
     sites["lst_read"] = False
+    sites["population"] = "matched"
+    popl = population_layer(pads, clear, cp_, cc_, pairs, pin["id_col"], cin["id_col"])
     out_g = run_dir / "thermal_matched_sites_9t.gpkg"
     out_p = run_dir / "thermal_match_pairs_9t.csv"
     out_j = run_dir / "thermal_match_summary_9t.json"
     sites.to_file(out_g, layer="sites", driver="GPKG")
+    popl.to_file(out_g, layer="population", driver="GPKG")
     pairs.to_csv(out_p, index=False)
     smd = {}
     for col in m["continuous"]:
@@ -153,6 +179,8 @@ def run(cfg: dict, out_root: Path | None = None, clearings_path: Path | None = N
     summary = {"stage": "matching (before T2)", "n_pads_in": int(len(pads)), "n_clearings_in": int(n_clear0),
                "n_clearings_clear_of_pads": int(len(clear)), "n_pairs": int(len(pairs)),
                "n_forest": int(0 if forest is None else len(forest)), "n_audit_blocks_excluded": len(audit_ids),
+               "audit": audit_info, "exploratory": bool(audit_info["exploratory"]),
+               "n_population": int(len(popl)),
                "std_mean_diff_matched": smd, "lst_read": False}
     out_j.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return io.finish(run_dir, summary, inputs=[pp, cp, chm, dem], outputs=[out_g, out_p, out_j], params=m,
@@ -166,8 +194,10 @@ def main():
     ap.add_argument("--clearings", type=Path, default=None)
     ap.add_argument("--pads", type=Path, default=None)
     ap.add_argument("--max-pads", type=int, default=None)
+    ap.add_argument("--allow-no-audit", action="store_true",
+                    help="run without the frozen P2 audit set. The output is labelled exploratory")
     a = ap.parse_args()
-    s = run(io.load_config(a.config), a.out_root, a.clearings, a.pads, a.max_pads)
+    s = run(io.load_config(a.config), a.out_root, a.clearings, a.pads, a.max_pads, a.allow_no_audit)
     print(json.dumps(s, indent=1, default=str))
 
 

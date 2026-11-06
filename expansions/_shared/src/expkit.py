@@ -112,12 +112,18 @@ def write_provenance(run_dir: Path, inputs: list[Path] | None = None, outputs: l
                      name: str | None = None) -> Path:
     """_PROVENANCE.json (or _PROVENANCE_<name>.json when several scripts share a folder) with SHA-256 of
     inputs/outputs (files above hash_limit_mb get size+mtime only)."""
+    def rel(p):
+        try:
+            return Path(p).resolve().relative_to(REPO).as_posix()     # repo-relative when inside the repo
+        except ValueError:
+            return str(p)
+
     def rec(p):
         p = Path(p)
         if not p.exists():
-            return {"path": str(p), "exists": False}
+            return {"path": rel(p), "exists": False}
         st = p.stat()
-        r = {"path": str(p), "bytes": st.st_size, "mtime": dt.datetime.fromtimestamp(st.st_mtime).isoformat()}
+        r = {"path": rel(p), "bytes": st.st_size, "mtime": dt.datetime.fromtimestamp(st.st_mtime).isoformat()}
         if p.is_file() and st.st_size <= hash_limit_mb * 1e6:
             r["sha256"] = sha256(p)
         return r

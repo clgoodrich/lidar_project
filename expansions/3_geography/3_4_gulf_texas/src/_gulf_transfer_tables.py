@@ -39,10 +39,12 @@ def collect_scores(areas: list[str]) -> pd.DataFrame:
     for area in areas:
         for p in sorted(gt.area_transfer_dir(area).glob("*/xfer_score_k40_*.json")):
             r = json.loads(p.read_text())
-            rows.append({"area": area, "arm": r.get("arm"), "contrast_only": r.get("contrast_only", False),
+            rows.append({"area": area, "arm": r.get("arm"), "task": r.get("task"), "contrast_only": r.get("contrast_only", False),
                          "recall": r["recall_target"], "lo": r["recall_target_ci"][0], "hi": r["recall_target_ci"][1],
                          "diff": r["diff"], "diff_lo": r["diff_ci"][0], "diff_hi": r["diff_ci"][1],
-                         "decision": r["decision"], "n_blocks": r["n_blocks_target"],
+                         "decision": r["decision"], "decision_basis": r.get("decision_basis", ""),
+                         "undefined_share": r.get("undefined_share"), "n_blocks": r["n_blocks_target"],
+                         "policy_hash": (r.get("target_policy") or {}).get("policy_hash"),
                          "density": r["density_target"], "warning": r.get("warning", ""), "file": str(p)})
     return pd.DataFrame(rows)
 
@@ -51,7 +53,8 @@ def error_review(cands: pd.DataFrame, blocks: pd.DataFrame, k_per_km2: float = g
     """Top-K unmatched and missed truth by stratum. cands needs block_id, score, truth_id."""
     km2 = blocks["area_km2"].sum()
     k = int(round(k_per_km2 * km2))
-    top = cands.sort_values(["score", "area_m2"], ascending=[False, False]).head(k)
+    top = cands[~cands.get("duplicate", False)] if "duplicate" in cands else cands
+    top = top.sort_values(["score", "area_m2", "blob_id"], ascending=[False, False, True]).head(k)
     top = top.merge(blocks[["block_id", "wet_stratum", "void_stratum"]], on="block_id", how="left")
     top["unmatched"] = top["truth_id"].isna()
     return top.groupby(["wet_stratum", "void_stratum"]).agg(top_k=("blob_id", "size"),

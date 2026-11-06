@@ -109,6 +109,43 @@ def test_pipeline(world, tmp_path):
         pd.DataFrame({"feature_key": use, "source_id": "local_mosaic", "reviewer": name, "visible": vals}).to_csv(rv / f"{name}.csv", index=False)
     assert s5.main(["--status", str(out_csv), "--reviews", str(rv), "--out", str(tmp_path)]) == 0
     g = json.loads((tmp_path / "leafoff_gate_9t.json").read_text())
-    assert g["by_source"]["local_mosaic"]["decision"] in {"success", "failure", "inconclusive"}
+    # Oracle. Judged chips exclude blank, unavailable and undated. Clopper-Pearson from scipy's beta directly.
+    from scipy.stats import beta
+    judged = st[~st.status.isin(["blank", "unavailable", "undated"])]
+    k, n = int((judged.status == "usable").sum()), len(judged)
+    lo = beta.ppf(0.025, k, n - k + 1) if k else 0.0
+    hi = beta.ppf(0.975, k + 1, n - k) if k < n else 1.0
+    want = "success" if lo > 0.60 else "failure" if hi < 0.60 else "inconclusive"
+    b = g["by_source"]["local_mosaic"]
+    assert b["n"] == n and b["n_sampled"] == len(st) and b["coverage"] == pytest.approx(n / len(st))
+    assert b["decision"] == want
     assert g["interpretability"]["local_mosaic"]["n"] == len(use)
     assert (tmp_path / "leafoff_status_by_source_9t.png").exists()
+
+
+def test_undated_chips_are_missing_not_negative():
+    """4.8-01. Pre-fix, 30 undated chips joined the denominator and the gate said 'unusable here'."""
+    import _leafoff_review_gate_9t as s5
+    st = pd.DataFrame({"source_id": ["a"] * 40 + ["pema"] * 40,
+                       "status": ["usable"] * 10 + ["undated"] * 30 + ["undated"] * 40})
+    g = s5.gate(st, 0.60)
+    # 10 of 10 judged. Clopper-Pearson lower bound for k = n = 10 is 0.025 ** (1 / 10) = 0.69 > 0.60.
+    assert g["a"]["n"] == 10 and g["a"]["coverage"] == pytest.approx(0.25)
+    assert g["a"]["lo"] == pytest.approx(0.025 ** 0.1) and g["a"]["decision"] == "success"
+    assert g["pema"]["n"] == 0 and g["pema"]["coverage"] == 0.0
+    assert g["pema"]["decision"] == "inconclusive" and g["pema"]["action"] != "unusable here"
+
+
+def test_intersections_are_true_junctions():
+    """Minor 4.8 finding. An end-to-end joint is degree two and is not an intersection."""
+    import _leafoff_georeg_offset_9t as s3
+    from shapely.geometry import LineString
+    bb = (-1e6, -1e6, 1e6, 1e6)
+    joint = [LineString([(0, 0), (10, 0)]), LineString([(10, 0), (20, 0)])]
+    assert len(s3.intersections(joint, bb)) == 0
+    tee = [LineString([(0, 0), (20, 0)]), LineString([(10, 0), (10, 10)])]
+    assert np.allclose(s3.intersections(tee, bb), [[10, 0]])
+    cross = [LineString([(0, 0), (20, 0)]), LineString([(10, -10), (10, 10)])]
+    assert np.allclose(s3.intersections(cross, bb), [[10, 0]])
+    star = [LineString([(0, 0), (10, 0)]), LineString([(10, 0), (20, 0)]), LineString([(10, 0), (10, 10)])]
+    assert np.allclose(s3.intersections(star, bb), [[10, 0]])

@@ -57,7 +57,8 @@ def write_summary(cfg: dict, prof: dict, out_dir: Path) -> Path:
               "- The share of candidates that are wells is unmeasured.",
               "", "## Records (evidence level b)", "",
               f"- Records in the area {int(c.loc['records_in_area', 'value'])}. "
-              f"With a depth {int(c.loc['records_with_depth', 'value'])}. "
+              f"With a depth {int(c.loc['records_with_depth', 'value'])}"
+              f"{' (no depth in records)' if int(c.loc['records_with_depth', 'value']) == 0 else ''}. "
               f"With a plugging date {int(c.loc['records_with_plug_date', 'value'])}. "
               f"Spud year 1800 sentinel {int(c.loc['records_spud_sentinel_1800', 'value'])}.",
               f"- Records with no candidate within {cfg['params']['link_radius_m']} m "

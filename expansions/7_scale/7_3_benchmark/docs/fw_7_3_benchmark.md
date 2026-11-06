@@ -75,7 +75,7 @@ P1 and P2 done. User decisions. Label licence. Whether the absolute audit area j
 - Test blocks ship with tiles and no labels. Buffer blocks ship with tiles and no labels, flagged.
 - Assert CRS on every tile. Assert no label file contains a test block.
 
-**S2. Scorer.** Script `notebooks/wellsight_v2/s5_eval/_bench_score_9t.py` (proposed, shipped in the release as `evaluate.py`). Input a probability raster per tile. Steps are candidate extraction at the 0.10 cutoff, polygonise, drop blobs under 4 m², greedy IoU match at 0.3, rank, keep top K per km², recall, block-bootstrap interval, calibration. Deterministic. Same inputs give byte-identical output.
+**S2. Scorer.** Script `notebooks/wellsight_v2/s5_eval/_bench_score_9t.py` (proposed, shipped in the release as `evaluate.py`). Input a probability raster per tile. Steps are candidate extraction at the task cutoff from `ek.policy_for` (pit 0.35, pad 0.525, 0.10 only as a sensitivity, amended 2026-11-06), polygonise, drop blobs under 4 m², greedy score-order IoU match at 0.3 within each block, rank, keep top K per km², recall, block-bootstrap interval, calibration. Deterministic. Same inputs give byte-identical output.
 
 **S3. Baselines.** Scripts under `notebooks/wellsight_v2/s3_train/` reuse P1 trainers. Rows.
 - Plain U-Net pit and pad (isolated, P1), three seeds.

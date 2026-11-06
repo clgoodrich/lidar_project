@@ -98,5 +98,43 @@ def test_adjudicate_and_strata():
                                       "truth_id": [1, 2]}), "n_truth": 2, "km2": 0.14, "truth_ids": [1, 2]}}
     st = mc.subset_truth(tabs, {1})
     assert st["b1"]["n_truth"] == 1 and np.isclose(gt.pooled_recall_at_k(st, ["b1"]), 1.0)
+    assert st["b1"]["truth_ids"] == [1]
     merged = mc.stratified_tables({"ok_rogers": tabs, "ok_nowata": tabs})
     assert set(merged) == {"ok_rogers|b1", "ok_nowata|b1"}
+
+
+def test_arms_and_class_policies():
+    """Pits and pads are scored apart at their own policies. L0 (a pit model) is never scored on pads."""
+    assert "L0" in mc.arms_for("pit") and "L0" not in mc.arms_for("pad")
+    assert mc.CLASS_TASKS == ("pit", "pad")
+    import geopandas as gpd
+    from shapely.geometry import box
+    t = gpd.GeoDataFrame({"truth_id": [0, 1, 2], "class": ["pit", "pad", "pit"]},
+                         geometry=[box(0, 0, 1, 1)] * 3, crs=CRS)
+    assert gt.class_truth(t, "pit")["truth_id"].tolist() == [0, 2]
+    assert gt.class_truth(t, "pad")["truth_id"].tolist() == [1]
+    assert gt.ek.policy_for("pit")["cutoff"] == 0.35 and gt.ek.policy_for("pad")["cutoff"] == 0.525
+
+
+def test_gain_plot_keeps_negative_gains(tmp_path, monkeypatch):
+    """The old plot fixed the y axis at 0 to 1, so a gain of -0.2 with interval [-0.3, -0.1] was invisible."""
+    import matplotlib.figure
+    seen = {}
+
+    def keep(self, *a, **k):
+        seen["ylim"] = self.axes[0].get_ylim()
+    monkeypatch.setattr(matplotlib.figure.Figure, "savefig", keep)
+    res = {"oklahoma": {"pit": {"primary_F1_minus_L1": {"gain": -0.2, "gain_ci": [-0.3, -0.1]},
+                                "policy": {"cutoff": 0.35}, "note": "x"}}}
+    rows = mc.gain_rows(res)
+    assert rows == [{"arm": "primary_F1", "stratum": "oklahoma pit", "recall": -0.2, "lo": -0.3, "hi": -0.1}]
+    gt.plot_recall_strata(pd.DataFrame(rows), tmp_path / "g.png", ylim=None)
+    assert seen["ylim"][0] < -0.3 and seen["ylim"][1] >= 0.0
+
+
+def test_l2_needs_declared_transfer_checkpoint():
+    cfg = gt.load_config("3.5")
+    assert cfg["model"]["pit"]["transfer_checkpoint"] is None
+    import pytest
+    with pytest.raises(gt.DecisionMissingError):
+        gt.transfer_checkpoint(cfg, "pit", "3.5")

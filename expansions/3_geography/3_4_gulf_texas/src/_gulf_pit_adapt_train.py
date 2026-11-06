@@ -12,7 +12,7 @@ Inputs
     data/<adapt area>/derived/05/features_reliefnorm_<area>_05.tif   (S9a)
     data/<adapt area>/derived/05/labels_pit_<area>_05.tif            (rasterised adaptation labels, assumed)
     data/<adapt area>/results/transfer/xfer_blocks_roles_<area>.gpkg (roles adapt_train, adapt_stop)
-    config_3_4.json model.pit.checkpoint                              (P1 output, not built yet)
+    config_3_4.json model.pit.transfer_checkpoint                     (user decision, unset. Refuses until set)
 Outputs
     expansions/3_geography/3_4_gulf_texas/models/pit_adapt_gulf/seed<k>/best.pt, train_log.csv
     expansions/3_geography/3_4_gulf_texas/models/pit_adapt_gulf/adapt_plan_gulf.json
@@ -34,6 +34,10 @@ ek = gt.ek
 EXP = "3.4"
 PATCH_PX, CELL = 256, 0.5
 FORBIDDEN_ROLES = ("test", "audit", "buffer", "adapt_stop")
+A1_CHANNELS = ["lrm_25", "lrm_5", "slope", "tpi_05", "openness_pos", "openness_neg", "roughness_11", "elev_rn"]
+# The 8-band relief-normalised stack cannot load the 7-band first conv. It is re-initialised by declaration and
+# recorded in best.pt 'init_load' (review G-11). Every other layer must load or training refuses.
+A1_REINIT = ("d1.0.",)
 
 
 def plan_area(area: str, n_train: int, n_val: int, seed: int, buffer_m: float):
@@ -64,7 +68,7 @@ def main(argv=None) -> int:
     master = int(pr["master_seed"])
     out_root = ek.sub(EXP, "models/pit_adapt_gulf")
     try:
-        ckpt = gt.resolve(cfg["model"]["pit"]["checkpoint"])
+        ckpt = gt.transfer_checkpoint(cfg, "pit", EXP)
         gt.check_checkpoint(ckpt, cfg["model"]["pit"].get("sha256"))
         sources_tr, sources_va, plan = [], [], {}
         for area in a.areas.split(","):
@@ -76,7 +80,7 @@ def main(argv=None) -> int:
             sources_tr.append((stack, lab, w_tr))
             sources_va.append((stack, lab, w_va))
             plan[area] = {"n_train": len(w_tr), "n_val": len(w_va)}
-    except (gt.MissingInputError, RuntimeError, AssertionError) as e:
+    except (gt.MissingInputError, gt.DecisionMissingError, RuntimeError, AssertionError) as e:
         print(str(e), file=sys.stderr)
         return 2
     mu, sd = gt.fit_norm_stats_multi(sources_tr)
@@ -91,8 +95,7 @@ def main(argv=None) -> int:
         seed = ek.child_seed(master, 0, 10 + k)
         res = gt.train_unet(sources_tr, sources_va, mu, sd, out_root / f"seed{k}", n_classes=3, patch_px=PATCH_PX,
                             epochs=a.epochs, lr=a.lr, alpha=[0.25, 0.5, 0.25], seed=seed, init_ckpt=ckpt,
-                            channels=["lrm_25", "lrm_5", "slope", "tpi_05", "openness_pos", "openness_neg",
-                                      "roughness_11", "elev_rn"], extra={"arm": "A1"})
+                            channels=A1_CHANNELS, reinit=A1_REINIT, extra={"arm": "A1"})
         print(f"seed {k}: best {res['best_score']:.3f}")
     ek.write_provenance(out_root, outputs=[out_root / f"seed{k}" / "best.pt" for k in range(a.seeds)],
                         params=vars(a), seeds={"master": master})

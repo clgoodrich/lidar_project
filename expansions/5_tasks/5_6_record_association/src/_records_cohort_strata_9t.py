@@ -32,7 +32,7 @@ import _records_assoc_core as core  # noqa: E402
 import _records_assoc_v2_9t as v2  # noqa: E402
 
 ek = th.ek
-COHORT_STATUSES = ["DEP Orphan List", "DEP Abandoned List", "Abandoned"]
+COHORT_GROUP = "orphan_abandoned"   # cohorts use the config's status group, the same set as S1 (review minor)
 
 
 def old_keys_2022(csv: Path, county: str = "Venango") -> set:
@@ -46,8 +46,9 @@ def permit_key(permit) -> pd.Series:
     return pd.Series(permit).astype(str).str.extract(r"121-(\d+)")[0].astype(float)
 
 
-def cohort_table(dep, old_keys: set, coord=None):
-    d = dep[dep.WELL_STATU.isin(COHORT_STATUSES)].copy()
+def cohort_table(dep, old_keys: set, statuses, coord=None):
+    """statuses = cfg['status_groups']['orphan_abandoned'], so the cohort population equals the S1 group."""
+    d = dep[dep.WELL_STATU.isin(list(statuses))].copy()
     d["key"] = permit_key(d.PERMIT_NUM).to_numpy()
     d["cohort"] = np.where(d.key.isin(old_keys), "listed_2022", "newly_documented")
     d["coord_source"] = "unstratified"
@@ -70,11 +71,12 @@ def main(argv=None) -> int:
     pad = th.read_vector(th.inp(cfg, "full_pad"))
     pb = th.read_vector(th.inp(cfg, "pit_blocks"), layer="blocks")
     db = th.read_vector(th.inp(cfg, "pad_blocks"), layer="blocks")
-    elig = {"pit": v2.make_eligible(v2.footprint_cells(pb, "n_pits", org, size), bbox, org, size),
-            "pad": v2.make_eligible(v2.footprint_cells(db, "n_pads", org, size), bbox, org, size)}
+    cp, cd = v2.footprints(cfg, pb, db)
+    elig = {"pit": v2.make_eligible(cp, bbox, org, size), "pad": v2.make_eligible(cd, bbox, org, size)}
+    max_loss, wrap = v2.null_settings(cfg)
     dep = th.load_dep(th.inp(cfg, "dep_wells"), bbox=bbox)
     coord = pd.read_csv(th.inp(cfg, "coord_source")) if th.has(cfg, "coord_source") else None
-    d = cohort_table(dep, old_keys_2022(th.inp(cfg, "orphan_2022")), coord)
+    d = cohort_table(dep, old_keys_2022(th.inp(cfg, "orphan_2022")), cfg["status_groups"][COHORT_GROUP], coord)
     rate = {"pit": core.pit_rate_fn(np.c_[pit["cx"], pit["cy"]], [cfg["pit"]["primary_radius_m"]]),
             "pad": core.pad_rate_fn(pad.geometry.values, [cfg["pad"]["primary_radius_m"]])}
     rows, nulls = [], {}
@@ -85,7 +87,7 @@ def main(argv=None) -> int:
             xy = xy[elig[mod](xy)]
             seed = ek.child_seed(int(cfg["seed"]) + 7, fold=mi, arm=ci)
             nul = core.shift_null(xy, elig[mod], rate[mod], n_shift, nl["shift_min_m"], nl["shift_max_m"],
-                                  nl["max_loss"], np.random.default_rng(seed), nl["max_tries"])
+                                  max_loss, np.random.default_rng(seed), nl["max_tries"], wrap_bbox=wrap)
             v = [x[r] for x in nul["draws"]]
             e = core.excess(rate[mod](xy)[r] if len(xy) else float("nan"), v)
             nulls[(mod, coh, src)] = (e["observed"], np.array(v))

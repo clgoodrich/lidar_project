@@ -83,3 +83,35 @@ def test_shifted_null_and_excess():
     assert obs == 1.0 and len(null) == 200
     e = ra.excess(obs, null)
     assert e["normalised_excess"] > 0.8 and e["p_upper"] < 0.05
+
+
+def test_shifted_null_at_100_spread_records():
+    """G-09. 100 records spread over the whole 10 km footprint, 50 of them on features. The old rule
+    rejected every shift (some record always left the box) and gave 0 of 999 kept, excess NaN.
+    The torus shift keeps all 999. Records on features give obs 0.5 and a null near 50 * pi * 50^2 / 1e8."""
+    from shapely.geometry import box
+    cfg = gt.load_config("3.7")["prereg"]
+    fp = box(0, 0, 10000, 10000)
+    rng = np.random.default_rng(3)
+    px, py = rng.uniform(0, 10000, 100), rng.uniform(0, 10000, 100)
+    fx, fy = px[:50] + 5, py[:50] + 5
+    rad = np.full(100, 50.0)
+    obs = float(np.mean(ra.nearest_dist(px, py, fx, fy) <= rad))
+    null, rej = ra.shifted_null(px, py, rad, fx, fy, fp, cfg["n_shifts"], cfg["shift_min_m"], cfg["shift_max_m"], 0)
+    assert obs == 0.5 and len(null) == 999 and rej == 0
+    e = ra.excess(obs, null, cfg["n_shifts"])
+    assert e["status"] == "computed" and e["null_mean"] < 0.05 and e["normalised_excess"] > 0.45
+
+
+def test_shifted_null_not_computable_is_explicit():
+    """Two far-apart squares. A 300 to 2000 m shift always leaves them, so no shift is kept.
+    The result says not computable and every number is NaN."""
+    from shapely.geometry import box
+    from shapely.ops import unary_union
+    fp = unary_union([box(0, 0, 1000, 1000), box(9000, 9000, 10000, 10000)])
+    rng = np.random.default_rng(4)
+    px = np.r_[rng.uniform(0, 1000, 50), rng.uniform(9000, 10000, 50)]
+    py = np.r_[rng.uniform(0, 1000, 50), rng.uniform(9000, 10000, 50)]
+    null, rej = ra.shifted_null(px, py, np.full(100, 50.0), px, py, fp, 50, 300, 2000, 0, max_tries=4)
+    e = ra.excess(1.0, null, 50)
+    assert len(null) < 50 and e["status"].startswith("not computable") and np.isnan(e["normalised_excess"])

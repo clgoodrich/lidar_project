@@ -72,13 +72,16 @@ def counts(cfg: dict, prof: dict, out_dir: Path, extra_rows=None, B: int | None 
                      "evidence_level": level, "note": note})
 
     add("records_in_area", len(r_in), "count", "b")
-    add("records_with_depth", int(r_in["depth_ft"].notna().sum()) if "depth_ft" in r_in else 0, "count", "b")
+    n_depth = int(pd.to_numeric(r_in["depth_ft"], errors="coerce").notna().sum()) if "depth_ft" in r_in else 0
+    add("records_with_depth", n_depth, "count", "b",
+        note=("no depth in records. The DEP export depth field "
+              f"{cfg['record_fields'].get('depth')} is empty in every row" if n_depth == 0 and len(r_in) else ""))
     add("records_with_plug_date", int(r_in["plug_date"].replace({"None": None, "nan": None}).notna().sum()), "count", "b")
     add("records_spud_sentinel_1800", int(r_in["spud_sentinel"].astype(str).isin(["True", "1"]).sum()), "count", "b")
     add("candidates_in_area", len(cand), "count", "a")
     add("candidates_within_K", int(cand["within_k"].astype(str).isin(["True", "1"]).sum()), "burden", "a")
     add("links_proposed", 0 if links is None else len(links), "association", "b",
-        note="5.6 proposals" if links is not None else "5.6 not built")
+        note="5.6 proposals" if links is not None else "no stable 5.6 proposal file")
     add(f"candidates_no_record_within_{r}m", int(np.sum(d_cand > r)), "association", "a")
     add(f"records_no_candidate_within_{r}m", int(np.sum(d_rec > r)), "association", "b")
     if eb:

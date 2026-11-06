@@ -38,7 +38,7 @@ def audit_layer(name: str, ent, cfg) -> tuple[dict, list]:
     p = th.inp(cfg, name, must_exist=False)
     assumed = bool(ent.get("assumed")) if isinstance(ent, dict) else False
     endpoint = bool(ent.get("endpoint")) if isinstance(ent, dict) else False
-    row = dict(layer=name, path=str(p), assumed=assumed, endpoint=endpoint, present=p.exists(),
+    row = dict(layer=name, path=rio.rel(p), assumed=assumed, endpoint=endpoint, present=p.exists(),
                rows=None, rows_in_bbox=None, crs_source=None, crs_ok=None, median_pos_error_m=None, note="")
     miss = []
     if not p.exists():
@@ -102,7 +102,7 @@ def main(argv=None) -> int:
     A.to_csv(out, index=False)
     out2 = th.outp(cfg, "audit_missing")
     pd.DataFrame(miss, columns=["layer", "column", "missing_share"]).to_csv(out2, index=False)
-    present = [Path(r["path"]) for r in rows if r["present"] and not r["endpoint"]]
+    present = [th.inp(cfg, r["layer"], must_exist=False) for r in rows if r["present"] and not r["endpoint"]]
     ek.write_provenance(run, inputs=present, outputs=[out, out2], params={"n_layers": len(rows)})
     n_ass_missing = int(((A.assumed) & (~A.present)).sum())
     print(f"wrote {out}\nwrote {out2}\n{n_ass_missing} assumed layers missing. Run folder {run}")

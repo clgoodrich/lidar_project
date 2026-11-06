@@ -1,0 +1,230 @@
+{
+  "adjudication": {
+    "distance_strata_m": [
+      0,
+      10,
+      25,
+      50,
+      100
+    ],
+    "field_use_min_ppv": null,
+    "n_sample": 60
+  },
+  "block_m": 375.0,
+  "block_origin": [
+    619500.0,
+    4593000.0
+  ],
+  "cutoff_used": 0.5,
+  "dedupe": {
+    "_note": "Prediction-only (review F15). Blobs whose polygons lie within gap_m merge, the highest score is kept. 2.0 m is 4 pixels at 0.5 m. Needs user decision.",
+    "gap_m": 2.0,
+    "rule": "geometric"
+  },
+  "det_id": {
+    "_note": "det_id = base + seeded permutation of a prediction-only order. pit base 1, pad base 1000001 (review 5.6-01).",
+    "seed_pad": 20261107,
+    "seed_pit": 20261106
+  },
+  "inputs": {
+    "adjudication_filled": {
+      "assumed": true,
+      "hint": "Blind identity adjudication of the sample drawn by _records_link_ppv_sample_9t.py --draw. User-only step.",
+      "path": "@exp:5.6/data/raw/records_link_adjudication_filled_9t.csv",
+      "schema": {
+        "adjudicator": "str",
+        "link_id": "int",
+        "outcome": "correct | wrong | ambiguous (inaccessible counts as ambiguous)",
+        "weight": "float, copied from the sample sheet"
+      }
+    },
+    "annotations": {
+      "hint": "QGIS truth, layers plat and pit_inside",
+      "path": "@truth/annotations_proj.gpkg"
+    },
+    "coord_source": {
+      "assumed": true,
+      "hint": "Requested from DEP in R1. Until it arrives the cohort run is unstratified.",
+      "path": "@dep_wells/dep_coordinate_source_venango.csv",
+      "schema": {
+        "PERMIT_NUM": "str, e.g. 121-12345",
+        "coord_error_m": "float or empty",
+        "coord_source": "str (GPS, digitised map, survey, unknown)"
+      }
+    },
+    "dep_wells": {
+      "hint": "DEP 2026-04 Venango export. Read-only.",
+      "path": "@dep_wells/venango_wells_all.gpkg"
+    },
+    "full_pad": {
+      "hint": "Run _records_full_detector_output_9t.py first (S0).",
+      "path": "@exp:5.6/data/processed/detector_output_pad_full_9t.gpkg"
+    },
+    "full_pit": {
+      "hint": "Run _records_full_detector_output_9t.py first (S0).",
+      "path": "@exp:5.6/data/processed/detector_output_pit_full_9t.gpkg"
+    },
+    "gnss_points": {
+      "assumed": true,
+      "hint": "Independent coordinates (R1 DEP GNSS, R2 NETL). None held.",
+      "path": "@reference/independent_coords/gnss_wells_9t.gpkg",
+      "schema": {
+        "PERMIT_NUM": "str",
+        "geometry": "Point EPSG:6346",
+        "h_acc_m": "float",
+        "method": "RTK | NETL survey | other"
+      }
+    },
+    "orphan_2022": {
+      "hint": "2022-05-09 orphan list (PA only). Keyed on API 37121nnnnn.",
+      "path": "@reference/legacy_data/US_Documented_Orphan_Wells.csv"
+    },
+    "pad_blocks": {
+      "hint": "375 m CV blocks with n_pads",
+      "path": "@nine_t/pad_blocks_9t.gpkg"
+    },
+    "pad_products": {
+      "hint": "Built by notebooks/wellsight_v2/s5_eval/_pad_threshold_products_9t.py. Layer model_geometry is the full held-out pad output at 0.50.",
+      "layer": "model_geometry",
+      "path": "@results_9t/pad/thresholds/pad_heldout_found_vs_missed_thr0p50_9t.gpkg"
+    },
+    "pit_blocks": {
+      "hint": "375 m CV blocks with n_pits",
+      "path": "@nine_t/pit_blocks_9t.gpkg"
+    },
+    "pit_candidates": {
+      "hint": "Built by notebooks/wellsight_v2/s5_eval/_build_undecided_pit_candidates_9t.py --thr 0.50",
+      "path": "@results_9t/pit/centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg"
+    }
+  },
+  "n_shift_used": 300,
+  "null": {
+    "max_loss": 0.1,
+    "max_tries": 20,
+    "n_shift": 300,
+    "shift_max_m": 500.0,
+    "shift_min_m": 200.0
+  },
+  "open_decisions": {
+    "assignment": "global",
+    "footprint": "complete_grid",
+    "null_redraw": "torus"
+  },
+  "other_states": {
+    "_note": "S5. Each state is a separate case study. Each needs its own detector output in the 5.6 full-output schema. None exists yet.",
+    "states": {
+      "IL": {
+        "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_il.gpkg",
+        "footprint": "@exp:5.6/data/processed/footprint_blocks_il.gpkg",
+        "records": "@reference/wells_il_isgs",
+        "status_col": "assumed",
+        "status_map": {}
+      },
+      "KS": {
+        "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_ks.gpkg",
+        "footprint": "@exp:5.6/data/processed/footprint_blocks_ks.gpkg",
+        "records": "@reference/wells_ks_kgs",
+        "status_col": "assumed",
+        "status_map": {}
+      },
+      "KY": {
+        "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_ky.gpkg",
+        "footprint": "@exp:5.6/data/processed/footprint_blocks_ky.gpkg",
+        "records": "@reference/wells_ky_kgs",
+        "status_col": "assumed",
+        "status_map": {}
+      },
+      "NY": {
+        "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_ny.gpkg",
+        "footprint": "@exp:5.6/data/processed/footprint_blocks_ny.gpkg",
+        "records": "@reference/wells_ny_dec",
+        "status_col": "assumed",
+        "status_map": {}
+      },
+      "OH": {
+        "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_oh.gpkg",
+        "footprint": "@exp:5.6/data/processed/footprint_blocks_oh.gpkg",
+        "records": "@reference/wells_oh_odnr",
+        "status_col": "assumed",
+        "status_map": {}
+      },
+      "OK": {
+        "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_ok.gpkg",
+        "footprint": "@exp:5.6/data/processed/footprint_blocks_ok.gpkg",
+        "records": "@reference/wells_ok_occ",
+        "status_col": "assumed",
+        "status_map": {}
+      },
+      "WV": {
+        "detector_full_pit": "@exp:5.6/data/processed/detector_output_pit_full_wv.gpkg",
+        "footprint": "@exp:5.6/data/processed/footprint_blocks_wv.gpkg",
+        "records": "@reference/wells_wv_dep",
+        "status_col": "assumed",
+        "status_map": {}
+      }
+    }
+  },
+  "outputs": {
+    "adjudication_sheet": "@exp:5.6/data/interim/records_link_adjudication_sheet_9t.csv",
+    "cohort_rates": "@exp:5.6/results/tables/records_cohort_excess_9t.csv",
+    "full_pad": "@exp:5.6/data/processed/detector_output_pad_full_9t.gpkg",
+    "full_pit": "@exp:5.6/data/processed/detector_output_pit_full_9t.gpkg",
+    "id_policy": "@exp:5.6/results/tables/records_detector_id_policy_9t.json",
+    "other_states": "@exp:5.6/results/tables/records_other_states_excess.csv",
+    "ppv_summary": "@exp:5.6/results/tables/records_link_ppv_9t.json",
+    "row_counts": "@exp:5.6/results/tables/records_detector_row_counts_9t.csv",
+    "runs": "@exp:5.6/results",
+    "validation": "@exp:5.6/results/tables/records_gnss_position_error_9t.csv",
+    "validation_summary": "@exp:5.6/results/tables/records_gnss_validation_9t.json"
+  },
+  "pad": {
+    "match_iou": 0.3,
+    "primary_radius_m": 0,
+    "radii_m": [
+      0,
+      25,
+      50
+    ]
+  },
+  "pit": {
+    "expected_predictions": 688,
+    "gate_m": 100.0,
+    "primary_radius_m": 50,
+    "radii_m": [
+      10,
+      25,
+      50,
+      75,
+      100
+    ]
+  },
+  "positive_control": {
+    "detector_set": "full",
+    "group": "active",
+    "level": "pad",
+    "radius_m": 0
+  },
+  "seed": 20261104,
+  "status_groups": {
+    "active": [
+      "Active"
+    ],
+    "orphan_abandoned": [
+      "DEP Orphan List",
+      "DEP Abandoned List"
+    ],
+    "plugged": [
+      "Plugged OG Well"
+    ]
+  },
+  "tile_bbox": [
+    619500.0,
+    4593000.0,
+    624000.0,
+    4597500.0
+  ],
+  "validation": {
+    "B": 2000,
+    "margin_m": 5.0
+  }
+}

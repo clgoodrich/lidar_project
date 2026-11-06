@@ -1,0 +1,6 @@
+{
+  "master_seed": 20261105,
+  "n_dirichlet": 2000,
+  "stage": "risk_sensitivity",
+  "sweep_grid_step": 0.1
+}

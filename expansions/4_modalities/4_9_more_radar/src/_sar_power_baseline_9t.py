@@ -1,8 +1,10 @@
 """S1 of framework 4.9. Headroom and simulated power of a paired AUC gain, per stratum, before any purchase.
 
 Purpose. From saved per-row baseline scores (y, block, score), compute per stratum the baseline AUC, headroom
-(1 minus AUC) and blocks available. Strata are "all" and "lidar_weak" (targets in the lowest quartile of baseline
-score, chosen before any SAR feature exists, against all decoys). Then simulate an arm.
+(1 minus AUC) and blocks available. Strata are "all" and "lidar_weak". lidar_weak keeps the targets in the weak
+tail of an external covariate (prereg.lidar_weak, for example canopy cover), against all decoys. It is never chosen
+on the baseline score (4.9-01). That rule handed any second score a gain by regression to the mean. When the
+covariate is unset or absent from the rows file, lidar_weak is skipped and the reason printed. Then simulate an arm.
   z      probit of the baseline score's mid-rank
   arm    z' = rho z + sqrt(1 - rho^2) e + shift y, with shift calibrated by bisection so the expected gain is g
   power  share of n_sims draws whose paired block-bootstrap lower bound exceeds delta_gain
@@ -32,10 +34,14 @@ from scipy.stats import norm, rankdata
 import _sar_kit_4_9 as sk
 
 
-def strata(y: np.ndarray, s: np.ndarray, q: float) -> dict:
-    """Row masks. lidar_weak keeps targets with baseline score at or below the q quantile of target scores, and all decoys."""
-    cut = np.quantile(s[y == 1], q)
-    return {"all": np.ones(len(y), bool), "lidar_weak": (y == 0) | (s <= cut)}
+def strata(y: np.ndarray, covariate, spec: dict | None) -> tuple[dict, dict]:
+    """Row masks and undefined strata with reasons. lidar_weak comes from an external covariate only (4.9-01)."""
+    m, why = sk.lidar_weak_mask(y, covariate, spec)
+    out = {"all": np.ones(len(y), bool)}
+    if m is None:
+        return out, {"lidar_weak": why}
+    out["lidar_weak"] = m
+    return out, {}
 
 
 def calibrate_shift(z, y, rho, g, draws, seed) -> float | None:
@@ -56,11 +62,14 @@ def calibrate_shift(z, y, rho, g, draws, seed) -> float | None:
     return (lo + hi) / 2
 
 
-def power_table(y, s, blocks, cfg, seed, label) -> pd.DataFrame:
+def power_table(y, s, blocks, cfg, seed, label, covariate=None) -> pd.DataFrame:
     P = cfg["prereg"]["power"]
     d = cfg["prereg"]["delta_gain"]
     rows = []
-    for sname, m in strata(y, s, cfg["prereg"]["lidar_weak_quantile"]).items():
+    masks, undefined = strata(y, covariate, cfg["prereg"].get("lidar_weak"))
+    for sname, why in undefined.items():
+        print(f"{label}: stratum {sname} undefined: {why}")
+    for sname, m in masks.items():
         yy, ss, bb = y[m], s[m], blocks[m]
         z = norm.ppf((rankdata(ss) - 0.5) / len(ss))
         base = sk.auc(yy, z)
@@ -82,7 +91,10 @@ def power_table(y, s, blocks, cfg, seed, label) -> pd.DataFrame:
                     bt = sk.paired_gain_boot(yy, z, arm, bb, P["B_power"], int(rng.integers(1 << 31)))
                     los.append(bt["lo"])
                     hw.append((bt["hi"] - bt["lo"]) / 2)
-                rows.append({**r, "power": float(np.mean(np.array(los) > d)), "median_half_width": float(np.median(hw))})
+                hw = np.asarray(hw, float)
+                rows.append({**r, "power": float(np.mean(np.array(los) > d)),
+                             "median_half_width": float(np.nanmedian(hw)) if np.isfinite(hw).any() else np.nan,
+                             "undefined_interval_share": float(np.mean(~np.isfinite(hw)))})
     return pd.DataFrame(rows)
 
 
@@ -108,7 +120,7 @@ def eligibility(tab: pd.DataFrame, cfg) -> dict:
             "record": "proceed to purchase request" if any_ok else "no room, untestable at current baseline"}
 
 
-def read_rows(spec: str, cfg) -> tuple[np.ndarray, np.ndarray, np.ndarray, str, Path]:
+def read_rows(spec: str, cfg):
     parts = spec.split(":")
     # Windows drive letters contain a colon. Rejoin the first two parts when the first is one letter.
     if len(parts[0]) == 1 and len(parts) > 1:
@@ -122,7 +134,9 @@ def read_rows(spec: str, cfg) -> tuple[np.ndarray, np.ndarray, np.ndarray, str, 
             raise ValueError(f"{p} lacks column {c!r}")
     sk.ek.assert_no_nan(df.block, "block")
     df = df[np.isfinite(df[col])]
-    return df.y.to_numpy(int), df[col].to_numpy(float), df.block.to_numpy(), label, p
+    cv = (cfg["prereg"].get("lidar_weak") or {}).get("covariate")
+    cov = df[cv].to_numpy(float) if cv and cv in df.columns else None
+    return df.y.to_numpy(int), df[col].to_numpy(float), df.block.to_numpy(), label, p, cov
 
 
 def main(argv=None) -> int:
@@ -140,9 +154,9 @@ def main(argv=None) -> int:
         a.rows = [f"{sk.resolve(h)}:{h['score_col']}:613590_heldout"]
     tabs, ins = [], []
     for spec in a.rows:
-        y, s, b, label, p = read_rows(spec, cfg)
+        y, s, b, label, p, cov = read_rows(spec, cfg)
         ins.append(p)
-        tabs.append(power_table(y, s, b, cfg, cfg["prereg"]["master_seed"], label))
+        tabs.append(power_table(y, s, b, cfg, cfg["prereg"]["master_seed"], label, cov))
     tab = pd.concat(tabs, ignore_index=True)
     el = eligibility(tab, cfg)
     out = Path(a.out) if a.out else sk.resolve(cfg["outputs"]["results"])

@@ -1,6 +1,6 @@
 # 3.2. Ohio, West Virginia, New York, Kentucky
 
-**Status.** Plan only. Nothing here has been run. Tier B, rewritten to full depth 2026-11-05 at the user's request (no deferral). Plan only. Nothing here has been run, downloaded or scored.
+**Status.** Built. Desk stages ran on held data (inventory, harmonisation, coverage). Nothing was downloaded or scored. Review fixes 2026-11-06. Tier B.
 **Plan.** [docs/plan_geo_appalachian_states.md](docs/plan_geo_appalachian_states.md)
 **Framework.** [docs/fw_3_2_appalachian_states.md](docs/fw_3_2_appalachian_states.md) (stages, gates, analysis plan, handoff)
 **Decisions.** [docs/decisions_3_2.md](docs/decisions_3_2.md)
@@ -23,6 +23,13 @@ Products for a new study area go to `data/<area>/` as everywhere else, not here.
 Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`). Add the import path with
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
+
+## Build status (2026-11-06)
+
+Review fix pass (F02 F03 F08 inherited from 3.1). Tests. `python -m pytest -q -p no:cacheprovider expansions/3_geography/3_2_appalachian_states/src/test_3_2.py` (9 passed).
+- Window scoring runs through the 3.1 stages, which now call the 3.0 reference scorer. There is no 3.2 matcher.
+- `config_3_2.json` reference now names the 3.0 tables. The 3.3 S1 blocks CSV feeds only design tools.
+- The adaptation arm (S11) scores both arms through the same policy. An old 0.10 cutoff is refused.
 
 ## Build status (2026-11-05)
 

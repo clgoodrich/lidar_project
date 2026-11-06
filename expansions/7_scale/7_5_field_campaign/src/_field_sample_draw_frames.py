@@ -8,7 +8,9 @@ Purpose
            A dated historic mark (4.6) within the radius makes early_map. Allocation is proportional with
            a floor of 10 per stratum (capped at the stratum size). Stratified simple random sampling
            without replacement, so pi = n_h / N_h exactly.
-    Arm B. Model candidates at the frozen K, cut into 5 equal-count score bands, equal allocation.
+    Arm B. Model candidates at the frozen K that lie inside the Arm A frame, cut into 5 equal-count score
+           bands, equal allocation. The frame is the 5.4 density site table (site_id, max_score, cx, cy), so the
+           density export can join on its site_id. Its sha256 is kept in the key (frame_sha256).
     Arm C. Random 250 m cells fully inside the reserved area, excluding cells within 50 m of an Arm A or
            B site. Each cell is searched in full. DEP wells inside a drawn cell are listed as seeded
            controls in the private key (search sensitivity, S4).
@@ -16,7 +18,8 @@ Purpose
     The private key holds them for the analysis. Both are hashed.
 
 Inputs (config_7_5.json)
-    annotations (held), blocks (held), audit block list (P2, assumed) and/or reserved area (assumed),
+    annotations (held), blocks (held), audit block list (P2, read with ek.require_audit, role audit only)
+    and/or reserved area (assumed),
     frozen candidates (P2, assumed), DEP wells (held, read-only), historic marks (4.6, optional)
 Outputs (expansions/7_scale/7_5_field_campaign/results/tables/)
     field_sample_blind_v1.csv     site_id, arm, x, y, lon, lat, cluster_id, pi, weight
@@ -140,15 +143,41 @@ def arm_a(cfg, feats, wells, marks, frame_geom):
     return gpd.GeoDataFrame(s, geometry="geometry", crs=feats.crs), f
 
 
-def arm_b(cfg, cands: pd.DataFrame):
+def arm_b_frame(cands: pd.DataFrame) -> pd.DataFrame:
+    """Normalise the Arm B frame. Two schemas are accepted.
+    5.4 density site table (site_id, max_score, cx, cy). Its site_id is what 5.4 S3 joins on (review F16).
+    Frozen candidate list (cand_id, score, cx, cy). It cannot feed the 5.4 export, which refuses it."""
+    c = cands.copy()
+    if "site_id" in c.columns:
+        c["cand_id"] = c["site_id"].astype(int).astype(str)
+        c["score"] = c["max_score"] if "max_score" in c.columns else c["score"]
+        c["frame_schema"] = "density_sites_5_4"
+    else:
+        c["frame_schema"] = "candidates"
+    miss = [k for k in ("cand_id", "score", "cx", "cy") if k not in c.columns]
+    if miss:
+        raise AssertionError(f"Arm B frame lacks columns {miss}")
+    return c
+
+
+def arm_b(cfg, cands: pd.DataFrame, frame_geom=None, frame_sha256: str = ""):
+    """Score-stratified draw from the candidates that lie inside the Arm A frame (audit blocks or reserved area).
+    Candidates outside the frame sit on ground the model may have trained on (review minor, 7.5 arm B)."""
     import geopandas as gpd
     nb = cfg["arm_B"]["n_bands"]
-    c = cands.sort_values(["score", "cand_id"], ascending=[False, True]).reset_index(drop=True)
+    c = arm_b_frame(cands)
+    if frame_geom is not None:
+        inside = gpd.points_from_xy(c["cx"], c["cy"]).within(frame_geom)
+        c = c[np.asarray(inside)]
+    if not len(c):
+        raise AssertionError("no Arm B candidates inside the frame (audit blocks or reserved area)")
+    c = c.sort_values(["score", "cand_id"], ascending=[False, True]).reset_index(drop=True)
     c["stratum"] = [f"band{b + 1}" for b in pd.qcut(np.arange(len(c)), nb, labels=False)]
     per = cfg["arm_B"]["n"] // nb
     alloc = {h: min(per, (c["stratum"] == h).sum()) for h in c["stratum"].unique()}
     s = stratified_draw(c, "stratum", alloc, ek.child_seed(cfg["master_seed"], 0, 2))
     s["arm"] = "B"
+    s["frame_sha256"] = frame_sha256
     return gpd.GeoDataFrame(s, geometry=gpd.points_from_xy(s["cx"], s["cy"]), crs=cfg["crs"])
 
 
@@ -193,7 +222,8 @@ def assemble(a, b, c, crs) -> tuple[pd.DataFrame, pd.DataFrame]:
                                    "N_h": d["N_h"], "n_h": d["n_h"], "x": cen.x.round(2), "y": cen.y.round(2),
                                    "score": d.get("score", np.nan), "era": d.get("era", ""), "dep_id": d.get("dep_id", ""),
                                    "controls": d.get("controls", ""), "cluster_id": d.get("cluster_id", d[sid]).astype(str),
-                                   "area_m2": d.geometry.area.round(1)}))
+                                   "area_m2": d.geometry.area.round(1),
+                                   "frame_schema": d.get("frame_schema", ""), "frame_sha256": d.get("frame_sha256", "")}))
     s = pd.concat(parts, ignore_index=True)
     s.insert(0, "site_id", [f"S{i:04d}" for i in range(len(s))])
     ll = gpd.GeoSeries(gpd.points_from_xy(s["x"], s["y"]), crs=crs).to_crs("EPSG:4326")
@@ -201,7 +231,8 @@ def assemble(a, b, c, crs) -> tuple[pd.DataFrame, pd.DataFrame]:
     s["weight"] = 1.0 / s["pi"]
     ek.assert_unique(s, "site_id")
     blind = s[["site_id", "arm", "x", "y", "lon", "lat", "area_m2", "pi", "weight"]]
-    key = s[["site_id", "arm", "stratum", "source_id", "score", "era", "dep_id", "controls", "cluster_id", "pi", "N_h", "n_h"]]
+    key = s[["site_id", "arm", "stratum", "source_id", "score", "era", "dep_id", "controls", "cluster_id", "pi", "N_h", "n_h",
+             "frame_schema", "frame_sha256"]]
     return blind, key
 
 
@@ -246,18 +277,27 @@ def draw(cfg: dict, out: Path, force: bool = False) -> dict:
     rp = cfg_path(inp["reserved_area"])
     reserved = gpd.read_file(rp).to_crs(cfg["crs"]) if rp.exists() else None
     ap_ = cfg_path(inp["audit_blocks"])
-    if ap_.exists():
+    # P2 audit CSV has # header lines and a sha256 sidecar. Only the P2 reader may parse it (review F05).
+    # A missing file is allowed only because the reserved area is a declared alternative frame. It is recorded.
+    audit = ek.require_audit(ap_, allow_missing=True)
+    frame_sources = []
+    if audit is not None:
         blocks = gpd.read_file(need(cfg_path(inp["blocks"]), "blocks"))
-        ids = set(pd.read_csv(ap_)["block_id"].astype(int))
+        ids = ek.audit_ids(audit, roles=("audit",))           # sealed test blocks only, not the buffer margin
         frames.append(blocks[blocks["block_id"].astype(int).isin(ids)].union_all())
+        frame_sources.append(f"P2 audit blocks {sorted(ids)} sha256 {audit.attrs.get('sha256', '')[:12]}")
     if reserved is not None:
         frames.append(reserved.union_all())
+        frame_sources.append("reserved area")
     if not frames:
         raise FileNotFoundError(f"no Arm A frame. Need the P2 audit list ({ap_}) or the reserved area ({rp})")
+    if audit is None:
+        frame_sources.append("no audit exclusion. P2 audit set missing, frame is the reserved area only")
     from shapely.ops import unary_union
-    a, frame_all = arm_a(cfg, feats, wells, marks, unary_union(frames))
+    frame_geom = unary_union(frames)
+    a, frame_all = arm_a(cfg, feats, wells, marks, frame_geom)
     cp = cfg_path(inp["candidates_frozen"])
-    b = arm_b(cfg, pd.read_csv(cp)) if cp.exists() else None
+    b = arm_b(cfg, pd.read_csv(cp), frame_geom, ek.sha256(cp)) if cp.exists() else None
     sites = pd.concat([x.geometry for x in (a, b) if x is not None])
     c = arm_c(cfg, reserved, gpd.GeoSeries(sites, crs=cfg["crs"]), wells) if reserved is not None else None
     blind, key = assemble(a, b, c, cfg["crs"])
@@ -271,7 +311,7 @@ def draw(cfg: dict, out: Path, force: bool = False) -> dict:
     ek.write_provenance(out, inputs=[ann, cfg_path(inp["dep_wells"])], outputs=[out / "field_sample_blind_v1.csv"],
                         params={k: cfg[k] for k in ("arm_A", "arm_B", "arm_C", "era_rules")},
                         seeds={"master": cfg["master_seed"]})
-    return {"n_sites": len(blind), "by_arm": blind["arm"].value_counts().to_dict(),
+    return {"n_sites": len(blind), "by_arm": blind["arm"].value_counts().to_dict(), "frame_sources": frame_sources,
             "missing_arms": [n for n, x in (("B", b), ("C", c)) if x is None]}
 
 

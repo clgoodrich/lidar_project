@@ -1,6 +1,9 @@
 """4.3 stage V0. Label gate. Independent leak and non-leak labels per pad, before any imagery work (9t).
 
 Purpose
+    Review 4.3-03. Records count only inside the dates the imagery can see (first scene minus
+    labels.visible_lookback_days to the last scene). Placeholder code lists refuse. Both are checked
+    before any record is read.
     Join DEP complaint, inspection and measurement records to pads within radius_m (100 m). A pad is
     'leak' if any record in the year window carries a leak code, 'nonleak' if it has a clean inspection or clean measurement
     and no leak record, else unlabelled. A label is strong only from a measurement source (handheld or
@@ -75,6 +78,27 @@ def pad_age(pads, wells_path: Path, layer, radius: float, year_now: int = 2026) 
                          "permit_num": j["PERMIT_NUM"].to_numpy()})
 
 
+def visible_window(cfg: dict) -> tuple[pd.Timestamp, pd.Timestamp, int]:
+    """Review 4.3-03. Dates a leak or clean record must fall in for the imagery to be able to see it.
+    From the first scene date minus labels.visible_lookback_days to the last scene date. The lookback
+    is a user decision. Unset refuses."""
+    from _vegstress_observability_9t import scene_list
+    lb = cfg["labels"].get("visible_lookback_days")
+    if lb is None:
+        raise RuntimeError("labels.visible_lookback_days is not set. How long before a scene a record can still "
+                           "describe what the scene shows is a user decision. Refusing (docs/decisions_4_3.md)")
+    d = pd.to_datetime(scene_list(cfg)["date"])
+    return d.min() - pd.Timedelta(days=int(lb)), d.max(), int(lb)
+
+
+def check_codes(L: dict) -> None:
+    """Review 4.3-03. Placeholder code lists must not yield a pre-specified CLOSE."""
+    if L.get("codes_status") != "dep_verified":
+        raise RuntimeError(f"labels.codes_status is {L.get('codes_status')!r}. The leak and clean code lists are "
+                           "placeholders, not DEP codes. A gate on them would CLOSE Question B on invented labels. "
+                           "Replace them from request R1 and set codes_status to dep_verified")
+
+
 def run(cfg: dict, out_root: Path | None = None, records_path: Path | None = None, hm_only: bool = False) -> dict:
     import geopandas as gpd
     L = cfg["labels"]
@@ -85,6 +109,8 @@ def run(cfg: dict, out_root: Path | None = None, records_path: Path | None = Non
     if hm_only:
         summary.update(verdict="not_run", reason="--hm-only. Records not read")
     else:
+        check_codes(L)
+        w0, w1, lb = visible_window(cfg)
         inp = cfg["inputs"]
         pin = inp["pads"]
         pp = io.resolve(pin)
@@ -92,6 +118,8 @@ def run(cfg: dict, out_root: Path | None = None, records_path: Path | None = Non
         rp = Path(records_path) if records_path else io.resolve(inp["records"])
         rec = records_gdf(rp)
         rec = rec[(rec["date"].dt.year >= L["years"][0]) & (rec["date"].dt.year <= L["years"][1])]
+        n_years = len(rec)
+        rec = rec[(rec["date"] >= w0) & (rec["date"] <= w1)]
         j = gpd.sjoin_nearest(rec, pads[["pad_id", "geometry"]], max_distance=L["radius_m"], how="inner",
                               distance_col="dist_m")
         j = j.sort_values("dist_m").drop_duplicates("record_id")   # one record, one pad
@@ -127,7 +155,9 @@ def run(cfg: dict, out_root: Path | None = None, records_path: Path | None = Non
             v = "failure"
         else:
             v = "inconclusive"
-        summary.update(n_records_in_window=int(len(rec)), n_records_joined=int(len(j)), counts=counts, verdict=v,
+        summary.update(n_records_in_years=int(n_years), n_records_in_window=int(len(rec)),
+                       visible_window={"from": str(w0.date()), "to": str(w1.date()), "lookback_days": lb},
+                       n_records_joined=int(len(j)), counts=counts, verdict=v,
                        action={"success": "Question B may run (V4)",
                                "failure": "Question B CLOSED by pre-specification. Question A continues",
                                "inconclusive": "Question B on hold. Seek more labels"}[v],

@@ -2,8 +2,10 @@
 
 Purpose
     One record per tile with status ok, warn or refuse and reason codes. Checks follow fw_7_4 section 7.
-    CRS          refuse if missing (and no --crs), geographic, or tiles disagree. Warn on US feet (converted)
-                 and on a missing vertical datum. An --crs override applies only when the header has none.
+    CRS          refuse if missing (and no --crs), geographic, or tiles disagree.
+                 Refuse on US feet (the builder does not convert) and on a CRS record that cannot be parsed.
+                 Warn on a missing vertical datum. An --crs override applies only when the header has no CRS
+                 record at all, never when the record is present but unreadable.
     point format refuse on an unreadable or truncated file. Warn on LAS before 1.2.
     returns      refuse if return fields are missing. Warn if every point is a single return.
     ground       refuse on zero class-2 points or ground density below the floor. Warn between the floor and
@@ -77,22 +79,28 @@ def check_tile(path: Path, cfg: dict, crs_override: str | None = None) -> dict:
         rec["reasons"].append("truncated or empty")
     if (hdr.version.major, hdr.version.minor) < (1, 2):
         rec["warnings"].append("old LAS version")
+    unparseable = False
     try:
         crs = hdr.parse_crs()
-    except Exception:  # noqa: BLE001
-        crs = None
-    if crs is None and crs_override:
+    except Exception:  # noqa: BLE001 - a CRS record that cannot be read is a refusal, never overridden
+        crs, unparseable = None, True
+    if unparseable:
+        rec["reasons"].append("CRS unparseable")
+    elif crs is None and crs_override:
         crs = CRS.from_user_input(crs_override)
         rec["warnings"].append("CRS from --crs override")
     horiz, unit, geographic, has_vert = _crs_info(crs)
     rec["crs"] = horiz.to_string() if horiz is not None else None
-    if horiz is None:
+    rec["crs_unit"] = unit or None
+    if horiz is None and not unparseable:
         rec["reasons"].append("CRS missing")
-    elif geographic:
+    elif horiz is not None and geographic:
         rec["reasons"].append("geographic CRS")
     to_m = 1.0
     if unit and unit.lower() in [u.lower() for u in FEET] or (unit and "foot" in unit.lower()):
-        rec["warnings"].append("units in feet (converted)")
+        # The derivative builder works in the raw header units and does not convert, so feet are refused.
+        # to_m only keeps the reported density and extent in metres.
+        rec["reasons"].append("units in feet (not supported, reproject to metres first)")
         to_m = 0.3048006096 if "us" in unit.lower() else 0.3048
     if horiz is not None and not has_vert:
         rec["warnings"].append("vertical datum missing")

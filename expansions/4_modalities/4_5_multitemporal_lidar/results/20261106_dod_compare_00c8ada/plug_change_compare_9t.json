@@ -1,0 +1,37 @@
+{
+  "primary": {
+    "statistic": "flag rate treated minus matched controls",
+    "estimate": 0.75,
+    "lo": 0.5,
+    "hi": 1.0,
+    "n_treated": 2,
+    "n_controls": 4,
+    "n_clusters": 2,
+    "delta_rate": 0.1,
+    "min_n": 20,
+    "verdict": "inconclusive (n below the preregistered minimum)",
+    "bootstrap_unreliable": true
+  },
+  "secondary_mean_change_m": {
+    "estimate": -0.06450548605062068,
+    "lo": -0.22435683058574796,
+    "hi": 0.09534585848450661
+  },
+  "dose_response": {
+    "note": "needs dates"
+  },
+  "placebo": {
+    "reps": 200,
+    "mean": 0.0050000000000000044,
+    "q025": -0.16666666666666666,
+    "q975": 0.5
+  },
+  "seam_dist_median_m": {
+    "control": 42.0,
+    "treated": 29.18033988749895
+  },
+  "seam_dist_smd_treated_vs_control": -0.3545288519087202,
+  "seam_matched": true,
+  "not_assessable": 2,
+  "reading": "Evidence level (a), terrain change. No detectable change is not no restoration or no plugging. S3 recovery runs the same point chain that built this field."
+}

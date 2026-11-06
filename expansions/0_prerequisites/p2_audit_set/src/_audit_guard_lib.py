@@ -6,8 +6,14 @@ Purpose
     tracked in git, also from the committed blob at HEAD. A file with neither is refused unless
     `allow_unfrozen=True` (dry runs and tests only).
     `assert_no_audit(items, audit)` raises on any intersection. Items are block ids, or shapely geometries
-    (training windows), which are tested against the audit block polygons (positive-area overlap).
-    The CLI checks every train and inner-validation list of a P1 split file against an audit file.
+    (training windows). Windows are tested against the audit block polygons dilated by the audit file's
+    `buffer_m` (positive-area overlap), so a window 1 m from audit ground fails at a 100 m buffer.
+    An audit id with no polygon in `blocks` raises. It never passes as "far away" (review P2-03).
+    The CLI checks every train, inner-validation and held-out list of a P1 split file. Audit blocks must
+    not reach calibration or scoring folds either.
+    Scope. The 9t draw frame is the pit-bearing blocks, so the file declares `tasks=pit` in its header.
+    `load_audit(path, task="pad")` refuses a file whose header does not name the task. Every task may still
+    exclude the blocks from training, which is conservative. Files without a `tasks` key are pit only.
 
 Audit file schema (written by `_audit_draw_blocks_9t.py` and `_audit_reserve_warren.py`)
     Leading `#` comment lines state the use rule. Columns block_id (int), role (`audit` or `buffer`),
@@ -54,7 +60,11 @@ def committed_hash(path: Path) -> str | None:
         rel = Path(path).resolve().relative_to(ek.REPO)
     except ValueError:
         return None
-    r = subprocess.run(["git", "-C", str(ek.REPO), "show", f"HEAD:{rel.as_posix()}"], capture_output=True, timeout=30)
+    try:
+        r = subprocess.run(["git", "-C", str(ek.REPO), "show", f"HEAD:{rel.as_posix()}"], capture_output=True,
+                           timeout=30)
+    except (OSError, subprocess.SubprocessError):        # git not installed, not runnable, or timed out
+        return None
     return _sha(r.stdout) if r.returncode == 0 else None
 
 
@@ -64,7 +74,13 @@ def frozen_hashes(path: Path) -> dict:
     return out
 
 
-def load_audit(path: Path, allow_unfrozen: bool = False) -> pd.DataFrame:
+def audit_tasks(header: dict) -> set[str]:
+    """Tasks the audit set was drawn for. A header without `tasks` is the pit-only 9t draw."""
+    return set(str(header.get("tasks", "pit")).split(","))
+
+
+def load_audit(path: Path, allow_unfrozen: bool = False, task: str | None = None) -> pd.DataFrame:
+    """Hash-checked audit set. task, when given, must be named in the header `tasks` (draw scope)."""
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"audit file not found: {path}")
@@ -83,6 +99,11 @@ def load_audit(path: Path, allow_unfrozen: bool = False) -> pd.DataFrame:
     df["block_id"] = df["block_id"].astype(int)
     df.attrs["sha256"] = h
     df.attrs["header"] = header_values(raw)
+    if task is not None:
+        key = "pit" if task.startswith("pit") else task
+        if key not in audit_tasks(df.attrs["header"]):
+            raise AuditViolation(f"{path} was drawn for tasks {sorted(audit_tasks(df.attrs['header']))}, not '{task}'. "
+                                 "A separate draw is needed to score that task on held-back ground.")
     return df
 
 
@@ -102,8 +123,11 @@ def header_values(raw: bytes) -> dict:
     return out
 
 
-def assert_no_audit(items, audit: pd.DataFrame, label: str = "", blocks=None) -> None:
-    """Raise AuditViolation if any block id, or any geometry, touches an audit or buffer block."""
+def assert_no_audit(items, audit: pd.DataFrame, label: str = "", blocks=None, buffer_m: float | None = None) -> None:
+    """Raise AuditViolation if any block id, or any geometry, touches an audit or buffer block.
+
+    Geometries are tested against the audit polygons dilated by buffer_m. The default is the audit file's
+    header buffer_m. A smaller explicit value is refused."""
     items = list(items)
     if not items:
         return
@@ -113,12 +137,23 @@ def assert_no_audit(items, audit: pd.DataFrame, label: str = "", blocks=None) ->
             raise ValueError("geometry items need the blocks GeoDataFrame")
         import shapely
         from shapely.strtree import STRtree
+        need = float(audit.attrs.get("header", {}).get("buffer_m", 0.0) or 0.0)
+        buf = need if buffer_m is None else float(buffer_m)
+        if buf < need:
+            raise AuditViolation(f"{label}: window buffer {buf} m is below the audit file's {need} m")
+        have = set(blocks.block_id.astype(int))
+        missing = sorted(ids - have)
+        if missing:
+            raise AuditViolation(f"{label}: audit blocks {missing[:10]} have no polygon in the blocks layer. "
+                                 "Cannot check windows against them")
         polys = list(blocks[blocks.block_id.astype(int).isin(ids)].geometry)
+        if buf > 0:
+            polys = [g.buffer(buf, join_style="mitre") for g in polys]
         tree = STRtree(polys)
         shr = shapely.buffer(items, -1e-6, join_style="mitre")
         hit = tree.query(shr, predicate="intersects")
         if hit.size:
-            raise AuditViolation(f"{label}: {len(set(hit[0]))} windows touch audit ground")
+            raise AuditViolation(f"{label}: {len(set(hit[0]))} windows within {buf} m of audit ground")
         return
     clean = [int(b) for b in items if b is not None and b == b]
     inter = sorted(set(clean) & ids)
@@ -126,8 +161,10 @@ def assert_no_audit(items, audit: pd.DataFrame, label: str = "", blocks=None) ->
         raise AuditViolation(f"{label}: audit blocks in list {inter[:10]}{' ...' if len(inter) > 10 else ''}")
 
 
-def check_split_file(split_path: Path, audit: pd.DataFrame, roles=("train", "inner_val")) -> list[str]:
-    """Every listed role of every task and fold. Returns violations as strings."""
+def check_split_file(split_path: Path, audit: pd.DataFrame, roles=("train", "inner_val", "held_out")) -> list[str]:
+    """Every listed role of every task and fold. Returns violations as strings.
+
+    held_out is checked too. Held-out folds feed calibration and scoring, which the audit set must not reach."""
     doc = json.loads(Path(split_path).read_text(encoding="utf-8"))
     out = []
     for task, t in doc["tasks"].items():

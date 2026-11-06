@@ -19,7 +19,8 @@ Algorithm
 Inputs (config_5_1.json)
     inputs.pit_blocks    @nine_t/pit_blocks_9t.gpkg   (data/9t/derived/05/pit_blocks_9t.gpkg, layer blocks)
     inputs.pad_blocks    @nine_t/pad_blocks_9t.gpkg   (layer blocks)
-    inputs.audit_blocks  @results_9t/splits/audit_blocks_9t_v1.csv  ASSUMED (P2 S2). Column block_id.
+    inputs.audit_blocks  @results_9t/splits/audit_blocks_9t_v1.csv  ASSUMED (P2 S2). Read only by ek.require_audit
+                         (hash-checked, # header). Roles audit and buffer are both excluded.
 Outputs
     outputs.shared_folds              -> expansions/5_tasks/5_1_context_features/results/tables/shared_folds_9t_v1.json
     outputs.shared_folds_provisional  -> .../results/tables/shared_folds_9t_provisional.json (with --allow-no-audit)
@@ -96,6 +97,23 @@ def load_blocks(cfg: dict) -> pd.DataFrame:
     return b
 
 
+NO_AUDIT_LABEL = "no audit exclusion, exploratory"
+
+
+def load_audit_ids(cfg: dict, allow_missing: bool):
+    """P2-01. The audit CSV has # header lines and a sha256 sidecar, so it is read only through ek.require_audit.
+    Audit and buffer roles both leave the folds. A missing file raises MissingInput unless allow_missing, and the
+    output is then labelled "no audit exclusion, exploratory". Returns (ids, provisional, label, sha256)."""
+    path = th.inp(cfg, "audit_blocks", must_exist=False)
+    df = ek.require_audit(path, allow_missing=True)
+    if df is None:
+        if not allow_missing:
+            th.inp(cfg, "audit_blocks")  # raises MissingInput with the hint
+        return [], True, NO_AUDIT_LABEL, None
+    ids = sorted(ek.audit_ids(df, roles=("audit", "buffer")))
+    return ids, False, "P2 audit and buffer blocks excluded", df.attrs.get("sha256")
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--config")
@@ -104,16 +122,9 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     cfg = th.load_cfg(__file__, a.config)
     blocks = load_blocks(cfg)
-    provisional = False
-    if th.has(cfg, "audit_blocks"):
-        audit = pd.read_csv(th.inp(cfg, "audit_blocks"))
-        th.require_columns(audit, ["block_id"], "audit_blocks")
-        audit_ids = sorted(audit.block_id.dropna().astype(int).unique().tolist())
-    elif a.allow_no_audit:
-        audit_ids, provisional = [], True
+    audit_ids, provisional, audit_label, audit_sha = load_audit_ids(cfg, a.allow_no_audit)
+    if provisional:
         print("WARNING. No P2 audit list. Writing a PROVISIONAL fold file. Do not retrain on it.")
-    else:
-        th.inp(cfg, "audit_blocks")  # raises MissingInput with the hint
     k, seed = int(cfg["n_folds"]), int(cfg["seed"])
     m = assign_shared(blocks, k, seed, audit_ids)
     ek.assert_disjoint(m.keys(), audit_ids, "audit blocks in folds")
@@ -121,7 +132,7 @@ def main(argv=None) -> int:
     digest = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
     doc = dict(version="v1", provisional=provisional, written=dt.datetime.now().isoformat(timespec="seconds"),
                seed=seed, k=k, rule="greedy joint deficit on pit and pad counts, ties by seeded permutation",
-               audit_blocks=audit_ids, n_blocks=len(m), folds=fold_summary(blocks, m, k),
+               audit_blocks=audit_ids, audit=audit_label, audit_sha256=audit_sha, n_blocks=len(m), folds=fold_summary(blocks, m, k),
                assignment_sha256=digest, **body)
     out = th.outp(cfg, "shared_folds_provisional" if provisional else "shared_folds")
     th.write_json(out, doc)

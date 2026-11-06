@@ -3,6 +3,10 @@
 Purpose. Three separate comparisons, none of which decides source readiness (review revision 2, 2026-11-04).
   1. Distance from each mark to the nearest drawn pit (pit_inside) and pad.
   2. Association with DEP records. Observed count of marks with a record within r, against a shifted-set null.
+     Only records that existed by the source date enter (spud date on or before it, compared by year when the
+     source date is a year). Records with no usable spud date (missing or the 1800 sentinel) are left out of the
+     primary count and enter a labelled sensitivity run. Without this filter a 1922 map was compared with wells
+     drilled decades later (review 4.6-01, 2026-11-06). A source with no parseable date is refused.
      Each null draw moves every record 200 to 500 m in a random direction, redrawn until it stays inside the oil
      field footprint, 300 draws. r is the source's measured check-point RMSE unless the config fixes it.
   3. Marks against model candidates at K = 40 per km2 (threshold 0.10, blobs of 4 m2 or more, mean-probability
@@ -69,6 +73,30 @@ def association(marks_xy, rec_xy, footprint, r, n, dmin, dmax, seed) -> dict:
     return {"radius_m": r, "observed": obs, "null_mean": float(null.mean()), "excess": float(obs - null.mean()),
             "excess_lo": float(lo), "excess_hi": float(hi), "p_one_sided": float((1 + (null >= obs).sum()) / (n + 1)),
             "n_shifts": n, "note": "association only, never a readiness test. Excess is not PPV"}
+
+
+def source_date(dates) -> tuple[pd.Timestamp, bool]:
+    """(date, year_only). One date per source. Refuses a missing, unparseable or mixed date."""
+    vals = sorted({str(d).strip() for d in dates if d is not None and str(d).strip() not in ("", "nan", "None")})
+    if len(vals) != 1:
+        raise ValueError(f"source date must be one value, got {vals or 'none'}. The date filter needs it")
+    v = vals[0]
+    if v.isdigit() and len(v) == 4:
+        return pd.Timestamp(f"{v}-12-31"), True
+    t = pd.to_datetime(v, errors="coerce")
+    if pd.isna(t):
+        raise ValueError(f"source date {v!r} does not parse")
+    return t, False
+
+
+def records_by_date(dep, when: pd.Timestamp, year_only: bool, field: str, sentinel_year: int):
+    """Boolean masks (existed, unknown) per record. existed = spud on or before the source date."""
+    if field not in dep:
+        raise KeyError(f"DEP export lacks {field}. The date filter needs it")
+    sp = pd.to_datetime(dep[field], errors="coerce")
+    unknown = sp.isna() | (sp.dt.year <= sentinel_year)
+    before = (sp.dt.year <= when.year) if year_only else (sp <= when)
+    return (before & ~unknown).to_numpy(), unknown.to_numpy()
 
 
 def candidates_topk(prob_path: Path, cfg) -> tuple:
@@ -138,9 +166,19 @@ def main(argv=None) -> int:
         fp = dep.union_all().convex_hull.buffer(250.0)
         res["footprint"] = "fallback: DEP record hull buffered 250 m (oil field footprint not supplied)"
     r = pr["assoc_radius_m"] or float(mk.accuracy_m.iloc[0])
-    rec_xy = np.column_stack([dep.geometry.x, dep.geometry.y])
-    res["dep_association"] = association(rows[["x", "y"]].to_numpy(), rec_xy, fp, r, a.n_shifts,
+    when, year_only = source_date(mk.date)
+    existed, unknown = records_by_date(dep, when, year_only, pr["record_date_field"], int(pr["record_sentinel_year_max"]))
+    res["record_date_filter"] = {"source_date": str(when.date()) if not year_only else str(when.year),
+                                 "field": pr["record_date_field"], "n_records_in_window": int(len(dep)),
+                                 "n_existed_by_date": int(existed.sum()), "n_unknown_date": int(unknown.sum()),
+                                 "n_after_date": int((~existed & ~unknown).sum())}
+    xy = np.column_stack([dep.geometry.x, dep.geometry.y])
+    res["dep_association"] = association(rows[["x", "y"]].to_numpy(), xy[existed], fp, r, a.n_shifts,
                                          pr["null_shift_min_m"], pr["null_shift_max_m"], pr["master_seed"])
+    res["dep_association_with_unknown_dates"] = {
+        **association(rows[["x", "y"]].to_numpy(), xy[existed | unknown], fp, r, a.n_shifts,
+                      pr["null_shift_min_m"], pr["null_shift_max_m"], pr["master_seed"]),
+        "label": "sensitivity. Records with no usable spud date counted as existing"}
     prob_path = Path(a.prob) if a.prob else hk.resolve(I["prob_raster"])
     if prob_path.exists():
         import rasterio

@@ -8,7 +8,8 @@ Purpose
                     1980-01-06 minus 1e9). GPS week time carries no date and is reported as unresolvable.
                     A sampled read gives inner dates only and never sets an eligibility bound. --full-scan does.
       3. year_bounds the project's nominal years (2006-01-01 to 2008-12-31, 2019-01-01 to 2019-12-31).
-                    Conservative. A plug date strictly between them is between the flights for certain.
+                    Conservative only when the survey flew inside them. A sampled GPS date outside them widens the
+                    window to hold it (method suffix +gps_widened). D20 over 9t flew 2020-03-18.
     The bound used per tile is the most authoritative one available.
 
 Inputs
@@ -121,6 +122,13 @@ def tile_window(rec: dict, project: dict, meta: pd.DataFrame | None) -> dict:
     cd = str(rec.get("header_creation_date") or "")
     if cd[:4].isdigit() and f"{project['year_lo']}-01-01" <= cd < out["window_end"]:
         out["window_end"], out["method"] = cd, "year_bounds+header_upper"
+    # A sampled GPS date is a date the survey certainly flew on. When it falls outside the nominal years, the year
+    # bounds are wrong for this tile, so the window is widened to hold it (fix 4.5-02, 2026-11-06). The D20 tiles
+    # over 9t are labelled 2019 but their points are dated 2020-03-18, so a 2019-12-31 window end was false.
+    gf, gl = rec.get("gps_first"), rec.get("gps_last")
+    if gf and gl and (gf < out["window_start"] or gl > out["window_end"]):
+        out["window_start"], out["window_end"] = min(gf, out["window_start"]), max(gl, out["window_end"])
+        out["method"] += "+gps_widened"
     return out
 
 
@@ -188,7 +196,8 @@ def run(cfg: dict, out_root: Path | None = None, full_scan: bool = False, use_la
         summ["ALERT"] = (f"{len(an)} tiles have point dates outside the project's nominal years. Year bounds are then "
                          "an assumption, not a guarantee. Read the USGS metadata (D1) before eligibility is final.")
     summ["note"] = ("Eligibility uses window_end of early tiles and window_start of late tiles. year_bounds is "
-                    "conservative and valid. Replace with metadata (D1) to enlarge the eligible window.")
+                    "conservative only when no GPS date falls outside it. gps_full_scan dates are the flight days. "
+                    "Replace with metadata (D1) to enlarge the eligible window.")
     js = run_dir / "flight_windows_9t.json"
     js.write_text(json.dumps(summ, indent=2, default=str), encoding="utf-8")
     ek.write_provenance(run_dir, inputs=inputs, outputs=[out_csv, js], params={"full_scan": full_scan},

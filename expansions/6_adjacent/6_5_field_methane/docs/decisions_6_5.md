@@ -2,6 +2,7 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- 2026-11-06. A unit mismatch, an unregistered instrument, mixed instrument types or mixed units invalidate the whole visit. The reason goes into `reasons`. Review 6.5-01. Made by the fix agent, change freely.
 - 2026-11-05. The framework was rewritten to full depth with a 4A table of assumptions. Made by the build agent, change freely.
 - 2026-11-05. The assumed instrument is a point sampler with a 1 ppm detection limit and a 100 ppm span gas. An open-path laser entry is kept separate. Made by the build agent, change freely.
 - 2026-11-05. The stop threshold is 5,000 ppm (10% of the methane LEL) until the safety reviewer sets it. Made by the build agent, change freely.

@@ -11,143 +11,566 @@
   "res_m": 0.5,
   "n_min_test_blocks": 30,
   "_n_min_note": "N_min is a user decision (fw_3_2 section 13). 30 is a placeholder so the gate code runs.",
-  "margin_delta": {"ny_alg": null, "ny_cat": null, "oh_wash": null, "oh_mon": null, "ky_lee": null, "ky_pow": null, "wv_ple": null, "wv_rit": null},
+  "margin_delta": {
+    "ny_alg": null,
+    "ny_cat": null,
+    "oh_wash": null,
+    "oh_mon": null,
+    "ky_lee": null,
+    "ky_pow": null,
+    "wv_ple": null,
+    "wv_rit": null
+  },
   "prereg_cover_share": 0.95,
-  "eligibility": {"min_cover": 0.999, "max_void_frac": 0.80, "density_rule": "9t_p5"},
-  "roles": {"adapt_frac": 0.0, "test_frac_of_rest": 0.80, "min_adapt_km2": 1e9, "recheck_frac": 0.20,
-            "_note": "Inside a window there is no adaptation role. Adaptation uses the companion window (Q3)."},
+  "eligibility": {
+    "min_cover": 0.999,
+    "max_void_frac": 0.8,
+    "density_rule": "9t_p5"
+  },
+  "roles": {
+    "adapt_frac": 0.0,
+    "test_frac_of_rest": 0.8,
+    "min_adapt_km2": 1000000000.0,
+    "recheck_frac": 0.2,
+    "_note": "Inside a window there is no adaptation role. Adaptation uses the companion window (Q3)."
+  },
   "catalogue": {
-    "windows": {"path_for": "reference", "rel": "lidar_catalogue/lidar_win_windows_us.csv"},
-    "projects": {"path_for": "reference", "rel": "lidar_catalogue/lidar_win_projects_us.csv"},
-    "download_list": {"path_for": "reference", "rel": "lidar_catalogue/lidar_win_download_list_us.csv"},
-    "tiles_unique": {"path_for": "reference", "rel": "lidar_catalogue/lidar_win_tiles_unique_us.csv"},
-    "query_log": {"path_for": "reference", "rel": "lidar_catalogue/lidar_win_query_log_us.csv"},
-    "tile_window": {"path_for": "reference", "rel": "lidar_catalogue/lidar_win_tile_window_us.csv"},
+    "windows": {
+      "path_for": "reference",
+      "rel": "lidar_catalogue/lidar_win_windows_us.csv"
+    },
+    "projects": {
+      "path_for": "reference",
+      "rel": "lidar_catalogue/lidar_win_projects_us.csv"
+    },
+    "download_list": {
+      "path_for": "reference",
+      "rel": "lidar_catalogue/lidar_win_download_list_us.csv"
+    },
+    "tiles_unique": {
+      "path_for": "reference",
+      "rel": "lidar_catalogue/lidar_win_tiles_unique_us.csv"
+    },
+    "query_log": {
+      "path_for": "reference",
+      "rel": "lidar_catalogue/lidar_win_query_log_us.csv"
+    },
+    "tile_window": {
+      "path_for": "reference",
+      "rel": "lidar_catalogue/lidar_win_tile_window_us.csv"
+    },
     "tile_bbox_crs": "EPSG:4269"
   },
   "areas": {
-    "ny_alg": {"state": "New York", "window": "NewYork_Allegany", "role": "primary", "pair": "ny_cat", "arm": 1,
-               "program": "NY_SouthwestNY_2017_A17", "expected_epsg": 6346,
-               "tiles": {"path_for": "source", "rel": "lidar_us_windows/NY_SouthwestNY_2017_A17/*.laz"}, "src_crs": null,
-               "slope_1m": {"area": "ny_allegany", "rel": "derived/1m/slope_ny_alg_1m.tif"}},
-    "ny_cat": {"state": "New York", "window": "NewYork_Cattaraugus", "role": "companion", "pair": "ny_alg", "arm": 1,
-               "program": "NY_SouthwestNY_2017_A17", "expected_epsg": 6346,
-               "tiles": {"path_for": "source", "rel": "lidar_us_windows/NY_SouthwestNY_2017_A17/*.laz"}, "src_crs": null,
-               "slope_1m": {"area": "ny_cattaraugus", "rel": "derived/1m/slope_ny_cat_1m.tif"}},
-    "oh_wash": {"state": "Ohio", "window": "Ohio_Washington", "role": "primary", "pair": "oh_mon", "arm": 1,
-                "program": "OH_Statewide_Phase2_2020_B20", "expected_epsg": 6346,
-                "tiles": {"path_for": "source", "rel": "lidar_us_windows/OH_Statewide_Phase2_2020_B20/*.laz"}, "src_crs": null,
-                "slope_1m": {"area": "ohio_washington", "rel": "derived/1m/slope_oh_wash_1m.tif"}},
-    "oh_mon": {"state": "Ohio", "window": "Ohio_Monroe", "role": "companion", "pair": "oh_wash", "arm": 1,
-               "program": "OH_Statewide_Phase2_2020_B20", "expected_epsg": 6346,
-               "tiles": {"path_for": "source", "rel": "lidar_us_windows/OH_Statewide_Phase2_2020_B20/*.laz"}, "src_crs": null,
-               "slope_1m": {"area": "ohio_monroe", "rel": "derived/1m/slope_oh_mon_1m.tif"}},
-    "ky_lee": {"state": "Kentucky", "window": "Kentucky_Lee", "role": "primary", "pair": "ky_pow", "arm": 1,
-               "program": "KY_WestCentral_2017_C19", "expected_epsg": 6346,
-               "tiles": {"path_for": "source", "rel": "lidar_us_windows/KY_WestCentral_2017_C19/*.laz"}, "src_crs": null,
-               "slope_1m": {"area": "ky_lee", "rel": "derived/1m/slope_ky_lee_1m.tif"}},
-    "ky_pow": {"state": "Kentucky", "window": "Kentucky_Powell", "role": "companion", "pair": "ky_lee", "arm": 1,
-               "program": "KY_WestCentral_2017_C19", "expected_epsg": 6346,
-               "tiles": {"path_for": "source", "rel": "lidar_us_windows/KY_WestCentral_2017_C19/*.laz"}, "src_crs": null,
-               "slope_1m": {"area": "ky_powell", "rel": "derived/1m/slope_ky_pow_1m.tif"}},
-    "wv_ple": {"state": "West Virginia", "window": "WestVirginia_Pleasants", "role": "primary", "pair": "wv_rit", "arm": 1,
-               "program": "WV_FEMAR3_Southcentral_2018_D19", "expected_epsg": 6346,
-               "tiles": {"path_for": "source", "rel": "lidar_us_windows/WV_FEMAR3_Southcentral_2018_D19/*.laz"}, "src_crs": null,
-               "slope_1m": {"area": "wv_pleasants", "rel": "derived/1m/slope_wv_ple_1m.tif"}},
-    "wv_rit": {"state": "West Virginia", "window": "WestVirginia_Ritchie", "role": "companion", "pair": "wv_ple", "arm": 1,
-               "program": null, "expected_epsg": 6346, "state_of_data": "assumed (window proposed, not in the rebuilt list)",
-               "tiles": {"path_for": "source", "rel": "lidar_us_windows/UNKNOWN_RITCHIE/*.laz"}, "src_crs": null,
-               "slope_1m": {"area": "wv_ritchie", "rel": "derived/1m/slope_wv_rit_1m.tif"}}
+    "ny_alg": {
+      "state": "New York",
+      "window": "NewYork_Allegany",
+      "role": "primary",
+      "pair": "ny_cat",
+      "arm": 1,
+      "program": "NY_SouthwestNY_2017_A17",
+      "expected_epsg": 6346,
+      "tiles": {
+        "path_for": "source",
+        "rel": "lidar_us_windows/NY_SouthwestNY_2017_A17/*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "ny_allegany",
+        "rel": "derived/1m/slope_ny_alg_1m.tif"
+      }
+    },
+    "ny_cat": {
+      "state": "New York",
+      "window": "NewYork_Cattaraugus",
+      "role": "companion",
+      "pair": "ny_alg",
+      "arm": 1,
+      "program": "NY_SouthwestNY_2017_A17",
+      "expected_epsg": 6346,
+      "tiles": {
+        "path_for": "source",
+        "rel": "lidar_us_windows/NY_SouthwestNY_2017_A17/*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "ny_cattaraugus",
+        "rel": "derived/1m/slope_ny_cat_1m.tif"
+      }
+    },
+    "oh_wash": {
+      "state": "Ohio",
+      "window": "Ohio_Washington",
+      "role": "primary",
+      "pair": "oh_mon",
+      "arm": 1,
+      "program": "OH_Statewide_Phase2_2020_B20",
+      "expected_epsg": 6346,
+      "tiles": {
+        "path_for": "source",
+        "rel": "lidar_us_windows/OH_Statewide_Phase2_2020_B20/*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "ohio_washington",
+        "rel": "derived/1m/slope_oh_wash_1m.tif"
+      }
+    },
+    "oh_mon": {
+      "state": "Ohio",
+      "window": "Ohio_Monroe",
+      "role": "companion",
+      "pair": "oh_wash",
+      "arm": 1,
+      "program": "OH_Statewide_Phase2_2020_B20",
+      "expected_epsg": 6346,
+      "tiles": {
+        "path_for": "source",
+        "rel": "lidar_us_windows/OH_Statewide_Phase2_2020_B20/*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "ohio_monroe",
+        "rel": "derived/1m/slope_oh_mon_1m.tif"
+      }
+    },
+    "ky_lee": {
+      "state": "Kentucky",
+      "window": "Kentucky_Lee",
+      "role": "primary",
+      "pair": "ky_pow",
+      "arm": 1,
+      "program": "KY_WestCentral_2017_C19",
+      "expected_epsg": 6346,
+      "tiles": {
+        "path_for": "source",
+        "rel": "lidar_us_windows/KY_WestCentral_2017_C19/*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "ky_lee",
+        "rel": "derived/1m/slope_ky_lee_1m.tif"
+      }
+    },
+    "ky_pow": {
+      "state": "Kentucky",
+      "window": "Kentucky_Powell",
+      "role": "companion",
+      "pair": "ky_lee",
+      "arm": 1,
+      "program": "KY_WestCentral_2017_C19",
+      "expected_epsg": 6346,
+      "tiles": {
+        "path_for": "source",
+        "rel": "lidar_us_windows/KY_WestCentral_2017_C19/*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "ky_powell",
+        "rel": "derived/1m/slope_ky_pow_1m.tif"
+      }
+    },
+    "wv_ple": {
+      "state": "West Virginia",
+      "window": "WestVirginia_Pleasants",
+      "role": "primary",
+      "pair": "wv_rit",
+      "arm": 1,
+      "program": "WV_FEMAR3_Southcentral_2018_D19",
+      "expected_epsg": 6346,
+      "tiles": {
+        "path_for": "source",
+        "rel": "lidar_us_windows/WV_FEMAR3_Southcentral_2018_D19/*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "wv_pleasants",
+        "rel": "derived/1m/slope_wv_ple_1m.tif"
+      }
+    },
+    "wv_rit": {
+      "state": "West Virginia",
+      "window": "WestVirginia_Ritchie",
+      "role": "companion",
+      "pair": "wv_ple",
+      "arm": 1,
+      "program": null,
+      "expected_epsg": 6346,
+      "state_of_data": "assumed (window proposed, not in the rebuilt list)",
+      "tiles": {
+        "path_for": "source",
+        "rel": "lidar_us_windows/UNKNOWN_RITCHIE/*.laz"
+      },
+      "src_crs": null,
+      "slope_1m": {
+        "area": "wv_ritchie",
+        "rel": "derived/1m/slope_wv_rit_1m.tif"
+      }
+    }
   },
   "outputs": {
-    "tables": {"exp": "3.2", "rel": "results/tables/{area}"},
-    "heavy": {"exp": "3.2", "rel": "data/processed/{area}/05"},
-    "shared_tables": {"exp": "3.2", "rel": "results/tables"},
-    "harmonised": {"exp": "3.2", "rel": "data/processed/wells_status_harmonised_appal.csv.gz"}
+    "tables": {
+      "exp": "3.2",
+      "rel": "results/tables/{area}"
+    },
+    "heavy": {
+      "exp": "3.2",
+      "rel": "data/processed/{area}/05"
+    },
+    "shared_tables": {
+      "exp": "3.2",
+      "rel": "results/tables"
+    },
+    "harmonised": {
+      "exp": "3.2",
+      "rel": "data/processed/wells_status_harmonised_appal.csv.gz"
+    }
   },
   "reference": {
-    "blocks_csv": {"exp": "3.3", "rel": "results/20261105_slope_recall_5886eff/slope_recall_blocks_9t.csv"},
-    "summary_json": {"exp": "3.3", "rel": "results/20261105_slope_recall_5886eff/slope_recall_summary_9t.json"},
-    "blocks_9t": {"path_for": "nine_t", "rel": "pit_blocks_9t.gpkg"},
-    "ground_density_9t": {"path_for": "nine_t", "rel": "ground_density_9t_05.tif"},
-    "features_9t": {"path_for": "nine_t", "rel": "features_pit_9t_05.tif"},
-    "ground_per_m2_9t_overall": 2.70
+    "blocks_csv": {
+      "exp": "3.3",
+      "rel": "results/20261105_slope_recall_5886eff/slope_recall_blocks_9t.csv"
+    },
+    "summary_json": {
+      "exp": "3.3",
+      "rel": "results/20261105_slope_recall_5886eff/slope_recall_summary_9t.json"
+    },
+    "blocks_9t": {
+      "path_for": "nine_t",
+      "rel": "pit_blocks_9t.gpkg"
+    },
+    "ground_density_9t": {
+      "path_for": "nine_t",
+      "rel": "ground_density_9t_05.tif"
+    },
+    "features_9t": {
+      "path_for": "nine_t",
+      "rel": "features_pit_9t_05.tif"
+    },
+    "ground_per_m2_9t_overall": 2.7,
+    "tables": {
+      "pit": {
+        "exp": "3.0",
+        "rel": "results/tables/xfer_ref_block_tables_9t.json"
+      },
+      "pad": {
+        "exp": "3.0",
+        "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"
+      }
+    },
+    "_note": "Scoring reference is the 3.0 reference tables (review F02 / F08). They stamp ek.policy_for, the footprint (all 144 blocks after the G-02 fill) and the checkpoint lineage. Both are provisional today (historical CV5 pit, buffer-0 pad), so 3.1 scores are descriptive until P1 isolated models exist. blocks_csv and summary_json (3.3 S1) feed only the projected-width design tool and the prereg draft."
   },
   "models": {
-    "pit": {"cv5": {"path_for": "models", "rel": "pit/unet_cv5/fold{k}/best.pt"}, "n_classes": 3, "cls": 1, "patch": 256, "overlap": 64},
-    "pad": {"cv5": {"path_for": "models", "rel": "pad/unet_cv5/fold{k}/best.pt"}, "n_classes": 2, "cls": 1, "patch": 384, "overlap": 96},
+    "pit": {
+      "cv5": {
+        "path_for": "models",
+        "rel": "pit/unet_cv5/fold{k}/best.pt"
+      },
+      "n_classes": 3,
+      "cls": 1,
+      "patch": 256,
+      "overlap": 64
+    },
+    "pad": {
+      "cv5": {
+        "path_for": "models",
+        "rel": "pad/unet_cv5/fold{k}/best.pt"
+      },
+      "n_classes": 2,
+      "cls": 1,
+      "patch": 384,
+      "overlap": 96
+    },
     "policy": "ensemble_mean_5_folds",
     "n_folds": 5
   },
-  "builders": {"channels": ["lrm_25", "lrm_5", "slope", "tpi_05", "openness_pos", "openness_neg", "roughness_11"]},
+  "builders": {
+    "channels": [
+      "lrm_25",
+      "lrm_5",
+      "slope",
+      "tpi_05",
+      "openness_pos",
+      "openness_neg",
+      "roughness_11"
+    ]
+  },
   "assumed": {
-    "isolated_ckpt": {"spec": {"path_for": "models", "rel": "{task}/unet_iso_cv5/fold{k}/best.pt"},
-      "schema": "torch checkpoint, keys state_dict, channels, mu, sd, epoch", "from": "P1 isolated trainers"},
-    "derived_buffer": {"spec": {"path_for": "results_9t", "rel": "splits/buffer_derivation_9t.json"},
-      "schema": "JSON {\"pit_buffer_m\": float, \"pad_buffer_m\": float}", "from": "P1 S4"},
-    "truth": {"spec": {"exp": "3.2", "rel": "data/processed/{area}/xfer_truth_features_{area}.gpkg"},
-      "schema": "GeoPackage, layers pit_inside (id pit_inside_id), pit_full, pad (id pad_id), EPSG:6346, complete blind blocks", "from": "S7 blind annotation"},
-    "truth_recheck": {"spec": {"exp": "3.2", "rel": "data/processed/{area}/xfer_truth_recheck_{area}.gpkg"},
-      "schema": "same as truth, independent second pass on recheck blocks", "from": "S7"},
-    "prereg": {"spec": {"exp": "3.2", "rel": "docs/prereg_xfer_{area}.md"},
-      "schema": "Markdown preregistration, committed before scoring", "from": "S7 (fill the template)"},
-    "flight_dates": {"spec": {"exp": "3.2", "rel": "results/tables/lidar_flight_dates_appal.csv"},
-      "schema": "CSV program, start_date, end_date, leaf_state, source_url", "from": "USGS project metadata XML"},
-    "nlcd": {"spec": {"path_for": "landcover", "rel": "nlcd_2021_appal.tif"},
-      "schema": "NLCD 2021 30 m GeoTIFF, EPSG:5070", "from": "proposed _fetch_nlcd_appalachia.py"},
-    "adapt_ckpt": {"spec": {"exp": "3.2", "rel": "models/adapt_{area}/best.pt"},
-      "schema": "checkpoint written by _appal_adapt_finetune.py", "from": "S11"}
+    "isolated_ckpt": {
+      "spec": {
+        "path_for": "models",
+        "rel": "{task}/unet_iso_cv5/fold{k}/best.pt"
+      },
+      "schema": "torch checkpoint, keys state_dict, channels, mu, sd, epoch",
+      "from": "P1 isolated trainers"
+    },
+    "derived_buffer": {
+      "spec": {
+        "path_for": "results_9t",
+        "rel": "splits/buffer_derivation_9t.json"
+      },
+      "schema": "P1 buffer_derivation_9t.json, read with ek.read_buffer(task) (buffer_m_by_task, or buffer_m for pit)",
+      "from": "P1 S4"
+    },
+    "truth": {
+      "spec": {
+        "exp": "3.2",
+        "rel": "data/processed/{area}/xfer_truth_features_{area}.gpkg"
+      },
+      "schema": "GeoPackage, layers pit_inside (id pit_inside_id), pit_full, pad (id pad_id), EPSG:6346, complete blind blocks",
+      "from": "S7 blind annotation"
+    },
+    "truth_recheck": {
+      "spec": {
+        "exp": "3.2",
+        "rel": "data/processed/{area}/xfer_truth_recheck_{area}.gpkg"
+      },
+      "schema": "same as truth, independent second pass on recheck blocks",
+      "from": "S7"
+    },
+    "prereg": {
+      "spec": {
+        "exp": "3.2",
+        "rel": "docs/prereg_xfer_{area}.md"
+      },
+      "schema": "Markdown preregistration, committed before scoring",
+      "from": "S7 (fill the template)"
+    },
+    "flight_dates": {
+      "spec": {
+        "exp": "3.2",
+        "rel": "results/tables/lidar_flight_dates_appal.csv"
+      },
+      "schema": "CSV program, start_date, end_date, leaf_state, source_url",
+      "from": "USGS project metadata XML"
+    },
+    "nlcd": {
+      "spec": {
+        "path_for": "landcover",
+        "rel": "nlcd_2021_appal.tif"
+      },
+      "schema": "NLCD 2021 30 m GeoTIFF, EPSG:5070",
+      "from": "proposed _fetch_nlcd_appalachia.py"
+    },
+    "adapt_ckpt": {
+      "spec": {
+        "exp": "3.2",
+        "rel": "models/adapt_{area}/best.pt"
+      },
+      "schema": "checkpoint written by _appal_adapt_finetune.py",
+      "from": "S11"
+    }
   },
   "fallback_buffer_m": 192.0,
-  "projected_width": {"densities_per_km2": [10, 25, 50, 100], "cluster_sizes": [1, 2, 4], "n_blocks": [30, 60, 120, 177], "reps": 50, "B": 200},
+  "projected_width": {
+    "densities_per_km2": [
+      10,
+      25,
+      50,
+      100
+    ],
+    "cluster_sizes": [
+      1,
+      2,
+      4
+    ],
+    "n_blocks": [
+      30,
+      60,
+      120,
+      177
+    ],
+    "reps": 50,
+    "B": 200
+  },
   "wells": {
     "sources": {
-      "ny_dec_regulated": {"path": {"path_for": "reference", "rel": "wells_ny_dec/ny_oil_gas_regulated_wells_since_1860.csv"},
-        "state": "New York", "reader": "csv", "id": "API Well Number", "lat": "Surface Latitude", "lon": "Surface Longitude",
-        "status": "Well Status ", "type": "Well Type", "county": "County", "name": "Well Name",
-        "date_spud": "Date Spudded", "date_complete": "Date Well Completed", "date_plug": "Date Well Plugged",
-        "datum": "NAD83", "datum_state": "assumed, VERIFY in the DEC data dictionary", "coord_method": null},
-      "ny_dec_orphan": {"path": {"path_for": "reference", "rel": "wells_ny_dec/ny_orphaned_wells.csv"},
-        "state": "New York", "reader": "csv", "id": "API WELL NUMBER", "lat": "SURFACE LATITUDE", "lon": "SURFACE LONGITUDE",
-        "status": "WELL STATUS", "type": "WELL TYPE CODE", "county": "COUNTY", "name": "WELL NAME",
-        "datum": "NAD83", "datum_state": "assumed, VERIFY", "coord_method": "VERIFIED LOCATION", "force_status": "orphan"},
-      "oh_odnr": {"path": {"path_for": "reference", "rel": "wells_oh_odnr/oh_odnr_wells.csv.gz"},
-        "state": "Ohio", "reader": "csv", "id": "API_WELLNO", "lat": "WH_LAT", "lon": "WH_LONG",
-        "status": "WL_STATUS_DESC", "type": "MapSymbol_DESC", "county": "WL_CNTY", "name": "WELL_NM",
-        "datum": "NAD83", "datum_state": "assumed, VERIFY (lat/lon columns differ from WH_LAT by about 1 m)", "coord_method": null},
-      "wv_dep": {"path": {"path_for": "reference", "rel": "wells_wv_dep/wv_dep_all_wells.csv.gz"},
-        "state": "West Virginia", "reader": "csv", "id": "api", "lat": "lat", "lon": "lon",
-        "status": "wellstatus", "type": "welltype", "county": "county", "name": "farmname",
-        "date_complete": "compdate", "datum": "NAD83", "datum_state": "webmap links say datum=83, VERIFY", "coord_method": null,
-        "sentinel_xy": [500000.0, 4000000.0], "sentinel_cols": ["wellx", "welly"]},
-      "ky_kgs": {"path": {"path_for": "reference", "rel": "wells_ky_kgs/kyog_dd.zip"}, "member": "kyog_dd.shp",
-        "state": "Kentucky", "reader": "shp", "id": "API", "lat": "Rec_Lat83", "lon": "Rec_Lng83",
-        "lat27": "Rec_Lat27", "lon27": "Rec_Lng27",
-        "status": "Org_Result", "type": "Org_WClass", "county": "County", "name": "Org_Farm",
-        "date_complete": "Cmpl_Date", "date_plug": "Plug_Date", "datum": "NAD83 (converted from NAD27 by KGS)",
-        "datum_state": "held, shift measured", "coord_method": null},
-      "us_orphan_2026": {"path": {"path_for": "reference", "rel": "wells_us_orphan_2026/US_orphaned_wells_2026.csv"},
-        "state": null, "state_filter": ["New York", "Ohio", "Kentucky", "West Virginia"], "reader": "csv",
-        "id": "primary_identifier", "lat": "latitude", "lon": "longitude", "status": "status", "type": "type",
-        "county": "county", "name": "well_name", "datum": "NAD83", "datum_state": "location_notes per row",
-        "coord_method": "location_notes", "force_status": "orphan"},
-      "us_orphan_2022": {"path": {"path_for": "reference", "rel": "wells_us_orphan_2022/US_orphaned_wells.csv"},
-        "state": null, "state_filter": ["New York", "Ohio", "Kentucky", "West Virginia"], "reader": "csv",
-        "id": "Well identifier", "lat": "Latitude", "lon": "Longitude", "status": "Status", "type": "Type",
-        "county": "County", "name": "Well name", "datum": "NAD83", "datum_state": "Location notes per row",
-        "coord_method": "Location notes", "force_status": "orphan",
-        "_note": "memory note: this file was found to be PA-only once; the loader reports the per-state count it finds"}
+      "ny_dec_regulated": {
+        "path": {
+          "path_for": "reference",
+          "rel": "wells_ny_dec/ny_oil_gas_regulated_wells_since_1860.csv"
+        },
+        "state": "New York",
+        "reader": "csv",
+        "id": "API Well Number",
+        "lat": "Surface Latitude",
+        "lon": "Surface Longitude",
+        "status": "Well Status ",
+        "type": "Well Type",
+        "county": "County",
+        "name": "Well Name",
+        "date_spud": "Date Spudded",
+        "date_complete": "Date Well Completed",
+        "date_plug": "Date Well Plugged",
+        "datum": "NAD83",
+        "datum_state": "assumed, VERIFY in the DEC data dictionary",
+        "coord_method": null
+      },
+      "ny_dec_orphan": {
+        "path": {
+          "path_for": "reference",
+          "rel": "wells_ny_dec/ny_orphaned_wells.csv"
+        },
+        "state": "New York",
+        "reader": "csv",
+        "id": "API WELL NUMBER",
+        "lat": "SURFACE LATITUDE",
+        "lon": "SURFACE LONGITUDE",
+        "status": "WELL STATUS",
+        "type": "WELL TYPE CODE",
+        "county": "COUNTY",
+        "name": "WELL NAME",
+        "datum": "NAD83",
+        "datum_state": "assumed, VERIFY",
+        "coord_method": "VERIFIED LOCATION",
+        "force_status": "orphan"
+      },
+      "oh_odnr": {
+        "path": {
+          "path_for": "reference",
+          "rel": "wells_oh_odnr/oh_odnr_wells.csv.gz"
+        },
+        "state": "Ohio",
+        "reader": "csv",
+        "id": "API_WELLNO",
+        "lat": "WH_LAT",
+        "lon": "WH_LONG",
+        "status": "WL_STATUS_DESC",
+        "type": "MapSymbol_DESC",
+        "county": "WL_CNTY",
+        "name": "WELL_NM",
+        "datum": "NAD83",
+        "datum_state": "assumed, VERIFY (lat/lon columns differ from WH_LAT by about 1 m)",
+        "coord_method": null
+      },
+      "wv_dep": {
+        "path": {
+          "path_for": "reference",
+          "rel": "wells_wv_dep/wv_dep_all_wells.csv.gz"
+        },
+        "state": "West Virginia",
+        "reader": "csv",
+        "id": "api",
+        "lat": "lat",
+        "lon": "lon",
+        "status": "wellstatus",
+        "type": "welltype",
+        "county": "county",
+        "name": "farmname",
+        "date_complete": "compdate",
+        "datum": "NAD83",
+        "datum_state": "webmap links say datum=83, VERIFY",
+        "coord_method": null,
+        "sentinel_xy": [
+          500000.0,
+          4000000.0
+        ],
+        "sentinel_cols": [
+          "wellx",
+          "welly"
+        ]
+      },
+      "ky_kgs": {
+        "path": {
+          "path_for": "reference",
+          "rel": "wells_ky_kgs/kyog_dd.zip"
+        },
+        "member": "kyog_dd.shp",
+        "state": "Kentucky",
+        "reader": "shp",
+        "id": "API",
+        "lat": "Rec_Lat83",
+        "lon": "Rec_Lng83",
+        "lat27": "Rec_Lat27",
+        "lon27": "Rec_Lng27",
+        "status": "Org_Result",
+        "type": "Org_WClass",
+        "county": "County",
+        "name": "Org_Farm",
+        "date_complete": "Cmpl_Date",
+        "date_plug": "Plug_Date",
+        "datum": "NAD83 (converted from NAD27 by KGS)",
+        "datum_state": "held, shift measured",
+        "coord_method": null
+      },
+      "us_orphan_2026": {
+        "path": {
+          "path_for": "reference",
+          "rel": "wells_us_orphan_2026/US_orphaned_wells_2026.csv"
+        },
+        "state": null,
+        "state_filter": [
+          "New York",
+          "Ohio",
+          "Kentucky",
+          "West Virginia"
+        ],
+        "reader": "csv",
+        "id": "primary_identifier",
+        "lat": "latitude",
+        "lon": "longitude",
+        "status": "status",
+        "type": "type",
+        "county": "county",
+        "name": "well_name",
+        "datum": "NAD83",
+        "datum_state": "location_notes per row",
+        "coord_method": "location_notes",
+        "force_status": "orphan"
+      },
+      "us_orphan_2022": {
+        "path": {
+          "path_for": "reference",
+          "rel": "wells_us_orphan_2022/US_orphaned_wells.csv"
+        },
+        "state": null,
+        "state_filter": [
+          "New York",
+          "Ohio",
+          "Kentucky",
+          "West Virginia"
+        ],
+        "reader": "csv",
+        "id": "Well identifier",
+        "lat": "Latitude",
+        "lon": "Longitude",
+        "status": "Status",
+        "type": "Type",
+        "county": "County",
+        "name": "Well name",
+        "datum": "NAD83",
+        "datum_state": "Location notes per row",
+        "coord_method": "Location notes",
+        "force_status": "orphan",
+        "_note": "memory note: this file was found to be PA-only once; the loader reports the per-state count it finds"
+      }
     },
     "status_rules": [
-      ["orphan", "(?i)orphan|^UL$|^UM$|^UN$|unknown located|unknown not found"],
-      ["plugged", "(?i)plug|final restoration|^PA$|^PM$|^PB$|^TRM$|replugged"],
-      ["abandoned", "(?i)abandon|^D&A$|^TA$|inactive|^IN$|^SI$|shut.?in|historical production|^AB$|^IA$|^TAI$"],
-      ["active", "(?i)^AC$|active|producing|^OIL$|^GAS$|^O&G$|^GS$|^SWD$|^WI$|injection|storage|^CBM$|domestic"],
-      ["other", ".*"]
+      [
+        "orphan",
+        "(?i)orphan|^UL$|^UM$|^UN$|unknown located|unknown not found"
+      ],
+      [
+        "plugged",
+        "(?i)plug|final restoration|^PA$|^PM$|^PB$|^TRM$|replugged"
+      ],
+      [
+        "abandoned",
+        "(?i)abandon|^D&A$|^TA$|inactive|^IN$|^SI$|shut.?in|historical production|^AB$|^IA$|^TAI$"
+      ],
+      [
+        "active",
+        "(?i)^AC$|active|producing|^OIL$|^GAS$|^O&G$|^GS$|^SWD$|^WI$|injection|storage|^CBM$|domestic"
+      ],
+      [
+        "other",
+        ".*"
+      ]
     ],
     "_status_note": "VERIFY each mapping against the source data dictionary. Original code and text are always kept.",
     "date_sentinel_year": 1800,
     "early_cutoff_year": 1930,
     "min_decimals": 5
-  }
+  },
+  "_policy_note": "Proposal cutoff, min blob, IoU, match order and K come from ek.policy_for(task) through the 3.0 scorer. iou_tau and min_blob_m2 here mirror it and are not read by the scorer."
 }

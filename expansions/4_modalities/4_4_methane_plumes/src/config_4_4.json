@@ -41,6 +41,8 @@
       "abandoned_scenarios": {"low": 280000, "high": 970000},
       "abandoned_scenarios_note": "VERIFY. Range of Pennsylvania abandoned-well estimates as cited in Kang et al. 2014. Used only to scale the tail count."
     },
+    "tail_max_extrapolation_multiple": null,
+    "tail_max_extrapolation_note": "User decision (4.4-01). Largest multiple of the largest observed rate at which a fitted tail may be read. null means no extrapolation. A detection limit beyond it gives 'not identifiable by extrapolation'.",
     "tail_bootstrap_B": 2000,
     "seed": 20261105
   },

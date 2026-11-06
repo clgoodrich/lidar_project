@@ -1,0 +1,147 @@
+{
+  "written": "2026-11-06T10:49:59",
+  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_scenarios_9t.py"
+  ],
+  "params": {
+    "top_n": 50,
+    "n_sites": 1354,
+    "scenarios": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "primary": "A",
+    "e_status": "unusable: E has 1 component(s), fewer than the declared minimum 2",
+    "index_rules": {
+      "H": {
+        "rule": "unrankable",
+        "min_coverage": 1.0,
+        "impute": {}
+      },
+      "E": {
+        "rule": "unrankable",
+        "min_coverage": 1.0,
+        "impute": {}
+      },
+      "e_min_components": 2,
+      "e_min_distinct": 51
+    },
+    "h_components": [
+      "h_status",
+      "h_age",
+      "h_no_plug_record"
+    ],
+    "n_unrankable_H": 296,
+    "n_unrankable_E": 1354,
+    "scenario_report": {
+      "A": {
+        "n_rankable": 0,
+        "n_unrankable": 1354,
+        "top_set_size": 0,
+        "ties_in_top": 0,
+        "largest_tie_in_top": 0,
+        "tie_at_cutoff": 0,
+        "distinct_ranks_in_top": 0,
+        "candidate_share": null,
+        "status": "unrankable (no site has every key)"
+      },
+      "B": {
+        "n_rankable": 1058,
+        "n_unrankable": 296,
+        "top_set_size": 169,
+        "ties_in_top": 169,
+        "largest_tie_in_top": 169,
+        "tie_at_cutoff": 169,
+        "distinct_ranks_in_top": 1,
+        "candidate_share": 0.0,
+        "status": "ties exceed N"
+      },
+      "C": {
+        "n_rankable": 0,
+        "n_unrankable": 1354,
+        "top_set_size": 0,
+        "ties_in_top": 0,
+        "largest_tie_in_top": 0,
+        "tie_at_cutoff": 0,
+        "distinct_ranks_in_top": 0,
+        "candidate_share": null,
+        "status": "unrankable (no site has every key)"
+      },
+      "D": {
+        "n_rankable": 0,
+        "n_unrankable": 1354,
+        "top_set_size": 0,
+        "ties_in_top": 0,
+        "largest_tie_in_top": 0,
+        "tie_at_cutoff": 0,
+        "distinct_ranks_in_top": 0,
+        "candidate_share": null,
+        "status": "unrankable (no site has every key)"
+      }
+    },
+    "top_n_jaccard_between_scenarios": {
+      "A_B": null,
+      "A_C": null,
+      "A_D": null,
+      "B_C": null,
+      "B_D": null,
+      "C_D": null
+    },
+    "top_n_candidate_share": {
+      "A": null,
+      "B": 0.0,
+      "C": null,
+      "D": null
+    },
+    "tie_rule": "competition ranks. Equal keys share a rank. The top-N set keeps every tie at the cutoff.",
+    "e_components": {
+      "roads_n_100": 1
+    },
+    "missing_components": [
+      "water_wells",
+      "buildings",
+      "streams",
+      "wetlands",
+      "public_supply",
+      "protected"
+    ],
+    "prereg_sha256": null,
+    "endpoint_inputs_read": [],
+    "statement": "Scenario rankings are rules, not findings. Candidate rows are conditional on the feature model."
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_exposure_sites_9t.csv",
+      "bytes": 201099,
+      "mtime": "2026-11-06T10:49:26.631460",
+      "sha256": "b9fa43fe40cec1cf7af069ad0975e0c15304db4db7f4159a7499d10e3150f624"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_hazard_proxy_9t.csv",
+      "bytes": 75436,
+      "mtime": "2026-11-06T10:49:44.301304",
+      "sha256": "15fcad4f8d01509fed2aad43d7a0b96b0379bf4c29617f7af20d120a8cab8912"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_scenario_ranks_9t.csv",
+      "bytes": 182321,
+      "mtime": "2026-11-06T10:49:59.555832",
+      "sha256": "5b858d4c89949917e7e108cdc8424ea0d6b7567ed920424b61f984d53e8dc159"
+    },
+    {
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_scenario_summary_9t.json",
+      "bytes": 2569,
+      "mtime": "2026-11-06T10:49:59.562833",
+      "sha256": "d4ef4cf78346c83c75323f4995c66bc9a02bfd24066e9d365153be867d04ac60"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "stage": "T0+T1",
+  "evidence_level": "(a) at best. Not a well or leak claim",
+  "t0": {
+    "verdict": "success",
+    "action": "continue to T1",
+    "routes_tested": [
+      "bare gravel thermal inertia",
+      "soil moisture difference"
+    ],
+    "null_routes": [
+      "land cover and canopy removal",
+      "slope and aspect solar loading"
+    ],
+    "not_testable": [
+      "leaking gas at ordinary flow"
+    ]
+  },
+  "n_pads_layer": 995,
+  "n_pads": 650,
+  "delta_T_K": 1.0,
+  "proxy_dT_K": null,
+  "sensors": {
+    "landsat_tirs": {
+      "native_pixel_m": 100.0,
+      "median_fill": 0.1314738689389891,
+      "share_fill_ge_thr": 0.023076923076923078,
+      "breakeven_dT_K": 7.606074180900947,
+      "scenes": {
+        "status": "missing_input",
+        "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_2_thermal\\data\\raw\\scene_index_landsat_9t.csv",
+        "usable": null
+      },
+      "registration": {
+        "status": "missing_input",
+        "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_2_thermal\\data\\raw\\tiepoints_landsat_9t.csv"
+      },
+      "registration_qc": {
+        "pass": false,
+        "reason": "no tie points. Registration is unchecked, so a pad cannot be placed in its pixel"
+      },
+      "verdict": "inconclusive",
+      "reason": "proxy_dT_K not measured. Break-even dT reported only. no tie points. Registration is unchecked, so a pad cannot be placed in its pixel"
+    },
+    "ecostress": {
+      "native_pixel_m": 70.0,
+      "median_fill": 0.23980234724151284,
+      "share_fill_ge_thr": 0.45692307692307693,
+      "breakeven_dT_K": 4.170100966496658,
+      "scenes": {
+        "status": "missing_input",
+        "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_2_thermal\\data\\raw\\scene_index_ecostress_9t.csv",
+        "usable": null
+      },
+      "registration": {
+        "status": "missing_input",
+        "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\4_modalities\\4_2_thermal\\data\\raw\\tiepoints_ecostress_9t.csv"
+      },
+      "registration_qc": {
+        "pass": false,
+        "reason": "no tie points. Registration is unchecked, so a pad cannot be placed in its pixel"
+      },
+      "verdict": "inconclusive",
+      "reason": "proxy_dT_K not measured. Break-even dT reported only. no tie points. Registration is unchecked, so a pad cannot be placed in its pixel"
+    }
+  }
+}

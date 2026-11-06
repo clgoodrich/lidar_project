@@ -7,8 +7,7 @@ Purpose
     evidence_level and the build fails if any layer mixes levels. Candidates are worded "candidate" only.
 Inputs
     S1 output screen_eligible_mask_9t.gpkg in the run folder (run S1 first)
-    candidates_pit / candidates_pad   data/9t/results/records/detector_output_{pit,pad}_full_9t.gpkg   assumed (5.6)
-    proposals                          data/9t/results/records/proposals_56_9t.csv                     assumed (5.6), optional
+    candidates_pit / candidates_pad   expansions/5_tasks/5_6_record_association/data/processed/detector_output_{pit,pad}_full_9t.gpkg (5.6 S0)
     dep_wells                          data/_source/reference/dep_wells/venango_wells_all.gpkg         held
     partner_area / partner_wells       data/_source/partners/co2_partner/                              assumed, optional
     historic, field                    4.6 and 7.5 outputs                                            assumed, optional
@@ -32,13 +31,22 @@ import _co2_screen_lib as L
 from _co2_screen_lib import ek
 
 
+# 5.6 writes its proposals into a dated run folder with no stable path, and its pit and pad det_id values collided
+# before the 2026-11-06 contract. So 6.1 reads no proposal file. The link flag is a record within link_radius_m.
+LINKS_ABSENT = "no stable 5.6 proposal file. Link flag is a record within link_radius_m"
+
+
 def score_band(scores: np.ndarray, edges: list[float]) -> list[str]:
     idx = np.clip(np.digitize(scores, edges) - 1, 0, len(edges) - 2)
     return [f"{edges[i]:.2f}-{min(edges[i + 1], 1.0):.2f}" for i in idx]
 
 
-def candidate_layer(cand, rec, elig, cfg: dict, proposals: pd.DataFrame | None):
-    """Rank, K flag, nearest-record distance, link flag, blind-zone flag."""
+def candidate_layer(cand, rec, elig, cfg: dict):
+    """Rank, K flag, nearest-record distance, link flag, blind-zone flag.
+
+    K is spent only inside the scored footprint. A candidate in a blind zone (or outside every block) gets no
+    k_rank and is never within_k, so it cannot use up review budget that eligible area paid for.
+    """
     p = cfg["params"]
     c = cand.copy()
     blocks = elig[["block_id", "eligible", "geometry"]]
@@ -47,41 +55,22 @@ def candidate_layer(cand, rec, elig, cfg: dict, proposals: pd.DataFrame | None):
     c["in_blind_zone"] = [not bool(elig_map.get(b, False)) if b == b else True for b in c.block_id]
     elig_km2 = float(blocks[blocks.eligible].area.sum() / 1e6)
     k = int(round(p["k_per_km2"] * elig_km2))
-    c = c.sort_values(["score", "area_m2", "site_id"], ascending=[False, False, True], na_position="last")
-    c["k_rank"] = np.arange(1, len(c) + 1)
-    c["within_k"] = c.k_rank <= k
+    c = c.sort_values(["score", "area_m2", "site_uid"], ascending=[False, False, True], na_position="last")
+    scored = ~c["in_blind_zone"].to_numpy(bool)
+    rank = np.full(len(c), np.nan)
+    rank[scored] = np.arange(1, int(scored.sum()) + 1)
+    c["k_rank"] = rank
+    c["within_k"] = scored & (rank <= k)
     c["score_band"] = score_band(c.score.to_numpy(), p["score_bands"])
     rec_xy = L.xy(rec)
     c["nearest_record_m"] = np.round(L.nearest_dist(L.xy(c), rec_xy), 1)
-    if proposals is not None and len(proposals):
-        linked = set(proposals.site_id.astype(str))
-        c["linked_record"] = c.site_id.isin(linked)
-        c["link_basis"] = "5.6 proposal"
-    else:
-        c["linked_record"] = c.nearest_record_m <= p["link_radius_m"]
-        c["link_basis"] = f"record within {p['link_radius_m']} m (no 5.6 proposals)"
+    c["linked_record"] = c.nearest_record_m <= p["link_radius_m"]
+    c["link_basis"] = f"record within {p['link_radius_m']} m"
     c["label"] = "candidate"
     c["method"] = p["method_name"]
     c["method_version"] = p["method_version"]
     c["evidence_level"] = "a"
     return c.reset_index(drop=True), k, elig_km2
-
-
-def links_layer(proposals: pd.DataFrame | None, cand, cfg: dict):
-    import geopandas as gpd
-    from shapely.geometry import LineString  # noqa: F401
-    if proposals is None:
-        return None, "5.6 proposals not built"
-    pr = proposals.copy()
-    pr["site_id"] = pr.site_id.astype(str)
-    pr["link_ppv"] = pr["link_ppv"].where(pr["link_ppv"].notna(), "not measured").astype(str) \
-        if "link_ppv" in pr else "not measured"
-    pr["meaning"] = "proposed association only. Not a coordinate correction"
-    m = pr.merge(cand[["site_id", "geometry"]], on="site_id", how="inner")
-    ek.assert_rows(m, len(pr), "proposal to candidate join")
-    g = gpd.GeoDataFrame(m, geometry="geometry", crs=cfg["crs"])
-    g["evidence_level"] = "b"   # a link is a record-side proposal, reported with the record evidence level
-    return g, ""
 
 
 def build(cfg: dict, prof: dict, out_dir: Path, overrides: dict | None = None,
@@ -104,10 +93,8 @@ def build(cfg: dict, prof: dict, out_dir: Path, overrides: dict | None = None,
     cand = L.read_candidates(cfg, o.get("candidates_pit"), o.get("candidates_pad"))
     n_cand_in = len(cand)
     cand = cand[cand.within(area_poly.geometry.iloc[0].buffer(p["screen_buffer_m"]))]
-    prop_p = L.input_path(cfg, "proposals", o.get("proposals"), required=False)
-    proposals = pd.read_csv(prop_p) if prop_p is not None else None
-    cand, k, elig_km2 = candidate_layer(cand, rec, elig, cfg, proposals)
-    links, links_reason = links_layer(proposals, cand, cfg)
+    cand, k, elig_km2 = candidate_layer(cand, rec, elig, cfg)
+    links, links_reason = None, LINKS_ABSENT
 
     layers = {"L1_records": rec, "L2_candidates": cand, "L3_links": links,
               "L4_eligible": elig.assign(evidence_level="coverage")}
@@ -175,13 +162,13 @@ def add_cli(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--profile", default="co2")
     ap.add_argument("--profile-file", default=None)
     ap.add_argument("--out", default=None)
-    for k_ in ("candidates-pit", "candidates-pad", "proposals", "dep-wells", "partner-area", "partner-wells",
+    for k_ in ("candidates-pit", "candidates-pad", "dep-wells", "partner-area", "partner-wells",
                "eligible", "historic", "field"):
         ap.add_argument(f"--{k_}", default=None, help="override the configured path")
 
 
 def overrides_from(a) -> dict:
-    return {k_: getattr(a, k_) for k_ in ("candidates_pit", "candidates_pad", "proposals", "dep_wells",
+    return {k_: getattr(a, k_) for k_ in ("candidates_pit", "candidates_pad", "dep_wells",
                                           "partner_area", "partner_wells", "eligible", "historic", "field")}
 
 

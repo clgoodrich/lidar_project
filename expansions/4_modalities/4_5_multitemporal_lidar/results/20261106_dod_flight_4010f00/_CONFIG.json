@@ -1,0 +1,29 @@
+{
+  "full_scan": true,
+  "projects": {
+    "early": {
+      "laz_dir": {
+        "key": "data",
+        "rel": "9t/derived/lidar_2006_2008"
+      },
+      "laz_glob": "*.laz",
+      "name": "PA_STATEWIDE_N_2006_2008",
+      "year_hi": 2008,
+      "year_lo": 2006
+    },
+    "late": {
+      "laz_dir": {
+        "key": "source",
+        "rel": "westernpa"
+      },
+      "laz_glob": "**/USGS_LPC_PA_WesternPA_2019_D20_*.laz",
+      "name": "PA_WesternPA_2019_D20",
+      "tile_index": {
+        "key": "source",
+        "rel": "laz_tile_index.csv"
+      },
+      "year_hi": 2019,
+      "year_lo": 2019
+    }
+  }
+}

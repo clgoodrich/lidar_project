@@ -3,6 +3,14 @@
 Newest first. One line per decision, with the date and who made it.
 
 
+- 2026-11-06. Review fix 4.8-01. Unavailable, blank and undated chips leave the usable-share denominator. They had been counted as not usable, so an all-undated PEMA source read `unusable here`. Coverage (judged chips over sampled chips) is now reported per source. With no judged chip the gate is inconclusive. This replaces the 2026-11-05 line that missing chips count against the share. Made by the review-fix agent, change freely.
+- 2026-11-06. Registration nodes are true junctions only. A node needs three or more road arms. End-to-end joints of one road are dropped. Made by the review-fix agent, change freely.
+
+## Needs user decision
+
+- A minimum coverage for the usable-share gate. Without one, a source can pass on a small judged share of its sampled chips. Coverage is reported but does not gate.
+
+
 - 2026-11-05. Framework rewritten to full depth (14 sections and an Assumed data table). made by the build agent, change freely.
 - 2026-11-05. Two chip statuses added, undated and low visible ground, so no chip is forced into a wrong class. made by the build agent, change freely.
 - 2026-11-05. Visible ground cutoff 0.15 and usable share gate 0.60 are defaults until the user confirms them before S1. made by the build agent, change freely.

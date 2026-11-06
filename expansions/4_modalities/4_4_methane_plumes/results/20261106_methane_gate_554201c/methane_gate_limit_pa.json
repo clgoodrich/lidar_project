@@ -1,0 +1,52 @@
+{
+  "mean_rate_kg_per_day": 0.27,
+  "mean_rate_kg_per_h": 0.01125,
+  "mean_rate_source": "Kang M, Kanno CM, Reid MC, Zhang X, Mauzerall DL, Celia MA, Chen Y, Onstott TC (2014). Direct measurements of methane emissions from abandoned oil and gas wells in Pennsylvania. PNAS 111(51):18173-18177. doi:10.1073/pnas.1408315111. Figures as quoted in docs/plans/protocol_gates_and_metrics.md section 9 (checked at the Princeton record 2026-11-04).",
+  "best_case_factor": 10.0,
+  "closure_ratio": 100.0,
+  "wells_per_footprint": {
+    "source": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+    "max": 4,
+    "max_raw": 41,
+    "p99_occupied": 2.0,
+    "n_points": 20108,
+    "n_distinct": 19611,
+    "max_stacked": 41,
+    "n_stacked_locations": 189,
+    "count_mode": "distinct_locations"
+  },
+  "population": {
+    "low": 280000,
+    "high": 970000,
+    "documented_orphans_2022": 4786
+  },
+  "instruments": [
+    {
+      "instrument": "Tanager (Carbon Mapper)",
+      "dl_best_kg_h": 9.0,
+      "R_mean_stated_low": 8000.0,
+      "R_mean_stated_high": 16000.0,
+      "R_mean_best_case": 800.0,
+      "R_high_best_case": null,
+      "aggregation_N_best_case": 800.0,
+      "tail_fit": null,
+      "gates": {
+        "mean": "failure",
+        "aggregation": "failure",
+        "tail": {
+          "verdict": "inconclusive",
+          "why": "per-well rates not on file"
+        },
+        "aggregation_sensitivity_raw_records": "inconclusive"
+      },
+      "verdict": {
+        "small_well_attribution": "CLOSE",
+        "m2_large_leaker_branch": "live for the tail only (tail inconclusive)",
+        "scope": "Routine satellite screening of individual ordinary small wells, under the stated instrument conditions only. Does not bound rare large emitters, aggregation elsewhere, other basins or other instruments."
+      }
+    }
+  ],
+  "overall_verdict": "CLOSE",
+  "evidence_level": "none of (a) to (d). Arithmetic only.",
+  "verify": "Every figure tagged VERIFY in config_4_4.json must be read in its source before this verdict is final."
+}

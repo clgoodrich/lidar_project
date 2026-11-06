@@ -24,8 +24,8 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 `sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "notebooks/wellsight_v2"))`.
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
-## Build status (2026-11-05)
-Built by the build agent. Assumed inputs and their schemas are in `src/config_4_6.json`. Every script stops with the name of a missing input. Tests. `python -m pytest -q expansions/4_modalities/4_6_historic_maps_aerials/src/test_4_6.py -p no:cacheprovider` (7 passed).
+## Build status (2026-11-06)
+Built by the build agent 2026-11-05. Review fixes 2026-11-06 (4.6-01). Assumed inputs and their schemas are in `src/config_4_6.json`. Every script stops with the name of a missing input. Tests. `python -m pytest -q expansions/4_modalities/4_6_historic_maps_aerials/src/test_4_6.py -p no:cacheprovider` (8 passed on 2026-11-06).
 
 | Script | Stage | Runnable now | Missing |
 |---|---|---|---|
@@ -34,8 +34,8 @@ Built by the build agent. Assumed inputs and their schemas are in `src/config_4_
 | `src/_hist_topo_crop_9t.py` | S1 crop and renders | yes, on `data/_source/historic_topo_probe/oil_city_1922_62500.tif` | D5 sheets for more dates. Neatline bounds per sheet (VERIFY) |
 | `src/_hist_aerial_probe_9t.py` | S2 aerial frames | no | D7 frame index `data/raw/aerial_frame_index_9t.csv` and scans |
 | `src/_hist_georef_check_9t.py` | S3 accuracy | no | GCP and check point table `data/_source/historic_topo_probe/<source>_gcp.csv` |
-| `src/_hist_marks_merge_9t.py` | S4 agreement and mark layer | no | two digitiser mark sheets in `data/raw/marks/` |
-| `src/_hist_marks_vs_records_9t.py` | S5 compare | no | S4 marks. Oil field footprint (falls back to a DEP hull). OOF pit probability mosaic for comparison 3 |
+| `src/_hist_marks_merge_9t.py` | S4 agreement and mark layer | no | two digitiser mark sheets in `data/raw/marks/`. Interval resamples pairs as units since 2026-11-06 |
+| `src/_hist_marks_vs_records_9t.py` | S5 compare | no | S4 marks with one source date. Oil field footprint (falls back to a DEP hull). OOF pit probability mosaic for comparison 3. Records are filtered to wells spudded by the source date since 2026-11-06 |
 | `src/_hist_source_verdicts_9t.py` | S6 verdicts | no | S1 to S4 products |
 | `src/test_4_6.py` | smoke tests | yes | nothing |
 

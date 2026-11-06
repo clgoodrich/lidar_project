@@ -5,7 +5,8 @@ Purpose
         does not already carry keeps the satellite arm open. Otherwise CLOSE.
     T1. Per pad and per sensor, the fill fraction f (largest share of one native pixel the pad covers),
         on a fixed grid and averaged over random grid offsets. Share of pads with f >= 0.25. Usable scene
-        counts by season and hour. Registration RMSE from tie points. Diluted contrast proxy_dT x f with a
+        counts by season and hour. Registration RMSE from tie points, used as a QC gate (no tie points or
+        a median RMSE above the limit blocks success, review 4.2-02). Diluted contrast proxy_dT x f with a
         block bootstrap of the median. Contrast-to-spread. Gate verdict per sensor against delta_T.
         Without a measured proxy_dT, reports the break-even dT = delta_T / median f only.
 Inputs
@@ -74,8 +75,21 @@ def registration(sensor: dict, g: dict) -> dict:
     per = t.groupby("scene_id").apply(lambda d: float(np.sqrt(np.mean(d["dx_m"] ** 2 + d["dy_m"] ** 2))),
                                       include_groups=False)
     lim = g["max_registration_frac_pixel"] * sensor["native_pixel_m"]
-    return {"status": "ok", "path": str(p), "n_scenes": int(len(per)), "rmse_m_median": float(per.median()),
-            "limit_m": lim, "scenes_over_limit": sorted(per[per > lim].index.astype(str).tolist())}
+    med = float(per.median()) if len(per) else float("nan")
+    return {"status": "ok", "path": str(p), "n_scenes": int(len(per)), "rmse_m_median": med,
+            "limit_m": lim, "scenes_checked": sorted(per.index.astype(str).tolist()),
+            "scenes_over_limit": sorted(per[per > lim].index.astype(str).tolist()),
+            "qc_pass": bool(np.isfinite(med) and med <= lim)}
+
+
+def registration_qc(reg: dict) -> tuple[bool, str]:
+    """Review 4.2-02. A sensor can pass T1 only with tie points whose median RMSE is within the limit."""
+    if not isinstance(reg, dict) or reg.get("status") != "ok":
+        return False, "no tie points. Registration is unchecked, so a pad cannot be placed in its pixel"
+    if not reg.get("qc_pass"):
+        return False, (f"registration median RMSE {reg.get('rmse_m_median'):.1f} m exceeds the limit "
+                       f"{reg.get('limit_m'):.1f} m")
+    return True, "registration within limit"
 
 
 def sensor_gate(df: pd.DataFrame, sensor: dict, g: dict, scenes: dict, reg: dict, seed: int) -> dict:
@@ -88,12 +102,15 @@ def sensor_gate(df: pd.DataFrame, sensor: dict, g: dict, scenes: dict, reg: dict
            "share_fill_ge_thr": float(np.nanmean(f >= g["fill_share_threshold"])),
            "breakeven_dT_K": g["delta_T_K"] / med_fill if med_fill > 0 else float("inf"),
            "scenes": scenes, "registration": reg}
+    reg_ok, reg_msg = registration_qc(reg)
+    res["registration_qc"] = {"pass": reg_ok, "reason": reg_msg}
     dT = g.get("proxy_dT_K")
     if dT is None:
-        res.update(verdict="inconclusive", reason="proxy_dT_K not measured. Break-even dT reported only")
+        res.update(verdict="inconclusive", reason="proxy_dT_K not measured. Break-even dT reported only. " + reg_msg)
         return res
     stat = lambda bl: float(np.nanmedian(np.concatenate([byb[b] for b in bl]))) * dT  # noqa: E731
-    pt, lo, hi, _ = ek.block_bootstrap(stat, blocks, B=g["bootstrap_B"], seed=seed)
+    pt, lo, hi, dr = ek.block_bootstrap(stat, blocks, B=g["bootstrap_B"], seed=seed)
+    res["undefined_share"] = ek.undefined_share(dr)
     noise = scenes.get("noise_K") if isinstance(scenes, dict) and scenes.get("noise_K") else sensor["assumed_noise_K"]
     spread = g.get("spread_K") or noise
     cts = pt / spread if spread else float("nan")
@@ -101,10 +118,12 @@ def sensor_gate(df: pd.DataFrame, sensor: dict, g: dict, scenes: dict, reg: dict
     res.update(diluted_median_K=pt, lo=lo, hi=hi, noise_K=noise, spread_K=spread, contrast_to_spread=cts)
     if hi < g["delta_T_K"]:
         res["verdict"] = "failure"
-    elif lo > g["delta_T_K"] and cts >= 1 and usable is not None and usable >= g["min_usable_scenes"]:
+    elif lo > g["delta_T_K"] and cts >= 1 and usable is not None and usable >= g["min_usable_scenes"] and reg_ok:
         res["verdict"] = "success"
     else:
         res["verdict"] = "inconclusive"
+        if not reg_ok:
+            res["reason"] = "registration QC failed. " + reg_msg
     res["action"] = {"failure": "pre-specified CLOSE for this sensor", "success": "run T2",
                      "inconclusive": "report, collect scenes or measure proxy_dT"}[res["verdict"]]
     return res

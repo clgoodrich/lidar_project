@@ -1,24 +1,23 @@
 {
   "n_records": 1058,
-  "n_candidates_in": 685,
-  "n_sites": 1385,
+  "n_candidates_in": 677,
+  "n_sites": 1354,
   "n_record_sites": 1058,
-  "n_candidate_sites": 327,
-  "n_records_with_surface_evidence": 394,
-  "scored_area_km2": 16.171875,
-  "k": 647,
+  "n_candidate_sites": 296,
+  "n_records_with_surface_evidence": 356,
+  "scored_area_km2": 20.25,
+  "k": 810,
   "k_per_km2": 40.0,
   "p_band_cuts": [
-    0.709,
-    0.6523333333333333,
-    0.534
+    0.707,
+    0.646,
+    0.51
   ],
   "p_band_counts": {
     "record": 1058,
-    "K3": 124,
-    "K2": 97,
-    "K1": 82,
-    "below_K": 24
+    "K3": 116,
+    "K2": 100,
+    "K1": 80
   },
   "site_resolution": "5.6_full_output",
   "receptors_present": [
@@ -60,11 +59,13 @@
     "P": [
       "candidates:score",
       "dep_wells:PERMIT_NUM",
-      "pit_blocks:n_pits",
+      "pit_blocks:geometry",
       "config:k_per_km2"
     ]
   },
   "note": "P for candidates is an ordinal band of the feature model, conditional on the feature model. Exposure from present receptor layers only.",
-  "n_candidates_merged_into_records": 358,
-  "n_candidates_shared_by_several_records": 33
+  "n_candidates_merged_into_records": 381,
+  "n_records_with_several_candidates": 25,
+  "merge_rule": "every candidate within assoc_radius_m of a record joins its nearest record",
+  "footprint_rule": "all blocks of the grid (not n_pits > 0)"
 }

@@ -4,7 +4,7 @@ Purpose
     Read the configured layers once, the same way in every stage.
     - records(): DEP wells in the 9t bbox, minus never-drilled statuses (read-only source)
     - candidates(): 5.6 S0 full detector output, or the held pit layers when it is absent (flagged)
-    - footprint_km2(): scored eligible area, the blocks with n_pits > 0, for K = 40 per km2
+    - footprint_km2(): scored eligible area, every block of the grid, for K = 40 per km2
     - receptors(): every receptor layer that exists. Missing assumed layers are recorded, not invented
     - start_run(): run folder under the 5.3 results/runs/ with _RUN.md and _CONFIG.json
 Inputs (path specs in config_5_3.json)
@@ -43,9 +43,21 @@ def blocks(cfg):
 
 
 def footprint_km2(cfg) -> float:
+    """Scored eligible area for K. Review 2026-11-06: every block of the grid (144 on 9t), never the blocks
+    chosen by truth (n_pits > 0). The 29 zero-pit blocks of 9t have no out-of-fold detector output, so this
+    area is larger than the area the detector actually scored (see docs/decisions_5_3.md)."""
     b = blocks(cfg)
-    b = b[b["n_pits"] > 0]
     return float(len(b) * cfg["block_size_m"] ** 2 / 1e6)
+
+
+def rel(p) -> str:
+    """Repo-relative path string for outputs (review 2026-11-06: no absolute paths in tables). Paths outside
+    the repo are returned as given."""
+    p = Path(p)
+    try:
+        return p.resolve().relative_to(ek.REPO.resolve()).as_posix()
+    except ValueError:
+        return p.as_posix()
 
 
 def candidates(cfg):
@@ -108,3 +120,14 @@ def start_run(cfg, short: str, why: str, keys=None) -> Path:
     keep = {k: cfg[k] for k in (keys or []) if k in cfg}
     keep["stage"] = short
     return ek.new_run("5.3", short, keep, base=th.resolve(cfg["outputs"]["runs"]), why=why)
+
+
+def save_fig(fig, path, dpi: int = 130) -> Path:
+    """Save beside the target, then replace it. A viewer holding the old PNG open blocks truncation on
+    Windows (OSError 22) but not a rename over it."""
+    import os
+    path = Path(path)
+    tmp = path.with_name("_tmp_" + path.name)
+    fig.savefig(tmp, dpi=dpi)
+    os.replace(tmp, path)
+    return path

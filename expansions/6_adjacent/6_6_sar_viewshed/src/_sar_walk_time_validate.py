@@ -6,8 +6,13 @@ Purpose
     calibration half, fit one non-negative time multiplier per land-cover group by non-negative least squares
     (measured time = sum over groups of multiplier times the Tobler time spent in that group). Score the holdout
     with the fitted multipliers. Relative error per route is |model - measured| / measured. Primary is the median
-    over holdout routes with a route bootstrap interval (B = 2000). Track points with an error larger than the
-    segment length are dropped, so GNSS noise does not inflate distance. The route is the unit of independence.
+    over holdout routes with a route bootstrap interval (B = 2000). The route is the unit of independence.
+    GNSS noise (review 6.6-01). At 1 Hz a walker moves about 1.3 m per fix and the fix error is 2 to 3 m. The old
+    rule dropped any segment shorter than the error, which dropped every segment, so modelled time was 0. Raw
+    segments would instead inflate the length by noise. Now the track is smoothed with a centred moving average
+    (walk_smooth_s, ends padded by point reflection so a straight walk keeps its ends), then thinned to points at
+    least walk_min_disp_m apart (or 3 times the median fix error after smoothing, if larger). Segment length and
+    slope come from the thinned track. Measured time still runs from the first to the last raw fix.
     Gate. Success when the upper bound is under the time tolerance. Failure when the lower bound is above it.
 Inputs
     data/9t/source/sar_field/walk_tracks_9t.csv (assumed: route_id, t_s, x, y, err_m), DEM (held), landcover (held)
@@ -29,15 +34,50 @@ import _sar_viewshed_tool as V
 from _sar_viewshed_tool import ek
 
 
-def route_segments(g, tr: pd.DataFrame, lc: np.ndarray | None, cp: dict) -> dict:
-    """Tobler time per land-cover group along one track."""
+def smooth_track(t: np.ndarray, x: np.ndarray, y: np.ndarray, window_s: float) -> tuple[np.ndarray, np.ndarray, int]:
+    """Centred moving average over about window_s seconds of fixes. Ends are padded by point reflection
+    (2 * x0 - x_k), so a constant-velocity walk keeps its true end points. Returns x, y and the window in points."""
+    n = len(x)
+    dt = float(np.median(np.diff(t))) if n > 1 else 1.0
+    w = int(max(1, round(window_s / dt if dt > 0 else 1)))
+    w = w + 1 if w % 2 == 0 else w
+    h = min(w // 2, n - 1)
+    if h < 1:
+        return x.astype(float), y.astype(float), 1
+    w = 2 * h + 1
+    out = []
+    for a in (x.astype(float), y.astype(float)):
+        pad = np.r_[2 * a[0] - a[1:h + 1][::-1], a, 2 * a[-1] - a[-h - 1:-1][::-1]]
+        out.append(np.convolve(pad, np.ones(w) / w, mode="valid"))
+    return out[0], out[1], w
+
+
+def thin_by_displacement(x: np.ndarray, y: np.ndarray, min_disp: float) -> np.ndarray:
+    """Indices of points at least min_disp from the previous kept point. The first and last points are kept."""
+    keep = [0]
+    for i in range(1, len(x)):
+        if np.hypot(x[i] - x[keep[-1]], y[i] - y[keep[-1]]) >= min_disp:
+            keep.append(i)
+    if keep[-1] != len(x) - 1:
+        keep.append(len(x) - 1)
+    return np.array(keep, int)
+
+
+def route_segments(g, tr: pd.DataFrame, lc: np.ndarray | None, cp: dict, wp: dict | None = None) -> dict:
+    """Tobler time per land-cover group along one track, after noise-aware smoothing and thinning."""
+    wp = wp or {}
     tr = tr.sort_values("t_s")
-    x, y = tr.x.to_numpy(), tr.y.to_numpy()
+    t = tr.t_s.to_numpy(float)
+    xr, yr = tr.x.to_numpy(float), tr.y.to_numpy(float)
+    xs, ys, w = smooth_track(t, xr, yr, float(wp.get("walk_smooth_s", 15.0)))
+    err = float(np.nanmedian(tr.err_m)) if "err_m" in tr and tr.err_m.notna().any() else 0.0
+    min_disp = max(float(wp.get("walk_min_disp_m", 10.0)), 3.0 * err / np.sqrt(w))
+    k = thin_by_displacement(xs, ys, min_disp)
+    x, y = xs[k], ys[k]
     v, u = g.to_vu(x, y)
     z = V.bilinear(g.dem, v, u)
     dxy = np.hypot(np.diff(x), np.diff(y))
-    err = tr.err_m.to_numpy()[1:] if "err_m" in tr else np.zeros(len(dxy))
-    keep = (dxy > err) & np.isfinite(np.diff(z))
+    keep = (dxy > 0) & np.isfinite(np.diff(z))
     S = np.diff(z)[keep] / dxy[keep]
     t_seg = dxy[keep] / V.tobler_speed_ms(S, cp)
     if lc is not None:
@@ -45,9 +85,11 @@ def route_segments(g, tr: pd.DataFrame, lc: np.ndarray | None, cp: dict) -> dict
         grp = np.array([str(int(c)) for c in code])
     else:
         grp = np.array(["all"] * len(t_seg))
-    by = pd.Series(t_seg).groupby(grp).sum().to_dict()
-    return {"measured_s": float(tr.t_s.iloc[-1] - tr.t_s.iloc[0]), "tobler_by_group": by,
-            "length_m": float(dxy[keep].sum()), "n_dropped_points": int((~keep).sum())}
+    by = pd.Series(t_seg, dtype=float).groupby(grp).sum().to_dict()
+    return {"measured_s": float(t[-1] - t[0]), "tobler_by_group": by,
+            "length_m": float(dxy[keep].sum()), "n_points_raw": int(len(t)), "n_points_used": int(len(k)),
+            "n_segments_no_dem": int((~np.isfinite(np.diff(z))).sum()), "smooth_window_pts": int(w),
+            "min_disp_m": float(min_disp)}
 
 
 def fit_multipliers(routes: list[dict]) -> dict:
@@ -73,7 +115,10 @@ def run(cfg: dict, tracks: pd.DataFrame, g, lc=None, B: int | None = None) -> tu
     perm = list(rng.permutation(ids))
     cal, hold = sorted(perm[: len(perm) // 2]), sorted(perm[len(perm) // 2:])
     ek.assert_disjoint(cal, hold, "calibration vs holdout routes")
-    segs = {rid: route_segments(g, tracks[tracks.route_id == rid], lc, cp) for rid in ids}
+    segs = {rid: route_segments(g, tracks[tracks.route_id == rid], lc, cp, vc) for rid in ids}
+    zero = [rid for rid in ids if segs[rid]["length_m"] <= 0]
+    if zero:
+        raise ValueError(f"routes with zero modelled length {zero}. Check the track and the DEM extent.")
     mult = fit_multipliers([segs[r] for r in cal])
     default = float(np.median(list(mult.values()))) if mult else 1.0
     rows = []
@@ -82,7 +127,8 @@ def run(cfg: dict, tracks: pd.DataFrame, g, lc=None, B: int | None = None) -> tu
         mt = model_time(s, mult, default)
         rows.append({"route_id": rid, "half": "calibration" if rid in cal else "holdout", "measured_s": s["measured_s"],
                      "model_s": mt, "rel_err": abs(mt - s["measured_s"]) / s["measured_s"] if s["measured_s"] else np.nan,
-                     "length_m": s["length_m"], "n_dropped_points": s["n_dropped_points"]})
+                     "length_m": s["length_m"], "n_points_raw": s["n_points_raw"], "n_points_used": s["n_points_used"],
+                     "min_disp_m": s["min_disp_m"]})
     df = pd.DataFrame(rows)
     ho = df[df.half == "holdout"].set_index("route_id")
     res = {"multipliers_fit_on_calibration": mult, "n_routes": len(ids), "holdout_routes": hold,

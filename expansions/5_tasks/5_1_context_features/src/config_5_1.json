@@ -123,10 +123,10 @@
     }
   },
   "trainers": {
-    "pit": "@exp:p1/src/_pit_unet_iso_cv5.py",
+    "pit": "@exp:p1/src/_pit_unet_iso_train_9t.py",
     "pad": "@tools/../notebooks/wellsight_v2/s3_train/_pad_unet_iso_cv5.py",
     "road": "@exp:5.1/src/_context_road_trainer_shared.py",
-    "note": "The pit isolated trainer is P1 S3 (not built). The road trainer is a copy of _road_unet_1m_recall.py that reads the shared folds (not built, GPU). Each must accept --split-file and --fold."
+    "note": "The pit isolated trainer is P1 S3, expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py. Its CLI reads a P1 split JSON (--splits, --only-folds, --out-dir), not this manifest, so pit jobs cannot run on the shared folds until the manifest is exported in the P1 split schema. The road trainer is a copy of _road_unet_1m_recall.py that reads the shared folds (not built, GPU). Each must accept --split-file and --fold."
   },
   "inputs": {
     "pit_blocks": {
@@ -168,7 +168,7 @@
     "audit_blocks": {
       "path": "@results_9t/splits/audit_blocks_9t_v1.csv",
       "assumed": true,
-      "schema": "csv with column block_id (int). From P2 S2",
+      "schema": "csv with # header lines, columns block_id (int), role (audit | buffer), stratum, area. From P2 S2. Read with ek.require_audit",
       "hint": "P2 audit set. Run P2 first or pass --allow-no-audit for a provisional fold file"
     },
     "shared_folds": {

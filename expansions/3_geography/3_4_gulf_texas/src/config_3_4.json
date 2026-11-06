@@ -19,13 +19,15 @@
     "annotation_protocol": "9t guide, two reviewers, 20% independent re-annotation, confuser class drawn"
   },
   "reference": {
-    "tables": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_9t.json"},
-    "_schema": "JSON {block_id: {cands: [{blob_id, score, area_m2, truth_id}], n_truth, km2}} from the 3.0 new-baseline run"
+    "tables_by_task": {"pit": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_9t.json"},
+                       "pad": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"}},
+    "_schema": "JSON {block_id: {cands: [{blob_id, score, area_m2, truth_id}], n_truth, km2}} [+ policy, meta] from 3.0. One file per task"
   },
   "model": {
-    "pit": {"checkpoint": {"key": "models", "rel": "pit/unet_iso_cv5/policy/best.pt"}, "sha256": null,
-            "_note": "isolated pit checkpoint is a P1 output, not built yet"},
-    "pad": {"checkpoint": {"key": "models", "rel": "pad/unet_cv5_iso/fold0/best.pt"}, "sha256": null}
+    "pit": {"transfer_checkpoint": null, "sha256": null,
+            "_note": "USER DECISION. Which frozen pit checkpoint is the transfer model. The old default pit/unet_iso_cv5/policy/best.pt has no producer. Code refuses until this is set"},
+    "pad": {"transfer_checkpoint": null, "sha256": null,
+            "_note": "USER DECISION. Candidate on disk: models pad/unet_cv5_iso/fold0/best.pt (one fold of five). One fold or an ensemble is a prereg decision"}
   },
   "areas": {
     "la_caddo": {"role": "T1", "catalogue_window": "Louisiana_Caddo", "project": "LA_Sabine_River_Lidar_2018_D18",

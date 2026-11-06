@@ -4,7 +4,8 @@ Purpose
     Read the Warren block frame (3.1 output, role column) and take the rows with role `audit`. Refuse if
     any model output already exists over those blocks, since the rule is that nobody has seen model output
     for the reserved area. Model output is any file under data/warren/ matching the config globs whose
-    raster or vector extent overlaps a reserved block. Then write the reserved list with a header and a
+    raster or vector extent overlaps a reserved block. Each extent is reprojected from its own CRS to the
+    block frame's CRS before the test. An extent with no CRS counts as seen. Then write the reserved list with a header and a
     SHA-256. Default is a dry run. `--freeze` writes the v1 file and its `.sha256` sidecar and refuses to
     overwrite. Freezing is a user decision, and the user also decides whether Warren is the absolute area.
 
@@ -37,7 +38,7 @@ CFG = json.loads((HERE.parent / "config_p2.json").read_text(encoding="utf-8"))["
 
 
 def output_extents(root: Path, globs: list[str]):
-    """(path, shapely box) for every model-output file under root."""
+    """(path, shapely box, crs) for every model-output file under root. crs is None when unknown."""
     from shapely.geometry import box
     out = []
     for g in globs:
@@ -46,16 +47,25 @@ def output_extents(root: Path, globs: list[str]):
                 if p.suffix.lower() == ".tif":
                     import rasterio
                     with rasterio.open(p) as r:
-                        out.append((p, box(*r.bounds)))
+                        out.append((p, box(*r.bounds), r.crs.to_wkt() if r.crs else None))
                 else:
                     import pyogrio
                     info = pyogrio.read_info(p)
                     if info.get("total_bounds") is not None:
-                        out.append((p, box(*info["total_bounds"])))
+                        out.append((p, box(*info["total_bounds"]), info.get("crs")))
             except Exception as e:  # noqa: BLE001
-                out.append((p, None))
+                out.append((p, None, None))
                 print(f"could not read extent of {p}: {e}")
     return out
+
+
+def to_block_crs(ext, crs, blocks):
+    """The extent polygon in the block frame's CRS. Its bounding box after reprojection, densified."""
+    import geopandas as gpd
+    g = gpd.GeoSeries([ext], crs=crs)
+    if blocks.crs is not None and not g.crs.equals(blocks.crs):
+        g = gpd.GeoSeries([ext.segmentize(max(ext.length / 400, 1e-9))], crs=crs).to_crs(blocks.crs)
+    return g.iloc[0]
 
 
 def reserve(blocks, outputs) -> tuple[pd.DataFrame, list[str]]:
@@ -63,10 +73,14 @@ def reserve(blocks, outputs) -> tuple[pd.DataFrame, list[str]]:
     if aud.empty:
         raise SystemExit("no rows with role == 'audit' in the Warren block frame")
     problems = []
-    for p, ext in outputs:
+    for p, ext, crs in outputs:
         if ext is None:
             problems.append(f"{p}: extent unreadable, treat as seen")
             continue
+        if crs is None:
+            problems.append(f"{p}: extent has no CRS, treat as seen")
+            continue
+        ext = to_block_crs(ext, crs, blocks)
         hit = aud[aud.geometry.intersects(ext)]
         if len(hit):
             problems.append(f"{p}: model output overlaps reserved blocks {sorted(hit.block_id.astype(int))[:10]}")

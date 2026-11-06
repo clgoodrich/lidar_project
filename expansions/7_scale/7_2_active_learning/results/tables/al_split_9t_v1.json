@@ -125,5 +125,5 @@
  ],
  "buffer": [],
  "audit": [],
- "audit_source": "none on disk (P2 pending)"
+ "audit_source": "no audit exclusion, exploratory"
 }

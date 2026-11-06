@@ -6,7 +6,9 @@ Purpose
     1. Splits are read from the P1 S2 split file. They are never rebuilt. The file hash is checked and saved
        in every checkpoint.
     2. Training windows are drawn with `IsolatedSampler`. A draw is rejected if the whole window touches any
-       held-out or inner-validation block (dilated by `--buffer-m`). Background draws obey the same rule.
+       held-out or inner-validation block, dilated by the derived pit buffer. The buffer is read through
+       `ek.read_buffer("pit")` from the P1 S4 buffer JSON (`--buffer-json`). The trainer stops if it is
+       missing, unless `--buffer-m` is given explicitly (review P1-02). Background draws obey the same rule.
        Audit blocks from P2 (`--audit-file`) join the forbidden set and the P2 guard refuses any audit
        block in a training or validation list.
     3. Fold-local normalisation. Mean and standard deviation per channel from `--norm-windows` training
@@ -31,7 +33,7 @@ Outputs (default out-dir C:/Users/colto/Documents/GitHub/lidar_project/data/9t/m
     Run record under expansions/0_prerequisites/p1_splits_manifests/results/<run_id>/
 
 Run
-    python expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py --splits data/9t/results/splits/cv_splits_future_9t_v1.json --dry-run
+    python expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py --splits data/9t/results/splits/cv_splits_future_9t_v1.json [--buffer-json FILE] --dry-run
     python expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py --splits data/9t/results/splits/cv_splits_future_9t_v1.json --measure-epoch
     python expansions/0_prerequisites/p1_splits_manifests/src/_pit_unet_iso_train_9t.py --splits data/9t/results/splits/cv_splits_future_9t_v1.json --epochs 40
 """
@@ -50,7 +52,7 @@ HERE = Path(__file__).resolve()
 sys.path.insert(0, str(HERE.parent))
 import _split_core_lib_9t as sc  # noqa: E402
 from _split_future_write_9t import split_file_for  # noqa: E402
-from _split_sampler_leakage_9t import draw_windows, forbidden_polys, isolated_module  # noqa: E402
+from _split_sampler_leakage_9t import draw_windows, forbidden_polys, isolated_module, resolve_buffers  # noqa: E402
 ek = sc.ek
 
 P2_SRC = HERE.parents[2] / "p2_audit_set" / "src"
@@ -77,13 +79,14 @@ def fold_norm_stats(feat_path: Path, rc: np.ndarray, patch: int, read_px: int, n
 
 
 def guard_lists(audit_file: Path | None, roles: dict, buffer_m: float = 0.0) -> list[int]:
-    """P2 guard. Raises if an audit block is in train or inner_val. Returns the audit ids to forbid."""
+    """P2 guard. Raises if an audit block is in train, inner_val or held_out. Returns the audit ids to forbid."""
     if audit_file is None:
         return []
     sys.path.insert(0, str(P2_SRC))
     import _audit_guard_lib as ag
-    audit = ag.load_audit(audit_file)
-    ag.assert_no_audit(roles["train"] + roles["inner_val"], audit, label="isolated pit trainer lists")
+    audit = ag.load_audit(audit_file, task="pit")
+    ag.assert_no_audit(roles["train"] + roles["inner_val"] + roles.get("held_out", []), audit,
+                       label="isolated pit trainer lists")
     need = float(audit.attrs.get("header", {}).get("buffer_m", 0.0))
     if buffer_m < need:
         raise AssertionError(f"--buffer-m {buffer_m} is below the audit file's buffer {need} m")
@@ -147,7 +150,9 @@ def main(argv=None) -> int:
     ap.add_argument("--workers", type=int, default=0)
     ap.add_argument("--norm-windows", type=int, default=20_000)
     ap.add_argument("--norm-read-px", type=int, default=32, help="each norm window read at this size")
-    ap.add_argument("--buffer-m", type=float, default=0.0, help="dilate forbidden blocks (P1 S4 buffer)")
+    ap.add_argument("--buffer-m", type=float, default=None,
+                    help="explicit buffer. Default the derived pit buffer through ek.read_buffer('pit')")
+    ap.add_argument("--buffer-json", type=Path, default=None, help="P1 S4 buffer JSON. Default ek.default_buffer_path()")
     ap.add_argument("--audit-file", type=Path, default=None, help="P2 audit_blocks_9t_v1.csv")
     ap.add_argument("--features", type=Path, default=None)
     ap.add_argument("--labels", type=Path, default=None)
@@ -157,6 +162,9 @@ def main(argv=None) -> int:
     ap.add_argument("--dry-run", action="store_true", help="build splits, samplers and norm on a sample. No training")
     ap.add_argument("--measure-epoch", action="store_true", help="S6. Time one epoch of fold 0")
     a = ap.parse_args(argv)
+    buffer_src = "explicit --buffer-m" if a.buffer_m is not None else str(a.buffer_json or ek.default_buffer_path())
+    a.buffer_m = resolve_buffers(["pit"], a.buffer_m, a.buffer_json)["pit"]
+    print(f"buffer {a.buffer_m} m from {buffer_src}")
 
     import geopandas as gpd
     import rasterio
@@ -186,7 +194,7 @@ def main(argv=None) -> int:
     cfg = {k: str(v) for k, v in vars(a).items()} | {"split_sha256": split_sha}
     run = ek.new_run("p1", "pit_iso_train" + ("_dry" if a.dry_run else ""), cfg,
                      why="S3 isolated pit trainer" + (" dry run" if a.dry_run else ""))
-    summary, fold_rows = {"split_sha256": split_sha, "folds": {}}, []
+    summary, fold_rows = {"split_sha256": split_sha, "buffer_m": a.buffer_m, "buffer_source": buffer_src, "folds": {}}, []
 
     for k in sorted(want):
         roles = splits[k]

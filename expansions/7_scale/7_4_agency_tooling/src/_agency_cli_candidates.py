@@ -28,7 +28,11 @@ Outputs (<out>/<run_id>/)
 
 Run
     python expansions/7_scale/7_4_agency_tooling/src/_agency_cli_candidates.py check-env --out <folder>
-    python expansions/7_scale/7_4_agency_tooling/src/_agency_cli_candidates.py run --lidar <laz folder> --out <folder>
+    python expansions/7_scale/7_4_agency_tooling/src/_agency_cli_candidates.py run --lidar <laz folder> --out <folder> \
+        --k-per-km2-pit 40 --k-per-km2-pad 40
+    --model both needs explicit per-class budgets (shared or per-class K is an open decision, docs/decisions_7_4.md).
+    --features stacks must match --crs (default EPSG:6346) in metres. --lidar tiles must be EPSG:6346 in metres.
+    Known-well CSVs with lon/lat columns need --known-wells-crs. --calibration is repeatable, one file per model hash.
 """
 from __future__ import annotations
 
@@ -129,10 +133,21 @@ def verify_manifest(cfg: dict, cls: str, manifest_path: Path) -> list[tuple[Path
 
 
 # ----------------------------------------------------------------------------- features
-def build_features(tiles: list[Path], out_dir: Path, cfg: dict, src_crs: str | None) -> Path:
-    """Run the repo derivative builder on the admitted tiles, then stack the 7 channels."""
+def tiles_spec(tiles: list[Path]) -> str:
+    """The builder's --tiles value naming exactly the admitted tiles. Never a folder glob (7.4-01)."""
+    paths = [str(Path(t).resolve()) for t in tiles]
+    bad = [q for q in paths if "," in q or any(ch in q for ch in "*?[]")]
+    if bad:
+        raise Refused(f"tile paths with a comma or glob character cannot be passed to the builder: {bad[:3]}")
+    return ",".join(paths)
+
+
+def build_features(tiles: list[Path], out_dir: Path, cfg: dict, src_crs: str | None = None) -> Path:
+    """Run the repo derivative builder on the admitted tiles only, then stack the 7 channels."""
     import laspy
     import rasterio
+    if not tiles:
+        raise Refused("no admitted tiles to build")
     xs, ys = [], []
     for t in tiles:
         with laspy.open(t) as f:
@@ -140,8 +155,7 @@ def build_features(tiles: list[Path], out_dir: Path, cfg: dict, src_crs: str | N
             xs += [h.mins[0], h.maxs[0]]; ys += [h.mins[1], h.maxs[1]]
     sfx = "agency_05"
     out_dir.mkdir(parents=True, exist_ok=True)
-    pattern = str(tiles[0].parent / "*.la[sz]") if len({t.parent for t in tiles}) == 1 else str(tiles[0])
-    cmd = [sys.executable, str(ek.REPO / cfg["derivative_builder"]), "--tiles", pattern,
+    cmd = [sys.executable, str(ek.REPO / cfg["derivative_builder"]), "--tiles", tiles_spec(tiles),
            "--bbox", f"{min(xs)},{min(ys)},{max(xs)},{max(ys)}", "--suffix", sfx, "--res", str(cfg["resolution_m"]),
            "--out-dir", str(out_dir)]
     if src_crs:
@@ -168,7 +182,24 @@ def build_features(tiles: list[Path], out_dir: Path, cfg: dict, src_crs: str | N
     return stack
 
 
-def predict_class(cfg: dict, cls: str, ckpts, stack: Path, cache: Path, resume: bool):
+def check_stack_crs(crs, declared: str) -> None:
+    """The stack CRS must equal the declared CRS, and both must be projected in metres (7.4-02)."""
+    from pyproj import CRS
+    if crs is None:
+        raise Refused("feature stack has no CRS")
+    got, want = CRS.from_user_input(crs), CRS.from_user_input(declared)
+    try:
+        ek.assert_crs(got, declared)
+    except AssertionError:
+        raise Refused(f"feature stack CRS {got.to_string()} differs from the declared CRS {declared}. "
+                      "Pass --crs to declare the stack CRS") from None
+    for c in (got, want):
+        h = c.sub_crs_list[0] if c.is_compound else c
+        if not h.is_projected or any(ax.unit_name != "metre" for ax in h.axis_info[:2]):
+            raise Refused(f"CRS {h.to_string()} is not projected in metres. The tool needs a metre grid")
+
+
+def predict_class(cfg: dict, cls: str, ckpts, stack: Path, cache: Path, resume: bool, declared: str):
     import rasterio
     import torch
     import _dl
@@ -176,11 +207,12 @@ def predict_class(cfg: dict, cls: str, ckpts, stack: Path, cache: Path, resume: 
     cp = cache / f"{cls}_prob.tif"
     if resume and cp.exists():
         with rasterio.open(cp) as r:
+            check_stack_crs(r.crs, declared)
             return r.read(1), r.transform, r.crs
     m = cfg["models"][cls]
     acc = None
     with rasterio.open(stack) as r:
-        ek.assert_crs(r, r.crs)
+        check_stack_crs(r.crs, declared)
         H, W, tf, crs = r.height, r.width, r.transform, r.crs
         if abs(r.res[0] - cfg["resolution_m"]) > 1e-6:
             raise Refused(f"feature stack resolution {r.res[0]} m, the tool needs {cfg['resolution_m']} m")
@@ -217,42 +249,119 @@ def tile_footprints(df, crs):
     return gpd.GeoDataFrame(df[["tile_id", "status", "reasons", "warnings"]].copy(), geometry=geoms, crs=crs)
 
 
+def review_budgets(a, cfg: dict, classes: list[str]) -> dict:
+    """Review budget in candidates per km2, per class.
+
+    One model. --k-per-km2 (or its per-class flag), default config k_per_km2.
+    Both models. The plan says only that K "caps the output list". Whether K is one budget shared by pits
+    and pads, and how a shared budget would be split between two score scales, is not decided
+    (docs/decisions_7_4.md, Needs user decision). So --model both needs explicit per-class budgets.
+    """
+    per = {"pit": a.k_per_km2_pit, "pad": a.k_per_km2_pad}
+    if len(classes) == 1:
+        c = classes[0]
+        if per[c] is not None and a.k_per_km2 is not None and per[c] != a.k_per_km2:
+            raise Refused(f"--k-per-km2 {a.k_per_km2} and --k-per-km2-{c} {per[c]} disagree")
+        k = per[c] if per[c] is not None else (a.k_per_km2 if a.k_per_km2 is not None else cfg["k_per_km2"])
+        out = {c: float(k)}
+    else:
+        if a.k_per_km2 is not None or any(per[c] is None for c in classes):
+            raise Refused("--model both needs explicit per-class budgets --k-per-km2-pit and --k-per-km2-pad. "
+                          "A single K would be applied once per class and double the review list. "
+                          "Whether K is shared across classes is an open decision (docs/decisions_7_4.md)")
+        out = {c: float(per[c]) for c in classes}
+    if any(not np.isfinite(v) or v < 0 for v in out.values()):
+        raise Refused(f"review budgets must be finite and non-negative, got {out}")
+    return out
+
+
+def load_calibrations(paths, ckpts: dict) -> dict:
+    """Map each class to the calibration file that carries its model hash. A file that fits no class is refused."""
+    by_sha = {}
+    for cp in paths or []:
+        c = json.loads(Path(cp).read_text(encoding="utf-8"))
+        sha = c.get("model_sha256")
+        if not sha:
+            raise Refused(f"{cp}: calibration file has no model_sha256")
+        if sha in by_sha:
+            raise Refused(f"two calibration files for model {sha[:7]}")
+        by_sha[sha] = (cp, c)
+    out, used = {}, set()
+    for cls, ck in ckpts.items():
+        h = ck[0][1]
+        if h in by_sha:
+            out[cls] = (by_sha[h][0], tc.apply_calibration(by_sha[h][1], h))
+            used.add(h)
+    unused = [str(by_sha[h][0]) for h in by_sha if h not in used]
+    if unused:
+        raise Refused(f"calibration file(s) {unused} match no model in this run")
+    return out
+
+
+def parse_crs_arg(txt: str | None) -> str | None:
+    if txt is None:
+        return None
+    from pyproj import CRS
+    try:
+        CRS.from_user_input(txt)
+    except Exception as e:  # noqa: BLE001
+        raise Refused(f"--crs {txt!r} cannot be parsed. {e}") from None
+    return txt
+
+
 def run(a, cfg: dict) -> Path:
     import geopandas as gpd
+    import rasterio
     from rasterio.features import rasterize
     params = {k: v for k, v in vars(a).items() if k not in ("out", "cmd", "resume", "config")}
     if a.res != cfg["resolution_m"]:
         raise Refused(f"--res {a.res} refused. The tool is fixed at {cfg['resolution_m']} m")
-    rd = ek.new_run("7.4", "agency", {**params, "tool": cfg["tool_version"]}, base=Path(a.out),
-                    why="Agency candidate run.")
+    if not (a.lidar or a.features):
+        raise Refused("give --lidar or --features")
     classes = ["pit", "pad"] if a.model == "both" else [a.model]
+    budgets = review_budgets(a, cfg, classes)
+    user_crs = parse_crs_arg(a.crs)
+    # Declared CRS. --features uses --crs, else the model contract CRS. --lidar uses the builder's output CRS,
+    # and the tiles must already be in it, because the builder is not asked to reproject here.
+    if a.features:
+        declared = user_crs or ek.DST_CRS
+        with rasterio.open(a.features) as r:
+            check_stack_crs(r.crs, declared)
+    else:
+        declared = ek.DST_CRS
+    wells = None
+    if a.known_wells:                                   # read and checked before any prediction
+        wells = ex.read_known_wells(Path(a.known_wells), declared, a.known_wells_crs)
     manifest = Path(a.manifest) if a.manifest else cfg_path(cfg["manifest"])
     ckpts = {cls: verify_manifest(cfg, cls, manifest) for cls in classes}
-    validity, coverage = {}, None
+    cals = load_calibrations(a.calibration, ckpts)
+    rd = ek.new_run("7.4", "agency", {**params, "tool": cfg["tool_version"]}, base=Path(a.out),
+                    why="Agency candidate run.")
+    validity, coverage, ok_tiles = {}, None, []
     if a.lidar:
-        df = va.check_folder(Path(a.lidar), cfg, a.crs, a.strict)
+        df = va.check_folder(Path(a.lidar), cfg, user_crs, a.strict)
         va.write_report(df, rd)
         if (df["status"] == "refuse").all():
             raise Refused("every tile refused. See validity_report.csv")
-        crs_txt = next((c for c in df["crs"] if isinstance(c, str)), a.crs)
-        coverage = tile_footprints(df, crs_txt)
+        ok_df = df[df["status"] != "refuse"]
+        tile_crs = next((c for c in ok_df["crs"] if isinstance(c, str)), None)
+        try:
+            ek.assert_crs(tile_crs, declared)
+        except AssertionError:
+            raise Refused(f"tile CRS {tile_crs} is not the builder CRS {declared}. Reproject the tiles first") from None
+        coverage = tile_footprints(df, tile_crs)
         coverage.to_file(rd / "coverage.gpkg", driver="GPKG")
         validity = {t: (s if s != "warn" else "warn:" + w) for t, s, w in zip(df["tile_id"], df["status"], df["warnings"])}
-        ok_tiles = [Path(p) for p, s in zip(df["path"], df["status"]) if s != "refuse"]
-    if a.features:
-        stack = Path(a.features)
-    elif a.lidar:
-        stack = build_features(ok_tiles, rd / "derived", cfg, a.crs if a.crs else None)
+        ok_tiles = [Path(p) for p in ok_df["path"]]
+        stack = build_features(ok_tiles, rd / "derived", cfg)
+        with rasterio.open(stack) as r:
+            check_stack_crs(r.crs, declared)
     else:
-        raise Refused("give --lidar or --features")
-    wells = None
-    if a.known_wells:
-        wells_path = Path(a.known_wells)
-    cal_fn = None
+        stack = Path(a.features)
     meta_cls = {}
     tables = {}
     for cls in classes:
-        prob, tf, crs = predict_class(cfg, cls, ckpts[cls], stack, rd / "cache", a.resume)
+        prob, tf, crs = predict_class(cfg, cls, ckpts[cls], stack, rd / "cache", a.resume, declared)
         valid = np.isfinite(prob) & (prob >= 0)
         if coverage is not None:
             ok = coverage[coverage["status"] != "refuse"]
@@ -270,19 +379,17 @@ def run(a, cfg: dict) -> Path:
         else:
             blobs["tile_id"] = Path(stack).stem
         area_km2 = float(valid.sum()) * abs(tf.a * tf.e) / 1e6
-        if wells is None and a.known_wells:
-            wells = ex.read_known_wells(wells_path, crs)
-        if a.calibration:
-            cal_fn = tc.apply_calibration(json.loads(Path(a.calibration).read_text()), ckpts[cls][0][1])
+        cal_fn = cals[cls][1] if cls in cals else None
         sha = ek.config_hash({"ckpts": [h for _, h in ckpts[cls]]})
         meta = {"run_id": rd.name, "model_id": f"{cls}_{cfg['models'][cls]['method'].split()[0]}_ens{len(ckpts[cls])}",
                 "model_sha256": ";".join(h for _, h in ckpts[cls]), "method": cfg["models"][cls]["method"]
                 + (" (cutoff changed, flagged)" if a.cutoff is not None else "")}
-        t = ex.build_table(blobs, cls, meta, area_km2, a.k_per_km2, wells, validity, cal_fn)
-        if a.k_per_km2 is not None:
-            t = t[t["within_review_budget"]].copy()
+        t = ex.build_table(blobs, cls, meta, area_km2, budgets[cls], wells, validity, cal_fn)
+        t = t[t["within_review_budget"]].copy()
         tables[cls] = t
-        meta_cls[cls] = {"area_km2": area_km2, "n": len(t), "ensemble_hash7": sha, "cutoff": cut}
+        meta_cls[cls] = {"area_km2": area_km2, "n": len(t), "ensemble_hash7": sha, "cutoff": cut,
+                         "k_per_km2": budgets[cls], "k": int(np.floor(budgets[cls] * area_km2)),
+                         "calibration": str(cals[cls][0]) if cls in cals else None}
         if a.keep_rasters:
             (rd / "probability").mkdir(exist_ok=True)
             shutil.copyfile(rd / "cache" / f"{cls}_prob.tif", rd / "probability" / f"{cls}_prob.tif")
@@ -294,12 +401,12 @@ def run(a, cfg: dict) -> Path:
     ex.guard_text([stmt], cfg["forbidden_words"])
     (rd / "trust_statement.md").write_text(stmt, encoding="utf-8")
     inputs = [p for v in ckpts.values() for p, _ in v] + ([Path(a.known_wells)] if a.known_wells else [])
-    if a.lidar:
-        inputs += sorted([*Path(a.lidar).glob("*.la[sz]")])
-    else:
-        inputs.append(stack)
+    inputs += [Path(cals[c][0]) for c in cals]
+    inputs += ok_tiles if a.lidar else [stack]            # refused tiles are not inputs to any candidate
     ek.write_provenance(rd, inputs=inputs, outputs=[rd / "candidates.csv", rd / "candidates.gpkg"],
                         params={**params, "classes": meta_cls, "validity": vs, "summary": summ,
+                                "declared_crs": declared, "review_budget_per_km2": budgets,
+                                "review_budget_total_per_km2": sum(budgets.values()),
                                 "tool_version": cfg["tool_version"], "contract": cfg["input_contract_version"],
                                 "pdal": shutil.which("pdal"), "platform": platform.platform()},
                         seeds={"seed": a.seed}, hash_limit_mb=500)
@@ -319,12 +426,16 @@ def main(argv=None) -> int:
     r.add_argument("--lidar", default=None); r.add_argument("--features", default=None); r.add_argument("--out", required=True)
     r.add_argument("--crs", default=None); r.add_argument("--aoi", default=None)
     r.add_argument("--model", choices=["pit", "pad", "both"], default="both")
-    r.add_argument("--cutoff", type=float, default=None); r.add_argument("--k-per-km2", type=float, default=40.0)
+    r.add_argument("--cutoff", type=float, default=None)
+    r.add_argument("--k-per-km2", type=float, default=None, help="review budget for a single --model. Default config k_per_km2")
+    r.add_argument("--k-per-km2-pit", type=float, default=None); r.add_argument("--k-per-km2-pad", type=float, default=None)
     r.add_argument("--res", type=float, default=0.5); r.add_argument("--device", default="auto")
-    r.add_argument("--strict", action="store_true"); r.add_argument("--calibration", default=None)
+    r.add_argument("--strict", action="store_true"); r.add_argument("--calibration", action="append", default=None,
+                                                                           help="repeatable. Each file applies to the class whose model hash it carries")
     r.add_argument("--seed", type=int, default=0); r.add_argument("--workers", type=int, default=1, help="reserved. Runs are single-process today")
     r.add_argument("--resume", action="store_true"); r.add_argument("--keep-rasters", action="store_true")
     r.add_argument("--known-wells", default=None); r.add_argument("--manifest", default=None)
+    r.add_argument("--known-wells-crs", default=None, help="CRS of CSV coordinates. Required for lon/lat columns")
     c = sp.add_parser("calibrate"); c.add_argument("--labels", required=True); c.add_argument("--model-sha256", required=True)
     c.add_argument("--out", required=True)
     p = sp.add_parser("report"); p.add_argument("--run", required=True)
@@ -362,7 +473,7 @@ def main(argv=None) -> int:
         rd = run(a, cfg)
         print(f"run folder {rd}")
         return 0
-    except Refused as e:
+    except (Refused, ex.InputError) as e:
         print(f"refused: {e}", file=sys.stderr)
         return 2
     except (EnvProblem, FileNotFoundError) as e:

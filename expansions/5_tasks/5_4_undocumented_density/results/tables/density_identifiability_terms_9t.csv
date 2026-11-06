@@ -1,7 +1,7 @@
 term,status,value,range,evidence_level,source,identifies_it
-D,identified,624,block bootstrap 567 to 678,a,C:\Users\colto\Documents\GitHub\lidar_project\expansions\5_tasks\5_4_undocumented_density\results\tables\density_accounting_9t.json,Distinct sites at K = 40 per km² (done)
-N_doc,identified_conditional,929,,b,C:\Users\colto\Documents\GitHub\lidar_project\expansions\5_tasks\5_4_undocumented_density\results\tables\density_accounting_9t.json,DEP coordinate provenance (R1) to confirm the 5 m merge and footprint scope
+D,identified,656,block bootstrap 578 to 739,a,expansions/5_tasks/5_4_undocumented_density/results/tables/density_accounting_9t.json,Distinct sites at K = 40 per km² (done)
+N_doc,identified_conditional,1052,,b,expansions/5_tasks/5_4_undocumented_density/results/tables/density_accounting_9t.json,DEP coordinate provenance (R1) to confirm the 5 m merge and footprint scope
 p,unidentified,,0 to 1,,,7.5 Arm B score-stratified field sample with identity status
 r,unidentified,,"0 to 1, so no finite upper bound on T",,,7.5 Arm C independent searches of sampled areas
 m,unidentified,,"[1.0, 1.5, 2.0]",,,Field counts of wells per confirmed site
-cohort_excess,descriptive_only,,,a,C:\Users\colto\Documents\GitHub\lidar_project\expansions\5_tasks\5_6_record_association\results\tables\records_cohort_excess_9t.csv,Not a density input. No recall-equivalence gate (protocol section 5)
+cohort_excess,descriptive_only,,,a,expansions/5_tasks/5_6_record_association/results/tables/records_cohort_excess_9t.csv,Not a density input. No recall-equivalence gate (protocol section 5)

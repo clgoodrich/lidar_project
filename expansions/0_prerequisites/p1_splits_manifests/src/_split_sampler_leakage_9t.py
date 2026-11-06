@@ -6,14 +6,18 @@ Purpose
     The real `__getitem__` of each sampler runs. Only the raster reads are replaced by a recorder, so the
     test exercises the production window logic without reading pixels. Each window is turned into a world
     rectangle and tested exactly (shapely, positive-area overlap) against the forbidden polygons: the
-    held-out and inner-validation blocks of that fold, dilated by `--buffer-m`.
+    held-out and inner-validation blocks of that fold, dilated by the derived buffer of the task.
+    The buffer is read from the P1 S4 buffer JSON through `ek.read_buffer(task)` (review P1-02). The script
+    stops if it is missing, unless `--buffer-m` is given explicitly.
     Gate. The isolated sampler gives zero leaking windows in every fold. The historical count is reported.
     It measures the original leakage and is expected to be non-zero.
     `--check-norm DIR` also checks every `norm_stats_fold{k}.npz` written by the isolated pit trainer.
     Every window it was fitted on must clear the forbidden set, and the statistics must differ between folds.
+    Every fold of the split must have its statistics file. A missing fold fails the trace.
 
 Inputs
-    split file from P1 S2 (data/9t/results/splits/cv_splits_future_9t_v1.json), the manifests and blocks
+    split file from P1 S2 (data/9t/results/splits/cv_splits_future_9t_v1.json), the P1 S4 buffer JSON
+    (--buffer-json, default data/9t/results/splits/buffer_derivation_9t.json), the manifests and blocks
     (through the trainers), the 9t feature raster header (data/9t/derived/05/features_pit_9t_05.tif)
 
 Outputs
@@ -121,7 +125,7 @@ def leakage_for_task(task: str, splits: dict, man, blocks_gdf, feat_path: Path, 
     return out
 
 
-def check_norm(model_dir: Path, splits: dict, blocks_gdf, transform, buffer_m: float = 0.0) -> dict:
+def check_norm(model_dir: Path, splits: dict, blocks_gdf, transform, buffer_m: float) -> dict:
     """Every fitted normalisation object traced to training windows only, and fold-local."""
     res, mus = {}, []
     for f, roles in splits.items():
@@ -138,9 +142,28 @@ def check_norm(model_dir: Path, splits: dict, blocks_gdf, transform, buffer_m: f
                        "split_sha256": str(z["split_sha256"]) if "split_sha256" in z else None}
     distinct = len({m.tobytes() for m in mus}) == len(mus) if len(mus) > 1 else None
     res["stats_differ_between_folds"] = distinct
-    res["pass"] = bool(mus) and all(v.get("leaking_windows", 0) == 0 for k, v in res.items()
-                                    if isinstance(v, dict) and v.get("present")) and distinct is not False
+    missing = [str(f) for f in splits if not res[str(f)]["present"]]
+    res["missing_folds"] = missing
+    res["pass"] = (not missing and bool(mus) and distinct is not False
+                   and all(v.get("leaking_windows", 0) == 0 for v in res.values() if isinstance(v, dict) and v.get("present")))
     return res
+
+
+def resolve_buffers(tasks, buffer_m: float | None, buffer_json: Path | None) -> dict[str, float]:
+    """Per-task buffer. An explicit --buffer-m wins. Otherwise ek.read_buffer, and a missing value stops."""
+    if buffer_m is not None:
+        return {t: float(buffer_m) for t in tasks}
+    p = Path(buffer_json) if buffer_json else ek.default_buffer_path()
+    if not p.exists():
+        raise SystemExit(f"derived buffer missing: {p}. Run _split_buffer_derive_9t.py (P1 S4), pass "
+                         "--buffer-json, or pass --buffer-m explicitly.")
+    out = {}
+    for t in tasks:
+        try:
+            out[t] = ek.read_buffer(t, p)
+        except KeyError as e:
+            raise SystemExit(f"{e}")
+    return out
 
 
 def main(argv=None) -> int:
@@ -148,7 +171,9 @@ def main(argv=None) -> int:
     ap.add_argument("--splits", type=Path, required=True, help="split file from P1 S2")
     ap.add_argument("--tasks", default="pit,pad")
     ap.add_argument("--n", type=int, default=100_000, help="windows per fold per sampler")
-    ap.add_argument("--buffer-m", type=float, default=0.0, help="dilate forbidden blocks (P1 S4 buffer)")
+    ap.add_argument("--buffer-m", type=float, default=None,
+                    help="explicit buffer for every task. Default the derived buffer per task (ek.read_buffer)")
+    ap.add_argument("--buffer-json", type=Path, default=None, help="P1 S4 buffer JSON. Default ek.default_buffer_path()")
     ap.add_argument("--check-norm", type=Path, default=None, help="isolated pit model dir with norm_stats_fold*.npz")
     ap.add_argument("--out-dir", type=Path, default=None, help="default data/9t/results/splits/")
     a = ap.parse_args(argv)
@@ -156,33 +181,38 @@ def main(argv=None) -> int:
         raise SystemExit(f"split file not found: {a.splits}. Run _split_future_write_9t.py first (P1 S2).")
     import geopandas as gpd
     import rasterio
-    res = {"splits": str(a.splits), "splits_sha256": ek.sha256(a.splits), "tasks": {}}
-    for task in a.tasks.split(","):
+    tasks = a.tasks.split(",")
+    bufs = resolve_buffers(tasks + (["pit"] if a.check_norm else []), a.buffer_m, a.buffer_json)
+    res = {"splits": str(a.splits), "splits_sha256": ek.sha256(a.splits), "buffer_m_by_task": bufs,
+           "buffer_source": "explicit --buffer-m" if a.buffer_m is not None else str(a.buffer_json or ek.default_buffer_path()),
+           "tasks": {}}
+    for task in tasks:
         p = sc.task_params(task)
         man = sc.load_manifest(task)
         blocks = gpd.read_file(p["blocks"], layer="blocks")
         ek.assert_crs(blocks)
         feat = sc.trainer(task).FEATURES
         res["tasks"][task] = leakage_for_task(task, split_file_for(task, a.splits), man, blocks, Path(feat),
-                                              a.n, a.buffer_m, p["patch"], p["jitter_m"])
+                                              a.n, bufs[task], p["patch"], p["jitter_m"])
     if a.check_norm:
         p = sc.task_params("pit")
         blocks = gpd.read_file(p["blocks"], layer="blocks")
         with rasterio.open(sc.trainer("pit").FEATURES) as r:
             tf = r.transform
-        res["norm_trace"] = check_norm(a.check_norm, split_file_for("pit", a.splits), blocks, tf, a.buffer_m)
+        res["norm_trace"] = check_norm(a.check_norm, split_file_for("pit", a.splits), blocks, tf, bufs["pit"])
     iso_ok = all(v["isolated_leaking"] == 0 for t in res["tasks"].values() for v in t.values())
     res["gate"] = "pass" if iso_ok and res.get("norm_trace", {}).get("pass", True) else "fail"
     out = a.out_dir or (ek.path_for("results_9t") / "splits")
     out.mkdir(parents=True, exist_ok=True)
     js = out / "sampler_leakage_test_9t.json"
     js.write_text(json.dumps(res, indent=2), encoding="utf-8")
-    run = ek.new_run("p1", "sampler_leakage", {"n": a.n, "tasks": a.tasks, "buffer_m": a.buffer_m},
+    run = ek.new_run("p1", "sampler_leakage", {"n": a.n, "tasks": a.tasks, "buffer_m_by_task": bufs},
                      why="S5 window-level leakage test.")
     ek.write_provenance(run, inputs=[a.splits], outputs=[js])
     for t, v in res["tasks"].items():
-        print(t, {f: (x["historical_leaking"], x["isolated_leaking"]) for f, x in v.items()},
-              "(historical, isolated) leaking windows per fold")
+        print(t, f"buffer {bufs[t]} m", {f: (x["historical_leaking"], x["isolated_leaking"], x["isolated_no_window"])
+                                         for f, x in v.items()},
+              "(historical, isolated leaking windows, isolated draws with no clear window) per fold")
     print(f"gate {res['gate']}\nwrote {js}\nrun record {run}")
     return 0 if res["gate"] == "pass" else 1
 

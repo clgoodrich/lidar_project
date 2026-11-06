@@ -50,8 +50,8 @@ def paired_diff(arm_a, arm_b, k_per_km2: float, B: int, seed: int):
     common = sorted(set(ba["block_id"]) & set(bb["block_id"]))
     if set(ba["block_id"]) != set(bb["block_id"]):
         raise AssertionError("arms were scored on different blocks; a paired test needs the same blocks")
-    pa = sc.payload_from_files(ca, ba, common)
-    pb = sc.payload_from_files(cb, bb, common)
+    pa = sc.payload_from_files(ca, ba, common, strict=True)
+    pb = sc.payload_from_files(cb, bb, common, strict=True)
     idx = list(range(len(common)))
     fa = lambda ix: sc.pooled_recall([pa[i] for i in ix], k_per_km2)  # noqa: E731
     fb = lambda ix: sc.pooled_recall([pb[i] for i in ix], k_per_km2)  # noqa: E731
@@ -79,7 +79,7 @@ def sign_flip_interval(pa, pb, k_per_km2, B, seed):
 
 def h3_width(pool_arm, n_test: int, k_per_km2: float, B: int, seed: int, reps: int = 50):
     c, b = pool_arm
-    payload = sc.payload_from_files(c, b)
+    payload = sc.payload_from_files(c, b, strict=True)
     return ek.projected_width(lambda bl: sc.pooled_recall(bl, k_per_km2), payload, n_target=n_test, B=B,
                               reps=reps, seed=seed)
 
@@ -107,7 +107,7 @@ def main(argv=None) -> int:
     ap.add_argument("--n-test", type=int, default=None, help="hidden-test block count")
     ap.add_argument("--margin", type=float, default=None, help="leaderboard margin (user decision)")
     ap.add_argument("--ceiling", nargs=3, metavar=("SECOND_GPKG", "FIRST_GPKG", "LAYER"))
-    ap.add_argument("--k-per-km2", type=float, default=40.0)
+    ap.add_argument("--k-per-km2", type=float, default=ek.PROPOSAL_POLICY["k_per_km2"])
     ap.add_argument("--B", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=20261105)
     ap.add_argument("--out", default=str(ek.sub("7.3", "results/tables") / "bench_validity_terrain_v1.json"))

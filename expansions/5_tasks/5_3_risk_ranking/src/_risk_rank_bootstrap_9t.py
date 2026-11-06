@@ -75,16 +75,16 @@ def one_draw(rng, sites, H, comps, cand, k, recs, cfg):
             obs = Hd.loc[ing & ~Hd[c].isna().to_numpy(), c].to_numpy()
             if m.any() and len(obs):
                 Hd.loc[m, c] = rng.choice(obs, m.sum(), replace=True)
-    return s3.rank_all(s3.assemble(s, Hd, comps))
+    return s3.rank_all(s3.assemble(s, Hd, comps, cfg=cfg))
 
 
 def run_boot(sites, H, comps, cand, k, recs, cfg, B, master):
-    base = s3.rank_all(s3.assemble(sites, H, comps))
+    base = s3.rank_all(s3.assemble(sites, H, comps, cfg=cfg))
     scen = [c[5:] for c in base.columns if c.startswith("rank_")]
     ids = base["site_id"].to_numpy()
     n = rc.top_n_size(len(base), cfg["top_n_max"], cfg["top_n_share"])
     base_top = {s: rc.top_set(base[f"rank_{s}"], n, ids) for s in scen}
-    R = {s: np.zeros((B, len(base)), np.int32) for s in scen}
+    R = {s: np.full((B, len(base)), np.nan) for s in scen}
     rows = []
     t0 = time.time()
     for i in range(B):
@@ -101,10 +101,14 @@ def run_boot(sites, H, comps, cand, k, recs, cfg, B, master):
     site_rows = []
     for s in scen:
         M = R[s]
-        freq = (M <= n).mean(0)
-        lo, hi = np.percentile(M, [2.5, 97.5], axis=0)
+        freq = (np.nan_to_num(M, nan=np.inf) <= n).mean(0)
+        unr = np.isnan(M).mean(0)
+        # an interval is reported only for a site rankable in every draw (no draws dropped, review SH-01)
+        lo, hi = np.percentile(np.where(np.isnan(M), np.inf, M), [2.5, 97.5], axis=0)
+        lo = np.where(unr > 0, np.nan, lo)
+        hi = np.where(unr > 0, np.nan, hi)
         site_rows.append(pd.DataFrame(dict(site_id=ids, scenario=s, base_rank=base[f"rank_{s}"].to_numpy(),
-                                           rank_lo=lo, rank_hi=hi, topn_freq=freq,
+                                           rank_lo=lo, rank_hi=hi, topn_freq=freq, unrankable_share=unr,
                                            stable_in=freq >= cfg["stable_in_share"],
                                            p_source=base["p_source"], P=base["P"], H=base["H"], E=base["E"],
                                            conditional=base["conditional"])))
@@ -133,7 +137,7 @@ def figure(si, scen, n, path):
     ax.set_title(f"Scenario {scen} rank stability, tile 9t. Candidates are {th.CONDITIONAL}", fontsize=9)
     ax.legend(fontsize=7, loc="lower right")
     fig.tight_layout()
-    fig.savefig(path, dpi=130)
+    rio.save_fig(fig, path)
     plt.close(fig)
 
 

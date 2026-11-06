@@ -4,11 +4,15 @@ Purpose
     Works on replay output or on live rounds, which share one schema.
     Stopping rule (S4). Stop when cumulative minutes reach the budget, or when the random control's
     stopping-set recall changes by under 0.01 for two rounds. Uses the stopping set only.
+    The rule is enforced (review 7.2 minor). Curves, scores and inclusion logs are cut at the stop round
+    before any estimate. If the loop stops before B*, the primary is read at the stop round and flagged.
     Primary (section 8). Recall at K on the stopping set at B* reviewer-minutes, U minus R, the mean over
     selection seeds inside each block resample (paired block bootstrap, B = 2000). The stopping set has
     about 20 blocks, so a paired sign-flip permutation p-value is reported beside it.
-    G defaults to R recall at the full budget minus R recall at 75% of it. It is read from R alone and
-    frozen to a file before U is scored. A G in the config wins. Superiority decision with ek.decide.
+    G comes from config_7_2.json ("G") or the preregistration JSON (--prereg, key "G"), set before scoring
+    (review 7.2-01). It is never chosen from the replay it judges and never floored. With G unset the
+    decision is inconclusive. G_raw (R recall at the budget minus at 75% of it) is always reported as a
+    diagnostic only. Superiority decision with ek.decide.
     H3. Policy ranking by recall at equal minutes and at equal label count, side by side.
     Discovery (S6). Horvitz-Thompson estimates over sampled discovery windows with their pi. Features the
     pool never proposed per window, pool recall, and yield per reviewer-hour. Interval by bootstrap over windows.
@@ -50,7 +54,7 @@ def payload_by_block(stop_c, stop_b, scores_long, policy, seed, rnd) -> dict:
     c = stop_c.drop(columns="score").merge(s[["cand_id", "score"]], on="cand_id", how="left")
     if c["score"].isna().any():
         raise AssertionError(f"missing stopping-set scores for {policy} seed {seed} round {rnd}")
-    return dict(zip(sorted(stop_b["block_id"]), sc.payload_from_files(c, stop_b, sorted(stop_b["block_id"]))))
+    return dict(zip(sorted(stop_b["block_id"]), sc.payload_from_files(c, stop_b, sorted(stop_b["block_id"]), strict=True)))
 
 
 def check_stop(curves: pd.DataFrame, cfg: dict, control: str = "R") -> dict:
@@ -67,28 +71,47 @@ def check_stop(curves: pd.DataFrame, cfg: dict, control: str = "R") -> dict:
     return {"stop": False, "round": int(r.index.max())}
 
 
-def frozen_G(cfg, curves, path: Path, control: str) -> dict:
-    if cfg.get("G") is not None:
-        return {"G": float(cfg["G"]), "source": "config (user value)"}
-    if path.exists():
-        return json.loads(path.read_text())
+G_UNSET = ("inconclusive (G unset. Set G in config_7_2.json or the preregistration before scoring. "
+           "G_raw is a diagnostic and is never used as the margin)")
+
+
+def G_raw(curves, cfg, control: str) -> float:
+    """Control recall at the budget minus at 75% of it. Diagnostic only (review 7.2-01)."""
     seeds = sorted(curves.loc[curves["policy"] == control, "seed"].unique())
     rec = lambda m: float(np.mean([curves[(curves["policy"] == control) & (curves["seed"] == s) &  # noqa: E731
                                           (curves["round"] == round_at(curves, control, s, m))]["recall_stop"].iloc[0] for s in seeds]))
     b = cfg["budget_minutes"]
-    raw = rec(b) - rec(0.75 * b)
-    # A superiority margin below 0 would let a policy "win" while doing worse than the control.
-    # The derived value is floored at 0 and both numbers are kept.
-    g = {"G": max(raw, 0.0), "G_raw": raw, "floored_at_zero": raw < 0,
-         "source": f"{control} recall at the budget minus at 75% of it, frozen before the policy was scored",
-         "seeds": [int(s) for s in seeds]}
+    return rec(b) - rec(0.75 * b)
+
+
+def resolve_G(cfg, curves, path: Path, control: str, prereg: dict | None = None) -> dict:
+    """Review 7.2-01. G is set before scoring, from the config or the preregistration. It is never chosen
+    from the replay it is tested on and never floored. G_raw is always reported beside it."""
+    if cfg.get("G") is not None:
+        G, src = float(cfg["G"]), "config_7_2.json G (set before scoring)"
+    elif prereg and prereg.get("G") is not None:
+        G, src = float(prereg["G"]), f"preregistration {prereg.get('_path', '')} G (set before scoring)"
+    else:
+        G, src = None, "unset"
+    g = {"G": G, "source": src, "G_raw": G_raw(curves, cfg, control),
+         "G_raw_note": f"{control} recall at the budget minus at 75% of it, from the same curves that are scored. "
+                       "Diagnostic only. Never used as the margin and never floored",
+         "seeds": [int(s) for s in sorted(curves.loc[curves["policy"] == control, "seed"].unique())]}
     path.write_text(json.dumps(g, indent=2), encoding="utf-8")
     return g
 
 
-def primary(cfg, curves, scores, stop_c, stop_b, G: float, B: int) -> dict:
+def enforce_stop(curves, scores, incl, stop: dict):
+    """Cut every policy at the stop round (review 7.2 minor: the stop rule was computed and then ignored)."""
+    r = stop["round"]
+    cut = lambda d: d[d["round"] <= r] if len(d) and "round" in d else d  # noqa: E731
+    return cut(curves), cut(scores), cut(incl)
+
+
+def primary(cfg, curves, scores, stop_c, stop_b, G: float | None, B: int, stop: dict | None = None) -> dict:
     pol, ctl = cfg["primary"]["policy"], cfg["primary"]["control"]
     bstar = cfg["B_star_share"] * cfg["budget_minutes"]
+    stopped_early = bool(stop and stop["stop"] and curves.loc[curves["round"] <= stop["round"], "cum_minutes"].max() < bstar)
     seeds = sorted(set(curves.loc[curves["policy"] == pol, "seed"]) & set(curves.loc[curves["policy"] == ctl, "seed"]))
     kpk = cfg["scoring"]["k_per_km2"]
     pa = {s: payload_by_block(stop_c, stop_b, scores, pol, s, round_at(curves, pol, s, bstar)) for s in seeds}
@@ -107,7 +130,10 @@ def primary(cfg, curves, scores, stop_c, stop_b, G: float, B: int) -> dict:
     return {"policy": pol, "control": ctl, "B_star_minutes": bstar, "diff": point, "lo": lo, "hi": hi, "G": G,
             "n_seeds": len(seeds), "n_blocks": len(blocks), "permutation_p": p,
             "bootstrap_unreliable": len(blocks) < 15,
-            "decision": ek.decide(lo, hi, G, "superiority") if len(seeds) >= 3 else "void (fewer than 3 seeds)"}
+            "stopped_before_B_star": stopped_early,
+            "read_at": "stop round (the loop stopped before B*)" if stopped_early else "B* minutes",
+            "decision": ("void (fewer than 3 seeds)" if len(seeds) < 3 else G_UNSET if G is None
+                         else ek.decide(lo, hi, G, "superiority"))}
 
 
 def ranking(curves: pd.DataFrame, cfg: dict) -> pd.DataFrame:
@@ -177,8 +203,10 @@ def main(argv=None) -> int:
     ap.add_argument("--tables", default=str(ek.sub("7.2", "results/tables")))
     ap.add_argument("--prefix", default="al_replay", help="al_replay or a live prefix with the same schema")
     ap.add_argument("--B", type=int, default=2000)
+    ap.add_argument("--prereg", default=None, help="preregistration JSON with key G (used when config G is null)")
     a = ap.parse_args(argv)
     cfg = load_cfg(Path(a.config))
+    prereg = {**json.loads(Path(a.prereg).read_text(encoding="utf-8")), "_path": a.prereg} if a.prereg else None
     t = Path(a.tables)
     try:
         curves = pd.read_csv(need(t / f"{a.prefix}_curves_9t.csv", "curves"))
@@ -190,20 +218,27 @@ def main(argv=None) -> int:
     except FileNotFoundError as e:
         print(e, file=sys.stderr)
         return 2
-    res = analyse(cfg, curves, scores, incl, stop_c, stop_b, oracle, a.B, t, ek.sub("7.2", "results/figures"), a.prefix)
+    res = analyse(cfg, curves, scores, incl, stop_c, stop_b, oracle, a.B, t, ek.sub("7.2", "results/figures"), a.prefix,
+                  prereg)
     print(json.dumps(res["primary"], indent=2, default=float))
     return 0
 
 
-def analyse(cfg, curves, scores, incl, stop_c, stop_b, oracle, B, tables: Path, figs: Path, prefix: str = "al_replay") -> dict:
-    """prefix keeps replay and live products apart, so a replay G is never reused by the live loop."""
+def analyse(cfg, curves, scores, incl, stop_c, stop_b, oracle, B, tables: Path, figs: Path, prefix: str = "al_replay",
+            prereg: dict | None = None) -> dict:
+    """prefix keeps replay and live products apart. G comes from the config or the preregistration only."""
     if incl["pi"].le(0).any():
         raise AssertionError("an item with pi = 0 was logged (bug)")
     ctl = cfg["primary"]["control"]
-    G = frozen_G(cfg, curves, tables / f"{prefix}_G_frozen_9t.json", ctl)
+    G = resolve_G(cfg, curves, tables / f"{prefix}_G_frozen_9t.json", ctl, prereg)
+    stop = check_stop(curves, cfg, ctl)
+    n_rounds_run = int(curves["round"].max())
+    curves, scores, incl = enforce_stop(curves, scores, incl, stop)
+    stop = {**stop, "enforced": True, "rounds_run": n_rounds_run, "rounds_kept": int(curves["round"].max())}
     res = {"evidence_level": "a", "exploratory": ("replay oracle is the annotator's own labels" if prefix == "al_replay" else "live loop"),
-           "stop_rule": check_stop(curves, cfg, ctl), "G": G,
-           "primary": primary(cfg, curves, scores, stop_c, stop_b, G["G"], B),
+           "stop_rule": stop, "G": G,
+           "n_seeds": int(curves["seed"].nunique()),
+           "primary": primary(cfg, curves, scores, stop_c, stop_b, G["G"], B, stop),
            "discovery": discovery(incl, oracle, cfg["cost_minutes"]["W"], B, cfg["master_seed"])}
     rk = ranking(curves, cfg)
     rk.to_csv(tables / f"{prefix}_policy_ranking_9t.csv", index=False)

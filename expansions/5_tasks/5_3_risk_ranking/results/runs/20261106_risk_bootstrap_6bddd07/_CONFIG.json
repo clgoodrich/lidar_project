@@ -1,0 +1,7 @@
+{
+  "candidate_jitter_m": 10.0,
+  "master_seed": 20261105,
+  "n_boot": 2000,
+  "record_pos_error_m": 30.0,
+  "stage": "risk_bootstrap"
+}
