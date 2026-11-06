@@ -2,14 +2,24 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Dedupe gap. User accepted the default 2.0 m ("take defaults"). Change freely.
+- 2026-11-06. Held-out products are re-cut at the policy cutoffs by the new script src/_records_policy_recut_9t.py. It thresholds the existing held-out probability rasters. notebooks/ is not edited. User accepted the default pit 0.35 and pad 0.525 ("take defaults"). Change freely.
+
 ## Needs user decision
 
-- The dedupe gap is 2.0 m. That is 4 pixels at 0.5 m. It is the largest gap among the 3 blobs the old truth flag dropped, so it was checked against truth once. The rule itself reads no truth. 0 m is keep_all. Counts at other gaps are in the 2026-11-06 entry.
-- The held-out products were cut at 0.50. ek.policy_for gives 0.35 for pits and 0.525 for pads. A rebuild at the policy cutoffs needs a change in notebooks/, outside this folder.
 - The 29 zero-pit blocks have no out-of-fold pit prediction. The complete grid gives them records but no pit detections. Scoring them needs a choice of model and a check that no training patch reached them.
 
 ## Log
 
+- 2026-11-06. Defaults pass by the review-fix agent. S0 now reads data/interim/records_pit_recut_policy_9t.gpkg and data/interim/records_pad_recut_policy_9t.gpkg. S0 refuses a product whose thr_used is not the policy cutoff. Change freely.
+- 2026-11-06. The 0.50 pit product from 2026-08-12 is older than the CV5 fold rasters (2026-09-17) and the pit manifest (2026-09-04). Re-cutting today's rasters at 0.50 gives 658 pit blobs, not 688. Pads reproduce exactly (1005). So part of the pit change comes from the newer rasters, not from the cutoff.
+- 2026-11-06. Rerun on 9t. Pit rows 677 to 768 (779 before dedupe, 11 merged). Pad rows 1005 to 996. Matched pits 481 to 486. Novel pits 196 to 282. Matched pads 604 to 607.
+- 2026-11-06. Positive control (active, pad, 0 m) still passes. Normalised excess 0.373 [0.316, 0.410] to 0.363 [0.305, 0.395].
+- 2026-11-06. Orphan and abandoned at pit 50 m 0.043 [-0.082, 0.171] to 0.015 [-0.108, 0.136]. At pad 0 m 0.054 [0.000, 0.109] to 0.060 [0.007, 0.111].
+- 2026-11-06. Plugged at pit 50 m 0.039 [-0.023, 0.103] to 0.084 [0.012, 0.153]. At pad 0 m 0.171 [0.123, 0.216] to 0.168 [0.126, 0.211].
+- 2026-11-06. New default run results/20261106_recassoc_23e82bc. Old-rule sensitivity results/20261106_recassoc_74b4c0c. The adjudication sheet was redrawn from the new default run.
 - 2026-11-06. Review fix pass by the review-fix agent. Change freely.
 - 2026-11-06. F15. The deployment dedupe read the truth flag dup_on_pit. It is refused now. The default is geometric. Blobs whose polygons lie within 2.0 m merge, and the highest score stays. Pit rows went from 685 to 677. All 481 truth-matched blobs stay. 11 undecided blobs merge. The truth flag and source stay as evaluation columns only.
 - 2026-11-06. Gap counts on 9t. At 0.5 m 6 pairs touch. At 1 m 8. At 2 m 11. At 3 m 15. At 5 m 25. Above 2 m truth-matched pairs start to merge with each other.

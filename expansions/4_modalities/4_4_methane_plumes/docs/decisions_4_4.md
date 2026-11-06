@@ -2,6 +2,9 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- 2026-11-06. Tail extrapolation multiple `m0.tail_max_extrapolation_multiple`. User accepted the default null, no extrapolation ("take defaults"). Change freely.
+- 2026-11-06. `m3.max_undefined` for the cell bootstrap of the rate ratio. User accepted the default 0 ("take defaults"). Change freely. It is now a config value passed to the bootstrap.
+
 
 - 2026-11-06. Review fix 4.4-01. The tail gate refuses extrapolation. When the best-case limit lies beyond a declared multiple of the largest observed rate, the tail verdict is `not identifiable by extrapolation`. The multiple is `m0.tail_max_extrapolation_multiple`. It is null, so any limit above the largest observed rate is refused. Made by the review-fix agent, change freely.
 - 2026-11-06. Tail success now needs the lower bound of the expected exceeding count to reach one well. The old check `lower bound > 0` was always true. Made by the review-fix agent, change freely.
@@ -11,9 +14,9 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
-- Tail extrapolation multiple (`m0.tail_max_extrapolation_multiple`). How far past the largest measured rate a fitted tail may be read. Null means no extrapolation. With Kang-like rates (largest about 0.09 kg/h) against the 9 kg/h best-case limit the multiple is about 100.
 - Whether the exact conditional rate ratio may decide M3 when separation leaves the cell bootstrap undefined.
 
+## Earlier decisions (2026-11-05)
 
 - 2026-11-05. Scripts live in this expansion's `src/`, not in `notebooks/wellsight_v2/s5_eval/`. Outputs go to `results/<run_id>/` here, not `data/9t/results/methane/`. Made by the build agent, change freely.
 - 2026-11-05. Best-case factor 10 and closure ratio 100 are the framework's proposed defaults, kept in `config_4_4.json`. Made by the build agent, change freely.

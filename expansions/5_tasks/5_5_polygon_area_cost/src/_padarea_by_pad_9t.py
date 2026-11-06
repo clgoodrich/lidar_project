@@ -16,7 +16,7 @@ Purpose
     subtract_pits is set. Pads are scored by held-out polygons only (one CV fold model per block).
 
 Inputs (config_5_5.json)
-    pad_products  @results_9t/pad/thresholds/pad_heldout_found_vs_missed_thr0p50_9t.gpkg (model_geometry)
+    pad_products  @exp:5.6/data/interim/records_pad_recut_policy_9t.gpkg (model_geometry, cut at 0.525)
     annotations   @truth/annotations_proj.gpkg (plat, pit_inside)
     pad_blocks    @nine_t/pad_blocks_9t.gpkg
     pad_cover     @results_9t/pad/pad_cover_split_9t.gpkg (cover_class per pad_id, optional stratifier)
@@ -101,7 +101,8 @@ def main(argv=None) -> int:
                               max_abs_log_ratio=float(ms.log_ratio.abs().max())),
              n_small=len(small), n_small_matched=int(m.ref_row.isin(small).sum()),
              max_abs_log_ratio_matched=float(m.log_ratio.abs().max()),
-             cutoff_note=f"pad polygons are the 0.50 product; policy cutoff is {pol['cutoff']}",n_drawn=len(plat), n_pred=len(pred), n_matched=len(m), n_merged=int(m.merged.sum()),
+             cutoff_used=float(pred["thr_used"].iloc[0]) if len(pred) else None, road_scope=cfg.get("road_scope"),
+             n_drawn=len(plat), n_pred=len(pred), n_matched=len(m), n_merged=int(m.merged.sum()),
              n_split=int(T.split.sum()), median_log_ratio_matched=float(m.log_ratio.median()),
              median_area_ratio_matched=float(np.exp(m.log_ratio.median())), subtract_pits=cfg.get("subtract_pits"))
     js = th.write_json(th.outp(cfg, "tile_decomp"), D)

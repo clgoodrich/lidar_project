@@ -2,6 +2,8 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- 2026-11-06. Records with no usable spud date. User accepted the default sensitivity count only (`prereg.undated_records` sensitivity_only) ("take defaults"). Change freely. S5 refuses any other value.
+
 
 - 2026-11-06. S5 compares marks only with DEP records spudded on or before the source date. A year-only source date compares by year. Records with no usable spud date (missing or the 1800 sentinel) are left out and enter a labelled sensitivity count (review 4.6-01). Made by the review-fix agent, change freely.
 - 2026-11-06. A source with no date, or with more than one date, is refused by S5. Made by the review-fix agent, change freely.
@@ -17,4 +19,5 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. Docs that the framework places in docs/iterations/ are written to results/tables/ for the lead to copy. made by the build agent, change freely.
 
 ## Needs user decision
-- Whether records with no usable spud date belong in the primary association or only in the sensitivity count.
+
+None open after the 2026-11-06 defaults.

@@ -26,6 +26,9 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults pass (2026-11-06). Candidate H stays unrankable. E min_coverage is 1.0. max_undefined is 0 in the config and a preregistration cannot loosen it. Every provenance file holds repo-relative paths. Tests pass (19).
+Rerun on the new 5.6 output (768 pit rows). Sites 1354 to 1394. Candidate sites 296 to 336. A and D still rank nothing. B top 50 is still one tie of 169 records.
+
 Review fixes 2026-11-06 (5.3-01, 5.3-02 and minors). Paths are repo-relative. Config is `src/config_5_3.json`. Tests are `src/test_5_3.py` (16 passed).
 
 | Script | Stage | Runnable now | What is missing |

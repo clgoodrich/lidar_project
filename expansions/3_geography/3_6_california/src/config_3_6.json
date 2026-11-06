@@ -4,13 +4,13 @@
   "prereg": {
     "primary_estimand": "pad recall at K=40/km2 on E1+E2, California minus 9t isolated pad reference, non-inferiority against -margin (D-CA1)",
     "k_per_km2": 40,
-    "margin": null,
+    "margin": 0.03,
     "min_pad_f1": null,
     "min_class_kappa": null,
     "max_date_gap_months": null,
     "max_share_over_gap": null,
     "developed_cap": null,
-    "void_cap": 0.9,
+    "void_cap": 0.5,
     "min_ground_ppm2": 2.0,
     "n_min_blocks": 15,
     "master_seed": 3600,
@@ -21,16 +21,66 @@
     "equip_height_m": [1.5, 12.0],
     "equip_area_m2": [1.0, 400.0],
     "equip_pad_buffer_m": 10,
-    "model_policy": "isolated pad model, one declared policy",
+    "model_policy": "fold_mean of the provisional transfer model pad/unet_cv5_iso (config model.pad, user default 2026-11-06)",
     "checkpoint_sha256": null,
     "annotation_protocol": "two annotators on 20% of blocks, one on the rest, reviewer checks 20 pads, no status or wells or model shown"
   },
   "pad_classes": {"E1": "equipped", "E2": "bare", "E3": "faint (lidar only, partly circular)", "E0": "uncertain"},
   "primary_classes": ["E1", "E2"],
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "max_undefined": 0.0,
+    "family": [
+      "A0:pad:ca1"
+    ],
+    "_note": "User default 2026-11-06 (take defaults). Holm over the declared primary gates (arm:task:area) only. fw_3_6 section 7. One primary, pad recall on E1+E2 in ca1. ca_la, E3, E0 and class rows are reported, never gated."
+  },
   "reference": {"tables_by_task": {"pad": {"exp": "3.0", "rel": "results/tables/xfer_ref_block_tables_pad_9t.json"}}},
   "model": {
-    "pad": {"transfer_checkpoint": null, "sha256": null,
-            "_note": "USER DECISION. Isolated pad model exists (5 folds), candidate models pad/unet_cv5_iso/fold0/best.pt. One fold or an ensemble is a prereg decision. Code refuses until set"}
+    "pad": {
+      "transfer_checkpoint": [
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold0/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold1/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold2/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold3/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold4/best.pt"
+        }
+      ],
+      "sha256": [
+        "c6ec36776869925c1c2e69210f079d10b0c5dd220a3d6c598047fac124e29d44",
+        "28c408b18e05ede44a42f8d2dbee11f5bd63ddd9b66f22e7d087764270b8b331",
+        "06b7168cc92765ef32f414ce836ad0a36d4fa22fe2093d66ca6df918272eb5ff",
+        "b17d07f8cb82120a5051f6607eabc5c9b11a0e92191f2b31e2d4227e35bff248",
+        "1962cc309146d5d51f0e1a9853bac3163eb1e97aae385d2634d5f328e415975a"
+      ],
+      "policy": "fold_mean",
+      "family": "pad/unet_cv5_iso",
+      "lineage": "isolated",
+      "label": "provisional transfer model",
+      "provisional": true,
+      "provisional_reasons": [
+        "trained with buffer_m 0 (review P1-02)",
+        "fold split from the P1 dry run, not the frozen file",
+        "no single 9t model is trained on all 9t ground. The five folds together are"
+      ],
+      "init_checkpoint": null,
+      "_note": "User accepted the default 2026-11-06 (take defaults). The current best 9t family, the five-fold ensemble that also produced the 3.0 reference tables, averaged per pixel (fold_mean). sha256 checked before use. init_checkpoint (which fold seeds fine-tuning) stays a user decision."
+    }
   },
   "areas": {
     "ca1": {"role": "test", "catalogue_window": null, "project": "TBD (Kern or Ventura 3DEP, VERIFY)",

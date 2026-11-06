@@ -27,14 +27,18 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 ## Build status (2026-11-06)
 
 Review fixes on 2026-11-06 (adversarial review P2-03, the P2 minors, consolidated F05).
-Tests. `python -m pytest -q -p no:cacheprovider expansions/0_prerequisites/p2_audit_set/src/test_p2.py` (13 passed).
+Tests. `python -m pytest -q -p no:cacheprovider expansions/0_prerequisites/p2_audit_set/src/test_p2.py` (14 passed).
+User default applied on 2026-11-06. Pads get a separate draw from the pad-bearing blocks (`--task pad`, config `draw_9t_pad`). Dry run only.
+The pad dry run drew 19 of 129 blocks at share 0.15, seed 20261104, buffer 150 m window mode. KS density D 0.136 p 0.882, slope D 0.182 p 0.588.
+Window mode keeps 0.85 of the pad blocks for training. Block mode would keep 0.28. Blocks 84 and 137 are in both dry-run audit sets.
+Files `data/interim/audit_blocks_pad_9t_dryrun.csv` and `data/interim/audit_draw_pad_9t_dryrun.json`. Run record `results/20261106_audit_draw_dry_6244f7b/`.
 The P1 round-trip test reads a P2-written audit CSV through `ek.read_audit` in a fresh process (`test_p1.py`).
 Nothing is frozen. Freezing an audit set is a user decision (`--freeze`). Dry runs wrote to `data/interim/` in this folder.
 
 | Script | Stage | Runnable now with held data | Missing or pending |
 |---|---|---|---|
 | `src/_audit_exposure_ledger_9t.py` | S0 exposure ledger and `audit_set_history.md` | yes, ran as a dry run (144 blocks, 12 to 15 model uses each) | uses marked unknown need a person to fill `config_p2.json` |
-| `src/_audit_draw_blocks_9t.py` | S1 draw, buffer, KS, split overlap. S5 freeze | dry run yes, reran 2026-11-06 (same 17 blocks). Freeze no | user decision to freeze. Reads the pit buffer with `ek.read_buffer("pit")` |
+| `src/_audit_draw_blocks_9t.py` | S1 draw, buffer, KS, split overlap. S5 freeze | dry run yes, reran 2026-11-06 (same 17 pit blocks). Pad dry run 2026-11-06 (19 blocks). Freeze no | user decision to freeze. Reads the task buffer with `ek.read_buffer(task)` |
 | `src/_audit_guard_lib.py` | S2 guard and CLI check | yes | frozen audit file. Wiring into trainers outside this folder is for the lead |
 | `src/_audit_discovery_draw.py` | S3 discovery sample | no | assumed input. A block frame `data/<area>/results/transfer/<area>_blocks.gpkg` outside 9t |
 | `src/_audit_reserve_warren.py` | S4 reserve Warren | no | assumed input. `data/warren/results/transfer/warren_blocks.gpkg` with a `role` column (from 3.1) |

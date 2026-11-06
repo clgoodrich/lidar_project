@@ -25,6 +25,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
 ## Build status (2026-11-06)
+
+Defaults applied 2026-11-06 (user said "take defaults"). SMRF uses the PDAL filters.smrf defaults. Tests 6 passed.
+
 Built by the build agent 2026-11-05. Review fixes 2026-11-06 (4.7-01, nested ladder). Assumed inputs and their schemas are in `src/config_4_7.json`. Nothing runs on real data until the NETL reply (R2). The request itself is a user step. Tests. `python -m pytest -q expansions/4_modalities/4_7_drone_lidar/src/test_4_7.py -p no:cacheprovider` (5 passed on 2026-11-06, synthetic LAS through the PDAL CLI).
 
 | Script | Stage | Runnable now | Missing |

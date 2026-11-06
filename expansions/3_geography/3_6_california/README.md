@@ -26,6 +26,8 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults applied (2026-11-06, user said take defaults). Margin 0.03 recall. Void cap 0.5 (was 0.9). Holm over the one primary A0 pad on ca1. ca_la and class rows are reported, never gated. The provisional pad transfer model is the five-fold `pad/unet_cv5_iso` ensemble (fold_mean) with sha256 per fold.
+
 Review repair (2026-11-06). Pad scoring uses the pad policy (cutoff 0.525) and the pad reference by task. The equipment rule is truth-free and compared at equal K over all candidates, so the union can lose. The pad transfer checkpoint is an explicit unset config key. Open user decisions are in `docs/decisions_3_6.md`.
 
 Built by the build agent. The shared regional-transfer code is `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py`. Expansions 3.4 to 3.8 import it. Stage commands that every region shares are its subcommands. Assumed inputs and their schemas are in `src/config_3_6.json`. A missing assumed input stops a script with a message that names the input, its schema and the VERIFY step. Decisions are in `docs/decisions_3_6.md`. Run the tests with `python -m pytest -q expansions/3_geography/3_6_california/src/test_3_6.py -p no:cacheprovider`.
@@ -38,7 +40,7 @@ Built by the build agent. The shared regional-transfer code is `expansions/3_geo
 | `src/_ca_label_packs.py` | S3 blind label packs and double-label draw | no | blocks, NAIP, hillshade, nDSM |
 | `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py agree --exp 3.6` | S3 agreement (F1 at IoU 0.3, kappa) | no | two annotators' polygons |
 | `expansions/3_geography/3_4_gulf_texas/src/_geo_transfer_core.py derive / infer --task pad --exp 3.6` | S4 derivatives and frozen pad inference | no | Kern or Ventura lidar, pad policy hash |
-| `src/_ca_pad_recall_by_class.py` | S5 primary scoring by class with ceiling | no | pad probability raster, truth, 3.0 pad reference tables, `prereg.margin` (D-CA1) |
+| `src/_ca_pad_recall_by_class.py` | S5 primary scoring by class with ceiling | no | pad probability raster, truth, 3.0 pad reference tables |
 | `src/_ca_unmatched_sample.py` | S6 unmatched draw and summary | no | candidate table, filled label sheet |
 | `src/_ca_status_by_pad.py` | S7 status join (descriptive) | no | frozen S5 result, CalGEM snapshot |
 | `src/_ca_equipment_rule.py` | S8 equipment rule at equal K (exploratory) | no | nDSM, truth, candidates and score JSON from core `score --task pad` |

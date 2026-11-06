@@ -1,0 +1,48 @@
+{
+  "written": "2026-11-06T14:32:33",
+  "commit": "f3a49aeb5f140b94dfb31efbcb2f1155b9c5bd99",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_sensitivity_9t.py"
+  ],
+  "params": {
+    "top_n": 50,
+    "n_dirichlet": 2000,
+    "seed": 20261109,
+    "band_variant_missing": [
+      "water_wells"
+    ]
+  },
+  "seeds": {
+    "dirichlet": 20261109
+  },
+  "inputs": [],
+  "outputs": [
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_weight_sweep_9t.csv",
+      "bytes": 175349,
+      "mtime": "2026-11-06T14:32:31.833700",
+      "sha256": "3fca99bca2ed95e6de255757a319d516a37658bb53f98505468db4e3358122e7"
+    },
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_oneout_change_9t.csv",
+      "bytes": 2152,
+      "mtime": "2026-11-06T14:32:31.904844",
+      "sha256": "90e69f558c40c783479f096a3ee9cb6e3ecbc2b3ed9092370f2ce6bb61092240"
+    },
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_weight_sweep_9t_site_freq.csv",
+      "bytes": 24782,
+      "mtime": "2026-11-06T14:32:31.907363",
+      "sha256": "1135244811dce54a59836c679c0bae2e036bbbcb59af6ee41330e78856f967c3"
+    },
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/figures/risk_weight_sweep_9t.png",
+      "bytes": 49752,
+      "mtime": "2026-11-06T14:32:33.154425",
+      "sha256": "cb65f11c8b2e9c96be5ddb2b5cf2d6bab80e1c0d119d37b97043c87a4780162f"
+    }
+  ]
+}

@@ -26,7 +26,9 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
-Review fix pass. The footprint is all 144 blocks. The D bootstrap stays inside 0 to K. The 5.6 input has 677 pit rows. Tests pass (10). No density map is produced anywhere.
+Review fix pass. The footprint is all 144 blocks. The D bootstrap stays inside 0 to K. Tests pass (10). No density map is produced anywhere.
+
+Defaults pass (2026-11-06). The 5.6 input is now cut at the policy cutoff 0.35 and has 768 pit rows. K stays 810. D went from 656 [578, 739] to 733 [648, 782]. 35 sites hold several blobs (was 21). D at K30 went from 592 to 596.
 
 | Script | Stage | Runnable now | Missing |
 |---|---|---|---|

@@ -26,7 +26,10 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
-Review fixes applied on 2026-11-06 (findings 4.2-01, 4.2-02, 4.2-03, P2-01, SH-01 and the cloud QA note). Tests pass with `python -m pytest -q expansions/4_modalities/4_2_thermal/src/test_4_2.py -p no:cacheprovider` (11 passed). Paths and assumed schemas live in `src/config_4_2.json`. Each script writes a run folder `results/<YYYYMMDD>_<short>_<hash7>/` with `_CONFIG.json`, `_RUN.md` and `_PROVENANCE.json`. Later stages find earlier runs by the time recorded in `_PROVENANCE.json`, not by folder name.
+Defaults applied 2026-11-06 (user said "take defaults"). T4 useful gain is 0.03 recall at K. max_undefined is 0 for T3 and T4. The T4 population stays pads and clearings. T3 and T4 are the two primaries. Their stage verdicts are now `verdict_unadjusted`. The gate is Holm over both, run by `src/_thermal_primary_holm_9t.py`. Tests 14 passed. Nothing reran, because T3 and T4 have no input on file.
+
+
+Review fixes applied on 2026-11-06 (findings 4.2-01, 4.2-02, 4.2-03, P2-01, SH-01 and the cloud QA note). Tests pass with `python -m pytest -q expansions/4_modalities/4_2_thermal/src/test_4_2.py -p no:cacheprovider` (14 passed). Paths and assumed schemas live in `src/config_4_2.json`. Each script writes a run folder `results/<YYYYMMDD>_<short>_<hash7>/` with `_CONFIG.json`, `_RUN.md` and `_PROVENANCE.json`. Later stages find earlier runs by the time recorded in `_PROVENANCE.json`, not by folder name.
 
 | Script | Stage | Runnable now | What is missing |
 |---|---|---|---|
@@ -36,6 +39,7 @@ Review fixes applied on 2026-11-06 (findings 4.2-01, 4.2-02, 4.2-03, P2-01, SH-0
 | `src/_thermal_extract_samples_9t.py` | T2 pixel-weighted LST and covariates | no | LST scenes with a per-pixel cloud QA band, a scene index, and tie points that passed T1 |
 | `src/_thermal_contrast_model_9t.py` | T3 covariate-adjusted contrast and gate | no | T2 samples of the matched layer |
 | `src/_thermal_added_value_9t.py` | T4 added value at K = 40 per km2 | no | T2 samples of the population layer and the 3.0 block folds `data/raw/transfer_blocks.csv` |
+| `src/_thermal_primary_holm_9t.py` | primary gate, Holm over T3 and T4 | no | T3 and T4 runs. A missing primary keeps p 1 |
 | `src/test_4_2.py` | tests | yes | nothing |
 | none | T5 drone appendix | design only | Not scheduled by the framework |
 

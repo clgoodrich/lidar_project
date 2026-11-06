@@ -5,6 +5,7 @@ Run
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -119,8 +120,33 @@ def test_seam_flags_and_gate():
             "n_features": 10}
     g = s5.gate(summ, 0.05, False, n_flat=0)
     assert g["s1_decision"] == "failure" and g["release_area_test"]
-    g2 = s5.gate(summ, None, False, n_flat=0)
-    assert g2["s1_decision"] == "no_margin_set" and not g2["release_area_test"]
+    with pytest.raises(ValueError, match="margin is required"):
+        s5.gate(summ, None, False, n_flat=0)
+    # take defaults 2026-11-06. Margin 0.03. S1's Holm decision is used when the margins agree
+    summ2 = {"primary": {"diff": -0.012, "lo": -0.063, "hi": 0.038, "margin": 0.03, "decision": "inconclusive",
+                         "decision_basis": "interval spans the bound"},
+             "cut_points": {"feature_slope_deg": [7.0, 10.0]}, "n_features": 10}
+    g3 = s5.gate(summ2, 0.03, False, n_flat=0)
+    assert g3["s1_decision"] == "inconclusive" and not g3["release_area_test"]
+    assert g3["s1_decision_basis"] == "interval spans the bound"
+
+
+def test_defaults_margin_family_footprint():
+    cfg = json.loads((HERE.parent / "config_3_3.json").read_text(encoding="utf-8"))
+    assert cfg["margin_delta"] == 0.03 and cfg["footprint_rule"] == "all_blocks"
+    m = cfg["multiplicity"]
+    assert m["method"] == "holm" and m["family"] == ["q1_slope_feature"] and m["max_undefined"] == 0.0
+
+
+def test_s1_primary_holm_gate_exact():
+    """Hand oracle. 10 draws, 1 at or below -0.03, share 0.1 -> not under 0.025, CI spans -> inconclusive.
+    0 draws below -> share 0 -> success."""
+    import _geo_xfer_lib as xl
+    d = np.array([-0.05, -0.02, -0.01, 0, 0, 0.01, 0.01, 0.02, 0.02, 0.03])
+    h = xl.hg.holm_input("q1_slope_feature", d, -0.045, 0.03, 0.03, "noninferiority", ["q1_slope_feature"])
+    assert h["p_one_sided"] == pytest.approx(0.1) and h["decision_partial"] == "inconclusive"
+    h = xl.hg.holm_input("q1_slope_feature", d[1:], -0.02, 0.03, 0.03, "noninferiority", ["q1_slope_feature"])
+    assert h["p_one_sided"] == 0.0 and h["decision_partial"] == "success"
 
 
 # ----------------------------------------------------------------------------- review 2026-11-06 regressions

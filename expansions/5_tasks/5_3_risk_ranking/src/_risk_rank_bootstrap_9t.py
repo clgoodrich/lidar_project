@@ -168,7 +168,7 @@ def main(argv=None) -> int:
         outs.append(png)
     summ = st.groupby("scenario").jaccard_vs_base.agg(median="median", p05=lambda v: v.quantile(0.05)).round(4)
     summ["n_stable_in"] = si.groupby("scenario").stable_in.sum()
-    ek.write_provenance(run, inputs=[cp], outputs=outs,
+    rio.write_provenance(run, inputs=[cp], outputs=outs,
                         params=dict(B=B, top_n=n, missing_receptors=missing, summary=summ.to_dict()),
                         seeds={"master": cfg["master_seed"], "rule": "child_seed(master, draw, 5)"})
     print(summ.to_string())

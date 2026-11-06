@@ -4,6 +4,8 @@
   "prereg": {
     "primary_estimand": "E2. Median over sites of (well-site long-term LOS rate minus matched-control mean), mm/yr, two-sided around delta",
     "delta_mm_yr": null,
+    "multiplicity": {"method": "holm", "family": ["E2_rate_mm_yr"], "max_undefined": 0.0,
+                     "_note": "User default 2026-11-06 (take defaults). Holm over declared primaries. E2 is the one primary, so Holm equals the unadjusted gate. E3, the placebo and the permutation band are reported, never gated. delta stays a user decision."},
     "los_sign": "positive toward the satellite",
     "wavelength_m": {"sentinel1_c": 0.05546576, "nisar_l": 0.2385, "alos2_l": 0.2425, "_verify": "c over centre frequency, check against mission specs"},
     "mission": "sentinel1_c",

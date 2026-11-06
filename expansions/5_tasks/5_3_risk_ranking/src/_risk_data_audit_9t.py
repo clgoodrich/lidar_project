@@ -103,7 +103,7 @@ def main(argv=None) -> int:
     out2 = th.outp(cfg, "audit_missing")
     pd.DataFrame(miss, columns=["layer", "column", "missing_share"]).to_csv(out2, index=False)
     present = [th.inp(cfg, r["layer"], must_exist=False) for r in rows if r["present"] and not r["endpoint"]]
-    ek.write_provenance(run, inputs=present, outputs=[out, out2], params={"n_layers": len(rows)})
+    rio.write_provenance(run, inputs=present, outputs=[out, out2], params={"n_layers": len(rows)})
     n_ass_missing = int(((A.assumed) & (~A.present)).sum())
     print(f"wrote {out}\nwrote {out2}\n{n_ass_missing} assumed layers missing. Run folder {run}")
     return 0

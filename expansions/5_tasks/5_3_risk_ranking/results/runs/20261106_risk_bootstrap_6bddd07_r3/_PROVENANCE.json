@@ -1,0 +1,74 @@
+{
+  "written": "2026-11-06T14:34:41",
+  "commit": "f3a49aeb5f140b94dfb31efbcb2f1155b9c5bd99",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_rank_bootstrap_9t.py"
+  ],
+  "params": {
+    "B": 2000,
+    "top_n": 50,
+    "missing_receptors": [
+      "water_wells",
+      "buildings",
+      "streams",
+      "wetlands",
+      "public_supply",
+      "protected"
+    ],
+    "summary": {
+      "median": {
+        "A": NaN,
+        "B": 1.0,
+        "C": 1.0,
+        "D": NaN
+      },
+      "p05": {
+        "A": NaN,
+        "B": 1.0,
+        "C": 1.0,
+        "D": NaN
+      },
+      "n_stable_in": {
+        "A": 0,
+        "B": 169,
+        "C": 1058,
+        "D": 0
+      }
+    }
+  },
+  "seeds": {
+    "master": 20261105,
+    "rule": "child_seed(master, draw, 5)"
+  },
+  "inputs": [
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_candidate_scores_9t.csv",
+      "bytes": 17470,
+      "mtime": "2026-11-06T14:32:11.793580",
+      "sha256": "6f9beb0e435e79de006f531f6fbb67a7c258901232fb07584b44549c3cde8cd2"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_rank_stability_9t.csv",
+      "bytes": 99607,
+      "mtime": "2026-11-06T14:34:37.938077",
+      "sha256": "237dbc2361a1bcc9f11422839b845fa43236806ea72bf6b4aca8b80b081fa72d"
+    },
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_site_rank_interval_9t.csv",
+      "bytes": 419229,
+      "mtime": "2026-11-06T14:34:37.985812",
+      "sha256": "b74dcc6679d75e8cb27c5680603e0b0da943567a3f4d0e8b286756a0f14b13ff"
+    },
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/figures/risk_rank_stability_9t.png",
+      "bytes": 25082,
+      "mtime": "2026-11-06T14:34:41.231183",
+      "sha256": "68766e6eba9ff94fe5e4f5affdc3c9ef426fd8f072e00ead03d49fc17c84f2e4"
+    }
+  ]
+}

@@ -7,7 +7,8 @@ Purpose
     lease. Outer GroupKFold by lease. Inner GroupKFold picks the logistic C. AUC of covariates only
     versus covariates plus stress, paired cluster bootstrap over leases (ek.bootstrap_diff, paired).
     Decision with ek.decide (superiority) against delta_gain. Run for all labels, strong labels only and
-    weak labels only, reported separately. A success is a screening association with the stated label
+    weak labels only, reported separately. All labels is primary B (one of two primaries with V3). Strong and
+    weak are secondary. Stage verdicts are unadjusted. The gate is Holm in _vegstress_primary_holm_9t.py. A success is a screening association with the stated label
     type. It is not leak detection and not well identity.
 Inputs
     V0 gate     <run>_vegstress_labels_*/vegstress_label_counts_9t.json
@@ -126,10 +127,12 @@ def run(cfg: dict, out_root: Path | None = None, labels_dir: Path | None = None,
         res[name] = {"status": "ok", "n": int(len(d)), "n_leak": int(d.y.sum()), "n_leases": len(leases),
                      "auc_cov": float(auc("score_cov")(leases)), "auc_cov_stress": float(auc("score_cov_stress")(leases)),
                      "auc_gain": pt, "lo": lo, "hi": hi, "undefined_share": ek.undefined_share(dr),
-                     "max_undefined": mu, "verdict": ek.decide(lo, hi, lt["delta_gain"], "superiority")}
+                     "max_undefined": mu, "verdict_unadjusted": ek.decide(lo, hi, lt["delta_gain"], "superiority"),
+                     "primary": name == "all", **io._t.one_sided_shares(dr, lt["delta_gain"], mu)}
         score_parts.append(d[["pad_id", "label", "strength", "lease_id", "score_cov", "score_cov_stress"]].assign(subset=name))
     summary = {"stage": "V4", "question": "B leak association", "covariates": covs, "stress_features": stress,
                "delta_gain": lt["delta_gain"], "results": res,
+               "gated_by": "Holm over V3 and V4 all labels (_vegstress_primary_holm_9t.py)",
                "note": "A positive result is an association with the stated label type. Not leak detection, not well identity"}
     out_j, out_c = run_dir / "vegstress_leak_test_9t.json", run_dir / "vegstress_leak_scores_9t.csv"
     out_j.write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")

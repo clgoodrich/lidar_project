@@ -144,6 +144,7 @@
     "k_per_km2": 40,
     "link_radius_m": 50,
     "score_bands": [
+      0.35,
       0.5,
       0.6,
       0.7,
@@ -151,7 +152,11 @@
       0.9,
       1.0001
     ],
-    "frozen_cutoff": 0.5,
+    "frozen_cutoff": {
+      "pit": 0.35,
+      "pad": 0.525,
+      "_note": "Per kind, equal to ek.policy_for. The 5.6 products are cut at these since 2026-11-06. The old single 0.50 re-imposed 0.50 on pits and dropped 200 of 768 pit blobs."
+    },
     "sentinel_year": 1800,
     "bootstrap_B": 2000,
     "master_seed": 20261105,

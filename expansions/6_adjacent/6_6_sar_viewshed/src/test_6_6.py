@@ -24,6 +24,7 @@ C = N // 2
 X0, Y0 = 600000.0, 4590000.0
 TF = Affine(1.0, 0, X0, 0, -1.0, Y0 + N)
 VP = V.load_config()["viewshed"]
+VP_UNK = dict(VP, void_obstacle="unknown")          # the pre-2026-11-06 rule, kept as a sensitivity
 
 
 def grid(dem, dsm=None, chm=None, void=None):
@@ -191,10 +192,11 @@ def test_unobserved_strip_gives_unknown(kind):
     """F13 / 6.6-02. On flat ground nothing known can block. The only thing between observer and target is
     unobserved terrain, so the honest answer is unknown. Pre-fix both implementations said visible."""
     g = _strip(kind)
-    p = V.los_profile(g, OBS, xy(C, C + 40), "O0", vp=VP)
+    vp = VP_UNK                     # NaN is unknown under both void rules. The void case tests the old rule
+    p = V.los_profile(g, OBS, xy(C, C + 40), "O0", vp=vp)
     assert p["state"] == "unknown" and p["visible"] is None and p["p_visible"] is None
-    assert V.los_profile(g, OBS, xy(C, C + 10), "O0", vp=VP)["state"] == "visible"      # strip not on the ray
-    r = V.viewshed(g, OBS, 90, "O0", vp=VP)
+    assert V.los_profile(g, OBS, xy(C, C + 10), "O0", vp=vp)["state"] == "visible"      # strip not on the ray
+    r = V.viewshed(g, OBS, 90, "O0", vp=vp)
     assert r["vis"][C, C + 40] == V.UNKNOWN and r["vis"][C, C + 10] == V.VISIBLE
     assert r["vis"][C, C - 40] == V.VISIBLE                                              # other side
     assert r["n_unknown"] > 0
@@ -225,10 +227,10 @@ def test_cumulative_keeps_unknown_apart():
     """6.6-02. One observer west of a void strip. The cell east of the strip is unknown, not 'seen by nobody'.
     A second observer east of the strip sees it, so then it is seen once. The strip cells stay unknown."""
     g = _strip("void")
-    one = V.cumulative(g, [OBS], 90, "O0", vp=VP)
+    one = V.cumulative(g, [OBS], 90, "O0", vp=VP_UNK)
     assert one["state"][C, C + 40] == V.UNKNOWN and np.isnan(one["count"][C, C + 40])
     assert one["count"][C, C - 40] == 1
-    two = V.cumulative(g, [OBS, xy(C, C + 60)], 90, "O0", vp=VP)
+    two = V.cumulative(g, [OBS, xy(C, C + 60)], 90, "O0", vp=VP_UNK)
     assert two["count"][C, C + 40] == 1 and two["state"][C, C + 40] == V.VISIBLE
     assert two["state"][C, C + 20] == V.UNKNOWN
 
@@ -298,3 +300,80 @@ def test_gnss_tolerance_is_two_sided():
     out = [SV.predict(g, r, "O0", 0.0, VP) for r in rows.itertuples()]
     assert [x["status"] for x in out] == ["ambiguous", "ambiguous", "scored", "scored"]
     assert [x["agree"] for x in out] == [None, None, True, False]
+
+
+# ----------------------------------------------------------------------------- void obstacle model (2026-11-06)
+def test_fill_void_lower_by_hand():
+    z = np.array([[0.0, 100.0, 100.0, 7.0, 5.0], [100.0, 0.0, 3.0, 100.0, np.nan]])
+    void = np.array([[0, 1, 1, 0, 0], [1, 0, 0, 1, 0]], bool)
+    out, unres = V.fill_void_lower(z, void)
+    assert out[0].tolist() == [0.0, 0.0, 0.0, 7.0, 5.0]              # min(0, 7), not the mean 3.5
+    assert unres[0].tolist() == [False] * 5
+    assert unres[1].tolist() == [True, False, False, True, False]   # one-sided voids (nothing observed before, NaN after)
+
+
+def _void_ridge():
+    """Row C. Void columns C+20..C+24 hold a 100 m DEM artefact. C+19 is observed at 0 and C+25 at 7. The target
+    C+35 is the first cell of a 10 m bench. Eye 1.7 m. Target slope (10 - 1.7) / 35 = 0.237. C+25 itself gives
+    (7 - 1.7) / 25 = 0.212, so it does not block. A void obstacle at 0 (the lower neighbour) does not block. At 7
+    (the higher neighbour) it would block, since (7 - 1.7) / 20 = 0.265."""
+    dem = np.zeros((N, N))
+    void = np.zeros((N, N), bool)
+    dem[:, C + 20:C + 25] = 100.0
+    void[:, C + 20:C + 25] = True
+    dem[:, C + 25] = 7.0
+    dem[:, C + 35:C + 46] = 10.0
+    return dem, void
+
+
+def test_void_obstacle_takes_the_lower_neighbour():
+    dem, void = _void_ridge()
+    vp = dict(VP, curvature=False)
+    g = grid(dem, void=void)
+    tgt = xy(C, C + 35)
+    p = V.los_profile(g, OBS, tgt, "O0", vp=vp)
+    assert p["state"] == "visible" and p["n_unknown_obstacles"] == 0
+    assert V.viewshed(g, OBS, 90, "O0", vp=vp)["vis"][C, C + 35] == V.VISIBLE
+    assert V.los_profile(g, OBS, tgt, "O0", vp=dict(vp, void_obstacle="unknown"))["state"] == "unknown"
+    hi = dem.copy()
+    hi[:, C + 20:C + 25] = 7.0                                     # the higher neighbour, observed: it hides
+    assert V.los_profile(grid(hi), OBS, tgt, "O0", vp=vp)["state"] == "hidden"
+    assert V.viewshed(grid(dem, void=void), OBS, 90, "O0", vp=vp)["void_obstacle"] == "lower_neighbour"
+
+
+def test_void_at_the_observer_stays_unknown():
+    """The observer stands in a void patch (as on 9t). No observed sample lies before the void, so it stays unknown."""
+    dem = np.zeros((N, N))
+    void = np.zeros((N, N), bool)
+    void[:, C - 3:C + 6] = True
+    g = grid(dem, void=void)
+    assert V.los_profile(g, OBS, xy(C, C + 30), "O0", vp=VP)["state"] == "unknown"
+    assert V.viewshed(g, OBS, 90, "O0", vp=VP)["vis"][C, C + 30] == V.UNKNOWN
+
+
+def test_void_model_is_decided_and_checked():
+    assert V.load_config()["viewshed"]["void_obstacle"] == "lower_neighbour"
+    with pytest.raises(SystemExit):
+        V.void_model(dict(VP, void_obstacle="mean"))
+
+
+def test_sweep_matches_brute_force_with_voids():
+    """Random terrain with random void blobs. Sweep and profile agree on the three-state call within half a cell."""
+    rng = np.random.default_rng(5)
+    from scipy.ndimage import gaussian_filter
+    dem = gaussian_filter(rng.normal(0, 1, (N, N)), 4) * 40
+    void = gaussian_filter(rng.normal(0, 1, (N, N)), 3) > 0.06          # about a quarter of the cells
+    void[C - 2:C + 3, C - 2:C + 3] = False
+    g = grid(dem, void=void)
+    r = V.viewshed(g, OBS, 95, "O0", vp=VP)
+    cells = np.argwhere((r["vis"] != 255) & ~void)
+    pick = cells[rng.choice(len(cells), 300, replace=False)]
+    name = {V.VISIBLE: "visible", V.HIDDEN: "hidden", V.UNKNOWN: "unknown"}
+    unresolved = 0
+    for v, u in pick:
+        sw = name[int(r["vis"][v, u])]
+        x, y = xy(v, u)
+        ok = any(V.los_profile(g, OBS, (x + dx, y + dy), "O0", vp=VP)["state"] == sw
+                 for dx in (0, -0.5, 0.5) for dy in (0, -0.5, 0.5))
+        unresolved += not ok
+    assert unresolved == 0, unresolved

@@ -7,7 +7,9 @@ Repeat 0 is the deterministic GroupKFold. Repeats 1 to n are StratifiedGroupKFol
 mean out-of-fold probability over repeats. Then per arm and stratum
   strata     all, and lidar_weak from an external covariate (prereg.lidar_weak). Never from the baseline score,
              which would hand any second score a gain by regression to the mean (4.9-01). Unset covariate means
-             lidar_weak is reported as undefined. One primary row only (prereg.primary_stratum, now all).
+             lidar_weak is reported as undefined. The covariate is ground point density sampled from its layer when
+             the rows lack the column. One primary row only. prereg.primary_stratum (lidar_weak) when it forms,
+             else prereg.primary_stratum_fallback (all). Holm over that one primary is m = 1, no adjustment.
   gain       AUC(baseline + arm) - AUC(baseline), paired block bootstrap B = 2000 (same blocks for both).
              Undefined draws are counted (undefined_share) and above prereg.max_undefined_share give inconclusive.
   perm       paired permutation interval when fewer than 15 blocks, on within-arm ranks
@@ -98,8 +100,12 @@ def make_strata(y, df: pd.DataFrame, pr: dict) -> tuple[dict, dict]:
     col = spec.get("covariate")
     if col and ("score" in col.lower() or col.startswith("arm:")):
         raise ValueError(f"lidar_weak covariate {col!r} is a score or arm column. Use an external covariate")
-    cov = df[col].to_numpy(float) if col and col in df else None
+    cov, lwhy = (df[col].to_numpy(float), None) if col and col in df else (None, None)
+    if cov is None and col and spec.get("layer"):
+        cov, lwhy = sk.layer_covariate(df, spec)
     m, why = sk.lidar_weak_mask(y, cov, spec)
+    if m is None and lwhy:
+        why = lwhy
     strata = {"all": np.ones(len(y), bool)}
     undefined = {}
     if m is None:
@@ -113,6 +119,7 @@ def score_strata(y, sb, sa, sp, grp, strata: dict, cfg: dict, elig: dict, arm: s
                  n0: int = 0) -> list[dict]:
     """Arm and placebo rows for every stratum. The arm decision needs a null placebo. Exactly one primary row."""
     pr = cfg["prereg"]
+    ps, _ = sk.primary_stratum(pr, strata)
     rows = []
     for sname, m in strata.items():
         pair = {}
@@ -120,7 +127,7 @@ def score_strata(y, sb, sa, sp, grp, strata: dict, cfg: dict, elig: dict, arm: s
             r = gain_row(y[m], sb[m], s[m], grp[m], cfg, sk.ek.child_seed(pr["master_seed"], k, n0 + len(rows)),
                          f"{arm}:{sname}:{kind}")
             r.update(arm=arm, stratum=sname, kind=kind,
-                     primary=bool(primary_arm and kind == "arm" and sname == pr.get("primary_stratum", "all")))
+                     primary=bool(primary_arm and kind == "arm" and sname == ps))
             e = [v["eligible"] for kk, v in elig.items() if kk.endswith(f":{sname}")]
             r["eligible"] = any(e) if e else None
             pair[kind] = r
@@ -171,6 +178,7 @@ def main(argv=None) -> int:
     ep = Path(a.eligibility) if a.eligibility else out / "sar_power_eligibility_9t.json"
     elig = json.loads(ep.read_text())["strata"] if ep.exists() else {}
     strata, undefined = make_strata(y, df, pr)
+    print("primary stratum:", sk.primary_stratum(pr, strata)[1])
     for sname, why in undefined.items():
         print(f"stratum {sname} undefined: {why}")
     rows = []

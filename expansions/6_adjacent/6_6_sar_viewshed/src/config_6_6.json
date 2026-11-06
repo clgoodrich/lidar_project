@@ -21,6 +21,8 @@
                "refraction_k": 0.13, "earth_radius_m": 6371000.0, "curvature": true, "canopy_height_m": 2.0,
                "k_extinction": {"leaf_on": 0.15, "leaf_off": 0.05, "_note": "starting values per metre, VERIFY, calibrated in S4"},
                "o2_visible_threshold": 0.5, "pocket_min_area_m2": 400.0, "ray_chunk": 256, "mask_voids": true,
+               "void_obstacle": "lower_neighbour",
+               "_void_obstacle_note": "A void sample on a ray takes the lower of the two nearest observed heights along the ray. One-sided voids stay unknown. unknown is the sensitivity. User accepted on 2026-11-06 (take defaults). Change freely.",
                "_void_note": "mask_voids true makes void cells (no ground return) unknown, as targets and as obstacles on a sightline (review 6.6-02, F13)."},
   "cost": {"tobler_a": 6.0, "tobler_b": 3.5, "tobler_c": 0.05, "resample_m": 5.0,
            "landcover_multiplier": {"_note": "NLCD codes, time multipliers. Starting values. VERIFY and calibrate in S5.",

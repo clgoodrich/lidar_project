@@ -4,10 +4,13 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
-- 2026-11-06. Buffer mode of the split. `block` (the default the review fix asked for) moves every train block that touches held-out ground to role `buffer`. That leaves 12 to 24 pit train blocks per fold and 15 to 32 pad blocks. `window` keeps the lists and lets the sampler reject windows within the buffer, as P2 already does for audit blocks. A third option is a spatially blocked re-fold, which keeps more training ground but breaks comparability with the historical folds.
-- 2026-11-06. The noise band of the range rule is 2 sigma of the tail lags. A different band can change the buffer by 25 m steps.
+- Freezing this file is still a user step.
 
 ## Decisions
+
+- 2026-11-06. Buffer mode of the split. User accepted the default `window`. Train blocks keep their role and the sampler rejects windows within the buffer of held-out ground ("take defaults"). Change freely.
+- 2026-11-06. Noise band of the range rule. User accepted the default 2 sigma of the tail lags ("take defaults"). Change freely.
+- 2026-11-06. The P1 dry run was rerun in window mode. Train blocks per fold are pit 72, 71, 76, 74, 75 (was 23, 12, 24, 20, 22 in block mode) and pad 84, 82, 82, 82, 83 (was 32, 16, 15, 16, 20). The isolated sampler leaks 0 windows in every fold. The block-mode dry-run files moved to data/interim/dryrun/block_mode_20261106/. Made by the review-fix agent.
 
 - 2026-11-06. Review fix P1-04. The buffer uses `range_m_upper_bound`, the first lag at 95% of the sill plus 2 sigma of the tail lags. A first lag at or above it gives the first lag as the bound with `range_below_first_lag`. Made by the review-fix agent, change freely.
 - 2026-11-06. Review fix P1-03. The pad buffer is derived from the historical per-fold pad rasters, each taken inside its own held-out blocks. Pad class 1, the same receptive field rule, patch 384. Made by the review-fix agent, change freely.

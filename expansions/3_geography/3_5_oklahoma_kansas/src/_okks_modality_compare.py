@@ -65,15 +65,17 @@ def infer_arm(arm: str, area: str, cfg: dict) -> Path:
     """Run each seed checkpoint once on the test stack and write the three-seed mean (declared policy)."""
     md = ek.area_dir(area) / "results" / "modality"
     stack = ek.area_dir(area) / "derived" / "05" / STACK[arm].format(a=area)
-    if arm == "L0":
-        ckpts = [gt.transfer_checkpoint(cfg, "pit", EXP)]
+    if arm == "L0":                            # provisional transfer model, five-fold 9t ensemble (fold_mean)
+        ckpts, shas, _ = gt.transfer_checkpoints(cfg, "pit", EXP)
+        for c, h in zip(ckpts, shas):
+            gt.check_checkpoint(c, h)
     else:
         ckpts = sorted((ek.exp_dir(EXP) / "models" / arm).glob("seed*/best.pt"))
     if not ckpts:
         raise gt.MissingInputError(f"no seed checkpoints for {arm}. Train with _okks_modality_train.py --execute")
     task = "pit" if arm == "L0" else "pad"     # trained arms are 2-class (bg, pit-or-pad)
     probs = [gt.frozen_infer(stack, c, task, md / f"_{arm}_{c.parent.name}", f"{arm}_{c.parent.name}_{area}")
-             for c in ckpts]
+             for c in ckpts]                   # L0 hashes checked above
     return gt.mean_rasters(probs, md / f"{arm}_prob_{area}.tif")
 
 
@@ -134,8 +136,11 @@ def main(argv=None) -> int:
                                                     "stratum": f"{col}={val}", "recall": gt.pooled_recall_at_k(st, list(st)),
                                                     "n_truth": sum(v["n_truth"] for v in st.values())})
                     per_arm[arm] = stratified_tables(per)
+                fam = list(cfg["multiplicity"]["family"])
+                gate = f"F1-L1:{cls}:{group}"
                 g = {"primary_F1_minus_L1": gt.paired_arm_difference(per_arm["F1"], per_arm["L1"], dg, B=a.B,
-                                                                     seed=int(pr["master_seed"]))}
+                                                                     seed=int(pr["master_seed"]),
+                                                                     gate=gate if gate in fam else None, family=fam)}
                 for x, y in (("L1", "O1"), ("F1", "O1"), ("L0", "L1"), ("L2", "L1")):
                     if x not in per_arm:
                         continue

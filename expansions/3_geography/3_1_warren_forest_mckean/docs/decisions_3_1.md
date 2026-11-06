@@ -2,6 +2,11 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primary gates warren, mckean, forest, secondaries and sensitivities reported and never gated (`_transfer_holm_gate.py`) ("take defaults"). Change freely.
+- 2026-11-06. Undefined bootstrap draws. User accepted the default max_undefined 0 (any undefined draw makes the gate inconclusive) ("take defaults"). Change freely.
+- 2026-11-06. Margin per arm. User accepted the default 0.03 recall for warren, mckean and forest ("take defaults"). Change freely.
 - 2026-11-06. Review fix pass (F02 F03 F08 F11 G-03 G-06 G-07 P1-03, minors). Made by the review-fix agent, change freely.
   - Scoring is the 3.0 scorer. `_geo_xfer_lib` keeps `candidates_from_prob`, `match_iou` and `score_area` as thin wrappers. Matching is in score order. The old `test_match_iou` locked in IoU order and now asserts the score-order result.
   - Blocks are credited by centroid (the 3.0 rule that made the 9t reference), not by representative point. One rule keeps 3.1 and the reference comparable. A seam centroid goes to the lower block id.
@@ -29,6 +34,6 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
+- At Delta 0.03 the S2 projected width exceeds 2 x Delta in every design cell (smallest median width 0.061). The readiness gate cannot pass as designed. Add blocks or revisit Delta. (listed 2026-11-06)
 - Low-density stratum. Its 5 audit blocks are now in `xfer_audit_blocks_warren_v1.csv`. Decide whether low-density audit blocks belong in the sealed audit set.
 - Reference rule. The 3.0 tables are ranked per fold, as the archival sweep did. The target is ranked once over all test blocks. Confirm this pairing in the preregistration.
-- No multiplicity correction is applied across arms (Warren, McKean, Forest) and secondaries. Decide whether any secondary is gated.

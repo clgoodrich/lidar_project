@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pytest
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -17,6 +18,24 @@ import _sar_kit_4_9 as sk  # noqa: E402
 
 CFG = sk.load_cfg()
 X0, Y0, X1, Y1 = CFG["bbox_9t"]
+_REAL_LOAD = sk.load_cfg
+
+
+@pytest.fixture(autouse=True)
+def _no_real_layer(monkeypatch, tmp_path):
+    """Scripts read the committed config. Point its ground density layer at a missing file so no test reads the
+    real 9t raster. lidar_weak is then not formed and the primary falls back to all. Tests that need the layer
+    set CFG_LAYER themselves."""
+    def load(path=None):
+        c = _REAL_LOAD(path)
+        c["prereg"]["lidar_weak"]["layer"] = {"abs": str(CFG_LAYER.get("path", tmp_path / "absent_density.tif"))}
+        return c
+    monkeypatch.setattr(sk, "load_cfg", load)
+    yield
+    CFG_LAYER.clear()
+
+
+CFG_LAYER: dict = {}
 
 
 def test_auc_and_holm():
@@ -60,7 +79,7 @@ def test_power(tmp_path):
     df.to_csv(f, index=False)
     assert s1.main(["--rows", f"{f}:score:syn", "--n-sims", "4", "--B", "20", "--out", str(tmp_path)]) == 0
     tab = pd.read_csv(tmp_path / "sar_power_by_stratum_9t.csv")
-    # config leaves the lidar_weak covariate unset, so only "all" is formed (4.9-01)
+    # the ground density layer is not held here (fixture), so only "all" is formed (4.9-01)
     assert set(tab.stratum) == {"all"}
     el = json.loads((tmp_path / "sar_power_eligibility_9t.json").read_text())
     assert "syn:all" in el["strata"] and "syn:lidar_weak" not in el["strata"]
@@ -130,7 +149,7 @@ def test_features_score_figure(tmp_path):
     assert arm.gain > plc.gain and arm.primary
     assert int(g.primary.sum()) == 1
     lw = g[g.stratum == "lidar_weak"]
-    assert len(lw) == 1 and lw.iloc[0].decision.startswith("undefined (lidar_weak covariate not set")
+    assert len(lw) == 1 and lw.iloc[0].decision.startswith("undefined (lidar_weak layer not held")
     assert s6.main(["--gain", str(tmp_path / "sar_new_gain_by_arm_9t.csv"), "--out", str(tmp_path / "fig.png")]) == 0
     assert (tmp_path / "fig.png").exists()
 
@@ -175,7 +194,8 @@ def test_lidar_weak_same_information_arm_is_not_success():
     dec = {(r["stratum"], r["kind"]): r["decision"] for r in rows}
     assert dec[("lidar_weak", "arm")] != "success" and dec[("all", "arm")] != "success"
     assert sum(r["primary"] for r in rows) == 1
-    assert [r["stratum"] for r in rows if r["primary"]] == ["all"]
+    # default 2026-11-06. lidar_weak formed, so it is the one primary
+    assert [r["stratum"] for r in rows if r["primary"]] == ["lidar_weak"]
 
 
 def test_lidar_weak_refuses_score_covariate_and_unset():
@@ -188,8 +208,13 @@ def test_lidar_weak_refuses_score_covariate_and_unset():
         raise AssertionError("a score column was accepted as the lidar_weak covariate")
     except ValueError:
         pass
-    st, und = s5.make_strata(y, df, CFG["prereg"])
+    unset = json.loads(json.dumps(CFG["prereg"]))
+    unset["lidar_weak"]["covariate"] = None
+    st, und = s5.make_strata(y, df, unset)
     assert set(st) == {"all"} and "not set" in und["lidar_weak"]
+    st, und = s5.make_strata(y, df, CFG["prereg"])           # layer declared, rows without x, ym
+    assert set(st) == {"all"} and "lack x, ym" in und["lidar_weak"]
+    assert sk.primary_stratum(CFG["prereg"], st) == ("all", "lidar_weak not formed, primary falls back to all")
     m, why = s1.strata(y, np.array([0.0, 0.9, 0.0, 0.1]), _cfg(quantile=0.5)["prereg"]["lidar_weak"])
     # targets have covariate 0.9 and 0.1. High side, top half keeps the 0.9 target only. All decoys kept.
     assert list(m["lidar_weak"]) == [True, True, True, False] and not why
@@ -256,3 +281,43 @@ def test_s4_refuses_changed_frozen_rows(tmp_path):
         raise AssertionError("changed frozen rows were overwritten")
     except RuntimeError as e:
         assert "frozen rows changed" in str(e)
+
+
+def test_lidar_weak_default_ground_density_tercile(tmp_path):
+    """Default accepted 2026-11-06. lidar_weak is the lowest tercile of targets on ground point density,
+    sampled from the layer at each row point. 30 targets spaced 100 m apart get densities 1, 2 and 3 ground
+    returns per m2 in turn (constant 21 m squares, window half-width 5 m stays inside each square). The 1/3
+    quantile of ten 1s, ten 2s and ten 3s is 1.667 (linear, by hand), so exactly the ten targets at 1 are weak.
+    Decoys sit at density 3 and are all kept. lidar_weak is then the one primary."""
+    import rasterio
+    from rasterio.transform import from_origin
+    import _sar_new_score_9t as s5
+    c = CFG["prereg"]["lidar_weak"]
+    assert c["covariate"] == "ground_density_ppsm" and c["weak_side"] == "low"
+    assert c["quantile"] == pytest.approx(1 / 3) and c["layer"]["rel"] == "9t/derived/1m/ground_density_9t_1m.tif"
+    assert CFG["prereg"]["primary_stratum"] == "lidar_weak" and CFG["prereg"]["primary_stratum_fallback"] == "all"
+    assert CFG["prereg"]["max_undefined_share"] == 0.0
+    a = np.full((1000, 1000), 3, "uint16")
+    xs, ys, yv = [], [], []
+    for i in range(30):
+        cx, cy = X0 + 50 + 100 * (i % 10), Y0 + 1000 - 50 - 100 * (i // 10)
+        r, cc = int(Y0 + 1000 - cy), int(cx - X0)
+        a[r - 10:r + 11, cc - 10:cc + 11] = i % 3 + 1
+        xs.append(cx), ys.append(cy), yv.append(1)
+    for j in range(30):                                  # decoys in the 3-density background
+        xs.append(X0 + 50 + 100 * (j % 10)), ys.append(Y0 + 700 - 100 * (j // 10) - 50), yv.append(0)
+    lay = tmp_path / "gd.tif"
+    with rasterio.open(lay, "w", driver="GTiff", width=1000, height=1000, count=1, dtype="uint16", crs="EPSG:6346",
+                       transform=from_origin(X0, Y0 + 1000, 1.0, 1.0), nodata=0) as d:
+        d.write(a, 1)
+    df = pd.DataFrame({"x": xs, "ym": ys})
+    y = np.array(yv)
+    spec = dict(c, layer={"abs": str(lay)})
+    vals, why = sk.layer_covariate(df, spec)
+    assert why is None and list(vals[:3]) == [1.0, 2.0, 3.0] and (vals[30:] == 3.0).all()
+    pr = dict(CFG["prereg"], lidar_weak=spec)
+    strata, und = s5.make_strata(y, df, pr)
+    m = strata["lidar_weak"]
+    assert not und and int(m[y == 1].sum()) == 10 and m[y == 0].all()
+    assert list(np.flatnonzero(m[:30])) == list(range(0, 30, 3))
+    assert sk.primary_stratum(pr, strata) == ("lidar_weak", "lidar_weak formed")

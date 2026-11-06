@@ -2,6 +2,9 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- 2026-11-06. Seam band edge `controls.seam_band_edges_m`. User accepted the default 50 m ("take defaults"). Change freely.
+- 2026-11-06. S3 reproduction tolerance `recovery.reproduce_tol_m`. User accepted the default 0.01 m RMS ("take defaults"). Change freely.
+
 
 - 2026-11-06. S3 now injects into the 2006 to 2008 ground points and runs the S4 point chain from `_change_rebuild_v2_9t.py`. That is per-pass horizontal shift, overlap offsets, TIN, DoD, destripe and high-pass. The old S3 used a global DEM shift, a different chain (review 4.5-01). Made by the review-fix agent, change freely.
 - 2026-11-06. The injected change is a raised-cosine mound, flat to half the radius and zero at the radius. Its amplitude makes the footprint mean equal h. The step disc is gone. Made by the review-fix agent, change freely.
@@ -23,5 +26,5 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. Change field for S4 is `dod_v2_highpass_9t_2m.tif`, the field behind the saved v2 summary. Made by the build agent, change freely.
 
 ## Needs user decision
-- Seam band edge for exact matching (proposed 50 m, `controls.seam_band_edges_m`).
-- Reproduction tolerance for S3 (proposed 0.01 m RMS, `recovery.reproduce_tol_m`).
+
+None open after the 2026-11-06 defaults.

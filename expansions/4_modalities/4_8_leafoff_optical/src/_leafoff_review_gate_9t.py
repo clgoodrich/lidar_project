@@ -1,8 +1,9 @@
 """S5 and the gate of framework 4.8. Reviewer agreement on usable chips and the usable-share decision per source.
 
 Purpose. Per source, the usable share is usable chips over judged chips, with a Clopper-Pearson interval. Judged
-chips exclude missing data (unavailable, blank, undated). Coverage, the judged share of sampled chips, is reported. The
-gate compares it with usable_share_gate (0.60). Success (fetch D10) if the lower bound is above the gate, failure
+chips exclude missing data (unavailable, blank, undated). Coverage, the judged share of sampled chips, must reach
+min_coverage (0.80, user accepted default 2026-11-06) before the gate decides. Below it the decision is inconclusive.
+The gate compares the share with usable_share_gate (0.60). Success (fetch D10) if the lower bound is above the gate, failure
 (unusable here) if the upper bound is below it, else inconclusive. Interpretability uses the two blind reviewers
 on usable chips only. It reports Cohen's kappa over yes, no and cannot_tell, and the share judged visible by both,
 with an exact interval. A "no" is not rejection of the feature. Blank and unavailable chips are never negatives.
@@ -28,23 +29,27 @@ import _leafoff_kit_4_8 as lk
 MISSING = {"unavailable", "blank", "undated"}
 
 
-def gate(status: pd.DataFrame, level: float) -> dict:
+def gate(status: pd.DataFrame, level: float, min_coverage: float) -> dict:
     """4.8-01. Missing data (unavailable, blank, undated) is left out of the denominator, never counted as a
     not-usable chip. Coverage is the share of sampled chips that carry a quality judgement. With no judged chip
-    the share is undefined and the decision is inconclusive."""
+    the share is undefined and the decision is inconclusive. Below min_coverage (prereg.min_coverage, 0.80)
+    neither success nor failure is called, so a source cannot pass on a small judged share."""
     out = {}
     for sid, g in status.groupby("source_id"):
         judged = g[~g.status.isin(MISSING)]
         k, n = int((judged.status == "usable").sum()), len(judged)
         p, lo, hi = lk.ek.clopper_pearson(k, n)
-        dec = lk.ek.decide(lo - level, hi - level, 0.0, "superiority") if n else "inconclusive"
+        cov = n / len(g) if len(g) else float("nan")
+        enough = bool(n and cov >= min_coverage)
+        dec = lk.ek.decide(lo - level, hi - level, 0.0, "superiority") if enough else "inconclusive"
         out[sid] = {"n": n, "n_sampled": len(g), "n_missing": int(len(g) - n),
-                    "coverage": n / len(g) if len(g) else float("nan"),
+                    "coverage": cov, "min_coverage": min_coverage, "coverage_ok": enough,
                     "missing_counts": g.status[g.status.isin(MISSING)].value_counts().to_dict(),
                     "usable": k, "share": p, "lo": lo, "hi": hi, "decision": dec,
                     "action": None, "status_counts": g.status.value_counts().to_dict()}
         out[sid]["action"] = ({"success": "fetch D10", "failure": "unusable here", "inconclusive": "report, sample more"}[dec]
-                              if n else "no judged chip. Verify the flight date or coverage before calling the gate")
+                              if enough else "no judged chip. Verify the flight date or coverage before calling the gate" if not n
+                              else f"coverage {cov:.2f} below {min_coverage:.2f}. Resolve missing chips before calling the gate")
     return out
 
 
@@ -100,7 +105,8 @@ def main(argv=None) -> int:
     res_dir = lk.resolve(cfg["outputs"]["results"])
     sp = lk.need(Path(a.status) if a.status else res_dir / "leafoff_chip_status_9t.csv", "S2 chip status table")
     st = pd.read_csv(sp)
-    res = {"gate_level": pr["usable_share_gate"], "by_source": gate(st, pr["usable_share_gate"])}
+    res = {"gate_level": pr["usable_share_gate"], "min_coverage": pr["min_coverage"],
+           "by_source": gate(st, pr["usable_share_gate"], float(pr["min_coverage"]))}
     rd = Path(a.reviews) if a.reviews else lk.resolve(cfg["inputs"]["reviews"])
     files = sorted(rd.glob("*.csv")) if rd.exists() else []
     if files:

@@ -136,12 +136,7 @@ def main(argv=None) -> int:
     except FileNotFoundError as e:
         print(e, file=sys.stderr)
         return 2
-    if cfg.get("seed_label_blocks") is None:
-        print("refused. seed_label_blocks is null in config_7_2.json. Declare the round-0 seed blocks whose base "
-              "labels may train every arm ([] for acquired labels only). Review 7.2-02, a user decision",
-              file=sys.stderr)
-        return 2
-    seed_blocks = {int(b) for b in cfg["seed_label_blocks"]}
+    seed_blocks = {int(b) for b in cfg["seed_label_blocks"]}      # user default [] (acquired labels only, 2026-11-06)
     forbidden = set(split["stopping"]) | set(split["audit"]) | set(split.get("buffer", []))
     used = set(items_geo.set_index("item_id").loc[lab["item_id"], "block_id"].astype(int))
     ek.assert_disjoint(used, forbidden, "training items vs stopping/audit/buffer blocks")

@@ -26,7 +26,10 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
-Review fixes applied on 2026-11-06 (findings 4.3-01, 4.3-02, 4.3-03, P2-01, SH-01, the latest-run order and the weak chain test). Tests pass with `python -m pytest -q expansions/4_modalities/4_3_vegetation_stress/src/test_4_3.py -p no:cacheprovider` (11 passed). Paths and assumed schemas live in `src/config_4_3.json`. Generic helpers come from `../4_2_thermal/src/_thermal_shared_io.py`. Each script writes a run folder `results/<YYYYMMDD>_<short>_<hash7>/` with `_CONFIG.json`, `_RUN.md` and `_PROVENANCE.json`.
+Defaults applied 2026-11-06 (user said "take defaults"). visible_lookback_days is 365. V3 useful gain is 0.03 recall at K. max_undefined is 0 for V3 and V4. The September scene stays shoulder. V3 and V4 on all labels are the two primaries. Their stage verdicts are now `verdict_unadjusted`. The gate is Holm over both, run by `src/_vegstress_primary_holm_9t.py`. V0 on the held data still refuses, now only because the code lists are placeholders. Tests 12 passed.
+
+
+Review fixes applied on 2026-11-06 (findings 4.3-01, 4.3-02, 4.3-03, P2-01, SH-01, the latest-run order and the weak chain test). Tests pass with `python -m pytest -q expansions/4_modalities/4_3_vegetation_stress/src/test_4_3.py -p no:cacheprovider` (12 passed). Paths and assumed schemas live in `src/config_4_3.json`. Generic helpers come from `../4_2_thermal/src/_thermal_shared_io.py`. Each script writes a run folder `results/<YYYYMMDD>_<short>_<hash7>/` with `_CONFIG.json`, `_RUN.md` and `_PROVENANCE.json`.
 
 | Script | Stage | Runnable now | What is missing |
 |---|---|---|---|

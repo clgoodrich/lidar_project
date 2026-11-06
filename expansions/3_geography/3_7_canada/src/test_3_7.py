@@ -115,3 +115,16 @@ def test_shifted_null_not_computable_is_explicit():
     null, rej = ra.shifted_null(px, py, np.full(100, 50.0), px, py, fp, 50, 300, 2000, 0, max_tries=4)
     e = ra.excess(1.0, null, 50)
     assert len(null) < 50 and e["status"].startswith("not computable") and np.isnan(e["normalised_excess"])
+
+
+def test_defaults_per_province_family():
+    """take defaults 2026-11-06. Six primaries (pit and pad in three provinces), Holm over all six, margin 0.03."""
+    cfg = gt.load_config("3.7")
+    assert cfg["prereg"]["margin_by_area"] == {"ab1": 0.03, "bc1": 0.03, "on1": 0.03}
+    fam = cfg["multiplicity"]["family"]
+    assert len(fam) == 6 and gt.primary_gate(cfg, "A0", "pad", "bc1")[0] == "A0:pad:bc1"
+    p = [0.004, 0.5, 0.5, 0.5, 0.5, 0.009]              # hand Holm, m 6. .004*6 = .024. .009*5 = .045
+    gates = {g: {"p_one_sided": q, "lo": -0.01, "hi": 0.1, "margin": 0.03} for g, q in zip(fam, p)}
+    out = gt.hg.family_gate(gates)
+    assert out[fam[0]]["p_holm"] == 0.024 and out[fam[0]]["decision"] == "success"
+    assert abs(out[fam[5]]["p_holm"] - 0.045) < 1e-12 and out[fam[5]]["decision"] == "inconclusive"

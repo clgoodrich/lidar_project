@@ -427,6 +427,7 @@ def test_field_export_feeds_5_4_end_to_end(tmp_path):
 
     # 7.5 export, then the real 5.4 S3 reader and function on the unmodified files
     res = fx.export(clean, wl, key, Path(cfg54["inputs"]["sites"]), cfg, tmp_path / "processed")
+    assert res["arm_b_transfer_assumption"].startswith("ASSUMPTION"), "user default 2026-11-06, labelled as an assumption"
     B = pd.read_csv(tmp_path / "processed" / "arm_b_candidate_outcomes.csv")
     C = pd.read_csv(tmp_path / "processed" / "arm_c_search_outcomes.csv")
     assert list(B.columns) == list(cfg54["inputs"]["arm_b"]["schema"])
@@ -468,3 +469,39 @@ def test_field_export_feeds_5_4_end_to_end(tmp_path):
     sites.write_text(sites.read_text() + "\n", encoding="utf-8")
     with pytest.raises(AssertionError, match="frame changed"):
         fx.export(clean, wl, key, sites, cfg, tmp_path / "processed2")
+
+
+# ----------------------------------------------------------------------------- user defaults 2026-11-06
+def test_single_cluster_strata_collapse_with_adjacent_same_arm():
+    """User default. A frame stratum with one cluster merges with its adjacent stratum before the draw.
+    Hand oracle. Arm A order inside morph m1 is early_dated, steel_dated. m1|steel_dated has one cluster, so it
+    merges with its previous neighbour in the same morph (the next one, m2|early_dated, is another morph).
+    m2 keeps two strata with two clusters each. Arm B band3 (one cluster) merges with band4, the next band."""
+    df = pd.DataFrame({"stratum": ["m1|early_dated"] * 4 + ["m1|steel_dated"] * 3 + ["m2|early_dated"] * 2 + ["m2|no_record"] * 2,
+                       "cluster_id": ["a", "a", "b", "b", "L", "L", "L", "c", "d", "e", "f"]})
+    order = ["m1|early_dated", "m1|steel_dated", "m2|early_dated", "m2|no_record"]
+    out, log = fd.collapse_single_cluster(df, order, group=lambda h: h.split("|")[0])
+    assert log == [{"merged": ["m1|early_dated", "m1|steel_dated"], "into": "m1|early_dated+steel_dated",
+                    "reason": "m1|steel_dated has 1 cluster(s)"}]
+    assert out["stratum"].value_counts().to_dict() == {"m1|early_dated+steel_dated": 7, "m2|early_dated": 2, "m2|no_record": 2}
+    b = pd.DataFrame({"stratum": ["band1"] * 2 + ["band2"] * 2 + ["band3"] * 2 + ["band4"] * 2,
+                      "cluster_id": ["p", "q", "r", "s", "t", "t", "u", "v"]})
+    out, log = fd.collapse_single_cluster(b, ["band1", "band2", "band3", "band4"])
+    assert [m["into"] for m in log] == ["band3+band4"]
+    last = pd.DataFrame({"stratum": ["band1"] * 2 + ["band2"], "cluster_id": ["p", "q", "r"]})
+    assert fd.collapse_single_cluster(last, ["band1", "band2"])[1][0]["into"] == "band1+band2", "last band takes the previous"
+
+
+def test_draw_records_collapse_and_density_assumption(tmp_path):
+    """The real draw applies the collapse (config strata) and every Arm A stratum in the key has two or more
+    frame clusters or was merged. The density export labels the Arm B transfer as an assumption."""
+    cfg = _world(tmp_path)
+    assert cfg["strata"]["collapse_single_cluster"] is True
+    assert cfg["density_export"]["detector_link_m"] == 15.0 and cfg["density_export"]["well_merge_m"] == 5.0
+    assert cfg["density_export"]["arm_b_transfer_assumption"].startswith("ASSUMPTION")
+    s = fd.draw(cfg, tmp_path / "t")
+    # hand check of _world. Its pad early_dated stratum holds one cluster, so it merges with pad steel_dated
+    assert [m["into"] for m in s["collapsed_strata"]["A"]] == ["pad_unclassified|early_dated+steel_dated"]
+    assert s["collapsed_strata"]["B"] == []
+    key = pd.read_csv(tmp_path / "t" / "field_sample_key_v1.csv")
+    assert (key[key["arm"] != "C"].groupby(["arm", "stratum"])["cluster_id"].nunique() >= 2).all()

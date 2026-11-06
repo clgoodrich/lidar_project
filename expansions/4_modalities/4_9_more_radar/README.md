@@ -25,15 +25,18 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
 ## Build status (2026-11-06)
+
+Defaults applied 2026-11-06 (user said "take defaults"). lidar_weak is the lowest tercile of targets on ground point density, read from `data/9t/derived/1m/ground_density_9t_1m.tif` at each row point. It is the primary stratum once that layer is held and the stratum forms, else the primary falls back to all. The layer is held. max_undefined_share stays 0. With one primary, Holm is m = 1. No S1 or S5 result is on file, so nothing reran. Tests 12 passed.
+
 Review fixes for 4.9-01 and the 4.9 minors. Tests 11 passed.
 
 | Script | Change |
 |---|---|
 | `src/_sar_kit_4_9.py` | `lidar_weak_mask` from an external covariate. `paired_gain_boot` counts undefined draws. `paired_perm` on within-arm ranks. Frozen-row stamp and check |
-| `src/_sar_power_baseline_9t.py` | S1 strata from the covariate. lidar_weak skipped when it is unset |
-| `src/_sar_new_score_9t.py` | S5 strata from the covariate. One primary row (all). Placebo must be null. undefined_share column |
+| `src/_sar_power_baseline_9t.py` | S1 strata from the covariate or the ground density layer. lidar_weak skipped when neither is on the rows |
+| `src/_sar_new_score_9t.py` | S5 strata from the covariate or the ground density layer. One primary row (lidar_weak when formed, else all). Placebo must be null. undefined_share column |
 | `src/_sar_new_features_9t.py` | S4 refuses to overwrite frozen rows that changed. `--adopt-frozen` |
-| `src/config_4_9.json` | `prereg.lidar_weak` (covariate unset), `primary_stratum`, `max_undefined_share` |
+| `src/config_4_9.json` | `prereg.lidar_weak` (ground density, lowest tercile), `primary_stratum`, `max_undefined_share` |
 
 No S1 or S5 result was on file, so nothing was rerun. The held 9t pit rows were stamped as frozen.
 

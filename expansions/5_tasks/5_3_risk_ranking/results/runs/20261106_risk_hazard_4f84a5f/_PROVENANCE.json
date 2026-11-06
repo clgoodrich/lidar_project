@@ -70,13 +70,13 @@
   "seeds": {},
   "inputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_exposure_sites_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_exposure_sites_9t.csv",
       "bytes": 201099,
       "mtime": "2026-11-06T10:49:26.631460",
       "sha256": "b9fa43fe40cec1cf7af069ad0975e0c15304db4db7f4159a7499d10e3150f624"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "path": "data/_source/reference/dep_wells/venango_wells_all.gpkg",
       "bytes": 8036352,
       "mtime": "2026-04-29T08:21:26.401647",
       "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
@@ -84,13 +84,13 @@
   ],
   "outputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_hazard_proxy_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_hazard_proxy_9t.csv",
       "bytes": 75436,
       "mtime": "2026-11-06T10:49:44.301304",
       "sha256": "15fcad4f8d01509fed2aad43d7a0b96b0379bf4c29617f7af20d120a8cab8912"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_hazard_summary_9t.json",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_hazard_summary_9t.json",
       "bytes": 1332,
       "mtime": "2026-11-06T10:49:44.303307",
       "sha256": "17e557483f3cce1ee3067292e5940c0f35b0dc266b0c96b6dff827742290223f"

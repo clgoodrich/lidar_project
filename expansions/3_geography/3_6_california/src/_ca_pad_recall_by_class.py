@@ -72,8 +72,9 @@ def main(argv=None) -> int:
     sets = {"primary": cfg["primary_classes"], "E1": ["E1"], "E2": ["E2"], "E3": ["E3"], "E0": ["E0"]}
     rows, tabs_by = class_rows(prob, truth, blocks, sets)
     pol = tabs_by.pop("_policy")
+    gate, fam = gt.primary_gate(cfg, "A0", "pad", a.area)    # only ca1 is a declared primary (Holm family)
     prim = gt.transfer_difference(tabs_by["primary"], tab_ref, margin, B=a.B, seed=int(cfg["prereg"]["master_seed"]),
-                                  ref_policy=ref_pol, target_policy=pol)
+                                  ref_policy=ref_pol, target_policy=pol, gate=gate, family=fam)
     prim["reference_tables"] = str(ref_p)
     prim["interpretable"] = rows[0]["share_ceiling_below_0p9"] <= 0.25
     prim["density_scaled_k"] = gt.density_scaled_k(prim["density_target"], prim["density_ref"])

@@ -312,3 +312,22 @@ def test_validity_and_leaderboard(tmp_path, monkeypatch):
                                       diff_vs_baseline=0.03, diff_lo=-0.01, diff_hi=0.07, maintainer=False,
                                       transductive=False)]), "terrain_v1")
     assert md.count("| 1 |") == 2, "overlapping intervals should tie"
+
+
+def test_margin_default_and_h3_pending(tmp_path, monkeypatch):
+    """User default 2026-11-06. Leaderboard margin 0.03 recall. The H3 width target stays open.
+    Hand oracle. diff interval (0.04, 0.09) clears 0.03, so success. (0.01, 0.09) straddles it, inconclusive.
+    (-0.05, 0.02) lies below it, failure. H3 width 0.05 with no target is pending, and 0.05 <= 2 x 0.03."""
+    import _bench_validity_checks_9t as va
+    import _bench_leaderboard_submit_9t as lb
+    cfg = json.loads((Path(va.__file__).parent / "config_7_3.json").read_text())
+    assert cfg["leaderboard"]["margin"] == 0.03 and cfg["leaderboard"]["h3_width_target"] is None
+    assert va.LEADERBOARD["margin"] == 0.03
+    assert lb.vs_baseline(0.04, 0.09, 0.03) == "success"
+    assert lb.vs_baseline(0.01, 0.09, 0.03) == "inconclusive"
+    assert lb.vs_baseline(-0.05, 0.02, 0.03) == "failure"
+    h = va.h3_decision(0.05, 24, 0.03, None)
+    assert h["decision"] == "pending H3 width target (user decision)" and h["passes_2x_margin_reference"] is True
+    assert va.h3_decision(0.05, 24, 0.03, 0.04)["decision"] == "fail"
+    assert lb.main(["--release", str(tmp_path), "rules"]) == 0
+    assert "margin of 0.03 recall" in (tmp_path / "RULES.md").read_text()

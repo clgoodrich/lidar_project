@@ -17,9 +17,13 @@
     },
     "_cutoff_note": "Primary proposal cutoff, matching and K come from ek.policy_for(task) (policy fw00_s4_20261105). Pit 0.35 and pad 0.525 are the sweep's leave-one-fold-out cutoffs. cutoff_by_task mirrors them for reading only and a test checks it equals policy_for. 0.10 is the fw_00 sensitivity (mode sensitivity). At 0.10 the 9t uint8 mosaic gives recall 0.575 at K 40.",
     "void_cap_default": 0.5,
-    "_void_cap_note": "Review G-05. Interior nodata counts toward a block's void fraction. A block is dropped when the void fraction exceeds the preregistered cap, else this default. 0.5 is the preregistration example value. Needs user decision (decisions_3_0.md).",
+    "_void_cap_note": "Review G-05. Interior nodata counts toward a block's void fraction. A block is dropped when the void fraction exceeds the preregistered cap, else this default. User accepted the default 0.5 on 2026-11-06 (take defaults, decisions_3_0.md).",
     "zero_feature_fill": "round_robin",
-    "_zero_feature_fill_note": "Review G-02. 9t blocks with no feature were never in any training manifest, so every fold model is out of sample there. round_robin gives block b the fold model (sorted position of b among the fill blocks) mod 5, one model per block like a held-out block. fold_mean is the sensitivity. Needs user decision."
+    "_zero_feature_fill_note": "Review G-02. 9t blocks with no feature were never in any training manifest, so every fold model is out of sample there. round_robin gives block b the fold model (sorted position of b among the fill blocks) mod 5, one model per block like a held-out block. fold_mean is the sensitivity. User accepted round_robin as primary on 2026-11-06 (take defaults). It gives the same pit recall 0.946 as fold_mean.",
+    "margin_default": 0.03,
+    "_margin_note": "User default 2026-11-06. Non-inferiority margin and useful gain are 0.03 recall unless a preregistration states its own with a burden source.",
+    "multiplicity": {"method": "holm", "alpha": 0.05, "max_undefined": 0.0, "default_family": "the one primary of the preregistration",
+      "_note": "User default 2026-11-06. Holm over the declared primary gates of an expansion only. Secondaries and sensitivities are reported, never gated. Code in _transfer_holm_gate.py."}
   },
   "reference_9t": {
     "pit": {

@@ -279,3 +279,15 @@ def test_controls_and_compare(tmp_path):
 def test_missing_input_named(tmp_path):
     with pytest.raises(FileNotFoundError, match="MISSING INPUT S0 flight windows"):
         S1.run(_cfg(), out_root=tmp_path / "empty")
+
+
+def test_config_defaults_2026_11_06():
+    """Defaults accepted 2026-11-06. Seam band edge 50 m, S3 reproduction tolerance 0.01 m RMS.
+    A field off by 0.011 m everywhere fails at 0.01 and one off by 0.009 passes (RMS by hand)."""
+    cfg = io.load_config()
+    assert cfg["controls"]["seam_band_edges_m"] == [50.0]
+    tol = cfg["recovery"]["reproduce_tol_m"]
+    assert tol == 0.01
+    z = np.zeros((20, 20))
+    assert S3.reproduce_check(z, z + 0.011, tol)["status"] == "fail"
+    assert S3.reproduce_check(z, z + 0.009, tol)["status"] == "pass"

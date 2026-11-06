@@ -26,6 +26,9 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults pass (2026-11-06). The contract test now builds its 5.6 files with the real 5.6 S0 writer. The score cutoff is per kind and equals the policy (pit 0.35, pad 0.525). The old single 0.50 would have dropped 200 of the 768 pit blobs. Tests pass (10).
+Full chain on the new 5.6 output, run into `expansions/6_adjacent/6_1_co2_geothermal/data/interim/screen_chain_9t/`. Sites 1,690 to 1,764 (768 pit, 996 pad). Blind-zone sites 243 to 255. Within K 681, unchanged. Records with a candidate within 50 m 0.60 to 0.63. Claim audit 0 hits.
+
 Tests. `python -m pytest -q expansions/6_adjacent/6_1_co2_geothermal/src/test_6_1.py -p no:cacheprovider` gives 9 passed.
 Review fixes on 2026-11-06. Candidate sites are keyed by kind plus det_id, so pit and pad ids can no longer collide. The producer-less `proposals_56_9t.csv` input is gone. The link flag is a record within 50 m. Blind-zone candidates no longer use review budget. A zero depth count now says there is no depth in the records.
 Real-data check on 2026-11-06. The full chain ran on 9t into a scratch folder with the 5.6 pit and pad files on disk. It read 685 pit and 1,005 pad sites. 243 sit in blind zones. 681 are within K. Before the fix 84 of the top 681 by score were blind-zone sites. Records in the area 1,068. Records with a depth 0. The claim audit found 0 hits.

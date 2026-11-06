@@ -14,7 +14,7 @@ What is here
     candidates  policy, candidates_from_prob, candidates_for_blocks (shared window, no seam clipping),
                 match_iou. All call the 3.0 reference scorer (_transfer_score_lib, ek.policy_for)
     scoring     score_area (3.0 score_tables over complete blocks), pooled_recall,
-                diff_vs_reference (block bootstrap + decision), permutation_p,
+                diff_vs_reference (block bootstrap, Holm gate on primaries), permutation_p,
                 superblock_ids, density_scaled_k
     inference   load_ckpt, check_channels, ensemble_prob (wraps _dl.predict_full_tile),
                 predict_array (in-memory sliding window, for small edited windows)
@@ -47,6 +47,7 @@ CRS = ek.DST_CRS                 # EPSG:6346
 BLOCK_M = 375.0                  # 9t block side (fw_00 section 4)
 sys.path.insert(0, str(HERE.parents[2] / "3_0_transfer_protocol" / "src"))
 import _transfer_score_lib as tl  # noqa: E402  (the one reference scorer, review F02 / G-03)
+import _transfer_holm_gate as hg  # noqa: E402  (Holm over declared primaries, user default 2026-11-06)
 
 # Proposal cutoff, matching and K come from ek.policy_for(task) via tl.policy (pit 0.35, pad 0.525, score-order
 # matching). 0.10 is only the fw_00 sensitivity cutoff. These constants mirror the policy for old callers.
@@ -566,15 +567,29 @@ def permutation_p(a_rows, b_rows, n_perm: int = 5000, seed: int = 0) -> float:
     return (cnt + 1) / (n_perm + 1)
 
 
-def diff_vs_reference(target_rows, ref_rows, *, margin: float | None, B: int = 2000, seed: int = 0,
-                      kind: str = "noninferiority"):
-    """Target minus reference pooled recall, independent block bootstraps, decision by ek.decide."""
+def diff_vs_reference(target_rows, ref_rows, *, margin: float, B: int = 2000, seed: int = 0,
+                      kind: str = "noninferiority", gate: str | None = None, family: list | None = None):
+    """Target minus reference pooled recall, independent block bootstraps.
+
+    Only a declared primary is gated (gate names it, family lists the expansion's primaries). Its decision is
+    the Holm step of _transfer_holm_gate (one-sided bootstrap share, max_undefined 0). In a family of more than
+    one a single run decides success only at alpha/(2m). Otherwise run the family step. A call without gate is a
+    secondary or sensitivity. It reports the interval and is never gated (user default 2026-11-06)."""
+    if margin is None:
+        raise ValueError("margin is required (user default 0.03 recall, config margin_delta)")
     target_rows = [tuple(r) for r in target_rows]
     ref_rows = [tuple(r) for r in ref_rows]
-    d, lo, hi = ek.bootstrap_diff(pooled_recall, target_rows, pooled_recall, ref_rows, B=B, seed=seed)
+    d, lo, hi, draws = ek.bootstrap_diff(pooled_recall, target_rows, pooled_recall, ref_rows, B=B, seed=seed,
+                                         max_undefined=hg.MAX_UNDEFINED, return_draws=True)
     out = {"diff": d, "lo": lo, "hi": hi, "B": B, "seed": seed, "margin": margin,
            "n_target_blocks": len(target_rows), "n_reference_blocks": len(ref_rows),
-           "decision": ek.decide(lo, hi, margin, kind) if margin is not None else "no_margin_set"}
+           "undefined_share": ek.undefined_share(draws)}
+    if gate is None:
+        out["decision"] = "not gated (secondary or sensitivity)"
+    else:
+        h = hg.holm_input(gate, draws, lo, hi, float(margin), kind, family or [gate])
+        out.update({"decision": h["decision_partial"], "decision_basis": h["decision_partial_basis"],
+                    "decision_unadjusted": ek.decide(lo, hi, float(margin), kind), "holm_input": h})
     if len(target_rows) < 15:
         out["permutation_p"] = permutation_p(target_rows, ref_rows, seed=seed)
         out["note"] = "fewer than 15 target blocks, the bootstrap is unreliable"

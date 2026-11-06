@@ -15,17 +15,17 @@
     {
       "modality": "pit",
       "coord_source": "unstratified",
-      "diff_norm_excess": -0.3011586609648261,
-      "lo": -0.9140375037534817,
-      "hi": 0.2508361204013378,
+      "diff_norm_excess": -0.37143432199513293,
+      "lo": -1.105474539366549,
+      "hi": 0.2964257324493721,
       "label": "descriptive only, no recall-equivalence gate"
     },
     {
       "modality": "pad",
       "coord_source": "unstratified",
-      "diff_norm_excess": 0.0044706051209025405,
-      "lo": -0.3925230321803349,
-      "hi": 0.18215439371374811,
+      "diff_norm_excess": 0.006750713282912915,
+      "lo": -0.39215275576287306,
+      "hi": 0.18070682940084234,
       "label": "descriptive only, no recall-equivalence gate"
     }
   ],

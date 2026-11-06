@@ -79,6 +79,10 @@ def test_state_table_row_and_paired_eval():
     cover = pd.DataFrame({"tag": ["t"], "configured": [True], "cover": [0.97]})
     r = stt.window_row("t", area, score, cover, pd.DataFrame())
     assert r["status"] == "scored" and r["union_cover"] == 0.97 and r["stamp"] == "preregistered"
+    holm = {"t": {"decision": "success", "p_holm": 0.004, "family": ["t", "u"]}}       # family step wins
+    r2 = stt.window_row("t", area, score, cover, pd.DataFrame(), holm)
+    assert r2["decision"] == "success" and r2["p_holm"] == 0.004 and r2["decision_basis"] == "Holm over ['t', 'u']"
+    assert stt.window_row("c", area, score, cover, pd.DataFrame(), holm)["decision"] == "inconclusive"
     z = [(5, 10)] * 20
     a = [(7, 10)] * 20
     res = ad.paired_eval(z, a, B=100, seed=0)

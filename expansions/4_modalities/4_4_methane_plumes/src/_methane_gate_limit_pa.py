@@ -118,7 +118,8 @@ def gate_tail(tail: dict | None, largest_kg_h: float | None, dl_best: float, pop
 
     4.4-01. A fitted tail says nothing about rates far beyond the data. When the detection limit lies above
     max_extrapolation times the largest observed rate, the verdict is 'not identifiable by extrapolation'.
-    max_extrapolation is a user decision (config m0.tail_max_extrapolation_multiple). While it is null, any
+    max_extrapolation is config m0.tail_max_extrapolation_multiple. The user accepted null (no extrapolation)
+    on 2026-11-06. While it is null, any
     limit above the largest observed rate is refused the same way. Success needs the lower bound of the
     expected exceeding count to reach one well (the old check 'lower bound > 0' was always true)."""
     if not tail or "error" in tail:
@@ -132,7 +133,7 @@ def gate_tail(tail: dict | None, largest_kg_h: float | None, dl_best: float, pop
     allowed = 1.0 if max_extrapolation is None else float(max_extrapolation)
     if mult > allowed:
         why = (f"detection limit {dl_best:g} kg/h is {mult:.1f} times the largest observed rate {data_max:g} kg/h. "
-               + ("No extrapolation multiple is declared (user decision)." if max_extrapolation is None else
+               + ("No extrapolation is allowed (default null, accepted 2026-11-06)." if max_extrapolation is None else
                   f"The declared limit is {allowed:g} times."))
         return {"verdict": NOT_IDENTIFIABLE, "why": why, **base}
     exp = {fit: {s: tail[fit][s] * n_pop for s in ("p_exceed", "lo", "hi")} for fit in ("lognormal", "loglogistic")}

@@ -4,8 +4,12 @@ Purpose
     Read the per-block table of a target scoring run and of the 9t reference (a scoring run folder, or the
     archival per-block counts rebuilt from the sweep). Resample each area's blocks independently
     (`ek.bootstrap_diff`, B and seed from the preregistration) and take the 95% interval of the difference
-    in pooled recall. Apply `ek.decide` with the preregistered margin (non-inferiority). Success if the lower
-    bound is above minus the margin, failure if the upper bound is below it, inconclusive otherwise.
+    in pooled recall. Gate with the preregistered margin (non-inferiority, default 0.03 recall). Multiplicity
+    is Holm over the preregistration's declared primary family (`multiplicity.family`, default this one
+    primary). Success if the Holm-adjusted one-sided bootstrap share is under 0.025, failure if the upper bound
+    is below minus the margin, inconclusive otherwise. With a family of one this is ek.decide. In a larger
+    family a single report can only decide success at alpha/(2m). Otherwise run `_transfer_holm_gate.py`.
+    Undefined bootstrap draws are not tolerated (max_undefined 0).
     Inconclusive is never written as no effect. The report also gives both feature densities, the
     density-scaled secondary when the target run has it, the 9t fold spread at K, and a warning under 15
     target blocks. Evidence level (a) drawn features only.
@@ -41,6 +45,7 @@ import pandas as pd
 HERE = Path(__file__).resolve()
 sys.path.insert(0, str(HERE.parent))
 import _transfer_score_lib as tl  # noqa: E402
+import _transfer_holm_gate as hg  # noqa: E402
 ek = tl.ek
 
 
@@ -62,10 +67,16 @@ def ratio_stat(tab: pd.DataFrame):
     return stat
 
 
-def decision(target: pd.DataFrame, ref: pd.DataFrame, margin: float, B: int, seed: int, kind: str = "noninferiority") -> dict:
+def decision(target: pd.DataFrame, ref: pd.DataFrame, margin: float, B: int, seed: int, kind: str = "noninferiority",
+             gate: str = "primary", family: list | None = None) -> dict:
+    """Primary gate. Holm over `family` (default this gate alone). max_undefined 0 (user default 2026-11-06)."""
     st, sr = ratio_stat(target), ratio_stat(ref)
-    d, lo, hi = ek.bootstrap_diff(st, range(len(target)), sr, range(len(ref)), B=B, seed=seed)
-    return {"diff": d, "lo": lo, "hi": hi, "margin": margin, "kind": kind, "verdict": ek.decide(lo, hi, margin, kind),
+    d, lo, hi, draws = ek.bootstrap_diff(st, range(len(target)), sr, range(len(ref)), B=B, seed=seed,
+                                         max_undefined=hg.MAX_UNDEFINED, return_draws=True)
+    h = hg.holm_input(gate, draws, lo, hi, margin, kind, family or [gate])
+    return {"diff": d, "lo": lo, "hi": hi, "margin": margin, "kind": kind, "verdict": h["decision_partial"],
+            "verdict_basis": h["decision_partial_basis"], "verdict_unadjusted": ek.decide(lo, hi, margin, kind),
+            "p_one_sided": h["p_one_sided"], "undefined_share": h["undefined_share"], "holm_input": h,
             "target_recall": st(range(len(target))), "reference_recall": sr(range(len(ref))), "B": B, "seed": seed,
             "n_target_blocks": len(target), "n_reference_blocks": len(ref)}
 
@@ -139,7 +150,7 @@ def write_md(doc: dict, path: Path) -> None:
     lines += ["## Context",
               f"- Feature density. Target {doc['density_target']:.1f} per km2. 9t {doc['density_reference']:.1f} per km2.",
               f"- Target blocks {r['n_target_blocks']}. Reference blocks {r['n_reference_blocks']}.",
-              f"- Scoring policy {doc['policy_hash']}. No multiplicity correction is applied (decisions_3_0.md)."]
+              f"- Scoring policy {doc['policy_hash']}. Multiplicity {doc['multiplicity']}."]
     if doc.get("secondary"):
         s = doc["secondary"]
         lines.append(f"- Secondary at density-scaled K {s['k_per_km2']:.1f}. Target recall {s['recall']:.3f} "
@@ -166,7 +177,13 @@ def main(argv=None) -> int:
     confirm, why = compatibility(pr, tsum, rinfo)
     margin = float(pr["margin"])
     seed, B = int(sc.get("seed", 20261105)), int(sc.get("B", 2000))
-    prim = decision(ttab, rtab, margin, B, ek.child_seed(seed, 0, 2))
+    mult = pr.get("multiplicity") or {}
+    area = tsum["settings"].get("area")
+    gate = mult.get("gate", area)
+    family = list(mult.get("family") or [gate])
+    if gate not in family:
+        raise SystemExit(f"prereg multiplicity.gate {gate} is not in multiplicity.family {family}")
+    prim = decision(ttab, rtab, margin, B, ek.child_seed(seed, 0, 2), gate=gate, family=family)
     if not confirm:
         prim["verdict_if_confirmatory"] = prim["verdict"]
         prim["verdict"] = DESCRIPTIVE
@@ -182,8 +199,8 @@ def main(argv=None) -> int:
            "confirmatory": confirm, "not_confirmatory": why,
            "density_target": density(ttab), "density_reference": density(rtab),
            "secondary": tsum.get("secondary_density_scaled"), "warnings": warns, "evidence_level": "(a) drawn feature",
-           "reference": a.reference, "multiplicity": "none applied, one primary estimand (fw_00)"}
-    area = doc["area"]
+           "reference": a.reference, "holm_input": None if not confirm else prim["holm_input"],
+           "multiplicity": f"{hg.METHOD}, family {family}, max_undefined {hg.MAX_UNDEFINED}"}
     js, md = a.target / f"transfer_decision_{area}.json", a.target / f"transfer_decision_{area}.md"
     js.write_text(json.dumps(doc, indent=1, default=float), encoding="utf-8")
     write_md(doc, md)

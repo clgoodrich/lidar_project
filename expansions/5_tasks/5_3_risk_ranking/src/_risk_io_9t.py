@@ -50,6 +50,34 @@ def footprint_km2(cfg) -> float:
     return float(len(b) * cfg["block_size_m"] ** 2 / 1e6)
 
 
+def _rel_tree(o):
+    """Every string that is an absolute path inside the repo becomes repo-relative. Other values pass through."""
+    if isinstance(o, dict):
+        return {k: _rel_tree(v) for k, v in o.items()}
+    if isinstance(o, list):
+        return [_rel_tree(v) for v in o]
+    if isinstance(o, str) and len(o) > 2 and (o[1:3] in (":\\", ":/") or o.startswith("/")):
+        try:
+            return Path(o).resolve().relative_to(ek.REPO.resolve()).as_posix()
+        except (ValueError, OSError):
+            return o
+    return o
+
+
+def relativise_provenance(path) -> Path:
+    """Rewrite one _PROVENANCE*.json so no path inside the repo is absolute (inputs, outputs, params, argv)."""
+    import json
+    path = Path(path)
+    d = json.loads(path.read_text(encoding="utf-8"))
+    path.write_text(json.dumps(_rel_tree(d), indent=2), encoding="utf-8")
+    return path
+
+
+def write_provenance(run, **kw) -> Path:
+    """ek.write_provenance, then repo-relative paths everywhere in the file (review 2026-11-06 minor)."""
+    return relativise_provenance(ek.write_provenance(run, **kw))
+
+
 def rel(p) -> str:
     """Repo-relative path string for outputs (review 2026-11-06: no absolute paths in tables). Paths outside
     the repo are returned as given."""

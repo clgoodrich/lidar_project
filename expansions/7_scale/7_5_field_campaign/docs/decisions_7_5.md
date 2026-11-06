@@ -2,14 +2,18 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Detector link radius for Arm C wells. User accepted the default 15 m (config density_export.detector_link_m) ("take defaults"). Change freely.
+- 2026-11-06. Round-2 duplicate merge radius. User accepted the default 5 m (config density_export.well_merge_m) ("take defaults"). Change freely.
+- 2026-11-06. Single-cluster strata. User accepted the default of collapsing them with the adjacent stratum of the same arm before the draw (config strata) ("take defaults"). Change freely.
+- 2026-11-06. Arm B transfer of p to the whole footprint. User accepted the default of accepting the transfer. The density export labels it as an assumption ("take defaults"). Change freely.
+- 2026-11-06. Arm A adjacency is the era order inside one morphology class, next stratum first. Arm B adjacency is the next score band, or the previous one for the last band. A merged band keeps the allocation of both parts. Made by the review-fix agent, change freely.
+
 ## Needs user decision
 
 - 2026-11-06. Target width 0.30 is out of reach at n = 182. The expected bound width there is 0.407. The design needs about 746 allocated sites at deff 1.5 and 20% inaccessible. Choose one. Fund about 746 sites, accept a wider target, or cut the inaccessible share. The target was not changed.
 - 2026-11-06. No n can give plus or minus 0.10 on the share while 20% of sites are inaccessible. The gap alone is 0.20 wide. Decide whether plus or minus 0.10 stays a goal.
-- 2026-11-06. Detector link radius for Arm C wells is 15 m, the protocol search radius. Confirm or replace it (config density_export.detector_link_m).
-- 2026-11-06. Round-2 wells within 5 m of a round-1 well in the same cell count as one well. Confirm or replace it (config density_export.well_merge_m).
-- 2026-11-06. A sampled stratum with a single cluster makes the arm result inconclusive. Decide whether to collapse such strata, and with which neighbour, before the draw.
-- 2026-11-06. Arm B now draws from the 5.4 density site table inside the audit blocks or reserved area. 5.4 then applies a p from that subset to D for the whole footprint. Confirm that this transfer is acceptable.
 
 ## Log
 

@@ -2,6 +2,14 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Transfer checkpoint (pit and pad). User accepted the default of the current best 9t models. Pit is the five-fold `pit/unet_cv5` ensemble, pad the five-fold `pad/unet_cv5_iso` ensemble, policy fold_mean, sha256 per fold and lineage in `model.<task>`. Results are labelled provisional transfer model. No single 9t model is trained on all 9t ground, so the five folds together stand for it ("take defaults"). Change freely.
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primary gates A0:pit:la_caddo, A0:pit:tx_east (A1 is its own family q2_family), secondaries and sensitivities reported and never gated (`_transfer_holm_gate.py`) ("take defaults"). Change freely.
+- 2026-11-06. Undefined bootstrap draws. User accepted the default max_undefined 0 (any undefined draw makes the gate inconclusive) ("take defaults"). Change freely.
+- 2026-11-06. Void cap. User accepted the default 0.5 (was 0.9 in this config) ("take defaults"). Change freely.
+- 2026-11-06. Margin. User accepted the default 0.03 recall ("take defaults"). Change freely.
+- 2026-11-06. Useful gain delta_gain. User accepted the default 0.03 recall ("take defaults"). Change freely.
 - Regional scoring takes cutoff, minimum area, IoU and match order only from `ek.policy_for(task, mode)` (pit 0.35, pad 0.525, score order). `score_raster` needs a task. The old 0.10 default is gone. The policy dict and hash are stamped into every score output (F02, G-01). (2026-11-06, review repair by the fix agent, change freely)
 - Extraction is 4-connected, the same as the 3.0 polygoniser. Candidates and truth are assigned by centroid. Candidates outside scored blocks are removed before matching. The 3.0 dedupe rule is applied (F02, G-03). (2026-11-06, review repair by the fix agent, change freely)
 - Support rule, one policy. A block's scored support is its finite, unmasked cells. The K budget and the truth denominator use that support. Truth counts only when its centroid lies on a supported cell of an eligible block. Blocks with zero support are dropped and listed (F07). (2026-11-06, review repair by the fix agent, change freely)
@@ -40,7 +48,6 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
-- Which frozen checkpoint is the transfer model per task. Config key `model.<task>.transfer_checkpoint` is null and inference and fine-tuning refuse until it is set. The old default `pit/unet_iso_cv5/policy/best.pt` has no producer. (listed 2026-11-06)
-- Multiplicity. No correction is applied across areas, arms, classes or strata. Decide a family and a correction, or declare each gate a separate question. (listed 2026-11-06)
+- An ensemble cannot seed fine-tuning. `model.<task>.init_checkpoint` is null, so A1/L2 style fine-tuning refuses until one fold is named. (listed 2026-11-06)
 - Support rule alignment with 3.0. The regional core uses the actual scored support (nodata and masks shrink the K budget and the denominator). The 3.0 reference now treats interior nodata as void under a cap and keeps the full block area. Pick one rule for both. (listed 2026-11-06)
-- Undefined bootstrap draws. Any undefined draw now makes a gate inconclusive (expkit SH-01). A tolerated share (`max_undefined`) would have to be declared in the prereg. (listed 2026-11-06)
+- Confirm the Holm family. The fix agent read fw_3_4 section 7 as A0 pit on T1 and T2. Pad rows are reported, not gated. Add A0 pad gates to `multiplicity.family` if pads are primary too. (2026-11-06)

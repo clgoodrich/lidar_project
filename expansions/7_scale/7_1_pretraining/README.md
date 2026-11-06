@@ -27,6 +27,8 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 ## Build status (2026-11-06)
 
 Review fixes 7.1-01, 7.1-02 and the 7.2-01 G pattern were applied on 2026-11-06. Nothing was trained on real data.
+User defaults on 2026-11-06. G is 0.02 recall and `finetune.audit_model_fold` is 0. One primary, so Holm changes nothing. max_undefined is 0.
+The primary arm is still open. No scored 7.1 output exists, so nothing was rerun.
 
 **No audit exclusion on disk.** The P2 audit file `data/9t/results/splits/audit_blocks_9t_v1.csv` does not exist yet.
 Every 7.1 product on disk ran with no audit exclusion and is exploratory.
@@ -42,8 +44,8 @@ No fine-tune or curve run exists yet.
 | `src/_ssl_identity_probe_us.py` | QC 7 survey-identity probe | no | a pretrained checkpoint |
 | `src/_ssl_label_subsets_9t.py` | S3 nested label subsets | yes with `--historical --allow-no-audit` (provisional, exploratory) | P1 future split and the frozen P2 audit file for the primary |
 | `src/_ssl_finetune_pit_9t.py` | S3 fine-tune, S4 arm A4, S6 arm A5, `--predict-audit` | A0 yes with `--allow-no-audit` | A1 to A3 need S2 checkpoints. A4 needs 6.3 validated labels. A5 is not built. `--predict-audit` needs the frozen P2 audit |
-| `src/_ssl_curve_score_9t.py` | S5 curves and primary test, S7 `--audit-once` | no | fine-tune outputs, the primary arm and G (user decisions). `--audit-once` also needs the frozen audit and `finetune.audit_model_fold` |
-| `src/config_7_1.json` | assumed inputs and frozen parameters | yes | G, primary arm, audit model fold (user) |
+| `src/_ssl_curve_score_9t.py` | S5 curves and primary test, S7 `--audit-once` | no | fine-tune outputs and the primary arm (user). `--audit-once` also needs the frozen audit |
+| `src/config_7_1.json` | assumed inputs and frozen parameters | yes | primary arm (user) |
 | `src/test_7_1.py` | tests | yes | 10 passed |
 
 What changed on 2026-11-06.

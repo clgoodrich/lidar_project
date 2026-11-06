@@ -167,11 +167,15 @@ def main(argv=None) -> int:
         res["footprint"] = "fallback: DEP record hull buffered 250 m (oil field footprint not supplied)"
     r = pr["assoc_radius_m"] or float(mk.accuracy_m.iloc[0])
     when, year_only = source_date(mk.date)
+    if pr.get("undated_records") != "sensitivity_only":
+        raise ValueError(f"prereg.undated_records is {pr.get('undated_records')!r}. The accepted rule (2026-11-06) is "
+                         "'sensitivity_only'. Undated records never enter the primary association")
     existed, unknown = records_by_date(dep, when, year_only, pr["record_date_field"], int(pr["record_sentinel_year_max"]))
     res["record_date_filter"] = {"source_date": str(when.date()) if not year_only else str(when.year),
                                  "field": pr["record_date_field"], "n_records_in_window": int(len(dep)),
                                  "n_existed_by_date": int(existed.sum()), "n_unknown_date": int(unknown.sum()),
-                                 "n_after_date": int((~existed & ~unknown).sum())}
+                                 "n_after_date": int((~existed & ~unknown).sum()),
+                                 "undated_records": pr["undated_records"]}
     xy = np.column_stack([dep.geometry.x, dep.geometry.y])
     res["dep_association"] = association(rows[["x", "y"]].to_numpy(), xy[existed], fp, r, a.n_shifts,
                                          pr["null_shift_min_m"], pr["null_shift_max_m"], pr["master_seed"])

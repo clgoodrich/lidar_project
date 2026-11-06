@@ -1,0 +1,128 @@
+{
+  "written": "2026-11-06T14:32:11",
+  "commit": "f3a49aeb5f140b94dfb31efbcb2f1155b9c5bd99",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/5_tasks/5_3_risk_ranking/src/_risk_exposure_layers_9t.py"
+  ],
+  "params": {
+    "n_records": 1058,
+    "n_candidates_in": 768,
+    "n_sites": 1394,
+    "n_record_sites": 1058,
+    "n_candidate_sites": 336,
+    "n_records_with_surface_evidence": 388,
+    "scored_area_km2": 20.25,
+    "k": 810,
+    "k_per_km2": 40.0,
+    "p_band_cuts": [
+      0.595,
+      0.527,
+      0.355
+    ],
+    "p_band_counts": {
+      "record": 1058,
+      "K3": 126,
+      "K2": 119,
+      "K1": 91
+    },
+    "site_resolution": "5.6_full_output",
+    "receptors_present": [
+      "roads"
+    ],
+    "missing_components": [
+      "water_wells",
+      "buildings",
+      "streams",
+      "wetlands",
+      "public_supply",
+      "protected"
+    ],
+    "e_components_used": {
+      "roads_n_100": 1
+    },
+    "distance_bands_m": [
+      50,
+      100,
+      250,
+      500
+    ],
+    "lineage": {
+      "roads_d_nearest": [
+        "roads:geometry"
+      ],
+      "roads_n_50": [
+        "roads:geometry"
+      ],
+      "roads_n_100": [
+        "roads:geometry"
+      ],
+      "roads_n_250": [
+        "roads:geometry"
+      ],
+      "roads_n_500": [
+        "roads:geometry"
+      ],
+      "P": [
+        "candidates:score",
+        "dep_wells:PERMIT_NUM",
+        "pit_blocks:geometry",
+        "config:k_per_km2"
+      ]
+    },
+    "note": "P for candidates is an ordinal band of the feature model, conditional on the feature model. Exposure from present receptor layers only.",
+    "n_candidates_merged_into_records": 432,
+    "n_records_with_several_candidates": 41,
+    "merge_rule": "every candidate within assoc_radius_m of a record joins its nearest record",
+    "footprint_rule": "all blocks of the grid (not n_pits > 0)"
+  },
+  "seeds": {},
+  "inputs": [
+    {
+      "path": "data/_source/reference/dep_wells/venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    },
+    {
+      "path": "data/9t/derived/05/pit_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-09-04T10:51:16.244983",
+      "sha256": "fad7c3fd96ada6b2c677738d9e0e8a8c5580a345d10582882ce4d62624187d52"
+    },
+    {
+      "path": "data/_source/reference/tiger_roads/tl_2024_42121_roads.shp",
+      "bytes": 2970348,
+      "mtime": "2024-09-16T10:07:53",
+      "sha256": "c050848f7fcfa73cc5475a2671ed397aca561892edbf35d9e50487701b82797b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/data/processed/risk_exposure_layers_9t.gpkg",
+      "bytes": 2404352,
+      "mtime": "2026-11-06T14:32:11.776270",
+      "sha256": "097f4b7c6c591af5e7a2034a2ac4e51afde39143ff6ea6519856a7353ddfd1a1"
+    },
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_exposure_sites_9t.csv",
+      "bytes": 207337,
+      "mtime": "2026-11-06T14:32:11.816343",
+      "sha256": "d9f7f6fe5067f06e9dda99cbf6b1594d35ccf849d198a60c0d16c37bbccf76b6"
+    },
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_candidate_scores_9t.csv",
+      "bytes": 17470,
+      "mtime": "2026-11-06T14:32:11.793580",
+      "sha256": "6f9beb0e435e79de006f531f6fbb67a7c258901232fb07584b44549c3cde8cd2"
+    },
+    {
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_exposure_summary_9t.json",
+      "bytes": 1568,
+      "mtime": "2026-11-06T14:32:11.819311",
+      "sha256": "4bb3f2b11e33963d2256aa0e9c55ab0323be8ac22f045a381ce8ca35483e257e"
+    }
+  ]
+}

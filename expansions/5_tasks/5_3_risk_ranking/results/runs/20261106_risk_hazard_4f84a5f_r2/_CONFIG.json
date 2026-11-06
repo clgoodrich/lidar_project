@@ -1,0 +1,22 @@
+{
+  "age_bracket_score": {
+    "1956_1984": 2,
+    "1985_on": 1,
+    "missing": 2,
+    "pre1956": 3,
+    "unknown_sentinel": 2
+  },
+  "stage": "risk_hazard",
+  "status_hazard_score": {
+    "Abandoned": 3,
+    "Active": 1,
+    "Cannot Be Located": 3,
+    "DEP Abandoned List": 3,
+    "DEP Orphan List": 3,
+    "DEP Plugged": 0,
+    "Plugged OG Well": 0,
+    "Plugged Unverified": 2,
+    "_other": 1,
+    "_undocumented_candidate": 3
+  }
+}

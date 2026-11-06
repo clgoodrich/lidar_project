@@ -8,7 +8,9 @@ Purpose
     difference from V2 (repeated scenes averaged to the site, so site-seasons are not counted as
     independent). Out-of-fold logistic ranking, lidar only versus lidar plus index, same folds and
     blocks, recall at K = 40 per km2 and AUC with a paired block bootstrap (4.2 added_value code).
-    Decision with ek.decide (superiority) against delta_gain on recall at K.
+    Decision with ek.decide (superiority) against delta_gain on recall at K. V3 is primary A of two
+    primaries (V3, V4 all labels). The stage verdict is unadjusted. The gate is Holm over both primaries in
+    _vegstress_primary_holm_9t.py, from p_success and p_failure on recall at K.
 Inputs
     sites     <run>_vegstress_match_*/vegstress_matched_sites_9t.gpkg
     by_site   <run>_vegstress_sites_*/vegstress_by_site_9t.csv
@@ -82,13 +84,14 @@ def run(cfg: dict, out_root: Path | None = None, sites_path=None, by_site_path=N
                          why="V3 Question A added value.")
     r = io.added_value(t, av["lidar_features"], extra, "label", "fold", "block_id", area, av["k_per_km2"],
                        B=av["bootstrap_B"], seed=ek.child_seed(cfg["master_seed"], arm=30),
-                       max_undefined=float(av.get("max_undefined", 0.0)))
+                       max_undefined=float(av.get("max_undefined", 0.0)), margin=float(av["delta_gain"]))
     scores = r.pop("scores")
     rk = r["recall_at_k"]
     v = ek.decide(rk["lo"], rk["hi"], av["delta_gain"], "superiority") if ident else "not_identifiable"
     r.update(stage="V3", question="A disturbance and morphology", layer=layer, identifiable=ident,
              identifiability=ident_msg, fold_source=fold_src, extra_features=extra,
-             delta_gain=av["delta_gain"], verdict=v,
+             delta_gain=av["delta_gain"], verdict_unadjusted=v,
+             gated_by="Holm over V3 and V4 all labels (_vegstress_primary_holm_9t.py)",
              note="Failure means the CHM and land cover hold the signal. A difference in disturbed ground, not leakage")
     out_c, out_j, out_p = (run_dir / "vegstress_added_value_9t.csv", run_dir / "vegstress_added_value_9t.json",
                            run_dir / "vegstress_added_value_9t.png")

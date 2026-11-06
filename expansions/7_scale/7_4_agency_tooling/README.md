@@ -30,13 +30,13 @@ Built by the build agent on 2026-11-05. Review fixes applied on 2026-11-06 (find
 
 | Script | Stage | Runnable now | What is missing |
 |---|---|---|---|
-| `src/_agency_cli_candidates.py` | check-env, version, manifest, validate, run, calibrate, report | yes | final frozen model from 3.0 and P1, `requirements_lock.txt`, wheelhouse or container, the shared-budget decision below |
+| `src/_agency_cli_candidates.py` | check-env, version, manifest, validate, run, calibrate, report | yes | final frozen model from 3.0 and P1, `requirements_lock.txt`, wheelhouse or container |
 | `src/_agency_las_validity.py` | section 7 refuse and warn checks | yes | thresholds fixed from 3.1 (proposed values in config) |
 | `src/_agency_export_formats.py` | GPKG, CSV, KML export with the candidate schema | yes | nothing |
 | `src/_agency_trust_calibrate.py` | trust statement, isotonic calibration (T7) | yes | 3.0 and 3.1 result files (statement says evaluated on 9t only), 50 to 100 agency labels |
 | `src/_agency_fixture_las_build.py` | T1 fixtures and check | yes | 10 of 10 fixtures behave as expected, zero silent passes. Feet tiles now expect a refusal |
 | `src/config_7_4.json` | assumed inputs and thresholds | yes | named agency user and decision |
-| `src/test_7_4.py` | tests on fixtures written in the test itself | yes | 18 passed. 8 of them fail on the pre-fix code |
+| `src/test_7_4.py` | tests on fixtures written in the test itself | yes | 18 passed. 8 of them fail on the pre-fix code. `test_budget_per_class_for_both` checks the budget default |
 
 Changes on 2026-11-06.
 - The derivative builder gets the admitted tiles by name. Refused tiles no longer enter the build through a folder glob.
@@ -46,7 +46,7 @@ Changes on 2026-11-06.
 - A CRS record that cannot be parsed is refused. `--crs` applies only when the header has no CRS record.
 - Known wells are read before any prediction. A missing coordinate exits 2. lon/lat columns need `--known-wells-crs`.
 - `--calibration` is repeatable. Each file applies to the class that carries its model hash.
-- `--model both` needs `--k-per-km2-pit` and `--k-per-km2-pad`. A single K is refused, because it was applied per class.
+- User default 2026-11-06. One review budget per class, 40 per km2 each. `--model both` now runs without budget flags. A shared `--k-per-km2` applies to each class. A per-class flag that disagrees with it is refused. The two lists are never merged.
 
 Rerun on 2026-11-06. The block 6 run needs explicit budgets now. With 40 and 40 per km2 it gives the same 5 pit and 5 pad rows as before (`data/interim/runs/20261106_agency_8e1600d/`). The old run held 10 rows against a single stated K of 40 per km2, which is 5 rows.
 

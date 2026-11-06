@@ -6,7 +6,7 @@
   "block_m": 375.0,
   "merge_radius_m": 15.0,
   "record_merge_m": 5.0,
-  "expected_pit_rows": 677,
+  "expected_pit_rows": 768,
   "footprint": "complete_grid",
   "doc_statuses_exclude": ["Operator Reported Not Drilled", "Proposed But Never Materialized"],
   "grid": {"p_min": 0.05, "p_max": 0.90, "r_min": 0.10, "r_max": 0.90, "step": 0.05, "m_values": [1.0, 1.5, 2.0]},

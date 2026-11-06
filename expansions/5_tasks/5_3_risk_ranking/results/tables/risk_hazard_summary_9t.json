@@ -1,5 +1,5 @@
 {
-  "n_sites": 1354,
+  "n_sites": 1394,
   "dropped_optional": {
     "depth": "missing share 1.00",
     "formation": "missing share 1.00",
@@ -30,24 +30,24 @@
     "min_coverage": 1.0,
     "impute": {}
   },
-  "n_unrankable_H": 296,
+  "n_unrankable_H": 336,
   "n_unrankable_H_by_source": {
-    "feature_band": 296,
+    "feature_band": 336,
     "record": 0
   },
   "missing_share": {
     "h_status": 0.0,
     "age_bracket": 0.0,
     "h_age": 0.0,
-    "h_no_plug_record": 0.2186,
+    "h_no_plug_record": 0.241,
     "surface_evidence_flag": 0.0,
     "pathway_flag": 1.0,
-    "H": 0.2186,
+    "H": 0.241,
     "H_coverage": 0.0
   },
   "age_bracket_counts": {
     "1956_1984": 984,
-    "missing": 296,
+    "missing": 336,
     "unknown_sentinel": 43,
     "1985_on": 31
   },

@@ -358,14 +358,15 @@ def test_recall_and_decisions():
     assert 0.8 <= r <= 1.0
     dup = gt.pooled_recall_at_k(good, ["b0", "b0"])        # duplicates count twice, recall unchanged
     assert dup == gt.pooled_recall_at_k(good, ["b0"])
-    res = gt.transfer_difference(good, ref, margin=0.2, B=200)
+    res = gt.transfer_difference(good, ref, margin=0.2, B=200, gate="A0:pit:la_caddo")
     assert res["decision"] == "success" and res["undefined_share"] == 0.0
     bad = _tables(20, 0.1, 3)
-    assert gt.transfer_difference(bad, ref, margin=0.1, B=200)["decision"] == "failure"
-    few = gt.transfer_difference(_tables(5, 0.9, 4), ref, margin=0.1, B=100)
+    assert gt.transfer_difference(bad, ref, margin=0.1, B=200, gate="A0:pit:la_caddo")["decision"] == "failure"
+    assert gt.transfer_difference(bad, ref, margin=0.1, B=200)["decision"].startswith("not gated")   # secondary
+    few = gt.transfer_difference(_tables(5, 0.9, 4), ref, margin=0.1, B=100, gate="A0:pit:la_caddo")
     assert few["decision"] == "inconclusive" and "permutation" in few          # band never stands in for a CI
     assert "Never used in a gate" in few["permutation"]["label"]
-    pa = gt.paired_arm_difference(good, bad, delta_gain=0.05, B=200)
+    pa = gt.paired_arm_difference(good, bad, delta_gain=0.05, B=200, gate="A1:pit:la_caddo")
     assert pa["decision"] == "success"
     with pytest.raises(AssertionError):
         gt.paired_arm_difference(good, _tables(3, 0.5), 0.05, B=10)
@@ -378,7 +379,7 @@ def test_sparse_target_undefined_draws_give_inconclusive():
     t = _tables(20, 1.0, 5, n_truth=0, n_cand=3)
     t["b0"] = _tables(1, 1.0, 6)["b0"]
     ref = _tables(20, 0.95, 2)
-    r = gt.transfer_difference(t, ref, margin=0.5, B=200)
+    r = gt.transfer_difference(t, ref, margin=0.5, B=200, gate="A0:pit:la_caddo")
     assert 0 < r["undefined_share"] < 1
     assert r["decision"] == "inconclusive" and "undefined" in r["decision_basis"]
 
@@ -538,5 +539,66 @@ def test_config_and_missing_input_message():
             assert gt.utm_epsg_nad83_2011(ac["centre_lonlat"][0]) == int(ac["crs"].split(":")[1]), area
     with pytest.raises(gt.MissingInputError, match="assumed schema"):
         gt.require_input(Path("nope_does_not_exist.csv"), "thing", {"a": "int"})
+    assert gt.need_decision(cfg, "margin") == 0.03                 # user default 2026-11-06
     with pytest.raises(gt.DecisionMissingError):
-        gt.need_decision(cfg, "margin")
+        gt.need_decision(cfg, "observability_floor")
+
+
+# ----------------------------------------------------------------------------- user defaults 2026-11-06
+CKPT_SHA = {"pit": "1143a4f37c38acdc78f1fa51bc2f87ba0dd6a773dc2a4dd4b662e6e2ff0ef8e1",
+            "pad": "c6ec36776869925c1c2e69210f079d10b0c5dd220a3d6c598047fac124e29d44"}   # fold0, sha256sum by hand
+
+
+@pytest.mark.parametrize("exp", ["3.4", "3.5", "3.6", "3.7"])
+def test_defaults_in_regional_configs(exp):
+    """take defaults. margin 0.03, void cap 0.5, Holm family declared, max_undefined 0, transfer model set."""
+    cfg = gt.load_config(exp)
+    pr = cfg["prereg"]
+    assert pr["margin"] == 0.03 and pr["void_cap"] == 0.5
+    assert pr.get("delta_gain", 0.03) == 0.03
+    assert all(v == 0.03 for v in (pr.get("margin_by_area") or {}).values())
+    mu = cfg["multiplicity"]
+    assert mu["method"] == "holm" and mu["max_undefined"] == 0.0 and len(mu["family"]) >= 1
+    for task, m in cfg["model"].items():
+        assert m["policy"] == "fold_mean" and m["label"] == "provisional transfer model" and m["provisional"]
+        assert len(m["transfer_checkpoint"]) == 5 and len(m["sha256"]) == 5
+        assert m["sha256"][0] == CKPT_SHA[task]
+        assert m["family"] == {"pit": "pit/unet_cv5", "pad": "pad/unet_cv5_iso"}[task]
+
+
+def test_transfer_checkpoints_resolve_and_hash():
+    """The declared files exist and their hashes match the config (checked by the real loader)."""
+    cfg = gt.load_config("3.4")
+    paths, shas, rec = gt.transfer_checkpoints(cfg, "pit", "3.4")
+    assert [p.parent.name for p in paths] == [f"fold{k}" for k in range(5)]
+    assert gt.check_checkpoint(paths[0], shas[0]) == CKPT_SHA["pit"]
+    assert rec["label"] == "provisional transfer model" and rec["sha256"]["0"] == CKPT_SHA["pit"]
+    with pytest.raises(AssertionError, match="checkpoint hash"):
+        gt.check_checkpoint(paths[1], shas[0])
+    with pytest.raises(gt.DecisionMissingError, match="init_checkpoint"):
+        gt.transfer_checkpoint(cfg, "pit", "3.4")             # an ensemble cannot seed fine-tuning
+
+
+def test_primary_gate_only_declared_primaries():
+    cfg = gt.load_config("3.4")
+    assert gt.primary_gate(cfg, "A0", "pit", "la_caddo")[0] == "A0:pit:la_caddo"
+    assert gt.primary_gate(cfg, "A0", "pad", "la_caddo")[0] is None
+    assert gt.primary_gate(cfg, "C0", "pit", "tx_pecos")[0] is None
+    assert gt.primary_gate(cfg, "A0", "pit", "la_caddo", mode="sensitivity")[0] is None
+    assert gt.primary_gate(cfg, "A0", "pit", "la_caddo", strata_filter="wet_stratum=wet")[0] is None
+
+
+def test_holm_family_of_two_in_core():
+    """A clear pass (no draw at or below -margin) is a success in a family of two. A forced inconclusive
+    (under 15 blocks) carries forced_inconclusive into the Holm input."""
+    good, ref = _tables(20, 0.95, 1), _tables(20, 0.95, 2)
+    fam = ["A0:pit:la_caddo", "A0:pit:tx_east"]
+    r = gt.transfer_difference(good, ref, margin=0.2, B=200, gate=fam[0], family=fam)
+    assert r["holm_input"]["p_one_sided"] == 0.0 and r["decision"] == "success"
+    assert r["holm_input"]["family_size"] == 2
+    few = gt.transfer_difference(_tables(5, 0.9, 4), ref, margin=0.2, B=100, gate=fam[1], family=fam)
+    assert few["decision"] == "inconclusive" and few["holm_input"]["forced_inconclusive"] == "5 blocks < 15"
+    out = gt.hg.family_gate({fam[0]: r["holm_input"], fam[1]: few["holm_input"]})
+    assert out[fam[0]]["decision"] == "success" and out[fam[1]]["decision"] == "inconclusive"
+    with pytest.raises(ValueError, match="not in the declared family"):
+        gt.transfer_difference(good, ref, margin=0.2, B=20, gate="A0:pit:nowhere", family=fam)

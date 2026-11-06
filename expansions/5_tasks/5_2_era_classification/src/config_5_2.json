@@ -36,8 +36,8 @@
     "label_noise_p": [0.05, 0.10, 0.20],
     "label_noise_reps": 50,
     "min_blocks_for_bootstrap": 15,
-    "max_undefined": null,
-    "_max_undefined_note": "Share of undefined (one-class) bootstrap draws tolerated. fw_5_2 declares none, so null means 0 and any undefined draw gives inconclusive. User decision."
+    "max_undefined": 0.0,
+    "_max_undefined_note": "Share of undefined (one-class) bootstrap draws tolerated. 0, so any undefined draw gives inconclusive. User accepted the default 0 on 2026-11-06 (take defaults)."
   },
   "support": {"q_lo": 0.01, "q_hi": 0.99, "n_bins": 20},
   "inputs": {

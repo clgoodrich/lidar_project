@@ -1,22 +1,22 @@
 removed_part,removed,scenario,e_status,n_rankable,jaccard_vs_full,n_swapped,kendall_vs_full
 E,roads_n_100,A,"unusable: E has 0 component(s), fewer than the declared minimum 2",0.0,,0.0,
 E,roads_n_100,B,"unusable: E has 0 component(s), fewer than the declared minimum 2",1058.0,1.0,0.0,1.0
-E,roads_n_100,C,"unusable: E has 0 component(s), fewer than the declared minimum 2",1354.0,1.0,0.0,1.0
+E,roads_n_100,C,"unusable: E has 0 component(s), fewer than the declared minimum 2",1394.0,1.0,0.0,1.0
 E,roads_n_100,D,"unusable: E has 0 component(s), fewer than the declared minimum 2",0.0,,0.0,
 H,h_status,A,"unusable: E has 1 component(s), fewer than the declared minimum 2",0.0,,0.0,
 H,h_status,B,"unusable: E has 1 component(s), fewer than the declared minimum 2",1058.0,0.22178477690288714,0.0,0.8197782813370229
-H,h_status,C,"unusable: E has 1 component(s), fewer than the declared minimum 2",1354.0,1.0,0.0,1.0
+H,h_status,C,"unusable: E has 1 component(s), fewer than the declared minimum 2",1394.0,1.0,0.0,1.0
 H,h_status,D,"unusable: E has 1 component(s), fewer than the declared minimum 2",0.0,,0.0,
 H,h_age,A,"unusable: E has 1 component(s), fewer than the declared minimum 2",0.0,,0.0,
 H,h_age,B,"unusable: E has 1 component(s), fewer than the declared minimum 2",1058.0,0.9883040935672515,0.0,0.9669156697452133
-H,h_age,C,"unusable: E has 1 component(s), fewer than the declared minimum 2",1354.0,1.0,0.0,1.0
+H,h_age,C,"unusable: E has 1 component(s), fewer than the declared minimum 2",1394.0,1.0,0.0,1.0
 H,h_age,D,"unusable: E has 1 component(s), fewer than the declared minimum 2",0.0,,0.0,
 H,h_no_plug_record,A,"unusable: E has 1 component(s), fewer than the declared minimum 2",0.0,,0.0,
-H,h_no_plug_record,B,"unusable: E has 1 component(s), fewer than the declared minimum 2",1354.0,0.3634408602150538,0.0,0.9558242676372908
-H,h_no_plug_record,C,"unusable: E has 1 component(s), fewer than the declared minimum 2",1354.0,1.0,0.0,1.0
+H,h_no_plug_record,B,"unusable: E has 1 component(s), fewer than the declared minimum 2",1394.0,0.3346534653465347,0.0,0.9558242676372908
+H,h_no_plug_record,C,"unusable: E has 1 component(s), fewer than the declared minimum 2",1394.0,1.0,0.0,1.0
 H,h_no_plug_record,D,"unusable: E has 1 component(s), fewer than the declared minimum 2",0.0,,0.0,
 P,P,A,"unusable: E has 1 component(s), fewer than the declared minimum 2",0.0,,0.0,
 P,P,B,"unusable: E has 1 component(s), fewer than the declared minimum 2",1058.0,1.0,0.0,1.0
-P,P,C,"unusable: E has 1 component(s), fewer than the declared minimum 2",1354.0,1.0,0.0,1.0
+P,P,C,"unusable: E has 1 component(s), fewer than the declared minimum 2",1394.0,1.0,0.0,1.0
 P,P,D,"unusable: E has 1 component(s), fewer than the declared minimum 2",0.0,,0.0,
 band,water_wells absent,all,,,,,

@@ -36,7 +36,10 @@ Built by the build agent on 2026-11-05. Review fixes on 2026-11-06 (F04, F05, F1
 | `src/_field_results_ingest.py` | S5 validation, reconciliation, visit log, child well table | no | filled field and well records (partner) |
 | `src/_field_analysis_bounds.py` | S4 sensitivity, S6 design-based bounds and gate | no | ingested results |
 | `src/_field_density_export.py` | handoff to 5.4 S3 (arm B and arm C files) | no | ingested results |
-| `src/config_7_5.json` | assumed frames, codes and design values | yes | partner, permissions, primary estimand, target width (user) |
-| `src/test_7_5.py` | tests, including an end-to-end run into 5.4 S3 | yes | 11 passed |
+| `src/config_7_5.json` | assumed frames, codes and design values | yes | partner, permissions, primary estimand, site count and target width (user) |
+| `src/test_7_5.py` | tests, including an end-to-end run into 5.4 S3 | yes | 13 passed |
+
+User defaults on 2026-11-06. Detector link 15 m and well merge 5 m are confirmed. Single-cluster strata merge with the adjacent stratum of the same arm before the draw (config `strata`).
+The Arm B transfer of p to the whole footprint is accepted. The density export labels it as an assumption. No sample exists, so nothing was redrawn.
 
 The target width 0.30 needs about 746 sites. At n = 182 the expected width is 0.407. See `docs/decisions_7_5.md`.

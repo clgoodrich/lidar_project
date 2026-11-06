@@ -87,7 +87,7 @@ def main(argv=None) -> int:
     out = th.outp(cfg, "hazard_csv")
     H.to_csv(out, index=False)
     js = th.write_json(th.outp(cfg, "hazard_summary"), summ)
-    ek.write_provenance(run, inputs=[src, th.inp(cfg, "dep_wells")], outputs=[out, js], params=summ)
+    rio.write_provenance(run, inputs=[src, th.inp(cfg, "dep_wells")], outputs=[out, js], params=summ)
     print(f"dropped optional {summ['dropped_optional']}\nage {summ['age_bracket_counts']}\nwrote {out}\nwrote {js}")
     return 0
 

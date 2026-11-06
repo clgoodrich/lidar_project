@@ -16,7 +16,14 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. The scorer takes a cutoff per task. Both stay at 0.10 per fw_00. At 0.10 pad recall is 0.063 and at 0.3 it is 0.68 on the provisional dev test. The pad cutoff needs a user decision from the operating-point sweep, never from the dev test. Made by the build agent, change freely.
 - 2026-11-05. Leaderboard ties use overlap of each entry's difference interval from the baseline. A pairwise paired test is a later upgrade. Made by the build agent, change freely.
 
+## Decisions
+
+- 2026-11-06. Leaderboard margin. User accepted the default 0.03 recall. An entry beats the baseline when the lower bound of its paired difference exceeds 0.03 ("take defaults"). Change freely.
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primaries only. H1, H2 and H3 are validity checks and are not Holm gated ("take defaults"). Change freely.
+- 2026-11-06. max_undefined. User accepted the default 0 ("take defaults"). Change freely.
+- 2026-11-06. H3 stays pending until the width target is set (config leaderboard.h3_width_target, null). The framework rule of 2 x margin (0.06) is reported beside it for reference only. Made by the review-fix agent.
+
 ## Needs user decision
 
 - Freeze the P1 future split and the P2 audit set. A real release needs both.
-- Leaderboard margin and the H3 width target. Still open from 2026-11-05.
+- The H3 width target. Still open from 2026-11-05. Config `leaderboard.h3_width_target` is null, so H3 stays pending.

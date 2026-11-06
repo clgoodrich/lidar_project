@@ -166,7 +166,7 @@ def test_end_to_end_drawn_and_cost(tmp_path):
     gpd.GeoDataFrame(dict(id=[0]), geometry=[LineString([(X0, Y0 + 40), (X0 + 400, Y0 + 40)])], crs=CRS).to_file(
         ann, layer="roads", driver="GPKG")
     pr = tmp_path / "pred.gpkg"
-    pred.to_file(pr, layer="model_geometry", driver="GPKG")
+    pred.assign(thr_used=0.525).to_file(pr, layer="model_geometry", driver="GPKG")
     blocks = gpd.GeoDataFrame(dict(block_id=[0, 1]), geometry=[box(X0, Y0, X0 + 375, Y0 + 150),
                                                                box(X0, Y0 + 150, X0 + 375, Y0 + 375)], crs=CRS)
     bpath = tmp_path / "blocks.gpkg"
@@ -215,3 +215,36 @@ def test_missing_cost_table_still_writes_break_even(tmp_path):
     with pytest.raises(SystemExit):
         mc.main(["--config", str(cp), "--reference", "drawn"])
     assert (tmp_path / "pad_cost_error_summary_drawn_9t.json").exists()
+
+
+def test_pad_products_must_be_cut_at_0525(tmp_path):
+    """Defaults 2026-11-06. The 0.50 product is refused. A product cut at 0.525 loads."""
+    _, pred = _pads(3)
+    for thr, ok in ((0.50, False), (0.525, True)):
+        pr = tmp_path / f"pred_{thr}.gpkg"
+        pred.assign(thr_used=thr).to_file(pr, layer="model_geometry", driver="GPKG")
+        cfg = dict(inputs=dict(pad_products=dict(path=str(pr), layer="model_geometry")))
+        if ok:
+            assert len(gt.load_pred(cfg)) == 3
+        else:
+            with pytest.raises(SystemExit, match="CUTOFF MISMATCH"):
+                gt.load_pred(cfg)
+    cfg5 = json.loads((Path(__file__).resolve().parent / "config_5_5.json").read_text())
+    assert cfg5["road_scope"] == "all_mapped" and cfg5["match_rule"] == "overlap_any"
+    assert "records_pad_recut_policy_9t" in cfg5["inputs"]["pad_products"]["path"]
+
+
+def test_all_mapped_roads_count_through_roads(tmp_path):
+    """A through road and an access road both inside the 30 m window both count. Hand count 30 + 20 = 50 m."""
+    import geopandas as gpd
+    from shapely.geometry import box, LineString
+    ann = tmp_path / "ann.gpkg"
+    gpd.GeoDataFrame(dict(kind=["access", "through"]),
+                     geometry=[LineString([(10, 5), (100, 5)]), LineString([(-5, 15), (15, 15)])], crs=CRS).to_file(ann, layer="roads", driver="GPKG")
+    cfg = dict(inputs=dict(annotations=str(ann)), road_scope="all_mapped")
+    roads = gt.load_roads(cfg)
+    assert len(roads) == 2
+    ref = gpd.GeoDataFrame(dict(pad_id=[0]), geometry=[box(0, 0, 10, 10)], crs=CRS)
+    assert gt.road_length(ref, roads, 30.0)[0] == pytest.approx(30.0 + 20.0, abs=1e-6)
+    with pytest.raises(SystemExit):
+        gt.load_roads(dict(cfg, road_scope="access_only"))

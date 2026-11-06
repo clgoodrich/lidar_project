@@ -11,6 +11,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = ""          # CPU only, set before torch is
 
 import json  # noqa: E402
 import sys  # noqa: E402
+import pytest  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 import numpy as np  # noqa: E402
@@ -239,10 +240,11 @@ def test_audit_block_absent_from_oof_and_audit_once(tmp_path):
     t = tmp_path / "t"; t.mkdir()
     with pytest.raises(cs.AuditRefused, match="no frozen hash"):
         cs.audit_once(cfg, tmp_path / "audit_runs", "A1", 50, t, unfrozen)
-    with pytest.raises(cs.AuditRefused, match="G, finetune.audit_model_fold"):
-        cs.audit_once(cfg, tmp_path / "audit_runs", "A1", 50, t, ap)
+    with pytest.raises(cs.AuditRefused, match="primary arm"):
+        cs.audit_once(cfg, tmp_path / "audit_runs", None, 50, t, ap)
     assert not (t / "ssl_audit_lock.json").exists()
-    cfg["G"], cfg["finetune"]["audit_model_fold"] = 0.05, 2
+    assert cfg["G"] == 0.02 and cfg["finetune"]["audit_model_fold"] == 0      # user defaults 2026-11-06
+    cfg["finetune"]["audit_model_fold"] = 2                                    # the synthetic audit block sits in fold 2
     res = cs.audit_once(cfg, tmp_path / "audit_runs", "A1", 50, t, ap)
     assert res["n_blocks"] == 1 and res["audit_opened"] is True
     assert res["decision"] == "void (fewer than 3 matched seeds)"
@@ -295,15 +297,15 @@ def test_curves_G_from_config_never_floored(tmp_path):
                                   ("A1", 0.25): 18, ("A1", 0.5): 18, ("A1", 1.0): 19})
     t, f = tmp_path / "t", tmp_path / "f"; t.mkdir(); f.mkdir()
     res = cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f)
-    assert res["G"]["G"] is None and abs(res["G"]["G_raw"] - (-0.05)) < 1e-12, "G_raw reported, never floored"
+    assert res["G"]["G"] == 0.02, "user default G 0.02 from config_7_1.json"
+    assert abs(res["G"]["G_raw"] - (-0.05)) < 1e-12, "G_raw reported, never floored"
     assert abs(res["primary"]["diff"] - 0.40) < 1e-12
-    assert res["primary"]["decision"] == cs.G_UNSET, "an unset G is inconclusive, never a derived margin"
-    cfg["G"] = 0.05
-    res = cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f)
     assert res["G"]["source"].startswith("config") and res["primary"]["decision"] == "success"
     cfg["G"] = 0.8
     assert cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f)["primary"]["decision"] == "failure"
     cfg["G"] = None
+    with pytest.raises(cs.GUnset):
+        cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f)
     res = cs.analyse(cfg, tmp_path / "fake", "A1", 100, t, f, prereg={"G": 0.05, "_path": "prereg.json"})
     assert res["G"]["source"].startswith("preregistration") and res["primary"]["decision"] == "success"
     assert json.loads((t / "ssl_G_frozen_9t.json").read_text())["G_raw"] == res["G"]["G_raw"]

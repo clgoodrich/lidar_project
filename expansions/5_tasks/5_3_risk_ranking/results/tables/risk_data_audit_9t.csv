@@ -1,6 +1,6 @@
 layer,path,assumed,endpoint,present,rows,rows_in_bbox,crs_source,crs_ok,median_pos_error_m,note
 dep_wells,data/_source/reference/dep_wells/venango_wells_all.gpkg,False,False,True,20108.0,1068.0,EPSG:6346,True,,
-candidates_full,expansions/5_tasks/5_6_record_association/data/processed/detector_output_pit_full_9t.gpkg,False,False,True,677.0,677.0,EPSG:6346,True,,
+candidates_full,expansions/5_tasks/5_6_record_association/data/processed/detector_output_pit_full_9t.gpkg,False,False,True,768.0,768.0,EPSG:6346,True,,
 candidates_fallback,data/9t/results/pit/centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg,False,False,True,481.0,481.0,EPSG:6346,True,,
 pit_blocks,data/9t/derived/05/pit_blocks_9t.gpkg,False,False,True,144.0,144.0,EPSG:6346,True,,
 roads,data/_source/reference/tiger_roads/tl_2024_42121_roads.shp,False,False,True,4733.0,33.0,EPSG:4269,True,,

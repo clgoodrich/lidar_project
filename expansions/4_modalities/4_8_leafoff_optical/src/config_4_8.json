@@ -19,6 +19,8 @@
     "n_intersections": 10,
     "visible_ground_cutoff": 0.15,
     "usable_share_gate": 0.60,
+    "min_coverage": 0.80,
+    "min_coverage_note": "Judged share of sampled chips needed before the usable-share gate decides. 2026-11-06 user accepted default (\"take defaults\"). Change freely",
     "blank_mean": 240.0,
     "blank_std": 3.0,
     "nodata_share_blank": 0.5,

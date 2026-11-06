@@ -1,0 +1,110 @@
+{
+  "written": "2026-11-06T14:27:51",
+  "commit": "f3a49aeb5f140b94dfb31efbcb2f1155b9c5bd99",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/4_modalities/4_4_methane_plumes/src/_methane_gate_limit_pa.py"
+  ],
+  "params": {
+    "well_emission": {
+      "mean_kg_per_day": 0.27,
+      "n_wells": 19,
+      "n_measurements": 42,
+      "n_high_emitters": 3,
+      "source": "Kang M, Kanno CM, Reid MC, Zhang X, Mauzerall DL, Celia MA, Chen Y, Onstott TC (2014). Direct measurements of methane emissions from abandoned oil and gas wells in Pennsylvania. PNAS 111(51):18173-18177. doi:10.1073/pnas.1408315111. Figures as quoted in docs/plans/protocol_gates_and_metrics.md section 9 (checked at the Princeton record 2026-11-04).",
+      "page": "VERIFY abstract and Table 1",
+      "per_well_rates_csv": {
+        "exp": "4.4",
+        "rel": "data/raw/kang2014_per_well_rates.csv"
+      },
+      "per_well_rates_schema": "well_id, rate_kg_per_day (one row per well, mean over that well's measurements), n_measurements, note. Typed from Kang et al. 2014 tables or SI.",
+      "largest_measured_kg_per_day": null,
+      "largest_measured_note": "VERIFY. Fill from Kang et al. 2014 tables. null means the tail gate cannot close."
+    },
+    "detection_limits": [
+      {
+        "instrument": "Tanager (Carbon Mapper)",
+        "pod90_low_kg_per_h": 90.0,
+        "pod90_high_kg_per_h": 180.0,
+        "conditions": "90% probability of detection at 3 m/s wind, 35 degree solar zenith, 25% albedo, 30 m GSD",
+        "gsd_m": 30.0,
+        "source": "Carbon Mapper. Tanager detection limits, carbonmapper.org (checked 2026-11-04 per docs/plans/protocol_gates_and_metrics.md section 9). VERIFY against the Carbon Mapper product guide (D4)."
+      }
+    ],
+    "best_case_factor": 10.0,
+    "best_case_factor_note": "User decision, proposed default. DL divided by this factor stands for the best plausible wind and albedo.",
+    "closure_ratio": 100.0,
+    "closure_ratio_note": "User decision, proposed default. Headroom for wind, albedo and retrieval variance. A decision margin, not a variance quantity.",
+    "wells_per_footprint": {
+      "from_dep_points": {
+        "key": "dep_wells",
+        "rel": "venango_wells_all.gpkg"
+      },
+      "count_mode": "distinct_locations",
+      "count_mode_note": "distinct_locations drops DEP records stacked on one placeholder coordinate. raw_records counts them all (sensitivity).",
+      "fallback_max_wells": 4,
+      "fallback_note": "Used only when the DEP points are absent. A handful of wells on one lease, per the framework."
+    },
+    "population": {
+      "documented_orphan_csv": {
+        "key": "reference",
+        "rel": "legacy_data/US_Documented_Orphan_Wells.csv"
+      },
+      "documented_orphan_note": "US_Documented_Orphan_Wells.csv is PA only (2022-05-09 DEP orphan list).",
+      "abandoned_scenarios": {
+        "low": 280000,
+        "high": 970000
+      },
+      "abandoned_scenarios_note": "VERIFY. Range of Pennsylvania abandoned-well estimates as cited in Kang et al. 2014. Used only to scale the tail count."
+    },
+    "tail_max_extrapolation_multiple": null,
+    "tail_max_extrapolation_note": "2026-11-06 user accepted default null, no extrapolation (\"take defaults\"). Change freely (4.4-01). Largest multiple of the largest observed rate at which a fitted tail may be read. null means no extrapolation. A detection limit beyond it gives 'not identifiable by extrapolation'.",
+    "tail_bootstrap_B": 2000,
+    "seed": 20261105
+  },
+  "seeds": {
+    "tail": 20261105
+  },
+  "inputs": [
+    {
+      "path": "expansions/4_modalities/4_4_methane_plumes/src/config_4_4.json",
+      "bytes": 6279,
+      "mtime": "2026-11-06T14:26:27.303031",
+      "sha256": "3eb8bbe4ef382c1966d74d9b6832a090003b07c4d80407127dfc322a89fe2d7e"
+    },
+    {
+      "path": "data/_source/reference/dep_wells/venango_wells_all.gpkg",
+      "bytes": 8036352,
+      "mtime": "2026-04-29T08:21:26.401647",
+      "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
+    },
+    {
+      "path": "data/_source/reference/legacy_data/US_Documented_Orphan_Wells.csv",
+      "bytes": 1156380,
+      "mtime": "2026-04-13T14:12:35.185701",
+      "sha256": "e99d8d01de91d7dfc16bed29c9e3120481506f54297c999688fb46e9767378c7"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions/4_modalities/4_4_methane_plumes/results/20261106_methane_gate_0268845/methane_gate_limit_pa.csv",
+      "bytes": 1582,
+      "mtime": "2026-11-06T14:27:46.548082",
+      "sha256": "ba0af407fdf5fdcd9a52c10fc079b30666bad1e854c4a186d49388be850440e9"
+    },
+    {
+      "path": "expansions/4_modalities/4_4_methane_plumes/results/20261106_methane_gate_0268845/methane_gate_limit_pa.json",
+      "bytes": 2159,
+      "mtime": "2026-11-06T14:27:46.549586",
+      "sha256": "0dd0cc28818911d433322e089501106702160d1e88c7a0b61c8dcde80c002543"
+    },
+    {
+      "path": "expansions/4_modalities/4_4_methane_plumes/results/20261106_methane_gate_0268845/methane_gate_ratio_bars_pa.png",
+      "bytes": 49822,
+      "mtime": "2026-11-06T14:27:51.627721",
+      "sha256": "f23b206ec30c112da279f49903a71630319993067018563cbd8364789022a79f"
+    }
+  ]
+}

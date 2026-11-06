@@ -1,18 +1,18 @@
 {
-  "written": "2026-11-06T11:05:35",
-  "commit": "a0b91cd0c93422ee2cee18311cb0d0657a4e6b83",
+  "written": "2026-11-06T14:51:41",
+  "commit": "f3a49aeb5f140b94dfb31efbcb2f1155b9c5bd99",
   "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
   "executable": "C:\\Python313\\python.exe",
   "platform": "Windows-11-10.0.26200-SP0",
   "argv": [
-    "expansions/7_scale/7_2_active_learning/src/_al_split_pool_stop_9t.py",
+    "_al_split_pool_stop_9t.py",
     "--no-audit",
     "--build-items"
   ],
   "params": {
     "stopping_blocks": 20,
     "discovery_share": 0.3,
-    "buffer_m": 0.0,
+    "buffer_m": 100.0,
     "_buffer_note": "derived buffer comes from P1 S4. 0 until then, stated in every run"
   },
   "seeds": {
@@ -20,7 +20,7 @@
   },
   "inputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\blocks_unified_9t.gpkg",
+      "path": "data/9t/derived/05/blocks_unified_9t.gpkg",
       "bytes": 131072,
       "mtime": "2026-09-18T11:29:12.333623",
       "sha256": "c53082dc480f1c4bc218246139221564a9496399e4f9ef742dd97ca0200bd4a4"
@@ -28,10 +28,10 @@
   ],
   "outputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\7_scale\\7_2_active_learning\\results\\tables\\al_split_9t_v1.json",
-      "bytes": 1058,
-      "mtime": "2026-11-06T11:04:49.855496",
-      "sha256": "44b5a4333a4f876120ef534fa18d923b7f30e8a03d041ffb653edfd4a048818a"
+      "path": "expansions/7_scale/7_2_active_learning/results/tables/al_split_9t_v1.json",
+      "bytes": 1062,
+      "mtime": "2026-11-06T14:51:08.680770",
+      "sha256": "c1319e1de97ba80926d0b7e94bb05bcebd21db7cfd0650496e375d2d5cffa8fa"
     }
   ]
 }

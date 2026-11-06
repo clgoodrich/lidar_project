@@ -26,6 +26,9 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults applied 2026-11-06 (user said "take defaults"). Seam band edge 50 m and S3 reproduction tolerance 0.01 m RMS. Both were already the config values, so no output changed and nothing reran. Tests 12 passed.
+
+
 Built by the build agent 2026-11-05. Review fixes 2026-11-06 (4.5-01, 4.5-02). Every script has a docstring, an argparse CLI and a `run()` function. Tests are in `src/test_4_5.py`.
 
 | Script | Stage | Runnable now | What is missing |

@@ -2,6 +2,9 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- 2026-11-06. The score cutoff is per kind and equals ek.policy_for (pit 0.35, pad 0.525). It follows the 5.6 re-cut the user accepted ("take defaults"). The old single 0.50 re-imposed 0.50 on pits. Test test_cutoff_is_per_kind_policy. Made by the review-fix agent, change freely.
+- 2026-11-06. The contract fixture runs the real 5.6 S0 writer. Only the pre-contract legacy fixture stays hand built, since no producer writes that shape now. Made by the review-fix agent, change freely.
+- 2026-11-06. Full chain on 9t with the re-cut 5.6 output. Sites 1,690 to 1,764. Blind-zone sites 243 to 255. Within K 681. Claim audit 0 hits.
 - 2026-11-06. Candidate sites are keyed by kind plus det_id (`site_uid`, for example `pad:17`). det_id alone is never the key. A file with a kind column must match the file it came from. Review 6.1-01. Made by the fix agent, change freely.
 - 2026-11-06. 6.1 reads no 5.6 proposal file. 5.6 writes proposals into dated run folders and `proposals_56_9t.csv` had no producer. The link flag is a record within 50 m. Made by the fix agent, change freely.
 - 2026-11-06. K is spent only inside the scored footprint. Blind-zone candidates get no rank and are never within K. Made by the fix agent, change freely.

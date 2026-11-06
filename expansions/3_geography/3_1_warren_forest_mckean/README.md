@@ -26,6 +26,8 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults applied (2026-11-06, user said take defaults). Margin 0.03 recall per arm. Holm over the three arm primaries (warren, mckean, forest). K30, density-scaled, super-block and low-density rows are reported, never gated. max_undefined 0. Warren S2 projected width and the prereg draft were rerun. At Delta 0.03 no design cell passes the width gate (smallest median width 0.061 against 0.06), so the draft lists it as a blocker.
+
 Review fix pass (F02 F03 F08 F11 G-03 G-06 G-07 P1-03, minors). Tests. `python -m pytest -q -p no:cacheprovider expansions/3_geography/3_1_warren_forest_mckean/src/test_3_1.py` (21 passed).
 - Scoring is the 3.0 reference scorer. `_geo_xfer_lib.py` keeps its function names and calls `_transfer_score_lib`. Cutoff 0.35 for pits, score-order matching, dedupe.
 - Extraction runs once on a shared window over all scored blocks. A seam-crossing blob gives one candidate, equal to the whole-raster oracle.
@@ -47,10 +49,10 @@ Built by the build agent. Every script has a docstring, an argparse CLI and a `R
 | `expansions/3_geography/3_1_warren_forest_mckean/src/_geo_xfer_lib.py` | shared library | yes | nothing |
 | `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_tile_inventory_wfm.py` | S0 inventory | yes. Run on Warren (7 tiles) and McKean (59 tiles) with `--ground` | flight dates (USGS metadata, manual). `mckean_full.las` is not at the documented F: path |
 | `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_blocks_roles_wfm.py` | S1 blocks and roles | yes with `--provisional-buffer`. Run on Warren | P1 derived buffer. Prereg seed |
-| `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_projected_width_wfm.py` | S2 projected width | yes. Run on Warren with no margin | margin Δ (user). P1 isolated reference table |
+| `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_projected_width_wfm.py` | S2 projected width | yes. Rerun on Warren at Δ 0.03 (2026-11-06) | P1 isolated reference table. No cell passes 2Δ |
 | `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_build_derivs_wfm.py` | S3 0.5 m rebuild | yes, but expensive. Dry run and `--check-9t` run only | compute time. Time one block first with `--block-id` |
 | `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_annot_tools_wfm.py` | S4 timing, S6 package and agreement | `package` yes. `timing` and `agreement` need people | reviewers, blind truth GeoPackage |
-| `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_prereg_draft_wfm.py` | S5 preregistration draft | yes. Draft written with a blocker list | margin, P1 checkpoints, flight dates, reviewers |
+| `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_prereg_draft_wfm.py` | S5 preregistration draft | yes. Draft rewritten 2026-11-06 with a blocker list | P1 checkpoints, flight dates, reviewers, width gate |
 | `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_frozen_infer_wfm.py` | S7a frozen inference | after S3. `--allow-cv5` gives a provisional run | P1 isolated checkpoints, S3 stack |
 | `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_score_k40_wfm.py` | S7b scoring and sensitivities | no | blind truth (S6), committed prereg, S7a raster |
 | `expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_error_review_wfm.py` | S8 error review | no | an S7b run |

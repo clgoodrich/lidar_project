@@ -12,7 +12,7 @@ Inputs
     3.3 S1 run folder slope_recall_summary_9t.json, config_3_3.json (margin_delta, area_gate)
 
 Outputs
-    <S1 run folder>/slope_area_gate_9t.json   verdict (release, hold, no_margin_set), reasons, commands
+    <S1 run folder>/slope_area_gate_9t.json   verdict (release or hold), S1 decision and basis, reasons, commands
 
 Run
     python expansions/3_geography/3_3_low_relief_slope/src/_slope_area_gate_9t.py
@@ -42,15 +42,19 @@ def gate(summary: dict, margin, user_request: bool, n_flat: int | None = None) -
            "coverage_note": (f"lowest tercile reaches {cut_lo:.1f} deg. {flat}. S1 says little about flat farmland"
                              if cut_lo > FLAT_DEG else "lowest tercile is flat")}
     if margin is None:
-        out["s1_decision"] = "no_margin_set"
-    else:
-        out["s1_decision"] = ek.decide(p["lo"], p["hi"], margin, "noninferiority")
+        raise ValueError("margin is required (user default 0.03 recall, config margin_delta)")
+    if p.get("margin") is not None and float(p["margin"]) == float(margin) and "decision" in p:
+        out["s1_decision"] = p["decision"]                      # the S1 Holm gate (family of one)
+        out["s1_decision_basis"] = p.get("decision_basis", "S1 summary")
+    else:                                                       # margin override. Family of one, Holm = unadjusted
+        out["s1_decision"] = ek.decide(p["lo"], p["hi"], float(margin), "noninferiority")
+        out["s1_decision_basis"] = "margin override. One primary, so Holm equals the unadjusted interval rule"
     penalty = out["s1_decision"] == "failure"
     out["release_area_test"] = bool(penalty or user_request)
     out["reason"] = ("user request" if user_request else
                      "slope penalty found (upper bound below minus margin)" if penalty else
                      "no slope penalty shown; area test stays gated" if out["s1_decision"] == "success" else
-                     "inconclusive or no margin; area test stays gated until the user decides")
+                     "inconclusive; area test stays gated until the user decides")
     return out
 
 

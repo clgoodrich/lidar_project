@@ -7,6 +7,8 @@ Purpose
     pad residual minus its matched clearing residual. Scene differences are averaged to the pair (site
     scenes are not independent), then a block bootstrap (B = 2000) of the mean over 375 m blocks.
     Decision with ek.decide (superiority) on sign x contrast against delta_T, sign preregistered in config.
+    T3 is one of two primaries (T3, T4). The stage verdict is unadjusted. The gate is Holm over both
+    primaries in _thermal_primary_holm_9t.py, from the one-sided shares p_success and p_failure written here.
     statsmodels is not installed, so the scene random effect of the framework is replaced by scene fixed
     effects (decision 2026-11-05). Exploratory splits by leaf state are written but not gated.
 Inputs
@@ -75,14 +77,15 @@ def run(cfg: dict, out_root: Path | None = None, samples_path: Path | None = Non
     stat = lambda bl: float(np.mean(np.concatenate([byb[b] for b in bl]))) * sign  # noqa: E731
     pt, lo, hi, dr = ek.block_bootstrap(stat, blocks, B=g["bootstrap_B"], seed=ek.child_seed(cfg["master_seed"], arm=30))
     verdict = ek.decide(lo, hi, g["delta_T_K"], "superiority")
+    shares = io.one_sided_shares(dr, g["delta_T_K"], float(g.get("max_undefined", 0.0)))
     explo = {}
     for ls, d in m.groupby("leaf_state"):
         explo[str(ls)] = {"n_pairs": int(d["pair_id"].nunique()), "mean_diff_K": float(d["diff_K"].mean())}
     summary = {"stage": "T3", "evidence_level": "(a). A surface difference, never a leak or a well",
                "n_pairs": int(len(per)), "n_blocks": len(blocks), "n_pair_scenes": int(len(m)),
                "expected_sign": sign, "signed_contrast_K": pt, "lo": lo, "hi": hi, "delta_T_K": g["delta_T_K"],
-               "undefined_share": ek.undefined_share(dr),
-               "verdict": verdict, "exploratory_by_leaf_state": explo,
+               "undefined_share": ek.undefined_share(dr), **shares,
+               "verdict_unadjusted": verdict, "gated_by": "Holm over T3 and T4 (_thermal_primary_holm_9t.py)", "exploratory_by_leaf_state": explo,
                "note": "Failure means no detectable contrast at this pixel size. It does not exclude a drone signal"}
     if len(blocks) < 15:
         summary["warning"] = "fewer than 15 blocks, bootstrap unreliable. Add a permutation interval"

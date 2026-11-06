@@ -79,6 +79,11 @@ def main(argv=None) -> int:
     pw = T / f"xfer_projected_width_{a.area}.json"
     if not pw.exists():
         blockers.append("S2 projected width not run")
+    elif pw.with_suffix(".csv").exists():
+        import pandas as pd
+        ok = pd.read_csv(pw.with_suffix(".csv")).gate_width_le_2margin.map(lambda v: v is True or v == "True")
+        if not ok.any():
+            blockers.append(f"projected width exceeds 2 x Delta ({margin}) in every S2 design cell. Add blocks or revisit Delta")
     ref = xl.resolve_path(cfg["reference"]["blocks_csv"])
     ref_s = xl.resolve_path(cfg["reference"]["summary_json"])
     pol = xl.policy("pit")                     # review F02. The one scoring policy
@@ -120,8 +125,10 @@ def main(argv=None) -> int:
           "Two reviewers per test block, layers pit_inside, pit_full and pad, no model output, no well points, no scores. "
           "Third look adjudicates. A seeded 20% of test blocks is re-annotated independently. Exposure logged per block.", "",
           "## Gates",
-          "Readiness. Projected width at most 2Delta. Success. Lower bound above minus Delta. Failure. Upper bound below minus Delta. "
-          "Otherwise inconclusive. One scoring run.", ""]
+          "Readiness. Projected width at most 2Delta. Success. Holm-adjusted one-sided bootstrap share under 0.025. "
+          "Failure. Upper bound below minus Delta. Otherwise inconclusive. One scoring run.",
+          f"- Multiplicity. Holm over the declared primaries {(cfg.get('multiplicity') or {}).get('family')}. "
+          "Secondaries are reported, never gated. No undefined bootstrap draw is tolerated (max_undefined 0).", ""]
     if a.template and Path(a.template).exists():
         md += ["## Template text", Path(a.template).read_text(encoding="utf-8")]
     out = T / f"xfer_prereg_draft_{a.area}.md"

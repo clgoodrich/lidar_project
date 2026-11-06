@@ -4,10 +4,11 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
-- The footprint is all 144 blocks. The 29 zero-pit blocks have no out-of-fold pit prediction, so they add area but no candidates. K is then 810 and only 677 candidates exist. D is limited by supply, not by K. The fix is an out-of-fold prediction for those blocks, which needs a model choice.
+- The footprint is all 144 blocks. The 29 zero-pit blocks have no out-of-fold pit prediction, so they add area but no candidates. K is then 810 and only 768 candidates exist. D is limited by supply, not by K. The fix is an out-of-fold prediction for those blocks, which needs a model choice.
 
 ## Log
 
+- 2026-11-06. Defaults pass. 5.6 now cuts pits at 0.35. expected_pit_rows is 768. Rerun S0, S1, S2 and S5. D sites 656 [578, 739] to 733 [648, 782]. K 810 unchanged. Grid inconsistent cells 480 of 918. Made by the review-fix agent, change freely.
 - 2026-11-06. Review fix pass by the review-fix agent. Change freely.
 - 2026-11-06. 5.4-02. The footprint is the complete grid, not the blocks with drawn pits. truth_bearing is kept as a sensitivity.
 - 2026-11-06. 5.4-01. The D bootstrap reruns the top-K cut and the site merge on every resample. The old one summed per-block site counts after the cut. A resample that repeated dense blocks then held more than K sites. That is how it reached 678 with K = 647. Every draw now lies in 0 to K.

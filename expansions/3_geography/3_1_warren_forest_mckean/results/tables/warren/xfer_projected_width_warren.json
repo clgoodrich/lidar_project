@@ -7,10 +7,10 @@
   "icc_rho": 0.0,
   "reference_blocks": 115,
   "reference_density_per_km2": 31.103381642512076,
-  "margin": null,
-  "planned_test_blocks": 71,
+  "margin": 0.03,
+  "planned_test_blocks": 85,
   "reps": 50,
   "B": 200,
   "seed": 20261105,
-  "gate": "not decided (no margin)"
+  "gate": "see gate_width_le_2margin per row"
 }

@@ -36,11 +36,11 @@ Review repair on 2026-11-06 (findings 7.3-01, 7.3-02, F02, F05). The provisional
 | `src/_bench_export_release_9t.py` | S1 export, manifest, `--verify` | yes with `--provisional-historical` | frozen P1 future split and frozen P2 audit set for a real release. Reads them with `ek.read_split` and `ek.require_audit` |
 | `src/_bench_evaluate_recall_k.py` | S2 official scorer (`evaluate.py`) | yes | nothing. Needs `--task`. Policy from `ek.policy_for` or the release `scoring_policy.json` |
 | `src/_bench_baselines_score_9t.py` | S3 baselines on shipped dev clips | yes for pit_unet_cv5 and pad_unet_cv5_iso | P1 isolated pit model, unetpp_r34_imagenet fold rasters |
-| `src/_bench_validity_checks_9t.py` | S4 H1, H2, H3, label ceiling | no | unetpp and second-seed candidate files, test block count, margin (user), 6.3 labels |
+| `src/_bench_validity_checks_9t.py` | S4 H1, H2, H3, label ceiling | no | unetpp and second-seed candidate files, test block count, H3 width target (user), 6.3 labels |
 | `src/_bench_fresh_checkout_test.py` | S5 fresh-checkout reproduction | yes | passed on the rescored provisional release (2026-11-06) |
-| `src/_bench_leaderboard_submit_9t.py` | S6 rules, submissions, leaderboard | rules and render yes | hidden-test labels (P2), margin (user). Submit now needs `--task` and the baseline score JSON |
+| `src/_bench_leaderboard_submit_9t.py` | S6 rules, submissions, leaderboard | rules and render yes | hidden-test labels (P2). Submit now needs `--task` and the baseline score JSON |
 | `src/config_7_3.json` | assumed inputs | yes | |
-| `src/test_7_3.py` | tests | yes | 10 passed. P1 and P2 inputs come from the real producers |
+| `src/test_7_3.py` | tests | yes | 11 passed. P1 and P2 inputs come from the real producers |
 
 The release sits in `data/processed/terrain_v1/` (gitignored). Dev-test recall at 40 per km2, B = 200, primary policy fw00_s4_20261105, within-block matching.
 
@@ -48,5 +48,9 @@ The release sits in `data/processed/terrain_v1/` (gitignored). Dev-test recall a
 |---|---|---|
 | pit_unet_cv5 | 0.673 (0.496 to 0.764) | 0.911 (0.816 to 0.968), 92 of 101 |
 | pad_unet_cv5_iso | 0.063 (0.025 to 0.115) | 0.730 (0.643 to 0.823), 81 of 111 |
+
+User defaults on 2026-11-06. The leaderboard margin is 0.03 recall (config). Each submission gets a `vs_baseline` verdict at that margin.
+The H3 width target is still open, so H3 stays pending. Holm applies only to declared primaries. max_undefined is 0.
+No validity or submission output exists on disk, so nothing was rerun.
 
 The pit number agrees with the 3.0 reproduction of 0.909. The old pad number came from the 0.10 cutoff, which merges pad blobs.

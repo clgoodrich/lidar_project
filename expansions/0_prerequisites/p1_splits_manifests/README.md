@@ -27,7 +27,12 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 ## Build status (2026-11-06)
 
 Review fixes on 2026-11-06 (adversarial review P1-01 to P1-05, the P1 minors, consolidated F05).
-Tests. `python -m pytest -q -p no:cacheprovider expansions/0_prerequisites/p1_splits_manifests/src/test_p1.py` (21 passed).
+Tests. `python -m pytest -q -p no:cacheprovider expansions/0_prerequisites/p1_splits_manifests/src/test_p1.py` (23 passed).
+User defaults applied on 2026-11-06 ("take defaults"). Buffer mode `window` is now the default. The noise band stays 2 sigma.
+The dry run was rerun in window mode. Train blocks per fold, pit 72, 71, 76, 74, 75 (block mode had 23, 12, 24, 20, 22).
+Pad 84, 82, 82, 82, 83 (block mode had 32, 16, 15, 16, 20). Train blocks near held-out ground, pit 49, 59, 52, 54, 53 and pad 52, 66, 67, 66, 63.
+The isolated sampler leaks 0 windows in every fold at 100 m (pit) and 150 m (pad). The norm trace passes. The gate passes.
+The block-mode dry-run files moved to `data/interim/dryrun/block_mode_20261106/`.
 Default outputs go to the framework paths under `data/9t/results/splits/`. The dry runs wrote to `data/interim/dryrun/` in this folder instead, so nothing outside this folder changed.
 
 | Script | Stage | Runnable now with held data | Missing or pending |
@@ -35,7 +40,7 @@ Default outputs go to the framework paths under `data/9t/results/splits/`. The d
 | `src/_split_core_lib_9t.py` | library, now with the block buffer | yes | none |
 | `src/_split_recover_roles_9t.py` | S0 recover roles | yes, ran (15 of 15 held-out lists from checkpoints equal the exporter) | none |
 | `src/_split_determinism_check_9t.py` | S1 determinism | yes, ran (fixed code identical in every fold, historical pit code differed in folds 0, 2, 4) | none |
-| `src/_split_future_write_9t.py` | S2 split file, buffer, verify, `--exclude-audit` | yes, reran 2026-11-06 with the derived buffer and verified | the buffer mode is a user decision. Committing the file is a user step |
+| `src/_split_future_write_9t.py` | S2 split file, buffer, verify, `--exclude-audit` | yes, reran 2026-11-06 in window mode and verified | committing or freezing the file is a user step |
 | `src/_split_future_csv_9t.py` | S2 long CSV | yes, ran 2026-11-06 | none |
 | `src/_pit_unet_iso_train_9t.py` | S3 isolated pit trainer, S6 `--measure-epoch` | dry run yes, reran at the derived 100 m. Training no | GPU hours (S6 user decision) |
 | `src/_split_buffer_derive_9t.py` | S4 buffer per task | yes, reran (pit 100 m, pad 150 m) | none |

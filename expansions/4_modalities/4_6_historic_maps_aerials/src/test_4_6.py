@@ -143,7 +143,8 @@ def test_marks_merge_and_compare(tmp_path):
     # by hand. Only records 0 to 3 existed by 1939, so 4 marks have a record within 12 m (6 without the filter)
     assert res["dep_association"]["observed"] == 4 and res["dep_association"]["excess"] > 0
     assert res["record_date_filter"] == {"source_date": "1939", "field": "SPUD_DATE", "n_records_in_window": 6,
-                                         "n_existed_by_date": 4, "n_unknown_date": 1, "n_after_date": 1}
+                                         "n_existed_by_date": 4, "n_unknown_date": 1, "n_after_date": 1,
+                                         "undated_records": "sensitivity_only"}
     assert res["dep_association_with_unknown_dates"]["observed"] == 5
     assert res["topk"]["in_topk"][0] > 0
     (tmp_path / "syn_crop_9t.json").write_text(json.dumps({"cover_share_9t": 0.9}))
@@ -182,3 +183,8 @@ def test_neatline_and_aerial_probe(tmp_path):
     assert s2.main(["--index", str(f), "--out", str(tmp_path)]) == 0
     dv = pd.read_csv(tmp_path / "hist_aerial_dates_9t.csv").set_index("date").verdict
     assert dv["1939-04-01"] == "legible candidate" and dv["1942-05-01"].startswith("inconclusive") and "1950-05-01" not in dv
+
+
+def test_undated_records_default_2026_11_06():
+    """Default accepted 2026-11-06. Undated records are a sensitivity count only. Any other value refuses."""
+    assert CFG["prereg"]["undated_records"] == "sensitivity_only"

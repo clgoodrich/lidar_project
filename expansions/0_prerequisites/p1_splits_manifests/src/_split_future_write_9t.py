@@ -48,6 +48,9 @@ ek = sc.ek
 
 K = 5
 BUFFER_MODES = ("block", "window")
+# 2026-11-06. User accepted the default buffer mode `window` ("take defaults"). Train blocks keep their role and
+# the sampler rejects windows within the buffer of held-out ground. Change freely.
+DEFAULT_BUFFER_MODE = "window"
 PATH_KEYS = ("manifest", "blocks")        # path strings are not compared by verify. Their hashes are.
 
 
@@ -71,7 +74,7 @@ def buffer_spec(task: str, path: Path) -> dict:
 def build(manifests: dict[str, Path | None] | None = None, exporter_dir: Path | None = None,
           check_exporter: bool = True, exclude: set[int] | None = None, exclude_source: dict | None = None,
           buffers: dict[str, dict | None] | None = None, blocks: dict[str, Path | None] | None = None,
-          buffer_mode: str = "block") -> dict:
+          buffer_mode: str = DEFAULT_BUFFER_MODE) -> dict:
     """The split document for every task. Raises on any QC problem.
 
     exclude      block ids (P2 audit and buffer rows) removed from every role after the historical fold
@@ -212,7 +215,7 @@ def verify(path: Path, manifests=None, exporter_dir=None, check_exporter=True, b
         blks.setdefault(t, Path(v["blocks"]))
     try:
         now = build(mans, exporter_dir, check_exporter, exclude=excl, exclude_source=src, buffers=bufs,
-                    blocks=blks, buffer_mode=next(iter(modes)) if modes else "block")
+                    blocks=blks, buffer_mode=next(iter(modes)) if modes else DEFAULT_BUFFER_MODE)
     except (AssertionError, ValueError) as e:
         return probs + [str(e)]
     for t in tasks:
@@ -253,8 +256,9 @@ def main(argv=None) -> int:
                     help="frozen P2 audit file. Its audit and buffer blocks leave every role (write v2 or later)")
     ap.add_argument("--buffer-json", type=Path, default=None,
                     help="P1 S4 buffer_derivation_9t.json. Default ek.default_buffer_path()")
-    ap.add_argument("--buffer-mode", choices=BUFFER_MODES, default="block",
-                    help="block moves train blocks within the buffer of held-out ground to role 'buffer'")
+    ap.add_argument("--buffer-mode", choices=BUFFER_MODES, default=DEFAULT_BUFFER_MODE,
+                    help="window (default) keeps the lists and the sampler rejects windows within the buffer. "
+                         "block moves train blocks within the buffer of held-out ground to role 'buffer'")
     ap.add_argument("--no-buffer", action="store_true",
                     help="exploratory only. Write the split with no buffer (recorded as buffer_m null)")
     a = ap.parse_args(argv)

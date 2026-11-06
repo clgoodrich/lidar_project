@@ -18,5 +18,10 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. Per-block candidate extraction reads a 100 m padded window so a blob on a block edge is counted once. Made by the build agent, change freely.
 - 2026-11-05. The trainer is a dry run unless `--train` is given. Made by the build agent, change freely.
 
+## Decisions
+
+- 2026-11-06. Negative exclusion radius train.neg_truth_exclusion_m. User accepted the default 30 m ("take defaults"). Change freely. It no longer follows jitter_m. A null value is now refused. Test test_truth_exclusion_is_decided_30m.
+
 ## Needs user decision
-- 2026-11-06. Confirm the negative exclusion radius. 30 m equals the window jitter. A larger radius removes more confuser labels near pits.
+
+- None open.

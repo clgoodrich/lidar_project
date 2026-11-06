@@ -331,13 +331,15 @@ def _oof_scores(X, y, folds, seed):
 
 def added_value(df: pd.DataFrame, base: list[str], extra: list[str], label: str, fold: str, block: str,
                 block_area_km2: dict, k_per_km2: float = 40.0, B: int = 2000, seed: int = 0,
-                max_undefined: float = 0.0) -> dict:
+                max_undefined: float = 0.0, margin: float | None = None) -> dict:
     """Out-of-fold ranking, lidar-only versus lidar plus extra features, same folds and blocks.
 
     Recall at K per km2 (ek.recall_at_k, truth = positive sites) and AUC, each with a paired block
     bootstrap of the difference (ek.bootstrap_diff, paired=True). Returns point, lo, hi per metric and
     the out-of-fold scores. Undefined draws are counted (SH-01). Their share is reported per metric, and
     above max_undefined the interval is (NaN, NaN), which ek.decide turns into inconclusive.
+    With margin given, recall at K also carries the one-sided bootstrap shares p_success and p_failure
+    (one_sided_shares) that the Holm gate over the primaries uses.
     """
     from sklearn.metrics import roc_auc_score
     y = df[label].to_numpy(int)
@@ -377,6 +379,8 @@ def added_value(df: pd.DataFrame, base: list[str], extra: list[str], label: str,
                                            max_undefined=max_undefined, return_draws=True)
         out[name] = {"lidar_only": float(fb(blocks)), "lidar_plus": float(fa(blocks)), "diff": pt, "lo": lo, "hi": hi,
                      "undefined_share": ek.undefined_share(dr), "max_undefined": max_undefined}
+        if margin is not None and name == "recall_at_k":
+            out[name].update(one_sided_shares(dr, margin, max_undefined))
         if not np.isfinite(lo):
             out[name]["ci_note"] = (f"{ek.undefined_share(dr):.3f} of {B} draws undefined (a resample with one class or "
                                     f"no truth), above the declared {max_undefined}. Interval undefined, verdict inconclusive")
@@ -384,3 +388,50 @@ def added_value(df: pd.DataFrame, base: list[str], extra: list[str], label: str,
         out["warning"] = "fewer than 15 blocks, bootstrap unreliable (fw_00 section 4). Add a permutation interval"
     out["scores"] = d[["_sa", "_sb"]].rename(columns={"_sa": "score_lidar_only", "_sb": "score_lidar_plus"})
     return out
+
+
+# ----------------------------------------------------------------------------- Holm over the primaries
+def one_sided_shares(draws, margin: float, max_undefined: float = 0.0) -> dict:
+    """One-sided bootstrap shares at the margin (superiority).
+
+    p_success is the share of draws at or below the margin. p_failure is the share at or above it. They match
+    ek.decide on a 95% percentile interval. lo > margin is p_success < 0.025, hi < margin is p_failure < 0.025.
+    Undefined draws follow SH-01. Above max_undefined both shares are NaN (the Holm gate reads NaN as 1).
+    """
+    d = np.asarray(draws, float)
+    und = ek.undefined_share(d)
+    if und > max_undefined or und == 1.0:
+        return {"p_success": float("nan"), "p_failure": float("nan"), "margin": float(margin)}
+    f = d[np.isfinite(d)]
+    return {"p_success": float(np.mean(f <= margin)), "p_failure": float(np.mean(f >= margin)), "margin": float(margin)}
+
+
+def holm_adjust(p: dict) -> dict:
+    """Holm step-down adjusted p-values. A missing or NaN p counts as 1, so it stays in the family size."""
+    q = {k: (1.0 if v is None or not np.isfinite(v) else float(v)) for k, v in p.items()}
+    keys = sorted(q, key=lambda k: q[k])
+    m, out, run = len(keys), {}, 0.0
+    for i, k in enumerate(keys):
+        run = max(run, min(1.0, (m - i) * q[k]))
+        out[k] = run
+    return out
+
+
+def holm_gate(primaries: dict, alpha: float = 0.05) -> dict:
+    """Default accepted 2026-11-06 ("take defaults"). Holm over the declared primary gates only.
+
+    primaries maps a gate name to its stage result with p_success and p_failure, or to None when the stage has
+    not run or is not identifiable. Success and failure are two one-sided families, each adjusted by Holm over
+    all primaries and gated at alpha / 2 (the one-sided level of the 95% interval each stage reports). A gate
+    with no result keeps p 1, so it counts in the family and can never pass.
+    """
+    ps = {k: (v or {}).get("p_success") for k, v in primaries.items()}
+    pf = {k: (v or {}).get("p_failure") for k, v in primaries.items()}
+    a_s, a_f = holm_adjust(ps), holm_adjust(pf)
+    out = {}
+    for k, v in primaries.items():
+        verdict = ("success" if a_s[k] < alpha / 2 else "failure" if a_f[k] < alpha / 2 else "inconclusive")
+        out[k] = {"p_success": ps[k], "p_failure": pf[k], "holm_p_success": a_s[k], "holm_p_failure": a_f[k],
+                  "has_result": v is not None, "verdict": verdict}
+    return {"method": "Holm over the declared primaries, one-sided at alpha / 2 per family", "alpha": alpha,
+            "m": len(primaries), "gates": out}

@@ -62,7 +62,8 @@ def export(clean: pd.DataFrame, wells: pd.DataFrame, key: pd.DataFrame, frame_pa
     ek.assert_rows(df, len(clean), "clean x key")
     ek.assert_no_nan(df["pi"], "pi")
     out.mkdir(parents=True, exist_ok=True)
-    res = {"out": str(out), "frame": str(frame_path), "frame_sha256": sha_now}
+    res = {"out": str(out), "frame": str(frame_path), "frame_sha256": sha_now,
+           "arm_b_transfer_assumption": de.get("arm_b_transfer_assumption")}
 
     # ---------------------------------------------------------------- arm B
     b = df[df["arm"] == "B"]

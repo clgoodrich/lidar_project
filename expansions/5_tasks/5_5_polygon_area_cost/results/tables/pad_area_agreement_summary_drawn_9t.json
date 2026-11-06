@@ -14,13 +14,13 @@
     "policy_hash": "f6d15ee"
   },
   "primary": {
-    "median_r": 0.23828162822772953,
-    "median_lo": 0.19643020093054647,
-    "median_hi": 0.28573276075621484,
-    "p90_abs_r": 0.6963502918534025,
-    "p90_lo": 0.6339526257167831,
-    "p90_hi": 0.7671108194694506,
-    "n_pads": 616,
+    "median_r": 0.17214432144423547,
+    "median_lo": 0.13062654409545743,
+    "median_hi": 0.21458952942897844,
+    "p90_abs_r": 0.6581172510013505,
+    "p90_lo": 0.6001612622968933,
+    "p90_hi": 0.703343524588252,
+    "n_pads": 620,
     "n_blocks": 129,
     "few_blocks": false
   },
@@ -28,89 +28,89 @@
   "delta_source": "fallback ln(1.25), no cost table",
   "decision": "inconclusive",
   "secondary": {
-    "n": 616,
-    "mean_r": 0.21621429898401065,
-    "sd_r": 0.41471053218216813,
+    "n": 620,
+    "mean_r": 0.12894616492369687,
+    "sd_r": 0.40992162467640186,
     "bland_altman_log": [
-      -0.5966183440930388,
-      1.0290469420610602
+      -0.6745002194420509,
+      0.9323925492894445
     ],
-    "ols_slope": 0.5593701129061158,
-    "ols_intercept": 3.48114302320351,
-    "mape": 0.43434253936762657,
-    "median_iou": 0.6636233007025857,
-    "median_boundary_m": 3.843785196725467,
-    "median_hausdorff95_m": 10.44115537023678
+    "ols_slope": 0.5674903286426453,
+    "ols_intercept": 3.3328617442623836,
+    "mape": 0.3628067964226939,
+    "median_iou": 0.6743548761513264,
+    "median_boundary_m": 3.6409741762074437,
+    "median_hausdorff95_m": 10.095595018993091
   },
   "strata": {
     "size_tercile": [
       {
         "size_tercile": "large",
-        "size": 312,
-        "median": 0.1107
+        "size": 314,
+        "median": 0.0283
       },
       {
         "size_tercile": "medium",
-        "size": 247,
-        "median": 0.3504
+        "size": 248,
+        "median": 0.2816
       },
       {
         "size_tercile": "small",
-        "size": 57,
-        "median": 0.5823
+        "size": 58,
+        "median": 0.5192
       }
     ],
     "cover_class": [
       {
         "cover_class": "canopy",
-        "size": 33,
-        "median": 0.2442
+        "size": 34,
+        "median": 0.171
       },
       {
         "cover_class": "open",
-        "size": 56,
-        "median": 0.2605
+        "size": 59,
+        "median": 0.2146
       },
       {
         "cover_class": "partial",
         "size": 527,
-        "median": 0.2369
+        "median": 0.1691
       }
     ]
   },
   "calibration_arm": {
     "fit_A_test_B": {
-      "scale_factor": 0.7833031590089489,
-      "median_abs_r_before": 0.2850039184992357,
-      "median_abs_r_after": 0.18746333718499908,
+      "scale_factor": 0.8306742832461902,
+      "median_abs_r_before": 0.256030251864624,
+      "median_abs_r_after": 0.1935758705575892,
       "improves": true
     },
     "fit_B_test_A": {
-      "scale_factor": 0.7902177468333288,
-      "median_abs_r_before": 0.3101482179031882,
-      "median_abs_r_after": 0.20232494302647902,
+      "scale_factor": 0.852231404698216,
+      "median_abs_r_before": 0.27321299058608334,
+      "median_abs_r_after": 0.191863788860641,
       "improves": true
     },
     "useful": true
   },
-  "matched": 616,
-  "unmatched_reference": 379,
+  "matched": 620,
+  "unmatched_reference": 375,
   "sensitivity": {
     "match_rule": "iou_gate",
     "iou_min": 0.3,
     "primary": {
-      "median_r": 0.23696510119244757,
-      "median_lo": 0.19416372803273224,
-      "median_hi": 0.2851012712633018,
-      "p90_abs_r": 0.6600715521593822,
-      "p90_lo": 0.6019041391160055,
-      "p90_hi": 0.7044589082854154,
-      "n_pads": 603,
+      "median_r": 0.17424000642948556,
+      "median_lo": 0.13299768616075439,
+      "median_hi": 0.2186356733193897,
+      "p90_abs_r": 0.6145075793980832,
+      "p90_lo": 0.5481823634617297,
+      "p90_hi": 0.6606621603713986,
+      "n_pads": 607,
       "n_blocks": 129,
       "few_blocks": false
     },
     "decision": "inconclusive",
-    "matched": 603,
+    "matched": 607,
     "note": "An IoU gate caps |r| at ln(1/iou) for nested shapes. Not the primary."
   },
   "note": "Area is level (a). It says nothing about wells."

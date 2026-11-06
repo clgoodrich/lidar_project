@@ -76,10 +76,12 @@ def test_score_area_matches_toolkit_and_counts_empty_blocks():
 def test_diff_and_permutation_note():
     tgt = [(8, 10)] * 10
     ref = [(9, 10)] * 50
-    d = xl.diff_vs_reference(tgt, ref, margin=0.05, B=200, seed=0)
+    d = xl.diff_vs_reference(tgt, ref, margin=0.05, B=200, seed=0, gate="warren")
     assert d["diff"] == pytest.approx(-0.1) and "permutation_p" in d
     assert d["decision"] == "failure"
-    assert xl.diff_vs_reference(tgt, ref, margin=None, B=50)["decision"] == "no_margin_set"
+    with pytest.raises(ValueError, match="margin is required"):
+        xl.diff_vs_reference(tgt, ref, margin=None, B=50)
+    assert xl.diff_vs_reference(tgt, ref, margin=0.05, B=50)["decision"] == "not gated (secondary or sensitivity)"
     assert xl.density_scaled_k(40, 30, 15) == pytest.approx(20)
 
 
@@ -102,6 +104,32 @@ def test_candidates_from_prob_and_score_transfer(tmp_path):
     res, per, sc, st = sk.score_transfer(cands, truth, b, ref, margin=0.1, B=100, seed=0, superblock_side=2)
     assert res["primary"]["n_truth"] == 3 and res["primary"]["k"] == 2 and res["primary"]["hits"] == 2
     assert {"k30", "density_scaled", "superblock", "calibration", "reference"} <= set(res)
+    for key in ("k30", "density_scaled", "superblock"):           # secondaries are reported, never gated
+        assert res[key]["decision"] == "not gated (secondary or sensitivity)"
+
+
+def test_defaults_margin_and_family():
+    """take defaults 2026-11-06. Margin 0.03 per arm, Holm over warren, mckean, forest, max_undefined 0."""
+    cfg = xl.load_config(HERE.parent / "config_3_1.json")
+    assert cfg["margin_delta"] == {"warren": 0.03, "mckean": 0.03, "forest": 0.03}
+    assert cfg["multiplicity"]["method"] == "holm" and cfg["multiplicity"]["max_undefined"] == 0.0
+    assert cfg["multiplicity"]["family"] == ["warren", "mckean", "forest"]
+    c2 = xl.load_config(HERE.parents[2] / "3_2_appalachian_states" / "src" / "config_3_2.json")
+    assert set(c2["margin_delta"].values()) == {0.03}
+    assert c2["multiplicity"]["family"] == ["ny_alg", "oh_wash", "ky_lee", "wv_ple"]
+
+
+def test_primary_holm_family_of_three():
+    """A clear pass alone (share 0) stays a success in a family of three. A share between alpha/(2m) and
+    alpha/2 is success alone and inconclusive in the family of three until the family step."""
+    tgt = [(9, 10)] * 40
+    ref = [(9, 10)] * 40
+    d = xl.diff_vs_reference(tgt, ref, margin=0.03, B=200, seed=0, gate="warren",
+                             family=["warren", "mckean", "forest"])
+    assert d["holm_input"]["p_one_sided"] == 0.0 and d["decision"] == "success"
+    h = xl.hg.holm_partial(0.012, -0.02, 0.05, 0.03, "noninferiority", 3)
+    assert h[0] == "inconclusive"
+    assert xl.hg.holm_partial(0.012, -0.02, 0.05, 0.03, "noninferiority", 1)[0] == "success"
 
 
 def test_las_header_and_ground_grid(tmp_path):
@@ -342,7 +370,7 @@ def test_f08_lineage_and_reference_guards(tmp_path):
         sk.reference_counts(sens, xl.policy(), 40, 30)
     ok, why = xl.tl.confirmatory_ok({"family": "pit/unet_cv5", "lineage": "historical_cv5", "provisional": True},
                                     {"family": "pit/unet_cv5", "lineage": "historical_cv5", "provisional": True})
-    res = {"primary": {"decision": "success"}, "k30": {"decision": "failure"}}
+    res = {"primary": {"decision": "success"}, "k30": {"decision": "not gated (secondary or sensitivity)"}}
     sk.apply_lineage(res, ok, why)
     assert res["primary"] == {"decision": "descriptive", "decision_if_confirmatory": "success"}
-    assert res["provisional"] is True and res["k30"]["decision"] == "descriptive"
+    assert res["provisional"] is True and res["k30"]["decision"] == "not gated (secondary or sensitivity)"

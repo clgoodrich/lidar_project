@@ -28,6 +28,8 @@ def load_cfg(path=None) -> dict:
 
 
 def resolve(spec: dict, **fmt) -> Path:
+    if "abs" in spec:                      # tests only, never in a committed config
+        return Path(spec["abs"])
     rel = spec["rel"].format(**fmt) if fmt else spec["rel"]
     if "key" in spec:
         return ek.path_for(spec["key"]) / rel
@@ -153,6 +155,47 @@ def lidar_weak_mask(y, covariate, spec: dict | None):
     else:
         raise ValueError(f"lidar_weak weak_side must be high or low, got {side!r}")
     return (~y) | (y & tk), None
+
+
+def layer_covariate(df, spec: dict | None):
+    """lidar_weak covariate sampled from a raster layer at each row point (x, ym), for rows that lack the column.
+
+    Mean of the raw cell values over a square of half-width spec['window_m'] around the point. The ground density
+    layer stores ground returns per 1 m cell with nodata 0, so 0 is read as zero returns, not as missing (a heavy
+    canopy cell is the weak case, dropping it would bias the density up). Returns (values, None) or (None, reason).
+    The frozen rows are not changed. The covariate is computed beside them at score time."""
+    if not spec or not spec.get("layer"):
+        return None, "no layer declared for the lidar_weak covariate"
+    path = resolve(spec["layer"])
+    if not Path(path).exists():
+        return None, f"lidar_weak layer not held at {path}"
+    if not {"x", "ym"} <= set(df.columns):
+        return None, "rows lack x, ym, so the lidar_weak layer cannot be sampled"
+    import rasterio
+    h = float(spec.get("window_m", 5.0))
+    with rasterio.open(path) as d:
+        a = d.read(1).astype(float)
+        T, H, W = d.transform, d.height, d.width
+        if d.crs is None or d.crs.to_epsg() != int(str(ek.DST_CRS).split(":")[1]):
+            raise ValueError(f"lidar_weak layer CRS {d.crs} is not {ek.DST_CRS}")
+    out = np.full(len(df), np.nan)
+    for i, (x, y) in enumerate(df[["x", "ym"]].to_numpy(float)):
+        r0, c0 = rasterio.transform.rowcol(T, x - h, y + h)
+        r1, c1 = rasterio.transform.rowcol(T, x + h, y - h)
+        r0, c0, r1, c1 = max(r0, 0), max(c0, 0), min(r1, H - 1), min(c1, W - 1)
+        if r0 <= r1 and c0 <= c1:
+            out[i] = float(a[r0:r1 + 1, c0:c1 + 1].mean()) / abs(T.a * T.e)
+    return out, None
+
+
+def primary_stratum(pr: dict, strata: dict) -> tuple[str, str]:
+    """The one primary stratum. prereg.primary_stratum when that stratum formed, else prereg.primary_stratum_fallback
+    (default accepted 2026-11-06. lidar_weak is primary once its layer is held, secondary until then)."""
+    want = pr.get("primary_stratum", "all")
+    if want in strata:
+        return want, f"{want} formed"
+    fb = pr.get("primary_stratum_fallback", "all")
+    return fb, f"{want} not formed, primary falls back to {fb}"
 
 
 def frozen_cols(df) -> list[str]:

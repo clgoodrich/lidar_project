@@ -133,7 +133,7 @@ def build(cfg: dict, prof: dict, out_dir: Path, overrides: dict | None = None,
     meta = pd.DataFrame({"item": ["profile", "partner", "policy_K_per_km2", "K_candidates", "eligible_km2",
                                   "frozen_cutoff", "link_rule"] + [f"absent:{k_}" for k_ in absent],
                          "text": [prof["name"], cfg["decisions"]["partner"], str(p["k_per_km2"]), str(k),
-                                  f"{elig_km2:.4f}", str(p["frozen_cutoff"]), cand.link_basis.iloc[0] if len(cand) else ""]
+                                  f"{elig_km2:.4f}", str(L.frozen_cutoffs(cfg)), cand.link_basis.iloc[0] if len(cand) else ""]
                          + list(absent.values())})
     l0 = pd.concat([limits, meta], ignore_index=True)
     l0["evidence_level"] = "limits"

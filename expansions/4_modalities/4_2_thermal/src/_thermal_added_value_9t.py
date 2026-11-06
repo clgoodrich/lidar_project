@@ -8,7 +8,8 @@ Purpose
     LST, on the 3.0 scorer block folds. Paired block bootstrap of the differences (_thermal_shared_io.added_value).
     Decision with ek.decide (superiority) against delta_gain on recall at K. Undefined bootstrap draws are
     counted and reported (SH-01). Above added_value.max_undefined the interval is undefined and the verdict
-    is inconclusive.
+    is inconclusive. T4 is one of two primaries (T3, T4). The stage verdict is unadjusted. The gate is Holm
+    over both primaries in _thermal_primary_holm_9t.py, from p_success and p_failure on recall at K.
 Inputs
     sites     <run>_thermal_match_*/thermal_matched_sites_9t.gpkg
     samples   <run>_thermal_samples_*/thermal_samples_by_scene_9t.csv (T2 run with --layer population)
@@ -95,12 +96,13 @@ def run(cfg: dict, out_root: Path | None = None, sites_path=None, samples_path=N
                          why="T4 added value of LST over lidar.")
     r = io.added_value(t, av["lidar_features"], extra, "label", "fold", "block_id", area, av["k_per_km2"],
                        B=cfg["gate"]["bootstrap_B"], seed=ek.child_seed(cfg["master_seed"], arm=40),
-                       max_undefined=float(av.get("max_undefined", 0.0)))
+                       max_undefined=float(av.get("max_undefined", 0.0)), margin=float(av["delta_gain"]))
     scores = r.pop("scores")
     rk = r["recall_at_k"]
     v = ek.decide(rk["lo"], rk["hi"], av["delta_gain"], "superiority") if ident else "not_identifiable"
     r.update(stage="T4", layer=layer, identifiable=ident, identifiability=ident_msg, fold_source=fold_src,
-             extra_features=extra, delta_gain=av["delta_gain"], verdict=v,
+             extra_features=extra, delta_gain=av["delta_gain"], verdict_unadjusted=v,
+             gated_by="Holm over T3 and T4 (_thermal_primary_holm_9t.py)",
              note="Failure means lidar already holds the signal. Evidence level (a)")
     out_c = run_dir / "thermal_added_value_9t.csv"
     out_j = run_dir / "thermal_added_value_9t.json"

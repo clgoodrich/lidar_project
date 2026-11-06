@@ -250,7 +250,19 @@ def test_negatives_never_on_truth(world):
     assert len(nr) == 4
     d = np.array([pit.distance(Point(x, y)) for x, y in np.r_[nc, nr]])
     assert (d > 30.0).all()
-    assert TR.truth_exclusion_m(cfg) == cfg["train"]["jitter_m"]
+    assert TR.truth_exclusion_m(cfg) == 30.0
+
+
+def test_truth_exclusion_is_decided_30m():
+    """Default accepted 2026-11-06. 30 m, independent of jitter_m. The old code returned jitter_m (20 here)."""
+    import json as _j
+    real = _j.loads((Path(__file__).resolve().parent / "config_6_3.json").read_text())
+    assert real["train"]["neg_truth_exclusion_m"] == 30.0
+    real["train"]["jitter_m"] = 20.0
+    assert TR.truth_exclusion_m(real) == 30.0
+    real["train"]["neg_truth_exclusion_m"] = None
+    with pytest.raises(SystemExit, match="decided as 30 m"):
+        TR.truth_exclusion_m(real)
 
 
 def test_confuser_label_raster_not_stale(world):

@@ -167,7 +167,7 @@ def main(argv=None) -> int:
         figure(grid_member, ever, png, n)
         outs.append(png)
     g = sw[sw.kind == "grid"]
-    ek.write_provenance(run, outputs=outs, params=dict(top_n=n, n_dirichlet=n_dir, seed=seed,
+    rio.write_provenance(run, outputs=outs, params=dict(top_n=n, n_dirichlet=n_dir, seed=seed,
                                                        band_variant_missing=missing),
                         seeds={"dirichlet": seed})
     print(f"top N {n}. grid Jaccard vs equal min {g.jaccard_vs_equal.min():.3f} median {g.jaccard_vs_equal.median():.3f}")

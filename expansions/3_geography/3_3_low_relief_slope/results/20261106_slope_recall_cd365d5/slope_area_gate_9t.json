@@ -1,0 +1,41 @@
+{
+  "primary": {
+    "statistic": "feature-level recall, lowest minus highest slope tercile",
+    "diff": -0.011904761904761862,
+    "lo": -0.06318015992004002,
+    "hi": 0.038444528137399715,
+    "undefined_share": 0.0,
+    "p_one_sided": 0.248,
+    "decision_basis": "interval spans the bound",
+    "multiplicity": {
+      "method": "holm over declared primary gates (user default 2026-11-06)",
+      "family": [
+        "q1_slope_feature"
+      ],
+      "max_undefined": 0.0
+    },
+    "margin": 0.03,
+    "decision": "inconclusive"
+  },
+  "margin": 0.03,
+  "lowest_tercile_upper_deg": 7.673674417034788,
+  "n_pits_under_flat_deg": 0,
+  "coverage_note": "lowest tercile reaches 7.7 deg. 0 of 503 scored pits have 25 m slope under 2.0 deg. S1 says little about flat farmland",
+  "s1_decision": "inconclusive",
+  "s1_decision_basis": "interval spans the bound",
+  "release_area_test": false,
+  "reason": "inconclusive; area test stays gated until the user decides",
+  "area_window": {
+    "window": "Illinois_Cumberland",
+    "project": "IL_8County_2020_A20",
+    "tiles": 80,
+    "gb": 3.61,
+    "area": "il_cumberland"
+  },
+  "commands_if_released": [
+    "python expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_tile_inventory_wfm.py --area il_cumberland --tiles <fetched LAZ glob>",
+    "python expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_blocks_roles_wfm.py --area il_cumberland --provisional-buffer",
+    "python expansions/3_geography/3_1_warren_forest_mckean/src/_xfer_projected_width_wfm.py --area il_cumberland",
+    "then 3.1 S3 to S8 with --area il_cumberland (fetch is a user step, 3.61 GB, measure one tile first)"
+  ]
+}

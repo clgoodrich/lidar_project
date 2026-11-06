@@ -2,6 +2,11 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primary gates ny_alg, oh_wash, ky_lee, wv_ple (the four primary windows). Companion windows are descriptive, secondaries and sensitivities reported and never gated (`_transfer_holm_gate.py`) ("take defaults"). Change freely.
+- 2026-11-06. Undefined bootstrap draws. User accepted the default max_undefined 0 (any undefined draw makes the gate inconclusive) ("take defaults"). Change freely.
+- 2026-11-06. Margin per window. User accepted the default 0.03 recall ("take defaults"). Change freely.
 - 2026-11-06. Review fix pass (F02 F03 F08 inherited). Made by the review-fix agent, change freely.
   - 3.2 keeps no matcher of its own. Window scoring runs through the 3.1 stages and so through the 3.0 scorer.
   - The scoring reference is the 3.0 tables. The 3.3 S1 blocks CSV stays only for the projected-width design tool.
@@ -17,5 +22,4 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. Outputs stay in this expansion (`results/tables/`, `data/processed/`), not in `data/_source/reference/` or `data/<area>/`. Made by the build agent, change freely.
 
 ## Needs user decision
-
-- No multiplicity correction is applied across the windows and states. Decide whether the state table ever gates more than one window.
+- None open. (2026-11-06)

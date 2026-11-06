@@ -26,6 +26,8 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults applied (2026-11-06, user said take defaults). Margin 0.03 recall. All-block footprint confirmed. Holm over one primary (feature-level slope difference), so it equals the plain interval rule. S1 and S5 were rerun. The S1 decision moved from no_margin_set to inconclusive (difference -0.012, interval -0.063 to 0.038, one-sided share 0.248). The area test stays gated. Run folder `results/20261106_slope_recall_cd365d5/`.
+
 Review fix pass (F02 F03 G-02 G-12 P1-01 P1-03 P2-01, minors). Tests. `python -m pytest -q -p no:cacheprovider expansions/3_geography/3_3_low_relief_slope/src/test_3_3.py` (11 passed).
 - S1 scores through the 3.0 reference scorer (`ek.policy_for("pit")`, 0.35 in every fold, dedupe on). Extraction runs on one shared window per fold.
 - S1 now scores all 144 blocks. The 29 pit-free blocks join one fold each (3.0 round_robin rule). The fold models never trained there.
@@ -47,11 +49,11 @@ Built by the build agent. Step 1 (S1, S2, S5) ran on held data on the CPU in abo
 
 | Script | Stage | Runnable now with held data | What is missing |
 |---|---|---|---|
-| `expansions/3_geography/3_3_low_relief_slope/src/_slope_recall_tercile_9t.py` | S1 slope stratification | yes. Run | margin Δ for the gate (user) |
+| `expansions/3_geography/3_3_low_relief_slope/src/_slope_recall_tercile_9t.py` | S1 slope stratification | yes. Rerun 2026-11-06 at Δ 0.03 | nothing |
 | `expansions/3_geography/3_3_low_relief_slope/src/_slope_confound_logit_9t.py` | S2 confound checks | yes. Run | nothing |
 | `expansions/3_geography/3_3_low_relief_slope/src/_slope_terrain_edit_9t.py` | S3 paired edits | build yes (`--no-score`). Scoring needs the GPU | P1 isolated checkpoints, P1 buffer, P2 audit list. `--allow-cv5` gives a provisional run |
 | `expansions/3_geography/3_3_low_relief_slope/src/_slope_edit_seam_check_9t.py` | S4 seam checks | after S3 | an S3 run |
-| `expansions/3_geography/3_3_low_relief_slope/src/_slope_area_gate_9t.py` | S5 area gate | yes. Run | margin Δ. The Illinois fetch is a user step |
+| `expansions/3_geography/3_3_low_relief_slope/src/_slope_area_gate_9t.py` | S5 area gate | yes. Rerun 2026-11-06 | The Illinois fetch is a user step |
 | `expansions/3_geography/3_3_low_relief_slope/src/config_3_3.json` | config | yes | assumed P1 and P2 inputs are listed under `assumed` |
 | `expansions/3_geography/3_3_low_relief_slope/src/test_3_3.py` | smoke test | yes. 6 passed | nothing |
 
@@ -65,7 +67,7 @@ Built by the build agent. Step 1 (S1, S2, S5) ran on held data on the CPU in abo
 - Pooled out-of-fold recall at 40 per km² is 0.909 (457 of 503 floors, 115 blocks, 95% block bootstrap 0.881 to 0.934). It reproduces the archival 0.909.
 - Feature-level recall by slope tercile is 0.899 (low), 0.934 (middle) and 0.893 (high). Low minus high is +0.006 (−0.064 to +0.075).
 - Block-level low minus high is +0.042 (−0.030 to +0.115).
-- No margin is set, so the decision is no_margin_set. The area test stays gated.
+- Margin 0.03 (user default 2026-11-06). The decision is inconclusive. The area test stays gated.
 - The 9t lowest tercile ends at 7.7 degrees. None of the 503 scored pits has a 25 m slope under 2 degrees. Step 1 says little about flat farmland.
 - In the logistic fit, depth carries the clearest partial association (odds ratio 1.68 per SD). Measured depth rises with slope, so the two are entangled.
 - The blocks CSV is the provisional 9t reference table for 3.1 and 3.2 scoring.

@@ -10,11 +10,18 @@
   "block_m": 375.0,
   "res_m": 0.5,
   "margin_delta": {
-    "warren": null,
-    "mckean": null,
-    "forest": null
+    "warren": 0.03,
+    "mckean": 0.03,
+    "forest": 0.03
   },
-  "_margin_note": "User decision per arm, in recall points, from the tolerable missed-feature burden at K=40. Never from fold spread. null gives decision no_margin_set.",
+  "_margin_note": "User accepted the default 0.03 recall per arm on 2026-11-06 (take defaults). Change freely. Never from fold spread.",
+  "multiplicity": {
+    "method": "holm",
+    "family": ["warren", "mckean", "forest"],
+    "alpha": 0.05,
+    "max_undefined": 0.0,
+    "_note": "User default 2026-11-06. Holm over the per-arm primaries only (fw_3_1 primary per arm). K30, density-scaled, super-block and the low-density stratum are reported, never gated. Family step: 3.0 _transfer_holm_gate.py over the three score JSONs."
+  },
   "eligibility": {
     "min_cover": 0.999,
     "max_void_frac": 0.8,

@@ -172,9 +172,10 @@ def _separated(D: pd.DataFrame) -> bool:
     return bool(D.y[D.is_well == 1].sum() == 0 or D.y[D.is_well == 0].sum() == 0)
 
 
-def rate_ratio(P: pd.DataFrame, B: int, seed: int):
+def rate_ratio(P: pd.DataFrame, B: int, seed: int, max_undefined: float = 0.0):
     """Cluster bootstrap over cells. A resample with separation has no finite MLE. It is undefined (NaN),
-    counted, and by SH-01 makes the interval undefined. The exact conditional interval is reported beside it."""
+    counted, and by SH-01 makes the interval undefined above max_undefined (config m3.max_undefined, 0).
+    The exact conditional interval is reported beside it."""
     def fit(D):
         if D.is_well.nunique() < 2 or D.y.sum() == 0 or _separated(D):
             return np.nan
@@ -183,10 +184,10 @@ def rate_ratio(P: pd.DataFrame, B: int, seed: int):
     groups = {c: d for c, d in P.groupby("cell_id")}
     blocks = list(groups)
     point, lo, hi, draws = ek.block_bootstrap(lambda bl: fit(pd.concat([groups[b] for b in bl])), blocks, B=B,
-                                              seed=seed)
+                                              seed=seed, max_undefined=max_undefined)
     return {"rate_ratio": point, "lo": lo, "hi": hi, "n_cells": len(blocks), "n_wells": int(P.is_well.sum()),
             "n_controls": int((P.is_well == 0).sum()), "n_sources_counted": float(P.y.sum()),
-            "separation": _separated(P), "undefined_share": ek.undefined_share(draws),
+            "separation": _separated(P), "undefined_share": ek.undefined_share(draws), "max_undefined": max_undefined,
             "exact_conditional": exact_conditional_rr(P),
             "bootstrap_unreliable": len(blocks) < 15}
 
@@ -244,7 +245,7 @@ def run(cfg: dict, out_root: Path | None = None, overlay_dir: Path | None = None
                 bad = [r.cell_id for r in opp.itertuples()
                        if (int(np.floor(r.x0 / cm)), int(np.floor(r.y0 / cm))) in fc]
                 D = P[~P.cell_id.isin(bad)]
-            rr = rate_ratio(D, int(m3["bootstrap_B"]), int(m3["seed"]))
+            rr = rate_ratio(D, int(m3["bootstrap_B"]), int(m3["seed"]), float(m3.get("max_undefined", 0.0)))
             rr["verdict"] = ek.decide(rr["lo"], rr["hi"], useful, "superiority") if np.isfinite(rr["lo"]) else "inconclusive"
             out[tag] = rr
         res["rate_ratio"] = out

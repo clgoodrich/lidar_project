@@ -260,7 +260,7 @@ def test_load_folds_missing_audit(tmp_path):
 
 def test_primary_one_class_resamples_are_counted_and_inconclusive():
     """5.2 NaN. Three blocks, one all early and two all late. A resample is one-class with probability
-    (2/3)^3 + (1/3)^3 = 1/3 (hand oracle). With no declared max_undefined the decision is inconclusive."""
+    (2/3)^3 + (1/3)^3 = 1/3 (hand oracle). With max_undefined 0 the decision is inconclusive."""
     import _era_model_arms_9t as s6
     rng = np.random.default_rng(0)
     pred = pd.DataFrame({"block_id": np.repeat([0, 1, 2], 10), "early": np.repeat([1.0, 0.0, 0.0], 10),
@@ -270,3 +270,14 @@ def test_primary_one_class_resamples_are_counted_and_inconclusive():
     r = s6.primary(pred, cfg)
     assert abs(r["undefined_share"] - 1 / 3) < 0.04
     assert np.isnan(r["lo"]) and r["decision"] == "inconclusive" and r["max_undefined"] == 0.0
+
+
+def test_max_undefined_is_decided_zero():
+    """Default accepted 2026-11-06. The shipped config holds 0 and a null value is refused."""
+    import _era_model_arms_9t as s6
+    real = json.loads((Path(__file__).resolve().parent / "config_5_2.json").read_text())
+    assert real["model"]["max_undefined"] == 0.0 and s6.max_undefined(real) == 0.0
+    cfg = json.loads(json.dumps(real))
+    cfg["model"]["max_undefined"] = None
+    with pytest.raises(SystemExit, match="decided as 0"):
+        s6.max_undefined(cfg)

@@ -26,6 +26,8 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults pass (2026-11-06). The negative exclusion radius is 30 m (`train.neg_truth_exclusion_m`). It no longer follows jitter_m. Nothing on CPU depends on it, so nothing was rerun. Tests pass (11).
+
 Tests. `python -m pytest -q expansions/6_adjacent/6_3_confuser_classes/src/test_6_3.py -p no:cacheprovider` gives 10 passed.
 Review fixes on 2026-11-06. No negative centre may sit within 30 m of a truth pit (the window jitter). This holds for the confuser and the random arm. On 9t, 477 of 481 matched candidates and 13 of 207 undecided candidates lie that close, so they can never be negative centres. The split is read through `ek.read_split` (P1 JSON) or `ek.read_split_csv` (P1 CSV, legacy words mapped). Audit blocks are read through `ek.require_audit`. Training excludes audit and buffer blocks. Scoring uses audit blocks only. The burned confuser label raster is rebuilt when its base raster or polygons change (sha256 sidecar). The pooled score counts a hit only on truth inside the audit blocks, in the block of that truth.
 Real-data check on 2026-11-06. The P1 exporter CSV `data/9t/results/splits/cv_split_blocks_pit_9t.csv` reads into 5 folds with canonical roles.

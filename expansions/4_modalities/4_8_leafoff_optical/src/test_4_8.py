@@ -116,6 +116,8 @@ def test_pipeline(world, tmp_path):
     lo = beta.ppf(0.025, k, n - k + 1) if k else 0.0
     hi = beta.ppf(0.975, k + 1, n - k) if k < n else 1.0
     want = "success" if lo > 0.60 else "failure" if hi < 0.60 else "inconclusive"
+    if n / len(st) < 0.80:                      # coverage rule, user default 2026-11-06
+        want = "inconclusive"
     b = g["by_source"]["local_mosaic"]
     assert b["n"] == n and b["n_sampled"] == len(st) and b["coverage"] == pytest.approx(n / len(st))
     assert b["decision"] == want
@@ -124,14 +126,23 @@ def test_pipeline(world, tmp_path):
 
 
 def test_undated_chips_are_missing_not_negative():
-    """4.8-01. Pre-fix, 30 undated chips joined the denominator and the gate said 'unusable here'."""
+    """4.8-01. Pre-fix, 30 undated chips joined the denominator and the gate said 'unusable here'.
+    Source a has 10 of 10 judged chips usable. Clopper-Pearson lower bound 0.025 ** (1 / 10) = 0.69 > 0.60.
+    Its coverage is 10 / 40 = 0.25, under the 0.80 minimum (default 2026-11-06), so it is inconclusive, not
+    success. Source b has 36 of 40 judged (coverage 0.90) and all usable. Lower bound 0.025 ** (1 / 36) = 0.90,
+    so it succeeds."""
     import _leafoff_review_gate_9t as s5
-    st = pd.DataFrame({"source_id": ["a"] * 40 + ["pema"] * 40,
-                       "status": ["usable"] * 10 + ["undated"] * 30 + ["undated"] * 40})
-    g = s5.gate(st, 0.60)
-    # 10 of 10 judged. Clopper-Pearson lower bound for k = n = 10 is 0.025 ** (1 / 10) = 0.69 > 0.60.
+    st = pd.DataFrame({"source_id": ["a"] * 40 + ["pema"] * 40 + ["b"] * 40,
+                       "status": ["usable"] * 10 + ["undated"] * 30 + ["undated"] * 40 + ["usable"] * 36 + ["blank"] * 4})
+    cov = lk.load_cfg()["prereg"]["min_coverage"]
+    assert cov == 0.80
+    g = s5.gate(st, 0.60, cov)
     assert g["a"]["n"] == 10 and g["a"]["coverage"] == pytest.approx(0.25)
-    assert g["a"]["lo"] == pytest.approx(0.025 ** 0.1) and g["a"]["decision"] == "success"
+    assert g["a"]["lo"] == pytest.approx(0.025 ** 0.1) and g["a"]["decision"] == "inconclusive"
+    assert g["a"]["coverage_ok"] is False and "below 0.80" in g["a"]["action"]
+    assert s5.gate(st, 0.60, 0.20)["a"]["decision"] == "success"         # the old behaviour, now only with a low floor
+    assert g["b"]["coverage"] == pytest.approx(0.90) and g["b"]["lo"] == pytest.approx(0.025 ** (1 / 36))
+    assert g["b"]["decision"] == "success"
     assert g["pema"]["n"] == 0 and g["pema"]["coverage"] == 0.0
     assert g["pema"]["decision"] == "inconclusive" and g["pema"]["action"] != "unusable here"
 

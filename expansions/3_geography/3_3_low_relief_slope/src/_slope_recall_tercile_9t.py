@@ -248,8 +248,9 @@ def tercile_table(feat, blk, B, seed):
                          "lo": lo, "hi": hi, "n_features": len(sub), "n_found": int(sub.found.sum()),
                          "n_blocks": int(sub.block_id.nunique())})
         lowf, highf = rec(0), rec(2)
-        d, lo, hi, _ = ek.block_bootstrap(lambda bs: lowf(bs) - highf(bs), idx, B=B, seed=seed)
-        out[f"feature_{col}_low_minus_high"] = {"diff": d, "lo": lo, "hi": hi}
+        d, lo, hi, dr = ek.block_bootstrap(lambda bs: lowf(bs) - highf(bs), idx, B=B, seed=seed)
+        out[f"feature_{col}_low_minus_high"] = {"diff": d, "lo": lo, "hi": hi, "undefined_share": ek.undefined_share(dr),
+                                                "_draws": dr}
     for col in ("slope_tercile", "relief_tercile"):
         groups = {}
         for tt in (0, 1, 2):
@@ -396,9 +397,20 @@ def main(argv=None) -> int:
 
     tab, diffs = tercile_table(feat, blk, B, seed)
     overall = ek.block_bootstrap(xl.pooled_recall, list(zip(blk.hits, blk.n_truth)), B=B, seed=seed)[:3]
-    prim = diffs["feature_slope_tercile_low_minus_high"]
+    draws = {k: v.pop("_draws", None) for k, v in diffs.items()}
+    prim = dict(diffs["feature_slope_tercile_low_minus_high"])
     margin = cfg.get("margin_delta")
-    decision = ek.decide(prim["lo"], prim["hi"], margin) if margin is not None else "no_margin_set"
+    if margin is None:
+        raise SystemExit("config margin_delta is unset (user default 0.03 recall)")
+    mult = cfg["multiplicity"]                    # Holm over the declared primary gates (one, Q1 feature slope)
+    h = xl.hg.holm_input(mult["gate"], draws["feature_slope_tercile_low_minus_high"], prim["lo"], prim["hi"],
+                         float(margin), "noninferiority", mult["family"])
+    decision = h["decision_partial"]
+    prim.update({"p_one_sided": h["p_one_sided"], "decision_basis": h["decision_partial_basis"],
+                 "multiplicity": {"method": h["method"], "family": h["family"], "max_undefined": h["max_undefined"]}})
+    for k, v in diffs.items():
+        if k != "feature_slope_tercile_low_minus_high":
+            v["decision"] = "not gated (secondary)"
 
     fcsv, bcsv, tcsv = run / "slope_recall_features_9t.csv", run / "slope_recall_blocks_9t.csv", run / "slope_recall_terciles_9t.csv"
     feat.drop(columns="geometry").to_csv(fcsv, index=False)
@@ -409,7 +421,7 @@ def main(argv=None) -> int:
     pol = xl.policy("pit")
     summ = {"evidence_level": "(a) drawn features, exploratory association",
             "policy": pol, "policy_hash": pol["policy_hash"],
-            "footprint": {"rule": a.fill, "n_blocks": int(len(blk)), "n_pit_free_blocks_added": len(fill_ids),
+            "footprint": {"rule": a.fill, "decided": cfg.get("_footprint_note"), "n_blocks": int(len(blk)), "n_pit_free_blocks_added": len(fill_ids),
                           "n_blocks_with_truth": int((blk.n_truth > 0).sum())},
             "audit": audit_label,
             "split_source": "historical trainer split read with ek.read_split_csv",

@@ -29,7 +29,9 @@
     "record_sentinel_year_max": 1800,
     "record_date_note": "S5 keeps DEP records spudded on or before the source date (review 4.6-01, 2026-11-06). 1800-01-01 is the DEP no-date sentinel.",
     "master_seed": 20261105,
-    "B": 2000
+    "B": 2000,
+    "undated_records": "sensitivity_only",
+    "undated_records_note": "Records with no usable spud date enter only the labelled sensitivity count, never the primary association. 2026-11-06 user accepted default (\"take defaults\"). Change freely"
   },
   "inputs": {
     "source_list": {

@@ -42,7 +42,7 @@
       "abandoned_scenarios_note": "VERIFY. Range of Pennsylvania abandoned-well estimates as cited in Kang et al. 2014. Used only to scale the tail count."
     },
     "tail_max_extrapolation_multiple": null,
-    "tail_max_extrapolation_note": "User decision (4.4-01). Largest multiple of the largest observed rate at which a fitted tail may be read. null means no extrapolation. A detection limit beyond it gives 'not identifiable by extrapolation'.",
+    "tail_max_extrapolation_note": "2026-11-06 user accepted default null, no extrapolation (\"take defaults\"). Change freely (4.4-01). Largest multiple of the largest observed rate at which a fitted tail may be read. null means no extrapolation. A detection limit beyond it gives 'not identifiable by extrapolation'.",
     "tail_bootstrap_B": 2000,
     "seed": 20261105
   },
@@ -74,6 +74,8 @@
     "useful_rate_ratio": 2.0,
     "useful_rate_ratio_note": "User decision, proposed default. The ratio that would justify satellite prioritisation.",
     "bootstrap_B": 2000,
+    "max_undefined": 0.0,
+    "max_undefined_note": "SH-01. Share of undefined cell-bootstrap draws tolerated. 0, so any separated resample gives an undefined interval and inconclusive. 2026-11-06 user accepted default (\"take defaults\"). Change freely",
     "seed": 20261105
   },
   "m4_basins": [

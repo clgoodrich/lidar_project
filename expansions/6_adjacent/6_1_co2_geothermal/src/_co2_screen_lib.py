@@ -210,8 +210,24 @@ def read_candidates(cfg: dict, pit_override=None, pad_override=None):
                                       geometry=g.geometry.centroid.values, crs=cfg["crs"]))
     c = pd.concat(parts, ignore_index=True)
     ek.assert_unique(c, "site_uid")
-    c = c[c.score >= cfg["params"]["frozen_cutoff"]].reset_index(drop=True)
-    return c
+    cut = frozen_cutoffs(cfg)
+    keep = c["score"].to_numpy() >= c["kind"].map(cut).to_numpy(float)
+    return c[keep].reset_index(drop=True)
+
+
+def frozen_cutoffs(cfg: dict) -> dict:
+    """Per-kind score cutoff. It must equal ek.policy_for (pit 0.35, pad 0.525), so 6.1 keeps every blob the 5.6
+    policy re-cut kept (2026-11-06)."""
+    fc = cfg["params"]["frozen_cutoff"]
+    if not isinstance(fc, dict):
+        raise SystemExit(f"params.frozen_cutoff must be per kind (pit, pad), got {fc!r}")
+    out = {}
+    for kind in ("pit", "pad"):
+        pol = float(ek.policy_for(kind)["cutoff"])
+        if abs(float(fc[kind]) - pol) > 1e-9:
+            raise SystemExit(f"frozen_cutoff[{kind}] {fc[kind]} is not the policy cutoff {pol}")
+        out[kind] = pol
+    return out
 
 
 def nearest_dist(a_xy: np.ndarray, b_xy: np.ndarray) -> np.ndarray:

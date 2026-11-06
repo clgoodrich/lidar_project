@@ -55,6 +55,7 @@ RULES = """# Rules ({name})
 6. At most {cap} submissions per team per {days} days. Each submission is scored once.
 7. Test labels are never returned. Only aggregate scores are published.
 8. Each entry reports its difference from the plain U-Net baseline with a paired block-bootstrap interval.
+   An entry beats the baseline only when the lower bound of that interval exceeds the margin of {margin:.2f} recall.
 9. Ranks are shown only with intervals. Two entries whose difference interval spans 0 are listed as tied.
 10. Entries from the maintainers are marked.
 11. After v1 closes the test labels may be released as v2 with a fresh hidden set. A released test set is never reused as hidden.
@@ -70,7 +71,12 @@ def load_table() -> pd.DataFrame:
     p = table_path()
     return pd.read_csv(p) if p.exists() else pd.DataFrame(
         columns=["sub_id", "team", "track", "date", "maintainer", "transductive", "pred_sha256", "recall", "lo",
-                 "hi", "diff_vs_baseline", "diff_lo", "diff_hi", "n_blocks", "policy_hash"])
+                 "hi", "diff_vs_baseline", "diff_lo", "diff_hi", "vs_baseline", "margin", "n_blocks", "policy_hash"])
+
+
+def vs_baseline(diff_lo: float, diff_hi: float, margin: float) -> str:
+    """Leaderboard verdict against the U-Net baseline. Superiority at the margin (user default 0.03, 2026-11-06)."""
+    return ek.decide(diff_lo, diff_hi, float(margin), "superiority")
 
 
 def pred_hash(paths) -> str:
@@ -118,6 +124,7 @@ def submit(a, cfg) -> dict:
     row = {"sub_id": sub_id, "team": a.team, "track": a.track, "date": a.date, "maintainer": a.maintainer,
            "transductive": a.transductive, "pred_sha256": h, "recall": s["recall"], "lo": s["ci95"][0],
            "hi": s["ci95"][1], "diff_vs_baseline": diff["point"], "diff_lo": diff["lo"], "diff_hi": diff["hi"],
+           "vs_baseline": vs_baseline(diff["lo"], diff["hi"], lb["margin"]), "margin": float(lb["margin"]),
            "n_blocks": s["n_blocks"], "policy_hash": policy["policy_hash"]}
     tab = pd.concat([tab, pd.DataFrame([row])], ignore_index=True)
     tab.to_csv(table_path(), index=False)
@@ -175,7 +182,8 @@ def main(argv=None) -> int:
         root.mkdir(parents=True, exist_ok=True)
         lb = cfg["leaderboard"]
         (root / "RULES.md").write_text(RULES.format(name=cfg["release_name"], k=int(ek.PROPOSAL_POLICY["k_per_km2"]),
-                                                    cap=lb["max_submissions"], days=lb["window_days"]), encoding="utf-8")
+                                                    cap=lb["max_submissions"], days=lb["window_days"],
+                                                    margin=float(lb["margin"])), encoding="utf-8")
         print(f"wrote {root / 'RULES.md'}")
     elif a.cmd == "submit":
         for p in [a.test_labels, a.test_blocks, *a.baseline, *a.pred]:

@@ -20,6 +20,10 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. KML holds one point per candidate in EPSG:4326 with the candidate label in the description. Made by the build agent, change freely.
 - 2026-11-05. Local calibration is isotonic regression. Made by the build agent, change freely.
 
+## Decisions
+
+- 2026-11-06. Review budget K. User accepted the default of one budget per class, 40 per km2 each. `--model both` now runs without flags. The two class lists are never merged ("take defaults"). Change freely.
+
 ## Needs user decision
 
-- 2026-11-06. Is the review budget K one total for pits and pads together, or one budget per class? The framework says only that K "caps the output list". The transfer evidence reports recall at 40 per km2 for each class on its own. A shared total also needs a rule to merge two score scales into one list. Until this is decided, `--model both` needs explicit per-class budgets.
+- None open for K. Packaging and the named agency user stay open (see Build status).

@@ -341,7 +341,8 @@ def test_block_buffer_moves_near_train_blocks(tmp_path, buffer_json):
     mp = synth_manifest(tmp_path)
     gp = synth_blocks_gpkg(tmp_path)
     plain = fw.build({"pit": mp}, check_exporter=False)
-    doc = fw.build({"pit": mp}, check_exporter=False, buffers={"pit": fw.buffer_spec("pit", bj)}, blocks={"pit": gp})
+    doc = fw.build({"pit": mp}, check_exporter=False, buffers={"pit": fw.buffer_spec("pit", bj)}, blocks={"pit": gp},
+                   buffer_mode="block")
     t = doc["tasks"]["pit"]
     assert t["buffer_m"] == 25.0 and t["buffer_mode"] == "block"
     for f in range(5):
@@ -385,7 +386,8 @@ def test_f05_round_trip_real_writers_fresh_process(tmp_path, buffer_json):
     import _audit_draw_blocks_9t as dr
     bj, oracle = buffer_json
     mp, gp = synth_manifest(tmp_path), synth_blocks_gpkg(tmp_path)
-    doc = fw.build({"pit": mp}, check_exporter=False, buffers={"pit": fw.buffer_spec("pit", bj)}, blocks={"pit": gp})
+    doc = fw.build({"pit": mp}, check_exporter=False, buffers={"pit": fw.buffer_spec("pit", bj)}, blocks={"pit": gp},
+                   buffer_mode="block")      # block mode so the 'buffer' role is exercised end to end
     sj = fw.write_split(doc, tmp_path / "cv_splits_future_9t_v1.json")
     fc.main(["--json", str(sj), "--out-dir", str(tmp_path)])
     cj = tmp_path / "cv_splits_future_pit_9t_v1.csv"
@@ -407,3 +409,31 @@ def test_f05_round_trip_real_writers_fresh_process(tmp_path, buffer_json):
     assert got["buffer_pit"] == oracle and got["buffer_pad"] == "KeyError"
     assert got["audit"] == [[2, "audit"], [3, "buffer"], [11, "audit"]]
     assert got["audit_ids"] == [2, 11]
+
+
+def test_default_buffer_mode_is_window(tmp_path, buffer_json):
+    """User default 2026-11-06. With no buffer_mode given, build() and the CLI use `window`. Lists stay equal to the
+    unbuffered split. The near blocks are counted per fold (hand oracle, Chebyshev neighbours of held-out)."""
+    import inspect
+    bj, _ = buffer_json
+    mp = synth_manifest(tmp_path)
+    gp = synth_blocks_gpkg(tmp_path)
+    plain = fw.build({"pit": mp}, check_exporter=False)
+    doc = fw.build({"pit": mp}, check_exporter=False, buffers={"pit": fw.buffer_spec("pit", bj)}, blocks={"pit": gp})
+    t = doc["tasks"]["pit"]
+    assert t["buffer_mode"] == "window" and t["buffer_removed_by_fold"] is None
+    for f in range(5):
+        p0 = plain["tasks"]["pit"]["folds"][str(f)]
+        r = t["folds"][str(f)]
+        assert r["train"] == p0["train"] and r["held_out"] == p0["held_out"]
+        near = chebyshev_neighbours(set(p0["held_out"])) & set(p0["train"])
+        assert t["near_held_out_by_fold"][str(f)] == len(near)
+    src = inspect.getsource(fw.main)
+    assert "default=DEFAULT_BUFFER_MODE" in src and fw.DEFAULT_BUFFER_MODE == "window"
+    f = fw.write_split(doc, tmp_path / "v1.json")
+    assert fw.verify(f, manifests={"pit": mp}, check_exporter=False) == []
+
+
+def test_noise_band_is_two_sigma():
+    """User default 2026-11-06. The range rule noise band is 2 sigma."""
+    assert bd.NOISE_K == 2.0

@@ -71,8 +71,8 @@ def check_stop(curves: pd.DataFrame, cfg: dict, control: str = "R") -> dict:
     return {"stop": False, "round": int(r.index.max())}
 
 
-G_UNSET = ("inconclusive (G unset. Set G in config_7_2.json or the preregistration before scoring. "
-           "G_raw is a diagnostic and is never used as the margin)")
+class GUnset(ValueError):
+    """G is null in the config and in the preregistration. The config default is 0.02 (user default 2026-11-06)."""
 
 
 def G_raw(curves, cfg, control: str) -> float:
@@ -92,7 +92,7 @@ def resolve_G(cfg, curves, path: Path, control: str, prereg: dict | None = None)
     elif prereg and prereg.get("G") is not None:
         G, src = float(prereg["G"]), f"preregistration {prereg.get('_path', '')} G (set before scoring)"
     else:
-        G, src = None, "unset"
+        raise GUnset("G is null in config_7_2.json and the preregistration. The user default is 0.02")
     g = {"G": G, "source": src, "G_raw": G_raw(curves, cfg, control),
          "G_raw_note": f"{control} recall at the budget minus at 75% of it, from the same curves that are scored. "
                        "Diagnostic only. Never used as the margin and never floored",
@@ -132,7 +132,7 @@ def primary(cfg, curves, scores, stop_c, stop_b, G: float | None, B: int, stop: 
             "bootstrap_unreliable": len(blocks) < 15,
             "stopped_before_B_star": stopped_early,
             "read_at": "stop round (the loop stopped before B*)" if stopped_early else "B* minutes",
-            "decision": ("void (fewer than 3 seeds)" if len(seeds) < 3 else G_UNSET if G is None
+            "decision": ("void (fewer than 3 seeds)" if len(seeds) < 3
                          else ek.decide(lo, hi, G, "superiority"))}
 
 

@@ -12,10 +12,16 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-06. The replay stops a policy when its pool is exhausted. The smaller 0.35 pool exposed a crash on an empty draw. Made by the review-fix agent.
 - 2026-11-06. The split reads the audit file through `ek.require_audit` (P2-01). `--no-audit` now only allows a missing file. The split is then stamped "no audit exclusion, exploratory". Made by the review-fix agent.
 
+## Decisions
+
+- 2026-11-06. G, the useful gain for U against R. User accepted the default 0.02 recall in `config_7_2.json` ("take defaults"). Change freely.
+- 2026-11-06. `seed_label_blocks`. User accepted the default [] (acquired labels only) ("take defaults"). Change freely.
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primaries only. 7.2 has one primary (U against R), so the adjusted value equals the raw one ("take defaults"). Change freely.
+- 2026-11-06. max_undefined. User accepted the default 0 ("take defaults"). Change freely.
+- 2026-11-06. The replay score was rerun with G 0.02. U minus R is 0.0 [-0.0064, 0.0043], so the decision moved from inconclusive (G unset) to failure. The loop stopped before B*, so the primary is read at the stop round. Whether that read stands is still open. Made by the review-fix agent.
+
 ## Needs user decision
 
-- G, the useful gain for U against R. Set it in `config_7_2.json` or the preregistration JSON before scoring. Until then the decision is inconclusive.
-- `seed_label_blocks`. Which blocks give base labels to every arm in the live retrain. `[]` means acquired labels only. Null refuses.
 - Whether reviewer additions outside any window should be shared across arms, given to the arms whose candidates sit in the same block, or dropped. They are dropped for now.
 - Whether an early stop before B* should read the primary at the stop round (current code) or void it.
 

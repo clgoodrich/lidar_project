@@ -26,6 +26,8 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults pass (2026-11-06). `model.max_undefined` is 0 and a null value is refused. The model still stops at the readiness gate (460 wells, all E3). Tests pass (16).
+
 Scripts sit in `src/`. Paths come from `src/config_5_2.json`. Outputs stay inside this folder. Tests run with
 `python -m pytest -q expansions/5_tasks/5_2_era_classification/src/test_5_2.py -p no:cacheprovider` (15 pass on 2026-11-06).
 

@@ -54,6 +54,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _split_core_lib_9t as sc  # noqa: E402
 ek = sc.ek
 
+# NOISE_K 2.0. 2026-11-06. User accepted the default noise band 2 sigma ("take defaults"). Change freely.
 FRAC, TAIL, NOISE_K = 0.95, 0.25, 2.0
 CLASS = {"pit": 1, "pad": 1}
 

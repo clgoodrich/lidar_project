@@ -1,6 +1,6 @@
 {
-  "G": null,
-  "source": "unset",
+  "G": 0.02,
+  "source": "config_7_2.json G (set before scoring)",
   "G_raw": 0.0,
   "G_raw_note": "R recall at the budget minus at 75% of it, from the same curves that are scored. Diagnostic only. Never used as the margin and never floored",
   "seeds": [

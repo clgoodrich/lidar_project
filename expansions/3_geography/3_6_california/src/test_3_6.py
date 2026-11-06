@@ -133,3 +133,12 @@ def test_pad_scoring_uses_pad_policy():
     rows, tabs_by = pr.class_rows(d / "p.tif", truth, blocks, {"primary": ["E1", "E2"]})
     assert tabs_by["_policy"] == gt.ek.policy_for("pad") and tabs_by["_policy"]["cutoff"] == 0.525
     assert rows[0]["n_truth"] == 2 and np.isclose(rows[0]["recall_k40"], 0.5)   # only the 0.6 blob is a candidate
+
+
+def test_defaults_primary_gate_and_margin():
+    """take defaults 2026-11-06. Only A0 pad on ca1 is gated. ca_la is reported. Margin 0.03, void cap 0.5."""
+    cfg = gt.load_config("3.6")
+    assert cfg["prereg"]["margin"] == 0.03 and cfg["prereg"]["void_cap"] == 0.5
+    assert gt.primary_gate(cfg, "A0", "pad", "ca1") == ("A0:pad:ca1", ["A0:pad:ca1"])
+    assert gt.primary_gate(cfg, "A0", "pad", "ca_la")[0] is None
+    assert cfg["model"]["pad"]["family"] == "pad/unet_cv5_iso" and cfg["model"]["pad"]["policy"] == "fold_mean"

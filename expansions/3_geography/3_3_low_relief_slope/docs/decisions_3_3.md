@@ -2,6 +2,12 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Scored footprint. User accepted the default all-block footprint (144 blocks, 29 pit-free) confirmed ("take defaults"). Change freely.
+- 2026-11-06. Margin for the S1 and S5 gate. User accepted the default 0.03 recall ("take defaults"). Change freely.
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primary gates q1_slope_feature (one primary, so Holm equals the unadjusted rule), secondaries and sensitivities reported and never gated (`_transfer_holm_gate.py`) ("take defaults"). Change freely.
+- 2026-11-06. Undefined bootstrap draws. User accepted the default max_undefined 0 (any undefined draw makes the gate inconclusive) ("take defaults"). Change freely.
 - 2026-11-06. Review fix pass (F02 F03 G-02 G-12 P1-01 P1-03 P2-01, minors). Made by the review-fix agent, change freely.
   - S1 scores through the 3.0 scorer. Proposal policy `policy_for` (0.35 in every fold) replaces `loo_max_recall`, which stays a sensitivity. The two agree on 9t.
   - S1 scores all 144 blocks (G-02). The 29 pit-free blocks join one fold each by the 3.0 round_robin rule. Block tercile cut points stay on pit-bearing blocks.
@@ -22,7 +28,4 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. Outputs go to this expansion's `results/<run_id>/`, not `data/9t/results/terrain/`. Made by the build agent, change freely.
 
 ## Needs user decision
-
-- The scored footprint now includes the 29 pit-free blocks. This lifts every tercile because the budget grows with area. Confirm that 3.3 should use the all-block footprint, as targets do.
-- Margin for the S5 gate is still unset (`margin_delta` null).
-- No multiplicity correction is applied across slope and relief, feature and block level. Only the feature-level slope difference is primary.
+- None open. (2026-11-06)

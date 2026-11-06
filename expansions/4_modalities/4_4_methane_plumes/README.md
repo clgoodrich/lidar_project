@@ -26,6 +26,9 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults applied 2026-11-06 (user said "take defaults"). The tail extrapolation multiple stays null, so no extrapolation. `m3.max_undefined` is 0 and is passed to the cell bootstrap. M0 reran as `results/20261106_methane_gate_0268845/`. Gate verdicts are unchanged (mean failure, aggregation failure, tail inconclusive, CLOSE). Tests 10 passed.
+
+
 Built by the build agent. Every script has a docstring, an argparse CLI and a `run()` function. Tests are in `src/test_4_4.py`.
 
 | Script | Stage | Runnable now | What is missing |
@@ -36,7 +39,7 @@ Built by the build agent. Every script has a docstring, an argparse CLI and a `r
 | `src/_methane_plume_overlay_pa.py` | M2 overlay and observation opportunity | no | Plume list `data/raw/carbon_mapper_plumes_l2b.csv`, observations `data/raw/carbon_mapper_observations.csv`, facilities `data/raw/active_facilities_pa.gpkg` |
 | `src/_methane_source_model_pa.py` | M3 sources, attribution rule, rate ratio | no | The M2 run. The rate ratio also needs the observations table |
 | M4 other basins | M0 to M3 with `--basin` | no | Basin rows in `m4_basins`, that basin's measured rates and wells |
-| `src/test_4_4.py` | smoke and regression tests | yes | nothing. 8 tests pass (2026-11-06) |
+| `src/test_4_4.py` | smoke and regression tests | yes | nothing. 10 tests pass (2026-11-06) |
 
 Output written so far.
 - `expansions/4_modalities/4_4_methane_plumes/results/20261106_methane_gate_554201c/methane_gate_limit_pa.json`, `methane_gate_limit_pa.csv`, `methane_gate_ratio_bars_pa.png` (rerun 2026-11-06)

@@ -81,19 +81,19 @@
   "seeds": {},
   "inputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\dep_wells\\venango_wells_all.gpkg",
+      "path": "data/_source/reference/dep_wells/venango_wells_all.gpkg",
       "bytes": 8036352,
       "mtime": "2026-04-29T08:21:26.401647",
       "sha256": "4132ab1aa3555989ee241913de06d0c003bcde166dc727ea9ee2d97cd4d9a835"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\05\\pit_blocks_9t.gpkg",
+      "path": "data/9t/derived/05/pit_blocks_9t.gpkg",
       "bytes": 131072,
       "mtime": "2026-09-04T10:51:16.244983",
       "sha256": "fad7c3fd96ada6b2c677738d9e0e8a8c5580a345d10582882ce4d62624187d52"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\_source\\reference\\tiger_roads\\tl_2024_42121_roads.shp",
+      "path": "data/_source/reference/tiger_roads/tl_2024_42121_roads.shp",
       "bytes": 2970348,
       "mtime": "2024-09-16T10:07:53",
       "sha256": "c050848f7fcfa73cc5475a2671ed397aca561892edbf35d9e50487701b82797b"
@@ -101,25 +101,25 @@
   ],
   "outputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\data\\processed\\risk_exposure_layers_9t.gpkg",
+      "path": "expansions/5_tasks/5_3_risk_ranking/data/processed/risk_exposure_layers_9t.gpkg",
       "bytes": 2387968,
       "mtime": "2026-11-06T10:49:26.574516",
       "sha256": "a5dbbcbcf34edfe5c2f1e7fcc4e1a78a23e9e352774b0384eb3610ff042ebcf2"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_exposure_sites_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_exposure_sites_9t.csv",
       "bytes": 201099,
       "mtime": "2026-11-06T10:49:26.631460",
       "sha256": "b9fa43fe40cec1cf7af069ad0975e0c15304db4db7f4159a7499d10e3150f624"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_candidate_scores_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_candidate_scores_9t.csv",
       "bytes": 15307,
       "mtime": "2026-11-06T10:49:26.586892",
       "sha256": "a354731d79f70edcbb213ebffe5efc07c6ae1ef273258bb81c320bdc00178406"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_exposure_summary_9t.json",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_exposure_summary_9t.json",
       "bytes": 1567,
       "mtime": "2026-11-06T10:49:26.641966",
       "sha256": "07b4403201e06622112d6e8d3dcae6a748d37a4281b7b55d16d7cc9f557d905c"

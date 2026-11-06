@@ -4,9 +4,12 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
-- 2026-11-06. Pads have no audit set of their own. Options are a separate pad draw from the pad-bearing blocks, or one joint draw over pit or pad blocks. Until then no pad result may be reported as an audit result.
+- Freezing this file is still a user step.
 
 ## Decisions
+
+- 2026-11-06. Pad audit set. User accepted the default of a separate pad draw from the pad-bearing blocks, dry run only ("take defaults"). Change freely.
+- 2026-11-06. `--task pad` draws 19 of 129 pad-bearing blocks at share 0.15, seed 20261104, buffer 150 m window mode. Config block `draw_9t_pad`. Two of the 19 are also in the pit dry-run audit set (84 and 137). Nothing is frozen. Made by the review-fix agent, change freely.
 
 - 2026-11-06. Review fix P2-03. Window checks use the audit file's buffer. A smaller explicit buffer is refused. Made by the review-fix agent, change freely.
 - 2026-11-06. Review fix P2-03. Held-out lists are checked against the audit set too. An audit id missing from the blocks layer is an error. Made by the review-fix agent, change freely.

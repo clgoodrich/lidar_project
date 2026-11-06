@@ -134,7 +134,18 @@ def test_gain_plot_keeps_negative_gains(tmp_path, monkeypatch):
 
 def test_l2_needs_declared_transfer_checkpoint():
     cfg = gt.load_config("3.5")
-    assert cfg["model"]["pit"]["transfer_checkpoint"] is None
+    assert len(cfg["model"]["pit"]["transfer_checkpoint"]) == 5          # provisional five-fold ensemble
+    assert cfg["model"]["pit"]["init_checkpoint"] is None
     import pytest
-    with pytest.raises(gt.DecisionMissingError):
+    with pytest.raises(gt.DecisionMissingError, match="init_checkpoint"):   # L2 init fold is not decided
         gt.transfer_checkpoint(cfg, "pit", "3.5")
+
+
+
+def test_defaults_gain_family_per_class():
+    """take defaults 2026-11-06. delta_gain 0.03. G gated per class on Oklahoma only (Holm over 2)."""
+    cfg = gt.load_config("3.5")
+    assert cfg["prereg"]["delta_gain"] == 0.03 and cfg["prereg"]["margin"] == 0.03
+    assert cfg["multiplicity"]["family"] == ["F1-L1:pit:oklahoma", "F1-L1:pad:oklahoma"]
+    h = gt.hg.holm({"F1-L1:pit:oklahoma": 0.02, "F1-L1:pad:oklahoma": 0.3})
+    assert h == {"F1-L1:pit:oklahoma": 0.04, "F1-L1:pad:oklahoma": 0.3}

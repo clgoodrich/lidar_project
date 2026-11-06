@@ -3,9 +3,11 @@
   "tool_version": "0.1.0-dev",
   "input_contract_version": "1",
   "resolution_m": 0.5,
-  "frozen_cutoff": {"pit": 0.10, "pad": 0.10, "_note": "proposal cutoff of fw_00 section 4. The final frozen value comes from 3.0"},
+  "frozen_cutoff": {"pit": 0.35, "pad": 0.525, "_note": "primary cutoffs of ek.policy_for (policy fw00_s4_20261105), set 2026-11-06. 0.10 is the sensitivity cutoff"},
   "min_area_m2": {"pit": 4.0, "pad": 4.0},
   "k_per_km2": 40,
+  "k_budget_mode": "per_class",
+  "_k_budget_note": "2026-11-06. User accepted the default of one budget per class, 40 per km2 each (take defaults). --model both gives pits 40 per km2 and pads 40 per km2, two lists, never merged across score scales. Change freely",
   "models": {
     "pit": {"n_classes": 3, "prob_class": 1, "patch": 256, "overlap": 64, "method": "unet_cv5 frozen policy",
             "checkpoints": [{"key": "models", "rel": "pit/unet_cv5/fold{k}/best.pt"}], "folds": [0, 1, 2, 3, 4],

@@ -23,6 +23,7 @@ import _vegstress_match_controls_9t as vm
 import _vegstress_extract_sites_9t as v2
 import _vegstress_added_value_9t as v3
 import _vegstress_leak_test_9t as v4
+import _vegstress_primary_holm_9t as vh
 
 X0, Y0, EXT = 619500.0, 4593000.0, 1300.0
 L2A_TAGS = {"BOA_ADD_OFFSET": "-1000", "BOA_QUANTIFICATION_VALUE": "10000", "PROCESSING_BASELINE": "05.11"}
@@ -235,12 +236,24 @@ def test_chain(world):
     assert a["stage"] == "V3" and a["identifiable"] is True and a["k_total"] == pytest.approx(90.0)
     assert a["recall_at_k"]["undefined_share"] == 0.0
     assert a["recall_at_k"]["lidar_plus"] == pytest.approx(0.90) and a["auc"]["lidar_only"] == pytest.approx(0.5)
-    assert a["verdict"] == "success"
+    assert a["verdict_unadjusted"] == "success" and a["delta_gain"] == 0.03
     e2 = v2.run(cfg, out_root=res / "pads", pads_only=True)
     t = v4.run(cfg, out_root=res, labels_dir=Path(lab["run_dir"]), by_site_path=Path(e2["run_dir"]) / "vegstress_by_site_9t.csv")
     assert t["results"]["all"]["status"] == "ok"
     assert t["results"]["all"]["auc_cov_stress"] > 0.9
     assert "undefined_share" in t["results"]["all"]
+    assert t["results"]["all"]["primary"] is True
+    # Holm over primary A (V3) and primary B (V4 all labels), read from the real stage outputs
+    h = vh.run(cfg, out_root=res, v3=Path(a["run_dir"]) / "vegstress_added_value_9t.json",
+               v4=Path(t["run_dir"]) / "vegstress_leak_test_9t.json")
+    ps = {"V3": a["recall_at_k"]["p_success"], "V4:all": t["results"]["all"]["p_success"]}
+    lo, hi = sorted(ps, key=ps.get)
+    want_lo = min(1.0, 2 * ps[lo])                       # Holm by hand, m = 2
+    assert h["m"] == 2 and h["gates"][lo]["holm_p_success"] == pytest.approx(want_lo)
+    assert h["gates"][hi]["holm_p_success"] == pytest.approx(max(want_lo, ps[hi]))
+    # Every pad ranks above every control with the index, so every recall draw is 0.90 or more and
+    # p_success for V3 is 0 (by construction). Holm keeps it 0, so V3 passes after adjustment
+    assert ps["V3"] == 0.0 and h["gates"]["V3"]["verdict"] == "success"
 
 
 def test_v3_matched_layer_not_identifiable(world):
@@ -252,7 +265,10 @@ def test_v3_matched_layer_not_identifiable(world):
     e = v2.run(cfg, out_root=res, sites_path=sites)
     a = v3.run(cfg, out_root=res, sites_path=sites, by_site_path=Path(e["run_dir"]) / "vegstress_by_site_9t.csv",
                fallback_folds=3, layer="sites")
-    assert a["verdict"] == "not_identifiable" and a["identifiable"] is False
+    assert a["verdict_unadjusted"] == "not_identifiable" and a["identifiable"] is False
+    h = vh.run(cfg, out_root=res, v3=Path(a["run_dir"]) / "vegstress_added_value_9t.json", v4=res / "none.json")
+    assert h["gates"]["V3"]["status"] == "not identifiable" and h["gates"]["V3"]["verdict"] == "inconclusive"
+    assert h["gates"]["V4:all"]["status"] == "not run" and h["m"] == 2
 
 
 def test_match_refuses_missing_audit(world, tmp_path):
@@ -267,3 +283,21 @@ def test_leak_test_refuses_without_gate(world, tmp_path):
     (tmp_path / "vegstress_label_counts_9t.json").write_text(json.dumps({"verdict": "failure"}))
     with pytest.raises(RuntimeError, match="not success"):
         v4.run(cfg, out_root=tmp_path, labels_dir=tmp_path)
+
+
+def test_config_defaults_2026_11_06(world, tmp_path):
+    """Defaults accepted 2026-11-06. Lookback 365 days, gain 0.03 recall, no undefined draws, September
+    stays shoulder, Holm over V3 and V4 all labels. With 365 days the window opens 2024-03-15 (first scene
+    2025-03-15 minus 365 days, no 29 February between, by hand). The ten 2010 reports stay outside, so leak stays 50."""
+    c = io.load_config()
+    assert c["labels"]["visible_lookback_days"] == 365
+    assert c["added_value"]["delta_gain"] == 0.03
+    assert c["added_value"]["max_undefined"] == 0.0 and c["leak_test"]["max_undefined"] == 0.0
+    assert [s["season"] for s in c["scenes"] if s["scene_id"] == "s2_sep_9t"] == ["shoulder"]
+    assert c["primary_gate"]["primaries"] == ["V3", "V4:all"]
+    d, cfg = world
+    c2 = json.loads(json.dumps(cfg))
+    c2["labels"]["visible_lookback_days"] = c["labels"]["visible_lookback_days"]
+    lab = v0.run(c2, out_root=tmp_path)
+    assert lab["visible_window"] == {"from": "2024-03-15", "to": "2025-09-15", "lookback_days": 365}
+    assert lab["counts"]["leak"]["n"] == 50

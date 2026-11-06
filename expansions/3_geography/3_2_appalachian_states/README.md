@@ -26,6 +26,8 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults applied (2026-11-06, user said take defaults). Margin 0.03 recall per window. Holm over the four primary windows (ny_alg, oh_wash, ky_lee, wv_ple). Companions are never gated. The state table takes the Holm verdict from `results/tables/xfer_holm_family_appal.json` when it exists. max_undefined 0.
+
 Review fix pass (F02 F03 F08 inherited from 3.1). Tests. `python -m pytest -q -p no:cacheprovider expansions/3_geography/3_2_appalachian_states/src/test_3_2.py` (9 passed).
 - Window scoring runs through the 3.1 stages, which now call the 3.0 reference scorer. There is no 3.2 matcher.
 - `config_3_2.json` reference now names the 3.0 tables. The 3.3 S1 blocks CSV feeds only design tools.
@@ -46,7 +48,7 @@ Built by the build agent. Per-window stages reuse the 3.1 scripts through `src/_
 | `expansions/3_geography/3_2_appalachian_states/src/_appal_thin_density_arm.py` | S9 thinned sensitivity arm | no | window tiles and the S3 inventory |
 | `expansions/3_geography/3_2_appalachian_states/src/_appal_adapt_finetune.py` | S11 adaptation (Q3, conditional, GPU) | no | a failed primary score, the companion zero-shot score, the P1 checkpoint, truth |
 | `expansions/3_geography/3_2_appalachian_states/src/_appal_state_table.py` | S12 state table and 5.6 hand-off | yes. Run (no window scored yet) | score runs |
-| `expansions/3_geography/3_2_appalachian_states/src/config_3_2.json` | config | yes | Ritchie window and project, margins, N_min |
+| `expansions/3_geography/3_2_appalachian_states/src/config_3_2.json` | config | yes | Ritchie window and project, N_min |
 | `expansions/3_geography/3_2_appalachian_states/src/test_3_2.py` | smoke test | yes. 8 passed | nothing |
 
 **Outputs produced (cheap runs on held data).**

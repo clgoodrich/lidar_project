@@ -25,6 +25,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
 ## Build status (2026-11-06)
+
+Defaults applied 2026-11-06 (user said "take defaults"). Undated records are a sensitivity count only. The rule is now `prereg.undated_records` and S5 refuses any other value. Tests 9 passed.
+
 Built by the build agent 2026-11-05. Review fixes 2026-11-06 (4.6-01). Assumed inputs and their schemas are in `src/config_4_6.json`. Every script stops with the name of a missing input. Tests. `python -m pytest -q expansions/4_modalities/4_6_historic_maps_aerials/src/test_4_6.py -p no:cacheprovider` (8 passed on 2026-11-06).
 
 | Script | Stage | Runnable now | Missing |

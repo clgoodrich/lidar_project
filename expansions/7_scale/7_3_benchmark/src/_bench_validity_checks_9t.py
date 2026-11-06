@@ -6,7 +6,9 @@ Purpose
     H2 sham control. Seed A minus seed B of one model. Passes if the interval contains 0 and the point
        estimate is under half the H1 point estimate.
     H3 projected width. Median 95% interval width when n_test blocks are drawn from the out-of-fold pool
-       (ek.projected_width). Passes if width <= 2 x margin. The margin is a user decision (config).
+       (ek.projected_width). The leaderboard margin is 0.03 (user default 2026-11-06, config). The H3 width
+       target is still a user decision (config leaderboard.h3_width_target). While it is null the H3 decision
+       stays pending. The framework rule 2 x margin is reported beside it for reference.
     Label ceiling. Second reviewer scored against the first annotator (IoU 0.3 one-to-one). A ceiling,
        not folded into any score.
 
@@ -20,7 +22,7 @@ Run
     python expansions/7_scale/7_3_benchmark/src/_bench_validity_checks_9t.py \
         --h1 unetpp_cands.csv unetpp_blocks.csv unet_cands.csv unet_blocks.csv \
         --h2 seedA_cands.csv seedA_blocks.csv seedB_cands.csv seedB_blocks.csv \
-        --h3-pool unet_cands.csv unet_blocks.csv --n-test 24 --margin 0.05
+        --h3-pool unet_cands.csv unet_blocks.csv --n-test 24
 """
 from __future__ import annotations
 
@@ -37,6 +39,16 @@ import expkit as ek  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _bench_evaluate_recall_k as sc  # noqa: E402
+
+LEADERBOARD = json.loads((Path(__file__).resolve().parent / "config_7_3.json").read_text(encoding="utf-8"))["leaderboard"]
+
+
+def h3_decision(width: float, n_test: int, margin: float, target: float | None) -> dict:
+    """H3 with the leaderboard margin (default 0.03) and the open width target. Null target keeps it pending."""
+    return {"median_width": width, "n_test": n_test, "margin": margin, "width_target": target,
+            "framework_rule_2x_margin": 2 * margin, "passes_2x_margin_reference": bool(width <= 2 * margin),
+            "decision": ("pending H3 width target (user decision)" if target is None
+                         else "pass" if width <= target else "fail")}
 
 
 def load_arm(cands_csv: str, blocks_csv: str):
@@ -105,7 +117,10 @@ def main(argv=None) -> int:
     ap.add_argument("--h2", nargs=4, metavar=("S1_CANDS", "S1_BLOCKS", "S2_CANDS", "S2_BLOCKS"))
     ap.add_argument("--h3-pool", nargs=2, metavar=("CANDS", "BLOCKS"))
     ap.add_argument("--n-test", type=int, default=None, help="hidden-test block count")
-    ap.add_argument("--margin", type=float, default=None, help="leaderboard margin (user decision)")
+    ap.add_argument("--margin", type=float, default=LEADERBOARD["margin"],
+                    help="leaderboard margin. Default config 0.03 (user default 2026-11-06)")
+    ap.add_argument("--width-target", type=float, default=LEADERBOARD.get("h3_width_target"),
+                    help="H3 width target. Default config (null, still a user decision)")
     ap.add_argument("--ceiling", nargs=3, metavar=("SECOND_GPKG", "FIRST_GPKG", "LAYER"))
     ap.add_argument("--k-per-km2", type=float, default=ek.PROPOSAL_POLICY["k_per_km2"])
     ap.add_argument("--B", type=int, default=2000)
@@ -133,9 +148,7 @@ def main(argv=None) -> int:
             print("--n-test is required for H3", file=sys.stderr)
             return 2
         w = h3_width(load_arm(*a.h3_pool), a.n_test, a.k_per_km2, a.B, a.seed)
-        res["H3_projected_width"] = {"median_width": w, "n_test": a.n_test, "margin": a.margin,
-                                     "decision": ("pending margin (user decision)" if a.margin is None
-                                                  else "pass" if w <= 2 * a.margin else "fail")}
+        res["H3_projected_width"] = h3_decision(w, a.n_test, a.margin, a.width_target)
     if a.ceiling:
         res["label_ceiling"] = label_ceiling(*a.ceiling)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)

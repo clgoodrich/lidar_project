@@ -25,6 +25,9 @@ Scripts resolve paths with `path_for("expansions")` (key in `config/paths.toml`)
 Anything at or above 100 MB goes under an ignored folder. Every run gets an entry in `docs/analysis_log.md`.
 
 ## Build status (2026-11-06)
+
+Defaults applied 2026-11-06 (user said "take defaults"). The usable-share gate needs coverage of 0.80 (`prereg.min_coverage`). Below it the decision is inconclusive. No gate output is on file, so nothing reran. Tests 4 passed.
+
 Built by the build agent. The framework was brought to full depth the same day. Assumed inputs and their schemas are in `src/config_4_8.json`. Tests. `python -m pytest -q expansions/4_modalities/4_8_leafoff_optical/src/test_4_8.py -p no:cacheprovider` (4 passed, offline, 2026-11-06). Review fixes 2026-11-06. Undated, blank and unavailable chips are missing data and leave the gate denominator. Coverage is reported. Registration uses true junctions only (three or more arms). No 4.8 output is on file, so nothing was rerun.
 
 | Script | Stage | Runnable now | Missing |

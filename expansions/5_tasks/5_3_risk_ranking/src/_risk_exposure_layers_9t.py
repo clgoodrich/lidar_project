@@ -108,7 +108,7 @@ def main(argv=None) -> int:
     sites.to_csv(csv, index=False)
     js = th.write_json(th.outp(cfg, "exposure_summary"), summ)
     ins = [th.inp(cfg, n) for n in ("dep_wells", "pit_blocks")] + [th.inp(cfg, n) for n in recs]
-    ek.write_provenance(run, inputs=ins, outputs=[gp, csv, cs, js], params=summ)
+    rio.write_provenance(run, inputs=ins, outputs=[gp, csv, cs, js], params=summ)
     print({k: summ[k] for k in ("n_sites", "n_record_sites", "n_candidate_sites", "k", "missing_components")})
     print(f"wrote {gp}\nwrote {csv}\nwrote {js}")
     return 0

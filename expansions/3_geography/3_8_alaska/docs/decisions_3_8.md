@@ -2,6 +2,10 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primary gates E2_rate_mm_yr (one primary, Holm equals the unadjusted rule), secondaries and sensitivities reported and never gated (`_transfer_holm_gate.py`) ("take defaults"). Change freely.
+- 2026-11-06. Undefined bootstrap draws. User accepted the default max_undefined 0 (any undefined draw makes the gate inconclusive) ("take defaults"). Change freely.
 - Injection recovery adds the known signal to the noisy stack and reads the rate from that one inversion. The old difference against an uninjected inversion cancelled the noise exactly (G-08). The synthetic self-test bias moved from +0.021 to -0.296 mm/yr at noise 0.3 rad. (2026-11-06, review repair by the fix agent, change freely)
 - End-of-season rate takes every year's sample from the same calendar month, the latest thaw month up to end_of_season_month present in every year. Months are never mixed across years (season mixing minor). (2026-11-06, review repair by the fix agent, change freely)
 - The E2 gate reports the share of undefined bootstrap draws and is inconclusive if any draw is undefined. The permutation band is labelled descriptive. (2026-11-06, review repair by the fix agent, change freely)
@@ -29,6 +33,4 @@ Newest first. One line per decision, with the date and who made it.
 - The training sampler rejects a whole patch that touches forbidden ground. Normalisation is fitted on training windows only. (2026-11-05, made by the build agent, change freely)
 
 ## Needs user decision
-
-- Multiplicity. No correction is applied across areas, arms, classes or strata. Decide a family and a correction, or declare each gate a separate question. (listed 2026-11-06)
-- Undefined bootstrap draws. Any undefined draw now makes a gate inconclusive (expkit SH-01). A tolerated share (`max_undefined`) would have to be declared in the prereg. (listed 2026-11-06)
+- `delta_mm_yr` (D-AK1 actionable rate) is still null. It is not a recall margin, so the 0.03 default does not apply. The E2 gate refuses until it is set. (2026-11-06)

@@ -48,7 +48,7 @@
   },
   "inputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_candidate_scores_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_candidate_scores_9t.csv",
       "bytes": 15307,
       "mtime": "2026-11-06T10:49:26.586892",
       "sha256": "a354731d79f70edcbb213ebffe5efc07c6ae1ef273258bb81c320bdc00178406"
@@ -56,13 +56,13 @@
   ],
   "outputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_rank_stability_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_rank_stability_9t.csv",
       "bytes": 185,
       "mtime": "2026-11-06T10:52:18.767541",
       "sha256": "6642f7bcccdfe9ac187635bfd88248a0a3c0f93b89d82c3e3cfbad24118e23f6"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_site_rank_interval_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_site_rank_interval_9t.csv",
       "bytes": 400825,
       "mtime": "2026-11-06T10:52:18.821699",
       "sha256": "4e748e5c3584f4d7fbf8c6b015df23dd5bb572f40e8d7ffc14074a8b4e5f0085"

@@ -3,8 +3,9 @@
 Purpose
     1. Eligible blocks are the pit-bearing 9t blocks (feature count from the pit manifest). This draw frame
        is pit-specific, so the file header says `frame=pit_bearing_blocks tasks=pit`. `load_audit(...,
-       task="pad")` refuses it. Pad trainers may still exclude these blocks from training. A pad audit set
-       needs its own draw (decisions_p2.md, needs user decision).
+       task="pad")` refuses it. `--task pad` makes the separate pad draw from the pad-bearing blocks (pad
+       manifest, pad buffer, config `draw_9t_pad`). Its header says `frame=pad_bearing_blocks tasks=pad`.
+       User default 2026-11-06. The pad draw is a dry run only.
     2. Strata. Feature density tercile by slope tercile (3 x 3). Slope is the mean of the `slope` band of the
        0.5 m feature stack per block, read on a 5 m grid. Terciles use ranks, so ties split by block id.
     3. Allocation. Target share of eligible blocks (default 15%). Proportional to stratum size by largest
@@ -174,6 +175,8 @@ def split_overlap(split_path: Path, forbidden: set[int]) -> dict:
 
 
 FRAME, TASKS = "pit_bearing_blocks", "pit"
+DRAWS = {"pit": {"cfg": "draw_9t", "frame": "pit_bearing_blocks", "stem": "9t"},
+         "pad": {"cfg": "draw_9t_pad", "frame": "pad_bearing_blocks", "stem": "pad_9t"}}
 
 
 def write_audit_csv(path: Path, tab, res, mode, buffer_m, seed, frame: str = FRAME, tasks: str = TASKS) -> None:
@@ -192,8 +195,14 @@ def write_audit_csv(path: Path, tab, res, mode, buffer_m, seed, frame: str = FRA
 
 
 def main(argv=None) -> int:
-    c = CFG["draw_9t"]
+    pre = argparse.ArgumentParser(add_help=False)
+    pre.add_argument("--task", choices=tuple(DRAWS), default="pit")
+    task = pre.parse_known_args(argv)[0].task
+    d = DRAWS[task]
+    c = CFG[d["cfg"]]
     ap = argparse.ArgumentParser(description="P2 S1 draw the 9t comparative audit set")
+    ap.add_argument("--task", choices=tuple(DRAWS), default="pit",
+                    help="pit (pit-bearing blocks) or pad (separate draw from the pad-bearing blocks)")
     ap.add_argument("--buffer-json", type=Path, default=None, help="P1 S4 buffer_derivation_9t.json")
     ap.add_argument("--buffer-m", type=float, default=None, help="overrides --buffer-json")
     ap.add_argument("--buffer-mode", choices=("window", "block"), default=c["buffer_mode"])
@@ -208,11 +217,11 @@ def main(argv=None) -> int:
     if a.buffer_m is None:
         if a.buffer_json is None or not a.buffer_json.exists():
             raise SystemExit("buffer missing. Give --buffer-json (P1 S4 output buffer_derivation_9t.json) or --buffer-m.")
-        a.buffer_m = float(ek.read_buffer(TASKS, a.buffer_json))
+        a.buffer_m = float(ek.read_buffer(task, a.buffer_json))
     import geopandas as gpd
     import _split_core_lib_9t as sc
-    pit = sc.trainer("pit")
-    man = sc.load_manifest("pit")
+    pit = sc.trainer(task)
+    man = sc.load_manifest(task)
     blocks = gpd.read_file(pit.BLOCKS, layer="blocks")
     ek.assert_crs(blocks)
     ek.assert_rows(blocks, 144, "9t blocks")
@@ -227,18 +236,19 @@ def main(argv=None) -> int:
     forbidden = set(res["audit"]) | (set(res["buffer"]) if a.buffer_mode == "block" else set())
     if a.splits:
         res["split_overlap"] = split_overlap(a.splits, forbidden)
-    res.update(buffer_m=a.buffer_m, buffer_mode=a.buffer_mode, seed=a.seed, n_eligible=len(tab), frame=FRAME, tasks=TASKS)
+    res.update(buffer_m=a.buffer_m, buffer_mode=a.buffer_mode, seed=a.seed, n_eligible=len(tab), frame=d["frame"],
+               tasks=task)
     if a.freeze:
-        dst = ek.path_for("results_9t") / "splits" / "audit_blocks_9t_v1.csv"
+        dst = ek.path_for("results_9t") / "splits" / f"audit_blocks_{d['stem']}_v1.csv"
         if dst.exists():
             raise SystemExit(f"{dst} exists and is frozen. A new audit set needs a new version and a user decision.")
     else:
-        dst = (a.out_dir or ek.sub("p2", "data/interim")) / "audit_blocks_9t_dryrun.csv"
+        dst = (a.out_dir or ek.sub("p2", "data/interim")) / f"audit_blocks_{d['stem']}_dryrun.csv"
     dst.parent.mkdir(parents=True, exist_ok=True)
-    write_audit_csv(dst, tab, res, a.buffer_mode, a.buffer_m, a.seed)
+    write_audit_csv(dst, tab, res, a.buffer_mode, a.buffer_m, a.seed, frame=d["frame"], tasks=task)
     h = ek.sha256(dst)
     res["file"], res["sha256"] = str(dst), h
-    js = dst.with_name("audit_draw_9t_" + ("v1" if a.freeze else "dryrun") + ".json")
+    js = dst.with_name(f"audit_draw_{d['stem']}_" + ("v1" if a.freeze else "dryrun") + ".json")
     js.write_text(json.dumps(res, indent=1, default=int), encoding="utf-8")
     if a.freeze:
         Path(str(dst) + ".sha256").write_text(f"{h}  {dst.name}\n", encoding="utf-8")
@@ -253,7 +263,7 @@ def main(argv=None) -> int:
     ek.write_provenance(run, inputs=[Path(pit.MANIFEST), Path(pit.BLOCKS)], outputs=[dst, js],
                         seeds={"draw": a.seed})
     print(f"{len(res['audit'])} audit blocks at share {res['share']}: {res['audit']}")
-    print(f"buffer {a.buffer_m} m, {len(res['buffer_pit_blocks'])} pit blocks overlap it. remaining pit-block share "
+    print(f"{task}: buffer {a.buffer_m} m, {len(res['buffer_pit_blocks'])} {task} blocks overlap it. remaining block share "
           f"window mode {res['remaining_if_window_mode']:.2f}, block mode {res['remaining_if_block_mode']:.2f}")
     print(f"KS density D {res['ks']['n_feat']['D']:.3f} p {res['ks']['n_feat']['p']:.3f}, slope D "
           f"{res['ks']['slope']['D']:.3f} p {res['ks']['slope']['p']:.3f}")

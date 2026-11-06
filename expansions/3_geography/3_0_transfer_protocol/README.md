@@ -26,6 +26,8 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults applied (2026-11-06, user said take defaults). Void cap 0.5 and round-robin fill are decided. Margin default 0.03 recall. Multiplicity is Holm over the declared primaries of each preregistration (`multiplicity.family`), in the new `src/_transfer_holm_gate.py`. The decision report gates with it and stores `holm_input` for the family step. max_undefined is 0. The prereg template lists these defaults in section 13.
+
 Review fix pass (F02 F08 F11 G-02 G-03 G-05 G-06, minors). Tests. `python -m pytest -q -p no:cacheprovider expansions/3_geography/3_0_transfer_protocol/src/test_3_0.py` (18 passed).
 - One scoring policy. Cutoff, minimum area, IoU and match order come from `ek.policy_for(task)`. The policy dict and hash are stamped into every output. 3.1, 3.2 and 3.3 call this scorer.
 - Dedupe was inactive before this pass (NaN versus None). It now drops second pieces.
@@ -62,7 +64,8 @@ The synthetic test covers the framework QC case. Recall is 1.0 with all three fe
 | `src/_transfer_baseline_repeat_9t.py` | S2 new baseline repeat and mosaic check | yes, ran. Pad isolated baseline repeats exactly. Pit mosaic gives 0.909 at cutoff 0.35 | isolated pit rasters (P1 S6) for the pit baseline |
 | `src/_transfer_infer_area.py` | S3 inference wrapper | dry run only | GPU run after the preregistration. Target tiles and bbox (assumed input) |
 | `src/_transfer_ci_width_9t.py` | S4 projected width | yes, ran on the archival pit pool | none |
-| `src/_transfer_prereg_fill.py` | S5 preregistration filler | yes | the user's field values (margin, policy, areas) |
+| `src/_transfer_prereg_fill.py` | S5 preregistration filler | yes | the user's field values (policy, areas). Margin default 0.03 |
+| `src/_transfer_holm_gate.py` | Holm gate over an expansion's declared primaries (library and family CLI) | yes. Tested | primary score JSONs with `holm_input` |
 | `src/_transfer_decision_report.py` | decision report | no real target yet | a scored target run and a filled preregistration |
 | `src/_transfer_ref_tables_9t.py` | reference block tables for 3.4 to 3.8 | yes, ran (pit 115 blocks, pad 129 blocks) | rerun on the isolated pit mosaic after P1 S6 |
 | `src/config_3_0.json` | settings and assumed inputs | yes | none |

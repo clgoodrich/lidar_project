@@ -50,12 +50,22 @@ def load_pred(cfg):
     ent = cfg["inputs"]["pad_products"]
     pred = clean(th.read_vector(th.inp(cfg, "pad_products"), layer=ent.get("layer", "model_geometry") if isinstance(ent, dict) else "model_geometry"))
     th.require_columns(pred, ["score"], "pad products")
+    want = float(ek.policy_for("pad")["cutoff"])              # 0.525, user accepted 2026-11-06
+    if "thr_used" not in pred.columns:
+        raise SystemExit("CUTOFF UNKNOWN [pad products]: no thr_used column. Use the 5.6 policy re-cut "
+                         "(_records_policy_recut_9t.py)")
+    got = sorted(set(np.round(pred["thr_used"].astype(float), 6)))
+    if got != [round(want, 6)]:
+        raise SystemExit(f"CUTOFF MISMATCH [pad products]: cut at {got}, policy cutoff is {want}")
     return pred
 
 
 def load_roads(cfg):
-    """Annotated road lines, or None when the annotation file has no roads layer."""
+    """Annotated road lines, or None when the annotation file has no roads layer. road_scope all_mapped (the only
+    rule, user accepted 2026-11-06) keeps every mapped road, through roads included. No road is filtered out."""
     import pyogrio
+    if cfg.get("road_scope", "all_mapped") != "all_mapped":
+        raise SystemExit(f"road_scope {cfg.get('road_scope')!r} is not implemented. Only all_mapped is.")
     ann = th.inp(cfg, "annotations")
     if "roads" not in [r[0] for r in pyogrio.list_layers(ann)]:
         return None

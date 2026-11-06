@@ -128,3 +128,9 @@ def test_observability_and_reference():
     assert rs.noise_floor(ser, "r1", 9, [5, 6, 7, 8, 9]) > 0.5
     amp = al.amplitude_by_year(ser.assign(kind="active_layer"), [5, 6, 7, 8, 9])
     assert set(amp.columns) == {"site", "year", "amp_mm"}
+
+
+def test_defaults_one_primary_no_undefined():
+    """take defaults 2026-11-06. E2 is the only gated primary. max_undefined 0."""
+    assert rd.FAMILY == ["E2_rate_mm_yr"] and rd.MAX_UNDEFINED == 0.0
+    assert rd.decide_two_sided(1.2, 2.0, 1.0) == "decisive, difference"

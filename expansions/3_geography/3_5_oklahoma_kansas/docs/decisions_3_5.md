@@ -2,6 +2,14 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Transfer checkpoint (pit and pad). User accepted the default of the current best 9t models. Pit is the five-fold `pit/unet_cv5` ensemble, pad the five-fold `pad/unet_cv5_iso` ensemble, policy fold_mean, sha256 per fold and lineage in `model.<task>`. Results are labelled provisional transfer model. No single 9t model is trained on all 9t ground, so the five folds together stand for it ("take defaults"). Change freely.
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primary gates F1-L1:pit:oklahoma, F1-L1:pad:oklahoma, secondaries and sensitivities reported and never gated (`_transfer_holm_gate.py`) ("take defaults"). Change freely.
+- 2026-11-06. Undefined bootstrap draws. User accepted the default max_undefined 0 (any undefined draw makes the gate inconclusive) ("take defaults"). Change freely.
+- 2026-11-06. Void cap. User accepted the default 0.5 (was 0.9 in this config) ("take defaults"). Change freely.
+- 2026-11-06. Margin. User accepted the default 0.03 recall ("take defaults"). Change freely.
+- 2026-11-06. Useful gain delta_gain. User accepted the default 0.03 recall ("take defaults"). Change freely.
 - Arms are scored per class. Pits use the pit policy and pit truth. Pads use the pad policy and pad truth. L0 (a pit model) is scored on pits only (F02, G-13). (2026-11-06, review repair by the fix agent, change freely)
 - The label-budget curve scores with task pit (policy cutoff 0.35) and stamps the policy hash per row (F02). (2026-11-06, review repair by the fix agent, change freely)
 - L2 fine-tunes with the head re-initialised by declaration (`out.`) and the 7 lidar channel names checked against the checkpoint (G-11). (2026-11-06, review repair by the fix agent, change freely)
@@ -34,8 +42,7 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
-- Which frozen checkpoint is the transfer model per task. Config key `model.<task>.transfer_checkpoint` is null and inference and fine-tuning refuse until it is set. The old default `pit/unet_iso_cv5/policy/best.pt` has no producer. (listed 2026-11-06)
-- Multiplicity. No correction is applied across areas, arms, classes or strata. Decide a family and a correction, or declare each gate a separate question. (listed 2026-11-06)
+- An ensemble cannot seed fine-tuning. `model.<task>.init_checkpoint` is null, so A1/L2 style fine-tuning refuses until one fold is named. (listed 2026-11-06)
 - Support rule alignment with 3.0. The regional core uses the actual scored support (nodata and masks shrink the K budget and the denominator). The 3.0 reference now treats interior nodata as void under a cap and keeps the full block area. Pick one rule for both. (listed 2026-11-06)
-- Undefined bootstrap draws. Any undefined draw now makes a gate inconclusive (expkit SH-01). A tolerated share (`max_undefined`) would have to be declared in the prereg. (listed 2026-11-06)
-- A pooled pit-and-pad primary for the one-foreground-class arms needs one declared cutoff for the merged class. Until then G is reported per class. (listed 2026-11-06)
+- A pooled pit-and-pad primary for the one-foreground-class arms needs one declared cutoff for the merged class. Until then G is gated per class under Holm over the two class gains. (listed 2026-11-06)
+- Confirm the Holm family. Until a pooled cutoff exists the gain is gated per class, so the family is F1-L1 pit and F1-L1 pad on Oklahoma. (2026-11-06)

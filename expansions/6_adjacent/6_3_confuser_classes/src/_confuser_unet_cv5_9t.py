@@ -162,9 +162,12 @@ def negative_centres(arm: str, polys, train_polys, seed: int, truth=None, truth_
 
 
 def truth_exclusion_m(cfg: dict) -> float:
-    """Declared radius around truth that no negative centre may enter. null in the config means jitter_m."""
+    """Declared radius around truth that no negative centre may enter. Decided 30 m (2026-11-06). It is its own
+    setting and no longer follows jitter_m. A missing value is refused."""
     v = cfg["train"].get("neg_truth_exclusion_m")
-    return float(cfg["train"]["jitter_m"] if v is None else v)
+    if v is None:
+        raise SystemExit("train.neg_truth_exclusion_m is not set. It was decided as 30 m on 2026-11-06")
+    return float(v)
 
 
 def read_truth(cfg: dict):

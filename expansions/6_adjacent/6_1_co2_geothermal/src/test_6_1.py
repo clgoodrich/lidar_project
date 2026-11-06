@@ -5,6 +5,7 @@ Run
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -120,24 +121,60 @@ def test_reader_gate():
 
 
 # ----------------------------------------------------------------------------- 2026-11-06 review fixes
-def _pit_pad_files(tmp: Path, contract: bool) -> tuple[Path, Path]:
-    """5.6 S0 shaped files. Old files reuse det_id 0..n-1 in each file. The 2026-11-06 contract adds kind and
-    starts pad ids at 1_000_001. Either way pit and pad must stay separate sites."""
+def _legacy_pit_pad_files(tmp: Path) -> tuple[Path, Path]:
+    """Pre-2026-11-06 5.6 files. They reuse det_id 0..n-1 in each file and carry no kind column. No producer
+    writes this shape any more, so this one fixture is hand built. It checks that old files stay safe."""
     import geopandas as gpd
     from shapely.geometry import box
-    pit_ids = [1, 2] if contract else [0, 1]
-    pad_ids = [1_000_001, 1_000_002] if contract else [0, 1]
-    pit = gpd.GeoDataFrame({"det_id": pit_ids, "score": [0.9, 0.8], "source": ["matched", "undecided"]},
+    pit = gpd.GeoDataFrame({"det_id": [0, 1], "score": [0.9, 0.8], "source": ["matched", "undecided"]},
                            geometry=[box(X0 + 18, Y0 + 48, X0 + 24, Y0 + 54), box(X0 + 120, Y0 + 20, X0 + 126, Y0 + 26)],
                            crs=CRS)
-    pad = gpd.GeoDataFrame({"det_id": pad_ids, "score": [0.85, 0.7], "source": ["matched", "unmatched"]},
+    pad = gpd.GeoDataFrame({"det_id": [0, 1], "score": [0.85, 0.7], "source": ["matched", "unmatched"]},
                            geometry=[box(X0 + 140, Y0 + 40, X0 + 170, Y0 + 70), box(X0 + 210, Y0 + 10, X0 + 240, Y0 + 40)],
                            crs=CRS)
-    if contract:
-        pit["kind"], pad["kind"] = "pit", "pad"
-    pp, dp = tmp / "pit.gpkg", tmp / "pad.gpkg"
+    pp, dp = tmp / "pit_legacy.gpkg", tmp / "pad_legacy.gpkg"
     pit.to_file(pp)
     pad.to_file(dp)
+    return pp, dp
+
+
+def _real_56_files(tmp: Path, blocks: Path) -> tuple[Path, Path]:
+    """Run the real 5.6 S0 writer (_records_full_detector_output_9t.main) on raw upstream layers in the shape the
+    5.6 policy re-cut writes (matched and undecided pit layers, pad model_geometry, thr_used at the policy
+    cutoffs). 6.1 then reads the writer's files unmodified (fix rule. no consumer-shaped fixtures)."""
+    import json
+    import geopandas as gpd
+    from shapely.geometry import box
+    src56 = Path(__file__).resolve().parents[3] / "5_tasks" / "5_6_record_association" / "src"
+    if str(src56) not in sys.path:
+        sys.path.insert(0, str(src56))
+    import _records_full_detector_output_9t as s0
+    d = tmp / "s56"
+    d.mkdir(exist_ok=True)
+    pits = gpd.GeoDataFrame({"score": [0.9, 0.8], "near_pit_m": [0.0, 30.0], "dup_on_pit": [1, 0],
+                             "fold": [0, 1], "thr_used": [0.35, 0.35]},
+                            geometry=[box(X0 + 18, Y0 + 48, X0 + 24, Y0 + 54), box(X0 + 120, Y0 + 20, X0 + 126, Y0 + 26)],
+                            crs=CRS)
+    cand = d / "pit_recut.gpkg"
+    pits.iloc[:1].to_file(cand, layer="matched", driver="GPKG")
+    pits.iloc[1:].to_file(cand, layer="undecided", driver="GPKG")
+    pads = gpd.GeoDataFrame({"score": [0.85, 0.7], "thr_used": [0.525, 0.525]},
+                            geometry=[box(X0 + 140, Y0 + 40, X0 + 170, Y0 + 70), box(X0 + 210, Y0 + 10, X0 + 240, Y0 + 40)],
+                            crs=CRS)
+    padp = d / "pad_recut.gpkg"
+    pads.to_file(padp, layer="model_geometry", driver="GPKG")
+    ann = d / "ann.gpkg"
+    gpd.GeoDataFrame({"pad_id": [7]}, geometry=[pads.geometry.iloc[0]], crs=CRS).to_file(ann, layer="plat", driver="GPKG")
+    cfg = json.loads((src56 / "config_5_6.json").read_text())
+    cfg["pit"]["expected_predictions"] = 2
+    pp, dp = d / "detector_output_pit_full_9t.gpkg", d / "detector_output_pad_full_9t.gpkg"
+    cfg["inputs"].update(pit_candidates=str(cand), pad_products=dict(path=str(padp), layer="model_geometry"),
+                         annotations=str(ann), pit_blocks=str(blocks), pad_blocks=str(blocks))
+    cfg["outputs"].update(full_pit=str(pp), full_pad=str(dp), row_counts=str(d / "rows.csv"),
+                          id_policy=str(d / "ids.json"))
+    cp = d / "cfg.json"
+    cp.write_text(json.dumps(cfg))
+    assert s0.main(["--config", str(cp)]) == 0
     return pp, dp
 
 
@@ -147,7 +184,8 @@ def test_pit_pad_ids_keyed_by_kind(tmp_path, contract):
     cfg = L.load_config()
     prof = L.load_profile(cfg, "co2")
     w = make_world(tmp_path)
-    w["candidates_pit"], w["candidates_pad"] = _pit_pad_files(tmp_path, contract)
+    w["candidates_pit"], w["candidates_pad"] = (_real_56_files(tmp_path, w["blocks"]) if contract
+                                                else _legacy_pit_pad_files(tmp_path))
     out = tmp_path / "run"
     out.mkdir()
     RUN.run_all(cfg, prof, out, w, B=20, figure=False)
@@ -160,7 +198,7 @@ def test_pit_pad_ids_keyed_by_kind(tmp_path, contract):
 
 def test_kind_column_must_match_file(tmp_path):
     cfg = L.load_config()
-    pp, dp = _pit_pad_files(tmp_path, contract=True)
+    pp, dp = _real_56_files(tmp_path, make_world(tmp_path)["blocks"])
     with pytest.raises(AssertionError, match="kind"):
         L.read_candidates(cfg, pit_override=dp, pad_override=pp)     # swapped files
 
@@ -204,3 +242,25 @@ def test_records_with_depth_zero_is_labelled(tmp_path):
     c = pd.read_csv(out / "screening_counts_9t.csv").set_index("metric")
     assert c.loc["records_with_depth", "value"] == 0
     assert "no depth in records" in c.loc["records_with_depth", "note"]
+
+
+def test_cutoff_is_per_kind_policy(tmp_path):
+    """2026-11-06. A pit blob of mean 0.40 is kept (pit cutoff 0.35). A pad of mean 0.50 is dropped (pad cutoff
+    0.525). The old single 0.50 cutoff dropped the pit. Hand oracle: 1 pit and 1 pad kept."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    cfg = L.load_config()
+    assert L.frozen_cutoffs(cfg) == {"pit": 0.35, "pad": 0.525}
+    pit = gpd.GeoDataFrame({"det_id": [1, 2], "kind": "pit", "score": [0.40, 0.30]},
+                           geometry=[box(X0, Y0, X0 + 4, Y0 + 4), box(X0 + 50, Y0, X0 + 54, Y0 + 4)], crs=CRS)
+    pad = gpd.GeoDataFrame({"det_id": [1000001, 1000002], "kind": "pad", "score": [0.50, 0.60]},
+                           geometry=[box(X0, Y0 + 50, X0 + 30, Y0 + 80), box(X0 + 100, Y0, X0 + 130, Y0 + 30)], crs=CRS)
+    pp, dp = tmp_path / "p.gpkg", tmp_path / "d.gpkg"
+    pit.to_file(pp)
+    pad.to_file(dp)
+    c = L.read_candidates(cfg, pit_override=pp, pad_override=dp)
+    assert set(c.site_uid) == {"pit:1", "pad:1000002"}
+    bad = json.loads(json.dumps(cfg))
+    bad["params"]["frozen_cutoff"] = 0.5
+    with pytest.raises(SystemExit):
+        L.frozen_cutoffs(bad)

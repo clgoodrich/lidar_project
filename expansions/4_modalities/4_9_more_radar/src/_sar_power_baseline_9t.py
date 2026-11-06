@@ -134,8 +134,13 @@ def read_rows(spec: str, cfg):
             raise ValueError(f"{p} lacks column {c!r}")
     sk.ek.assert_no_nan(df.block, "block")
     df = df[np.isfinite(df[col])]
-    cv = (cfg["prereg"].get("lidar_weak") or {}).get("covariate")
+    spec = cfg["prereg"].get("lidar_weak") or {}
+    cv = spec.get("covariate")
     cov = df[cv].to_numpy(float) if cv and cv in df.columns else None
+    if cov is None and cv and spec.get("layer"):
+        cov, why = sk.layer_covariate(df, spec)      # same ground density layer as S5
+        if why:
+            print(f"lidar_weak covariate from layer: {why}")
     return df.y.to_numpy(int), df[col].to_numpy(float), df.block.to_numpy(), label, p, cov
 
 

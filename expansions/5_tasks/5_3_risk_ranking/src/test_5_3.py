@@ -279,3 +279,36 @@ def test_enrichment_undefined_share_is_reported():
     expect = np.mean([ev_ix not in rng.integers(0, n_cell, n_cell) for _ in range(B)])
     assert out.loc["A", "undefined_share"] == pytest.approx(expect) and expect > 0
     assert np.isnan(out.loc["A", "enrich_lo"]) and out.loc["A", "decision"] == "inconclusive"
+
+
+def test_decided_defaults_are_in_the_config():
+    """Defaults accepted 2026-11-06. H unrankable, E min_coverage 1.0, max_undefined 0."""
+    import json
+    cfg = json.loads((HERE / "config_5_3.json").read_text())
+    assert cfg["index_missing"]["H"] == {"rule": "unrankable", "min_coverage": 1.0, "impute": {}}
+    assert cfg["index_missing"]["E"]["rule"] == "unrankable" and cfg["index_missing"]["E"]["min_coverage"] == 1.0
+    assert cfg["max_undefined"] == 0.0
+
+
+def test_prereg_cannot_loosen_max_undefined():
+    """A prereg declaring 0.2 is refused. The old code would have used 0.2 and turned the undefined draws of the
+    test above into a finite interval."""
+    import _risk_endpoint_check_9t as s6
+    cfg = {"max_undefined": 0.0}
+    assert s6.max_undefined(cfg, {}) == 0.0
+    assert s6.max_undefined(cfg, {"max_undefined": 0}) == 0.0
+    with pytest.raises(SystemExit, match="differs from the decided value"):
+        s6.max_undefined(cfg, {"max_undefined": 0.2})
+
+
+def test_provenance_paths_are_repo_relative(tmp_path):
+    """Every repo path in a 5.3 provenance file is repo-relative, params and argv included."""
+    import json
+    import _risk_io_9t as rio
+    inside = rio.ek.REPO / "expansions" / "5_tasks" / "5_3_risk_ranking" / "src" / "config_5_3.json"
+    p = rio.write_provenance(tmp_path, inputs=[inside], params={"src": str(inside), "nested": [str(inside)]})
+    txt = p.read_text()
+    assert str(rio.ek.REPO) not in txt and str(rio.ek.REPO).replace("\\", "/") not in txt
+    d = json.loads(txt)
+    want = "expansions/5_tasks/5_3_risk_ranking/src/config_5_3.json"
+    assert d["inputs"][0]["path"] == want and d["params"]["src"] == want and d["params"]["nested"] == [want]

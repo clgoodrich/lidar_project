@@ -11,10 +11,16 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-06. Training windows are redrawn every epoch from the child seed (seed, index, epoch). Validation windows stay fixed so epochs compare on the same windows. Made by the review-fix agent, change freely.
 - 2026-11-06. The label subsets JSON was rebuilt with `--allow-no-audit`. Its content did not change. It now says it has no audit exclusion. Made by the review-fix agent.
 
+## Decisions
+
+- 2026-11-06. G, the useful gain for the primary test. User accepted the default 0.02 recall in `config_7_1.json` ("take defaults"). Change freely.
+- 2026-11-06. `finetune.audit_model_fold`. User accepted the default 0 ("take defaults"). Change freely.
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primaries only. 7.1 has one primary, so the adjusted value equals the raw one ("take defaults"). Change freely.
+- 2026-11-06. max_undefined. User accepted the default 0. Any undefined bootstrap draw gives an inconclusive result ("take defaults"). Change freely.
+- 2026-11-06. A null G in both the config and the preregistration now raises GUnset instead of returning inconclusive. `--audit-once` still refuses without a primary arm. Made by the review-fix agent.
+
 ## Needs user decision
 
-- G, the useful gain for the primary test. Set it in `config_7_1.json` or the preregistration JSON before any pretrained arm is scored. Until then the primary decision is inconclusive.
-- `finetune.audit_model_fold`. Which fold model scores the sealed audit blocks in `--audit-once`. The audit lies outside every fold, so any fold model can score it.
 - The primary arm (already open since 2026-11-05).
 
 

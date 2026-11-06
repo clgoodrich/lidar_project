@@ -29,9 +29,11 @@
     "wetlands": "d_nearest", "public_supply": "inside", "protected": "inside"
   },
   "band_variants": {"water_wells": [25, 50, 100]},
-  "_index_missing_about": "Review 2026-11-06 (5.3-01). How H and E treat a missing component. rule unrankable = a site missing any component gets no index. rule impute needs a declared raw value per column in impute. min_coverage below 1 is a declared partial average. Choosing an imputation prior or a coverage minimum is a user decision (docs/decisions_5_3.md).",
+  "_index_missing_about": "Review 2026-11-06 (5.3-01). How H and E treat a missing component. rule unrankable = a site missing any component gets no index. rule impute needs a declared raw value per column in impute. min_coverage below 1 is a declared partial average. Decided 2026-11-06, see _index_missing_decided.",
   "index_missing": {"H": {"rule": "unrankable", "min_coverage": 1.0, "impute": {}},
                     "E": {"rule": "unrankable", "min_coverage": 1.0, "impute": {}}},
+  "_index_missing_decided": "2026-11-06. User accepted the defaults (take defaults). H stays unrankable for candidates (no imputation). E min_coverage 1.0. max_undefined 0.",
+  "max_undefined": 0.0,
   "e_min_components": 2,
   "e_min_distinct": null,
   "record_pos_error_m": 30.0,

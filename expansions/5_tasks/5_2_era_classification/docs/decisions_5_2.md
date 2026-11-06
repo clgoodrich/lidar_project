@@ -21,6 +21,10 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-06. P2-01. The audit file is read only through `ek.require_audit`. Audit and buffer blocks both leave the model table. A missing file stops a confirmatory run. With `--provisional-folds` the run is labelled "no audit exclusion, exploratory".
 - 2026-11-06. A bootstrap draw with one class has no AUC. It is kept and counted. The summary reports `undefined_share` for the primary, each arm, the permutation range and the label-noise check. No share is tolerated, so any undefined draw gives an inconclusive decision.
 
+## Decisions
+
+- 2026-11-06. model.max_undefined. User accepted the default 0 ("take defaults"). Change freely. A null value is now refused. Test test_max_undefined_is_decided_zero.
+
 ## Needs user decision
 
-- `model.max_undefined`. The framework declares no tolerated share of undefined draws. It stays null, which means 0. Setting it makes the interval conditional on a defined AUC.
+- None open.

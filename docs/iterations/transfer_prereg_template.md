@@ -67,8 +67,21 @@ The 3.0 decision report and the 3.1 scorer read these fields and compare them wi
 - `scoring.iou`. 0.3.
 - `scoring.order`. `score` (greedy in score order). `iou` is a sensitivity only.
 - `scoring.dedupe`. A second blob inside a matched feature is a duplicate.
-- `scoring.void_cap`. Largest void fraction of a complete block. Default 0.5 until the user sets it.
+- `scoring.void_cap`. Largest void fraction of a complete block. 0.5 (user default 2026-11-06).
 - `scoring.k_per_km2`. 40. 30 is a sensitivity only.
-- `checkpoint.family`. For example `pit/unet_iso_cv5`.
+- `checkpoint.family`. For example `pit/unet_cv5`. The provisional transfer model for 3.4 to 3.7 is the five-fold 9t ensemble `pit/unet_cv5` and `pad/unet_cv5_iso` under `fold_mean` (user default 2026-11-06).
 - `checkpoint.lineage`. `isolated` or `provisional`. A provisional checkpoint gives a descriptive result only.
 - `checkpoint.sha256`. Hash of every checkpoint file used.
+
+## 13. Defaults accepted 2026-11-06
+
+The user accepted these defaults ("take defaults"). A preregistration may state other values with a reason.
+
+- `margin`. 0.03 recall for any non-inferiority margin. A useful gain (`delta_gain`) is also 0.03 recall.
+- `multiplicity`. Holm over the declared primary gates of the expansion only. List them as `multiplicity.family` and name this file's gate as `multiplicity.gate`. Secondaries and sensitivities are reported and never gated.
+- Holm gate. The one-sided bootstrap share is the fraction of difference draws at or below minus the margin. Success needs the Holm-adjusted share under 0.025. Failure needs the upper bound below minus the margin. A family of one gives the plain interval rule. Code `expansions/3_geography/3_0_transfer_protocol/src/_transfer_holm_gate.py`.
+- `max_undefined`. 0. Any undefined bootstrap draw makes the gate inconclusive.
+- `scoring.void_cap`. 0.5.
+- Fill rule for feature-free 9t blocks. Round robin is primary. Fold mean is the sensitivity.
+- 3.3 footprint. All blocks, including the pit-free blocks.
+- Transfer checkpoint for 3.4 to 3.7. Label every result "provisional transfer model". The fold that seeds fine-tuning is not decided.

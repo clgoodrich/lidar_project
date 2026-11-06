@@ -2,6 +2,11 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- 2026-11-06. `added_value.max_undefined` (T4) and `gate.max_undefined` (T3). User accepted the default 0 ("take defaults"). Change freely.
+- 2026-11-06. T4 unmatched population. User accepted the default pads and clearings only, forest controls left out ("take defaults"). Change freely.
+- 2026-11-06. Useful gain `added_value.delta_gain` for T4. User accepted the default 0.03 recall at K (was the placeholder 0.05) ("take defaults"). Change freely.
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primaries T3 and T4 only ("take defaults"). Change freely. Each stage writes one-sided bootstrap shares at its margin and an unadjusted verdict. `src/_thermal_primary_holm_9t.py` adjusts both families by Holm and gates at alpha / 2. A primary not run or not identifiable keeps p 1. Secondaries are reported, never gated.
+
 - 2026-11-06. Review 4.2-01. Added value over lidar is measured on an unmatched population (every pad and every eligible clearing clear of pads and audit blocks). The caliper-matched set stays for T3 only. On the matched set T4 returns `not_identifiable`, because matching on the lidar covariates makes lidar uninformative by design. Made by the review-fix agent, change freely.
 - 2026-11-06. Review 4.2-02. Tie points are a QC gate. T1 cannot give success without tie points or with a median RMSE above `max_registration_frac_pixel` times the native pixel. T2 drops scenes over the limit and refuses a sensor whose T1 run had no tie points. A diluted contrast below delta_T can still give failure, because misregistration only lowers contrast further. Made by the review-fix agent, change freely.
 - 2026-11-06. Review 4.2-03. `latest_run` picks the run with the latest `written` time in `_PROVENANCE.json`. Runs without provenance never finished and are skipped. Made by the review-fix agent, change freely.
@@ -21,7 +26,5 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
-- `added_value.max_undefined`. The share of undefined bootstrap draws T4 may tolerate. It is 0 now.
 - Sensor scaling must be verified against the product guides. The constants live in `src/config_4_2.json` under `sensors`. Landsat TIRS uses `lst_scale` 0.00341802 and `lst_offset` 149.0 (Collection 2 Level 2 ST_B10). ECOSTRESS uses `lst_scale` 1.0 and `lst_offset` 0.0. That holds only for an already scaled delivery. The raw ECO2LSTE product stores LST as uint16 with scale 0.02. Native pixels are 100 m (Landsat) and 70 m (ECOSTRESS). They are read in `src/_thermal_extract_samples_9t.py` (`scene_lst`) and `src/_thermal_gate_contrast_9t.py`. T2 refuses LST outside `lst_plausible_K`, which catches a wrong scale but not a small offset error.
 - Cloud QA bit layouts must be verified. Landsat `qa_rule` treats QA_PIXEL bits 0 to 5 as bad (fill, dilated cloud, cirrus, cloud, cloud shadow, snow). ECOSTRESS `qa_rule` keeps QC bits 0 and 1 equal to 0 or 1 (best or nominal). The band index `qa_band` assumes LST in band 1 and QA in band 2 (Landsat) or 3 (ECOSTRESS). They live in `src/config_4_2.json` and are applied in `qa_bad` in `src/_thermal_extract_samples_9t.py`.
-- Whether the unmatched population for T4 should also include the forest controls. It holds pads and clearings now.

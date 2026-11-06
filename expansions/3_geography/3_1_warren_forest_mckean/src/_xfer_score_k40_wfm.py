@@ -6,9 +6,11 @@ Purpose
     test blocks (no seam clipping or duplicates, review F03), cut at ek.policy_for(task) (pit 0.35, pad 0.525),
     scored by mean probability, credited to a block by centroid, deduped, ranked, and cut at
     round(40 x test km2). Matching to the blind truth floors is greedy one-to-one at IoU 0.3 in score order.
-    The difference against the 3.0 reference tables uses independent block bootstraps (B = 2000) and ek.decide
-    against minus the margin. Fewer than 15 test blocks adds a permutation p-value and the unreliable-bootstrap
-    note. Secondary. Density-scaled K (c fixed from 9t), K = 30, super-block resampling, the low-density stratum
+    The difference against the 3.0 reference tables uses independent block bootstraps (B = 2000) against minus
+    the margin (config margin_delta, default 0.03 recall). Only an area in config multiplicity.family is gated.
+    Its gate is Holm over that family (3.0 _transfer_holm_gate, max_undefined 0). The JSON carries holm_input
+    for the family step. Fewer than 15 test blocks adds a permutation p-value and the unreliable-bootstrap
+    note. Secondaries are reported, never gated. Density-scaled K (c fixed from 9t), K = 30, super-block resampling, the low-density stratum
     (or an explicit "empty" record with its reason), calibration of candidate scores, target feature density.
 
 Guards (review F08 / G-06)
@@ -85,15 +87,17 @@ def reference_counts(tables_path: Path, policy: dict, k: float, k_sens: float) -
 
 
 def score_transfer(cands, truth, test_blocks, ref: pd.DataFrame, *, margin, B, seed, k=40.0, k_sens=30.0,
-                   superblock_side=None, ref_blocks_geo=None, policy=None):
-    """All statistics for one arm. Pure function of its inputs (testable on synthetic data)."""
+                   superblock_side=None, ref_blocks_geo=None, policy=None, gate=None, family=None):
+    """All statistics for one arm. Pure function of its inputs (testable on synthetic data).
+    Only the primary is gated, and only when gate names a declared primary (Holm family). K30, density-scaled
+    and super-block rows are reported, never gated."""
     pol = policy or xl.policy("pit")
     res = {}
     s40, per40, sc, st = xl.score_area(cands, truth, test_blocks, k_per_km2=k, policy=pol)
     s30, per30, _, _ = xl.score_area(cands, truth, test_blocks, k_per_km2=k_sens, policy=pol)
     ref_rows40 = list(zip(ref.hits, ref.n_truth))
     res["primary"] = {**s40, **xl.diff_vs_reference(list(zip(per40.hits, per40.n_truth)), ref_rows40,
-                                                     margin=margin, B=B, seed=seed)}
+                                                     margin=margin, B=B, seed=seed, gate=gate, family=family)}
     if "hits_k30" in ref:
         res["k30"] = {**s30, **xl.diff_vs_reference(list(zip(per30.hits, per30.n_truth)),
                                                      list(zip(ref.hits_k30, ref.n_truth)), margin=margin, B=B, seed=seed)}
@@ -147,7 +151,7 @@ def apply_lineage(res: dict, ok: bool, why: list[str]) -> None:
     res["provisional"] = not ok
     if ok:
         return
-    for key in ("primary", "k30", "density_scaled", "superblock"):
+    for key in ("primary",):                   # secondaries are never gated, so they have no decision to hold
         if key in res and "decision" in res[key]:
             res[key]["decision_if_confirmatory"] = res[key]["decision"]
             res[key]["decision"] = DESCRIPTIVE
@@ -209,6 +213,11 @@ def main(argv=None) -> int:
     ok, why = tl.confirmatory_ok(ref_meta.get("checkpoint"), infer["checkpoint"])
     ref_geo = gpd.read_file(xl.resolve_path(cfg["reference"]["blocks_9t"]), layer="blocks")
     margin = (cfg.get("margin_delta") or {}).get(a.area)
+    if margin is None:
+        raise SystemExit(f"config margin_delta.{a.area} is unset (user default 0.03 recall)")
+    mult = cfg.get("multiplicity") or {}
+    family = list(mult.get("family") or [])
+    gate = a.area if a.area in family else None      # companions and other non-primary areas are never gated
     test = roles[(roles.role == "test") & roles.eligible.astype(bool)]
     run = ek.new_run(cfg["exp_id"], f"xfer_score_{a.area}", {"area": a.area, "prereg": prereg_hash, "policy": pol,
                                                              "margin": margin, "superblock": a.superblock_side},
@@ -216,9 +225,13 @@ def main(argv=None) -> int:
     cands = candidates_in_blocks(prob, test, policy=pol)
     res, per, sc, st = score_transfer(cands, truth, test, ref, margin=margin, B=cfg["bootstrap_B"],
                                       seed=cfg["master_seed"], superblock_side=a.superblock_side, ref_blocks_geo=ref_geo,
-                                      policy=pol)
+                                      policy=pol, gate=gate, family=family)
+    res["multiplicity"] = {"method": xl.hg.METHOD, "family": family, "gated": gate is not None,
+                           "max_undefined": xl.hg.MAX_UNDEFINED}
     res["low_density_stratum"] = low_density_stratum(roles, lambda b: candidates_in_blocks(prob, b, policy=pol), truth, pol)
     apply_lineage(res, ok, why)
+    if gate is not None and ok:                 # only a confirmatory primary enters the Holm family step
+        res["holm_input"] = res["primary"].get("holm_input")
     stamp = [] if prereg_hash else ["NOT A PREREGISTERED SCORE"]
     if res["provisional"]:
         stamp.append("PROVISIONAL")

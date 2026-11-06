@@ -179,7 +179,7 @@ def main(argv=None) -> int:
                 prereg_sha256=prereg_hash(cfg), endpoint_inputs_read=[],
                 statement=("Scenario rankings are rules, not findings. Candidate rows are " + th.CONDITIONAL + "."))
     js = th.write_json(th.outp(cfg, "ranks_summary"), summ)
-    ek.write_provenance(run, inputs=[th.resolve(cfg["outputs"][k]) for k in ("exposure_csv", "hazard_csv")],
+    rio.write_provenance(run, inputs=[th.resolve(cfg["outputs"][k]) for k in ("exposure_csv", "hazard_csv")],
                         outputs=[out, js], params=summ)
     print(json.dumps({k: summ[k] for k in ("top_n", "n_sites", "top_n_jaccard_between_scenarios",
                                            "top_n_candidate_share")}, indent=1))

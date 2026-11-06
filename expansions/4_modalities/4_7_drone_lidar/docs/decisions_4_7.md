@@ -2,6 +2,8 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+- 2026-11-06. SMRF parameters `ladder.reclass`. User accepted the default PDAL filters.smrf defaults (cell 1, slope 0.15, window 18, threshold 0.5, scalar 1.25) ("take defaults"). Change freely.
+
 
 - 2026-11-06. The ladder is nested. The shuffle seed depends on the seed index only, so each lower rung is a subset of every higher rung with the same seed index. The density curve is a paired sensitivity, so nesting removes between-rung sampling noise. The framework asked for seeded random thinning and did not require nesting. Every run checks the nesting. Made by the review-fix agent, change freely.
 - 2026-11-06. Every rung is reclassified. Class 2 is reset to 1 and PDAL filters.smrf is rerun on the thinned points through the PDAL CLI. The native rung is reclassified the same way, so all rungs share one classifier. The native class is kept as the NativeClass extra dimension for the count check (review 4.7-01). Made by the review-fix agent, change freely.
@@ -18,4 +20,5 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. Results are labelled conditional on lidar-visible sites unless S1 shows selection independent of lidar. Unknown selection counts as lidar-based. made by the build agent, change freely.
 
 ## Needs user decision
-- SMRF parameters for the drone clouds (proposed PDAL defaults in `ladder.reclass`). Tune them on the native cloud against its vendor ground once R2 arrives.
+
+None open after the 2026-11-06 defaults.

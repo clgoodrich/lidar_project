@@ -40,12 +40,14 @@
     "seeds": [0, 1, 2], "epochs": 40, "patch_px": 256, "batch": 8, "lr": 3e-4, "samples_per_epoch": 2000,
     "n_classes": 3, "focal_alpha": [0.25, 1.0, 0.75], "focal_gamma": 2.0, "overlap_px": 64,
     "inner_val_share_historical": 0.15,
-    "audit_model_fold": null,
-    "_audit_model_fold_note": "user decision. Which fold model scores the sealed audit blocks in --audit-once. Null refuses (review 7.1-02)"
+    "audit_model_fold": 0,
+    "_audit_model_fold_note": "2026-11-06. User accepted the default fold 0 (take defaults). The fold model that scores the sealed audit blocks in --audit-once. Change freely"
   },
   "scoring": {"task": "pit_floor", "k_per_km2": 40.0, "B": 2000,
               "_note": "cutoff, min area, IoU and matching come from ek.policy_for(task) via sc.load_policy (F02, 2026-11-06). The old thr 0.10 is gone. k_per_km2 is kept for pooled recall and equals the policy value"},
-  "G": null,
-  "_G_note": "User decision, set before scoring (here or in the preregistration JSON, key G). Null gives an inconclusive decision. G is never derived from the runs it judges and never floored. G_raw (A0 f=0.50 minus f=0.25) is reported as a diagnostic only (review 7.2-01, 2026-11-06)",
+  "G": 0.02,
+  "_G_note": "2026-11-06. User accepted the default G 0.02 recall (take defaults). Change freely, before scoring. A preregistration G is used only if this is null. G is never derived from the runs it judges and never floored. G_raw (A0 f=0.50 minus f=0.25) is reported as a diagnostic only (review 7.2-01)",
+  "multiplicity": "holm over declared primaries. 7.1 declares one primary, so the Holm-adjusted value equals the raw one. Secondaries are reported, never gated (user default 2026-11-06)",
+  "max_undefined": 0,
   "runtime_bench": {"batch_sizes": [8, 16, 32], "patch_sizes": [128, 256], "steps": 50}
 }

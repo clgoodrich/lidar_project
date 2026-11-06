@@ -19,6 +19,7 @@ import _transfer_score_lib as tl  # noqa: E402
 import _transfer_score_run as sr  # noqa: E402
 import _transfer_prereg_fill as pf  # noqa: E402
 import _transfer_decision_report as dr  # noqa: E402
+import _transfer_holm_gate as hg  # noqa: E402
 import _transfer_ci_width_9t as cw  # noqa: E402
 import _transfer_baseline_repeat_9t as br  # noqa: E402
 
@@ -115,6 +116,7 @@ def _fields(tmp_path, prob, bp, truth, **ck):
              model_policy="single_fold:0", adaptation_area="none", test_area="synthetic", audit_file="none",
              labellers="test", density_c=5.0)
     f["checkpoint"] = {"family": "pit/unet_iso_cv5", "lineage": "isolated", "sha256": {"0": "a" * 64}, **ck}
+    f["multiplicity"] = {"method": "holm", "gate": "synth", "family": ["synth"], "max_undefined": 0.0}
     f["scoring"] = {"area": "synth", "task": "pit", "prob": str(prob), "blocks": str(bp), "truth": truth,
                     "truth_id": "pit_inside_id", "k": 40, "seed": 3, "B": 100, "void_cap": None,
                     "cutoff": 0.35, "iou": 0.3, "dedupe": "truth_matched", "order": "score", "mode": "primary"}
@@ -373,3 +375,86 @@ def test_g02_fill_and_ref_tables_schema(tmp_path):
     assert set(blk) == {"0", "1"} and pol["cutoff"] == 0.35 and meta["footprint"] == "all_blocks"
     assert tl.ref_block_counts(blk, 50.0, "global").hits.sum() == 0         # K = 1, the 0.95 decoy wins
     assert tl.ref_block_counts(blk, 100.0, "per_group").hits.sum() == 1     # one per fold, block 0 keeps its hit
+
+
+# ----------------------------------------------------------------------------- user defaults 2026-11-06
+def test_defaults_in_config():
+    """take defaults. void cap 0.5, round robin primary, margin 0.03, Holm with max_undefined 0."""
+    sd = tl._CFG["scoring_defaults"]
+    assert tl.VOID_CAP_DEFAULT == 0.5 and sd["zero_feature_fill"] == "round_robin"
+    assert sd["margin_default"] == 0.03
+    assert sd["multiplicity"]["method"] == "holm" and sd["multiplicity"]["max_undefined"] == 0.0
+    assert hg.MAX_UNDEFINED == 0.0 and pf.example_fields()["margin"] == 0.03
+
+
+def test_default_void_cap_honoured():
+    """Cap None falls back to 0.5. A block 4/16 void is kept, one 12/16 void is dropped."""
+    import geopandas as gpd
+    from rasterio.transform import from_origin
+    from shapely.geometry import box
+    prob = np.zeros((6, 10), np.float32)
+    tf = from_origin(0, 6, 1, 1)
+    prob[1:5, 1:5][:, :1] = np.nan             # left block 4 of 16 void (0.25)
+    prob[1:5, 5:9][:, :3] = np.nan             # right block 12 of 16 void (0.75)
+    blocks = gpd.GeoDataFrame({"block_id": [1, 2]}, geometry=[box(1, 1, 5, 5), box(5, 1, 9, 5)], crs="EPSG:6346")
+    eb = tl.eligible_blocks(blocks, prob, tf, void_cap=None)
+    assert eb.void_cap.tolist() == [0.5, 0.5]
+    assert eb.eligible.tolist() == [True, False]
+
+
+def test_holm_oracle():
+    """Hand Holm. p (a .01, b .04, c .03), m 3. a 3x.01 = .03. c max(.03, 2x.03) = .06. b max(.06, .04) = .06."""
+    adj = hg.holm({"a": 0.01, "b": 0.04, "c": 0.03})
+    assert adj == pytest.approx({"a": 0.03, "b": 0.06, "c": 0.06})
+    adj = hg.holm({"a": 0.01, "b": float("nan")})          # NaN counts as 1 and stays NaN
+    assert adj["a"] == pytest.approx(0.02) and np.isnan(adj["b"])
+
+
+def test_one_sided_share_and_undefined():
+    d = [-0.05, -0.04, 0.0, 0.01]
+    assert hg.one_sided_p(d, 0.03) == 0.5                   # two of four at or below -0.03
+    assert hg.one_sided_p(d, 0.03, "superiority") == 1.0    # all four at or below +0.03
+    assert hg.one_sided_p(d, -0.045, "superiority") == 0.25 # one of four at or below -0.045
+    assert np.isnan(hg.one_sided_p(d + [float("nan")], 0.03))   # max_undefined 0
+
+
+def test_family_gate_exact_verdicts():
+    """One primary at p .02 passes alone and fails to pass in a family of three (Holm .06)."""
+    g = {"lo": -0.02, "hi": 0.05, "margin": 0.03, "bound_kind": "noninferiority"}
+    alone = hg.family_gate({"x": {**g, "p_one_sided": 0.02}})
+    assert alone["x"]["decision"] == "success" and alone["x"]["p_holm"] == pytest.approx(0.02)
+    fam = hg.family_gate({"x": {**g, "p_one_sided": 0.02}, "y": {**g, "p_one_sided": 0.5},
+                          "z": {**g, "p_one_sided": 0.5, "lo": -0.2, "hi": -0.05}})
+    assert fam["x"]["p_holm"] == pytest.approx(0.06) and fam["x"]["decision"] == "inconclusive"
+    assert fam["z"]["decision"] == "failure" and fam["y"]["decision"] == "inconclusive"
+    assert hg.holm_partial(0.02, -0.02, 0.05, 0.03, "noninferiority", 1)[0] == "success"
+    assert hg.holm_partial(0.02, -0.02, 0.05, 0.03, "noninferiority", 2)[0] == "inconclusive"
+    assert hg.holm_partial(0.01, -0.02, 0.05, 0.03, "noninferiority", 2)[0] == "success"   # .01 < .05/4
+
+
+def test_decision_family_of_one_matches_decide_and_family_cli(tmp_path):
+    """A family of one equals ek.decide. The CLI refuses an incomplete family and applies Holm to a full one."""
+    good = pd.DataFrame({"hits": [9] * 30, "n_truth": [10] * 30, "area_km2": 0.14})
+    r = dr.decision(good, good, 0.03, 400, 1)
+    assert r["verdict"] == r["verdict_unadjusted"] == "success" and r["p_one_sided"] == 0.0
+    r2 = dr.decision(good, good, 0.03, 400, 1, gate="a", family=["a", "b"])
+    assert r2["holm_input"]["family_size"] == 2
+    pa, pb = tmp_path / "a.json", tmp_path / "b.json"
+    pa.write_text(json.dumps({"holm_input": r2["holm_input"]}))
+    with pytest.raises(SystemExit, match="not scored yet"):
+        hg.main(["--inputs", str(pa), "--out", str(tmp_path / "f.json")])
+    hb = dict(r2["holm_input"], gate="b", p_one_sided=0.4)
+    pb.write_text(json.dumps({"holm_input": hb}))
+    assert hg.main(["--inputs", str(pa), str(pb), "--out", str(tmp_path / "f.json")]) == 0
+    f = json.loads((tmp_path / "f.json").read_text())
+    assert f["a"]["p_holm"] == 0.0 and f["a"]["decision"] == "success"
+    assert f["b"]["p_holm"] == pytest.approx(0.4) and f["b"]["decision"] == "inconclusive"
+
+
+def test_prereg_multiplicity_checked(tmp_path):
+    prob, bp, truth = make_area(tmp_path)
+    f = _fields(tmp_path, prob, bp, truth)
+    bad = dict(f, multiplicity={"method": "bonferroni", "gate": "synth", "family": ["synth"]})
+    assert any("holm" in x for x in pf.check(bad))
+    bad = dict(f, multiplicity={"method": "holm", "gate": "synth", "family": ["other"]})
+    assert any("gate must be" in x for x in pf.check(bad))

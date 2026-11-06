@@ -166,3 +166,14 @@ def test_crossing():
     import _drone_density_curve_oc as s5
     v = s5.crossing(np.array([10.0, 5.0, 1.0]), np.array([1.0, 0.95, 0.5]), 0.90)
     assert 1.0 < v < 5.0
+
+
+def test_smrf_defaults_2026_11_06():
+    """Default accepted 2026-11-06. SMRF parameters are the PDAL filters.smrf defaults (cell 1, slope 0.15,
+    window 18, threshold 0.5, scalar 1.25, from the PDAL documentation) and reach the pipeline unchanged."""
+    import _drone_thin_ladder_oc as s3
+    rc = dk.load_cfg()["ladder"]["reclass"]
+    want = {"cell": 1.0, "slope": 0.15, "window": 18.0, "threshold": 0.5, "scalar": 1.25}
+    assert {k: rc[k] for k in want} == want and rc["method"] == "smrf"
+    st = [s for s in s3.reclass_stages(rc, 2) if s["type"] == "filters.smrf"]
+    assert len(st) == 1 and {k: st[0][k] for k in want} == want

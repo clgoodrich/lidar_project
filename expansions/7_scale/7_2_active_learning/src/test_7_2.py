@@ -65,6 +65,8 @@ def _cfg(tmp: Path) -> dict:
                          discovery_extra_blocks=a("none.gpkg"), base_labels=a("lbl.tif"))
     cfg["inputs"]["truth"] = {**a("ann.gpkg"), "layer": "pit_inside"}
     cfg["inputs"]["oof_prob"] = {"key": "expansions", "rel": str((tmp / "prob_fold{k}.tif").resolve())}
+    assert cfg["split"]["buffer_m"] == 100.0, "P1 derived pit buffer (2026-11-06)"
+    cfg["split"]["buffer_m"] = 0.0                   # fixture blocks are small. Buffer logic is tested on its own
     cfg["split"]["stopping_blocks"] = 6
     cfg.update(budget_minutes=240, batch_minutes=60)
     cfg["cost_minutes"].update(C=6.0, W=30.0)
@@ -111,10 +113,13 @@ def test_split_items_replay_curves(tmp_path):
     m = R.groupby("round")["recall_stop"].mean()
     small = (m.diff().abs() < cfg["stop"]["delta"]).to_numpy()
     stop_hand = next((int(m.index[i]) for i in range(1, len(m)) if small[i] and small[i - 1]), None)
-    assert cfg["G"] is None
+    assert cfg["G"] == 0.02, "user default G 0.02 (2026-11-06)"
     res = cs.analyse(cfg, cur, scores, incl, r["stop_cands"], r["stop_blocks"], r["oracle"], 100, tmp_path / "t", tmp_path / "f")
-    assert res["G"]["G"] is None and abs(res["G"]["G_raw"] - g_raw) < 1e-12, "G_raw is reported unfloored"
-    assert res["primary"]["decision"] == cs.G_UNSET, "7.2-01. An unset G is inconclusive, never derived"
+    assert res["G"]["G"] == 0.02 and abs(res["G"]["G_raw"] - g_raw) < 1e-12, "G_raw is reported unfloored"
+    p = res["primary"]
+    want = ("void (fewer than 3 seeds)" if p["n_seeds"] < 3 else "success" if p["lo"] > 0.02
+            else "failure" if p["hi"] < 0.02 else "inconclusive")
+    assert p["G"] == 0.02 and p["decision"] == want, "the decision uses the configured G"
     assert res["stop_rule"]["enforced"] is True
     if stop_hand is not None:
         assert res["stop_rule"]["round"] == stop_hand and res["stop_rule"]["rounds_kept"] == stop_hand
@@ -124,6 +129,8 @@ def test_split_items_replay_curves(tmp_path):
     assert cs.analyse(cfg, cur, scores, incl, r["stop_cands"], r["stop_blocks"], r["oracle"], 100, tmp_path / "t",
                       tmp_path / "f")["primary"]["decision"] == "failure"
     cfg["G"] = None
+    with pytest.raises(cs.GUnset):
+        cs.analyse(cfg, cur, scores, incl, r["stop_cands"], r["stop_blocks"], r["oracle"], 100, tmp_path / "t", tmp_path / "f")
     res = cs.analyse(cfg, cur, scores, incl, r["stop_cands"], r["stop_blocks"], r["oracle"], 100, tmp_path / "t",
                      tmp_path / "f", prereg={"G": 1.0, "_path": "prereg.json"})
     assert res["G"]["source"].startswith("preregistration") and res["primary"]["decision"] == "failure"
@@ -192,9 +199,7 @@ def test_review_package_ingest(tmp_path, monkeypatch):
     args = lambda pol: ["--config", str(tmp_path / "cfg.json"), "--round", "1", "--policy", pol, "--live",  # noqa: E731
                         str(tmp_path), "--split", str(tmp_path / "split.json"), "--items-geo", str(tmp_path / "items.gpkg")]
     (tmp_path / "cfg.json").write_text(json.dumps(cfg))
-    assert rt.main(args("U")) == 2, "7.2-02. An undeclared seed set refuses the retrain"
-    cfg["seed_label_blocks"] = []
-    (tmp_path / "cfg.json").write_text(json.dumps(cfg))
+    assert cfg["seed_label_blocks"] == [], "user default [] (acquired labels only, 2026-11-06)"
     assert rt.main(args("U")) == 0
     man = json.loads((rd / "train_U" / "train_manifest.json").read_text())
     assert man["pixels"]["forbidden_px"] > 0 and (rd / "train_U" / "labels_U_r01.tif").exists()

@@ -214,14 +214,14 @@ def _synthetic(tmp_path):
     pc[:, 1] += Y0 - X0
     score = np.r_[np.linspace(0.99, 0.80, 16), np.linspace(0.79, 0.50, 8)]
     raw = gpd.GeoDataFrame(dict(score=score, dup_on_pit=[1] * 16 + [0] * 8, near_pit_m=[0.0] * 16 + [60.0] * 8,
-                                fold=0, thr_used=0.5),
+                                fold=0, thr_used=0.35),
                            geometry=[Point(x, y).buffer(2) for x, y in pc], crs=CRS)
     cand = tmp_path / "cand.gpkg"
     raw.iloc[:16].to_file(cand, layer="matched", driver="GPKG")
     raw.iloc[16:].to_file(cand, layer="undecided", driver="GPKG")
     padp = tmp_path / "pad_products.gpkg"
     pad_geoms = [Point(x, y).buffer(15) for x, y in pc[:8]]
-    gpd.GeoDataFrame(dict(score=np.linspace(0.9, 0.6, 8)), geometry=pad_geoms, crs=CRS).to_file(
+    gpd.GeoDataFrame(dict(score=np.linspace(0.9, 0.6, 8), thr_used=0.525), geometry=pad_geoms, crs=CRS).to_file(
         padp, layer="model_geometry", driver="GPKG")
     ann = tmp_path / "ann.gpkg"
     gpd.GeoDataFrame(dict(pit_inside_id=np.arange(16)), geometry=list(raw.geometry[:16]), crs=CRS).to_file(
@@ -342,3 +342,52 @@ def test_other_states_refuses_non_metric_crs():
 def test_rel_paths_have_no_drive():
     p = th.rel(th.resolve("@exp:5.6/results/tables/x.csv"))
     assert p == "expansions/5_tasks/5_6_record_association/results/tables/x.csv"
+
+
+# ----------------------------------------------------------------------------- policy re-cut (defaults 2026-11-06)
+def test_config_cutoffs_are_the_policy_cutoffs():
+    cfg = json.loads((Path(__file__).resolve().parent / "config_5_6.json").read_text())
+    assert cfg["cutoff_used"]["pit"] == 0.35 and cfg["cutoff_used"]["pad"] == 0.525
+    assert cfg["cutoff_used"]["pit"] == th.ek.policy_for("pit")["cutoff"]
+    assert cfg["cutoff_used"]["pad"] == th.ek.policy_for("pad")["cutoff"]
+    assert cfg["dedupe"]["gap_m"] == 2.0
+    assert "records_pit_recut_policy_9t" in cfg["inputs"]["pit_candidates"]["path"]
+    assert "records_pad_recut_policy_9t" in cfg["inputs"]["pad_products"]["path"]
+
+
+def test_s0_refuses_a_product_cut_at_050(tmp_path):
+    """The old 0.50 products must not pass S0 once the config asks for the policy cutoffs."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    import _records_full_detector_output_9t as s0
+    cfg = json.loads((Path(__file__).resolve().parent / "config_5_6.json").read_text())
+    old = gpd.GeoDataFrame(dict(score=[0.9], thr_used=[0.50]), geometry=[box(X0, Y0, X0 + 4, Y0 + 4)], crs=CRS)
+    with pytest.raises(SystemExit, match="CUTOFF MISMATCH"):
+        s0.check_cutoff(old, cfg, "pit", "t")
+    with pytest.raises(SystemExit, match="CUTOFF UNKNOWN"):
+        s0.check_cutoff(old.drop(columns="thr_used"), cfg, "pad", "t")
+    s0.check_cutoff(old.assign(thr_used=0.525), cfg, "pad", "t")      # the right cutoff passes
+    bad = dict(cfg, cutoff_used={"pit": 0.50, "pad": 0.525})
+    with pytest.raises(SystemExit, match="not the policy cutoff"):
+        s0.check_cutoff(old, bad, "pit", "t")
+
+
+def test_recut_pad_threshold_counts_blobs(tmp_path, monkeypatch):
+    """cut_pads on a synthetic raster. Blob means 0.60 and 0.52 straddle 0.525, so 0.525 keeps one blob and 0.50
+    keeps two (hand count). Blobs are 20 x 20 px at 1 m, so 400 m2, above the 100 m2 minimum."""
+    import rasterio
+    from rasterio.transform import from_origin
+    import _records_policy_recut_9t as rc
+    prob = np.zeros((60, 60), np.float32)
+    prob[5:25, 5:25] = 0.60
+    prob[35:55, 35:55] = 0.52
+    d = tmp_path / "pad" / "unet"
+    d.mkdir(parents=True)
+    with rasterio.open(d / "pad_prob.tif", "w", driver="GTiff", width=60, height=60, count=1, dtype="float32",
+                       crs=CRS, transform=from_origin(X0, Y0 + 60, 1, 1)) as r:
+        r.write(prob, 1)
+    monkeypatch.setattr(rc.ek, "path_for", lambda key: tmp_path)
+    g, _ = rc.cut_pads(0.525)
+    assert len(g) == 1 and abs(g.score.iloc[0] - 0.60) < 1e-6 and set(g.thr_used) == {0.525}
+    g2, _ = rc.cut_pads(0.50)
+    assert len(g2) == 2

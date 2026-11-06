@@ -29,8 +29,9 @@ Outputs (<out>/<run_id>/)
 Run
     python expansions/7_scale/7_4_agency_tooling/src/_agency_cli_candidates.py check-env --out <folder>
     python expansions/7_scale/7_4_agency_tooling/src/_agency_cli_candidates.py run --lidar <laz folder> --out <folder> \
-        --k-per-km2-pit 40 --k-per-km2-pad 40
-    --model both needs explicit per-class budgets (shared or per-class K is an open decision, docs/decisions_7_4.md).
+        [--k-per-km2 40 | --k-per-km2-pit 40 --k-per-km2-pad 40]
+    The review budget is one budget per class (user default 2026-11-06). --model both gives each class its own
+    K, default config k_per_km2 = 40 per km2 each. The total review list is the sum of the class lists.
     --features stacks must match --crs (default EPSG:6346) in metres. --lidar tiles must be EPSG:6346 in metres.
     Known-well CSVs with lon/lat columns need --known-wells-crs. --calibration is repeatable, one file per model hash.
 """
@@ -252,24 +253,19 @@ def tile_footprints(df, crs):
 def review_budgets(a, cfg: dict, classes: list[str]) -> dict:
     """Review budget in candidates per km2, per class.
 
-    One model. --k-per-km2 (or its per-class flag), default config k_per_km2.
-    Both models. The plan says only that K "caps the output list". Whether K is one budget shared by pits
-    and pads, and how a shared budget would be split between two score scales, is not decided
-    (docs/decisions_7_4.md, Needs user decision). So --model both needs explicit per-class budgets.
+    One budget per class (config k_budget_mode per_class, user default 2026-11-06). Each class gets its
+    per-class flag, else --k-per-km2, else config k_per_km2 (40). The lists are never merged across the two
+    score scales. A per-class flag that disagrees with --k-per-km2 refuses.
     """
+    if cfg.get("k_budget_mode", "per_class") != "per_class":
+        raise Refused(f"k_budget_mode {cfg.get('k_budget_mode')!r} is not supported. Only per_class is defined")
     per = {"pit": a.k_per_km2_pit, "pad": a.k_per_km2_pad}
-    if len(classes) == 1:
-        c = classes[0]
+    out = {}
+    for c in classes:
         if per[c] is not None and a.k_per_km2 is not None and per[c] != a.k_per_km2:
             raise Refused(f"--k-per-km2 {a.k_per_km2} and --k-per-km2-{c} {per[c]} disagree")
         k = per[c] if per[c] is not None else (a.k_per_km2 if a.k_per_km2 is not None else cfg["k_per_km2"])
-        out = {c: float(k)}
-    else:
-        if a.k_per_km2 is not None or any(per[c] is None for c in classes):
-            raise Refused("--model both needs explicit per-class budgets --k-per-km2-pit and --k-per-km2-pad. "
-                          "A single K would be applied once per class and double the review list. "
-                          "Whether K is shared across classes is an open decision (docs/decisions_7_4.md)")
-        out = {c: float(per[c]) for c in classes}
+        out[c] = float(k)
     if any(not np.isfinite(v) or v < 0 for v in out.values()):
         raise Refused(f"review budgets must be finite and non-negative, got {out}")
     return out

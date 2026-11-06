@@ -5,6 +5,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-06 user accepted the default decisions, and the NISAR checkpoint deck
+
+- Scope. The user replied "take defaults" to the decision list. Each default is in its config and moved to "Decisions" in `expansions/*/*/docs/decisions_<id>.md`, marked as user-accepted. Not decided: GPU training, freezing the P1 split and P2 audit set, the 7.5 site count, the 6.4 depth source, and the items still under "Needs user decision".
+- Defaults. Holm over each expansion's primary gates, secondaries not gated. max_undefined 0. Margins 0.03 recall. G 0.02 (7.1, 7.2). void_cap 0.5. Round-robin fill. P1 buffer mode window, 2 sigma. Separate pad audit dry run. 5.6 dedupe 2 m and policy cutoffs. 5.5 all roads and pads at 0.525. 6.3 30 m. 6.6 lower-neighbour void obstacle. 7.4 K 40 per km2 per class. 7.5 link 15 m, merge 5 m, single-cluster strata collapsed. 4.x values as listed in each decisions file.
+- Transfer model for 3.4 to 3.7. No 9t model was trained on all 9t ground, so the five-fold ensembles `pit/unet_cv5` and `pad/unet_cv5_iso` (fold mean) are the provisional transfer model. Fine-tuning needs `init_checkpoint` (user decision).
+- Also set by the lead. 7.4 `frozen_cutoff` 0.10 to policy 0.35 and 0.525. 7.2 `split.buffer_m` 0 to 100 m (P1 derived pit buffer).
+- P1 dry run in window mode. Pit train blocks per fold 23, 12, 24, 20, 22 to 72, 71, 76, 74, 75. Pad 32, 16, 15, 16, 20 to 84, 82, 82, 82, 83. Sampler leaks 0 windows.
+- P2 pad dry run. 19 of 129 pad blocks, buffer 150 m, KS density p 0.882, slope p 0.588.
+- 5.6 re-cut at the policy cutoffs (`expansions/5_tasks/5_6_record_association/src/_records_policy_recut_9t.py`). Pit rows 677 to 768, pad 1005 to 996. Part of the pit change is newer fold rasters (2026-09-17), not the cutoff. Positive control 0.373 to 0.363. Orphan pit 0.043 to 0.015 [-0.108, 0.136]. Plugged pit 0.039 to 0.084 [0.012, 0.153].
+- Downstream. 5.4 D 656 to 733 [648, 782], K 810. 5.5 tile ratio 1.37 to 1.23, still inconclusive. 5.3 candidate sites 296 to 336, still unrankable. 6.1 sites 1,690 to 1,764. 6.6 unknown share O0 0.490 to 0.448.
+- Decisions now reached. 3.3 slope gate inconclusive, -0.012 [-0.063, 0.038]. 3.1 Warren no design cell passes the 2 delta width gate (best 0.061 against 0.06). 7.2 replay (exploratory, no audit, buffer 100 m) failure, U minus R 0.001 [-0.002, 0.003] below G 0.02, read at the stop round. 4.4 still CLOSE.
+- NISAR checkpoint deck for CIVE 6359. `nisar_writeup/nisar_checkpoint_slides_9t.pptx`, filled from `nisar_writeup/checkpoint-template.pptx` by `nisar_writeup/_make_checkpoint_slides.py`. New site map `nisar_writeup/figures/nisar_site_map_9t.png` by `nisar_writeup/_make_checkpoint_map.py` (650 pads, 506 pits, pads #1F5FA8 and pits #D97706 from the validated lost/found palette). Incidence 39, 47 and 41 degrees from `data/9t/results/nisar/nisar_lidar_sim_match_summary_9t.json`.
+
 ## 2026-11-06 fixes for both expansion reviews
 
 - Scope. Every finding in `docs/plans/expansion_adversarial_review_20261106.md` and `docs/plans/expansion_consolidated_review_20261106.md`. The lead fixed the shared toolkit first. Seven agents then fixed the groups in parallel, each in its own folders. No GPU training, no downloads, the audit set is not frozen.

@@ -14,6 +14,10 @@ Purpose
     Arm C. Random 250 m cells fully inside the reserved area, excluding cells within 50 m of an Arm A or
            B site. Each cell is searched in full. DEP wells inside a drawn cell are listed as seeded
            controls in the private key (search sensitivity, S4).
+    Single-cluster strata (user default 2026-11-06). Before the draw, a frame stratum with fewer than two
+           clusters is merged with the adjacent stratum of the same arm (config strata). It would otherwise
+           give one PSU and an unidentified variance. Merges are listed in the draw summary and the merged
+           stratum carries both names joined by "+".
     Two files. The blind sample has no score, no record status and no stratum name that reveals either.
     The private key holds them for the analysis. Both are hashed.
 
@@ -117,6 +121,38 @@ def allocate(sizes: dict, n: int, floor: int) -> dict:
     return {h: min(sizes[h], base[h] + add[h]) for h in sizes}
 
 
+def collapse_single_cluster(df: pd.DataFrame, order: list[str], strat_col: str = "stratum",
+                            cluster_col: str = "cluster_id", group=None) -> tuple[pd.DataFrame, list[dict]]:
+    """Merge every stratum with fewer than two distinct clusters into its adjacent stratum (user default 2026-11-06).
+
+    order   stratum labels in adjacency order (one arm). Labels missing from df are skipped.
+    group   optional function label -> group key. A neighbour in the same group is preferred (Arm A morphology).
+    The next stratum is preferred, then the previous one. Repeats until every stratum has two clusters or one
+    stratum is left. Returns the relabelled frame and the merge log."""
+    d = df.copy()
+    seq = [h for h in order if (d[strat_col] == h).any()]
+    seq += sorted(set(d[strat_col]) - set(seq), key=str)
+    grp = group or (lambda h: None)
+    log = []
+    while len(seq) > 1:
+        nclu = {h: d.loc[d[strat_col] == h, cluster_col].nunique() for h in seq}
+        bad = [h for h in seq if nclu[h] < 2]
+        if not bad:
+            break
+        h = bad[0]
+        i = seq.index(h)
+        nb = [j for j in (i + 1, i - 1) if 0 <= j < len(seq)]
+        same = [j for j in nb if grp(seq[j]) == grp(h)]
+        j = (same or nb)[0]
+        a, b = sorted((i, j))
+        pa, pb = seq[a].rpartition("|"), seq[b].rpartition("|")
+        new = (f"{pa[0]}|{pa[2]}+{pb[2]}" if pa[1] and pa[0] == pb[0] else f"{seq[a]}+{seq[b]}")
+        log.append({"merged": [seq[a], seq[b]], "into": new, "reason": f"{h} has {nclu[h]} cluster(s)"})
+        d.loc[d[strat_col].isin([seq[a], seq[b]]), strat_col] = new
+        seq[a:b + 1] = [new]
+    return d, log
+
+
 def stratified_draw(df: pd.DataFrame, strat_col: str, alloc: dict, seed: int) -> pd.DataFrame:
     out = []
     for i, (h, g) in enumerate(sorted(df.groupby(strat_col), key=lambda t: str(t[0]))):
@@ -136,11 +172,19 @@ def arm_a(cfg, feats, wells, marks, frame_geom):
         raise AssertionError("no drawn features inside the Arm A frame")
     f = attach_era(f, wells, rules, dep["spud_col"], dep["id_col"], marks)
     f["stratum"] = f["morph"] + "|" + f["era"]
+    collapsed = []
+    st = cfg.get("strata", {})
+    if st.get("collapse_single_cluster"):
+        era = {e: i for i, e in enumerate(st["era_order"])}
+        order = sorted(f["stratum"].unique(), key=lambda h: (h.split("|")[0], era.get(h.split("|")[-1], len(era)), h))
+        f, collapsed = collapse_single_cluster(f, order, group=lambda h: h.split("|")[0])
     alloc = allocate(f["stratum"].value_counts().to_dict(), cfg["arm_A"]["n"], cfg["arm_A"]["floor_per_stratum"])
     s = stratified_draw(f, "stratum", alloc, ek.child_seed(cfg["master_seed"], 0, 1))
     s["arm"] = "A"
     s["score"] = np.nan
-    return gpd.GeoDataFrame(s, geometry="geometry", crs=feats.crs), f
+    g = gpd.GeoDataFrame(s, geometry="geometry", crs=feats.crs)
+    g.attrs["collapsed"] = collapsed
+    return g, f
 
 
 def arm_b_frame(cands: pd.DataFrame) -> pd.DataFrame:
@@ -174,11 +218,22 @@ def arm_b(cfg, cands: pd.DataFrame, frame_geom=None, frame_sha256: str = ""):
     c = c.sort_values(["score", "cand_id"], ascending=[False, True]).reset_index(drop=True)
     c["stratum"] = [f"band{b + 1}" for b in pd.qcut(np.arange(len(c)), nb, labels=False)]
     per = cfg["arm_B"]["n"] // nb
-    alloc = {h: min(per, (c["stratum"] == h).sum()) for h in c["stratum"].unique()}
+    bands = [f"band{i + 1}" for i in range(nb)]
+    alloc_n = {h: per for h in bands}
+    collapsed = []
+    if cfg.get("strata", {}).get("collapse_single_cluster"):
+        if "cluster_id" not in c.columns:
+            c["cluster_id"] = c["cand_id"].astype(str)
+        c, collapsed = collapse_single_cluster(c, bands)
+        for m in collapsed:                                  # a merged band keeps the allocation of both parts
+            alloc_n[m["into"]] = sum(alloc_n.pop(x) for x in m["merged"])
+    alloc = {h: min(alloc_n.get(h, per), (c["stratum"] == h).sum()) for h in c["stratum"].unique()}
     s = stratified_draw(c, "stratum", alloc, ek.child_seed(cfg["master_seed"], 0, 2))
     s["arm"] = "B"
     s["frame_sha256"] = frame_sha256
-    return gpd.GeoDataFrame(s, geometry=gpd.points_from_xy(s["cx"], s["cy"]), crs=cfg["crs"])
+    g = gpd.GeoDataFrame(s, geometry=gpd.points_from_xy(s["cx"], s["cy"]), crs=cfg["crs"])
+    g.attrs["collapsed"] = collapsed
+    return g
 
 
 def arm_c(cfg, reserved, sites, wells):
@@ -312,6 +367,7 @@ def draw(cfg: dict, out: Path, force: bool = False) -> dict:
                         params={k: cfg[k] for k in ("arm_A", "arm_B", "arm_C", "era_rules")},
                         seeds={"master": cfg["master_seed"]})
     return {"n_sites": len(blind), "by_arm": blind["arm"].value_counts().to_dict(), "frame_sources": frame_sources,
+            "collapsed_strata": {"A": a.attrs.get("collapsed", []), "B": (b.attrs.get("collapsed", []) if b is not None else [])},
             "missing_arms": [n for n, x in (("B", b), ("C", c)) if x is None]}
 
 

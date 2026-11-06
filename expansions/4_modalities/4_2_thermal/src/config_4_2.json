@@ -175,7 +175,9 @@
     "_proxy_note": "Pad minus matched clearing surface difference before dilution. null means not yet measured. The gate then reports only the break-even dT = delta_T / median fill",
     "spread_K": null,
     "n_offsets": 16,
-    "bootstrap_B": 2000
+    "bootstrap_B": 2000,
+    "max_undefined": 0.0,
+    "_max_undefined_note": "T3 bootstrap. 0 as for T4. 2026-11-06 user accepted default (\"take defaults\"). Change freely"
   },
   "season_windows": {
     "leaf_off": [
@@ -244,7 +246,7 @@
   },
   "added_value": {
     "k_per_km2": 40.0,
-    "delta_gain": 0.05,
+    "delta_gain": 0.03,
     "lidar_features": [
       "area_m2",
       "chm_mean_m",
@@ -252,8 +254,18 @@
       "aspect_sin",
       "aspect_cos"
     ],
-    "_delta_gain_note": "User decision. Placeholder 0.05 recall at K",
+    "_delta_gain_note": "Useful gain 0.03 recall at K. 2026-11-06 user accepted default (\"take defaults\"). Change freely",
     "max_undefined": 0.0,
-    "_max_undefined_note": "Share of bootstrap draws allowed to be undefined (a resample with one class or no truth). 0 means any undefined draw gives an undefined interval and an inconclusive verdict (SH-01). User decision"
-  }
+    "_max_undefined_note": "Share of bootstrap draws allowed to be undefined. 0 means any undefined draw gives an undefined interval and an inconclusive verdict (SH-01). 2026-11-06 user accepted default (\"take defaults\"). Change freely"
+  },
+  "primary_gate": {
+    "primaries": [
+      "T3",
+      "T4"
+    ],
+    "method": "holm",
+    "alpha": 0.05,
+    "_note": "Holm over the declared primaries only (T3, T4), one-sided at alpha / 2 per family, in _thermal_primary_holm_9t.py. Secondaries are reported, never gated. 2026-11-06 user accepted default (\"take defaults\"). Change freely"
+  },
+  "_t4_population_note": "T4 unmatched population is pads and clearings only. Forest controls stay out. 2026-11-06 user accepted default (\"take defaults\"). Change freely"
 }

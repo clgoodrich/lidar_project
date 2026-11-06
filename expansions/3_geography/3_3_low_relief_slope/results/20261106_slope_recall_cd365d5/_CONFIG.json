@@ -1,0 +1,152 @@
+{
+  "B": 2000,
+  "_doc": "Config for expansion 3.3 (low-relief slope stratification, then edits). Path specs resolve through expkit (path_for / area_dir / exp_dir). Items marked assumed are not held yet; the scripts fail with a message naming them.",
+  "_footprint_note": "User confirmed the all-block footprint on 2026-11-06 (take defaults). The 29 pit-free blocks are scored, as targets are.",
+  "_margin_note": "User accepted the default 0.03 recall on 2026-11-06 (take defaults). Loss in recall points that would change the decision to try a flat county. Change freely.",
+  "_proposal_note": "Review F02. Primary is ek.policy_for('pit') (0.35 in every fold, which equals the archival leave-one-fold-out cutoff). loo_max_recall and fixed (proposal_thr 0.10, the fw_00 sensitivity) are sensitivities only. Changed 2026-11-06.",
+  "area_gate": {
+    "area": "il_cumberland",
+    "gb": 3.61,
+    "project": "IL_8County_2020_A20",
+    "tiles": 80,
+    "window": "Illinois_Cumberland"
+  },
+  "assumed": {
+    "audit_blocks": {
+      "from": "P2 S4 audit guard",
+      "schema": "P2 audit CSV with # header and sha256 sidecar, read with ek.require_audit / ek.read_audit",
+      "spec": {
+        "path_for": "results_9t",
+        "rel": "splits/audit_blocks_9t_v1.csv"
+      }
+    },
+    "derived_buffer": {
+      "from": "P1 S4 derived buffer (receptive field plus patch support plus correlogram range)",
+      "schema": "P1 buffer_derivation_9t.json, read with ek.read_buffer(task)",
+      "spec": {
+        "path_for": "results_9t",
+        "rel": "splits/buffer_derivation_9t.json"
+      }
+    },
+    "isolated_fold_blocks": {
+      "from": "P1 saved split file",
+      "schema": "P1 split CSV block_id,fold,role, read with ek.read_split_csv (roles train/inner_val/held_out)",
+      "spec": {
+        "path_for": "results_9t",
+        "rel": "splits/cv_splits_future_pit_9t_v1.csv"
+      }
+    },
+    "isolated_pit_ckpt": {
+      "from": "P1 isolated pit trainer (not built yet)",
+      "schema": "torch checkpoint with keys state_dict, channels, mu, sd, epoch (same as data/9t/models/pit/unet_cv5/fold*/best.pt)",
+      "spec": {
+        "path_for": "models",
+        "rel": "pit/unet_iso_cv5/fold{k}/best.pt"
+      }
+    }
+  },
+  "bootstrap_B": 2000,
+  "depth_ring_m": 5.0,
+  "edit": {
+    "context_margin_m": 128.0,
+    "donor_pad_m": 3.0,
+    "fallback_buffer_m": 128.0,
+    "feather_px": 3,
+    "floor_class": 1,
+    "min_spacing_m": 60.0,
+    "n_classes": 3,
+    "n_locations": 200,
+    "overlap": 64,
+    "patch": 256,
+    "seam_tolerance": 0.2,
+    "shams": [
+      "bump",
+      "ramp",
+      "flat_cut"
+    ]
+  },
+  "folds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "footprint_rule": "all_blocks",
+  "inputs": {
+    "blocks": {
+      "path_for": "nine_t",
+      "rel": "pit_blocks_9t.gpkg"
+    },
+    "dem_05": {
+      "path_for": "nine_t",
+      "rel": "dem_9t_05.tif"
+    },
+    "dem_1m": {
+      "path_for": "nine_t_1m",
+      "rel": "dem_9t_1m.tif"
+    },
+    "features_05": {
+      "path_for": "nine_t",
+      "rel": "features_pit_9t_05.tif"
+    },
+    "fold_assignment": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/pit_cv5_fold_assignment_9t.csv"
+    },
+    "fold_ckpt": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/fold{k}/best.pt"
+    },
+    "fold_prob": {
+      "path_for": "models",
+      "rel": "pit/unet_cv5/fold{k}/pit_prob_floor_cvfold{k}_9t_05.tif"
+    },
+    "ground_density_05": {
+      "path_for": "nine_t",
+      "rel": "ground_density_9t_05.tif"
+    },
+    "historical_split": {
+      "path_for": "results_9t",
+      "rel": "splits/cv_split_blocks_pit_9t.csv"
+    },
+    "slope_1m": {
+      "path_for": "nine_t_1m",
+      "rel": "slope_9t_1m.tif"
+    },
+    "sweep_counts": {
+      "path_for": "results_9t",
+      "rel": "operating_point/cv5_sweep_counts_per_block_pit_thr0p05to0p95_9t.csv"
+    },
+    "truth_floor_layer": "pit_inside",
+    "truth_gpkg": {
+      "path_for": "truth",
+      "rel": "annotations_proj.gpkg"
+    },
+    "truth_pad_layer": "pad",
+    "truth_rim_layer": "pit_full"
+  },
+  "iou_tau": 0.3,
+  "k_per_km2": 40.0,
+  "k_sensitivity_per_km2": 30.0,
+  "margin_delta": 0.03,
+  "master_seed": 20261105,
+  "min_blob_m2": 4.0,
+  "multiplicity": {
+    "_note": "User default 2026-11-06. Holm over declared primary gates. Only the feature-level slope difference is gated, so the family has one member and Holm equals the unadjusted gate. Q2 edits have no margin and are reported. Relief and block-level rows are secondaries, never gated.",
+    "alpha": 0.05,
+    "family": [
+      "q1_slope_feature"
+    ],
+    "gate": "q1_slope_feature",
+    "max_undefined": 0.0,
+    "method": "holm"
+  },
+  "n_folds": 5,
+  "proposal_policy": "policy_for",
+  "proposal_thr": 0.1,
+  "relief_window_m": 50,
+  "score_buffer_m": 40.0,
+  "slope_window_m": 25,
+  "void_buffer_m": 5.0
+}

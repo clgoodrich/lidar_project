@@ -118,13 +118,13 @@
   "seeds": {},
   "inputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_exposure_sites_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_exposure_sites_9t.csv",
       "bytes": 201099,
       "mtime": "2026-11-06T10:49:26.631460",
       "sha256": "b9fa43fe40cec1cf7af069ad0975e0c15304db4db7f4159a7499d10e3150f624"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_hazard_proxy_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_hazard_proxy_9t.csv",
       "bytes": 75436,
       "mtime": "2026-11-06T10:49:44.301304",
       "sha256": "15fcad4f8d01509fed2aad43d7a0b96b0379bf4c29617f7af20d120a8cab8912"
@@ -132,13 +132,13 @@
   ],
   "outputs": [
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_scenario_ranks_9t.csv",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_scenario_ranks_9t.csv",
       "bytes": 195099,
       "mtime": "2026-11-06T10:52:38.991127",
       "sha256": "1ef1958a7b934b0b0a049009db30ee7f844f55e69e4003d86ab51e9b9fb41979"
     },
     {
-      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\5_tasks\\5_3_risk_ranking\\results\\tables\\risk_scenario_summary_9t.json",
+      "path": "expansions/5_tasks/5_3_risk_ranking/results/tables/risk_scenario_summary_9t.json",
       "bytes": 2560,
       "mtime": "2026-11-06T10:52:38.997632",
       "sha256": "7cfadf5e4fc9016425b15a6a906b3cb345ba3ad09c1f0f2babee90602acea5e6"

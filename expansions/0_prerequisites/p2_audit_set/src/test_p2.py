@@ -188,3 +188,30 @@ def test_reserve_reprojects_extents():
     c3 = gpd.GeoSeries([blocks.geometry[3].centroid.buffer(20)], crs="EPSG:6346").to_crs("EPSG:4326").iloc[0]
     _, probs = rw.reserve(blocks, [(Path("q.tif"), box(*c3.bounds), "EPSG:4326")])
     assert probs == []
+
+
+def test_pad_draw_dry_run_on_held_9t(tmp_path, monkeypatch):
+    """User default 2026-11-06. A separate pad draw from the pad-bearing blocks, dry run only.
+    Runs the real main() on the held 9t pad manifest. Oracle by hand. The eligible blocks are the distinct
+    pad manifest block ids, the audit size is round(0.15 n). The file is readable for pad and refused for pit.
+    No frozen file is written."""
+    import _split_core_lib_9t as sc
+    try:
+        man = sc.load_manifest("pad")
+    except FileNotFoundError:
+        pytest.skip("9t pad manifest not held")
+    n_elig = man.dropna(subset=["block_id"]).block_id.astype(int).nunique()
+    monkeypatch.setattr(dr.ek, "new_run", lambda *a, **k: tmp_path / "run")      # no run record from a test
+    monkeypatch.setattr(dr.ek, "write_provenance", lambda *a, **k: None)
+    assert dr.main(["--task", "pad", "--buffer-m", "150", "--out-dir", str(tmp_path)]) == 0
+    p = tmp_path / "audit_blocks_pad_9t_dryrun.csv"
+    a = ag.load_audit(p, allow_unfrozen=True, task="pad")
+    h = a.attrs["header"]
+    assert h["frame"] == "pad_bearing_blocks" and h["tasks"] == "pad" and h["buffer_m"] == 150.0
+    assert len(a[a.role == "audit"]) == int(round(0.15 * n_elig))
+    assert set(a.block_id) <= set(man.block_id.dropna().astype(int))
+    with pytest.raises(ag.AuditViolation, match="drawn for tasks"):
+        ag.load_audit(p, allow_unfrozen=True, task="pit")
+    assert not Path(str(p) + ".sha256").exists()
+    js = json.loads((tmp_path / "audit_draw_pad_9t_dryrun.json").read_text())
+    assert js["tasks"] == "pad" and js["n_eligible"] == n_elig

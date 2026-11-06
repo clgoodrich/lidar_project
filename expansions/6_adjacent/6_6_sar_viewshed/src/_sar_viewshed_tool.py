@@ -24,6 +24,10 @@ Purpose
     (no surface value, a void cell with no ground return, or O2 canopy with no CHM value) is an unknown obstacle.
     A known obstacle that blocks the ray gives hidden. Otherwise any unknown obstacle on the ray gives unknown.
     A void target cell is unknown too. Cells with no DEM value, outside the raster or outside the radius are nodata.
+    Void obstacle model (config viewshed.void_obstacle, user accepted 2026-11-06). lower_neighbour gives a void
+    sample on a ray the lower of the two nearest observed surface heights along that ray, one before it and one
+    after it. The ray runs on past the target for this. A void with an observed sample on one side only stays
+    unknown. unknown is the old rule (every void sample is an unknown obstacle) and stays as a sensitivity.
     The cumulative map counts an unknown cell as unknown, never as seen by nobody.
 Inputs
     data/9t/derived/05/dem_9t_05.tif, dsm_9t_05.tif, chm_9t_05.tif, ground_density_9t_05.tif (held)
@@ -188,6 +192,43 @@ def void_at(g: Grid, v, u, vp: dict) -> np.ndarray:
     return ok & m.astype(bool)
 
 
+VOID_MODELS = ("lower_neighbour", "unknown")
+
+
+def void_model(vp: dict) -> str:
+    m = vp.get("void_obstacle")
+    if m not in VOID_MODELS:
+        raise SystemExit(f"viewshed.void_obstacle must be one of {VOID_MODELS}, got {m!r}")
+    return m
+
+
+def fill_void_lower(z: np.ndarray, void: np.ndarray):
+    """Void obstacle model along rays (last axis). A void sample takes min(previous observed, next observed),
+    observed meaning finite and not void. Returns (filled z, unresolved mask). unresolved marks void samples with
+    no observed sample on one side. Non-void samples are returned unchanged."""
+    z = np.atleast_2d(np.asarray(z, float))
+    void = np.atleast_2d(np.asarray(void, bool))
+    n = z.shape[-1]
+    ok = np.isfinite(z) & ~void
+    idx = np.broadcast_to(np.arange(n), z.shape)
+    prev = np.maximum.accumulate(np.where(ok, idx, -1), axis=-1)
+    nxt = np.flip(np.minimum.accumulate(np.flip(np.where(ok, idx, n), axis=-1), axis=-1), axis=-1)
+    has = void & (prev >= 0) & (nxt < n)
+    zp = np.take_along_axis(z, np.clip(prev, 0, n - 1), axis=-1)
+    zn = np.take_along_axis(z, np.clip(nxt, 0, n - 1), axis=-1)
+    out = np.where(has, np.minimum(zp, zn), z)
+    return out, void & ~has
+
+
+def obstacle_surface(z_raw: np.ndarray, void: np.ndarray, vp: dict):
+    """Surface heights with the configured void rule, and the unknown-obstacle mask."""
+    if void_model(vp) == "lower_neighbour":
+        z, unres = fill_void_lower(z_raw, void)
+        z, unres = z.reshape(np.shape(z_raw)), unres.reshape(np.shape(z_raw))
+        return z, ~np.isfinite(z) | unres
+    return z_raw, ~np.isfinite(z_raw) | void
+
+
 def curvature_drop(d_m, vp: dict):
     if not vp.get("curvature", True):
         return np.zeros_like(np.asarray(d_m, float))
@@ -219,13 +260,19 @@ def los_profile(g: Grid, obs_xy, tgt_xy, opacity="O0", eye_h=1.7, tgt_h=0.0, k_e
         return {"visible": None, "state": None, "transmission": None, "p_visible": None, "distance_m": D}
     step = g.cell / 2
     n = max(int(np.ceil(D / step - 1e-9)), 1)
-    t = np.arange(1, n) / n
+    # the ray runs on past the target to the raster edge, so the void model can find the next observed sample
+    H, W = g.dem.shape
+    n_ext = n + int(np.ceil(np.hypot(H, W) * g.cell / (D / n))) + 2
+    t_all = np.arange(1, n_ext) / n
+    sv_a, su_a = ov + t_all * (tv - ov), ou + t_all * (tu - ou)
+    z_all, unk_all = obstacle_surface(bilinear(_surface(g, opacity), sv_a, su_a), void_at(g, sv_a, su_a, vp), vp)
+    t = t_all[:n - 1]
     d = t * D
-    sv, su = ov + t * (tv - ov), ou + t * (tu - ou)
-    zs = bilinear(_surface(g, opacity), sv, su) - curvature_drop(d, vp)
+    sv, su = sv_a[:n - 1], su_a[:n - 1]
+    zs = z_all[:n - 1] - curvature_drop(d, vp)
     zt = zt_g + tgt_h - float(curvature_drop(D, vp))
     in_range = (d >= g.cell - 1e-9) & (d <= D - g.cell + 1e-9)
-    unk = ~np.isfinite(zs) | void_at(g, sv, su, vp)
+    unk = unk_all[:n - 1] | ~np.isfinite(zs)
     ch = None
     if opacity == "O2":
         if g.chm is None:
@@ -295,9 +342,9 @@ def viewshed(g: Grid, obs_xy, radius_m: float, opacity="O0", eye_h=1.7, tgt_h=0.
         d = j[None, :] * 0.5 * g.cell * np.ones((len(p), 1))
         valid = (j[None, :] * 0.5 <= Lr[:, None] + 1e-9) & (d <= radius_m + 1e-9)
         drop = curvature_drop(d, vp)
-        zs = bilinear(surf, sv, su) - drop
+        z_obs, unk = obstacle_surface(bilinear(surf, sv, su), void_at(g, sv, su, vp), vp)
+        zs = z_obs - drop
         zg = bilinear(g.dem, sv, su) + tgt_h - drop
-        unk = ~np.isfinite(zs) | void_at(g, sv, su, vp)
         if opacity == "O2":
             ch_raw = bilinear(g.chm, sv, su)
             unk = unk | ~np.isfinite(ch_raw)
@@ -364,7 +411,8 @@ def viewshed(g: Grid, obs_xy, radius_m: float, opacity="O0", eye_h=1.7, tgt_h=0.
             "unknown_fraction": float((vis == UNKNOWN).sum() / max(inside.sum(), 1)),
             "visible_fraction_of_known": float((vis == VISIBLE).sum() / max(known.sum(), 1)),
             "n_void_unknown": n_void, "opacity": opacity, "eye_h": eye_h, "tgt_h": tgt_h, "k_ext": k_ext,
-            "radius_m": radius_m, "curvature": bool(vp.get("curvature", True)), "refraction_k": vp["refraction_k"]}
+            "radius_m": radius_m, "curvature": bool(vp.get("curvature", True)), "refraction_k": vp["refraction_k"],
+            "void_obstacle": void_model(vp)}
 
 
 def cumulative(g: Grid, observers, radius_m, opacity="O0", **kw) -> dict:

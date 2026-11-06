@@ -26,6 +26,9 @@ Anything at or above 100 MB goes under an ignored folder. Every run gets an entr
 
 ## Build status (2026-11-06)
 
+Defaults pass (2026-11-06). Pads now come from the 5.6 re-cut at 0.525 (`expansions/5_tasks/5_6_record_association/data/interim/records_pad_recut_policy_9t.gpkg`). All mapped roads count in L_road (`road_scope` all_mapped). The match rule stays one-to-one with any positive overlap. Tests pass (14).
+Rerun on 9t. Model polygons 1005 to 996. Tile ratio 1.37 to 1.23. Matched pads 616 to 620. Median r 0.238 to 0.172. P90 |r| 0.696 to 0.658. Decision stays inconclusive.
+
 Review repair pass. Findings 5.5-01 and 5.5-02 and the circular test are fixed. Area is evidence level (a).
 
 | Script | Change | Runnable now | Missing |

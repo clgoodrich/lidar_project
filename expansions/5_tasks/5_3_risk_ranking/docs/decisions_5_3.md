@@ -2,15 +2,20 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Candidate H with no plugging record. User accepted the default unrankable, no imputation ("take defaults"). Change freely.
+- 2026-11-06. E coverage minimum (index_missing.E.min_coverage). User accepted the default 1.0 ("take defaults"). Change freely.
+- 2026-11-06. Tolerated share of undefined bootstrap draws in S6 (max_undefined in config_5_3.json). A preregistration may restate it but not loosen it. User accepted the default 0 ("take defaults"). Change freely.
+
 ## Needs user decision
 
-- Imputation rule for candidate H. A candidate has no plugging record by construction. Options are an imputed prior value declared in `index_missing.H.impute`, a coverage minimum below 1 in `index_missing.H.min_coverage`, or leaving candidates unrankable in H (today's default). Added 2026-11-06.
-- Coverage minimum for E once more receptor layers arrive (`index_missing.E.min_coverage`, default 1.0). Added 2026-11-06.
-- Whether a declared share of undefined bootstrap draws is acceptable for S6 enrichment (`max_undefined` in the preregistration, default 0). Added 2026-11-06.
 - Detector coverage of the 29 zero-pit blocks of 9t. K now uses all 144 blocks (20.25 km2). Those 29 blocks have no out-of-fold detector output, so the area that K counts is larger than the area the detector scored. An out-of-fold prediction for them is needed upstream. Added 2026-11-06.
 
 ## Log
 
+- 2026-11-06. Provenance files of 5.3 hold repo-relative paths everywhere, params and argv included. _risk_io_9t.write_provenance rewrites them. The 48 existing _PROVENANCE files were rewritten the same way. Made by the review-fix agent, change freely.
+- 2026-11-06. Rerun S0 to S5 and S7 on the new 5.6 output. Candidates in 677 to 768. Sites 1354 to 1394. Candidate sites 296 to 336, all unrankable in H. Records with surface evidence 356 to 388. A and D still rank nothing. B top 50 is still one tie of 169 records.
 - 2026-11-06. Review fix 5.3-01. A missing H or E component is no longer skipped per site. The default rule `unrankable` gives a site no index when it lacks any component. `impute` needs a declared value per column. Both rules are stamped into the S2 and S3 summaries. Made by the review-fix agent.
 - 2026-11-06. Review fix 5.3-02. E must have at least 2 components and top N + 1 distinct values. Otherwise E is NaN, and scenarios A and D are unrankable with the reason in `e_status`. A later key that is absent for every site is dropped, so B ranks by H alone and C by documented status alone. Made by the review-fix agent.
 - 2026-11-06. Ties share a competition rank and are reported (`tie_<scenario>`, `scenario_report`). Row order never breaks a tie. A top-N set keeps every site tied at the cutoff. Made by the review-fix agent.

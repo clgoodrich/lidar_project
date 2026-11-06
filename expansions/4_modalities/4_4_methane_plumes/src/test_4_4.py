@@ -176,3 +176,31 @@ def test_missing_input_message(tmp_path):
     cfg["m2"]["plume_catalogue_csv"] = str(tmp_path / "nope.csv")
     with pytest.raises(FileNotFoundError, match="MISSING INPUT plume catalogue"):
         M2.run(cfg, out_root=tmp_path)
+
+
+def test_config_defaults_2026_11_06():
+    """Defaults accepted 2026-11-06. No tail extrapolation, no undefined cell-bootstrap draws."""
+    cfg = io.load_config()
+    assert cfg["m0"]["tail_max_extrapolation_multiple"] is None
+    assert cfg["m3"]["max_undefined"] == 0.0
+    # With null any limit above the largest observed rate refuses (multiple 1.0 allowed, by hand 9 / 5 = 1.8)
+    t = M0.fit_tail(np.geomspace(0.5, 5.0, 19), 9.0, 30, 1)
+    g = M0.gate_tail(t, None, 9.0, {"high": 970000}, cfg["m0"]["tail_max_extrapolation_multiple"])
+    assert g["verdict"] == M0.NOT_IDENTIFIABLE and g["extrapolation_multiple"] == pytest.approx(1.8)
+
+
+def test_rate_ratio_max_undefined_honoured():
+    """Two cells with sources at wells and controls, two cells with no source. A resample of only sourceless
+    cells is undefined, probability (2/4)^4 = 0.0625 (by hand). With max_undefined 0 the interval is NaN.
+    With 0.2 it is finite. Point ratio 4 at wells over 2 at controls, same exposure, is 2.0."""
+    rows = []
+    for c in range(4):
+        rows.append((0.0, 0.0, 1, c, 5, 2.0 if c < 2 else 0.0))
+        rows.append((0.0, 0.0, 0, c, 5, 1.0 if c < 2 else 0.0))
+    P = pd.DataFrame(rows, columns=["x", "y_m", "is_well", "cell_id", "n_searched", "y"])
+    r0 = M3.rate_ratio(P, 2000, 1, 0.0)
+    r1 = M3.rate_ratio(P, 2000, 1, 0.2)
+    assert r0["rate_ratio"] == pytest.approx(2.0)
+    assert r0["undefined_share"] == pytest.approx(0.0625, abs=0.015)
+    assert np.isnan(r0["lo"]) and np.isfinite(r1["lo"])
+    assert r0["max_undefined"] == 0.0

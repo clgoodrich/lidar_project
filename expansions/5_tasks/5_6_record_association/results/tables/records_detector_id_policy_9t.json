@@ -11,7 +11,11 @@
     "gap_m": 2.0,
     "reads": "predicted geometry and score only. Truth columns are evaluation only."
   },
-  "cutoff_used": 0.5,
+  "cutoff_used": {
+    "pit": 0.35,
+    "pad": 0.525,
+    "_note": "Policy cutoffs from ek.policy_for. User accepted the re-cut on 2026-11-06 (take defaults). Products built by src/_records_policy_recut_9t.py."
+  },
   "proposal_policy_pit": {
     "task": "pit",
     "mode": "primary",
@@ -36,29 +40,29 @@
     "k_per_km2": 40.0,
     "policy_hash": "f6d15ee"
   },
-  "cutoff_note": "The held-out products were cut at 0.50. ek.policy_for gives 0.35 (pit) and 0.525 (pad). See docs/decisions_5_6.md, Needs user decision.",
+  "cutoff_note": "Products re-cut at the policy cutoffs by _records_policy_recut_9t.py. User accepted on 2026-11-06.",
   "rows": {
-    "pit": 677,
-    "pad": 1005
+    "pit": 768,
+    "pad": 996
   },
   "det_id_range": {
     "pit": [
       1,
-      677
+      768
     ],
     "pad": [
       1000001,
-      1001005
+      1000996
     ]
   },
   "files": {
     "pit": {
       "path": "expansions/5_tasks/5_6_record_association/data/processed/detector_output_pit_full_9t.gpkg",
-      "sha256": "e928d1ee7438b70dccf365459b428c78e85efbdd700f615ef1cbf0271815bf22"
+      "sha256": "0129c680be28a714355c33940621df1892e7d6cc5cd523800f24741be7b39b86"
     },
     "pad": {
       "path": "expansions/5_tasks/5_6_record_association/data/processed/detector_output_pad_full_9t.gpkg",
-      "sha256": "7ea64cd324a4f43f25afc87a12f03ebb4d451d7337c846c8b30a41560658e4c9"
+      "sha256": "6da8b9fe50f8fffe4b5e7e6186dab0123c708d94c497e4604ac1d4fc19feaad0"
     }
   }
 }

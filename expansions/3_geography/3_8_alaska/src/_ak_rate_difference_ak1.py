@@ -88,6 +88,13 @@ def seasonal_amplitude(series: pd.DataFrame, thaw_months: list[int]) -> float:
     return float(amp.median())
 
 
+_MU = json.loads((Path(__file__).resolve().parent / "config_3_8.json").read_text(encoding="utf-8"))["prereg"]["multiplicity"]
+FAMILY = list(_MU["family"])                       # declared primaries (user default 2026-11-06)
+MAX_UNDEFINED = float(_MU["max_undefined"])        # 0. No tolerated undefined bootstrap draws
+if len(FAMILY) != 1:
+    raise AssertionError("3.8 declares one primary. A larger family needs the Holm step, not this two-sided rule")
+
+
 def decide_two_sided(lo: float, hi: float, delta: float) -> str:
     """fw 3.8 section 10. Difference if |median| lower bound clears delta, equivalence if inside +-delta."""
     if not (np.isfinite(lo) and np.isfinite(hi)):
@@ -190,8 +197,11 @@ def main(argv=None) -> int:
         res[name] = {"median_diff": pt, "ci95": [lo, hi], "perm_band": [plo, phi], "n_sites": int(len(d)),
                      "n_clusters": int(d["cluster"].nunique()), "undefined_share": und,
                      "perm_band_label": "descriptive. Never used in the gate",
-                     "decision": (decide_two_sided(lo, hi, delta) if und == 0 else "inconclusive (undefined draws)")
-                     if name.startswith("E2") else "exploratory"}
+                     "decision": (decide_two_sided(lo, hi, delta) if und <= MAX_UNDEFINED else "inconclusive (undefined draws)")
+                     if name in FAMILY else "exploratory"}
+        if name in FAMILY:
+            res[name]["multiplicity"] = {"method": "holm", "family": FAMILY, "max_undefined": MAX_UNDEFINED,
+                                         "note": "one primary, Holm equals the unadjusted gate (user default 2026-11-06)"}
         tables.append(d.assign(estimand=name))
     cr = pts[pts["kind"] == "control"]["rate"].dropna().to_numpy()
     n = res["E2_rate_mm_yr"]["n_sites"]

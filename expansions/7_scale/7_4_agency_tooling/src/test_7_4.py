@@ -310,12 +310,21 @@ def test_known_wells_fail_early_and_lonlat(tmp_path):
     assert np.allclose(c["dist_nearest_known_m"], want, atol=0.02)
 
 
-def test_budget_not_doubled_for_both(tmp_path):
-    """7.4 minor. --model both no longer applies one K per class silently. Budgets are explicit per class."""
+def test_budget_per_class_for_both(tmp_path):
+    """User default 2026-11-06. One budget per class, 40 per km2 each. Hand oracle with AREA_KM2.
+    Default both gives each class floor(40 x area) and a total of 80 per km2. A shared --k-per-km2 applies per class.
+    A per-class flag that disagrees with --k-per-km2 refuses."""
     cp, _ = _models(tmp_path)
     stack = _stack(tmp_path / "stack.tif", CRS)
-    assert _run(cp, "--features", stack, "--out", tmp_path / "a") == 2                       # default both, K 40
-    assert _run(cp, "--features", stack, "--out", tmp_path / "b", "--k-per-km2", 40) == 2
+    assert _run(cp, "--features", stack, "--out", tmp_path / "a", "--cutoff", 0.0) == 0          # default both, K 40 each
+    prov = json.loads((_only_run(tmp_path / "a") / "_PROVENANCE.json").read_text())["params"]
+    assert prov["review_budget_per_km2"] == {"pit": 40.0, "pad": 40.0}
+    assert prov["review_budget_total_per_km2"] == 80.0
+    assert prov["classes"]["pit"]["k"] == int(np.floor(40 * AREA_KM2))
+    assert _run(cp, "--features", stack, "--out", tmp_path / "b", "--cutoff", 0.0, "--k-per-km2", 2000) == 0
+    prov = json.loads((_only_run(tmp_path / "b") / "_PROVENANCE.json").read_text())["params"]
+    assert prov["review_budget_per_km2"] == {"pit": 2000.0, "pad": 2000.0}
+    assert _run(cp, "--features", stack, "--out", tmp_path / "d", "--k-per-km2", 40, "--k-per-km2-pit", 30) == 2
     assert _run(cp, "--features", stack, "--out", tmp_path / "c", "--cutoff", 0.0,
                 "--k-per-km2-pit", 3000, "--k-per-km2-pad", 1000) == 0
     rd = _only_run(tmp_path / "c")

@@ -19,6 +19,7 @@ import _thermal_match_clearings_9t as tm
 import _thermal_extract_samples_9t as t2
 import _thermal_contrast_model_9t as t3
 import _thermal_added_value_9t as t4
+import _thermal_primary_holm_9t as th
 
 X0, Y0 = 619500.0, 4593000.0
 
@@ -153,6 +154,21 @@ def test_chain(world):
     assert a["auc"]["lidar_plus"] >= a["auc"]["lidar_only"] - 1e-9
     assert "undefined_share" in a["recall_at_k"] and "undefined_share" in a["auc"]
     assert json.loads((Path(a["run_dir"]) / "thermal_added_value_9t.json").read_text())["stage"] == "T4"
+    # Holm gate over the two primaries, read from the stage outputs the real scripts wrote
+    assert a["delta_gain"] == 0.03 and a["recall_at_k"]["margin"] == 0.03
+    h = th.run(cfg, out_root=d / "res", t3=Path(c["run_dir"]) / "thermal_contrast_summary_9t.json",
+               t4=Path(a["run_dir"]) / "thermal_added_value_9t.json")
+    ps = {"T3": c["p_success"], "T4": a["recall_at_k"]["p_success"]}
+    lo, hi = sorted(ps, key=ps.get)
+    want_lo = min(1.0, 2 * ps[lo])                       # Holm by hand, m = 2
+    want_hi = max(want_lo, ps[hi])
+    assert h["m"] == 2
+    assert h["gates"][lo]["holm_p_success"] == pytest.approx(want_lo)
+    assert h["gates"][hi]["holm_p_success"] == pytest.approx(want_hi)
+    for k in ("T3", "T4"):
+        hp = h["gates"][k]
+        want = "success" if hp["holm_p_success"] < 0.025 else "failure" if hp["holm_p_failure"] < 0.025 else "inconclusive"
+        assert hp["verdict"] == want and hp["status"] == "ok"
 
 
 def test_t4_matched_layer_not_identifiable(world):
@@ -161,7 +177,7 @@ def test_t4_matched_layer_not_identifiable(world):
     g, m, sites, gp, s, sp = _chain(world)
     samples = Path(s["run_dir"]) / "thermal_samples_by_scene_9t.csv"
     a = t4.run(cfg, out_root=d / "res", sites_path=sites, samples_path=samples, fallback_folds=3, layer="sites")
-    assert a["verdict"] == "not_identifiable" and a["identifiable"] is False
+    assert a["verdict_unadjusted"] == "not_identifiable" and a["identifiable"] is False
 
 
 def test_registration_gate(world):
@@ -257,3 +273,38 @@ def test_missing_input_message(world):
     d, cfg = world
     with pytest.raises(FileNotFoundError, match="MISSING INPUT"):
         tm.run(cfg, out_root=d / "res", clearings_path=d / "nope.gpkg", allow_no_audit=True)
+
+
+def test_config_defaults_2026_11_06():
+    """Defaults accepted 2026-11-06. Useful gain 0.03 recall, no undefined draws, Holm over T3 and T4."""
+    cfg = io.load_config()
+    assert cfg["added_value"]["delta_gain"] == 0.03
+    assert cfg["added_value"]["max_undefined"] == 0.0 and cfg["gate"]["max_undefined"] == 0.0
+    assert cfg["primary_gate"]["primaries"] == ["T3", "T4"] and cfg["primary_gate"]["method"] == "holm"
+
+
+def test_one_sided_shares_match_decide():
+    """lo > margin on the 95% interval is p_success < 0.025. 1000 draws 0.001 to 1.000, margin 0.0205.
+    20 draws are at or below it, so p_success 0.020 (by hand) and the stage verdict is success."""
+    d = np.arange(1, 1001) / 1000.0
+    s = io.one_sided_shares(d, 0.0205)
+    assert s["p_success"] == pytest.approx(0.020) and s["p_failure"] == pytest.approx(0.980)
+    lo, hi = np.percentile(d, [2.5, 97.5])
+    assert io.ek.decide(lo, hi, 0.0205, "superiority") == "success"
+    d2 = d.copy()
+    d2[0] = np.nan                                       # one undefined draw, max_undefined 0
+    assert np.isnan(io.one_sided_shares(d2, 0.0205)["p_success"])
+
+
+def test_holm_gate_by_hand():
+    """Both primaries pass unadjusted (0.020 and 0.015 under 0.025). Holm m = 2 gives 0.030 and 0.030,
+    so both are inconclusive after adjustment. A missing primary counts as p 1 and keeps m = 2."""
+    g = io.holm_gate({"T3": {"p_success": 0.020, "p_failure": 0.98}, "T4": {"p_success": 0.015, "p_failure": 0.985}})
+    assert g["gates"]["T4"]["holm_p_success"] == pytest.approx(0.030)
+    assert g["gates"]["T3"]["holm_p_success"] == pytest.approx(0.030)
+    assert g["gates"]["T3"]["verdict"] == "inconclusive" and g["gates"]["T4"]["verdict"] == "inconclusive"
+    g2 = io.holm_gate({"T3": {"p_success": 0.010, "p_failure": 0.99}, "T4": None})
+    assert g2["m"] == 2 and g2["gates"]["T3"]["holm_p_success"] == pytest.approx(0.020)
+    assert g2["gates"]["T3"]["verdict"] == "success" and g2["gates"]["T4"]["verdict"] == "inconclusive"
+    g3 = io.holm_gate({"T3": {"p_success": 0.99, "p_failure": 0.004}, "T4": {"p_success": 0.5, "p_failure": 0.5}})
+    assert g3["gates"]["T3"]["verdict"] == "failure" and g3["gates"]["T3"]["holm_p_failure"] == pytest.approx(0.008)

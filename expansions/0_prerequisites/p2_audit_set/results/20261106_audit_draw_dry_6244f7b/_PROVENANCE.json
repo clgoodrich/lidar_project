@@ -1,0 +1,48 @@
+{
+  "written": "2026-11-06T14:20:33",
+  "commit": "f3a49aeb5f140b94dfb31efbcb2f1155b9c5bd99",
+  "python": "3.13.5 (tags/v3.13.5:6cb20a2, Jun 11 2025, 16:15:46) [MSC v.1943 64 bit (AMD64)]",
+  "executable": "C:\\Python313\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "argv": [
+    "expansions/0_prerequisites/p2_audit_set/src/_audit_draw_blocks_9t.py",
+    "--task",
+    "pad",
+    "--buffer-json",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/buffer_derivation_9t.json",
+    "--splits",
+    "expansions/0_prerequisites/p1_splits_manifests/data/interim/dryrun/cv_splits_future_9t_v1.json"
+  ],
+  "params": {},
+  "seeds": {
+    "draw": 20261104
+  },
+  "inputs": [
+    {
+      "path": "data/9t/derived/05/pad_dataset_manifest.csv",
+      "bytes": 68911,
+      "mtime": "2026-09-04T10:52:23.665026",
+      "sha256": "2146c4a927ed6e47eb4476a8fa02f5c8e36f85528ae47e88d65a6ff5f161c999"
+    },
+    {
+      "path": "data/9t/derived/05/pad_blocks_9t.gpkg",
+      "bytes": 131072,
+      "mtime": "2026-06-10T15:26:51.678313",
+      "sha256": "17814922f580c801f47996153739ec12c54d378bd0a8fe9a8ef8b738c61417bc"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "expansions/0_prerequisites/p2_audit_set/data/interim/audit_blocks_pad_9t_dryrun.csv",
+      "bytes": 741,
+      "mtime": "2026-11-06T14:20:33.630359",
+      "sha256": "c5aeccb674d6d947f4e7ad36d41819e58ab7c23b9ce1d88eb23a8b70176d80dd"
+    },
+    {
+      "path": "expansions/0_prerequisites/p2_audit_set/data/interim/audit_draw_pad_9t_dryrun.json",
+      "bytes": 4081,
+      "mtime": "2026-11-06T14:20:33.632606",
+      "sha256": "97b632a3aacabe68849262f4e35f720e51d2ef228050b4cc34dc55b8a95c9393"
+    }
+  ]
+}

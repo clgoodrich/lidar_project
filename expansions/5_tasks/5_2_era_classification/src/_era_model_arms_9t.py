@@ -128,14 +128,17 @@ def oof(df: pd.DataFrame, arms: dict, cfg: dict) -> tuple[pd.DataFrame, dict]:
 
 
 NO_AUDIT_LABEL = "no audit exclusion, exploratory"
-UNDEFINED_RULE = ("A resample with one class has no AUC. Undefined draws are kept. With max_undefined unset (0) "
+UNDEFINED_RULE = ("A resample with one class has no AUC. Undefined draws are kept. With max_undefined 0 (decided 2026-11-06) "
                   "any undefined draw makes the interval NaN and the decision inconclusive.")
 
 
 def max_undefined(cfg: dict) -> float:
-    """Declared tolerated share of undefined bootstrap draws. fw_5_2 declares none, so 0 unless config sets it."""
+    """Tolerated share of undefined bootstrap draws. Decided 0 (user accepted the default, 2026-11-06). The config
+    must state it. A missing or null value is refused so the decision cannot silently drift."""
     v = cfg["model"].get("max_undefined")
-    return 0.0 if v is None else float(v)
+    if v is None:
+        raise SystemExit("model.max_undefined is not set. It was decided as 0 on 2026-11-06. Set it in config_5_2.json")
+    return float(v)
 
 
 def repo_rel(p) -> str:

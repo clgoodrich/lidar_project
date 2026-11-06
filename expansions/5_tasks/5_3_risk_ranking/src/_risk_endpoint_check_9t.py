@@ -12,7 +12,7 @@ Purpose
     top N over events expected in a random N, inverse inclusion weights when the table gives inclusion_prob.
     Interval. Block bootstrap over 1 km cells (wells on one lease are one cluster), B = 2000. A resample with no
     event or no top-N site has undefined enrichment. Its share is reported (undefined_share). Any undefined draw
-    makes the interval NaN and the decision inconclusive, unless the prereg declares max_undefined.
+    makes the interval NaN and the decision inconclusive. max_undefined is decided as 0 (config).
     Ranks with ties keep their shared rank, so a tie at the cutoff can put more than N wells in the top set.
     Fewer than 15 events. Clopper-Pearson for the top-N event share and the base share. Decision inconclusive.
     Comparators. Random order (enrichment 1 by construction), records-only order (status then age) and the
@@ -109,6 +109,17 @@ def enrich_stat(d: pd.DataFrame, col: str, n: int):
     return f
 
 
+def max_undefined(cfg, prereg) -> float:
+    """Tolerated share of undefined bootstrap draws. Config max_undefined is 0 (user accepted 2026-11-06, take
+    defaults), so any undefined draw gives a NaN interval and an inconclusive decision. A prereg may restate it
+    but may not loosen it."""
+    want = float(cfg.get("max_undefined", 0.0))
+    got = prereg.get("max_undefined")
+    if got is not None and float(got) != want:
+        raise SystemExit(f"max_undefined {got} in the preregistration differs from the decided value {want}")
+    return want
+
+
 def analyse(d: pd.DataFrame, H: pd.DataFrame, cfg, prereg, agency_col=None, B: int = 2000) -> pd.DataFrame:
     n = rc.top_n_size(len(d), prereg["top_n"], cfg["top_n_share"])
     hm = H.set_index("site_id")
@@ -119,7 +130,7 @@ def analyse(d: pd.DataFrame, H: pd.DataFrame, cfg, prereg, agency_col=None, B: i
     n_ev = int(d.event.sum())
     rows = []
     cols = [c for c in d.columns if c.startswith("rank_")]
-    max_undef = float(prereg.get("max_undefined", 0.0))   # declared in the prereg, else 0 (any undefined -> NaN)
+    max_undef = max_undefined(cfg, prereg)
     for c in cols:
         r = d[c].rank(method="min").to_numpy()
         point = rc.enrichment(r, d.event.to_numpy(), n, d.weight.to_numpy())
@@ -174,7 +185,7 @@ def main(argv=None) -> int:
     o = th.outp(cfg, "endpoint_csv")
     out.to_csv(o, index=False)
     ins = [th.inp(cfg, "prereg"), rp, th.inp(cfg, "field_flux")]
-    ek.write_provenance(run, inputs=ins, outputs=[o], params=dict(prereg=prereg, ranks_sha256=rh),
+    rio.write_provenance(run, inputs=ins, outputs=[o], params=dict(prereg=prereg, ranks_sha256=rh),
                         seeds={"bootstrap": prereg["seed"]})
     print(out.to_string(index=False))
     print(f"wrote {o}")

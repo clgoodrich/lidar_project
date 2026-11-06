@@ -3,12 +3,12 @@
 Purpose
     The handoff to 5.4, 6.1 and 6.4. Membership and det_id depend on predictions only (review F15, 5.6-01).
 
-    Pits. Every size-plausible held-out blob at the frozen 0.50 cutoff, read from both layers (matched and
-    undecided) of the held-out candidate file. The layer split is a truth label and is kept only as the evaluation
+    Pits. Every size-plausible held-out blob at the policy cutoff (0.35, ek.policy_for("pit")), read from both
+    layers (matched and undecided) of the re-cut file built by _records_policy_recut_9t.py. The layer split is a truth label and is kept only as the evaluation
     columns source and novel. Dedupe (config dedupe.rule) "geometric" merges blobs whose polygons lie within
     dedupe.gap_m of each other and keeps the highest-scoring one. It reads geometry and score only.
     "keep_all" is the sensitivity. The truth flag dup_on_pit stays as an evaluation column and is never used.
-    Pads. Every held-out pad polygon at 0.50 (layer model_geometry). No dedupe. They are matched to annotated pads
+    Pads. Every pad polygon at the policy cutoff 0.525 (layer model_geometry of the re-cut file). No dedupe. They are matched to annotated pads
     (plat) greedy by score with IoU >= 0.3 for the evaluation columns only, after the ids are fixed.
 
     Contract (both files)
@@ -23,8 +23,10 @@ Purpose
     The seeds and the id policy go into the provenance JSON and the tracked id policy table.
 
 Inputs (config_5_6.json)
-    pit_candidates  @results_9t/pit/centroid_matching/pit_candidates_undecided_thr0p50_9t.gpkg (matched, undecided)
-    pad_products    @results_9t/pad/thresholds/pad_heldout_found_vs_missed_thr0p50_9t.gpkg (model_geometry)
+    pit_candidates  @exp:5.6/data/interim/records_pit_recut_policy_9t.gpkg (matched, undecided)
+    pad_products    @exp:5.6/data/interim/records_pad_recut_policy_9t.gpkg (model_geometry)
+    Both carry thr_used. S0 refuses a product whose thr_used differs from cutoff_used, and a cutoff_used that
+    differs from ek.policy_for.
     annotations     @truth/annotations_proj.gpkg (plat), evaluation columns only
     pit_blocks, pad_blocks  @nine_t/pit_blocks_9t.gpkg, @nine_t/pad_blocks_9t.gpkg
 Outputs
@@ -104,11 +106,25 @@ def finish(full, kind: str, seed: int, blocks):
     return full.sort_values("det_id").reset_index(drop=True)
 
 
+def check_cutoff(df, cfg, kind: str, label: str) -> None:
+    """The product must be cut at the config cutoff, and the config cutoff must be the policy cutoff."""
+    want = float(cfg["cutoff_used"][kind])
+    pol = float(ek.policy_for(kind)["cutoff"])
+    if abs(want - pol) > 1e-9:
+        raise SystemExit(f"CUTOFF MISMATCH [{label}]: cutoff_used {want} is not the policy cutoff {pol}")
+    if "thr_used" not in df.columns:
+        raise SystemExit(f"CUTOFF UNKNOWN [{label}]: no thr_used column. Rebuild with _records_policy_recut_9t.py")
+    got = sorted(set(np.round(df["thr_used"].astype(float), 6)))
+    if got != [round(want, 6)]:
+        raise SystemExit(f"CUTOFF MISMATCH [{label}]: product cut at {got}, config wants {want}")
+
+
 def read_pit_layers(cfg):
     p = th.inp(cfg, "pit_candidates")
     layers = []
     for layer in ("matched", "undecided"):
         g = th.read_vector(p, layer=layer)
+        check_cutoff(g, cfg, "pit", f"pit_candidates/{layer}")
         g["source"] = layer
         layers.append(g)
     return layers
@@ -142,6 +158,7 @@ def build_pad(cfg):
     layer = ent.get("layer", "model_geometry") if isinstance(ent, dict) else "model_geometry"
     pred = th.read_vector(th.inp(cfg, "pad_products"), layer=layer)
     th.require_columns(pred, ["score"], "pad model_geometry")
+    check_cutoff(pred, cfg, "pad", "pad_products/model_geometry")
     pred = pred[~pred.geometry.is_empty].reset_index(drop=True)
     c = pred.geometry.centroid
     pred["cx"], pred["cy"] = c.x.round(2), c.y.round(2)
@@ -170,8 +187,8 @@ def id_policy(cfg, rule, pit, pad, files) -> dict:
                             reads="predicted geometry and score only. Truth columns are evaluation only."),
                 cutoff_used=cfg["cutoff_used"], proposal_policy_pit=ek.policy_for("pit"),
                 proposal_policy_pad=ek.policy_for("pad"),
-                cutoff_note=("The held-out products were cut at 0.50. ek.policy_for gives 0.35 (pit) and 0.525 (pad). "
-                             "See docs/decisions_5_6.md, Needs user decision."),
+                cutoff_note=("Products re-cut at the policy cutoffs by _records_policy_recut_9t.py. "
+                             "User accepted on 2026-11-06."),
                 rows=dict(pit=int(len(pit)), pad=int(len(pad))),
                 det_id_range=dict(pit=[int(pit.det_id.min()), int(pit.det_id.max())],
                                   pad=[int(pad.det_id.min()), int(pad.det_id.max())]),

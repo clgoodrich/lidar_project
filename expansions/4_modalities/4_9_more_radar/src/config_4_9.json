@@ -48,18 +48,24 @@
       "g_for_power_note": "null means delta_gain + 0.01 (framework S1 rule). With success defined as lower bound above delta, power at delta + 0.01 stays under about 0.5 unless the half-width is under 0.01, so the rule makes almost every stratum ineligible. Lead to decide (see decisions_4_9.md)"
     },
     "fill_cut": 0.25,
-    "lidar_weak_quantile": 0.25,
-    "lidar_weak_quantile_note": "2026-11-06 (4.9-01). Kept for the share of targets in lidar_weak. The stratum is no longer chosen on the baseline score. See lidar_weak",
+    "lidar_weak_quantile": 0.3333333333333333,
+    "lidar_weak_quantile_note": "Share of targets in lidar_weak, the lowest tercile. Mirrors lidar_weak.quantile. 2026-11-06 user accepted default (\"take defaults\"). Change freely",
     "lidar_weak": {
-      "covariate": null,
-      "weak_side": null,
-      "quantile": 0.25,
-      "note": "2026-11-06 (4.9-01). External lidar-weakness covariate, a rows column both arms see equally (for example base:control:cover with weak_side high). Never the baseline score. null means lidar_weak is not formed and is reported as undefined. User decision (decisions_4_9.md)"
+      "covariate": "ground_density_ppsm",
+      "weak_side": "low",
+      "quantile": 0.3333333333333333,
+      "layer": {
+        "key": "data",
+        "rel": "9t/derived/1m/ground_density_9t_1m.tif"
+      },
+      "window_m": 5.0,
+      "note": "Ground point density (ground returns per m2, mean over a square of half-width window_m at the row point x, ym). Written by notebooks/wellsight_v2/s1_build/_build_derivatives.py (uint16 ground returns per 1 m cell, nodata 0 read as zero returns). Lowest tercile of targets is weak, all decoys kept. A rows column of the same name wins over the layer. Never the baseline score (4.9-01). 2026-11-06 user accepted default (\"take defaults\"). Change freely"
     },
-    "primary_stratum": "all",
-    "primary_stratum_note": "2026-11-06 (4.9-01). The framework names lidar_weak as primary, but defines it on the baseline score, which manufactures gain. Primary is all until the user fixes the lidar_weak covariate. lidar_weak is secondary",
+    "primary_stratum": "lidar_weak",
+    "primary_stratum_note": "lidar_weak is primary once its ground density layer is held and the stratum forms. Until then the primary falls back to all and lidar_weak stays secondary. One primary only, so Holm over primaries is m = 1 (no adjustment). 2026-11-06 user accepted default (\"take defaults\"). Change freely",
     "max_undefined_share": 0.0,
-    "max_undefined_share_note": "SH-01. Share of undefined bootstrap draws tolerated before the interval is undefined (inconclusive). 0 follows expkit"
+    "max_undefined_share_note": "SH-01. Share of undefined bootstrap draws tolerated before the interval is undefined (inconclusive). 0. 2026-11-06 user accepted default (\"take defaults\"). Change freely",
+    "primary_stratum_fallback": "all"
   },
   "targets": {
     "pit": {

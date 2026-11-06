@@ -7,6 +7,14 @@
     "min_remaining_share": 0.6,
     "buffer_mode": "window"
   },
+  "draw_9t_pad": {
+    "_note": "2026-11-06. User accepted the default of a separate pad draw from the pad-bearing blocks (\"take defaults\"). Dry run only. Same settings and seed as the pit draw. Change freely.",
+    "share": 0.15,
+    "seed": 20261104,
+    "min_per_tercile": 3,
+    "min_remaining_share": 0.6,
+    "buffer_mode": "window"
+  },
   "exposure_uses": [
     {
       "name": "cv_model_roles",

@@ -124,8 +124,12 @@
     "_policy_note": "Cutoff, minimum area, IoU, match order, blob score and K come only from expkit.policy_for(task) (review F02 / 7.3-01, 2026-11-06). Primary pit 0.35 and pad 0.525. 0.10 is the sensitivity mode only. The export stamps the policy into the release as scoring_policy.json. Never tune these on the dev test."
   },
   "leaderboard": {
-    "margin": null,
-    "_margin_note": "user decision. Burden of one extra reviewer hour per km2. Never seed spread.",
+    "margin": 0.03,
+    "_margin_note": "2026-11-06. User accepted the default 0.03 recall (take defaults). An entry beats the baseline when its paired difference lower bound exceeds the margin. Change freely. Never seed spread.",
+    "h3_width_target": null,
+    "_h3_note": "user decision, still open (2026-11-06). Null keeps the H3 decision pending. The framework rule 2 x margin is reported for reference only",
+    "multiplicity": "holm over declared primaries. The leaderboard gate is one primary per entry (difference from the U-Net baseline). H1 H2 H3 are validity checks, not gated by Holm (user default 2026-11-06)",
+    "max_undefined": 0,
     "max_submissions": 3,
     "window_days": 90
   },

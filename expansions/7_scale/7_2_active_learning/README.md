@@ -39,13 +39,14 @@ That covers the 2026-11-05 run and the 2026-11-06 rerun. The split JSON says so 
 | `src/_al_replay_sim_9t.py` | S1 simulation replay | yes | nothing. Ran with the preregistered 10 seeds |
 | `src/_al_review_round_9t.py` | S3 steps 2 and 3 blind package and ingestion | yes | reviewers (assumption 1) |
 | `src/_al_review_timer_minutes.py` | effort timer (assumption 5) | yes | a 10-item trial with a reviewer |
-| `src/_al_retrain_round_9t.py` | S2 and S3 step 4 labels, weights, retrain launch | inputs yes once `seed_label_blocks` is set, training no | `seed_label_blocks` (user) and `trainer_cmd` (P1 isolated pit trainer) |
-| `src/_al_curve_score_9t.py` | S4 stop rule, S5 primary test, S6 discovery | yes on replay output | G (user) and live rounds for the real claim |
-| `src/config_7_2.json` | assumed inputs and frozen parameters | yes | budget, batch, G, seed blocks, temperature, hybrid split (user) |
+| `src/_al_retrain_round_9t.py` | S2 and S3 step 4 labels, weights, retrain launch | inputs yes, training no | `trainer_cmd` (P1 isolated pit trainer) |
+| `src/_al_curve_score_9t.py` | S4 stop rule, S5 primary test, S6 discovery | yes on replay output, rerun 2026-11-06 with G 0.02 | live rounds for the real claim |
+| `src/config_7_2.json` | assumed inputs and frozen parameters | yes | budget, batch, temperature, hybrid split (user) |
 | `src/test_7_2.py` | tests | yes | 5 passed |
 
 What changed on 2026-11-06.
-- G comes from the config or the preregistration only. It is unset, so the decision is inconclusive. G_raw is reported and never floored.
+- G comes from the config or the preregistration only. G_raw is reported and never floored.
+- User defaults 2026-11-06. G is 0.02 recall. `seed_label_blocks` is [] (acquired labels only). One primary, so Holm changes nothing. max_undefined is 0.
 - The stop rule is enforced. All curves are cut at the stop round before any estimate.
 - The live retrain trains only on the policy's acquired labels plus declared seed blocks. Reviewer additions are kept per arm.
 - Items are scored with `ek.policy_for("pit_floor")` through the 7.3 scorer 2. The cutoff moved from 0.10 to 0.35 and matching is block-local.
@@ -60,12 +61,12 @@ Rerun numbers, old (2026-11-05) to new (2026-11-06).
 | Pool items (C / W) | 1071 / 28 | 469 / 28 |
 | Stopping-set candidates | 295 | 134 |
 | Seeds | 3 | 10 |
-| G used | 0.0 (floored) | unset |
+| G used | 0.0 (floored) | unset, then 0.02 (user default, later 2026-11-06) |
 | G_raw | -0.0043 | 0.0 |
 | Stop round (enforced) | 2 (ignored) | 2 (enforced, 14 rounds run) |
 | U minus R | 0.0 [-0.0001, 0.0079] | 0.0 [-0.0064, 0.0043] |
 | Permutation p | 1.0 | 1.0 |
-| Decision | inconclusive | inconclusive (G unset) |
+| Decision | inconclusive | inconclusive (G unset), then failure at G 0.02 (hi 0.0043 below 0.02), read at the stop round |
 | R and U recall at the read point | 0.479 and 0.479 | 0.926 and 0.926 |
 | Pool recall (discovery) | 0.659 [0.590, 0.728] | 0.916 [0.884, 0.944] |
 

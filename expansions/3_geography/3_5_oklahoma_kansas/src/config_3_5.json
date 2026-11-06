@@ -4,13 +4,13 @@
   "prereg": {
     "primary_estimand": "paired gain G = recall(F1) - recall(L1) at K=40/km2 on OK test windows (Rogers, Nowata), block resampling stratified by window",
     "k_per_km2": 40,
-    "margin": null,
-    "delta_gain": null,
+    "margin": 0.03,
+    "delta_gain": 0.03,
     "model_policy": "three-seed mean probability per arm",
     "checkpoint_sha256": null,
     "master_seed": 3500,
     "buffer_m": 0,
-    "void_cap": 0.9,
+    "void_cap": 0.5,
     "n_min_blocks": 15,
     "max_date_gap_years": null,
     "registration_tol_m": null,
@@ -27,6 +27,16 @@
     ],
     "annotation_protocol": "two blind passes (L lidar-only, O imagery-only), adjudicate by IoU 0.3, seen_in and activity fields"
   },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "max_undefined": 0.0,
+    "family": [
+      "F1-L1:pit:oklahoma",
+      "F1-L1:pad:oklahoma"
+    ],
+    "_note": "User default 2026-11-06 (take defaults). Holm over the declared primary gates (arm:task:area) only. fw_3_5 section 7. One primary, the paired gain F1 minus L1 on the OK test windows (superiority against delta_gain). Until a pooled pit-and-pad cutoff is decided G is gated per class, so the family holds the pit and the pad gain. L1 vs O1, F1 vs O1, Kansas, L0 and L2 are reported, never gated."
+  },
   "reference": {
     "tables_by_task": {
       "pit": {
@@ -41,14 +51,89 @@
   },
   "model": {
     "pit": {
-      "transfer_checkpoint": null,
-      "sha256": null,
-      "_note": "USER DECISION. Frozen 9t pit checkpoint for L0 and the L2 init. The old default pit/unet_iso_cv5/policy/best.pt has no producer. Code refuses until set"
+      "transfer_checkpoint": [
+        {
+          "key": "models",
+          "rel": "pit/unet_cv5/fold0/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pit/unet_cv5/fold1/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pit/unet_cv5/fold2/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pit/unet_cv5/fold3/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pit/unet_cv5/fold4/best.pt"
+        }
+      ],
+      "sha256": [
+        "1143a4f37c38acdc78f1fa51bc2f87ba0dd6a773dc2a4dd4b662e6e2ff0ef8e1",
+        "3fbd51e391c397ee6ff5e22a883948db98915c6ccc351addeb042c83d033872e",
+        "59fbe9d673e3679d484172e7b8802c80a3243140f85103331e1846dab63af637",
+        "f145f4ced8eccbdd076cc043603275c005601460dc966a61022a2d94157dc505",
+        "9f14ac21192756857af55a43918a9811b77760e08317cdf3a3d4255281e1e54c"
+      ],
+      "policy": "fold_mean",
+      "family": "pit/unet_cv5",
+      "lineage": "historical_cv5",
+      "label": "provisional transfer model",
+      "provisional": true,
+      "provisional_reasons": [
+        "original CV5 sampler, not P1 isolated (protocol section 3)",
+        "no single 9t model is trained on all 9t ground. The five folds together are"
+      ],
+      "init_checkpoint": null,
+      "_note": "User accepted the default 2026-11-06 (take defaults). The current best 9t family, the five-fold ensemble that also produced the 3.0 reference tables, averaged per pixel (fold_mean). sha256 checked before use. init_checkpoint (which fold seeds fine-tuning) stays a user decision."
     },
     "pad": {
-      "transfer_checkpoint": null,
-      "sha256": null,
-      "_note": "USER DECISION. Candidate on disk {'key': 'models', 'rel': 'pad/unet_cv5_iso/fold0/best.pt'}. Not used by any 3.5 arm today"
+      "transfer_checkpoint": [
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold0/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold1/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold2/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold3/best.pt"
+        },
+        {
+          "key": "models",
+          "rel": "pad/unet_cv5_iso/fold4/best.pt"
+        }
+      ],
+      "sha256": [
+        "c6ec36776869925c1c2e69210f079d10b0c5dd220a3d6c598047fac124e29d44",
+        "28c408b18e05ede44a42f8d2dbee11f5bd63ddd9b66f22e7d087764270b8b331",
+        "06b7168cc92765ef32f414ce836ad0a36d4fa22fe2093d66ca6df918272eb5ff",
+        "b17d07f8cb82120a5051f6607eabc5c9b11a0e92191f2b31e2d4227e35bff248",
+        "1962cc309146d5d51f0e1a9853bac3163eb1e97aae385d2634d5f328e415975a"
+      ],
+      "policy": "fold_mean",
+      "family": "pad/unet_cv5_iso",
+      "lineage": "isolated",
+      "label": "provisional transfer model",
+      "provisional": true,
+      "provisional_reasons": [
+        "trained with buffer_m 0 (review P1-02)",
+        "fold split from the P1 dry run, not the frozen file",
+        "no single 9t model is trained on all 9t ground. The five folds together are"
+      ],
+      "init_checkpoint": null,
+      "_note": "User accepted the default 2026-11-06 (take defaults). The current best 9t family, the five-fold ensemble that also produced the 3.0 reference tables, averaged per pixel (fold_mean). sha256 checked before use. init_checkpoint (which fold seeds fine-tuning) stays a user decision."
     }
   },
   "arms": {

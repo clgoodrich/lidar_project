@@ -14,6 +14,9 @@ Purpose
                   mean prob score), one-to-one greedy match in score order at IoU 0.3, 3.0 dedupe rule
       scoring     pooled recall at K per km2 over the scored support of eligible blocks, block bootstrap, area difference,
                   paired arm difference, permutation null band (< 15 blocks), density-scaled K, ceiling
+      gates       only declared primaries (config multiplicity.family, arm:task:area) are gated, by Holm over the
+                  family (3.0 _transfer_holm_gate, max_undefined 0). Everything else is reported, never gated
+      model       provisional transfer model = config model.<task> (five-fold 9t ensemble, fold_mean), hashes checked
       agreement   two-annotator pad/pit F1 at IoU 0.3 and Cohen kappa on classes
       inference   frozen checkpoint inference through notebooks/wellsight_v2/s4_infer/_predict_on_tile.py
       prereg      write a preregistration skeleton from the config
@@ -58,6 +61,8 @@ import pandas as pd
 HERE = Path(__file__).resolve()
 sys.path.insert(0, str(HERE.parents[3] / "_shared" / "src"))
 import expkit as ek  # noqa: E402
+sys.path.insert(0, str(HERE.parents[2] / "3_0_transfer_protocol" / "src"))
+import _transfer_holm_gate as hg  # noqa: E402  (Holm over declared primaries, user default 2026-11-06)
 
 REPO = ek.REPO
 WSV2 = REPO / "notebooks" / "wellsight_v2"
@@ -824,20 +829,35 @@ def permutation_null_band(tab_a: dict, tab_b: dict, k_per_km2: float, B: int = 2
             "label": "permutation null band. Not an interval for the effect. Never used in a gate"}
 
 
-def _gate(lo: float, hi: float, margin: float, kind: str, n_blocks: int, undefined: float) -> tuple[str, str]:
-    """Decision plus the reason. Undefined bootstrap draws and fewer than N_MIN_BLOCKS give inconclusive."""
+def _gate(lo: float, hi: float, margin: float, kind: str, n_blocks: int, undefined: float, draws=None,
+          gate: str | None = None, family: list | None = None) -> tuple[str, str, dict | None]:
+    """Decision, reason and the Holm input. Only a declared primary (gate in family) is gated.
+
+    Undefined bootstrap draws (max_undefined 0, user default 2026-11-06) and fewer than N_MIN_BLOCKS give
+    inconclusive. A primary is gated by Holm over its family (3.0 _transfer_holm_gate). In a family of more
+    than one a single run decides success only at alpha/(2m). The family step decides the rest.
+    A call without gate is a secondary, a sensitivity or an exploratory contrast. It is never gated."""
+    if gate is None:
+        return "not gated (secondary, sensitivity or exploratory)", "reported only (user default 2026-11-06)", None
+    fam = list(family or [gate])
+    if gate not in fam:
+        raise ValueError(f"gate {gate} is not in the declared family {fam}")
+    h = hg.holm_input(gate, draws if draws is not None else [], lo, hi, margin, kind, fam)
     if n_blocks < N_MIN_BLOCKS:
+        h["forced_inconclusive"] = f"{n_blocks} blocks < {N_MIN_BLOCKS}"
         return "inconclusive", (f"{n_blocks} blocks < {N_MIN_BLOCKS}. The bootstrap is unreliable and the "
-                                "permutation band is not an interval, so no gate is evaluated")
-    if undefined > 0:
+                                "permutation band is not an interval, so no gate is evaluated"), h
+    if undefined > hg.MAX_UNDEFINED:
+        h["forced_inconclusive"] = f"undefined share {undefined:.3f}"
         return "inconclusive", (f"{undefined:.3f} of bootstrap draws are undefined (no truth in the resample). "
-                                "The interval is undefined (expkit SH-01)")
-    return ek.decide(lo, hi, margin, kind), "bootstrap percentile interval"
+                                "max_undefined is 0, so the interval is undefined (expkit SH-01)"), h
+    return h["decision_partial"], h["decision_partial_basis"], h
 
 
 def transfer_difference(tab_t: dict, tab_ref: dict, margin: float, k_per_km2: float = K_PER_KM2,
                         B: int = 2000, seed: int = 0, ref_policy: dict | None = None,
-                        target_policy: dict | None = None) -> dict:
+                        target_policy: dict | None = None, gate: str | None = None,
+                        family: list | None = None) -> dict:
     """Primary transfer estimand. Target minus reference recall at K, independent block bootstraps.
 
     Reports the share of undefined draws. Any undefined draw or fewer than 15 target blocks gives inconclusive.
@@ -854,13 +874,14 @@ def transfer_difference(tab_t: dict, tab_ref: dict, margin: float, k_per_km2: fl
     d, lo, hi, draws = ek.bootstrap_diff(fa, list(tab_t), fb, list(tab_ref), B=B, seed=seed, return_draws=True)
     pt, tlo, thi, tdraws = ek.block_bootstrap(fa, list(tab_t), B=B, seed=seed + 1)
     und = ek.undefined_share(draws)
-    decision, why = _gate(lo, hi, margin, "noninferiority", len(tab_t), und)
+    decision, why, h = _gate(lo, hi, margin, "noninferiority", len(tab_t), und, draws, gate, family)
     out = {"k_per_km2": k_per_km2, "n_blocks_target": len(tab_t), "n_blocks_ref": len(tab_ref),
            "recall_target": pt, "recall_target_ci": [tlo, thi], "recall_ref": fb(list(tab_ref)),
            "diff": d, "diff_ci": [lo, hi], "margin": margin, "undefined_share": und,
            "undefined_share_target": ek.undefined_share(tdraws), "decision": decision, "decision_basis": why,
            "policy_check": pol_note, "target_policy": target_policy,
-           "multiplicity": "no correction across areas, arms or strata (needs user decision)",
+           "gate": gate, "holm_input": h,
+           "multiplicity": f"{hg.METHOD}, family {list(family or ([gate] if gate else []))}, max_undefined {hg.MAX_UNDEFINED}",
            "density_target": density_per_km2(tab_t), "density_ref": density_per_km2(tab_ref)}
     if len(tab_t) < N_MIN_BLOCKS:
         out["warning"] = "fewer than 15 target blocks. Bootstrap unreliable. The permutation band is descriptive only"
@@ -884,7 +905,7 @@ def assert_same_support(tab_a: dict, tab_b: dict) -> None:
 
 
 def paired_arm_difference(tab_arm: dict, tab_base: dict, delta_gain: float, k_per_km2: float = K_PER_KM2,
-                          B: int = 2000, seed: int = 0) -> dict:
+                          B: int = 2000, seed: int = 0, gate: str | None = None, family: list | None = None) -> dict:
     """Paired arms on the same blocks (same resampled blocks for both). Superiority against delta_gain."""
     assert_same_support(tab_arm, tab_base)
     pa, pb = table_policy(tab_arm), table_policy(tab_base)
@@ -895,10 +916,10 @@ def paired_arm_difference(tab_arm: dict, tab_base: dict, delta_gain: float, k_pe
     fb = lambda b: pooled_recall_at_k(tab_base, b, k_per_km2)  # noqa: E731
     d, lo, hi, draws = ek.bootstrap_diff(fa, bl, fb, bl, B=B, seed=seed, paired=True, return_draws=True)
     und = ek.undefined_share(draws)
-    decision, why = _gate(lo, hi, delta_gain, "superiority", len(bl), und)
+    decision, why, h = _gate(lo, hi, delta_gain, "superiority", len(bl), und, draws, gate, family)
     return {"gain": d, "gain_ci": [lo, hi], "delta_gain": delta_gain, "n_blocks": len(bl), "undefined_share": und,
-            "decision": decision, "decision_basis": why, "policy_hash": pa,
-            "multiplicity": "no correction across contrasts or areas (needs user decision)"}
+            "decision": decision, "decision_basis": why, "policy_hash": pa, "gate": gate, "holm_input": h,
+            "multiplicity": f"{hg.METHOD}, family {list(family or ([gate] if gate else []))}, max_undefined {hg.MAX_UNDEFINED}"}
 
 
 def density_scaled_k(density_target: float, density_9t: float, k_9t: float = K_PER_KM2) -> float:
@@ -1101,23 +1122,67 @@ def check_checkpoint(ckpt: Path, expected_sha: str | None) -> str:
     return sha
 
 
-def transfer_checkpoint(cfg: dict, task: str, exp_id: str) -> Path:
-    """The declared transfer checkpoint for a task (config model.<task>.transfer_checkpoint).
+def transfer_checkpoints(cfg: dict, task: str, exp_id: str) -> tuple[list[Path], list[str | None], dict]:
+    """The declared transfer model for a task (config model.<task>), as (paths, expected sha256s, record).
 
-    Which model is the transfer model is a user decision. Nothing in the repo produces the old default
-    pit/unet_iso_cv5/policy/best.pt. So an unset key raises DecisionMissingError and a set but missing file
-    raises MissingInputError. There is no fallback.
+    User default 2026-11-06 ("take defaults"). The provisional transfer model is the current best 9t family,
+    the five-fold CV ensemble (pit/unet_cv5, pad/unet_cv5_iso, policy fold_mean). Together the folds were
+    trained on all 9t ground, and the family is the one behind the 3.0 reference tables and the policy cutoffs.
+    transfer_checkpoint may be one spec or a list of specs, sha256 a string or a list in the same order.
+    Every hash is checked before use. An unset key raises DecisionMissingError. There is no fallback.
     """
     m = (cfg.get("model") or {}).get(task) or {}
     spec = m.get("transfer_checkpoint")
     if not spec:
         raise DecisionMissingError(
             f"USER DECISION MISSING: model.{task}.transfer_checkpoint is unset in config_{exp_id.replace('.', '_')}.json."
-            " Declare which frozen checkpoint is the transfer model (e.g. a P1 isolated pit policy). "
-            "See docs/decisions under Needs user decision.")
-    return require_input(resolve(spec, exp_id), f"{exp_id} transfer checkpoint for {task}",
-                         "torch best.pt with state_dict, mu, sd, channels",
-                         "the declared checkpoint must exist. Train it or correct the path")
+            " Declare which frozen checkpoint is the transfer model. See docs/decisions.")
+    specs = spec if isinstance(spec, list) else [spec]
+    shas = m.get("sha256")
+    shas = shas if isinstance(shas, list) else [shas] * len(specs)
+    if len(shas) != len(specs):
+        raise AssertionError(f"model.{task}: {len(specs)} checkpoints but {len(shas)} sha256 values")
+    paths = [require_input(resolve(sp, exp_id), f"{exp_id} transfer checkpoint for {task}",
+                           "torch best.pt with state_dict, mu, sd, channels",
+                           "the declared checkpoint must exist. Train it or correct the path") for sp in specs]
+    rec = {"task": task, "family": m.get("family"), "lineage": m.get("lineage"), "policy": m.get("policy"),
+           "label": m.get("label", "provisional transfer model"), "provisional": bool(m.get("provisional", True)),
+           "provisional_reasons": m.get("provisional_reasons", []),
+           "sha256": {str(i): h for i, h in enumerate(shas)}, "paths": [str(x) for x in paths]}
+    return paths, shas, rec
+
+
+def transfer_checkpoint(cfg: dict, task: str, exp_id: str) -> Path:
+    """One checkpoint, for uses that need a single file (fine-tuning initialisation).
+
+    The declared transfer model is a five-fold ensemble. Which fold initialises an adaptation arm is not
+    decided, so a multi-checkpoint model raises DecisionMissingError unless model.<task>.init_checkpoint
+    names one spec of the list."""
+    paths, shas, _ = transfer_checkpoints(cfg, task, exp_id)
+    if len(paths) == 1:
+        return paths[0]
+    m = cfg["model"][task]
+    init = m.get("init_checkpoint")
+    if not init:
+        raise DecisionMissingError(
+            f"USER DECISION MISSING: model.{task}.transfer_checkpoint is a {len(paths)}-checkpoint ensemble "
+            f"({m.get('policy')}). An ensemble cannot initialise fine-tuning. Set model.{task}.init_checkpoint "
+            "to one of its specs (see docs/decisions under Needs user decision)")
+    ip = resolve(init, exp_id)
+    if ip not in paths:
+        raise AssertionError(f"model.{task}.init_checkpoint {ip} is not one of the declared transfer checkpoints")
+    return ip
+
+
+def transfer_infer(features: Path, cfg: dict, task: str, exp_id: str, out_dir: Path, suffix: str) -> tuple[Path, dict]:
+    """Frozen zero-shot inference with the declared transfer model. Ensemble -> pixel mean (fold_mean)."""
+    paths, shas, rec = transfer_checkpoints(cfg, task, exp_id)
+    if len(paths) == 1:
+        return frozen_infer(features, paths[0], task, out_dir, suffix, shas[0]), rec
+    probs = [frozen_infer(features, p, task, out_dir / f"_fold{i}", f"{suffix}_fold{i}", h)
+             for i, (p, h) in enumerate(zip(paths, shas))]
+    name = f"pit_prob_floor_{suffix}.tif" if task == "pit" else f"{task}_prob_{suffix}.tif"
+    return mean_rasters(probs, out_dir / name), rec
 
 
 def init_from_checkpoint(own_state: dict, ck: dict, reinit=(), channels: list | None = None) -> tuple[dict, dict]:
@@ -1359,6 +1424,12 @@ def prereg_markdown(exp_id: str, cfg: dict) -> str:
               "master_seed", "buffer_m", "void_cap", "n_min_blocks", "strata", "annotation_protocol"]:
         v = pr.get(k, "TBD")
         lines.append(f"| {k} | {json.dumps(v) if not isinstance(v, str) else v} |")
+    mu = cfg.get("multiplicity") or {}
+    lines.append(f"| multiplicity | {mu.get('method', 'TBD')} over {json.dumps(mu.get('family', 'TBD'))}, "
+                 f"max_undefined {mu.get('max_undefined', 'TBD')} |")
+    for task, m in (cfg.get("model") or {}).items():
+        lines.append(f"| transfer model {task} | {m.get('label', 'TBD')}. {m.get('family', 'TBD')} {m.get('policy', '')} "
+                     f"lineage {m.get('lineage', 'TBD')} |")
     lines += ["", "Margins come from the burden tradeoff, never from fold spread or variance.",
               "One threshold serves success and failure. The band between is inconclusive."]
     return "\n".join(lines) + "\n"
@@ -1507,13 +1578,16 @@ def _cmd_derive(args, cfg):
 
 def _cmd_infer(args, cfg):
     m = cfg["model"][args.task]
-    ckpt = transfer_checkpoint(cfg, args.task, args.exp)
+    paths, _, rec = transfer_checkpoints(cfg, args.task, args.exp)
     feats = ek.area_dir(args.area) / "derived" / "05" / f"features_{args.area}_05.tif"
     run = ek.new_run(args.exp, f"infer_{args.task}", {"area": args.area, **m},
-                     base=area_transfer_dir(args.area), why="frozen zero-shot inference")
-    prob = frozen_infer(feats, ckpt, args.task, run, f"{args.area}_05", m.get("sha256"))
-    finish_run(run, [feats, ckpt], [prob], {"task": args.task, "area": args.area})
-    print(f"wrote {prob}")
+                     base=area_transfer_dir(args.area), why="frozen zero-shot inference, provisional transfer model")
+    prob, rec = transfer_infer(feats, cfg, args.task, args.exp, run, f"{args.area}_05")
+    (run / f"xfer_infer_record_{args.task}_{args.area}.json").write_text(
+        json.dumps({"checkpoint": rec, "prob": str(prob), "prob_sha256": ek.sha256(prob),
+                    "label": rec["label"]}, indent=2), encoding="utf-8")
+    finish_run(run, [feats, *paths], [prob], {"task": args.task, "area": args.area, "checkpoint": rec})
+    print(f"wrote {prob} ({rec['label']})")
 
 
 def read_ref_tables(path: Path) -> tuple[dict, dict | None, dict]:
@@ -1553,6 +1627,22 @@ def class_truth(truth, task: str):
     return truth[truth["class"].astype(str) == want].copy()
 
 
+def gate_id(arm: str, task: str, area: str) -> str:
+    return f"{arm}:{task}:{area}"
+
+
+def primary_gate(cfg: dict, arm: str, task: str, area: str, mode: str = "primary", contrast: bool = False,
+                 strata_filter: str = "") -> tuple[str | None, list]:
+    """(gate id, family) when this score is a declared primary, else (None, family).
+    Primaries are listed in config multiplicity.family as arm:task:area. A sensitivity mode, a contrast arm or a
+    stratum subset is never a primary (user default 2026-11-06. Secondaries are reported, never gated)."""
+    fam = list((cfg.get("multiplicity") or {}).get("family") or [])
+    g = gate_id(arm, task, area)
+    if g in fam and mode == "primary" and not contrast and not strata_filter:
+        return g, fam
+    return None, fam
+
+
 def _cmd_score(args, cfg):
     import geopandas as gpd
     pr = cfg["prereg"]
@@ -1581,8 +1671,9 @@ def _cmd_score(args, cfg):
         tab_t, cands = score_raster(Path(args.prob), class_truth(truth, task), blocks, task=task, mode=args.mode,
                                     exclude_polygons=water)
         pol = cands.attrs["policy"]
+        gate, family = primary_gate(cfg, args.arm, task, args.area, args.mode, args.contrast, args.strata_filter)
         res = transfer_difference(tab_t, tab_ref, margin, B=args.B, seed=int(pr.get("master_seed", 0)),
-                                  ref_policy=ref_pol, target_policy=pol)
+                                  ref_policy=ref_pol, target_policy=pol, gate=gate, family=family)
         res.update({"arm": args.arm, "area": args.area, "task": task, "evidence_level": "(a) drawn feature",
                     "contrast_only": bool(args.contrast), "reference_tables": str(ref_p),
                     "density_scaled_k": density_scaled_k(res["density_target"], res["density_ref"]),

@@ -12,14 +12,22 @@
   "n_min_test_blocks": 30,
   "_n_min_note": "N_min is a user decision (fw_3_2 section 13). 30 is a placeholder so the gate code runs.",
   "margin_delta": {
-    "ny_alg": null,
-    "ny_cat": null,
-    "oh_wash": null,
-    "oh_mon": null,
-    "ky_lee": null,
-    "ky_pow": null,
-    "wv_ple": null,
-    "wv_rit": null
+    "ny_alg": 0.03,
+    "ny_cat": 0.03,
+    "oh_wash": 0.03,
+    "oh_mon": 0.03,
+    "ky_lee": 0.03,
+    "ky_pow": 0.03,
+    "wv_ple": 0.03,
+    "wv_rit": 0.03
+  },
+  "_margin_note": "User accepted the default 0.03 recall per window on 2026-11-06 (take defaults). Change freely.",
+  "multiplicity": {
+    "method": "holm",
+    "family": ["ny_alg", "oh_wash", "ky_lee", "wv_ple"],
+    "alpha": 0.05,
+    "max_undefined": 0.0,
+    "_note": "User default 2026-11-06. Holm over the four primary windows (fw_3_2 Q1, one estimand per window). Companion windows are descriptive and never gated."
   },
   "prereg_cover_share": 0.95,
   "eligibility": {

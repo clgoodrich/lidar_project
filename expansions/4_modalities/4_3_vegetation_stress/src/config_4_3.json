@@ -132,8 +132,8 @@
     "min_leases_per_class": 15,
     "hm_auc": 0.7,
     "codes_status": "placeholder",
-    "visible_lookback_days": null,
-    "_visible_note": "Records count only from the first scene date minus visible_lookback_days to the last scene date. User decision. null refuses"
+    "visible_lookback_days": 365,
+    "_visible_note": "Records count only from the first scene date minus visible_lookback_days to the last scene date. 365 days. 2026-11-06 user accepted default (\"take defaults\"). Change freely"
   },
   "observability": {
     "pixels_m": [
@@ -182,7 +182,7 @@
   },
   "added_value": {
     "k_per_km2": 40.0,
-    "delta_gain": 0.05,
+    "delta_gain": 0.03,
     "lidar_features": [
       "area_m2",
       "chm_mean_m",
@@ -190,7 +190,8 @@
       "aspect_cos"
     ],
     "bootstrap_B": 2000,
-    "max_undefined": 0.0
+    "max_undefined": 0.0,
+    "_delta_gain_note": "Useful gain 0.03 recall at K. 2026-11-06 user accepted default (\"take defaults\"). Change freely"
   },
   "leak_test": {
     "covariates": [
@@ -220,5 +221,15 @@
     "scl": 20.0
   },
   "_band_native_note": "Sentinel-2 MSI native pixel per band. B2 B3 B4 B8 10 m. B5 and B11 20 m. SCL 20 m. VERIFY",
-  "_max_undefined_note": "Share of bootstrap draws allowed to be undefined. 0 means any undefined draw gives an undefined interval and an inconclusive verdict (SH-01). User decision"
+  "_max_undefined_note": "Share of bootstrap draws allowed to be undefined. 0 means any undefined draw gives an undefined interval and an inconclusive verdict (SH-01). 2026-11-06 user accepted default (\"take defaults\"). Change freely",
+  "_season_note": "The September scene (s2_sep_9t) stays shoulder. 2026-11-06 user accepted default (\"take defaults\"). Change freely",
+  "primary_gate": {
+    "primaries": [
+      "V3",
+      "V4:all"
+    ],
+    "method": "holm",
+    "alpha": 0.05,
+    "_note": "Holm over the declared primaries only (A is V3 recall at K, B is V4 AUC gain on all labels), one-sided at alpha / 2 per family, in _vegstress_primary_holm_9t.py. V4 strong and weak subsets are secondary, reported and never gated. 2026-11-06 user accepted default (\"take defaults\"). Change freely"
+  }
 }

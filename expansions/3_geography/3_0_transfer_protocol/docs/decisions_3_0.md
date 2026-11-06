@@ -2,6 +2,14 @@
 
 Newest first. One line per decision, with the date and who made it.
 
+## Decisions
+
+- 2026-11-06. Void cap default. User accepted the default 0.5 (`scoring_defaults.void_cap_default`) ("take defaults"). Change freely.
+- 2026-11-06. Fill rule for feature-free 9t blocks. User accepted the default round robin as primary. Fold mean stays the sensitivity and gives the same pit recall 0.946 ("take defaults"). Change freely.
+- 2026-11-06. Multiplicity. User accepted the default Holm over the declared primary gates named in each preregistration (`multiplicity.family`, default the one primary), secondaries and sensitivities reported and never gated (`_transfer_holm_gate.py`) ("take defaults"). Change freely.
+- 2026-11-06. Undefined bootstrap draws. User accepted the default max_undefined 0 (any undefined draw makes the gate inconclusive) ("take defaults"). Change freely.
+- 2026-11-06. Margin. User accepted the default 0.03 recall (`scoring_defaults.margin_default` and the prereg example) ("take defaults"). Change freely.
+- 2026-11-06. The prereg template now lists the scoring and checkpoint fields and the accepted defaults (section 13). Done by the fix agent. Change freely.
 - 2026-11-06. Review fix pass (F02 F08 F11 G-02 G-03 G-05 G-06, minors). Made by the review-fix agent, change freely.
   - The scorer takes cutoff, minimum area, IoU and match order from `ek.policy_for(task)`. The dict and its hash are stamped into every score JSON, the reference tables and the decision report. `CUTOFF` (0.10) is the sensitivity only.
   - 3.1 and 3.2 now call this scorer in memory (`extract`, `score_tables`). There is one matcher.
@@ -34,8 +42,4 @@ Newest first. One line per decision, with the date and who made it.
 
 ## Needs user decision
 
-- Void cap default. Interior nodata now counts toward the void fraction. The default cap is 0.5, the value in the preregistration example. Each preregistration should state its own `void_cap`.
-- Fill rule for feature-free 9t blocks. Round robin (one fold model per block, like a held-out block) is the default. Fold mean is the sensitivity and gives the same pit recall (0.946 global).
 - Small-sample interval. fw_00 asks for a permutation interval under 15 blocks. A residual sign-flip interval collapses with one block that has truth. The code now says "not identifiable" there. A valid small-sample interval is not designed yet.
-- Multiplicity. There is no correction for several arms, K values or sensitivities. Decide whether any secondary is ever gated.
-- Prereg template `docs/iterations/transfer_prereg_template.md` sits outside 3.0. It should list `scoring.cutoff`, `scoring.iou`, `scoring.dedupe`, `scoring.order`, `scoring.void_cap` and the `checkpoint` block (family, lineage, sha256). The fill tool already checks them.

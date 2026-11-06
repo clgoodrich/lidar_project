@@ -20,5 +20,10 @@ Newest first. One line per decision, with the date and who made it.
 - 2026-11-05. The tool lives in the expansion `src/`, not `tools/` as the framework names it. Made by the build agent, change freely.
 - 2026-11-05. Field checks use a 1.7 m person target. Maps default to a ground target. Made by the build agent, change freely.
 
+## Decisions
+
+- 2026-11-06. Void obstacle model (viewshed.void_obstacle). User accepted the default lower_neighbour, the lower of the two nearest observed heights along the ray ("take defaults"). Change freely. A void with an observed sample on one side only stays unknown. Void targets stay unknown. The old rule is the sensitivity void_obstacle unknown. Tests test_void_obstacle_takes_the_lower_neighbour, test_fill_void_lower_by_hand, test_void_at_the_observer_stays_unknown, test_sweep_matches_brute_force_with_voids.
+- 2026-11-06. Rerun on 9t, 500 m from 621750, 4595250. O0 unknown share 0.490 to 0.448. Unknown cells 1,540,127 to 1,408,436, which are now only the void targets. Visible cells 44 to 131,321. O1 unknown share 0.449 to 0.449 (1,410,893 to 1,409,557 cells). O1 visible 36 to 1,126. Pockets unchanged (16 and 12). The void_obstacle unknown run reproduces the old O0 numbers exactly.
+
 ## Needs user decision
-- 2026-11-06. Whether a conservative model may resolve void obstacles (for example, the lower of the two neighbouring observed heights). Without one, 9t maps from many observers are mostly unknown.
+- None open.

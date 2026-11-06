@@ -14,7 +14,7 @@ Purpose
     and the label-efficiency ratio at 90% of A0 recall at f = 1.
     --audit-once (review 7.1-02) scores the sealed audit blocks once. It reads only audit_candidates_*.csv and
     audit_blocks_*.csv from _ssl_finetune_pit_9t.py --predict-audit, never the out-of-fold files. It needs a
-    frozen P2 audit file, a primary arm, a set G and finetune.audit_model_fold in the config. It writes
+    frozen P2 audit file and a primary arm. G (0.02) and finetune.audit_model_fold (0) are user defaults in the config. It writes
     results/tables/ssl_audit_lock.json (audit_opened true) before scoring and refuses any second run.
 
 Inputs
@@ -91,8 +91,8 @@ def curve_table(pl, blocks) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-G_UNSET = ("inconclusive (G unset. Set G in config_7_1.json or the preregistration before scoring. "
-           "G_raw is a diagnostic and is never used as the margin)")
+class GUnset(ValueError):
+    """G is null in the config and in the preregistration. The config default is 0.02 (user default 2026-11-06)."""
 
 
 def resolve_G(cfg, prereg: dict | None, pl, seeds, block_list, path: Path) -> dict:
@@ -106,7 +106,7 @@ def resolve_G(cfg, prereg: dict | None, pl, seeds, block_list, path: Path) -> di
     elif prereg and prereg.get("G") is not None:
         G, src = float(prereg["G"]), f"preregistration {prereg.get('_path', '')} G (set before scoring)"
     else:
-        G, src = None, "unset"
+        raise GUnset("G is null in config_7_1.json and the preregistration. The user default is 0.02")
     rec = {"G": G, "source": src, "G_raw": raw,
            "G_raw_note": "A0 recall f=0.50 minus f=0.25 on the same held-out blocks. Diagnostic only. "
                          "Never used as the margin and never floored",
@@ -184,7 +184,7 @@ def analyse(cfg, root: Path, primary: str | None, B: int, tables: Path, figs: Pa
         res["primary"] = {"arm": primary, "diff": point, "lo": lo, "hi": hi, "n_seeds": len(seeds),
                           "n_blocks": len(block_list), "G": G, "G_raw": res["G"]["G_raw"],
                           "decision": ("void (fewer than 3 matched seeds)" if len(seeds) < 3 else
-                                       G_UNSET if G is None else ek.decide(lo, hi, G, "superiority"))}
+                                       ek.decide(lo, hi, G, "superiority"))}
     expl = {}
     for (arm, f, s) in sorted(pl):
         if arm == "A0":
@@ -230,10 +230,11 @@ def audit_once(cfg, root: Path, primary: str | None, B: int, tables: Path, audit
     aud = sorted(ek.audit_ids(df, ("audit",)))
     primary = primary or cfg["finetune"]["primary_arm"]
     G = cfg.get("G") if cfg.get("G") is not None else (prereg or {}).get("G")
-    fold = cfg["finetune"].get("audit_model_fold")
-    missing = [n for n, v in (("primary arm", primary), ("G", G), ("finetune.audit_model_fold", fold)) if v is None]
-    if missing:
-        raise AuditRefused(f"refused. Set {', '.join(missing)} before the audit is opened")
+    if G is None:
+        raise GUnset("G is null in config_7_1.json and the preregistration. The user default is 0.02")
+    fold = int(cfg["finetune"]["audit_model_fold"])          # user default 0 (2026-11-06)
+    if primary is None:
+        raise AuditRefused("refused. Set the primary arm before the audit is opened")
     cands, blocks = load_runs(root, "audit")
     f0 = cfg["finetune"]["primary_fraction"]
     keep = blocks["arm"].isin([primary, "A0"]) & np.isclose(blocks["fraction"], f0) & (blocks["fold"] == fold)

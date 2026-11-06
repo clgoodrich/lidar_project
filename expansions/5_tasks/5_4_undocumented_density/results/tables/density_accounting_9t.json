@@ -5,24 +5,24 @@
   "footprint_blocks_with_pit_truth": 115,
   "k_per_km2": 40,
   "K": 810,
-  "candidates_in_footprint": 677,
-  "D_blobs": 677,
-  "D_sites": 656,
+  "candidates_in_footprint": 768,
+  "D_blobs": 768,
+  "D_sites": 733,
   "K_exceeds_candidates": true,
-  "sites_with_several_blobs": 21,
-  "sites_on_matched_feature": 470,
+  "sites_with_several_blobs": 35,
+  "sites_on_matched_feature": 477,
   "K30": 608,
-  "D_sites_K30": 592,
+  "D_sites_K30": 596,
   "D_sites_block_bootstrap": {
-    "point": 656.0,
-    "lo": 578.0,
-    "hi": 739.0249999999999,
+    "point": 733.0,
+    "lo": 648.0,
+    "hi": 782.0,
     "B": 2000,
     "support": [
       0,
       810
     ],
-    "draw_max": 781.0,
+    "draw_max": 792.0,
     "method": "blocks resampled, top-K cut and site merge rerun per draw"
   },
   "N_doc_records": 1058,
@@ -34,6 +34,6 @@
     "Proposed But Never Materialized"
   ],
   "detector_input": "expansions/5_tasks/5_6_record_association/data/processed/detector_output_pit_full_9t.gpkg",
-  "frame_sha256": "352ec7f486a23f68c83988657dcd5eb222923e12ddd26ef5ef69a47bc9a219e3",
+  "frame_sha256": "b47d672751bfaeb302324eb701948e9c95e12aab77a7ed56cf6917542cba93c7",
   "note": "D counts candidate sites (evidence level a). It is not a count of wells. Zero-pit blocks have no out-of-fold pit prediction, so they add area but no candidates."
 }

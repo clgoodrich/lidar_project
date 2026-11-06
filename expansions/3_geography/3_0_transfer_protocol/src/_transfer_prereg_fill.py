@@ -45,7 +45,8 @@ SECTION_FIELDS = {
     1: ["question"], 2: ["task", "candidate_unit", "scoring.footprint", "eligibility", "edge_rule"],
     3: ["lidar", "ground_density", "evidence_level", "label_source"], 4: ["frozen", "model_policy", "checkpoint"],
     5: ["adaptation_area", "test_area", "audit_file", "buffer_m", "buffer_source"],
-    6: ["primary_metric", "scoring.k", "scoring.cutoff", "scoring.iou", "scoring.dedupe", "scoring.seed", "scoring.B"], 7: ["margin", "margin_source", "actions"],
+    6: ["primary_metric", "scoring.k", "scoring.cutoff", "scoring.iou", "scoring.dedupe", "scoring.seed", "scoring.B"],
+    7: ["margin", "margin_source", "multiplicity", "actions"],
     8: ["labellers", "categories"], 9: ["report"], 10: [], 11: ["reference.run", "density_c", "split_file", "split_sha256",
                                                                   "planned_blocks"],
 }
@@ -65,14 +66,16 @@ def example_fields() -> dict:
         "adaptation_area": "<path or none>", "test_area": "<path>", "audit_file": "<P2 audit file or none>",
         "buffer_m": 100, "buffer_source": "P1 S4 buffer_derivation_9t.json",
         "primary_metric": "recall at K per km2 of scored eligible area",
-        "margin": 0.10, "margin_source": "tolerable missed-feature burden at K, stated here",
+        "margin": 0.03, "margin_source": "user default 0.03 recall (take defaults 2026-11-06), or the burden at K stated here",
+        "multiplicity": {"method": "holm", "gate": "<area>", "family": ["<area>"], "max_undefined": 0.0},
         "actions": {"success": "proceed to 3.2 or adaptation", "failure": "error review, no transfer claim",
                     "inconclusive": "report, change design or add blocks"},
         "labellers": "<names kept off documents>", "categories": ["pit", "possible pit", "uncertain"],
         "report": "detection and record association reported separately",
         "reference": {"run": "<9t reference run folder>", "label": "new baseline or archival"},
         "density_c": None, "split_file": "<P1 split file>", "split_sha256": "<sha256>", "planned_blocks": 30,
-        "checkpoint": {"family": "pit/unet_iso_cv5", "lineage": "isolated", "sha256": "<{fold: sha256} of best.pt>"},
+        "checkpoint": {"family": "pit/unet_cv5", "lineage": "historical_cv5, provisional transfer model (fold_mean of 5)",
+                       "sha256": "<{fold: sha256} of best.pt>"},
         "scoring": {"area": "<area>", "task": "pit", "prob": "<target probability raster>", "blocks": "<blocks gpkg>",
                     "truth": "<truth gpkg:layer>", "truth_id": "pit_inside_id", "footprint": None,
                     "void": None, "void_cap": 0.5, "k": 40, "seed": 20261105, "B": 2000,
@@ -111,6 +114,14 @@ def check(f: dict, ci_width: Path | None = None) -> list[str]:
             probs.append(f"declared scoring {diff} differ from ek.policy_for({pol['task']}) and no policy_override_reason is given")
     except (ValueError, KeyError) as e:
         probs.append(str(e))
+    mu = f.get("multiplicity")                        # user default 2026-11-06. Holm over declared primaries
+    if mu is not None:
+        if mu.get("method") != "holm":
+            probs.append("multiplicity.method must be holm (user default 2026-11-06)")
+        if mu.get("gate") not in (mu.get("family") or []):
+            probs.append("multiplicity.gate must be one of multiplicity.family")
+        if float(mu.get("max_undefined", 0.0)) != 0.0:
+            probs.append("multiplicity.max_undefined must be 0 (user default 2026-11-06)")
     if f.get("evidence_level") not in LEVELS:
         probs.append(f"evidence_level must be one of {LEVELS}")
     if ci_width and isinstance(m, (int, float)):

@@ -1,6 +1,6 @@
 {
   "top_n": 50,
-  "n_sites": 1354,
+  "n_sites": 1394,
   "scenarios": [
     "A",
     "B",
@@ -28,12 +28,12 @@
     "h_age",
     "h_no_plug_record"
   ],
-  "n_unrankable_H": 296,
-  "n_unrankable_E": 1354,
+  "n_unrankable_H": 336,
+  "n_unrankable_E": 1394,
   "scenario_report": {
     "A": {
       "n_rankable": 0,
-      "n_unrankable": 1354,
+      "n_unrankable": 1394,
       "top_set_size": 0,
       "ties_in_top": 0,
       "largest_tie_in_top": 0,
@@ -44,7 +44,7 @@
     },
     "B": {
       "n_rankable": 1058,
-      "n_unrankable": 296,
+      "n_unrankable": 336,
       "top_set_size": 169,
       "ties_in_top": 169,
       "largest_tie_in_top": 169,
@@ -54,7 +54,7 @@
       "status": "ties exceed N"
     },
     "C": {
-      "n_rankable": 1354,
+      "n_rankable": 1394,
       "n_unrankable": 0,
       "top_set_size": 1058,
       "ties_in_top": 1058,
@@ -66,7 +66,7 @@
     },
     "D": {
       "n_rankable": 0,
-      "n_unrankable": 1354,
+      "n_unrankable": 1394,
       "top_set_size": 0,
       "ties_in_top": 0,
       "largest_tie_in_top": 0,
