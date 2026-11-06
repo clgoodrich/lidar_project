@@ -1,0 +1,56 @@
+{
+  "target": "pad",
+  "arch": "unet",
+  "n_params": 7764226,
+  "folds": [
+    {
+      "fold": 0,
+      "best_epoch": 31,
+      "val_score": 0.5581724903807052,
+      "minutes": 13.5033234000206
+    },
+    {
+      "fold": 1,
+      "best_epoch": 32,
+      "val_score": 0.5433565592924808,
+      "minutes": 13.03793283700943
+    },
+    {
+      "fold": 2,
+      "best_epoch": 30,
+      "val_score": 0.5632248085327979,
+      "minutes": 13.131705609957377
+    },
+    {
+      "fold": 3,
+      "best_epoch": 29,
+      "val_score": 0.5243945219028644,
+      "minutes": 12.763428008556366
+    },
+    {
+      "fold": 4,
+      "best_epoch": 39,
+      "val_score": 0.5840159928229355,
+      "minutes": 12.699971175193786
+    }
+  ],
+  "val_score_mean": 0.5546328745863567,
+  "val_score_sd": 0.019956107365087725,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ],
+  "patch": 256,
+  "alpha": [
+    0.25,
+    0.75
+  ],
+  "epochs": 40,
+  "batch": 8,
+  "lr": 0.001
+}

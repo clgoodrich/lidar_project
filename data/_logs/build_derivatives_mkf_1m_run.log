@@ -1,0 +1,52 @@
+
+=== mkf_1m ===  grid 10000x10000 @ 1.0 m  CRS=EPSG:6346  tiles=59
+  output dir: data\mckean\mkf\derived\1m
+  [merge_mkf_1m] rc=0 in 512.2s
+  merged: 20.48 GB
+  [dem_mkf_1m] rc=0 in 280.5s
+  DEM: nan=42.02%  z=435.3..731.0 m
+  [dsm_mkf_1m] rc=0 in 293.2s
+  reading LAS for density + intensity...
+C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s1_build\_build_derivatives.py:312: RuntimeWarning: invalid value encountered in divide
+  smooth = np.where(sc > 0, sm / sc, np.nan)
+_tiffWriteProc: No space left on device.
+_tiffWriteProc: No space left on device.
+_tiffWriteProc: No space left on device.
+_tiffWriteProc: No space left on device.
+_tiffWriteProc: No space left on device.
+_tiffWriteProc: No space left on device.
+_tiffWriteProc: No space left on device.
+  wrote hillshade_mkf_1m + slope_mkf_1m
+Traceback (most recent call last):
+  File "rasterio\\_io.pyx", line 1833, in rasterio._io.DatasetWriterBase.write
+  File "rasterio\\_io.pyx", line 199, in rasterio._io.io_multi_band
+  File "rasterio\\_io.pyx", line 205, in rasterio._io.io_multi_band
+  File "rasterio\\_err.pyx", line 325, in rasterio._err.StackChecker.exc_wrap_int
+rasterio._err.CPLE_AppDefinedError: TIFFAppendToStrip:Write error at scanline 4096
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s1_build\_build_derivatives.py", line 404, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s1_build\_build_derivatives.py", line 394, in main
+    build(tiles, x0=x0, y0=y0, x1=x1, y1=y1,
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          res=args.res, sfx=args.suffix, dst_crs=args.crs,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+          out_dir=Path(args.out_dir) if args.out_dir else None,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+          dem_method=args.dem_method)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s1_build\_build_derivatives.py", line 324, in build
+    write_tif(out("tpi_grad_mag"), np.hypot(gx, gy).astype(np.float32),
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              transform=transform, crs=dst_crs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\_common.py", line 403, in write_tif
+    ds.write(out, 1)
+    ~~~~~~~~^^^^^^^^
+  File "rasterio\\_io.pyx", line 1835, in rasterio._io.DatasetWriterBase.write
+rasterio.errors.RasterioIOError: Write failed. See previous exception for details.

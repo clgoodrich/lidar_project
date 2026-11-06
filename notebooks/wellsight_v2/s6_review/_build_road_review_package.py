@@ -45,6 +45,16 @@ def sample_mean(arr, tf, line, step=3.0):
 
 
 def chunk_line(line: LineString, chunk_m: float):
+    """Same ~40 m chunking as the training data, and for a matching reason.
+
+    A predicted road is usually right along most of its length and wrong along
+    one stretch. Presented as a single feature, the reviewer can only accept or
+    reject the whole thing, and either answer is a lie. At 40 m they flag the
+    bad stretch and keep the rest.
+
+    Matching the training chunk size also means a rejected chunk drops straight
+    back into the manifest as a hard negative, with no re-cutting.
+    """
     if line is None or line.is_empty or line.geom_type != "LineString":
         return []
     if line.length <= chunk_m:

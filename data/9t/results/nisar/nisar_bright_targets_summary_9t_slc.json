@@ -25,10 +25,10 @@
     "at_well": 99
   },
   "share_by_context_in_lidar": {
-    "elsewhere": 0.65,
-    "on_road": 0.195,
-    "on_pad": 0.11,
-    "at_well": 0.045
+    "elsewhere": 0.591,
+    "on_road": 0.227,
+    "on_pad": 0.134,
+    "at_well": 0.048
   },
   "share_by_context_random_spots": {
     "elsewhere": 0.612,

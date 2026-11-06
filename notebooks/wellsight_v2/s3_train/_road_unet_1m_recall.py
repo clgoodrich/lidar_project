@@ -59,6 +59,20 @@ PREDICT_BLOCK = path_for("data_3x3") / "westernpa_d20" / "613590" / "derived" / 
 
 
 def build_dataset(split, manifest, blocks, transform, mu, sd, *, augment, seed):
+    """Three sampling policies from one manifest, one per `kind`.
+
+    The model has to separate three things, so it has to SEE all three:
+
+      road      the positive
+      not_road  a human looked at this and said no. Hard negatives.
+      drainage  natural channels. The single biggest source of false roads,
+                which is why they are trained as their own class rather than
+                filtered out afterwards.
+
+    Patches are centred on each chunk's midpoint and jittered, so a chunk is
+    seen from several offsets across an epoch. block_bounds confines the sampler
+    to this split's blocks.
+    """
     m = manifest[manifest.split == split]
     roads = m.loc[m.kind == "road", ["mid_x", "mid_y"]].to_numpy()
     not_roads = m.loc[m.kind == "not_road", ["mid_x", "mid_y"]].to_numpy()
@@ -84,6 +98,18 @@ def write_outputs(prob, argmax, profile):
 
 
 def evaluate_test(argmax, prob):
+    """Score the held-out test blocks two different ways.
+
+    PIXEL IoU is the obvious one and the least useful for roads: a road is a
+    thin ribbon, so being one cell off sideways destroys the IoU while losing
+    nothing that matters.
+
+    PER-LINE AP is the one to read. Walk each annotated test line, average
+    P(road) along it, and ask whether real roads score above the confusers.
+    Two separate AP numbers, because they are two different failure modes:
+    road vs not_road is "did it invent a road", road vs drainage is "did it
+    mistake a stream for one".
+    """
     with rasterio.open(LABELS) as r:
         labels = r.read(1); H, W = r.height, r.width; tf = r.transform
     blocks = gpd.read_file(BLOCKS, layer="blocks")
@@ -98,6 +124,12 @@ def evaluate_test(argmax, prob):
     ct = chunks[chunks.split == "test"]
 
     def line_prob(line, cls=1):
+        """Mean predicted probability along one line, sampled ~1 m apart.
+
+        The inverse-transform arithmetic converts a map coordinate to a row and
+        column by hand: tf.c/tf.f are the raster origin, tf.a/tf.e the cell size
+        (tf.e is negative, because rows run downward while northing runs up).
+        """
         if line is None or line.is_empty:
             return 0.0
         n = max(2, int(line.length)); vals = []
@@ -137,6 +169,14 @@ def evaluate_test(argmax, prob):
 
 
 def predict_613590(mu, sd, model):
+    """Predict on a block the model has never seen, in the same run.
+
+    9t test blocks are held out but they are still 9t: same survey, same canopy,
+    same terrain. 613590 is a different block entirely, so this is the only
+    number here that says anything about whether the model TRANSFERS rather than
+    merely being stable. It is why the alpha bump was accepted -- it closed road
+    gaps here, not on 9t.
+    """
     feat = PREDICT_BLOCK / "features_613590_1m.tif"
     if not feat.exists():
         print(f"  (skip 613590 predict: {feat} missing)"); return
@@ -162,6 +202,10 @@ def main() -> int:
                          "so an earlier run stays intact and comparable")
     args = ap.parse_args()
 
+    # --tag writes to a suffixed directory instead of overwriting the last run.
+    # Use it whenever the INPUTS changed (relabelled roads, a rebuilt stack), or
+    # the previous checkpoint and its metrics are gone and the comparison with it
+    # is unrecoverable.
     global OUTDIR
     if args.tag:
         OUTDIR = OUTDIR.with_name(f"{OUTDIR.name}_{args.tag}")

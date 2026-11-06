@@ -65,6 +65,10 @@ def main() -> int:
     ap.add_argument("--res", type=float, default=0.5)
     ap.add_argument("--max-points", type=int, default=400000)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--out", default="scanline_scene_data.js",
+                    help="filename inside docs/presentation/viewers")
+    ap.add_argument("--lrm-clip", type=float, default=0.06,
+                    help="metres either side of zero for the LRM floor ramp")
     a = ap.parse_args()
 
     cx, cy = a.centre_en
@@ -74,7 +78,7 @@ def main() -> int:
 
     grids = {}
     for name, fn in (("dem", "dem_9t_05.tif"), ("dsm", "dsm_9t_05.tif"),
-                     ("chm", "chm_9t_05.tif")):
+                     ("chm", "chm_9t_05.tif"), ("lrm", "lrm_5_9t_05.tif")):
         with rasterio.open(D05 / fn) as r:
             w = from_bounds(*b, transform=r.transform)
             g = r.read(1, window=w, boundless=True,
@@ -122,12 +126,16 @@ def main() -> int:
         z_min=float(np.nanmin(pz)), z_max=float(np.nanmax(pz)),
         multi_return_pct=float(100 * np.mean(nr > 1)),
         chm_vmin=CHM_VMIN, chm_vmax=CHM_VMAX, chm_nodata_rgb=CHM_NODATA_RGB,
+        lrm_nan_pct=float(100 * np.isnan(grids["lrm"]).mean()),
+        lrm_vmin=-a.lrm_clip, lrm_vmax=a.lrm_clip,
+        lrm_p1=float(np.nanpercentile(grids["lrm"], 1)),
+        lrm_p99=float(np.nanpercentile(grids["lrm"], 99)),
     )
     print("  " + json.dumps({k: (round(v, 2) if isinstance(v, float) else v)
                              for k, v in meta.items() if k != "origin_en"}))
 
     OUT.mkdir(parents=True, exist_ok=True)
-    js = OUT / "scanline_scene_data.js"
+    js = OUT / a.out
     parts = [
         "window.SCENE = " + json.dumps(meta) + ";",
         'window.SCENE.px = "' + b64(px) + '";',
@@ -138,6 +146,7 @@ def main() -> int:
         'window.SCENE.dem = "' + b64((grids["dem"] - zmin).astype("float32")) + '";',
         'window.SCENE.dsm = "' + b64((grids["dsm"] - zmin).astype("float32")) + '";',
         'window.SCENE.chm = "' + b64(grids["chm"].astype("float32")) + '";',
+        'window.SCENE.lrm = "' + b64(grids["lrm"].astype("float32")) + '";',
     ]
     js.write_text("\n".join(parts), encoding="utf-8")
     print(f"\n  {js}  ({js.stat().st_size/1e6:.1f} MB)")

@@ -1,0 +1,57 @@
+{
+  "target": "pit",
+  "arch": "unetpp_r34_imagenet",
+  "n_params": 26091443,
+  "folds": [
+    {
+      "fold": 0,
+      "best_epoch": 27,
+      "val_score": 0.5899256254225829,
+      "minutes": 13.782350281874338
+    },
+    {
+      "fold": 1,
+      "best_epoch": 35,
+      "val_score": 0.5595852798950905,
+      "minutes": 13.930668501059214
+    },
+    {
+      "fold": 2,
+      "best_epoch": 16,
+      "val_score": 0.5478613059369752,
+      "minutes": 13.908818169434864
+    },
+    {
+      "fold": 3,
+      "best_epoch": 35,
+      "val_score": 0.57720021865527,
+      "minutes": 13.856348152955373
+    },
+    {
+      "fold": 4,
+      "best_epoch": 40,
+      "val_score": 0.5328714694055521,
+      "minutes": 13.943630544344584
+    }
+  ],
+  "val_score_mean": 0.5614887798630942,
+  "val_score_sd": 0.020316423454206155,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ],
+  "patch": 256,
+  "alpha": [
+    0.1,
+    0.72,
+    0.25
+  ],
+  "epochs": 40,
+  "batch": 8,
+  "lr": 0.001
+}

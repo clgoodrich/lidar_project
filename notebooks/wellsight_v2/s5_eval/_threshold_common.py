@@ -50,6 +50,12 @@ BOOKMARK_SRSID = 28818
 
 
 def tag(t: float) -> str:
+    """0.30 -> "thr0p30". The 'p' is not decoration.
+
+    A dot in a filename means an extension to half the toolchain. `thr0.30.tif`
+    confuses GDAL sidecar handling and shell globbing alike, and the repo's
+    filename rule requires the defining parameter to be IN the name.
+    """
     return f"thr{t:.2f}".replace(".", "p")
 
 
@@ -145,6 +151,14 @@ _CREATE = """CREATE TABLE IF NOT EXISTS layer_styles (
 
 
 def embed_style(gpkg: Path, layer: str, qml: str, desc: str) -> None:
+    """Write the QML into the GeoPackage itself, so it styles on open.
+
+    A GeoPackage is a SQLite database, and QGIS looks for a `layer_styles` table
+    inside it. Putting the style there instead of beside the file as a .qml means
+    the colours travel with the data: drag the gpkg into QGIS and found is green,
+    missed is red, with nothing to configure. A sidecar .qml gets left behind the
+    first time somebody copies the file somewhere.
+    """
     con = sqlite3.connect(gpkg); cur = con.cursor()
     cur.execute(_CREATE)
     cur.execute("DELETE FROM layer_styles WHERE f_table_name = ?", (layer,))
@@ -183,6 +197,11 @@ def contact_sheet(path: Path, hillshade: Path, misses, pred, title: str,
 
     ``misses`` is a GeoDataFrame; ``label_fn(row)`` supplies the panel title.
     Capped at ``max_panels`` -- the cap is printed, never silent.
+
+    A count of misses tells you how many. This tells you WHY. Fifty crops on one
+    page is the fastest way to see that the misses are all shallow, or all under
+    dense canopy, or all on one slope aspect -- which is the difference between
+    "the model is weak" and "the model is weak at one identifiable thing".
     """
     n_all = len(misses)
     if not n_all:

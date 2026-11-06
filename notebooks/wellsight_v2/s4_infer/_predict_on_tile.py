@@ -39,7 +39,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _common import DERIV, make_profile, write_tif, path_for
 from _dl import DEVICE, UNet, predict_full_tile
 
-# Channel order MUST match what was saved in best.pt['channels']:
+# Channel order MUST match what was saved in best.pt['channels'].
+#
+# This is the single easiest thing to get wrong in the whole pipeline, and it
+# fails SILENTLY. The model takes a 7-band array; nothing checks that band 3 is
+# the slope it was trained on rather than tpi. Swap two and inference still
+# runs, still writes a plausible-looking probability raster, and is nonsense.
+# best.pt records the order it was trained with -- trust that, not this tuple.
 TRAINING_CHANNELS = (
     "lrm_25", "lrm_5", "slope", "tpi_05",
     "openness_pos", "openness_neg", "roughness_11",
@@ -81,6 +87,16 @@ def find_channel_files(sfx: str) -> list[tuple[str, Path]]:
 
 
 def stack_features(sfx: str, out_path: Path) -> Path:
+    """Seven separate channel rasters -> one 7-band float32 stack.
+
+    The model wants all seven bands for the same window at once, so reading
+    seven files per patch would be seven seeks per patch. Building the stack
+    once costs disk and saves that on every patch of every task.
+
+    Nodata is converted to NaN on the way in: each channel may declare a
+    different nodata value, and a raw -9999 fed through normalisation becomes an
+    enormous finite input rather than something the model can ignore.
+    """
     if out_path.exists():
         print(f"reusing existing {out_path.name}")
         return out_path
@@ -111,6 +127,17 @@ def stack_features(sfx: str, out_path: Path) -> Path:
 
 def infer_one(name: str, ckpt: Path, n_classes: int, patch: int, overlap: int,
               features: Path, out_dir: Path, sfx: str) -> np.ndarray:
+    """Load one checkpoint and run it across the whole tile.
+
+    mu and sd come OUT OF THE CHECKPOINT, not off disk. That is deliberate: the
+    model must see inputs normalised exactly the way they were during training.
+    Recomputing stats on this tile, or reading a regenerated feature_stats.json,
+    shifts every input by a couple of percent and nothing errors -- the numbers
+    just quietly get worse.
+
+    predict_full_tile slides a `patch`-sized window with `overlap` between
+    positions and blends the seams, so the output has no visible tile grid.
+    """
     print(f"\n=== [{name}] inference ===")
     ck = torch.load(ckpt, map_location=DEVICE, weights_only=False)
     mu = np.asarray(ck["mu"], dtype=np.float32)
@@ -136,6 +163,10 @@ def infer_one(name: str, ckpt: Path, n_classes: int, patch: int, overlap: int,
     write_tif(out_dir / f"{name}_prob_{sfx}.tif", prob[1],
               transform=tf, crs=crs, dtype="float32", nodata=-1.0, bigtiff=True)
     if name == "pit":
+        # The pit model is the only 3-class one, so "the foreground probability"
+        # is ambiguous for it. Name band 1 explicitly as the FLOOR and write the
+        # wall probability out separately, rather than leaving a reader to guess
+        # which class pit_prob_*.tif holds.
         # rename foreground prob to be explicit, and add wall prob.
         (out_dir / f"pit_prob_{sfx}.tif").rename(out_dir / f"pit_prob_floor_{sfx}.tif")
         write_tif(out_dir / f"pit_prob_wall_{sfx}.tif", prob[2],

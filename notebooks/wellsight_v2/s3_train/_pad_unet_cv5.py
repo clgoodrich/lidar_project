@@ -96,6 +96,14 @@ MANIFEST = DERIV_9T / "pad_dataset_manifest.csv"
 OUTDIR = path_for("models") / "pad" / "unet_cv5"
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
+# Every constant below that differs from `_pit_unet_cv5.py` differs because a
+# pad is a large, flat, man-made platform and a pit is a small depression:
+#   PATCH/OVERLAP  bigger, so a whole pad plus its surroundings fits in one view
+#   N_CLASSES      2, because a pad has no floor/wall pair to separate
+#   FOCAL_ALPHA    less lopsided, because pads cover far more pixels than pits
+#   MIN_AREA_M2    100, since the smallest thing that could be a pad is 260 m2
+#   SCORE_BUF_M    80, still comfortably wider than the object being scored
+# The seed is deliberately the SAME as the pit CV so both are argued alike.
 CRS = "EPSG:6346"
 PATCH = 384                        # pads are bigger than pits -> more context
 OVERLAP = 96
@@ -180,7 +188,16 @@ def match_scores(gt, pred, taus=REPORT_TAUS):
 
 
 def locate_rate(gt, pred):
-    """Fraction of annotated pads holding at least one prediction centroid."""
+    """Fraction of annotated pads holding at least one prediction centroid.
+
+    The pad analogue of the pit rim-containment metric, and it answers the same
+    question: did the model FIND this thing, never mind whether it traced the
+    outline the way a human would.
+
+    A pit has an inside/outside pair -- floor to segment, rim to be contained by.
+    A pad has no such pair, so the pad polygon itself is both the segmentation
+    target and the container.
+    """
     if not len(gt) or not len(pred):
         return 0.0, 0
     hits = 0
@@ -223,6 +240,9 @@ def main() -> int:
         print(f"    fold {f}: {sub.block_id.nunique():3d} blocks  {len(sub):4d} pads")
     print()
 
+    # Ground truth is ONE layer here, unlike the pit CV's floor/rim pair.
+    # dissolve() collapses a pad drawn in several pieces into a single row, so a
+    # multi-part annotation cannot be counted as several pads.
     pads = read_layer(ANN_GPKG, "pad").to_crs(CRS)
     pads = pads[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
     pads = pads.merge(man[["pad_id", "fold"]], on="pad_id", how="inner")
@@ -266,7 +286,11 @@ def main() -> int:
         prob_tif = fd / f"pad_prob_cvfold{k}_9t_05.tif"
 
         held_blocks = sorted(man.loc[man.fold == k, "block_id"].unique())
-        rest = sorted(set(man.block_id.unique()) - set(held_blocks))
+        # Drop NaN BEFORE the set difference. NaN is the off-tile annotations (no block).
+        # hash(nan) is id-based on Python >= 3.10, so NaN landed in a different place in
+        # sorted(rest) every process, which changed rng.permutation and the inner val split.
+        # Found by the 2026-11-04 adversarial review, reproduced 2026-11-05 (NaN index 9 or 92).
+        rest = sorted(b for b in set(man.block_id.dropna().unique()) - set(held_blocks))
         # Seed per fold, not once before the loop. A single shared RNG makes the
         # inner-val draw depend on how many folds ran before it in the process,
         # so --only-folds silently gives a different split than a full run.
@@ -353,6 +377,12 @@ def main() -> int:
         foot_val = blocks.loc[blocks.block_id.isin(val_blocks)].geometry.union_all()
         foot_held = blocks.loc[blocks.block_id.isin(held_blocks)].geometry.union_all()
 
+        # The model predicts over the WHOLE tile, but only two footprints are
+        # ever scored: inner val and this fold's held-out blocks. Zero everything
+        # else before polygonizing -- otherwise most of the polygonize cost goes
+        # on blobs no metric will read. Buffered well past a pad's size so a
+        # scored object is never clipped in half by the footprint edge. This is
+        # a speedup only; it changes no scored number.
         keep = _rasterize(
             [(g, 1) for g in
              [foot_val.buffer(SCORE_BUF_M), foot_held.buffer(SCORE_BUF_M)]],

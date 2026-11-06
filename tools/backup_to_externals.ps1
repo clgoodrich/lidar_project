@@ -53,7 +53,9 @@ $stamp = Get-Date -Format 'yyyy-MM-dd_HHmmss'
 
 $targets = @(
     @{ Label = 'T7';                     Sub = 'Colton\_BACKUPS\lidar_project_MIRROR' },
-    @{ Label = 'Seagate Portable Drive'; Sub = 'Colton\_BACKUPS\lidar_project_MIRROR' }
+    @{ Label = 'Seagate Portable Drive'; Sub = 'Colton\_BACKUPS\lidar_project_MIRROR' },
+    # the same Seagate, relabelled "Locked Tomb" (seen 2026-10-29 as F:, with the 2026-09-19 mirror folder on it)
+    @{ Label = 'Locked Tomb';            Sub = 'Colton\_BACKUPS\lidar_project_MIRROR' }
 )
 if ($Only.Count) { $targets = $targets | Where-Object { $Only -contains $_.Label } }
 

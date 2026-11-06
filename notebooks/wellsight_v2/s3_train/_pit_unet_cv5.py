@@ -16,7 +16,7 @@ DESIGN
 ------
 Split by BLOCK, never by well. Training patches are 128 m with 30 m jitter, so a
 patch centred on a training pit can physically overlap a neighbouring held-out
-pit. The 12x12 grid of 375 m blocks (111 of which contain pits) is the unit.
+pit. The 12x12 grid of 375 m blocks (115 of which contain pits) is the unit.
 
 Folds are balanced on PIT COUNT, not block count, because pits cluster on pads.
 Same greedy-deficit assignment as `_build_pit_dataset.py`, different seed.
@@ -87,13 +87,17 @@ from _dl import (DEFAULT_CHANNELS, CenteredPatchSampler, FocalCE, UNet,
 
 ROOT = Path(__file__).resolve().parents[3]
 ANN_GPKG = path_for("truth") / "annotations_proj.gpkg"
+#: Defaults are the vendor-ground stack. --features / --stats / --tag
+#: swap in another stack WITHOUT touching any of these, so the baseline
+#: run and its outputs are never overwritten by an experiment. Labels,
+#: blocks and manifest stay shared on purpose: the whole point of the
+#: comparison is that only the input rasters differ.
 FEATURES = DERIV_9T / "features_pit_9t_05.tif"
 LABELS = DERIV_9T / "labels_pit_9t_05.tif"
 STATS = DERIV_9T / "feature_stats.json"
 BLOCKS = DERIV_9T / "pit_blocks_9t.gpkg"
 MANIFEST = DERIV_9T / "pit_dataset_manifest.csv"
 OUTDIR = path_for("models") / "pit" / "unet_cv5"
-OUTDIR.mkdir(parents=True, exist_ok=True)
 
 CRS = "EPSG:6346"
 PATCH = 256
@@ -132,6 +136,17 @@ def assign_folds(blocks_n: pd.DataFrame, k: int, seed: int) -> dict[int, int]:
 # scoring
 # ---------------------------------------------------------------------------
 def polygonize(prob, transform, crs, thr, min_area=MIN_AREA_M2):
+    """Probability raster -> scored polygons.
+
+    Three steps: cut at the threshold, label the connected blobs, then give each
+    blob the MEAN probability inside it as its score. The mean is what the
+    threshold sweep later ranks on, so a large confident blob outranks a small
+    marginal one.
+
+    min_area drops specks below the size of a real pit. Without it the low
+    thresholds produce tens of thousands of single-cell polygons and the IoU
+    matching below slows to a crawl.
+    """
     mask = prob >= thr
     if not mask.any():
         return gpd.GeoDataFrame({"score": []}, geometry=[], crs=crs)
@@ -151,8 +166,20 @@ def polygonize(prob, transform, crs, thr, min_area=MIN_AREA_M2):
 
 
 def match_scores(gt, pred, taus=REPORT_TAUS):
-    """Greedy 1:1 IoU matching. Returns {tau: dict(tp, recall, precision, f1)}."""
+    """Greedy 1:1 IoU matching. Returns {tau: dict(tp, recall, precision, f1)}.
+
+    1:1 is the point. One prediction may claim at most one annotated pit, and
+    vice versa. Without that, a single sprawling blob covering five pits would
+    score as five hits, and recall would look excellent while the model was
+    actually failing to separate anything.
+
+    Greedy by SCORE: the most confident pairing is taken first, then both sides
+    are struck off. Optimal assignment would be marginally better and far
+    slower; the difference is negligible at these overlaps.
+    """
     n_gt, n_pred = len(gt), len(pred)
+    # Build every candidate (gt, pred, IoU) pair first. The spatial index means
+    # only geometries whose bounding boxes touch are ever compared.
     pairs = []
     if n_gt and n_pred:
         sidx = pred.sindex
@@ -185,7 +212,15 @@ def match_scores(gt, pred, taus=REPORT_TAUS):
 
 
 def containment(rims, pred):
-    """Fraction of rims holding at least one prediction centroid."""
+    """Fraction of rims holding at least one prediction centroid.
+
+    The honest metric for this problem. IoU asks whether the model traced the
+    floor boundary the way a human did, and that boundary is a judgement call
+    even between two humans. Containment asks the question that actually
+    matters: did the model put something inside this depression?
+
+    Reported alongside IoU recall, never instead of it.
+    """
     if not len(rims):
         return 0.0, 0
     if not len(pred):
@@ -210,13 +245,35 @@ def main() -> int:
     ap.add_argument("--workers", type=int, default=0)
     ap.add_argument("--only-folds", type=str, default="",
                     help="comma list, e.g. '4'. Default: all folds.")
+    ap.add_argument("--features", default=None,
+                    help="alternate feature stack; same grid required")
+    ap.add_argument("--stats", default=None,
+                    help="normalisation stats for --features")
+    ap.add_argument("--tag", default=None,
+                    help="suffix for the output dir, e.g. smrf")
     args = ap.parse_args()
+
+    global FEATURES, STATS, OUTDIR
+    if args.features:
+        FEATURES = Path(args.features)
+        STATS = Path(args.stats) if args.stats else STATS
+        if not FEATURES.exists():
+            raise SystemExit(f"no feature stack at {FEATURES}")
+    if args.tag:
+        OUTDIR = OUTDIR.parent / f"{OUTDIR.name}_{args.tag}"
+    OUTDIR.mkdir(parents=True, exist_ok=True)
+    print(f"features {FEATURES}")
+    print(f"stats    {STATS}")
+    print(f"out      {OUTDIR}\n")
     K = args.folds
     want = ({int(x) for x in args.only_folds.split(",") if x.strip() != ""}
             if args.only_folds else set(range(K)))
 
     print(f"== pit U-Net {K}-fold cross-validation on 9t ==\n")
 
+    # Step 1. Load the manifest and cut the blocks into k folds. normalize_ids
+    # lets an older manifest written under the pre-rename column names still
+    # load, so this works against the June fixture as well as today's file.
     man = normalize_ids(pd.read_csv(MANIFEST))
     blocks = gpd.read_file(BLOCKS, layer="blocks").to_crs(CRS)
     n_per = man.groupby("block_id").size().rename("n_pits").reset_index()
@@ -230,7 +287,11 @@ def main() -> int:
         print(f"    fold {f}: {sub.block_id.nunique():3d} blocks  {len(sub):4d} pits")
     print()
 
-    # ground truth geometry
+    # Step 2. Ground-truth geometry, two layers with different jobs:
+    #   pit_inside -> the FLOOR, what the model is asked to segment
+    #   pit_full   -> the RIM, the container the containment metric tests
+    # dissolve() collapses a pit drawn as several parts into one row, so a
+    # two-part annotation cannot be counted as two pits.
     floors = read_layer(ANN_GPKG, "pit_inside").to_crs(CRS)
     floors = floors[["pit_inside_id", "geometry"]].dissolve(by="pit_inside_id").reset_index()
     floors = floors.merge(man[["pit_inside_id", "fold"]], on="pit_inside_id", how="inner")
@@ -276,7 +337,11 @@ def main() -> int:
         prob_tif = fd / f"pit_prob_floor_cvfold{k}_9t_05.tif"
 
         held_blocks = sorted(man.loc[man.fold == k, "block_id"].unique())
-        rest = sorted(set(man.block_id.unique()) - set(held_blocks))
+        # Drop NaN BEFORE the set difference. NaN is the off-tile annotations (no block).
+        # hash(nan) is id-based on Python >= 3.10, so NaN landed in a different place in
+        # sorted(rest) every process, which changed rng.permutation and the inner val split.
+        # Found by the 2026-11-04 adversarial review, reproduced 2026-11-05 (NaN index 9 or 92).
+        rest = sorted(b for b in set(man.block_id.dropna().unique()) - set(held_blocks))
         # Seed per fold, not once before the loop. A single shared RNG makes the
         # inner-val draw depend on how many folds ran before it in the process,
         # so --only-folds silently gives a different split than a full run.
@@ -299,6 +364,12 @@ def main() -> int:
               f"inner-val {len(va_pits)} / {len(val_blocks)}   "
               f"HELD-OUT {int((man.fold == k).sum())} / {len(held_blocks)}")
 
+        # Patches are centred on annotated pits, jittered by up to JITTER_M so
+        # the model never learns "the thing I want is always dead centre".
+        # block_bounds clips the sampler to this fold's own blocks -- that is
+        # what stops a jittered training patch from reaching into held-out
+        # ground. Augment on for train, off for val, so the val number is stable
+        # between epochs.
         tr_ds = CenteredPatchSampler(
             feat_path=FEATURES, lbl_path=LABELS,
             policies=[("pit", tr_pits, JITTER_M)], block_bounds=bounds_of(tr_blocks),
@@ -374,6 +445,10 @@ def main() -> int:
         print(f"  scoring mask covers {100*keep.mean():.1f}% of tile")
 
         # ---- sweep once, reuse for selection AND for the reported curve ----
+        # One pass over the probability grid produces both things: the inner-val
+        # numbers that CHOOSE the threshold, and the held-out numbers at every
+        # threshold that make up the reported recovery curve. Selection only ever
+        # reads val_by_thr; held_by_thr is not consulted until the choice is made.
         val_by_thr, held_by_thr = {}, {}
         for pt in PROB_GRID:
             t0 = time.time()
@@ -399,6 +474,11 @@ def main() -> int:
                 f1_iou30=m[0.3]["f1"], recall_iou50=m[0.5]["recall"],
                 containment=c[0], containment_hits=c[1], n_rims=len(rim_held)))
 
+        # Pick the threshold on INNER VAL, then read the held-out number at that
+        # threshold exactly once. Both objectives were declared before any of
+        # this ran: F1 treats a miss and a false alarm alike, F2 says a missed
+        # well costs four times a false alarm. Reporting both is what stops the
+        # choice from being made after seeing which looked better.
         for obj in ("f1", "f2"):
             best_pt = max(val_by_thr, key=lambda t: val_by_thr[t][SEL_TAU][obj])
             m, c, npred = held_by_thr[best_pt]
@@ -433,6 +513,10 @@ def main() -> int:
 
     print(f"\n{'='*70}\nPOOLED RESULT ({K} folds, all {len(man)} pits scored once "
           f"by a model that never saw them)\n{'='*70}")
+    # Pooled numbers are WEIGHTED by fold size, not a plain mean of five
+    # percentages. Folds hold different pit counts, so a plain mean would let a
+    # small fold swing the headline. The per-fold min-max printed beside each
+    # pooled figure is the honest measure of whether it is stable.
     for obj in ("f1", "f2"):
         g = fdf[fdf.objective == obj]
         tot_gt = g.n_heldout.sum()

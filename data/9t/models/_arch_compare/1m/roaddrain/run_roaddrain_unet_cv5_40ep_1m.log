@@ -1,0 +1,111 @@
+== roaddrain / unet : 5-fold on the unified split ==
+   7,825 features across 144 blocks, 1 m grid
+     fold 0:  1546 features
+     fold 1:  1552 features
+     fold 2:  1561 features
+     fold 3:  1575 features
+     fold 4:  1591 features
+   unet: 7.8 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 4,727 / 92 blocks   inner-val 1,552 / 22   HELD-OUT 1,546
+ep   1/40  tr_loss=0.0099 va_loss=0.0091  va_iou bg=0.939  road=0.379  drainage=0.482  score=0.379  658.1s
+    -> new best (score=0.379), saved
+ep   2/40  tr_loss=0.0065 va_loss=0.0076  va_iou bg=0.936  road=0.380  drainage=0.550  score=0.380  653.4s
+    -> new best (score=0.380), saved
+ep   3/40  tr_loss=0.0056 va_loss=0.0075  va_iou bg=0.938  road=0.397  drainage=0.558  score=0.397  652.6s
+    -> new best (score=0.397), saved
+ep   4/40  tr_loss=0.0051 va_loss=0.0071  va_iou bg=0.940  road=0.401  drainage=0.553  score=0.401  649.0s
+    -> new best (score=0.401), saved
+ep   5/40  tr_loss=0.0044 va_loss=0.0076  va_iou bg=0.947  road=0.448  drainage=0.555  score=0.448  650.2s
+    -> new best (score=0.448), saved
+ep   6/40  tr_loss=0.0040 va_loss=0.0066  va_iou bg=0.943  road=0.413  drainage=0.556  score=0.413  650.8s
+ep   7/40  tr_loss=0.0036 va_loss=0.0072  va_iou bg=0.951  road=0.466  drainage=0.582  score=0.466  640.3s
+    -> new best (score=0.466), saved
+ep   8/40  tr_loss=0.0034 va_loss=0.0066  va_iou bg=0.948  road=0.450  drainage=0.582  score=0.450  656.5s
+ep   9/40  tr_loss=0.0031 va_loss=0.0072  va_iou bg=0.950  road=0.454  drainage=0.579  score=0.454  649.6s
+ep  10/40  tr_loss=0.0030 va_loss=0.0073  va_iou bg=0.948  road=0.442  drainage=0.606  score=0.442  647.8s
+ep  11/40  tr_loss=0.0028 va_loss=0.0081  va_iou bg=0.952  road=0.473  drainage=0.582  score=0.473  647.2s
+    -> new best (score=0.473), saved
+ep  12/40  tr_loss=0.0026 va_loss=0.0081  va_iou bg=0.954  road=0.483  drainage=0.577  score=0.483  642.2s
+    -> new best (score=0.483), saved
+ep  13/40  tr_loss=0.0025 va_loss=0.0074  va_iou bg=0.956  road=0.482  drainage=0.637  score=0.482  645.7s
+ep  14/40  tr_loss=0.0025 va_loss=0.0075  va_iou bg=0.959  road=0.509  drainage=0.613  score=0.509  643.9s
+    -> new best (score=0.509), saved
+ep  15/40  tr_loss=0.0023 va_loss=0.0068  va_iou bg=0.955  road=0.487  drainage=0.636  score=0.487  640.3s
+ep  16/40  tr_loss=0.0023 va_loss=0.0076  va_iou bg=0.959  road=0.504  drainage=0.645  score=0.504  638.6s
+ep  17/40  tr_loss=0.0022 va_loss=0.0073  va_iou bg=0.958  road=0.506  drainage=0.647  score=0.506  637.7s
+ep  18/40  tr_loss=0.0021 va_loss=0.0075  va_iou bg=0.961  road=0.518  drainage=0.654  score=0.518  644.7s
+    -> new best (score=0.518), saved
+ep  19/40  tr_loss=0.0021 va_loss=0.0080  va_iou bg=0.960  road=0.516  drainage=0.632  score=0.516  644.4s
+ep  20/40  tr_loss=0.0020 va_loss=0.0078  va_iou bg=0.961  road=0.526  drainage=0.651  score=0.526  644.7s
+    -> new best (score=0.526), saved
+ep  21/40  tr_loss=0.0019 va_loss=0.0081  va_iou bg=0.963  road=0.537  drainage=0.655  score=0.537  637.9s
+    -> new best (score=0.537), saved
+ep  22/40  tr_loss=0.0019 va_loss=0.0079  va_iou bg=0.963  road=0.538  drainage=0.661  score=0.538  636.0s
+    -> new best (score=0.538), saved
+ep  23/40  tr_loss=0.0018 va_loss=0.0077  va_iou bg=0.963  road=0.539  drainage=0.660  score=0.539  642.7s
+    -> new best (score=0.539), saved
+ep  24/40  tr_loss=0.0018 va_loss=0.0081  va_iou bg=0.962  road=0.534  drainage=0.662  score=0.534  643.4s
+ep  25/40  tr_loss=0.0017 va_loss=0.0084  va_iou bg=0.964  road=0.545  drainage=0.664  score=0.545  644.0s
+    -> new best (score=0.545), saved
+ep  26/40  tr_loss=0.0017 va_loss=0.0075  va_iou bg=0.965  road=0.548  drainage=0.676  score=0.548  645.3s
+    -> new best (score=0.548), saved
+ep  27/40  tr_loss=0.0017 va_loss=0.0081  va_iou bg=0.966  road=0.560  drainage=0.678  score=0.560  643.5s
+    -> new best (score=0.560), saved
+ep  28/40  tr_loss=0.0016 va_loss=0.0078  va_iou bg=0.966  road=0.562  drainage=0.677  score=0.562  643.7s
+    -> new best (score=0.562), saved
+ep  29/40  tr_loss=0.0016 va_loss=0.0084  va_iou bg=0.966  road=0.563  drainage=0.672  score=0.563  642.1s
+    -> new best (score=0.563), saved
+ep  30/40  tr_loss=0.0016 va_loss=0.0081  va_iou bg=0.965  road=0.553  drainage=0.680  score=0.553  643.0s
+ep  31/40  tr_loss=0.0015 va_loss=0.0083  va_iou bg=0.967  road=0.568  drainage=0.684  score=0.568  645.0s
+    -> new best (score=0.568), saved
+ep  32/40  tr_loss=0.0015 va_loss=0.0085  va_iou bg=0.966  road=0.569  drainage=0.668  score=0.569  636.8s
+    -> new best (score=0.569), saved
+ep  33/40  tr_loss=0.0015 va_loss=0.0087  va_iou bg=0.967  road=0.567  drainage=0.679  score=0.567  633.9s
+ep  34/40  tr_loss=0.0015 va_loss=0.0089  va_iou bg=0.966  road=0.566  drainage=0.676  score=0.566  636.7s
+ep  35/40  tr_loss=0.0015 va_loss=0.0087  va_iou bg=0.966  road=0.566  drainage=0.678  score=0.566  645.7s
+ep  36/40  tr_loss=0.0015 va_loss=0.0085  va_iou bg=0.967  road=0.571  drainage=0.688  score=0.571  644.0s
+    -> new best (score=0.571), saved
+ep  37/40  tr_loss=0.0015 va_loss=0.0091  va_iou bg=0.967  road=0.570  drainage=0.677  score=0.570  637.6s
+ep  38/40  tr_loss=0.0015 va_loss=0.0090  va_iou bg=0.967  road=0.573  drainage=0.677  score=0.573  636.7s
+    -> new best (score=0.573), saved
+ep  39/40  tr_loss=0.0015 va_loss=0.0089  va_iou bg=0.967  road=0.572  drainage=0.680  score=0.572  637.0s
+ep  40/40  tr_loss=0.0015 va_loss=0.0089  va_iou bg=0.967  road=0.572  drainage=0.677  score=0.572  640.1s
+
+Best score: 0.573. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\roaddrain\unet\fold0
+  fold 0 done in 429.3 min, best val road IoU 0.573
+
+============================================================
+FOLD 1
+============================================================
+  train 4,712 / 89 blocks   inner-val 1,561 / 33   HELD-OUT 1,552
+ep   1/40  tr_loss=0.0091 va_loss=0.0078  va_iou bg=0.936  road=0.383  drainage=0.425  score=0.383  672.4s
+    -> new best (score=0.383), saved
+ep   2/40  tr_loss=0.0060 va_loss=0.0074  va_iou bg=0.948  road=0.425  drainage=0.470  score=0.425  657.3s
+    -> new best (score=0.425), saved
+ep   3/40  tr_loss=0.0052 va_loss=0.0079  va_iou bg=0.937  road=0.384  drainage=0.467  score=0.384  658.5s
+ep   4/40  tr_loss=0.0046 va_loss=0.0072  va_iou bg=0.954  road=0.439  drainage=0.515  score=0.439  659.6s
+    -> new best (score=0.439), saved
+ep   5/40  tr_loss=0.0041 va_loss=0.0071  va_iou bg=0.956  road=0.460  drainage=0.534  score=0.460  658.2s
+    -> new best (score=0.460), saved
+ep   6/40  tr_loss=0.0037 va_loss=0.0069  va_iou bg=0.953  road=0.443  drainage=0.554  score=0.443  665.4s
+ep   7/40  tr_loss=0.0034 va_loss=0.0070  va_iou bg=0.956  road=0.457  drainage=0.585  score=0.457  666.4s
+ep   8/40  tr_loss=0.0032 va_loss=0.0097  va_iou bg=0.949  road=0.478  drainage=0.439  score=0.478  672.0s
+    -> new best (score=0.478), saved
+ep   9/40  tr_loss=0.0029 va_loss=0.0069  va_iou bg=0.959  road=0.473  drainage=0.593  score=0.473  669.6s
+ep  10/40  tr_loss=0.0028 va_loss=0.0067  va_iou bg=0.959  road=0.480  drainage=0.601  score=0.480  667.8s
+    -> new best (score=0.480), saved
+ep  11/40  tr_loss=0.0026 va_loss=0.0072  va_iou bg=0.960  road=0.484  drainage=0.599  score=0.484  666.5s
+    -> new best (score=0.484), saved
+ep  12/40  tr_loss=0.0025 va_loss=0.0070  va_iou bg=0.960  road=0.488  drainage=0.601  score=0.488  667.9s
+    -> new best (score=0.488), saved
+ep  13/40  tr_loss=0.0024 va_loss=0.0072  va_iou bg=0.965  road=0.513  drainage=0.635  score=0.513  679.8s
+    -> new best (score=0.513), saved
+ep  14/40  tr_loss=0.0023 va_loss=0.0067  va_iou bg=0.965  road=0.516  drainage=0.636  score=0.516  684.7s
+    -> new best (score=0.516), saved
+ep  15/40  tr_loss=0.0022 va_loss=0.0075  va_iou bg=0.964  road=0.503  drainage=0.641  score=0.503  668.1s
+ep  16/40  tr_loss=0.0021 va_loss=0.0073  va_iou bg=0.965  road=0.511  drainage=0.655  score=0.511  669.2s
+ep  17/40  tr_loss=0.0020 va_loss=0.0073  va_iou bg=0.967  road=0.521  drainage=0.664  score=0.521  667.8s

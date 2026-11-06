@@ -1,4 +1,4 @@
-pit_id,plat_id,block_id,split,centroid_x,centroid_y
+pit_inside_id,pad_id,block_id,split,centroid_x,centroid_y
 0,258.0,77.0,test,621446.1025119612,4595593.63710256
 1,256.0,77.0,test,621588.2007972451,4595488.45846207
 2,247.0,77.0,test,621732.7583926943,4595493.161858552

@@ -110,6 +110,9 @@ def centroid_match(gt: gpd.GeoDataFrame, pred: gpd.GeoDataFrame):
     scores = pred["score"].to_numpy()
     sidx = pred.sindex
 
+    # Build the candidate pairs ONCE. Both variants below are just different
+    # ways of counting the same pair list, so nothing is recomputed and the two
+    # numbers cannot drift apart.
     pairs = []                       # (gi, pj, score) centroid of pj inside gt gi
     for gi, r in enumerate(gt.itertuples()):
         for pj in sidx.intersection(r.geometry.bounds):
@@ -133,7 +136,10 @@ def centroid_match(gt: gpd.GeoDataFrame, pred: gpd.GeoDataFrame):
     p, r_ = lenient["precision"], lenient["recall"]
     lenient["f1"] = 2 * p * r_ / (p + r_) if (p + r_) else 0.0
 
-    # greedy 1:1, highest-scoring prediction first
+    # greedy 1:1, highest-scoring prediction first. Once a pit and a prediction
+    # are paired, both are struck off, so the second and third blob sitting on
+    # the same pit become false positives rather than free true positives. This
+    # is the variant to quote.
     ug, up, tp = set(), set(), 0
     for gi, pj, _ in sorted(pairs, key=lambda t: -t[2]):
         if gi in ug or pj in up:

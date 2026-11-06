@@ -46,7 +46,9 @@ RNG_SEED = 42
 def main() -> int:
     blocks = gpd.read_file(PIT_BLOCKS, layer="blocks")[["block_id", "geometry"]].copy()
 
-    # Count features per block across all three manifests (each row has block_id).
+    # Step 1. Count features per block across all three manifests. Every row in
+    # every manifest already carries a block_id, so nothing is re-joined
+    # spatially here -- this only adds up what the three builders recorded.
     counts = {}
     mans = {}
     for k, p in MAN.items():
@@ -57,7 +59,9 @@ def main() -> int:
             counts[int(bid)] = counts.get(int(bid), 0) + int(n)
     blocks["n_feat"] = blocks["block_id"].map(counts).fillna(0).astype(int)
 
-    # Greedy fill by TOTAL feature count (mirrors the other split builders).
+    # Step 2. Greedy fill by TOTAL feature count (mirrors the other split
+    # builders). A block counts as active if it holds a pit OR a pad OR a road,
+    # so a block that is pit-free but road-heavy is still training data.
     total = int(blocks["n_feat"].sum())
     active = (blocks[blocks.n_feat > 0][["block_id", "n_feat"]]
               .sample(frac=1, random_state=RNG_SEED).values)
@@ -76,7 +80,9 @@ def main() -> int:
         sub = blocks[blocks.split == s]
         print(f"  {s:8s} blocks={len(sub):3d}  features={int(sub.n_feat.sum()):5d}")
 
-    # Re-label each manifest's split column from the unified block map.
+    # Step 3. Re-label each manifest's split column from the unified block map.
+    # Written to *_unified.csv names, never over the originals -- the standalone
+    # pit / pad / road models keep their own splits and are unaffected by this.
     for k, m in mans.items():
         m = m.copy()
         m["split"] = m["block_id"].map(split_of).fillna("unused")

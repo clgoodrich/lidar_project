@@ -1,0 +1,121 @@
+{
+  "default_stack": "gslc",
+  "dates_used": {
+    "26": 10,
+    "90": 11,
+    "162": 15
+  },
+  "known_bad_dates_still_used": [
+    {
+      "date": "2026-09-08",
+      "track": 26
+    }
+  ],
+  "frequency_hz": [
+    1239000000.0
+  ],
+  "collections_by_month": {
+    "beta": {
+      "2025-10": 1,
+      "2025-11": 4,
+      "2025-12": 3,
+      "2026-01": 3,
+      "2026-06": 0,
+      "2026-07": 0,
+      "2026-08": 0,
+      "2026-09": 0,
+      "2026-10": 0
+    },
+    "provisional": {
+      "2025-10": 0,
+      "2025-11": 0,
+      "2025-12": 0,
+      "2026-01": 0,
+      "2026-06": 3,
+      "2026-07": 6,
+      "2026-08": 6,
+      "2026-09": 7,
+      "2026-10": 4
+    }
+  },
+  "pad_support": {
+    "reconstructed": 649,
+    "saved": 649,
+    "matched": 626,
+    "fewer_than_decoy": 473,
+    "percentiles": [
+      6.0,
+      25.0,
+      35.0,
+      48.0,
+      49.0
+    ]
+  },
+  "pit_support": {
+    "reconstructed": 495,
+    "saved": 495,
+    "matched": 488,
+    "fewer_than_decoy": 335,
+    "percentiles": [
+      4.0,
+      6.0,
+      7.0,
+      9.0,
+      9.0
+    ]
+  },
+  "pad": {
+    "n_pads": 626,
+    "n_decoys": 6260,
+    "unique_decoy_centres": 3741,
+    "test_rows_with_train_centre_within_50m": 1586,
+    "test_rows_with_train_centre_within_100m": 2991
+  },
+  "pad_local750": {
+    "n_pads": 87,
+    "n_decoys": 870,
+    "unique_decoy_centres": 699,
+    "test_rows_with_train_centre_within_50m": 140,
+    "test_rows_with_train_centre_within_100m": 257
+  },
+  "pad_local1500": {
+    "n_pads": 274,
+    "n_decoys": 2740,
+    "unique_decoy_centres": 1704,
+    "test_rows_with_train_centre_within_50m": 375,
+    "test_rows_with_train_centre_within_100m": 869,
+    "published_preprocessing": {
+      "pooled_auc": 0.7126218764984815,
+      "own_decoys_concordance": 0.7211678832116788,
+      "fold_aucs": [
+        0.9983606557377048,
+        0.55752009184845,
+        0.6134028642590287,
+        0.7714214104451894,
+        0.8428190476190476
+      ]
+    },
+    "fold_imputation": {
+      "pooled_auc": 0.7119492247855506,
+      "own_decoys_concordance": 0.7171532846715328,
+      "fold_aucs": [
+        0.9983606557377048,
+        0.55752009184845,
+        0.610678704856787,
+        0.7714214104451894,
+        0.8428190476190476
+      ]
+    },
+    "coordinates_only": {
+      "pooled_auc": 0.7379502104534073,
+      "own_decoys_concordance": 0.7383211678832117,
+      "fold_aucs": [
+        0.12459016393442623,
+        0.1742537313432836,
+        0.9428704856787049,
+        0.9366364861054545,
+        0.913168253968254
+      ]
+    }
+  }
+}

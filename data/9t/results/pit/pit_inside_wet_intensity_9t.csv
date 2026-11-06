@@ -1,0 +1,715 @@
+pit_inside_id,n_ground_in,int_ratio,tier
+0,45,0.6337126600284495,likely wet (0.6 to 0.8)
+1,86,0.5395569620253164,probably wet (under 0.6)
+2,91,0.33839150227617604,probably wet (under 0.6)
+3,280,0.6175623800383877,likely wet (0.6 to 0.8)
+4,73,0.8413307741522713,grey zone (0.8 to 1.2)
+5,128,1.2460901563937443,probably dry (1.2 or more)
+6,42,0.7994590417310664,likely wet (0.6 to 0.8)
+7,67,1.4895763281775387,probably dry (1.2 or more)
+8,62,0.45646067415730335,probably wet (under 0.6)
+9,59,0.5172531602323198,probably wet (under 0.6)
+10,70,1.5490842490842491,probably dry (1.2 or more)
+11,104,1.7378815080789947,probably dry (1.2 or more)
+12,76,0.6521412471825695,likely wet (0.6 to 0.8)
+13,120,0.548581560283688,probably wet (under 0.6)
+14,6,,not measured
+15,95,0.9969159599074788,grey zone (0.8 to 1.2)
+16,93,1.1324456902592852,grey zone (0.8 to 1.2)
+17,66,1.1230425055928412,grey zone (0.8 to 1.2)
+18,83,0.7783783783783784,likely wet (0.6 to 0.8)
+19,113,0.7675528289025222,likely wet (0.6 to 0.8)
+20,67,0.4094955489614243,probably wet (under 0.6)
+21,119,1.3950143815915628,probably dry (1.2 or more)
+22,120,1.2148864592094197,probably dry (1.2 or more)
+23,425,0.8069087688219664,grey zone (0.8 to 1.2)
+24,196,1.1682408500590318,grey zone (0.8 to 1.2)
+25,116,1.0455032119914347,grey zone (0.8 to 1.2)
+26,50,0.4672489082969432,probably wet (under 0.6)
+27,40,1.4042207792207793,probably dry (1.2 or more)
+28,63,1.3849354972950478,probably dry (1.2 or more)
+29,67,1.0709903593339176,grey zone (0.8 to 1.2)
+30,155,0.669683257918552,likely wet (0.6 to 0.8)
+31,213,0.6151046405823476,likely wet (0.6 to 0.8)
+32,62,0.7801519468186134,likely wet (0.6 to 0.8)
+33,50,0.4310520939734423,probably wet (under 0.6)
+34,64,0.8144654088050315,grey zone (0.8 to 1.2)
+35,75,0.550773369199731,probably wet (under 0.6)
+36,76,0.3083275980729525,probably wet (under 0.6)
+37,42,0.309704641350211,probably wet (under 0.6)
+38,50,1.0012048192771084,grey zone (0.8 to 1.2)
+39,29,1.0066371681415929,grey zone (0.8 to 1.2)
+40,60,0.7950435365036839,likely wet (0.6 to 0.8)
+41,42,0.9781113195747342,grey zone (0.8 to 1.2)
+42,88,1.034934497816594,grey zone (0.8 to 1.2)
+43,67,0.9809394145677331,grey zone (0.8 to 1.2)
+44,64,0.9946120689655172,grey zone (0.8 to 1.2)
+45,69,0.8297404311482622,grey zone (0.8 to 1.2)
+46,181,0.33629749393694425,probably wet (under 0.6)
+47,26,1.6202321724709785,probably dry (1.2 or more)
+48,39,1.2861952861952861,probably dry (1.2 or more)
+49,56,0.6906474820143885,likely wet (0.6 to 0.8)
+50,196,0.6025236593059937,likely wet (0.6 to 0.8)
+51,72,0.6046590141796083,likely wet (0.6 to 0.8)
+52,89,1.2325418994413408,probably dry (1.2 or more)
+53,66,1.2083892617449665,probably dry (1.2 or more)
+54,106,1.0314505776636713,grey zone (0.8 to 1.2)
+55,142,0.9975953280659567,grey zone (0.8 to 1.2)
+56,19,0.32517214996174443,probably wet (under 0.6)
+57,119,1.0121212121212122,grey zone (0.8 to 1.2)
+58,47,1.6602282704126428,probably dry (1.2 or more)
+59,88,1.1160409556313993,grey zone (0.8 to 1.2)
+60,68,0.5049683830171635,probably wet (under 0.6)
+61,80,1.1268446943078003,grey zone (0.8 to 1.2)
+62,705,0.813633067440174,grey zone (0.8 to 1.2)
+63,75,1.488659793814433,probably dry (1.2 or more)
+64,59,0.9913275517011341,grey zone (0.8 to 1.2)
+65,279,1.295417348608838,probably dry (1.2 or more)
+66,148,1.476158940397351,probably dry (1.2 or more)
+67,314,1.195519348268839,grey zone (0.8 to 1.2)
+68,147,1.3061224489795917,probably dry (1.2 or more)
+69,174,1.0126811594202898,grey zone (0.8 to 1.2)
+70,345,0.9477434679334917,grey zone (0.8 to 1.2)
+71,178,0.39145597210113336,probably wet (under 0.6)
+72,235,0.883349012229539,grey zone (0.8 to 1.2)
+73,334,1.2403669724770643,probably dry (1.2 or more)
+74,111,0.2676056338028169,probably wet (under 0.6)
+75,112,1.3222433460076046,probably dry (1.2 or more)
+76,257,1.5725190839694656,probably dry (1.2 or more)
+77,125,1.2748971193415637,probably dry (1.2 or more)
+78,44,1.0475599669148057,grey zone (0.8 to 1.2)
+79,113,0.774375503626108,likely wet (0.6 to 0.8)
+80,90,0.9933903576982893,grey zone (0.8 to 1.2)
+81,106,1.2110573042776434,probably dry (1.2 or more)
+82,108,0.9386503067484663,grey zone (0.8 to 1.2)
+83,90,0.9797830374753451,grey zone (0.8 to 1.2)
+84,107,1.0430308699719364,grey zone (0.8 to 1.2)
+85,72,0.718266253869969,likely wet (0.6 to 0.8)
+86,271,0.9990774907749077,grey zone (0.8 to 1.2)
+87,72,0.44974874371859297,probably wet (under 0.6)
+88,88,0.7704654895666132,likely wet (0.6 to 0.8)
+89,151,0.30305755395683454,probably wet (under 0.6)
+90,87,0.959094865100087,grey zone (0.8 to 1.2)
+91,188,1.007820136852395,grey zone (0.8 to 1.2)
+92,61,0.7244673034533431,likely wet (0.6 to 0.8)
+93,76,0.8833592534992224,grey zone (0.8 to 1.2)
+94,95,0.7803855825649623,likely wet (0.6 to 0.8)
+95,90,0.71654108360244,likely wet (0.6 to 0.8)
+96,144,0.8296146044624746,grey zone (0.8 to 1.2)
+97,137,1.488780487804878,probably dry (1.2 or more)
+98,32,1.4487603305785124,probably dry (1.2 or more)
+99,44,0.8767281105990783,grey zone (0.8 to 1.2)
+100,100,0.9363341443633414,grey zone (0.8 to 1.2)
+101,77,0.7377938517179023,likely wet (0.6 to 0.8)
+102,138,1.3523622047244095,probably dry (1.2 or more)
+103,193,0.669260700389105,likely wet (0.6 to 0.8)
+104,47,1.3682946357085668,probably dry (1.2 or more)
+105,64,1.0999131190269331,grey zone (0.8 to 1.2)
+106,75,2.532828282828283,probably dry (1.2 or more)
+107,35,0.9903320722992854,grey zone (0.8 to 1.2)
+108,58,1.2355015673981191,probably dry (1.2 or more)
+109,92,0.8219669777458722,grey zone (0.8 to 1.2)
+110,38,1.4884696016771488,probably dry (1.2 or more)
+111,155,0.8825194621372965,grey zone (0.8 to 1.2)
+112,124,1.019311797752809,grey zone (0.8 to 1.2)
+113,39,0.9177820267686424,grey zone (0.8 to 1.2)
+114,18,0.11976047904191617,probably wet (under 0.6)
+115,13,1.1286089238845145,grey zone (0.8 to 1.2)
+116,24,0.5653495440729484,probably wet (under 0.6)
+117,13,1.2248447204968944,probably dry (1.2 or more)
+118,120,1.216688510266492,probably dry (1.2 or more)
+119,71,0.262572789835892,probably wet (under 0.6)
+120,606,1.2980665950590762,probably dry (1.2 or more)
+121,86,1.2205199628597958,probably dry (1.2 or more)
+122,31,0.38706968933669184,probably wet (under 0.6)
+123,115,0.4358683314415437,probably wet (under 0.6)
+124,78,1.0996691480562448,grey zone (0.8 to 1.2)
+125,61,0.9616724738675958,grey zone (0.8 to 1.2)
+126,62,1.349290780141844,probably dry (1.2 or more)
+127,100,0.6245024325519681,likely wet (0.6 to 0.8)
+128,67,0.6482412060301508,likely wet (0.6 to 0.8)
+129,67,0.8388464800678541,grey zone (0.8 to 1.2)
+130,103,1.2405566600397615,probably dry (1.2 or more)
+131,100,1.1581896551724138,grey zone (0.8 to 1.2)
+132,40,0.9821428571428571,grey zone (0.8 to 1.2)
+133,33,1.260519247985676,probably dry (1.2 or more)
+134,81,0.7872954764196343,likely wet (0.6 to 0.8)
+135,52,0.9981684981684982,grey zone (0.8 to 1.2)
+136,43,0.1791469194312796,probably wet (under 0.6)
+137,47,0.9517045454545454,grey zone (0.8 to 1.2)
+138,92,1.2826552462526766,probably dry (1.2 or more)
+139,83,0.8981937602627258,grey zone (0.8 to 1.2)
+140,39,1.260250569476082,probably dry (1.2 or more)
+141,52,1.1458087367178276,grey zone (0.8 to 1.2)
+142,65,1.4781906300484653,probably dry (1.2 or more)
+143,39,1.013402829486225,grey zone (0.8 to 1.2)
+144,26,1.185244161358811,grey zone (0.8 to 1.2)
+145,57,0.2615658362989324,probably wet (under 0.6)
+146,43,1.115606936416185,grey zone (0.8 to 1.2)
+147,73,0.6324417601380501,likely wet (0.6 to 0.8)
+148,74,1.93215859030837,probably dry (1.2 or more)
+149,30,0.9939516129032258,grey zone (0.8 to 1.2)
+150,79,1.2786116322701688,probably dry (1.2 or more)
+151,23,1.5365132967496835,probably dry (1.2 or more)
+152,21,1.7269866247049568,probably dry (1.2 or more)
+153,54,1.133832976445396,grey zone (0.8 to 1.2)
+154,89,1.583934088568486,probably dry (1.2 or more)
+155,42,1.809477756286267,probably dry (1.2 or more)
+156,56,1.569802731411229,probably dry (1.2 or more)
+157,81,0.1378162450066578,probably wet (under 0.6)
+158,111,0.7555555555555555,likely wet (0.6 to 0.8)
+159,55,0.2581039755351682,probably wet (under 0.6)
+160,32,0.8596881959910914,grey zone (0.8 to 1.2)
+161,43,1.1616571892770107,grey zone (0.8 to 1.2)
+162,42,1.463981409759876,probably dry (1.2 or more)
+163,30,0.7758022549869905,likely wet (0.6 to 0.8)
+164,44,1.3810900082576383,probably dry (1.2 or more)
+165,24,1.2574171029668413,probably dry (1.2 or more)
+166,37,1.562591329761325,probably dry (1.2 or more)
+167,54,1.1692486444616577,grey zone (0.8 to 1.2)
+168,37,0.9385875127942682,grey zone (0.8 to 1.2)
+169,53,1.4546850998463903,probably dry (1.2 or more)
+170,71,0.5776450511945392,probably wet (under 0.6)
+171,85,1.0358455882352942,grey zone (0.8 to 1.2)
+172,31,0.5959595959595959,probably wet (under 0.6)
+173,87,1.5807210031347962,probably dry (1.2 or more)
+174,74,1.3093947606142728,probably dry (1.2 or more)
+175,149,1.4229910714285714,probably dry (1.2 or more)
+176,187,0.899063475546306,grey zone (0.8 to 1.2)
+177,50,0.6175269216487189,likely wet (0.6 to 0.8)
+178,91,1.0234248788368336,grey zone (0.8 to 1.2)
+179,85,1.1534552845528456,grey zone (0.8 to 1.2)
+180,22,1.06289592760181,grey zone (0.8 to 1.2)
+181,46,1.1494117647058824,grey zone (0.8 to 1.2)
+182,113,0.8472821397756687,grey zone (0.8 to 1.2)
+183,80,0.3558523173605656,probably wet (under 0.6)
+184,44,1.4359415305245056,probably dry (1.2 or more)
+185,49,0.9788732394366197,grey zone (0.8 to 1.2)
+186,123,1.027027027027027,grey zone (0.8 to 1.2)
+187,330,0.7172478793590952,likely wet (0.6 to 0.8)
+188,97,1.4166666666666667,probably dry (1.2 or more)
+189,52,0.5457685664939551,probably wet (under 0.6)
+190,71,1.400147383935151,probably dry (1.2 or more)
+191,101,1.2044887780548628,probably dry (1.2 or more)
+192,39,1.740336967294351,probably dry (1.2 or more)
+193,75,1.0473884469041854,grey zone (0.8 to 1.2)
+194,58,0.8378588052754073,grey zone (0.8 to 1.2)
+195,130,1.1393581081081081,grey zone (0.8 to 1.2)
+196,80,1.142156862745098,grey zone (0.8 to 1.2)
+197,133,1.0591471801925723,grey zone (0.8 to 1.2)
+198,21,1.809748427672956,probably dry (1.2 or more)
+199,39,1.445910290237467,probably dry (1.2 or more)
+200,36,1.59478672985782,probably dry (1.2 or more)
+201,57,1.3396918561995599,probably dry (1.2 or more)
+202,55,0.9197635135135135,grey zone (0.8 to 1.2)
+203,43,1.4400871459694988,probably dry (1.2 or more)
+204,28,1.1810282404055032,grey zone (0.8 to 1.2)
+205,41,0.825430277485072,grey zone (0.8 to 1.2)
+206,20,0.9007518796992481,grey zone (0.8 to 1.2)
+207,54,1.2362661902635106,probably dry (1.2 or more)
+208,112,1.1848937844217151,grey zone (0.8 to 1.2)
+209,63,1.4291433146517214,probably dry (1.2 or more)
+210,79,0.6644144144144144,likely wet (0.6 to 0.8)
+211,27,1.5262172284644195,probably dry (1.2 or more)
+212,32,0.9074074074074074,grey zone (0.8 to 1.2)
+213,54,1.6147769516728625,probably dry (1.2 or more)
+214,62,1.4236311239193085,probably dry (1.2 or more)
+215,123,1.8424507658643325,probably dry (1.2 or more)
+216,69,1.298277425203989,probably dry (1.2 or more)
+217,260,1.4692660550458716,probably dry (1.2 or more)
+218,70,0.803742802303263,grey zone (0.8 to 1.2)
+219,32,1.127906976744186,grey zone (0.8 to 1.2)
+220,57,1.0374042361424065,grey zone (0.8 to 1.2)
+221,27,1.3270189431704886,probably dry (1.2 or more)
+222,64,0.3624548736462094,probably wet (under 0.6)
+223,50,0.8933566433566433,grey zone (0.8 to 1.2)
+224,42,1.1374370886566008,grey zone (0.8 to 1.2)
+225,130,0.8879736408566722,grey zone (0.8 to 1.2)
+226,60,1.1960702341137124,grey zone (0.8 to 1.2)
+227,59,1.14247311827957,grey zone (0.8 to 1.2)
+228,54,1.6547972304648864,probably dry (1.2 or more)
+229,51,0.9197379197379197,grey zone (0.8 to 1.2)
+230,47,1.0859813084112149,grey zone (0.8 to 1.2)
+231,59,0.3401639344262295,probably wet (under 0.6)
+232,47,0.19528619528619529,probably wet (under 0.6)
+233,47,0.8020240354206198,grey zone (0.8 to 1.2)
+234,106,0.21506211180124224,probably wet (under 0.6)
+235,53,1.111969111969112,grey zone (0.8 to 1.2)
+236,28,1.51163708086785,probably dry (1.2 or more)
+237,87,0.24287749287749288,probably wet (under 0.6)
+238,53,1.330702446724546,probably dry (1.2 or more)
+239,39,1.356060606060606,probably dry (1.2 or more)
+240,92,1.599027102154274,probably dry (1.2 or more)
+241,62,0.6254709871891485,likely wet (0.6 to 0.8)
+242,81,0.6974358974358974,likely wet (0.6 to 0.8)
+243,310,0.7729220222793488,likely wet (0.6 to 0.8)
+244,162,0.6145276292335116,likely wet (0.6 to 0.8)
+245,174,0.7391304347826086,likely wet (0.6 to 0.8)
+246,816,1.1620879120879122,grey zone (0.8 to 1.2)
+247,62,1.61474609375,probably dry (1.2 or more)
+248,62,0.22389991371872303,probably wet (under 0.6)
+249,58,0.3151219512195122,probably wet (under 0.6)
+250,137,0.990228013029316,grey zone (0.8 to 1.2)
+251,72,0.8476635514018691,grey zone (0.8 to 1.2)
+252,26,1.064327485380117,grey zone (0.8 to 1.2)
+253,66,1.232508073196986,probably dry (1.2 or more)
+254,18,1.5610795454545454,probably dry (1.2 or more)
+255,19,1.1173131504257332,grey zone (0.8 to 1.2)
+256,32,0.7895148669796557,likely wet (0.6 to 0.8)
+257,41,0.14737718567860117,probably wet (under 0.6)
+258,14,1.3577235772357723,probably dry (1.2 or more)
+259,88,0.9715004191114837,grey zone (0.8 to 1.2)
+260,34,1.0308692120227458,grey zone (0.8 to 1.2)
+261,23,1.4743150684931507,probably dry (1.2 or more)
+262,33,1.2244710211591536,probably dry (1.2 or more)
+263,33,1.5483870967741935,probably dry (1.2 or more)
+264,28,0.7969441093687173,likely wet (0.6 to 0.8)
+265,27,1.04304381245196,grey zone (0.8 to 1.2)
+266,64,1.3864168618266979,probably dry (1.2 or more)
+267,48,1.5426929392446633,probably dry (1.2 or more)
+268,65,1.4071207430340558,probably dry (1.2 or more)
+269,108,0.6827715355805244,likely wet (0.6 to 0.8)
+270,102,0.9098143236074271,grey zone (0.8 to 1.2)
+271,54,1.102008032128514,grey zone (0.8 to 1.2)
+272,31,0.24171382376717865,probably wet (under 0.6)
+273,93,1.3055091819699498,probably dry (1.2 or more)
+274,46,1.028837998303647,grey zone (0.8 to 1.2)
+275,29,1.0115452930728241,grey zone (0.8 to 1.2)
+276,44,0.7379095163806553,likely wet (0.6 to 0.8)
+277,19,0.6192969334330591,likely wet (0.6 to 0.8)
+278,66,1.2018196856906533,probably dry (1.2 or more)
+279,59,0.26115581565471835,probably wet (under 0.6)
+280,61,1.3716442953020134,probably dry (1.2 or more)
+281,103,0.8062183658712943,grey zone (0.8 to 1.2)
+282,26,0.7028231797919762,likely wet (0.6 to 0.8)
+283,48,0.17982799061767005,probably wet (under 0.6)
+284,115,0.2076707202993452,probably wet (under 0.6)
+285,87,0.25106837606837606,probably wet (under 0.6)
+286,128,0.39424141749723146,probably wet (under 0.6)
+287,16,0.13404689092762487,probably wet (under 0.6)
+288,221,0.5878442545109211,probably wet (under 0.6)
+289,50,0.8842845973416732,grey zone (0.8 to 1.2)
+290,44,0.64058106841612,likely wet (0.6 to 0.8)
+291,70,0.8061594202898551,grey zone (0.8 to 1.2)
+292,61,1.1969147005444647,grey zone (0.8 to 1.2)
+293,19,1.1612903225806452,grey zone (0.8 to 1.2)
+294,70,0.8370689655172414,grey zone (0.8 to 1.2)
+295,68,0.9861271676300578,grey zone (0.8 to 1.2)
+296,53,0.40869565217391307,probably wet (under 0.6)
+297,76,1.1983715766099186,grey zone (0.8 to 1.2)
+298,165,0.8282753515914137,grey zone (0.8 to 1.2)
+299,66,1.295075456711676,probably dry (1.2 or more)
+300,26,0.195162635529608,probably wet (under 0.6)
+301,48,0.6966292134831461,likely wet (0.6 to 0.8)
+302,44,0.8930434782608696,grey zone (0.8 to 1.2)
+303,34,1.119518486672399,grey zone (0.8 to 1.2)
+304,47,0.9020316027088036,grey zone (0.8 to 1.2)
+305,46,0.33067375886524825,probably wet (under 0.6)
+306,102,1.070291777188329,grey zone (0.8 to 1.2)
+307,62,1.1849912739965096,grey zone (0.8 to 1.2)
+308,52,0.9473684210526315,grey zone (0.8 to 1.2)
+309,55,0.7017398508699254,likely wet (0.6 to 0.8)
+310,57,0.5073649754500819,probably wet (under 0.6)
+311,53,0.3821399839098954,probably wet (under 0.6)
+312,34,0.9713804713804713,grey zone (0.8 to 1.2)
+313,39,0.7491039426523297,likely wet (0.6 to 0.8)
+314,195,3.2294952681388014,probably dry (1.2 or more)
+315,38,0.270544783010157,probably wet (under 0.6)
+316,60,1.0272727272727273,grey zone (0.8 to 1.2)
+317,24,0.75375,likely wet (0.6 to 0.8)
+318,29,1.4212927756653992,probably dry (1.2 or more)
+319,19,0.9332310053722179,grey zone (0.8 to 1.2)
+320,26,0.33096366508688785,probably wet (under 0.6)
+321,55,1.0150078988941549,grey zone (0.8 to 1.2)
+322,70,0.20374220374220375,probably wet (under 0.6)
+323,23,1.0391566265060241,grey zone (0.8 to 1.2)
+324,32,0.6978228228228228,likely wet (0.6 to 0.8)
+325,117,1.0346646571213263,grey zone (0.8 to 1.2)
+326,108,0.8219056099732859,grey zone (0.8 to 1.2)
+327,207,1.0885357548240635,grey zone (0.8 to 1.2)
+328,43,0.6159110350727117,likely wet (0.6 to 0.8)
+329,79,1.1232114467408585,grey zone (0.8 to 1.2)
+330,95,0.22703412073490814,probably wet (under 0.6)
+331,116,0.8797348484848485,grey zone (0.8 to 1.2)
+332,62,1.3670520231213872,probably dry (1.2 or more)
+333,746,1.0992939099735217,grey zone (0.8 to 1.2)
+334,174,0.9645522388059702,grey zone (0.8 to 1.2)
+335,38,0.5829596412556054,probably wet (under 0.6)
+336,67,1.1874707807386629,grey zone (0.8 to 1.2)
+337,157,0.8819641170915958,grey zone (0.8 to 1.2)
+338,241,0.6571729957805907,likely wet (0.6 to 0.8)
+339,26,0.15602836879432624,probably wet (under 0.6)
+340,21,0.1598240469208211,probably wet (under 0.6)
+341,26,0.7907986111111112,likely wet (0.6 to 0.8)
+342,72,0.24862637362637363,probably wet (under 0.6)
+343,224,0.8063851699279093,grey zone (0.8 to 1.2)
+344,31,1.751434034416826,probably dry (1.2 or more)
+345,35,1.5861812778603268,probably dry (1.2 or more)
+346,38,0.2425222312045271,probably wet (under 0.6)
+347,44,0.7160983346550357,likely wet (0.6 to 0.8)
+348,38,1.2420333839150228,probably dry (1.2 or more)
+349,32,1.0976394849785407,grey zone (0.8 to 1.2)
+350,35,1.2811276429130776,probably dry (1.2 or more)
+351,45,0.44785276073619634,probably wet (under 0.6)
+352,67,0.8334742180896028,grey zone (0.8 to 1.2)
+353,69,0.7589820359281437,likely wet (0.6 to 0.8)
+354,125,1.4739884393063585,probably dry (1.2 or more)
+355,44,0.2531760435571688,probably wet (under 0.6)
+356,47,0.7737983034872762,likely wet (0.6 to 0.8)
+357,69,1.103305785123967,grey zone (0.8 to 1.2)
+358,534,0.9612546125461254,grey zone (0.8 to 1.2)
+359,136,0.5701284796573876,probably wet (under 0.6)
+360,67,0.8877284595300261,grey zone (0.8 to 1.2)
+361,23,1.453712190650779,probably dry (1.2 or more)
+362,107,0.6602282704126426,likely wet (0.6 to 0.8)
+363,22,0.7694155324259407,likely wet (0.6 to 0.8)
+364,60,0.7292418772563177,likely wet (0.6 to 0.8)
+365,19,0.28486646884273,probably wet (under 0.6)
+366,217,0.8434197886647454,grey zone (0.8 to 1.2)
+367,22,0.1437414030261348,probably wet (under 0.6)
+368,40,1.434782608695652,probably dry (1.2 or more)
+369,99,0.55,probably wet (under 0.6)
+370,36,0.5410700828937453,probably wet (under 0.6)
+371,99,0.25017667844522967,probably wet (under 0.6)
+372,63,0.7523510971786834,likely wet (0.6 to 0.8)
+373,65,0.9613899613899614,grey zone (0.8 to 1.2)
+374,17,0.9963369963369964,grey zone (0.8 to 1.2)
+375,78,0.8883136094674556,grey zone (0.8 to 1.2)
+376,36,1.0346798780487805,grey zone (0.8 to 1.2)
+377,15,1.5,probably dry (1.2 or more)
+378,25,1.3220738413197173,probably dry (1.2 or more)
+379,274,0.7946509519492294,likely wet (0.6 to 0.8)
+380,352,0.5460644007155635,probably wet (under 0.6)
+381,45,0.9936507936507937,grey zone (0.8 to 1.2)
+382,186,1.1317027281279397,grey zone (0.8 to 1.2)
+383,231,0.5021186440677966,probably wet (under 0.6)
+384,124,0.768893756845564,likely wet (0.6 to 0.8)
+385,58,1.1521547933157432,grey zone (0.8 to 1.2)
+386,36,1.2485131690739166,probably dry (1.2 or more)
+387,17,1.1509769094138544,grey zone (0.8 to 1.2)
+388,61,0.9726027397260274,grey zone (0.8 to 1.2)
+389,34,1.4755043227665705,probably dry (1.2 or more)
+390,62,1.0555555555555556,grey zone (0.8 to 1.2)
+391,73,0.6626334519572954,likely wet (0.6 to 0.8)
+392,67,0.637239165329053,likely wet (0.6 to 0.8)
+393,29,0.88107202680067,grey zone (0.8 to 1.2)
+394,42,0.8686652391149179,grey zone (0.8 to 1.2)
+395,32,0.6898086337338674,likely wet (0.6 to 0.8)
+396,54,0.9855545200372786,grey zone (0.8 to 1.2)
+397,82,0.9454621149042465,grey zone (0.8 to 1.2)
+398,74,1.593499554764025,probably dry (1.2 or more)
+399,56,1.5474683544303798,probably dry (1.2 or more)
+400,82,1.41984126984127,probably dry (1.2 or more)
+401,69,1.3791164658634538,probably dry (1.2 or more)
+402,239,0.9249394673123487,grey zone (0.8 to 1.2)
+403,37,1.343599615014437,probably dry (1.2 or more)
+404,119,1.147,grey zone (0.8 to 1.2)
+405,26,1.0589689265536724,grey zone (0.8 to 1.2)
+406,73,1.2873931623931625,probably dry (1.2 or more)
+407,109,1.3780385582564962,probably dry (1.2 or more)
+408,97,0.990857946554149,grey zone (0.8 to 1.2)
+409,70,1.3047547734930738,probably dry (1.2 or more)
+410,43,0.9080506742950551,grey zone (0.8 to 1.2)
+411,73,1.3086627417998318,probably dry (1.2 or more)
+412,148,0.25150602409638556,probably wet (under 0.6)
+413,67,1.1049562682215743,grey zone (0.8 to 1.2)
+414,108,0.9187919463087248,grey zone (0.8 to 1.2)
+415,54,1.061787072243346,grey zone (0.8 to 1.2)
+416,23,1.7591575091575091,probably dry (1.2 or more)
+417,62,0.5067811934900542,probably wet (under 0.6)
+418,187,0.9002302379125096,grey zone (0.8 to 1.2)
+419,61,0.6296296296296297,likely wet (0.6 to 0.8)
+420,32,0.9310816978548608,grey zone (0.8 to 1.2)
+421,56,1.8842544316996872,probably dry (1.2 or more)
+422,106,1.4171296296296296,probably dry (1.2 or more)
+423,220,0.4178743961352657,probably wet (under 0.6)
+424,98,1.6876172607879925,probably dry (1.2 or more)
+425,190,0.5605436573311368,probably wet (under 0.6)
+426,0,,not measured
+427,0,,not measured
+428,0,,not measured
+429,0,,not measured
+430,0,,not measured
+431,0,,not measured
+432,0,,not measured
+433,0,,not measured
+434,0,,not measured
+435,0,,not measured
+436,0,,not measured
+437,0,,not measured
+438,0,,not measured
+439,0,,not measured
+440,0,,not measured
+441,0,,not measured
+442,0,,not measured
+443,0,,not measured
+444,0,,not measured
+445,0,,not measured
+446,0,,not measured
+447,0,,not measured
+448,0,,not measured
+449,0,,not measured
+450,0,,not measured
+451,0,,not measured
+452,0,,not measured
+453,0,,not measured
+454,0,,not measured
+455,0,,not measured
+456,0,,not measured
+457,0,,not measured
+458,0,,not measured
+459,0,,not measured
+460,0,,not measured
+461,0,,not measured
+462,0,,not measured
+463,0,,not measured
+464,0,,not measured
+465,0,,not measured
+466,0,,not measured
+467,0,,not measured
+468,0,,not measured
+469,0,,not measured
+470,0,,not measured
+471,0,,not measured
+472,0,,not measured
+473,0,,not measured
+474,0,,not measured
+475,0,,not measured
+476,0,,not measured
+477,0,,not measured
+478,0,,not measured
+479,0,,not measured
+480,0,,not measured
+481,0,,not measured
+482,135,0.9111111111111111,grey zone (0.8 to 1.2)
+483,72,0.4995751911639762,probably wet (under 0.6)
+484,23,1.103924418604651,grey zone (0.8 to 1.2)
+485,55,0.231748158070998,probably wet (under 0.6)
+486,65,0.8576425323539699,grey zone (0.8 to 1.2)
+487,45,0.7278509768287142,likely wet (0.6 to 0.8)
+488,70,0.7788679245283019,likely wet (0.6 to 0.8)
+489,22,0.8383253914227365,grey zone (0.8 to 1.2)
+490,37,0.9371428571428572,grey zone (0.8 to 1.2)
+491,34,0.4225019669551534,probably wet (under 0.6)
+492,156,0.9697346600331676,grey zone (0.8 to 1.2)
+493,51,1.2154545454545456,probably dry (1.2 or more)
+494,102,1.0111524163568772,grey zone (0.8 to 1.2)
+495,143,0.816597510373444,grey zone (0.8 to 1.2)
+496,93,0.8927808628791115,grey zone (0.8 to 1.2)
+497,147,0.3949211908931699,probably wet (under 0.6)
+498,82,0.4409851301115242,probably wet (under 0.6)
+499,141,0.47883597883597884,probably wet (under 0.6)
+500,48,0.8511904761904762,grey zone (0.8 to 1.2)
+501,55,1.0365392692146158,grey zone (0.8 to 1.2)
+502,33,0.81,grey zone (0.8 to 1.2)
+503,71,0.5744400527009222,probably wet (under 0.6)
+504,43,1.162772585669782,grey zone (0.8 to 1.2)
+505,287,1.0700757575757576,grey zone (0.8 to 1.2)
+506,122,0.8515625,grey zone (0.8 to 1.2)
+507,31,0.9084821428571429,grey zone (0.8 to 1.2)
+508,77,1.4219409282700421,probably dry (1.2 or more)
+509,131,0.8456568557071069,grey zone (0.8 to 1.2)
+510,209,1.0753282653766414,grey zone (0.8 to 1.2)
+511,44,0.7004926108374384,likely wet (0.6 to 0.8)
+512,38,0.3933364183248496,probably wet (under 0.6)
+513,224,1.000928505106778,grey zone (0.8 to 1.2)
+514,78,1.3692660550458715,probably dry (1.2 or more)
+515,72,1.392,probably dry (1.2 or more)
+516,98,1.4114130434782608,probably dry (1.2 or more)
+517,99,1.7030812324929971,probably dry (1.2 or more)
+518,80,1.0244360902255638,grey zone (0.8 to 1.2)
+519,104,1.4285714285714286,probably dry (1.2 or more)
+520,110,1.5225988700564972,probably dry (1.2 or more)
+521,183,1.0066445182724253,grey zone (0.8 to 1.2)
+522,119,1.067977067977068,grey zone (0.8 to 1.2)
+523,63,0.6949910554561717,likely wet (0.6 to 0.8)
+524,513,1.3949313621964097,probably dry (1.2 or more)
+525,81,1.3707713125845737,probably dry (1.2 or more)
+526,53,1.18805765271105,grey zone (0.8 to 1.2)
+527,104,1.1476761619190405,grey zone (0.8 to 1.2)
+528,76,1.3906581740976645,probably dry (1.2 or more)
+529,88,0.8025298664792692,grey zone (0.8 to 1.2)
+530,150,1.2638991845811713,probably dry (1.2 or more)
+531,132,1.25619295958279,probably dry (1.2 or more)
+532,93,1.212258064516129,probably dry (1.2 or more)
+533,92,0.8509634290208415,grey zone (0.8 to 1.2)
+534,599,1.3875899280575539,probably dry (1.2 or more)
+535,81,1.5286160249739855,probably dry (1.2 or more)
+536,92,2.0257985257985256,probably dry (1.2 or more)
+537,123,1.1005385996409336,grey zone (0.8 to 1.2)
+538,155,0.6716016150740243,likely wet (0.6 to 0.8)
+539,78,0.45310015898251194,probably wet (under 0.6)
+540,41,1.067475360121304,grey zone (0.8 to 1.2)
+541,115,1.0110213078618662,grey zone (0.8 to 1.2)
+542,123,0.8128531073446328,grey zone (0.8 to 1.2)
+543,49,1.0416333066453163,grey zone (0.8 to 1.2)
+544,123,1.4542986425339366,probably dry (1.2 or more)
+545,100,1.3228021978021978,probably dry (1.2 or more)
+546,68,0.9949324324324325,grey zone (0.8 to 1.2)
+547,114,1.2793606671299513,probably dry (1.2 or more)
+548,249,0.4908933217692975,probably wet (under 0.6)
+549,491,0.8716981132075472,grey zone (0.8 to 1.2)
+550,103,1.66640866873065,probably dry (1.2 or more)
+551,149,1.0667251975417031,grey zone (0.8 to 1.2)
+552,62,0.8798751950078003,grey zone (0.8 to 1.2)
+553,50,1.1536661466458658,grey zone (0.8 to 1.2)
+554,488,1.0107317073170732,grey zone (0.8 to 1.2)
+555,59,1.0433130699088147,grey zone (0.8 to 1.2)
+556,129,1.0885547201336676,grey zone (0.8 to 1.2)
+557,97,1.1352313167259787,grey zone (0.8 to 1.2)
+558,261,1.0940325497287522,grey zone (0.8 to 1.2)
+559,0,,not measured
+560,0,,not measured
+561,0,,not measured
+562,0,,not measured
+563,0,,not measured
+564,0,,not measured
+565,0,,not measured
+566,0,,not measured
+567,0,,not measured
+568,0,,not measured
+569,0,,not measured
+570,0,,not measured
+571,0,,not measured
+572,0,,not measured
+573,0,,not measured
+574,0,,not measured
+575,0,,not measured
+576,0,,not measured
+577,0,,not measured
+578,0,,not measured
+579,0,,not measured
+580,0,,not measured
+581,0,,not measured
+582,0,,not measured
+583,0,,not measured
+584,0,,not measured
+585,0,,not measured
+586,0,,not measured
+587,0,,not measured
+588,0,,not measured
+589,0,,not measured
+590,0,,not measured
+591,0,,not measured
+592,0,,not measured
+593,0,,not measured
+594,0,,not measured
+595,0,,not measured
+596,0,,not measured
+597,0,,not measured
+598,0,,not measured
+599,0,,not measured
+600,0,,not measured
+601,0,,not measured
+602,0,,not measured
+603,0,,not measured
+604,0,,not measured
+605,0,,not measured
+606,0,,not measured
+607,0,,not measured
+608,0,,not measured
+609,0,,not measured
+610,0,,not measured
+611,0,,not measured
+612,0,,not measured
+613,0,,not measured
+614,0,,not measured
+615,0,,not measured
+616,0,,not measured
+617,0,,not measured
+618,0,,not measured
+619,0,,not measured
+620,0,,not measured
+621,0,,not measured
+622,0,,not measured
+623,0,,not measured
+624,0,,not measured
+625,0,,not measured
+626,0,,not measured
+627,0,,not measured
+628,0,,not measured
+629,0,,not measured
+630,0,,not measured
+631,0,,not measured
+632,0,,not measured
+633,0,,not measured
+634,0,,not measured
+635,0,,not measured
+636,0,,not measured
+637,0,,not measured
+638,0,,not measured
+639,0,,not measured
+640,0,,not measured
+641,0,,not measured
+642,0,,not measured
+643,0,,not measured
+644,0,,not measured
+645,0,,not measured
+646,0,,not measured
+647,0,,not measured
+648,0,,not measured
+649,0,,not measured
+650,0,,not measured
+651,0,,not measured
+652,0,,not measured
+653,0,,not measured
+654,0,,not measured
+655,0,,not measured
+656,0,,not measured
+657,0,,not measured
+658,0,,not measured
+659,0,,not measured
+660,0,,not measured
+661,0,,not measured
+662,0,,not measured
+663,0,,not measured
+664,0,,not measured
+665,0,,not measured
+666,0,,not measured
+667,0,,not measured
+668,0,,not measured
+669,0,,not measured
+670,0,,not measured
+671,0,,not measured
+672,0,,not measured
+673,0,,not measured
+674,0,,not measured
+675,0,,not measured
+676,0,,not measured
+677,0,,not measured
+678,0,,not measured
+679,0,,not measured
+680,0,,not measured
+681,0,,not measured
+682,0,,not measured
+683,0,,not measured
+684,0,,not measured
+685,0,,not measured
+686,0,,not measured
+687,0,,not measured
+688,0,,not measured
+689,0,,not measured
+690,0,,not measured
+691,0,,not measured
+692,0,,not measured
+693,0,,not measured
+694,0,,not measured
+695,0,,not measured
+696,0,,not measured
+697,0,,not measured
+698,0,,not measured
+699,0,,not measured
+700,0,,not measured
+701,0,,not measured
+702,0,,not measured
+703,0,,not measured
+704,0,,not measured
+705,0,,not measured
+706,0,,not measured
+707,0,,not measured
+708,0,,not measured
+709,0,,not measured
+710,0,,not measured
+711,0,,not measured
+712,0,,not measured
+713,0,,not measured

@@ -1,0 +1,159 @@
+"""Is the 18-degree ground-classification cut this vendor, or everybody?
+
+WHY THIS MATTERS
+----------------
+On five Venango tiles, every at-ground return beyond ~18 degrees off nadir was
+left unassigned -- roughly a million per tile, 0.0% classified as ground, and
+the discarded returns measure 6.5-6.7 cm RMSE against neighbouring flight lines,
+inside the USGS QL2 spec of 10 cm.
+
+Five tiles from one delivery is one data point, not a finding. If the same cliff
+appears in a different acquisition, flown by a different contractor to a
+different quality level, then it is a convention and we should expect it in
+every dataset this project ever touches. If it does not, it is specific to
+PA WesternPA 2019 D20 and only that area needs reprocessing.
+
+WHAT IS COMPARED
+----------------
+    PA WesternPA 2019 D20      Venango. QL2, ~4.8 ppsm, flown March 2020.
+    PA Northcentral 2019 B19   McKean. QL1, ~9 ppsm, a separate acquisition.
+
+THE MEASUREMENT
+---------------
+For each tile, of the returns sitting within +/- 15 cm of the ground surface --
+that is, returns that demonstrably reached the ground -- what share were
+classified as ground, binned by off-nadir scan angle?
+
+A cliff is a threshold in a processing script. A taper is accuracy. The two look
+nothing alike and the difference is the whole point.
+
+Decimated 1-in-3 for speed. The measurement is a RATIO within each angle bin, so
+thinning the cloud does not bias it; it only widens the error bars, and with
+millions of returns per tile those are negligible.
+
+METHOD
+------
+PDAL CLI via subprocess with a pipeline JSON -- the Python bindings do not
+function in this environment (CLAUDE.md).
+
+SAMPLE OR CENSUS
+----------------
+`--n-per-area 6` samples, which is what the first pass did. `--all` runs every
+map square in both deliveries -- 263 of them -- in parallel. The census matters
+because a sample of seven cannot tell "this delivery" from "this batch of
+flights", and it turned out to be the latter: tiles are grouped by FLIGHT BLOCK
+(delivery + month flown), not by county, because Venango was flown twice and the
+two halves do not behave the same.
+
+With 263 curves on one axis, individual lines are drawn faint and each block's
+median curve is drawn over the top. The band is the block's 10th-90th percentile.
+
+Run:
+    python notebooks/wellsight_v2/s7_analysis/_scan_angle_cliff_across_acquisitions.py
+    ... --n-per-area 6
+    ... --all --workers 6
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import warnings
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from datetime import datetime, timedelta
+from pathlib import Path
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+
+ROOT = Path(__file__).resolve().parents[3]
+SRCROOT = ROOT / "data" / "_source" / "lidar"
+OUT = ROOT / "docs" / "presentation" / "figures_30to45min" / "scan_angle"
+CSV = ROOT / "data" / "9t" / "results" / "nonground_classification"
+PDAL = "pdal"
+
+NEAR = 0.15
+STEP = 3             # decimation; a ratio per angle bin is unaffected
+EDGES = np.arange(0, 40.5, 1.0)   # Venango Nov 2019 sweeps to 31 deg
+
+SURFACE, INK, INK2, MUTED, RULE = "#fcfcfb", "#0b0b0b", "#52514e", "#8a887e", "#d8d7cf"
+BLUE, VERM, GREEN, GREY = "#1F5FA8", "#C43E1C", "#4FA352", "#B0B0B0"
+#: one colour per flight block, assigned in fixed order (dataviz skill)
+BLOCK_COLOURS = [BLUE, VERM, GREEN, "#7A4FA3", "#B8860B"]
+
+#: (label, directory, colour). Keep the two deliveries visually distinct --
+#: the whole question is whether they behave the same.
+AREAS = [
+    ("PA WesternPA 2019 D20  (Venango, QL2)", "westernpa", BLUE),
+    ("PA Northcentral 2019 B19  (McKean, QL1)", "mckean", VERM),
+]
+
+
+def run_pipeline(stages, label, timeout=3600):
+    """Write the pipeline to a temp file and shell out. See CLAUDE.md."""
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+        json.dump({"pipeline": stages}, f, indent=2)
+        tmp = f.name
+    r = subprocess.run([PDAL, "pipeline", tmp], capture_output=True, text=True,
+                       timeout=timeout)
+    Path(tmp).unlink(missing_ok=True)
+    if r.returncode != 0:
+        print(r.stdout[-900:]); print(r.stderr[-900:])
+        raise RuntimeError(f"{label} failed, exit {r.returncode}")
+
+
+def measure(laz):
+    """Ground-classification rate against scan angle, for one tile."""
+    tmp = Path(tempfile.gettempdir()) / f"_cliff_{laz.stem}.las"
+    run_pipeline([
+        str(laz),
+        {"type": "filters.decimation", "step": STEP},
+        {"type": "filters.hag_nn", "count": 8, "allow_extrapolation": True},
+        {"type": "writers.las", "filename": str(tmp),
+         "extra_dims": "HeightAboveGround=float32", "compression": "false"},
+    ], laz.stem)
+
+    import laspy
+    las = laspy.read(str(tmp))
+    cls = np.asarray(las.classification).astype("int16")
+    hag = np.asarray(las.HeightAboveGround, dtype="float32")
+    psid = np.asarray(las.point_source_id)
+    gps = np.asarray(las.gps_time)
+    for a in ("scan_angle", "scan_angle_rank"):
+        if hasattr(las, a):
+            v = np.asarray(getattr(las, a), dtype="float32")
+            ang = np.abs(v * 0.006 if a == "scan_angle" else v)
+            break
+    tmp.unlink(missing_ok=True)
+
+    at = np.isfinite(hag) & (np.abs(hag) < NEAR)
+    pool = at & ((cls == 2) | (cls == 1))
+    n_pool, _ = np.histogram(ang[pool], bins=EDGES)
+    n_g2, _ = np.histogram(ang[pool & (cls == 2)], bins=EDGES)
+    rate = np.divide(n_g2, n_pool, out=np.full(EDGES.size - 1, np.nan),
+                     where=n_pool > 50)
+
+    cut = np.nan
+    for i in range(1, rate.size):
+        if np.isfinite(rate[i]) and rate[i] < 0.10 and \
+                np.isfinite(rate[i - 1]) and rate[i - 1] > 0.50:
+            cut = float(EDGES[i]); break
+    lost = int((pool & (cls == 1) & (ang >= cut)).sum()) * STEP if \
+        np.isfinite(cut) else 0
+    d0 = datetime(1980, 1, 6) + timedelta(seconds=float(gps.min()) + 1e9 - 18)
+    return dict(points=int(cls.size) * STEP, lines=int(np.unique(psid).size),
+                ground_pct=100 * float((cls == 2).mean()),
+                max_ang=float(np.percentile(ang, 99.9)),
+                cut=cut, lost=lost, flown=d0.strftime("%Y-%m-%d"),
+                rate=rate, n_pool=n_pool)
+
+

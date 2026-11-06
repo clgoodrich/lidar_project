@@ -35,13 +35,18 @@ RNG_SEED = 42
 
 
 def main() -> int:
+    # Step 1. Borrow the block GEOMETRY only. The split column that comes with it
+    # was decided by pit content and is deliberately thrown away here -- keeping
+    # the same 12x12 boxes is what makes the two splits comparable.
     blocks = gpd.read_file(PIT_BLOCKS, layer="blocks")[["block_id", "geometry"]].copy()
     pad = read_layer(ANN, "pad").copy()
     pad = pad[~pad.geometry.isna() & ~pad.geometry.is_empty].copy()
     pad["ctr_x"] = pad.geometry.centroid.x
     pad["ctr_y"] = pad.geometry.centroid.y
 
-    # Count pads per block via centroid-in-block spatial join.
+    # Step 2. Count pads per block via centroid-in-block spatial join.
+    # Centroid, not polygon: a pad overlapping two blocks would otherwise be
+    # counted twice and could end up in two different splits at once.
     cent = gpd.GeoDataFrame(
         pad[["pad_id", "ctr_x", "ctr_y"]],
         geometry=gpd.points_from_xy(pad["ctr_x"], pad["ctr_y"]), crs=pad.crs,
@@ -50,8 +55,16 @@ def main() -> int:
     n_per_block = joined.groupby("block_id").size()
     blocks["n_pads"] = blocks["block_id"].map(n_per_block).fillna(0).astype(int)
 
-    # Greedy fill by PAD COUNT (mirrors _build_pit_dataset): shuffle pad-bearing
-    # blocks, assign each to whichever split has the largest remaining deficit.
+    # Step 3. Greedy fill by PAD COUNT (mirrors _build_pit_dataset): shuffle
+    # pad-bearing blocks, assign each to whichever split has the largest
+    # remaining deficit.
+    #
+    # By COUNT rather than by block, because pads cluster -- one block can hold
+    # thirty and its neighbour none. Balancing blocks would give a "70%" train
+    # split holding 40% of the pads.
+    #
+    # The shuffle is seeded, so this is reproducible. Change RNG_SEED and every
+    # trained checkpoint is scored against a split it never saw.
     total = int(blocks["n_pads"].sum())
     pad_blocks = (blocks[blocks.n_pads > 0][["block_id", "n_pads"]]
                   .sample(frac=1, random_state=RNG_SEED).values)
@@ -71,7 +84,10 @@ def main() -> int:
         sub = blocks[blocks.split == s]
         print(f"  {s:8s} blocks={len(sub):3d}  pads={int(sub.n_pads.sum()):4d}")
 
-    # Per-pad manifest from the new block splits.
+    # Step 4. Per-pad manifest from the new block splits. This OVERWRITES the
+    # version `_build_pad_road_dataset.py` wrote a moment ago, on purpose: that
+    # one inherited the pit split and dropped every pad in a pit-free block.
+    # Run order matters -- pad_road_dataset first, then this.
     joined["split"] = joined["block_id"].map(split_of).fillna("unused")
     man = joined[["pad_id", "block_id", "split", "ctr_x", "ctr_y"]].copy()
     man.columns = ["pad_id", "block_id", "split", "centroid_x", "centroid_y"]

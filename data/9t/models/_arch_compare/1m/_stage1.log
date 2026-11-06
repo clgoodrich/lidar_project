@@ -1,0 +1,2361 @@
+##### pit / unet
+== pit / unet : 5-fold on the unified split ==
+   503 features across 115 blocks, 1 m grid
+     fold 0:   103 features
+     fold 1:   101 features
+     fold 2:    98 features
+     fold 3:   103 features
+     fold 4:    98 features
+   unet: 7.8 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 299 / 67 blocks   inner-val 101 / 21   HELD-OUT 103
+ep   1/40  tr_loss=0.0057 va_loss=0.0036  va_iou bg=0.969  floor=0.099  wall=0.177  score=0.099  21.9s
+    -> new best (score=0.099), saved
+ep   2/40  tr_loss=0.0016 va_loss=0.0013  va_iou bg=0.993  floor=0.420  wall=0.434  score=0.420  16.7s
+    -> new best (score=0.420), saved
+ep   3/40  tr_loss=0.0012 va_loss=0.0009  va_iou bg=0.994  floor=0.429  wall=0.504  score=0.429  16.1s
+    -> new best (score=0.429), saved
+ep   4/40  tr_loss=0.0010 va_loss=0.0009  va_iou bg=0.995  floor=0.408  wall=0.513  score=0.408  16.7s
+ep   5/40  tr_loss=0.0009 va_loss=0.0008  va_iou bg=0.995  floor=0.407  wall=0.509  score=0.407  15.5s
+ep   6/40  tr_loss=0.0009 va_loss=0.0008  va_iou bg=0.996  floor=0.462  wall=0.545  score=0.462  15.1s
+    -> new best (score=0.462), saved
+ep   7/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.996  floor=0.485  wall=0.543  score=0.485  15.1s
+    -> new best (score=0.485), saved
+ep   8/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.994  floor=0.520  wall=0.530  score=0.520  15.2s
+    -> new best (score=0.520), saved
+ep   9/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.480  wall=0.564  score=0.480  15.3s
+ep  10/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.518  wall=0.544  score=0.518  15.4s
+ep  11/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.994  floor=0.545  wall=0.513  score=0.545  15.5s
+    -> new best (score=0.545), saved
+ep  12/40  tr_loss=0.0007 va_loss=0.0006  va_iou bg=0.996  floor=0.568  wall=0.593  score=0.568  16.0s
+    -> new best (score=0.568), saved
+ep  13/40  tr_loss=0.0007 va_loss=0.0006  va_iou bg=0.996  floor=0.478  wall=0.539  score=0.478  16.5s
+ep  14/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.557  wall=0.594  score=0.557  14.8s
+ep  15/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.445  wall=0.559  score=0.445  14.6s
+ep  16/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.995  floor=0.426  wall=0.522  score=0.426  15.1s
+ep  17/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.473  wall=0.569  score=0.473  14.6s
+ep  18/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.480  wall=0.588  score=0.480  14.5s
+ep  19/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.995  floor=0.538  wall=0.583  score=0.538  15.0s
+ep  20/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.488  wall=0.559  score=0.488  14.7s
+ep  21/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.435  wall=0.567  score=0.435  15.1s
+ep  22/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.563  wall=0.604  score=0.563  16.0s
+ep  23/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.520  wall=0.593  score=0.520  15.9s
+ep  24/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.537  wall=0.597  score=0.537  16.1s
+ep  25/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.512  wall=0.596  score=0.512  16.0s
+ep  26/40  tr_loss=0.0005 va_loss=0.0005  va_iou bg=0.996  floor=0.537  wall=0.599  score=0.537  15.7s
+ep  27/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.565  wall=0.607  score=0.565  15.5s
+ep  28/40  tr_loss=0.0005 va_loss=0.0005  va_iou bg=0.997  floor=0.552  wall=0.614  score=0.552  14.5s
+ep  29/40  tr_loss=0.0005 va_loss=0.0005  va_iou bg=0.997  floor=0.540  wall=0.603  score=0.540  14.5s
+ep  30/40  tr_loss=0.0005 va_loss=0.0005  va_iou bg=0.997  floor=0.563  wall=0.617  score=0.563  14.6s
+ep  31/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.555  wall=0.609  score=0.555  14.9s
+ep  32/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.552  wall=0.613  score=0.552  15.3s
+ep  33/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.549  wall=0.602  score=0.549  15.7s
+ep  34/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.573  wall=0.634  score=0.573  15.0s
+    -> new best (score=0.573), saved
+ep  35/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.582  wall=0.632  score=0.582  15.1s
+    -> new best (score=0.582), saved
+ep  36/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.996  floor=0.580  wall=0.627  score=0.580  14.4s
+ep  37/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.584  wall=0.623  score=0.584  14.6s
+    -> new best (score=0.584), saved
+ep  38/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.589  wall=0.626  score=0.589  14.8s
+    -> new best (score=0.589), saved
+ep  39/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.574  wall=0.611  score=0.574  14.8s
+ep  40/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.570  wall=0.618  score=0.570  14.7s
+
+Best score: 0.589. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unet\fold0
+  fold 0 done in 10.3 min, best val floor IoU 0.589
+
+============================================================
+FOLD 1
+============================================================
+  train 304 / 71 blocks   inner-val 98 / 23   HELD-OUT 101
+ep   1/40  tr_loss=0.0093 va_loss=0.0040  va_iou bg=0.991  floor=0.271  wall=0.005  score=0.271  19.7s
+    -> new best (score=0.271), saved
+ep   2/40  tr_loss=0.0025 va_loss=0.0024  va_iou bg=0.983  floor=0.189  wall=0.275  score=0.189  14.7s
+ep   3/40  tr_loss=0.0014 va_loss=0.0028  va_iou bg=0.994  floor=0.315  wall=0.212  score=0.315  14.8s
+    -> new best (score=0.315), saved
+ep   4/40  tr_loss=0.0012 va_loss=0.0013  va_iou bg=0.995  floor=0.416  wall=0.481  score=0.416  15.5s
+    -> new best (score=0.416), saved
+ep   5/40  tr_loss=0.0011 va_loss=0.0013  va_iou bg=0.995  floor=0.480  wall=0.500  score=0.480  15.4s
+    -> new best (score=0.480), saved
+ep   6/40  tr_loss=0.0010 va_loss=0.0016  va_iou bg=0.993  floor=0.248  wall=0.461  score=0.248  15.4s
+ep   7/40  tr_loss=0.0009 va_loss=0.0013  va_iou bg=0.991  floor=0.283  wall=0.434  score=0.283  15.3s
+ep   8/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.994  floor=0.405  wall=0.495  score=0.405  15.4s
+ep   9/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.995  floor=0.409  wall=0.495  score=0.409  14.9s
+ep  10/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.451  wall=0.536  score=0.451  15.5s
+ep  11/40  tr_loss=0.0007 va_loss=0.0011  va_iou bg=0.996  floor=0.473  wall=0.490  score=0.473  14.7s
+ep  12/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.506  wall=0.531  score=0.506  14.9s
+    -> new best (score=0.506), saved
+ep  13/40  tr_loss=0.0007 va_loss=0.0011  va_iou bg=0.996  floor=0.498  wall=0.468  score=0.498  14.8s
+ep  14/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.996  floor=0.431  wall=0.540  score=0.431  14.8s
+ep  15/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.995  floor=0.469  wall=0.550  score=0.469  15.3s
+ep  16/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.457  wall=0.543  score=0.457  15.3s
+ep  17/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.995  floor=0.421  wall=0.536  score=0.421  15.1s
+ep  18/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.995  floor=0.467  wall=0.547  score=0.467  14.6s
+ep  19/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.437  wall=0.547  score=0.437  14.5s
+ep  20/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.995  floor=0.459  wall=0.539  score=0.459  15.4s
+ep  21/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.995  floor=0.463  wall=0.535  score=0.463  14.9s
+ep  22/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.515  wall=0.553  score=0.515  15.3s
+    -> new best (score=0.515), saved
+ep  23/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.996  floor=0.481  wall=0.548  score=0.481  14.9s
+ep  24/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.488  wall=0.567  score=0.488  14.9s
+ep  25/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.500  wall=0.555  score=0.500  14.8s
+ep  26/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.519  wall=0.573  score=0.519  14.7s
+    -> new best (score=0.519), saved
+ep  27/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.995  floor=0.444  wall=0.525  score=0.444  15.2s
+ep  28/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.438  wall=0.520  score=0.438  14.7s
+ep  29/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.996  floor=0.513  wall=0.570  score=0.513  15.0s
+ep  30/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.523  wall=0.575  score=0.523  15.2s
+    -> new best (score=0.523), saved
+ep  31/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.531  wall=0.583  score=0.531  15.2s
+    -> new best (score=0.531), saved
+ep  32/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.503  wall=0.575  score=0.503  14.5s
+ep  33/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.533  wall=0.585  score=0.533  14.5s
+    -> new best (score=0.533), saved
+ep  34/40  tr_loss=0.0004 va_loss=0.0011  va_iou bg=0.996  floor=0.501  wall=0.575  score=0.501  15.0s
+ep  35/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.996  floor=0.551  wall=0.594  score=0.551  14.9s
+    -> new best (score=0.551), saved
+ep  36/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.513  wall=0.588  score=0.513  14.6s
+ep  37/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.528  wall=0.584  score=0.528  14.5s
+ep  38/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.492  wall=0.566  score=0.492  14.6s
+ep  39/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.509  wall=0.579  score=0.509  15.2s
+ep  40/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.529  wall=0.581  score=0.529  15.5s
+
+Best score: 0.551. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unet\fold1
+  fold 1 done in 10.1 min, best val floor IoU 0.551
+
+============================================================
+FOLD 2
+============================================================
+  train 302 / 71 blocks   inner-val 103 / 21   HELD-OUT 98
+ep   1/40  tr_loss=0.0094 va_loss=0.0033  va_iou bg=0.993  floor=0.264  wall=0.032  score=0.264  20.8s
+    -> new best (score=0.264), saved
+ep   2/40  tr_loss=0.0020 va_loss=0.0015  va_iou bg=0.996  floor=0.478  wall=0.465  score=0.478  14.7s
+    -> new best (score=0.478), saved
+ep   3/40  tr_loss=0.0013 va_loss=0.0011  va_iou bg=0.996  floor=0.384  wall=0.469  score=0.384  15.0s
+ep   4/40  tr_loss=0.0011 va_loss=0.0010  va_iou bg=0.996  floor=0.444  wall=0.471  score=0.444  15.1s
+ep   5/40  tr_loss=0.0010 va_loss=0.0009  va_iou bg=0.995  floor=0.440  wall=0.514  score=0.440  15.2s
+ep   6/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.995  floor=0.467  wall=0.536  score=0.467  15.3s
+ep   7/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.493  wall=0.537  score=0.493  14.9s
+    -> new best (score=0.493), saved
+ep   8/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.439  wall=0.540  score=0.439  14.7s
+ep   9/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.997  floor=0.434  wall=0.530  score=0.434  15.3s
+ep  10/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.503  wall=0.562  score=0.503  15.3s
+    -> new best (score=0.503), saved
+ep  11/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.528  wall=0.584  score=0.528  15.7s
+    -> new best (score=0.528), saved
+ep  12/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.995  floor=0.461  wall=0.543  score=0.461  16.0s
+ep  13/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.486  wall=0.572  score=0.486  14.9s
+ep  14/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.997  floor=0.473  wall=0.533  score=0.473  14.8s
+ep  15/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.531  wall=0.569  score=0.531  15.6s
+    -> new best (score=0.531), saved
+ep  16/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.997  floor=0.516  wall=0.597  score=0.516  16.0s
+ep  17/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.534  wall=0.578  score=0.534  15.4s
+    -> new best (score=0.534), saved
+ep  18/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.550  wall=0.595  score=0.550  14.9s
+    -> new best (score=0.550), saved
+ep  19/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.532  wall=0.574  score=0.532  15.1s
+ep  20/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.534  wall=0.578  score=0.534  15.3s
+ep  21/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.549  wall=0.598  score=0.549  14.8s
+ep  22/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.535  wall=0.596  score=0.535  14.8s
+ep  23/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.527  wall=0.570  score=0.527  14.9s
+ep  24/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.524  wall=0.585  score=0.524  14.8s
+ep  25/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.507  wall=0.563  score=0.507  15.1s
+ep  26/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.543  wall=0.576  score=0.543  15.0s
+ep  27/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.540  wall=0.607  score=0.540  14.7s
+ep  28/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.518  wall=0.616  score=0.518  14.7s
+ep  29/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.535  wall=0.579  score=0.535  14.7s
+ep  30/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.542  wall=0.621  score=0.542  14.8s
+ep  31/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.529  wall=0.577  score=0.529  14.5s
+ep  32/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.554  wall=0.593  score=0.554  14.5s
+    -> new best (score=0.554), saved
+ep  33/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.530  wall=0.602  score=0.530  15.0s
+ep  34/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.547  wall=0.600  score=0.547  15.6s
+ep  35/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.533  wall=0.573  score=0.533  15.2s
+ep  36/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.532  wall=0.590  score=0.532  15.4s
+ep  37/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.544  wall=0.591  score=0.544  15.9s
+ep  38/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.558  wall=0.611  score=0.558  15.2s
+    -> new best (score=0.558), saved
+ep  39/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.541  wall=0.588  score=0.541  15.2s
+ep  40/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.543  wall=0.611  score=0.543  15.2s
+
+Best score: 0.558. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unet\fold2
+  fold 2 done in 10.2 min, best val floor IoU 0.558
+
+============================================================
+FOLD 3
+============================================================
+  train 302 / 71 blocks   inner-val 98 / 23   HELD-OUT 103
+ep   1/40  tr_loss=0.0076 va_loss=0.0031  va_iou bg=0.993  floor=0.233  wall=0.325  score=0.233  21.1s
+    -> new best (score=0.233), saved
+ep   2/40  tr_loss=0.0019 va_loss=0.0018  va_iou bg=0.996  floor=0.381  wall=0.423  score=0.381  15.4s
+    -> new best (score=0.381), saved
+ep   3/40  tr_loss=0.0014 va_loss=0.0018  va_iou bg=0.995  floor=0.371  wall=0.394  score=0.371  15.3s
+ep   4/40  tr_loss=0.0011 va_loss=0.0014  va_iou bg=0.996  floor=0.436  wall=0.405  score=0.436  15.6s
+    -> new best (score=0.436), saved
+ep   5/40  tr_loss=0.0009 va_loss=0.0012  va_iou bg=0.996  floor=0.456  wall=0.510  score=0.456  15.2s
+    -> new best (score=0.456), saved
+ep   6/40  tr_loss=0.0009 va_loss=0.0011  va_iou bg=0.996  floor=0.467  wall=0.451  score=0.467  15.1s
+    -> new best (score=0.467), saved
+ep   7/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.997  floor=0.480  wall=0.508  score=0.480  15.0s
+    -> new best (score=0.480), saved
+ep   8/40  tr_loss=0.0008 va_loss=0.0011  va_iou bg=0.996  floor=0.439  wall=0.458  score=0.439  15.2s
+ep   9/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.995  floor=0.416  wall=0.494  score=0.416  15.4s
+ep  10/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.494  wall=0.562  score=0.494  15.3s
+    -> new best (score=0.494), saved
+ep  11/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.493  wall=0.533  score=0.493  16.3s
+ep  12/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.545  wall=0.569  score=0.545  15.1s
+    -> new best (score=0.545), saved
+ep  13/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.495  wall=0.554  score=0.495  14.9s
+ep  14/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.460  wall=0.521  score=0.460  14.6s
+ep  15/40  tr_loss=0.0006 va_loss=0.0011  va_iou bg=0.996  floor=0.505  wall=0.522  score=0.505  14.4s
+ep  16/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.502  wall=0.547  score=0.502  14.7s
+ep  17/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.533  wall=0.567  score=0.533  14.9s
+ep  18/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.515  wall=0.560  score=0.515  14.4s
+ep  19/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.546  wall=0.564  score=0.546  14.6s
+    -> new best (score=0.546), saved
+ep  20/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.491  wall=0.555  score=0.491  14.8s
+ep  21/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.543  wall=0.573  score=0.543  15.1s
+ep  22/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.515  wall=0.574  score=0.515  14.9s
+ep  23/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.541  wall=0.566  score=0.541  15.2s
+ep  24/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.532  wall=0.574  score=0.532  14.6s
+ep  25/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.996  floor=0.520  wall=0.568  score=0.520  15.4s
+ep  26/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.530  wall=0.597  score=0.530  15.4s
+ep  27/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.530  wall=0.580  score=0.530  14.4s
+ep  28/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.499  wall=0.564  score=0.499  14.8s
+ep  29/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.542  wall=0.573  score=0.542  14.7s
+ep  30/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.552  wall=0.579  score=0.552  15.0s
+    -> new best (score=0.552), saved
+ep  31/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.547  wall=0.587  score=0.547  14.8s
+ep  32/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.534  wall=0.572  score=0.534  16.0s
+ep  33/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.537  wall=0.565  score=0.537  15.0s
+ep  34/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.547  wall=0.584  score=0.547  15.2s
+ep  35/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.567  wall=0.600  score=0.567  15.1s
+    -> new best (score=0.567), saved
+ep  36/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.550  wall=0.585  score=0.550  16.7s
+ep  37/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.559  wall=0.594  score=0.559  15.7s
+ep  38/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.552  wall=0.601  score=0.552  16.1s
+ep  39/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.544  wall=0.578  score=0.544  15.9s
+ep  40/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.551  wall=0.578  score=0.551  15.2s
+
+Best score: 0.567. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unet\fold3
+  fold 3 done in 10.2 min, best val floor IoU 0.567
+
+============================================================
+FOLD 4
+============================================================
+  train 302 / 65 blocks   inner-val 103 / 27   HELD-OUT 98
+ep   1/40  tr_loss=0.0119 va_loss=0.0060  va_iou bg=0.982  floor=0.141  wall=0.202  score=0.141  20.0s
+    -> new best (score=0.141), saved
+ep   2/40  tr_loss=0.0021 va_loss=0.0016  va_iou bg=0.994  floor=0.321  wall=0.395  score=0.321  15.6s
+    -> new best (score=0.321), saved
+ep   3/40  tr_loss=0.0014 va_loss=0.0015  va_iou bg=0.991  floor=0.254  wall=0.346  score=0.254  15.7s
+ep   4/40  tr_loss=0.0011 va_loss=0.0011  va_iou bg=0.995  floor=0.407  wall=0.464  score=0.407  15.7s
+    -> new best (score=0.407), saved
+ep   5/40  tr_loss=0.0010 va_loss=0.0010  va_iou bg=0.994  floor=0.348  wall=0.434  score=0.348  14.8s
+ep   6/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.995  floor=0.409  wall=0.481  score=0.409  15.6s
+    -> new best (score=0.409), saved
+ep   7/40  tr_loss=0.0008 va_loss=0.0011  va_iou bg=0.996  floor=0.448  wall=0.449  score=0.448  15.1s
+    -> new best (score=0.448), saved
+ep   8/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.455  wall=0.510  score=0.455  16.1s
+    -> new best (score=0.455), saved
+ep   9/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.993  floor=0.372  wall=0.407  score=0.372  16.3s
+ep  10/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.995  floor=0.398  wall=0.471  score=0.398  16.6s
+ep  11/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.476  wall=0.516  score=0.476  15.1s
+    -> new best (score=0.476), saved
+ep  12/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.438  wall=0.503  score=0.438  16.0s
+ep  13/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.997  floor=0.485  wall=0.526  score=0.485  15.9s
+    -> new best (score=0.485), saved
+ep  14/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.450  wall=0.512  score=0.450  15.6s
+ep  15/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.997  floor=0.479  wall=0.537  score=0.479  15.4s
+ep  16/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.450  wall=0.510  score=0.450  15.5s
+ep  17/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.472  wall=0.524  score=0.472  15.1s
+ep  18/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.456  wall=0.504  score=0.456  15.4s
+ep  19/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.997  floor=0.466  wall=0.536  score=0.466  15.4s
+ep  20/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.491  wall=0.530  score=0.491  15.4s
+    -> new best (score=0.491), saved
+ep  21/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.473  wall=0.534  score=0.473  15.8s
+ep  22/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.444  wall=0.513  score=0.444  15.5s
+ep  23/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.512  wall=0.555  score=0.512  16.1s
+    -> new best (score=0.512), saved
+ep  24/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.529  wall=0.566  score=0.529  16.0s
+    -> new best (score=0.529), saved
+ep  25/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.468  wall=0.532  score=0.468  15.5s
+ep  26/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.491  wall=0.550  score=0.491  15.4s
+ep  27/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.524  wall=0.568  score=0.524  16.0s
+ep  28/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.495  wall=0.559  score=0.495  15.8s
+ep  29/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.469  wall=0.522  score=0.469  16.0s
+ep  30/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.484  wall=0.534  score=0.484  15.9s
+ep  31/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.503  wall=0.550  score=0.503  16.4s
+ep  32/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.494  wall=0.540  score=0.494  16.6s
+ep  33/40  tr_loss=0.0005 va_loss=0.0005  va_iou bg=0.997  floor=0.511  wall=0.568  score=0.511  15.8s
+ep  34/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.515  wall=0.569  score=0.515  15.4s
+ep  35/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.518  wall=0.570  score=0.518  15.9s
+ep  36/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.507  wall=0.537  score=0.507  16.0s
+ep  37/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.519  wall=0.565  score=0.519  15.9s
+ep  38/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.996  floor=0.496  wall=0.552  score=0.496  16.1s
+ep  39/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.528  wall=0.572  score=0.528  16.0s
+ep  40/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.529  wall=0.582  score=0.529  15.7s
+    -> new best (score=0.529), saved
+
+Best score: 0.529. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unet\fold4
+  fold 4 done in 10.6 min, best val floor IoU 0.529
+
+POOLED  val floor IoU 0.559 (sd 0.020)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unet\pooled_metrics.json
+EXIT 0 for pit/unet
+##### pad / unet
+== pad / unet : 5-fold on the unified split ==
+   650 features across 129 blocks, 1 m grid
+     fold 0:   130 features
+     fold 1:   134 features
+     fold 2:   127 features
+     fold 3:   129 features
+     fold 4:   130 features
+   unet: 7.8 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 386 / 78 blocks   inner-val 134 / 26   HELD-OUT 130
+ep   1/40  tr_loss=0.0260 va_loss=0.0298  va_iou bg=0.794  pad=0.262  score=0.262  25.4s
+    -> new best (score=0.262), saved
+ep   2/40  tr_loss=0.0189 va_loss=0.0202  va_iou bg=0.899  pad=0.357  score=0.357  20.7s
+    -> new best (score=0.357), saved
+ep   3/40  tr_loss=0.0182 va_loss=0.0199  va_iou bg=0.901  pad=0.399  score=0.399  20.6s
+    -> new best (score=0.399), saved
+ep   4/40  tr_loss=0.0165 va_loss=0.0184  va_iou bg=0.924  pad=0.412  score=0.412  20.7s
+    -> new best (score=0.412), saved
+ep   5/40  tr_loss=0.0152 va_loss=0.0185  va_iou bg=0.926  pad=0.416  score=0.416  20.6s
+    -> new best (score=0.416), saved
+ep   6/40  tr_loss=0.0151 va_loss=0.0179  va_iou bg=0.919  pad=0.448  score=0.448  19.5s
+    -> new best (score=0.448), saved
+ep   7/40  tr_loss=0.0150 va_loss=0.0174  va_iou bg=0.921  pad=0.448  score=0.448  19.1s
+    -> new best (score=0.448), saved
+ep   8/40  tr_loss=0.0141 va_loss=0.0185  va_iou bg=0.924  pad=0.450  score=0.450  19.5s
+    -> new best (score=0.450), saved
+ep   9/40  tr_loss=0.0135 va_loss=0.0176  va_iou bg=0.937  pad=0.451  score=0.451  19.1s
+    -> new best (score=0.451), saved
+ep  10/40  tr_loss=0.0139 va_loss=0.0172  va_iou bg=0.922  pad=0.448  score=0.448  18.9s
+ep  11/40  tr_loss=0.0133 va_loss=0.0160  va_iou bg=0.929  pad=0.476  score=0.476  18.9s
+    -> new best (score=0.476), saved
+ep  12/40  tr_loss=0.0129 va_loss=0.0184  va_iou bg=0.940  pad=0.450  score=0.450  19.8s
+ep  13/40  tr_loss=0.0131 va_loss=0.0168  va_iou bg=0.926  pad=0.467  score=0.467  19.3s
+ep  14/40  tr_loss=0.0125 va_loss=0.0175  va_iou bg=0.937  pad=0.474  score=0.474  19.1s
+ep  15/40  tr_loss=0.0121 va_loss=0.0170  va_iou bg=0.936  pad=0.490  score=0.490  19.8s
+    -> new best (score=0.490), saved
+ep  16/40  tr_loss=0.0121 va_loss=0.0184  va_iou bg=0.904  pad=0.439  score=0.439  20.2s
+ep  17/40  tr_loss=0.0125 va_loss=0.0158  va_iou bg=0.933  pad=0.492  score=0.492  20.6s
+    -> new best (score=0.492), saved
+ep  18/40  tr_loss=0.0117 va_loss=0.0187  va_iou bg=0.936  pad=0.477  score=0.477  20.6s
+ep  19/40  tr_loss=0.0112 va_loss=0.0186  va_iou bg=0.933  pad=0.481  score=0.481  20.9s
+ep  20/40  tr_loss=0.0121 va_loss=0.0206  va_iou bg=0.942  pad=0.491  score=0.491  20.9s
+ep  21/40  tr_loss=0.0115 va_loss=0.0167  va_iou bg=0.918  pad=0.459  score=0.459  22.3s
+ep  22/40  tr_loss=0.0116 va_loss=0.0163  va_iou bg=0.939  pad=0.501  score=0.501  21.3s
+    -> new best (score=0.501), saved
+ep  23/40  tr_loss=0.0113 va_loss=0.0169  va_iou bg=0.936  pad=0.479  score=0.479  20.4s
+ep  24/40  tr_loss=0.0108 va_loss=0.0157  va_iou bg=0.945  pad=0.515  score=0.515  20.4s
+    -> new best (score=0.515), saved
+ep  25/40  tr_loss=0.0111 va_loss=0.0166  va_iou bg=0.940  pad=0.506  score=0.506  19.4s
+ep  26/40  tr_loss=0.0107 va_loss=0.0161  va_iou bg=0.939  pad=0.513  score=0.513  20.5s
+ep  27/40  tr_loss=0.0103 va_loss=0.0157  va_iou bg=0.939  pad=0.519  score=0.519  21.7s
+    -> new best (score=0.519), saved
+ep  28/40  tr_loss=0.0101 va_loss=0.0163  va_iou bg=0.938  pad=0.522  score=0.522  20.2s
+    -> new best (score=0.522), saved
+ep  29/40  tr_loss=0.0102 va_loss=0.0163  va_iou bg=0.940  pad=0.530  score=0.530  19.0s
+    -> new best (score=0.530), saved
+ep  30/40  tr_loss=0.0096 va_loss=0.0165  va_iou bg=0.940  pad=0.523  score=0.523  19.3s
+ep  31/40  tr_loss=0.0100 va_loss=0.0141  va_iou bg=0.939  pad=0.558  score=0.558  19.7s
+    -> new best (score=0.558), saved
+ep  32/40  tr_loss=0.0098 va_loss=0.0169  va_iou bg=0.943  pad=0.527  score=0.527  19.1s
+ep  33/40  tr_loss=0.0097 va_loss=0.0157  va_iou bg=0.941  pad=0.522  score=0.522  19.9s
+ep  34/40  tr_loss=0.0096 va_loss=0.0166  va_iou bg=0.940  pad=0.498  score=0.498  19.5s
+ep  35/40  tr_loss=0.0098 va_loss=0.0142  va_iou bg=0.942  pad=0.542  score=0.542  20.5s
+ep  36/40  tr_loss=0.0093 va_loss=0.0153  va_iou bg=0.940  pad=0.519  score=0.519  19.9s
+ep  37/40  tr_loss=0.0095 va_loss=0.0166  va_iou bg=0.942  pad=0.522  score=0.522  20.3s
+ep  38/40  tr_loss=0.0092 va_loss=0.0173  va_iou bg=0.942  pad=0.538  score=0.538  20.1s
+ep  39/40  tr_loss=0.0091 va_loss=0.0156  va_iou bg=0.943  pad=0.530  score=0.530  19.8s
+ep  40/40  tr_loss=0.0091 va_loss=0.0151  va_iou bg=0.943  pad=0.539  score=0.539  20.3s
+
+Best score: 0.558. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\unet\fold0
+  fold 0 done in 13.5 min, best val pad IoU 0.558
+
+============================================================
+FOLD 1
+============================================================
+  train 389 / 76 blocks   inner-val 127 / 27   HELD-OUT 134
+ep   1/40  tr_loss=0.0224 va_loss=0.0181  va_iou bg=0.894  pad=0.346  score=0.346  25.1s
+    -> new best (score=0.346), saved
+ep   2/40  tr_loss=0.0164 va_loss=0.0174  va_iou bg=0.891  pad=0.358  score=0.358  19.9s
+    -> new best (score=0.358), saved
+ep   3/40  tr_loss=0.0149 va_loss=0.0163  va_iou bg=0.942  pad=0.463  score=0.463  19.8s
+    -> new best (score=0.463), saved
+ep   4/40  tr_loss=0.0142 va_loss=0.0142  va_iou bg=0.938  pad=0.448  score=0.448  19.2s
+ep   5/40  tr_loss=0.0140 va_loss=0.0165  va_iou bg=0.906  pad=0.376  score=0.376  19.4s
+ep   6/40  tr_loss=0.0142 va_loss=0.0139  va_iou bg=0.925  pad=0.441  score=0.441  19.9s
+ep   7/40  tr_loss=0.0137 va_loss=0.0137  va_iou bg=0.941  pad=0.476  score=0.476  20.0s
+    -> new best (score=0.476), saved
+ep   8/40  tr_loss=0.0126 va_loss=0.0137  va_iou bg=0.932  pad=0.434  score=0.434  19.9s
+ep   9/40  tr_loss=0.0128 va_loss=0.0143  va_iou bg=0.934  pad=0.463  score=0.463  19.9s
+ep  10/40  tr_loss=0.0128 va_loss=0.0136  va_iou bg=0.921  pad=0.438  score=0.438  20.0s
+ep  11/40  tr_loss=0.0130 va_loss=0.0132  va_iou bg=0.936  pad=0.468  score=0.468  20.6s
+ep  12/40  tr_loss=0.0122 va_loss=0.0127  va_iou bg=0.937  pad=0.469  score=0.469  20.7s
+ep  13/40  tr_loss=0.0122 va_loss=0.0137  va_iou bg=0.945  pad=0.503  score=0.503  20.6s
+    -> new best (score=0.503), saved
+ep  14/40  tr_loss=0.0122 va_loss=0.0131  va_iou bg=0.939  pad=0.484  score=0.484  20.1s
+ep  15/40  tr_loss=0.0117 va_loss=0.0126  va_iou bg=0.934  pad=0.477  score=0.477  19.8s
+ep  16/40  tr_loss=0.0116 va_loss=0.0135  va_iou bg=0.924  pad=0.451  score=0.451  20.1s
+ep  17/40  tr_loss=0.0118 va_loss=0.0125  va_iou bg=0.932  pad=0.493  score=0.493  20.2s
+ep  18/40  tr_loss=0.0111 va_loss=0.0122  va_iou bg=0.951  pad=0.526  score=0.526  20.2s
+    -> new best (score=0.526), saved
+ep  19/40  tr_loss=0.0107 va_loss=0.0130  va_iou bg=0.941  pad=0.486  score=0.486  20.3s
+ep  20/40  tr_loss=0.0110 va_loss=0.0134  va_iou bg=0.929  pad=0.452  score=0.452  20.0s
+ep  21/40  tr_loss=0.0110 va_loss=0.0122  va_iou bg=0.949  pad=0.517  score=0.517  19.5s
+ep  22/40  tr_loss=0.0106 va_loss=0.0117  va_iou bg=0.939  pad=0.503  score=0.503  18.8s
+ep  23/40  tr_loss=0.0100 va_loss=0.0121  va_iou bg=0.937  pad=0.508  score=0.508  18.9s
+ep  24/40  tr_loss=0.0109 va_loss=0.0120  va_iou bg=0.939  pad=0.523  score=0.523  18.7s
+ep  25/40  tr_loss=0.0101 va_loss=0.0115  va_iou bg=0.944  pad=0.532  score=0.532  19.5s
+    -> new best (score=0.532), saved
+ep  26/40  tr_loss=0.0098 va_loss=0.0115  va_iou bg=0.944  pad=0.496  score=0.496  18.9s
+ep  27/40  tr_loss=0.0096 va_loss=0.0136  va_iou bg=0.927  pad=0.463  score=0.463  18.9s
+ep  28/40  tr_loss=0.0098 va_loss=0.0122  va_iou bg=0.935  pad=0.492  score=0.492  18.9s
+ep  29/40  tr_loss=0.0095 va_loss=0.0136  va_iou bg=0.939  pad=0.499  score=0.499  18.7s
+ep  30/40  tr_loss=0.0094 va_loss=0.0122  va_iou bg=0.946  pad=0.529  score=0.529  19.1s
+ep  31/40  tr_loss=0.0093 va_loss=0.0120  va_iou bg=0.945  pad=0.524  score=0.524  19.0s
+ep  32/40  tr_loss=0.0093 va_loss=0.0120  va_iou bg=0.948  pad=0.543  score=0.543  18.9s
+    -> new best (score=0.543), saved
+ep  33/40  tr_loss=0.0092 va_loss=0.0119  va_iou bg=0.937  pad=0.493  score=0.493  18.7s
+ep  34/40  tr_loss=0.0086 va_loss=0.0119  va_iou bg=0.946  pad=0.517  score=0.517  18.7s
+ep  35/40  tr_loss=0.0090 va_loss=0.0129  va_iou bg=0.940  pad=0.499  score=0.499  18.4s
+ep  36/40  tr_loss=0.0087 va_loss=0.0114  va_iou bg=0.950  pad=0.527  score=0.527  18.6s
+ep  37/40  tr_loss=0.0088 va_loss=0.0121  va_iou bg=0.944  pad=0.522  score=0.522  18.5s
+ep  38/40  tr_loss=0.0087 va_loss=0.0116  va_iou bg=0.946  pad=0.519  score=0.519  18.6s
+ep  39/40  tr_loss=0.0086 va_loss=0.0120  va_iou bg=0.945  pad=0.533  score=0.533  18.7s
+ep  40/40  tr_loss=0.0085 va_loss=0.0118  va_iou bg=0.944  pad=0.519  score=0.519  18.5s
+
+Best score: 0.543. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\unet\fold1
+  fold 1 done in 13.0 min, best val pad IoU 0.543
+
+============================================================
+FOLD 2
+============================================================
+  train 394 / 78 blocks   inner-val 129 / 24   HELD-OUT 127
+ep   1/40  tr_loss=0.0277 va_loss=0.0246  va_iou bg=0.819  pad=0.287  score=0.287  25.2s
+    -> new best (score=0.287), saved
+ep   2/40  tr_loss=0.0190 va_loss=0.0175  va_iou bg=0.912  pad=0.401  score=0.401  20.2s
+    -> new best (score=0.401), saved
+ep   3/40  tr_loss=0.0174 va_loss=0.0161  va_iou bg=0.931  pad=0.456  score=0.456  19.0s
+    -> new best (score=0.456), saved
+ep   4/40  tr_loss=0.0167 va_loss=0.0150  va_iou bg=0.930  pad=0.468  score=0.468  19.4s
+    -> new best (score=0.468), saved
+ep   5/40  tr_loss=0.0154 va_loss=0.0152  va_iou bg=0.920  pad=0.448  score=0.448  19.7s
+ep   6/40  tr_loss=0.0152 va_loss=0.0142  va_iou bg=0.939  pad=0.505  score=0.505  18.6s
+    -> new best (score=0.505), saved
+ep   7/40  tr_loss=0.0149 va_loss=0.0152  va_iou bg=0.924  pad=0.469  score=0.469  18.8s
+ep   8/40  tr_loss=0.0144 va_loss=0.0145  va_iou bg=0.937  pad=0.483  score=0.483  19.4s
+ep   9/40  tr_loss=0.0143 va_loss=0.0147  va_iou bg=0.939  pad=0.490  score=0.490  20.1s
+ep  10/40  tr_loss=0.0139 va_loss=0.0140  va_iou bg=0.947  pad=0.501  score=0.501  19.8s
+ep  11/40  tr_loss=0.0134 va_loss=0.0139  va_iou bg=0.947  pad=0.527  score=0.527  19.8s
+    -> new best (score=0.527), saved
+ep  12/40  tr_loss=0.0135 va_loss=0.0130  va_iou bg=0.942  pad=0.523  score=0.523  19.8s
+ep  13/40  tr_loss=0.0132 va_loss=0.0124  va_iou bg=0.946  pad=0.518  score=0.518  19.4s
+ep  14/40  tr_loss=0.0133 va_loss=0.0126  va_iou bg=0.932  pad=0.504  score=0.504  19.5s
+ep  15/40  tr_loss=0.0128 va_loss=0.0136  va_iou bg=0.940  pad=0.519  score=0.519  18.9s
+ep  16/40  tr_loss=0.0127 va_loss=0.0135  va_iou bg=0.933  pad=0.512  score=0.512  19.9s
+ep  17/40  tr_loss=0.0123 va_loss=0.0124  va_iou bg=0.950  pad=0.555  score=0.555  19.5s
+    -> new best (score=0.555), saved
+ep  18/40  tr_loss=0.0120 va_loss=0.0133  va_iou bg=0.945  pad=0.511  score=0.511  19.3s
+ep  19/40  tr_loss=0.0119 va_loss=0.0135  va_iou bg=0.945  pad=0.510  score=0.510  19.9s
+ep  20/40  tr_loss=0.0120 va_loss=0.0119  va_iou bg=0.941  pad=0.531  score=0.531  18.9s
+ep  21/40  tr_loss=0.0117 va_loss=0.0125  va_iou bg=0.948  pad=0.544  score=0.544  19.3s
+ep  22/40  tr_loss=0.0118 va_loss=0.0141  va_iou bg=0.938  pad=0.482  score=0.482  19.7s
+ep  23/40  tr_loss=0.0112 va_loss=0.0144  va_iou bg=0.949  pad=0.525  score=0.525  19.8s
+ep  24/40  tr_loss=0.0111 va_loss=0.0173  va_iou bg=0.942  pad=0.497  score=0.497  20.1s
+ep  25/40  tr_loss=0.0109 va_loss=0.0142  va_iou bg=0.937  pad=0.512  score=0.512  20.7s
+ep  26/40  tr_loss=0.0107 va_loss=0.0132  va_iou bg=0.944  pad=0.530  score=0.530  20.6s
+ep  27/40  tr_loss=0.0107 va_loss=0.0138  va_iou bg=0.943  pad=0.519  score=0.519  20.3s
+ep  28/40  tr_loss=0.0109 va_loss=0.0117  va_iou bg=0.949  pad=0.561  score=0.561  19.4s
+    -> new best (score=0.561), saved
+ep  29/40  tr_loss=0.0102 va_loss=0.0143  va_iou bg=0.937  pad=0.520  score=0.520  19.0s
+ep  30/40  tr_loss=0.0100 va_loss=0.0133  va_iou bg=0.950  pad=0.563  score=0.563  19.2s
+    -> new best (score=0.563), saved
+ep  31/40  tr_loss=0.0101 va_loss=0.0134  va_iou bg=0.947  pad=0.555  score=0.555  19.7s
+ep  32/40  tr_loss=0.0101 va_loss=0.0128  va_iou bg=0.944  pad=0.538  score=0.538  19.0s
+ep  33/40  tr_loss=0.0097 va_loss=0.0134  va_iou bg=0.942  pad=0.531  score=0.531  19.2s
+ep  34/40  tr_loss=0.0098 va_loss=0.0134  va_iou bg=0.947  pad=0.561  score=0.561  19.6s
+ep  35/40  tr_loss=0.0096 va_loss=0.0141  va_iou bg=0.948  pad=0.547  score=0.547  19.3s
+ep  36/40  tr_loss=0.0095 va_loss=0.0136  va_iou bg=0.946  pad=0.550  score=0.550  19.6s
+ep  37/40  tr_loss=0.0094 va_loss=0.0141  va_iou bg=0.947  pad=0.532  score=0.532  19.2s
+ep  38/40  tr_loss=0.0093 va_loss=0.0134  va_iou bg=0.945  pad=0.553  score=0.553  19.0s
+ep  39/40  tr_loss=0.0095 va_loss=0.0133  va_iou bg=0.944  pad=0.531  score=0.531  20.0s
+ep  40/40  tr_loss=0.0093 va_loss=0.0141  va_iou bg=0.948  pad=0.547  score=0.547  20.1s
+
+Best score: 0.563. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\unet\fold2
+  fold 2 done in 13.1 min, best val pad IoU 0.563
+
+============================================================
+FOLD 3
+============================================================
+  train 391 / 78 blocks   inner-val 130 / 27   HELD-OUT 129
+ep   1/40  tr_loss=0.0240 va_loss=0.0180  va_iou bg=0.912  pad=0.348  score=0.348  24.2s
+    -> new best (score=0.348), saved
+ep   2/40  tr_loss=0.0178 va_loss=0.0163  va_iou bg=0.943  pad=0.399  score=0.399  18.9s
+    -> new best (score=0.399), saved
+ep   3/40  tr_loss=0.0167 va_loss=0.0145  va_iou bg=0.933  pad=0.424  score=0.424  18.7s
+    -> new best (score=0.424), saved
+ep   4/40  tr_loss=0.0162 va_loss=0.0172  va_iou bg=0.911  pad=0.388  score=0.388  19.0s
+ep   5/40  tr_loss=0.0157 va_loss=0.0134  va_iou bg=0.937  pad=0.456  score=0.456  19.2s
+    -> new best (score=0.456), saved
+ep   6/40  tr_loss=0.0150 va_loss=0.0145  va_iou bg=0.921  pad=0.419  score=0.419  18.7s
+ep   7/40  tr_loss=0.0146 va_loss=0.0141  va_iou bg=0.939  pad=0.432  score=0.432  19.6s
+ep   8/40  tr_loss=0.0139 va_loss=0.0140  va_iou bg=0.921  pad=0.430  score=0.430  19.1s
+ep   9/40  tr_loss=0.0135 va_loss=0.0120  va_iou bg=0.940  pad=0.466  score=0.466  19.4s
+    -> new best (score=0.466), saved
+ep  10/40  tr_loss=0.0141 va_loss=0.0131  va_iou bg=0.941  pad=0.451  score=0.451  19.9s
+ep  11/40  tr_loss=0.0132 va_loss=0.0145  va_iou bg=0.948  pad=0.467  score=0.467  19.2s
+    -> new best (score=0.467), saved
+ep  12/40  tr_loss=0.0138 va_loss=0.0137  va_iou bg=0.951  pad=0.459  score=0.459  19.2s
+ep  13/40  tr_loss=0.0126 va_loss=0.0121  va_iou bg=0.942  pad=0.492  score=0.492  18.8s
+    -> new best (score=0.492), saved
+ep  14/40  tr_loss=0.0131 va_loss=0.0120  va_iou bg=0.947  pad=0.503  score=0.503  18.8s
+    -> new best (score=0.503), saved
+ep  15/40  tr_loss=0.0126 va_loss=0.0127  va_iou bg=0.936  pad=0.454  score=0.454  18.7s
+ep  16/40  tr_loss=0.0124 va_loss=0.0148  va_iou bg=0.948  pad=0.435  score=0.435  19.3s
+ep  17/40  tr_loss=0.0123 va_loss=0.0135  va_iou bg=0.925  pad=0.448  score=0.448  20.0s
+ep  18/40  tr_loss=0.0115 va_loss=0.0137  va_iou bg=0.939  pad=0.453  score=0.453  20.4s
+ep  19/40  tr_loss=0.0114 va_loss=0.0119  va_iou bg=0.941  pad=0.475  score=0.475  19.4s
+ep  20/40  tr_loss=0.0114 va_loss=0.0124  va_iou bg=0.945  pad=0.501  score=0.501  18.9s
+ep  21/40  tr_loss=0.0114 va_loss=0.0137  va_iou bg=0.938  pad=0.475  score=0.475  18.8s
+ep  22/40  tr_loss=0.0113 va_loss=0.0127  va_iou bg=0.941  pad=0.475  score=0.475  18.8s
+ep  23/40  tr_loss=0.0111 va_loss=0.0124  va_iou bg=0.942  pad=0.490  score=0.490  19.0s
+ep  24/40  tr_loss=0.0108 va_loss=0.0130  va_iou bg=0.939  pad=0.475  score=0.475  19.0s
+ep  25/40  tr_loss=0.0106 va_loss=0.0133  va_iou bg=0.942  pad=0.497  score=0.497  19.1s
+ep  26/40  tr_loss=0.0103 va_loss=0.0115  va_iou bg=0.944  pad=0.508  score=0.508  18.6s
+    -> new best (score=0.508), saved
+ep  27/40  tr_loss=0.0106 va_loss=0.0144  va_iou bg=0.949  pad=0.472  score=0.472  18.7s
+ep  28/40  tr_loss=0.0102 va_loss=0.0116  va_iou bg=0.947  pad=0.501  score=0.501  18.7s
+ep  29/40  tr_loss=0.0098 va_loss=0.0113  va_iou bg=0.950  pad=0.524  score=0.524  18.8s
+    -> new best (score=0.524), saved
+ep  30/40  tr_loss=0.0098 va_loss=0.0124  va_iou bg=0.949  pad=0.493  score=0.493  18.9s
+ep  31/40  tr_loss=0.0097 va_loss=0.0140  va_iou bg=0.952  pad=0.510  score=0.510  18.6s
+ep  32/40  tr_loss=0.0097 va_loss=0.0129  va_iou bg=0.947  pad=0.513  score=0.513  18.6s
+ep  33/40  tr_loss=0.0096 va_loss=0.0124  va_iou bg=0.947  pad=0.486  score=0.486  18.9s
+ep  34/40  tr_loss=0.0090 va_loss=0.0122  va_iou bg=0.947  pad=0.498  score=0.498  18.9s
+ep  35/40  tr_loss=0.0092 va_loss=0.0114  va_iou bg=0.946  pad=0.507  score=0.507  19.0s
+ep  36/40  tr_loss=0.0092 va_loss=0.0125  va_iou bg=0.947  pad=0.504  score=0.504  18.6s
+ep  37/40  tr_loss=0.0091 va_loss=0.0114  va_iou bg=0.949  pad=0.505  score=0.505  18.5s
+ep  38/40  tr_loss=0.0090 va_loss=0.0134  va_iou bg=0.948  pad=0.516  score=0.516  18.7s
+ep  39/40  tr_loss=0.0091 va_loss=0.0125  va_iou bg=0.951  pad=0.519  score=0.519  19.5s
+ep  40/40  tr_loss=0.0089 va_loss=0.0130  va_iou bg=0.950  pad=0.515  score=0.515  18.7s
+
+Best score: 0.524. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\unet\fold3
+  fold 3 done in 12.8 min, best val pad IoU 0.524
+
+============================================================
+FOLD 4
+============================================================
+  train 390 / 77 blocks   inner-val 130 / 25   HELD-OUT 130
+ep   1/40  tr_loss=0.0332 va_loss=0.0283  va_iou bg=0.795  pad=0.266  score=0.266  23.7s
+    -> new best (score=0.266), saved
+ep   2/40  tr_loss=0.0193 va_loss=0.0222  va_iou bg=0.923  pad=0.378  score=0.378  19.3s
+    -> new best (score=0.378), saved
+ep   3/40  tr_loss=0.0178 va_loss=0.0192  va_iou bg=0.941  pad=0.434  score=0.434  19.0s
+    -> new best (score=0.434), saved
+ep   4/40  tr_loss=0.0171 va_loss=0.0171  va_iou bg=0.922  pad=0.450  score=0.450  18.8s
+    -> new best (score=0.450), saved
+ep   5/40  tr_loss=0.0159 va_loss=0.0170  va_iou bg=0.928  pad=0.467  score=0.467  18.8s
+    -> new best (score=0.467), saved
+ep   6/40  tr_loss=0.0163 va_loss=0.0163  va_iou bg=0.940  pad=0.484  score=0.484  18.7s
+    -> new best (score=0.484), saved
+ep   7/40  tr_loss=0.0156 va_loss=0.0168  va_iou bg=0.934  pad=0.489  score=0.489  18.6s
+    -> new best (score=0.489), saved
+ep   8/40  tr_loss=0.0155 va_loss=0.0157  va_iou bg=0.924  pad=0.480  score=0.480  18.6s
+ep   9/40  tr_loss=0.0151 va_loss=0.0160  va_iou bg=0.917  pad=0.463  score=0.463  18.6s
+ep  10/40  tr_loss=0.0143 va_loss=0.0147  va_iou bg=0.945  pad=0.518  score=0.518  18.5s
+    -> new best (score=0.518), saved
+ep  11/40  tr_loss=0.0146 va_loss=0.0142  va_iou bg=0.935  pad=0.506  score=0.506  18.5s
+ep  12/40  tr_loss=0.0139 va_loss=0.0163  va_iou bg=0.937  pad=0.509  score=0.509  18.4s
+ep  13/40  tr_loss=0.0136 va_loss=0.0164  va_iou bg=0.947  pad=0.539  score=0.539  19.0s
+    -> new best (score=0.539), saved
+ep  14/40  tr_loss=0.0138 va_loss=0.0156  va_iou bg=0.948  pad=0.539  score=0.539  20.1s
+ep  15/40  tr_loss=0.0130 va_loss=0.0140  va_iou bg=0.944  pad=0.517  score=0.517  19.2s
+ep  16/40  tr_loss=0.0129 va_loss=0.0152  va_iou bg=0.945  pad=0.530  score=0.530  18.4s
+ep  17/40  tr_loss=0.0128 va_loss=0.0139  va_iou bg=0.944  pad=0.544  score=0.544  18.9s
+    -> new best (score=0.544), saved
+ep  18/40  tr_loss=0.0123 va_loss=0.0147  va_iou bg=0.940  pad=0.527  score=0.527  19.7s
+ep  19/40  tr_loss=0.0126 va_loss=0.0147  va_iou bg=0.932  pad=0.522  score=0.522  19.9s
+ep  20/40  tr_loss=0.0119 va_loss=0.0150  va_iou bg=0.937  pad=0.515  score=0.515  19.0s
+ep  21/40  tr_loss=0.0120 va_loss=0.0162  va_iou bg=0.949  pad=0.528  score=0.528  18.7s
+ep  22/40  tr_loss=0.0115 va_loss=0.0141  va_iou bg=0.943  pad=0.541  score=0.541  18.7s
+ep  23/40  tr_loss=0.0116 va_loss=0.0127  va_iou bg=0.944  pad=0.548  score=0.548  18.4s
+    -> new best (score=0.548), saved
+ep  24/40  tr_loss=0.0113 va_loss=0.0134  va_iou bg=0.947  pad=0.564  score=0.564  18.7s
+    -> new best (score=0.564), saved
+ep  25/40  tr_loss=0.0113 va_loss=0.0126  va_iou bg=0.950  pad=0.572  score=0.572  18.4s
+    -> new best (score=0.572), saved
+ep  26/40  tr_loss=0.0112 va_loss=0.0124  va_iou bg=0.949  pad=0.571  score=0.571  18.6s
+ep  27/40  tr_loss=0.0107 va_loss=0.0135  va_iou bg=0.950  pad=0.575  score=0.575  18.7s
+    -> new best (score=0.575), saved
+ep  28/40  tr_loss=0.0106 va_loss=0.0144  va_iou bg=0.949  pad=0.565  score=0.565  18.6s
+ep  29/40  tr_loss=0.0105 va_loss=0.0128  va_iou bg=0.940  pad=0.555  score=0.555  20.0s
+ep  30/40  tr_loss=0.0103 va_loss=0.0128  va_iou bg=0.946  pad=0.580  score=0.580  19.5s
+    -> new best (score=0.580), saved
+ep  31/40  tr_loss=0.0104 va_loss=0.0138  va_iou bg=0.947  pad=0.569  score=0.569  19.1s
+ep  32/40  tr_loss=0.0101 va_loss=0.0149  va_iou bg=0.950  pad=0.567  score=0.567  18.5s
+ep  33/40  tr_loss=0.0098 va_loss=0.0149  va_iou bg=0.946  pad=0.567  score=0.567  19.7s
+ep  34/40  tr_loss=0.0098 va_loss=0.0141  va_iou bg=0.947  pad=0.566  score=0.566  19.3s
+ep  35/40  tr_loss=0.0096 va_loss=0.0123  va_iou bg=0.951  pad=0.569  score=0.569  19.1s
+ep  36/40  tr_loss=0.0096 va_loss=0.0141  va_iou bg=0.947  pad=0.574  score=0.574  19.3s
+ep  37/40  tr_loss=0.0101 va_loss=0.0140  va_iou bg=0.947  pad=0.562  score=0.562  18.6s
+ep  38/40  tr_loss=0.0095 va_loss=0.0140  va_iou bg=0.949  pad=0.567  score=0.567  18.7s
+ep  39/40  tr_loss=0.0094 va_loss=0.0137  va_iou bg=0.950  pad=0.584  score=0.584  18.5s
+    -> new best (score=0.584), saved
+ep  40/40  tr_loss=0.0096 va_loss=0.0130  va_iou bg=0.951  pad=0.581  score=0.581  18.6s
+
+Best score: 0.584. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\unet\fold4
+  fold 4 done in 12.7 min, best val pad IoU 0.584
+
+POOLED  val pad IoU 0.555 (sd 0.020)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\unet\pooled_metrics.json
+EXIT 0 for pad/unet
+##### pit / r34_scratch
+== pit / r34_scratch : 5-fold on the unified split ==
+   503 features across 115 blocks, 1 m grid
+     fold 0:   103 features
+     fold 1:   101 features
+     fold 2:    98 features
+     fold 3:   103 features
+     fold 4:    98 features
+   r34_scratch: 24.4 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 299 / 67 blocks   inner-val 101 / 21   HELD-OUT 103
+ep   1/40  tr_loss=0.0109 va_loss=0.0025  va_iou bg=0.993  floor=0.252  wall=0.008  score=0.252  18.4s
+    -> new best (score=0.252), saved
+ep   2/40  tr_loss=0.0019 va_loss=0.0014  va_iou bg=0.993  floor=0.290  wall=0.386  score=0.290  13.9s
+    -> new best (score=0.290), saved
+ep   3/40  tr_loss=0.0013 va_loss=0.0012  va_iou bg=0.995  floor=0.420  wall=0.418  score=0.420  12.9s
+    -> new best (score=0.420), saved
+ep   4/40  tr_loss=0.0011 va_loss=0.0010  va_iou bg=0.995  floor=0.435  wall=0.494  score=0.435  13.7s
+    -> new best (score=0.435), saved
+ep   5/40  tr_loss=0.0010 va_loss=0.0012  va_iou bg=0.992  floor=0.299  wall=0.409  score=0.299  13.4s
+ep   6/40  tr_loss=0.0010 va_loss=0.0009  va_iou bg=0.994  floor=0.328  wall=0.459  score=0.328  13.3s
+ep   7/40  tr_loss=0.0009 va_loss=0.0007  va_iou bg=0.996  floor=0.449  wall=0.514  score=0.449  12.9s
+    -> new best (score=0.449), saved
+ep   8/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.518  wall=0.560  score=0.518  13.5s
+    -> new best (score=0.518), saved
+ep   9/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.996  floor=0.468  wall=0.551  score=0.468  12.8s
+ep  10/40  tr_loss=0.0009 va_loss=0.0008  va_iou bg=0.996  floor=0.424  wall=0.509  score=0.424  13.1s
+ep  11/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.994  floor=0.402  wall=0.480  score=0.402  12.7s
+ep  12/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.995  floor=0.411  wall=0.516  score=0.411  12.6s
+ep  13/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.995  floor=0.434  wall=0.523  score=0.434  12.5s
+ep  14/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.504  wall=0.553  score=0.504  12.8s
+ep  15/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.464  wall=0.550  score=0.464  12.7s
+ep  16/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.454  wall=0.545  score=0.454  12.9s
+ep  17/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.995  floor=0.429  wall=0.522  score=0.429  13.4s
+ep  18/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.491  wall=0.586  score=0.491  13.4s
+ep  19/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.522  wall=0.590  score=0.522  13.6s
+    -> new best (score=0.522), saved
+ep  20/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.462  wall=0.544  score=0.462  12.9s
+ep  21/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.483  wall=0.571  score=0.483  13.0s
+ep  22/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.489  wall=0.586  score=0.489  13.0s
+ep  23/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.997  floor=0.478  wall=0.572  score=0.478  12.9s
+ep  24/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.505  wall=0.580  score=0.505  13.1s
+ep  25/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.476  wall=0.576  score=0.476  13.2s
+ep  26/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.474  wall=0.578  score=0.474  13.3s
+ep  27/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.543  wall=0.586  score=0.543  13.3s
+    -> new best (score=0.543), saved
+ep  28/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.488  wall=0.582  score=0.488  13.3s
+ep  29/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.532  wall=0.587  score=0.532  13.1s
+ep  30/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.997  floor=0.539  wall=0.597  score=0.539  13.5s
+ep  31/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.517  wall=0.592  score=0.517  13.5s
+ep  32/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.505  wall=0.576  score=0.505  13.4s
+ep  33/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.511  wall=0.570  score=0.511  13.4s
+ep  34/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.533  wall=0.601  score=0.533  13.2s
+ep  35/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.538  wall=0.607  score=0.538  13.7s
+ep  36/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.560  wall=0.607  score=0.560  13.4s
+    -> new best (score=0.560), saved
+ep  37/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.545  wall=0.603  score=0.545  13.3s
+ep  38/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.544  wall=0.604  score=0.544  13.8s
+ep  39/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.525  wall=0.588  score=0.525  13.3s
+ep  40/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.530  wall=0.596  score=0.530  12.8s
+
+Best score: 0.560. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_scratch\fold0
+  fold 0 done in 8.9 min, best val floor IoU 0.560
+
+============================================================
+FOLD 1
+============================================================
+  train 304 / 71 blocks   inner-val 98 / 23   HELD-OUT 101
+ep   1/40  tr_loss=0.0055 va_loss=0.0023  va_iou bg=0.993  floor=0.231  wall=0.330  score=0.231  18.2s
+    -> new best (score=0.231), saved
+ep   2/40  tr_loss=0.0015 va_loss=0.0013  va_iou bg=0.995  floor=0.417  wall=0.444  score=0.417  13.2s
+    -> new best (score=0.417), saved
+ep   3/40  tr_loss=0.0011 va_loss=0.0011  va_iou bg=0.995  floor=0.405  wall=0.457  score=0.405  13.1s
+ep   4/40  tr_loss=0.0010 va_loss=0.0012  va_iou bg=0.993  floor=0.322  wall=0.443  score=0.322  12.9s
+ep   5/40  tr_loss=0.0009 va_loss=0.0011  va_iou bg=0.995  floor=0.421  wall=0.490  score=0.421  12.9s
+    -> new best (score=0.421), saved
+ep   6/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.995  floor=0.414  wall=0.519  score=0.414  13.1s
+ep   7/40  tr_loss=0.0008 va_loss=0.0011  va_iou bg=0.996  floor=0.457  wall=0.503  score=0.457  12.9s
+    -> new best (score=0.457), saved
+ep   8/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.995  floor=0.434  wall=0.522  score=0.434  13.5s
+ep   9/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.994  floor=0.346  wall=0.454  score=0.346  13.5s
+ep  10/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.995  floor=0.452  wall=0.522  score=0.452  13.5s
+ep  11/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.996  floor=0.480  wall=0.522  score=0.480  13.2s
+    -> new best (score=0.480), saved
+ep  12/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.995  floor=0.468  wall=0.532  score=0.468  13.0s
+ep  13/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.447  wall=0.519  score=0.447  13.0s
+ep  14/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.996  floor=0.486  wall=0.545  score=0.486  13.1s
+    -> new best (score=0.486), saved
+ep  15/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.996  floor=0.464  wall=0.545  score=0.464  13.0s
+ep  16/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.473  wall=0.526  score=0.473  13.2s
+ep  17/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.995  floor=0.413  wall=0.513  score=0.413  13.4s
+ep  18/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.995  floor=0.438  wall=0.533  score=0.438  13.1s
+ep  19/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.472  wall=0.540  score=0.472  13.2s
+ep  20/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.446  wall=0.545  score=0.446  12.7s
+ep  21/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.995  floor=0.384  wall=0.531  score=0.384  13.2s
+ep  22/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.474  wall=0.556  score=0.474  13.5s
+ep  23/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.458  wall=0.545  score=0.458  13.7s
+ep  24/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.468  wall=0.556  score=0.468  13.8s
+ep  25/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.467  wall=0.550  score=0.467  13.4s
+ep  26/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.488  wall=0.565  score=0.488  14.1s
+    -> new best (score=0.488), saved
+ep  27/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.995  floor=0.440  wall=0.525  score=0.440  12.9s
+ep  28/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.428  wall=0.533  score=0.428  12.8s
+ep  29/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.996  floor=0.483  wall=0.558  score=0.483  13.3s
+ep  30/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.512  wall=0.570  score=0.512  13.2s
+    -> new best (score=0.512), saved
+ep  31/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.488  wall=0.577  score=0.488  13.1s
+ep  32/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.484  wall=0.559  score=0.484  13.4s
+ep  33/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.504  wall=0.572  score=0.504  13.0s
+ep  34/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.477  wall=0.558  score=0.477  12.8s
+ep  35/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.511  wall=0.582  score=0.511  13.3s
+ep  36/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.478  wall=0.572  score=0.478  13.4s
+ep  37/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.996  floor=0.509  wall=0.570  score=0.509  12.7s
+ep  38/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.472  wall=0.556  score=0.472  12.7s
+ep  39/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.472  wall=0.565  score=0.472  12.6s
+ep  40/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.497  wall=0.573  score=0.497  12.7s
+
+Best score: 0.512. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_scratch\fold1
+  fold 1 done in 8.9 min, best val floor IoU 0.512
+
+============================================================
+FOLD 2
+============================================================
+  train 302 / 71 blocks   inner-val 103 / 21   HELD-OUT 98
+ep   1/40  tr_loss=0.0059 va_loss=0.0017  va_iou bg=0.995  floor=0.408  wall=0.354  score=0.408  17.9s
+    -> new best (score=0.408), saved
+ep   2/40  tr_loss=0.0013 va_loss=0.0011  va_iou bg=0.994  floor=0.362  wall=0.428  score=0.362  12.7s
+ep   3/40  tr_loss=0.0011 va_loss=0.0009  va_iou bg=0.995  floor=0.437  wall=0.499  score=0.437  12.8s
+    -> new best (score=0.437), saved
+ep   4/40  tr_loss=0.0010 va_loss=0.0011  va_iou bg=0.992  floor=0.276  wall=0.398  score=0.276  13.0s
+ep   5/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.993  floor=0.345  wall=0.467  score=0.345  13.3s
+ep   6/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.458  wall=0.525  score=0.458  13.1s
+    -> new best (score=0.458), saved
+ep   7/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.469  wall=0.531  score=0.469  12.9s
+    -> new best (score=0.469), saved
+ep   8/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.996  floor=0.468  wall=0.536  score=0.468  13.8s
+ep   9/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.450  wall=0.538  score=0.450  12.8s
+ep  10/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.997  floor=0.489  wall=0.560  score=0.489  12.8s
+    -> new best (score=0.489), saved
+ep  11/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.472  wall=0.552  score=0.472  14.0s
+ep  12/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.504  wall=0.564  score=0.504  13.5s
+    -> new best (score=0.504), saved
+ep  13/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.494  wall=0.548  score=0.494  12.9s
+ep  14/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.501  wall=0.543  score=0.501  13.1s
+ep  15/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.475  wall=0.541  score=0.475  13.4s
+ep  16/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.997  floor=0.469  wall=0.574  score=0.469  13.7s
+ep  17/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.997  floor=0.493  wall=0.593  score=0.493  14.0s
+ep  18/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.528  wall=0.545  score=0.528  15.0s
+    -> new best (score=0.528), saved
+ep  19/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.505  wall=0.541  score=0.505  15.7s
+ep  20/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.505  wall=0.550  score=0.505  15.3s
+ep  21/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.483  wall=0.554  score=0.483  15.1s
+ep  22/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.497  wall=0.569  score=0.497  15.8s
+ep  23/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.507  wall=0.561  score=0.507  14.7s
+ep  24/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.515  wall=0.584  score=0.515  14.7s
+ep  25/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.995  floor=0.441  wall=0.512  score=0.441  14.9s
+ep  26/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.483  wall=0.555  score=0.483  14.4s
+ep  27/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.507  wall=0.571  score=0.507  14.4s
+ep  28/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.490  wall=0.583  score=0.490  14.7s
+ep  29/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.506  wall=0.558  score=0.506  14.2s
+ep  30/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.539  wall=0.607  score=0.539  15.1s
+    -> new best (score=0.539), saved
+ep  31/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.508  wall=0.569  score=0.508  14.2s
+ep  32/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.549  wall=0.581  score=0.549  13.9s
+    -> new best (score=0.549), saved
+ep  33/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.515  wall=0.584  score=0.515  13.6s
+ep  34/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.523  wall=0.580  score=0.523  13.5s
+ep  35/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.529  wall=0.566  score=0.529  13.7s
+ep  36/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.525  wall=0.577  score=0.525  13.7s
+ep  37/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.508  wall=0.578  score=0.508  15.2s
+ep  38/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.546  wall=0.598  score=0.546  15.6s
+ep  39/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.519  wall=0.577  score=0.519  13.8s
+ep  40/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.522  wall=0.585  score=0.522  13.7s
+
+Best score: 0.549. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_scratch\fold2
+  fold 2 done in 9.4 min, best val floor IoU 0.549
+
+============================================================
+FOLD 3
+============================================================
+  train 302 / 71 blocks   inner-val 98 / 23   HELD-OUT 103
+ep   1/40  tr_loss=0.0075 va_loss=0.0026  va_iou bg=0.994  floor=0.087  wall=0.237  score=0.087  19.7s
+    -> new best (score=0.087), saved
+ep   2/40  tr_loss=0.0015 va_loss=0.0013  va_iou bg=0.995  floor=0.396  wall=0.426  score=0.396  13.7s
+    -> new best (score=0.396), saved
+ep   3/40  tr_loss=0.0011 va_loss=0.0019  va_iou bg=0.995  floor=0.389  wall=0.353  score=0.389  13.5s
+ep   4/40  tr_loss=0.0011 va_loss=0.0013  va_iou bg=0.996  floor=0.441  wall=0.401  score=0.441  13.3s
+    -> new best (score=0.441), saved
+ep   5/40  tr_loss=0.0010 va_loss=0.0011  va_iou bg=0.994  floor=0.369  wall=0.470  score=0.369  14.0s
+ep   6/40  tr_loss=0.0009 va_loss=0.0012  va_iou bg=0.996  floor=0.461  wall=0.445  score=0.461  13.8s
+    -> new best (score=0.461), saved
+ep   7/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.996  floor=0.425  wall=0.507  score=0.425  13.8s
+ep   8/40  tr_loss=0.0008 va_loss=0.0013  va_iou bg=0.996  floor=0.475  wall=0.460  score=0.475  13.9s
+    -> new best (score=0.475), saved
+ep   9/40  tr_loss=0.0008 va_loss=0.0011  va_iou bg=0.995  floor=0.386  wall=0.492  score=0.386  13.8s
+ep  10/40  tr_loss=0.0007 va_loss=0.0011  va_iou bg=0.996  floor=0.508  wall=0.542  score=0.508  13.2s
+    -> new best (score=0.508), saved
+ep  11/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.994  floor=0.414  wall=0.457  score=0.414  13.2s
+ep  12/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.490  wall=0.527  score=0.490  13.1s
+ep  13/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.454  wall=0.525  score=0.454  13.4s
+ep  14/40  tr_loss=0.0007 va_loss=0.0012  va_iou bg=0.996  floor=0.460  wall=0.487  score=0.460  13.3s
+ep  15/40  tr_loss=0.0007 va_loss=0.0011  va_iou bg=0.996  floor=0.507  wall=0.486  score=0.507  13.3s
+ep  16/40  tr_loss=0.0007 va_loss=0.0011  va_iou bg=0.996  floor=0.506  wall=0.546  score=0.506  13.6s
+ep  17/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.481  wall=0.537  score=0.481  13.4s
+ep  18/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.996  floor=0.485  wall=0.537  score=0.485  13.4s
+ep  19/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.997  floor=0.500  wall=0.521  score=0.500  13.6s
+ep  20/40  tr_loss=0.0006 va_loss=0.0013  va_iou bg=0.996  floor=0.445  wall=0.498  score=0.445  13.6s
+ep  21/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.517  wall=0.564  score=0.517  13.7s
+    -> new best (score=0.517), saved
+ep  22/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.502  wall=0.562  score=0.502  13.5s
+ep  23/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.996  floor=0.464  wall=0.527  score=0.464  13.5s
+ep  24/40  tr_loss=0.0005 va_loss=0.0011  va_iou bg=0.997  floor=0.494  wall=0.542  score=0.494  13.2s
+ep  25/40  tr_loss=0.0005 va_loss=0.0011  va_iou bg=0.996  floor=0.491  wall=0.527  score=0.491  13.5s
+ep  26/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.997  floor=0.512  wall=0.555  score=0.512  14.2s
+ep  27/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.997  floor=0.486  wall=0.541  score=0.486  13.7s
+ep  28/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.511  wall=0.567  score=0.511  13.5s
+ep  29/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.510  wall=0.561  score=0.510  13.4s
+ep  30/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.519  wall=0.567  score=0.519  13.2s
+    -> new best (score=0.519), saved
+ep  31/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.524  wall=0.567  score=0.524  13.4s
+    -> new best (score=0.524), saved
+ep  32/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.514  wall=0.563  score=0.514  13.6s
+ep  33/40  tr_loss=0.0005 va_loss=0.0011  va_iou bg=0.996  floor=0.502  wall=0.545  score=0.502  13.7s
+ep  34/40  tr_loss=0.0005 va_loss=0.0012  va_iou bg=0.997  floor=0.506  wall=0.554  score=0.506  13.1s
+ep  35/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.997  floor=0.505  wall=0.545  score=0.505  13.5s
+ep  36/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.530  wall=0.574  score=0.530  14.0s
+    -> new best (score=0.530), saved
+ep  37/40  tr_loss=0.0004 va_loss=0.0012  va_iou bg=0.997  floor=0.511  wall=0.569  score=0.511  13.3s
+ep  38/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.997  floor=0.515  wall=0.575  score=0.515  13.1s
+ep  39/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.997  floor=0.517  wall=0.562  score=0.517  13.6s
+ep  40/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.515  wall=0.553  score=0.515  13.4s
+
+Best score: 0.530. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_scratch\fold3
+  fold 3 done in 9.1 min, best val floor IoU 0.530
+
+============================================================
+FOLD 4
+============================================================
+  train 302 / 65 blocks   inner-val 103 / 27   HELD-OUT 98
+ep   1/40  tr_loss=0.0099 va_loss=0.0022  va_iou bg=0.994  floor=0.028  wall=0.098  score=0.028  19.4s
+    -> new best (score=0.028), saved
+ep   2/40  tr_loss=0.0019 va_loss=0.0015  va_iou bg=0.995  floor=0.166  wall=0.341  score=0.166  13.3s
+    -> new best (score=0.166), saved
+ep   3/40  tr_loss=0.0013 va_loss=0.0013  va_iou bg=0.994  floor=0.295  wall=0.360  score=0.295  12.9s
+    -> new best (score=0.295), saved
+ep   4/40  tr_loss=0.0011 va_loss=0.0012  va_iou bg=0.993  floor=0.326  wall=0.387  score=0.326  12.9s
+    -> new best (score=0.326), saved
+ep   5/40  tr_loss=0.0010 va_loss=0.0011  va_iou bg=0.993  floor=0.296  wall=0.403  score=0.296  13.2s
+ep   6/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.994  floor=0.373  wall=0.455  score=0.373  13.8s
+    -> new best (score=0.373), saved
+ep   7/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.995  floor=0.393  wall=0.458  score=0.393  13.5s
+    -> new best (score=0.393), saved
+ep   8/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.996  floor=0.398  wall=0.460  score=0.398  13.6s
+    -> new best (score=0.398), saved
+ep   9/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.417  wall=0.482  score=0.417  13.7s
+    -> new best (score=0.417), saved
+ep  10/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.996  floor=0.414  wall=0.438  score=0.414  14.5s
+ep  11/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.994  floor=0.339  wall=0.442  score=0.339  14.9s
+ep  12/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.390  wall=0.459  score=0.390  14.5s
+ep  13/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.997  floor=0.433  wall=0.455  score=0.433  13.3s
+    -> new best (score=0.433), saved
+ep  14/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.994  floor=0.347  wall=0.446  score=0.347  13.9s
+ep  15/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.997  floor=0.491  wall=0.498  score=0.491  13.2s
+    -> new best (score=0.491), saved
+ep  16/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.426  wall=0.494  score=0.426  13.1s
+ep  17/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.448  wall=0.511  score=0.448  13.0s
+ep  18/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.995  floor=0.384  wall=0.464  score=0.384  13.8s
+ep  19/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.451  wall=0.489  score=0.451  14.9s
+ep  20/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.446  wall=0.504  score=0.446  14.3s
+ep  21/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.463  wall=0.504  score=0.463  14.0s
+ep  22/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.391  wall=0.485  score=0.391  13.8s
+ep  23/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.440  wall=0.510  score=0.440  13.8s
+ep  24/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.459  wall=0.521  score=0.459  13.4s
+ep  25/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.418  wall=0.500  score=0.418  13.7s
+ep  26/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.427  wall=0.510  score=0.427  13.3s
+ep  27/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.464  wall=0.515  score=0.464  14.4s
+ep  28/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.462  wall=0.545  score=0.462  14.3s
+ep  29/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.462  wall=0.518  score=0.462  13.9s
+ep  30/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.464  wall=0.526  score=0.464  14.4s
+ep  31/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.481  wall=0.540  score=0.481  14.5s
+ep  32/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.489  wall=0.527  score=0.489  13.7s
+ep  33/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.476  wall=0.536  score=0.476  13.4s
+ep  34/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.480  wall=0.545  score=0.480  14.4s
+ep  35/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.481  wall=0.543  score=0.481  13.8s
+ep  36/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.470  wall=0.517  score=0.470  13.5s
+ep  37/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.482  wall=0.541  score=0.482  14.5s
+ep  38/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.467  wall=0.518  score=0.467  13.2s
+ep  39/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.464  wall=0.519  score=0.464  13.2s
+ep  40/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.476  wall=0.539  score=0.476  13.2s
+
+Best score: 0.491. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_scratch\fold4
+  fold 4 done in 9.3 min, best val floor IoU 0.491
+
+POOLED  val floor IoU 0.528 (sd 0.025)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_scratch\pooled_metrics.json
+EXIT 0 for pit/r34_scratch
+##### pad / r34_scratch
+== pad / r34_scratch : 5-fold on the unified split ==
+   650 features across 129 blocks, 1 m grid
+     fold 0:   130 features
+     fold 1:   134 features
+     fold 2:   127 features
+     fold 3:   129 features
+     fold 4:   130 features
+   r34_scratch: 24.4 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 386 / 78 blocks   inner-val 134 / 26   HELD-OUT 130
+ep   1/40  tr_loss=0.0275 va_loss=0.0293  va_iou bg=0.829  pad=0.273  score=0.273  23.4s
+    -> new best (score=0.273), saved
+ep   2/40  tr_loss=0.0178 va_loss=0.0208  va_iou bg=0.913  pad=0.359  score=0.359  17.4s
+    -> new best (score=0.359), saved
+ep   3/40  tr_loss=0.0168 va_loss=0.0216  va_iou bg=0.926  pad=0.419  score=0.419  18.6s
+    -> new best (score=0.419), saved
+ep   4/40  tr_loss=0.0148 va_loss=0.0174  va_iou bg=0.912  pad=0.423  score=0.423  18.2s
+    -> new best (score=0.423), saved
+ep   5/40  tr_loss=0.0144 va_loss=0.0205  va_iou bg=0.939  pad=0.424  score=0.424  17.4s
+    -> new best (score=0.424), saved
+ep   6/40  tr_loss=0.0141 va_loss=0.0181  va_iou bg=0.910  pad=0.428  score=0.428  17.0s
+    -> new best (score=0.428), saved
+ep   7/40  tr_loss=0.0137 va_loss=0.0174  va_iou bg=0.927  pad=0.459  score=0.459  17.1s
+    -> new best (score=0.459), saved
+ep   8/40  tr_loss=0.0132 va_loss=0.0170  va_iou bg=0.935  pad=0.485  score=0.485  17.2s
+    -> new best (score=0.485), saved
+ep   9/40  tr_loss=0.0123 va_loss=0.0186  va_iou bg=0.937  pad=0.451  score=0.451  16.8s
+ep  10/40  tr_loss=0.0131 va_loss=0.0163  va_iou bg=0.939  pad=0.495  score=0.495  17.3s
+    -> new best (score=0.495), saved
+ep  11/40  tr_loss=0.0126 va_loss=0.0151  va_iou bg=0.928  pad=0.484  score=0.484  17.0s
+ep  12/40  tr_loss=0.0121 va_loss=0.0166  va_iou bg=0.934  pad=0.468  score=0.468  18.0s
+ep  13/40  tr_loss=0.0126 va_loss=0.0165  va_iou bg=0.942  pad=0.498  score=0.498  16.9s
+    -> new best (score=0.498), saved
+ep  14/40  tr_loss=0.0115 va_loss=0.0153  va_iou bg=0.940  pad=0.522  score=0.522  16.7s
+    -> new best (score=0.522), saved
+ep  15/40  tr_loss=0.0117 va_loss=0.0158  va_iou bg=0.938  pad=0.524  score=0.524  18.4s
+    -> new best (score=0.524), saved
+ep  16/40  tr_loss=0.0114 va_loss=0.0171  va_iou bg=0.935  pad=0.508  score=0.508  17.0s
+ep  17/40  tr_loss=0.0112 va_loss=0.0151  va_iou bg=0.937  pad=0.520  score=0.520  17.0s
+ep  18/40  tr_loss=0.0109 va_loss=0.0155  va_iou bg=0.927  pad=0.501  score=0.501  16.6s
+ep  19/40  tr_loss=0.0107 va_loss=0.0171  va_iou bg=0.942  pad=0.528  score=0.528  16.8s
+    -> new best (score=0.528), saved
+ep  20/40  tr_loss=0.0110 va_loss=0.0158  va_iou bg=0.946  pad=0.553  score=0.553  17.4s
+    -> new best (score=0.553), saved
+ep  21/40  tr_loss=0.0106 va_loss=0.0151  va_iou bg=0.935  pad=0.516  score=0.516  17.5s
+ep  22/40  tr_loss=0.0103 va_loss=0.0152  va_iou bg=0.936  pad=0.508  score=0.508  16.9s
+ep  23/40  tr_loss=0.0103 va_loss=0.0150  va_iou bg=0.944  pad=0.529  score=0.529  16.8s
+ep  24/40  tr_loss=0.0100 va_loss=0.0145  va_iou bg=0.946  pad=0.529  score=0.529  17.9s
+ep  25/40  tr_loss=0.0104 va_loss=0.0163  va_iou bg=0.925  pad=0.495  score=0.495  17.2s
+ep  26/40  tr_loss=0.0104 va_loss=0.0143  va_iou bg=0.944  pad=0.547  score=0.547  16.7s
+ep  27/40  tr_loss=0.0096 va_loss=0.0146  va_iou bg=0.940  pad=0.530  score=0.530  16.9s
+ep  28/40  tr_loss=0.0096 va_loss=0.0157  va_iou bg=0.946  pad=0.538  score=0.538  17.8s
+ep  29/40  tr_loss=0.0093 va_loss=0.0151  va_iou bg=0.944  pad=0.545  score=0.545  17.2s
+ep  30/40  tr_loss=0.0093 va_loss=0.0154  va_iou bg=0.944  pad=0.554  score=0.554  17.6s
+    -> new best (score=0.554), saved
+ep  31/40  tr_loss=0.0094 va_loss=0.0140  va_iou bg=0.944  pad=0.574  score=0.574  17.0s
+    -> new best (score=0.574), saved
+ep  32/40  tr_loss=0.0092 va_loss=0.0154  va_iou bg=0.948  pad=0.564  score=0.564  16.8s
+ep  33/40  tr_loss=0.0086 va_loss=0.0149  va_iou bg=0.944  pad=0.549  score=0.549  16.6s
+ep  34/40  tr_loss=0.0089 va_loss=0.0144  va_iou bg=0.947  pad=0.554  score=0.554  16.7s
+ep  35/40  tr_loss=0.0090 va_loss=0.0132  va_iou bg=0.943  pad=0.560  score=0.560  17.2s
+ep  36/40  tr_loss=0.0085 va_loss=0.0149  va_iou bg=0.945  pad=0.542  score=0.542  16.8s
+ep  37/40  tr_loss=0.0086 va_loss=0.0148  va_iou bg=0.946  pad=0.554  score=0.554  16.7s
+ep  38/40  tr_loss=0.0085 va_loss=0.0159  va_iou bg=0.944  pad=0.557  score=0.557  17.0s
+ep  39/40  tr_loss=0.0084 va_loss=0.0149  va_iou bg=0.945  pad=0.545  score=0.545  16.3s
+ep  40/40  tr_loss=0.0083 va_loss=0.0148  va_iou bg=0.945  pad=0.554  score=0.554  17.0s
+
+Best score: 0.574. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_scratch\fold0
+  fold 0 done in 11.6 min, best val pad IoU 0.574
+
+============================================================
+FOLD 1
+============================================================
+  train 389 / 76 blocks   inner-val 127 / 27   HELD-OUT 134
+ep   1/40  tr_loss=0.0246 va_loss=0.0192  va_iou bg=0.939  pad=0.295  score=0.295  23.0s
+    -> new best (score=0.295), saved
+ep   2/40  tr_loss=0.0176 va_loss=0.0175  va_iou bg=0.903  pad=0.374  score=0.374  17.8s
+    -> new best (score=0.374), saved
+ep   3/40  tr_loss=0.0167 va_loss=0.0161  va_iou bg=0.917  pad=0.416  score=0.416  17.7s
+    -> new best (score=0.416), saved
+ep   4/40  tr_loss=0.0155 va_loss=0.0147  va_iou bg=0.929  pad=0.428  score=0.428  17.9s
+    -> new best (score=0.428), saved
+ep   5/40  tr_loss=0.0144 va_loss=0.0145  va_iou bg=0.921  pad=0.408  score=0.408  17.7s
+ep   6/40  tr_loss=0.0142 va_loss=0.0150  va_iou bg=0.933  pad=0.436  score=0.436  17.3s
+    -> new best (score=0.436), saved
+ep   7/40  tr_loss=0.0143 va_loss=0.0152  va_iou bg=0.915  pad=0.418  score=0.418  17.0s
+ep   8/40  tr_loss=0.0133 va_loss=0.0136  va_iou bg=0.923  pad=0.424  score=0.424  17.5s
+ep   9/40  tr_loss=0.0130 va_loss=0.0133  va_iou bg=0.935  pad=0.461  score=0.461  18.3s
+    -> new best (score=0.461), saved
+ep  10/40  tr_loss=0.0135 va_loss=0.0132  va_iou bg=0.940  pad=0.469  score=0.469  19.2s
+    -> new best (score=0.469), saved
+ep  11/40  tr_loss=0.0126 va_loss=0.0128  va_iou bg=0.946  pad=0.495  score=0.495  17.0s
+    -> new best (score=0.495), saved
+ep  12/40  tr_loss=0.0127 va_loss=0.0131  va_iou bg=0.938  pad=0.459  score=0.459  17.6s
+ep  13/40  tr_loss=0.0121 va_loss=0.0141  va_iou bg=0.944  pad=0.495  score=0.495  17.9s
+ep  14/40  tr_loss=0.0124 va_loss=0.0146  va_iou bg=0.925  pad=0.455  score=0.455  17.1s
+ep  15/40  tr_loss=0.0117 va_loss=0.0127  va_iou bg=0.935  pad=0.475  score=0.475  17.1s
+ep  16/40  tr_loss=0.0116 va_loss=0.0119  va_iou bg=0.944  pad=0.509  score=0.509  17.1s
+    -> new best (score=0.509), saved
+ep  17/40  tr_loss=0.0117 va_loss=0.0141  va_iou bg=0.940  pad=0.493  score=0.493  18.1s
+ep  18/40  tr_loss=0.0115 va_loss=0.0132  va_iou bg=0.948  pad=0.514  score=0.514  17.2s
+    -> new best (score=0.514), saved
+ep  19/40  tr_loss=0.0109 va_loss=0.0130  va_iou bg=0.938  pad=0.484  score=0.484  16.9s
+ep  20/40  tr_loss=0.0112 va_loss=0.0140  va_iou bg=0.919  pad=0.429  score=0.429  16.7s
+ep  21/40  tr_loss=0.0110 va_loss=0.0131  va_iou bg=0.950  pad=0.521  score=0.521  17.1s
+    -> new best (score=0.521), saved
+ep  22/40  tr_loss=0.0106 va_loss=0.0137  va_iou bg=0.933  pad=0.478  score=0.478  17.1s
+ep  23/40  tr_loss=0.0105 va_loss=0.0130  va_iou bg=0.941  pad=0.510  score=0.510  16.6s
+ep  24/40  tr_loss=0.0104 va_loss=0.0142  va_iou bg=0.942  pad=0.512  score=0.512  16.7s
+ep  25/40  tr_loss=0.0103 va_loss=0.0134  va_iou bg=0.947  pad=0.529  score=0.529  17.1s
+    -> new best (score=0.529), saved
+ep  26/40  tr_loss=0.0101 va_loss=0.0126  va_iou bg=0.934  pad=0.469  score=0.469  16.8s
+ep  27/40  tr_loss=0.0099 va_loss=0.0134  va_iou bg=0.938  pad=0.489  score=0.489  16.6s
+ep  28/40  tr_loss=0.0100 va_loss=0.0119  va_iou bg=0.943  pad=0.517  score=0.517  17.2s
+ep  29/40  tr_loss=0.0098 va_loss=0.0126  va_iou bg=0.940  pad=0.507  score=0.507  17.2s
+ep  30/40  tr_loss=0.0092 va_loss=0.0125  va_iou bg=0.944  pad=0.519  score=0.519  17.0s
+ep  31/40  tr_loss=0.0094 va_loss=0.0124  va_iou bg=0.938  pad=0.507  score=0.507  17.5s
+ep  32/40  tr_loss=0.0093 va_loss=0.0117  va_iou bg=0.947  pad=0.543  score=0.543  18.1s
+    -> new best (score=0.543), saved
+ep  33/40  tr_loss=0.0092 va_loss=0.0131  va_iou bg=0.946  pad=0.518  score=0.518  17.3s
+ep  34/40  tr_loss=0.0087 va_loss=0.0126  va_iou bg=0.951  pad=0.536  score=0.536  17.3s
+ep  35/40  tr_loss=0.0089 va_loss=0.0135  va_iou bg=0.943  pad=0.505  score=0.505  17.0s
+ep  36/40  tr_loss=0.0085 va_loss=0.0122  va_iou bg=0.951  pad=0.537  score=0.537  16.9s
+ep  37/40  tr_loss=0.0088 va_loss=0.0129  va_iou bg=0.946  pad=0.525  score=0.525  16.9s
+ep  38/40  tr_loss=0.0085 va_loss=0.0115  va_iou bg=0.948  pad=0.530  score=0.530  16.9s
+ep  39/40  tr_loss=0.0086 va_loss=0.0121  va_iou bg=0.946  pad=0.535  score=0.535  17.3s
+ep  40/40  tr_loss=0.0086 va_loss=0.0126  va_iou bg=0.947  pad=0.529  score=0.529  17.8s
+
+Best score: 0.543. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_scratch\fold1
+  fold 1 done in 11.7 min, best val pad IoU 0.543
+
+============================================================
+FOLD 2
+============================================================
+  train 394 / 78 blocks   inner-val 129 / 24   HELD-OUT 127
+ep   1/40  tr_loss=0.0252 va_loss=0.0249  va_iou bg=0.815  pad=0.282  score=0.282  22.8s
+    -> new best (score=0.282), saved
+ep   2/40  tr_loss=0.0187 va_loss=0.0176  va_iou bg=0.918  pad=0.417  score=0.417  16.7s
+    -> new best (score=0.417), saved
+ep   3/40  tr_loss=0.0168 va_loss=0.0156  va_iou bg=0.929  pad=0.473  score=0.473  16.6s
+    -> new best (score=0.473), saved
+ep   4/40  tr_loss=0.0157 va_loss=0.0139  va_iou bg=0.941  pad=0.507  score=0.507  16.2s
+    -> new best (score=0.507), saved
+ep   5/40  tr_loss=0.0146 va_loss=0.0142  va_iou bg=0.931  pad=0.474  score=0.474  16.6s
+ep   6/40  tr_loss=0.0143 va_loss=0.0137  va_iou bg=0.943  pad=0.525  score=0.525  17.1s
+    -> new best (score=0.525), saved
+ep   7/40  tr_loss=0.0139 va_loss=0.0133  va_iou bg=0.935  pad=0.514  score=0.514  17.6s
+ep   8/40  tr_loss=0.0138 va_loss=0.0132  va_iou bg=0.922  pad=0.469  score=0.469  17.1s
+ep   9/40  tr_loss=0.0132 va_loss=0.0128  va_iou bg=0.945  pad=0.555  score=0.555  17.1s
+    -> new best (score=0.555), saved
+ep  10/40  tr_loss=0.0131 va_loss=0.0131  va_iou bg=0.942  pad=0.521  score=0.521  17.4s
+ep  11/40  tr_loss=0.0131 va_loss=0.0126  va_iou bg=0.938  pad=0.529  score=0.529  18.1s
+ep  12/40  tr_loss=0.0130 va_loss=0.0134  va_iou bg=0.937  pad=0.510  score=0.510  17.7s
+ep  13/40  tr_loss=0.0125 va_loss=0.0124  va_iou bg=0.945  pad=0.527  score=0.527  16.5s
+ep  14/40  tr_loss=0.0126 va_loss=0.0122  va_iou bg=0.941  pad=0.534  score=0.534  17.3s
+ep  15/40  tr_loss=0.0120 va_loss=0.0136  va_iou bg=0.947  pad=0.545  score=0.545  16.9s
+ep  16/40  tr_loss=0.0123 va_loss=0.0134  va_iou bg=0.926  pad=0.499  score=0.499  16.9s
+ep  17/40  tr_loss=0.0118 va_loss=0.0127  va_iou bg=0.933  pad=0.517  score=0.517  16.5s
+ep  18/40  tr_loss=0.0115 va_loss=0.0130  va_iou bg=0.932  pad=0.500  score=0.500  16.3s
+ep  19/40  tr_loss=0.0114 va_loss=0.0131  va_iou bg=0.947  pad=0.520  score=0.520  16.4s
+ep  20/40  tr_loss=0.0114 va_loss=0.0119  va_iou bg=0.947  pad=0.553  score=0.553  16.4s
+ep  21/40  tr_loss=0.0111 va_loss=0.0118  va_iou bg=0.944  pad=0.536  score=0.536  16.2s
+ep  22/40  tr_loss=0.0113 va_loss=0.0133  va_iou bg=0.945  pad=0.527  score=0.527  16.2s
+ep  23/40  tr_loss=0.0109 va_loss=0.0124  va_iou bg=0.940  pad=0.520  score=0.520  16.4s
+ep  24/40  tr_loss=0.0108 va_loss=0.0125  va_iou bg=0.941  pad=0.542  score=0.542  17.4s
+ep  25/40  tr_loss=0.0105 va_loss=0.0132  va_iou bg=0.943  pad=0.540  score=0.540  17.9s
+ep  26/40  tr_loss=0.0104 va_loss=0.0120  va_iou bg=0.946  pad=0.558  score=0.558  18.3s
+    -> new best (score=0.558), saved
+ep  27/40  tr_loss=0.0102 va_loss=0.0117  va_iou bg=0.949  pad=0.561  score=0.561  18.3s
+    -> new best (score=0.561), saved
+ep  28/40  tr_loss=0.0103 va_loss=0.0111  va_iou bg=0.951  pad=0.581  score=0.581  16.7s
+    -> new best (score=0.581), saved
+ep  29/40  tr_loss=0.0096 va_loss=0.0130  va_iou bg=0.944  pad=0.542  score=0.542  17.2s
+ep  30/40  tr_loss=0.0095 va_loss=0.0128  va_iou bg=0.952  pad=0.577  score=0.577  17.4s
+ep  31/40  tr_loss=0.0097 va_loss=0.0123  va_iou bg=0.951  pad=0.590  score=0.590  17.1s
+    -> new best (score=0.590), saved
+ep  32/40  tr_loss=0.0092 va_loss=0.0117  va_iou bg=0.950  pad=0.572  score=0.572  18.1s
+ep  33/40  tr_loss=0.0090 va_loss=0.0125  va_iou bg=0.950  pad=0.571  score=0.571  17.6s
+ep  34/40  tr_loss=0.0090 va_loss=0.0123  va_iou bg=0.949  pad=0.578  score=0.578  17.5s
+ep  35/40  tr_loss=0.0092 va_loss=0.0129  va_iou bg=0.949  pad=0.573  score=0.573  16.9s
+ep  36/40  tr_loss=0.0089 va_loss=0.0119  va_iou bg=0.950  pad=0.587  score=0.587  17.1s
+ep  37/40  tr_loss=0.0090 va_loss=0.0143  va_iou bg=0.949  pad=0.554  score=0.554  17.0s
+ep  38/40  tr_loss=0.0088 va_loss=0.0128  va_iou bg=0.947  pad=0.568  score=0.568  16.6s
+ep  39/40  tr_loss=0.0087 va_loss=0.0134  va_iou bg=0.947  pad=0.549  score=0.549  16.8s
+ep  40/40  tr_loss=0.0088 va_loss=0.0135  va_iou bg=0.950  pad=0.569  score=0.569  17.0s
+
+Best score: 0.590. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_scratch\fold2
+  fold 2 done in 11.5 min, best val pad IoU 0.590
+
+============================================================
+FOLD 3
+============================================================
+  train 391 / 78 blocks   inner-val 130 / 27   HELD-OUT 129
+ep   1/40  tr_loss=0.0295 va_loss=0.0197  va_iou bg=0.920  pad=0.304  score=0.304  22.9s
+    -> new best (score=0.304), saved
+ep   2/40  tr_loss=0.0193 va_loss=0.0165  va_iou bg=0.914  pad=0.378  score=0.378  17.2s
+    -> new best (score=0.378), saved
+ep   3/40  tr_loss=0.0177 va_loss=0.0396  va_iou bg=0.931  pad=0.356  score=0.356  17.8s
+ep   4/40  tr_loss=0.0165 va_loss=0.0169  va_iou bg=0.900  pad=0.363  score=0.363  18.3s
+ep   5/40  tr_loss=0.0153 va_loss=0.0138  va_iou bg=0.945  pad=0.464  score=0.464  16.9s
+    -> new best (score=0.464), saved
+ep   6/40  tr_loss=0.0149 va_loss=0.0132  va_iou bg=0.928  pad=0.436  score=0.436  16.6s
+ep   7/40  tr_loss=0.0148 va_loss=0.0129  va_iou bg=0.945  pad=0.474  score=0.474  16.5s
+    -> new best (score=0.474), saved
+ep   8/40  tr_loss=0.0135 va_loss=0.0146  va_iou bg=0.913  pad=0.410  score=0.410  16.4s
+ep   9/40  tr_loss=0.0134 va_loss=0.0122  va_iou bg=0.942  pad=0.470  score=0.470  17.9s
+ep  10/40  tr_loss=0.0136 va_loss=0.0129  va_iou bg=0.944  pad=0.471  score=0.471  18.1s
+ep  11/40  tr_loss=0.0129 va_loss=0.0129  va_iou bg=0.947  pad=0.495  score=0.495  17.1s
+    -> new best (score=0.495), saved
+ep  12/40  tr_loss=0.0134 va_loss=0.0134  va_iou bg=0.945  pad=0.458  score=0.458  17.3s
+ep  13/40  tr_loss=0.0125 va_loss=0.0135  va_iou bg=0.923  pad=0.437  score=0.437  17.9s
+ep  14/40  tr_loss=0.0122 va_loss=0.0139  va_iou bg=0.922  pad=0.438  score=0.438  16.7s
+ep  15/40  tr_loss=0.0123 va_loss=0.0136  va_iou bg=0.922  pad=0.426  score=0.426  17.5s
+ep  16/40  tr_loss=0.0123 va_loss=0.0135  va_iou bg=0.951  pad=0.472  score=0.472  18.5s
+ep  17/40  tr_loss=0.0122 va_loss=0.0124  va_iou bg=0.946  pad=0.499  score=0.499  17.4s
+    -> new best (score=0.499), saved
+ep  18/40  tr_loss=0.0117 va_loss=0.0123  va_iou bg=0.936  pad=0.466  score=0.466  17.5s
+ep  19/40  tr_loss=0.0114 va_loss=0.0123  va_iou bg=0.947  pad=0.483  score=0.483  17.4s
+ep  20/40  tr_loss=0.0117 va_loss=0.0130  va_iou bg=0.934  pad=0.473  score=0.473  16.8s
+ep  21/40  tr_loss=0.0113 va_loss=0.0123  va_iou bg=0.941  pad=0.499  score=0.499  18.1s
+ep  22/40  tr_loss=0.0112 va_loss=0.0129  va_iou bg=0.944  pad=0.482  score=0.482  17.1s
+ep  23/40  tr_loss=0.0111 va_loss=0.0120  va_iou bg=0.952  pad=0.517  score=0.517  17.4s
+    -> new best (score=0.517), saved
+ep  24/40  tr_loss=0.0105 va_loss=0.0132  va_iou bg=0.943  pad=0.484  score=0.484  17.4s
+ep  25/40  tr_loss=0.0107 va_loss=0.0131  va_iou bg=0.943  pad=0.505  score=0.505  19.0s
+ep  26/40  tr_loss=0.0102 va_loss=0.0108  va_iou bg=0.945  pad=0.522  score=0.522  18.5s
+    -> new best (score=0.522), saved
+ep  27/40  tr_loss=0.0103 va_loss=0.0138  va_iou bg=0.946  pad=0.485  score=0.485  18.0s
+ep  28/40  tr_loss=0.0098 va_loss=0.0125  va_iou bg=0.952  pad=0.508  score=0.508  17.1s
+ep  29/40  tr_loss=0.0096 va_loss=0.0123  va_iou bg=0.953  pad=0.525  score=0.525  17.0s
+    -> new best (score=0.525), saved
+ep  30/40  tr_loss=0.0095 va_loss=0.0131  va_iou bg=0.946  pad=0.487  score=0.487  17.0s
+ep  31/40  tr_loss=0.0096 va_loss=0.0132  va_iou bg=0.947  pad=0.498  score=0.498  17.5s
+ep  32/40  tr_loss=0.0094 va_loss=0.0121  va_iou bg=0.948  pad=0.519  score=0.519  18.6s
+ep  33/40  tr_loss=0.0094 va_loss=0.0124  va_iou bg=0.950  pad=0.493  score=0.493  19.5s
+ep  34/40  tr_loss=0.0087 va_loss=0.0118  va_iou bg=0.950  pad=0.510  score=0.510  18.8s
+ep  35/40  tr_loss=0.0088 va_loss=0.0120  va_iou bg=0.948  pad=0.510  score=0.510  18.2s
+ep  36/40  tr_loss=0.0091 va_loss=0.0136  va_iou bg=0.947  pad=0.497  score=0.497  17.3s
+ep  37/40  tr_loss=0.0085 va_loss=0.0112  va_iou bg=0.952  pad=0.520  score=0.520  16.8s
+ep  38/40  tr_loss=0.0089 va_loss=0.0142  va_iou bg=0.948  pad=0.501  score=0.501  17.6s
+ep  39/40  tr_loss=0.0087 va_loss=0.0127  va_iou bg=0.950  pad=0.519  score=0.519  17.5s
+ep  40/40  tr_loss=0.0086 va_loss=0.0130  va_iou bg=0.952  pad=0.528  score=0.528  17.6s
+    -> new best (score=0.528), saved
+
+Best score: 0.528. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_scratch\fold3
+  fold 3 done in 11.8 min, best val pad IoU 0.528
+
+============================================================
+FOLD 4
+============================================================
+  train 390 / 77 blocks   inner-val 130 / 25   HELD-OUT 130
+ep   1/40  tr_loss=0.0269 va_loss=0.0230  va_iou bg=0.844  pad=0.321  score=0.321  22.8s
+    -> new best (score=0.321), saved
+ep   2/40  tr_loss=0.0183 va_loss=0.0220  va_iou bg=0.938  pad=0.386  score=0.386  17.4s
+    -> new best (score=0.386), saved
+ep   3/40  tr_loss=0.0168 va_loss=0.0154  va_iou bg=0.927  pad=0.490  score=0.490  17.5s
+    -> new best (score=0.490), saved
+ep   4/40  tr_loss=0.0157 va_loss=0.0165  va_iou bg=0.937  pad=0.485  score=0.485  17.5s
+ep   5/40  tr_loss=0.0150 va_loss=0.0161  va_iou bg=0.906  pad=0.433  score=0.433  16.9s
+ep   6/40  tr_loss=0.0145 va_loss=0.0147  va_iou bg=0.943  pad=0.507  score=0.507  16.8s
+    -> new best (score=0.507), saved
+ep   7/40  tr_loss=0.0140 va_loss=0.0210  va_iou bg=0.936  pad=0.450  score=0.450  17.2s
+ep   8/40  tr_loss=0.0141 va_loss=0.0167  va_iou bg=0.921  pad=0.461  score=0.461  17.1s
+ep   9/40  tr_loss=0.0140 va_loss=0.0183  va_iou bg=0.944  pad=0.500  score=0.500  16.9s
+ep  10/40  tr_loss=0.0132 va_loss=0.0162  va_iou bg=0.949  pad=0.514  score=0.514  16.7s
+    -> new best (score=0.514), saved
+ep  11/40  tr_loss=0.0132 va_loss=0.0130  va_iou bg=0.942  pad=0.526  score=0.526  16.7s
+    -> new best (score=0.526), saved
+ep  12/40  tr_loss=0.0130 va_loss=0.0150  va_iou bg=0.943  pad=0.528  score=0.528  16.7s
+    -> new best (score=0.528), saved
+ep  13/40  tr_loss=0.0131 va_loss=0.0147  va_iou bg=0.938  pad=0.534  score=0.534  16.8s
+    -> new best (score=0.534), saved
+ep  14/40  tr_loss=0.0126 va_loss=0.0163  va_iou bg=0.946  pad=0.552  score=0.552  16.7s
+    -> new best (score=0.552), saved
+ep  15/40  tr_loss=0.0120 va_loss=0.0156  va_iou bg=0.950  pad=0.540  score=0.540  17.9s
+ep  16/40  tr_loss=0.0120 va_loss=0.0175  va_iou bg=0.946  pad=0.520  score=0.520  16.6s
+ep  17/40  tr_loss=0.0122 va_loss=0.0140  va_iou bg=0.943  pad=0.540  score=0.540  18.0s
+ep  18/40  tr_loss=0.0115 va_loss=0.0133  va_iou bg=0.944  pad=0.554  score=0.554  16.8s
+    -> new best (score=0.554), saved
+ep  19/40  tr_loss=0.0116 va_loss=0.0165  va_iou bg=0.943  pad=0.547  score=0.547  16.8s
+ep  20/40  tr_loss=0.0114 va_loss=0.0153  va_iou bg=0.948  pad=0.543  score=0.543  16.8s
+ep  21/40  tr_loss=0.0112 va_loss=0.0142  va_iou bg=0.943  pad=0.548  score=0.548  17.9s
+ep  22/40  tr_loss=0.0111 va_loss=0.0142  va_iou bg=0.947  pad=0.553  score=0.553  18.1s
+ep  23/40  tr_loss=0.0106 va_loss=0.0135  va_iou bg=0.941  pad=0.541  score=0.541  18.3s
+ep  24/40  tr_loss=0.0109 va_loss=0.0162  va_iou bg=0.949  pad=0.551  score=0.551  18.0s
+ep  25/40  tr_loss=0.0103 va_loss=0.0129  va_iou bg=0.951  pad=0.578  score=0.578  18.1s
+    -> new best (score=0.578), saved
+ep  26/40  tr_loss=0.0102 va_loss=0.0126  va_iou bg=0.946  pad=0.559  score=0.559  18.1s
+ep  27/40  tr_loss=0.0103 va_loss=0.0130  va_iou bg=0.943  pad=0.564  score=0.564  17.6s
+ep  28/40  tr_loss=0.0099 va_loss=0.0136  va_iou bg=0.948  pad=0.568  score=0.568  16.8s
+ep  29/40  tr_loss=0.0104 va_loss=0.0154  va_iou bg=0.949  pad=0.572  score=0.572  16.7s
+ep  30/40  tr_loss=0.0098 va_loss=0.0143  va_iou bg=0.946  pad=0.582  score=0.582  16.9s
+    -> new best (score=0.582), saved
+ep  31/40  tr_loss=0.0098 va_loss=0.0159  va_iou bg=0.950  pad=0.568  score=0.568  16.9s
+ep  32/40  tr_loss=0.0093 va_loss=0.0169  va_iou bg=0.949  pad=0.567  score=0.567  16.8s
+ep  33/40  tr_loss=0.0092 va_loss=0.0161  va_iou bg=0.949  pad=0.584  score=0.584  16.8s
+    -> new best (score=0.584), saved
+ep  34/40  tr_loss=0.0093 va_loss=0.0159  va_iou bg=0.951  pad=0.582  score=0.582  18.3s
+ep  35/40  tr_loss=0.0089 va_loss=0.0128  va_iou bg=0.954  pad=0.586  score=0.586  17.1s
+    -> new best (score=0.586), saved
+ep  36/40  tr_loss=0.0092 va_loss=0.0137  va_iou bg=0.949  pad=0.595  score=0.595  17.0s
+    -> new best (score=0.595), saved
+ep  37/40  tr_loss=0.0092 va_loss=0.0144  va_iou bg=0.951  pad=0.585  score=0.585  16.8s
+ep  38/40  tr_loss=0.0088 va_loss=0.0145  va_iou bg=0.950  pad=0.583  score=0.583  17.4s
+ep  39/40  tr_loss=0.0086 va_loss=0.0143  va_iou bg=0.953  pad=0.604  score=0.604  16.9s
+    -> new best (score=0.604), saved
+ep  40/40  tr_loss=0.0088 va_loss=0.0136  va_iou bg=0.954  pad=0.597  score=0.597  16.7s
+
+Best score: 0.604. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_scratch\fold4
+  fold 4 done in 11.6 min, best val pad IoU 0.604
+
+POOLED  val pad IoU 0.567 (sd 0.028)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_scratch\pooled_metrics.json
+EXIT 0 for pad/r34_scratch
+##### pit / r34_imagenet
+== pit / r34_imagenet : 5-fold on the unified split ==
+   503 features across 115 blocks, 1 m grid
+     fold 0:   103 features
+     fold 1:   101 features
+     fold 2:    98 features
+     fold 3:   103 features
+     fold 4:    98 features
+C:\Python313\Lib\site-packages\huggingface_hub\file_download.py:129: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\colto\.cache\huggingface\hub\models--smp-hub--resnet34.imagenet. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+   r34_imagenet: 24.4 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 299 / 67 blocks   inner-val 101 / 21   HELD-OUT 103
+ep   1/40  tr_loss=0.0141 va_loss=0.0022  va_iou bg=0.994  floor=0.085  wall=0.193  score=0.085  18.4s
+    -> new best (score=0.085), saved
+ep   2/40  tr_loss=0.0018 va_loss=0.0013  va_iou bg=0.994  floor=0.378  wall=0.452  score=0.378  12.8s
+    -> new best (score=0.378), saved
+ep   3/40  tr_loss=0.0012 va_loss=0.0013  va_iou bg=0.994  floor=0.420  wall=0.471  score=0.420  13.1s
+    -> new best (score=0.420), saved
+ep   4/40  tr_loss=0.0010 va_loss=0.0009  va_iou bg=0.995  floor=0.443  wall=0.528  score=0.443  13.3s
+    -> new best (score=0.443), saved
+ep   5/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.996  floor=0.468  wall=0.500  score=0.468  13.0s
+    -> new best (score=0.468), saved
+ep   6/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.996  floor=0.372  wall=0.481  score=0.372  13.2s
+ep   7/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.996  floor=0.420  wall=0.452  score=0.420  13.3s
+ep   8/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.995  floor=0.461  wall=0.556  score=0.461  13.5s
+ep   9/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.996  floor=0.458  wall=0.550  score=0.458  13.0s
+ep  10/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.467  wall=0.559  score=0.467  12.9s
+ep  11/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.994  floor=0.459  wall=0.518  score=0.459  12.9s
+ep  12/40  tr_loss=0.0007 va_loss=0.0006  va_iou bg=0.996  floor=0.482  wall=0.575  score=0.482  12.6s
+    -> new best (score=0.482), saved
+ep  13/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.499  wall=0.554  score=0.499  12.5s
+    -> new best (score=0.499), saved
+ep  14/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.474  wall=0.563  score=0.474  13.0s
+ep  15/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.447  wall=0.553  score=0.447  13.3s
+ep  16/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.995  floor=0.398  wall=0.501  score=0.398  13.4s
+ep  17/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.505  wall=0.574  score=0.505  13.0s
+    -> new best (score=0.505), saved
+ep  18/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.532  wall=0.597  score=0.532  13.5s
+    -> new best (score=0.532), saved
+ep  19/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.997  floor=0.548  wall=0.595  score=0.548  13.6s
+    -> new best (score=0.548), saved
+ep  20/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.484  wall=0.551  score=0.484  13.4s
+ep  21/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.995  floor=0.467  wall=0.550  score=0.467  13.8s
+ep  22/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.564  wall=0.607  score=0.564  14.1s
+    -> new best (score=0.564), saved
+ep  23/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.997  floor=0.518  wall=0.583  score=0.518  14.3s
+ep  24/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.514  wall=0.586  score=0.514  19.5s
+ep  25/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.473  wall=0.585  score=0.473  19.4s
+ep  26/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.521  wall=0.595  score=0.521  15.0s
+ep  27/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.536  wall=0.583  score=0.536  13.1s
+ep  28/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.508  wall=0.602  score=0.508  17.6s
+ep  29/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.533  wall=0.597  score=0.533  19.5s
+ep  30/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.547  wall=0.597  score=0.547  16.6s
+ep  31/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.557  wall=0.607  score=0.557  13.1s
+ep  32/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.996  floor=0.522  wall=0.585  score=0.522  12.7s
+ep  33/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.533  wall=0.586  score=0.533  13.2s
+ep  34/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.549  wall=0.610  score=0.549  13.4s
+ep  35/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.565  wall=0.610  score=0.565  13.8s
+    -> new best (score=0.565), saved
+ep  36/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.996  floor=0.551  wall=0.606  score=0.551  14.0s
+ep  37/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.561  wall=0.611  score=0.561  13.4s
+ep  38/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.996  floor=0.550  wall=0.605  score=0.550  13.0s
+ep  39/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.538  wall=0.594  score=0.538  12.9s
+ep  40/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.538  wall=0.598  score=0.538  13.2s
+
+Best score: 0.565. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_imagenet\fold0
+  fold 0 done in 9.4 min, best val floor IoU 0.565
+
+============================================================
+FOLD 1
+============================================================
+  train 304 / 71 blocks   inner-val 98 / 23   HELD-OUT 101
+ep   1/40  tr_loss=0.0066 va_loss=0.0015  va_iou bg=0.994  floor=0.357  wall=0.412  score=0.357  20.2s
+    -> new best (score=0.357), saved
+ep   2/40  tr_loss=0.0011 va_loss=0.0010  va_iou bg=0.995  floor=0.421  wall=0.498  score=0.421  14.3s
+    -> new best (score=0.421), saved
+ep   3/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.996  floor=0.496  wall=0.493  score=0.496  14.2s
+    -> new best (score=0.496), saved
+ep   4/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.995  floor=0.399  wall=0.521  score=0.399  13.3s
+ep   5/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.994  floor=0.386  wall=0.485  score=0.386  13.0s
+ep   6/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.995  floor=0.415  wall=0.506  score=0.415  12.9s
+ep   7/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.996  floor=0.453  wall=0.526  score=0.453  13.2s
+ep   8/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.444  wall=0.548  score=0.444  13.2s
+ep   9/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.448  wall=0.521  score=0.448  13.7s
+ep  10/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.502  wall=0.559  score=0.502  13.0s
+    -> new best (score=0.502), saved
+ep  11/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.481  wall=0.530  score=0.481  13.2s
+ep  12/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.995  floor=0.458  wall=0.551  score=0.458  12.8s
+ep  13/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.996  floor=0.481  wall=0.541  score=0.481  13.2s
+ep  14/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.997  floor=0.492  wall=0.552  score=0.492  13.2s
+ep  15/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.496  wall=0.579  score=0.496  13.0s
+ep  16/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.461  wall=0.545  score=0.461  13.8s
+ep  17/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.454  wall=0.540  score=0.454  13.8s
+ep  18/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.477  wall=0.559  score=0.477  13.6s
+ep  19/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.467  wall=0.555  score=0.467  14.4s
+ep  20/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.504  wall=0.560  score=0.504  13.9s
+    -> new best (score=0.504), saved
+ep  21/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.474  wall=0.556  score=0.474  13.7s
+ep  22/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.465  wall=0.566  score=0.465  13.5s
+ep  23/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.480  wall=0.558  score=0.480  13.7s
+ep  24/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.514  wall=0.574  score=0.514  13.6s
+    -> new best (score=0.514), saved
+ep  25/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.996  floor=0.504  wall=0.572  score=0.504  14.0s
+ep  26/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.530  wall=0.597  score=0.530  14.3s
+    -> new best (score=0.530), saved
+ep  27/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.995  floor=0.449  wall=0.521  score=0.449  12.6s
+ep  28/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.996  floor=0.461  wall=0.556  score=0.461  12.7s
+ep  29/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.517  wall=0.568  score=0.517  12.6s
+ep  30/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.996  floor=0.527  wall=0.567  score=0.527  12.6s
+ep  31/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.513  wall=0.578  score=0.513  12.9s
+ep  32/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.996  floor=0.507  wall=0.570  score=0.507  12.9s
+ep  33/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.527  wall=0.585  score=0.527  13.0s
+ep  34/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.514  wall=0.583  score=0.514  12.7s
+ep  35/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.538  wall=0.596  score=0.538  13.4s
+    -> new best (score=0.538), saved
+ep  36/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.513  wall=0.591  score=0.513  13.1s
+ep  37/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.530  wall=0.582  score=0.530  13.2s
+ep  38/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.513  wall=0.576  score=0.513  13.1s
+ep  39/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.512  wall=0.591  score=0.512  12.9s
+ep  40/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.529  wall=0.583  score=0.529  13.0s
+
+Best score: 0.538. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_imagenet\fold1
+  fold 1 done in 9.0 min, best val floor IoU 0.538
+
+============================================================
+FOLD 2
+============================================================
+  train 302 / 71 blocks   inner-val 103 / 21   HELD-OUT 98
+ep   1/40  tr_loss=0.0076 va_loss=0.0014  va_iou bg=0.996  floor=0.378  wall=0.481  score=0.378  18.7s
+    -> new best (score=0.378), saved
+ep   2/40  tr_loss=0.0012 va_loss=0.0010  va_iou bg=0.996  floor=0.431  wall=0.496  score=0.431  13.1s
+    -> new best (score=0.431), saved
+ep   3/40  tr_loss=0.0010 va_loss=0.0010  va_iou bg=0.996  floor=0.451  wall=0.482  score=0.451  13.2s
+    -> new best (score=0.451), saved
+ep   4/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.995  floor=0.373  wall=0.488  score=0.373  13.1s
+ep   5/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.445  wall=0.566  score=0.445  13.0s
+ep   6/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.481  wall=0.542  score=0.481  13.0s
+    -> new best (score=0.481), saved
+ep   7/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.484  wall=0.567  score=0.484  13.0s
+    -> new best (score=0.484), saved
+ep   8/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.451  wall=0.537  score=0.451  13.0s
+ep   9/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.481  wall=0.561  score=0.481  13.2s
+ep  10/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.496  wall=0.548  score=0.496  13.2s
+    -> new best (score=0.496), saved
+ep  11/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.521  wall=0.583  score=0.521  13.0s
+    -> new best (score=0.521), saved
+ep  12/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.994  floor=0.400  wall=0.492  score=0.400  12.9s
+ep  13/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.502  wall=0.559  score=0.502  12.8s
+ep  14/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.502  wall=0.571  score=0.502  12.8s
+ep  15/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.995  floor=0.468  wall=0.532  score=0.468  12.8s
+ep  16/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.997  floor=0.506  wall=0.587  score=0.506  12.9s
+ep  17/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.542  wall=0.582  score=0.542  13.0s
+    -> new best (score=0.542), saved
+ep  18/40  tr_loss=0.0005 va_loss=0.0011  va_iou bg=0.997  floor=0.537  wall=0.563  score=0.537  13.3s
+ep  19/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.534  wall=0.587  score=0.534  12.9s
+ep  20/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.500  wall=0.571  score=0.500  12.8s
+ep  21/40  tr_loss=0.0005 va_loss=0.0010  va_iou bg=0.997  floor=0.505  wall=0.580  score=0.505  12.8s
+ep  22/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.504  wall=0.596  score=0.504  12.8s
+ep  23/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.518  wall=0.575  score=0.518  12.8s
+ep  24/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.996  floor=0.543  wall=0.582  score=0.543  12.8s
+    -> new best (score=0.543), saved
+ep  25/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.496  wall=0.562  score=0.496  12.8s
+ep  26/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.523  wall=0.588  score=0.523  12.8s
+ep  27/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.518  wall=0.593  score=0.518  12.8s
+ep  28/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.506  wall=0.604  score=0.506  12.8s
+ep  29/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.551  wall=0.586  score=0.551  12.8s
+    -> new best (score=0.551), saved
+ep  30/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.554  wall=0.633  score=0.554  12.8s
+    -> new best (score=0.554), saved
+ep  31/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.542  wall=0.598  score=0.542  12.8s
+ep  32/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.550  wall=0.600  score=0.550  12.8s
+ep  33/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.538  wall=0.604  score=0.538  12.8s
+ep  34/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.540  wall=0.597  score=0.540  12.8s
+ep  35/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.546  wall=0.585  score=0.546  12.9s
+ep  36/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.526  wall=0.586  score=0.526  12.8s
+ep  37/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.526  wall=0.596  score=0.526  12.8s
+ep  38/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.554  wall=0.609  score=0.554  12.8s
+    -> new best (score=0.554), saved
+ep  39/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.543  wall=0.596  score=0.543  12.8s
+ep  40/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.539  wall=0.606  score=0.539  12.8s
+
+Best score: 0.554. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_imagenet\fold2
+  fold 2 done in 8.7 min, best val floor IoU 0.554
+
+============================================================
+FOLD 3
+============================================================
+  train 302 / 71 blocks   inner-val 98 / 23   HELD-OUT 103
+ep   1/40  tr_loss=0.0081 va_loss=0.0018  va_iou bg=0.995  floor=0.354  wall=0.358  score=0.354  18.1s
+    -> new best (score=0.354), saved
+ep   2/40  tr_loss=0.0012 va_loss=0.0013  va_iou bg=0.996  floor=0.412  wall=0.415  score=0.412  13.0s
+    -> new best (score=0.412), saved
+ep   3/40  tr_loss=0.0010 va_loss=0.0013  va_iou bg=0.996  floor=0.422  wall=0.459  score=0.422  12.8s
+    -> new best (score=0.422), saved
+ep   4/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.996  floor=0.454  wall=0.434  score=0.454  12.8s
+    -> new best (score=0.454), saved
+ep   5/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.995  floor=0.436  wall=0.502  score=0.436  12.8s
+ep   6/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.996  floor=0.416  wall=0.505  score=0.416  12.8s
+ep   7/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.997  floor=0.475  wall=0.549  score=0.475  12.7s
+    -> new best (score=0.475), saved
+ep   8/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.474  wall=0.516  score=0.474  12.7s
+ep   9/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.997  floor=0.474  wall=0.532  score=0.474  12.7s
+ep  10/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.532  wall=0.577  score=0.532  12.8s
+    -> new best (score=0.532), saved
+ep  11/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.501  wall=0.513  score=0.501  12.7s
+ep  12/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.558  wall=0.576  score=0.558  12.8s
+    -> new best (score=0.558), saved
+ep  13/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.489  wall=0.539  score=0.489  12.7s
+ep  14/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.510  wall=0.515  score=0.510  12.7s
+ep  15/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.500  wall=0.546  score=0.500  12.7s
+ep  16/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.494  wall=0.551  score=0.494  12.8s
+ep  17/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.502  wall=0.543  score=0.502  12.7s
+ep  18/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.494  wall=0.528  score=0.494  12.7s
+ep  19/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.547  wall=0.565  score=0.547  12.8s
+ep  20/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.492  wall=0.549  score=0.492  12.8s
+ep  21/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.515  wall=0.552  score=0.515  12.8s
+ep  22/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.527  wall=0.582  score=0.527  12.8s
+ep  23/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.498  wall=0.553  score=0.498  12.7s
+ep  24/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.494  wall=0.558  score=0.494  13.2s
+ep  25/40  tr_loss=0.0005 va_loss=0.0014  va_iou bg=0.996  floor=0.499  wall=0.530  score=0.499  12.8s
+ep  26/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.530  wall=0.577  score=0.530  12.7s
+ep  27/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.528  wall=0.571  score=0.528  12.8s
+ep  28/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.532  wall=0.575  score=0.532  12.8s
+ep  29/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.508  wall=0.561  score=0.508  12.8s
+ep  30/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.559  wall=0.594  score=0.559  12.8s
+    -> new best (score=0.559), saved
+ep  31/40  tr_loss=0.0004 va_loss=0.0011  va_iou bg=0.997  floor=0.530  wall=0.571  score=0.530  12.7s
+ep  32/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.524  wall=0.562  score=0.524  12.8s
+ep  33/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.537  wall=0.571  score=0.537  12.8s
+ep  34/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.554  wall=0.592  score=0.554  12.8s
+ep  35/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.552  wall=0.584  score=0.552  12.8s
+ep  36/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.529  wall=0.576  score=0.529  12.8s
+ep  37/40  tr_loss=0.0004 va_loss=0.0011  va_iou bg=0.997  floor=0.553  wall=0.594  score=0.553  12.8s
+ep  38/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.545  wall=0.601  score=0.545  12.8s
+ep  39/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.551  wall=0.591  score=0.551  12.8s
+ep  40/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.530  wall=0.565  score=0.530  12.8s
+
+Best score: 0.559. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_imagenet\fold3
+  fold 3 done in 8.6 min, best val floor IoU 0.559
+
+============================================================
+FOLD 4
+============================================================
+  train 302 / 65 blocks   inner-val 103 / 27   HELD-OUT 98
+ep   1/40  tr_loss=0.0148 va_loss=0.0017  va_iou bg=0.994  floor=0.328  wall=0.352  score=0.328  18.2s
+    -> new best (score=0.328), saved
+ep   2/40  tr_loss=0.0015 va_loss=0.0012  va_iou bg=0.995  floor=0.360  wall=0.415  score=0.360  13.0s
+    -> new best (score=0.360), saved
+ep   3/40  tr_loss=0.0011 va_loss=0.0010  va_iou bg=0.996  floor=0.360  wall=0.445  score=0.360  12.9s
+    -> new best (score=0.360), saved
+ep   4/40  tr_loss=0.0010 va_loss=0.0009  va_iou bg=0.996  floor=0.353  wall=0.461  score=0.353  12.9s
+ep   5/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.995  floor=0.401  wall=0.479  score=0.401  12.9s
+    -> new best (score=0.401), saved
+ep   6/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.458  wall=0.509  score=0.458  12.9s
+    -> new best (score=0.458), saved
+ep   7/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.996  floor=0.414  wall=0.479  score=0.414  13.1s
+ep   8/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.996  floor=0.430  wall=0.492  score=0.430  13.0s
+ep   9/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.424  wall=0.483  score=0.424  12.8s
+ep  10/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.438  wall=0.491  score=0.438  13.0s
+ep  11/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.995  floor=0.402  wall=0.488  score=0.402  12.9s
+ep  12/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.436  wall=0.498  score=0.436  12.9s
+ep  13/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.465  wall=0.487  score=0.465  12.8s
+    -> new best (score=0.465), saved
+ep  14/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.442  wall=0.515  score=0.442  12.8s
+ep  15/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.997  floor=0.473  wall=0.490  score=0.473  12.9s
+    -> new best (score=0.473), saved
+ep  16/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.442  wall=0.501  score=0.442  12.8s
+ep  17/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.454  wall=0.529  score=0.454  12.9s
+ep  18/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.466  wall=0.496  score=0.466  12.9s
+ep  19/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.473  wall=0.513  score=0.473  12.9s
+    -> new best (score=0.473), saved
+ep  20/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.485  wall=0.541  score=0.485  12.9s
+    -> new best (score=0.485), saved
+ep  21/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.483  wall=0.522  score=0.483  12.8s
+ep  22/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.482  wall=0.542  score=0.482  12.9s
+ep  23/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.473  wall=0.528  score=0.473  12.8s
+ep  24/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.501  wall=0.557  score=0.501  12.8s
+    -> new best (score=0.501), saved
+ep  25/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.995  floor=0.420  wall=0.495  score=0.420  12.9s
+ep  26/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.995  floor=0.460  wall=0.487  score=0.460  12.8s
+ep  27/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.524  wall=0.555  score=0.524  12.9s
+    -> new best (score=0.524), saved
+ep  28/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.498  wall=0.562  score=0.498  12.8s
+ep  29/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.478  wall=0.533  score=0.478  12.8s
+ep  30/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.493  wall=0.528  score=0.493  13.3s
+ep  31/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.510  wall=0.555  score=0.510  12.9s
+ep  32/40  tr_loss=0.0005 va_loss=0.0011  va_iou bg=0.997  floor=0.479  wall=0.519  score=0.479  12.8s
+ep  33/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.497  wall=0.561  score=0.497  12.8s
+ep  34/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.482  wall=0.559  score=0.482  12.8s
+ep  35/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.494  wall=0.566  score=0.494  12.8s
+ep  36/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.494  wall=0.541  score=0.494  12.8s
+ep  37/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.512  wall=0.560  score=0.512  12.8s
+ep  38/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.486  wall=0.546  score=0.486  12.8s
+ep  39/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.501  wall=0.560  score=0.501  12.8s
+ep  40/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.502  wall=0.569  score=0.502  12.8s
+
+Best score: 0.524. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_imagenet\fold4
+  fold 4 done in 8.7 min, best val floor IoU 0.524
+
+POOLED  val floor IoU 0.548 (sd 0.015)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\r34_imagenet\pooled_metrics.json
+EXIT 0 for pit/r34_imagenet
+##### pad / r34_imagenet
+== pad / r34_imagenet : 5-fold on the unified split ==
+   650 features across 129 blocks, 1 m grid
+     fold 0:   130 features
+     fold 1:   134 features
+     fold 2:   127 features
+     fold 3:   129 features
+     fold 4:   130 features
+   r34_imagenet: 24.4 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 386 / 78 blocks   inner-val 134 / 26   HELD-OUT 130
+ep   1/40  tr_loss=0.0204 va_loss=0.0185  va_iou bg=0.913  pad=0.428  score=0.428  22.1s
+    -> new best (score=0.428), saved
+ep   2/40  tr_loss=0.0140 va_loss=0.0183  va_iou bg=0.931  pad=0.449  score=0.449  16.4s
+    -> new best (score=0.449), saved
+ep   3/40  tr_loss=0.0133 va_loss=0.0243  va_iou bg=0.939  pad=0.429  score=0.429  16.3s
+ep   4/40  tr_loss=0.0128 va_loss=0.0159  va_iou bg=0.931  pad=0.490  score=0.490  16.4s
+    -> new best (score=0.490), saved
+ep   5/40  tr_loss=0.0127 va_loss=0.0177  va_iou bg=0.926  pad=0.462  score=0.462  16.4s
+ep   6/40  tr_loss=0.0120 va_loss=0.0178  va_iou bg=0.942  pad=0.511  score=0.511  16.3s
+    -> new best (score=0.511), saved
+ep   7/40  tr_loss=0.0113 va_loss=0.0160  va_iou bg=0.945  pad=0.517  score=0.517  16.3s
+    -> new best (score=0.517), saved
+ep   8/40  tr_loss=0.0115 va_loss=0.0170  va_iou bg=0.943  pad=0.513  score=0.513  16.4s
+ep   9/40  tr_loss=0.0110 va_loss=0.0141  va_iou bg=0.940  pad=0.525  score=0.525  16.4s
+    -> new best (score=0.525), saved
+ep  10/40  tr_loss=0.0108 va_loss=0.0158  va_iou bg=0.926  pad=0.492  score=0.492  16.3s
+ep  11/40  tr_loss=0.0107 va_loss=0.0250  va_iou bg=0.935  pad=0.385  score=0.385  16.3s
+ep  12/40  tr_loss=0.0113 va_loss=0.0147  va_iou bg=0.932  pad=0.485  score=0.485  16.4s
+ep  13/40  tr_loss=0.0101 va_loss=0.0182  va_iou bg=0.946  pad=0.511  score=0.511  16.4s
+ep  14/40  tr_loss=0.0102 va_loss=0.0143  va_iou bg=0.940  pad=0.535  score=0.535  16.3s
+    -> new best (score=0.535), saved
+ep  15/40  tr_loss=0.0096 va_loss=0.0141  va_iou bg=0.937  pad=0.521  score=0.521  16.4s
+ep  16/40  tr_loss=0.0095 va_loss=0.0151  va_iou bg=0.940  pad=0.542  score=0.542  16.4s
+    -> new best (score=0.542), saved
+ep  17/40  tr_loss=0.0100 va_loss=0.0171  va_iou bg=0.942  pad=0.515  score=0.515  16.4s
+ep  18/40  tr_loss=0.0095 va_loss=0.0163  va_iou bg=0.942  pad=0.544  score=0.544  16.3s
+    -> new best (score=0.544), saved
+ep  19/40  tr_loss=0.0092 va_loss=0.0152  va_iou bg=0.940  pad=0.546  score=0.546  16.3s
+    -> new best (score=0.546), saved
+ep  20/40  tr_loss=0.0093 va_loss=0.0157  va_iou bg=0.946  pad=0.562  score=0.562  16.5s
+    -> new best (score=0.562), saved
+ep  21/40  tr_loss=0.0087 va_loss=0.0177  va_iou bg=0.947  pad=0.545  score=0.545  16.4s
+ep  22/40  tr_loss=0.0088 va_loss=0.0152  va_iou bg=0.940  pad=0.540  score=0.540  16.3s
+ep  23/40  tr_loss=0.0084 va_loss=0.0174  va_iou bg=0.947  pad=0.524  score=0.524  16.4s
+ep  24/40  tr_loss=0.0081 va_loss=0.0158  va_iou bg=0.952  pad=0.546  score=0.546  16.4s
+ep  25/40  tr_loss=0.0080 va_loss=0.0163  va_iou bg=0.944  pad=0.550  score=0.550  16.4s
+ep  26/40  tr_loss=0.0081 va_loss=0.0149  va_iou bg=0.939  pad=0.539  score=0.539  16.4s
+ep  27/40  tr_loss=0.0074 va_loss=0.0149  va_iou bg=0.949  pad=0.575  score=0.575  16.4s
+    -> new best (score=0.575), saved
+ep  28/40  tr_loss=0.0076 va_loss=0.0145  va_iou bg=0.947  pad=0.575  score=0.575  17.0s
+    -> new best (score=0.575), saved
+ep  29/40  tr_loss=0.0072 va_loss=0.0190  va_iou bg=0.950  pad=0.574  score=0.574  16.4s
+ep  30/40  tr_loss=0.0070 va_loss=0.0188  va_iou bg=0.949  pad=0.565  score=0.565  16.3s
+ep  31/40  tr_loss=0.0069 va_loss=0.0193  va_iou bg=0.951  pad=0.587  score=0.587  16.3s
+    -> new best (score=0.587), saved
+ep  32/40  tr_loss=0.0068 va_loss=0.0172  va_iou bg=0.945  pad=0.559  score=0.559  16.4s
+ep  33/40  tr_loss=0.0066 va_loss=0.0205  va_iou bg=0.951  pad=0.545  score=0.545  16.3s
+ep  34/40  tr_loss=0.0065 va_loss=0.0206  va_iou bg=0.950  pad=0.536  score=0.536  16.3s
+ep  35/40  tr_loss=0.0065 va_loss=0.0168  va_iou bg=0.950  pad=0.569  score=0.569  16.3s
+ep  36/40  tr_loss=0.0064 va_loss=0.0187  va_iou bg=0.947  pad=0.547  score=0.547  16.3s
+ep  37/40  tr_loss=0.0063 va_loss=0.0203  va_iou bg=0.949  pad=0.545  score=0.545  16.4s
+ep  38/40  tr_loss=0.0062 va_loss=0.0196  va_iou bg=0.949  pad=0.574  score=0.574  16.3s
+ep  39/40  tr_loss=0.0063 va_loss=0.0176  va_iou bg=0.951  pad=0.565  score=0.565  16.3s
+ep  40/40  tr_loss=0.0063 va_loss=0.0171  va_iou bg=0.950  pad=0.570  score=0.570  16.3s
+
+Best score: 0.587. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_imagenet\fold0
+  fold 0 done in 11.0 min, best val pad IoU 0.587
+
+============================================================
+FOLD 1
+============================================================
+  train 389 / 76 blocks   inner-val 127 / 27   HELD-OUT 134
+ep   1/40  tr_loss=0.0249 va_loss=0.0166  va_iou bg=0.934  pad=0.410  score=0.410  21.9s
+    -> new best (score=0.410), saved
+ep   2/40  tr_loss=0.0149 va_loss=0.0165  va_iou bg=0.941  pad=0.443  score=0.443  16.4s
+    -> new best (score=0.443), saved
+ep   3/40  tr_loss=0.0140 va_loss=0.0140  va_iou bg=0.925  pad=0.465  score=0.465  16.4s
+    -> new best (score=0.465), saved
+ep   4/40  tr_loss=0.0131 va_loss=0.0130  va_iou bg=0.942  pad=0.477  score=0.477  16.3s
+    -> new best (score=0.477), saved
+ep   5/40  tr_loss=0.0125 va_loss=0.0138  va_iou bg=0.939  pad=0.446  score=0.446  16.3s
+ep   6/40  tr_loss=0.0122 va_loss=0.0127  va_iou bg=0.952  pad=0.504  score=0.504  16.3s
+    -> new best (score=0.504), saved
+ep   7/40  tr_loss=0.0121 va_loss=0.0132  va_iou bg=0.932  pad=0.465  score=0.465  16.4s
+ep   8/40  tr_loss=0.0115 va_loss=0.0120  va_iou bg=0.939  pad=0.470  score=0.470  16.4s
+ep   9/40  tr_loss=0.0116 va_loss=0.0146  va_iou bg=0.944  pad=0.489  score=0.489  16.4s
+ep  10/40  tr_loss=0.0115 va_loss=0.0127  va_iou bg=0.940  pad=0.490  score=0.490  16.4s
+ep  11/40  tr_loss=0.0121 va_loss=0.0136  va_iou bg=0.938  pad=0.472  score=0.472  16.4s
+ep  12/40  tr_loss=0.0110 va_loss=0.0127  va_iou bg=0.940  pad=0.481  score=0.481  16.3s
+ep  13/40  tr_loss=0.0102 va_loss=0.0119  va_iou bg=0.941  pad=0.512  score=0.512  16.5s
+    -> new best (score=0.512), saved
+ep  14/40  tr_loss=0.0104 va_loss=0.0139  va_iou bg=0.932  pad=0.473  score=0.473  16.4s
+ep  15/40  tr_loss=0.0100 va_loss=0.0118  va_iou bg=0.946  pad=0.517  score=0.517  16.5s
+    -> new best (score=0.517), saved
+ep  16/40  tr_loss=0.0097 va_loss=0.0113  va_iou bg=0.949  pad=0.530  score=0.530  16.4s
+    -> new best (score=0.530), saved
+ep  17/40  tr_loss=0.0102 va_loss=0.0124  va_iou bg=0.936  pad=0.502  score=0.502  16.5s
+ep  18/40  tr_loss=0.0095 va_loss=0.0115  va_iou bg=0.947  pad=0.528  score=0.528  16.4s
+ep  19/40  tr_loss=0.0092 va_loss=0.0146  va_iou bg=0.941  pad=0.499  score=0.499  16.4s
+ep  20/40  tr_loss=0.0094 va_loss=0.0131  va_iou bg=0.939  pad=0.487  score=0.487  16.5s
+ep  21/40  tr_loss=0.0090 va_loss=0.0118  va_iou bg=0.953  pad=0.547  score=0.547  16.4s
+    -> new best (score=0.547), saved
+ep  22/40  tr_loss=0.0089 va_loss=0.0133  va_iou bg=0.935  pad=0.490  score=0.490  16.4s
+ep  23/40  tr_loss=0.0088 va_loss=0.0120  va_iou bg=0.946  pad=0.539  score=0.539  16.4s
+ep  24/40  tr_loss=0.0087 va_loss=0.0118  va_iou bg=0.954  pad=0.578  score=0.578  16.8s
+    -> new best (score=0.578), saved
+ep  25/40  tr_loss=0.0082 va_loss=0.0123  va_iou bg=0.952  pad=0.568  score=0.568  16.6s
+ep  26/40  tr_loss=0.0085 va_loss=0.0107  va_iou bg=0.952  pad=0.538  score=0.538  16.4s
+ep  27/40  tr_loss=0.0077 va_loss=0.0128  va_iou bg=0.943  pad=0.516  score=0.516  16.5s
+ep  28/40  tr_loss=0.0078 va_loss=0.0129  va_iou bg=0.945  pad=0.530  score=0.530  16.4s
+ep  29/40  tr_loss=0.0076 va_loss=0.0138  va_iou bg=0.945  pad=0.530  score=0.530  16.4s
+ep  30/40  tr_loss=0.0075 va_loss=0.0128  va_iou bg=0.956  pad=0.569  score=0.569  16.4s
+ep  31/40  tr_loss=0.0072 va_loss=0.0138  va_iou bg=0.951  pad=0.560  score=0.560  16.5s
+ep  32/40  tr_loss=0.0071 va_loss=0.0128  va_iou bg=0.957  pad=0.587  score=0.587  16.4s
+    -> new best (score=0.587), saved
+ep  33/40  tr_loss=0.0068 va_loss=0.0136  va_iou bg=0.953  pad=0.553  score=0.553  16.4s
+ep  34/40  tr_loss=0.0067 va_loss=0.0136  va_iou bg=0.954  pad=0.557  score=0.557  16.4s
+ep  35/40  tr_loss=0.0066 va_loss=0.0163  va_iou bg=0.954  pad=0.552  score=0.552  16.4s
+ep  36/40  tr_loss=0.0066 va_loss=0.0136  va_iou bg=0.958  pad=0.570  score=0.570  16.4s
+ep  37/40  tr_loss=0.0065 va_loss=0.0148  va_iou bg=0.955  pad=0.563  score=0.563  16.4s
+ep  38/40  tr_loss=0.0067 va_loss=0.0120  va_iou bg=0.955  pad=0.564  score=0.564  16.6s
+ep  39/40  tr_loss=0.0064 va_loss=0.0122  va_iou bg=0.958  pad=0.595  score=0.595  16.5s
+    -> new best (score=0.595), saved
+ep  40/40  tr_loss=0.0063 va_loss=0.0131  va_iou bg=0.955  pad=0.568  score=0.568  16.5s
+
+Best score: 0.595. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_imagenet\fold1
+  fold 1 done in 11.1 min, best val pad IoU 0.595
+
+============================================================
+FOLD 2
+============================================================
+  train 394 / 78 blocks   inner-val 129 / 24   HELD-OUT 127
+ep   1/40  tr_loss=0.0224 va_loss=0.0173  va_iou bg=0.936  pad=0.474  score=0.474  22.2s
+    -> new best (score=0.474), saved
+ep   2/40  tr_loss=0.0161 va_loss=0.0159  va_iou bg=0.938  pad=0.446  score=0.446  16.7s
+ep   3/40  tr_loss=0.0145 va_loss=0.0151  va_iou bg=0.929  pad=0.476  score=0.476  16.6s
+    -> new best (score=0.476), saved
+ep   4/40  tr_loss=0.0141 va_loss=0.0124  va_iou bg=0.940  pad=0.527  score=0.527  16.5s
+    -> new best (score=0.527), saved
+ep   5/40  tr_loss=0.0131 va_loss=0.0128  va_iou bg=0.934  pad=0.500  score=0.500  16.5s
+ep   6/40  tr_loss=0.0128 va_loss=0.0133  va_iou bg=0.931  pad=0.504  score=0.504  16.6s
+ep   7/40  tr_loss=0.0125 va_loss=0.0127  va_iou bg=0.949  pad=0.554  score=0.554  16.6s
+    -> new best (score=0.554), saved
+ep   8/40  tr_loss=0.0122 va_loss=0.0574  va_iou bg=0.936  pad=0.450  score=0.450  16.6s
+ep   9/40  tr_loss=0.0121 va_loss=0.0132  va_iou bg=0.932  pad=0.521  score=0.521  16.6s
+ep  10/40  tr_loss=0.0120 va_loss=0.0146  va_iou bg=0.951  pad=0.530  score=0.530  16.6s
+ep  11/40  tr_loss=0.0117 va_loss=0.0147  va_iou bg=0.947  pad=0.509  score=0.509  16.6s
+ep  12/40  tr_loss=0.0117 va_loss=0.0130  va_iou bg=0.938  pad=0.518  score=0.518  16.5s
+ep  13/40  tr_loss=0.0108 va_loss=0.0135  va_iou bg=0.952  pad=0.537  score=0.537  16.6s
+ep  14/40  tr_loss=0.0107 va_loss=0.0118  va_iou bg=0.942  pad=0.542  score=0.542  16.6s
+ep  15/40  tr_loss=0.0107 va_loss=0.0139  va_iou bg=0.947  pad=0.545  score=0.545  16.6s
+ep  16/40  tr_loss=0.0106 va_loss=0.0139  va_iou bg=0.949  pad=0.542  score=0.542  16.6s
+ep  17/40  tr_loss=0.0108 va_loss=0.0109  va_iou bg=0.945  pad=0.565  score=0.565  16.6s
+    -> new best (score=0.565), saved
+ep  18/40  tr_loss=0.0101 va_loss=0.0126  va_iou bg=0.950  pad=0.546  score=0.546  16.7s
+ep  19/40  tr_loss=0.0103 va_loss=0.0133  va_iou bg=0.949  pad=0.553  score=0.553  16.6s
+ep  20/40  tr_loss=0.0098 va_loss=0.0124  va_iou bg=0.956  pad=0.588  score=0.588  17.4s
+    -> new best (score=0.588), saved
+ep  21/40  tr_loss=0.0093 va_loss=0.0129  va_iou bg=0.948  pad=0.549  score=0.549  16.6s
+ep  22/40  tr_loss=0.0095 va_loss=0.0125  va_iou bg=0.945  pad=0.533  score=0.533  16.6s
+ep  23/40  tr_loss=0.0092 va_loss=0.0111  va_iou bg=0.949  pad=0.571  score=0.571  16.5s
+ep  24/40  tr_loss=0.0088 va_loss=0.0115  va_iou bg=0.952  pad=0.596  score=0.596  16.5s
+    -> new best (score=0.596), saved
+ep  25/40  tr_loss=0.0091 va_loss=0.0143  va_iou bg=0.940  pad=0.542  score=0.542  16.5s
+ep  26/40  tr_loss=0.0083 va_loss=0.0129  va_iou bg=0.951  pad=0.568  score=0.568  16.6s
+ep  27/40  tr_loss=0.0081 va_loss=0.0130  va_iou bg=0.943  pad=0.547  score=0.547  16.5s
+ep  28/40  tr_loss=0.0083 va_loss=0.0124  va_iou bg=0.953  pad=0.588  score=0.588  16.6s
+ep  29/40  tr_loss=0.0077 va_loss=0.0136  va_iou bg=0.951  pad=0.581  score=0.581  16.5s
+ep  30/40  tr_loss=0.0074 va_loss=0.0142  va_iou bg=0.956  pad=0.597  score=0.597  16.6s
+    -> new best (score=0.597), saved
+ep  31/40  tr_loss=0.0076 va_loss=0.0141  va_iou bg=0.950  pad=0.587  score=0.587  16.6s
+ep  32/40  tr_loss=0.0077 va_loss=0.0113  va_iou bg=0.954  pad=0.595  score=0.595  16.6s
+ep  33/40  tr_loss=0.0069 va_loss=0.0139  va_iou bg=0.954  pad=0.588  score=0.588  16.6s
+ep  34/40  tr_loss=0.0071 va_loss=0.0138  va_iou bg=0.955  pad=0.605  score=0.605  16.6s
+    -> new best (score=0.605), saved
+ep  35/40  tr_loss=0.0070 va_loss=0.0156  va_iou bg=0.955  pad=0.601  score=0.601  16.5s
+ep  36/40  tr_loss=0.0069 va_loss=0.0145  va_iou bg=0.956  pad=0.611  score=0.611  16.6s
+    -> new best (score=0.611), saved
+ep  37/40  tr_loss=0.0069 va_loss=0.0142  va_iou bg=0.954  pad=0.585  score=0.585  16.6s
+ep  38/40  tr_loss=0.0065 va_loss=0.0146  va_iou bg=0.953  pad=0.603  score=0.603  16.6s
+ep  39/40  tr_loss=0.0067 va_loss=0.0146  va_iou bg=0.953  pad=0.582  score=0.582  16.6s
+ep  40/40  tr_loss=0.0066 va_loss=0.0132  va_iou bg=0.956  pad=0.601  score=0.601  16.6s
+
+Best score: 0.611. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_imagenet\fold2
+  fold 2 done in 11.2 min, best val pad IoU 0.611
+
+============================================================
+FOLD 3
+============================================================
+  train 391 / 78 blocks   inner-val 130 / 27   HELD-OUT 129
+ep   1/40  tr_loss=0.0240 va_loss=0.0194  va_iou bg=0.887  pad=0.331  score=0.331  22.1s
+    -> new best (score=0.331), saved
+ep   2/40  tr_loss=0.0168 va_loss=0.0149  va_iou bg=0.940  pad=0.429  score=0.429  16.7s
+    -> new best (score=0.429), saved
+ep   3/40  tr_loss=0.0150 va_loss=0.0134  va_iou bg=0.938  pad=0.455  score=0.455  16.5s
+    -> new best (score=0.455), saved
+ep   4/40  tr_loss=0.0143 va_loss=0.0134  va_iou bg=0.924  pad=0.427  score=0.427  16.5s
+ep   5/40  tr_loss=0.0137 va_loss=0.0124  va_iou bg=0.951  pad=0.497  score=0.497  16.6s
+    -> new best (score=0.497), saved
+ep   6/40  tr_loss=0.0133 va_loss=0.0132  va_iou bg=0.924  pad=0.432  score=0.432  16.5s
+ep   7/40  tr_loss=0.0131 va_loss=0.0135  va_iou bg=0.934  pad=0.444  score=0.444  16.5s
+ep   8/40  tr_loss=0.0124 va_loss=0.0126  va_iou bg=0.942  pad=0.482  score=0.482  16.6s
+ep   9/40  tr_loss=0.0122 va_loss=0.0110  va_iou bg=0.947  pad=0.502  score=0.502  16.6s
+    -> new best (score=0.502), saved
+ep  10/40  tr_loss=0.0121 va_loss=0.0122  va_iou bg=0.946  pad=0.486  score=0.486  16.6s
+ep  11/40  tr_loss=0.0119 va_loss=0.0120  va_iou bg=0.953  pad=0.519  score=0.519  16.5s
+    -> new best (score=0.519), saved
+ep  12/40  tr_loss=0.0115 va_loss=0.0119  va_iou bg=0.954  pad=0.501  score=0.501  16.5s
+ep  13/40  tr_loss=0.0108 va_loss=0.0116  va_iou bg=0.947  pad=0.512  score=0.512  16.5s
+ep  14/40  tr_loss=0.0109 va_loss=0.0118  va_iou bg=0.945  pad=0.511  score=0.511  16.5s
+ep  15/40  tr_loss=0.0107 va_loss=0.0120  va_iou bg=0.942  pad=0.479  score=0.479  16.5s
+ep  16/40  tr_loss=0.0107 va_loss=0.0123  va_iou bg=0.949  pad=0.493  score=0.493  17.3s
+ep  17/40  tr_loss=0.0109 va_loss=0.0116  va_iou bg=0.951  pad=0.538  score=0.538  16.6s
+    -> new best (score=0.538), saved
+ep  18/40  tr_loss=0.0099 va_loss=0.0160  va_iou bg=0.943  pad=0.484  score=0.484  16.4s
+ep  19/40  tr_loss=0.0103 va_loss=0.0118  va_iou bg=0.944  pad=0.492  score=0.492  16.5s
+ep  20/40  tr_loss=0.0097 va_loss=0.0108  va_iou bg=0.952  pad=0.553  score=0.553  16.5s
+    -> new best (score=0.553), saved
+ep  21/40  tr_loss=0.0097 va_loss=0.0114  va_iou bg=0.953  pad=0.552  score=0.552  16.5s
+ep  22/40  tr_loss=0.0093 va_loss=0.0121  va_iou bg=0.940  pad=0.490  score=0.490  16.4s
+ep  23/40  tr_loss=0.0093 va_loss=0.0110  va_iou bg=0.960  pad=0.562  score=0.562  16.4s
+    -> new best (score=0.562), saved
+ep  24/40  tr_loss=0.0089 va_loss=0.0111  va_iou bg=0.950  pad=0.539  score=0.539  16.5s
+ep  25/40  tr_loss=0.0087 va_loss=0.0120  va_iou bg=0.951  pad=0.558  score=0.558  16.5s
+ep  26/40  tr_loss=0.0082 va_loss=0.0113  va_iou bg=0.957  pad=0.564  score=0.564  16.5s
+    -> new best (score=0.564), saved
+ep  27/40  tr_loss=0.0086 va_loss=0.0133  va_iou bg=0.956  pad=0.543  score=0.543  16.4s
+ep  28/40  tr_loss=0.0082 va_loss=0.0109  va_iou bg=0.951  pad=0.539  score=0.539  16.5s
+ep  29/40  tr_loss=0.0078 va_loss=0.0130  va_iou bg=0.961  pad=0.564  score=0.564  16.5s
+ep  30/40  tr_loss=0.0077 va_loss=0.0119  va_iou bg=0.955  pad=0.544  score=0.544  16.4s
+ep  31/40  tr_loss=0.0078 va_loss=0.0143  va_iou bg=0.956  pad=0.555  score=0.555  16.4s
+ep  32/40  tr_loss=0.0074 va_loss=0.0126  va_iou bg=0.956  pad=0.563  score=0.563  16.5s
+ep  33/40  tr_loss=0.0075 va_loss=0.0128  va_iou bg=0.960  pad=0.548  score=0.548  16.5s
+ep  34/40  tr_loss=0.0068 va_loss=0.0116  va_iou bg=0.958  pad=0.559  score=0.559  16.5s
+ep  35/40  tr_loss=0.0069 va_loss=0.0139  va_iou bg=0.958  pad=0.555  score=0.555  16.5s
+ep  36/40  tr_loss=0.0071 va_loss=0.0132  va_iou bg=0.955  pad=0.542  score=0.542  16.5s
+ep  37/40  tr_loss=0.0068 va_loss=0.0116  va_iou bg=0.961  pad=0.569  score=0.569  16.6s
+    -> new best (score=0.569), saved
+ep  38/40  tr_loss=0.0070 va_loss=0.0146  va_iou bg=0.957  pad=0.565  score=0.565  16.5s
+ep  39/40  tr_loss=0.0065 va_loss=0.0138  va_iou bg=0.960  pad=0.571  score=0.571  16.5s
+    -> new best (score=0.571), saved
+ep  40/40  tr_loss=0.0066 va_loss=0.0136  va_iou bg=0.960  pad=0.576  score=0.576  16.5s
+    -> new best (score=0.576), saved
+
+Best score: 0.576. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_imagenet\fold3
+  fold 3 done in 11.1 min, best val pad IoU 0.576
+
+============================================================
+FOLD 4
+============================================================
+  train 390 / 77 blocks   inner-val 130 / 25   HELD-OUT 130
+ep   1/40  tr_loss=0.0233 va_loss=0.0187  va_iou bg=0.906  pad=0.432  score=0.432  22.0s
+    -> new best (score=0.432), saved
+ep   2/40  tr_loss=0.0158 va_loss=0.0160  va_iou bg=0.942  pad=0.493  score=0.493  16.4s
+    -> new best (score=0.493), saved
+ep   3/40  tr_loss=0.0145 va_loss=0.0148  va_iou bg=0.921  pad=0.483  score=0.483  16.5s
+ep   4/40  tr_loss=0.0140 va_loss=0.0163  va_iou bg=0.935  pad=0.488  score=0.488  16.5s
+ep   5/40  tr_loss=0.0135 va_loss=0.0145  va_iou bg=0.945  pad=0.533  score=0.533  16.4s
+    -> new best (score=0.533), saved
+ep   6/40  tr_loss=0.0130 va_loss=0.0132  va_iou bg=0.941  pad=0.526  score=0.526  16.4s
+ep   7/40  tr_loss=0.0121 va_loss=0.0136  va_iou bg=0.943  pad=0.553  score=0.553  16.4s
+    -> new best (score=0.553), saved
+ep   8/40  tr_loss=0.0128 va_loss=0.0153  va_iou bg=0.917  pad=0.481  score=0.481  16.5s
+ep   9/40  tr_loss=0.0120 va_loss=0.0143  va_iou bg=0.938  pad=0.519  score=0.519  16.4s
+ep  10/40  tr_loss=0.0122 va_loss=0.0127  va_iou bg=0.941  pad=0.537  score=0.537  16.4s
+ep  11/40  tr_loss=0.0117 va_loss=0.0133  va_iou bg=0.947  pad=0.552  score=0.552  16.4s
+ep  12/40  tr_loss=0.0113 va_loss=0.0157  va_iou bg=0.948  pad=0.534  score=0.534  17.1s
+ep  13/40  tr_loss=0.0106 va_loss=0.0148  va_iou bg=0.950  pad=0.584  score=0.584  16.5s
+    -> new best (score=0.584), saved
+ep  14/40  tr_loss=0.0110 va_loss=0.0123  va_iou bg=0.948  pad=0.582  score=0.582  16.4s
+ep  15/40  tr_loss=0.0104 va_loss=0.0150  va_iou bg=0.953  pad=0.549  score=0.549  16.5s
+ep  16/40  tr_loss=0.0104 va_loss=0.0176  va_iou bg=0.944  pad=0.529  score=0.529  16.4s
+ep  17/40  tr_loss=0.0112 va_loss=0.0130  va_iou bg=0.944  pad=0.556  score=0.556  16.4s
+ep  18/40  tr_loss=0.0107 va_loss=0.0158  va_iou bg=0.955  pad=0.575  score=0.575  16.4s
+ep  19/40  tr_loss=0.0103 va_loss=0.0161  va_iou bg=0.949  pad=0.568  score=0.568  16.4s
+ep  20/40  tr_loss=0.0103 va_loss=0.0131  va_iou bg=0.949  pad=0.570  score=0.570  16.5s
+ep  21/40  tr_loss=0.0101 va_loss=0.0130  va_iou bg=0.949  pad=0.579  score=0.579  16.4s
+ep  22/40  tr_loss=0.0095 va_loss=0.0138  va_iou bg=0.947  pad=0.566  score=0.566  16.4s
+ep  23/40  tr_loss=0.0089 va_loss=0.0117  va_iou bg=0.951  pad=0.598  score=0.598  16.5s
+    -> new best (score=0.598), saved
+ep  24/40  tr_loss=0.0087 va_loss=0.0162  va_iou bg=0.954  pad=0.577  score=0.577  16.5s
+ep  25/40  tr_loss=0.0087 va_loss=0.0144  va_iou bg=0.957  pad=0.595  score=0.595  16.4s
+ep  26/40  tr_loss=0.0084 va_loss=0.0117  va_iou bg=0.950  pad=0.590  score=0.590  16.5s
+ep  27/40  tr_loss=0.0081 va_loss=0.0139  va_iou bg=0.956  pad=0.602  score=0.602  16.4s
+    -> new best (score=0.602), saved
+ep  28/40  tr_loss=0.0081 va_loss=0.0170  va_iou bg=0.954  pad=0.586  score=0.586  16.5s
+ep  29/40  tr_loss=0.0081 va_loss=0.0149  va_iou bg=0.952  pad=0.600  score=0.600  16.4s
+ep  30/40  tr_loss=0.0077 va_loss=0.0135  va_iou bg=0.954  pad=0.624  score=0.624  16.4s
+    -> new best (score=0.624), saved
+ep  31/40  tr_loss=0.0077 va_loss=0.0144  va_iou bg=0.955  pad=0.612  score=0.612  16.6s
+ep  32/40  tr_loss=0.0073 va_loss=0.0158  va_iou bg=0.956  pad=0.613  score=0.613  16.5s
+ep  33/40  tr_loss=0.0072 va_loss=0.0163  va_iou bg=0.952  pad=0.602  score=0.602  16.4s
+ep  34/40  tr_loss=0.0073 va_loss=0.0151  va_iou bg=0.955  pad=0.614  score=0.614  16.4s
+ep  35/40  tr_loss=0.0069 va_loss=0.0140  va_iou bg=0.961  pad=0.625  score=0.625  16.4s
+    -> new best (score=0.625), saved
+ep  36/40  tr_loss=0.0070 va_loss=0.0165  va_iou bg=0.956  pad=0.627  score=0.627  16.4s
+    -> new best (score=0.627), saved
+ep  37/40  tr_loss=0.0070 va_loss=0.0166  va_iou bg=0.956  pad=0.609  score=0.609  16.4s
+ep  38/40  tr_loss=0.0069 va_loss=0.0149  va_iou bg=0.956  pad=0.616  score=0.616  16.4s
+ep  39/40  tr_loss=0.0069 va_loss=0.0156  va_iou bg=0.957  pad=0.623  score=0.623  16.5s
+ep  40/40  tr_loss=0.0068 va_loss=0.0142  va_iou bg=0.958  pad=0.626  score=0.626  16.4s
+
+Best score: 0.627. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_imagenet\fold4
+  fold 4 done in 11.1 min, best val pad IoU 0.627
+
+POOLED  val pad IoU 0.599 (sd 0.018)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\r34_imagenet\pooled_metrics.json
+EXIT 0 for pad/r34_imagenet
+##### pit / unetpp_r34_imagenet
+== pit / unetpp_r34_imagenet : 5-fold on the unified split ==
+   503 features across 115 blocks, 1 m grid
+     fold 0:   103 features
+     fold 1:   101 features
+     fold 2:    98 features
+     fold 3:   103 features
+     fold 4:    98 features
+   unetpp_r34_imagenet: 26.1 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 299 / 67 blocks   inner-val 101 / 21   HELD-OUT 103
+ep   1/40  tr_loss=0.0031 va_loss=0.0011  va_iou bg=0.995  floor=0.304  wall=0.416  score=0.304  25.8s
+    -> new best (score=0.304), saved
+ep   2/40  tr_loss=0.0010 va_loss=0.0009  va_iou bg=0.995  floor=0.433  wall=0.503  score=0.433  20.5s
+    -> new best (score=0.433), saved
+ep   3/40  tr_loss=0.0009 va_loss=0.0011  va_iou bg=0.996  floor=0.520  wall=0.446  score=0.520  20.5s
+    -> new best (score=0.520), saved
+ep   4/40  tr_loss=0.0009 va_loss=0.0008  va_iou bg=0.996  floor=0.475  wall=0.534  score=0.475  20.5s
+ep   5/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.435  wall=0.521  score=0.435  20.4s
+ep   6/40  tr_loss=0.0008 va_loss=0.0007  va_iou bg=0.996  floor=0.505  wall=0.565  score=0.505  21.0s
+ep   7/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.423  wall=0.517  score=0.423  20.5s
+ep   8/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.492  wall=0.569  score=0.492  20.5s
+ep   9/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.469  wall=0.550  score=0.469  20.5s
+ep  10/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.997  floor=0.471  wall=0.558  score=0.471  20.4s
+ep  11/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.494  wall=0.549  score=0.494  20.5s
+ep  12/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.533  wall=0.570  score=0.533  20.6s
+    -> new best (score=0.533), saved
+ep  13/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.464  wall=0.540  score=0.464  20.5s
+ep  14/40  tr_loss=0.0006 va_loss=0.0006  va_iou bg=0.996  floor=0.516  wall=0.581  score=0.516  20.4s
+ep  15/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.464  wall=0.571  score=0.464  20.6s
+ep  16/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.994  floor=0.384  wall=0.486  score=0.384  20.4s
+ep  17/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.994  floor=0.476  wall=0.527  score=0.476  20.5s
+ep  18/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.541  wall=0.591  score=0.541  20.5s
+    -> new best (score=0.541), saved
+ep  19/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.569  wall=0.602  score=0.569  20.5s
+    -> new best (score=0.569), saved
+ep  20/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.515  wall=0.566  score=0.515  20.5s
+ep  21/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.488  wall=0.580  score=0.488  20.5s
+ep  22/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.508  wall=0.599  score=0.508  20.5s
+ep  23/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.997  floor=0.521  wall=0.603  score=0.521  20.5s
+ep  24/40  tr_loss=0.0005 va_loss=0.0006  va_iou bg=0.996  floor=0.503  wall=0.550  score=0.503  20.5s
+ep  25/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.473  wall=0.597  score=0.473  20.5s
+ep  26/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.552  wall=0.597  score=0.552  20.5s
+ep  27/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.590  wall=0.626  score=0.590  20.5s
+    -> new best (score=0.590), saved
+ep  28/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.541  wall=0.618  score=0.541  20.6s
+ep  29/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.547  wall=0.616  score=0.547  20.5s
+ep  30/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.542  wall=0.613  score=0.542  20.5s
+ep  31/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.560  wall=0.624  score=0.560  20.6s
+ep  32/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.543  wall=0.616  score=0.543  20.5s
+ep  33/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.557  wall=0.614  score=0.557  20.4s
+ep  34/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.563  wall=0.630  score=0.563  20.5s
+ep  35/40  tr_loss=0.0004 va_loss=0.0005  va_iou bg=0.997  floor=0.578  wall=0.637  score=0.578  20.9s
+ep  36/40  tr_loss=0.0003 va_loss=0.0006  va_iou bg=0.997  floor=0.582  wall=0.638  score=0.582  20.6s
+ep  37/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.585  wall=0.635  score=0.585  20.5s
+ep  38/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.570  wall=0.634  score=0.570  20.5s
+ep  39/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.559  wall=0.624  score=0.559  20.5s
+ep  40/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.552  wall=0.618  score=0.552  20.4s
+
+Best score: 0.590. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unetpp_r34_imagenet\fold0
+  fold 0 done in 13.8 min, best val floor IoU 0.590
+
+============================================================
+FOLD 1
+============================================================
+  train 304 / 71 blocks   inner-val 98 / 23   HELD-OUT 101
+ep   1/40  tr_loss=0.0056 va_loss=0.0015  va_iou bg=0.995  floor=0.382  wall=0.432  score=0.382  25.8s
+    -> new best (score=0.382), saved
+ep   2/40  tr_loss=0.0011 va_loss=0.0011  va_iou bg=0.995  floor=0.396  wall=0.450  score=0.396  20.9s
+    -> new best (score=0.396), saved
+ep   3/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.996  floor=0.457  wall=0.511  score=0.457  20.8s
+    -> new best (score=0.457), saved
+ep   4/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.994  floor=0.362  wall=0.482  score=0.362  20.7s
+ep   5/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.995  floor=0.464  wall=0.531  score=0.464  20.7s
+    -> new best (score=0.464), saved
+ep   6/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.994  floor=0.413  wall=0.496  score=0.413  20.7s
+ep   7/40  tr_loss=0.0007 va_loss=0.0012  va_iou bg=0.996  floor=0.434  wall=0.489  score=0.434  20.7s
+ep   8/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.996  floor=0.451  wall=0.528  score=0.451  20.6s
+ep   9/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.455  wall=0.533  score=0.455  20.7s
+ep  10/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.996  floor=0.435  wall=0.499  score=0.435  20.8s
+ep  11/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.494  wall=0.550  score=0.494  20.7s
+    -> new best (score=0.494), saved
+ep  12/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.477  wall=0.550  score=0.477  20.7s
+ep  13/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.996  floor=0.475  wall=0.537  score=0.475  20.7s
+ep  14/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.458  wall=0.547  score=0.458  20.7s
+ep  15/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.461  wall=0.560  score=0.461  20.6s
+ep  16/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.498  wall=0.550  score=0.498  20.9s
+    -> new best (score=0.498), saved
+ep  17/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.995  floor=0.459  wall=0.548  score=0.459  20.7s
+ep  18/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.466  wall=0.552  score=0.466  20.7s
+ep  19/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.492  wall=0.549  score=0.492  20.8s
+ep  20/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.498  wall=0.569  score=0.498  20.7s
+    -> new best (score=0.498), saved
+ep  21/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.455  wall=0.552  score=0.455  20.7s
+ep  22/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.996  floor=0.515  wall=0.584  score=0.515  20.7s
+    -> new best (score=0.515), saved
+ep  23/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.996  floor=0.482  wall=0.550  score=0.482  20.6s
+ep  24/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.482  wall=0.554  score=0.482  21.4s
+ep  25/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.535  wall=0.602  score=0.535  20.7s
+    -> new best (score=0.535), saved
+ep  26/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.996  floor=0.525  wall=0.572  score=0.525  20.7s
+ep  27/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.497  wall=0.555  score=0.497  20.7s
+ep  28/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.459  wall=0.550  score=0.459  20.6s
+ep  29/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.996  floor=0.490  wall=0.565  score=0.490  20.7s
+ep  30/40  tr_loss=0.0004 va_loss=0.0011  va_iou bg=0.996  floor=0.556  wall=0.571  score=0.556  20.7s
+    -> new best (score=0.556), saved
+ep  31/40  tr_loss=0.0003 va_loss=0.0009  va_iou bg=0.997  floor=0.541  wall=0.591  score=0.541  20.7s
+ep  32/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.528  wall=0.582  score=0.528  20.7s
+ep  33/40  tr_loss=0.0003 va_loss=0.0009  va_iou bg=0.997  floor=0.544  wall=0.591  score=0.544  20.7s
+ep  34/40  tr_loss=0.0003 va_loss=0.0010  va_iou bg=0.997  floor=0.518  wall=0.582  score=0.518  20.7s
+ep  35/40  tr_loss=0.0003 va_loss=0.0009  va_iou bg=0.997  floor=0.560  wall=0.609  score=0.560  20.8s
+    -> new best (score=0.560), saved
+ep  36/40  tr_loss=0.0003 va_loss=0.0010  va_iou bg=0.997  floor=0.529  wall=0.597  score=0.529  20.6s
+ep  37/40  tr_loss=0.0003 va_loss=0.0010  va_iou bg=0.997  floor=0.537  wall=0.590  score=0.537  20.6s
+ep  38/40  tr_loss=0.0003 va_loss=0.0009  va_iou bg=0.997  floor=0.516  wall=0.580  score=0.516  20.7s
+ep  39/40  tr_loss=0.0003 va_loss=0.0008  va_iou bg=0.997  floor=0.517  wall=0.585  score=0.517  20.6s
+ep  40/40  tr_loss=0.0003 va_loss=0.0009  va_iou bg=0.997  floor=0.550  wall=0.587  score=0.550  20.7s
+
+Best score: 0.560. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unetpp_r34_imagenet\fold1
+  fold 1 done in 13.9 min, best val floor IoU 0.560
+
+============================================================
+FOLD 2
+============================================================
+  train 302 / 71 blocks   inner-val 103 / 21   HELD-OUT 98
+ep   1/40  tr_loss=0.0147 va_loss=0.0020  va_iou bg=0.995  floor=0.354  wall=0.315  score=0.354  25.7s
+    -> new best (score=0.354), saved
+ep   2/40  tr_loss=0.0013 va_loss=0.0013  va_iou bg=0.996  floor=0.328  wall=0.394  score=0.328  20.7s
+ep   3/40  tr_loss=0.0010 va_loss=0.0009  va_iou bg=0.996  floor=0.435  wall=0.483  score=0.435  20.7s
+    -> new best (score=0.435), saved
+ep   4/40  tr_loss=0.0009 va_loss=0.0010  va_iou bg=0.994  floor=0.397  wall=0.440  score=0.397  20.7s
+ep   5/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.996  floor=0.468  wall=0.557  score=0.468  20.7s
+    -> new best (score=0.468), saved
+ep   6/40  tr_loss=0.0008 va_loss=0.0009  va_iou bg=0.996  floor=0.495  wall=0.543  score=0.495  20.6s
+    -> new best (score=0.495), saved
+ep   7/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.996  floor=0.501  wall=0.551  score=0.501  20.8s
+    -> new best (score=0.501), saved
+ep   8/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.997  floor=0.453  wall=0.558  score=0.453  20.7s
+ep   9/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.997  floor=0.430  wall=0.514  score=0.430  20.6s
+ep  10/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.997  floor=0.476  wall=0.536  score=0.476  20.7s
+ep  11/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.486  wall=0.584  score=0.486  20.7s
+ep  12/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.484  wall=0.567  score=0.484  20.8s
+ep  13/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.996  floor=0.504  wall=0.555  score=0.504  21.2s
+    -> new best (score=0.504), saved
+ep  14/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.488  wall=0.552  score=0.488  20.7s
+ep  15/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.995  floor=0.479  wall=0.534  score=0.479  20.7s
+ep  16/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.997  floor=0.548  wall=0.604  score=0.548  20.7s
+    -> new best (score=0.548), saved
+ep  17/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.532  wall=0.578  score=0.532  20.7s
+ep  18/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.525  wall=0.590  score=0.525  20.7s
+ep  19/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.471  wall=0.541  score=0.471  20.7s
+ep  20/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.996  floor=0.510  wall=0.561  score=0.510  20.8s
+ep  21/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.532  wall=0.590  score=0.532  20.7s
+ep  22/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.504  wall=0.587  score=0.504  20.7s
+ep  23/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.505  wall=0.568  score=0.505  20.7s
+ep  24/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.530  wall=0.601  score=0.530  20.7s
+ep  25/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.496  wall=0.553  score=0.496  20.7s
+ep  26/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.511  wall=0.583  score=0.511  20.7s
+ep  27/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.476  wall=0.572  score=0.476  20.7s
+ep  28/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.511  wall=0.599  score=0.511  20.7s
+ep  29/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.540  wall=0.574  score=0.540  20.7s
+ep  30/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.542  wall=0.617  score=0.542  20.7s
+ep  31/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.535  wall=0.595  score=0.535  20.6s
+ep  32/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.545  wall=0.585  score=0.545  20.7s
+ep  33/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.513  wall=0.594  score=0.513  20.7s
+ep  34/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.521  wall=0.582  score=0.521  20.7s
+ep  35/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.518  wall=0.573  score=0.518  20.7s
+ep  36/40  tr_loss=0.0003 va_loss=0.0008  va_iou bg=0.996  floor=0.509  wall=0.570  score=0.509  20.7s
+ep  37/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.512  wall=0.582  score=0.512  20.7s
+ep  38/40  tr_loss=0.0003 va_loss=0.0008  va_iou bg=0.997  floor=0.540  wall=0.601  score=0.540  20.8s
+ep  39/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.523  wall=0.581  score=0.523  20.7s
+ep  40/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.511  wall=0.593  score=0.511  20.7s
+
+Best score: 0.548. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unetpp_r34_imagenet\fold2
+  fold 2 done in 13.9 min, best val floor IoU 0.548
+
+============================================================
+FOLD 3
+============================================================
+  train 302 / 71 blocks   inner-val 98 / 23   HELD-OUT 103
+ep   1/40  tr_loss=0.0128 va_loss=0.0016  va_iou bg=0.995  floor=0.360  wall=0.354  score=0.360  26.4s
+    -> new best (score=0.360), saved
+ep   2/40  tr_loss=0.0012 va_loss=0.0012  va_iou bg=0.996  floor=0.429  wall=0.455  score=0.429  21.0s
+    -> new best (score=0.429), saved
+ep   3/40  tr_loss=0.0010 va_loss=0.0013  va_iou bg=0.996  floor=0.450  wall=0.405  score=0.450  20.6s
+    -> new best (score=0.450), saved
+ep   4/40  tr_loss=0.0008 va_loss=0.0011  va_iou bg=0.996  floor=0.434  wall=0.506  score=0.434  20.6s
+ep   5/40  tr_loss=0.0008 va_loss=0.0011  va_iou bg=0.996  floor=0.485  wall=0.522  score=0.485  20.7s
+    -> new best (score=0.485), saved
+ep   6/40  tr_loss=0.0008 va_loss=0.0010  va_iou bg=0.996  floor=0.467  wall=0.485  score=0.467  20.6s
+ep   7/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.515  wall=0.558  score=0.515  20.5s
+    -> new best (score=0.515), saved
+ep   8/40  tr_loss=0.0007 va_loss=0.0015  va_iou bg=0.996  floor=0.430  wall=0.349  score=0.430  20.7s
+ep   9/40  tr_loss=0.0007 va_loss=0.0011  va_iou bg=0.997  floor=0.474  wall=0.513  score=0.474  20.5s
+ep  10/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.540  wall=0.561  score=0.540  20.6s
+    -> new best (score=0.540), saved
+ep  11/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.997  floor=0.481  wall=0.531  score=0.481  20.6s
+ep  12/40  tr_loss=0.0006 va_loss=0.0012  va_iou bg=0.996  floor=0.496  wall=0.515  score=0.496  20.5s
+ep  13/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.997  floor=0.544  wall=0.575  score=0.544  20.6s
+    -> new best (score=0.544), saved
+ep  14/40  tr_loss=0.0006 va_loss=0.0009  va_iou bg=0.996  floor=0.459  wall=0.509  score=0.459  20.5s
+ep  15/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.515  wall=0.569  score=0.515  20.5s
+ep  16/40  tr_loss=0.0006 va_loss=0.0010  va_iou bg=0.997  floor=0.516  wall=0.530  score=0.516  20.6s
+ep  17/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.529  wall=0.552  score=0.529  20.6s
+ep  18/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.537  wall=0.557  score=0.537  20.6s
+ep  19/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.554  wall=0.569  score=0.554  20.6s
+    -> new best (score=0.554), saved
+ep  20/40  tr_loss=0.0005 va_loss=0.0009  va_iou bg=0.997  floor=0.488  wall=0.529  score=0.488  20.6s
+ep  21/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.505  wall=0.545  score=0.505  20.6s
+ep  22/40  tr_loss=0.0005 va_loss=0.0011  va_iou bg=0.997  floor=0.485  wall=0.545  score=0.485  20.6s
+ep  23/40  tr_loss=0.0005 va_loss=0.0011  va_iou bg=0.997  floor=0.496  wall=0.546  score=0.496  20.6s
+ep  24/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.535  wall=0.575  score=0.535  20.7s
+ep  25/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.996  floor=0.549  wall=0.579  score=0.549  20.6s
+ep  26/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.528  wall=0.586  score=0.528  20.5s
+ep  27/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.506  wall=0.558  score=0.506  20.6s
+ep  28/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.544  wall=0.595  score=0.544  20.5s
+ep  29/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.544  wall=0.595  score=0.544  20.6s
+ep  30/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.572  wall=0.604  score=0.572  20.8s
+    -> new best (score=0.572), saved
+ep  31/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.556  wall=0.604  score=0.556  20.8s
+ep  32/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.544  wall=0.589  score=0.544  20.6s
+ep  33/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.549  wall=0.592  score=0.549  20.6s
+ep  34/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.553  wall=0.603  score=0.553  20.6s
+ep  35/40  tr_loss=0.0003 va_loss=0.0007  va_iou bg=0.997  floor=0.577  wall=0.605  score=0.577  20.6s
+    -> new best (score=0.577), saved
+ep  36/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.555  wall=0.604  score=0.555  20.6s
+ep  37/40  tr_loss=0.0004 va_loss=0.0010  va_iou bg=0.997  floor=0.555  wall=0.602  score=0.555  20.6s
+ep  38/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.554  wall=0.606  score=0.554  20.5s
+ep  39/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.556  wall=0.601  score=0.556  20.6s
+ep  40/40  tr_loss=0.0003 va_loss=0.0008  va_iou bg=0.997  floor=0.558  wall=0.603  score=0.558  20.6s
+
+Best score: 0.577. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unetpp_r34_imagenet\fold3
+  fold 3 done in 13.9 min, best val floor IoU 0.577
+
+============================================================
+FOLD 4
+============================================================
+  train 302 / 65 blocks   inner-val 103 / 27   HELD-OUT 98
+ep   1/40  tr_loss=0.0097 va_loss=0.0015  va_iou bg=0.995  floor=0.292  wall=0.347  score=0.292  25.8s
+    -> new best (score=0.292), saved
+ep   2/40  tr_loss=0.0012 va_loss=0.0010  va_iou bg=0.996  floor=0.415  wall=0.466  score=0.415  20.8s
+    -> new best (score=0.415), saved
+ep   3/40  tr_loss=0.0010 va_loss=0.0009  va_iou bg=0.996  floor=0.400  wall=0.474  score=0.400  20.7s
+ep   4/40  tr_loss=0.0009 va_loss=0.0009  va_iou bg=0.996  floor=0.435  wall=0.483  score=0.435  20.8s
+    -> new best (score=0.435), saved
+ep   5/40  tr_loss=0.0008 va_loss=0.0008  va_iou bg=0.996  floor=0.449  wall=0.510  score=0.449  20.7s
+    -> new best (score=0.449), saved
+ep   6/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.476  wall=0.524  score=0.476  20.8s
+    -> new best (score=0.476), saved
+ep   7/40  tr_loss=0.0007 va_loss=0.0010  va_iou bg=0.996  floor=0.456  wall=0.489  score=0.456  20.8s
+ep   8/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.996  floor=0.453  wall=0.503  score=0.453  20.7s
+ep   9/40  tr_loss=0.0007 va_loss=0.0007  va_iou bg=0.996  floor=0.454  wall=0.500  score=0.454  20.8s
+ep  10/40  tr_loss=0.0007 va_loss=0.0008  va_iou bg=0.996  floor=0.422  wall=0.504  score=0.422  20.8s
+ep  11/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.996  floor=0.441  wall=0.502  score=0.441  20.7s
+ep  12/40  tr_loss=0.0007 va_loss=0.0009  va_iou bg=0.995  floor=0.433  wall=0.460  score=0.433  20.8s
+ep  13/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.472  wall=0.516  score=0.472  20.7s
+ep  14/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.494  wall=0.538  score=0.494  20.7s
+    -> new best (score=0.494), saved
+ep  15/40  tr_loss=0.0006 va_loss=0.0008  va_iou bg=0.997  floor=0.503  wall=0.542  score=0.503  20.7s
+    -> new best (score=0.503), saved
+ep  16/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.996  floor=0.475  wall=0.524  score=0.475  20.7s
+ep  17/40  tr_loss=0.0006 va_loss=0.0007  va_iou bg=0.997  floor=0.504  wall=0.552  score=0.504  20.8s
+    -> new best (score=0.504), saved
+ep  18/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.502  wall=0.529  score=0.502  20.7s
+ep  19/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.437  wall=0.509  score=0.437  21.2s
+ep  20/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.996  floor=0.470  wall=0.549  score=0.470  20.7s
+ep  21/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.483  wall=0.531  score=0.483  20.7s
+ep  22/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.476  wall=0.534  score=0.476  20.7s
+ep  23/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.508  wall=0.567  score=0.508  20.7s
+    -> new best (score=0.508), saved
+ep  24/40  tr_loss=0.0005 va_loss=0.0007  va_iou bg=0.997  floor=0.487  wall=0.549  score=0.487  20.7s
+ep  25/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.996  floor=0.447  wall=0.522  score=0.447  20.7s
+ep  26/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.494  wall=0.550  score=0.494  20.7s
+ep  27/40  tr_loss=0.0005 va_loss=0.0008  va_iou bg=0.997  floor=0.513  wall=0.556  score=0.513  20.7s
+    -> new best (score=0.513), saved
+ep  28/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.508  wall=0.584  score=0.508  20.7s
+ep  29/40  tr_loss=0.0004 va_loss=0.0009  va_iou bg=0.997  floor=0.484  wall=0.531  score=0.484  20.7s
+ep  30/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.476  wall=0.538  score=0.476  20.7s
+ep  31/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.502  wall=0.567  score=0.502  20.7s
+ep  32/40  tr_loss=0.0004 va_loss=0.0011  va_iou bg=0.997  floor=0.476  wall=0.519  score=0.476  20.7s
+ep  33/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.494  wall=0.560  score=0.494  20.8s
+ep  34/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.504  wall=0.571  score=0.504  20.7s
+ep  35/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.499  wall=0.562  score=0.499  20.7s
+ep  36/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.997  floor=0.486  wall=0.538  score=0.486  20.8s
+ep  37/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.505  wall=0.560  score=0.505  20.7s
+ep  38/40  tr_loss=0.0004 va_loss=0.0008  va_iou bg=0.996  floor=0.491  wall=0.543  score=0.491  21.1s
+ep  39/40  tr_loss=0.0004 va_loss=0.0007  va_iou bg=0.997  floor=0.504  wall=0.555  score=0.504  20.7s
+ep  40/40  tr_loss=0.0004 va_loss=0.0006  va_iou bg=0.997  floor=0.533  wall=0.590  score=0.533  20.8s
+    -> new best (score=0.533), saved
+
+Best score: 0.533. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unetpp_r34_imagenet\fold4
+  fold 4 done in 13.9 min, best val floor IoU 0.533
+
+POOLED  val floor IoU 0.561 (sd 0.020)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pit\unetpp_r34_imagenet\pooled_metrics.json
+EXIT 0 for pit/unetpp_r34_imagenet
+##### pad / unetpp_r34_imagenet
+== pad / unetpp_r34_imagenet : 5-fold on the unified split ==
+   650 features across 129 blocks, 1 m grid
+     fold 0:   130 features
+     fold 1:   134 features
+     fold 2:   127 features
+     fold 3:   129 features
+     fold 4:   130 features
+   unetpp_r34_imagenet: 26.1 M parameters
+
+============================================================
+FOLD 0
+============================================================
+  train 386 / 78 blocks   inner-val 134 / 26   HELD-OUT 130
+ep   1/40  tr_loss=0.0199 va_loss=0.0182  va_iou bg=0.910  pad=0.429  score=0.429  32.3s
+    -> new best (score=0.429), saved
+ep   2/40  tr_loss=0.0138 va_loss=0.0210  va_iou bg=0.926  pad=0.419  score=0.419  26.9s
+ep   3/40  tr_loss=0.0128 va_loss=0.0171  va_iou bg=0.940  pad=0.485  score=0.485  26.9s
+    -> new best (score=0.485), saved
+ep   4/40  tr_loss=0.0124 va_loss=0.0186  va_iou bg=0.898  pad=0.424  score=0.424  27.2s
+ep   5/40  tr_loss=0.0117 va_loss=0.0167  va_iou bg=0.935  pad=0.481  score=0.481  26.9s
+ep   6/40  tr_loss=0.0116 va_loss=0.0160  va_iou bg=0.937  pad=0.511  score=0.511  27.8s
+    -> new best (score=0.511), saved
+ep   7/40  tr_loss=0.0115 va_loss=0.0212  va_iou bg=0.949  pad=0.470  score=0.470  27.0s
+ep   8/40  tr_loss=0.0120 va_loss=0.0161  va_iou bg=0.936  pad=0.508  score=0.508  26.8s
+ep   9/40  tr_loss=0.0107 va_loss=0.0168  va_iou bg=0.944  pad=0.492  score=0.492  26.6s
+ep  10/40  tr_loss=0.0109 va_loss=0.0154  va_iou bg=0.947  pad=0.542  score=0.542  26.9s
+    -> new best (score=0.542), saved
+ep  11/40  tr_loss=0.0108 va_loss=0.0163  va_iou bg=0.944  pad=0.491  score=0.491  26.7s
+ep  12/40  tr_loss=0.0100 va_loss=0.0150  va_iou bg=0.934  pad=0.495  score=0.495  27.3s
+ep  13/40  tr_loss=0.0098 va_loss=0.0146  va_iou bg=0.939  pad=0.520  score=0.520  27.1s
+ep  14/40  tr_loss=0.0095 va_loss=0.0157  va_iou bg=0.946  pad=0.554  score=0.554  27.6s
+    -> new best (score=0.554), saved
+ep  15/40  tr_loss=0.0092 va_loss=0.0180  va_iou bg=0.944  pad=0.518  score=0.518  28.8s
+ep  16/40  tr_loss=0.0095 va_loss=0.0167  va_iou bg=0.937  pad=0.522  score=0.522  30.1s
+ep  17/40  tr_loss=0.0094 va_loss=0.0163  va_iou bg=0.934  pad=0.512  score=0.512  29.0s
+ep  18/40  tr_loss=0.0091 va_loss=0.0176  va_iou bg=0.940  pad=0.508  score=0.508  27.6s
+ep  19/40  tr_loss=0.0088 va_loss=0.0148  va_iou bg=0.933  pad=0.528  score=0.528  28.2s
+ep  20/40  tr_loss=0.0090 va_loss=0.0149  va_iou bg=0.939  pad=0.544  score=0.544  27.4s
+ep  21/40  tr_loss=0.0087 va_loss=0.0146  va_iou bg=0.937  pad=0.529  score=0.529  27.1s
+ep  22/40  tr_loss=0.0082 va_loss=0.0172  va_iou bg=0.944  pad=0.532  score=0.532  27.1s
+ep  23/40  tr_loss=0.0079 va_loss=0.0168  va_iou bg=0.946  pad=0.531  score=0.531  27.1s
+ep  24/40  tr_loss=0.0075 va_loss=0.0140  va_iou bg=0.949  pad=0.560  score=0.560  27.4s
+    -> new best (score=0.560), saved
+ep  25/40  tr_loss=0.0077 va_loss=0.0181  va_iou bg=0.949  pad=0.555  score=0.555  27.5s
+ep  26/40  tr_loss=0.0075 va_loss=0.0158  va_iou bg=0.950  pad=0.582  score=0.582  26.9s
+    -> new best (score=0.582), saved
+ep  27/40  tr_loss=0.0072 va_loss=0.0172  va_iou bg=0.947  pad=0.549  score=0.549  27.8s
+ep  28/40  tr_loss=0.0068 va_loss=0.0174  va_iou bg=0.948  pad=0.571  score=0.571  28.1s
+ep  29/40  tr_loss=0.0069 va_loss=0.0188  va_iou bg=0.952  pad=0.579  score=0.579  27.1s
+ep  30/40  tr_loss=0.0066 va_loss=0.0153  va_iou bg=0.946  pad=0.577  score=0.577  26.9s
+ep  31/40  tr_loss=0.0067 va_loss=0.0197  va_iou bg=0.950  pad=0.589  score=0.589  26.9s
+    -> new best (score=0.589), saved
+ep  32/40  tr_loss=0.0066 va_loss=0.0181  va_iou bg=0.952  pad=0.584  score=0.584  26.9s
+ep  33/40  tr_loss=0.0062 va_loss=0.0202  va_iou bg=0.953  pad=0.569  score=0.569  27.6s
+ep  34/40  tr_loss=0.0062 va_loss=0.0203  va_iou bg=0.951  pad=0.556  score=0.556  27.5s
+ep  35/40  tr_loss=0.0060 va_loss=0.0165  va_iou bg=0.950  pad=0.584  score=0.584  27.0s
+ep  36/40  tr_loss=0.0061 va_loss=0.0193  va_iou bg=0.951  pad=0.567  score=0.567  27.0s
+ep  37/40  tr_loss=0.0061 va_loss=0.0179  va_iou bg=0.952  pad=0.581  score=0.581  27.0s
+ep  38/40  tr_loss=0.0058 va_loss=0.0201  va_iou bg=0.951  pad=0.596  score=0.596  27.0s
+    -> new best (score=0.596), saved
+ep  39/40  tr_loss=0.0059 va_loss=0.0167  va_iou bg=0.951  pad=0.578  score=0.578  27.0s
+ep  40/40  tr_loss=0.0060 va_loss=0.0181  va_iou bg=0.954  pad=0.593  score=0.593  27.1s
+
+Best score: 0.596. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\unetpp_r34_imagenet\fold0
+  fold 0 done in 18.3 min, best val pad IoU 0.596
+
+============================================================
+FOLD 1
+============================================================
+  train 389 / 76 blocks   inner-val 127 / 27   HELD-OUT 134
+ep   1/40  tr_loss=0.0186 va_loss=0.0427  va_iou bg=0.914  pad=0.382  score=0.382  32.6s
+    -> new best (score=0.382), saved
+ep   2/40  tr_loss=0.0140 va_loss=0.0145  va_iou bg=0.936  pad=0.465  score=0.465  26.9s
+    -> new best (score=0.465), saved
+ep   3/40  tr_loss=0.0128 va_loss=0.0136  va_iou bg=0.939  pad=0.497  score=0.497  27.0s
+    -> new best (score=0.497), saved
+ep   4/40  tr_loss=0.0121 va_loss=0.0126  va_iou bg=0.928  pad=0.457  score=0.457  27.2s
+ep   5/40  tr_loss=0.0123 va_loss=0.0131  va_iou bg=0.945  pad=0.487  score=0.487  26.8s
+ep   6/40  tr_loss=0.0120 va_loss=0.0133  va_iou bg=0.941  pad=0.482  score=0.482  27.2s
+ep   7/40  tr_loss=0.0117 va_loss=0.0144  va_iou bg=0.946  pad=0.491  score=0.491  27.1s
+ep   8/40  tr_loss=0.0110 va_loss=0.0126  va_iou bg=0.940  pad=0.472  score=0.472  27.3s
+ep   9/40  tr_loss=0.0113 va_loss=0.0149  va_iou bg=0.945  pad=0.490  score=0.490  28.1s
+ep  10/40  tr_loss=0.0114 va_loss=0.0137  va_iou bg=0.934  pad=0.470  score=0.470  27.2s
+ep  11/40  tr_loss=0.0124 va_loss=0.0157  va_iou bg=0.945  pad=0.486  score=0.486  27.0s
+ep  12/40  tr_loss=0.0112 va_loss=0.0146  va_iou bg=0.930  pad=0.447  score=0.447  27.0s
+ep  13/40  tr_loss=0.0104 va_loss=0.0144  va_iou bg=0.941  pad=0.502  score=0.502  27.1s
+    -> new best (score=0.502), saved
+ep  14/40  tr_loss=0.0102 va_loss=0.0146  va_iou bg=0.950  pad=0.527  score=0.527  27.0s
+    -> new best (score=0.527), saved
+ep  15/40  tr_loss=0.0099 va_loss=0.0127  va_iou bg=0.940  pad=0.497  score=0.497  26.9s
+ep  16/40  tr_loss=0.0097 va_loss=0.0119  va_iou bg=0.946  pad=0.518  score=0.518  27.0s
+ep  17/40  tr_loss=0.0096 va_loss=0.0146  va_iou bg=0.942  pad=0.511  score=0.511  26.7s
+ep  18/40  tr_loss=0.0095 va_loss=0.0114  va_iou bg=0.945  pad=0.527  score=0.527  26.8s
+ep  19/40  tr_loss=0.0090 va_loss=0.0135  va_iou bg=0.945  pad=0.514  score=0.514  27.3s
+ep  20/40  tr_loss=0.0091 va_loss=0.0112  va_iou bg=0.951  pad=0.533  score=0.533  27.0s
+    -> new best (score=0.533), saved
+ep  21/40  tr_loss=0.0089 va_loss=0.0110  va_iou bg=0.950  pad=0.547  score=0.547  26.9s
+    -> new best (score=0.547), saved
+ep  22/40  tr_loss=0.0087 va_loss=0.0145  va_iou bg=0.947  pad=0.525  score=0.525  27.0s
+ep  23/40  tr_loss=0.0082 va_loss=0.0127  va_iou bg=0.937  pad=0.513  score=0.513  26.9s
+ep  24/40  tr_loss=0.0084 va_loss=0.0128  va_iou bg=0.944  pad=0.537  score=0.537  27.1s
+ep  25/40  tr_loss=0.0080 va_loss=0.0133  va_iou bg=0.951  pad=0.560  score=0.560  27.2s
+    -> new best (score=0.560), saved
+ep  26/40  tr_loss=0.0079 va_loss=0.0127  va_iou bg=0.945  pad=0.508  score=0.508  27.0s
+ep  27/40  tr_loss=0.0076 va_loss=0.0130  va_iou bg=0.949  pad=0.531  score=0.531  26.9s
+ep  28/40  tr_loss=0.0075 va_loss=0.0131  va_iou bg=0.948  pad=0.536  score=0.536  27.1s
+ep  29/40  tr_loss=0.0074 va_loss=0.0140  va_iou bg=0.953  pad=0.543  score=0.543  27.0s
+ep  30/40  tr_loss=0.0071 va_loss=0.0121  va_iou bg=0.955  pad=0.568  score=0.568  27.0s
+    -> new best (score=0.568), saved
+ep  31/40  tr_loss=0.0069 va_loss=0.0131  va_iou bg=0.952  pad=0.560  score=0.560  27.3s
+ep  32/40  tr_loss=0.0067 va_loss=0.0120  va_iou bg=0.958  pad=0.595  score=0.595  28.2s
+    -> new best (score=0.595), saved
+ep  33/40  tr_loss=0.0069 va_loss=0.0136  va_iou bg=0.954  pad=0.549  score=0.549  27.4s
+ep  34/40  tr_loss=0.0065 va_loss=0.0149  va_iou bg=0.954  pad=0.541  score=0.541  27.1s
+ep  35/40  tr_loss=0.0067 va_loss=0.0151  va_iou bg=0.951  pad=0.543  score=0.543  27.2s
+ep  36/40  tr_loss=0.0064 va_loss=0.0132  va_iou bg=0.957  pad=0.563  score=0.563  26.9s
+ep  37/40  tr_loss=0.0065 va_loss=0.0151  va_iou bg=0.953  pad=0.556  score=0.556  27.0s
+ep  38/40  tr_loss=0.0063 va_loss=0.0124  va_iou bg=0.957  pad=0.570  score=0.570  26.8s
+ep  39/40  tr_loss=0.0063 va_loss=0.0132  va_iou bg=0.953  pad=0.568  score=0.568  26.8s
+ep  40/40  tr_loss=0.0061 va_loss=0.0137  va_iou bg=0.956  pad=0.565  score=0.565  26.6s
+
+Best score: 0.595. Outputs in C:\Users\colto\Documents\GitHub\lidar_project\data\9t\models\_arch_compare\1m\pad\unetpp_r34_imagenet\fold1
+  fold 1 done in 18.2 min, best val pad IoU 0.595
+
+============================================================
+FOLD 2
+============================================================
+  train 394 / 78 blocks   inner-val 129 / 24   HELD-OUT 127
+ep   1/40  tr_loss=0.0290 va_loss=0.0182  va_iou bg=0.900  pad=0.407  score=0.407  32.7s
+    -> new best (score=0.407), saved
+ep   2/40  tr_loss=0.0150 va_loss=0.0147  va_iou bg=0.942  pad=0.492  score=0.492  27.2s
+    -> new best (score=0.492), saved
+ep   3/40  tr_loss=0.0142 va_loss=0.0138  va_iou bg=0.937  pad=0.514  score=0.514  27.2s
+    -> new best (score=0.514), saved
+ep   4/40  tr_loss=0.0133 va_loss=0.0131  va_iou bg=0.938  pad=0.517  score=0.517  27.3s
+    -> new best (score=0.517), saved
+ep   5/40  tr_loss=0.0127 va_loss=0.0139  va_iou bg=0.948  pad=0.521  score=0.521  28.6s
+    -> new best (score=0.521), saved
+ep   6/40  tr_loss=0.0121 va_loss=0.0124  va_iou bg=0.939  pad=0.538  score=0.538  28.6s
+    -> new best (score=0.538), saved
+ep   7/40  tr_loss=0.0120 va_loss=0.0123  va_iou bg=0.937  pad=0.528  score=0.528  29.1s
+ep   8/40  tr_loss=0.0121 va_loss=0.0117  va_iou bg=0.939  pad=0.520  score=0.520  29.3s
+ep   9/40  tr_loss=0.0115 va_loss=0.0120  va_iou bg=0.938  pad=0.539  score=0.539  28.4s
+    -> new best (score=0.539), saved
+ep  10/40  tr_loss=0.0115 va_loss=0.0145  va_iou bg=0.949  pad=0.538  score=0.538  28.0s
+ep  11/40  tr_loss=0.0115 va_loss=0.0129  va_iou bg=0.946  pad=0.549  score=0.549  27.1s
+    -> new best (score=0.549), saved
+ep  12/40  tr_loss=0.0110 va_loss=0.0121  va_iou bg=0.936  pad=0.517  score=0.517  26.7s
+ep  13/40  tr_loss=0.0106 va_loss=0.0128  va_iou bg=0.954  pad=0.546  score=0.546  27.9s
+ep  14/40  tr_loss=0.0105 va_loss=0.0115  va_iou bg=0.945  pad=0.542  score=0.542  26.6s
+ep  15/40  tr_loss=0.0104 va_loss=0.0135  va_iou bg=0.947  pad=0.553  score=0.553  26.7s
+    -> new best (score=0.553), saved
+ep  16/40  tr_loss=0.0100 va_loss=0.0129  va_iou bg=0.944  pad=0.547  score=0.547  26.6s
+ep  17/40  tr_loss=0.0100 va_loss=0.0111  va_iou bg=0.946  pad=0.566  score=0.566  26.7s
+    -> new best (score=0.566), saved
+ep  18/40  tr_loss=0.0097 va_loss=0.0133  va_iou bg=0.947  pad=0.530  score=0.530  26.7s
+ep  19/40  tr_loss=0.0095 va_loss=0.0139  va_iou bg=0.947  pad=0.533  score=0.533  26.8s
+ep  20/40  tr_loss=0.0091 va_loss=0.0125  va_iou bg=0.947  pad=0.547  score=0.547  26.7s
+ep  21/40  tr_loss=0.0092 va_loss=0.0121  va_iou bg=0.949  pad=0.552  score=0.552  26.7s
+ep  22/40  tr_loss=0.0089 va_loss=0.0127  va_iou bg=0.946  pad=0.539  score=0.539  26.8s
+ep  23/40  tr_loss=0.0084 va_loss=0.0112  va_iou bg=0.947  pad=0.563  score=0.563  26.9s
+ep  24/40  tr_loss=0.0082 va_loss=0.0114  va_iou bg=0.952  pad=0.594  score=0.594  26.8s
+    -> new best (score=0.594), saved
+ep  25/40  tr_loss=0.0078 va_loss=0.0137  va_iou bg=0.947  pad=0.551  score=0.551  27.0s
+ep  26/40  tr_loss=0.0078 va_loss=0.0139  va_iou bg=0.953  pad=0.568  score=0.568  27.0s
+ep  27/40  tr_loss=0.0074 va_loss=0.0121  va_iou bg=0.950  pad=0.572  score=0.572  27.7s
+ep  28/40  tr_loss=0.0077 va_loss=0.0120  va_iou bg=0.954  pad=0.594  score=0.594  36.4s
+ep  29/40  tr_loss=0.0075 va_loss=0.0116  va_iou bg=0.949  pad=0.587  score=0.587  37.1s
+ep  30/40  tr_loss=0.0070 va_loss=0.0128  va_iou bg=0.955  pad=0.592  score=0.592  30.1s
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s3_train\_arch_compare_9t_1m.py", line 328, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\s3_train\_arch_compare_9t_1m.py", line 286, in main
+    train_loop(
+    ~~~~~~~~~~^
+        model=model, train_loader=tl, val_loader=vl,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        score=lambda iou: float(iou[cfg["score_cls"]]),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        extra_iou_names=cfg["iou_names"])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\_dl.py", line 371, in train_loop
+    tr_loss, _ = run_epoch(model, train_loader, opt, loss_fn, scaler, n_classes, train=True)
+                 ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\_dl.py", line 306, in run_epoch
+    for x, y in loader:
+                ^^^^^^
+  File "C:\Users\colto\AppData\Roaming\Python\Python313\site-packages\torch\utils\data\dataloader.py", line 733, in __next__
+    data = self._next_data()
+  File "C:\Users\colto\AppData\Roaming\Python\Python313\site-packages\torch\utils\data\dataloader.py", line 789, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\colto\AppData\Roaming\Python\Python313\site-packages\torch\utils\data\_utils\fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\notebooks\wellsight_v2\_dl.py", line 271, in __getitem__
+    feat = self._feat.read(window=win).astype(np.float32)
+numpy._core._exceptions._ArrayMemoryError: Unable to allocate 1.75 MiB for an array with shape (7, 256, 256) and data type float32
+EXIT 1 for pad/unetpp_r34_imagenet
+STAGE1 COMPLETE

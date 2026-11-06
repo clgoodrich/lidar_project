@@ -59,6 +59,16 @@ def main() -> int:
     ed_status = ed_by_id["status"].to_dict() if "status" in ed_by_id.columns else {}
     present = set(ed_by_id.index)
 
+    # Iterate over the ORIGINAL, never the edited file. That is what makes a
+    # deletion detectable: a candidate the reviewer removed simply stops
+    # appearing in `present`, and absence is treated as a rejection rather than
+    # as missing data. Reviewing by flag and reviewing by delete both work, and
+    # a reviewer who mixes the two still gets the right answer.
+    #
+    # A rejection is NOT a discard. Its geometry is kept and becomes a hard
+    # negative: the model is told, at that exact spot, that this is not a pit.
+    # Deleting the row instead would throw away the most informative training
+    # example in the whole package.
     keep_ids, reject_ids, unsure_ids = [], [], []
     for pid in orig.index:
         if pid not in present:

@@ -1,0 +1,76 @@
+Kentucky Geological Survey
+Oil and Gas Well GIS Extract
+ArcPro 3.x
+Extract Date: 2026-10-30 02:35 AM
+Records: 162,166
+previous shapefile built on 2026-10-23 02:40 AM, replaced on 2026-10-30 02:35 AM
+previous shapefile built on 2026-10-16 02:35 AM, replaced on 2026-10-23 02:40 AM
+previous shapefile built on 2026-10-09 02:37 AM, replaced on 2026-10-16 02:35 AM
+previous shapefile built on 2026-10-02 02:36 AM, replaced on 2026-10-09 02:37 AM
+previous shapefile built on 2026-09-25 02:35 AM, replaced on 2026-10-02 02:36 AM
+previous shapefile built on 2026-09-21 10:59 AM, replaced on 2026-09-25 02:35 AM
+previous shapefile built on 2026-09-21 09:13 AM, replaced on 2026-09-21 10:59 AM
+previous shapefile built on 2026-09-04 02:36 AM, replaced on 2026-09-21 09:13 AM
+previous shapefile built on 2026-08-28 02:36 AM, replaced on 2026-09-04 02:36 AM
+previous shapefile built on 2026-08-21 02:36 AM, replaced on 2026-08-28 02:36 AM
+previous shapefile built on 2026-08-14 02:36 AM, replaced on 2026-08-21 02:36 AM
+previous shapefile built on 2026-08-07 02:36 AM, replaced on 2026-08-14 02:36 AM
+previous shapefile built on 2026-07-31 02:36 AM, replaced on 2026-08-07 02:36 AM
+previous shapefile built on 2026-07-24 02:36 AM, replaced on 2026-07-31 02:36 AM
+previous shapefile built on 2026-07-17 02:36 AM, replaced on 2026-07-24 02:36 AM
+previous shapefile built on 2026-07-03 02:36 AM, replaced on 2026-07-17 02:36 AM
+previous shapefile built on 2026-06-26 02:36 AM, replaced on 2026-07-03 02:36 AM
+previous shapefile built on 2026-06-19 02:36 AM, replaced on 2026-06-26 02:36 AM
+previous shapefile built on 2026-06-12 02:36 AM, replaced on 2026-06-19 02:36 AM
+previous shapefile built on 2026-06-05 02:37 AM, replaced on 2026-06-12 02:36 AM
+previous shapefile built on 2026-05-22 02:36 AM, replaced on 2026-06-05 02:37 AM
+previous shapefile built on 2026-05-15 02:36 AM, replaced on 2026-05-22 02:36 AM
+previous shapefile built on 2026-05-08 02:36 AM, replaced on 2026-05-15 02:36 AM
+previous shapefile built on 2026-05-01 02:37 AM, replaced on 2026-05-08 02:36 AM
+previous shapefile built on 2026-04-24 02:38 AM, replaced on 2026-05-01 02:37 AM
+previous shapefile built on 2026-04-17 02:36 AM, replaced on 2026-04-24 02:38 AM
+previous shapefile built on 2026-04-10 02:36 AM, replaced on 2026-04-17 02:36 AM
+previous shapefile built on 2026-04-03 02:36 AM, replaced on 2026-04-10 02:36 AM
+previous shapefile built on 2026-03-27 02:36 AM, replaced on 2026-04-03 02:36 AM
+previous shapefile built on 2026-03-20 02:36 AM, replaced on 2026-03-27 02:36 AM
+previous shapefile built on 2026-03-13 01:54 PM, replaced on 2026-03-20 02:36 AM
+previous shapefile built on 2026-03-13 01:35 PM, replaced on 2026-03-13 01:54 PM
+previous shapefile built on 2026-03-06 02:34 AM, replaced on 2026-03-13 01:35 PM
+previous shapefile built on 2026-03-05 02:52 PM, replaced on 2026-03-06 02:34 AM
+previous shapefile built on 2026-03-05 02:44 PM, replaced on 2026-03-05 02:52 PM
+previous shapefile built on 2026-03-05 01:52 PM, replaced on 2026-03-05 02:44 PM
+previous shapefile built on 2026-01-07 03:47 PM, replaced on 2026-03-05 01:52 PM
+previous shapefile built on 2026-01-05 01:12 PM, replaced on 2026-01-07 03:47 PM
+previous shapefile built on 2025-10-21 03:11 PM, replaced on 2026-01-05 01:12 PM
+previous shapefile built on 2025-07-10 02:14 PM, replaced on 2025-10-21 03:11 PM
+previous shapefile built on 2025-04-10 11:25 AM, replaced on 2025-07-10 02:14 PM
+previous shapefile built on 2024-12-23 01:15 PM, replaced on 2025-04-10 11:25 AM
+previous shapefile built on 2024-09-12 02:02 PM, replaced on 2024-12-23 01:15 PM
+previous shapefile built on 2024-05-01 01:48 PM, replaced on 2024-09-12 02:02 PM
+previous shapefile built on 2024-03-21 12:37 PM, replaced on 2024-05-01 01:48 PM
+previous shapefile built on 2024-02-07 04:09 PM, replaced on 2024-03-21 12:37 PM
+previous shapefile built on 2024-02-07 01:50 PM, replaced on 2024-02-07 04:09 PM
+previous shapefile built on 2023-09-29 12:55 PM, replaced on 2024-02-07 01:50 PM
+previous shapefile built on 2023-09-29 08:39 AM, replaced on 2023-09-29 12:55 PM
+previous shapefile built on 2023-09-28 04:10 PM, replaced on 2023-09-29 08:39 AM
+previous shapefile built on 9/22/2023, replaced on 2023-09-28 04:10 PM
+previous shapefile built on 6/28/2023, replaced on 9/22/2023
+previous shapefile built on 2/10/23, replaced on 6/28/2023
+previous shapefile built on 12/1/2022, replaced on 2/10/2023
+previous shpefile built on 7/28/2022, replaced on 12/1/2022
+previous shapefile built on 3/17/2022, replaced on 7/28/2022
+previous shapefile built on 3/9/2022, replaced on 3/17/2022
+previous shapefile built on 2/1/2022, replaced on 3/9/2022
+previous shapefile built on 12/7/2021, replaced on 2/1/2022
+previous shapefile built on 10/12/2021, replaced on 12/7/2021
+previous shapefile built on 8/26/2021, replaced on 10/12/2021
+previous shapefile built on 6/23/2021, replaced on 8/26/2021
+previous shapefile built on 6/2/2021, replaced on 6/23/2021
+previous shapefile built on 5/5/2021, replaced on 6/2/2021
+previous shapefile built on 4/21/2021, replaced on 5/5/2021
+previous shapefile built on 4/7/2021, replaced on 4/21/2021
+previous shapefile built on 12/18/2020, replaced on 4/7/2021
+previous shapefile built on 7/31/2020, replaced on 12/18/2020
+previous shapefile built on 7/1/2020, replaced on 7/31/2020
+previous shapefile built on 4/22/2020, replaced on 7/1/2020
+previous shapefile built on 1/14/2020, replaced on 4/22/2020

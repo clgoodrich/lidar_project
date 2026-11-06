@@ -33,6 +33,13 @@ from _common import DERIV, DST_CRS, path_for
 
 
 def valid_mask(dem_path: Path, erode_px: int = 3) -> tuple[np.ndarray, object, object]:
+    """Where does this tile actually have data?
+
+    A tile is a rectangle; the survey inside it is not. The nodata corners get
+    interpolated into something smooth and featureless, and the model reliably
+    calls that a pad. Eroding a few cells past the edge also drops the ring
+    where the DEM was built from one or two returns and is mostly noise.
+    """
     with rasterio.open(dem_path) as r:
         dem = r.read(1); nd = r.nodata; tf = r.transform; crs = r.crs
     v = np.isfinite(dem)
@@ -49,6 +56,15 @@ def candidates(prob_path: Path, valid: np.ndarray, thresh: float, min_area_m2: f
     from shapely.geometry import shape
     with rasterio.open(prob_path) as r:
         prob = r.read(1).astype(np.float32)
+    # The five-step clean-up, in this order and for these reasons:
+    #   threshold + valid   commit to a cutoff, inside real data only
+    #   closing             bridge the 1-2 cell gaps a thin wall leaves, so one
+    #                       pit stops being three fragments
+    #   fill_holes          a pit with a bright centre reads as a ring; fill it
+    #   remove_small        drop specks below the size of the thing being sought
+    # min_px is derived from area in METRES so the same call behaves the same at
+    # 0.5 m and 1 m. Hard-coding a pixel count silently changes the filter with
+    # resolution.
     fg = (prob >= thresh) & valid
     fg = ndi.binary_closing(fg, structure=np.ones((3, 3)))
     fg = ndi.binary_fill_holes(fg)

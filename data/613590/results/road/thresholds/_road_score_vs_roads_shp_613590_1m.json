@@ -1,6 +1,6 @@
 {
   "model": "recall_relabeled20260806",
-  "prob_raster": "data\\derivatives\\tiles\\9t\\road_unet_1m_recall_relabeled20260806\\road_prob_613590_1m.tif",
+  "prob_raster": "data\\9t\\models\\road\\unet_1m_recall_relabeled20260806\\road_prob_613590_1m.tif",
   "tol_m": 5.0,
   "cover_frac": 0.5,
   "chunk_m": 40.0,

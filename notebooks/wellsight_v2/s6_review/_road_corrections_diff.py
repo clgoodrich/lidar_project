@@ -54,6 +54,14 @@ def main() -> int:
     ed_status = ed_by_id["status"].to_dict() if "status" in ed_by_id.columns else {}
     present = set(ed_by_id.index)
 
+    # Walk the ORIGINAL, not the edited file, so a segment the reviewer deleted
+    # is detected by its absence. Flagging and deleting are both valid ways to
+    # reject, and mixing them still gives the right answer.
+    #
+    # Rejected geometry is kept and fed back as a HARD NEGATIVE. A place the
+    # model confidently called a road and a human said was not one is worth more
+    # per example than any number of easy background patches -- which is why
+    # this loop, rather than a post-hoc filter, is how false roads get fixed.
     keep_ids, reject_ids, unsure_ids = [], [], []
     for sid in orig.index:
         if sid not in present:

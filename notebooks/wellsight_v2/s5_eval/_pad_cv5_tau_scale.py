@@ -53,6 +53,9 @@ def main() -> int:
     for obj in OBJECTIVES:
         for k in sorted(fold_df.fold.unique()):
             sel = fold_df[(fold_df.fold == k) & (fold_df.objective == obj)]
+            # Threshold read back from the CV run and held FIXED across every
+            # tau, for the reason spelled out in `_pit_cv5_tau_scale.py`:
+            # re-selecting per tau builds a curve no deployed model can match.
             thr = float(sel.prob_threshold.iloc[0])
             tif = OUTDIR / f"fold{k}" / f"pad_prob_cvfold{k}_9t_05.tif"
             with rasterio.open(tif) as r:

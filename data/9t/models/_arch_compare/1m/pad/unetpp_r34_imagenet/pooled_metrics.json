@@ -1,0 +1,44 @@
+{
+  "target": "pad",
+  "arch": "unetpp_r34_imagenet",
+  "n_params": 26091298,
+  "folds": [
+    {
+      "fold": 2,
+      "best_epoch": 34,
+      "val_score": 0.626403989614744,
+      "minutes": 18.96856817404429
+    },
+    {
+      "fold": 3,
+      "best_epoch": 40,
+      "val_score": 0.5871629614000089,
+      "minutes": 18.638883833090464
+    },
+    {
+      "fold": 4,
+      "best_epoch": 39,
+      "val_score": 0.6362235004018312,
+      "minutes": 18.09995995759964
+    }
+  ],
+  "val_score_mean": 0.6165968171388614,
+  "val_score_sd": 0.021195433403858696,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ],
+  "patch": 256,
+  "alpha": [
+    0.25,
+    0.75
+  ],
+  "epochs": 40,
+  "batch": 8,
+  "lr": 0.001
+}

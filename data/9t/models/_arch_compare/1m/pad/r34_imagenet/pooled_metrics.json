@@ -1,0 +1,56 @@
+{
+  "target": "pad",
+  "arch": "r34_imagenet",
+  "n_params": 24449058,
+  "folds": [
+    {
+      "fold": 0,
+      "best_epoch": 31,
+      "val_score": 0.5865497001043672,
+      "minutes": 11.04059838851293
+    },
+    {
+      "fold": 1,
+      "best_epoch": 39,
+      "val_score": 0.5952625789688547,
+      "minutes": 11.073026963075002
+    },
+    {
+      "fold": 2,
+      "best_epoch": 36,
+      "val_score": 0.6112063781433007,
+      "minutes": 11.185719708601633
+    },
+    {
+      "fold": 3,
+      "best_epoch": 40,
+      "val_score": 0.5759535754507659,
+      "minutes": 11.13908754189809
+    },
+    {
+      "fold": 4,
+      "best_epoch": 36,
+      "val_score": 0.6269629026736172,
+      "minutes": 11.080552546183268
+    }
+  ],
+  "val_score_mean": 0.5991870270681812,
+  "val_score_sd": 0.01806023624235883,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ],
+  "patch": 256,
+  "alpha": [
+    0.25,
+    0.75
+  ],
+  "epochs": 40,
+  "batch": 8,
+  "lr": 0.001
+}

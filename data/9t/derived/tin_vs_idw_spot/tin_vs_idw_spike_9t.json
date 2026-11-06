@@ -1,0 +1,35 @@
+{
+  "window": [
+    623522.4,
+    4594648.6,
+    624122.4,
+    4595248.6
+  ],
+  "idw_radius_m": 3.0,
+  "results": [
+    {
+      "method": "TIN",
+      "cell_m": 0.5,
+      "spike": 17.969886996450327,
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\tin_vs_idw_spot\\dem_tin_spot_9t_0p5m.tif"
+    },
+    {
+      "method": "IDW",
+      "cell_m": 0.5,
+      "spike": 8.114617213765614,
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\tin_vs_idw_spot\\dem_idw_spot_9t_0p5m.tif"
+    },
+    {
+      "method": "TIN",
+      "cell_m": 1.0,
+      "spike": 20.837363186307314,
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\tin_vs_idw_spot\\dem_tin_spot_9t_1m.tif"
+    },
+    {
+      "method": "IDW",
+      "cell_m": 1.0,
+      "spike": 13.950471835930852,
+      "path": "C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\data\\9t\\derived\\tin_vs_idw_spot\\dem_idw_spot_9t_1m.tif"
+    }
+  ]
+}

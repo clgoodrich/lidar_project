@@ -250,6 +250,19 @@ def _hits(gt: gpd.GeoDataFrame, pred: gpd.GeoDataFrame,
     pred_centroid_in_gt   a prediction's centroid lies inside the pad
     gt_centroid_covered   the pad's centroid lies inside a prediction
     iou                   best IoU against any single prediction >= iou_thr
+
+    They fail in opposite directions, which is why all three are reported:
+
+      pred_centroid_in_gt  breaks when blobs MERGE. A super-blob swallowing ten
+                           pads has one centroid, in the middle of nowhere, so
+                           this reads zero at the cutoff claiming the most ground.
+      gt_centroid_covered  is generous in exactly that case -- a super-blob
+                           covers every centroid it swallowed.
+      iou                  is the strict one, and the only one that punishes a
+                           prediction for being the wrong SIZE.
+
+    Read together they say whether a threshold is finding pads or dissolving the
+    tile. Any single one of them can be made to look good.
     """
     n = len(gt)
     out = {k: np.zeros(n, bool) for k in

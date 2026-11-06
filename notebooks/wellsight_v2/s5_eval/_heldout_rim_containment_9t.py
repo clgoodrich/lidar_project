@@ -125,7 +125,21 @@ def polygonize(prob, transform, crs, thresh, min_area=MIN_AREA_M2):
 
 
 def containment(rims, pred):
-    """Per rim: does any predicted floor polygon intersect / centre in / sit in it?"""
+    """Per rim: does any predicted floor polygon intersect / centre in / sit in it?
+
+    Three nested criteria, computed in one pass because each is a refinement of
+    the one before:
+
+      intersects    touches the rim at all              loosest
+      centroid_in   its centre is inside the rim        the headline number
+      fully_within  the whole polygon is inside         strictest
+
+    centroid_in is the headline because it is the one that survives both failure
+    modes. `intersects` counts a huge blob that merely clips the rim edge;
+    `fully_within` fails a correct prediction that spills a metre over the lip.
+    All three are reported so the gap between them is visible -- a big gap means
+    the model is finding pits but sizing them badly.
+    """
     n = len(rims)
     inter = np.zeros(n, bool)
     cent = np.zeros(n, bool)

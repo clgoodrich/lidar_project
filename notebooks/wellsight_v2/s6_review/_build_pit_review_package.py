@@ -160,6 +160,11 @@ def main() -> int:
     review_path = out_dir / f"review_pits_{args.key}.gpkg"
     review.to_file(review_path, layer="review", driver="GPKG")
     # pristine backup for the diff
+    # The pristine copy is the whole reason the diff can work. QGIS edits the
+    # review file in place, so once a reviewer saves there is no record of what
+    # the model originally proposed -- and a deletion becomes indistinguishable
+    # from a candidate that never existed. Written here, before the file is ever
+    # handed over, and never touched again.
     orig_path = out_dir / f"review_pits_{args.key}_ORIGINAL.gpkg"
     if orig_path.exists():
         orig_path.unlink()

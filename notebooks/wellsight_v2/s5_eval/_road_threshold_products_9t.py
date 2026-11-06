@@ -93,7 +93,16 @@ THRESHOLDS_PRODUCTS = [0.20, 0.30, 0.40, 0.50]
 
 
 def coverage(lines: gpd.GeoSeries, dist_m: np.ndarray, transform) -> np.ndarray:
-    """Fraction of each line within TOL_M of a road pixel, via a distance grid."""
+    """Fraction of each line within TOL_M of a road pixel, via a distance grid.
+
+    The distance grid is the trick. Buffering every prediction and intersecting
+    it with every line would be geometry work per pair. Instead
+    distance_transform_edt is computed ONCE per threshold, giving each cell its
+    distance to the nearest predicted road pixel. After that, testing a line is
+    just sampling that grid along it -- an array lookup, not a spatial join.
+
+    `~transform` is the inverse affine: map coordinates back to row and column.
+    """
     inv = ~transform
     H, W = dist_m.shape
     out = np.zeros(len(lines))
@@ -166,6 +175,10 @@ def main() -> int:
     for t in THRESHOLDS_SWEEP:
         m = prob >= t
         dist = ndi.distance_transform_edt(~m) * res
+        # Three coverages, not one. cov_r is recall. cov_d and cov_n are the
+        # cost of it: how much drainage and how many human-rejected lines this
+        # same cutoff also claims. A threshold that lifts recall while lifting
+        # drainage just as fast has bought nothing.
         cov_r = coverage(road_h.geometry, dist, tf)
         cov_d = coverage(drain_h.geometry, dist, tf)
         cov_n = coverage(notrd_h.geometry, dist, tf)

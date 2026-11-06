@@ -1,0 +1,57 @@
+{
+  "target": "pit",
+  "arch": "unet",
+  "n_params": 7764259,
+  "folds": [
+    {
+      "fold": 0,
+      "best_epoch": 38,
+      "val_score": 0.5893619568253462,
+      "minutes": 10.320374635855357
+    },
+    {
+      "fold": 1,
+      "best_epoch": 35,
+      "val_score": 0.5511516912222453,
+      "minutes": 10.0799320936203
+    },
+    {
+      "fold": 2,
+      "best_epoch": 38,
+      "val_score": 0.5581184984170059,
+      "minutes": 10.173313693205516
+    },
+    {
+      "fold": 3,
+      "best_epoch": 35,
+      "val_score": 0.5673161227471992,
+      "minutes": 10.218776297569274
+    },
+    {
+      "fold": 4,
+      "best_epoch": 40,
+      "val_score": 0.5294145781519036,
+      "minutes": 10.578560610612234
+    }
+  ],
+  "val_score_mean": 0.5590725694727401,
+  "val_score_sd": 0.019640011047911472,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ],
+  "patch": 256,
+  "alpha": [
+    0.1,
+    0.72,
+    0.25
+  ],
+  "epochs": 40,
+  "batch": 8,
+  "lr": 0.001
+}

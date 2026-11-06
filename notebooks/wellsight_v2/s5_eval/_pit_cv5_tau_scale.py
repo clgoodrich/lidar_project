@@ -52,6 +52,11 @@ def main() -> int:
     rows = []
     for obj in OBJECTIVES:
         for k in sorted(fold_df.fold.unique()):
+            # The probability threshold is READ BACK from the CV run, where it
+            # was chosen on that fold's inner val split. It stays fixed across
+            # every tau below. Re-selecting it per tau would let each point on
+            # the curve pick its own best threshold, which manufactures a
+            # flattering line that no single deployed model could produce.
             sel = fold_df[(fold_df.fold == k) & (fold_df.objective == obj)]
             thr = float(sel.prob_threshold.iloc[0])
             tif = OUTDIR / f"fold{k}" / f"pit_prob_floor_cvfold{k}_9t_05.tif"
@@ -84,6 +89,9 @@ def main() -> int:
     out = OUTDIR / "pit_cv5_iou_strictness_scale_9t.csv"
     df.to_csv(out, index=False)
 
+    # Pooled by weighting each fold by its own denominator -- n_gt for recall,
+    # n_pred for precision -- rather than averaging five percentages. The two
+    # denominators are different, which is why they are applied separately.
     print(f"\n{'='*66}\nPOOLED ACROSS 5 FOLDS (all 426 pits)\n{'='*66}")
     md = ["| IoU required | pit R (F1-sel) | pit P (F1-sel) | pit R (F2-sel) | pit P (F2-sel) |",
           "|---|---|---|---|---|"]

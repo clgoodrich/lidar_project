@@ -1,0 +1,62 @@
+[
+  {
+    "fold": 0,
+    "background_draws": 1000,
+    "windows_overlapping_heldout_blocks": 182,
+    "example": {
+      "centre": [
+        622516.1068390104,
+        4596740.120398165
+      ],
+      "heldout_overlap_m2": 15360.0
+    }
+  },
+  {
+    "fold": 1,
+    "background_draws": 1000,
+    "windows_overlapping_heldout_blocks": 192,
+    "example": {
+      "centre": [
+        619634.782887503,
+        4595169.302029489
+      ],
+      "heldout_overlap_m2": 2976.0
+    }
+  },
+  {
+    "fold": 2,
+    "background_draws": 1000,
+    "windows_overlapping_heldout_blocks": 222,
+    "example": {
+      "centre": [
+        623997.4469968533,
+        4595340.945585025
+      ],
+      "heldout_overlap_m2": 960.0
+    }
+  },
+  {
+    "fold": 3,
+    "background_draws": 1000,
+    "windows_overlapping_heldout_blocks": 211,
+    "example": {
+      "centre": [
+        623334.1193334848,
+        4595318.253648035
+      ],
+      "heldout_overlap_m2": 330.0
+    }
+  },
+  {
+    "fold": 4,
+    "background_draws": 1000,
+    "windows_overlapping_heldout_blocks": 214,
+    "example": {
+      "centre": [
+        620934.4969096006,
+        4593457.167326598
+      ],
+      "heldout_overlap_m2": 5429.0
+    }
+  }
+]

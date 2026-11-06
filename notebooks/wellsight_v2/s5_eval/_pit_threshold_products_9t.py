@@ -141,6 +141,11 @@ def embed_style(gpkg: Path, layer: str, qml: str, desc: str) -> None:
 def main() -> int:
     print("== per-threshold pit products (0.20 / 0.30 / 0.40 / 0.50) ==\n")
 
+    # Only val and test pits are scored. Training pits would flatter every
+    # threshold equally and tell you nothing about a new tile. The rim layer,
+    # not the floor layer: a pit counts as found when a predicted floor's
+    # centroid falls inside the hand-drawn rim, which is a question about
+    # LOCATING the pit rather than tracing its outline.
     rim = read_layer(ANN_GPKG, "pit_full").to_crs(CRS)
     man = normalize_ids(pd.read_csv(NINE_T / "pit_dataset_manifest.csv"))
     held = set(man.loc[man.split.isin(("val", "test")), "pit_inside_id"])
@@ -164,6 +169,10 @@ def main() -> int:
         tg = tag(t)
         pred = polygonize(prob, tf, pcrs, t)
 
+        # For each held-out rim, does ANY prediction put its centroid inside?
+        # One hit is enough, so the loop breaks -- a pit found twice is still
+        # one pit found. The spatial index keeps this from being a full
+        # cross-product of rims against predictions.
         cent = np.zeros(len(rim_h), bool)
         if len(pred):
             sidx = pred.sindex
@@ -182,7 +191,13 @@ def main() -> int:
               f"{m.sum() * px / 1e4:6.2f} ha claimed, "
               f"found {int(cent.sum()):3d}/{len(rim_h)}  MISSED {n_miss}")
 
-        # ---- rasters ----
+        # ---- rasters: two per threshold, doing two different jobs ----
+        # mask (uint8)  what this cutoff CLAIMS. Carries a colormap so it drops
+        #               into QGIS as a red overlay with nothing to configure.
+        # prob (float32) the same footprint but keeping the probability values,
+        #               so you can see whether a claim was marginal or confident.
+        # Both stamp THRESHOLD and SOURCE into the band tags -- the file can
+        # always say what made it, even detached from this script.
         p = prof.copy(); p.update(dtype="uint8", nodata=0, count=1,
                                   compress="deflate", tiled=True)
         rp = path_for("models") / "pit" / "unet_v2" / f"pit_unet_floor_mask_{tg}_9t_05.tif"
@@ -198,6 +213,14 @@ def main() -> int:
             d.update_tags(1, THRESHOLD=str(t), SOURCE=PROB.name)
 
         # ---- gpkg: rims, centroids, locator circles, model geometry ----
+        # Five layers of the same misses, because a 26 m2 polygon is sub-pixel
+        # on screen at full-tile zoom and effectively invisible:
+        #   rim_missed        the true shape, once you have found it
+        #   centroid_missed   a point marker, which QGIS draws at a fixed screen
+        #                     size and so stays visible at every zoom
+        #   locator_missed    a 120 m circle, spottable across the whole tile
+        #   rim_found         the other half, for context
+        #   model_geometry    what the model actually drew, to see WHY it missed
         gp = OUT / f"pit_heldout_found_vs_missed_{tg}_9t.gpkg"
         if gp.exists():
             gp.unlink()

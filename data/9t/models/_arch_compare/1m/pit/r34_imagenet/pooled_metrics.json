@@ -1,0 +1,57 @@
+{
+  "target": "pit",
+  "arch": "r34_imagenet",
+  "n_params": 24449203,
+  "folds": [
+    {
+      "fold": 0,
+      "best_epoch": 35,
+      "val_score": 0.5645676772911807,
+      "minutes": 9.412547433376313
+    },
+    {
+      "fold": 1,
+      "best_epoch": 35,
+      "val_score": 0.5384976893553693,
+      "minutes": 9.00768549044927
+    },
+    {
+      "fold": 2,
+      "best_epoch": 38,
+      "val_score": 0.5543249181651047,
+      "minutes": 8.724057451883953
+    },
+    {
+      "fold": 3,
+      "best_epoch": 30,
+      "val_score": 0.5592043972424073,
+      "minutes": 8.626100711027782
+    },
+    {
+      "fold": 4,
+      "best_epoch": 27,
+      "val_score": 0.524458075583511,
+      "minutes": 8.69357442855835
+    }
+  ],
+  "val_score_mean": 0.5482105515275146,
+  "val_score_sd": 0.014726340287224731,
+  "channels": [
+    "lrm_25",
+    "lrm_5",
+    "slope",
+    "tpi_05",
+    "openness_pos",
+    "openness_neg",
+    "roughness_5"
+  ],
+  "patch": 256,
+  "alpha": [
+    0.1,
+    0.72,
+    0.25
+  ],
+  "epochs": 40,
+  "batch": 8,
+  "lr": 0.001
+}

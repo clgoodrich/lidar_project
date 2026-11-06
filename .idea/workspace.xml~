@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f82a0f68-2ed7-4c66-b5b1-1af98fa316e7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/613590/results/road/thresholds/_road_score_vs_roads_shp_613590_1m.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/613590/results/road/thresholds/_road_score_vs_roads_shp_613590_1m.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/613590/results/road/thresholds/road_found_vs_missed_thr0p50_613590_1m.gpkg" beforeDir="false" afterPath="$PROJECT_DIR$/data/613590/results/road/thresholds/road_found_vs_missed_thr0p50_613590_1m.gpkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/9t/derived/05/pad_dataset_manifest_unified.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/9t/derived/05/pad_dataset_manifest_unified.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/9t/derived/05/pit_dataset_manifest_unified.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/9t/derived/05/pit_dataset_manifest_unified.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/9t/derived/05/road_dataset_manifest_unified.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/9t/derived/05/road_dataset_manifest_unified.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/OTHER_DATA/derived/pit_dataset_manifest.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/OTHER_DATA/derived/pit_dataset_manifest.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/MOVES.csv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/MOVES.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_ledgers/duplicates_proposed_moves.csv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_ledgers/duplicates_proposed_moves.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/analysis_log.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/analysis_log.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/duplicates_report.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/duplicates_report.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/iterations/LEADERBOARD.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/iterations/LEADERBOARD.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/publication/WellSight_Presentation.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/docs/presentation/WellSight_Presentation.pptx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/reference_index.csv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/reference_index.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/reference_index_summary.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/reference_index_summary.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/verify_backup_report.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/verify_backup_report.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/archive/_fetch_nisar_9t.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/archive/_fetch_nisar_9t.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/phase_1_derivative_generation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/phase_1_derivative_generation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/phase_2_prep_annotations.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/phase_2_prep_annotations.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/phase_3_rasterization_training_prep.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/phase_3_rasterization_training_prep.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s2_labels/_build_pad_road_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s2_labels/_build_pad_road_dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s2_labels/_build_pad_split.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s2_labels/_build_pad_split.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s2_labels/_build_unified_split.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s2_labels/_build_unified_split.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s2_labels/_sanity_render.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s2_labels/_sanity_render.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s3_train/_pad_unet_cv5.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s3_train/_pad_unet_cv5.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s3_train/_road_unet_1m_recall.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s3_train/_road_unet_1m_recall.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s4_infer/_postfilter_tile_candidates.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s4_infer/_postfilter_tile_candidates.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s4_infer/_predict_on_tile.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s4_infer/_predict_on_tile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_cv5_centroid_precision_pit_pad_9t.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_cv5_centroid_precision_pit_pad_9t.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_heldout_rim_containment_9t.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_heldout_rim_containment_9t.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_pad_cv5_tau_scale.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_pad_cv5_tau_scale.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_pad_threshold_products_9t.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_pad_threshold_products_9t.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_pit_cv5_tau_scale.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_pit_cv5_tau_scale.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_pit_threshold_products_9t.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_pit_threshold_products_9t.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_road_threshold_products_9t.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_road_threshold_products_9t.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_threshold_common.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s5_eval/_threshold_common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s6_review/_build_pit_review_package.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s6_review/_build_pit_review_package.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s6_review/_build_road_review_package.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s6_review/_build_road_review_package.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s6_review/_pit_corrections_diff.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s6_review/_pit_corrections_diff.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/wellsight_v2/s6_review/_road_corrections_diff.py" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/wellsight_v2/s6_review/_road_corrections_diff.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/annotations_proj_v2.gpkg" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/annotations_proj_v2.gpkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/pit_full.dbf" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/pit_full.dbf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/pit_full.shp" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/pit_full.shp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/pit_full.shx" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/pit_full.shx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/pit_inside.dbf" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/pit_inside.dbf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/pit_inside.shp" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/pit_inside.shp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/pit_inside.shx" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/pit_inside.shx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/roads.dbf" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/roads.dbf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/roads.shp" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/roads.shp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/annotations/roads.shx" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/annotations/roads.shx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qgis/wellsight.qgz" beforeDir="false" afterPath="$PROJECT_DIR$/qgis/wellsight.qgz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/cornrow_test_tile.las" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/cornrow_test_tile.las" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Jupyter Notebook" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;clgoodrich&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/clgoodrich/lidar_project.git&quot;,
+    &quot;accountId&quot;: &quot;bdc54225-3ac5-4764-b73a-f111faef4016&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="3AxpkwYWE3ff8BpDJCpXdZANncL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;reorg/phase4&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/colto/Documents/GitHub/lidar_project - Copy&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-PY-252.23892.515" />
+        <option value="bundled-python-sdk-7e47963ff851-f0eec537fc84-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.23892.515" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f82a0f68-2ed7-4c66-b5b1-1af98fa316e7" name="Changes" comment="" />
+      <created>1773544222347</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1773544222347</updated>
+      <workItem from="1773544223411" duration="8026000" />
+      <workItem from="1773687127419" duration="3069000" />
+      <workItem from="1774276370439" duration="1454000" />
+      <workItem from="1775920469358" duration="6117000" />
+      <workItem from="1776109302126" duration="9974000" />
+      <workItem from="1776820927376" duration="24000" />
+      <workItem from="1781557571451" duration="2926000" />
+      <workItem from="1784579365815" duration="29000" />
+      <workItem from="1784579573387" duration="1280000" />
+      <workItem from="1784589984788" duration="2517000" />
+      <workItem from="1786569266251" duration="12000" />
+      <workItem from="1786630692664" duration="12400000" />
+      <workItem from="1786649840733" duration="22508000" />
+      <workItem from="1786822991003" duration="6175000" />
+      <workItem from="1786976709875" duration="67829000" />
+      <workItem from="1787636506852" duration="8349000" />
+      <workItem from="1788534477844" duration="10142000" />
+      <workItem from="1788629238732" duration="21761000" />
+      <workItem from="1789140129501" duration="37392000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
+          <url>file://$PROJECT_DIR$/notebooks/wellsight_v2/s1_build/phase_1_derivative_generation.ipynb</url>
+          <line>4</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
