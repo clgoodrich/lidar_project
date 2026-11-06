@@ -69,14 +69,18 @@ def chips_for_window(stack: Path, wid: str, ppsm: float, cfg: dict, excl):
     from shapely.geometry import box
     c = cfg["corpus"]
     size, stride = c["chip_px"], c["stride_px"]
+    if size <= 0 or stride <= 0:
+        raise ValueError("chip size and stride must be positive")
     rows, drops = [], {"nodata": 0, "excluded": 0}
     with rasterio.open(stack) as r:
         if r.crs is None or not r.crs.is_projected:
             raise AssertionError(f"{stack}: CRS missing or geographic ({r.crs})")
         if r.count != len(cfg["channels"]):
             raise AssertionError(f"{stack}: {r.count} bands, expected {len(cfg['channels'])}")
-        for row in range(0, max(r.height - size, 0) + 1, stride):
-            for col in range(0, max(r.width - size, 0) + 1, stride):
+        if r.transform.b != 0 or r.transform.d != 0:
+            raise ValueError("rotated stacks are not supported")
+        for row in range(0, r.height - size + 1, stride):
+            for col in range(0, r.width - size + 1, stride):
                 w = Window(col, row, size, size)
                 x0, y1 = r.transform * (col, row)
                 x1, y0 = r.transform * (col + size, row + size)
@@ -84,8 +88,8 @@ def chips_for_window(stack: Path, wid: str, ppsm: float, cfg: dict, excl):
                 if excl is not None and fp.intersects(excl):
                     drops["excluded"] += 1
                     continue
-                b1 = r.read(1, window=w).astype(np.float32)
-                bad = ~np.isfinite(b1) if r.nodata is None or np.isnan(r.nodata) else (b1 == r.nodata) | ~np.isfinite(b1)
+                bands = r.read(window=w, masked=True).astype(np.float32)
+                bad = (np.ma.getmaskarray(bands) | ~np.isfinite(bands.data)).any(axis=0)
                 frac = float(bad.mean())
                 if frac > c["max_nodata_frac"]:
                     drops["nodata"] += 1
@@ -105,17 +109,21 @@ def norm_stats(index: pd.DataFrame, n_sample: int, seed: int, n_ch: int):
     for path, g in pick.groupby("stack_path"):
         with rasterio.open(path) as r:
             for _, c in g.iterrows():
-                a = r.read(window=Window(int(c["col"]), int(c["row"]), int(c["size"]), int(c["size"]))).astype(np.float64)
+                a = r.read(window=Window(int(c["col"]), int(c["row"]), int(c["size"]), int(c["size"])), masked=True).astype(np.float64)
                 for k in range(n_ch):
-                    v = a[k][np.isfinite(a[k])]
+                    v = a[k].compressed()
+                    v = v[np.isfinite(v)]
                     s[k] += v.sum(); s2[k] += (v * v).sum(); n[k] += v.size
-    mu = s / np.maximum(n, 1)
+    if np.any(n == 0):
+        raise ValueError("normalisation requires valid observations in every channel")
+    mu = s / n
     sd = np.sqrt(np.maximum(s2 / np.maximum(n, 1) - mu * mu, 1e-12))
     return mu.astype(np.float32), np.maximum(sd, 1e-6).astype(np.float32)
 
 
 def build_corpus(cfg: dict, windows: pd.DataFrame, out_dir: Path, build: bool = False) -> dict:
-    excl = load_exclusions(cfg["inputs"]["corpus_exclusions"], "EPSG:6346")
+    import rasterio
+    exclusions_by_crs = {}
     all_rows, summary = [], {"windows": {}}
     for _, w in windows.iterrows():
         stack = Path(str(w["stack_path"]))
@@ -125,7 +133,13 @@ def build_corpus(cfg: dict, windows: pd.DataFrame, out_dir: Path, build: bool = 
             else:
                 summary["windows"][w["window_id"]] = {"status": f"missing stack {stack}"}
                 continue
-        rows, drops = chips_for_window(stack, str(w["window_id"]), float(w["ground_ppsm"]), cfg, excl)
+        with rasterio.open(stack) as raster:
+            if raster.crs is None:
+                raise ValueError(f"{stack}: missing CRS")
+            crs = raster.crs.to_wkt()
+        if crs not in exclusions_by_crs:
+            exclusions_by_crs[crs] = load_exclusions(cfg["inputs"]["corpus_exclusions"], crs)
+        rows, drops = chips_for_window(stack, str(w["window_id"]), float(w["ground_ppsm"]), cfg, exclusions_by_crs[crs])
         all_rows += rows
         summary["windows"][w["window_id"]] = {"status": "ok", "chips": len(rows), **drops}
     if not all_rows:
@@ -135,8 +149,8 @@ def build_corpus(cfg: dict, windows: pd.DataFrame, out_dir: Path, build: bool = 
     idx["density_bin"] = pd.cut(idx["ground_ppsm"], bins, labels=False, include_lowest=True)
     ek.assert_no_nan(idx["density_bin"], "density_bin")
     out_dir.mkdir(parents=True, exist_ok=True)
-    idx.to_csv(out_dir / "ssl_chip_index_us.csv", index=False)
     mu, sd = norm_stats(idx, cfg["corpus"]["norm_sample_chips"], cfg["master_seed"], len(cfg["channels"]))
+    idx.to_csv(out_dir / "ssl_chip_index_us.csv", index=False)
     np.savez(out_dir / "ssl_norm_stats_us.npz", mu=mu, sd=sd, channels=np.array(cfg["channels"]))
     summary.update(n_chips=len(idx), by_density_bin=idx["density_bin"].value_counts().sort_index().to_dict(),
                    mu=mu.tolist(), sd=sd.tolist())

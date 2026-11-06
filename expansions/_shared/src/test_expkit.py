@@ -35,6 +35,18 @@ def test_intervals():
     assert ek.n_for_proportion(0.15, deff=1.0) == 43
 
 
+def test_decide_invalid_evidence_and_boundaries():
+    import pytest
+    for kind in ("noninferiority", "superiority"):
+        for lo, hi in ((0.1, np.nan), (np.nan, 0.2), (0.2, -0.2), (0.1, np.inf)):
+            assert ek.decide(lo, hi, 0.05, kind) == "inconclusive"
+        for margin in (-0.1, np.nan, np.inf):
+            with pytest.raises(ValueError):
+                ek.decide(0.1, 0.2, margin, kind)
+    assert ek.decide(-0.05, -0.05, 0.05) == "inconclusive"
+    assert ek.decide(0.05, 0.05, 0.05, "superiority") == "inconclusive"
+
+
 def test_calibration_and_run(tmp_path):
     c = ek.calibration([0, 1, 1, 0], [0.1, 0.9, 0.8, 0.2])
     assert c["brier"] < 0.05

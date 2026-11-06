@@ -266,6 +266,12 @@ def calibration(y, p, bins: int = 10):
 
 def decide(lo: float, hi: float, margin: float, kind: str = "noninferiority") -> str:
     """fw_00 decision function. Inconclusive is never 'no effect'."""
+    if kind not in {"noninferiority", "superiority"}:
+        raise ValueError(kind)
+    if not np.isfinite(margin) or margin < 0:
+        raise ValueError("margin must be finite and nonnegative")
+    if not np.isfinite(lo) or not np.isfinite(hi) or lo > hi:
+        return "inconclusive"
     if kind == "noninferiority":
         return "success" if lo > -margin else "failure" if hi < -margin else "inconclusive"
     if kind == "superiority":

@@ -1,0 +1,42 @@
+"C:\Python313\python.exe" -m pytest -q expansions\0_prerequisites\p1_splits_manifests\src\test_p1.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\0_prerequisites\p2_audit_set\src\test_p2.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_0_transfer_protocol\src\test_3_0.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_1_warren_forest_mckean\src\test_3_1.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_2_appalachian_states\src\test_3_2.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_3_low_relief_slope\src\test_3_3.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_4_gulf_texas\src\test_3_4.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_5_oklahoma_kansas\src\test_3_5.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_6_california\src\test_3_6.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_7_canada\src\test_3_7.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\3_geography\3_8_alaska\src\test_3_8.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_1_magnetometry\src\test_4_1.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_2_thermal\src\test_4_2.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_3_vegetation_stress\src\test_4_3.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_4_methane_plumes\src\test_4_4.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_5_multitemporal_lidar\src\test_4_5.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_6_historic_maps_aerials\src\test_4_6.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_7_drone_lidar\src\test_4_7.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_8_leafoff_optical\src\test_4_8.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\4_modalities\4_9_more_radar\src\test_4_9.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\5_tasks\5_1_context_features\src\test_5_1.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\5_tasks\5_2_era_classification\src\test_5_2.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\5_tasks\5_3_risk_ranking\src\test_5_3.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\5_tasks\5_4_undocumented_density\src\test_5_4.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\5_tasks\5_5_polygon_area_cost\src\test_5_5.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\5_tasks\5_6_record_association\src\test_5_6.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\6_adjacent\6_1_co2_geothermal\src\test_6_1.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\6_adjacent\6_2_coal_features\src\test_6_2.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\6_adjacent\6_3_confuser_classes\src\test_6_3.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\6_adjacent\6_4_hydrogen\src\test_6_4.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\6_adjacent\6_5_field_methane\src\test_6_5.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\6_adjacent\6_6_sar_viewshed\src\test_6_6.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\7_scale\7_1_pretraining\src\test_7_1.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\7_scale\7_2_active_learning\src\test_7_2.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\7_scale\7_3_benchmark\src\test_7_3.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\7_scale\7_4_agency_tooling\src\test_7_4.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\7_scale\7_5_field_campaign\src\test_7_5.py -p no:cacheprovider
+"C:\Python313\python.exe" -m pytest -q expansions\_shared\src\test_expkit.py -p no:cacheprovider
+python tmp/expansion_review_20261106/reproduce.py > tmp/expansion_review_20261106/reproduce.log 2>&1
+python tmp/expansion_review_20261106/contracts.py > tmp/expansion_review_20261106/contracts.log 2>&1
+git rev-parse HEAD
+git status --short

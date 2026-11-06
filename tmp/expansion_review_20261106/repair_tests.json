@@ -1,0 +1,496 @@
+[
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\0_prerequisites\\p1_splits_manifests\\src\\test_p1.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".........                                                                [100%]\n9 passed in 16.80s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\0_prerequisites\\p2_audit_set\\src\\test_p2.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "........                                                                 [100%]\n8 passed in 2.86s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_0_transfer_protocol\\src\\test_3_0.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "..........                                                               [100%]\n10 passed in 4.00s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_1_warren_forest_mckean\\src\\test_3_1.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "...........                                                              [100%]\n11 passed in 8.00s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_2_appalachian_states\\src\\test_3_2.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "........                                                                 [100%]\n============================== warnings summary ===============================\nexpansions/3_geography/3_2_appalachian_states/src/test_3_2.py::test_geod_shift_and_window_tags\nexpansions/3_geography/3_2_appalachian_states/src/test_3_2.py::test_geod_shift_and_window_tags\nexpansions/3_geography/3_2_appalachian_states/src/test_3_2.py::test_geod_shift_and_window_tags\nexpansions/3_geography/3_2_appalachian_states/src/test_3_2.py::test_geod_shift_and_window_tags\n  C:\\Python313\\Lib\\site-packages\\pyproj\\geod.py:398: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)\n    return self._inv_point(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n8 passed, 4 warnings in 1.66s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_3_low_relief_slope\\src\\test_3_3.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "......                                                                   [100%]\n6 passed in 4.26s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_4_gulf_texas\\src\\test_3_4.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "..........                                                               [100%]\n10 passed in 20.74s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_5_oklahoma_kansas\\src\\test_3_5.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "......                                                                   [100%]\n6 passed in 1.94s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_6_california\\src\\test_3_6.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "......                                                                   [100%]\n6 passed in 3.06s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_7_canada\\src\\test_3_7.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "....                                                                     [100%]\n4 passed in 1.92s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\3_geography\\3_8_alaska\\src\\test_3_8.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "......                                                                   [100%]\n6 passed in 1.80s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_1_magnetometry\\src\\test_4_1.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "......                                                                   [100%]\n6 passed in 3.06s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_2_thermal\\src\\test_4_2.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".....                                                                    [100%]\n5 passed in 9.02s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_3_vegetation_stress\\src\\test_4_3.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "....                                                                     [100%]\n4 passed in 27.95s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_4_methane_plumes\\src\\test_4_4.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".....                                                                    [100%]\n5 passed in 4.47s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_5_multitemporal_lidar\\src\\test_4_5.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".......                                                                  [100%]\n============================== warnings summary ===============================\nexpansions/4_modalities/4_5_multitemporal_lidar/src/test_4_5.py::test_recovery_chain_sees_half_metre\nexpansions/4_modalities/4_5_multitemporal_lidar/src/test_4_5.py::test_recovery_chain_sees_half_metre\n  C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\notebooks\\wellsight_v2\\s7_analysis\\_icp_change_classify_9t.py:175: RuntimeWarning: All-NaN slice encountered\n    r = np.nanmedian(out, axis=1)\n\nexpansions/4_modalities/4_5_multitemporal_lidar/src/test_4_5.py::test_recovery_chain_sees_half_metre\nexpansions/4_modalities/4_5_multitemporal_lidar/src/test_4_5.py::test_recovery_chain_sees_half_metre\n  C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\notebooks\\wellsight_v2\\s7_analysis\\_icp_change_classify_9t.py:177: RuntimeWarning: All-NaN slice encountered\n    c = np.nanmedian(out, axis=0)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n7 passed, 4 warnings in 10.50s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_6_historic_maps_aerials\\src\\test_4_6.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".......                                                                  [100%]\n7 passed in 4.25s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_7_drone_lidar\\src\\test_4_7.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "....                                                                     [100%]\n4 passed in 5.17s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_8_leafoff_optical\\src\\test_4_8.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "..                                                                       [100%]\n2 passed in 5.26s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\4_modalities\\4_9_more_radar\\src\\test_4_9.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".....                                                                    [100%]\n5 passed in 18.83s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\5_tasks\\5_1_context_features\\src\\test_5_1.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "...........                                                              [100%]\n11 passed in 4.40s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\5_tasks\\5_2_era_classification\\src\\test_5_2.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "............                                                             [100%]\n12 passed in 12.36s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\5_tasks\\5_3_risk_ranking\\src\\test_5_3.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".......                                                                  [100%]\n7 passed in 3.92s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\5_tasks\\5_4_undocumented_density\\src\\test_5_4.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "......                                                                   [100%]\n6 passed in 3.25s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\5_tasks\\5_5_polygon_area_cost\\src\\test_5_5.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "........                                                                 [100%]\n8 passed in 3.67s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\5_tasks\\5_6_record_association\\src\\test_5_6.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "............                                                             [100%]\n12 passed in 3.92s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\6_adjacent\\6_1_co2_geothermal\\src\\test_6_1.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "....                                                                     [100%]\n4 passed in 4.46s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\6_adjacent\\6_2_coal_features\\src\\test_6_2.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "....                                                                     [100%]\n4 passed in 7.59s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\6_adjacent\\6_3_confuser_classes\\src\\test_6_3.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".....                                                                    [100%]\n5 passed in 7.15s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\6_adjacent\\6_4_hydrogen\\src\\test_6_4.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "......                                                                   [100%]\n6 passed in 3.73s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\6_adjacent\\6_5_field_methane\\src\\test_6_5.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "....                                                                     [100%]\n4 passed in 2.32s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\6_adjacent\\6_6_sar_viewshed\\src\\test_6_6.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "..........                                                               [100%]\n10 passed in 3.31s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\7_scale\\7_1_pretraining\\src\\test_7_1.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": ".......                                                                  [100%]\n============================== warnings summary ===============================\nexpansions/7_scale/7_1_pretraining/src/test_7_1.py::test_subsets_finetune_and_curves\nexpansions/7_scale/7_1_pretraining/src/test_7_1.py::test_subsets_finetune_and_curves\n  C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\expansions\\7_scale\\7_1_pretraining\\src\\_ssl_curve_score_9t.py:106: OptimizeWarning: Covariance of the parameters could not be estimated\n    p, _ = curve_fit(f, n, r, p0=[max(r), max(r) - min(r) + 1e-3, 0.5], maxfev=20000)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n7 passed, 2 warnings in 29.30s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\7_scale\\7_2_active_learning\\src\\test_7_2.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "....                                                                     [100%]\n4 passed in 9.42s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\7_scale\\7_3_benchmark\\src\\test_7_3.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "...                                                                      [100%]\n3 passed in 8.74s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\7_scale\\7_4_agency_tooling\\src\\test_7_4.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "....                                                                     [100%]\n4 passed in 7.25s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\7_scale\\7_5_field_campaign\\src\\test_7_5.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "...                                                                      [100%]\n3 passed in 4.93s\n"
+  },
+  {
+    "command": [
+      "C:\\Python313\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "expansions\\_shared\\src\\test_expkit.py",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "returncode": 0,
+    "output": "......                                                                   [100%]\n6 passed in 2.21s\n"
+  }
+]

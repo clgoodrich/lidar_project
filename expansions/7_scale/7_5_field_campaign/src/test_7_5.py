@@ -113,3 +113,13 @@ def test_draw_sheets_ingest_analyse(tmp_path):
     bad = rec.copy(); bad.loc[bad.index[1], ["outcome", "identity"]] = ["steel_anomaly_only", "confirmed_well"]
     with pytest.raises(AssertionError):
         fi.validate(bad, blind, fg.codebook(cfg), 30.0)
+
+
+def test_single_cluster_cannot_pass_precision():
+    import pandas as pd
+    import _field_analysis_bounds as fa
+    df = pd.DataFrame({"pi": [1.0] * 100, "identity": ["confirmed_well"] * 100,
+                       "outcome": ["confirmed_well"] * 100, "cluster_id": ["one lease"] * 100})
+    result = fa.summarise(df, {}, 100, 0, 0.1)
+    assert result["gate"] == "inconclusive"
+    assert result["interval_lo"] == 0 and result["interval_hi"] == 1

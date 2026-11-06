@@ -53,7 +53,7 @@ from _split_future_write_9t import split_file_for  # noqa: E402
 from _split_sampler_leakage_9t import draw_windows, forbidden_polys, isolated_module  # noqa: E402
 ek = sc.ek
 
-P2_SRC = HERE.parents[2] / "0_prerequisites" / "p2_audit_set" / "src"
+P2_SRC = HERE.parents[2] / "p2_audit_set" / "src"
 
 
 def fold_norm_stats(feat_path: Path, rc: np.ndarray, patch: int, read_px: int, n_ch: int):

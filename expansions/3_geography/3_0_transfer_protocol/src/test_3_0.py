@@ -72,6 +72,20 @@ def test_recall_one_and_two_thirds(tmp_path):
     assert json.dumps(again["summary"], sort_keys=True, default=str) == json.dumps(part["summary"], sort_keys=True, default=str)
 
 
+def test_void_half_pixel_shift_rejected(tmp_path):
+    import rasterio
+    from affine import Affine
+    prob, bp, truth = make_area(tmp_path)
+    void = tmp_path / "void.tif"
+    with rasterio.open(prob) as r:
+        profile = r.profile.copy()
+    profile["transform"] = profile["transform"] * Affine.translation(0.5, 0)
+    with rasterio.open(void, "w", **profile) as r:
+        r.write(np.zeros((SIZE, SIZE), dtype=np.float32), 1)
+    with pytest.raises(ValueError, match="pixel transform"):
+        tl.score(prob, bp, truth, void_path=void, B=10)
+
+
 def test_uint8_dn254_and_duplicates(tmp_path):
     prob, bp, truth = make_area(tmp_path, uint8=True)
     s = tl.score(prob, bp, truth, 125.0, truth_id="pit_inside_id", B=100, seed=1, drop_edge=False)["summary"]

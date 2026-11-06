@@ -23,6 +23,68 @@ import _ssl_pretrain_objectives_us as pt  # noqa: E402
 CRS = "EPSG:6346"
 
 
+def test_norm_valid_zero_nodata_nan_and_empty(tmp_path):
+    import pytest
+    import _ssl_corpus_chips_us as cc
+    p = tmp_path / "stats.tif"
+    _raster(p, np.array([[0, 2], [-9999, np.nan]]), nodata=-9999)
+    idx = pd.DataFrame([dict(stack_path=str(p), row=0, col=0, size=2)])
+    mu, sd = cc.norm_stats(idx, 1, 0, 1)
+    np.testing.assert_allclose(mu, [1])
+    np.testing.assert_allclose(sd, [1])
+    _raster(p, np.full((2, 2), -9999), nodata=-9999)
+    with pytest.raises(ValueError, match="valid observations"):
+        cc.norm_stats(idx, 1, 0, 1)
+
+
+def test_all_channels_and_complete_windows(tmp_path):
+    import _ssl_corpus_chips_us as cc
+    cfg = {"corpus": {"chip_px": 2, "stride_px": 2, "max_nodata_frac": 0.2}, "channels": ["a", "b"]}
+    p = tmp_path / "bands.tif"
+    a = np.ones((2, 2, 2)); a[1, 0, 0] = -9999
+    _raster(p, a, nodata=-9999)
+    rows, drops = cc.chips_for_window(p, "w", 3, cfg, None)
+    assert rows == [] and drops["nodata"] == 1
+    cfg["corpus"]["chip_px"] = 3
+    assert cc.chips_for_window(p, "w", 3, cfg, None)[0] == []
+
+
+def test_build_corpus_reprojects_exclusions(tmp_path):
+    import geopandas as gpd
+    import rasterio
+    import pytest
+    from shapely.geometry import box
+    import _ssl_corpus_chips_us as cc
+    cfg = _cfg(tmp_path)
+    p = tmp_path / "mercator.tif"
+    _raster(p, np.ones((7, 64, 64)), x0=-8900000, y1=5000000)
+    with rasterio.open(p, "r+") as r:
+        r.crs = "EPSG:3857"
+        footprint = box(*r.bounds)
+    exclusion = tmp_path / "exclusion.gpkg"
+    gpd.GeoDataFrame(geometry=[footprint.buffer(1)], crs="EPSG:3857").to_crs(CRS).to_file(exclusion)
+    cfg["inputs"]["corpus_exclusions"] = [{"key": "expansions", "rel": str(exclusion)}]
+    windows = pd.DataFrame([dict(window_id="w", stack_path=str(p), ground_ppsm=3)])
+    with pytest.raises(FileNotFoundError, match="no admitted chips"):
+        cc.build_corpus(cfg, windows, tmp_path / "out")
+
+
+def test_future_manifest_producer_contract_and_hash(tmp_path):
+    import pytest
+    import _ssl_label_subsets_9t as ls
+    sys.path.insert(0, str(pt.ek.sub("p1", "src")))
+    import _split_future_write_9t as producer
+    tasks = {"pit": {"folds": {"0": {"train": [2], "inner_val": [3], "held_out": [4]}}}}
+    p = tmp_path / "future.json"
+    doc = {"schema": "wellsight.cv_splits.v1", "tasks": tasks, "content_sha256": producer.sc.lists_hash(tasks)}
+    p.write_text(json.dumps(doc))
+    assert ls.folds_future(p) == [{"fold": 0, "train": [2], "val": [3], "heldout": [4]}]
+    doc["tasks"]["pit"]["folds"]["0"]["train"] = [4]
+    p.write_text(json.dumps(doc))
+    with pytest.raises(AssertionError, match="hash mismatch"):
+        ls.folds_future(p)
+
+
 def _raster(path, arr, x0=0.0, y1=150.0, res=0.5, nodata=np.nan, dtype="float32"):
     import rasterio
     from rasterio.transform import from_origin

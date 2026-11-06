@@ -1,0 +1,49 @@
+{
+  "dn254": {
+    "values": [
+      [
+        0.0,
+        0.5,
+        1.0,
+        NaN
+      ]
+    ],
+    "zero_preserved": true,
+    "nodata_nan": true
+  },
+  "float_zero_nan_nodata": {
+    "values": [
+      [
+        0.0,
+        NaN,
+        NaN,
+        1.0
+      ]
+    ],
+    "zero_preserved": true
+  },
+  "half_pixel_void_grid": {
+    "accepted": true,
+    "n_eligible": 1
+  },
+  "actual_buffer_to_31": {
+    "producer_buffer_m": 100.0,
+    "consumer_key_present": false
+  },
+  "actual_p2_to_73": {
+    "exception": "ParserError",
+    "message": "Error tokenizing data. C error: Expected 1 fields in line 3, saw 3\n"
+  },
+  "audit_role_mapping": {
+    "7": "buffer"
+  },
+  "truth_dependent_dedupe": {
+    "with_annotation": [
+      0
+    ],
+    "without_annotation": [
+      0,
+      1
+    ]
+  }
+}

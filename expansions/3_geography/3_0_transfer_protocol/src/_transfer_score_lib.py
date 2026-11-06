@@ -279,7 +279,11 @@ def score(prob_path: Path, blocks_path: Path, truth_spec: str, k_per_km2: float 
     ek.assert_crs(blocks)
     ek.assert_unique(blocks, "block_id")
     fp = gpd.read_file(footprint_path) if footprint_path else None
-    void = read_prob(void_path, scale="none")[0] if void_path else None
+    void = None
+    if void_path:
+        void, void_tf, void_crs = read_prob(void_path, scale="none")
+        if void.shape != prob.shape or void_tf != tf or void_crs != crs:
+            raise ValueError("void and probability rasters must have identical CRS, shape and pixel transform")
     eb = eligible_blocks(blocks, prob, tf, fp, void, void_cap, drop_edge)
     el = eb[eb.eligible]
     area = float(el.area_km2.sum())

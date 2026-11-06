@@ -1,0 +1,5 @@
+C:\Python313\python.exe -m pytest -q expansions/0_prerequisites/p1_splits_manifests/src/test_p1.py -p no:cacheprovider
+..........                                                               [100%]
+10 passed in 14.93s
+Exit code: 0
+Executed after adding test_isolated_trainer_actual_frozen_audit_guard.

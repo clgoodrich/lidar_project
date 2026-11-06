@@ -1,0 +1,20 @@
+truth_zero {'0': 0.0, '1': 1.0}
+cutoff {'regional_default_candidates': 1, 'declared_pit_candidates': 0}
+matching_order {'regional_iou_match': {2: 1}, 'expected_score_order_match': {1: 1}}
+nodata_footprint {'budget_area_km2': 0.01, 'valid_area_km2': 0.0001}
+invalid_gate {'nan_hi': 'success', 'reversed': 'success'}
+trainer_audit_import {'exception': 'ModuleNotFoundError', 'message': "No module named '_audit_guard_lib'"}
+actual_p1_to_benchmark {'exception': 'KeyError', 'message': "'folds'"}
+p2_format_to_benchmark {'exception': 'ParserError', 'message': 'Error tokenizing data. C error: Expected 1 fields in line 3, saw 2\n'}
+nodata_line_of_sight {'visible': True, 'transmission': 1.0, 'p_visible': 1.0, 'distance_m': 14.0, 'target_slope': -0.12142952732246563, 'max_obstacle_slope': -0.13077011838498967}
+one_cluster_precision {'n': 100, 'n_eff': 100.0, 'n_confirmed': 100, 'n_non_well': 0, 'n_ambiguous': 0, 'n_inaccessible': 0, 'lower_bound': 1.0, 'upper_bound': 1.0, 'cp_lo': 0.9637833073548235, 'cp_hi': 1.0, 'boot_lo': 0.9637833073548235, 'boot_hi': 1.0, 'interval_lo': 0.9637833073548235, 'interval_hi': 1.0, 'width': 0.03621669264517646, 'gate': 'success (precision)', 'evidence_level': 'd (confirmed) and c (steel) kept apart'}
+ssl_nodata_norm {'actual_mean': [-2499.0], 'expected_mean': [1.0]}
+ssl_exclusion_crs {'same_physical_footprint_admitted': 1, 'drops': {'nodata': 0, 'excluded': 0}}
+actual_p1_to_ssl {'exception': 'KeyError', 'message': "'folds'"}
+reference_tie_id_conversion {'numeric_reference': 1.0, 'regional_replay': 0.0}
+block_seam_duplicate {'whole_raster_candidates': 1, 'per_block_candidates': 2, 'areas': [1800.0, 1800.0], 'bounds': [(50.0, 40.0, 140.0, 60.0), (60.0, 40.0, 150.0, 60.0)]}
+C:\Users\colto\Documents\GitHub\lidar_project\expansions\3_geography\3_4_gulf_texas\src\_geo_transfer_core.py:754: UserWarning: Geometry is in a geographic CRS. Results from 'centroid' are likely incorrect. Use 'GeoSeries.to_crs()' to re-project geometries to a projected CRS before this operation.
+
+  cents = truth.geometry.centroid
+geographic_area_units {'accepted_geographic': True, 'reported_blob_m2': [100.0]}
+actual_reference_bootstrap_timing {'blocks': 115, 'candidates': 778, 'B': 30, 'seconds': 1.3087730999977794, 'point': 0.9165009940357853, 'estimated_seconds_B2000_linear': 87.25153999985196}

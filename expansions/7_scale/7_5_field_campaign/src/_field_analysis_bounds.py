@@ -1,4 +1,4 @@
-"""Weighted identity bounds, exact intervals, search sensitivity and the precision gate (7.5 S4, S6, section 7).
+"""Weighted identity bounds, interval diagnostics and the precision gate (7.5 S4, S6, section 7).
 
 Purpose
     Bounds (protocol section 6). Per arm and per stratum, with weights w = 1 / pi.
@@ -6,11 +6,14 @@ Purpose
         upper = 1 - sum w over definite non-wells / sum w
     Every ambiguous and inaccessible site sits in the gap between them.
     Sampling uncertainty.
-        - Exact. Clopper-Pearson on the Kish effective sample size, n_eff = (sum w)^2 / sum w^2, applied
+        - Heuristic. Clopper-Pearson on the Kish effective sample size, n_eff = (sum w)^2 / sum w^2, applied
           to the lower bound (its lower limit) and to the upper bound (its upper limit). Within one
-          stratum weights are equal, so this is the plain Clopper-Pearson interval on counts.
+          stratum weights are equal, so this reduces to Clopper-Pearson on counts, whose exact coverage
+          requires independent binomial observations. Kish substitution is not exact survey inference.
         - Clustered. Bootstrap over clusters (lease or DEP pad), B = 2000, of both bounds. The reported
           interval is the wider of the two.
+          Fewer than two clusters produces an inconclusive result with logical bounds [0, 1].
+          Multi-cluster coverage still requires validation against the actual sampling design.
     Differences between strata or arms use Newcombe hybrid score intervals on the within-stratum counts
     (ek.newcombe_diff) for the lower-bound share. Era strata are always reported separately, never pooled.
     Arm B precision per score band is descriptive unless sized.
@@ -45,6 +48,9 @@ from _field_sample_draw_frames import CFG, ek, load_cfg, need  # noqa: E402
 
 
 def bounds(df: pd.DataFrame) -> dict:
+    pi = df["pi"].to_numpy(float)
+    if not len(pi) or not np.isfinite(pi).all() or np.any((pi <= 0) | (pi > 1)):
+        raise ValueError("inclusion probabilities must be finite and in (0, 1]")
     w = 1.0 / df["pi"].to_numpy(float)
     conf = (df["identity"] == "confirmed_well").to_numpy()
     non = (df["identity"] == "definite_non_well").to_numpy()
@@ -75,6 +81,13 @@ def cluster_boot(df: pd.DataFrame, B: int, seed: int) -> tuple[float, float]:
 
 def summarise(df: pd.DataFrame, label: dict, B: int, seed: int, target: float) -> dict:
     b = bounds(df)
+    if df["cluster_id"].isna().any():
+        raise ValueError("every observation needs a cluster_id")
+    if df["cluster_id"].nunique() < 2:
+        return {**label, **b, "boot_lo": None, "boot_hi": None,
+                "interval_lo": 0.0, "interval_hi": 1.0, "width": 1.0,
+                "gate": "inconclusive", "interval_method": "unidentified cluster variance",
+                "evidence_level": "fewer than two independent clusters; [0, 1] is a logical bound, not a confidence interval"}
     bl, bh = cluster_boot(df, B, seed) if df["cluster_id"].nunique() > 1 else (b["cp_lo"], b["cp_hi"])
     lo, hi = min(b["cp_lo"], bl), max(b["cp_hi"], bh)
     width = hi - lo

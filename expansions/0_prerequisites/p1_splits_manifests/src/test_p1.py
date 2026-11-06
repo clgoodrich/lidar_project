@@ -21,6 +21,20 @@ import _split_buffer_derive_9t as bd  # noqa: E402
 import _split_determinism_check_9t as dc  # noqa: E402
 
 
+def test_isolated_trainer_actual_frozen_audit_guard(tmp_path):
+    import hashlib
+    import _pit_unet_iso_train_9t as trainer
+    audit = tmp_path / "audit.csv"
+    raw = b"# buffer_m=25\nblock_id,role\n9,audit\n10,buffer\n"
+    audit.write_bytes(raw)
+    Path(str(audit) + ".sha256").write_text(hashlib.sha256(raw).hexdigest())
+    assert trainer.guard_lists(audit, {"train": [1], "inner_val": [2]}, 25) == [9, 10]
+    with pytest.raises(AssertionError):
+        trainer.guard_lists(audit, {"train": [9], "inner_val": [2]}, 25)
+    with pytest.raises(AssertionError, match="below"):
+        trainer.guard_lists(audit, {"train": [1], "inner_val": [2]}, 24)
+
+
 def synth_manifest(tmp: Path, n_blocks=16, n_nan=7, seed=0) -> Path:
     rng = np.random.default_rng(seed)
     rows = []

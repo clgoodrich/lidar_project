@@ -1,0 +1,7 @@
+# Comparative audit set for tile 9t. It supports comparisons between new models only.
+# Every 9t block trained or validated four of the five historical CV models.
+# Audit and buffer rows are excluded from all training, calibration, mining and selection.
+# seed=0 share=0.2 buffer_m=100.0 buffer_mode=block
+# written=2026-11-06T09:36:28
+block_id,role,stratum,area
+7,audit,d0s0,9t

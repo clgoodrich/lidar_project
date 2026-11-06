@@ -9,8 +9,8 @@ Purpose
 
 Inputs
     blocks GeoPackage with block_id and n_feat (config inputs.blocks_9t, held)
-    future split JSON from P1 (config inputs.split_future, assumed). Schema
-        {"folds": [{"fold": k, "train": [...], "val": [...], "heldout": [...]}]}
+    future split JSON from P1 (config inputs.split_future), wellsight.cv_splits.v1.
+    Uses the pit task and verifies its content hash through the producer's reader.
     --historical builds a PROVISIONAL split from the held historical held-out lists. Inner validation is
     then a seeded 15% of the training blocks. It is labelled provisional and never feeds the primary claim.
 Outputs
@@ -39,9 +39,11 @@ from _ssl_pretrain_objectives_us import CFG, cfg_path, ek, load_cfg, need  # noq
 
 
 def folds_future(path: Path) -> list[dict]:
-    sp = json.loads(need(path, "P1 future split").read_text())
-    return [{"fold": int(f["fold"]), "train": sorted(map(int, f["train"])), "val": sorted(map(int, f["val"])),
-             "heldout": sorted(map(int, f["heldout"]))} for f in sp["folds"]]
+    sys.path.insert(0, str(ek.sub("p1", "src")))
+    from _split_future_write_9t import split_file_for
+    folds = split_file_for("pit", need(path, "P1 future split"))
+    return [{"fold": k, "train": sorted(map(int, f["train"])), "val": sorted(map(int, f["inner_val"])),
+             "heldout": sorted(map(int, f["held_out"]))} for k, f in sorted(folds.items())]
 
 
 def folds_historical(path: Path, master: int, val_share: float) -> list[dict]:

@@ -5,6 +5,25 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-06 adversarial code review of all expansions (blank-slate)
+
+- The review used the blank-slate prompt `docs/plans/expansion_code_review_blank_prompt.md` with TARGET = ALL. It was read-only. Five independent reviewers covered the groups, and the lead re-checked one blocker per group.
+- Tests: 38 files, 247 passed, 0 failed, 0 skipped.
+- Verdict: no expansion is READY. 5 are BROKEN (3.4, 3.6, 4.9, 5.3, 6.4), 20 run but are untrusted, and 12 are incomplete.
+- Main blockers:
+  - The shared bootstrap drops NaN draws.
+  - Transfer targets are scored at cutoff 0.10 against a reference at 0.35 / 0.525.
+  - The P1 split role names and the P2 audit `#` header break every consumer.
+  - The derived 100 m buffer is never applied by default.
+  - The audit set is not frozen, so 7.x runs on disk have no audit exclusion.
+  - The 5.3 ranking is a NaN-skipping artefact.
+  - 4.9 `lidar_weak` manufactures gain.
+  - DEP `TOTAL_MAXI` is 100% null, which blocks 6.4.
+- 11 files were changed in the working tree by another session during the review. They were re-checked and none closes a finding.
+- Write-up: `docs/plans/expansion_adversarial_review_20261106.md`. Not yet reconciled with `docs/plans/expansion_consolidated_review_20261106.md`.
+
+---
+
 ## 2026-11-05 parallel build of all 37 expansions
 
 - User directive: begin the build on all expansions at once. The lead wrote the shared toolkit `expansions/_shared/src/expkit.py` (paths, run folders, provenance, seeds, QC checks, recall at K, block bootstrap, exact intervals, calibration, decision rule). Eight build agents then wrote each group's `src/` in parallel. They wrote only inside their folders, made no notebook edits, did no GPU training, made no downloads and ran no git operations.
