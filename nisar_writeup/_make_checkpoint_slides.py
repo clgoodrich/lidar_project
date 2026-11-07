@@ -154,7 +154,7 @@ def slide3(s) -> None:
              ("Score learns location, not the target",
               "Map x and y alone, or fake pads, score as high as the radar",
               "Decoys within 1.5 km and a placebo test"),
-             ("Target smaller than a pixel. 2.8 dB speckle on one date",
+             ("Target smaller than a pixel. Single-look speckle on each date",
               "Pit contrast below the date-to-date scatter",
               "Average many dates. Use lidar intensity for wet pits")]
     tbl = shape(s, "Table 13").table
