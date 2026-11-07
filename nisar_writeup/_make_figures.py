@@ -83,7 +83,7 @@ def fig_ideas():
         ("2  A pad is a scar", "A cleared, levelled pad should return a different amount of energy than forest.",
          "Pads read slightly darker, but only because they are clearings. The effect did not survive a location check.", "weak"),
         ("3  Seasons differ", "Bare trees in winter, leaves in summer. A pit might change differently.",
-         "A change of about +0.2 dB. A single scene scatters by about 2.8 dB, so the change is under a tenth of the noise.", "weak"),
+         "A change of about +0.2 dB. That is far smaller than the speckle in a single scene.", "weak"),
         ("4  Old wells move", "Radar phase can sense millimetres of ground motion between passes.",
          "Pit coherence was +0.0001 higher than decoys. Not one of 282 wells was flagged as moving.", "none"),
         ("5  Wet pits are dark", "Calm water reflects radar away from the satellite, so it should look dark.",

@@ -26,7 +26,7 @@ This is the plain-language story of every NISAR test in the project. It says wha
 
 **A pixel is not a clean 5 m measurement.** We measured the real sharpness of the images. The smallest thing they can separate is about 3.9 m by 5.7 m. Neighbouring pixels are correlated at 0.38. So a 5 m pixel is a blurred average over a patch a little bigger than itself.
 
-**Speckle.** Radar echoes from many small scatterers add up with random phase. The result is a grainy image. A single pixel of ordinary ground varies by about 2.8 dB from date to date, even though the ground has not changed. Any real signal must be bigger than that, or it must be averaged over many dates.
+**Speckle.** Radar echoes from many small scatterers add up with random phase. The result is a grainy image. A single pixel of ordinary ground varies from date to date, even though the ground has not changed. Any real signal must be bigger than that, or it must be averaged over many dates.
 
 ### How big is a pit to this radar?
 
@@ -111,7 +111,7 @@ L-band barely separates open ground from closed canopy at 5 m in our own control
 
 **The idea.** Trees are bare in winter and leafy in summer. A pit might change by a different amount.
 
-**What we found.** We compared each pit with 40 matched decoy spots and used a swap test that keeps whole time series together. Pits showed a leaf-off HH fall of +0.25 dB and a leaf-on HV rise of +0.19 dB on tile 9t (p below 0.001). These are tiny. A single date scatters by 2.8 dB. The pattern did not hold in the same way in the other areas. We treat it as a lead and not as a detection.
+**What we found.** We compared each pit with 40 matched decoy spots and used a swap test that keeps whole time series together. Pits showed a leaf-off HH fall of +0.25 dB and a leaf-on HV rise of +0.19 dB on tile 9t (p below 0.001). These are tiny next to the date-to-date speckle scatter. The pattern did not hold in the same way in the other areas. We treat it as a lead and not as a detection.
 
 ### 4.4 Old wells move
 
