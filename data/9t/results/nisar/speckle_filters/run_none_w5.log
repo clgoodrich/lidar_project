@@ -1,0 +1,58 @@
+area 9t_slc
+dropping nisar_slc_lidar_20260908_t026D_9t.tif: valid fraction below 0.5 or a bad granule
+filter none w5: {'date': 'nisar_slc_lidar_20251028_t162A_9t.tif', 'enl_hh_before': 0.9813228274181076, 'enl_hh_after': 0.9813228274181076, 'mean_hh_ratio_after_over_before': 1.0, 'filter_seconds': 0.3}
+season           leafoff_fall  leafon  winter
+track direction                              
+26    D                     1       4       2
+90    A                     1       8       1
+162   A                     3       8       3
+track 26: rho0 0.042, best 0.063 at (+20,-10) -> as delivered
+track 90: rho0 0.016, best 0.042 at (-20,-10) -> as delivered
+track 162: rho0 0.003, best 0.053 at (-20,-10) -> as delivered
+    track                    metric  open_median_db  closed_median_db  auc_closed_gt_open
+0      26           hh_leafoff_fall          -9.034            -8.330               0.539
+1      26                 hh_winter          -7.053            -6.488               0.541
+2      26                 hh_leafon          -5.528            -5.163               0.533
+3      26  hh_change_leafon_vs_fall           3.644             3.405               0.489
+4      26           hv_leafoff_fall         -14.895           -14.224               0.540
+5      26                 hv_winter         -13.330           -12.579               0.562
+6      26                 hv_leafon         -10.501           -10.098               0.544
+7      26  hv_change_leafon_vs_fall           4.518             4.193               0.484
+8      90           hh_leafoff_fall          -6.650            -6.695               0.502
+9      90                 hh_winter          -6.963            -6.913               0.503
+10     90                 hh_leafon          -4.818            -4.950               0.499
+11     90  hh_change_leafon_vs_fall           1.753             1.847               0.501
+12     90           hv_leafoff_fall         -13.498           -13.150               0.521
+13     90                 hv_winter         -15.615           -14.935               0.538
+14     90                 hv_leafon         -10.366           -10.294               0.522
+15     90  hv_change_leafon_vs_fall           2.953             2.947               0.500
+16    162           hh_leafoff_fall          -7.325            -7.260               0.511
+17    162                 hh_winter          -7.973            -7.858               0.518
+18    162                 hh_leafon          -5.865            -5.961               0.505
+19    162  hh_change_leafon_vs_fall           1.353             1.274               0.494
+20    162           hv_leafoff_fall         -12.947           -12.786               0.517
+21    162                 hv_winter         -14.496           -14.236               0.524
+22    162                 hv_leafon         -10.778           -10.808               0.513
+23    162  hv_change_leafon_vs_fall           1.858             1.931               0.509
+tile median leaf-on minus leaf-off (dB): {(26, 'hh'): 3.4460368156433105, (26, 'hv'): 4.290983200073242, (90, 'hh'): 1.7913581132888794, (90, 'hv'): 2.871005058288574, (162, 'hh'): 1.3146734237670898, (162, 'hv'): 1.9147558212280273}
+pad: 650 features with rings and decoys
+pit: 506 features with rings and decoys
+   features                    metric    n  median_feature_minus_ring_db  median_decoy_minus_ring_db  median_excess_db  excess_ci_lo  excess_ci_hi  auc_feature_gt_decoy  wilcoxon_p_excess  swap_n  swap_observed  swap_p_two_sided  swap_null_lo  swap_null_hi
+0       pad           hh_leafoff_fall  650                        -0.121                      -0.115            -0.003        -0.053         0.065                 0.517              0.197     650         -0.003             0.909        -0.053         0.053
+1       pad                 hh_winter  650                        -0.202                      -0.117            -0.086        -0.150        -0.011                 0.478              0.039     650         -0.086             0.002        -0.053         0.051
+2       pad                 hh_leafon  650                        -0.062                      -0.055             0.005        -0.040         0.047                 0.503              0.899     650          0.005             0.845        -0.047         0.047
+3       pad  hh_change_leafon_vs_fall  650                         0.026                       0.059            -0.043        -0.079         0.016                 0.484              0.178     650         -0.043             0.098        -0.049         0.050
+4       pad           hv_leafoff_fall  650                        -0.072                      -0.078            -0.010        -0.060         0.049                 0.507              0.822     650         -0.010             0.716        -0.055         0.052
+5       pad                 hv_winter  650                        -0.074                      -0.098             0.015        -0.053         0.045                 0.497              0.419     650          0.015             0.572        -0.052         0.049
+6       pad                 hv_leafon  650                        -0.023                      -0.014            -0.008        -0.045         0.030                 0.496              0.398     650         -0.008             0.735        -0.041         0.040
+7       pad  hv_change_leafon_vs_fall  650                         0.025                       0.048            -0.026        -0.088         0.035                 0.483              0.139     650         -0.026             0.304        -0.050         0.049
+8       pit           hh_leafoff_fall  506                        -0.123                      -0.391             0.246         0.105         0.434                 0.564              0.000     506          0.246             0.000        -0.131         0.134
+9       pit                 hh_winter  506                        -0.266                      -0.337             0.085        -0.072         0.226                 0.520              0.175     506          0.085             0.189        -0.123         0.122
+10      pit                 hh_leafon  506                        -0.113                      -0.184             0.088        -0.028         0.213                 0.534              0.013     506          0.088             0.058        -0.088         0.093
+11      pit  hh_change_leafon_vs_fall  506                         0.127                       0.210            -0.103        -0.246         0.044                 0.467              0.027     506         -0.103             0.126        -0.135         0.125
+12      pit           hv_leafoff_fall  506                        -0.287                      -0.356             0.070        -0.083         0.226                 0.527              0.103     506          0.070             0.299        -0.130         0.131
+13      pit                 hv_winter  506                        -0.214                      -0.308             0.104        -0.026         0.245                 0.530              0.022     506          0.104             0.082        -0.116         0.116
+14      pit                 hv_leafon  506                         0.068                      -0.118             0.194         0.119         0.297                 0.562              0.000     506          0.194             0.000        -0.079         0.080
+15      pit  hv_change_leafon_vs_fall  506                         0.240                       0.196             0.045        -0.076         0.160                 0.505              0.585     506          0.045             0.466        -0.117         0.129
+wrote 0 rasters to C:\Users\colto\Documents\GitHub\lidar_project\data\9t\derived\nisar_slc_lidar_5m
+wrote C:\Users\colto\Documents\GitHub\lidar_project\data\9t\results\nisar\speckle_filters\none_w5\figures\nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change_swap40_9t_slc_5m.png

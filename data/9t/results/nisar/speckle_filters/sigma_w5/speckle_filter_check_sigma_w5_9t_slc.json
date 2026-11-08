@@ -1,0 +1,15 @@
+{
+ "date": "nisar_slc_lidar_20251028_t162A_9t.tif",
+ "enl_hh_before": 0.9813228274181076,
+ "enl_hh_after": 10.695865281584478,
+ "mean_hh_ratio_after_over_before": 0.9846463799476624,
+ "filter_seconds": 44.9,
+ "filter": "sigma",
+ "window": 5,
+ "looks": 1.0,
+ "sigma_range": [
+  0.08381478597946058,
+  3.9321459493022863,
+  0.8187966956572456
+ ]
+}

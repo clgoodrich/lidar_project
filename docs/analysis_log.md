@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-08 NISAR speckle filters (median, Frost, Gamma-MAP, Lee sigma)
+
+- Why. The NISAR images were never speckle filtered. They are single-look (ENL 0.98). The 2.8 dB speckle figure in the write-up had no source and has been removed. The measured single-date HH spread is 5.95 dB.
+- What. Four filters with a 5 × 5 window on linear intensity. QGIS images are in `data/9t/derived/nisar_speckle_filters/`. The seasonal test was rerun with 40 decoys on the SLC stack, with outputs in `data/9t/results/nisar/speckle_filters/<filter>_w5/`. The unfiltered rerun matches the October baseline exactly.
+- Result. The filters raise ENL to between 10 and 15. The pit effects shrink: HH leaf-off falls from +0.25 dB to between +0.10 and +0.21, and HV leaf-on from +0.19 to between +0.07 and +0.15. The AUC stays between 0.54 and 0.58. The HH seasonal change in pits now has p of 0.002 or less under Frost, Gamma and sigma, with 64 comparisons uncorrected, so it is a lead only. Under median, Gamma and sigma, pads read 0.05 to 0.19 dB darker, which may be texture. No usable detector. Doc: `docs/iterations/nisar_speckle_filters_9t.md`.
+
 ## 2026-11-06 user accepted the default decisions, and the NISAR checkpoint deck
 
 - Scope. The user replied "take defaults" to the decision list. Each default is in its config and moved to "Decisions" in `expansions/*/*/docs/decisions_<id>.md`, marked as user-accepted. Not decided: GPU training, freezing the P1 split and P2 audit set, the 7.5 site count, the 6.4 depth source, and the items still under "Needs user decision".
