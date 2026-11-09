@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-08 AGU poster wireframe on the UH template (44 x 44 in)
+
+- User template `agu_poster/AGU_poster.pptx` (56 x 45 in) moved in from `docs/`. Page stays 44 x 44 (user). New `agu_poster/_make_agu_poster.py` copies the template's frame pieces onto the draft's grid and writes `agu_poster/agu_poster_wireframe_44in.pptx`. Ten boxes plus the hero, grey placeholders only. Abstract box dropped. Template untouched. validate.py passes.
+
 ## 2026-11-08 AGU poster moved to its own folder
 
 - `docs/poster_agu_layout_draft.md`, `docs/agu_abstract_2026.md` and `docs/agu abstract colton.docx` moved to `agu_poster/` with `tools/apply_moves.py` (ledger `docs/MOVES.csv`). Links in `literature/CITATIONS.md` and `docs/iterations/centroid_matching_pit_pad_9t.md` updated. Reference index rebuilt. New `agu_poster/README.md`. Older log entries keep the old paths.

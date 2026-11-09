@@ -1,6 +1,8 @@
 # AGU poster layout draft — 44 in × 44 in, model predictions only
 
 Drafted 2026-11-04. Scope is the three U-Net detectors (pits, pads, roads), their inputs, validation and results.
+
+**Update 2026-11-08.** The user gave a template, `agu_poster/AGU_poster.pptx` (UH Cullen College frame, 56 x 45 in). The page stays 44 x 44 (user's choice). The frame pieces (red border, header band, UH logo, red heading bars, red-outlined boxes) are copied onto a 44 x 44 grid by `agu_poster/_make_agu_poster.py`, which writes `agu_poster/agu_poster_wireframe_44in.pptx`. The grid there supersedes section 1 and 2: outer border 0.5 in, three 13.87 in columns with 0.3 in gaps, header band 5.6 in, footer strip 2.8 in (references, acknowledgements, QR). The template's abstract box is dropped, so the page carries pictures, not a block of text. Heading bars keep the template's 48 pt. Figures must not use red to carry meaning, because the frame is red.
 Out of scope: change detection, NISAR, ICP, SAR bright targets, instance-segmentation detectors.
 Audience-facing title and headings must not say "WellSight" (internal working name).
 

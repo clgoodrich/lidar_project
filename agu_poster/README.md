@@ -8,5 +8,7 @@ Everything for the AGU poster on lidar detection of oil-well pits, pads and road
 | `agu_abstract_2026.md` | Abstract text, v17 |
 | `agu abstract colton.docx` | Your Word copy of the abstract (not edited) |
 | `AGU_poster.pptx` | Your poster template, 56 x 45 in, UH Cullen College frame (never edited; the build writes a new file) |
+| `_make_agu_poster.py` | Builds the 44 x 44 poster from the template frame |
+| `agu_poster_wireframe_44in.pptx` | Current build: layout wireframe with placeholders |
 
 Moved here from `docs/` on 2026-11-08 with `tools/apply_moves.py` (logged in `docs/MOVES.csv`). Poster figures and the built `.pptx` go in this folder too.
