@@ -2,6 +2,8 @@
 
 This file was written and committed before any 613590 sample was scored. Its purpose is to fix the model, the test set, the predictions and the decision rule in advance.
 
+> **Correction 2026-11-09 (outside review).** The sentence above is too broad. This file (commit a8a38c0, 2026-10-27 09:33) preceded this classifier's results (30cccb8, 12:21 the same day), but earlier October tests had already scored 613590 pits. Read it as pre-registration of this classifier experiment only. The authoritative interval is the block bootstrap from the saved predictions: gain -0.016744, 95% -0.054676 to +0.019843 (lidar 0.881404). The outside re-analysis bounds below (+0.015 to +0.018) could not be reproduced from saved files and are documented only.
+
 ## Question
 
 Does a NISAR model trained on 9t transfer to a different tile, and does it add to a lidar model there?

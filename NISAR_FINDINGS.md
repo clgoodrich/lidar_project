@@ -25,8 +25,8 @@ The radar varies more with optical vegetation indices than with lidar canopy hei
 - **Radar.** NISAR L-band (24 cm wavelength, 1.257 GHz), left-looking. No S-band data is used.
 - **Products.** L2 GSLC and SLC at 5 m, HH and HV polarisation. Tracks 26, 90 and 162, with 8, 11 and 14 dates.
 - **Area.** Tile 9t, Venango County. The lidar tile is 4.5 km square (619500 to 624000 E, 4593000 to 4597500 N, EPSG:6346). The NISAR window cut around it is 4.9 km square (EPSG:32617). Older text that says a 4.9 km tile means the NISAR window. A second tile, 613590, was used for one held-out test.
-- **Status of the data.** Beta and provisional products. They are not validated or fully calibrated.
-- **Registration.** The radar sits about 10 m off the lidar.
+- **Status of the data.** Beta (not fully calibrated) and provisional (fully calibrated, partly validated, per ASF). Mixing the two levels is a known risk. Validated reprocessing of these dates is scheduled for 2027.
+- **Registration.** The NASA product sat about 10 m off the lidar. After placing the radar on lidar heights, 46 of 48 blocks on 9t and 31 of 48 on 613590 agree within 2.5 m with a lidar simulation. That is agreement with the simulation, not an independent check of position.
 
 ## How results are scored
 
@@ -64,7 +64,7 @@ The radar varies more with optical vegetation indices than with lidar canopy hei
 - A frozen model trained on 9t pits was tested on 36 pits of tile 613590. NISAR alone scored 0.658, rich lidar 0.881 and the combination 0.865. The gate failed.
 - The gain over rich lidar was -0.017, with a bootstrap interval of -0.055 to +0.020. The gate of +0.05 was not met, and a smaller gain is not excluded.
 - Rich lidar at 0.881 left room for the gate, so this is the one test that could clearly fail.
-- The three predictions written before the run all held. The pre-registration is `docs/iterations/nisar_heldout_613590_prereg.md`.
+- The three predictions written before the run all held. The pre-registration covers this classifier only, since 613590 pits had been scored by earlier tests. Saved row predictions are a 2026-11-03 rerun that reproduces the original numbers. Gain -0.017, block bootstrap 95% -0.055 to +0.020. This excludes +0.05 for these 36 pits. It is not proof of equivalence or a bound for other regions. The pre-registration is `docs/iterations/nisar_heldout_613590_prereg.md`.
 - There is no pad held-out test, because 613590 has no pad annotations.
 
 ### 3. Combining radar and lidar
@@ -163,7 +163,7 @@ Tables, scripts and reproduce commands: `docs/iterations/nisar_followup_checks_9
 ### 6. Signal quality
 
 - The data are single-look speckle (equivalent number of looks about 0.85). Neighbouring pixels correlate at 0.38.
-- The impulse response is 3.9 m in slant range by 5.7 m in azimuth.
+- The impulse response is 3.9 m in slant range (about 5.3 to 6.2 m on the ground) by 5.7 m in azimuth, from bright uncontrolled scatterers.
 - Occupied bandwidth is 31 to 33 MHz against a nominal 40 MHz. We found no radio interference.
 - Per-date HV offsets have a standard deviation of 1.1 to 1.8 dB between dates. Normalising each date changes no AUC by more than 0.015.
 - Line-of-sight motion was kept exploratory. Removing it changes AUC by -0.005 and +0.010.

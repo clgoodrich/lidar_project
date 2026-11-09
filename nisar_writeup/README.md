@@ -24,7 +24,7 @@ This is the plain-language story of every NISAR test in the project. It says wha
 
 **The product.** We used the Level-2 GSLC product. Each pixel holds a complex number, so it carries both amplitude (strength) and phase (a fine distance measure). The pixels sit on a 5 m grid.
 
-**A pixel is not a clean 5 m measurement.** We measured the real sharpness of the images. The smallest thing they can separate is about 3.9 m by 5.7 m. Neighbouring pixels are correlated at 0.38. So a 5 m pixel is a blurred average over a patch a little bigger than itself.
+**A pixel is not a clean 5 m measurement.** We measured the real sharpness of the images. The smallest thing they can separate is about 3.9 m in slant range (about 5.3 to 6.2 m on the ground at 39 to 47 degrees incidence) by 5.7 m along track. Both come from bright uncontrolled scatterers, so treat them as rough. Neighbouring pixels are correlated at 0.38. So a 5 m pixel is a blurred average over a patch a little bigger than itself.
 
 **Speckle.** Radar echoes from many small scatterers add up with random phase. The result is a grainy image. A single pixel of ordinary ground varies from date to date, even though the ground has not changed. Any real signal must be bigger than that, or it must be averaged over many dates.
 
@@ -42,11 +42,11 @@ This figure is the most direct picture of the problem. The leaf-off aerial photo
 
 ## 2. The data we had
 
-We used NISAR GSLC scenes over tile 9t. The first was taken on 2025-10-28 and the last on 2026-10-14. That is 37 dates across three tracks.
+We used NISAR GSLC scenes over tile 9t. The first was taken on 2025-10-28 and the last on 2026-10-14. That is 37 dates across three tracks. 35 are usable after dropping one empty and one misplaced granule. The lidar-placed stack used for the corrected classifiers has 33 (8, 11 and 14 on tracks 26, 90 and 162), because two October dates came later.
 
 - **Beta products.** 11 dates from October 2025 to January 2026. Beta means the calibration was not finished.
-- **Provisional products.** 26 dates from June to October 2026. These are calibrated but not yet validated.
-- **Dropped.** Two track-26 granules (2026-07-22 and 2026-09-08) are misplaced or empty. We removed them everywhere.
+- **Provisional products.** 26 dates from June to October 2026. ASF describes these as fully calibrated and partly validated.
+- **Dropped.** Two track-26 granules (2026-07-22 and 2026-09-08) are misplaced or empty. The analysis stack and the corrected classifiers drop both. An outside review (2026-11-09) found three readers that still kept 2026-09-08: the wet/dry pit table, the averaged image in the three-sensor figure, and the signal-quality table. All three now drop it. The wet/dry conclusion does not change.
 
 Each GSLC file is about 22.6 GB. We did not download whole files. We read only the part that covers our tile, using HTTP range requests. Each saved window is about 9 MB.
 
@@ -81,7 +81,7 @@ L-band barely separates open ground from closed canopy at 5 m in our own control
 
 ![Placement fix](figures/nisar_placement_fix_9t.png)
 
-**The result.** The typical error fell from about 10 m to about 1 m. With a model of the forest echo, 46 of 48 blocks sit within 2.5 m on this tile. On the second tile (613590) it is 31 of 48, and the worst block is 29.7 m out. We checked the constants on half the blocks and tested them on the other half. All held.
+**The result.** The typical error fell from about 10 m to about 1 m. With a model of the forest echo, 46 of 48 blocks sit within 2.5 m on this tile. On the second tile (613590) it is 31 of 48, and the worst block is 29.7 m out. We fitted the constants on half the blocks and tested them on the other half. On 9t every held-out half passed. On 613590 they passed 6/8 and 3/8 on track 26, 5/8 and 5/8 on track 90, and 4/8 and 5/8 on track 162.
 
 **A limit.** The lidar simulation both supplies the offsets and scores the match. So these counts measure agreement with that simulation. They are not an independent measure of position. The independent test, with steady bright points and wells, found no peak, so position is not independently confirmed on either tile.
 
@@ -111,7 +111,7 @@ L-band barely separates open ground from closed canopy at 5 m in our own control
 
 **The idea.** Trees are bare in winter and leafy in summer. A pit might change by a different amount.
 
-**What we found.** We compared each pit with 40 matched decoy spots and used a swap test that keeps whole time series together. Pits showed a leaf-off HH fall of +0.25 dB and a leaf-on HV rise of +0.19 dB on tile 9t (p below 0.001). These are tiny next to the date-to-date speckle scatter. The pattern did not hold in the same way in the other areas. We treat it as a lead and not as a detection.
+**What we found.** We compared each pit with 40 matched decoy spots and used a swap test that keeps whole time series together. Within the leaf-off fall season, pits were +0.25 dB brighter in HH than their decoys. Within the leaf-on season they were +0.19 dB brighter in HV (swap test p below 0.001 for both, tile 9t). These are pit-versus-decoy contrasts inside one season, not a seasonal change. The tests of change between seasons were not significant (HH -0.10 dB, p 0.13; HV +0.05 dB, p 0.47). Season is also tangled with processing level (all winter dates are beta, all summer dates provisional), track and snow. A small contrast can sit below one-date speckle and still be detectable over many dates, so speckle alone does not rule it out. The pattern did not hold in the same way in the other areas. We treat it as a lead and not as a detection.
 
 ### 4.4 Old wells move
 
@@ -131,9 +131,9 @@ L-band barely separates open ground from closed canopy at 5 m in our own control
 
 ![Wet against dry](figures/nisar_wet_vs_dry_pits_9t.png)
 
-**What we found.** NISAR gave +1.57 dB for wet pits and +1.75 dB for dry. The groups overlap completely. The lidar ratio was 0.14 to 0.90 for wet pits and 1.26 to 1.74 for dry. Those two ranges do not touch.
+**What we found.** NISAR gave +1.58 dB for wet pits and +1.74 dB for dry, after dropping the flagged date (+1.57 and +1.75 before). The groups overlap completely. The lidar ratio was 0.14 to 0.90 for wet pits and 1.26 to 1.74 for dry. Those two ranges do not touch.
 
-**Limits.** There are only 13 pits and no held-out set. A cut at 1.0 is too loose. Across all 714 pit interiors it calls 258 of 503 measured pits wet. The grey zone from 0.8 to 1.2 needs your eyes in Google Earth. 211 pits fall outside the lidar tiles and could not be measured.
+**Limits.** There are only 13 pits and no held-out set. The wet and dry labels come from one look at 2019-era imagery and lidar, and pit 512 was labelled from a lidar cross-section, so the lidar result is not independent of its labels. The radar dates are 2025 to 2026, so a pit wet in the reference may not be wet on every radar date. Removing pit 512 leaves the lidar ranges still apart. A cut at 1.0 is too loose. Across all 714 pit interiors it calls 258 of 502 measured pits wet. The grey zone from 0.8 to 1.2 needs your eyes in Google Earth. 211 pits fall outside the lidar tiles and could not be measured.
 
 ## 5. Why the early scores looked good
 
@@ -158,13 +158,13 @@ At the start the pad score looked impressive. Several early runs gave an AUC of 
 
 ## 6. Does the radar add anything to lidar?
 
-**The bar.** Before the main runs we set a rule. NISAR plus a rich lidar model had to beat the lidar model alone by 0.05 in AUC. A limit of this rule: the rich lidar model already scores 0.917 on pads and 0.968 on pits on 9t, so on pits a gain of 0.05 was arithmetically impossible there (it would need 1.018). On 9t pits, "no gain" cannot be told apart from "no room". The test that can is the held-out one on 613590 (lidar 0.884, gain -0.017, upper 95% bound about +0.015 to +0.018 by an outside re-analysis), which excludes +0.05 for pits on that tile. For pads there is no held-out test.
+**The bar.** Before the main runs we set a rule. NISAR plus a rich lidar model had to beat the lidar model alone by 0.05 in AUC. A limit of this rule: the rich lidar model already scores 0.917 on pads and 0.968 on pits on 9t, so on pits a gain of 0.05 was arithmetically impossible there (it would need 1.018). On 9t pits, "no gain" cannot be told apart from "no room". The test that can is the held-out one on 613590 (lidar 0.881, gain -0.017, block bootstrap 95% interval -0.055 to +0.020, reproduced from saved predictions), which excludes +0.05 for pits on that tile. For pads there is no held-out test.
 
 **The tests.** We tried every place where lidar might be weak. These were pads the lidar U-Net missed, pads under canopy, the weakest quarter of pads, a second tile with frozen models, and a comparison with free Sentinel-2 imagery.
 
 ![Gain over lidar](figures/nisar_gain_over_lidar_9t.png)
 
-**What we found.** No estimate reached 0.05. The best, in the lidar-weak quarter, was +0.015, and it came from the design that rewards location. Free Sentinel-2 did as well as the radar or better (0.840 against 0.622 on matched decoys). Fusing the radar with the U-Net gave 0.995 against 0.999 for the U-Net alone. That test is capped by the U-Net's near-perfect score. On the second tile the three predictions we wrote down before the run all held.
+**What we found.** No estimate reached 0.05. The best, in the lidar-weak quarter, was +0.015, and it came from the design that rewards location. Free Sentinel-2 did as well as the radar or better (0.840 against 0.622 on matched decoys). Fusing the radar with the U-Net gave 0.995 against 0.999 for the U-Net alone. That test is capped by the U-Net's near-perfect score. On the second tile the three predictions we wrote down before the run all held. Two caveats. Pits on that tile had been scored by earlier tests before the pre-registration, so it was pre-registered for this classifier only. And the saved row-level predictions come from a rerun on 2026-11-03 that reproduces the original numbers exactly; the original rows were not kept.
 
 **What is not excluded.** Two tests have few samples (60 pads and 36 pits), so their intervals are wide. A gain of 0.06 to 0.12 cannot be ruled out there. The honest reading is that we found no reliable gain and did not prove there is none.
 
@@ -221,7 +221,7 @@ For the box, lidar and aerial photos are the right tools. The lidar at your firs
 | Ascending, descending | Flying north or south. |
 | GSLC | NISAR product on a map grid with amplitude and phase. |
 | RSLC | The same data before it is placed on a map grid. |
-| Beta, provisional | Early NISAR releases. Not fully calibrated or validated. |
+| Beta, provisional | Early NISAR releases. Beta is not fully calibrated. Provisional is fully calibrated and partly validated (ASF). Validated products started 2026-11-06 for new acquisitions; reprocessing of older dates is scheduled for 2027. |
 | Speckle | Random grain in radar images from many small scatterers. |
 | Coherence | How stable the echo stays between two dates. 1 is perfect. |
 | Interferogram | The phase difference between two dates. It senses small motion. |

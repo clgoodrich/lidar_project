@@ -13,7 +13,7 @@ This closes the list in `docs/iterations/BACKLOG.md` ("NISAR outstanding checks 
 | 5 | Frozen run on 613590 | All three pre-registered predictions held. Gate failed. Pits only. |
 | 6 | Repeated CV, cluster-aware tests | Gain of NISAR over lidar is -0.01 to +0.003 with sd 0.004 to 0.012. Clustered tests cut the significant pad bands from 229 to 20. |
 | 7 | U-Net retrain with whole-window isolation, fusion | Isolation costs 2 points of recall. NISAR adds nothing to the U-Net (0.995 against 0.999). |
-| 8 | Effective looks, impulse response, RFI, noise floor, per-date normalisation | Single-look speckle, no RFI, normalisation changes nothing. |
+| 8 | Effective looks, impulse response, RFI, noise floor, per-date normalisation | Single-look speckle, a few relative spectral-outlier flags (not proof of RFI), normalisation changes no AUC by more than 0.015. |
 | 9 | Precision at fixed recall, pad false-positive screen | NISAR alone separates true from false candidates (0.72) but adds nothing to the detector score. |
 | 10 | LOS motion | Kept as exploratory. It carries no weight in any result. |
 
@@ -88,7 +88,7 @@ With local decoys every group is near 0.5 for NISAR (0.45 to 0.54). No group is 
 
 ## 5. Frozen held-out test on 613590 (pre-registered)
 
-The pre-registration, `nisar_heldout_613590_prereg.md`, was committed before any 613590 sample was scored. The model was trained on all 9t pit samples. The 613590 tile has 36 annotated pits and **no annotated pad**, so pads could not be tested.
+The pre-registration, `nisar_heldout_613590_prereg.md`, was committed before this classifier scored any 613590 sample (commit a8a38c0, results 30cccb8). Earlier tests in October had already scored 613590 pits, so it is not pre-registration for the area as a whole. The model was trained on all 9t pit samples. The 613590 tile has 36 annotated pits and **no annotated pad**, so pads could not be tested.
 
 | Model AUC on 613590 pits (36 pits, 360 decoys, 51 blocks) | AUC (block bootstrap 95%) |
 |---|---|
@@ -183,7 +183,7 @@ Candidates are the connected regions of the isolated U-Net's out-of-fold probabi
 
 ## 8. Signal quality (`_nisar_signal_checks_9t.py`, `_nisar_feat_radnorm_9t.py`)
 
-Measured on the 35 RSLC windows and the lidar-placed stack. Files: `nisar_signal_checks_per_window_9t_slc.csv`, `nisar_signal_checks_by_track_9t_slc.csv`, `nisar_radnorm_*_9t_slc*.csv`.
+Measured on the 35 RSLC windows and the lidar-placed stack. Files: `nisar_signal_checks_per_window_9t_slc.csv`, `nisar_signal_checks_by_track_9t_slc.csv`, `nisar_radnorm_*_9t_slc*.csv`. Rerun 2026-11-09 without the flagged 2026-09-08 granule (track 26 now 8 windows, outlier flags unchanged at 1 HH and 5 HV): `nisar_signal_checks_per_window_9t.csv`, `nisar_signal_checks_by_track_9t.csv`. The `_slc` files are the 2026-10-27 originals, kept for history.
 
 | Quantity | Track 26 | Track 90 | Track 162 |
 |---|---|---|---|

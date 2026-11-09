@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-09 NISAR: fixes from the second outside review (`tmp/nisar_adversarial_20261109/REPORT.md`)
+
+- Bad-date readers. `_nisar_signal_checks_9t.py` now drops `BAD_DATES` (rerun: `data/9t/results/nisar/nisar_signal_checks_per_window_9t.csv`, `..._by_track_9t.csv`; track 26 has 8 windows; flags unchanged). `nisar_writeup/_make_figures.py` drops them from the three-sensor mean and the wet/dry figure (wet/dry now +1.58 / +1.74 dB, was +1.57 / +1.75; still overlapping). The wet/dry CSV generator is not in the repo, so the CSV itself is unchanged and filtered at read time.
+- Wording. README, `NISAR_FINDINGS.md`, `NISAR_METHODS.md`, `nisar_checks_9t.md`, the pre-registration (dated correction note), the 2026-11-03 review response (correction section), the slides and the figures: seasonal numbers described as within-season contrasts with the non-significant change tests; 37 delivered / 35 usable / 33 corrected dates; "All held" replaced by the 613590 half-block counts; beta vs provisional calibration per ASF; impulse response in slant range and ground range; 1.239 GHz; "no RFI" replaced by outlier flags; held-out interval -0.055 to +0.020 from saved predictions; pre-registration scope; dedupe folds not fixed; 502 not 503 ratios; speckle not a hard floor; "None held up" now "None was demonstrated".
+- Regenerated `nisar_writeup/figures/*.png` and `nisar_writeup/nisar_checkpoint_slides_9t.pptx`. No model was refit.
+
 ## 2026-11-09 Prior-work citations: Ramachandran 2024 and the NETL Oil Creek lidar papers
 
 - Added to `literature/CITATIONS.md`: Ramachandran et al. 2024 (PDF downloaded to `literature/papers/ramachandran_2024_well_pads_satellite_dl.pdf`), Saint-Vincent et al. 2021, the Sams et al. Pioneer Run drone lidar poster (OSTI 1569995), Reeder et al., Gorantla et al., Saint-Vincent et al. 2020. NETL PDFs stay in `data/_source/reference/literature/`.

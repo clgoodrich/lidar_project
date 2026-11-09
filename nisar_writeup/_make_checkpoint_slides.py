@@ -96,7 +96,7 @@ def slide1(s) -> None:
     set_para(ps[1], "Tile 9t in Venango County, PA. 20 km² of hardwood forest with 650 mapped well pads and "
                     "506 pits from 150 years of oil drilling.")
     set_para(ps[3], "Any rise or fall in HH or HV backscatter, or a drop in coherence, at pads and pits compared "
-                    "with matched forest nearby. It must be larger than the date-to-date speckle scatter.")
+                    "with matched forest nearby. Speckle is large on one date, so a small signal needs many repeat dates.")
     set_para(ps[5], "The 24 cm L-band wave passes through much of the canopy. Clearings, water and metal change "
                     "the echo, and 12-day repeats let speckle be averaged out.")
     notes(s, "About 1 minute 40 seconds. Read the question. The site is tile 9t in Venango County, 4.5 by 4.5 km of "
@@ -126,7 +126,7 @@ def slide2(s) -> None:
     notes(s, "About 1 minute 40 seconds. L-band because it is the band that best sees under leaves, and NISAR is "
              "the first free L-band mission with this revisit. I use the GSLC product, and the raw RSLC so I can "
              "place the image on lidar heights myself. Three tracks cover the tile, two ascending and one "
-             "descending, at 39 to 47 degrees incidence. 37 usable dates from October 2025 to October 2026. I "
+             "descending, at 39 to 47 degrees incidence. 37 dates delivered from October 2025 to October 2026, 35 usable after dropping an empty and a misplaced one. I "
              "check everything against our lidar maps of pads and pits, the state well records, and Sentinel-1 and "
              "Sentinel-2.")
 
@@ -155,7 +155,7 @@ def slide3(s) -> None:
               "Map x and y alone, or fake pads, score as high as the radar",
               "Decoys within 1.5 km and a placebo test"),
              ("Target smaller than a pixel. Single-look speckle on each date",
-              "Pit contrast below the date-to-date scatter",
+              "Pit contrast smaller than one-date speckle",
               "Average many dates. Use lidar intensity for wet pits")]
     tbl = shape(s, "Table 13").table
     for i, row in enumerate(risks, start=1):

@@ -109,6 +109,8 @@ def lag_corr(z, mask_blocks, axis, lag):
 
 def main():
     idx = pd.read_csv(sorted(glob.glob(str(C.A.RSLC / "*index*.csv")))[0])
+    # same exclusions as every other stack (review 2026-11-09 found 2026-09-08 still read here)
+    idx = idx[[(str(d), int(t)) not in C.A.BAD_DATES for d, t in zip(idx.date, idx.track)]]
     rows = []
     for _, r in idx.iterrows():
         with h5py.File(C.A.RSLC / r.file) as h:

@@ -12,7 +12,7 @@ Written 2026-10-26, revised the same day after two outside reviews (Section 14).
 - NISAR does not identify wells, pumpjacks or steel. Every direct test of that was null.
 - NISAR did not help screen false positives from the lidar pit detector (gain -0.026, p 0.58), nor from the pad detector (Section 15: NISAR alone separates true from false candidates at 0.72, but score + NISAR scores below the score alone).
 - The fusion with the lidar U-Net was redone with an isolated retrain. NISAR adds nothing (0.995 against 0.999).
-- A frozen model trained on 9t pits and tested on 36 pits of tile 613590 gave the same answer (NISAR alone 0.658, no gain over lidar).
+- A frozen model trained on 9t pits and tested on 36 pits of tile 613590 gave the same answer (NISAR alone 0.658 with a 95% interval of 0.47 to 0.82; gain over lidar -0.017, 95% -0.055 to +0.020, so no demonstrated gain and +0.05 excluded for these pits).
 - This does not show NISAR can never help. It shows that here, with a 4.5 km lidar tile (4.9 km NISAR window), 5 m posting and these features, it does not.
 
 AUC here is P(target value > comparison value). 0.5 is no separation. Below 0.5 means the target is lower.
@@ -22,7 +22,7 @@ AUC here is P(target value > comparison value). 0.5 is no separation. Below 0.5 
 | Area tag | Place | Role |
 |---|---|---|
 | `9t` | Venango County, PA. A 4.5 km square (EPSG:6346 bounds 619500, 4593000 to 624000, 4597500). | Every scored result. |
-| `613590`, `mkf` | Two other lidar areas. | Data-extension plan only (`docs/iterations/nisar_area_extension_613590_mkf.md`). No scored result. |
+| `613590`, `mkf` | Two other lidar areas. | 613590: held-out pit test scored (36 pits, `docs/iterations/nisar_heldout_613590_prereg.md`). mkf: data extension and early tests only (`docs/iterations/nisar_area_extension_613590_mkf.md`). |
 | `warren` | Warren County swath, 7 USGS lidar tiles. | Bright-target test against DEP wells only. No pad annotations, so no pad scoring. |
 
 **Ground truth on 9t** (`qgis/annotations/annotations_proj.gpkg`):
@@ -36,7 +36,7 @@ AUC here is P(target value > comparison value). 0.5 is no separation. Below 0.5 
 
 ## 3. The NISAR data
 
-**Product.** NISAR (NASA-ISRO SAR), L-band (24 cm wavelength, 1.257 GHz), left-looking. Files come from the ASF DAAC cloud. Collections are `NISAR_L2_GSLC_BETA_V1` and the provisional equivalent, and `NISAR_L1_RSLC_BETA_V1` and `..._PROVISIONAL_V1`. **Neither is validated or fully calibrated.** Beta and provisional processing differ in calibration, which shows up as per-track brightness offsets (Section 7).
+**Product.** NISAR (NASA-ISRO SAR), L-band (24 cm wavelength; these granules are centred at 1.239 GHz with 40 MHz bandwidth, the value used for phase conversion), left-looking. Files come from the ASF DAAC cloud. Collections are `NISAR_L2_GSLC_BETA_V1` and the provisional equivalent, and `NISAR_L1_RSLC_BETA_V1` and `..._PROVISIONAL_V1`. **Neither is validated or fully calibrated.** Beta and provisional processing differ in calibration, which shows up as per-track brightness offsets (Section 7).
 
 **Polarisations.** HH and HV only. There is no VV, so full quad-pol decomposition is not possible. The "dual-pol" features are the HH/HV ones.
 
@@ -413,7 +413,7 @@ Write-up with every table: `docs/iterations/nisar_checks_9t.md`. Pre-registratio
 | Repeated CV (10 repeats), block-clustered band tests | Gain over lidar -0.01 to +0.003. Significant pad bands fall from 229 (naive) to 20 (clustered), and local-decoy bands from 137 to 0. |
 | Isolated U-Net retrain | Recall at IoU 0.3 is 0.872 against 0.888 for the original sampler (F1 about 0.705 for the isolated model; 0.888 is a recall, corrected 2026-10-27). Fusion: NISAR + U-Net 0.995 against U-Net 0.999. |
 | Pad false-positive screen on U-Net candidates | NISAR alone separates true from false (0.72, tau 0.3). Score + NISAR 0.831 against score 0.849. Precision at 70% recall +0.034 (-0.008 to +0.061). |
-| Signal quality | Single-look speckle (ENL about 0.85), neighbour correlation 0.38, impulse response 3.9 m (slant range) by 5.7 m (azimuth), occupied bandwidth 31 to 33 MHz, no RFI. |
+| Signal quality | Single-look speckle (ENL about 0.85), neighbour correlation 0.38, impulse response 3.9 m (slant range) by 5.7 m (azimuth), occupied bandwidth 31 to 33 MHz. Relative spectral-outlier flags on 1 HH and 5 HV windows. These are not proof of RFI, and RFI is not ruled out. |
 | Per-date radiometric normalisation | HV date offsets sd 1.1 to 1.8 dB. Normalising changes no AUC by more than 0.015. |
 | LOS motion | Kept exploratory. Removing the group changes AUC by -0.005 and +0.010. |
 

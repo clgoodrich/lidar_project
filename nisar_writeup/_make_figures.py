@@ -32,6 +32,13 @@ from rasterio.windows import from_bounds
 from scipy.stats import norm
 from shapely.geometry import box
 
+# Granules dropped from every stack. Same set as BAD_DATES in notebooks/wellsight_v2/_nisar_area.py.
+BAD_DATES = {("2026-07-22", 26), ("2026-09-08", 26)}
+
+
+def is_bad(date: str, track: int) -> bool:
+    return (str(date)[:10], int(track)) in BAD_DATES
+
 matplotlib.use("Agg")
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "nisar_writeup" / "figures"
@@ -83,7 +90,7 @@ def fig_ideas():
         ("2  A pad is a scar", "A cleared, levelled pad should return a different amount of energy than forest.",
          "Pads read slightly darker, but only because they are clearings. The effect did not survive a location check.", "weak"),
         ("3  Seasons differ", "Bare trees in winter, leaves in summer. A pit might change differently.",
-         "A change of about +0.2 dB. That is far smaller than the speckle in a single scene.", "weak"),
+         "About +0.2 dB against matched decoys within a season. The season-to-season change was not significant.", "weak"),
         ("4  Old wells move", "Radar phase can sense millimetres of ground motion between passes.",
          "Pit coherence was +0.0001 higher than decoys. Not one of 282 wells was flagged as moving.", "none"),
         ("5  Wet pits are dark", "Calm water reflects radar away from the satellite, so it should look dark.",
@@ -125,7 +132,7 @@ def fig_ideas():
         b.plot([0.03], [0.02], marker=mk, color=col, ms=9, mec=INK, mew=0.8, clip_on=False)
         b.text(0.09, 0.02, txt, fontsize=9, va="center", fontweight="bold")
     fig.subplots_adjust(left=0.02, right=0.99, top=0.88, bottom=0.03)
-    fig.suptitle("Five things we hoped the radar would show. None held up.", x=0.02, ha="left", fontsize=14, fontweight="bold")
+    fig.suptitle("Five things we hoped the radar would show. None was demonstrated.", x=0.02, ha="left", fontsize=14, fontweight="bold")
     save(fig, "nisar_five_ideas_9t.png")
 
 
@@ -192,6 +199,11 @@ def fig_views():
     axes[1].set_title("Lidar hillshade, 2019\n0.5 m pixels", fontsize=10.5)
     # NISAR
     files = sorted(glob.glob(str(ROOT / "data/9t/derived/nisar_slc_lidar_5m/nisar_slc_lidar_*_9t.tif")))
+    # nisar_slc_lidar_<yyyymmdd>_t<track><A|D>_9t.tif; drop the flagged granules
+    def _key(f):
+        p = Path(f).stem.split("_")
+        return f"{p[3][:4]}-{p[3][4:6]}-{p[3][6:]}", int(p[4][1:-1])
+    files = [f for f in files if not is_bad(*_key(f))]
 
     def hhdb(f):
         with rasterio.open(f) as s:
@@ -426,7 +438,7 @@ def fig_gain():
     ax.axvline(0, color=INK, lw=1.0)
     ax.axvline(0.05, color=ORANGE, lw=2.0, ls=(0, (5, 3)))
     ax.text(0.052, len(rows) - 0.35, "pre-set bar:\n+0.05", color=INK, fontsize=9.5, ha="left", va="bottom", fontweight="bold")
-    ax.text(0.0, len(rows) - 0.35, "no gain", fontsize=9.5, ha="center", va="bottom")
+    ax.text(0.0, len(rows) - 0.35, "zero", fontsize=9.5, ha="center", va="bottom")
     ax.set_xlim(-0.075, 0.13)
     ax.set_ylim(-0.7, len(rows) + 0.6)
     ax.set_yticks([])
@@ -472,13 +484,15 @@ def fig_r2():
 # ---------------------------------------------------------------- 11. wet vs dry
 def fig_wet_dry():
     d = pd.read_csv(ROOT / "data/9t/results/nisar/nisar_pit_wet_dry_db_9t.csv")
+    d = d[[not is_bad(a, b) for a, b in zip(d.date, d.track)]].dropna(subset=["db"])
+    n_dates = d.groupby(["date", "track"]).ngroups
     w = pd.read_csv(ROOT / "data/9t/results/pit/pit_inside_wet_intensity_9t.csv").set_index("pit_inside_id")
     g = d.groupby(["label", "pit"]).db.agg(["mean", "std", "count"]).reset_index()
     g["se"] = g["std"] / np.sqrt(g["count"])
     g["lidar"] = g.pit.map(w.int_ratio)
     fig, axes = plt.subplots(1, 2, figsize=(12.5, 5.2))
     rng = np.random.default_rng(3)
-    for ax, col, ylab, title in [(axes[0], "mean", "Radar: pit centre minus ring, dB (average of 36 dates)", "NISAR radar cannot tell them apart"),
+    for ax, col, ylab, title in [(axes[0], "mean", f"Radar: pit centre minus ring, dB (average of {n_dates} dates)", "NISAR radar cannot tell them apart"),
                                   (axes[1], "lidar", "Lidar: laser return strength inside pit / around it", "Lidar laser strength separates them")]:
         for k, lab in enumerate(["wet", "dry"]):
             s = g[g.label == lab]
@@ -500,7 +514,7 @@ def fig_wet_dry():
         ax.set_title(title, fontsize=11.5)
     axes[1].axhline(1.0, color=GREY, lw=1.0, ls=(0, (4, 3)))
     axes[1].text(1.55, 1.03, "equal to surroundings", ha="right", fontsize=8.8, color=GREY)
-    axes[0].text(-0.55, axes[0].get_ylim()[1] * 0.97, "Whiskers: standard error over 36 dates.\nBlack bar: group mean.", fontsize=8.5, color=GREY, va="top")
+    axes[0].text(-0.55, axes[0].get_ylim()[1] * 0.97, f"Whiskers: spread over {n_dates} dates (dates,\nnot independent pits). Black bar: group mean.", fontsize=8.5, color=GREY, va="top")
     fig.suptitle("Wet and dry pits, labelled by eye: lidar laser strength separates them, NISAR does not", x=0.01, ha="left", fontsize=12.5, fontweight="bold", y=1.0)
     fig.subplots_adjust(left=0.07, right=0.99, wspace=0.22)
     save(fig, "nisar_wet_vs_dry_pits_9t.png")
@@ -514,13 +528,13 @@ def fig_timeline():
         ("30 Sep", "31-date stack at 5 m, pads and pits against decoys", "n", "Result flips with a few metres of shift. Seasonal change adds nothing."),
         ("5 Oct", "Interferograms at 506 pits", "n", "Coherence +0.0001. Motion noise 7.5 mm for pits and decoys alike."),
         ("7 Oct", "Steel, pad change, slope motion", "n", "Wells 0.1 dB brighter than decoys. No well flagged as moving."),
-        ("9 to 13 Oct", "Radar placed 10 m off the lidar. Traced and fixed.", "f", "Error 10 m down to about 1 m. 46 of 48 blocks within 2.5 m."),
+        ("9 to 13 Oct", "Radar placed 10 m off the lidar. Traced and fixed.", "f", "Error 10 m down to about 1 m. 46 of 48 blocks within 2.5 m of the lidar simulation."),
         ("13 to 14 Oct", "All tests re-run on the corrected stack", "w", "Pad darkening gone. Pit leads (+0.2 dB) remain but are small."),
         ("19 to 21 Oct", "Review fixes, 40-decoy swap test, wells snapped to lidar", "n", "Pit leads of +0.2 dB held. Wells 0.7% against 0.9% for controls."),
         ("21 Oct", "Bright steady targets across tracks", "f", "Stable objects repeat 6 to 8 times chance. Chips on 28 Oct: buildings and bridges, not wells."),
         ("23 Oct", "Warren swath, 684 wells", "n", "Wells 3.9% against 5.2% for random pixels."),
         ("26 Oct", "303 radar features, then an outside audit", "n", "Early 0.71 to 0.88 was mostly place. Corrected: 0.48 to 0.64."),
-        ("27 Oct", "Follow-ups: where lidar is weak, against Sentinel-2", "n", "No gain over lidar or Sentinel-2. Radar tracks vegetation type."),
+        ("27 Oct", "Follow-ups: where lidar is weak, against Sentinel-2", "n", "No demonstrated gain over lidar or Sentinel-2. Radar tracks vegetation type."),
         ("28 Oct", "Leaf-off and snow dates", "f", "Only 3 NISAR dates are bare and snow-free. None in Feb to May."),
         ("29 Oct to 1 Nov", "Sentinel-1 early April, wet pits, the box", "n", "No bright steady return. Wet and dry pits overlap."),
     ]

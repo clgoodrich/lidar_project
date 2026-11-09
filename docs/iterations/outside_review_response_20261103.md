@@ -170,3 +170,10 @@ Sheets: `data/9t/results/change/sheets/change_evidence_sheet_anthropogenic_1_9t_
 | new | 372, 802, 817, 49, 664 | Broad diffuse tints without morphology. Not earthwork. |
 
 So the rebuild removed some of the seam patches (20, 114, most of 109 and 786) and not others (391). It did not create new convincing earthwork. Patches 810 and 1277 are the two to send for independent confirmation.
+
+
+## Correction 2026-11-09 (second outside review, `tmp/nisar_adversarial_20261109/REPORT.md`)
+
+- **Duplicate decoys row.** `_nisar_feat_dedupe_9t.py` keys on centre plus footprint size, not centre alone, and calls `GroupKFold` again after dropping rows, so folds were not held fixed (1,327 changed same-fold pit block pairs). The AUC shifts it reports (pits 0.829 to 0.765, local pads 0.479 to 0.601) are real but cannot be attributed to duplicate removal alone. Gains over lidar stay small and negative in both versions.
+- **Held-out bound.** "Every resampling gives an upper 95% bound of +0.018 or less" is documented only. The reproducible block bootstrap from saved predictions gives +0.0198. The conclusion that +0.05 is excluded for these 36 pits stands.
+- **Bad dates.** The wet/dry table, the three-sensor illustrative mean and the signal-quality table still read 2026-09-08. Fixed 2026-11-09.
