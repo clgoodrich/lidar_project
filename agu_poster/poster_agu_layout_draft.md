@@ -75,7 +75,7 @@ Two sets exist and they do not match.
 
 | Source | Pits | Pads | Metric |
 |---|---|---|---|
-| `docs/agu_abstract_2026.md` v17 (2026-08-04) | 93% located, precision 0.72, trained on 471 | 94% located, precision 0.90 | centroid matching, ann503 era |
+| `agu_poster/agu_abstract_2026.md` v17 (2026-08-04) | 93% located, precision 0.72, trained on 471 | 94% located, precision 0.90 | centroid matching, ann503 era |
 | `docs/iterations/LEADERBOARD.md` CV5 ann712 (2026-09-17) | R 0.861 / P 0.686 @IoU 0.3 (F1 rule), containment 0.914 | R 0.888 / P 0.597 @IoU 0.3, locate 0.923 | IoU 0.3, 712 pits, 995 pads |
 | Threshold-free AP @IoU 0.3 (2026-09-23) | 0.818 [0.778–0.857] | 0.745 [0.703–0.789] | ranked AP, 95% block bootstrap |
 

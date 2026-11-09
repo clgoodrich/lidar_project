@@ -240,7 +240,7 @@ Every figure re-derived from source on 2026-08-04.
 | road recall | **0.982** | `recall_clean` at thr 0.20, n = **735** |
 | road pixel IoU | 0.5814 | `road_unet_1m_recall/test_metrics.json` |
 
-Corrections applied to `docs/agu_abstract_2026.md`:
+Corrections applied to `agu_poster/agu_abstract_2026.md`:
 
 1. **471 pits, not 503.** 503 is the current annotation count; no model has seen it.
 2. **93% pits, not 94%.** 0.9308.

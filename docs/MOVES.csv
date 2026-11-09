@@ -26674,3 +26674,6 @@ ts,phase,old_path,new_path,size_bytes,reason
 2026-11-06T00:58:57+00:00,expansions,docs/plans/frameworks/fw_7_4_agency_tooling.md,expansions/7_scale/7_4_agency_tooling/docs/fw_7_4_agency_tooling.md,18335,one standard directory per expansion
 2026-11-06T00:58:57+00:00,expansions,docs/plans/plan_scale_field_campaign.md,expansions/7_scale/7_5_field_campaign/docs/plan_scale_field_campaign.md,2991,one standard directory per expansion
 2026-11-06T00:58:57+00:00,expansions,docs/plans/frameworks/fw_7_5_field_campaign.md,expansions/7_scale/7_5_field_campaign/docs/fw_7_5_field_campaign.md,7662,one standard directory per expansion
+2026-11-09T03:09:43+00:00,poster,docs/poster_agu_layout_draft.md,agu_poster/poster_agu_layout_draft.md,10281,AGU poster gets its own folder (user request 2026-11-08)
+2026-11-09T03:09:43+00:00,poster,docs/agu_abstract_2026.md,agu_poster/agu_abstract_2026.md,14730,AGU poster gets its own folder (user request 2026-11-08)
+2026-11-09T03:09:43+00:00,poster,docs/agu abstract colton.docx,agu_poster/agu abstract colton.docx,12551,AGU poster gets its own folder (user request 2026-11-08)

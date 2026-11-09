@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-08 AGU poster moved to its own folder
+
+- `docs/poster_agu_layout_draft.md`, `docs/agu_abstract_2026.md` and `docs/agu abstract colton.docx` moved to `agu_poster/` with `tools/apply_moves.py` (ledger `docs/MOVES.csv`). Links in `literature/CITATIONS.md` and `docs/iterations/centroid_matching_pit_pad_9t.md` updated. Reference index rebuilt. New `agu_poster/README.md`. Older log entries keep the old paths.
+
 ## 2026-11-08 NISAR speckle filters (median, Frost, Gamma-MAP, Lee sigma)
 
 - Why. The NISAR images were never speckle filtered. They are single-look (ENL 0.98). The 2.8 dB speckle figure in the write-up had no source and has been removed. The measured single-date HH spread is 5.95 dB.
