@@ -121,7 +121,12 @@ def main() -> None:
         r.shadow.inherit = False
         return r
 
-    rect(X0, FOOT_TOP - 0.45, X1 - X0, 0.03, RGBColor(0xBF, 0xBF, 0xBF))   # hairline above the footer
+    # thin grey rules break the page up without boxing anything in: one above the footer and one
+    # down the middle of each column gutter (the col 2 / col 3 gutter starts below the hero)
+    rule_c, rule_w = RGBColor(0xBF, 0xBF, 0xBF), 0.04
+    rect(X0, FOOT_TOP - 0.45, X1 - X0, rule_w, rule_c)
+    rect(C2 - GAP / 2 - rule_w / 2, BODY_TOP, rule_w, BODY_BOT - BODY_TOP, rule_c)
+    rect(C3 - GAP / 2 - rule_w / 2, 22.0, rule_w, BODY_BOT - 22.0, rule_c)
     for head, x, y, w, h, note in BOXES:
         foot = y >= FOOT_TOP
         if head is None:
