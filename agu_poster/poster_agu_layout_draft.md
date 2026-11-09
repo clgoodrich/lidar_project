@@ -139,3 +139,27 @@ Three slides. Slide 2 also mentions NISAR, so do not copy that text. Images extr
 
 Gaps: no model-prediction overlay exists in the deck, so the hero must be built new. The pipeline text is about 9 pt at 13 in wide, far below the 32 pt floor.
 Resolved 2026-11-05: both are right. The USGS project is `PA_WesternPA_2019_D20`, flown leaf-off November 2019 to March 2020 (`docs/03_las_inspection_report.md:106`). On the poster write "USGS 3DEP 2019 project, flown Nov 2019 to Mar 2020". The deck's 503 pit floors and the leaderboard's 502 scored rims differ by one. 467/503 = 0.928 matches the F2 recall.
+
+## 10. Design evidence and the revised layout (2026-11-08)
+
+What the studies show:
+
+- Silver et al. 2025, randomized trial, 94 physicians. A #BetterPoster layout (main finding in large type) did not raise total knowledge (7.33 vs 6.83, ns). It did raise recall of the key concept (1.75 vs 1.45, p = .006).
+- Oronje, Morrison et al. 2022, two conference surveys (n = 59, 95). Billboard posters were preferred for the main message (82%) and looks (58%). Traditional posters were preferred for methods and rigor (67%). The authors ask for more methods on billboard posters.
+- Bentsen and Ostergaard 2025, 103 posters rated. Both formats scored well when text and visuals were balanced. Oversimplified posters lost points.
+- Posters with graphs or photos were named memorable more often (WPA 1999 studies). Viewers give a poster about 3 s before deciding to stop.
+- Ratio rules (NIH 40/20/40 graphics/text/white, Argonne 30/40/30, EGU 40/40/20) are guidance with no data behind them. Used as rough targets only.
+
+Changes made in `_make_agu_poster.py`:
+
+1. One main-finding sentence in 84 pt across columns 2 and 3, above the hero. The hero shrinks to about 11.6 in tall.
+2. Every section leads with a figure and carries one or two short sentences at 44 pt.
+3. Headings are statements of what the section shows, 54 pt, up to two lines.
+4. Methods and validation stay on the page, as a pipeline diagram and a fold map.
+5. Results lead with three large numbers, then the precision-recall curves.
+6. The QR code is labelled "Full methods, data and code".
+7. Body text is about 120 words now. Cap 500 in total.
+
+Measured on the wireframe body: figure blocks 46%, blank 48%, text ink the rest.
+
+Numbers in brackets (`[93%]`, `[712]` pits) are still waiting on decision 1 in section 7. The main sentence says "9 in 10", which both number sets support.

@@ -679,3 +679,9 @@ All entries below are **cite-only**. No paper was read or downloaded during the 
 - **Generated:** `expansions/7_scale/7_3_benchmark/src/_bench_card_datasheet_9t.py`.
 
 Kang et al. 2014 (above) is now also used by `expansions/4_modalities/4_4_methane_plumes/src/_methane_gate_limit_pa.py` (M0 gate). Hammack et al. 2023 remains not read.
+
+### Poster design evidence (AGU poster layout, 2026-11-08) — cite-only
+- **Citations:** Silver, et al. (2025). #BetterPoster vs traditional poster, randomized trial. *PRiMER* (STFM), https://journals.stfm.org/primer/2025/silver-2024-0141/. Oronje, B., Morrison, M., et al. (2022). A step in the right direction: billboard-style posters preferred overall at two conferences, but should include more methods and limitations. *Qeios* P7N5BO. Bentsen, and Ostergaard (2025). What makes a good poster? Evaluating BetterPoster and classic formats. *J. Cancer Educ.*, https://link.springer.com/article/10.1007/s13187-025-02622-1. Ilic, D., and Rowe, N. (2013). What is the evidence that poster presentations are effective in promoting knowledge transfer? *Health Info. Libr. J.* 30(1), 4–12. Erren, T. C., and Bourne, P. E. (2007). Ten simple rules for a good poster presentation. *PLoS Comput. Biol.* 3(5), e102.
+- **About:** controlled and field tests of poster formats, plus a review and a rules paper.
+- **Used for:** main-finding sentence in large type, statement headings, figure-led sections, methods kept visible, about 500 words.
+- **Generated:** `agu_poster/_make_agu_poster.py`, `agu_poster/agu_poster_wireframe_44in.pptx`, `agu_poster/agu_poster_mockup_44in.pptx`.

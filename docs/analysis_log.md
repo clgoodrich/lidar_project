@@ -5,6 +5,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-08 AGU poster layout revised from poster-design evidence, plus a mockup
+
+- Read the poster-design studies (Silver et al. 2025 RCT, Oronje et al. 2022 surveys, Bentsen and Ostergaard 2025, WPA 1999) and the ratio guides. Summary in `agu_poster/poster_agu_layout_draft.md` section 10. Citations in `literature/CITATIONS.md`.
+- `agu_poster/_make_agu_poster.py` rewritten: main-finding sentence above the hero, statement headings, figure-led sections, big-number results, QR label. `--mockup` writes `agu_poster/agu_poster_mockup_44in.pptx` with stand-in images from `docs/figures/`, the 9t operating-point figures and `RemoteSensing_option2.pptx` (read in memory). Preview `agu_poster/agu_poster_mockup_preview.png`. Both decks pass validate.py.
+- Intro line first said "over 27,000 orphan wells". The repo copy of the PA list has 4,786 rows, so the number was dropped for "thousands".
+- Stand-ins contain red (pit profile, PR curves, hand-label hero). They are not final figures and must be redrawn to the colourblind rule.
+
 ## 2026-11-08 AGU poster wireframe on the UH template (44 x 44 in)
 
 - User template `agu_poster/AGU_poster.pptx` (56 x 45 in) moved in from `docs/`. Page stays 44 x 44 (user). New `agu_poster/_make_agu_poster.py` copies the template's frame pieces onto the draft's grid and writes `agu_poster/agu_poster_wireframe_44in.pptx`. Ten boxes plus the hero, grey placeholders only. Abstract box dropped. Template untouched. validate.py passes.
