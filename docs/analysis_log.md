@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-09 AGU poster figures built and placed
+
+- New `agu_poster/_make_poster_figures.py` writes seven figures to `agu_poster/figures/` from held-out outputs on 9t. Hero window chosen automatically (most features, with a found pit, a missed pit and an unlabelled detection). F2 thresholds per fold from `*_cv5_per_fold_9t.csv`. Pit out-of-fold mosaic decoded as v / 254.
+- `agu_poster/_make_agu_poster.py` rewritten as stacked blocks per section. Text grew from about 120 to 255 words. Statement headings shortened to one line. Mockup `agu_poster/agu_poster_mockup_44in.pptx`, preview `agu_poster/agu_poster_mockup_preview.png`. validate.py passes on both decks.
+- Flag: the 98% road number is from the road test split, not the CV blocks named in the Results heading. Numbers await the user's pick.
+
 ## 2026-11-08 AGU poster layout revised from poster-design evidence, plus a mockup
 
 - Read the poster-design studies (Silver et al. 2025 RCT, Oronje et al. 2022 surveys, Bentsen and Ostergaard 2025, WPA 1999) and the ratio guides. Summary in `agu_poster/poster_agu_layout_draft.md` section 10. Citations in `literature/CITATIONS.md`.

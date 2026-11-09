@@ -163,3 +163,21 @@ Changes made in `_make_agu_poster.py`:
 Measured on the wireframe body: figure blocks 46%, blank 48%, text ink the rest.
 
 Numbers in brackets (`[93%]`, `[712]` pits) are still waiting on decision 1 in section 7. The main sentence says "9 in 10", which both number sets support.
+
+## 11. Figures built and text added (2026-11-09)
+
+The user asked for more images and more text. `agu_poster/_make_poster_figures.py` builds seven figures into `agu_poster/figures/`. `_make_agu_poster.py --mockup` places them and adds draft text (255 words in headings, body and captions).
+
+| Figure | Source | Notes |
+|---|---|---|
+| Hero | pit out-of-fold mosaic, pad fold rasters by block, F2 threshold per fold | Window 619500–620250 E, 4594500–4594875 N (EPSG:6346), the most feature-rich 750 x 375 m window holding a found pit, a missed pit and an unlabelled detection. 14 found, 1 missed, 2 unlabelled detections there |
+| Optical vs lidar | `RemoteSensing_option2.pptx` images 2 and 3 | The user's own pair. Source of the air photo is not recorded in the repo |
+| Seven channels | `features_pit_9t_05.tif` | 40 m around the median-size pit |
+| Pit, pad, road | hillshade 0.5 m plus hand outlines | One seeded example each |
+| Pipeline | drawn | |
+| Test blocks | pit split, `pit_cv5_fold_assignment_9t.csv` | Pad split differs. Shown for pits only |
+| PR curves | ranked candidates, IoU 0.3, held-out | |
+
+Palette pit `#2a78d6`, pad `#eb6834`, road `#1baf7a`. dataviz validator, `--pairs all`: worst CVD pair 9.2 deutan, normal floor 24.0, road contrast 2.74:1 (WARN), so every class is labelled in words too.
+
+Numbers used: leaderboard ann712 F2 (pits 93%, pads 91%, precision 63% and 59%), roads 98% (`recall_clean`, road test split, not the CV blocks). Still needs the user's sign-off (decision 1).

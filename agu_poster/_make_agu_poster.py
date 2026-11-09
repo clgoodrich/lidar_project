@@ -1,27 +1,26 @@
 """AGU poster, 44 x 44 in, built on the user's UH template frame. The template is never edited.
 
 Input   agu_poster/AGU_poster.pptx           user template (56 x 45 in, UH Cullen College frame)
+        agu_poster/figures/*.png             built by agu_poster/_make_poster_figures.py
 Output  agu_poster/agu_poster_wireframe_44in.pptx   grey blocks say what goes where
-        agu_poster/agu_poster_mockup_44in.pptx      same layout, existing images dropped in as stand-ins (--mockup)
+        agu_poster/agu_poster_mockup_44in.pptx      same layout with the figures placed (--mockup)
 
-Layout follows the poster-design evidence summarised in poster_agu_layout_draft.md section 10:
+Layout follows the poster-design evidence in poster_agu_layout_draft.md section 10:
 one main-finding sentence in large type above the hero (Silver et al. 2025 RCT, key-concept recall),
-every section led by a figure with 1 to 3 short sentences, headings written as statements,
-methods and validation kept on the page as diagrams (Oronje et al. 2022; Bentsen and Ostergaard 2025),
-about 500 words in total.
+every section led by a figure, headings written as statements, methods and validation kept on the page
+(Oronje et al. 2022; Bentsen and Ostergaard 2025), about 350 to 500 words.
 
-Mockup stand-ins come from docs/figures/, the 9t operating-point figures, and the user's
-RemoteSensing_option2.pptx (repo root, read in memory, never edited). They are not the final figures.
+Each section is a stack of blocks laid top to bottom: ("fig", key, height, wireframe note) or ("text", body).
+"|" in body text starts a new paragraph.
 
 Run
     python agu_poster/_make_agu_poster.py            # wireframe
-    python agu_poster/_make_agu_poster.py --mockup   # mockup
+    python agu_poster/_make_agu_poster.py --mockup   # with figures
 """
 from __future__ import annotations
 
 import argparse
 import io
-import zipfile
 from pathlib import Path
 
 from PIL import Image
@@ -33,9 +32,9 @@ from pptx.util import Inches, Pt
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 SRC = HERE / "AGU_poster.pptx"
+FIGS = HERE / "figures"
 OUT_WIRE = HERE / "agu_poster_wireframe_44in.pptx"
 OUT_MOCK = HERE / "agu_poster_mockup_44in.pptx"
-DECK = ROOT / "RemoteSensing_option2.pptx"
 PAGE = 44.0
 WHITE, GREY = RGBColor(0xFF, 0xFF, 0xFF), RGBColor(0x6B, 0x6B, 0x6B)
 INK = RGBColor(0x2B, 0x2F, 0x36)         # charcoal body text
@@ -50,48 +49,68 @@ C1, C2, C3 = X0, X0 + CW + GAP, X0 + 2 * (CW + GAP)
 HEAD = (0.8, 5.6)          # header band top, height (the one solid block of UH red)
 BODY_TOP, BODY_BOT = 7.2, 40.0
 FOOT_TOP, FOOT_BOT = 40.9, 43.2
-LOWER = 23.4               # top of the col 2 / col 3 sections under the hero
+HERO_H = 10.6              # hero figure height, figure is 27.6 x 10.6 in
+LOWER = BODY_TOP + 3.6 + HERO_H + 0.9     # top of the col 2 / col 3 sections under the hero
 
-HEAD_PT, BODY_PT = 54, 44  # statement headings (up to 2 lines), body text floor from the draft
-HEAD_H = 1.9               # room for a 2-line heading at 54 pt
+HEAD_PT, BODY_PT, CAP_PT = 54, 44, 32
+HEAD_H = 1.05              # one-line statement heading at 54 pt
+LINE = BODY_PT * 1.2 / 72  # body line height, in
+CHARS = 44                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TAKEAWAY = "Airborne lidar finds 9 in 10 old well pits and pads under forest canopy"
 
-# mockup stand-ins: ("file", path) or ("deck", media name in RemoteSensing_option2.pptx)
-OPF = ROOT / "data/9t/results/operating_point/figures"
-STAND_INS = {
-    "intro": ("file", ROOT / "docs/figures/Pennsylvania Map Abandoned.png"),
-    "data": ("deck", "ppt/media/image3.png"),
-    "signs": ("file", ROOT / "docs/figures/pit_profile_diagram.png"),
-    "hero": ("deck", "ppt/media/image4.png"),
-    "setup": ("deck", "ppt/media/image6.png"),
-    "results": ("file", OPF / "pr_curve_ranked_candidates_at_proposal_cutoff_heldout_cv5_iou0p30_iou0p50_pit_pitsmrf_pad_9t.png"),
+FIG_FILES = {
+    "intro": ROOT / "docs/figures/Pennsylvania Map Abandoned.png",
+    "optical": FIGS / "poster_optical_vs_lidar_9t.png",
+    "channels": FIGS / "poster_channels_one_pit_9t.png",
+    "signs": FIGS / "poster_signs_gallery_9t.png",
+    "hero": FIGS / "poster_hero_heldout_9t.png",
+    "setup": FIGS / "poster_pipeline_diagram.png",
+    "valid": FIGS / "poster_cv_folds_pit_9t.png",
+    "results": FIGS / "poster_pr_curves_heldout_9t.png",
 }
 
-# section: key, heading (a statement), x, y, w, h, figure height, figure note (wireframe), body ("|" = new paragraph)
 SECTIONS = [
-    ("intro", "Forests hide old wells from air photos", C1, BODY_TOP, CW, 10.4, 5.0,
-     "Map of Pennsylvania documented orphan wells",
-     "Pennsylvania lists thousands of orphan wells. Many more were never recorded."),
-    ("data", "Lidar sees the ground under the trees", C1, 18.4, CW, 10.6, 5.6,
-     "Optical vs lidar pair, then the seven-channel strip of one pit",
-     "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020. 1 m bare-earth model."),
-    ("signs", "A well leaves a pit, a pad and a road", C1, 29.8, CW, BODY_BOT - 29.8, 4.6,
-     "Three-up drawing: pit profile, pad, road",
-     "We drew [712] pits, [995] pads and [735] road segments by hand."),
-    ("setup", "One U-Net per sign, seven terrain channels", C2, LOWER, CW, 8.2, 4.0,
-     "Pipeline diagram: points, ground, DEM, channels, U-Net, candidates",
-     "Each model maps one sign. Roads also learn drainage as a look-alike."),
-    ("valid", "Scored only by models that never saw the feature", C2, LOWER + 9.0, CW, BODY_BOT - LOWER - 9.0, 3.2,
-     "Fold map: tile split into five spatial blocks",
-     "Each of five spatial blocks is tested by a model trained on the other four."),
-    ("results", "Nine in ten pits and pads found", C3, LOWER, CW, 10.6, 4.2,
-     "Precision-recall curves, pits and pads", ""),
-    ("takeaways", "What this means", C3, LOWER + 11.2, CW, BODY_BOT - LOWER - 11.2, 0.0, "",
-     "Lidar can screen whole counties for unrecorded wells.|"
-     "Next: more survey blocks and field checks."),
+    ("Forests hide old wells from air photos", C1, BODY_TOP, [
+        ("fig", "intro", 5.6, "Map of Pennsylvania documented orphan wells"),
+        ("text", "Orphan wells have no owner left to plug them. Unplugged wells can leak methane and brine. "
+                 "Pennsylvania lists thousands, and many more were never recorded. Most sit under forest, "
+                 "hidden from air photos."),
+    ]),
+    ("Lidar sees the ground under the trees", C1, 19.4, [
+        ("fig", "optical", 3.9, "Air photo and lidar of the same ground"),
+        ("text", "USGS 3DEP lidar, flown leaf-off from Nov 2019 to Mar 2020. Each model reads seven terrain "
+                 "layers, shown here around one pit."),
+        ("fig", "channels", 2.9, "Seven-channel strip of one pit"),
+    ]),
+    ("A well leaves a pit, a pad and a road", C1, 31.6, [
+        ("fig", "signs", 5.0, "Pit, pad, road on hillshade"),
+        ("text", "We outlined 712 pits and 995 pads by hand and traced the access roads."),
+    ]),
+    ("One U-Net per sign", C2, LOWER, [
+        ("fig", "setup", 4.6, "Pipeline diagram"),
+        ("text", "The road model also learns drainage, the feature it most often confuses with road."),
+    ]),
+    ("Tested on blocks the model never saw", C2, LOWER + 8.75, [
+        ("fig", "valid", 3.2, "Five test sets of 375 m blocks"),
+        ("text", "Five rounds. Each test set (blue) is scored by a model trained without it. A detection "
+                 "counts when it matches a hand outline (IoU 0.3 or more)."),
+    ]),
+    ("Nine in ten found in held-out blocks", C3, LOWER, [
+        ("stats", None, 2.7, None),
+        ("fig", "results", 4.8, "Precision-recall curves, pits and pads"),
+        ("text", "Precision is lower. 63% of pit and 59% of pad detections match a hand outline. Some of "
+                 "the rest may be features we have not drawn yet."),
+    ]),
+    ("What this means", C3, LOWER + 12.1, [
+        ("text", "Lidar can screen whole counties for unrecorded wells.|This is one survey block. The labels "
+                 "are our own reading of the ground, and no site has been visited yet.|Next we add survey "
+                 "blocks and check sites in the field."),
+    ]),
 ]
-STATS = [("[93%]", "pits"), ("[91%]", "pads"), ("[98%]", "roads")]
+STATS = [("93%", "pits"), ("91%", "pads"), ("98%", "roads")]
+HERO_CAPTION = ("Every prediction shown comes from a model that never saw this block. Western Pennsylvania, "
+                "750 m by 375 m.")
 
 
 def named(slide, name):
@@ -100,6 +119,14 @@ def named(slide, name):
 
 def place(shape, x, y, w, h):
     shape.left, shape.top, shape.width, shape.height = Inches(x), Inches(y), Inches(w), Inches(h)
+
+
+def text_height(text, size=BODY_PT, chars=CHARS):
+    """Rough height of wrapped body text in a column, in inches."""
+    k = chars * BODY_PT / size
+    lines = sum(max(1, -(-len(p) // int(k))) for p in text.split("|"))
+    paras = len(text.split("|"))
+    return lines * size * 1.2 / 72 + (paras - 1) * size * 0.4 / 72
 
 
 def text_box(slide, x, y, w, h, text, size, color, bold=False, italic=False, align=PP_ALIGN.LEFT,
@@ -120,26 +147,19 @@ def text_box(slide, x, y, w, h, text, size, color, bold=False, italic=False, ali
     return tb
 
 
-def load_image(src) -> io.BytesIO:
-    """Open a stand-in, downscale to at most 2400 px, return JPEG bytes (keeps the mockup small)."""
-    kind, ref = src
-    if kind == "deck":
-        with zipfile.ZipFile(DECK) as z:
-            im = Image.open(io.BytesIO(z.read(ref)))
-            im.load()
-    else:
-        im = Image.open(ref)
-    im = im.convert("RGB")
-    im.thumbnail((2400, 2400))
+def load_image(path: Path):
+    """Downscale to at most 4000 px on the long side and return JPEG or PNG bytes plus the pixel size."""
+    im = Image.open(path).convert("RGB")
+    im.thumbnail((4000, 4000))
     buf = io.BytesIO()
-    im.save(buf, "JPEG", quality=88)
+    im.save(buf, "PNG", optimize=True)
     buf.seek(0)
     return buf, im.size
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mockup", action="store_true", help="drop existing images in as stand-ins")
+    ap.add_argument("--mockup", action="store_true", help="place the built figures")
     mock = ap.parse_args().mockup
 
     prs = Presentation(str(SRC))
@@ -168,13 +188,12 @@ def main() -> None:
         return r
 
     def figure(key, x, y, w, h, note, size=36):
-        """Grey block in the wireframe. In the mockup, the stand-in fitted inside the area."""
-        if mock and key in STAND_INS:
-            buf, (pw, ph) = load_image(STAND_INS[key])
+        """Grey block in the wireframe. In the mockup, the figure fitted inside the area, top-centred."""
+        if mock and FIG_FILES.get(key, Path("-")).exists():
+            buf, (pw, ph) = load_image(FIG_FILES[key])
             scale = min(w / pw, h / ph)
             fw, fh = pw * scale, ph * scale
-            s.shapes.add_picture(buf, Inches(x + (w - fw) / 2), Inches(y + (h - fh) / 2), Inches(fw), Inches(fh))
-            text_box(s, x, y + h + 0.05, w, 0.5, "stand-in: " + note.lower(), 22, GREY, italic=True)
+            s.shapes.add_picture(buf, Inches(x + (w - fw) / 2), Inches(y), Inches(fw), Inches(fh))
             return
         rect(x, y, w, h, FIG_FILL)
         text_box(s, x + 0.5, y, w - 1.0, h, note, size, GREY, italic=True, align=PP_ALIGN.CENTER,
@@ -186,31 +205,39 @@ def main() -> None:
     rect(C2 - GAP / 2 - rw / 2, BODY_TOP, rw, BODY_BOT - BODY_TOP, RULE)
     rect(C3 - GAP / 2 - rw / 2, LOWER, rw, BODY_BOT - LOWER, RULE)
 
-    # main finding, the one line a passer-by reads in 3 s; then the hero under it
+    # main finding, the one line a passer-by reads in 3 s; then the hero and its caption
     text_box(s, C2, BODY_TOP, X1 - C2, 3.2, TAKEAWAY, 84, INK, bold=True, anchor=MSO_ANCHOR.MIDDLE)
-    hero_y = BODY_TOP + 3.6
-    figure("hero", C2, hero_y, X1 - C2, LOWER - 0.8 - hero_y,
+    hero_y = BODY_TOP + 3.4
+    figure("hero", C2, hero_y, X1 - C2, HERO_H,
            "Hero figure. One held-out block. Hillshade base, hand annotation as outlines, model output "
-           "filled. Zoom insets: a hit, a miss, a false alarm", 40)
+           "filled. Zoom insets: a hit, a miss, an unlabelled detection", 40)
+    text_box(s, C2, hero_y + HERO_H + 0.05, X1 - C2, 0.6, HERO_CAPTION, CAP_PT, GREY)
 
-    for key, head, x, y, w, h, fig_h, note, body in SECTIONS:
-        text_box(s, x, y, w, HEAD_H, head, HEAD_PT, UH_RED, bold=True, anchor=MSO_ANCHOR.BOTTOM)
-        rule_y = y + HEAD_H + 0.15
-        rect(x, rule_y, w, 0.05, UH_RED)
+    words = len(TAKEAWAY.split()) + len(HERO_CAPTION.split())
+    for head, x, y, blocks in SECTIONS:
+        text_box(s, x, y, CW, HEAD_H, head, HEAD_PT, UH_RED, bold=True, anchor=MSO_ANCHOR.BOTTOM)
+        words += len(head.split())
+        rule_y = y + HEAD_H + 0.12
+        rect(x, rule_y, CW, 0.05, UH_RED)
         top = rule_y + 0.4
-        if key == "results":                       # three big numbers, then the curves
-            sw = w / 3
-            for i, (num, lab) in enumerate(STATS):
-                text_box(s, x + i * sw, top, sw, 1.7, num, 110, INK, bold=True, align=PP_ALIGN.CENTER)
-                text_box(s, x + i * sw, top + 1.75, sw, 0.8, lab, 44, INK, align=PP_ALIGN.CENTER)
-            top += 2.9
-            text_box(s, x, top, w, 0.8, "found in held-out blocks", 36, GREY, align=PP_ALIGN.CENTER)
-            top += 1.0
-        if fig_h:
-            figure(key, x, top, w, fig_h, note)
-            top += fig_h + 0.6
-        if body:
-            text_box(s, x, top, w, y + h - top, body, BODY_PT, INK)
+        for kind, key_or_text, h, note in [(b[0], b[1], b[2] if len(b) > 2 else None,
+                                            b[3] if len(b) > 3 else None) for b in blocks]:
+            if kind == "fig":
+                figure(key_or_text, x, top, CW, h, note)
+                top += h + 0.35
+            elif kind == "stats":                       # three big numbers
+                sw = CW / 3
+                for i, (num, lab) in enumerate(STATS):
+                    text_box(s, x + i * sw, top, sw, 1.7, num, 110, INK, bold=True, align=PP_ALIGN.CENTER)
+                    text_box(s, x + i * sw, top + 1.75, sw, 0.8, lab, 44, INK, align=PP_ALIGN.CENTER)
+                top += h + 0.2
+            else:
+                th = text_height(key_or_text)
+                text_box(s, x, top, CW, th + 0.2, key_or_text, BODY_PT, INK)
+                words += len(key_or_text.replace("|", " ").split())
+                top += th + 0.45
+        if top > BODY_BOT + 0.3:
+            print(f"WARNING: section '{head}' runs to y {top:.1f} in, past the body bottom {BODY_BOT}")
 
     # footer
     for head, x, w, note in (("References", X0, 19.0, "Short reference list. 3DEP citation."),
@@ -226,7 +253,7 @@ def main() -> None:
 
     out = OUT_MOCK if mock else OUT_WIRE
     prs.save(str(out))
-    print(out)
+    print(out, f"body words {words}")
 
 
 if __name__ == "__main__":
