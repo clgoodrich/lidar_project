@@ -5,6 +5,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-09 AGU poster: results table, clearer hero, more text
+
+- User feedback: use our own model numbers (recall, precision, pads weak), too little text, hero insets unclear, colours poor.
+- Results now a table from `docs/iterations/LEADERBOARD.md` (ann712 CV5, F2 per fold, IoU 0.3): pits found 93%, correct 63%, tight fit (R@0.5) 82%; pads 91%, 59%, 77%; roads found 98% (`recall_clean`, 735 held-out segments), road precision left blank because it is not object-scored. Heading "Most found. Pads are the weak spot".
+- Hero colours swapped: pits orange `#eb6834` (solid), pads translucent blue `#2a78d6`. Same validated trio, worst CVD 9.2 deutan. Insets now show pits only, each with a one-line explanation. Third inset renamed "Not in our labels".
+- Text 255 -> 347 words. Sections stack automatically per column. Figures rendered at their placed size so in-figure text stays near 32 pt.
+
 ## 2026-11-09 AGU poster figures built and placed
 
 - New `agu_poster/_make_poster_figures.py` writes seven figures to `agu_poster/figures/` from held-out outputs on 9t. Hero window chosen automatically (most features, with a found pit, a missed pit and an unlabelled detection). F2 thresholds per fold from `*_cv5_per_fold_9t.csv`. Pit out-of-fold mosaic decoded as v / 254.

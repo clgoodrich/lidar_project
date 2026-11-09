@@ -17,7 +17,8 @@ Inputs (read only)
   data/9t/results/operating_point/pr_froc_curve_points_ranked_candidates_heldout_cv5_pit_pitsmrf_pad_9t.csv
   qgis/annotations/annotations_proj.gpkg (pit_inside, pit_outside, plat, roads)
 
-Palette (dataviz validate_palette.js, light, --pairs all, 2026-11-09): pit #2a78d6, pad #eb6834, road #1baf7a.
+Palette (dataviz validate_palette.js, light, --pairs all, 2026-11-09): pit #eb6834, pad #2a78d6, road #1baf7a.
+Pit is orange so the small pits stand out on the translucent blue pads (swapped 2026-11-09 at the user request).
 Worst CVD pair road/pad dE 9.2 deutan, tritan 9.6; normal floor 24.0; road 2.74:1 contrast (WARN), so every
 class is also named by a direct label. No red carries meaning.
 
@@ -54,7 +55,7 @@ ANN = ROOT / "qgis/annotations/annotations_proj.gpkg"
 PR = ROOT / "data/9t/results/operating_point/pr_froc_curve_points_ranked_candidates_heldout_cv5_pit_pitsmrf_pad_9t.csv"
 DECK = ROOT / "RemoteSensing_option2.pptx"
 
-PIT, PAD, ROAD = "#2a78d6", "#eb6834", "#1baf7a"
+PIT, PAD, ROAD = "#eb6834", "#2a78d6", "#1baf7a"
 INK, MUTED, HELD, OTHER = "#2B2F36", "#6B6B6B", "#2a78d6", "#D9D9D9"
 DPI = 200
 plt.rcParams.update({"font.family": "Calibri", "font.size": 32, "axes.edgecolor": MUTED,
@@ -204,50 +205,52 @@ def fig_hero():
         fa = [f for f in fa if x0 + m < f[0] < x1 - m and y0 + m < f[1] < y1 - m]
         if hits and miss and fa:
             break
-    fig = plt.figure(figsize=(27.6, 10.6), dpi=DPI)
-    ax = fig.add_axes([0.0, 0.089, 0.70, 0.911])
+    fig = plt.figure(figsize=(27.6, 9.4), dpi=DPI)
+    ax = fig.add_axes([0.0, 0.10, 0.62, 0.90])
     show_hs(ax, b)
-    overlay(ax, pad_m & cover, b, PAD, 0.40)
-    overlay(ax, pit_m & cover, b, PIT, 0.85)
+    overlay(ax, pad_m & cover, b, PAD, 0.30)
+    overlay(ax, pit_m & cover, b, PIT, 0.95)
     outline(ax, pads, b, PAD, 3, "--")
     outline(ax, pits_rim, b, PIT, 3)
     bare(ax, b)
     scalebar(ax, b, 100, "100 m")
     picks = []
-    if hits:
-        g = max(hits, key=lambda g: g.area); picks.append(("Found", g.centroid.x, g.centroid.y))
-    if miss:
-        g = miss[0]; picks.append(("Missed", g.centroid.x, g.centroid.y))
-    if fa:
-        f = max(fa, key=lambda t: t[2]); picks.append(("No hand label", f[0], f[1]))
+    g = max(hits, key=lambda g: g.area)
+    picks.append(("Found", "The model's pit (solid) sits inside|the hand-drawn rim.", g.centroid.x, g.centroid.y))
+    g = miss[0]
+    picks.append(("Missed", "A hand-drawn pit with no|model pit inside it.", g.centroid.x, g.centroid.y))
+    f = max(fa, key=lambda t: t[2])
+    picks.append(("Not in our labels", "The model marked a pit we never|drew. It may be one we overlooked.",
+                  f[0], f[1]))
     half = 25
-    for i, (lab, cx, cy) in enumerate(picks):
+    for i, (lab, expl, cx, cy) in enumerate(picks):
         ib = (cx - half, cy - half, cx + half, cy + half)
-        ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec="white", lw=6))
-        ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec=INK, lw=3))
-        ax.text(ib[0], ib[3] + 4, str(i + 1), fontsize=34, fontweight="bold", color=INK, path_effects=HALO)
-        ia = fig.add_axes([0.715, 1 - (i + 1) * 0.333 + 0.01, 0.135, 0.313])
-        pm, dm, _ = oof(ib)
+        ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec="white", lw=7))
+        ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec=INK, lw=3.5))
+        ax.text(ib[0], ib[3] + 4, str(i + 1), fontsize=36, fontweight="bold", color=INK, path_effects=HALO)
+        y0 = 1 - (i + 1) * 0.333 + 0.02
+        ia = fig.add_axes([0.632, y0, 0.115, 0.30])
+        pm, _, _ = oof(ib)
         show_hs(ia, ib)
-        overlay(ia, dm, ib, PAD, 0.40)
-        overlay(ia, pm, ib, PIT, 0.85)
-        outline(ia, pads, ib, PAD, 4, "--")
-        outline(ia, pits_rim, ib, PIT, 4)
+        overlay(ia, pm, ib, PIT, 0.95)          # insets are about pits, so pads are outline only
+        outline(ia, pads, ib, PAD, 3, "--")
+        outline(ia, pits_rim, ib, PIT, 5)
         bare(ia, ib)
-        fig.text(0.86, 1 - (i + 1) * 0.333 + 0.17, f"{i + 1}  {lab}", fontsize=34, fontweight="bold", color=INK,
-                 va="center")
+        fig.text(0.758, y0 + 0.22, f"{i + 1}  {lab}", fontsize=34, fontweight="bold", color=INK, va="center")
+        fig.text(0.758, y0 + 0.10, expl.replace("|", chr(10)), fontsize=28, color=INK, va="center", linespacing=1.15)
     # legend, direct and in words
     lx = 0.0
-    for txt, col, kind in (("Pit, model", PIT, "fill"), ("Pit, hand drawn", PIT, "line"),
-                           ("Pad, model", PAD, "fill"), ("Pad, hand drawn", PAD, "dash")):
-        y = 0.035
+    for txt, col, kind in (("Pit found by model", PIT, "fill"), ("Pit drawn by hand", PIT, "line"),
+                           ("Pad found by model", PAD, "fill"), ("Pad drawn by hand", PAD, "dash")):
+        y = 0.045
         if kind == "fill":
-            fig.patches.append(Rectangle((lx, y - 0.012), 0.012, 0.024, transform=fig.transFigure, color=col, alpha=0.8))
+            fig.patches.append(Rectangle((lx, y - 0.016), 0.014, 0.032, transform=fig.transFigure, color=col,
+                                         alpha=0.95 if col == PIT else 0.45))
         else:
-            fig.lines.append(plt.Line2D([lx, lx + 0.012], [y, y], transform=fig.transFigure, color=col, lw=4,
+            fig.lines.append(plt.Line2D([lx, lx + 0.014], [y, y], transform=fig.transFigure, color=col, lw=5,
                                         ls="--" if kind == "dash" else "-"))
-        fig.text(lx + 0.017, y, txt, fontsize=26, va="center", color=INK)
-        lx += 0.175
+        fig.text(lx + 0.019, y, txt, fontsize=28, va="center", color=INK)
+        lx += 0.158
     fig.savefig(OUT / "poster_hero_heldout_9t.png", dpi=DPI)
     plt.close(fig)
     return b, len(hits), len(miss), len(fa)
@@ -277,8 +280,8 @@ def fig_gallery():
         tb = r.bounds
     inner = lambda g: g.cx[tb.left + 100:tb.right - 100, tb.bottom + 100:tb.top - 100]  # noqa: E731
     pits, pads, roads = inner(ann("pit_outside")), inner(ann("plat")), inner(ann("roads"))
-    fig, axs = plt.subplots(1, 3, figsize=(13.47, 5.0), dpi=DPI)
-    fig.subplots_adjust(left=0, right=1, top=0.87, bottom=0, wspace=0.04)
+    fig, axs = plt.subplots(1, 3, figsize=(13.47, 4.4), dpi=DPI)
+    fig.subplots_adjust(left=0, right=1, top=1, bottom=0, wspace=0.04)
     keep = {"Pit": 0, "Pad": 1, "Road": 1}   # one example per sign, from the same seeded draw as before
     rows = (("Pit", pits, PIT, 30, "-"), ("Pad", pads, PAD, 90, "--"), ("Road", roads, ROAD, 90, "-"))
     for r, (lab, gdf, col, half, ls) in enumerate(rows):
@@ -297,7 +300,7 @@ def fig_gallery():
             else:
                 outline(ax, gdf, b, col, 4, ls)
             bare(ax, b)
-            ax.set_title(lab, fontsize=32, fontweight="bold", color=INK)
+            ax.text(0.04, 0.95, lab, transform=ax.transAxes, va="top", fontsize=34, fontweight="bold", color=INK, path_effects=HALO)
             ax.text(0.04, 0.05, f"{2 * half} m", transform=ax.transAxes, fontsize=24, color=INK, path_effects=HALO)
     fig.savefig(OUT / "poster_signs_gallery_9t.png", dpi=DPI)
     plt.close(fig)
@@ -306,8 +309,8 @@ def fig_gallery():
 def fig_folds():
     pf = block_fold("pit")
     allb = gpd.read_file(D05 / "pit_blocks_9t.gpkg", layer="blocks")
-    fig, axs = plt.subplots(1, 5, figsize=(13.47, 3.6), dpi=DPI)
-    fig.subplots_adjust(left=0, right=1, top=0.82, bottom=0, wspace=0.06)
+    fig, axs = plt.subplots(1, 5, figsize=(13.47, 2.9), dpi=DPI)
+    fig.subplots_adjust(left=0, right=1, top=0.80, bottom=0, wspace=0.06)
     for k, ax in enumerate(axs):
         allb.plot(ax=ax, color="white", edgecolor=OTHER, lw=0.8)
         pf[pf.fold != k].plot(ax=ax, color=OTHER, edgecolor="white", lw=0.8)
@@ -319,21 +322,22 @@ def fig_folds():
 
 
 def fig_pipeline():
-    rows = (["Lidar points", "Ground filter", "Bare-earth model, 0.5 m", "7 terrain layers"],
-            ["U-Net, one per sign", "Threshold", "Candidate outlines"])
-    W, H = 13.47, 4.6
+    nl = chr(10)
+    rows = ([f"Lidar{nl}points", f"Ground{nl}filter", f"Bare earth{nl}0.5 m", f"7 terrain{nl}layers"],
+            [f"U-Net{nl}per sign", "Cutoff", f"Candidate{nl}outlines"])
+    W, H = 13.47, 3.6
     fig = plt.figure(figsize=(W, H), dpi=DPI)
     ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, W); ax.set_ylim(0, H); ax.set_axis_off()
-    w, h, gap = 2.95, 1.45, 0.47
+    w, h, gap = 2.95, 1.3, 0.47
     prev = None
-    for r, (row, y) in enumerate(zip(rows, (2.95, 0.4))):
+    for r, (row, y) in enumerate(zip(rows, (2.2, 0.1))):
         for i, s in enumerate(row):
             x = 0.05 + (i if r == 0 else 3 - i) * (w + gap)
-            hi = s.startswith("U-Net")
+            hi = s.startswith("U-Net")  # the model step is the one shaded box
             ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02,rounding_size=0.15",
                                         fc="#DCE8F8" if hi else "#F2F2F2", ec="none"))
-            ax.text(x + w / 2, y + h / 2, s.replace(", ", ",\n") if len(s) > 16 else s, ha="center",
-                    va="center", fontsize=24, color=INK, fontweight="bold" if hi else "normal", linespacing=1.1)
+            ax.text(x + w / 2, y + h / 2, s, ha="center",
+                    va="center", fontsize=32, color=INK, fontweight="bold" if hi else "normal", linespacing=1.0)
             if prev is not None:
                 px, py = prev
                 if py == y and x > px:
@@ -352,16 +356,16 @@ def fig_pipeline():
 def fig_pr():
     d = pd.read_csv(PR)
     d = d[d.tau == 0.3]
-    fig, ax = plt.subplots(figsize=(13.47, 4.8), dpi=DPI)
-    fig.subplots_adjust(left=0.17, right=0.97, top=0.96, bottom=0.27)
+    fig, ax = plt.subplots(figsize=(13.47, 4.0), dpi=DPI)
+    fig.subplots_adjust(left=0.13, right=0.97, top=0.95, bottom=0.30)
     for name, col, lab in (("pit", PIT, "Pits"), ("pad", PAD, "Pads")):
         s = d[d.model == name].sort_values("rank")
         ax.plot(s.recall, s.precision, color=col, lw=5)
         i = int(len(s) * (0.80 if name == "pit" else 0.62))
         ax.text(s.recall.iloc[i], s.precision.iloc[i] + (0.05 if name == "pit" else -0.11), lab, color=INK, fontsize=34,
                 fontweight="bold", ha="center", path_effects=HALO)
-    ax.set_xlim(0, 1); ax.set_ylim(0, 1.02)
-    ax.set_xlabel("Share of hand-drawn features found"); ax.set_ylabel("Share of detections\nthat are real")
+    ax.set_xlim(0, 1); ax.set_ylim(0, 1.02); ax.set_yticks([0, 0.5, 1]); ax.set_xticks([0, 0.25, 0.5, 0.75, 1])
+    ax.set_xlabel("Found (share of hand-drawn features)"); ax.set_ylabel("Correct")
     ax.grid(color="#E6E6E6", lw=1.5); ax.spines[["top", "right"]].set_visible(False)
     fig.savefig(OUT / "poster_pr_curves_heldout_9t.png", dpi=DPI)
     plt.close(fig)
@@ -370,10 +374,11 @@ def fig_pr():
 def fig_optical():
     with zipfile.ZipFile(DECK) as z:
         ims = [Image.open(io.BytesIO(z.read(f"ppt/media/image{i}.png"))).convert("RGB") for i in (2, 3)]
-    fig, axs = plt.subplots(1, 2, figsize=(13.47, 3.9), dpi=DPI)
-    fig.subplots_adjust(left=0, right=1, top=0.84, bottom=0, wspace=0.03)
+    fig, axs = plt.subplots(1, 2, figsize=(13.47, 3.25), dpi=DPI)
+    fig.subplots_adjust(left=0, right=1, top=1, bottom=0, wspace=0.03)
     for ax, im, t in zip(axs, ims, ("Air photo", "Lidar, trees removed")):
-        ax.imshow(im); ax.set_axis_off(); ax.set_title(t, fontsize=28, color=INK)
+        ax.imshow(im, aspect="auto"); ax.set_axis_off()
+        ax.text(0.03, 0.94, t, transform=ax.transAxes, va="top", fontsize=30, fontweight="bold", color=INK, path_effects=HALO)
     fig.savefig(OUT / "poster_optical_vs_lidar_9t.png", dpi=DPI)
     plt.close(fig)
 

@@ -49,13 +49,13 @@ C1, C2, C3 = X0, X0 + CW + GAP, X0 + 2 * (CW + GAP)
 HEAD = (0.8, 5.6)          # header band top, height (the one solid block of UH red)
 BODY_TOP, BODY_BOT = 7.2, 40.0
 FOOT_TOP, FOOT_BOT = 40.9, 43.2
-HERO_H = 10.6              # hero figure height, figure is 27.6 x 10.6 in
+HERO_H = 9.4               # hero figure height, figure is 27.6 x 9.4 in
 LOWER = BODY_TOP + 3.6 + HERO_H + 0.9     # top of the col 2 / col 3 sections under the hero
 
 HEAD_PT, BODY_PT, CAP_PT = 54, 44, 32
 HEAD_H = 1.05              # one-line statement heading at 54 pt
 LINE = BODY_PT * 1.2 / 72  # body line height, in
-CHARS = 44                 # body characters per line across one column at 44 pt (Calibri, measured)
+CHARS = 45                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TAKEAWAY = "Airborne lidar finds 9 in 10 old well pits and pads under forest canopy"
 
@@ -72,43 +72,54 @@ FIG_FILES = {
 
 SECTIONS = [
     ("Forests hide old wells from air photos", C1, BODY_TOP, [
-        ("fig", "intro", 5.6, "Map of Pennsylvania documented orphan wells"),
+        ("fig", "intro", 3.4, "Map of Pennsylvania documented orphan wells"),
         ("text", "Orphan wells have no owner left to plug them. Unplugged wells can leak methane and brine. "
-                 "Pennsylvania lists thousands, and many more were never recorded. Most sit under forest, "
-                 "hidden from air photos."),
+                 "Pennsylvania lists thousands, and many more were never recorded.|We ask whether airborne "
+                 "lidar can find the marks drilling left on the ground."),
     ]),
-    ("Lidar sees the ground under the trees", C1, 19.4, [
-        ("fig", "optical", 3.9, "Air photo and lidar of the same ground"),
-        ("text", "USGS 3DEP lidar, flown leaf-off from Nov 2019 to Mar 2020. Each model reads seven terrain "
-                 "layers, shown here around one pit."),
+    ("Lidar sees the ground under the trees", C1, None, [
+        ("fig", "optical", 3.25, "Air photo and lidar of the same ground"),
+        ("text", "USGS 3DEP lidar over a 4.5 km square in western Pennsylvania, flown leaf-off from Nov "
+                 "2019 to Mar 2020. From the ground returns we build a 0.5 m bare-earth model and seven "
+                 "terrain layers, shown below around one pit."),
         ("fig", "channels", 2.9, "Seven-channel strip of one pit"),
     ]),
-    ("A well leaves a pit, a pad and a road", C1, 31.6, [
-        ("fig", "signs", 5.0, "Pit, pad, road on hillshade"),
-        ("text", "We outlined 712 pits and 995 pads by hand and traced the access roads."),
+    ("A well leaves a pit, a pad and a road", C1, None, [
+        ("fig", "signs", 4.4, "Pit, pad, road on hillshade"),
+        ("text", "The pit is a small bowl with a raised rim. The pad is the flat work area. The road is the "
+                 "track cut to reach it. We outlined 712 pits and 995 pads by hand."),
     ]),
     ("One U-Net per sign", C2, LOWER, [
-        ("fig", "setup", 4.6, "Pipeline diagram"),
-        ("text", "The road model also learns drainage, the feature it most often confuses with road."),
+        ("fig", "setup", 3.6, "Pipeline diagram"),
+        ("text", "A U-Net labels every pixel. Each sign gets its own model, which outputs a probability map. "
+                 "Pixels above a cutoff become outlines. The road model also learns drainage, the feature "
+                 "it most often confuses with road."),
     ]),
-    ("Tested on blocks the model never saw", C2, LOWER + 8.75, [
-        ("fig", "valid", 3.2, "Five test sets of 375 m blocks"),
-        ("text", "Five rounds. Each test set (blue) is scored by a model trained without it. A detection "
-                 "counts when it matches a hand outline (IoU 0.3 or more)."),
+    ("Tested on blocks the model never saw", C2, None, [
+        ("fig", "valid", 2.9, "Five test sets of 375 m blocks"),
+        ("text", "The tile is cut into 375 m blocks in five test sets. Each set (blue) is scored by a model "
+                 "trained without it. A detection counts when it overlaps a hand outline enough (IoU 0.3). "
+                 "Roads use their own held-out set of 735 segments."),
     ]),
-    ("Nine in ten found in held-out blocks", C3, LOWER, [
-        ("stats", None, 2.7, None),
-        ("fig", "results", 4.8, "Precision-recall curves, pits and pads"),
-        ("text", "Precision is lower. 63% of pit and 59% of pad detections match a hand outline. Some of "
-                 "the rest may be features we have not drawn yet."),
+    ("Most found. Pads are the weak spot", C3, LOWER, [
+        ("table", None, 3.4, None),
+        ("fig", "results", 4.0, "Precision-recall curves, pits and pads"),
+        ("text", "Recall is high for all three. Precision is lower, worst for pads. Pad edges are loose, so "
+                 "only 77% match tightly. Some unmatched detections may be features we have not drawn yet."),
     ]),
-    ("What this means", C3, LOWER + 12.1, [
-        ("text", "Lidar can screen whole counties for unrecorded wells.|This is one survey block. The labels "
-                 "are our own reading of the ground, and no site has been visited yet.|Next we add survey "
-                 "blocks and check sites in the field."),
+    ("What this means", C3, None, [
+        ("text", "Lidar can screen whole counties for unrecorded wells. Pits are the most reliable sign.|"
+                 "Limits. One survey block, labels are our own reading of the ground, and no site has been "
+                 "visited yet.|Next we add survey blocks and check sites in the field."),
     ]),
 ]
-STATS = [("93%", "pits"), ("91%", "pads"), ("98%", "roads")]
+# Results table: ann712 CV5, F2 threshold per fold, IoU 0.3 (docs/iterations/LEADERBOARD.md, 2026-09-17).
+# Roads: recall_clean at thr 0.20 on 735 held-out segments; road precision is not object-scored, so it is left blank.
+TABLE = [("", "Found", "Correct", "Tight fit"),
+         ("Pits", "93%", "63%", "82%"),
+         ("Pads", "91%", "59%", "77%"),
+         ("Roads", "98%", "—", "—")]
+TABLE_NOTE = "Found = recall. Correct = precision. Tight fit = recall at IoU 0.5."
 HERO_CAPTION = ("Every prediction shown comes from a model that never saw this block. Western Pennsylvania, "
                 "750 m by 375 m.")
 
@@ -214,7 +225,9 @@ def main() -> None:
     text_box(s, C2, hero_y + HERO_H + 0.05, X1 - C2, 0.6, HERO_CAPTION, CAP_PT, GREY)
 
     words = len(TAKEAWAY.split()) + len(HERO_CAPTION.split())
+    col_end = {C1: BODY_TOP - 0.7, C2: LOWER - 0.7, C3: LOWER - 0.7}
     for head, x, y, blocks in SECTIONS:
+        y = col_end[x] + 0.7 if y is None else y      # stack under the previous section in the column
         text_box(s, x, y, CW, HEAD_H, head, HEAD_PT, UH_RED, bold=True, anchor=MSO_ANCHOR.BOTTOM)
         words += len(head.split())
         rule_y = y + HEAD_H + 0.12
@@ -225,18 +238,28 @@ def main() -> None:
             if kind == "fig":
                 figure(key_or_text, x, top, CW, h, note)
                 top += h + 0.35
-            elif kind == "stats":                       # three big numbers
-                sw = CW / 3
-                for i, (num, lab) in enumerate(STATS):
-                    text_box(s, x + i * sw, top, sw, 1.7, num, 110, INK, bold=True, align=PP_ALIGN.CENTER)
-                    text_box(s, x + i * sw, top + 1.75, sw, 0.8, lab, 44, INK, align=PP_ALIGN.CENTER)
-                top += h + 0.2
+            elif kind == "table":                       # recall and precision per sign, numbers large
+                rh = (h - 0.6) / len(TABLE)
+                cws = [3.2] + [(CW - 3.2) / 3] * 3
+                for r, row in enumerate(TABLE):
+                    cx = x
+                    for c, cell in enumerate(row):
+                        big = r > 0 and c > 0
+                        text_box(s, cx, top + r * rh, cws[c], rh, cell, 56 if big else 40,
+                                 INK if (big or c == 0) else GREY, bold=big or c == 0,
+                                 align=PP_ALIGN.LEFT if c == 0 else PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+                        cx += cws[c]
+                    if r == 0:
+                        rect(x, top + rh - 0.02, CW, 0.03, RULE)
+                text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 0.5, TABLE_NOTE, 28, GREY)
+                top += h + 0.3
             else:
                 th = text_height(key_or_text)
                 text_box(s, x, top, CW, th + 0.2, key_or_text, BODY_PT, INK)
                 words += len(key_or_text.replace("|", " ").split())
                 top += th + 0.45
-        if top > BODY_BOT + 0.3:
+        col_end[x] = top - 0.45
+        if top - 0.45 > BODY_BOT + 0.05:
             print(f"WARNING: section '{head}' runs to y {top:.1f} in, past the body bottom {BODY_BOT}")
 
     # footer

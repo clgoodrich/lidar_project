@@ -181,3 +181,5 @@ The user asked for more images and more text. `agu_poster/_make_poster_figures.p
 Palette pit `#2a78d6`, pad `#eb6834`, road `#1baf7a`. dataviz validator, `--pairs all`: worst CVD pair 9.2 deutan, normal floor 24.0, road contrast 2.74:1 (WARN), so every class is labelled in words too.
 
 Numbers used: leaderboard ann712 F2 (pits 93%, pads 91%, precision 63% and 59%), roads 98% (`recall_clean`, road test split, not the CV blocks). Still needs the user's sign-off (decision 1).
+
+Update later on 2026-11-09: Results is a recall / precision / IoU 0.5 table from the leaderboard, with the pad weakness stated. Pit is orange and pad blue in every figure. Text is 347 words. Numbers are the leaderboard set (the user confirmed these are the model numbers to use).
