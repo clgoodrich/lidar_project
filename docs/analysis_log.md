@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-09 NISAR checkpoint deck, methods version
+
+- New `nisar_writeup/_make_checkpoint_slides_methods.py` (copy of `_make_checkpoint_slides.py`) writes `nisar_writeup/nisar_checkpoint_slides_methods_9t.pptx`. Methods only, no results assumed. Slide 3 now follows the review design: input manifest, lidar-height geocoding with offsets fit on reference targets, a small fixed radar feature set, the lidar detector's candidates scored with and without radar on fixed folds, and recall at a fixed inspection budget on a reserved area (bar +0.05 recall). Risks rewritten as hypothetical. Template and original deck unchanged. validate.py passes.
+
 ## 2026-11-09 NISAR: fixes from the second outside review (`tmp/nisar_adversarial_20261109/REPORT.md`)
 
 - Bad-date readers. `_nisar_signal_checks_9t.py` now drops `BAD_DATES` (rerun: `data/9t/results/nisar/nisar_signal_checks_per_window_9t.csv`, `..._by_track_9t.csv`; track 26 has 8 windows; flags unchanged). `nisar_writeup/_make_figures.py` drops them from the three-sensor mean and the wet/dry figure (wet/dry now +1.58 / +1.74 dB, was +1.57 / +1.75; still overlapping). The wet/dry CSV generator is not in the repo, so the CSV itself is unchanged and filtered at read time.
