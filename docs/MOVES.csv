@@ -26677,3 +26677,4 @@ ts,phase,old_path,new_path,size_bytes,reason
 2026-11-09T03:09:43+00:00,poster,docs/poster_agu_layout_draft.md,agu_poster/poster_agu_layout_draft.md,10281,AGU poster gets its own folder (user request 2026-11-08)
 2026-11-09T03:09:43+00:00,poster,docs/agu_abstract_2026.md,agu_poster/agu_abstract_2026.md,14730,AGU poster gets its own folder (user request 2026-11-08)
 2026-11-09T03:09:43+00:00,poster,docs/agu abstract colton.docx,agu_poster/agu abstract colton.docx,12551,AGU poster gets its own folder (user request 2026-11-08)
+2026-11-09T03:20:28+00:00,poster,docs/AGU_poster.pptx,agu_poster/AGU_poster.pptx,708017,user poster template joins agu_poster/ (2026-11-08)
