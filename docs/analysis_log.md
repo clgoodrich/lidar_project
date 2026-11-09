@@ -5,6 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-09 Prior-work citations: Ramachandran 2024 and the NETL Oil Creek lidar papers
+
+- Added to `literature/CITATIONS.md`: Ramachandran et al. 2024 (PDF downloaded to `literature/papers/ramachandran_2024_well_pads_satellite_dl.pdf`), Saint-Vincent et al. 2021, the Sams et al. Pioneer Run drone lidar poster (OSTI 1569995), Reeder et al., Gorantla et al., Saint-Vincent et al. 2020. NETL PDFs stay in `data/_source/reference/literature/`.
+- Corrected `docs/articles/ramachandran_explained.md`: wrong title, and the paper maps well pads in general, not orphan wells. Its Appalachian out-of-region test fell to precision 0.647, recall 0.552.
+- AGU poster intro now cites both lines of prior work. The References footer lists Ramachandran 2024, Saint-Vincent 2021, Sams et al. and USGS 3DEP.
+
+## 2026-11-09 Pumpjack pilot tile path repointed (T7 rebuild)
+
+- The T7 (H:) was reformatted and is being rebuilt; `H:\lidar_project_data_DO_NOT_DELETE\data\source_laz\` is not coming back (superseded by the Colton mirror, user decision 2026-11-06).
+- `data/9t/results/pumpjack/pumpjack_pilot_wells_9t.json`: 8 `tile` paths now point to `H:\Colton\_BACKUPS\lidar_project_MIRROR\data\_source\lidar\westernpa\USGS_LPC_PA_WesternPA_2019_D20_17TPF619594.laz`. `docs/iterations/lidar_pumpjack_pilot_warren.md` raw-tile path updated to match. No results changed.
+
 ## 2026-11-09 AGU poster: results table, clearer hero, more text
 
 - User feedback: use our own model numbers (recall, precision, pads weak), too little text, hero insets unclear, colours poor.

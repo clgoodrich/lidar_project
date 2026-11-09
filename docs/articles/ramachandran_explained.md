@@ -2,7 +2,9 @@
 
 A plain-English walkthrough of the paper, its methodology, and the training script.
 
-**Paper:** Ramachandran et al. 2024. "A deep learning approach to detect orphaned wells from satellite imagery." *Nature Communications* 15:7036.
+**Paper:** Ramachandran et al. 2024. "Deep learning for detecting and characterizing oil and gas well pads in satellite imagery." *Nature Communications* 15:7036. https://doi.org/10.1038/s41467-024-50334-9
+
+**Correction 2026-11-09.** The title above was wrong in this doc until today. The paper maps oil and gas well pads and storage tanks in general, mostly active ones. It does not target orphan wells. Read "well pads" wherever this doc says orphaned wells. Out of region, the model dropped to precision 0.647 and recall 0.552 in the Appalachian basin.
 
 ---
 

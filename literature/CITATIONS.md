@@ -60,6 +60,12 @@ is the source of record.
 | Naeini, Cooper & Hauskrecht | 2015 | Expected calibration error (ECE) | **Adopted** — ECE on held-out blobs and pixels | `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9t.py`; `data/9t/results/operating_point/pr_ap_froc_calibration_summary_cv5_pit_pitsmrf_pad_9t.json` | ✓ `naeini_2015_bayesian_binning_ece.pdf` |
 | Angelopoulos et al. | 2022 | Conformal risk control | **Adopted** — recall-guarantee policy in the Phase 3 sweep | `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`; `data/9t/results/operating_point/policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv` | ✓ `angelopoulos_2022_conformal_risk_control.pdf` |
 | Elkan | 2001 | Cost-sensitive decision threshold p* = C_FP/(C_FP+C_FN) | **Adopted** — cost-ratio policy in the Phase 3 sweep | `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`; `data/9t/results/operating_point/policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv` | ✓ `elkan_2001_foundations_cost_sensitive_learning.pdf` |
+| Ramachandran et al. | 2024 | Well pads from satellite imagery, Permian and Denver | Optical comparison, poster intro | `agu_poster/_make_agu_poster.py` | ✓ `ramachandran_2024_well_pads_satellite_dl.pdf` |
+| Saint-Vincent et al. | 2021 | Oil Creek abandoned wells, records plus lidar | Prior work, poster | `agu_poster/_make_agu_poster.py` | ✓ `data/_source/reference/literature/saint_vincent_2021_oil_creek_state_park.pdf` |
+| Sams et al. (NETL poster) | ~2019 | Pioneer Run drone lidar, 1860s oil field | Prior work, poster | `agu_poster/_make_agu_poster.py` | ✓ `data/_source/reference/literature/saint_vincent_2019_pioneer_run_lidar_conference.pdf` |
+| Reeder et al. (NETL) | 2023? | Procedure for locating wells | Background | none | ✓ `data/_source/reference/literature/netl_2023_reeder_procedure_locating_wells.pdf` |
+| Gorantla et al. (NETL AGU) | 2024? | State lidar for orphaned wells | Prior work | none | ✓ `data/_source/reference/literature/netl_2024_gorantla_state_lidar_orphan_wells_agu.pdf` |
+| Saint-Vincent et al. | 2020 | Records plus aeromagnetic surveys | Background | none | ✓ `data/_source/reference/literature/saint_vincent_2020_database_aeromagnetic.pdf` |
 
 ---
 
@@ -685,3 +691,47 @@ Kang et al. 2014 (above) is now also used by `expansions/4_modalities/4_4_methan
 - **About:** controlled and field tests of poster formats, plus a review and a rules paper.
 - **Used for:** main-finding sentence in large type, statement headings, figure-led sections, methods kept visible, about 500 words.
 - **Generated:** `agu_poster/_make_agu_poster.py`, `agu_poster/agu_poster_wireframe_44in.pptx`, `agu_poster/agu_poster_mockup_44in.pptx`.
+
+## Prior work on finding wells (added 2026-11-09)
+
+### Ramachandran et al. 2024 — well pads from satellite imagery (Permian and Denver basins)
+- **Citation:** Ramachandran, N., Irvin, J., Omara, M., Gautam, R., Meisenhelder, K., Rostami, E., Sheng, H., Ng, A. Y., and Jackson, R. B. (2024). Deep learning for detecting and characterizing oil and gas well pads in satellite imagery. *Nature Communications* 15, 7036. https://doi.org/10.1038/s41467-024-50334-9
+- **About:** RetinaNet detector plus EfficientNet-B3 verifier on Google Earth imagery. Test set precision 0.955, recall 0.904 (Permian and Denver). Deployed over both basins, 194,973 Permian pad detections. Maps oil and gas well pads in general, not orphan wells. Out of region, the Appalachian basin fell to precision 0.647, recall 0.552, because pads there are small and under trees.
+- **Used for:** the optical comparison (Permian check, about 35% of Texas RRC orphans within 100 m of a pad detection), the paper drafts, and the AGU poster introduction (why lidar in forested Appalachia).
+- **Generated:** `docs/publication/WellSight_Paper.md`; `docs/articles/ramachandran_explained.md`; `docs/iterations/expansion_options_methods.md`; `agu_poster/_make_agu_poster.py`.
+- **Source:** `literature/papers/ramachandran_2024_well_pads_satellite_dl.pdf` (open access, downloaded 2026-11-09).
+
+### Saint-Vincent et al. 2021 — Oil Creek State Park, historic records plus lidar
+- **Citation:** Saint-Vincent, P. M. B., Sams, J. I., Mundia-Howe, M., Reeder, M. D., Veloski, G. A., and Pekney, N. J. (2021). Historic and modern approaches for discovery of abandoned wells for methane emissions mitigation in Oil Creek State Park, Pennsylvania. *Journal of Environmental Management* 280, 111856.
+- **About:** NETL study combining old records, topographic maps, air photos and lidar to find abandoned wells at Oil Creek. The closest prior lidar work in our region, at a much smaller scale and by manual interpretation.
+- **Used for:** prior-work framing in the paper drafts and the AGU poster.
+- **Generated:** `docs/articles/abandoned_well_pit_research.md`; `agu_poster/_make_agu_poster.py`.
+- **Source:** `data/_source/reference/literature/saint_vincent_2021_oil_creek_state_park.pdf` (accepted manuscript).
+
+### Sams, Mundia-Howe, Veloski and Hammack — Pioneer Run drone lidar (NETL conference poster)
+- **Citation:** Sams, J. I., Mundia-Howe, M., Veloski, G. A., and Hammack, R. W. LiDAR mapping of 1860s' oil fields along Pioneer Run, Oil Creek State Park, Titusville, Pennsylvania. NETL conference poster. OSTI 1569995, https://www.osti.gov/biblio/1569995. Year not printed on the poster; the drone survey was flown May 2017.
+- **About:** Drone lidar over America's oldest oil field. Hillshade shows the 1860s drill pads, foundations and access trails under mature forest. An open well bore was found in the field from a lidar depression. Matched against John Mather's 1865 photographs.
+- **Used for:** the direct precedent for reading pits, pads and roads from lidar under canopy; AGU poster prior work. Repo filename says saint_vincent_2019, but Saint-Vincent is not an author.
+- **Generated:** `agu_poster/_make_agu_poster.py`.
+- **Source:** `data/_source/reference/literature/saint_vincent_2019_pioneer_run_lidar_conference.pdf`.
+
+### Reeder, Sams, Gorantla and Pekney — NETL procedure for locating wells
+- **Citation:** Reeder, M. D., Sams, J. I., Gorantla, R., and Pekney, N. J. Procedure for locating oil and gas wells in the Appalachian Basin. NETL manuscript (year from the repo filename, 2023, not verified).
+- **About:** NETL workflow. Compile well databases, historical topographic maps, air photos and lidar (1 m cells) in GIS, then aeromagnetic survey, then field checks.
+- **Used for:** background on manual practice.
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/literature/netl_2023_reeder_procedure_locating_wells.pdf`.
+
+### Gorantla, Sams, Reeder and Pekney — state lidar for orphaned wells (AGU poster)
+- **Citation:** Gorantla, V. R., Sams, J., Reeder, M., and Pekney, N. Extended Application of State LiDAR Datasets in Locating Orphaned Wells in the Appalachian Region. AGU poster (year from the repo filename, 2024, not verified).
+- **About:** NETL ArcGIS workflow turning state lidar into DEMs and hillshades to trace trails and access roads to well sites, applied in PA, NY, KY, WV and OH. Manual interpretation.
+- **Used for:** prior work at state scale.
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/literature/netl_2024_gorantla_state_lidar_orphan_wells_agu.pdf`.
+
+### Saint-Vincent et al. 2020 — database records and aeromagnetic surveys
+- **Citation:** Saint-Vincent, P. M. B., Sams, J. I., Hammack, R. W., Veloski, G. A., and Pekney, N. J. (2020). Identifying abandoned well sites using database records and aeromagnetic surveys (venue not verified; manuscript dated 2020-04-28).
+- **About:** Combining well records with aeromagnetic surveys to locate abandoned wells.
+- **Used for:** background for the magnetometry expansion.
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/literature/saint_vincent_2020_database_aeromagnetic.pdf`.

@@ -55,7 +55,7 @@ LOWER = BODY_TOP + 3.6 + HERO_H + 0.9     # top of the col 2 / col 3 sections un
 HEAD_PT, BODY_PT, CAP_PT = 54, 44, 32
 HEAD_H = 1.05              # one-line statement heading at 54 pt
 LINE = BODY_PT * 1.2 / 72  # body line height, in
-CHARS = 45                 # body characters per line across one column at 44 pt (Calibri, measured)
+CHARS = 50                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TAKEAWAY = "Airborne lidar finds 9 in 10 old well pits and pads under forest canopy"
 
@@ -72,16 +72,17 @@ FIG_FILES = {
 
 SECTIONS = [
     ("Forests hide old wells from air photos", C1, BODY_TOP, [
-        ("fig", "intro", 3.4, "Map of Pennsylvania documented orphan wells"),
-        ("text", "Orphan wells have no owner left to plug them. Unplugged wells can leak methane and brine. "
-                 "Pennsylvania lists thousands, and many more were never recorded.|We ask whether airborne "
-                 "lidar can find the marks drilling left on the ground."),
+        ("fig", "intro", 2.6, "Map of Pennsylvania documented orphan wells"),
+        ("text", "Orphan wells have no owner left to plug them, and can leak methane and brine. "
+                 "Pennsylvania lists thousands, and many more were never recorded.|Satellite pad detection "
+                 "finds about half the pads in Appalachia (Ramachandran et al. 2024). NETL has read old "
+                 "wells from lidar by eye (Sams et al.; Saint-Vincent et al. 2021). Can a model do it?"),
     ]),
     ("Lidar sees the ground under the trees", C1, None, [
-        ("fig", "optical", 3.25, "Air photo and lidar of the same ground"),
-        ("text", "USGS 3DEP lidar over a 4.5 km square in western Pennsylvania, flown leaf-off from Nov "
-                 "2019 to Mar 2020. From the ground returns we build a 0.5 m bare-earth model and seven "
-                 "terrain layers, shown below around one pit."),
+        ("fig", "optical", 2.9, "Air photo and lidar of the same ground"),
+        ("text", "USGS 3DEP lidar over a 4.5 km square in western Pennsylvania, flown leaf-off "
+                 "Nov 2019 to Mar 2020. We build a 0.5 m bare-earth model and seven terrain layers, "
+                 "shown below around one pit."),
         ("fig", "channels", 2.9, "Seven-channel strip of one pit"),
     ]),
     ("A well leaves a pit, a pad and a road", C1, None, [
@@ -263,11 +264,13 @@ def main() -> None:
             print(f"WARNING: section '{head}' runs to y {top:.1f} in, past the body bottom {BODY_BOT}")
 
     # footer
-    for head, x, w, note in (("References", X0, 19.0, "Short reference list. 3DEP citation."),
+    for head, x, w, note in (("References", X0, 19.0, "Ramachandran et al. 2024, Nat. Commun. 15, 7036. Saint-Vincent et al. 2021, J. Environ. Manage. 280, 111856. Sams et al., NETL, LiDAR mapping of 1860s oil fields, Pioneer Run (OSTI 1569995). USGS 3D Elevation Program"),
                              ("Acknowledgements", X0 + 19.8, 14.0, "Funding and data credits.")):
         text_box(s, x, FOOT_TOP - 0.1, w, 0.8, head, 40, UH_RED, bold=True)
         rect(x, FOOT_TOP + 0.75, w, 0.05, UH_RED)
-        text_box(s, x, FOOT_TOP + 1.05, w, FOOT_BOT - FOOT_TOP - 1.05, note, 28, GREY, italic=True)
+        ref = head == "References"
+        text_box(s, x, FOOT_TOP + 1.0, w, FOOT_BOT - FOOT_TOP - 0.95, note, 24 if ref else 28,
+                 INK if ref else GREY, italic=not ref)
     text_box(s, X1 - 8.6, FOOT_TOP + 0.4, 5.9, 1.6, "Full methods, data and code", 32, INK,
              align=PP_ALIGN.RIGHT, anchor=MSO_ANCHOR.MIDDLE)
     rect(X1 - 2.3, FOOT_TOP, 2.3, 2.3, FIG_FILL)
