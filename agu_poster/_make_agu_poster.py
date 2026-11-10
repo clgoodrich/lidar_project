@@ -4,6 +4,7 @@ Input   agu_poster/AGU_poster.pptx           user template (56 x 45 in, UH Culle
         agu_poster/figures/*.png             built by agu_poster/_make_poster_figures.py
 Output  agu_poster/agu_poster_wireframe_44in.pptx   grey blocks say what goes where
         agu_poster/agu_poster_mockup_44in.pptx      same layout with the figures placed (--mockup)
+        agu_poster/agu_poster_outline_44in.pptx     figures placed, every text slot a [stand-in] (--outline)
 
 Layout follows the poster-design evidence in poster_agu_layout_draft.md section 10:
 one main-finding sentence in large type above the hero (Silver et al. 2025 RCT, key-concept recall),
@@ -16,6 +17,7 @@ Each section is a stack of blocks laid top to bottom: ("fig", key, height, wiref
 Run
     python agu_poster/_make_agu_poster.py            # wireframe
     python agu_poster/_make_agu_poster.py --mockup   # with figures
+    python agu_poster/_make_agu_poster.py --outline  # figures, stand-in text
 """
 from __future__ import annotations
 
@@ -35,6 +37,7 @@ SRC = HERE / "AGU_poster.pptx"
 FIGS = HERE / "figures"
 OUT_WIRE = HERE / "agu_poster_wireframe_44in.pptx"
 OUT_MOCK = HERE / "agu_poster_mockup_44in.pptx"
+OUT_OUTLINE = HERE / "agu_poster_outline_44in.pptx"
 PAGE = 44.0
 WHITE, GREY = RGBColor(0xFF, 0xFF, 0xFF), RGBColor(0x6B, 0x6B, 0x6B)
 INK = RGBColor(0x2B, 0x2F, 0x36)         # charcoal body text
@@ -121,6 +124,21 @@ TABLE = [("", "Found", "Correct", "Tight fit"),
          ("Pads", "91%", "59%", "77%"),
          ("Roads", "98%", "—", "—")]
 TABLE_NOTE = "Found = recall. Correct = precision. Tight fit = recall at IoU 0.5."
+# --outline: stand-in text per section, (heading, [one entry per text block]). Space is kept at the real
+# text's height so the layout matches the mockup.
+OUTLINE = [
+    ("[Heading: why the problem matters]",
+     ["[Background: what orphan wells are and why they matter]|[Prior work here: satellite and lidar "
+      "studies, then the question]"]),
+    ("[Heading: why lidar]", ["[Data: lidar source, area, flight dates, terrain layers built]"]),
+    ("[Heading: what a well leaves behind]", ["[Signs: describe pit, pad and road. Number of hand labels]"]),
+    ("[Heading: the model]", ["[Method: model type, outputs, cutoff, how roads differ]"]),
+    ("[Heading: how it was tested]", ["[Validation: blocks, test sets, match rule, road test set]"]),
+    ("[Heading: main result]", ["[Results: what the numbers say, where it is weak and why]"]),
+    ("[Heading: implications]", ["[Implications here]|[Limits here]|[Next steps here]"]),
+]
+OUTLINE_TABLE = [("", "Found", "Correct", "Tight fit")] + [(r[0], "[xx%]", "[xx%]", "[xx%]") for r in TABLE[1:]]
+
 HERO_CAPTION = ("Every prediction shown comes from a model that never saw this block. Western Pennsylvania, "
                 "750 m by 375 m.")
 
@@ -172,7 +190,10 @@ def load_image(path: Path):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--mockup", action="store_true", help="place the built figures")
-    mock = ap.parse_args().mockup
+    ap.add_argument("--outline", action="store_true", help="figures placed, every text slot a stand-in")
+    args = ap.parse_args()
+    outline = args.outline
+    mock = args.mockup or outline
 
     prs = Presentation(str(SRC))
     prs.slide_width = prs.slide_height = Inches(PAGE)
@@ -188,9 +209,9 @@ def main() -> None:
     place(logo, X0, (HEAD[0] + HEAD[1] - lh) / 2, lw, lh)
     tx = X0 + lw + 0.8
     text_box(s, tx, HEAD[0] + 0.5, X1 - tx, 2.4, "[Poster title]", 110, WHITE, bold=True)
-    text_box(s, tx, HEAD[0] + 3.0, X1 - tx, 1.0, "Colton Goodrich, [co-authors]", 54, WHITE)
+    text_box(s, tx, HEAD[0] + 3.0, X1 - tx, 1.0, "[Authors]" if outline else "Colton Goodrich, [co-authors]", 54, WHITE)
     text_box(s, tx, HEAD[0] + 4.1, X1 - tx, 0.9,
-             "Cullen College of Engineering, University of Houston", 40, WHITE)
+             "[Affiliation]" if outline else "Cullen College of Engineering, University of Houston", 40, WHITE)
 
     def rect(x, y, w, h, color):
         r = s.shapes.add_shape(1, Inches(x), Inches(y), Inches(w), Inches(h))
@@ -218,18 +239,20 @@ def main() -> None:
     rect(C3 - GAP / 2 - rw / 2, LOWER, rw, BODY_BOT - LOWER, RULE)
 
     # main finding, the one line a passer-by reads in 3 s; then the hero and its caption
-    text_box(s, C2, BODY_TOP, X1 - C2, 3.2, TAKEAWAY, 84, INK, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+    text_box(s, C2, BODY_TOP, X1 - C2, 3.2, "[Main finding in one sentence]" if outline else TAKEAWAY, 84, INK, bold=True, anchor=MSO_ANCHOR.MIDDLE)
     hero_y = BODY_TOP + 3.4
     figure("hero", C2, hero_y, X1 - C2, HERO_H,
            "Hero figure. One held-out block. Hillshade base, hand annotation as outlines, model output "
            "filled. Zoom insets: a hit, a miss, an unlabelled detection", 40)
-    text_box(s, C2, hero_y + HERO_H + 0.05, X1 - C2, 0.6, HERO_CAPTION, CAP_PT, GREY)
+    text_box(s, C2, hero_y + HERO_H + 0.05, X1 - C2, 0.6,
+             "[Hero caption: what the map shows and where]" if outline else HERO_CAPTION, CAP_PT, GREY)
 
     words = len(TAKEAWAY.split()) + len(HERO_CAPTION.split())
     col_end = {C1: BODY_TOP - 0.7, C2: LOWER - 0.7, C3: LOWER - 0.7}
-    for head, x, y, blocks in SECTIONS:
+    for si, (head, x, y, blocks) in enumerate(SECTIONS):
+        stand_texts = iter(OUTLINE[si][1])
         y = col_end[x] + 0.7 if y is None else y      # stack under the previous section in the column
-        text_box(s, x, y, CW, HEAD_H, head, HEAD_PT, UH_RED, bold=True, anchor=MSO_ANCHOR.BOTTOM)
+        text_box(s, x, y, CW, HEAD_H, OUTLINE[si][0] if outline else head, HEAD_PT, UH_RED, bold=True, anchor=MSO_ANCHOR.BOTTOM)
         words += len(head.split())
         rule_y = y + HEAD_H + 0.12
         rect(x, rule_y, CW, 0.05, UH_RED)
@@ -242,7 +265,7 @@ def main() -> None:
             elif kind == "table":                       # recall and precision per sign, numbers large
                 rh = (h - 0.6) / len(TABLE)
                 cws = [3.2] + [(CW - 3.2) / 3] * 3
-                for r, row in enumerate(TABLE):
+                for r, row in enumerate(OUTLINE_TABLE if outline else TABLE):
                     cx = x
                     for c, cell in enumerate(row):
                         big = r > 0 and c > 0
@@ -252,11 +275,13 @@ def main() -> None:
                         cx += cws[c]
                     if r == 0:
                         rect(x, top + rh - 0.02, CW, 0.03, RULE)
-                text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 0.5, TABLE_NOTE, 28, GREY)
+                text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 0.5,
+                         "[Table note: define each column]" if outline else TABLE_NOTE, 28, GREY)
                 top += h + 0.3
             else:
                 th = text_height(key_or_text)
-                text_box(s, x, top, CW, th + 0.2, key_or_text, BODY_PT, INK)
+                text_box(s, x, top, CW, th + 0.2, next(stand_texts) if outline else key_or_text, BODY_PT,
+                         GREY if outline else INK, italic=outline)
                 words += len(key_or_text.replace("|", " ").split())
                 top += th + 0.45
         col_end[x] = top - 0.45
@@ -269,6 +294,8 @@ def main() -> None:
         text_box(s, x, FOOT_TOP - 0.1, w, 0.8, head, 40, UH_RED, bold=True)
         rect(x, FOOT_TOP + 0.75, w, 0.05, UH_RED)
         ref = head == "References"
+        if outline:
+            note = "[References here]" if ref else "[Funding and data credits here]"
         text_box(s, x, FOOT_TOP + 1.0, w, FOOT_BOT - FOOT_TOP - 0.95, note, 24 if ref else 28,
                  INK if ref else GREY, italic=not ref)
     text_box(s, X1 - 8.6, FOOT_TOP + 0.4, 5.9, 1.6, "Full methods, data and code", 32, INK,
@@ -277,7 +304,7 @@ def main() -> None:
     text_box(s, X1 - 2.3, FOOT_TOP, 2.3, 2.3, "QR", 28, GREY, italic=True, align=PP_ALIGN.CENTER,
              anchor=MSO_ANCHOR.MIDDLE)
 
-    out = OUT_MOCK if mock else OUT_WIRE
+    out = OUT_OUTLINE if outline else OUT_MOCK if mock else OUT_WIRE
     prs.save(str(out))
     print(out, f"body words {words}")
 
