@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-11 NISAR status brief compiled
+
+- New `nisar_writeup/nisar_project_status_brief.md`. One-page roll-up of every NISAR thread (data held, placement fix, five ideas, key scores, reviews, checkpoint decks, open threads, decisions pending). No new analysis. Starting point for the NISAR thread.
+
 ## 2026-11-09 NISAR checkpoint deck, methods version
 
 - New `nisar_writeup/_make_checkpoint_slides_methods.py` (copy of `_make_checkpoint_slides.py`) writes `nisar_writeup/nisar_checkpoint_slides_methods_9t.pptx`. Methods only, no results assumed. Slide 3 now follows the review design: input manifest, lidar-height geocoding with offsets fit on reference targets, a small fixed radar feature set, the lidar detector's candidates scored with and without radar on fixed folds, and recall at a fixed inspection budget on a reserved area (bar +0.05 recall). Risks rewritten as hypothetical. Template and original deck unchanged. validate.py passes.
