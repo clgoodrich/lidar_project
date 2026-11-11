@@ -735,3 +735,64 @@ Kang et al. 2014 (above) is now also used by `expansions/4_modalities/4_4_methan
 - **Used for:** background for the magnetometry expansion.
 - **Generated:** none yet.
 - **Source:** `data/_source/reference/literature/saint_vincent_2020_database_aeromagnetic.pdf`.
+
+## Related work on finding wells (added 2026-11-11)
+
+Gathered as background reading on the same subject. None of these drove a design decision yet. PDFs are in `data/_source/reference/related_work/` (git-ignored), indexed in its `README.md`.
+
+### Ciulla et al. 2024 — undocumented wells from historical topographic maps
+- **Citation:** Ciulla, F., Santos, A., Jordan, P., et al. (2024). A deep learning based framework to identify undocumented orphaned oil and gas wells from historical maps: a case study for California and Oklahoma. *Environmental Science & Technology* 58(50). https://doi.org/10.1021/acs.est.4c04413
+- **About:** U-Net detects well symbols on georeferenced USGS topo maps. Symbols over 100 m from any documented well are flagged. 1,301 candidates in Kern, Los Angeles, Osage and Oklahoma counties, checked with imagery and magnetics.
+- **Used for:** related work. Overlaps expansion 4.6 (historic maps).
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/ciulla_2024_undocumented_wells_historic_maps.pdf` (CC BY).
+
+### Seth, Lin et al. 2024 — Alberta Wells Dataset
+- **Citation:** Seth, P., Lin, M., Yaw, B. D., Boutot, J., Kang, M., and Rolnick, D. (2024). Alberta Wells Dataset: pinpointing oil and gas wells from satellite imagery. arXiv:2410.09032.
+- **About:** Benchmark of abandoned, suspended and active wells in medium-resolution satellite imagery, with detection and segmentation baselines.
+- **Used for:** related work. Overlaps expansion 7.3 (benchmark).
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/seth_2024_alberta_wells_dataset.pdf`.
+
+### Wang et al. 2026 — theory-guided model for drone magnetic surveys
+- **Citation:** Wang, J., Chou, C., Biraud, S., et al. (2026). Improving UAV magnetic surveys with a theory-guided empirical model for locating and characterizing undocumented orphaned oil and gas wells. *Environmental Science & Technology*. https://doi.org/10.1021/acs.est.6c02007
+- **About:** Model of the steel-casing magnetic anomaly to pick wells from drone surveys. Applied at Hillman State Park, Pennsylvania.
+- **Used for:** related work. Overlaps expansion 4.1 (magnetometry).
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/wang_2026_uav_magnetic_survey_wells.pdf` (CC BY-NC-ND).
+
+### Hammack, Veloski, Hodges and White 2016 — NETL methods for finding legacy wells
+- **Citation:** Hammack, R. W., Veloski, G. A., Hodges, D. G., and White, C. M. (2016). *Methods for Finding Legacy Wells in Large Areas.* NETL-TRS-6-2016, U.S. DOE National Energy Technology Laboratory, Pittsburgh, PA.
+- **About:** Helicopter and drone magnetics, lidar and records for locating legacy wells. Wood-cased early wells are missed by magnetics and can show as lidar depressions.
+- **Used for:** related work. Supports why lidar matters for pre-steel wells.
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/hammack_2016_methods_finding_legacy_wells.pdf` (OSTI 1361498).
+
+### Veloski, Hammack and Sams 2024 — aeromagnetic survey, Washington County PA
+- **Citation:** Veloski, G. A., Hammack, R. W., and Sams, J. E., III (2024). *Results from an Aeromagnetic Survey to Detect Steel-Cased Wells at a Marcellus Shale Well Site in Washington County, Pennsylvania.* DOE/NETL-2025/4891.
+- **About:** Helicopter survey with two boom-mounted cesium magnetometers detecting vertical steel casing.
+- **Used for:** related work. Overlaps expansion 4.1.
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/veloski_2024_aeromag_steel_cased_well_pa.pdf`.
+
+### Qian et al. 2026 — oriented R-CNN for oil and gas facilities
+- **Citation:** Qian, Y., Liu, S., Zhang, N., Chen, Y., Chen, Z., and Li, M. (2026). Oil and gas facility detection in high-resolution remote sensing images based on oriented R-CNN. *Remote Sensing* 18(2), 229. https://doi.org/10.3390/rs18020229
+- **About:** Oriented-box detector and benchmark for well sites and tanks in optical imagery.
+- **Used for:** related work, optical side.
+- **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/qian_2026_oil_gas_facility_oriented_rcnn.pdf` (CC BY).
+
+### EDF 2026 — Finding Pennsylvania's orphan and abandoned wells (brief)
+- **Citation:** Environmental Defense Fund. Finding Pennsylvania's orphan and abandoned wells. Two-page project brief.
+- **About:** Drone magnetic surveys over parcels in Clarion, Venango and McKean counties, with PA DEP, DOE and McGill.
+- **Used for:** context. Same counties as this project.
+- **Generated:** none.
+- **Source:** `data/_source/reference/related_work/edf_2026_finding_old_wells_pa_brief.pdf`.
+
+### Cite-only (download blocked)
+- Boutot, J., et al. (2026). Multi-technology detection of undocumented orphaned oil and gas wells: a large-scale drone and ground-based survey in Pennsylvania. *Environmental Science & Technology*. https://doi.org/10.1021/acs.est.6c01930 . Field-checked well counts in northwest Pennsylvania.
+- Lin, M., and Rolnick, D. (2021). Detecting abandoned oil and gas wells using machine learning and semantic segmentation. NeurIPS 2021 Tackling Climate Change with ML workshop. https://www.climatechange.ai/papers/neurips2021/64
+- Boutot, J., Peltz, A. S., McVay, R., and Kang, M. (2022). Documented orphaned oil and gas wells across the United States. *Environmental Science & Technology* 56(20), 14228–14236. https://doi.org/10.1021/acs.est.2c03268
+- Kang, M., Kanno, C. M., Reid, M. C., et al. (2014). Direct measurements of methane emissions from abandoned oil and gas wells in Pennsylvania. *PNAS* 111(51), 18173–18177. https://doi.org/10.1073/pnas.1408315111
+- Williams, J. P., Regehr, A., and Kang, M. (2021). Methane emissions from abandoned oil and gas wells in Canada and the United States. *Environmental Science & Technology*. https://doi.org/10.1021/acs.est.0c04265
+- Aeromagnetic surveys for the location of undocumented orphaned wells (2023). *The Leading Edge* 42(12). https://doi.org/10.1190/tle42120798.1 . Authors not verified.
