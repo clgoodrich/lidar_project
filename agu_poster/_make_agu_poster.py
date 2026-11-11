@@ -124,8 +124,8 @@ TABLE = [("", "Found", "Correct", "Tight fit"),
          ("Pads", "91%", "59%", "77%"),
          ("Roads", "98%", "—", "—")]
 TABLE_NOTE = "Found = recall. Correct = precision. Tight fit = recall at IoU 0.5."
-# --outline: stand-in text per section, (heading, [one entry per text block]). Each slot is sized for its
-# stand-in, which frees room for the expansion section below.
+# --outline: stand-in text per section, (heading, [one entry per text block]). Space is kept at the real
+# text's height so the layout matches the mockup.
 OUTLINE = [
     ("[Heading: why the problem matters]",
      ["[Background: what orphan wells are and why they matter]|[Prior work here: satellite and lidar "
@@ -137,17 +137,6 @@ OUTLINE = [
     ("[Heading: main result]", ["[Results: what the numbers say, where it is weak and why]"]),
     ("[Heading: implications]", ["[Implications here]|[Limits here]|[Next steps here]"]),
 ]
-# --outline only: the expansion tracks from docs/plans/EXPANSION_MASTER_PLAN.md section 3, one line each.
-# Plan only. Nothing here is a result.
-EXPANSION = ("[Heading: where this goes next]", C1, [
-    ("small", "[New areas: Warren, Forest, other states]|"
-              "[New signals: magnetometry, old maps, drone lidar]|"
-              "[New tasks: era, risk ranking, well records]|"
-              "[Adjacent: confusers, coal, CO2, field methane]|"
-              "[Scale: field campaign, active learning, benchmark]"),
-])
-SMALL_PT = 32
-
 OUTLINE_TABLE = [("", "Found", "Correct", "Tight fit")] + [(r[0], "[xx%]", "[xx%]", "[xx%]") for r in TABLE[1:]]
 
 HERO_CAPTION = ("Every prediction shown comes from a model that never saw this block. Western Pennsylvania, "
@@ -260,13 +249,10 @@ def main() -> None:
 
     words = len(TAKEAWAY.split()) + len(HERO_CAPTION.split())
     col_end = {C1: BODY_TOP - 0.7, C2: LOWER - 0.7, C3: LOWER - 0.7}
-    sections = [(h, x, y, b, OUTLINE[i]) for i, (h, x, y, b) in enumerate(SECTIONS)]
-    if outline:
-        sections.append((EXPANSION[0], EXPANSION[1], None, EXPANSION[2], (EXPANSION[0], [])))
-    for head, x, y, blocks, stand in sections:
-        stand_texts = iter(stand[1])
+    for si, (head, x, y, blocks) in enumerate(SECTIONS):
+        stand_texts = iter(OUTLINE[si][1])
         y = col_end[x] + 0.7 if y is None else y      # stack under the previous section in the column
-        text_box(s, x, y, CW, HEAD_H, stand[0] if outline else head, HEAD_PT, UH_RED, bold=True, anchor=MSO_ANCHOR.BOTTOM)
+        text_box(s, x, y, CW, HEAD_H, OUTLINE[si][0] if outline else head, HEAD_PT, UH_RED, bold=True, anchor=MSO_ANCHOR.BOTTOM)
         words += len(head.split())
         rule_y = y + HEAD_H + 0.12
         rect(x, rule_y, CW, 0.05, UH_RED)
@@ -292,14 +278,10 @@ def main() -> None:
                 text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 0.5,
                          "[Table note: define each column]" if outline else TABLE_NOTE, 28, GREY)
                 top += h + 0.3
-            elif kind == "small":                       # compact list, one paragraph per line
-                th = text_height(key_or_text, SMALL_PT)
-                text_box(s, x, top, CW, th + 0.2, key_or_text, SMALL_PT, GREY, italic=True)
-                top += th + 0.45
             else:
-                body = next(stand_texts) if outline else key_or_text
-                th = text_height(body)
-                text_box(s, x, top, CW, th + 0.2, body, BODY_PT, GREY if outline else INK, italic=outline)
+                th = text_height(key_or_text)
+                text_box(s, x, top, CW, th + 0.2, next(stand_texts) if outline else key_or_text, BODY_PT,
+                         GREY if outline else INK, italic=outline)
                 words += len(key_or_text.replace("|", " ").split())
                 top += th + 0.45
         col_end[x] = top - 0.45
