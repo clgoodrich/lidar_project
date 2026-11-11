@@ -796,3 +796,41 @@ Gathered as background reading on the same subject. None of these drove a design
 - Kang, M., Kanno, C. M., Reid, M. C., et al. (2014). Direct measurements of methane emissions from abandoned oil and gas wells in Pennsylvania. *PNAS* 111(51), 18173–18177. https://doi.org/10.1073/pnas.1408315111
 - Williams, J. P., Regehr, A., and Kang, M. (2021). Methane emissions from abandoned oil and gas wells in Canada and the United States. *Environmental Science & Technology*. https://doi.org/10.1021/acs.est.0c04265
 - Aeromagnetic surveys for the location of undocumented orphaned wells (2023). *The Leading Edge* 42(12). https://doi.org/10.1190/tle42120798.1 . Authors not verified.
+
+## Related work: methane detection and remote sensing (added 2026-11-11)
+
+Background reading. PDFs in `data/_source/reference/related_work/methane/` (git-ignored). Shared point: most abandoned-well leaks sit below satellite (about 50 to 200 kg/h) and aircraft (about 1 to 10 kg/h) limits, and a few high emitters carry most of the total. Consistent with the 4.4 close (Kang et al. 2014 and Carbon Mapper entries above).
+
+### Follansbee et al. 2025 — orphan-well emission rates by plume inversion
+- **Citation:** Follansbee, E., Lee, J. E., Dubey, M. L., Dooley, J. F., Shuck, C., Minschwaner, K., Santos, A., Biraud, S. C., and Dubey, M. K. (2025). Orphaned oil and gas well methane emission rates quantified using Gaussian plume inversions of ambient observations. *Atmospheric Measurement Techniques* 18, 4527–4542. https://doi.org/10.5194/amt-18-4527-2025
+- **Used for:** related work, 6.5 (field methane). **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/methane/follansbee_2025_orphan_well_plume_inversion.pdf` (CC BY).
+
+### de Smet, Nikulin, Balrup and Graber 2023 — drone magnetics plus ground methane
+- **Citation:** de Smet, T. S., Nikulin, A., Balrup, N., and Graber, N. (2023). Successful integration of UAV aeromagnetic mapping with terrestrial methane emissions surveys in orphaned well remediation. *Remote Sensing* 15, 5004. https://doi.org/10.3390/rs15205004
+- **Used for:** related work, 4.1 and 6.5. **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/methane/desmet_2023_uav_mag_methane_orphan_wells.pdf` (CC BY).
+
+### Cusworth et al. 2019 — spaceborne imaging spectrometers for methane point sources
+- **Citation:** Cusworth, D. H., Jacob, D. J., Varon, D. J., et al. (2019). Potential of next-generation imaging spectrometers to detect and quantify methane point sources from space. *Atmospheric Measurement Techniques* 12, 5655–5668. https://doi.org/10.5194/amt-12-5655-2019
+- **Used for:** related work, 4.4 detection limit. **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/methane/cusworth_2019_spaceborne_methane_point_sources.pdf` (CC BY).
+
+### Meier et al. 2026 — first AVIRIS-4 methane results
+- **Citation:** Meier, S., Vögtli, M., Hueni, A., McManemin, A., Brandt, A. R., Juéry, C., Blandin, V., Brunner, D., and Kuhlmann, G. (2026). Quantifying CH4 point source emissions with airborne remote sensing: first results from AVIRIS-4. *Atmospheric Measurement Techniques* 19, 333–358. https://doi.org/10.5194/amt-19-333-2026
+- **Used for:** related work, 4.4 airborne arm. **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/methane/meier_2026_aviris4_methane_detection.pdf` (CC BY).
+
+### Ruzicka et al. 2026 — automatic trace-gas plume detection
+- **Citation:** Ruzicka, V., Thompson, D. R., Fahlen, J. E., et al. (2026). Fully automatic trace gas plume detection. arXiv:2605.03372.
+- **Used for:** related work. **Generated:** none yet.
+- **Source:** `data/_source/reference/related_work/methane/ruzicka_2026_auto_plume_detection_emit.pdf`.
+
+### Yale Carbon Containment Lab 2022 — measuring methane at abandoned wells and mines
+- **Citation:** Yale Carbon Containment Lab (2022-02-10). Measurement of methane emissions: abandoned wells and mines. Memo.
+- **Used for:** background. **Generated:** none.
+- **Source:** `data/_source/reference/related_work/methane/yale_2022_methane_measurement_memo.pdf`.
+
+### Cite-only
+- Kang, M., Christian, S., Celia, M. A., et al. (2016). Identification and characterization of high methane-emitting abandoned oil and gas wells. *PNAS* 113(48), 13636–13641. https://doi.org/10.1073/pnas.1605913113
+- Helicopter methane and magnetometry survey of abandoned wells in Pennsylvania. *Carbon Management* (2018). Title and authors not verified. https://doaj.org/article/19b6a93c3adb460588244582734700b0
