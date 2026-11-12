@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-12 Lidar pit outlines exported to KML, 9t and 613590
+
+- Source `qgis/annotations/pit_full.shp` (outer rim, the "outside" layer, 847 polygons, EPSG:4326). The `grids/westernpa_*_pit_outside.gpkg` files are empty templates and were not used.
+- Pits kept where they touch the valid-data footprint of `dem_9t_1m.tif` and `dem_613590_1m.tif`. 9t 506 pits, 613590 160 pits.
+- Source `id` is empty for every polygon, so names are `<area>_pit_NNN`, numbered north to south. The description holds the centre lat/lon.
+- Six polygons (9t 5, 613590 1) carry ring self-intersections from the source annotations. Left unchanged.
+- Outputs `qgis/annotations/kml/pit_outside_9t.kml` and `qgis/annotations/kml/pit_outside_613590.kml`.
+
 ## 2026-11-11 NISAR HH, HV and HV/HH by season and canopy cover, 9t
 
 - Script `notebooks/wellsight_v2/s5_eval/_nisar_pol_season_canopy_9t.py --slc`. Output `data/9t/results/nisar/nisar_pol_season_by_canopy_9t_slc.csv`. Lidar-placed SLC stack, 33 dates, canopy from the 2019 CHM (open < 0.25, closed > 0.8). Means in linear power.
