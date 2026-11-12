@@ -5,6 +5,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-11 NISAR HH, HV and HV/HH by season and canopy cover, 9t
+
+- Script `notebooks/wellsight_v2/s5_eval/_nisar_pol_season_canopy_9t.py --slc`. Output `data/9t/results/nisar/nisar_pol_season_by_canopy_9t_slc.csv`. Lidar-placed SLC stack, 33 dates, canopy from the 2019 CHM (open < 0.25, closed > 0.8). Means in linear power.
+- Summer (Jun to Sep, provisional) is brighter than 2025-11-04 to 2025-12-18 (beta) on every track. HH +0.6 to +1.7 dB, HV +1.6 to +2.3 dB, HV/HH +0.5 to +1.0 dB.
+- Open and closed canopy shift by the same amount. Closed reads only 0.1 to 0.5 dB above open in both seasons. HV/HH differs by 0.2 dB or less between canopy classes.
+- Reading. The seasonal shift is tile-wide and does not track canopy, so beta-to-provisional calibration and moisture are not separable from leaf-out. The two clean leaf-off dates on track 162 (2025-11-21, 2026-01-08) sit only about 0.7 dB below summer in HV. The darkest dates follow snow (2025-12-03) or cold (2026-01-20).
+
 ## 2026-11-11 NISAR status brief compiled
 
 - New `nisar_writeup/nisar_project_status_brief.md`. One-page roll-up of every NISAR thread (data held, placement fix, five ideas, key scores, reviews, checkpoint decks, open threads, decisions pending). No new analysis. Starting point for the NISAR thread.
