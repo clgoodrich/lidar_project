@@ -1,0 +1,37 @@
+{
+  "source": "OPERA CSLC-S1 V1, VV",
+  "window": [
+    "2026-03-25",
+    "2026-04-20"
+  ],
+  "window_m": "20 x 20 (2 x 4 native px)",
+  "bursts": {
+    "T004-006689-IW1": {
+      "pass": "Ascending",
+      "dates": [
+        "2026-04-05"
+      ]
+    },
+    "T077-163486-IW2": {
+      "pass": "Ascending",
+      "dates": [
+        "2026-03-29",
+        "2026-04-10"
+      ]
+    }
+  },
+  "pairs": 1,
+  "pits": 506,
+  "tile_coherence_median_over_pairs": 0.418,
+  "coh_excess_pooled_per_pit_median": -0.0096,
+  "coh_excess_pooled_ci95": [
+    -0.0298,
+    0.0066
+  ],
+  "coh_excess_pooled_wilcoxon_p": 0.5487,
+  "los_excess_mm_pooled_median": -0.56,
+  "los_excess_mm_pooled_ci95": [
+    -1.199,
+    0.5612
+  ]
+}

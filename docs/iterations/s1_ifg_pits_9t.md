@@ -1,6 +1,6 @@
-# Sentinel-1 C-band interferograms at pits, Oct-Nov 2025 (9t, 613590)
+# Sentinel-1 C-band interferograms at pits, Oct-Nov 2025 and April 2025-2026 (9t, 613590)
 
-Run 2026-11-13. The NISAR L-band pit test repeated with Sentinel-1 C-band over the same autumn.
+Run 2026-11-13. The NISAR L-band pit test repeated with Sentinel-1 C-band. Autumn 2025 matches NISAR track 162. Early to mid April (25 Mar to 20 Apr) adds the leaf-off spring that NISAR does not have.
 
 ## Goal
 
@@ -10,10 +10,12 @@ Use the same pits, rings, decoys and seed as the NISAR run (`_nisar_gslc_interfe
 ## Data
 
 - OPERA CSLC-S1 V1 (NASA JPL OPERA, distributed by ASF DAAC). Geocoded complex SLC bursts, VV only, 5 m x 10 m, UTM 17N, flattened.
-- Search is NASA CMR by point, 2025-10-01 to 2025-11-30. Ten bursts, all Sentinel-1A. No Sentinel-1C bursts were returned.
+- Search is NASA CMR by point. Windows `octnov2025` (2025-10-01 to 11-30), `apr2025` and `apr2026` (25 Mar to 20 Apr). 17 bursts, all Sentinel-1A. No Sentinel-1C bursts were returned.
 - Two burst IDs. T077-163486-IW2 covers both areas. T004-006689-IW1 covers only the east edge of 9t (58 to 60 pits). Both are ascending.
-- Five dates per burst at 12 days. T004: 10-07, 10-19, 10-31, 11-12, 11-24. T077: 10-12, 10-24, 11-05, 11-17, 11-29.
-- Files are 263 MB each, 2.6 GB total, in `data/_source/s1_cslc/` (git-ignored, logged in `data/_source/_download_ledger.csv`).
+- Autumn, five dates per burst at 12 days. T004: 10-07, 10-19, 10-31, 11-12, 11-24. T077: 10-12, 10-24, 11-05, 11-17, 11-29.
+- April 2025. T004 03-29 and 04-10. T077 04-03 and 04-15.
+- April 2026. T077 03-29 and 04-10. T004 has one date (04-05), so no pair.
+- Files are 263 to 273 MB each, 4.5 GB total, in `data/_source/s1_cslc/` (git-ignored, logged in `data/_source/_download_ledger.csv`).
 
 ## Method
 
@@ -22,7 +24,7 @@ Use the same pits, rings, decoys and seed as the NISAR run (`_nisar_gslc_interfe
 - Coherence excess = (pit - ring) - median(decoy - ring). Phase as LOS mm, lambda 5.547 cm.
 - Pixels outside a burst are dropped from each sum. The first run let them in as zero, and track 4 phases read exactly 0 mm. Fixed before the results below.
 
-## Results
+## Results, October to November 2025
 
 | Area | Pits | Pairs | Tile coherence | Coherence excess, pooled | LOS excess, pooled | Decoy LOS scatter |
 |---|---|---|---|---|---|---|
@@ -33,23 +35,39 @@ Use the same pits, rings, decoys and seed as the NISAR run (`_nisar_gslc_interfe
 - On 613590 one of four pairs (11-17 to 11-29) gives p 0.02 with an interval that still spans zero. That is not significant after four tests.
 - Tile coherence of about 0.42 at 8 looks sits near the estimator's floor for fully decorrelated ground (about 0.3). Forest loses most C-band coherence in 12 days, even in autumn.
 
+## Results, early to mid April
+
+| Window | Area | Pairs | Tile coherence | Coherence excess | LOS excess | Decoy LOS scatter |
+|---|---|---|---|---|---|---|
+| Apr 2025 | 9t | 2 (T077 506 pits, T004 45) | 0.43, 0.46 | +0.006 [-0.014, +0.020] | -1.27 mm [-1.93, -0.15] | 4.5 to 5.0 mm |
+| Apr 2025 | 613590 | 1 | 0.43 | +0.002 [-0.110, +0.042] | +2.86 mm [-2.14, +4.57] | 4.7 mm |
+| Apr 2026 | 9t | 1 | 0.42 | -0.010 [-0.030, +0.007] | -0.56 mm [-1.20, +0.56] | 5.2 mm |
+| Apr 2026 | 613590 | 1 | 0.43 | -0.070 [-0.108, +0.030] | +1.94 mm [-3.66, +4.75] | 5.3 mm |
+
+- April coherence is no higher than autumn. Bare branches still decorrelate C-band in 12 days.
+- One result excludes zero. 9t, T077, 2025-04-03 to 04-15, pits -1.18 mm median, Wilcoxon p 0.003 over 506 pits. Open pits (cover < 0.3) -1.50 mm, closed (> 0.7) -0.78 mm.
+- It does not repeat. The same burst and season in 2026 gives -0.56 mm, p 0.60. 613590 in the same pair goes the other way (+2.86 mm, 36 pits).
+- About 17 pair tests were run on 9t and 613590 across both seasons. A Bonferroni threshold for 17 is 0.003, so this one sits at the line.
+- A 1 mm difference at C-band is about 0.2 rad. Soil moisture change between dates shifts C-band phase by that much, and pits hold water. A spring moisture effect is a more likely cause than ground motion.
+
 ## Interpretation
 
-- C-band agrees with L-band. Pits show no coherence or phase difference from decoys.
+- C-band agrees with L-band. Pits show no coherence difference from decoys in either season. Phase shows one unreplicated 1 mm spring difference on 9t (April 2025), most likely moisture.
 - C-band coherence over forest is lower than NISAR L-band on the same autumn (NISAR track 162 0.53 to 0.65). The shorter wave is scattered by the remaining canopy.
 - The persistent-scatterer screen was not run. Five dates are too few (pure speckle passes D_A < 0.25 in 6.6% of pixels at 5 dates).
 
 ## Outputs
 
-- `data/9t/results/s1/s1_ifg_pits_by_pair_9t.csv`, `s1_ifg_pits_per_pit_9t.csv`, `s1_ifg_pits_summary_9t.json`
-- `data/613590/results/s1/s1_ifg_pits_by_pair_613590.csv`, `s1_ifg_pits_per_pit_613590.csv`, `s1_ifg_pits_summary_613590.json`
+For each `<window>` in `octnov2025`, `apr2025`, `apr2026` (the autumn files were renamed to carry the window on 2026-11-13):
+- `data/9t/results/s1/s1_ifg_pits_by_pair_<window>_9t.csv`, `s1_ifg_pits_per_pit_<window>_9t.csv`, `s1_ifg_pits_summary_<window>_9t.json`
+- `data/613590/results/s1/s1_ifg_pits_by_pair_<window>_613590.csv`, `s1_ifg_pits_per_pit_<window>_613590.csv`, `s1_ifg_pits_summary_<window>_613590.json`
 
 ## Reproduce
 
 ```
-python notebooks/wellsight_v2/s5_eval/_s1_cslc_fetch_9t.py
-python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc
-python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc --area 613590
+python notebooks/wellsight_v2/s5_eval/_s1_cslc_fetch_9t.py octnov2025 apr2025 apr2026
+python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc --window <window>
+python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc --area 613590 --window <window>
 ```
 
 ## Source

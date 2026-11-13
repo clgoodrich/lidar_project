@@ -1,0 +1,2 @@
+burst,orbit_pass,d1,d2,n_pits,tile_coh_median,pit_coh_median,ring_coh_median,coh_excess_median,coh_excess_ci95,wilcoxon_p,los_excess_mm_median,los_decoy_abs_mm_median
+T077-163486-IW2,Ascending,2026-03-29,2026-04-10,36,0.425,0.395,0.439,-0.0696,"(np.float64(-0.1088), np.float64(0.0354))",0.2716,1.94,5.32

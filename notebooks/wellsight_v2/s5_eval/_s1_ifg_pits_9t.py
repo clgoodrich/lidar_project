@@ -1,4 +1,4 @@
-"""Sentinel-1 C-band interferograms over the pits, Oct-Nov 2025: the NISAR pit test repeated at C-band.
+"""Sentinel-1 C-band interferograms over the pits (Oct-Nov 2025, April 2025, April 2026): the NISAR pit test repeated at C-band.
 
 Data. OPERA CSLC-S1 V1 bursts (geocoded complex SLC, VV, 5 m x 10 m UTM 17N, flattened), fetched by
 _s1_cslc_fetch_9t.py into data/_source/s1_cslc/. Two Sentinel-1A orbits cover 9t and 613590:
@@ -13,7 +13,7 @@ Method. Identical to _nisar_gslc_interferogram_pits_9t.py except the radar:
   * Coherence excess = (pit - ring) - median(decoy - ring). Phase as LOS mm with lambda 5.547 cm.
 Pits are the annotated outer rims (pit_outside). Registration as delivered by OPERA.
 
-  python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc [--area 613590]
+  python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc [--area 613590] [--window octnov2025|apr2025|apr2026]
 """
 import importlib
 import json
@@ -45,6 +45,12 @@ MIN_VALID_SHARE = 0.5
 LAMBDA_M = 0.05547
 MM_PER_RAD = LAMBDA_M / (4 * np.pi) * 1000
 N_DECOY, SEED, B = 5, 20261005, 2000
+WINDOWS = {"octnov2025": ("2025-10-01", "2025-11-30"),
+           "apr2025": ("2025-03-25", "2025-04-20"), "apr2026": ("2026-03-25", "2026-04-20")}
+WIN_NAME = sys.argv.pop(sys.argv.index("--window") + 1) if "--window" in sys.argv else "octnov2025"
+if "--window" in sys.argv:
+    sys.argv.remove("--window")
+D0, D1 = WINDOWS[WIN_NAME]
 
 
 def burst_windows(tf, shape):
@@ -55,6 +61,8 @@ def burst_windows(tf, shape):
     for f in sorted(SRC.glob("OPERA_L2_CSLC-S1_*.h5")):
         p = f.stem.split("_")
         burst, date = p[3], f"{p[4][:4]}-{p[4][4:6]}-{p[4][6:8]}"
+        if not D0 <= date <= D1:
+            continue
         with h5py.File(f, "r") as h:
             if int(h["data/projection"][()]) != 32617:
                 raise SystemExit(f"unexpected projection in {f.name}")
@@ -143,6 +151,8 @@ def main():
     for b, d in bursts.items():
         dates = sorted(d["dates"])
         for d1, d2 in zip(dates[:-1], dates[1:]):
+            if (pd.Timestamp(d2) - pd.Timestamp(d1)).days > 24:
+                continue
             coh_n, ifg_n = interferogram(d["dates"][d1], d["dates"][d2])
             coh = to_grid(coh_n, d["tf"], tf, shape)
             ifg = to_grid(ifg_n.real, d["tf"], tf, shape) + 1j * to_grid(ifg_n.imag, d["tf"], tf, shape)
@@ -169,7 +179,7 @@ def main():
     df = pd.DataFrame(rows)
     df["coh_excess"] = df.coh_pit_minus_ring - df.coh_decoy_minus_ring_median
     df["los_excess_mm"] = df.los_pit_minus_ring_mm - df.los_decoy_minus_ring_mm_median
-    df.to_csv(OUT / f"s1_ifg_pits_per_pit_{AREA}.csv", index=False)
+    df.to_csv(OUT / f"s1_ifg_pits_per_pit_{WIN_NAME}_{AREA}.csv", index=False)
 
     per_pair = []
     for (b, d1, d2), g in df.groupby(["burst", "d1", "d2"]):
@@ -182,12 +192,12 @@ def main():
                              los_excess_mm_median=round(g.los_excess_mm.median(), 2),
                              los_decoy_abs_mm_median=round(g.los_decoy_abs_mm_median.median(), 2)))
     per_pair = pd.DataFrame(per_pair)
-    per_pair.to_csv(OUT / f"s1_ifg_pits_by_pair_{AREA}.csv", index=False)
+    per_pair.to_csv(OUT / f"s1_ifg_pits_by_pair_{WIN_NAME}_{AREA}.csv", index=False)
     print(per_pair.to_string())
 
     pooled = df.groupby("pit").agg(coh_excess=("coh_excess", "mean"), los=("los_excess_mm", "mean"))
     e = pooled.coh_excess.dropna()
-    summary = {"source": "OPERA CSLC-S1 V1, VV", "window_m": "20 x 20 (2 x 4 native px)",
+    summary = {"source": "OPERA CSLC-S1 V1, VV", "window": [D0, D1], "window_m": "20 x 20 (2 x 4 native px)",
                "bursts": {b: {"pass": d["pass"], "dates": sorted(d["dates"])} for b, d in bursts.items()},
                "pairs": int(len(per_pair)), "pits": int(len(pits)),
                "tile_coherence_median_over_pairs": round(float(per_pair.tile_coh_median.median()), 3),
@@ -196,7 +206,7 @@ def main():
                "coh_excess_pooled_wilcoxon_p": round(float(wilcoxon(e).pvalue), 4),
                "los_excess_mm_pooled_median": round(float(pooled.los.median()), 2),
                "los_excess_mm_pooled_ci95": boot_ci(pooled.los, rng)}
-    json.dump(summary, open(OUT / f"s1_ifg_pits_summary_{AREA}.json", "w"), indent=2)
+    json.dump(summary, open(OUT / f"s1_ifg_pits_summary_{WIN_NAME}_{AREA}.json", "w"), indent=2)
     print(json.dumps(summary, indent=2))
 
 

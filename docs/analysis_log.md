@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Sentinel-1 C-band interferograms at pits, early to mid April 2025 and 2026 -- S1
+
+- Ask. The Sentinel-1 pit test for early to mid April. Window 25 Mar to 20 Apr, both 2025 and 2026. NISAR has no spring dates.
+- 7 more OPERA CSLC-S1 bursts (1.9 GB). April 2025 one pair per burst. April 2026 one pair on T077 only.
+- Scripts take `--window octnov2025|apr2025|apr2026`. Autumn outputs renamed to carry `octnov2025` (git mv, same commit).
+- Coherence excess spans zero in every April result. Tile coherence 0.42 to 0.46, no better than autumn.
+- One phase result excludes zero. 9t T077 2025-04-03 to 04-15, -1.18 mm, p 0.003, 506 pits. Not repeated in April 2026 (-0.56 mm, p 0.60). 613590 same pair +2.86 mm. At the Bonferroni line for about 17 pair tests. Likely a moisture phase effect, not motion.
+- Doc `docs/iterations/s1_ifg_pits_9t.md` updated.
+
 ## 2026-11-13 Sentinel-1 C-band interferograms at pits, Oct-Nov 2025 -- S1
 
 - Ask. Repeat the autumn NISAR pit checks with Sentinel-1 C-band at the same place and time.
