@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Sentinel-1 small-metal detection, first experiment (CFAR + D_A against DEP wells)
+
+- Ask. Run the first experiment from the user's SAR small-metal methodology note.
+- Data. OPERA CSLC-S1 T077 ascending, 32 dates 2025-04-03 to 2026-04-10, window over 9t and 613590 (86 km2). 3,412 DEP wells.
+- Script `notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py`. CFAR guard 3 x 7 px, background 15 x 33 px on mean intensity. Looks 12.4, T 4.7 dB at P_fa 1e-6. D_A < 0.25. Hit ellipse 10 m x 20 m.
+- Deviations. No 2x oversampling (the geocoded spectrum already fills the band). No calibration. Water masked after the first run put most candidates on the river banks.
+- Result. 481 candidates. Wells hit 0.26% against random 0.44% and local decoys 0.18%. Active 0.38%, plugged 0.32%, abandoned or orphan 0%, never drilled 0%. Ratio to random 0.5 to 1.1 across 3 to 10 dB.
+- Only 9 pixels in the window pass D_A < 0.25, none at a well. Median D_A 0.53, the pure-speckle value.
+- Wells are not bright or steady at Sentinel-1 resolution. Matches the NISAR steel result. Doc `docs/iterations/s1_metal_cfar_9t.md`.
+
 ## 2026-11-13 Side package of 9t annotations and RRIM
 
 - Folder `share_9t_annotations_rrim/` at the repo root, git-ignored (rule added to `.gitignore`).

@@ -8,6 +8,8 @@ data/y_spacing, data/projection, identification/orbit_pass_direction) under the 
 data/_source/s1_cslc_windows/ (git-ignored), so _s1_ifg_pits_9t.py reads it like a full burst.
 
   python notebooks/wellsight_v2/s5_eval/_s1_cslc_window_fetch_9t.py [2017 ... 2024]
+  python notebooks/wellsight_v2/s5_eval/_s1_cslc_window_fetch_9t.py --range 2025-04-01 2026-04-15 T077
+Windows also keep data/azimuth_carrier_phase (float32), which must be removed before any oversampling.
 """
 import sys
 import time
@@ -25,16 +27,18 @@ POINTS = [(-79.541, 41.500), (-79.611, 41.476)]
 E0, E1, N0, N1 = 613300, 624200, 4589800, 4597700
 
 
-def search(year):
+def search(year=None, start=None, end=None, track=None):
+    start = start or f"{year}-03-25"
+    end = end or f"{year}-04-20"
     urls = {}
     for lon, lat in POINTS:
         r = requests.get(CMR, params={"short_name": "OPERA_L2_CSLC-S1_V1", "point": f"{lon},{lat}",
-                                      "temporal": f"{year}-03-25T00:00:00Z,{year}-04-20T23:59:59Z",
+                                      "temporal": f"{start}T00:00:00Z,{end}T23:59:59Z",
                                       "page_size": 200}, timeout=60)
         r.raise_for_status()
         for e in r.json()["feed"]["entry"]:
             h5 = [l["href"] for l in e["links"] if l["href"].startswith("https") and l["href"].endswith(".h5")]
-            if h5:
+            if h5 and (track is None or f"_{track}-" in e["title"]):
                 urls[e["title"]] = h5[0]
     return urls
 
@@ -50,10 +54,12 @@ def cut(title, url):
         r = np.where((ys >= N0) & (ys <= N1))[0]
         vv = h["data/VV"][r.min():r.max() + 1, c.min():c.max() + 1]
         meta = {k: h[f"data/{k}"][()] for k in ("x_spacing", "y_spacing", "projection")}
+        carrier = h["data/azimuth_carrier_phase"][r.min():r.max() + 1, c.min():c.max() + 1].astype(np.float32)
         pas = h["identification/orbit_pass_direction"][()]
     tmp = out.with_suffix(".part")
     with h5py.File(tmp, "w") as o:
         o["data/VV"] = vv
+        o["data/azimuth_carrier_phase"] = carrier   # needed to deramp before oversampling
         o["data/x_coordinates"] = xs[c.min():c.max() + 1]
         o["data/y_coordinates"] = ys[r.min():r.max() + 1]
         for k, v in meta.items():
@@ -67,9 +73,13 @@ def cut(title, url):
 
 def main():
     DEST.mkdir(parents=True, exist_ok=True)
-    years = [int(y) for y in sys.argv[1:]] or list(range(2017, 2025))
-    for y in years:
-        for title, url in sorted(search(y).items()):
+    if "--range" in sys.argv:      # --range START END TRACK, e.g. --range 2025-04-01 2026-04-15 T077
+        i = sys.argv.index("--range")
+        jobs = [search(start=sys.argv[i + 1], end=sys.argv[i + 2], track=sys.argv[i + 3])]
+    else:
+        jobs = [search(int(y)) for y in (sys.argv[1:] or range(2017, 2025))]
+    for urls in jobs:
+        for title, url in sorted(urls.items()):
             t0 = time.time()
             for attempt in range(3):
                 try:
