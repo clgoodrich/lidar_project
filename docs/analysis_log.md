@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Lidar road annotations exported to KML, 9t and 613590
+
+- Source `qgis/annotations/roads.shp` (EPSG:4326, so no reprojection). Lines kept where they touch the valid footprint of `dem_9t_1m.tif` and `dem_613590_1m.tif`. Multi-part lines split.
+- 9t 1,358 lines, 206.1 km. 613590 1,546 lines, 191.9 km. Named `<area>_road_NNNN` north to south. Description gives the length.
+- Outputs `qgis/annotations/kml/road_lines_9t.kml` and `qgis/annotations/kml/road_lines_613590.kml`.
+
 ## 2026-11-13 Site context figures around 9t_pit_295 and three user points
 
 - Script `notebooks/wellsight_v2/s5_eval/_s1_site_context_9t.py <name> <lat> <lon> [half_box_m]`. Panels are lidar RRIM, lidar canopy height and Sentinel-1 brightness against surroundings. Overlays: pits, pads, roads, DEP wells, NISAR steady bright pixels.
