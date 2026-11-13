@@ -5,6 +5,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Site context figures around 9t_pit_295 and three user points
+
+- Script `notebooks/wellsight_v2/s5_eval/_s1_site_context_9t.py <name> <lat> <lon> [half_box_m]`. Panels are lidar RRIM, lidar canopy height and Sentinel-1 brightness against surroundings. Overlays: pits, pads, roads, DEP wells, NISAR steady bright pixels.
+- Outputs in `data/9t/results/s1/sites/`: `s1_site_pit295_9t.png` (300 m box), `s1_site_point1_9t.png`, `s1_site_point2_9t.png`, `s1_site_point3_9t.png` (150 m boxes).
+- Points 1 and 3 sit 22 and 24 m from active 1981 DEP wells (121-29892, 121-29886). Point 2 is an unannotated graded clearing about 80 m across, dark on Sentinel-1 (-4.8 dB, smooth ground). No Sentinel-1 target at any point. Eight NISAR steady bright pixels lie in the point 3 box, scattered over open ground, none at the point or the well.
+- Correction to an earlier chat answer. Point 3 is at the edge of a canopy gap, not under 13 m canopy.
+
 ## 2026-11-13 Sentinel-1 small-metal experiment scored against annotated pits
 
 - Ask. Use the user's pit annotations, not DEP wells, as targets.
