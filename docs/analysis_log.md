@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Brightness at two user points (point4, point5), 9t
+
+- Figures `nisar/sentinel1/results/9t/sites/s1_site_point4_9t.png` (41.498993, -79.525621) and `s1_site_point5_9t.png` (41.502787, -79.519712), from `nisar/sentinel1/code/_s1_site_context_9t.py`.
+- Point 4. Dark on both radars (Sentinel-1 -4.9 dB, NISAR HH -3.4 dB against the 250 m median). One NISAR steady bright pixel 23 m away beside the road. Nothing bright at the point. Active DEP well 38 m (121-20315, 1965).
+- Point 5. Open graded clearing next to a gully. Dark at the point on Sentinel-1 (-4.0 dB), but NISAR HH +5.0 dB and HV +2.9 dB. 16 NISAR steady bright pixels within 100 m, three on all tracks (up to 17.7 dB, D_A 0.09). A bright streak on Sentinel-1 30 to 70 m south-south-east. Not annotated as a pad. Nearest pit 101 m, pad 92 m. Active DEP wells 61 and 81 m (1973, 1981).
+
 ## 2026-11-13 NISAR and Sentinel-1 work gathered into `nisar/`
 
 - Why. So an outside reviewer can read and rerun the NISAR work without opening a dozen folders.
