@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Sentinel-1 pit interferograms, every early-to-mid April 2017 to 2026 -- S1
+
+- Ask. Test whether the April 2025 9t phase result (-1.18 mm, p 0.003) repeats in other years.
+- New `_s1_cslc_window_fetch_9t.py` reads only the area window from remote OPERA CSLC-S1 HDF5 (byte ranges). 34 dates, 426 MB, `data/_source/s1_cslc_windows/`. Sentinel-1A only in OPERA for 2017-2024.
+- `_s1_ifg_pits_9t.py` gains `--window aprall` and per-pair grid alignment (whole-pixel shifts only, else refuse). Rerun of apr2025 with the new code reproduces the old table exactly.
+- Phase. 9t T077 per-year medians -0.52 to +1.03 mm outside 2025. Pooled -0.06 mm [-0.31, +0.12]. 613590 pooled -0.59 mm [-1.22, +0.45]. The 2025 result does not recur.
+- Coherence. 613590 +0.0004, nothing. 9t +0.011 [+0.006, +0.014]. Closed-canopy pits equal their own ring (-0.000), so the excess there is the decoys reading low. Open pits sit +0.015 above their ring, a bare-ground contrast. Not a pit signal.
+- Doc `docs/iterations/s1_ifg_pits_9t.md` updated.
+
 ## 2026-11-13 Sentinel-1 C-band interferograms at pits, early to mid April 2025 and 2026 -- S1
 
 - Ask. The Sentinel-1 pit test for early to mid April. Window 25 Mar to 20 Apr, both 2025 and 2026. NISAR has no spring dates.

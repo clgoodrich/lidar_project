@@ -13,7 +13,7 @@ Method. Identical to _nisar_gslc_interferogram_pits_9t.py except the radar:
   * Coherence excess = (pit - ring) - median(decoy - ring). Phase as LOS mm with lambda 5.547 cm.
 Pits are the annotated outer rims (pit_outside). Registration as delivered by OPERA.
 
-  python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc [--area 613590] [--window octnov2025|apr2025|apr2026]
+  python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc [--area 613590] [--window octnov2025|apr2025|apr2026|aprall]
 """
 import importlib
 import json
@@ -37,7 +37,7 @@ from _common import read_layer  # noqa: E402
 
 A, ANN, CRS = st.A, st.ANN, st.CRS
 ROOT = HERE.parents[2]
-SRC = ROOT / "data" / "_source" / "s1_cslc"
+SRCS = [ROOT / "data" / "_source" / "s1_cslc", ROOT / "data" / "_source" / "s1_cslc_windows"]   # full bursts, cut windows
 AREA = A.TAG.replace("_slc", "")
 OUT = ROOT / "data" / AREA / "results" / "s1"
 WIN_YX = (2, 4)              # rows (10 m) x cols (5 m) = 20 m x 20 m
@@ -46,7 +46,8 @@ LAMBDA_M = 0.05547
 MM_PER_RAD = LAMBDA_M / (4 * np.pi) * 1000
 N_DECOY, SEED, B = 5, 20261005, 2000
 WINDOWS = {"octnov2025": ("2025-10-01", "2025-11-30"),
-           "apr2025": ("2025-03-25", "2025-04-20"), "apr2026": ("2026-03-25", "2026-04-20")}
+           "apr2025": ("2025-03-25", "2025-04-20"), "apr2026": ("2026-03-25", "2026-04-20"),
+           "aprall": ("03-25", "04-20")}   # month-day only: every year's early-to-mid April, 2017-2026
 WIN_NAME = sys.argv.pop(sys.argv.index("--window") + 1) if "--window" in sys.argv else "octnov2025"
 if "--window" in sys.argv:
     sys.argv.remove("--window")
@@ -58,10 +59,11 @@ def burst_windows(tf, shape):
     x0, y1 = tf.c - 200, tf.f + 200
     x1, y0 = tf.c + shape[1] * tf.a + 200, tf.f + shape[0] * tf.e - 200
     out = {}
-    for f in sorted(SRC.glob("OPERA_L2_CSLC-S1_*.h5")):
+    files = {f.stem: f for src in SRCS for f in sorted(src.glob("OPERA_L2_CSLC-S1_*.h5"))}
+    for f in files.values():
         p = f.stem.split("_")
         burst, date = p[3], f"{p[4][:4]}-{p[4][4:6]}-{p[4][6:8]}"
-        if not D0 <= date <= D1:
+        if not (D0 <= date[5:] <= D1 if len(D0) == 5 else D0 <= date <= D1):
             continue
         with h5py.File(f, "r") as h:
             if int(h["data/projection"][()]) != 32617:
@@ -75,11 +77,23 @@ def burst_windows(tf, shape):
             dx, dy = float(h["data/x_spacing"][()]), float(h["data/y_spacing"][()])
             wtf = Affine(dx, 0, xs[c.min()] - dx / 2, 0, dy, ys[r.min()] - dy / 2)
             pas = h["identification/orbit_pass_direction"][()].decode()
-        d = out.setdefault(burst, {"tf": wtf, "pass": pas, "dates": {}})
-        if d["tf"] != wtf:
-            raise SystemExit(f"grid differs between dates in burst {burst}")
-        d["dates"][date] = np.where(np.isfinite(vv), vv, 0).astype(np.complex64)
+        d = out.setdefault(burst, {"pass": pas, "dates": {}})
+        d["dates"][date] = (wtf, np.where(np.isfinite(vv), vv, 0).astype(np.complex64))
     return out
+
+
+def align(t1, a1, t2, a2):
+    """Crop two windows of one burst to their common pixels. The burst grid can shift between years, but only by
+    whole pixels on the same posting; anything else is refused."""
+    if (t1.a, t1.e) != (t2.a, t2.e):
+        raise SystemExit("posting differs within a burst")
+    ox, oy = (t2.c - t1.c) / t1.a, (t2.f - t1.f) / t1.e
+    if abs(ox - round(ox)) > 1e-6 or abs(oy - round(oy)) > 1e-6:
+        raise SystemExit(f"sub-pixel grid shift within a burst: {ox}, {oy}")
+    ox, oy = int(round(ox)), int(round(oy))
+    r0, c0 = max(0, oy), max(0, ox)                       # start in a1
+    r1, c1 = min(a1.shape[0], oy + a2.shape[0]), min(a1.shape[1], ox + a2.shape[1])
+    return t1 * Affine.translation(c0, r0), a1[r0:r1, c0:c1], a2[r0 - oy:r1 - oy, c0 - ox:c1 - ox]
 
 
 def interferogram(s1, s2):
@@ -153,9 +167,10 @@ def main():
         for d1, d2 in zip(dates[:-1], dates[1:]):
             if (pd.Timestamp(d2) - pd.Timestamp(d1)).days > 24:
                 continue
-            coh_n, ifg_n = interferogram(d["dates"][d1], d["dates"][d2])
-            coh = to_grid(coh_n, d["tf"], tf, shape)
-            ifg = to_grid(ifg_n.real, d["tf"], tf, shape) + 1j * to_grid(ifg_n.imag, d["tf"], tf, shape)
+            ptf, s1, s2 = align(*d["dates"][d1], *d["dates"][d2])
+            coh_n, ifg_n = interferogram(s1, s2)
+            coh = to_grid(coh_n, ptf, tf, shape)
+            ifg = to_grid(ifg_n.real, ptf, tf, shape) + 1j * to_grid(ifg_n.imag, ptf, tf, shape)
             cf, iff = coh.ravel(), ifg.ravel()
             tile_med = float(np.nanmedian(coh[in_tile]))
             valid = np.isfinite(cf)      # pixels inside this burst; outside ones must not enter a sum as 0

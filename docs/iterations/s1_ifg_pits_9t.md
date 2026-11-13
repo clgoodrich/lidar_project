@@ -1,4 +1,4 @@
-# Sentinel-1 C-band interferograms at pits, Oct-Nov 2025 and April 2025-2026 (9t, 613590)
+# Sentinel-1 C-band interferograms at pits, Oct-Nov 2025 and April 2017-2026 (9t, 613590)
 
 Run 2026-11-13. The NISAR L-band pit test repeated with Sentinel-1 C-band. Autumn 2025 matches NISAR track 162. Early to mid April (25 Mar to 20 Apr) adds the leaf-off spring that NISAR does not have.
 
@@ -15,7 +15,8 @@ Use the same pits, rings, decoys and seed as the NISAR run (`_nisar_gslc_interfe
 - Autumn, five dates per burst at 12 days. T004: 10-07, 10-19, 10-31, 11-12, 11-24. T077: 10-12, 10-24, 11-05, 11-17, 11-29.
 - April 2025. T004 03-29 and 04-10. T077 04-03 and 04-15.
 - April 2026. T077 03-29 and 04-10. T004 has one date (04-05), so no pair.
-- Files are 263 to 273 MB each, 4.5 GB total, in `data/_source/s1_cslc/` (git-ignored, logged in `data/_source/_download_ledger.csv`).
+- April 2017 to 2024. 34 more dates, read as windows only by `_s1_cslc_window_fetch_9t.py` (HTTPS byte ranges, about 14 MB a date, 426 MB in all, `data/_source/s1_cslc_windows/`, git-ignored). OPERA holds only Sentinel-1A for these dates, so pairs are 12 days (one 24 days, T004 2021).
+- Full bursts are 263 to 273 MB each, 4.5 GB total, in `data/_source/s1_cslc/` (git-ignored, logged in `data/_source/_download_ledger.csv`).
 
 ## Method
 
@@ -50,15 +51,32 @@ Use the same pits, rings, decoys and seed as the NISAR run (`_nisar_gslc_interfe
 - About 17 pair tests were run on 9t and 613590 across both seasons. A Bonferroni threshold for 17 is 0.003, so this one sits at the line.
 - A 1 mm difference at C-band is about 0.2 rad. Soil moisture change between dates shifts C-band phase by that much, and pits hold water. A spring moisture effect is a more likely cause than ground motion.
 
+## Results, every early-to-mid April 2017 to 2026 (`--window aprall`)
+
+- 9t 21 pairs (T077 12, T004 9). 613590 12 pairs (T077).
+- Phase. 9t T077 per-year medians run -0.52 to +1.03 mm, 2025 aside. Pooled -0.06 mm [-0.31, +0.12]. 613590 pooled -0.59 mm [-1.22, +0.45]. The April 2025 -1.18 mm is the most negative of 12 years and does not recur. Treat it as chance or a one-season moisture effect.
+- Coherence, 613590. +0.0004 [-0.022, +0.018], p 0.77. Nothing.
+- Coherence, 9t. +0.011 [+0.006, +0.014], pooled over years, p < 0.001. Split by canopy over the pit:
+
+| Pit canopy | Pits | Coherence excess | Pit minus own ring |
+|---|---|---|---|
+| Open (< 0.3) | 97 | +0.018, p 0.0003 | +0.015 |
+| Mid | 249 | +0.008, p 0.04 | +0.003 |
+| Closed (> 0.7) | 160 | +0.011, p 0.02 | -0.000 |
+
+- Under closed canopy the pit equals its own ring. The excess there comes only from decoys reading about 0.01 below their rings, which is a property of the decoy construction, not of pits.
+- In the open the pit is 0.015 above its ring. Open bare ground holds C-band coherence better than the forest around it. That is a canopy contrast. Decoys are matched on shape, not on cover.
+- So the 9t excess is design plus openness, not a pit signal. 613590 does not show it.
+
 ## Interpretation
 
-- C-band agrees with L-band. Pits show no coherence difference from decoys in either season. Phase shows one unreplicated 1 mm spring difference on 9t (April 2025), most likely moisture.
+- C-band agrees with L-band. Pits show no coherence difference from decoys in either season. Phase shows one 1 mm spring difference on 9t (April 2025) that did not recur in any of the other 11 Aprils. Pooled over 12 Aprils, the 9t coherence excess (+0.011) traces to decoy construction and open ground, and 613590 shows none.
 - C-band coherence over forest is lower than NISAR L-band on the same autumn (NISAR track 162 0.53 to 0.65). The shorter wave is scattered by the remaining canopy.
 - The persistent-scatterer screen was not run. Five dates are too few (pure speckle passes D_A < 0.25 in 6.6% of pixels at 5 dates).
 
 ## Outputs
 
-For each `<window>` in `octnov2025`, `apr2025`, `apr2026` (the autumn files were renamed to carry the window on 2026-11-13):
+For each `<window>` in `octnov2025`, `apr2025`, `apr2026`, `aprall` (the autumn files were renamed to carry the window on 2026-11-13):
 - `data/9t/results/s1/s1_ifg_pits_by_pair_<window>_9t.csv`, `s1_ifg_pits_per_pit_<window>_9t.csv`, `s1_ifg_pits_summary_<window>_9t.json`
 - `data/613590/results/s1/s1_ifg_pits_by_pair_<window>_613590.csv`, `s1_ifg_pits_per_pit_<window>_613590.csv`, `s1_ifg_pits_summary_<window>_613590.json`
 
@@ -66,6 +84,7 @@ For each `<window>` in `octnov2025`, `apr2025`, `apr2026` (the autumn files were
 
 ```
 python notebooks/wellsight_v2/s5_eval/_s1_cslc_fetch_9t.py octnov2025 apr2025 apr2026
+python notebooks/wellsight_v2/s5_eval/_s1_cslc_window_fetch_9t.py 2017 2018 2019 2020 2021 2022 2023 2024
 python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc --window <window>
 python notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py --slc --area 613590 --window <window>
 ```
