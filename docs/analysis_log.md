@@ -5,6 +5,21 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 NISAR and Sentinel-1 work gathered into `nisar/`
+
+- Why. So an outside reviewer can read and rerun the NISAR work without opening a dozen folders.
+- What moved (134 moves, none deleted, all in `docs/MOVES.csv` under phase `nisar_folder`, ledger `docs/_ledgers/nisar_folder_moves.csv`).
+  - Scripts to `nisar/code/` (s1_build, s5_eval, s6_review, s7_analysis, nisar_reflectors) and `nisar/sentinel1/code/`.
+  - Outputs to `nisar/results/<area>/` and `nisar/sentinel1/results/<area>/`.
+  - Rasters and date indexes to `nisar/derived/<area>/` (git-ignored, 11 GB). Sentinel-1 downloads to `nisar/sentinel1/source/` (git-ignored, 5.4 GB).
+  - Docs to `nisar/docs/` and `nisar/sentinel1/docs/`. Decks to `nisar/writeup/`. Audits to `nisar/reviews/`. QGIS project to `nisar/qgis/`.
+- Path changes in code. `_nisar_area.py` now sets `NISAR_ROOT`, `NISAR_DERIVED` and `NISAR_RESULTS` and adds `notebooks/wellsight_v2` to the path for `_common`. Hand-built paths in 14 scripts, the 4.9 expansion kit and one cross-section script were updated.
+- `.gitignore`. Rules for `nisar/derived/**` and `nisar/sentinel1/source/` added, matching the old `data/**/derived/**` rules. Large-file audit clean.
+- Checks. Import check of 76 moved scripts, 0 failures. Three scripts rerun and reproduced their saved outputs byte for byte (`_nisar_pol_season_canopy_9t.py --slc`, `_s1_ifg_pits_9t.py` autumn, `_s1_metal_pits_9t.py --stack april`).
+- `_nisar_steel_9t.py` rerun wrote different date counts (9, 11, 15 against 8, 10, 13). Its saved results predate the 2026-10-26 bad-date fix. The saved files were restored. A deliberate rerun is still owed.
+- Old paths in this log are left as written. Use `docs/MOVES.csv` to find the new path.
+- Start page `nisar/README.md`. Reference index rebuilt.
+
 ## 2026-11-13 Small-metal pit test on an April-only Sentinel-1 stack
 
 - Ask. Use April tracks only.

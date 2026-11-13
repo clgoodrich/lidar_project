@@ -21,7 +21,7 @@ In. Power analysis, arm definitions, acquisition specification, feature extracti
 Out. Change detection, displacement products, steel or reflector detection and anything about wells (levels b to d). Any restatement of NISAR results beyond the numbers in section 1. Any claim that all coarse sensors fail.
 
 ## 3. Definitions
-- **Baseline.** The rich lidar texture model of `docs/iterations/nisar_corrected_rescoring_9t.md`, same folds, same 250 m buffer, same decoys.
+- **Baseline.** The rich lidar texture model of `nisar/docs/iterations/nisar_corrected_rescoring_9t.md`, same folds, same 250 m buffer, same decoys.
 - **Arm.** One SAR product family added to the baseline. Arms are listed in the table below.
 - **Gain.** AUC of (arm plus baseline) minus AUC of baseline, paired on the same decoy set and the same blocks.
 - **Headroom.** 1 minus baseline AUC in the stratum being scored.
@@ -42,12 +42,12 @@ Features per arm. Backscatter mean and texture (GLCM), local contrast against a 
 ## 4. Inputs
 | Input | Path | State |
 |---|---|---|
-| Rich lidar baseline rows and folds | `data/9t/results/nisar/nisar_pit_dedupe_auc_9t_slc.csv`, `nisar_pad_dedupe_auc_9t_slc_local1500.csv` | held |
-| Baseline builders | `notebooks/wellsight_v2/s5_eval/_nisar_feat_common.py`, `_nisar_feat_dedupe_9t.py`, `_nisar_feat_heldout_9t.py` | held |
-| Held-out pit scores 613590 | `data/613590/results/nisar/nisar_pit_heldout_scores_613590_slc.csv` | held |
-| Prior prereg and addendum | `docs/iterations/nisar_heldout_613590_prereg.md` | held |
+| Rich lidar baseline rows and folds | `nisar/results/9t/nisar_pit_dedupe_auc_9t_slc.csv`, `nisar_pad_dedupe_auc_9t_slc_local1500.csv` | held |
+| Baseline builders | `nisar/code/s5_eval/_nisar_feat_common.py`, `_nisar_feat_dedupe_9t.py`, `_nisar_feat_heldout_9t.py` | held |
+| Held-out pit scores 613590 | `nisar/results/613590/nisar_pit_heldout_scores_613590_slc.csv` | held |
+| Prior prereg and addendum | `nisar/docs/iterations/nisar_heldout_613590_prereg.md` | held |
 | Review response with G1 to G3 | `docs/iterations/outside_review_response_20261103.md` | held |
-| NISAR methods and checks | `docs/iterations/nisar_checks_9t.md`, `nisar_corrected_rescoring_9t.md` | held |
+| NISAR methods and checks | `nisar/docs/iterations/nisar_checks_9t.md`, `nisar_corrected_rescoring_9t.md` | held |
 | Drawn pits and pads | `qgis/annotations/annotations_proj.gpkg` | held |
 | New SAR products | `data/_source/sar_new/<sensor>/` | proposed, see section 5 |
 

@@ -40,7 +40,7 @@ LINE = REPO / "test_line_cross_section.gpkg"
 ANN = REPO / "qgis" / "annotations" / "annotations_proj.gpkg"
 DEM = REPO / "data" / "9t" / "derived" / "1m" / "dem_9t_1m.tif"
 DSM = REPO / "data" / "9t" / "derived" / "1m" / "dsm_9t_1m.tif"
-NISAR = REPO / "data" / "9t" / "derived" / "nisar_gslc_5m"
+NISAR = REPO / "nisar" / "derived" / "9t" / "nisar_gslc_5m"
 # Local relief model = DEM minus an N-pixel moving mean (_build_derivatives.py). At 1 m, N pixels = N metres.
 LRM = {11: REPO / "data" / "9t" / "derived" / "1m" / "lrm_11_9t_1m.tif",
        25: REPO / "data" / "9t" / "derived" / "1m" / "lrm_25_9t_1m.tif"}

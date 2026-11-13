@@ -20,7 +20,7 @@ sys.path.insert(0, str(HERE.parents[2] / "_shared" / "src"))
 import expkit as ek  # noqa: E402
 
 CFG_PATH = HERE / "config_4_9.json"
-S5_EVAL = ek.REPO / "notebooks" / "wellsight_v2" / "s5_eval"
+S5_EVAL = ek.REPO / "nisar" / "code" / "s5_eval"   # moved 2026-11-13 from notebooks/wellsight_v2/s5_eval
 
 
 def load_cfg(path=None) -> dict:

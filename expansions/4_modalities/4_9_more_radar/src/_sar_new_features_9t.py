@@ -3,7 +3,7 @@
 Purpose. Two steps, either alone.
   --rows-only  Write the frozen scoring rows from the NISAR samples files (targets, decoys, blocks, map x and y, and
                the rich lidar baseline features). Repeated decoy locations are dropped with the key used by
-               notebooks/wellsight_v2/s5_eval/_nisar_feat_dedupe_9t.py (centre pixel and footprint size). Uses
+               nisar/code/s5_eval/_nisar_feat_dedupe_9t.py (centre pixel and footprint size). Uses
                _nisar_feat_common.load_samples with NISAR_STACK=slc (pads also LOCAL_M=1500), so the rows are the
                ones the NISAR result was scored on.
   features     From the arm's geocoded stacks (linear power, one band per date) compute per polarisation the mean
@@ -18,7 +18,7 @@ on a mismatch. A rows file with no stamp is adopted only when it matches its --r
 user passes --adopt-frozen for rows they have checked.
 The feature list is frozen here. Feature sets are never chosen on the scoring blocks.
 Inputs.
-  data/9t/derived/nisar_features_5m/nisar_<target>_samples_9t_slc*.npz (held, --rows-only)
+  nisar/derived/9t/nisar_features_5m/nisar_<target>_samples_9t_slc*.npz (held, --rows-only)
   data/9t/derived/sar_new/<arm>/sar_<arm>_<pol>_stack_9t.tif (assumed), optional _coh_stack_ and _t3_ files
 Outputs.
   expansions/4_modalities/4_9_more_radar/data/processed/sar_rows_<target>_9t.csv   rows (and arm columns once built)

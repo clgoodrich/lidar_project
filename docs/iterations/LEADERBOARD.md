@@ -550,7 +550,7 @@ of 1069 matched.
 
 ## NISAR SAR features against matched decoys (corrected 2026-10-26, checks 2026-10-27)
 
-The first-pass table (0.815 to 0.96) is superseded: it came from a pipeline with a block-assignment bug, unequal pixel counts, unbuffered CV and no location or rich-lidar control. Corrected model AUC, 5-fold block CV with a 250 m buffer, lidar-placed SLC stack. Not comparable to the U-Net rows above. Doc: `docs/iterations/nisar_corrected_rescoring_9t.md`.
+The first-pass table (0.815 to 0.96) is superseded: it came from a pipeline with a block-assignment bug, unequal pixel counts, unbuffered CV and no location or rich-lidar control. Corrected model AUC, 5-fold block CV with a 250 m buffer, lidar-placed SLC stack. Not comparable to the U-Net rows above. Doc: `nisar/docs/iterations/nisar_corrected_rescoring_9t.md`.
 
 | Target | Decoys | all NISAR | map x/y only | rich lidar baseline | NISAR + rich lidar | placebo |
 |---|---|---|---|---|---|---|
@@ -564,11 +564,11 @@ The first-pass table (0.815 to 0.96) is superseded: it came from a pipeline with
 | Pads (60) | other clearings only | 0.801 | 0.462 | 0.990 | 0.989 | 0.469 |
 | Pits on 613590 (36), frozen 9t model | cover and slope matched | 0.658 | n/a | 0.881 | 0.865 | n/a |
 
-The gate (NISAR + rich lidar beats rich lidar by 0.05) is not passed in any row. Repeated CV (10 repeats) gives the gain as -0.01 to +0.003. Details: `docs/iterations/nisar_checks_9t.md`. The 0.640 / 0.479 / 0.829 rows moved by 0.005 or less after the skewness and kurtosis fix of 2026-10-27.
+The gate (NISAR + rich lidar beats rich lidar by 0.05) is not passed in any row. Repeated CV (10 repeats) gives the gain as -0.01 to +0.003. Details: `nisar/docs/iterations/nisar_checks_9t.md`. The 0.640 / 0.479 / 0.829 rows moved by 0.005 or less after the skewness and kurtosis fix of 2026-10-27.
 
 Pad U-Net with whole-window block isolation (`data/9t/models/pad/unet_cv5_iso/`): pooled held-out recall at IoU 0.3 is 0.872 (F1-selected) and 0.891 (F2-selected), against 0.888 and 0.912 for the original sampler. As a false-positive screen NISAR adds nothing to the detector score (TP against FP AUC 0.849 for the score, 0.831 with NISAR).
 
-Follow-up checks of 2026-10-27 (`docs/iterations/nisar_followup_checks_9t.md`). Repeat-averaged probabilities, so near-chance AUCs read a little higher than the single runs above.
+Follow-up checks of 2026-10-27 (`nisar/docs/iterations/nisar_followup_checks_9t.md`). Repeat-averaged probabilities, so near-chance AUCs read a little higher than the single runs above.
 
 | Check | Result |
 |---|---|

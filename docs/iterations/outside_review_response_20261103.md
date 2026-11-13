@@ -34,13 +34,13 @@ We agree with both. Our own wording was wider than this in places. Section 5 giv
 
 | # | Point | Status | What we did |
 |---|---|---|---|
-| G1 | The +0.05 gate cannot be met on 9t pits (rich lidar 0.968, needs 1.018). | **Reproduced** by arithmetic. | **Fixed in wording.** `nisar_writeup/README.md` now says "no gain" and "no room" cannot be told apart on 9t pits. The held-out test is the one that can. |
+| G1 | The +0.05 gate cannot be met on 9t pits (rich lidar 0.968, needs 1.018). | **Reproduced** by arithmetic. | **Fixed in wording.** `nisar/writeup/README.md` now says "no gain" and "no room" cannot be told apart on 9t pits. The held-out test is the one that can. |
 | G2 | The held-out test excludes +0.05 for pits on 613590. Radar alone 0.658 (95% 0.47 to 0.82). | Reviewer only, but our reported 0.658 matches their 0.658. | Cited in the pre-registration addendum. |
 | G3 | No pad held-out test. | Agree. 613590 has 0 annotated pads. | **Open.** Needs a second tile with pad labels made without the radar. |
 | N4 | The test is less independent than described. 613590 pits were scored on 2026-10-14 and 2026-10-19. The pre-registration rule contradicts itself. The 9t samples were regenerated after the commit. | **Confirmed.** `git diff a8a38c00..HEAD` shows a refactor of `_nisar_feat_common.py` (model moved into `fit_predict`, same settings) and a new held-out script. | **Disclosed** in an addendum to `nisar_heldout_613590_prereg.md`. The original text is untouched. The rule is restated. |
-| N5 | The documented registration figure "about 10 m" is wrong both ways. | **Confirmed.** Our log has 46 of 48 within 2.5 m on 9t and 31 of 48 on 613590 (worst 29.7 m). | **Fixed** in `NISAR_METHODS.md`, `nisar_checks_9t.md`, `nisar_corrected_rescoring_9t.md` and `nisar_writeup/README.md`. The check is internal (same lidar), so it is still not independent. |
+| N5 | The documented registration figure "about 10 m" is wrong both ways. | **Confirmed.** Our log has 46 of 48 within 2.5 m on 9t and 31 of 48 on 613590 (worst 29.7 m). | **Fixed** in `nisar/docs/NISAR_METHODS.md`, `nisar_checks_9t.md`, `nisar_corrected_rescoring_9t.md` and `nisar/writeup/README.md`. The check is internal (same lidar), so it is still not independent. |
 | N6 | Radar (2025-10 to 2026-10) cannot date or corroborate a 2006 to 2019 earthwork. | Agree. | **Disclosed.** |
-| R1 | Reproducibility. The held-out run saved no per-row scores. 3,879 of 4,890 9t decoys lie within 10 m of another decoy. Counts disagree across docs (8/11/14 against 10/11/15 dates, 4.9 against 4.5 km tile). `NISAR_METHODS.md` still said "no held-out area". | Partly confirmed. The 8/11/14 and 10/11/15 figures are two different stacks (SLC after the bad-date drop, GSLC before). `NISAR_METHODS.md` is **fixed**. | **Open.** Save per-row scores in the next held-out run. Reconcile the tile size (the lidar box is 4.5 km, the NISAR window is wider). |
+| R1 | Reproducibility. The held-out run saved no per-row scores. 3,879 of 4,890 9t decoys lie within 10 m of another decoy. Counts disagree across docs (8/11/14 against 10/11/15 dates, 4.9 against 4.5 km tile). `nisar/docs/NISAR_METHODS.md` still said "no held-out area". | Partly confirmed. The 8/11/14 and 10/11/15 figures are two different stacks (SLC after the bad-date drop, GSLC before). `nisar/docs/NISAR_METHODS.md` is **fixed**. | **Open.** Save per-row scores in the next held-out run. Reconcile the tile size (the lidar box is 4.5 km, the NISAR window is wider). |
 
 ## 4. Results of the re-runs
 
@@ -87,7 +87,7 @@ Visual read of five "anthropogenic" patches on `data/9t/results/change/sheets/ch
 - `notebooks/wellsight_v2/s7_analysis/_icp_change_classify_9t.py` (polygon export, threshold units)
 - `notebooks/wellsight_v2/s7_analysis/_change_features_9t.py` (slope-matched controls, placebo rate, `--field`)
 - `notebooks/wellsight_v2/s7_analysis/_change_landcover_9t.py` (both patch sets, z-field columns)
-- `docs/iterations/nisar_heldout_613590_prereg.md` (addendum), `NISAR_METHODS.md`, `docs/iterations/nisar_checks_9t.md`, `docs/iterations/nisar_corrected_rescoring_9t.md`, `nisar_writeup/README.md`
+- `nisar/docs/iterations/nisar_heldout_613590_prereg.md` (addendum), `nisar/docs/NISAR_METHODS.md`, `nisar/docs/iterations/nisar_checks_9t.md`, `nisar/docs/iterations/nisar_corrected_rescoring_9t.md`, `nisar/writeup/README.md`
 
 ## 7. A second review, by Gemini (`ADVERSARIAL_AUDIT_DECISION_MEMO.md`, dated 2026-11-03)
 
@@ -138,11 +138,11 @@ Patch 899 and the sheets. New evidence sheets were made from the v2 patches, wit
 
 | Item | What was done | Result |
 |---|---|---|
-| R1 per-row scores | `_nisar_feat_heldout_9t.py` now saves them. Re-ran. | Numbers identical to the first run (rich lidar 0.881, all NISAR 0.658, NISAR + rich 0.865, gain -0.017, bootstrap -0.055 to +0.020). Scores: `data/613590/results/nisar/nisar_pit_heldout_scores_613590_slc.csv`. |
-| Duplicate decoys | New `_nisar_feat_dedupe_9t.py` drops every repeated decoy location and re-scores with the same folds. | **Pits** (4,890 rows, 4,392 distinct). Rich lidar 0.968 to 0.973. NISAR alone **0.829 to 0.765**. Gain -0.001 to -0.004 (95% -0.009 to -0.000). **Pads, local 1,500 m** (2,970 rows, 2,498 distinct). Rich lidar 0.923 to 0.925. NISAR alone **0.479 to 0.601**. Gain -0.016 to -0.008 (95% -0.025 to +0.003). Radar-alone AUCs move by 0.06 to 0.12 with the decoy set. The gain over lidar does not. Files: `data/9t/results/nisar/nisar_pit_dedupe_auc_9t_slc.csv`, `nisar_pad_dedupe_auc_9t_slc_local1500.csv`. |
-| Tile size, dates per track | Reconciled. The lidar tile is 4.5 km (the DEM bounds). The NISAR window is 4.9 km. The corrected stack has 8, 11 and 14 dates. The 10, 11 and 15 belong to the GSLC stack before the bad-date drop. | Fixed in `NISAR_METHODS.md`, `NISAR_FINDINGS.md`, `nisar_checks_9t.md`, `nisar_corrected_rescoring_9t.md`, `nisar_pad_features_scored_9t.md`. |
+| R1 per-row scores | `_nisar_feat_heldout_9t.py` now saves them. Re-ran. | Numbers identical to the first run (rich lidar 0.881, all NISAR 0.658, NISAR + rich 0.865, gain -0.017, bootstrap -0.055 to +0.020). Scores: `nisar/results/613590/nisar_pit_heldout_scores_613590_slc.csv`. |
+| Duplicate decoys | New `_nisar_feat_dedupe_9t.py` drops every repeated decoy location and re-scores with the same folds. | **Pits** (4,890 rows, 4,392 distinct). Rich lidar 0.968 to 0.973. NISAR alone **0.829 to 0.765**. Gain -0.001 to -0.004 (95% -0.009 to -0.000). **Pads, local 1,500 m** (2,970 rows, 2,498 distinct). Rich lidar 0.923 to 0.925. NISAR alone **0.479 to 0.601**. Gain -0.016 to -0.008 (95% -0.025 to +0.003). Radar-alone AUCs move by 0.06 to 0.12 with the decoy set. The gain over lidar does not. Files: `nisar/results/9t/nisar_pit_dedupe_auc_9t_slc.csv`, `nisar_pad_dedupe_auc_9t_slc_local1500.csv`. |
+| Tile size, dates per track | Reconciled. The lidar tile is 4.5 km (the DEM bounds). The NISAR window is 4.9 km. The corrected stack has 8, 11 and 14 dates. The 10, 11 and 15 belong to the GSLC stack before the bad-date drop. | Fixed in `nisar/docs/NISAR_METHODS.md`, `nisar/docs/NISAR_FINDINGS.md`, `nisar_checks_9t.md`, `nisar_corrected_rescoring_9t.md`, `nisar_pad_features_scored_9t.md`. |
 
-The radar-alone headline numbers in `NISAR_FINDINGS.md` and the write-up (0.83 for pits, 0.48 to 0.64 for pads) should be read with the de-duplicated values beside them. They are unstable, which is one more reason they are not used for any decision.
+The radar-alone headline numbers in `nisar/docs/NISAR_FINDINGS.md` and the write-up (0.83 for pits, 0.48 to 0.64 for pads) should be read with the de-duplicated values beside them. They are unstable, which is one more reason they are not used for any decision.
 
 ## 9. Still open
 
@@ -172,7 +172,7 @@ Sheets: `data/9t/results/change/sheets/change_evidence_sheet_anthropogenic_1_9t_
 So the rebuild removed some of the seam patches (20, 114, most of 109 and 786) and not others (391). It did not create new convincing earthwork. Patches 810 and 1277 are the two to send for independent confirmation.
 
 
-## Correction 2026-11-09 (second outside review, `tmp/nisar_adversarial_20261109/REPORT.md`)
+## Correction 2026-11-09 (second outside review, `nisar/reviews/nisar_adversarial_20261109/REPORT.md`)
 
 - **Duplicate decoys row.** `_nisar_feat_dedupe_9t.py` keys on centre plus footprint size, not centre alone, and calls `GroupKFold` again after dropping rows, so folds were not held fixed (1,327 changed same-fold pit block pairs). The AUC shifts it reports (pits 0.829 to 0.765, local pads 0.479 to 0.601) are real but cannot be attributed to duplicate removal alone. Gains over lidar stay small and negative in both versions.
 - **Held-out bound.** "Every resampling gives an upper 95% bound of +0.018 or less" is documented only. The reproducible block bootstrap from saved predictions gives +0.0198. The conclusion that +0.05 is excluded for these 36 pits stands.

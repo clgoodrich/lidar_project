@@ -4,7 +4,7 @@ WHY THIS FIGURE EXISTS
 ----------------------
 The obvious question about NISAR is "can it find pits?" and the honest answer is
 no, for a reason that is purely geometric and worth showing rather than
-asserting. The reconnaissance in docs/nisar_lidar_supplement_proposal.md
+asserting. The reconnaissance in nisar/docs/nisar_lidar_supplement_proposal.md
 measured the products over this very tile:
 
     GCOV  (backscatter)          10 m pixel

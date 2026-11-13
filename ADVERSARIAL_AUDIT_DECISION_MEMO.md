@@ -24,7 +24,7 @@
 3. **Location & Confounder Inflation:** Tile-wide SAR pad skill (AUC $0.64$) is a place effect driven by distance to decoys, matching map coordinates ($x/y$ AUC $0.815$), while local decoys collapse SAR skill to chance (AUC $0.479$).
 
 ### 2.2 Reproduction of Headline Results
-Re-running `notebooks/wellsight_v2/s5_eval/_nisar_feat_heldout_9t.py` against saved samples confirmed the exact figures reported in `NISAR_FINDINGS.md` and `data/613590/results/nisar/nisar_pit_heldout_summary_613590_slc.json`:
+Re-running `nisar/code/s5_eval/_nisar_feat_heldout_9t.py` against saved samples confirmed the exact figures reported in `nisar/docs/NISAR_FINDINGS.md` and `nisar/results/613590/nisar_pit_heldout_summary_613590_slc.json`:
 - **Simple Lidar Baseline (3 bands):** AUC $0.753$ ($95\%\text{ CI: } 0.660\text{--}0.858$)
 - **Rich Lidar Baseline (26 bands):** AUC $0.881$ ($95\%\text{ CI: } 0.805\text{--}0.940$)
 - **All NISAR (293 bands):** AUC $0.658$ ($95\%\text{ CI: } 0.465\text{--}0.820$)
@@ -32,7 +32,7 @@ Re-running `notebooks/wellsight_v2/s5_eval/_nisar_feat_heldout_9t.py` against sa
 - **Observed Incremental Gain:** $-0.017$ ($95\%\text{ block bootstrap: } -0.055\text{ to } +0.020$).
 - **Gate Passed:** `False` (fell short of $+0.05$ threshold).
 
-Saved score verification from `data/9t/results/nisar/nisar_pit_model_auc_by_set_9t_slc.csv` and `data/9t/results/nisar/nisar_pad_model_auc_by_set_9t_slc_local1500.csv`:
+Saved score verification from `nisar/results/9t/nisar_pit_model_auc_by_set_9t_slc.csv` and `nisar/results/9t/nisar_pad_model_auc_by_set_9t_slc_local1500.csv`:
 - 9t Pit 5-fold CV: Rich lidar AUC $0.968$; NISAR + Rich AUC $0.967$ (gain $-0.001$).
 - 9t Pad Local 1,500 m Decoys: Rich lidar AUC $0.923$; All NISAR AUC $0.479$ (chance); NISAR + Rich AUC $0.906$ (gain $-0.017$).
 
@@ -46,7 +46,7 @@ Saved score verification from `data/9t/results/nisar/nisar_pit_model_auc_by_set_
 #### Category B: Findings That Narrow Scope or Reveal Evaluator Vulnerabilities
 
 ##### Finding B1: Ceiling Limitations in Headline Evaluations Obscure Low-Signal Headroom
-- **Code Location & Artifact:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_fusion_9t.py` (lines 240–248); `NISAR_FINDINGS.md` (lines 73–75).
+- **Code Location & Artifact:** `nisar/code/s5_eval/_nisar_feat_fusion_9t.py` (lines 240–248); `nisar/docs/NISAR_FINDINGS.md` (lines 73–75).
 - **Observed Result:** Pad U-Net out-of-fold baseline AUC is $0.999$; combined U-Net + NISAR is $0.995$. In the clearing confuser test ($n=60$ pads), rich lidar baseline AUC is $0.988$; combined is $0.988$.
 - **Impact on Claim:** The claim that "NISAR adds nothing to U-Net fusion" is uninformative. With baseline performance at $0.999$, the maximum possible mathematical gain is $+0.001$, making the $+0.05$ gate impossible to achieve.
 - **Headroom Re-partitioning:**
@@ -55,29 +55,29 @@ Saved score verification from `data/9t/results/nisar/nisar_pit_model_auc_by_set_
   - *Conclusion:* Only tests in the second group provide defensible evidence. The decision survives solely because those specific tests also showed zero gain.
 
 ##### Finding B2: Spatial Confounding & Distance-to-Decoy Artifact Explains Apparent Radar Skill
-- **Code Location & Artifact:** `notebooks/wellsight_v2/s5_eval/_nisar_pad_distance_bands_9t.py`; `data/9t/results/nisar/nisar_pad_distance_bands_auc_9t_slc.csv`; `NISAR_FINDINGS.md` (lines 141–149).
+- **Code Location & Artifact:** `nisar/code/s5_eval/_nisar_pad_distance_bands_9t.py`; `nisar/results/9t/nisar_pad_distance_bands_auc_9t_slc.csv`; `nisar/docs/NISAR_FINDINGS.md` (lines 141–149).
 - **Observed Result:** As decoy distance increases from $100\text{--}500\text{ m}$ to $>3{,}500\text{ m}$, NISAR AUC climbs monotonically from $0.440 \to 0.491 \to 0.531 \to 0.632 \to 0.680 \to 0.710$. Simultaneously, map $x/y$ coordinates alone climb from $0.381 \to 0.385 \to 0.651 \to 0.838 \to 0.919 \to 0.961$.
 - **Impact on Claim:** The apparent standalone SAR skill on pads (AUC $0.64$) is entirely a regional setting / geographic clustering proxy. Well pads cluster in specific geologic sections; distant forest decoys differ in stand composition and elevation. Radar detects regional ecotype, not well pads.
 
 ##### Finding B3: Unresolved ~10 m Planimetric Residual Blurs Pit-Scale Apertures
-- **Code Location & Artifact:** `notebooks/wellsight_v2/s5_eval/_nisar_registration_points_9t.py`; `data/9t/results/nisar/nisar_registration_points_shift_9t_slc.csv`; `docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md` (lines 121–137).
+- **Code Location & Artifact:** `nisar/code/s5_eval/_nisar_registration_points_9t.py`; `nisar/results/9t/nisar_registration_points_shift_9t_slc.csv`; `nisar/docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md` (lines 121–137).
 - **Observed Result:** A pit aperture is $4\text{ to }9$ pixels ($\approx 100\text{--}225\text{ m}^2$). The point-target registration search against $9{,}592$ lidar objects yielded a null result (hit rates $0.0006\text{--}0.0095$, best shifts hit search boundary at $\pm 40\text{ m}$). In earlier tests, forcing a best shift on GSLC moved pit HV excess from $-0.07\text{ dB}$ (AUC $0.476$) to $-0.45\text{ dB}$ (AUC $0.358$).
-- **Impact on Claim:** While the regeocoding pipeline removed the $8\text{--}12\text{ m}$ Copernicus DEM height bias using lidar bare-earth heights (`notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`), residual planimetric blur remains unconstrained against independent point controls. A residual $10\text{ m}$ ($2\text{ pixel}$) registration error shifts a small pit outside the sampling aperture. The negative pit result could partly reflect spatial blurring rather than complete absence of L-band contrast.
+- **Impact on Claim:** While the regeocoding pipeline removed the $8\text{--}12\text{ m}$ Copernicus DEM height bias using lidar bare-earth heights (`nisar/code/s1_build/_nisar_regeocode_lidar_9t.py`), residual planimetric blur remains unconstrained against independent point controls. A residual $10\text{ m}$ ($2\text{ pixel}$) registration error shifts a small pit outside the sampling aperture. The negative pit result could partly reflect spatial blurring rather than complete absence of L-band contrast.
 
 ##### Finding B4: Radar HV Signal in Closed Canopy is Dominated by Terrain Illumination
-- **Code Location & Artifact:** `notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_heldout_9t.py`; `NISAR_FINDINGS.md` (lines 88–98).
+- **Code Location & Artifact:** `nisar/code/s5_eval/_nisar_vs_optical_heldout_9t.py`; `nisar/docs/NISAR_FINDINGS.md` (lines 88–98).
 - **Observed Result:** In closed canopy ($>0.8$ cover), lidar canopy height explains $<2\%$ of HV variance ($R^2 = 0.07\text{ OLS } / 0.08\text{ GBDT}$). Adding simulated terrain facet gain (`sim_db`) elevates held-out $R^2$ to $0.57$.
 - **Impact on Claim:** The belief that L-band HV penetrates closed canopy to measure sub-canopy structural clearing or vegetation biomass is contradicted by the data. Closed-canopy HV variance is dominated by local terrain illumination angle.
 
 #### Category C: Findings Affecting Only Reproducibility and Audit Trail
 
 ##### Finding C1: Massive Sample Loss from 250 m Train-Test CV Buffering
-- **Code Location:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_common.py:oof_probs` (lines 137–141).
+- **Code Location:** `nisar/code/s5_eval/_nisar_feat_common.py:oof_probs` (lines 137–141).
 - **Observed Result:** In 9t pit 5-fold CV, removing training samples within $250\text{ m}$ of test samples drops $20.9\%\text{ to }71.5\%$ of training rows per fold (Fold 3 drops $3{,}077$ of $4{,}303$ training rows; Fold 4 drops $2{,}364$ rows).
 - **Impact on Claim:** Necessary to prevent leakage across neighboring pads and decoys, but introduces severe training fold size instability (effective training sample size varies between $1{,}226$ and $3{,}405$ across folds).
 
 ##### Finding C2: Decoy Coordinate Reuse in Nominal Denominators
-- **Code Location:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_score_9t.py` (line 42); `data/9t/derived/nisar_features_5m/nisar_pit_samples_9t_slc.npz`.
+- **Code Location:** `nisar/code/s5_eval/_nisar_feat_score_9t.py` (line 42); `nisar/derived/9t/nisar_features_5m/nisar_pit_samples_9t_slc.npz`.
 - **Observed Result:** On 9t pits, the dataset reports $489$ pits and $4{,}890$ decoys, but only $4{,}115$ unique decoy coordinates exist ($15.8\%$ duplicate spatial positions). On 613590, $360$ decoys map to $351$ unique positions.
 - **Impact on Claim:** Does not invalidate out-of-fold evaluation because blocks group decoys, but inflates the nominal degrees of freedom in decoy baseline distributions.
 
@@ -196,7 +196,7 @@ A critical adversarial finding is that **NISAR observations cannot corroborate h
 
 ### Decisive Test for Workflow 1 (NISAR)
 **The 613590 Annotated Pad Transfer Test:**
-Execute the preregistered pad evaluation on tile 613590 using the $161$ review candidates in `data/613590/results/nisar/nisar_pad_review_candidates_613590.gpkg`. 
+Execute the preregistered pad evaluation on tile 613590 using the $161$ review candidates in `nisar/results/613590/nisar_pad_review_candidates_613590.gpkg`. 
 - *Protocol:* Visually annotate the $161$ candidates and any missed pads in QGIS using independent orthoimagery. Score the frozen 9t pad model once.
 - *Decision Rule:* If NISAR $+$ rich lidar fails to beat rich lidar by $+0.05$ AUC with lower bootstrap bound $>0$, the exclusion of NISAR from pad detection is finalized across independent domains.
 

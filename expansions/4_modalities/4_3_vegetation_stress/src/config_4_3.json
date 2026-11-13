@@ -88,7 +88,7 @@
       "radiometry": null
     }
   ],
-  "_scenes_note": "Held 5 m stacks written by notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_9t.py from Element 84 Earth Search items (ids in 'item', dates from that script). Bands were resampled onto a 5 m grid (average for reflectance, nearest for SCL), so V2 puts them back on the native 10 m and 20 m grids. The stacks carry no L2A radiometry tags. 'radiometry' must then be declared per scene as {add_offset, quantification, processing_baseline, offset_removed_upstream, source}. null makes V2 refuse. VERIFY in docs/decisions_4_3.md",
+  "_scenes_note": "Held 5 m stacks written by nisar/code/s5_eval/_nisar_vs_optical_9t.py from Element 84 Earth Search items (ids in 'item', dates from that script). Bands were resampled onto a 5 m grid (average for reflectance, nearest for SCL), so V2 puts them back on the native 10 m and 20 m grids. The stacks carry no L2A radiometry tags. 'radiometry' must then be declared per scene as {add_offset, quantification, processing_baseline, offset_removed_upstream, source}. null makes V2 refuse. VERIFY in docs/decisions_4_3.md",
   "scene_index": {
     "exp": "4.3",
     "rel": "data/raw/scene_index_optical_9t.csv",

@@ -1,0 +1,135 @@
+phase,old_path,new_path,reason
+nisar_folder,data/9t/derived/nisar_10m,nisar/derived/9t/nisar_10m,"NISAR derived, gathered for review"
+nisar_folder,data/9t/derived/nisar_dem,nisar/derived/9t/nisar_dem,"NISAR derived, gathered for review"
+nisar_folder,data/9t/derived/nisar_features_5m,nisar/derived/9t/nisar_features_5m,"NISAR derived, gathered for review"
+nisar_folder,data/9t/derived/nisar_gslc_5m,nisar/derived/9t/nisar_gslc_5m,"NISAR derived, gathered for review"
+nisar_folder,data/9t/derived/nisar_rslc_window,nisar/derived/9t/nisar_rslc_window,"NISAR derived, gathered for review"
+nisar_folder,data/9t/derived/nisar_slc_lidar_5m,nisar/derived/9t/nisar_slc_lidar_5m,"NISAR derived, gathered for review"
+nisar_folder,data/9t/derived/nisar_speckle_filters,nisar/derived/9t/nisar_speckle_filters,"NISAR derived, gathered for review"
+nisar_folder,data/9t/results/nisar,nisar/results/9t,"NISAR results, gathered for review"
+nisar_folder,data/613590/derived/nisar_features_5m,nisar/derived/613590/nisar_features_5m,"NISAR derived, gathered for review"
+nisar_folder,data/613590/derived/nisar_gslc_5m,nisar/derived/613590/nisar_gslc_5m,"NISAR derived, gathered for review"
+nisar_folder,data/613590/derived/nisar_rslc_window,nisar/derived/613590/nisar_rslc_window,"NISAR derived, gathered for review"
+nisar_folder,data/613590/derived/nisar_slc_lidar_5m,nisar/derived/613590/nisar_slc_lidar_5m,"NISAR derived, gathered for review"
+nisar_folder,data/613590/results/nisar,nisar/results/613590,"NISAR results, gathered for review"
+nisar_folder,data/warren/derived/nisar_gslc_5m,nisar/derived/warren/nisar_gslc_5m,"NISAR derived, gathered for review"
+nisar_folder,data/warren/results/nisar,nisar/results/warren,"NISAR results, gathered for review"
+nisar_folder,data/mckean/mkf/derived/nisar_gslc_5m,nisar/derived/mkf/nisar_gslc_5m,"NISAR derived, gathered for review"
+nisar_folder,data/mckean/mkf/results/nisar,nisar/results/mkf,"NISAR results, gathered for review"
+nisar_folder,data/9t/derived/weather/nisar_dates_leaf_and_snow_9t.csv,nisar/derived/9t/weather/nisar_dates_leaf_and_snow_9t.csv,NISAR date leaf/snow state
+nisar_folder,data/9t/derived/weather/noaa_snow_at_nisar_dates_9t.csv,nisar/derived/9t/weather/noaa_snow_at_nisar_dates_9t.csv,NISAR date leaf/snow state
+nisar_folder,data/9t/results/s1,nisar/sentinel1/results/9t,Sentinel-1 cross-check results
+nisar_folder,data/613590/results/s1,nisar/sentinel1/results/613590,Sentinel-1 cross-check results
+nisar_folder,data/_source/s1_cslc,nisar/sentinel1/source/s1_cslc,Sentinel-1 OPERA CSLC bursts (git-ignored)
+nisar_folder,data/_source/s1_cslc_windows,nisar/sentinel1/source/s1_cslc_windows,Sentinel-1 OPERA CSLC windows (git-ignored)
+nisar_folder,notebooks/wellsight_v2/_nisar_area.py,nisar/code/_nisar_area.py,NISAR area/path helper
+nisar_folder,notebooks/wellsight_v2/nisar_reflectors,nisar/code/nisar_reflectors,NISAR reflector framework
+nisar_folder,notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py,nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s1_build/_fetch_nisar_rslc_window_9t.py,nisar/code/s1_build/_fetch_nisar_rslc_window_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s1_build/_nisar_geometry.py,nisar/code/s1_build/_nisar_geometry.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py,nisar/code/s1_build/_nisar_regeocode_lidar_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s1_build/archive/_fetch_nisar_9t.py,nisar/code/s1_build/archive/_fetch_nisar_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_chips.py,nisar/code/s5_eval/_nisar_bright_chips.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_coincidence_9t.py,nisar/code/s5_eval/_nisar_bright_coincidence_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_layers_warren.py,nisar/code/s5_eval/_nisar_bright_layers_warren.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_targets_9t.py,nisar/code/s5_eval/_nisar_bright_targets_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_targets_wells_warren.py,nisar/code/s5_eval/_nisar_bright_targets_wells_warren.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_ablate_9t.py,nisar/code/s5_eval/_nisar_feat_ablate_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_amp_trend_9t.py,nisar/code/s5_eval/_nisar_feat_amp_trend_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_coherence_9t.py,nisar/code/s5_eval/_nisar_feat_coherence_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_common.py,nisar/code/s5_eval/_nisar_feat_common.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_dedupe_9t.py,nisar/code/s5_eval/_nisar_feat_dedupe_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_dualpol_9t.py,nisar/code/s5_eval/_nisar_feat_dualpol_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_events_9t.py,nisar/code/s5_eval/_nisar_feat_events_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_fusion_9t.py,nisar/code/s5_eval/_nisar_feat_fusion_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_geometry_9t.py,nisar/code/s5_eval/_nisar_feat_geometry_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_height_resid_9t.py,nisar/code/s5_eval/_nisar_feat_height_resid_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_heldout_9t.py,nisar/code/s5_eval/_nisar_feat_heldout_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_hhhv_9t.py,nisar/code/s5_eval/_nisar_feat_hhhv_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_los_motion_9t.py,nisar/code/s5_eval/_nisar_feat_los_motion_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_model_9t.py,nisar/code/s5_eval/_nisar_feat_model_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_radnorm_9t.py,nisar/code/s5_eval/_nisar_feat_radnorm_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_rain_freeze_9t.py,nisar/code/s5_eval/_nisar_feat_rain_freeze_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_repeat_9t.py,nisar/code/s5_eval/_nisar_feat_repeat_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_road_context_9t.py,nisar/code/s5_eval/_nisar_feat_road_context_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_score_9t.py,nisar/code/s5_eval/_nisar_feat_score_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_spatial_9t.py,nisar/code/s5_eval/_nisar_feat_spatial_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_status_9t.py,nisar/code/s5_eval/_nisar_feat_status_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_subaperture_9t.py,nisar/code/s5_eval/_nisar_feat_subaperture_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_subset_9t.py,nisar/code/s5_eval/_nisar_feat_subset_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_temporal_9t.py,nisar/code/s5_eval/_nisar_feat_temporal_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_texture_9t.py,nisar/code/s5_eval/_nisar_feat_texture_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_features_vs_flatness_9t.py,nisar/code/s5_eval/_nisar_features_vs_flatness_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_flatten_gain_test_9t.py,nisar/code/s5_eval/_nisar_flatten_gain_test_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py,nisar/code/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_gslc_interferogram_pits_9t.py,nisar/code/s5_eval/_nisar_gslc_interferogram_pits_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py,nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_hvflat_9t.py,nisar/code/s5_eval/_nisar_hvflat_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_leaf_state_9t.py,nisar/code/s5_eval/_nisar_leaf_state_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py,nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_optical_feats_9t.py,nisar/code/s5_eval/_nisar_optical_feats_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pad_change_9t.py,nisar/code/s5_eval/_nisar_pad_change_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pad_distance_bands_9t.py,nisar/code/s5_eval/_nisar_pad_distance_bands_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pad_fp_screen_9t.py,nisar/code/s5_eval/_nisar_pad_fp_screen_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pit_chips_9t.py,nisar/code/s5_eval/_nisar_pit_chips_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pit_fixed_subset_9t.py,nisar/code/s5_eval/_nisar_pit_fixed_subset_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pit_fp_screen_9t.py,nisar/code/s5_eval/_nisar_pit_fp_screen_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pol_season_canopy_9t.py,nisar/code/s5_eval/_nisar_pol_season_canopy_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_radar_vs_optical_pads_9t.py,nisar/code/s5_eval/_nisar_radar_vs_optical_pads_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_registration_points_9t.py,nisar/code/s5_eval/_nisar_registration_points_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_signal_checks_9t.py,nisar/code/s5_eval/_nisar_signal_checks_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_slope_motion_9t.py,nisar/code/s5_eval/_nisar_slope_motion_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_speckle_filter_maps_9t.py,nisar/code/s5_eval/_nisar_speckle_filter_maps_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_speckle_filter_seasonal_9t.py,nisar/code/s5_eval/_nisar_speckle_filter_seasonal_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_steel_9t.py,nisar/code/s5_eval/_nisar_steel_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_steel_snapped_9t.py,nisar/code/s5_eval/_nisar_steel_snapped_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_vs_canopy_9t.py,nisar/code/s5_eval/_nisar_vs_canopy_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_9t.py,nisar/code/s5_eval/_nisar_vs_optical_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_heldout_9t.py,nisar/code/s5_eval/_nisar_vs_optical_heldout_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_weak_lidar_9t.py,nisar/code/s5_eval/_nisar_weak_lidar_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_cslc_fetch_9t.py,nisar/sentinel1/code/_s1_cslc_fetch_9t.py,Sentinel-1 script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_cslc_window_fetch_9t.py,nisar/sentinel1/code/_s1_cslc_window_fetch_9t.py,Sentinel-1 script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py,nisar/sentinel1/code/_s1_ifg_pits_9t.py,Sentinel-1 script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py,nisar/sentinel1/code/_s1_metal_cfar_9t.py,Sentinel-1 script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py,nisar/sentinel1/code/_s1_metal_pits_9t.py,Sentinel-1 script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_pit_box_check_9t.py,nisar/sentinel1/code/_s1_pit_box_check_9t.py,Sentinel-1 script
+nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_site_context_9t.py,nisar/sentinel1/code/_s1_site_context_9t.py,Sentinel-1 script
+nisar_folder,notebooks/wellsight_v2/s6_review/_build_nisar_gslc_qgis_project_9t.py,nisar/code/s6_review/_build_nisar_gslc_qgis_project_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s7_analysis/_cross_section_nisar_lines_9t.py,nisar/code/s7_analysis/_cross_section_nisar_lines_9t.py,NISAR script
+nisar_folder,notebooks/wellsight_v2/s7_analysis/_cross_section_nisar_simple_9t.py,nisar/code/s7_analysis/_cross_section_nisar_simple_9t.py,NISAR script
+nisar_folder,NISAR_FINDINGS.md,nisar/docs/NISAR_FINDINGS.md,NISAR doc
+nisar_folder,NISAR_METHODS.md,nisar/docs/NISAR_METHODS.md,NISAR doc
+nisar_folder,docs/nisar_lidar_supplement_proposal.md,nisar/docs/nisar_lidar_supplement_proposal.md,NISAR doc
+nisar_folder,docs/iterations/nisar_area_extension_613590_mkf.md,nisar/docs/iterations/nisar_area_extension_613590_mkf.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_bright_chips.md,nisar/docs/iterations/nisar_bright_chips.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_bright_coincidence.md,nisar/docs/iterations/nisar_bright_coincidence.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_bright_targets_wells_warren.md,nisar/docs/iterations/nisar_bright_targets_wells_warren.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_checks_9t.md,nisar/docs/iterations/nisar_checks_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_corrected_rescoring_9t.md,nisar/docs/iterations/nisar_corrected_rescoring_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_feature_products_plan.md,nisar/docs/iterations/nisar_feature_products_plan.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_followup_checks_9t.md,nisar/docs/iterations/nisar_followup_checks_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md,nisar/docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_gslc_interferogram_pits_9t.md,nisar/docs/iterations/nisar_gslc_interferogram_pits_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md,nisar/docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_heldout_613590_prereg.md,nisar/docs/iterations/nisar_heldout_613590_prereg.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_leaf_and_snow_9t.md,nisar/docs/iterations/nisar_leaf_and_snow_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_methodology_audit_20261026.md,nisar/docs/iterations/nisar_methodology_audit_20261026.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_pad_features_scored_9t.md,nisar/docs/iterations/nisar_pad_features_scored_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_pit_features_scored_9t.md,nisar/docs/iterations/nisar_pit_features_scored_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_pit_fp_screen.md,nisar/docs/iterations/nisar_pit_fp_screen.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_reflector_framework.md,nisar/docs/iterations/nisar_reflector_framework.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_regeocode_plan_9t.md,nisar/docs/iterations/nisar_regeocode_plan_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_review_fixes_flatten_test.md,nisar/docs/iterations/nisar_review_fixes_flatten_test.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_speckle_filters_9t.md,nisar/docs/iterations/nisar_speckle_filters_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_steel_snapped.md,nisar/docs/iterations/nisar_steel_snapped.md,NISAR iteration doc
+nisar_folder,docs/iterations/nisar_wells_steel_pads_slopes_9t.md,nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md,NISAR iteration doc
+nisar_folder,docs/iterations/s1_ifg_pits_9t.md,nisar/sentinel1/docs/s1_ifg_pits_9t.md,Sentinel-1 iteration doc
+nisar_folder,docs/iterations/s1_metal_cfar_9t.md,nisar/sentinel1/docs/s1_metal_cfar_9t.md,Sentinel-1 iteration doc
+nisar_folder,nisar_writeup,nisar/writeup,"NISAR write-up, decks, figures"
+nisar_folder,tmp/nisar_adversarial_20261109,nisar/reviews/nisar_adversarial_20261109,NISAR audits and reviews
+nisar_folder,tmp/nisar_boundary_audit.json,nisar/reviews/nisar_boundary_audit.json,NISAR audits and reviews
+nisar_folder,tmp/nisar_boundary_audit.py,nisar/reviews/nisar_boundary_audit.py,NISAR audits and reviews
+nisar_folder,tmp/nisar_method_audit.json,nisar/reviews/nisar_method_audit.json,NISAR audits and reviews
+nisar_folder,tmp/nisar_method_audit.py,nisar/reviews/nisar_method_audit.py,NISAR audits and reviews
+nisar_folder,tmp/nisar_slide_revision,nisar/reviews/nisar_slide_revision,NISAR audits and reviews
+nisar_folder,qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz,nisar/qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz,NISAR QGIS project

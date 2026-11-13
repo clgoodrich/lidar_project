@@ -4,7 +4,7 @@ THE HONEST FRAMING
 ------------------
 The natural pitch is "use NISAR to find pits". It does not survive contact with
 the numbers already measured over this tile in
-docs/nisar_lidar_supplement_proposal.md:
+nisar/docs/nisar_lidar_supplement_proposal.md:
 
     GCOV backscatter   10 m pixel     ->  100 m2
     GUNW InSAR         80 m pixel     -> 6400 m2

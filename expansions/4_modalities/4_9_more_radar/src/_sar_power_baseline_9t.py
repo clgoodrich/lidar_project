@@ -13,7 +13,7 @@ Eligibility. Power at g = delta_gain + 0.01 at the primary rho is at least 0.80,
 plus the median interval half-width. If no stratum is eligible the test is not run. The record then says "no room,
 untestable at current baseline", which is a statement about the ceiling, not about radar.
 Inputs (one or more --rows files).
-  data/613590/results/nisar/nisar_pit_heldout_scores_613590_slc.csv (held, score column "rich lidar baseline")
+  nisar/results/613590/nisar_pit_heldout_scores_613590_slc.csv (held, score column "rich lidar baseline")
   expansions/4_modalities/4_9_more_radar/data/processed/sar_baseline_rows_pit_9t.csv (assumed, see config)
 Outputs.
   data/9t/results/sar_new/sar_power_by_stratum_9t.csv   one row per input, stratum, rho and g

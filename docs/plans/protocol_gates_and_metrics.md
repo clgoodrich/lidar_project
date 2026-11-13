@@ -29,7 +29,7 @@ Most plans produce evidence about drawn terrain features. Whether a drawn featur
 - The inner validation and training blocks are not reproducible. `sorted(set(block_ids) - held)` places the NaN block (the 209 pit rows and 345 pad rows with no block id) at a position that changes between processes. In four fresh Python 3.13 processes the inner validation list differed in folds 0, 2 and 4. The logged runs cannot be reconstructed from the code.
 - `_save_cv_split_manifests_9t.py` drops NaN before shuffling. Its saved train and validation roles do not match the trained models. Only its held-out lists are valid.
 - The original sampler (`notebooks/wellsight_v2/_dl.py`, lines 249 to 275) draws a centre inside a training block and then reads a full window clipped only to the raster. A window can reach held-out ground. The trainer comment that `block_bounds` prevents this is wrong.
-- The isolated pad trainer `_pad_unet_iso_cv5.py` fixes this for pads. It rejects any window that touches a held-out or inner-validation block (`docs/iterations/nisar_checks_9t.md`, section 7). There is no isolated pit trainer.
+- The isolated pad trainer `_pad_unet_iso_cv5.py` fixes this for pads. It rejects any window that touches a held-out or inner-validation block (`nisar/docs/iterations/nisar_checks_9t.md`, section 7). There is no isolated pit trainer.
 - The trainers compute 14 normalisation numbers once over the original training blocks and reuse them for every fold. This leaks into each fold (trainer docstring).
 - The 209 and 345 rows with no block id are annotations off the tile, not unscored in-tile features (`LEADERBOARD.md`, line 303).
 

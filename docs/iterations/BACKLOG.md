@@ -19,7 +19,7 @@ Full methods: `docs/iterations/expansion_options_methods.md` (geography, modalit
 
 ## NISAR review follow-ups (added 2026-10-19) — OPEN
 
-From `docs/iterations/nisar_review_fixes_flatten_test.md`. Not fixed in that pass.
+From `nisar/docs/iterations/nisar_review_fixes_flatten_test.md`. Not fixed in that pass.
 
 - Bright-target merge (`_nisar_bright_targets_9t.py` `merge_tracks`): links same-track points, chains
   beyond 15 m, takes position and `da_min` from different members, drops per-track positions. Keep per-track
@@ -37,8 +37,8 @@ From `docs/iterations/nisar_review_fixes_flatten_test.md`. Not fixed in that pas
 
 ## NISAR compact reflectors (added 2026-10-19) — FRAMEWORK ONLY
 
-Design: `docs/iterations/nisar_reflector_framework.md`. Python contracts:
-`notebooks/wellsight_v2/nisar_reflectors/`. No processing backend or tests run.
+Design: `nisar/docs/iterations/nisar_reflector_framework.md`. Python contracts:
+`nisar/code/nisar_reflectors/`. No processing backend or tests run.
 
 - Implement frozen manifest and explicit metadata/validity adapters without importing
   analysis modules that consume global command-line arguments.
@@ -276,12 +276,12 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
 - ~~**Test n / dataset-era mixing**~~ **FIXED 2026-07-02**: all four instance evals re-run on the current 65/93 test split with same-era checkpoints (pad_05 Mask R-CNN retrained same day, best = ep 3); LEADERBOARD is now single-era with old numbers quarantined in a legacy block. Still open: report binomial CIs (n = 65/93 is still small).
 - **DEP-well 0.42 recall lacks a null model**: compute random-point matching rate at 25 m before citing it.
 - **NISAR language overshoots**: "InSAR proven viable over PA" rests on one beta fall pair (coherence 0.50, n=1); keep the seasonal-viability framing as a hypothesis until the validated CONUS release (~Jul 2026) + a multi-pair stack.
-- **NISAR GSLC stack follow-ups (added 2026-09-30).** See `docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md`. Against same-shape decoys, pads are 0.2–0.4 dB darker. Pits show about −0.4 dB only when the data are shifted onto the lidar. The shift comes from a weak canopy correlation, ρ ≤ 0.07. To do:
+- **NISAR GSLC stack follow-ups (added 2026-09-30).** See `nisar/docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md`. Against same-shape decoys, pads are 0.2–0.4 dB darker. Pits show about −0.4 dB only when the data are shifted onto the lidar. The shift comes from a weak canopy correlation, ρ ≤ 0.07. To do:
   - register each track against point targets (pumpjacks, tanks, buildings) found in the lidar DSM. This decides whether the pit signal is real.
   - add March–April GSLCs when released. That is the flooded-forest HH double-bounce test for water-filled pits.
-  - ~~coherence from the saved complex windows (reappraisal option 2)~~ **DONE 2026-10-05**: null at pit scale (`docs/iterations/nisar_gslc_interferogram_pits_9t.md`). Tile coherence 0.50 HH in snow-free 12-day pairs, which suits cluster or slope motion (option 3).
+  - ~~coherence from the saved complex windows (reappraisal option 2)~~ **DONE 2026-10-05**: null at pit scale (`nisar/docs/iterations/nisar_gslc_interferogram_pits_9t.md`). Tile coherence 0.50 HH in snow-free 12-day pairs, which suits cluster or slope motion (option 3).
   - re-run the GCOV pad test with decoys. Its −0.44 dB includes a pad-size effect.
-  - **Steel, pad change and slope motion tried 2026-10-07** (`docs/iterations/nisar_wells_steel_pads_slopes_9t.md`). No usable well signal yet. Open items from it:
+  - **Steel, pad change and slope motion tried 2026-10-07** (`nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md`). No usable well signal yet. Open items from it:
     - confirm the NISAR GSLC phase sign from the product specification. The summer slope signal flips meaning on it.
     - get a PA landslide inventory (PAGS) for 9t. The one on disk is in Antarctica.
     - re-run slope motion with a longer snow-free stack (2027) and test for a soil-moisture phase.
@@ -289,21 +289,21 @@ Full three-part audit in `analysis_log.md` (2026-07-01 methodology-evaluation en
     - steel needs finer pixels or more dates. Retry when the full NISAR archive gives 60+ dates per track.
     - (2026-10-08) pit interferogram test: pit rings fall on pads, decoy rings on forest. Keep pads out of the pit ring, or draw each pit's decoys in the same setting (pad or forest). Re-run before trusting the pit-scale null.
     - (2026-10-09) fix the look direction in `_nisar_slope_motion_9t.py` (lines 155–157 assume right-looking). Use the GSLC `losUnitVectorX/Y` cubes per pixel. The aspect result now reads as downslope creep if the phase sign is "positive = toward".
-    - (2026-10-09) re-place NISAR pixels on the lidar ground. Plan in `docs/iterations/nisar_regeocode_plan_9t.md`. **Stage 0 done 2026-10-09: gate failed (0 of 48 blocks within 2.5 m, features 8–12 m away from the satellite on all 3 tracks), so go on to Stage 1 (RSLC fetch).** **Stage 1 done 2026-10-09: 34 RSLC windows held.** **Stage 2 and V1 done 2026-10-10. Our re-placement reproduces NASA's GSLC: placement within 0.02 px, interferogram match 0.998. Next: lidar heights (geoid unit test first), then V2, V3 and the full stack.** **Lidar heights and V3 done 2026-10-12 on 9t: offset 9–12 m down to 1.3–1.6 m, 26 of 48 blocks within 2.5 m. Next: track 026 along-track offset (3 m, also in NASA's stack), V2, re-run the well, pad and pit tests on the corrected stack, then RSLC fetch and re-placement for 613590 and McKean.** **Leftover offsets fixed and V2 run 2026-10-13: check datum fixed, 2 bad granules dropped, dates lined up, each track tied to the lidar. 46 of 48 blocks within 2.5 m on the canopy-modelled check, 48 of 48 within 5 m on bare earth. V2 slope 1.03 / 1.27 / 1.18 (passes on 026 only).** Still open: **(2026-10-13) 9t downstream tests re-run on the corrected stack: abandoned-well lead and pad darkening gone, pit leads stay (see the plan doc). Still open: the same on 613590 (RSLC fetch first) and McKean, and a McKean pad re-check.** **(2026-10-14) 613590 fixed and re-tested: 31 of 48 blocks within 2.5 m, no well signal, pit lead repeats in direction. Open: why 613590 is weaker than 9t (held-out blocks 3-6 of 8), V1 on 613590, McKean (RSLC fetch, track 098 in UTM 18), a fixed-in-advance pit test on fresh data.**
-      - re-run the well, pad and pit tests on the final 9t stack (`data/9t/derived/nisar_slc_lidar_5m/`). Add the `source` switch to `load_complex` first.
+    - (2026-10-09) re-place NISAR pixels on the lidar ground. Plan in `nisar/docs/iterations/nisar_regeocode_plan_9t.md`. **Stage 0 done 2026-10-09: gate failed (0 of 48 blocks within 2.5 m, features 8–12 m away from the satellite on all 3 tracks), so go on to Stage 1 (RSLC fetch).** **Stage 1 done 2026-10-09: 34 RSLC windows held.** **Stage 2 and V1 done 2026-10-10. Our re-placement reproduces NASA's GSLC: placement within 0.02 px, interferogram match 0.998. Next: lidar heights (geoid unit test first), then V2, V3 and the full stack.** **Lidar heights and V3 done 2026-10-12 on 9t: offset 9–12 m down to 1.3–1.6 m, 26 of 48 blocks within 2.5 m. Next: track 026 along-track offset (3 m, also in NASA's stack), V2, re-run the well, pad and pit tests on the corrected stack, then RSLC fetch and re-placement for 613590 and McKean.** **Leftover offsets fixed and V2 run 2026-10-13: check datum fixed, 2 bad granules dropped, dates lined up, each track tied to the lidar. 46 of 48 blocks within 2.5 m on the canopy-modelled check, 48 of 48 within 5 m on bare earth. V2 slope 1.03 / 1.27 / 1.18 (passes on 026 only).** Still open: **(2026-10-13) 9t downstream tests re-run on the corrected stack: abandoned-well lead and pad darkening gone, pit leads stay (see the plan doc). Still open: the same on 613590 (RSLC fetch first) and McKean, and a McKean pad re-check.** **(2026-10-14) 613590 fixed and re-tested: 31 of 48 blocks within 2.5 m, no well signal, pit lead repeats in direction. Open: why 613590 is weaker than 9t (held-out blocks 3-6 of 8), V1 on 613590, McKean (RSLC fetch, track 098 in UTM 18), a fixed-in-advance pit test on fresh data.**
+      - re-run the well, pad and pit tests on the final 9t stack (`nisar/derived/9t/nisar_slc_lidar_5m/`). Add the `source` switch to `load_complex` first.
       - every GSLC loader must drop `BAD_DATES` through `_nisar_area.usable()`. Earlier track 026 results on all 3 areas include 2026-09-08, and McKean's include 2026-07-22.
       - every NASA GSLC stack mixes beta and provisional dates, which sit 3.2 m apart in slant range (4–7 m on the ground). Re-run multi-date GSLC results only on lined-up stacks.
       - RSLC fetch, lidar heights, line-up and per-track constants for 613590 and McKean.
       - report the provisional range offset (2.0–3.9 m long in slant range on 9t) and the track 026 along-track jumps (0–7.7 m) to the NISAR team, with the numbers in the plan doc.
       - find out why the V2 slope is 1.18–1.27 on the ascending tracks.
-    - (2026-10-12) other areas, from `docs/iterations/nisar_area_extension_613590_mkf.md`:
+    - (2026-10-12) other areas, from `nisar/docs/iterations/nisar_area_extension_613590_mkf.md`:
       - abandoned wells beat decoys for steady bright targets in all 3 areas (p 0.063 / 0.21 / 0.017). Fix one test in advance and check it on fresh dates or a 4th area.
       - slope motion in McKean: compare track 162 against 098 (090 misses McKean).
       - McKean pads are annotated in two clusters only. Annotate the rest, or keep decoys inside the annotated clusters.
       - McKean lidar covers 58% of the window. Fetch the missing B19 tiles, or build from `F:/lidar_project/consolidated/lidar_all/mckean_full.las`.
       - steady-target counts scale with how few dates a track has. Require a minimum date count, or scale D_A, before comparing tracks or areas.
     - (2026-10-08) check the 8 two-track bright targets in `nisar_bright_targets_points_9t.gpkg` against imagery. Find out why track 090 gives six times more targets than track 162.
-- **NISAR GCOV pad test, follow-ups (added 2026-09-26).** See `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`. The single January beta image gives a faint pad signal: open pads are about 0.8 dB darker in HH. The open/closed control is also weak (HV AUC 0.62). To do:
+- **NISAR GCOV pad test, follow-ups (added 2026-09-26).** See `nisar/docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`. The single January beta image gives a faint pad signal: open pads are about 0.8 dB darker in HH. The open/closed control is also weak (HV AUC 0.62). To do:
   - repeat on a leaf-on or fall snow-free GCOV granule
   - average several dates to beat speckle
   - measure the ~10 m E / 5 m N beta misregistration against a sharp target, not canopy correlation
@@ -670,7 +670,7 @@ write-up). Deferred refinements from that same advice:
 
 ## NISAR outstanding checks after the 2026-10-26 reviews — DONE 2026-10-27
 
-All ten items were run. Results: `docs/iterations/nisar_checks_9t.md`. None changed the conclusion (NISAR does not add to lidar on 9t). Still open after those checks:
+All ten items were run. Results: `nisar/docs/iterations/nisar_checks_9t.md`. None changed the conclusion (NISAR does not add to lidar on 9t). Still open after those checks:
 - A pad held-out test on a second tile. 613590 has no annotated pad polygons, so only pits (36) were tested. Needs pad annotation on another tile with NISAR coverage.
 - The unresolved disagreement between the tile-wide design (NISAR 0.64) and the local-decoy design (0.48). Not a subset effect. Not explained.
 - A calibrated HV noise floor. The RSLC windows carry no noise table.
@@ -678,9 +678,9 @@ All ten items were run. Results: `docs/iterations/nisar_checks_9t.md`. None chan
 - Change detection through time, and areas without lidar. Never tested here.
 - Confuser test has only about 60 pads with enough matched clearing ground. More annotated pads or a looser match would give it power.
 
-## NISAR follow-up checks after the two reviews of NISAR_FINDINGS.md — DONE 2026-10-27
-All seven were run. Results: `docs/iterations/nisar_followup_checks_9t.md`. Closed: the tile-wide 0.64 against local 0.48 (a place effect, distance bands), the weak-lidar test, radar against Sentinel-2, terrain flattening of HV, the pit-drop split, the optical audit. Still open:
-- Pad held-out test on a second tile. Blocked by labels. Mark `verdict` in `data/613590/results/nisar/nisar_pad_review_candidates_613590.gpkg` (161 candidates) in QGIS and add missed pads, then write the pad version of `_nisar_feat_heldout_9t.py` (plan in the iteration doc, section 6).
+## NISAR follow-up checks after the two reviews of nisar/docs/NISAR_FINDINGS.md — DONE 2026-10-27
+All seven were run. Results: `nisar/docs/iterations/nisar_followup_checks_9t.md`. Closed: the tile-wide 0.64 against local 0.48 (a place effect, distance bands), the weak-lidar test, radar against Sentinel-2, terrain flattening of HV, the pit-drop split, the optical audit. Still open:
+- Pad held-out test on a second tile. Blocked by labels. Mark `verdict` in `nisar/results/613590/nisar_pad_review_candidates_613590.gpkg` (161 candidates) in QGIS and add missed pads, then write the pad version of `_nisar_feat_heldout_9t.py` (plan in the iteration doc, section 6).
 - Registration from point targets. The test with lidar objects was null and uninformative. Needs a better point set (surveyed structures, corner reflectors) or a different method.
 - Pads against other clearings, radar against Sentinel-2. 60 pads tie them. Needs more annotated pads or a looser match.
 - Pit decoys with footprint matching alone and incidence matching alone. The split inside the design step is unknown.

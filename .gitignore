@@ -231,3 +231,21 @@ data/_source/reference/wells_can/
 
 # side package: copies of 9t annotations + RRIM (rrim 0.5 m is 176 MB, regenerable)
 share_9t_annotations_rrim/
+
+# --- nisar/ folder (2026-11-13): NISAR and Sentinel-1 work gathered for review ---
+# data/**/derived/** no longer matches these, so the same rules are repeated here.
+nisar/derived/**
+!nisar/derived/**/
+!nisar/derived/**/_PROVENANCE.json
+!nisar/derived/**/*.md
+!nisar/derived/**/*.json
+!nisar/derived/**/*.csv
+!nisar/derived/**/*_preview.png
+!nisar/derived/**/*_quicklook.png
+# per-directory rules that stood before the move (whole directory ignored, csv included)
+nisar/derived/warren/nisar_gslc_5m/
+nisar/derived/9t/nisar_features_5m/
+nisar/derived/warren/nisar_features_5m/
+nisar/derived/613590/nisar_features_5m/
+# Sentinel-1 source bursts and windows (regenerable, 4.7 GB)
+nisar/sentinel1/source/

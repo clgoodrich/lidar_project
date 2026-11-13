@@ -49,7 +49,7 @@ What changed on 2026-11-06.
 - V3 runs on the unmatched population layer by default. On the matched layer it returns `not_identifiable`.
 - V0 counts records only inside the dates the scenes can see. It refuses placeholder code lists.
 - The audit set is read through `ek.require_audit`. Bootstrap intervals count undefined draws.
-- The held stack dates come from the script that wrote them (`notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_9t.py`). They are 2026-06-03, 2026-09-07 and 2025-10-27, not the mid-month placeholders.
+- The held stack dates come from the script that wrote them (`nisar/code/s5_eval/_nisar_vs_optical_9t.py`). They are 2026-06-03, 2026-09-07 and 2025-10-27, not the mid-month placeholders.
 
 Runs. All numbers are from the JSON files named.
 - `results/20261105_vegstress_labels_7f82a84/vegstress_label_counts_9t.json`. Hanley and McNeil check. At AUC 0.70 with 40 per class the SE is 0.058 and the lower bound is 0.585, above 0.5. Fourteen per class is the smallest equal n that clears 0.5 under simple random sampling. Lease clustering widens this. Unchanged.

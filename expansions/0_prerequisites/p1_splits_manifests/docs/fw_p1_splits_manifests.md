@@ -32,7 +32,7 @@ Out. Retraining headline models (a later decision after S6). Road models (covere
 | Blocks | `data/9t/derived/05/pit_blocks_9t.gpkg` | held |
 | Pit trainer | `notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py` | held |
 | Pad trainer | `notebooks/wellsight_v2/s3_train/_pad_unet_cv5.py` | held |
-| Isolated pad trainer | `notebooks/wellsight_v2/s3_train/_pad_unet_iso_cv5.py` | held, documented in `docs/iterations/nisar_checks_9t.md` section 7 |
+| Isolated pad trainer | `notebooks/wellsight_v2/s3_train/_pad_unet_iso_cv5.py` | held, documented in `nisar/docs/iterations/nisar_checks_9t.md` section 7 |
 | Sampler | `notebooks/wellsight_v2/_dl.py` lines 235 to 290 (`CenteredPatchSampler`) | held |
 | Pit checkpoints | `data/9t/models/pit/unet_cv5/fold{0..4}/` | held, 5 each |
 | Pad checkpoints | `data/9t/models/pad/unet_cv5/fold{0..4}/` | held |

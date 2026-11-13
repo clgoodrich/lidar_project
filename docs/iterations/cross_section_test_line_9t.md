@@ -15,7 +15,7 @@ Draw a cross section of the ground along one line, with the pads, pits and roads
 | Lines | One feature per line in layer `test_line`. Line 1 is 111.3 m long, bearing 28° (SSW to NNE). Drawn in EPSG:4326 and reprojected to EPSG:6346. | `test_line_cross_section.gpkg` (repo root, user-owned, not committed) |
 | Ground | 2019 lidar DEM, 1 m | `data/9t/derived/1m/dem_9t_1m.tif` |
 | Surface top | 2019 lidar DSM, 1 m. Canopy, brush and structures. | `data/9t/derived/1m/dsm_9t_1m.tif` |
-| Radar | NISAR summer 2026 mean, track 162, HH and HV, 5 m, as delivered | `data/9t/derived/nisar_gslc_5m/nisar_{hh,hv}_summer_2026_track162_9t_5m.tif` |
+| Radar | NISAR summer 2026 mean, track 162, HH and HV, 5 m, as delivered | `nisar/derived/9t/nisar_gslc_5m/nisar_{hh,hv}_summer_2026_track162_9t_5m.tif` |
 | Features | `plat` (pads), `pit_outside` (whole pit incl. rim), `pit_inside` (pit floor), `roads` (centrelines) | `qgis/annotations/annotations_proj.gpkg` |
 
 ## Method

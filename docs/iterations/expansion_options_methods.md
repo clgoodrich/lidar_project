@@ -50,7 +50,7 @@ The pasted list says "your ~200 labels". The repo holds 712 pits and 995 pads on
 4. **Independent labels.** No label may come from the model being tested, from the radar, or from the same lidar the model reads. If a label does, say so next to the number.
 5. **Unmatched is not negative.** A candidate with no record nearby may be an undocumented well. It becomes a negative only after outside adjudication. Keep an uncertain category.
 6. **Spatial splits.** Split by block or by whole area. Bootstrap over blocks, not over rows.
-7. **Controls.** Decoys are matched on slope within 3 degrees, de-duplicated, and used to measure a placebo rate. Method precedent is `notebooks/wellsight_v2/s7_analysis/_change_features_9t.py` and `notebooks/wellsight_v2/s5_eval/_nisar_feat_dedupe_9t.py`.
+7. **Controls.** Decoys are matched on slope within 3 degrees, de-duplicated, and used to measure a placebo rate. Method precedent is `notebooks/wellsight_v2/s7_analysis/_change_features_9t.py` and `nisar/code/s5_eval/_nisar_feat_dedupe_9t.py`.
 8. **Report negatives** in the same format as positives.
 9. **Candidates stay candidates.** Nothing is called a confirmed well without field or record confirmation. Every candidate carries a score, the method and the distance to the nearest known well.
 10. **Housekeeping.** Colourblind-safe figures validated over all pairs. Full paths for new files. Short descriptive names. Any file of 100 MB or more gets a `.gitignore` rule in the same change. Literature used in a design goes into `literature/CITATIONS.md` in the same change.

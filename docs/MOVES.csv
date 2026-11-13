@@ -26678,3 +26678,271 @@ ts,phase,old_path,new_path,size_bytes,reason
 2026-11-09T03:09:43+00:00,poster,docs/agu_abstract_2026.md,agu_poster/agu_abstract_2026.md,14730,AGU poster gets its own folder (user request 2026-11-08)
 2026-11-09T03:09:43+00:00,poster,docs/agu abstract colton.docx,agu_poster/agu abstract colton.docx,12551,AGU poster gets its own folder (user request 2026-11-08)
 2026-11-09T03:20:28+00:00,poster,docs/AGU_poster.pptx,agu_poster/AGU_poster.pptx,708017,user poster template joins agu_poster/ (2026-11-08)
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/nisar_10m,nisar/derived/9t/nisar_10m,1533759,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/nisar_dem,nisar/derived/9t/nisar_dem,44725356,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/nisar_features_5m,nisar/derived/9t/nisar_features_5m,2503723705,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/nisar_gslc_5m,nisar/derived/9t/nisar_gslc_5m,489457363,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/nisar_rslc_window,nisar/derived/9t/nisar_rslc_window,1562722704,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/nisar_slc_lidar_5m,nisar/derived/9t/nisar_slc_lidar_5m,629745044,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/nisar_speckle_filters,nisar/derived/9t/nisar_speckle_filters,65950388,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/results/nisar,nisar/results/9t,85771563,"NISAR results, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/613590/derived/nisar_features_5m,nisar/derived/613590/nisar_features_5m,967646420,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/613590/derived/nisar_gslc_5m,nisar/derived/613590/nisar_gslc_5m,384541090,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/613590/derived/nisar_rslc_window,nisar/derived/613590/nisar_rslc_window,1120619290,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/613590/derived/nisar_slc_lidar_5m,nisar/derived/613590/nisar_slc_lidar_5m,485731340,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/613590/results/nisar,nisar/results/613590,18299671,"NISAR results, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/warren/derived/nisar_gslc_5m,nisar/derived/warren/nisar_gslc_5m,507340465,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/warren/results/nisar,nisar/results/warren,2973528,"NISAR results, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/mckean/mkf/derived/nisar_gslc_5m,nisar/derived/mkf/nisar_gslc_5m,2058643067,"NISAR derived, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/mckean/mkf/results/nisar,nisar/results/mkf,15008051,"NISAR results, gathered for review"
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/weather/nisar_dates_leaf_and_snow_9t.csv,nisar/derived/9t/weather/nisar_dates_leaf_and_snow_9t.csv,2726,NISAR date leaf/snow state
+2026-11-13T19:43:58+00:00,nisar_folder,data/9t/derived/weather/noaa_snow_at_nisar_dates_9t.csv,nisar/derived/9t/weather/noaa_snow_at_nisar_dates_9t.csv,1794,NISAR date leaf/snow state
+2026-11-13T19:45:04+00:00,nisar_folder,data/613590/results/s1,nisar/sentinel1/results/613590,123848,Sentinel-1 cross-check results
+2026-11-13T19:45:04+00:00,nisar_folder,data/_source/s1_cslc,nisar/sentinel1/source/s1_cslc,4559657688,Sentinel-1 OPERA CSLC bursts (git-ignored)
+2026-11-13T19:45:04+00:00,nisar_folder,data/_source/s1_cslc_windows,nisar/sentinel1/source/s1_cslc_windows,1212165072,Sentinel-1 OPERA CSLC windows (git-ignored)
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/_nisar_area.py,nisar/code/_nisar_area.py,4616,NISAR area/path helper
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/nisar_reflectors,nisar/code/nisar_reflectors,11729,NISAR reflector framework
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py,nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py,10012,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s1_build/_fetch_nisar_rslc_window_9t.py,nisar/code/s1_build/_fetch_nisar_rslc_window_9t.py,10774,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s1_build/_nisar_geometry.py,nisar/code/s1_build/_nisar_geometry.py,12170,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py,nisar/code/s1_build/_nisar_regeocode_lidar_9t.py,31898,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s1_build/archive/_fetch_nisar_9t.py,nisar/code/s1_build/archive/_fetch_nisar_9t.py,5133,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_chips.py,nisar/code/s5_eval/_nisar_bright_chips.py,7489,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_coincidence_9t.py,nisar/code/s5_eval/_nisar_bright_coincidence_9t.py,2633,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_layers_warren.py,nisar/code/s5_eval/_nisar_bright_layers_warren.py,1464,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_targets_9t.py,nisar/code/s5_eval/_nisar_bright_targets_9t.py,8147,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_bright_targets_wells_warren.py,nisar/code/s5_eval/_nisar_bright_targets_wells_warren.py,4819,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_ablate_9t.py,nisar/code/s5_eval/_nisar_feat_ablate_9t.py,3285,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_amp_trend_9t.py,nisar/code/s5_eval/_nisar_feat_amp_trend_9t.py,2227,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_coherence_9t.py,nisar/code/s5_eval/_nisar_feat_coherence_9t.py,5040,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_common.py,nisar/code/s5_eval/_nisar_feat_common.py,9107,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_dedupe_9t.py,nisar/code/s5_eval/_nisar_feat_dedupe_9t.py,3362,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_dualpol_9t.py,nisar/code/s5_eval/_nisar_feat_dualpol_9t.py,2419,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_events_9t.py,nisar/code/s5_eval/_nisar_feat_events_9t.py,1900,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_fusion_9t.py,nisar/code/s5_eval/_nisar_feat_fusion_9t.py,4669,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_geometry_9t.py,nisar/code/s5_eval/_nisar_feat_geometry_9t.py,2813,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_height_resid_9t.py,nisar/code/s5_eval/_nisar_feat_height_resid_9t.py,6221,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_heldout_9t.py,nisar/code/s5_eval/_nisar_feat_heldout_9t.py,4000,NISAR script
+2026-11-13T19:45:04+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_hhhv_9t.py,nisar/code/s5_eval/_nisar_feat_hhhv_9t.py,4440,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_los_motion_9t.py,nisar/code/s5_eval/_nisar_feat_los_motion_9t.py,2949,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_model_9t.py,nisar/code/s5_eval/_nisar_feat_model_9t.py,5235,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_radnorm_9t.py,nisar/code/s5_eval/_nisar_feat_radnorm_9t.py,7465,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_rain_freeze_9t.py,nisar/code/s5_eval/_nisar_feat_rain_freeze_9t.py,3321,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_repeat_9t.py,nisar/code/s5_eval/_nisar_feat_repeat_9t.py,6606,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_road_context_9t.py,nisar/code/s5_eval/_nisar_feat_road_context_9t.py,2465,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_score_9t.py,nisar/code/s5_eval/_nisar_feat_score_9t.py,21112,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_spatial_9t.py,nisar/code/s5_eval/_nisar_feat_spatial_9t.py,3827,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_status_9t.py,nisar/code/s5_eval/_nisar_feat_status_9t.py,3929,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_subaperture_9t.py,nisar/code/s5_eval/_nisar_feat_subaperture_9t.py,5456,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_subset_9t.py,nisar/code/s5_eval/_nisar_feat_subset_9t.py,1803,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_temporal_9t.py,nisar/code/s5_eval/_nisar_feat_temporal_9t.py,3451,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_feat_texture_9t.py,nisar/code/s5_eval/_nisar_feat_texture_9t.py,3202,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_features_vs_flatness_9t.py,nisar/code/s5_eval/_nisar_features_vs_flatness_9t.py,8137,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_flatten_gain_test_9t.py,nisar/code/s5_eval/_nisar_flatten_gain_test_9t.py,6728,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py,nisar/code/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py,17387,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_gslc_interferogram_pits_9t.py,nisar/code/s5_eval/_nisar_gslc_interferogram_pits_9t.py,19854,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py,nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py,27210,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_hvflat_9t.py,nisar/code/s5_eval/_nisar_hvflat_9t.py,3175,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_leaf_state_9t.py,nisar/code/s5_eval/_nisar_leaf_state_9t.py,5197,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py,nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py,27043,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_optical_feats_9t.py,nisar/code/s5_eval/_nisar_optical_feats_9t.py,2384,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pad_change_9t.py,nisar/code/s5_eval/_nisar_pad_change_9t.py,13194,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pad_distance_bands_9t.py,nisar/code/s5_eval/_nisar_pad_distance_bands_9t.py,4727,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pad_fp_screen_9t.py,nisar/code/s5_eval/_nisar_pad_fp_screen_9t.py,13946,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pit_chips_9t.py,nisar/code/s5_eval/_nisar_pit_chips_9t.py,3359,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pit_fixed_subset_9t.py,nisar/code/s5_eval/_nisar_pit_fixed_subset_9t.py,4361,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pit_fp_screen_9t.py,nisar/code/s5_eval/_nisar_pit_fp_screen_9t.py,6449,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_pol_season_canopy_9t.py,nisar/code/s5_eval/_nisar_pol_season_canopy_9t.py,1412,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_radar_vs_optical_pads_9t.py,nisar/code/s5_eval/_nisar_radar_vs_optical_pads_9t.py,3991,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_registration_points_9t.py,nisar/code/s5_eval/_nisar_registration_points_9t.py,4505,NISAR script
+2026-11-13T19:45:05+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_signal_checks_9t.py,nisar/code/s5_eval/_nisar_signal_checks_9t.py,9274,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_slope_motion_9t.py,nisar/code/s5_eval/_nisar_slope_motion_9t.py,16269,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_speckle_filter_maps_9t.py,nisar/code/s5_eval/_nisar_speckle_filter_maps_9t.py,2401,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_speckle_filter_seasonal_9t.py,nisar/code/s5_eval/_nisar_speckle_filter_seasonal_9t.py,7823,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_steel_9t.py,nisar/code/s5_eval/_nisar_steel_9t.py,14570,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_steel_snapped_9t.py,nisar/code/s5_eval/_nisar_steel_snapped_9t.py,6932,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_vs_canopy_9t.py,nisar/code/s5_eval/_nisar_vs_canopy_9t.py,5253,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_9t.py,nisar/code/s5_eval/_nisar_vs_optical_9t.py,8164,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_vs_optical_heldout_9t.py,nisar/code/s5_eval/_nisar_vs_optical_heldout_9t.py,7859,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_nisar_weak_lidar_9t.py,nisar/code/s5_eval/_nisar_weak_lidar_9t.py,6145,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_cslc_fetch_9t.py,nisar/sentinel1/code/_s1_cslc_fetch_9t.py,3299,Sentinel-1 script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_cslc_window_fetch_9t.py,nisar/sentinel1/code/_s1_cslc_window_fetch_9t.py,4460,Sentinel-1 script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_ifg_pits_9t.py,nisar/sentinel1/code/_s1_ifg_pits_9t.py,12406,Sentinel-1 script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py,nisar/sentinel1/code/_s1_metal_cfar_9t.py,16302,Sentinel-1 script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py,nisar/sentinel1/code/_s1_metal_pits_9t.py,9833,Sentinel-1 script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_pit_box_check_9t.py,nisar/sentinel1/code/_s1_pit_box_check_9t.py,3253,Sentinel-1 script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s5_eval/_s1_site_context_9t.py,nisar/sentinel1/code/_s1_site_context_9t.py,6039,Sentinel-1 script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s6_review/_build_nisar_gslc_qgis_project_9t.py,nisar/code/s6_review/_build_nisar_gslc_qgis_project_9t.py,7567,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s7_analysis/_cross_section_nisar_lines_9t.py,nisar/code/s7_analysis/_cross_section_nisar_lines_9t.py,4254,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,notebooks/wellsight_v2/s7_analysis/_cross_section_nisar_simple_9t.py,nisar/code/s7_analysis/_cross_section_nisar_simple_9t.py,2697,NISAR script
+2026-11-13T19:45:06+00:00,nisar_folder,NISAR_FINDINGS.md,nisar/docs/NISAR_FINDINGS.md,20713,NISAR doc
+2026-11-13T19:45:06+00:00,nisar_folder,NISAR_METHODS.md,nisar/docs/NISAR_METHODS.md,39712,NISAR doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/nisar_lidar_supplement_proposal.md,nisar/docs/nisar_lidar_supplement_proposal.md,9373,NISAR doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_area_extension_613590_mkf.md,nisar/docs/iterations/nisar_area_extension_613590_mkf.md,10073,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_bright_chips.md,nisar/docs/iterations/nisar_bright_chips.md,8098,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_bright_coincidence.md,nisar/docs/iterations/nisar_bright_coincidence.md,2076,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_bright_targets_wells_warren.md,nisar/docs/iterations/nisar_bright_targets_wells_warren.md,2510,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_checks_9t.md,nisar/docs/iterations/nisar_checks_9t.md,20910,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_corrected_rescoring_9t.md,nisar/docs/iterations/nisar_corrected_rescoring_9t.md,11170,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_feature_products_plan.md,nisar/docs/iterations/nisar_feature_products_plan.md,14037,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_followup_checks_9t.md,nisar/docs/iterations/nisar_followup_checks_9t.md,17135,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md,nisar/docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md,9700,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_gslc_interferogram_pits_9t.md,nisar/docs/iterations/nisar_gslc_interferogram_pits_9t.md,5859,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md,nisar/docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md,13732,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_heldout_613590_prereg.md,nisar/docs/iterations/nisar_heldout_613590_prereg.md,5178,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_leaf_and_snow_9t.md,nisar/docs/iterations/nisar_leaf_and_snow_9t.md,3607,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_methodology_audit_20261026.md,nisar/docs/iterations/nisar_methodology_audit_20261026.md,14850,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_pad_features_scored_9t.md,nisar/docs/iterations/nisar_pad_features_scored_9t.md,8576,NISAR iteration doc
+2026-11-13T19:45:06+00:00,nisar_folder,docs/iterations/nisar_pit_features_scored_9t.md,nisar/docs/iterations/nisar_pit_features_scored_9t.md,4002,NISAR iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/nisar_pit_fp_screen.md,nisar/docs/iterations/nisar_pit_fp_screen.md,2991,NISAR iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/nisar_reflector_framework.md,nisar/docs/iterations/nisar_reflector_framework.md,15306,NISAR iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/nisar_regeocode_plan_9t.md,nisar/docs/iterations/nisar_regeocode_plan_9t.md,51088,NISAR iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/nisar_review_fixes_flatten_test.md,nisar/docs/iterations/nisar_review_fixes_flatten_test.md,13990,NISAR iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/nisar_speckle_filters_9t.md,nisar/docs/iterations/nisar_speckle_filters_9t.md,3908,NISAR iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/nisar_steel_snapped.md,nisar/docs/iterations/nisar_steel_snapped.md,2425,NISAR iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/nisar_wells_steel_pads_slopes_9t.md,nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md,14024,NISAR iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/s1_ifg_pits_9t.md,nisar/sentinel1/docs/s1_ifg_pits_9t.md,7284,Sentinel-1 iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,docs/iterations/s1_metal_cfar_9t.md,nisar/sentinel1/docs/s1_metal_cfar_9t.md,9397,Sentinel-1 iteration doc
+2026-11-13T19:45:07+00:00,nisar_folder,nisar_writeup,nisar/writeup,10802238,"NISAR write-up, decks, figures"
+2026-11-13T19:45:07+00:00,nisar_folder,tmp/nisar_adversarial_20261109,nisar/reviews/nisar_adversarial_20261109,155561,NISAR audits and reviews
+2026-11-13T19:45:07+00:00,nisar_folder,tmp/nisar_boundary_audit.json,nisar/reviews/nisar_boundary_audit.json,1256,NISAR audits and reviews
+2026-11-13T19:45:07+00:00,nisar_folder,tmp/nisar_boundary_audit.py,nisar/reviews/nisar_boundary_audit.py,2026,NISAR audits and reviews
+2026-11-13T19:45:07+00:00,nisar_folder,tmp/nisar_method_audit.json,nisar/reviews/nisar_method_audit.json,2669,NISAR audits and reviews
+2026-11-13T19:45:07+00:00,nisar_folder,tmp/nisar_method_audit.py,nisar/reviews/nisar_method_audit.py,4514,NISAR audits and reviews
+2026-11-13T19:45:07+00:00,nisar_folder,tmp/nisar_slide_revision,nisar/reviews/nisar_slide_revision,6198212,NISAR audits and reviews
+2026-11-13T19:45:07+00:00,nisar_folder,qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz,nisar/qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz,21583,NISAR QGIS project
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_by_pair_apr2025_9t.csv,nisar/sentinel1/results/9t/s1_ifg_pits_by_pair_apr2025_9t.csv,442,Sentinel-1 cross-check results
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_by_pair_apr2026_9t.csv,nisar/sentinel1/results/9t/s1_ifg_pits_by_pair_apr2026_9t.csv,308,Sentinel-1 cross-check results
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_by_pair_aprall_9t.csv,nisar/sentinel1/results/9t/s1_ifg_pits_by_pair_aprall_9t.csv,3071,Sentinel-1 cross-check results
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_by_pair_octnov2025_9t.csv,nisar/sentinel1/results/9t/s1_ifg_pits_by_pair_octnov2025_9t.csv,1280,Sentinel-1 cross-check results
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_per_pit_apr2025_9t.csv,nisar/sentinel1/results/9t/s1_ifg_pits_per_pit_apr2025_9t.csv,123925,Sentinel-1 cross-check results
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_per_pit_apr2026_9t.csv,nisar/sentinel1/results/9t/s1_ifg_pits_per_pit_apr2026_9t.csv,91433,Sentinel-1 cross-check results
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_per_pit_aprall_9t.csv,nisar/sentinel1/results/9t/s1_ifg_pits_per_pit_aprall_9t.csv,1473252,Sentinel-1 cross-check results
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_per_pit_octnov2025_9t.csv,nisar/sentinel1/results/9t/s1_ifg_pits_per_pit_octnov2025_9t.csv,503761,Sentinel-1 cross-check results
+2026-11-13T20:11:26+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_summary_apr2025_9t.json,nisar/sentinel1/results/9t/s1_ifg_pits_summary_apr2025_9t.json,768,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_summary_apr2026_9t.json,nisar/sentinel1/results/9t/s1_ifg_pits_summary_apr2026_9t.json,744,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_summary_aprall_9t.json,nisar/sentinel1/results/9t/s1_ifg_pits_summary_aprall_9t.json,1605,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_ifg_pits_summary_octnov2025_9t.json,nisar/sentinel1/results/9t/s1_ifg_pits_summary_octnov2025_9t.json,847,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_cfar_candidates_fullyear_9t613590.gpkg,nisar/sentinel1/results/9t/s1_metal_cfar_candidates_fullyear_9t613590.gpkg,188416,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_cfar_hit_rates_fullyear_9t613590.csv,nisar/sentinel1/results/9t/s1_metal_cfar_hit_rates_fullyear_9t613590.csv,1075,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_cfar_map_fullyear_9t613590.png,nisar/sentinel1/results/9t/s1_metal_cfar_map_fullyear_9t613590.png,1806114,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_cfar_summary_fullyear_9t613590.json,nisar/sentinel1/results/9t/s1_metal_cfar_summary_fullyear_9t613590.json,602,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_cfar_wells_fullyear_9t613590.gpkg,nisar/sentinel1/results/9t/s1_metal_cfar_wells_fullyear_9t613590.gpkg,585728,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_pits_hit_rates_april_9t613590.csv,nisar/sentinel1/results/9t/s1_metal_pits_hit_rates_april_9t613590.csv,1054,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_pits_hit_rates_fullyear_9t613590.csv,nisar/sentinel1/results/9t/s1_metal_pits_hit_rates_fullyear_9t613590.csv,1089,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_pits_map_april_9t613590.png,nisar/sentinel1/results/9t/s1_metal_pits_map_april_9t613590.png,1300354,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_pits_map_fullyear_9t613590.png,nisar/sentinel1/results/9t/s1_metal_pits_map_fullyear_9t613590.png,1317051,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_pits_scored_april_9t613590.gpkg,nisar/sentinel1/results/9t/s1_metal_pits_scored_april_9t613590.gpkg,1478656,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_pits_scored_fullyear_9t613590.gpkg,nisar/sentinel1/results/9t/s1_metal_pits_scored_fullyear_9t613590.gpkg,1478656,Sentinel-1 cross-check results
+2026-11-13T20:11:27+00:00,nisar_folder,data/9t/results/s1/s1_metal_pits_summary_april_9t613590.json,nisar/sentinel1/results/9t/s1_metal_pits_summary_april_9t613590.json,483,Sentinel-1 cross-check results
+2026-11-13T20:11:28+00:00,nisar_folder,data/9t/results/s1/s1_metal_pits_summary_fullyear_9t613590.json,nisar/sentinel1/results/9t/s1_metal_pits_summary_fullyear_9t613590.json,485,Sentinel-1 cross-check results
+2026-11-13T20:11:28+00:00,nisar_folder,data/9t/results/s1/sites/s1_site_pit295_9t.png,nisar/sentinel1/results/9t/sites/s1_site_pit295_9t.png,1496419,Sentinel-1 cross-check results
+2026-11-13T20:11:28+00:00,nisar_folder,data/9t/results/s1/sites/s1_site_point1_9t.png,nisar/sentinel1/results/9t/sites/s1_site_point1_9t.png,946567,Sentinel-1 cross-check results
+2026-11-13T20:11:28+00:00,nisar_folder,data/9t/results/s1/sites/s1_site_point2_9t.png,nisar/sentinel1/results/9t/sites/s1_site_point2_9t.png,854259,Sentinel-1 cross-check results
+2026-11-13T20:11:28+00:00,nisar_folder,data/9t/results/s1/sites/s1_site_point3_9t.png,nisar/sentinel1/results/9t/sites/s1_site_point3_9t.png,746097,Sentinel-1 cross-check results
+2026-11-13T20:22:11+00:00,nisar_folder_undo,nisar/qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz,qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz,21583,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:11+00:00,nisar_folder_undo,nisar/reviews/nisar_slide_revision,tmp/nisar_slide_revision,6198212,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:11+00:00,nisar_folder_undo,nisar/reviews/nisar_method_audit.py,tmp/nisar_method_audit.py,4524,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:11+00:00,nisar_folder_undo,nisar/reviews/nisar_method_audit.json,tmp/nisar_method_audit.json,2669,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:11+00:00,nisar_folder_undo,nisar/reviews/nisar_boundary_audit.py,tmp/nisar_boundary_audit.py,2036,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:11+00:00,nisar_folder_undo,nisar/reviews/nisar_boundary_audit.json,tmp/nisar_boundary_audit.json,1256,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:11+00:00,nisar_folder_undo,nisar/reviews/nisar_adversarial_20261109,tmp/nisar_adversarial_20261109,155307,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:11+00:00,nisar_folder_undo,nisar/writeup,nisar_writeup,10801085,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/sentinel1/docs/s1_metal_cfar_9t.md,docs/iterations/s1_metal_cfar_9t.md,9301,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/sentinel1/docs/s1_ifg_pits_9t.md,docs/iterations/s1_ifg_pits_9t.md,7186,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md,docs/iterations/nisar_wells_steel_pads_slopes_9t.md,13758,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_steel_snapped.md,docs/iterations/nisar_steel_snapped.md,2414,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_speckle_filters_9t.md,docs/iterations/nisar_speckle_filters_9t.md,3857,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_review_fixes_flatten_test.md,docs/iterations/nisar_review_fixes_flatten_test.md,13653,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_regeocode_plan_9t.md,docs/iterations/nisar_regeocode_plan_9t.md,50148,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_reflector_framework.md,docs/iterations/nisar_reflector_framework.md,15289,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_pit_fp_screen.md,docs/iterations/nisar_pit_fp_screen.md,2898,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_pit_features_scored_9t.md,docs/iterations/nisar_pit_features_scored_9t.md,3935,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_pad_features_scored_9t.md,docs/iterations/nisar_pad_features_scored_9t.md,8438,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_methodology_audit_20261026.md,docs/iterations/nisar_methodology_audit_20261026.md,14890,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_leaf_and_snow_9t.md,docs/iterations/nisar_leaf_and_snow_9t.md,3597,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_heldout_613590_prereg.md,docs/iterations/nisar_heldout_613590_prereg.md,5097,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md,docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md,13451,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_gslc_interferogram_pits_9t.md,docs/iterations/nisar_gslc_interferogram_pits_9t.md,5826,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md,docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md,9517,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_followup_checks_9t.md,docs/iterations/nisar_followup_checks_9t.md,17119,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_feature_products_plan.md,docs/iterations/nisar_feature_products_plan.md,14018,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_corrected_rescoring_9t.md,docs/iterations/nisar_corrected_rescoring_9t.md,10995,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_checks_9t.md,docs/iterations/nisar_checks_9t.md,20649,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_bright_targets_wells_warren.md,docs/iterations/nisar_bright_targets_wells_warren.md,2470,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_bright_coincidence.md,docs/iterations/nisar_bright_coincidence.md,2065,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_bright_chips.md,docs/iterations/nisar_bright_chips.md,7972,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/iterations/nisar_area_extension_613590_mkf.md,docs/iterations/nisar_area_extension_613590_mkf.md,9899,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/nisar_lidar_supplement_proposal.md,docs/nisar_lidar_supplement_proposal.md,9373,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/NISAR_METHODS.md,NISAR_METHODS.md,39207,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/docs/NISAR_FINDINGS.md,NISAR_FINDINGS.md,20483,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/sentinel1/source/s1_cslc_windows,data/_source/s1_cslc_windows,1212165072,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/sentinel1/source/s1_cslc,data/_source/s1_cslc,4559657688,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/9t/weather/noaa_snow_at_nisar_dates_9t.csv,data/9t/derived/weather/noaa_snow_at_nisar_dates_9t.csv,1794,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/9t/weather/nisar_dates_leaf_and_snow_9t.csv,data/9t/derived/weather/nisar_dates_leaf_and_snow_9t.csv,2726,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/mkf/nisar_gslc_5m,data/mckean/mkf/derived/nisar_gslc_5m,2058643067,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/warren/nisar_gslc_5m,data/warren/derived/nisar_gslc_5m,507340465,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/613590/nisar_slc_lidar_5m,data/613590/derived/nisar_slc_lidar_5m,485731340,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/613590/nisar_rslc_window,data/613590/derived/nisar_rslc_window,1120619290,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/613590/nisar_gslc_5m,data/613590/derived/nisar_gslc_5m,384541090,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/613590/nisar_features_5m,data/613590/derived/nisar_features_5m,967646420,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:12+00:00,nisar_folder_undo,nisar/derived/9t/nisar_speckle_filters,data/9t/derived/nisar_speckle_filters,65950388,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:13+00:00,nisar_folder_undo,nisar/derived/9t/nisar_slc_lidar_5m,data/9t/derived/nisar_slc_lidar_5m,629745044,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:13+00:00,nisar_folder_undo,nisar/derived/9t/nisar_rslc_window,data/9t/derived/nisar_rslc_window,1562722704,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:13+00:00,nisar_folder_undo,nisar/derived/9t/nisar_gslc_5m,data/9t/derived/nisar_gslc_5m,489457363,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:13+00:00,nisar_folder_undo,nisar/derived/9t/nisar_features_5m,data/9t/derived/nisar_features_5m,2503723705,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:13+00:00,nisar_folder_undo,nisar/derived/9t/nisar_dem,data/9t/derived/nisar_dem,44725356,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:22:13+00:00,nisar_folder_undo,nisar/derived/9t/nisar_10m,data/9t/derived/nisar_10m,1533759,back to original place: user wants only scripts and outputs in nisar/
+2026-11-13T20:23:31+00:00,nisar_folder,data/9t/derived/nisar_10m,nisar/derived/9t/nisar_10m,1533759,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/9t/derived/nisar_dem,nisar/derived/9t/nisar_dem,44725356,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/9t/derived/nisar_features_5m,nisar/derived/9t/nisar_features_5m,2503723705,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/9t/derived/nisar_gslc_5m,nisar/derived/9t/nisar_gslc_5m,489457363,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/9t/derived/nisar_rslc_window,nisar/derived/9t/nisar_rslc_window,1562722704,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/9t/derived/nisar_slc_lidar_5m,nisar/derived/9t/nisar_slc_lidar_5m,629745044,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/9t/derived/nisar_speckle_filters,nisar/derived/9t/nisar_speckle_filters,65950388,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/613590/derived/nisar_features_5m,nisar/derived/613590/nisar_features_5m,967646420,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/613590/derived/nisar_gslc_5m,nisar/derived/613590/nisar_gslc_5m,384541090,"NISAR derived, gathered for review"
+2026-11-13T20:23:31+00:00,nisar_folder,data/613590/derived/nisar_rslc_window,nisar/derived/613590/nisar_rslc_window,1120619290,"NISAR derived, gathered for review"
+2026-11-13T20:23:32+00:00,nisar_folder,data/613590/derived/nisar_slc_lidar_5m,nisar/derived/613590/nisar_slc_lidar_5m,485731340,"NISAR derived, gathered for review"
+2026-11-13T20:23:32+00:00,nisar_folder,data/warren/derived/nisar_gslc_5m,nisar/derived/warren/nisar_gslc_5m,507340465,"NISAR derived, gathered for review"
+2026-11-13T20:23:32+00:00,nisar_folder,data/mckean/mkf/derived/nisar_gslc_5m,nisar/derived/mkf/nisar_gslc_5m,2058643067,"NISAR derived, gathered for review"
+2026-11-13T20:23:32+00:00,nisar_folder,data/9t/derived/weather/nisar_dates_leaf_and_snow_9t.csv,nisar/derived/9t/weather/nisar_dates_leaf_and_snow_9t.csv,2726,NISAR date leaf/snow state
+2026-11-13T20:23:32+00:00,nisar_folder,data/9t/derived/weather/noaa_snow_at_nisar_dates_9t.csv,nisar/derived/9t/weather/noaa_snow_at_nisar_dates_9t.csv,1794,NISAR date leaf/snow state
+2026-11-13T20:23:32+00:00,nisar_folder,data/_source/s1_cslc,nisar/sentinel1/source/s1_cslc,4559657688,Sentinel-1 OPERA CSLC bursts (git-ignored)
+2026-11-13T20:23:32+00:00,nisar_folder,data/_source/s1_cslc_windows,nisar/sentinel1/source/s1_cslc_windows,1212165072,Sentinel-1 OPERA CSLC windows (git-ignored)
+2026-11-13T20:23:32+00:00,nisar_folder,NISAR_FINDINGS.md,nisar/docs/NISAR_FINDINGS.md,20483,NISAR doc
+2026-11-13T20:23:32+00:00,nisar_folder,NISAR_METHODS.md,nisar/docs/NISAR_METHODS.md,39207,NISAR doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/nisar_lidar_supplement_proposal.md,nisar/docs/nisar_lidar_supplement_proposal.md,9373,NISAR doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_area_extension_613590_mkf.md,nisar/docs/iterations/nisar_area_extension_613590_mkf.md,9899,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_bright_chips.md,nisar/docs/iterations/nisar_bright_chips.md,7972,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_bright_coincidence.md,nisar/docs/iterations/nisar_bright_coincidence.md,2065,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_bright_targets_wells_warren.md,nisar/docs/iterations/nisar_bright_targets_wells_warren.md,2470,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_checks_9t.md,nisar/docs/iterations/nisar_checks_9t.md,20649,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_corrected_rescoring_9t.md,nisar/docs/iterations/nisar_corrected_rescoring_9t.md,10995,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_feature_products_plan.md,nisar/docs/iterations/nisar_feature_products_plan.md,14018,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_followup_checks_9t.md,nisar/docs/iterations/nisar_followup_checks_9t.md,17119,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md,nisar/docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md,9517,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_gslc_interferogram_pits_9t.md,nisar/docs/iterations/nisar_gslc_interferogram_pits_9t.md,5826,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md,nisar/docs/iterations/nisar_gslc_stack_pad_pit_seasonal_9t.md,13451,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_heldout_613590_prereg.md,nisar/docs/iterations/nisar_heldout_613590_prereg.md,5097,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_leaf_and_snow_9t.md,nisar/docs/iterations/nisar_leaf_and_snow_9t.md,3597,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_methodology_audit_20261026.md,nisar/docs/iterations/nisar_methodology_audit_20261026.md,14890,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_pad_features_scored_9t.md,nisar/docs/iterations/nisar_pad_features_scored_9t.md,8438,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_pit_features_scored_9t.md,nisar/docs/iterations/nisar_pit_features_scored_9t.md,3935,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_pit_fp_screen.md,nisar/docs/iterations/nisar_pit_fp_screen.md,2898,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_reflector_framework.md,nisar/docs/iterations/nisar_reflector_framework.md,15289,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_regeocode_plan_9t.md,nisar/docs/iterations/nisar_regeocode_plan_9t.md,50148,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_review_fixes_flatten_test.md,nisar/docs/iterations/nisar_review_fixes_flatten_test.md,13653,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_speckle_filters_9t.md,nisar/docs/iterations/nisar_speckle_filters_9t.md,3857,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_steel_snapped.md,nisar/docs/iterations/nisar_steel_snapped.md,2414,NISAR iteration doc
+2026-11-13T20:23:32+00:00,nisar_folder,docs/iterations/nisar_wells_steel_pads_slopes_9t.md,nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md,13758,NISAR iteration doc
+2026-11-13T20:23:33+00:00,nisar_folder,docs/iterations/s1_ifg_pits_9t.md,nisar/sentinel1/docs/s1_ifg_pits_9t.md,7186,Sentinel-1 iteration doc
+2026-11-13T20:23:33+00:00,nisar_folder,docs/iterations/s1_metal_cfar_9t.md,nisar/sentinel1/docs/s1_metal_cfar_9t.md,9301,Sentinel-1 iteration doc
+2026-11-13T20:23:33+00:00,nisar_folder,nisar_writeup,nisar/writeup,10801085,"NISAR write-up, decks, figures"
+2026-11-13T20:23:33+00:00,nisar_folder,tmp/nisar_adversarial_20261109,nisar/reviews/nisar_adversarial_20261109,155307,NISAR audits and reviews
+2026-11-13T20:23:33+00:00,nisar_folder,tmp/nisar_boundary_audit.json,nisar/reviews/nisar_boundary_audit.json,1256,NISAR audits and reviews
+2026-11-13T20:23:33+00:00,nisar_folder,tmp/nisar_boundary_audit.py,nisar/reviews/nisar_boundary_audit.py,2036,NISAR audits and reviews
+2026-11-13T20:23:33+00:00,nisar_folder,tmp/nisar_method_audit.json,nisar/reviews/nisar_method_audit.json,2669,NISAR audits and reviews
+2026-11-13T20:23:33+00:00,nisar_folder,tmp/nisar_method_audit.py,nisar/reviews/nisar_method_audit.py,4524,NISAR audits and reviews
+2026-11-13T20:23:33+00:00,nisar_folder,tmp/nisar_slide_revision,nisar/reviews/nisar_slide_revision,6198212,NISAR audits and reviews
+2026-11-13T20:23:33+00:00,nisar_folder,qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz,nisar/qgis/nisar_gslc_seasonal_backscatter_draped_on_lidar_dem_9t_5m.qgz,21583,NISAR QGIS project

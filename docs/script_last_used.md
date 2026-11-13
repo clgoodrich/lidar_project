@@ -83,7 +83,7 @@ Source: `docs/analysis_log.md`, 137 dated entries from 2026-04-30 to 2026-08-06.
 
 ## Run, but longer ago
 
-- `notebooks/wellsight_v2/s1_build/archive/_fetch_nisar_9t.py` — last run 2026-06-27 (46 days)
+- `nisar/code/s1_build/archive/_fetch_nisar_9t.py` — last run 2026-06-27 (46 days)
 - `notebooks/wellsight_v2/s1_build/archive/_build_exag_derivatives.py` — last run 2026-06-17 (56 days)
 - `notebooks/wellsight_v2/s1_build/archive/_fetch_permian_grids.py` — last run 2026-06-17 (56 days)
 - `notebooks/wellsight_v2/s4_infer/_pad_unet_infer_grid.py` — last run 2026-06-17 (56 days)

@@ -1,7 +1,7 @@
 """S5 of framework 4.9. Paired AUC gain of each SAR arm over the rich lidar baseline, out of fold, by block.
 
 Purpose. Same model family and CV as the NISAR result. fit_predict and oof_probs are imported from
-notebooks/wellsight_v2/s5_eval/_nisar_feat_common.py (histogram gradient boosting, band dropping and median
+nisar/code/s5_eval/_nisar_feat_common.py (histogram gradient boosting, band dropping and median
 imputation inside the training fold, 5-fold GroupKFold by block, training rows within 250 m of a test row removed).
 Repeat 0 is the deterministic GroupKFold. Repeats 1 to n are StratifiedGroupKFold with child seeds. Scores are the
 mean out-of-fold probability over repeats. Then per arm and stratum

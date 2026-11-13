@@ -2,7 +2,7 @@
 
 WHY THIS COPY EXISTS
 --------------------
-The audit of 2026-10-26 (docs/iterations/nisar_methodology_audit_20261026.md, finding 3) showed that the original
+The audit of 2026-10-26 (nisar/docs/iterations/nisar_methodology_audit_20261026.md, finding 3) showed that the original
 `_pad_unet_cv5.py` chooses a training patch centre inside a training block but reads the whole 384 px window. The
 window can reach into a held-out block, so the model can train on held-out pixels and labels. Simulated exposure
 was 18% to 22% of background draws per fold.

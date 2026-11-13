@@ -40,10 +40,10 @@ is the source of record.
 | Suh et al. | 2021 | U-Net on lidar for relict charcoal hearths | *Candidate* — closest published analogue; motivates VAT/SVF channels | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Richards | 2009 | Remote Sensing with Imaging Radar (Springer), ch. 3 imaging geometry | Slant-range, layover, foreshortening and shadow conditions in the SAR geometry simulator | `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py`; `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html` | cite-only |
 | Small | 2011 | Flattening gamma: radiometric terrain correction for SAR imagery (IEEE TGRS 49(8):3081) | Illuminated-area weighting and layover/shadow handling in the simulated backscatter | same as Richards 2009 | cite-only |
-| JPL / NASA | 2024 | NISAR DEM v1.2 (Copernicus GLO-30 2023_1 on the WGS84 ellipsoid), doi:10.5067/NIDEM-1 | The exact heights NASA used for the GSLC, used in check V1 of the NISAR re-placement | `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`; `data/9t/derived/nisar_dem/DEM_N41_00_W080_00_C01.tif` | data; README and licence beside the tile |
-| ISCE3 developers | 2024 | ISCE3 InSAR Scientific Computing Environment (software), github.com/isce-framework/isce3 | Conventions reproduced in the NISAR re-placement: zero-Doppler geometry, Doppler deramp/reramp around sinc interpolation, 6 x 6 spline "biquintic" DEM interpolation | `notebooks/wellsight_v2/s1_build/_nisar_geometry.py` | cite-only (software) |
-| Fattahi, Agram & Simons | 2017 | Network-based enhanced spectral diversity for TOPS time series (IEEE TGRS 55(2):777) | **Adopted 2026-10-13** — one offset per date solved by least squares from every date pair, to line up the NISAR dates of each 9t track | `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`; `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`; `data/9t/results/nisar/nisar_slc_date_offsets_9t.csv` | ✓ `fattahi_2017_network_esd_tops_coregistration.pdf` (author copy) |
-| NGS / IOGP EPSG | 2014–2016 | EPSG:8970 ITRF2014 to NAD83(2011) (time-dependent Helmert) and NOAA NGS GEOID12B | Lidar NAVD88 heights to the radar's ellipsoid and frame (2026-10-12), and the radar-to-lidar grid offset removed in check V3 (2026-10-13) | `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`; `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py` | data / standard |
+| JPL / NASA | 2024 | NISAR DEM v1.2 (Copernicus GLO-30 2023_1 on the WGS84 ellipsoid), doi:10.5067/NIDEM-1 | The exact heights NASA used for the GSLC, used in check V1 of the NISAR re-placement | `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py`; `nisar/derived/9t/nisar_dem/DEM_N41_00_W080_00_C01.tif` | data; README and licence beside the tile |
+| ISCE3 developers | 2024 | ISCE3 InSAR Scientific Computing Environment (software), github.com/isce-framework/isce3 | Conventions reproduced in the NISAR re-placement: zero-Doppler geometry, Doppler deramp/reramp around sinc interpolation, 6 x 6 spline "biquintic" DEM interpolation | `nisar/code/s1_build/_nisar_geometry.py` | cite-only (software) |
+| Fattahi, Agram & Simons | 2017 | Network-based enhanced spectral diversity for TOPS time series (IEEE TGRS 55(2):777) | **Adopted 2026-10-13** — one offset per date solved by least squares from every date pair, to line up the NISAR dates of each 9t track | `nisar/code/s1_build/_nisar_geometry.py`; `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py`; `nisar/results/9t/nisar_slc_date_offsets_9t.csv` | ✓ `fattahi_2017_network_esd_tops_coregistration.pdf` (author copy) |
+| NGS / IOGP EPSG | 2014–2016 | EPSG:8970 ITRF2014 to NAD83(2011) (time-dependent Helmert) and NOAA NGS GEOID12B | Lidar NAVD88 heights to the radar's ellipsoid and frame (2026-10-12), and the radar-to-lidar grid offset removed in check V3 (2026-10-13) | `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py`; `nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py` | data / standard |
 | Zakšek et al. | 2011 | Sky-View Factor | *Candidate* — new channel, pending redundancy check vs `openness_pos` | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Guyot et al. | 2018 | Multi-visualization CNN for buried structures | *Candidate* — supports the channel-stack approach | `docs/iterations/pit_refinement_options.md` | cite-only |
 | Verschoof-van der Vaart & Lambers | 2019 | WODAN, R-CNN on lidar | Benchmark context | `docs/iterations/benchmark_context_what_counts_as_good.md` | cite-only |
@@ -410,10 +410,10 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Citation:** Small, D. (2011). "Flattening Gamma: Radiometric Terrain Correction for SAR Imagery." *IEEE Transactions on Geoscience and Remote Sensing* 49(8), 3081–3093. doi:10.1109/TGRS.2011.2120616.
 - **About:** Normalises SAR backscatter by the true illuminated area from a DEM, rather than by an ellipsoid. Slopes facing toward and away from the radar then become comparable.
 - **Used for:** NISAR GCOV delivers RTC gamma-0 by this method. It is why pads on hillsides can be compared with their forest ring in the NISAR pad test. Backscatter is averaged in linear power before conversion to dB.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py`; `data/9t/derived/nisar_10m/nisar_gcov_hh_gamma0_db_20260120_9t_10m.tif`; `data/9t/derived/nisar_10m/nisar_gcov_hv_gamma0_db_20260120_9t_10m.tif`; `data/9t/results/nisar/`; `docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`.
+- **Generated:** `nisar/code/s5_eval/_nisar_gcov_pad_vs_forest_backscatter_9t.py`; `nisar/derived/9t/nisar_10m/nisar_gcov_hh_gamma0_db_20260120_9t_10m.tif`; `nisar/derived/9t/nisar_10m/nisar_gcov_hv_gamma0_db_20260120_9t_10m.tif`; `nisar/results/9t/`; `nisar/docs/iterations/nisar_gcov_pad_vs_forest_backscatter_9t.md`.
 - **Also used for (2026-09-29):** illuminated-area weighting of backscatter in the SAR geometry simulator, `notebooks/wellsight_v2/s7_analysis/_build_sar_geometry_simulator_613590.py` -> `data/613590/results/sar_geometry/sar_geometry_simulator_layover_foreshortening_shadow_800m_613590_2m.html`.
-- **Also used for (2026-10-09):** area-projection brightness of the lidar bare-earth radar simulation in NISAR Stage 0, `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py` -> `data/9t/derived/nisar_gslc_5m/nisar_lidar_sim_t{026,090,162}_9t.tif`, `data/9t/results/nisar/nisar_lidar_sim_match_shifts_9t.csv`, `data/9t/results/nisar/figures/nisar_lidar_sim_match_9t.png`; plan `docs/iterations/nisar_regeocode_plan_9t.md`.
-- **Also used for (2026-10-10):** `layover_shadow` and `rtc_area_factor` in `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`, for the lidar-based NISAR re-placement.
+- **Also used for (2026-10-09):** area-projection brightness of the lidar bare-earth radar simulation in NISAR Stage 0, `nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py` -> `nisar/derived/9t/nisar_gslc_5m/nisar_lidar_sim_t{026,090,162}_9t.tif`, `nisar/results/9t/nisar_lidar_sim_match_shifts_9t.csv`, `nisar/results/9t/figures/nisar_lidar_sim_match_9t.png`; plan `nisar/docs/iterations/nisar_regeocode_plan_9t.md`.
+- **Also used for (2026-10-10):** `layover_shadow` and `rtc_area_factor` in `nisar/code/s1_build/_nisar_geometry.py`, for the lidar-based NISAR re-placement.
 - **Source:** https://doi.org/10.1109/TGRS.2011.2120616 — cite-only (paywalled IEEE).
 - **Data note:** the GCOV granule's own metadata names its terrain model as the NISAR DEM v1.2 (doi:10.5067/NIDEM-1), built from Copernicus DEM GLO-30 2023_1 (doi:10.5270/ESA-c5d3d65). The Copernicus licence terms apply to any redistribution.
 
@@ -421,14 +421,14 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Citation:** Jet Propulsion Laboratory (2024). *Copernicus DEM for NISAR v1.2 (EPSG 4326).* NASA Alaska Satellite Facility DAAC. doi:10.5067/NIDEM-1. Built from Copernicus DEM GLO-30 COP-DEM_GLO-30-DGED/2023_1 (doi:10.5270/ESA-c5d3d65), converted from EGM2008 to the WGS84 ellipsoid.
 - **About:** The global DEM that NISAR processing uses to place radar pixels and remove topographic phase.
 - **Used for:** Check V1 of the NISAR re-placement. With NASA's exact heights, our copy of the GSLC can be compared with theirs like for like.
-- **Generated:** `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`; `data/9t/results/nisar/nisar_regeocode_v1_checks_9t.csv`; `docs/iterations/nisar_regeocode_plan_9t.md`. Tile `data/9t/derived/nisar_dem/DEM_N41_00_W080_00_C01.tif` (gitignored, 43 MB).
+- **Generated:** `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py`; `nisar/results/9t/nisar_regeocode_v1_checks_9t.csv`; `nisar/docs/iterations/nisar_regeocode_plan_9t.md`. Tile `nisar/derived/9t/nisar_dem/DEM_N41_00_W080_00_C01.tif` (gitignored, 43 MB).
 - **Source:** https://nisar.asf.earthdatacloud.nasa.gov/NISAR/DEM/v1.2/EPSG4326/ (Earthdata login). Copernicus DEM licence terms apply to redistribution. `LICENSE.pdf` and `README.txt` are kept beside the tile.
 
 ### ISCE3 — InSAR Scientific Computing Environment (software)
 - **Citation:** ISCE3 developers (2024). *ISCE3: InSAR Scientific Computing Environment, version 3.* Jet Propulsion Laboratory / California Institute of Technology. https://github.com/isce-framework/isce3
 - **About:** The open-source processor behind NISAR's L1 and L2 products, including GSLC geocoding.
 - **Used for:** ISCE3 does not run on Windows, so its conventions were rebuilt in numpy and confirmed against NASA's GSLC. They are zero-Doppler geometry from the orbit, Doppler deramp and reramp around sinc interpolation, the 6 x 6 spline that ISCE calls "biquintic", and range flattening. Each was settled by a measured comparison (plan doc, check V1), not taken from the code.
-- **Generated:** `notebooks/wellsight_v2/s1_build/_nisar_geometry.py`; `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py`.
+- **Generated:** `nisar/code/s1_build/_nisar_geometry.py`; `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py`.
 - **Source:** https://github.com/isce-framework/isce3 (cite-only, software).
 
 ### Richards 2009 — imaging radar geometry
@@ -456,7 +456,7 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Citation:** Touzi, R., Lopes, A., Bruniquel, J., & Vachon, P. W. (1999). "Coherence estimation for SAR imagery." *IEEE Transactions on Geoscience and Remote Sensing* 37(1), 135–149. doi:10.1109/36.739146.
 - **About:** The sample coherence estimator over a moving window, and its upward bias when the number of looks is small and true coherence is low.
 - **Used for:** Coherence at well pits from NISAR GSLC pairs over 9t, with a 3 x 3 (9-look) window. The bias is why pits are compared with rings and same-shape decoys under the same window, not read as absolute values.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_gslc_interferogram_pits_9t.py`; `data/9t/results/nisar/nisar_gslc_interferogram_pits_vs_decoys_win3_9t_5m_summary.json`; `data/9t/derived/nisar_gslc_5m/nisar_interferogram_coherence_hh_win3_t090A_20260912_20260924_9t_5m.tif`; `docs/iterations/nisar_gslc_interferogram_pits_9t.md`.
+- **Generated:** `nisar/code/s5_eval/_nisar_gslc_interferogram_pits_9t.py`; `nisar/results/9t/nisar_gslc_interferogram_pits_vs_decoys_win3_9t_5m_summary.json`; `nisar/derived/9t/nisar_gslc_5m/nisar_interferogram_coherence_hh_win3_t090A_20260912_20260924_9t_5m.tif`; `nisar/docs/iterations/nisar_gslc_interferogram_pits_9t.md`.
 - **Source:** https://doi.org/10.1109/36.739146 — cite-only (paywalled IEEE).
 
 ### Zebker & Villasenor 1992 — decorrelation in interferometric radar echoes
@@ -470,15 +470,15 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Citation:** Ferretti, A., Prati, C., & Rocca, F. (2001). "Permanent scatterers in SAR interferometry." *IEEE Transactions on Geoscience and Remote Sensing* 39(1), 8–20. doi:10.1109/36.898661.
 - **About:** Points that keep a stable echo over a long SAR stack. They are picked by the amplitude dispersion index D_A = std / mean of amplitude, with D_A < 0.25.
 - **Used for:** The steel test at DEP wells in 9t. A steady bright target is D_A < 0.25 and at least 6 dB above its surroundings.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_steel_9t.py`; `docs/iterations/nisar_wells_steel_pads_slopes_9t.md`; `data/9t/results/nisar/nisar_steel_summary_9t.json`.
-- **Also used (2026-11-13):** D_A < 0.25 steadiness test in the Sentinel-1 small-metal CFAR experiment. Generated `notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py`; `docs/iterations/s1_metal_cfar_9t.md`; `data/9t/results/s1/s1_metal_cfar_summary_fullyear_9t613590.json`.
+- **Generated:** `nisar/code/s5_eval/_nisar_steel_9t.py`; `nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md`; `nisar/results/9t/nisar_steel_summary_9t.json`.
+- **Also used (2026-11-13):** D_A < 0.25 steadiness test in the Sentinel-1 small-metal CFAR experiment. Generated `nisar/sentinel1/code/_s1_metal_cfar_9t.py`; `nisar/sentinel1/docs/s1_metal_cfar_9t.md`; `nisar/sentinel1/results/9t/s1_metal_cfar_summary_fullyear_9t613590.json`.
 - **Source:** https://doi.org/10.1109/36.898661 — cite-only (paywalled IEEE).
 
 ### Berardino et al. 2002 — small-baseline InSAR time series
 - **Citation:** Berardino, P., Fornaro, G., Lanari, R., & Sansosti, E. (2002). "A new algorithm for surface deformation monitoring based on small baseline differential SAR interferograms." *IEEE Transactions on Geoscience and Remote Sensing* 40(11), 2375–2383. doi:10.1109/TGRS.2002.803792.
 - **About:** Ground displacement time series from many short-baseline, multilooked interferograms.
 - **Used for:** The summer slope-motion stack in 9t, a simple chain version: consecutive 12–24 day pairs, 25 m multilook, cumulative phase.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_slope_motion_9t.py`; `docs/iterations/nisar_wells_steel_pads_slopes_9t.md`; `data/9t/results/nisar/nisar_slope_motion_summary_9t.json`.
+- **Generated:** `nisar/code/s5_eval/_nisar_slope_motion_9t.py`; `nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md`; `nisar/results/9t/nisar_slope_motion_summary_9t.json`.
 - **Source:** https://doi.org/10.1109/TGRS.2002.803792 — cite-only (paywalled IEEE).
 
 ### De Zan et al. 2014 — soil moisture and interferometric phase
@@ -492,21 +492,21 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Citation:** Fattahi, H., Agram, P., & Simons, M. (2017). "A Network-Based Enhanced Spectral Diversity Approach for TOPS Time-Series Analysis." *IEEE Transactions on Geoscience and Remote Sensing* 55(2), 777–786. doi:10.1109/TGRS.2016.2614925.
 - **About:** Every date of a Sentinel-1 TOPS stack must be co-registered very precisely along track. The paper measures the misregistration on many date pairs, not against one reference date, and solves for one offset per date by least squares. The network beats temporal decorrelation.
 - **Used for:** Lining up the NISAR dates of each 9t track. NASA's beta and provisional granules sit 3.2 m apart in slant range, and track 026 dates jump metres along track. Every pair of dates is registered by sub-pixel phase correlation of the amplitude. One slant-range and azimuth offset per date is solved by least squares, with the provisional dates' mean held at zero. Lining up raised track 026 12-day coherence from 0.31 to 0.52.
-- **Generated:** `notebooks/wellsight_v2/s1_build/_nisar_geometry.py` (`network_offsets`); `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py` (`--estimate-offsets`, `--write --coreg`); `data/9t/results/nisar/nisar_slc_date_offsets_9t.csv`; `data/9t/results/nisar/nisar_slc_pair_coherence_9t.csv`; `docs/iterations/nisar_regeocode_plan_9t.md`.
+- **Generated:** `nisar/code/s1_build/_nisar_geometry.py` (`network_offsets`); `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py` (`--estimate-offsets`, `--write --coreg`); `nisar/results/9t/nisar_slc_date_offsets_9t.csv`; `nisar/results/9t/nisar_slc_pair_coherence_9t.csv`; `nisar/docs/iterations/nisar_regeocode_plan_9t.md`.
 - **Source:** https://doi.org/10.1109/TGRS.2016.2614925. Local copy: `literature/papers/fattahi_2017_network_esd_tops_coregistration.pdf`, the author copy from https://web.gps.caltech.edu/~simons/publications/pdfs/Fattahi_2016.pdf.
 
 ### NGS and EPSG — NAD83(2011) to ITRF2014, and GEOID12B
 - **Citation:** IOGP EPSG Geodetic Parameter Dataset, transformation EPSG:8970 "ITRF2014 to NAD83(2011) (1)", a time-dependent coordinate frame rotation with reference epoch 2010.0, built by NOAA NGS and NRCan. Applied through PROJ 9.5. NOAA National Geodetic Survey (2014). *GEOID12B.* https://geodesy.noaa.gov/GEOID/GEOID12B/, read as the PROJ grid `us_noaa_g2012bu0.tif`.
 - **About:** The 14-parameter link between the North American datum and the global frame, and the hybrid geoid that turns NAVD88 heights into NAD83(2011) ellipsoid heights.
 - **Used for:** (1) 2026-10-12: lidar bare-earth heights (NAVD88, NAD83(2011)) turned into the WGS84 ellipsoid heights the NISAR geometry needs, with ITRF2014 standing in for WGS84. PROJ's own NAD83(2011) to "WGS 84" route is a null transform. (2) 2026-10-13: the lidar simulation grid (NAD83(2011)) sits 0.80 m east and 1.01 m south of the radar grid on 9t at epoch 2026.39. Check V3 now removes that offset.
-- **Generated:** `notebooks/wellsight_v2/s1_build/_nisar_regeocode_lidar_9t.py` (`lidar_heights`); `notebooks/wellsight_v2/s5_eval/_nisar_lidar_sim_match_9t.py` (`datum_offset`); `data/9t/derived/nisar_slc_lidar_5m/`; `data/9t/results/nisar/nisar_lidar_sim_match_summary*_9t.json`; `docs/iterations/nisar_regeocode_plan_9t.md`.
+- **Generated:** `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py` (`lidar_heights`); `nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py` (`datum_offset`); `nisar/derived/9t/nisar_slc_lidar_5m/`; `nisar/results/9t/nisar_lidar_sim_match_summary*_9t.json`; `nisar/docs/iterations/nisar_regeocode_plan_9t.md`.
 - **Source:** EPSG registry https://epsg.org/transformation_8970/ and https://geodesy.noaa.gov/GEOID/GEOID12B/ — data and standards, no PDF.
 
 ### Cloude & Pottier 1997 — entropy / alpha decomposition
 - **Citation:** Cloude, S. R., & Pottier, E. (1997). "An entropy based classification scheme for land applications of polarimetric SAR." *IEEE Transactions on Geoscience and Remote Sensing* 35(1), 68-78. doi:10.1109/36.551935.
 - **About:** Eigen-decomposition of the polarimetric covariance into entropy, alpha and anisotropy.
 - **Used for:** 2026-10-26: entropy, alpha and degree-of-polarisation bands from the 2 x 2 HH/HV covariance.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_dualpol_9t.py`; `data/9t/derived/nisar_features_5m/nisar_feat_dualpol_9t_5m.tif`.
+- **Generated:** `nisar/code/s5_eval/_nisar_feat_dualpol_9t.py`; `nisar/derived/9t/nisar_features_5m/nisar_feat_dualpol_9t_5m.tif`.
 - **Source:** cite-only, https://doi.org/10.1109/36.551935
 
 ### Kim & van Zyl 2009 — radar vegetation index
@@ -520,28 +520,28 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Citation:** Touzi, R., Lopes, A., & Vachon, P. W. (1988). "Edge detection in SAR images using a constant false alarm rate ratio of averages." *IEEE Transactions on Geoscience and Remote Sensing* 26(6), 764-773. doi:10.1109/36.7708.
 - **About:** Ratio of local means across a half-window pair as a speckle-robust edge strength.
 - **Used for:** 2026-10-26: `roa_edge` band in the texture product.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_texture_9t.py`; `data/9t/derived/nisar_features_5m/nisar_feat_texture_9t_5m.tif`.
+- **Generated:** `nisar/code/s5_eval/_nisar_feat_texture_9t.py`; `nisar/derived/9t/nisar_features_5m/nisar_feat_texture_9t_5m.tif`.
 - **Source:** cite-only, https://doi.org/10.1109/36.7708
 
 ### Daly et al. 2008 — PRISM climate data
 - **Citation:** Daly, C., Halbleib, M., Smith, J. I., Gibson, W. P., Doggett, M. K., Taylor, G. H., Curtis, J., & Pasteris, P. P. (2008). "Physiographically sensitive mapping of climatological temperature and precipitation across the conterminous United States." *International Journal of Climatology* 28(15), 2031-2064. doi:10.1002/joc.1688. Data: PRISM Climate Group, Oregon State University, https://prism.oregonstate.edu.
 - **About:** Method behind the 4 km PRISM daily rain and temperature grids.
 - **Used for:** 2026-10-26: daily rain and min/max temperature at the 9t centre for the rain and freeze product.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_weather_prism_daily_9t.py`; `data/9t/derived/weather/weather_prism_daily_9t.csv`; `data/9t/derived/nisar_features_5m/nisar_feat_rainfreeze_9t_5m.tif`.
+- **Generated:** `notebooks/wellsight_v2/s5_eval/_weather_prism_daily_9t.py`; `data/9t/derived/weather/weather_prism_daily_9t.csv`; `nisar/derived/9t/nisar_features_5m/nisar_feat_rainfreeze_9t_5m.tif`.
 - **Source:** cite-only, https://doi.org/10.1002/joc.1688 and https://services.nacse.org/prism/data/get/us/4km/
 
 ### Kohler & Linsley 1951 — antecedent precipitation index
 - **Citation:** Kohler, M. A., & Linsley, R. K. (1951). "Predicting the runoff from storm rainfall." U.S. Weather Bureau Research Paper 34.
 - **About:** Soil-wetness proxy from decayed prior rainfall.
 - **Used for:** 2026-10-26: the 10-day, 0.85-decay API that each NISAR date is regressed on.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_rain_freeze_9t.py`.
+- **Generated:** `nisar/code/s5_eval/_nisar_feat_rain_freeze_9t.py`.
 - **Source:** cite-only.
 
 ### Zebker & Villasenor 1992 — decorrelation in interferometric radar
 - **Citation:** Zebker, H. A., & Villasenor, J. (1992). "Decorrelation in interferometric radar echoes." *IEEE Transactions on Geoscience and Remote Sensing* 30(5), 950-959. doi:10.1109/36.175330.
 - **About:** Spatial-baseline and temporal decorrelation of repeat-pass InSAR.
 - **Used for:** 2026-10-26: coherence regressed on gap and |kz|, and phase regressed on kz for the height residual.
-- **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_feat_height_resid_9t.py`; `data/9t/derived/nisar_features_5m/nisar_feat_heightresid_9t_5m.tif`.
+- **Generated:** `nisar/code/s5_eval/_nisar_feat_height_resid_9t.py`; `nisar/derived/9t/nisar_features_5m/nisar_feat_heightresid_9t_5m.tif`.
 - **Source:** cite-only, https://doi.org/10.1109/36.175330
 
 ### Dewitz 2021 — NLCD 2019 land cover products

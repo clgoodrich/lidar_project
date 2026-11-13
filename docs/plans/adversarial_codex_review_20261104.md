@@ -105,7 +105,7 @@ The original pit trainer says `block_bounds` prevents patches reaching held-out 
 
 See [trainer assertion](C:/Users/colto/Documents/GitHub/lidar_project/notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py:363) and [sampler implementation](C:/Users/colto/Documents/GitHub/lidar_project/notebooks/wellsight_v2/_dl.py:249).
 
-**This is partly corrected already.** The isolated pad trainer explicitly rejects windows intersecting held-out blocks. Its saved report shows recall falling from 0.912 to 0.891 under the F2 comparison. I am not treating that corrected implementation as still having the original window bug. See [isolated trainer](C:/Users/colto/Documents/GitHub/lidar_project/notebooks/wellsight_v2/s3_train/_pad_unet_iso_cv5.py:1) and [comparison](C:/Users/colto/Documents/GitHub/lidar_project/docs/iterations/nisar_checks_9t.md:135).
+**This is partly corrected already.** The isolated pad trainer explicitly rejects windows intersecting held-out blocks. Its saved report shows recall falling from 0.912 to 0.891 under the F2 comparison. I am not treating that corrected implementation as still having the original window bug. See [isolated trainer](C:/Users/colto/Documents/GitHub/lidar_project/notebooks/wellsight_v2/s3_train/_pad_unet_iso_cv5.py:1) and [comparison](C:/Users/colto/Documents/GitHub/lidar_project/nisar/docs/iterations/nisar_checks_9t.md:135).
 
 But the transfer protocol points to the original family, and P1 addresses block lists rather than the actual windows.
 
@@ -344,7 +344,7 @@ The CO₂ plan’s narrowed screening claim is appropriate. Class VI requirement
 - **Confuser reduction is worth a bounded experiment.** It directly addresses review workload. Its strongest claim is fewer adjudicated confusers at acceptable feature recall—not improved well identity.
 - **Magnetometry plus carefully designed field searches addresses the central identity gap.** The small pilot is valuable even if it shows that equipment, casing conditions or access make a larger survey impractical.
 - **Conditional density analysis is useful now.** Showing which unknowns dominate the answer can prevent an attractive but unidentified density map.
-- **The existing NISAR negative result should survive with limited scope.** Saved deduplicated AUC gains are −0.004 for pits and −0.008 for pads; the pad interval includes zero. This supports deprioritizing that tested configuration, not rejecting radar generally. [Pit results](C:/Users/colto/Documents/GitHub/lidar_project/data/9t/results/nisar/nisar_pit_dedupe_auc_9t_slc.csv:1), [pad results](C:/Users/colto/Documents/GitHub/lidar_project/data/9t/results/nisar/nisar_pad_dedupe_auc_9t_slc_local1500.csv:1).
+- **The existing NISAR negative result should survive with limited scope.** Saved deduplicated AUC gains are −0.004 for pits and −0.008 for pads; the pad interval includes zero. This supports deprioritizing that tested configuration, not rejecting radar generally. [Pit results](C:/Users/colto/Documents/GitHub/lidar_project/nisar/results/9t/nisar_pit_dedupe_auc_9t_slc.csv:1), [pad results](C:/Users/colto/Documents/GitHub/lidar_project/nisar/results/9t/nisar_pad_dedupe_auc_9t_slc_local1500.csv:1).
 
 The answers that would most change my recommendations are:
 

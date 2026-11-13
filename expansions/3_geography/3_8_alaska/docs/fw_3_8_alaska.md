@@ -8,7 +8,7 @@
 ## 1. Problem and objective
 Legacy wells in the Arctic sit in permafrost. Thawing ground can settle or heave around a pad. A monitoring programme would want to know whether well sites move differently from comparable ground.
 
-**This is a different question from detection and it uses a different method.** The detector reads lidar terrain with a U-Net. This study reads a stack of radar phase images. The repository has no prior success with this method. The only radar work held here is NISAR over the Pennsylvania site 9t. It found no pit-scale signal and its pad scores were later shown to be confounded by location (`docs/iterations/nisar_gslc_interferogram_pits_9t.md`, `nisar_methodology_audit_20261026.md`). None of that work measures displacement at wells, and none of it was on tundra. Treat this as a new, unproven project.
+**This is a different question from detection and it uses a different method.** The detector reads lidar terrain with a U-Net. This study reads a stack of radar phase images. The repository has no prior success with this method. The only radar work held here is NISAR over the Pennsylvania site 9t. It found no pit-scale signal and its pad scores were later shown to be confounded by location (`nisar/docs/iterations/nisar_gslc_interferogram_pits_9t.md`, `nisar_methodology_audit_20261026.md`). None of that work measures displacement at wells, and none of it was on tundra. Treat this as a new, unproven project.
 
 **Estimand E1 (measurement, not a hypothesis).** The smallest displacement rate the chosen radar stack can resolve at a pad-sized target, given noise, reference stability and seasonal confounding.
 **Estimand E2 (primary).** The difference, in millimetres per year of line-of-sight displacement, between legacy well sites and matched control sites with no wells, over a stated multi-year window, relative to a stable reference.
@@ -32,14 +32,14 @@ Out. Well detection from elevation or radar. Training any network. Wells with no
 - **Seasonal amplitude.** Peak-to-trough LOS change within a thaw season.
 - **Long-term rate.** Slope of end-of-season to end-of-season displacement across years, which removes the seasonal cycle by design.
 - **Injection-recovery.** Adding a known synthetic displacement to the phase at selected control pixels and recovering it through the whole chain.
-- Tooling background. `notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py` fetches NISAR complex windows and `s5_eval/_nisar_gslc_interferogram_pits_9t.py` forms interferograms from consecutive dates. The 9t docs report median HH coherence 0.50 outside winter and no displacement difference between pits and decoys (about 7.5 mm phase noise per pit per 12-day pair). These numbers are for Pennsylvania forest and carry no weight here.
+- Tooling background. `nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py` fetches NISAR complex windows and `s5_eval/_nisar_gslc_interferogram_pits_9t.py` forms interferograms from consecutive dates. The 9t docs report median HH coherence 0.50 outside winter and no displacement difference between pits and decoys (about 7.5 mm phase noise per pit per 12-day pair). These numbers are for Pennsylvania forest and carry no weight here.
 
 ## 4. Inputs
 | Input | Path | State |
 |---|---|---|
 | USGS 2022 orphan list, 12 Alaska rows | `data/_source/reference/wells_us_orphan_2022/US_orphaned_wells.csv` | held |
 | USGS 2026 orphan list, 44 Alaska rows (35 with blank status and type) | `data/_source/reference/wells_us_orphan_2026/US_orphaned_wells_2026.csv` | held |
-| NISAR fetch and interferogram scripts (Pennsylvania) | `notebooks/wellsight_v2/s1_build/_fetch_nisar_gslc_window_9t.py`, `s5_eval/_nisar_gslc_interferogram_pits_9t.py` | held, reusable as a pattern only |
+| NISAR fetch and interferogram scripts (Pennsylvania) | `nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py`, `s5_eval/_nisar_gslc_interferogram_pits_9t.py` | held, reusable as a pattern only |
 | Alaska wells, SAR stacks, elevation, controls | `data/_source/reference/wells_ak/`, `data/ak1/derived/` | proposed |
 
 The US catalogue under `data/_source/reference/lidar_catalogue/` is United States 3DEP lidar listing and holds no Alaska radar or IfSAR rows.
@@ -170,4 +170,4 @@ The three iteration docs, `docs/analysis_log.md`, `docs/iterations/BACKLOG.md`, 
 
 ## Review revision 2 (third review, 2026-11-04) and 2026-11-05 expansion
 Motion is not well integrity. This framework states line-of-sight displacement as its own estimand, requires a reference-stability test, an injection-recovery test, matched controls and a location-only baseline, and keeps the study off the (a) to (d) scale.
-Source. `docs/plans/protocol_gates_and_metrics.md` sections 9 and 16, `docs/iterations/nisar_methodology_audit_20261026.md`.
+Source. `docs/plans/protocol_gates_and_metrics.md` sections 9 and 16, `nisar/docs/iterations/nisar_methodology_audit_20261026.md`.
