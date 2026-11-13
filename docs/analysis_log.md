@@ -5,6 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Sentinel-1 C-band interferograms at pits, Oct-Nov 2025 -- S1
+
+- Ask. Repeat the autumn NISAR pit checks with Sentinel-1 C-band at the same place and time.
+- Data. OPERA CSLC-S1 V1, VV, 10 bursts (Sentinel-1A only), 263 MB each, in `data/_source/s1_cslc/` (git-ignored). Bursts T077-163486-IW2 (both areas) and T004-006689-IW1 (east edge of 9t only), both ascending, 5 dates each at 12 days.
+- Scripts `notebooks/wellsight_v2/s5_eval/_s1_cslc_fetch_9t.py` and `_s1_ifg_pits_9t.py`. Same pit, ring and decoy sets as the NISAR run. 20 m x 20 m coherence window.
+- Bug caught. Pixels outside a burst entered the phase sums as 0, so track 4 read exactly 0 mm. Fixed by dropping them per pair.
+- 9t, 506 pits, 8 pairs. Coherence excess +0.004 [-0.004, +0.016], p 0.19. LOS -0.43 mm [-0.73, +0.08] against 5 mm decoy scatter.
+- 613590, 36 pits, 4 pairs. Coherence excess +0.011 [-0.006, +0.037], p 0.08. LOS +0.55 mm [-0.70, +2.35].
+- Tile coherence about 0.42, near the 8-look floor. C-band forest decorrelates in 12 days. NISAR L-band on the same autumn was 0.53 to 0.65.
+- Same answer as L-band. No pit signal. Doc `docs/iterations/s1_ifg_pits_9t.md`.
+
 ## 2026-11-13 NISAR checks limited to October and November -- NISAR
 
 - Oct and Nov hold at most 4 dates per track in any area. Only track 162 has a same-year run (2025-10-28, 11-09, 11-21). Tracks 26 and 90 have one date in 2025 and one in Oct 2026.

@@ -1,0 +1,5 @@
+burst,orbit_pass,d1,d2,n_pits,tile_coh_median,pit_coh_median,ring_coh_median,coh_excess_median,coh_excess_ci95,wilcoxon_p,los_excess_mm_median,los_decoy_abs_mm_median
+T077-163486-IW2,Ascending,2025-10-12,2025-10-24,36,0.422,0.418,0.429,-1e-04,"(np.float64(-0.0259), np.float64(0.0619))",0.7269,-1.05,4.87
+T077-163486-IW2,Ascending,2025-10-24,2025-11-05,36,0.424,0.41,0.419,-0.0265,"(np.float64(-0.1), np.float64(0.0399))",0.414,0.49,6.02
+T077-163486-IW2,Ascending,2025-11-05,2025-11-17,36,0.424,0.479,0.426,0.0508,"(np.float64(-0.0127), np.float64(0.1302))",0.1079,0.45,5.43
+T077-163486-IW2,Ascending,2025-11-17,2025-11-29,36,0.425,0.454,0.42,0.0419,"(np.float64(-0.0056), np.float64(0.1351))",0.0201,2.51,5.88
