@@ -32,7 +32,7 @@ Scoring. A well is hit when a candidate falls inside an ellipse of 10 m (x) by 2
 range plus 5 m, half a cell in azimuth plus 9 m, for geocoding and DEP coordinate error. Baselines:
 20,000 random points in the window, and one local decoy per well moved 150-600 m and kept 30 m from any well.
 
-  python notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py
+  python notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py [--stack fullyear|april]
 """
 import json
 import sys
@@ -56,7 +56,14 @@ sys.path.insert(0, str(HERE.parent))
 SRC = ROOT / "data" / "_source" / "s1_cslc_windows"
 WELLS = ROOT / "data" / "_source" / "reference" / "dep_wells" / "venango_wells_all.gpkg"
 OUT = ROOT / "data" / "9t" / "results" / "s1"
-TAG = "9t613590"
+# --stack fullyear (default): 32 consecutive dates 2025-04-03 to 2026-04-10.
+# --stack april: every April date on the track, 2017-2026 (22 dates, leaf-off, ten years).
+STACK = sys.argv.pop(sys.argv.index("--stack") + 1) if "--stack" in sys.argv else "fullyear"
+if "--stack" in sys.argv:
+    sys.argv.remove("--stack")
+if STACK not in ("fullyear", "april"):
+    raise SystemExit(f"unknown --stack {STACK}")
+TAG = f"{STACK}_9t613590"
 D0, D1, TRACK = "2025-04-01", "2026-04-15", "T077"
 GUARD = (3, 1)      # half-sizes in pixels (rows, cols): 7 x 3
 BACK = (16, 7)      # 33 x 15
@@ -76,7 +83,7 @@ def load():
     for f in sorted(SRC.glob(f"OPERA_L2_CSLC-S1_{TRACK}-*.h5")):
         d = f.stem.split("_")[4]
         date = f"{d[:4]}-{d[4:6]}-{d[6:8]}"
-        if D0 <= date <= D1:
+        if (date[5:7] == "04") if STACK == "april" else (D0 <= date <= D1):
             files.append((date, f))
     grids = []
     for date, f in files:
@@ -289,7 +296,7 @@ def main():
             ax.set_title(f"Mean VV amplitude, {len(dates)} dates", fontsize=10, color=INK)
         ax.set_xticks([]); ax.set_yticks([])
     axs[0].legend(loc="lower left", fontsize=8, framealpha=0.9)
-    fig.suptitle("Sentinel-1 track 77, Apr 2025 to Apr 2026: bright-target candidates against DEP wells", fontsize=11, color=INK)
+    fig.suptitle(f"Sentinel-1 track 77, {dates[0]} to {dates[-1]} ({STACK}, {len(dates)} dates): bright-target candidates against DEP wells", fontsize=11, color=INK)
     fig.tight_layout()
     fig.savefig(OUT / f"s1_metal_cfar_map_{TAG}.png", dpi=170)
 

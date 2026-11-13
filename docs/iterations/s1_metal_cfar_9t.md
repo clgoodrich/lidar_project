@@ -60,7 +60,27 @@ At the user's request the same stack, CFAR, water mask and D_A test were scored 
 - Steadiest pixel inside the outline: pits D_A 0.416, decoys 0.417 (p 0.86). Median D_A at pit centroids is 0.53, pure speckle.
 - Reading. Pits are a few tenths of a dB brighter than nearby ground, with no gain in steadiness. That is the signature of rough or open disturbed ground (berm, cleared rim), not a metal point target. It is the same size as the NISAR within-season pit contrast (+0.25 dB HH in fall). Decoys are matched on shape, not canopy, so openness may explain part of it.
 
-Outputs. `data/9t/results/s1/s1_metal_pits_hit_rates_9t613590.csv`, `s1_metal_pits_scored_9t613590.gpkg` (per pit hit flags, D_A and SCR at centroid), `s1_metal_pits_summary_9t613590.json`, `s1_metal_pits_map_9t613590.png`.
+Outputs. `data/9t/results/s1/s1_metal_pits_hit_rates_fullyear_9t613590.csv`, `s1_metal_pits_scored_fullyear_9t613590.gpkg` (per pit hit flags, D_A and SCR at centroid), `s1_metal_pits_summary_fullyear_9t613590.json`, `s1_metal_pits_map_fullyear_9t613590.png`.
+
+## April-only stack, scored against pits (2026-11-13)
+
+At the user's request the pit test was rerun on April images only: `--stack april`, every April date on track 77 from 2017 to 2026. That is 22 dates, leaf-off, spread over ten years instead of one. The late-April windows (21 to 30 April) were fetched for this run.
+
+| Threshold | Candidates in tiles | Pits, polygon | Decoys, polygon | Pits, ellipse | Random, ellipse |
+|---|---|---|---|---|---|
+| P_fa 1e-6 (4.7 dB) | 184 | 0.15% (1) | 0.30% (2) | 0% | 0.32% |
+| 3 dB | 2,351 | 9.3% (62) | 5.3% (35) | 7.2% | 3.8% |
+| 4 dB | 465 | 2.4% (16) | 0.45% (3) | 1.8% | 0.8% |
+| 5 dB and above | 131 or fewer | 0% | 0 to 0.3% | 0% | 0 to 0.2% |
+| CFAR + D_A < 0.25 | 3 or 4 | 0% | 0% | 0% | 0% |
+
+- At the designed threshold and above, pits are hit no more often than decoys.
+- Below it, pits are hit more often: 4 dB 16 against 3 (Fisher p 0.004), 3 dB 62 against 35 (p 0.006). Seven thresholds were tried, and the full-year stack gave 8 against 9 at 4 dB, so the 4 dB result is not stable across stacks.
+- Brightest pixel inside the outline. Pits +1.80 dB, decoys +1.67 dB (p 0.008). 9t +0.16 dB (p 0.003), 613590 none (p 0.98). The excess is smaller than in the full-year stack (+0.23 dB).
+- Steadiest pixel inside the outline. Pits 0.385, decoys 0.380 (p 0.08). Pits are no steadier.
+- Reading. Leaf-off April does not bring out a metal signal. Pits stay slightly brighter, slightly rougher ground with no steadiness, as in the full-year stack.
+
+Outputs. `data/9t/results/s1/s1_metal_pits_hit_rates_april_9t613590.csv`, `s1_metal_pits_scored_april_9t613590.gpkg`, `s1_metal_pits_summary_april_9t613590.json`, `s1_metal_pits_map_april_9t613590.png`. The earlier outputs were renamed with `fullyear` in the same change.
 
 ## Interpretation
 
@@ -71,11 +91,11 @@ Outputs. `data/9t/results/s1/s1_metal_pits_hit_rates_9t613590.csv`, `s1_metal_pi
 
 ## Outputs
 
-- `data/9t/results/s1/s1_metal_cfar_hit_rates_9t613590.csv` (threshold sweep, by status)
-- `data/9t/results/s1/s1_metal_cfar_candidates_9t613590.gpkg` (481 candidates, `steady` flag, SCR, D_A)
-- `data/9t/results/s1/s1_metal_cfar_wells_9t613590.gpkg` (wells with hit flags, D_A and SCR at the well)
-- `data/9t/results/s1/s1_metal_cfar_summary_9t613590.json`
-- `data/9t/results/s1/s1_metal_cfar_map_9t613590.png` (greyscale amplitude, wells as blue circles, candidates as orange plus signs; lost/found palette, validated all pairs, worst dE 21.1 deutan)
+- `data/9t/results/s1/s1_metal_cfar_hit_rates_fullyear_9t613590.csv` (threshold sweep, by status)
+- `data/9t/results/s1/s1_metal_cfar_candidates_fullyear_9t613590.gpkg` (481 candidates, `steady` flag, SCR, D_A)
+- `data/9t/results/s1/s1_metal_cfar_wells_fullyear_9t613590.gpkg` (wells with hit flags, D_A and SCR at the well)
+- `data/9t/results/s1/s1_metal_cfar_summary_fullyear_9t613590.json`
+- `data/9t/results/s1/s1_metal_cfar_map_fullyear_9t613590.png` (greyscale amplitude, wells as blue circles, candidates as orange plus signs; lost/found palette, validated all pairs, worst dE 21.1 deutan)
 
 ## Reproduce
 
@@ -83,6 +103,7 @@ Outputs. `data/9t/results/s1/s1_metal_pits_hit_rates_9t613590.csv`, `s1_metal_pi
 python notebooks/wellsight_v2/s5_eval/_s1_cslc_window_fetch_9t.py --range 2025-04-01 2026-04-15 T077
 python notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py
 python notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py
+python notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py --stack april   # needs the April windows: _s1_cslc_window_fetch_9t.py 2017 ... 2024 and --range YYYY-04-21 YYYY-04-30 T077
 ```
 
 ## Sources

@@ -14,7 +14,7 @@ Two hit rules, both reported:
 Decoys are same-shape copies of each pit moved 150 to 600 m, kept inside the tile and 30 m clear of every pit,
 so the polygon rule has a like-for-like baseline. Random points use the ellipse rule only.
 
-  python notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py
+  python notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py [--stack fullyear|april]
 """
 import json
 import sys
@@ -176,7 +176,7 @@ def main():
     axs[0].plot([], [], color=M.WELL_C, label="annotated pits (outer rim)")
     axs[0].scatter([], [], marker="+", color=M.CAND_C, label="CFAR candidates, P_fa 1e-6")
     axs[0].legend(loc="lower left", fontsize=8, framealpha=0.9)
-    fig.suptitle(f"Sentinel-1 track 77, {len(dates)} dates: bright-target candidates against annotated pits",
+    fig.suptitle(f"Sentinel-1 track 77, {M.STACK} stack, {len(dates)} dates ({dates[0]} to {dates[-1]}): candidates against annotated pits",
                  fontsize=11, color=M.INK)
     fig.tight_layout()
     fig.savefig(M.OUT / f"s1_metal_pits_map_{M.TAG}.png", dpi=170)

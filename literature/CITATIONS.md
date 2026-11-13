@@ -471,7 +471,7 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **About:** Points that keep a stable echo over a long SAR stack. They are picked by the amplitude dispersion index D_A = std / mean of amplitude, with D_A < 0.25.
 - **Used for:** The steel test at DEP wells in 9t. A steady bright target is D_A < 0.25 and at least 6 dB above its surroundings.
 - **Generated:** `notebooks/wellsight_v2/s5_eval/_nisar_steel_9t.py`; `docs/iterations/nisar_wells_steel_pads_slopes_9t.md`; `data/9t/results/nisar/nisar_steel_summary_9t.json`.
-- **Also used (2026-11-13):** D_A < 0.25 steadiness test in the Sentinel-1 small-metal CFAR experiment. Generated `notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py`; `docs/iterations/s1_metal_cfar_9t.md`; `data/9t/results/s1/s1_metal_cfar_summary_9t613590.json`.
+- **Also used (2026-11-13):** D_A < 0.25 steadiness test in the Sentinel-1 small-metal CFAR experiment. Generated `notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py`; `docs/iterations/s1_metal_cfar_9t.md`; `data/9t/results/s1/s1_metal_cfar_summary_fullyear_9t613590.json`.
 - **Source:** https://doi.org/10.1109/36.898661 — cite-only (paywalled IEEE).
 
 ### Berardino et al. 2002 — small-baseline InSAR time series

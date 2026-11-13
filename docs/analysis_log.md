@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Small-metal pit test on an April-only Sentinel-1 stack
+
+- Ask. Use April tracks only.
+- `_s1_metal_cfar_9t.py` gains `--stack fullyear|april` and puts the stack in every output name. Earlier outputs renamed `..._fullyear_9t613590` (git mv, same commit). The doc and CITATIONS paths were updated.
+- Fetched late-April windows (21 to 30 April, 2017 to 2026, 5 new). April stack is 22 dates on track 77, 2017-04-09 to 2026-04-10.
+- `_s1_metal_pits_9t.py --stack april`. P_fa 1e-6, pits 1 of 666 against decoys 2. 4 dB, 16 against 3 (p 0.004; full year was 8 against 9). 3 dB, 62 against 35.
+- Brightest pixel in the outline. Pits +0.13 dB over decoys (p 0.008), 9t only. Steadiest pixel the same (0.385 against 0.380). No metal signal in leaf-off April.
+
 ## 2026-11-13 Site context figures redrawn with roads on every panel
 
 - `_s1_site_context_9t.py` now draws `roads.shp` on all three panels (white line, charcoal edge), including Sentinel-1. Previously thin grey dashes, lidar panels only.
