@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Sentinel-1 small-metal experiment scored against annotated pits
+
+- Ask. Use the user's pit annotations, not DEP wells, as targets.
+- Script `notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py`. Same stack, CFAR and D_A as the DEP run. 666 pits (`pit_full.shp`). Random points and same-shape decoys drawn inside the 9t and 613590 tiles only, since only those are annotated.
+- P_fa 1e-6. Pits 0.15% (1 of 666) inside outline + 10 m, decoys 0.60%. Steady candidates hit no pits at any threshold.
+- 3 dB threshold. Pits 65, decoys 36 (Fisher p 0.004, seven thresholds tried).
+- Brightest pixel in the outline. Pits +1.86 dB, decoys +1.63 dB (p 2e-5). 9t +0.26 dB, 613590 +0.09 dB (p 0.26). Steadiest pixel identical (D_A 0.416 against 0.417).
+- Reading. Slightly brighter disturbed ground, not steady metal. Same size as the NISAR fall HH pit contrast. Doc `docs/iterations/s1_metal_cfar_9t.md`.
+
 ## 2026-11-13 Sentinel-1 small-metal detection, first experiment (CFAR + D_A against DEP wells)
 
 - Ask. Run the first experiment from the user's SAR small-metal methodology note.

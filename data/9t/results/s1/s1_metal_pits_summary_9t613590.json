@@ -1,0 +1,23 @@
+{
+  "dates": 32,
+  "threshold_db": 4.73,
+  "enl": 12.36,
+  "pits": 666,
+  "pits_9t": 506,
+  "pits_613590": 160,
+  "decoys": 666,
+  "random_points": 20000,
+  "polygon_buffer_m": 10.0,
+  "hit_ellipse_m": [
+    10.0,
+    20.0
+  ],
+  "candidates_in_tiles": 229,
+  "steady_candidates_in_tiles": 4,
+  "pits_polygon": 0.0015,
+  "decoys_polygon": 0.006,
+  "pits_ellipse": 0.0015,
+  "random_ellipse": 0.0042,
+  "median_da_at_pits": 0.532,
+  "median_scr_db_at_pits": 0.11
+}

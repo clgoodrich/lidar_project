@@ -1,4 +1,4 @@
-# Sentinel-1 small-metal detection, first experiment (9t and 613590)
+# Sentinel-1 small-metal detection, first experiment (9t and 613590): DEP wells and annotated pits
 
 Run 2026-11-13. The "first experiment" of the SAR small-metal methodology note (user, 2026-11-12): CFAR on the stack mean intensity, then amplitude dispersion, scored against known wells.
 
@@ -38,6 +38,30 @@ Run 2026-11-13. The "first experiment" of the SAR small-metal methodology note (
 - The 9 steady targets are all very bright (9 to 29 dB above background). Two sit near active wells (34 m and 82 m) but outside the hit ellipse. The other seven are 380 to 825 m from any well, in clusters on the river floodplain.
 - Most of the 481 CFAR candidates sit on the floodplain and on slopes facing the radar, not on the upland well fields.
 
+## Second target set: annotated well pits (2026-11-13)
+
+At the user's request the same stack, CFAR, water mask and D_A test were scored against the lidar pit annotations instead of DEP wells. Script `notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py` (imports the first script; only targets and baselines change).
+
+- Targets. `qgis/annotations/pit_full.shp` (outer rims), 666 pits in the window (9t 506, 613590 160).
+- Baselines. Pits exist only inside the two lidar tiles, so random points (20,000) and decoys are drawn inside those tiles. Decoys are same-shape copies of each pit moved 150 to 600 m and kept 30 m from every pit.
+- Hit rules. Ellipse (10 m x 20 m around the centroid) and polygon (inside the outline buffered 10 m).
+
+| Threshold | Candidates in tiles | Pits, polygon | Decoys, polygon | Pits, ellipse | Random, ellipse |
+|---|---|---|---|---|---|
+| P_fa 1e-6 (4.7 dB) | 229 | 0.15% (1) | 0.60% (4) | 0.15% | 0.42% |
+| 3 dB | 2,375 | 9.8% (65) | 5.4% (36) | 7.4% | 3.7% |
+| 4 dB | 560 | 1.2% (8) | 1.4% (9) | 0.6% | 0.9% |
+| 6 dB and above | 71 or fewer | 0% | 0 to 0.3% | 0% | 0 to 0.2% |
+| CFAR + D_A < 0.25, any threshold | 4 or 5 | 0% | 0% | 0% | 0.01 to 0.02% |
+
+- At the designed threshold and above, pits are hit no more often than decoys or random ground.
+- At the loose 3 dB threshold pits are hit about twice as often as decoys (65 against 36, Fisher p 0.004 before allowing for seven thresholds).
+- Continuous check. Brightest pixel inside the buffered outline: pits median 1.86 dB above background, decoys 1.63 dB (Mann-Whitney p 2e-5). 9t +0.26 dB (p 2e-5), 613590 +0.09 dB (p 0.26).
+- Steadiest pixel inside the outline: pits D_A 0.416, decoys 0.417 (p 0.86). Median D_A at pit centroids is 0.53, pure speckle.
+- Reading. Pits are a few tenths of a dB brighter than nearby ground, with no gain in steadiness. That is the signature of rough or open disturbed ground (berm, cleared rim), not a metal point target. It is the same size as the NISAR within-season pit contrast (+0.25 dB HH in fall). Decoys are matched on shape, not canopy, so openness may explain part of it.
+
+Outputs. `data/9t/results/s1/s1_metal_pits_hit_rates_9t613590.csv`, `s1_metal_pits_scored_9t613590.gpkg` (per pit hit flags, D_A and SCR at centroid), `s1_metal_pits_summary_9t613590.json`, `s1_metal_pits_map_9t613590.png`.
+
 ## Interpretation
 
 - At Sentinel-1 resolution, Venango wellheads, pumpjacks and tank sites do not stand out in brightness and are not steady scatterers. Active wells are hit at the same rate as random ground.
@@ -58,6 +82,7 @@ Run 2026-11-13. The "first experiment" of the SAR small-metal methodology note (
 ```
 python notebooks/wellsight_v2/s5_eval/_s1_cslc_window_fetch_9t.py --range 2025-04-01 2026-04-15 T077
 python notebooks/wellsight_v2/s5_eval/_s1_metal_cfar_9t.py
+python notebooks/wellsight_v2/s5_eval/_s1_metal_pits_9t.py
 ```
 
 ## Sources
