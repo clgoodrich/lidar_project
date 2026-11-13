@@ -5,6 +5,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Side package of 9t annotations and RRIM
+
+- Folder `share_9t_annotations_rrim/` at the repo root, git-ignored (rule added to `.gitignore`).
+- `rrim_openness_9t_0p5m.tif` and `rrim_openness_9t_1m.tif` copied from `data/9t/derived/05/` and `data/9t/derived/1m/`. The 0.5 m copy's compound CRS (EPSG:6346 + NAVD88) set to horizontal EPSG:6346.
+- `annotations_9t.gpkg`. 13 layers in EPSG:6346, whole features touching the 9t tile. Layer list, counts and sources in the folder README.
+
 ## 2026-11-13 Sentinel-1 pit interferograms, every early-to-mid April 2017 to 2026 -- S1
 
 - Ask. Test whether the April 2025 9t phase result (-1.18 mm, p 0.003) repeats in other years.

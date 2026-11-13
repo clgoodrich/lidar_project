@@ -228,3 +228,6 @@ data/*/derived/ca_label_packs_*/
 data/ak1/derived/ak_stack_ak1/
 data/_source/reference/wells_rrc_orphans_tx/
 data/_source/reference/wells_can/
+
+# side package: copies of 9t annotations + RRIM (rrim 0.5 m is 176 MB, regenerable)
+share_9t_annotations_rrim/
