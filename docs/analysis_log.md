@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 NISAR checks limited to October and November -- NISAR
+
+- Oct and Nov hold at most 4 dates per track in any area. Only track 162 has a same-year run (2025-10-28, 11-09, 11-21). Tracks 26 and 90 have one date in 2025 and one in Oct 2026.
+- Persistent-scatterer screen not rerun. Simulated pure speckle passes D_A < 0.25 in 18.6% of pixels at 3 dates and 10.8% at 4, against 1.7% at 8 and 0.0% at 20. The screen means nothing at 3 or 4 dates.
+- Phase checks read from the existing per-pair outputs (`data/<area>/results/nisar/nisar_gslc_interferogram_pits_vs_decoys_win3_<area>[_slc]_5m_by_pair.csv`). No rerun needed.
+- 9t lidar-placed SLC, track 162, 506 pits. Coherence excess +0.001 to +0.011 across the two Oct-Nov pairs and both polarisations. Every 95% interval spans zero. LOS excess under 1 mm, against 4 to 7 mm decoy scatter.
+- 613590 lidar-placed SLC, 36 pits. Coherence excess -0.032 to +0.033. One of four (11-09 to 11-21 HV, +0.033, interval +0.003 to +0.082, p 0.07) excludes zero. Not significant after four tests, and the as-delivered GSLC gives +0.013 for the same pair.
+- No change from the full-stack result. Pits show no coherence or phase difference from decoys in autumn either.
+
 ## 2026-11-12 Lidar pit outlines exported to KML, 9t and 613590
 
 - Source `qgis/annotations/pit_full.shp` (outer rim, the "outside" layer, 847 polygons, EPSG:4326). The `grids/westernpa_*_pit_outside.gpkg` files are empty templates and were not used.
