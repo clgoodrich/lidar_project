@@ -1,7 +1,7 @@
 """Three-panel site figure for one point on 9t: lidar RRIM, lidar canopy height, Sentinel-1 brightness vs surroundings.
 
 Marks DEP wells (white triangles), NISAR steady bright pixels (blue squares, from the lidar-placed SLC run) and the
-point itself (orange plus). Annotated pits are outlined in blue, pads in charcoal, roads dashed grey.
+point itself (orange plus). Annotated pits are outlined in blue, pads in charcoal, roads (roads.shp) as white lines with a charcoal edge on all three panels.
 Sentinel-1 panel is the CFAR signal-to-clutter ratio from _s1_metal_cfar_9t.py (32 dates, track 77, water masked).
 Colours: lost/found pair #1F5FA8 / #D97706 (dataviz validate_palette.js --pairs all, worst dE 21.1 deutan), plus
 charcoal and grey; every class also has its own marker shape. Canopy uses a single-hue green ramp (sequential).
@@ -17,6 +17,7 @@ import geopandas as gpd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as pe
 import numpy as np
 import rasterio
 from pyproj import Transformer
@@ -54,8 +55,10 @@ def main():
             if len(g):
                 gg = g.to_crs(32617) if s1 else g
                 gg.boundary.plot(ax=ax, **kw)
-        if len(roads) and not s1:
-            roads.plot(ax=ax, color=GREY, linewidth=1, linestyle="--")
+        if len(roads):
+            (roads.to_crs(32617) if s1 else roads).plot(
+                ax=ax, color="white", linewidth=1.6, zorder=4,
+                path_effects=[pe.Stroke(linewidth=3.4, foreground=INK), pe.Normal()])
         pts = [(wells, dict(marker="^", s=110, facecolor="white", edgecolor=INK, linewidths=1.3, label="DEP well")),
                (bright, dict(marker="s", s=90, facecolor="none", edgecolor=BLUE, linewidths=2, label="NISAR steady bright pixel"))]
         for g, kw in pts:
@@ -71,7 +74,7 @@ def main():
         img = r.read(window=from_bounds(xx - H, yy - H, xx + H, yy + H, r.transform)).transpose(1, 2, 0)
     axs[0].imshow(img, extent=(xx - H, xx + H, yy - H, yy + H))
     marks(axs[0])
-    axs[0].set_title("Lidar RRIM, 0.5 m (pits blue, pads charcoal, roads dashed)", fontsize=10)
+    axs[0].set_title("Lidar RRIM, 0.5 m (pits blue, pads charcoal, roads white)", fontsize=10)
     with rasterio.open(CHM) as r:
         c = r.read(1, window=from_bounds(xx - H, yy - H, xx + H, yy + H, r.transform)).astype(float)
     c[c < -100] = np.nan
@@ -100,6 +103,8 @@ def main():
     L = 50 if H >= 60 else 20
     axs[0].plot([xx - H + 0.1 * H, xx - H + 0.1 * H + L], [yy - H + 0.1 * H] * 2, color="white", lw=3)
     axs[0].text(xx - H + 0.1 * H + L / 2, yy - H + 0.14 * H, f"{L} m", color="white", ha="center", fontsize=9)
+    axs[0].plot([], [], color="white", linewidth=1.6, path_effects=[pe.Stroke(linewidth=3.4, foreground=INK), pe.Normal()],
+                label="road annotations")
     axs[0].legend(loc="upper right", fontsize=8, framealpha=0.9)
     fig.suptitle(f"{name} ({lat:.6f}, {lon:.6f}), {2 * H:.0f} m box, north up", fontsize=12)
     fig.tight_layout()

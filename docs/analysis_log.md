@@ -5,6 +5,11 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-13 Site context figures redrawn with roads on every panel
+
+- `_s1_site_context_9t.py` now draws `roads.shp` on all three panels (white line, charcoal edge), including Sentinel-1. Previously thin grey dashes, lidar panels only.
+- Regenerated `data/9t/results/s1/sites/s1_site_{pit295,point1,point2,point3}_9t.png`.
+
 ## 2026-11-13 Lidar road annotations exported to KML, 9t and 613590
 
 - Source `qgis/annotations/roads.shp` (EPSG:4326, so no reprojection). Lines kept where they touch the valid footprint of `dem_9t_1m.tif` and `dem_613590_1m.tif`. Multi-part lines split.
