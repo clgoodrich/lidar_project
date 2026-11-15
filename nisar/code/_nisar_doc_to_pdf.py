@@ -26,10 +26,14 @@ li { margin: 2px 0; }
 """
 body = markdown.markdown(SRC.read_text(encoding="utf-8"), extensions=["tables", "sane_lists"])
 html = f"<!doctype html><meta charset='utf-8'><title>NISAR process and outcomes</title><style>{CSS}</style>{body}"
+import time
+start = time.time()
 with tempfile.TemporaryDirectory() as d:
     h = Path(d) / "doc.html"
     h.write_text(html, encoding="utf-8")
     exe = next(b for b in BROWSERS if Path(b).exists())
     subprocess.run([exe, "--headless", "--disable-gpu", "--no-pdf-header-footer",
                     f"--print-to-pdf={OUT}", h.as_uri()], check=True, timeout=120)
+if not OUT.exists() or OUT.stat().st_mtime < start:
+    sys.exit(f"PDF was NOT updated (is it open in a viewer?): {OUT}")
 print(OUT, OUT.stat().st_size)
