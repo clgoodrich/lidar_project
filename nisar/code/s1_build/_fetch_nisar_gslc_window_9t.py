@@ -76,6 +76,22 @@ def query() -> pd.DataFrame:
         q = {"short_name": sn, "bounding_box": ",".join(map(str, BBOX)), "page_size": 200}
         with urllib.request.urlopen(CMR + "?" + urllib.parse.urlencode(q), timeout=90) as r:
             items = json.load(r)["items"]
+        # 2026-11-15: the spring-2026 granules (CRID P05023) are not found by the bounding-box search
+        # (footprints missing from CMR). Also search by the track/direction/frame seen in the box results.
+        seen = {it["umm"]["GranuleUR"] for it in items}
+        tdf = set()
+        for it in items:                # neighbouring frames too: frame numbers shifted in the P05023 release
+            trk, d, fr = it["umm"]["GranuleUR"].split("_")[5:8]
+            tdf |= {(trk, d, f"{int(fr) + k:03d}") for k in (-1, 0, 1)}
+        for trk, d, fr in sorted(tdf):
+            q2 = {"short_name": sn, "page_size": 200,
+                  "readable_granule_name": f"NISAR_*_{trk}_{d}_{fr}_*",
+                  "options[readable_granule_name][pattern]": "true"}
+            with urllib.request.urlopen(CMR + "?" + urllib.parse.urlencode(q2), timeout=90) as r:
+                for it in json.load(r)["items"]:
+                    if it["umm"]["GranuleUR"] not in seen:
+                        seen.add(it["umm"]["GranuleUR"])
+                        items.append(it)
         for it in items:
             u = it["umm"]
             url = [x["URL"] for x in u["RelatedUrls"]
