@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-15 Process document: tracks, amplitude and phase
+
+- Rewrote step 3 and added section 4a in `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md`. The old step 3 gave "lighting differences are information" as the reason for keeping tracks apart. The fuller reasons are viewing-direction dependence, per-track calibration offsets (+1.9 to +4.2 dB HV), phase only valid within a track, and unaligned dates.
+- Ablation evidence (`nisar/docs/iterations/nisar_pad_features_scored_9t.md`). Ascending only 0.828, all tracks 0.815, descending only 0.667 (9t pads, core 5 m, far decoys). Combining tracks added nothing.
+- PDF regenerated with `nisar/code/_nisar_doc_to_pdf.py`.
+
+---
+
 ## 2026-11-15 Plain-language NISAR process and outcomes document
 
 - Wrote `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md`. It covers why radar was tried, the data, the eight process steps, the five ideas and their results, the Sentinel-1 cross-check, mistakes caught, and open paths. No new analysis.

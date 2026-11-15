@@ -57,9 +57,12 @@ We wrote our own geocoder, swapped in lidar heights, and solved the leftover shi
 After this, 46 of 48 blocks on 9t agreed with a lidar simulation to within 2.5 m. On 613590 it was 31 of 48.
 This agrees with a simulation. It is not an independent check of position.
 
-**Step 3. Combine ascending and descending passes.** The satellite looks from two sides on different tracks.
-Each track lights the hills differently. We placed all tracks on the same lidar grid and kept them as separate bands.
-We did not average them, because the lighting differences are information about the terrain.
+**Step 3. Handle the three tracks.** A track is a fixed, repeating orbit path with its own viewing direction and angle.
+Tracks 90 and 162 are ascending and track 26 is descending. Each has its own dates (14, 11 and 8 usable).
+We placed all three on the same lidar grid and computed every feature per track.
+We never merged them into one image. The model receives each track's features as separate columns.
+A few bands compare directions, such as ascending minus descending HH. They rest on the single descending track.
+Section 4a explains why they cannot be merged and what that did to the data.
 
 **Step 4. Build features.** We made 303 radar bands for each target.
 They cover brightness, texture, coherence (how stable the signal is between dates), season, and terrain lighting.
@@ -78,6 +81,36 @@ They found real mistakes. We fixed them and reran the tests. Section 7 lists the
 
 **Step 8. Cross-check with a second radar.** We repeated the main ideas with Sentinel-1 C-band, using your pit outlines.
 Section 6 covers it.
+
+## 4a. Amplitude, phase and the three tracks
+
+**Amplitude** is how bright each pixel is, in dB, for HH and HV.
+Most of the 303 bands come from it. Brightness, texture, dual-pol ratios, seasonal trend, bright and dark outliers and terrain-flattened brightness are all amplitude.
+Every pad and pit score rests mainly on amplitude.
+
+**Phase** was used in three places, and all three came out null or weak.
+- Interferograms at pits. One date times the conjugate of the next date on the same track. Phase noise was about 7.5 mm per pit per pair, so any motion would need to exceed about 15 mm in 12 days.
+- Coherence, which is how stable the signal is between dates. It fed the pad-change test and the coherence bands.
+- The line-of-sight motion and height-residual bands. The Sentinel-1 interferograms used phase the same way.
+
+We never ran persistent scatterer interferometry or a time-series deformation fit on NISAR. There are too few dates, and the data are beta or provisional.
+
+**Why the tracks cannot be merged**
+- Brightness depends on viewing direction. A slope facing the satellite is bright and the same slope seen from the other side is dark. Averaging blends two different measurements.
+- Calibration differs by track. Per-track HV summer-versus-fall offsets range from +1.9 to +4.2 dB, which points to calibration and not season. An average would build that error in.
+- Phase only works within a track. Interferometry subtracts two images taken from the same position. A different track has a different line of sight, so there is no valid subtraction.
+- Dates do not line up between tracks. Seasonal change is measured inside one track, where terrain and angle cancel.
+
+**What the tracks gave us**
+- More dates. 33 in total, against at most 14 on one track.
+- Cross-checks. A bright spot seen on all three tracks is not noise. The building at point 5 was one.
+
+**What the tracks did to the data**
+- Combining added nothing in the one test that isolates it. This is the ablation on 9t pads with matched decoys. Ascending tracks alone scored 0.828, all tracks 0.815 and the descending track alone 0.667. We know of no test showing three tracks beat one.
+- Each track is thin. Every feature rests on 8 to 14 dates, so each is noisy.
+- Season and track are tangled. Beta dates (Oct 2025 to Jan 2026) and provisional dates (Jun to Oct 2026) fall unevenly across tracks. Track 90 has no clean leaf-off date. A comparison across seasons can mix in geometry and calibration.
+- Cross-track contrasts rest on one descending track. We cannot tell a real direction effect from track 26's own calibration.
+- Motion is measured along one line of sight only. A real change in another direction would be partly invisible.
 
 ## 5. What each idea showed
 
