@@ -17,6 +17,7 @@ The Sentinel-1 C-band cross-check agrees. Pits show no coherence, motion or stea
 
 ## Read these first
 
+0. `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md`. The whole story in plain language.
 1. `nisar/docs/NISAR_FINDINGS.md`. The findings and the numbers.
 2. `nisar/docs/NISAR_METHODS.md`. How every number was made.
 3. `nisar/writeup/nisar_project_status_brief.md`. One page on where things stand.

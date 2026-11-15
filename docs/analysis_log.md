@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-15 Plain-language NISAR process and outcomes document
+
+- Wrote `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md`. It covers why radar was tried, the data, the eight process steps, the five ideas and their results, the Sentinel-1 cross-check, mistakes caught, and open paths. No new analysis.
+- Added the building calibration. User confirmed point 5 (41.502787, -79.519712) is a building. NISAR showed three pixels bright on all tracks (up to 17.7 dB, steadiness 0.09). Sentinel-1 showed a streak to the south-south-east. So the steady-bright test fires on a real structure, and the null at pits is about the pits. A building is far larger than a wellhead.
+- Linked from `nisar/README.md`.
+
+---
+
 ## 2026-11-13 Brightness at two user points (point4, point5), 9t
 
 - Figures `nisar/sentinel1/results/9t/sites/s1_site_point4_9t.png` (41.498993, -79.525621) and `s1_site_point5_9t.png` (41.502787, -79.519712), from `nisar/sentinel1/code/_s1_site_context_9t.py`.
