@@ -33,7 +33,7 @@ Sources. `nisar/docs/NISAR_FINDINGS.md`, `nisar/docs/NISAR_METHODS.md`, `nisar/w
 ## 3. What was built
 
 - **Placement fix.** NASA's product sat about 10 m off the lidar. The cause is the Copernicus DEM sitting above the lidar ground. We wrote our own geocoder (matches NASA to 0.02 pixel), swapped in lidar heights and solved per-date and per-track offsets. 46 of 48 blocks within 2.5 m on 9t, 31 of 48 on 613590. That is agreement with a lidar simulation, not an independent position check.
-- **Feature stack.** 303 SAR bands per target (backscatter, texture, coherence, seasonal, sub-aperture, terrain gain).
+- **Feature stack.** 346 SAR bands built per target, 337 kept after the missing-value filter (backscatter, texture, coherence, seasonal, sub-aperture, terrain gain). See `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md` section 4b.
 - **Scoring design.** Matched decoys (canopy ±0.05, slope ±1°), gradient boosting, 5-fold spatial block CV (500 m blocks, 250 m buffer). Controls are lidar-only, rich lidar (26 bands), map x/y only and a placebo.
 - **Speckle filters** (2026-11-08). Median, Frost, Gamma-MAP and Lee sigma at 5 × 5. Images in `nisar/derived/9t/nisar_speckle_filters/`.
 

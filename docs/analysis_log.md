@@ -5,6 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-15 PCA of the NISAR feature bands (9t) and band-count explanation
+
+- Ran PCA on 60,000 random 9t pixels, 337 kept bands (334 after zero-variance drop), lidar-placed stack. Script `nisar/code/s5_eval/_nisar_feat_pca_9t.py`, write-up `nisar/docs/iterations/nisar_feat_pca_9t.md`, outputs `nisar/results/9t/nisar_feat_pca_*_9t_slc.*` and `nisar/results/9t/figures/nisar_feat_pca_9t_slc.png`.
+- PC1 6.9%, first 5 22.2%. PCs for 50/80/90/95/99%: 26/87/127/158/212. Participation ratio 56.5. Within one track 42 to 44 PCs for 90%.
+- Band count traced. 346 NISAR bands built (13 product scripts, mostly per track) + 3 lidar controls + 2 road context = 351 scored. 337 to 340 kept after the 20% missing rule. 293 in the 613590 held-out test (about 53 not available there, not itemised). The old "303" was unsourced and is removed.
+- The 32 amplitude statistics are 10 measures per track x 3 tracks + 2 cross-track, chosen from the flatness hypothesis. No principled count. The number of bands was never swept.
+- `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md` updated. Step 2 (offset described as inferred, echo-height test, 46 vs 40 of 48), step 4 (band counts), new section 4b. Status brief 303 corrected. PDF regenerated.
+- Not changed: `nisar/docs/NISAR_FINDINGS.md` and `nisar/docs/NISAR_METHODS.md` still state "46 of 48 blocks" without the echo-height qualifier.
+
+---
+
 ## 2026-11-15 Process document: tracks, amplitude and phase
 
 - Rewrote step 3 and added section 4a in `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md`. The old step 3 gave "lighting differences are information" as the reason for keeping tracks apart. The fuller reasons are viewing-direction dependence, per-track calibration offsets (+1.9 to +4.2 dB HV), phase only valid within a track, and unaligned dates.

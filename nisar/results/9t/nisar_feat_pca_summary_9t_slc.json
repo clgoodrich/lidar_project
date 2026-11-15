@@ -1,0 +1,30 @@
+{
+  "pixels": 60000,
+  "bands_input": 337,
+  "bands_kept": 334,
+  "missing_rule": 0.2,
+  "seed": 20261115,
+  "participation_ratio": 56.5,
+  "var_pc1": 0.069,
+  "var_first5": 0.222,
+  "var_first10": 0.318,
+  "pcs_for_50pct": 26,
+  "pcs_for_80pct": 87,
+  "pcs_for_90pct": 127,
+  "pcs_for_95pct": 158,
+  "pcs_for_99pct": 212,
+  "per_track_alone": {
+    "026": {
+      "bands": 111,
+      "pcs_for_90pct": 44
+    },
+    "090": {
+      "bands": 103,
+      "pcs_for_90pct": 42
+    },
+    "162": {
+      "bands": 112,
+      "pcs_for_90pct": 44
+    }
+  }
+}

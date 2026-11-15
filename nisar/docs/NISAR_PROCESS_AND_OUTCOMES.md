@@ -51,11 +51,20 @@ Three facts about the data shape everything below.
 
 **Step 1. Get the data.** We cut small windows from huge NASA files with range reads. Each window was about 9 MB from a file of 22.6 GB.
 
-**Step 2. Fix the position.** NASA's product sat about 10 m off the lidar. That is two radar pixels, which matters for a pit.
-The cause is the elevation model NASA used. It sits above the true ground in forest.
+**Step 2. Fix the position.** We inferred that NASA's product sat about 8 to 12 m off the lidar. That is about two radar pixels, which matters for a pit.
+We never checked this against a surveyed point. Four things point to a real error.
+- The shift points away from the satellite on all three tracks.
+- All three geometries give the same height error, 8 to 10 m.
+- The shift grows with canopy height (correlation 0.55 to 0.62).
+- Our fix matched the predicted shift (correlation 0.82 to 0.90).
+
+The cause is the elevation model NASA used. It sits partway up the canopy in forest.
 We wrote our own geocoder, swapped in lidar heights, and solved the leftover shifts for each date and track.
-After this, 46 of 48 blocks on 9t agreed with a lidar simulation to within 2.5 m. On 613590 it was 31 of 48.
-This agrees with a simulation. It is not an independent check of position.
+We also tested where the radar echo sits. We put it at 0, 10, 25 and 50% of canopy height above the ground.
+The best fit was 10%, about 1 to 2 m above the ground, not at the canopy top. A canopy-top surface fit worse.
+After this, 46 of 48 blocks on 9t agreed with a lidar simulation to within 2.5 m. That used the 10% echo height. With bare earth it was 40 of 48. On 613590 it was 31 of 48.
+This is agreement with a simulation that also set the track offsets. It is not an independent check of position.
+The independent test, steady bright points at wells, found no clear peak.
 
 **Step 3. Handle the three tracks.** A track is a fixed, repeating orbit path with its own viewing direction and angle.
 Tracks 90 and 162 are ascending and track 26 is descending. Each has its own dates (14, 11 and 8 usable).
@@ -64,8 +73,9 @@ We never merged them into one image. The model receives each track's features as
 A few bands compare directions, such as ascending minus descending HH. They rest on the single descending track.
 Section 4a explains why they cannot be merged and what that did to the data.
 
-**Step 4. Build features.** We made 303 radar bands for each target.
-They cover brightness, texture, coherence (how stable the signal is between dates), season, and terrain lighting.
+**Step 4. Build features.** We computed 346 radar bands for each target. The model keeps 337 after dropping bands with over 20% missing values.
+The held-out test on 613590 uses 293, the bands that exist on both areas.
+There is no principled reason for these counts. Section 4b shows where they come from.
 We also tried four speckle filters. Speckle is the grainy noise in radar images.
 
 **Step 5. Score against fair decoys.** For each pit or pad we drew decoy spots with the same canopy cover (within 0.05) and slope (within 1 degree).
@@ -85,7 +95,7 @@ Section 6 covers it.
 ## 4a. Amplitude, phase and the three tracks
 
 **Amplitude** is how bright each pixel is, in dB, for HH and HV.
-Most of the 303 bands come from it. Brightness, texture, dual-pol ratios, seasonal trend, bright and dark outliers and terrain-flattened brightness are all amplitude.
+Most of the bands come from it. Brightness, texture, dual-pol ratios, seasonal trend, bright and dark outliers and terrain-flattened brightness are all amplitude.
 Every pad and pit score rests mainly on amplitude.
 
 **Phase** was used in three places, and all three came out null or weak.
@@ -111,6 +121,49 @@ We never ran persistent scatterer interferometry or a time-series deformation fi
 - Season and track are tangled. Beta dates (Oct 2025 to Jan 2026) and provisional dates (Jun to Oct 2026) fall unevenly across tracks. Track 90 has no clean leaf-off date. A comparison across seasons can mix in geometry and calibration.
 - Cross-track contrasts rest on one descending track. We cannot tell a real direction effect from track 26's own calibration.
 - Motion is measured along one line of sight only. A real change in another direction would be partly invisible.
+
+## 4b. Where the band count comes from, and what PCA says
+
+**The count is arithmetic.** We wrote 13 scripts, each producing a handful of measures, and ran most of them once for each of the three tracks.
+Seven dual-pol measures times three tracks gives 21 bands. Five texture measures times three gives 15. And so on.
+
+| Product | Bands | Product | Bands |
+|---|---|---|---|
+| Amplitude statistics | 32 | Line-of-sight motion | 12 |
+| Amplitude trend and season | 42 | Rain and freeze | 22 |
+| Coherence | 43 | Spatial | 63 |
+| Dual-pol | 21 | Sub-aperture | 15 |
+| Events | 15 | Temporal | 43 |
+| Geometry | 14 | Texture | 15 |
+| Height residual | 9 | | |
+
+These sum to 346. The scorer also holds 3 lidar controls and 2 road-context bands, which makes 351 scored.
+Road context is circular and is excluded from every NISAR set.
+
+**The 32 amplitude statistics.** The list was built from one hypothesis, that a pad is unnaturally flat.
+So we took brightness (mean HH, mean HV, HV minus HH), its spread over dates, amplitude dispersion, and HH coherence at three date gaps with its decay.
+That is 10 measures per track, 30 in all, plus 2 brightness differences between tracks.
+Nothing says 32 is the right number. It is where the list ended. We never swept the number of bands.
+The list is short because the data are small. There are about 33 dates, a pad or pit covers 4 to 9 pixels, and there are about 600 pads. Thousands of bands would only fit noise.
+
+**The conclusion did not obviously depend on the count.** Six plain backscatter layers scored 0.462 on pads. All bands scored 0.622. The gain over lidar stayed near zero either way, -0.017 on held-out pits.
+That is suggestive, not proof. We never ran a clean test with 2, 10, 32 and 346 bands.
+
+**PCA (2026-11-15).** Principal component analysis finds the independent directions in a set of measurements.
+We ran it on 60,000 random pixels of tile 9t. We used the 337 bands the model keeps, minus 3 that never varied. Each band was clipped at its 1st and 99th percentiles and standardised.
+- The first component holds only 6.9% of the variance. The first five hold 22%.
+- 26 components cover half the variance. 87 cover 80%, 127 cover 90%, 158 cover 95% and 212 cover 99%.
+- A common summary, the participation ratio, gives an effective dimension of about 56.
+- Each track alone needs 42 to 44 components for 90% of its roughly 100 to 110 bands.
+
+So the bands are redundant, but not as redundant as we expected. About a third to a half of them carry something not already in the others, so there are roughly 100 to 130 real directions.
+The main axes are physical. Component 1 is overall brightness across all tracks, including the ascending-minus-descending difference.
+Component 2 is local texture on the two ascending tracks, mostly the spatial group (45% of its weight).
+Component 3 is brightness on track 26 alone, which shows how much a single track's own level matters.
+Events, rain and freeze, height residual and sub-aperture carry almost no weight in the first five components.
+
+Limits. The sample is tile-wide, so forest dominates. It was not taken at pad or pit pixels. PCA finds variance, not usefulness. A component that explains a lot of variance can still say nothing about pads.
+Files are in `nisar/results/9t/nisar_feat_pca_*_9t_slc.*` and `nisar/results/9t/figures/nisar_feat_pca_9t_slc.png`. The script is `nisar/code/s5_eval/_nisar_feat_pca_9t.py`.
 
 ## 5. What each idea showed
 
