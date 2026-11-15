@@ -28,11 +28,14 @@ sys.path.insert(0, str(HERE))
 import _s1_metal_cfar_9t as M  # noqa: E402
 
 ROOT = M.ROOT
-RRIM = ROOT / "data" / "9t" / "derived" / "05" / "rrim_openness_9t_05.tif"
-CHM = ROOT / "data" / "9t" / "derived" / "1m" / "chm_9t_1m.tif"
+AREA = "9t"
+if "--area" in sys.argv:          # 2026-11-15: --area 613590 also supported
+    i = sys.argv.index("--area"); AREA = sys.argv[i + 1]; del sys.argv[i:i + 2]
+RRIM = ROOT / "data" / AREA / "derived" / "05" / f"rrim_openness_{AREA}_05.tif"
+CHM = ROOT / "data" / AREA / "derived" / "1m" / f"chm_{AREA}_1m.tif"
 ANN = ROOT / "qgis" / "annotations"
-NISAR_BRIGHT = ROOT / "nisar" / "results" / "9t" / "nisar_bright_targets_points_9t_slc.gpkg"
-OUT = ROOT / "nisar" / "sentinel1" / "results" / "9t" / "sites"
+NISAR_BRIGHT = ROOT / "nisar" / "results" / AREA / f"nisar_bright_targets_points_{AREA}_slc.gpkg"
+OUT = ROOT / "nisar" / "sentinel1" / "results" / AREA / "sites"
 BLUE, ORANGE, INK, GREY = "#1F5FA8", "#D97706", "#2B2F36", "#5B6168"
 
 
@@ -108,7 +111,7 @@ def main():
     axs[0].legend(loc="upper right", fontsize=8, framealpha=0.9)
     fig.suptitle(f"{name} ({lat:.6f}, {lon:.6f}), {2 * H:.0f} m box, north up", fontsize=12)
     fig.tight_layout()
-    out = OUT / f"s1_site_{name}_9t.png"
+    out = OUT / f"s1_site_{name}_{AREA}.png"
     fig.savefig(out, dpi=120)
     print(out)
 
