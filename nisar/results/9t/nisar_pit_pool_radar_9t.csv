@@ -1,0 +1,9 @@
+metric,n_pool,n_other,median_pool_db,median_other_db,diff_db,p_mannwhitney,p_perm
+hh_leafoff_fall,23,477,0.519,0.245,0.274,0.5624,0.4266
+hh_winter,23,477,0.251,0.085,0.165,0.5958,0.6448
+hh_leafon,23,477,0.275,0.105,0.171,0.4809,0.5752
+hh_change_leafon_vs_fall,23,477,0.08,-0.147,0.227,0.7903,0.5544
+hv_leafoff_fall,23,477,0.456,0.042,0.413,0.1685,0.2482
+hv_winter,23,477,0.112,0.101,0.011,0.9705,0.9748
+hv_leafon,23,477,0.285,0.193,0.092,0.8697,0.662
+hv_change_leafon_vs_fall,23,477,-0.348,0.046,-0.394,0.4063,0.2304

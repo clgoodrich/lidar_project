@@ -5,6 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-15 Pool pits from lidar, and inner-rim KMLs
+
+- `nisar/code/s5_eval/_nisar_pit_pool_9t.py`. Pool = inner-rim floor at least 50% flat (slope < 2 deg) and ground intensity <= 0.7 of the 3-10 m ring, or ground density <= 0.5. Thresholds set before looking at the radar. Pad 303's pit (id 45) is flagged (flat 0.51, intensity 0.34).
+- 9t: 23 pool pits of 500 with inner rims. Their NISAR seasonal excess does not differ from other pits (largest difference +0.41 dB HV fall, permutation p 0.25; all 8 metrics p > 0.2).
+- 613590: only the 36 pits in the seasonal analysis (old annotations_proj layer) were tested. None is a pool pit.
+- Outputs `nisar/results/<area>/nisar_pit_pool_{per_pit,radar}_<area>.csv`, `nisar_pit_pool_<area>.gpkg`, `nisar/results/kml/nisar_pit_pool_9t.kml`.
+- Inner-rim KMLs `qgis/annotations/kml/pit_inside_9t.kml` (503) and `pit_inside_613590.kml` (155), from `tools/_export_pit_inside_kml.py`.
+- Site figures for pads 303, 316, 993 and 613590 pit 718 in `nisar/sentinel1/results/<area>/sites/`.
+
+---
+
 ## 2026-11-15 Held-out pit test with the first k principal components
 
 - Script `nisar/code/s5_eval/_nisar_feat_pca_sweep_heldout_9t.py`, outputs `nisar/results/613590/nisar_pit_heldout_pca_sweep_613590_slc.csv` and `.json`. Documented in `nisar/docs/iterations/nisar_feat_pca_9t.md`. Exploratory, after the pre-registered test.

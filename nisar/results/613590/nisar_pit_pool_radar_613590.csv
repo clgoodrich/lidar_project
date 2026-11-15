@@ -1,0 +1,9 @@
+metric,n_pool,n_other
+hh_leafoff_fall,0,36
+hh_winter,0,36
+hh_leafon,0,36
+hh_change_leafon_vs_fall,0,36
+hv_leafoff_fall,0,36
+hv_winter,0,36
+hv_leafon,0,36
+hv_change_leafon_vs_fall,0,36
