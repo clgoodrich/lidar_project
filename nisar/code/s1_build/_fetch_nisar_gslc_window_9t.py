@@ -76,8 +76,9 @@ def query() -> pd.DataFrame:
         q = {"short_name": sn, "bounding_box": ",".join(map(str, BBOX)), "page_size": 200}
         with urllib.request.urlopen(CMR + "?" + urllib.parse.urlencode(q), timeout=90) as r:
             items = json.load(r)["items"]
-        # 2026-11-15: the spring-2026 granules (CRID P05023) are not found by the bounding-box search
-        # (footprints missing from CMR). Also search by the track/direction/frame seen in the box results.
+        # 2026-11-15: also search by the track/direction/frame seen in the box results, plus neighbouring
+        # frames. Checked: the spring-2026 frame-23 (track 90) granules have footprints, and their south edge
+        # lies about 12 km north of 9t, so the box search was right to miss them. Kept as a safety net.
         seen = {it["umm"]["GranuleUR"] for it in items}
         tdf = set()
         for it in items:                # neighbouring frames too: frame numbers shifted in the P05023 release
