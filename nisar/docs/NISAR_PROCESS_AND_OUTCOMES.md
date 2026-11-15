@@ -24,6 +24,7 @@ NISAR is a new NASA and ISRO satellite. It uses L-band, a long 24 cm wavelength 
 Its data are free. That made it a cheap test.
 
 Two ideas drove the test.
+
 - Steel is bright. A wellhead or tank might show as a steady bright spot.
 - Pits and pads are scars. Their roughness, wetness or soil might change the radar signal.
 
@@ -41,6 +42,7 @@ Two ideas drove the test.
 | Cross-check | Sentinel-1 C-band (5.5 cm), from NASA's OPERA archive |
 
 Three facts about the data shape everything below.
+
 - Some dates are beta (not fully calibrated) and some are provisional. Season and processing level are tangled.
 - No scenes were released from 2026-01-20 to 2026-06-20.
 - NASA plans validated reprocessing of the older dates in 2027.
@@ -133,6 +135,7 @@ It is feasible on Sentinel-1 through NASA's displacement products. We expect a n
 ## 7. Mistakes we caught
 
 We list these because they changed the answer.
+
 - Early pad and pit scores were inflated. Decoys differed from targets in more than location. The corrected design is the one reported.
 - The U-Net sampler could read held-out pixels. We fixed it and reran the fusion.
 - Two statistics (`skew7`, `kurt7`) were not true window moments. After the fix the headline moved by 0.005 or less.
@@ -150,6 +153,7 @@ Three remain. The dedupe comparison did not hold folds fixed. The wet and dry CS
 
 On 2026-11-13 you picked a spot (41.502787, -79.519712) and later told us it was a building.
 We had read it as a graded yard, so this is a fair test of the radar.
+
 - NISAR showed three pixels bright on all three tracks. The strongest was 17.7 dB above its surroundings. Its steadiness score was 0.09, well under the 0.25 steady cutoff.
 - Sentinel-1 showed a bright streak just south-south-east of the point.
 No pit or well site has come near that.
@@ -159,11 +163,13 @@ A building is far bigger than a wellhead, so this does not show the test would c
 ## 9. What this does and does not tell us
 
 It tells us
+
 - The current radar features should not go into the detector.
 - Radar-alone scores are too sensitive to design to be headlines.
 - Free Sentinel-2 optical does as well as the radar, or better, where lidar is absent.
 
 It does not tell us
+
 - That radar is useless. A smaller gain is not excluded.
 - Anything about pads that lidar cannot see. They are not in the labels.
 - Anything about wells changed since 2019. The labels come from lidar.
@@ -197,6 +203,7 @@ It does not tell us
 | Numbers and figures | `nisar/results/<area>/` and `nisar/sentinel1/results/<area>/` |
 
 Glossary.
+
 - **L-band, C-band, X-band.** Radar wavelengths of about 24 cm, 5.5 cm and 3 cm. Longer waves pass through leaves more easily.
 - **HH, HV.** Transmit and receive polarisations. HV is cross-polarised and responds to volume scattering such as canopy.
 - **Speckle.** Grainy noise from many small reflectors inside one pixel.
