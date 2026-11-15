@@ -59,3 +59,33 @@ It does not test whether fewer bands would change the NISAR-plus-lidar gain.
 ## Reproduce
 
 `python nisar/code/s5_eval/_nisar_feat_pca_9t.py`
+
+## Held-out sweep over the number of components (2026-11-15)
+
+**Script:** `nisar/code/s5_eval/_nisar_feat_pca_sweep_heldout_9t.py`
+Exploratory. Run after the pre-registered 613590 test and not part of it.
+
+Same frozen design as `nisar/code/s5_eval/_nisar_feat_heldout_9t.py`. Train on the 9t pit samples (5,379 rows), score the 613590 pit samples (396 rows, 36 pits).
+The NISAR bands are replaced by their first k components. The PCA is fitted on the 9t training rows only, then applied to 613590.
+278 of the 293 shared bands survive the missing-value rule and zero-variance filter. The rich lidar baseline is 26 bands.
+The run reproduces the saved result: all 293 bands plus rich lidar scores 0.865, gain -0.017 (-0.055 to +0.020).
+
+| NISAR input | Alone | With rich lidar | Gain over rich lidar (95% block bootstrap) |
+|---|---|---|---|
+| Rich lidar only | | 0.881 | |
+| All 293 bands | 0.658 | 0.865 | -0.017 (-0.055, +0.020) |
+| PC1 | 0.496 | 0.876 | -0.005 (-0.017, +0.003) |
+| first 2 | 0.572 | 0.865 | -0.016 (-0.036, -0.000) |
+| first 5 | 0.630 | 0.874 | -0.007 (-0.022, +0.006) |
+| first 10 | 0.600 | 0.874 | -0.008 (-0.025, +0.006) |
+| first 30 | 0.593 | 0.872 | -0.010 (-0.026, +0.006) |
+| first 60 | 0.597 | 0.865 | -0.017 (-0.037, +0.002) |
+| first 127 | 0.578 | 0.858 | -0.023 (-0.048, -0.002) |
+
+- No component count gives a gain. Every point estimate is negative and none reaches +0.05.
+- The radar-alone score is highest at 5 components (0.630). The brightness axis, PC1, scores chance (0.496) on pits.
+- The gain gets worse as components are added. With 127 the interval excludes zero on the negative side. That is what fitting noise looks like.
+- Only 36 pits, eight component counts, and the counts were chosen after the fact. Read the pattern, not any one row.
+
+Files: `nisar/results/613590/nisar_pit_heldout_pca_sweep_613590_slc.csv` and `.json`.
+Reproduce: `python nisar/code/s5_eval/_nisar_feat_pca_sweep_heldout_9t.py --slc`

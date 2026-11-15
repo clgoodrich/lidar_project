@@ -147,7 +147,7 @@ Nothing says 32 is the right number. It is where the list ended. We never swept 
 The list is short because the data are small. There are about 33 dates, a pad or pit covers 4 to 9 pixels, and there are about 600 pads. Thousands of bands would only fit noise.
 
 **The conclusion did not obviously depend on the count.** Six plain backscatter layers scored 0.462 on pads. All bands scored 0.622. The gain over lidar stayed near zero either way, -0.017 on held-out pits.
-That is suggestive, not proof. We never ran a clean test with 2, 10, 32 and 346 bands.
+That is suggestive, not proof. We have since run a sweep over components, described below.
 
 **PCA (2026-11-15).** Principal component analysis finds the independent directions in a set of measurements.
 We ran it on 60,000 random pixels of tile 9t. We used the 337 bands the model keeps, minus 3 that never varied. Each band was clipped at its 1st and 99th percentiles and standardised.
@@ -161,6 +161,13 @@ The main axes are physical. Component 1 is overall brightness across all tracks,
 Component 2 is local texture on the two ascending tracks, mostly the spatial group (45% of its weight).
 Component 3 is brightness on track 26 alone, which shows how much a single track's own level matters.
 Events, rain and freeze, height residual and sub-aperture carry almost no weight in the first five components.
+
+**Does the count matter? A held-out sweep.** We replaced the radar bands with their first 1, 2, 5, 10, 30, 60 and 127 components and reran the 613590 pit test.
+The PCA was fitted on the 9t training rows only. The run reproduces the earlier -0.017 when all 293 bands are used.
+- No component count gave a gain. The estimates ran from -0.005 to -0.023 against lidar alone (0.881). The best was PC1 alone, because it adds almost nothing.
+- Radar alone peaked at 0.630 with 5 components. The brightness axis alone scored chance (0.496).
+- More components made it worse. At 127 the interval was -0.048 to -0.002. That looks like fitting noise.
+- Only 36 pits, and the counts were chosen after the fact. This is exploratory.
 
 Limits. The sample is tile-wide, so forest dominates. It was not taken at pad or pit pixels. PCA finds variance, not usefulness. A component that explains a lot of variance can still say nothing about pads.
 Files are in `nisar/results/9t/nisar_feat_pca_*_9t_slc.*` and `nisar/results/9t/figures/nisar_feat_pca_9t_slc.png`. The script is `nisar/code/s5_eval/_nisar_feat_pca_9t.py`.

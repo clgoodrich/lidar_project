@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-15 Held-out pit test with the first k principal components
+
+- Script `nisar/code/s5_eval/_nisar_feat_pca_sweep_heldout_9t.py`, outputs `nisar/results/613590/nisar_pit_heldout_pca_sweep_613590_slc.csv` and `.json`. Documented in `nisar/docs/iterations/nisar_feat_pca_9t.md`. Exploratory, after the pre-registered test.
+- PCA fitted on 9t training rows only, applied to 613590. k = 1, 2, 5, 10, 30, 60, 127. Reproduces all-band gain -0.017 (-0.055 to +0.020). Rich lidar 0.881.
+- Gain over rich lidar: -0.005, -0.016, -0.007, -0.008, -0.010, -0.017, -0.023. None positive. Radar alone peaks 0.630 at k = 5. PC1 alone 0.496.
+- Conclusion: the number of bands or components does not change the null result on these 36 pits.
+
+---
+
 ## 2026-11-15 PCA of the NISAR feature bands (9t) and band-count explanation
 
 - Ran PCA on 60,000 random 9t pixels, 337 kept bands (334 after zero-variance drop), lidar-placed stack. Script `nisar/code/s5_eval/_nisar_feat_pca_9t.py`, write-up `nisar/docs/iterations/nisar_feat_pca_9t.md`, outputs `nisar/results/9t/nisar_feat_pca_*_9t_slc.*` and `nisar/results/9t/figures/nisar_feat_pca_9t_slc.png`.

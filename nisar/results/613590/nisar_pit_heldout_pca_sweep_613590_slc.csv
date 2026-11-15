@@ -1,0 +1,17 @@
+feature_set,auc,gain_over_rich,gain_lo,gain_hi
+rich lidar baseline,0.881,,,
+all NISAR bands + rich,0.865,-0.017,-0.055,0.02
+PC1 alone,0.496,,,
+PC1 + rich,0.876,-0.005,-0.017,0.003
+PC2 alone,0.572,,,
+PC2 + rich,0.865,-0.016,-0.036,-0.0
+PC5 alone,0.63,,,
+PC5 + rich,0.874,-0.007,-0.022,0.006
+PC10 alone,0.6,,,
+PC10 + rich,0.874,-0.008,-0.025,0.006
+PC30 alone,0.593,,,
+PC30 + rich,0.872,-0.01,-0.026,0.006
+PC60 alone,0.597,,,
+PC60 + rich,0.865,-0.017,-0.037,0.002
+PC127 alone,0.578,,,
+PC127 + rich,0.858,-0.023,-0.048,-0.002
