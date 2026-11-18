@@ -5,6 +5,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-18 Process and outcomes doc rewritten
+
+- `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md` and `.pdf` reframed around the marker objective. Added the per-track date table (613590 track 162 has 6 dates), the no-NISAR-DEM note, the steady-target section, marker sites, pool pits and the spring gap. Noted the seasonal tests ran on 31 of 37 dates.
+
 ## 2026-11-15 Pool pits from lidar, and inner-rim KMLs
 
 - `nisar/code/s5_eval/_nisar_pit_pool_9t.py`. Pool = inner-rim floor at least 50% flat (slope < 2 deg) and ground intensity <= 0.7 of the 3-10 m ring, or ground density <= 0.5. Thresholds set before looking at the radar. Pad 303's pit (id 45) is flagged (flat 0.51, intensity 0.34).
