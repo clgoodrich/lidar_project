@@ -25,15 +25,15 @@ Prediction, candidate ranking and discovery are outside the present scope.
 
 | Potential marker | What was measured | Reading |
 |---|---|---|
-| **Pit brightness** | Across 506 mapped pits, the pit-to-ring contrast beat the decoy-to-ring contrast by **0.25 dB in fall HH** (p 0.0002) and **0.19 dB in summer HV** (p 0.0002). | **Strongest lead.** Most of the excess comes from decoys being dark, not pits standing out. In fall the pits were 0.12 dB darker than their rings and decoys 0.39 dB darker. The direct summer-minus-fall change was not conclusive. |
-| **Pad coherence loss** | Across 649 pads, **169 snow-free coherence-loss events against 136.4 expected** from decoys (p 0.001). | **Weaker lead.** Pads lost signal stability slightly more often. No dated well activity explains it. Vegetation, traffic and weather are plausible. Winter shows no excess (13 against 13.1). |
-| **Pad brightness** | Across 650 pads, fall and summer HH were within 0.01 dB of decoys. Winter HH was -0.086 dB (p 0.0016). | No dark pad signature. The winter value is exploratory. Snow and processing level varied. |
+| **Pit brightness** | Across 506 mapped pits, the pit-to-ring contrast beat the control-to-ring contrast by **0.25 dB in fall HH** (p 0.0002) and **0.19 dB in summer HV** (p 0.0002). | **Strongest lead.** Most of the excess comes from control spots being dark, not pits standing out. In fall the pits were 0.12 dB darker than their rings and control spots 0.39 dB darker. The direct summer-minus-fall change was not conclusive. |
+| **Pad coherence loss** | Across 649 pads, **169 snow-free coherence-loss events against 136.4 expected** from control spots (p 0.001). | **Weaker lead.** Pads lost signal stability slightly more often. No dated well activity explains it. Vegetation, traffic and weather are plausible. Winter shows no excess (13 against 13.1). |
+| **Pad brightness** | Across 650 pads, fall and summer HH were within 0.01 dB of control spots. Winter HH was -0.086 dB (p 0.0016). | No dark pad signature. The winter value is exploratory. Snow and processing level varied. |
 | **Steel** | Steady bright targets near DEP wells (section 6). | No marker. Wells hit at chance. |
 | **Water** | 8 wet and 5 dry reference pits. Then 23 lidar-found pool pits against 477 other pits (section 7). | No marker. Wet and dry overlap. Pool pits match other pits. |
 | **Motion** | Pit interferograms and slope motion at wells. | No marker. 0 of 15 coherent wells flagged after correction. |
 
 **Limits that apply to every row**
-- Decoys were the same shape as the feature, moved 150 to 600 m onto background. They were not matched on canopy, slope or road access. Part of the pit excess may come from that.
+- Control spots were the same shape as the feature, moved 150 to 600 m onto background. They were not matched on canopy, slope or road access. Part of the pit excess may come from that.
 - The pit contrast is small. The 95% interval for fall HH runs from 0.10 to 0.43 dB.
 - The "fall" season rests on 1 date on tracks 26 and 90 and 3 dates on track 162 (section 3).
 - The data are beta and provisional, with calibration offsets between tracks.
@@ -111,8 +111,9 @@ We placed all three on the same lidar grid and computed every measure per track.
 Section 4a explains why.
 
 **Step 4. Measure contrasts at known sites.** For each pit or pad we compared the feature with a ring around it.
-We then compared that contrast with five decoys of the same shape, 150 to 600 m away. The difference is the excess.
-A swap test shuffles feature and decoy labels to get a p-value.
+We then compared that contrast with five control spots of the same shape, 150 to 600 m away. The difference is the excess.
+Control spots are a comparison baseline. They show the contrast any patch of ground gives, so the excess is what the feature adds. They are not training data for a model. Scripts and file names still call them decoys.
+A swap test shuffles feature and control labels to get a p-value.
 
 **Step 5. Build bands.** We also computed 346 radar bands for each site, for screening. Section 4b says where the count comes from.
 We tried four speckle filters. Speckle is the grainy noise in radar images.
@@ -208,13 +209,13 @@ A steady bright target is a persistent scatterer. This section is the selection 
 - Per track, amplitude dispersion is the spread of HH brightness over dates divided by its mean. Forest pixels sit near 0.5.
 - A steady bright target scores below 0.25 and is at least 6 dB brighter than the median within 250 m.
 - A well is hit when a target sits within 15 m.
-- Each well gets 5 decoys 150 to 600 m away with the same canopy cover. Never-drilled permits are a negative control.
+- Each well gets 5 control spots 150 to 600 m away with the same canopy cover. Never-drilled permits are a negative control.
 
 **Results.**
 
 | Test | Wells | Comparison | Reading |
 |---|---|---|---|
-| NISAR, 9t | 1 to 2% hit | 0.3 to 1% at decoys | Wells about 0.1 dB brighter, active and abandoned alike. Steadiness does not separate them (AUC 0.47 to 0.50). |
+| NISAR, 9t | 1 to 2% hit | 0.3 to 1% at control spots | Wells about 0.1 dB brighter, active and abandoned alike. Steadiness does not separate them (AUC 0.47 to 0.50). |
 | NISAR, Warren (684 wells) | 3.9% hit | 5.2% at random spots | At chance (p 0.75). Under canopy 2.2% against 5.3%. |
 | Sentinel-1, 9t and 613590 | 2 of 9 steady targets near active wells (34 m, 82 m), outside the hit zone | The other 7 sit on the river floodplain | Same as random ground |
 | Registration from steady targets | Best 2.4% at one shift | 1.6% median | No clear peak. Cannot fix position. |
@@ -261,17 +262,17 @@ We used OPERA Sentinel-1 products, which are already aligned for interferometry.
 | Test | Result |
 |---|---|
 | Interferograms of pits, Oct-Nov 2025, April 2025 and 2026, every April 2017 to 2026 | No pit signal. April 2025 on 9t showed -1.18 mm (p 0.003). It did not return in other years. Pooled it was -0.06 mm (range -0.31 to +0.12). |
-| Coherence at pits against decoys | A small +0.011 on 9t. It traces to how decoys were drawn and to open ground. 613590 shows none. |
+| Coherence at pits against control spots | A small +0.011 on 9t. It traces to how control spots were drawn and to open ground. 613590 shows none. |
 | Small-metal bright-spot detector (CFAR) at wells | Wells 0.26% against 0.44% for random ground. |
-| Same detector at 666 annotated pits | Pits 0.15% against decoys 0.60%. |
-| Steadiest pixel at pits | Same as decoys (0.385 against 0.380 in April). |
+| Same detector at 666 annotated pits | Pits 0.15% against control spots 0.60%. |
+| Steadiest pixel at pits | Same as control spots (0.385 against 0.380 in April). |
 | X-band (finer, 3 cm) | None free over our areas. The nearest Umbra scenes are about 86 km away. |
 
 Bright pixels near pits mean rough or open disturbed ground. They do not mean steel.
 
 ## 9. Mistakes we caught
 
-- Early pad and pit scores were inflated. Decoys differed from targets in more than location.
+- Early pad and pit scores were inflated. Control spots differed from targets in more than location.
 - Two statistics (`skew7`, `kurt7`) were not true window moments. After the fix the headline moved by 0.005 or less.
 - In the optical test we masked thin cirrus, which removed most of September. We also subtracted a reflectance offset these scenes do not use. Both were fixed.
 - We guessed the radar "follows the terrain", then that it "looks like trees". Neither held up.
@@ -304,7 +305,7 @@ It does not tell us
 - Anything about the validated products. Those arrive in 2027.
 - Anything about sites changed since 2019. The outlines come from lidar.
 
-**Archived on 2026-11-15.** Earlier work trained classifiers to rank sites against decoys, set a +0.05 pass mark and swept the number of bands.
+**Archived on 2026-11-15.** Earlier work trained classifiers to tell sites from decoy spots used as training negatives, set a +0.05 pass mark and swept the number of bands.
 That is prediction, outside the present objective. 17 scripts and 98 result files were moved to `nisar/archive/prediction/`.
 The earlier version of this document is `nisar/archive/prediction/NISAR_PROCESS_AND_OUTCOMES_prediction_version_20261115.md`.
 Nothing was deleted. The moves are logged in `docs/MOVES.csv` under `nisar_prediction_archive`.
@@ -314,7 +315,7 @@ For the record, the held-out pit test on 613590 gave -0.017 against lidar alone 
 
 | Step | Needs |
 |---|---|
-| Rerun pit and pad contrasts with decoys matched on canopy, slope and road access | Desk work |
+| Rerun pit and pad contrasts with control spots matched on canopy, slope and road access | Desk work |
 | Compare pits with non-well depressions | Desk work. Tells a well marker from a depression marker |
 | Rerun the seasonal tests on all 37 dates | Desk work |
 | Rerun the 9t steel test on the lidar-placed stack | Desk work |
@@ -349,7 +350,7 @@ Glossary.
 - **HH, HV.** Transmit and receive polarisations. HV responds to volume scattering such as canopy.
 - **Speckle.** Grainy noise from many small reflectors inside one pixel.
 - **Coherence.** How similar the signal is between two dates. High means a stable surface.
-- **Decoy.** A comparison spot of the same shape, 150 to 600 m from the feature.
-- **Excess.** Feature-minus-ring contrast, minus the same for decoys.
+- **Control spot.** A spot of the same shape as the feature, 150 to 600 m away on background. It is a comparison baseline, not training data. Code and file names call it a decoy.
+- **Excess.** Feature-minus-ring contrast, minus the same for control spots.
 - **CFAR.** A bright-spot detector that sets its threshold from the local background.
 - **Steadiness (D_A).** Spread of a pixel's brightness over dates divided by its mean. Under 0.25 is steady. Pure speckle is about 0.53.
