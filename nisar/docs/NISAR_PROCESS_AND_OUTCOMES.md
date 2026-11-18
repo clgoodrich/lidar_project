@@ -133,8 +133,9 @@ The pit and pad brightness contrasts rest on amplitude.
 - Coherence, which is how stable the signal is between dates. It fed the pad coherence-loss test.
 - The line-of-sight motion and height-residual bands. The Sentinel-1 interferograms used phase the same way.
 
-We never ran persistent-scatterer interferometry or a deformation time series on NISAR. There are too few dates, and the data are beta or provisional.
-The steady-target screen in section 6 uses amplitude only.
+Persistent-scatterer analysis has two steps. Step 1 picks pixels whose brightness barely changes over dates (amplitude dispersion under 0.25, Ferretti et al. 2001). Step 2 fits motion and height from the phase at only those pixels.
+We ran step 1. It is the steady-target screen in section 6, and it found almost no persistent scatterers at wells.
+We did not run step 2. With no scatterers at wells there is nothing to measure there. It also needs about 20 or more dates on one track, and we have 10 to 15 split between beta and provisional.
 
 **Why the tracks cannot be merged**
 - Brightness depends on viewing direction. A slope facing the satellite is bright and the same slope seen from the other side is dark.
@@ -198,9 +199,10 @@ Files are `nisar/results/9t/nisar_feat_pca_*_9t_slc.*` and `nisar/results/9t/fig
 What the radar responds to. HV follows optical greenness far more than lidar canopy height (R squared 0.52 against 0.04).
 In closed forest most raw HV is terrain lighting. Adding simulated terrain gain lifts the explained share from 0.07 to 0.57.
 
-## 6. Steady bright targets (persistent-scatterer screen)
+## 6. Steady bright targets (persistent-scatterer selection, step 1)
 
 **Idea.** Casing, pumpjacks and tanks are steel. Steel gives strong echoes that stay the same between passes. Forest echoes flicker.
+A steady bright target is a persistent scatterer. This section is the selection step of persistent-scatterer analysis. The phase step (section 4a) was not run.
 
 **Method.**
 - Per track, amplitude dispersion is the spread of HH brightness over dates divided by its mean. Forest pixels sit near 0.5.
