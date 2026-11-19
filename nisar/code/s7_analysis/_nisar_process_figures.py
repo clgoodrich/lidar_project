@@ -71,8 +71,8 @@ def fig_dates():
     ax.set_xlabel("Acquisition date")
     ax.legend(handles=[Line2D([], [], marker="o", ls="", c=BLUE, label="Beta, valid"),
                        Line2D([], [], marker="s", ls="", c=ORANGE, label="Provisional, valid"),
-                       Line2D([], [], marker="x", ls="", c=GREY, label="No valid pixels in window"),
-                       Patch(facecolor="none", edgecolor=GREY, hatch="///", label="Not yet released (spring 2026)")],
+                       Line2D([], [], marker="x", ls="", c=GREY, label="Image, no valid pixels over tile"),
+                       Patch(facecolor="none", edgecolor=GREY, hatch="///", label="Raw data only (spring 2026)")],
               loc="upper center", bbox_to_anchor=(0.5, 1.2), ncol=4, fontsize=7.5, handletextpad=0.3, columnspacing=1)
     save(fig, "nisar_dates_on_hand.png")
 

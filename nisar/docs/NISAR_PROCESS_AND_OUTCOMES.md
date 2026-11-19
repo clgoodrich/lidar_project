@@ -67,7 +67,7 @@ Prediction, candidate ranking and discovery are outside the present scope.
 
 ## 3a. The spring 2026 gap (checked 2026-11-15)
 
-The satellite did record over 9t and 613590 in spring 2026. NASA has not yet released processed images of those passes.
+The satellite did record over 9t and 613590 in spring 2026. The raw data is released. Processed images of our frames are not, so we cannot use it yet.
 - **Raw data exists.** NASA's archive lists raw Level 0 files (RRSD) for spring passes on tracks 90 and 162, for example 2026-04-09, 2026-04-21, 2026-05-27 and 2026-06-08. Each raw pass is about 60 GB and covers our areas.
 - **Raw data cannot be clipped.** It is echo data, not an image. Each image pixel is built from echoes spread over kilometres of flight path. Using it means downloading the whole file and focusing it ourselves with ISCE3, NASA's open-source processor.
 - **Processed spring images exist only for the neighbouring frame.** The April 9 GSLC on track 90 is frame 23. Its south edge sits about 12 km north of 9t. Track 162's spring files are frame 24. Our clipped windows from those files held no valid pixels over 9t or 613590.
