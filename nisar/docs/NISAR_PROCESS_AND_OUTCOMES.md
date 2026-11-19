@@ -343,6 +343,7 @@ For the record, the held-out pit test on 613590 gave -0.017 against lidar alone 
 | Independent review | `nisar/reviews/nisar_adversarial_20261109/REPORT.md` |
 | Sentinel-1 write-ups | `nisar/sentinel1/docs/s1_ifg_pits_9t.md`, `nisar/sentinel1/docs/s1_metal_cfar_9t.md` |
 | Archived prediction work | `nisar/archive/prediction/` |
+| Figures for this document | `nisar/docs/figures/`, made by `nisar/code/s7_analysis/_nisar_process_figures.py` |
 
 Glossary.
 

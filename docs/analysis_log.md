@@ -5,6 +5,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+
+## 2026-11-18 Process figures for the NISAR process doc
+
+- New script `nisar/code/s7_analysis/_nisar_process_figures.py` writes six figures to `nisar/docs/figures/`.
+- The figures are dates_on_hand (from the window indexes), excess_number_line, ps_selection_plane, position_cross_section, evidence_ladder and band_count_waffle.
+- Numbers are quoted from `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md`. Palette is the validated lost/found set. Grey is context only.
+- The PS plane and the cross-section are schematics. Only the building point and the quoted rates are data.
+
 ## 2026-11-18 Process and outcomes doc rewritten
 
 - `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md` and `.pdf` reframed around the marker objective. Added the per-track date table (613590 track 162 has 6 dates), the no-NISAR-DEM note, the steady-target section, marker sites, pool pits and the spring gap. Noted the seasonal tests ran on 31 of 37 dates.
