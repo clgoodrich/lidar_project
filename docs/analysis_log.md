@@ -6,6 +6,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 ---
 
 
+
+## 2026-11-19 Decision: amplitude uses provisional dates only (June 2026 on)
+
+- User decision. Beta dates (2025-10-28 to 2026-01-20) are out of scope for any amplitude measure. They are not fully calibrated.
+- Usable amplitude dates: 9t tracks 26/90/162 have 7/10/9 (2026-06-20 to 10-18). 613590 has 7/10 and none on track 162.
+- Affected: the fall HH pit lead (+0.25 dB) and the winter pad value rest on beta dates. They are no longer in scope as stated.
+- Also affected: amplitude bands and the steady-target (PS step 1) screen where they used beta dates.
+- Phase and coherence results are not covered by this decision.
+- Not yet rerun. The seasonal script defines seasons in `nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py` (SEASONS).
+
 ## 2026-11-18 Process figures for the NISAR process doc
 
 - New script `nisar/code/s7_analysis/_nisar_process_figures.py` writes six figures to `nisar/docs/figures/`.
