@@ -8,6 +8,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-20 Provisional PS limitation accepted as a limitation (user decision)
+
+- User: "If there's limitations, then there's limitations, and we shouldn't shelve things or branch off into random areas."
+- The provisional-only PS screen and steel results stand as run. No threshold recalibration, no multi-track rule, no shelving.
+- The limit (6 to 10 dates, 0.14 to 0.62% pass rate) is stated in nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md section 6.
+
 ## 2026-11-20 Persistent-scatterer screen rerun on provisional dates only; site figures redrawn
 
 - Lidar-placed stack extended through 2026-10-18 (9t 37 dates, 613590 28). Re-alignment check left at most 0.37 m. Log `nisar/results/9t/nisar_slc_extend_20261120_run2.log`.

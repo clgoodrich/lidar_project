@@ -218,7 +218,15 @@ A steady bright target is a persistent scatterer. This section is the selection 
 | NISAR, 9t | 1 to 2% hit | 0.3 to 1% at control spots | Wells about 0.1 dB brighter, active and abandoned alike. Steadiness does not separate them (AUC 0.47 to 0.50). |
 | NISAR, Warren (684 wells) | 3.9% hit | 5.2% at random spots | At chance (p 0.75). Under canopy 2.2% against 5.3%. |
 | Sentinel-1, 9t and 613590 | 2 of 9 steady targets near active wells (34 m, 82 m), outside the hit zone | The other 7 sit on the river floodplain | Same as random ground |
+| NISAR provisional dates only (June to October 2026), 9t and 613590 | 23 to 26% hit at 9t, 16 to 21% at 613590 | 20 to 24% at control spots | At chance. Steadiness AUC 0.49 to 0.53. Limited by date count, see below. |
 | Registration from steady targets | Best 2.4% at one shift | 1.6% median | No clear peak. Cannot fix position. |
+
+**Limitation of the provisional-only run (2026-11-20).**
+- Amplitude work uses provisional dates only. That leaves 6 to 10 dates per track.
+- Amplitude dispersion from so few dates is noisy. Speckle falls below 0.25 by chance.
+- The screen passes 0.14 to 0.62% of pixels. Most of these are noise in open fields.
+- The method was designed for about 30 or more dates. This is a limit of the data on hand.
+- The result is reported as is. The screen stays in the analysis with this limit stated.
 
 **Why it likely fails here.**
 - A wellhead is 1 to 3 m. A 5 m pixel also holds trees and ground.
