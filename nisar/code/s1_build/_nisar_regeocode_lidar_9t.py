@@ -335,9 +335,10 @@ def write_stack(heights, coreg=False, absolute=False):
         name = f"nisar_slc_{tag}_{key}_{TAG}.tif"
         grow = gi[(gi.date == rrow.date) & (gi.track == rrow.track)].iloc[0]
         bad = (str(rrow.date), int(rrow.track)) in gfetch.A.BAD_DATES
-        if coreg and name not in off.index:
+        if coreg and name not in off.index and not bad:
             raise KeyError(f"{name} has no row in {OFFSETS}; refresh the offsets table before writing a co-registered stack")
-        cs = (float(off.loc[name, "slant_m"]), float(off.loc[name, "az_s"])) if coreg else (0.0, 0.0)
+        # BAD_DATES are never analysed and estimate_offsets skips them, so they are written without a per-date offset
+        cs = (float(off.loc[name, "slant_m"]), float(off.loc[name, "az_s"])) if coreg and name in off.index else (0.0, 0.0)
         ts = (float(trk.loc[rrow.track, "slant_m"]), float(trk.loc[rrow.track, "az_s"])) if absolute else (0.0, 0.0)
         t0 = time.time()
         o, info = make_slc(key, heights=heights, pols=("HH", "HV"), coreg=(cs[0] + ts[0], cs[1] + ts[1]))

@@ -14,7 +14,7 @@ Context per target: nearest DEP well (any status), nearest annotated pad and roa
 2019 lidar canopy cover. These are candidates for metal (tanks, pipe, equipment), not wells.
 
 Run:
-  python nisar/code/s5_eval/_nisar_bright_targets_9t.py
+  python nisar/code/s5_eval/_nisar_bright_targets_9t.py [--slc] [--prov]   (--prov: provisional dates only, see _nisar_steel_9t.py)
 """
 from __future__ import annotations
 
@@ -73,7 +73,7 @@ def write_layers(maps, tf, shape):
         fbg = median_filter(np.where(np.isfinite(fdb), fdb, np.nanmedian(fdb)), size=k)
         bands["mean_hh_flat_db"] = fdb
         bands["above_250m_flat_db"] = fdb - fbg
-        path = steel.DER / f"nisar_bright_targets_layers_t{t:03d}_{AREA.TAG}.tif"
+        path = steel.DER / f"nisar_bright_targets_layers_t{t:03d}_{steel.OTAG}.tif"
         with rasterio.open(path, "w", driver="GTiff", height=shape[0], width=shape[1], count=len(bands),
                            dtype="float32", crs=CRS, transform=tf, nodata=np.nan, compress="deflate") as dst:
             for i, (name, a) in enumerate(bands.items(), 1):
@@ -141,7 +141,7 @@ def main():
     in_lidar = g.canopy_cover.notna()   # after the sort: the mask must index the rows it is applied to
 
     stem = "nisar_bright_targets"
-    g.to_file(OUT / f"{stem}_points_{AREA.TAG}.gpkg", layer="candidate_bright_targets", driver="GPKG")
+    g.to_file(OUT / f"{stem}_points_{steel.OTAG}.gpkg", layer="candidate_bright_targets", driver="GPKG")
     summary = dict(params=dict(da_max=steel.DA_MAX, bright_db=steel.BRIGHT_DB, bg_m=steel.BG_M,
                                merge_m=MERGE_M, near_m=NEAR_M),
                    dates_per_track=n_dates, track_points=int(len(p)), targets=int(len(g)),
@@ -150,7 +150,7 @@ def main():
                    share_by_context_in_lidar=g[in_lidar].context.value_counts(normalize=True).round(3).to_dict(),
                    share_by_context_random_spots=chance.round(3).to_dict(),
                    by_context_2plus_tracks=g[g.n_tracks >= 2].context.value_counts().to_dict())
-    json.dump(summary, open(OUT / f"{stem}_summary_{AREA.TAG}.json", "w"), indent=2, default=int)
+    json.dump(summary, open(OUT / f"{stem}_summary_{steel.OTAG}.json", "w"), indent=2, default=int)
     print(json.dumps(summary, indent=2, default=int))
     print(g.head(15).drop(columns="geometry").to_string())
 

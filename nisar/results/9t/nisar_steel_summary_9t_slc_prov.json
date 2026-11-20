@@ -1,0 +1,299 @@
+{
+  "params": {
+    "da_max": 0.25,
+    "bright_db": 6.0,
+    "radius_m": 15.0,
+    "background_m": 250.0,
+    "n_decoy": 5,
+    "seed": 20261007
+  },
+  "tracks": {
+    "26": {
+      "n_dates": 6,
+      "sbt_pixels": 5638
+    },
+    "90": {
+      "n_dates": 10,
+      "sbt_pixels": 3449
+    },
+    "162": {
+      "n_dates": 9,
+      "sbt_pixels": 1333
+    }
+  },
+  "by_status": [
+    {
+      "group": "active",
+      "n_wells": 617,
+      "n_decoys": 3018,
+      "canopy_cover_median": 0.5199999809265137,
+      "wells_sbt_any_track": 0.233,
+      "decoys_sbt_any_track": 0.239,
+      "odds_ratio_any": 0.97,
+      "p_any": 0.84,
+      "wells_sbt_2plus_tracks": 0.019,
+      "decoys_sbt_2plus_tracks": 0.03,
+      "odds_ratio_2plus": 0.65,
+      "p_2plus": 0.18,
+      "auc_brightness_wells_gt_decoys": 0.548,
+      "auc_steadiness_wells_gt_decoys": 0.498,
+      "p_brightness": 0.00016,
+      "bright_max_db_median_wells": 4.89,
+      "bright_max_db_median_decoys": 4.69
+    },
+    {
+      "group": "plugged",
+      "n_wells": 271,
+      "n_decoys": 1324,
+      "canopy_cover_median": 0.4000000059604645,
+      "wells_sbt_any_track": 0.247,
+      "decoys_sbt_any_track": 0.21,
+      "odds_ratio_any": 1.24,
+      "p_any": 0.19,
+      "wells_sbt_2plus_tracks": 0.018,
+      "decoys_sbt_2plus_tracks": 0.017,
+      "odds_ratio_2plus": 1.11,
+      "p_2plus": 0.8,
+      "auc_brightness_wells_gt_decoys": 0.504,
+      "auc_steadiness_wells_gt_decoys": 0.487,
+      "p_brightness": 0.85,
+      "bright_max_db_median_wells": 4.6,
+      "bright_max_db_median_decoys": 4.69
+    },
+    {
+      "group": "abandoned",
+      "n_wells": 174,
+      "n_decoys": 863,
+      "canopy_cover_median": 0.5199999809265137,
+      "wells_sbt_any_track": 0.264,
+      "decoys_sbt_any_track": 0.202,
+      "odds_ratio_any": 1.42,
+      "p_any": 0.068,
+      "wells_sbt_2plus_tracks": 0.04,
+      "decoys_sbt_2plus_tracks": 0.01,
+      "odds_ratio_2plus": 3.98,
+      "p_2plus": 0.0099,
+      "auc_brightness_wells_gt_decoys": 0.556,
+      "auc_steadiness_wells_gt_decoys": 0.515,
+      "p_brightness": 0.019,
+      "bright_max_db_median_wells": 4.86,
+      "bright_max_db_median_decoys": 4.64
+    },
+    {
+      "group": "not_drilled",
+      "n_wells": 10,
+      "n_decoys": 50,
+      "canopy_cover_median": 0.2800000011920929,
+      "wells_sbt_any_track": 0.2,
+      "decoys_sbt_any_track": 0.2,
+      "odds_ratio_any": 1.0,
+      "p_any": 1.0,
+      "wells_sbt_2plus_tracks": 0.0,
+      "decoys_sbt_2plus_tracks": 0.04,
+      "odds_ratio_2plus": 0.0,
+      "p_2plus": 1.0,
+      "auc_brightness_wells_gt_decoys": 0.578,
+      "auc_steadiness_wells_gt_decoys": 0.486,
+      "p_brightness": 0.45,
+      "bright_max_db_median_wells": 5.34,
+      "bright_max_db_median_decoys": 4.68
+    }
+  ],
+  "by_status_and_canopy": [
+    {
+      "cover": "open_cover_lt0p30",
+      "group": "active",
+      "n_wells": 232,
+      "wells_sbt_any_track": 0.207,
+      "decoys_sbt_any_track": 0.237,
+      "auc_brightness": 0.558,
+      "auc_steadiness": 0.516
+    },
+    {
+      "cover": "open_cover_lt0p30",
+      "group": "plugged",
+      "n_wells": 112,
+      "wells_sbt_any_track": 0.321,
+      "decoys_sbt_any_track": 0.224,
+      "auc_brightness": 0.52,
+      "auc_steadiness": 0.487
+    },
+    {
+      "cover": "open_cover_lt0p30",
+      "group": "abandoned",
+      "n_wells": 69,
+      "wells_sbt_any_track": 0.362,
+      "decoys_sbt_any_track": 0.202,
+      "auc_brightness": 0.578,
+      "auc_steadiness": 0.539
+    },
+    {
+      "cover": "open_cover_lt0p30",
+      "group": "not_drilled",
+      "n_wells": 5,
+      "wells_sbt_any_track": 0.0,
+      "decoys_sbt_any_track": 0.12,
+      "auc_brightness": 0.312,
+      "auc_steadiness": 0.504
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
+      "group": "active",
+      "n_wells": 385,
+      "wells_sbt_any_track": 0.249,
+      "decoys_sbt_any_track": 0.24,
+      "auc_brightness": 0.542,
+      "auc_steadiness": 0.487
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
+      "group": "plugged",
+      "n_wells": 159,
+      "wells_sbt_any_track": 0.195,
+      "decoys_sbt_any_track": 0.2,
+      "auc_brightness": 0.493,
+      "auc_steadiness": 0.487
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
+      "group": "abandoned",
+      "n_wells": 105,
+      "wells_sbt_any_track": 0.2,
+      "decoys_sbt_any_track": 0.201,
+      "auc_brightness": 0.543,
+      "auc_steadiness": 0.501
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
+      "group": "not_drilled",
+      "n_wells": 5,
+      "wells_sbt_any_track": 0.4,
+      "decoys_sbt_any_track": 0.28,
+      "auc_brightness": 0.808,
+      "auc_steadiness": 0.448
+    }
+  ],
+  "registration": {
+    "best_shift_m": [
+      10,
+      -10
+    ],
+    "best_hit_rate": 0.241,
+    "zero_shift_hit_rate": 0.233,
+    "median_hit_rate_over_shifts": 0.216
+  },
+  "registration_grid_rows_dy_cols_dx": {
+    "shifts": [
+      -20,
+      -15,
+      -10,
+      -5,
+      0,
+      5,
+      10,
+      15,
+      20
+    ],
+    "hit_rate": [
+      [
+        0.185,
+        0.199,
+        0.196,
+        0.211,
+        0.224,
+        0.22,
+        0.22,
+        0.222,
+        0.207
+      ],
+      [
+        0.203,
+        0.207,
+        0.206,
+        0.206,
+        0.216,
+        0.22,
+        0.217,
+        0.211,
+        0.214
+      ],
+      [
+        0.211,
+        0.229,
+        0.209,
+        0.235,
+        0.207,
+        0.225,
+        0.241,
+        0.225,
+        0.222
+      ],
+      [
+        0.219,
+        0.222,
+        0.216,
+        0.227,
+        0.237,
+        0.235,
+        0.23,
+        0.235,
+        0.225
+      ],
+      [
+        0.229,
+        0.222,
+        0.204,
+        0.238,
+        0.233,
+        0.233,
+        0.219,
+        0.237,
+        0.229
+      ],
+      [
+        0.225,
+        0.224,
+        0.209,
+        0.229,
+        0.216,
+        0.224,
+        0.224,
+        0.216,
+        0.22
+      ],
+      [
+        0.222,
+        0.212,
+        0.217,
+        0.211,
+        0.201,
+        0.222,
+        0.212,
+        0.206,
+        0.193
+      ],
+      [
+        0.216,
+        0.207,
+        0.216,
+        0.207,
+        0.212,
+        0.206,
+        0.209,
+        0.206,
+        0.203
+      ],
+      [
+        0.217,
+        0.212,
+        0.212,
+        0.212,
+        0.194,
+        0.204,
+        0.212,
+        0.193,
+        0.185
+      ]
+    ]
+  }
+}

@@ -1,0 +1,202 @@
+== 9t
+nisar_slc_lidar_20251028_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 13.7}
+nisar_slc_lidar_20251104_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.5}
+nisar_slc_lidar_20251109_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.6}
+nisar_slc_lidar_20251112_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.4}
+nisar_slc_lidar_20251121_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.6}
+nisar_slc_lidar_20251203_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.9}
+nisar_slc_lidar_20251218_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.7}
+nisar_slc_lidar_20251230_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.5}
+nisar_slc_lidar_20260115_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.9}
+nisar_slc_lidar_20260120_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.7}
+nisar_slc_lidar_20260620_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20260625_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.4}
+nisar_slc_lidar_20260628_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.1}
+nisar_slc_lidar_20260702_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20260707_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.4}
+nisar_slc_lidar_20260714_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260719_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20260726_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260812_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260815_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260819_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20260824_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.6}
+nisar_slc_lidar_20260827_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260831_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260908_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20260912_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20260917_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.4}
+nisar_slc_lidar_20260920_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260924_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260929_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.4}
+nisar_slc_lidar_20261002_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20261006_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260108_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.4}
+nisar_slc_lidar_20260905_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20261011_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 30.8}
+nisar_slc_lidar_20261014_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 31.8}
+nisar_slc_lidar_20261018_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 31.5}
+                                 file       date  track  collection  away_m  forward_m  slant_m          az_s  az_m  applied_slant_m  applied_az_s  track_misclosure_rms_m
+nisar_slc_lidar_20251112_t026D_9t.tif 2025-11-12     26        beta   -5.76       4.28   -3.773  6.289614e-04  4.28              0.0           0.0                    0.37
+nisar_slc_lidar_20251218_t026D_9t.tif 2025-12-18     26        beta   -6.75       3.97   -4.423  5.835558e-04  3.97              0.0           0.0                    0.37
+nisar_slc_lidar_20251230_t026D_9t.tif 2025-12-30     26        beta   -7.12       4.83   -4.664  7.102130e-04  4.83              0.0           0.0                    0.37
+nisar_slc_lidar_20260628_t026D_9t.tif 2026-06-28     26 provisional   -0.50       4.29   -0.328  6.313727e-04  4.29              0.0           0.0                    0.37
+nisar_slc_lidar_20260815_t026D_9t.tif 2026-08-15     26 provisional    0.06      -3.27    0.041 -4.808084e-04 -3.27              0.0           0.0                    0.37
+nisar_slc_lidar_20260827_t026D_9t.tif 2026-08-27     26 provisional    0.18       1.06    0.119  1.565341e-04  1.06              0.0           0.0                    0.37
+nisar_slc_lidar_20260920_t026D_9t.tif 2026-09-20     26 provisional    0.82      -3.38    0.536 -4.969465e-04 -3.38              0.0           0.0                    0.37
+nisar_slc_lidar_20261002_t026D_9t.tif 2026-10-02     26 provisional   -0.31       0.83   -0.204  1.224512e-04  0.83              0.0           0.0                    0.37
+nisar_slc_lidar_20261014_t026D_9t.tif 2026-10-14     26 provisional   -0.25       0.46   -0.164  6.739843e-05  0.46              0.0           0.0                    0.37
+nisar_slc_lidar_20251104_t090A_9t.tif 2025-11-04     90        beta   -5.67      -0.19   -3.535 -2.738910e-05 -0.19              0.0           0.0                    0.09
+nisar_slc_lidar_20260115_t090A_9t.tif 2026-01-15     90        beta   -4.79       0.07   -2.986  1.049500e-05  0.07              0.0           0.0                    0.09
+nisar_slc_lidar_20260620_t090A_9t.tif 2026-06-20     90 provisional   -0.54       0.44   -0.337  6.494416e-05  0.44              0.0           0.0                    0.09
+nisar_slc_lidar_20260702_t090A_9t.tif 2026-07-02     90 provisional    0.13       0.67    0.082  9.873083e-05  0.67              0.0           0.0                    0.09
+nisar_slc_lidar_20260714_t090A_9t.tif 2026-07-14     90 provisional    0.25       0.21    0.154  3.152566e-05  0.21              0.0           0.0                    0.09
+nisar_slc_lidar_20260726_t090A_9t.tif 2026-07-26     90 provisional    0.96      -3.57    0.599 -5.245459e-04 -3.57              0.0           0.0                    0.09
+nisar_slc_lidar_20260819_t090A_9t.tif 2026-08-19     90 provisional   -0.42       0.21   -0.262  3.027967e-05  0.21              0.0           0.0                    0.09
+nisar_slc_lidar_20260831_t090A_9t.tif 2026-08-31     90 provisional   -0.10       0.25   -0.065  3.660152e-05  0.25              0.0           0.0                    0.09
+nisar_slc_lidar_20260912_t090A_9t.tif 2026-09-12     90 provisional    0.06       0.47    0.037  6.842660e-05  0.47              0.0           0.0                    0.09
+nisar_slc_lidar_20260924_t090A_9t.tif 2026-09-24     90 provisional   -0.09       0.27   -0.053  4.000695e-05  0.27              0.0           0.0                    0.09
+nisar_slc_lidar_20261006_t090A_9t.tif 2026-10-06     90 provisional    0.04       0.49    0.028  7.159965e-05  0.49              0.0           0.0                    0.09
+nisar_slc_lidar_20261018_t090A_9t.tif 2026-10-18     90 provisional   -0.29       0.56   -0.183  8.243137e-05  0.56              0.0           0.0                    0.09
+nisar_slc_lidar_20251028_t162A_9t.tif 2025-10-28    162        beta   -4.36      -0.41   -3.190 -6.033318e-05 -0.41              0.0           0.0                    0.18
+nisar_slc_lidar_20251109_t162A_9t.tif 2025-11-09    162        beta   -5.62      -0.19   -4.110 -2.827490e-05 -0.19              0.0           0.0                    0.18
+nisar_slc_lidar_20251121_t162A_9t.tif 2025-11-21    162        beta   -4.80      -0.33   -3.514 -4.870888e-05 -0.33              0.0           0.0                    0.18
+nisar_slc_lidar_20251203_t162A_9t.tif 2025-12-03    162        beta   -4.29      -1.17   -3.138 -1.714211e-04 -1.17              0.0           0.0                    0.18
+nisar_slc_lidar_20260120_t162A_9t.tif 2026-01-20    162        beta   -4.43      -0.28   -3.240 -4.076614e-05 -0.28              0.0           0.0                    0.18
+nisar_slc_lidar_20260625_t162A_9t.tif 2026-06-25    162 provisional   -0.07      -0.11   -0.052 -1.645346e-05 -0.11              0.0           0.0                    0.18
+nisar_slc_lidar_20260707_t162A_9t.tif 2026-07-07    162 provisional   -0.14      -0.26   -0.105 -3.876643e-05 -0.26              0.0           0.0                    0.18
+nisar_slc_lidar_20260719_t162A_9t.tif 2026-07-19    162 provisional   -0.11       0.10   -0.082  1.489360e-05  0.10              0.0           0.0                    0.18
+nisar_slc_lidar_20260812_t162A_9t.tif 2026-08-12    162 provisional    0.01       0.14    0.010  2.105695e-05  0.14              0.0           0.0                    0.18
+nisar_slc_lidar_20260824_t162A_9t.tif 2026-08-24    162 provisional   -0.55       0.08   -0.405  1.193708e-05  0.08              0.0           0.0                    0.18
+nisar_slc_lidar_20260917_t162A_9t.tif 2026-09-17    162 provisional   -0.12      -0.08   -0.085 -1.240563e-05 -0.08              0.0           0.0                    0.18
+nisar_slc_lidar_20260929_t162A_9t.tif 2026-09-29    162 provisional    0.38      -0.27    0.276 -3.924845e-05 -0.27              0.0           0.0                    0.18
+nisar_slc_lidar_20260108_t162A_9t.tif 2026-01-08    162        beta   -3.19      -0.41   -2.331 -6.103113e-05 -0.41              0.0           0.0                    0.18
+nisar_slc_lidar_20260905_t162A_9t.tif 2026-09-05    162 provisional   -0.19      -0.00   -0.137 -2.829319e-07 -0.00              0.0           0.0                    0.18
+nisar_slc_lidar_20261011_t162A_9t.tif 2026-10-11    162 provisional    0.79       0.40    0.580  5.926968e-05  0.40              0.0           0.0                    0.18
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\results\9t\nisar_slc_date_offsets_9t.csv
+nisar_slc_lidar_20251028_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -3.19, 'coreg_az_s': -6.033318064154895e-05, 'seconds': 13.0}
+nisar_slc_lidar_20251104_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -3.535, 'coreg_az_s': -2.7389096096748043e-05, 'seconds': 9.1}
+nisar_slc_lidar_20251109_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -4.11, 'coreg_az_s': -2.827489816593276e-05, 'seconds': 9.3}
+nisar_slc_lidar_20251112_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -3.773, 'coreg_az_s': 0.0006289614294063, 'seconds': 9.0}
+nisar_slc_lidar_20251121_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -3.514, 'coreg_az_s': -4.870888201018797e-05, 'seconds': 9.2}
+nisar_slc_lidar_20251203_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -3.138, 'coreg_az_s': -0.0001714211482958, 'seconds': 9.5}
+nisar_slc_lidar_20251218_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -4.423, 'coreg_az_s': 0.0005835558141164, 'seconds': 9.4}
+nisar_slc_lidar_20251230_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -4.664, 'coreg_az_s': 0.0007102129754459, 'seconds': 9.2}
+nisar_slc_lidar_20260115_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -2.986, 'coreg_az_s': 1.0495003321974532e-05, 'seconds': 9.3}
+nisar_slc_lidar_20260120_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -3.24, 'coreg_az_s': -4.076614303684478e-05, 'seconds': 9.2}
+nisar_slc_lidar_20260620_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -0.337, 'coreg_az_s': 6.49441627728181e-05, 'seconds': 9.1}
+nisar_slc_lidar_20260625_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -0.052, 'coreg_az_s': -1.6453461878994778e-05, 'seconds': 9.2}
+nisar_slc_lidar_20260628_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -0.328, 'coreg_az_s': 0.0006313727488664, 'seconds': 9.0}
+nisar_slc_lidar_20260702_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.082, 'coreg_az_s': 9.873082996422504e-05, 'seconds': 9.3}
+nisar_slc_lidar_20260707_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -0.105, 'coreg_az_s': -3.876643053735359e-05, 'seconds': 9.2}
+nisar_slc_lidar_20260714_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.154, 'coreg_az_s': 3.1525662950256975e-05, 'seconds': 9.3}
+nisar_slc_lidar_20260719_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -0.082, 'coreg_az_s': 1.4893599895266716e-05, 'seconds': 9.2}
+nisar_slc_lidar_20260726_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.599, 'coreg_az_s': -0.0005245458544449, 'seconds': 9.0}
+nisar_slc_lidar_20260812_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.01, 'coreg_az_s': 2.1056951161709016e-05, 'seconds': 9.3}
+nisar_slc_lidar_20260815_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.041, 'coreg_az_s': -0.0004808084103015, 'seconds': 9.1}
+nisar_slc_lidar_20260819_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -0.262, 'coreg_az_s': 3.0279667835255375e-05, 'seconds': 9.4}
+nisar_slc_lidar_20260824_t162A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -0.405, 'coreg_az_s': 1.19370836963455e-05, 'seconds': 9.1}
+nisar_slc_lidar_20260827_t026D_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': 0.119, 'coreg_az_s': 0.0001565340541901, 'seconds': 9.1}
+nisar_slc_lidar_20260831_t090A_9t.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 6.43, 'coreg_slant_m': -0.065, 'coreg_az_s': 3.660152243368971e-05, 'seconds': 9.0}
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\nisar\code\s1_build\_nisar_regeocode_lidar_9t.py", line 607, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\nisar\code\s1_build\_nisar_regeocode_lidar_9t.py", line 583, in main
+    write_stack(a.heights, coreg=a.coreg, absolute=a.absolute)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\nisar\code\s1_build\_nisar_regeocode_lidar_9t.py", line 339, in write_stack
+    raise KeyError(f"{name} has no row in {OFFSETS}; refresh the offsets table before writing a co-registered stack")
+KeyError: 'nisar_slc_lidar_20260908_t026D_9t.tif has no row in C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\nisar\\results\\9t\\nisar_slc_date_offsets_9t.csv; refresh the offsets table before writing a co-registered stack'
+FAILED 9t
+== 613590
+nisar_slc_lidar_20251104_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 12.6}
+nisar_slc_lidar_20251028_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.7}
+nisar_slc_lidar_20251109_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.6}
+nisar_slc_lidar_20251112_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 10.8}
+nisar_slc_lidar_20251121_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 10.1}
+nisar_slc_lidar_20251203_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20251218_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20251230_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.5}
+nisar_slc_lidar_20260108_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260115_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20260120_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260620_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260628_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260702_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260714_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.6}
+nisar_slc_lidar_20260726_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.1}
+nisar_slc_lidar_20260815_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20260819_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260827_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.1}
+nisar_slc_lidar_20260831_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260908_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260912_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20260920_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.1}
+nisar_slc_lidar_20260924_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.2}
+nisar_slc_lidar_20261002_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.4}
+nisar_slc_lidar_20261006_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 9.3}
+nisar_slc_lidar_20261014_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 28.3}
+nisar_slc_lidar_20261018_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.0, 'coreg_az_s': 0.0, 'seconds': 28.6}
+track 162: cropped to 760 x 844 cells with data on every date
+track 162: no provisional dates, reference is the mean of all 6
+                                     file       date  track  collection  away_m  forward_m  slant_m      az_s  az_m  applied_slant_m  applied_az_s  track_misclosure_rms_m
+nisar_slc_lidar_20251112_t026D_613590.tif 2025-11-12     26        beta   -5.95       4.48   -3.877  0.000659  4.48              0.0           0.0                    0.34
+nisar_slc_lidar_20251218_t026D_613590.tif 2025-12-18     26        beta   -6.91       3.98   -4.504  0.000586  3.98              0.0           0.0                    0.34
+nisar_slc_lidar_20251230_t026D_613590.tif 2025-12-30     26        beta   -7.21       4.85   -4.696  0.000714  4.85              0.0           0.0                    0.34
+nisar_slc_lidar_20260628_t026D_613590.tif 2026-06-28     26 provisional   -0.55       4.34   -0.355  0.000639  4.34              0.0           0.0                    0.34
+nisar_slc_lidar_20260815_t026D_613590.tif 2026-08-15     26 provisional    0.11      -3.31    0.073 -0.000487 -3.31              0.0           0.0                    0.34
+nisar_slc_lidar_20260827_t026D_613590.tif 2026-08-27     26 provisional    0.18       1.09    0.117  0.000160  1.09              0.0           0.0                    0.34
+nisar_slc_lidar_20260920_t026D_613590.tif 2026-09-20     26 provisional    0.87      -3.41    0.568 -0.000501 -3.41              0.0           0.0                    0.34
+nisar_slc_lidar_20261002_t026D_613590.tif 2026-10-02     26 provisional   -0.36       0.86   -0.234  0.000127  0.86              0.0           0.0                    0.34
+nisar_slc_lidar_20261014_t026D_613590.tif 2026-10-14     26 provisional   -0.26       0.43   -0.169  0.000063  0.43              0.0           0.0                    0.34
+nisar_slc_lidar_20251104_t090A_613590.tif 2025-11-04     90        beta   -5.60      -0.36   -3.523 -0.000053 -0.36              0.0           0.0                    0.10
+nisar_slc_lidar_20260115_t090A_613590.tif 2026-01-15     90        beta   -4.77       0.01   -2.997  0.000001  0.01              0.0           0.0                    0.10
+nisar_slc_lidar_20260620_t090A_613590.tif 2026-06-20     90 provisional   -0.56       0.41   -0.351  0.000061  0.41              0.0           0.0                    0.10
+nisar_slc_lidar_20260702_t090A_613590.tif 2026-07-02     90 provisional    0.14       0.64    0.088  0.000095  0.64              0.0           0.0                    0.10
+nisar_slc_lidar_20260714_t090A_613590.tif 2026-07-14     90 provisional    0.23       0.22    0.143  0.000033  0.22              0.0           0.0                    0.10
+nisar_slc_lidar_20260726_t090A_613590.tif 2026-07-26     90 provisional    1.06      -3.48    0.665 -0.000512 -3.48              0.0           0.0                    0.10
+nisar_slc_lidar_20260819_t090A_613590.tif 2026-08-19     90 provisional   -0.43       0.21   -0.270  0.000031  0.21              0.0           0.0                    0.10
+nisar_slc_lidar_20260831_t090A_613590.tif 2026-08-31     90 provisional   -0.11       0.22   -0.071  0.000033  0.22              0.0           0.0                    0.10
+nisar_slc_lidar_20260912_t090A_613590.tif 2026-09-12     90 provisional    0.01       0.51    0.007  0.000075  0.51              0.0           0.0                    0.10
+nisar_slc_lidar_20260924_t090A_613590.tif 2026-09-24     90 provisional   -0.13       0.28   -0.082  0.000041  0.28              0.0           0.0                    0.10
+nisar_slc_lidar_20261006_t090A_613590.tif 2026-10-06     90 provisional    0.05       0.46    0.029  0.000067  0.46              0.0           0.0                    0.10
+nisar_slc_lidar_20261018_t090A_613590.tif 2026-10-18     90 provisional   -0.25       0.52   -0.159  0.000076  0.52              0.0           0.0                    0.10
+nisar_slc_lidar_20251028_t162A_613590.tif 2025-10-28    162        beta    0.14       0.14    0.106  0.000020  0.14              0.0           0.0                    0.14
+nisar_slc_lidar_20251109_t162A_613590.tif 2025-11-09    162        beta   -0.98       0.03   -0.717  0.000004  0.03              0.0           0.0                    0.14
+nisar_slc_lidar_20251121_t162A_613590.tif 2025-11-21    162        beta   -0.17       0.07   -0.121  0.000010  0.07              0.0           0.0                    0.14
+nisar_slc_lidar_20251203_t162A_613590.tif 2025-12-03    162        beta    0.01      -0.63    0.011 -0.000093 -0.63              0.0           0.0                    0.14
+nisar_slc_lidar_20260108_t162A_613590.tif 2026-01-08    162        beta    0.84       0.12    0.614  0.000018  0.12              0.0           0.0                    0.14
+nisar_slc_lidar_20260120_t162A_613590.tif 2026-01-20    162        beta    0.15       0.28    0.108  0.000041  0.28              0.0           0.0                    0.14
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\results\613590\nisar_slc_date_offsets_613590.csv
+nisar_slc_lidar_20251104_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -3.523, 'coreg_az_s': -5.304154616671258e-05, 'seconds': 12.6}
+nisar_slc_lidar_20251028_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.106, 'coreg_az_s': 2.0138837269064395e-05, 'seconds': 9.8}
+nisar_slc_lidar_20251109_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -0.717, 'coreg_az_s': 4.06074138263164e-06, 'seconds': 9.5}
+nisar_slc_lidar_20251112_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -3.877, 'coreg_az_s': 0.0006590412091676, 'seconds': 9.1}
+nisar_slc_lidar_20251121_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -0.121, 'coreg_az_s': 1.0113880051672932e-05, 'seconds': 9.2}
+nisar_slc_lidar_20251203_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.011, 'coreg_az_s': -9.307638625913412e-05, 'seconds': 9.3}
+nisar_slc_lidar_20251218_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -4.504, 'coreg_az_s': 0.0005860056637233, 'seconds': 9.3}
+nisar_slc_lidar_20251230_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -4.696, 'coreg_az_s': 0.0007138707892675, 'seconds': 9.2}
+nisar_slc_lidar_20260108_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.614, 'coreg_az_s': 1.7682824146457467e-05, 'seconds': 9.2}
+nisar_slc_lidar_20260115_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -2.997, 'coreg_az_s': 1.0743924683264567e-06, 'seconds': 9.1}
+nisar_slc_lidar_20260120_t162A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.108, 'coreg_az_s': 4.108022306133476e-05, 'seconds': 9.3}
+nisar_slc_lidar_20260620_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -0.351, 'coreg_az_s': 6.101566450885079e-05, 'seconds': 9.0}
+nisar_slc_lidar_20260628_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -0.355, 'coreg_az_s': 0.0006386538637168, 'seconds': 9.2}
+nisar_slc_lidar_20260702_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.088, 'coreg_az_s': 9.479514085611012e-05, 'seconds': 9.2}
+nisar_slc_lidar_20260714_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.143, 'coreg_az_s': 3.2773892630748166e-05, 'seconds': 9.1}
+nisar_slc_lidar_20260726_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.665, 'coreg_az_s': -0.0005116689913332, 'seconds': 9.2}
+nisar_slc_lidar_20260815_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.073, 'coreg_az_s': -0.000486782463014, 'seconds': 9.1}
+nisar_slc_lidar_20260819_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -0.27, 'coreg_az_s': 3.059995344543947e-05, 'seconds': 9.2}
+nisar_slc_lidar_20260827_t026D_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': 0.117, 'coreg_az_s': 0.0001600963299189, 'seconds': 9.2}
+nisar_slc_lidar_20260831_t090A_613590.tif {'lidar_fill_share': 0.15832000673343993, 'nasa_minus_used_height_median_m': 5.94, 'coreg_slant_m': -0.071, 'coreg_az_s': 3.3095607264777066e-05, 'seconds': 9.4}
+Traceback (most recent call last):
+  File "C:\Users\colto\Documents\GitHub\lidar_project\nisar\code\s1_build\_nisar_regeocode_lidar_9t.py", line 607, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\nisar\code\s1_build\_nisar_regeocode_lidar_9t.py", line 583, in main
+    write_stack(a.heights, coreg=a.coreg, absolute=a.absolute)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\colto\Documents\GitHub\lidar_project\nisar\code\s1_build\_nisar_regeocode_lidar_9t.py", line 339, in write_stack
+    raise KeyError(f"{name} has no row in {OFFSETS}; refresh the offsets table before writing a co-registered stack")
+KeyError: 'nisar_slc_lidar_20260908_t026D_613590.tif has no row in C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\nisar\\results\\613590\\nisar_slc_date_offsets_613590.csv; refresh the offsets table before writing a co-registered stack'
+FAILED 613590

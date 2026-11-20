@@ -1,0 +1,9 @@
+cover,group,n_wells,wells_sbt_any_track,decoys_sbt_any_track,auc_brightness,auc_steadiness
+open_cover_lt0p30,active,42,0.167,0.214,0.509,0.639
+open_cover_lt0p30,plugged,39,0.333,0.171,0.544,0.486
+open_cover_lt0p30,abandoned,60,0.133,0.185,0.486,0.516
+open_cover_lt0p30,not_drilled,5,0.2,0.125,0.408,0.425
+canopy_cover_ge0p30,active,243,0.16,0.188,0.471,0.477
+canopy_cover_ge0p30,plugged,189,0.185,0.21,0.502,0.525
+canopy_cover_ge0p30,abandoned,219,0.183,0.239,0.481,0.528
+canopy_cover_ge0p30,not_drilled,15,0.267,0.24,0.566,0.454

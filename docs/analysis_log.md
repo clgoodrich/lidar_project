@@ -7,6 +7,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+
+## 2026-11-20 Persistent-scatterer screen rerun on provisional dates only; site figures redrawn
+
+- Lidar-placed stack extended through 2026-10-18 (9t 37 dates, 613590 28). Re-alignment check left at most 0.37 m. Log `nisar/results/9t/nisar_slc_extend_20261120_run2.log`.
+- Fix in `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py`: BAD_DATES are written without a per-date offset, since they are never analysed.
+- New `--prov` switch on `_nisar_steel_9t.py` and `_nisar_bright_targets_9t.py` (dates from 2026-06-01). Outputs tagged `_slc_prov`.
+- Dates per track: 26/90/162 = 6/10/9 on 9t, 6/10/0 on 613590.
+- Steel: wells at chance. 9t active 23.3% vs controls 23.9% (p 0.84), plugged 24.7 vs 21.0 (p 0.19), abandoned 26.4 vs 20.2 (p 0.068). 613590 active 16.1 vs 19.1, abandoned 17.2 vs 22.8 (p 0.046, wells lower). Steadiness AUC 0.49 to 0.53.
+- Problem: the screen now passes 0.14 to 0.62% of pixels per track, against about 0.1 to 0.2% with all dates. 6,756 targets on 9t. The redrawn site figures show PS pixels spread across open fields.
+- Cause: D_A from 6 to 10 dates is too noisy. Pure speckle reaches D_A < 0.25 by chance often enough to flood the screen. Ferretti et al. use about 30 dates or more.
+- So the provisional-only PS selection is not a valid persistent-scatterer screen as it stands. The threshold needs a false-alarm calibration for the date count, or the step is dropped.
+- Site figures now draw each PS pixel as its own 5 m square, per track. Script `nisar/sentinel1/code/_s1_site_context_9t.py`.
+
 ## 2026-11-19 Decision: amplitude uses provisional dates only (June 2026 on)
 
 - User decision. Beta dates (2025-10-28 to 2026-01-20) are out of scope for any amplitude measure. They are not fully calibrated.

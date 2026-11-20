@@ -1,6 +1,6 @@
 """Three-panel site figure for one point on 9t: lidar RRIM, lidar canopy height, Sentinel-1 brightness vs surroundings.
 
-Marks DEP wells (white triangles), NISAR steady bright pixels (blue squares, from the lidar-placed SLC run) and the
+Marks DEP wells (white triangles), NISAR steady bright pixels and the
 point itself (orange plus). Annotated pits are outlined in blue, pads in charcoal, roads (roads.shp) as white lines with a charcoal edge on all three panels.
 Sentinel-1 panel is the CFAR signal-to-clutter ratio from _s1_metal_cfar_9t.py (32 dates, track 77, water masked).
 Colours: lost/found pair #1F5FA8 / #D97706 (dataviz validate_palette.js --pairs all, worst dE 21.1 deutan), plus
@@ -9,6 +9,11 @@ charcoal and grey; every class also has its own marker shape. Canopy uses a sing
   python nisar/sentinel1/code/_s1_site_context_9t.py <name> <lat> <lon> [half_box_m]
   e.g. python nisar/sentinel1/code/_s1_site_context_9t.py point3 41.499860 -79.514601 75
 Writes nisar/sentinel1/results/9t/sites/s1_site_<name>_9t.png
+
+NISAR steady bright pixels (2026-11-20): every 5 m pixel that passes the persistent-scatterer screen
+(D_A < 0.25, >= 6 dB above the 250 m median, HH), drawn as its own 5 m square, one line style per track
+(26 solid, 90 dashed, 162 dotted). Read from the per-track layers of _nisar_bright_targets_9t.py --slc --prov:
+lidar-placed stack, provisional dates only (2026-06 on). Before this the figure drew one point per cluster.
 """
 import sys
 from pathlib import Path
@@ -22,6 +27,7 @@ import numpy as np
 import rasterio
 from pyproj import Transformer
 from rasterio.windows import from_bounds
+from matplotlib.patches import Rectangle
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -34,8 +40,26 @@ if "--area" in sys.argv:          # 2026-11-15: --area 613590 also supported
 RRIM = ROOT / "data" / AREA / "derived" / "05" / f"rrim_openness_{AREA}_05.tif"
 CHM = ROOT / "data" / AREA / "derived" / "1m" / f"chm_{AREA}_1m.tif"
 ANN = ROOT / "qgis" / "annotations"
-NISAR_BRIGHT = ROOT / "nisar" / "results" / AREA / f"nisar_bright_targets_points_{AREA}_slc.gpkg"
 OUT = ROOT / "nisar" / "sentinel1" / "results" / AREA / "sites"
+SBT_DIR = ROOT / "nisar" / "derived" / AREA / "nisar_slc_lidar_5m"
+TRACK_LS = {26: "-", 90: "--", 162: ":"}
+
+
+def sbt_pixels(x, y, H):
+    """Centres (EPSG:32617) of steady-bright pixels within the box, per track."""
+    out = {}
+    for t in TRACK_LS:
+        f = SBT_DIR / f"nisar_bright_targets_layers_t{t:03d}_{AREA}_slc_prov.tif"
+        if not f.exists():
+            continue
+        with rasterio.open(f) as r:
+            b = [d for d in r.descriptions].index("steady_bright_target") + 1
+            w = from_bounds(x - H - 5, y - H - 5, x + H + 5, y + H + 5, r.transform)
+            a = r.read(b, window=w, boundless=True, fill_value=0)
+            wt = r.window_transform(w)
+        rr, cc = np.where(a == 1)
+        out[t] = [wt * (c + 0.5, rw + 0.5) for rw, c in zip(rr, cc)]
+    return out
 BLUE, ORANGE, INK, GREY = "#1F5FA8", "#D97706", "#2B2F36", "#5B6168"
 
 
@@ -48,7 +72,8 @@ def main():
     x, y = to_s1.transform(xx, yy)
     clip = lambda g: g.to_crs(6346).cx[xx - H:xx + H, yy - H:yy + H]
     wells = clip(gpd.read_file(M.WELLS))
-    bright = clip(gpd.read_file(NISAR_BRIGHT))
+    sbt = sbt_pixels(x, y, H)
+    to_l = Transformer.from_crs(32617, 6346, always_xy=True)
     pits = clip(gpd.read_file(ANN / "pit_full.shp"))
     pads = clip(gpd.read_file(ANN / "pad.shp"))
     roads = clip(gpd.read_file(ANN / "roads.shp"))
@@ -62,8 +87,13 @@ def main():
             (roads.to_crs(32617) if s1 else roads).plot(
                 ax=ax, color="white", linewidth=1.6, zorder=4,
                 path_effects=[pe.Stroke(linewidth=3.4, foreground=INK), pe.Normal()])
-        pts = [(wells, dict(marker="^", s=110, facecolor="white", edgecolor=INK, linewidths=1.3, label="DEP well")),
-               (bright, dict(marker="s", s=90, facecolor="none", edgecolor=BLUE, linewidths=2, label="NISAR steady bright pixel"))]
+        for t, cs in sbt.items():
+            for i, (cx, cy) in enumerate(cs):
+                if not s1:
+                    cx, cy = to_l.transform(cx, cy)
+                ax.add_patch(Rectangle((cx - 2.5, cy - 2.5), 5, 5, fill=False, edgecolor=BLUE, linewidth=1.8,
+                                       linestyle=TRACK_LS[t], zorder=5, label=None if i else f"NISAR PS pixel, track {t}"))
+        pts = [(wells, dict(marker="^", s=110, facecolor="white", edgecolor=INK, linewidths=1.3, label="DEP well"))]
         for g, kw in pts:
             gx, gy = g.geometry.x.values, g.geometry.y.values
             if s1 and len(g):

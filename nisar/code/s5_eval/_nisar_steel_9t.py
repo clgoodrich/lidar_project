@@ -24,6 +24,8 @@ Registration: the hit rate of active wells is recomputed with the stack shifted 
 A clear peak away from zero is a point-target estimate of the radar-to-lidar offset.
 
   python nisar/code/s5_eval/_nisar_steel_9t.py
+  --prov  amplitude from provisional dates only (2026-06-01 on; user decision 2026-11-19, beta is out of
+          scope for amplitude). Outputs carry _prov after the area tag, beside the older all-date files.
 """
 import importlib
 import json
@@ -54,6 +56,11 @@ DER = st.SRC
 WELLS = AREA.WELLS
 DA_MAX, BRIGHT_DB, R_M, BG_M = 0.25, 6.0, 15.0, 250.0
 N_DECOY, SEED = 5, 20261007
+PROV = "--prov" in sys.argv
+if PROV:
+    sys.argv.remove("--prov")
+AMP_FROM = "2026-06-01" if PROV else None
+OTAG = AREA.TAG + ("_prov" if PROV else "")   # output tag
 GROUPS = {"active": ["Active"], "plugged": ["Plugged OG Well", "DEP Plugged"],
           "abandoned": ["DEP Abandoned List", "DEP Orphan List", "Abandoned"],
           "not_drilled": ["Operator Reported Not Drilled", "Proposed But Never Materialized"]}
@@ -73,6 +80,8 @@ INK = "#2B2F36"
 def sbt_maps(idx, stack, shape):
     """Per track: steady-bright-target mask, D_A and brightness."""
     out = {}
+    if AMP_FROM:
+        idx = idx[idx.date.astype(str) >= AMP_FROM]
     for t, g in idx.groupby("track"):
         A = np.stack([np.abs(stack[f][0]) for f in g.file]).astype(np.float32)
         ok = np.all(np.isfinite(A) & (A > 0), axis=0)
@@ -220,21 +229,21 @@ def main():
     stem = "nisar_steel"
     w_out = w[["PERMIT_NUM", "WELL_STATU", "group", "OPERATOR", "cover", "n_tracks_sbt", "bright_max_db",
                "da_min", "geometry"]]
-    w_out.to_file(OUT / f"{stem}_wells_{AREA.TAG}.gpkg", layer="dep_wells_sbt", driver="GPKG")
-    res.to_csv(OUT / f"{stem}_by_status_{AREA.TAG}.csv", index=False)
-    by_cov.to_csv(OUT / f"{stem}_by_canopy_{AREA.TAG}.csv", index=False)
+    w_out.to_file(OUT / f"{stem}_wells_{OTAG}.gpkg", layer="dep_wells_sbt", driver="GPKG")
+    res.to_csv(OUT / f"{stem}_by_status_{OTAG}.csv", index=False)
+    by_cov.to_csv(OUT / f"{stem}_by_canopy_{OTAG}.csv", index=False)
     summ = dict(params=dict(da_max=DA_MAX, bright_db=BRIGHT_DB, radius_m=R_M, background_m=BG_M,
                             n_decoy=N_DECOY, seed=SEED),
                 tracks={str(t): dict(n_dates=int(m["n"]), sbt_pixels=int(m["sbt"].sum())) for t, m in maps.items()},
                 by_status=rows, by_status_and_canopy=by_cov.to_dict("records"), registration=reg,
                 registration_grid_rows_dy_cols_dx=dict(shifts=list(shifts), hit_rate=grid.round(3).tolist()))
-    json.dump(summ, open(OUT / f"{stem}_summary_{AREA.TAG}.json", "w"), indent=2, default=float)
+    json.dump(summ, open(OUT / f"{stem}_summary_{OTAG}.json", "w"), indent=2, default=float)
 
     # SBT count raster (0-3 tracks), gitignored derived
     cnt = np.sum([m["sbt"] for m in maps.values()], axis=0).astype(np.uint8)
     prof = dict(driver="GTiff", height=shape[0], width=shape[1], count=1, dtype="uint8", crs=CRS,
                 transform=tf, compress="deflate")
-    with rasterio.open(DER / f"{stem}_track_count_{AREA.TAG}.tif", "w", **prof) as d:
+    with rasterio.open(DER / f"{stem}_track_count_{OTAG}.tif", "w", **prof) as d:
         d.write(cnt, 1)
 
     # figure: hit rates by group (wells vs decoys), and the registration grid
@@ -257,10 +266,10 @@ def main():
     ax[1].invert_yaxis()
     ax[1].set_title("Active-well hit rate vs shift", fontsize=11)
     plt.colorbar(im, ax=ax[1], fraction=0.046)
-    fig.suptitle(f"NISAR HH steady bright targets (D_A < {DA_MAX}, ≥ {BRIGHT_DB:.0f} dB above 250 m background), {AREA.TAG}",
+    fig.suptitle(f"NISAR HH steady bright targets (D_A < {DA_MAX}, ≥ {BRIGHT_DB:.0f} dB above 250 m background), {OTAG}",
                  fontsize=11)
     fig.tight_layout()
-    fig.savefig(FIG / f"{stem}_hit_rate_by_status_{AREA.TAG}.png", dpi=150)
+    fig.savefig(FIG / f"{stem}_hit_rate_by_status_{OTAG}.png", dpi=150)
     print("done", stem)
 
 
