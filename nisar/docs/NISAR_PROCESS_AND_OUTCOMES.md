@@ -25,7 +25,7 @@ Prediction, candidate ranking and discovery are outside the present scope.
 
 | Potential marker | What was measured | Reading |
 |---|---|---|
-| **Pit brightness** | Across 506 mapped pits, the pit-to-ring contrast beat the control-to-ring contrast by **0.25 dB in fall HH** (p 0.0002) and **0.19 dB in summer HV** (p 0.0002). | **Strongest lead.** Most of the excess comes from control spots being dark, not pits standing out. In fall the pits were 0.12 dB darker than their rings and control spots 0.39 dB darker. The direct summer-minus-fall change was not conclusive. |
+| **Pit brightness** | Across 506 mapped pits, the pit-to-ring contrast beat the control-to-ring contrast by **0.19 dB in summer HV** (p 0.0002, provisional dates). A 0.25 dB fall HH contrast came from beta dates and is now out of scope for amplitude. | **Strongest lead.** Most of the excess comes from control spots being dark, not pits standing out. In fall the pits were 0.12 dB darker than their rings and control spots 0.39 dB darker. The direct summer-minus-fall change was not conclusive. |
 | **Pad coherence loss** | Across 649 pads, **169 snow-free coherence-loss events against 136.4 expected** from control spots (p 0.001). | **Weaker lead.** Pads lost signal stability slightly more often. No dated well activity explains it. Vegetation, traffic and weather are plausible. Winter shows no excess (13 against 13.1). |
 | **Pad brightness** | Across 650 pads, fall and summer HH were within 0.01 dB of control spots. Winter HH was -0.086 dB (p 0.0016). | No dark pad signature. The winter value is exploratory. Snow and processing level varied. |
 | **Steel** | Steady bright targets near DEP wells (section 6). | No marker. Wells hit at chance. |
@@ -34,9 +34,9 @@ Prediction, candidate ranking and discovery are outside the present scope.
 
 **Limits that apply to every row**
 - Control spots were the same shape as the feature, moved 150 to 600 m onto background. They were not matched on canopy, slope or road access. Part of the pit excess may come from that.
-- The pit contrast is small. The 95% interval for fall HH runs from 0.10 to 0.43 dB.
+- The pit contrast is small. The fall HH interval (0.10 to 0.43 dB) is from beta dates and no longer counts.
 - The "fall" season rests on 1 date on tracks 26 and 90 and 3 dates on track 162 (section 3).
-- The data are beta and provisional, with calibration offsets between tracks.
+- Amplitude work uses provisional dates only (June 2026 onward). Beta dates are out of scope for amplitude. Calibration offsets between tracks remain.
 - Position is inferred from lidar and not surveyed (section 4).
 
 ## 3. The data
@@ -62,7 +62,7 @@ Prediction, candidate ranking and discovery are outside the present scope.
 - The seasonal pit and pad tests ran on 31 of these dates (7, 10 and 14 by track). Later downloads were not added. The tests were not rerun.
 - 613590 has no summer or fall 2026 on track 162. Its seasonal numbers are thinner than 9t's.
 - Nothing is usable between 2026-01-20 and 2026-06-20. Section 3a explains why.
-- Some dates are beta (not fully calibrated) and some are provisional. Season and processing level are tangled. Beta covers Oct 2025 to Jan 2026, provisional Jun to Oct 2026.
+- Some dates are beta (not fully calibrated) and some are provisional. Season and processing level are tangled. Beta covers Oct 2025 to Jan 2026, provisional Jun to Oct 2026. Since 2026-11-19 amplitude work uses provisional dates only. This removes the confound for amplitude but leaves 6 to 10 dates per track.
 - NASA plans validated reprocessing of the older dates in 2027.
 
 ## 3a. The spring 2026 gap (checked 2026-11-15)
@@ -136,7 +136,7 @@ The pit and pad brightness contrasts rest on amplitude.
 
 Persistent-scatterer analysis has two steps. Step 1 picks pixels whose brightness barely changes over dates (amplitude dispersion under 0.25, Ferretti et al. 2001). Step 2 fits motion and height from the phase at only those pixels.
 We ran step 1. It is the steady-target screen in section 6, and it found almost no persistent scatterers at wells.
-We did not run step 2. With no scatterers at wells there is nothing to measure there. It also needs about 20 or more dates on one track, and we have 10 to 15 split between beta and provisional.
+We did not run step 2. With no scatterers at wells there is nothing to measure there. It also needs about 20 or more dates on one track, and we have 6 to 10 provisional dates per track.
 
 **Why the tracks cannot be merged**
 - Brightness depends on viewing direction. A slope facing the satellite is bright and the same slope seen from the other side is dark.
@@ -192,7 +192,7 @@ Files are `nisar/results/9t/nisar_feat_pca_*_9t_slc.*` and `nisar/results/9t/fig
 |---|---|---|
 | Steel is bright | No | Section 6. |
 | A pad is a scar | No | A 0.3 dB darkening seen early vanished after the position fix. Corrected fall and summer pad contrasts are within 0.01 dB of zero. |
-| Pits change with season | A lead | +0.25 dB HH in fall and +0.19 dB HV in summer. Between-season change was not conclusive. Speckle filtering shrinks the contrasts. |
+| Pits change with season | A lead | +0.19 dB HV in summer (provisional). The fall HH result was beta and is out of scope. Between-season change was not conclusive. Speckle filtering shrinks the contrasts. |
 | Pads lose stability | A weaker lead | 169 events against 136.4 expected. |
 | Old wells move | No | Pit coherence excess +0.0001. None of 282 wells flagged for slope motion held up. |
 | Wet pits are dark | No | Wet and dry overlap (+1.58 against +1.74 dB). Pool pits match other pits (section 7). |
@@ -325,12 +325,12 @@ For the record, the held-out pit test on 613590 gave -0.017 against lidar alone 
 |---|---|
 | Rerun pit and pad contrasts with control spots matched on canopy, slope and road access | Desk work |
 | Compare pits with non-well depressions | Desk work. Tells a well marker from a depression marker |
-| Rerun the seasonal tests on all 37 dates | Desk work |
+| Rerun the seasonal tests on provisional dates only | Desk work |
 | Rerun the 9t steel test on the lidar-placed stack | Desk work |
 | Pool cue on all 155 inner rims in 613590 | Desk work, lidar only |
 | Independent position check | Surveyed structures or corner reflectors |
 | Spring scenes | NASA's processed frames, or focusing raw passes (section 3a) |
-| Beta against provisional confound | The 2027 validated reprocessing |
+| Beta against provisional confound | Removed for amplitude by using provisional only (2026-11-19) |
 | Fine X-band | A paid scene from Umbra, Capella or ICEYE |
 
 ## 13. Where to find the evidence

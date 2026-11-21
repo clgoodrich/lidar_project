@@ -8,6 +8,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-20 Process doc and PDF updated to the provisional-only amplitude rule
+
+- Fall HH pit contrast marked beta and out of scope. Summer HV +0.19 dB stands. Confound, date counts and next-steps rows updated. PDF regenerated.
+
 ## 2026-11-20 Provisional PS limitation accepted as a limitation (user decision)
 
 - User: "If there's limitations, then there's limitations, and we shouldn't shelve things or branch off into random areas."
