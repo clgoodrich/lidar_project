@@ -2,7 +2,7 @@
 
 Journal style: serif type, boxed axes, inward ticks, real legends, no titles. Captions live in the doc.
   1 nisar_dates_on_hand.png          every NISAR pass per track and tile, with beta/provisional and the spring gap
-  2 nisar_excess_number_line.png     pit and control-spot contrast with their rings, fall HH, and the excess
+  2 nisar_excess_number_line.png     pit and control-spot contrast with their rings, summer 2026 HV, and the excess
   3 nisar_ps_selection_plane.png     persistent-scatterer selection region (step 1), steadiness x brightness
   4 nisar_position_cross_section.png schematic of the canopy placement error and the surface used instead
   5 nisar_evidence_ladder.png        evidence stage reached by each marker idea
@@ -60,35 +60,46 @@ def fig_dates():
         ax.scatter(ok[ok.collection == "beta"].t, [y] * (ok.collection == "beta").sum(), marker="o", s=18, c=BLUE)
         ax.scatter(ok[ok.collection == "provisional"].t, [y] * (ok.collection == "provisional").sum(), marker="s",
                    s=16, c=ORANGE)
+        ax.scatter(ok[ok.collection == "standard"].t, [y] * (ok.collection == "standard").sum(), marker="^",
+                   s=20, c=RED)
         ax.scatter(bad.t, [y] * len(bad), marker="x", s=14, c=GREY, lw=0.8)
         labels.append(f"{area}, track {trk} (n = {len(ok)})")
     ax.axhline(3.5, color=K, lw=0.5)
+    # amplitude seasons (provisional rule, 2026-11-19): summer 06-01..09-30, fall 10-21..11-30
+    for a, b, lab in (("2026-06-01", "2026-09-30", "Summer"), ("2026-10-21", "2026-11-30", "Fall")):
+        ax.axvspan(pd.Timestamp(a), pd.Timestamp(b), color=LIGHT, alpha=0.5, lw=0, zorder=0)
+        ax.text(pd.Timestamp(a) + (pd.Timestamp(b) - pd.Timestamp(a)) / 2, len(lanes) + 0.45, lab,
+                ha="center", va="center", fontsize=7)
+    ax.axvline(pd.Timestamp("2026-06-01"), color=K, lw=0.8, ls="--")
+    ax.text(pd.Timestamp("2026-05-28"), 0.6, "amplitude\nuses dates\nfrom here", ha="right", va="bottom", fontsize=6.5)
     ax.set_yticks(range(len(lanes), 0, -1), labels)
     ax.set_ylim(0.4, len(lanes) + 0.6)
-    ax.set_xlim(pd.Timestamp("2025-10-15"), pd.Timestamp("2026-10-31"))
+    ax.set_xlim(pd.Timestamp("2025-10-15"), pd.Timestamp("2026-12-05"))
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=range(1, 13, 2)))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
     ax.set_xlabel("Acquisition date")
     ax.legend(handles=[Line2D([], [], marker="o", ls="", c=BLUE, label="Beta, valid"),
                        Line2D([], [], marker="s", ls="", c=ORANGE, label="Provisional, valid"),
+                       Line2D([], [], marker="^", ls="", c=RED, label="Standard, valid"),
                        Line2D([], [], marker="x", ls="", c=GREY, label="Image, no valid pixels over tile"),
                        Patch(facecolor="none", edgecolor=GREY, hatch="///", label="Raw data only (spring 2026)")],
-              loc="upper center", bbox_to_anchor=(0.5, 1.2), ncol=4, fontsize=7.5, handletextpad=0.3, columnspacing=1)
+              loc="upper center", bbox_to_anchor=(0.5, 1.2), ncol=3, fontsize=7.5, handletextpad=0.3, columnspacing=1)
     save(fig, "nisar_dates_on_hand.png")
 
 
 def fig_excess():
     fig, ax = plt.subplots(figsize=(5.0, 2.0))
     ax.axvline(0, color=GREY, lw=0.6, ls="--")
-    ax.plot(-0.39, 1, "s", ms=6, c=ORANGE)
-    ax.plot(-0.12, 2, "o", ms=6, c=BLUE)
-    ax.errorbar(-0.39 + 0.25, 2, xerr=[[0.25 - 0.10], [0.43 - 0.25]], fmt="none", ecolor=K, elinewidth=0.8, capsize=3)
-    ax.annotate("", xy=(-0.12, 1.5), xytext=(-0.39, 1.5), arrowprops=dict(arrowstyle="<->", lw=0.8))
-    ax.text(-0.255, 1.58, "excess +0.25 dB, $p$ = 0.0002", ha="center", va="bottom", fontsize=8)
+    # 9t, summer 2026 HV, lidar-placed stack, nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_swap40_9t_slc_5m.csv
+    ax.plot(-0.150, 1, "s", ms=6, c=ORANGE)
+    ax.plot(0.067, 2, "o", ms=6, c=BLUE)
+    ax.annotate("", xy=(0.067, 1.5), xytext=(-0.150, 1.5), arrowprops=dict(arrowstyle="<->", lw=0.8))
+    ax.text(-0.04, 1.58, "median per-pit excess +0.18 dB\n95% interval 0.11 to 0.27, $p$ < 0.001",
+            ha="center", va="bottom", fontsize=7.5)
     ax.set_yticks([1, 2], ["Control spots", "Pits (n = 506)"])
     ax.set_ylim(0.5, 2.6)
-    ax.set_xlim(-0.6, 0.2)
-    ax.set_xlabel("Feature minus ring, fall HH (dB)")
+    ax.set_xlim(-0.4, 0.3)
+    ax.set_xlabel("Feature minus ring, summer 2026 HV (dB)")
     save(fig, "nisar_excess_number_line.png")
 
 
@@ -141,8 +152,8 @@ def fig_cross_section():
 
 def fig_ladder():
     stages = ["Measured", "Survives\nposition fix", "Exceeds\ncontrol spots", "Repeats across\nseasons", "Specific to\nwell sites"]
-    ideas = [("Pit brightness", 3), ("Pad coherence loss", 3), ("Pad brightness", 1), ("Steel (PS selection)", 2),
-             ("Water in pits", 2), ("Motion", 2), ("Sentinel-1 C-band", 2)]  # these failed against controls; pad brightness vanished after the fix
+    ideas = [("Pit brightness", 3), ("Pad coherence loss", 3), ("Pad darkening, leaf-off", 3), ("Steel (PS selection)", 2),
+             ("Water in pits", 2), ("Motion", 2), ("Sentinel-1 C-band", 2)]  # pits: summer HV holds, fall HH fails; pads: dark in fall 2026, at chance in summer (2026-11-20)
     fig, ax = plt.subplots(figsize=(5.6, 3.0))
     for i, (name, n) in enumerate(ideas):
         y = len(ideas) - 1 - i
