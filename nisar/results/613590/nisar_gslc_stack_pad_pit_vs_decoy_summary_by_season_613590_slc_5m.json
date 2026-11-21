@@ -4,7 +4,7 @@
    "track": 26,
    "direction": "D",
    "season": "leafoff_fall",
-   "n": 1
+   "n": 2
   },
   {
    "track": 26,
@@ -13,64 +13,34 @@
    "n": 4
   },
   {
-   "track": 26,
-   "direction": "D",
-   "season": "winter",
-   "n": 2
-  },
-  {
    "track": 90,
    "direction": "A",
    "season": "leafoff_fall",
-   "n": 1
+   "n": 2
   },
   {
    "track": 90,
    "direction": "A",
    "season": "leafon",
    "n": 8
-  },
-  {
-   "track": 90,
-   "direction": "A",
-   "season": "winter",
-   "n": 1
-  },
-  {
-   "track": 162,
-   "direction": "A",
-   "season": "leafoff_fall",
-   "n": 3
-  },
-  {
-   "track": 162,
-   "direction": "A",
-   "season": "leafon",
-   "n": 0
-  },
-  {
-   "track": 162,
-   "direction": "A",
-   "season": "winter",
-   "n": 3
   }
  ],
  "registration": [
   {
    "track": 26,
-   "rho_unshifted": 0.06940882396759922,
+   "rho_unshifted": 0.06910828112043146,
    "best_dx": 20,
    "best_dy": -10,
-   "rho_best": 0.1048522734831801,
+   "rho_best": 0.10459650649077414,
    "peak_inside_search": false,
    "applied": false
   },
   {
    "track": 90,
-   "rho_unshifted": 0.16546628756644816,
+   "rho_unshifted": 0.16541519722324158,
    "best_dx": -20,
    "best_dy": -10,
-   "rho_best": 0.22975879875660896,
+   "rho_best": 0.22988403606094104,
    "peak_inside_search": false,
    "applied": false
   }
@@ -91,12 +61,8 @@
  },
  "seasons": {
   "leafoff_fall": [
-   "2025-10-01",
-   "2025-11-30"
-  ],
-  "winter": [
-   "2025-12-01",
-   "2026-01-31"
+   "2026-10-21",
+   "2026-11-30"
   ],
   "leafon": [
    "2026-06-01",
@@ -105,151 +71,95 @@
  },
  "n_decoys": 5,
  "tile_median_change_leafon_minus_fall_db": {
-  "26_hh": 3.209611415863037,
-  "26_hv": 3.8742847442626953,
-  "90_hh": 1.4448473453521729,
-  "90_hv": 2.467593193054199
+  "26_hh": 0.8227992057800293,
+  "26_hv": 0.7516088485717773,
+  "90_hh": 0.7163233757019043,
+  "90_hv": 0.6165084838867188
  },
  "control": [
   {
    "track": 26,
    "metric": "hh_leafoff_fall",
-   "open_median_db": -10.472764015197754,
-   "closed_median_db": -8.134469985961914,
-   "auc_closed_gt_open": 0.605639636516571
-  },
-  {
-   "track": 26,
-   "metric": "hh_winter",
-   "open_median_db": -8.998135566711426,
-   "closed_median_db": -6.398927688598633,
-   "auc_closed_gt_open": 0.6491270065307617
+   "open_median_db": -8.16621208190918,
+   "closed_median_db": -5.73355770111084,
+   "auc_closed_gt_open": 0.634527862071991
   },
   {
    "track": 26,
    "metric": "hh_leafon",
-   "open_median_db": -6.855279922485352,
-   "closed_median_db": -5.039663314819336,
-   "auc_closed_gt_open": 0.6357335448265076
+   "open_median_db": -6.83310604095459,
+   "closed_median_db": -5.075274467468262,
+   "auc_closed_gt_open": 0.6292207837104797
   },
   {
    "track": 26,
    "metric": "hh_change_leafon_vs_fall",
-   "open_median_db": 3.703970193862915,
-   "closed_median_db": 3.2279796600341797,
-   "auc_closed_gt_open": 0.4752284288406372
+   "open_median_db": 1.649385929107666,
+   "closed_median_db": 0.7650806903839111,
+   "auc_closed_gt_open": 0.4412611722946167
   },
   {
    "track": 26,
    "metric": "hv_leafoff_fall",
-   "open_median_db": -16.540599822998047,
-   "closed_median_db": -13.778948783874512,
-   "auc_closed_gt_open": 0.6224425435066223
-  },
-  {
-   "track": 26,
-   "metric": "hv_winter",
-   "open_median_db": -15.22118854522705,
-   "closed_median_db": -12.366212844848633,
-   "auc_closed_gt_open": 0.6657387018203735
+   "open_median_db": -13.809020042419434,
+   "closed_median_db": -10.659786224365234,
+   "auc_closed_gt_open": 0.6717914938926697
   },
   {
    "track": 26,
    "metric": "hv_leafon",
-   "open_median_db": -11.571882247924805,
-   "closed_median_db": -10.055923461914062,
-   "auc_closed_gt_open": 0.6306402087211609
+   "open_median_db": -11.592912673950195,
+   "closed_median_db": -10.095077514648438,
+   "auc_closed_gt_open": 0.6317988634109497
   },
   {
    "track": 26,
    "metric": "hv_change_leafon_vs_fall",
-   "open_median_db": 4.789979457855225,
-   "closed_median_db": 3.7709481716156006,
-   "auc_closed_gt_open": 0.45278188586235046
+   "open_median_db": 2.2850735187530518,
+   "closed_median_db": 0.5826065540313721,
+   "auc_closed_gt_open": 0.40137916803359985
   },
   {
    "track": 90,
    "metric": "hh_leafoff_fall",
-   "open_median_db": -9.63335132598877,
-   "closed_median_db": -5.967403888702393,
-   "auc_closed_gt_open": 0.6509669423103333
-  },
-  {
-   "track": 90,
-   "metric": "hh_winter",
-   "open_median_db": -10.17519760131836,
-   "closed_median_db": -6.406888008117676,
-   "auc_closed_gt_open": 0.657599151134491
+   "open_median_db": -8.406608581542969,
+   "closed_median_db": -5.318234443664551,
+   "auc_closed_gt_open": 0.6664170622825623
   },
   {
    "track": 90,
    "metric": "hh_leafon",
-   "open_median_db": -6.917257308959961,
-   "closed_median_db": -4.661654472351074,
-   "auc_closed_gt_open": 0.6826618909835815
+   "open_median_db": -6.973903656005859,
+   "closed_median_db": -4.620491027832031,
+   "auc_closed_gt_open": 0.6891022324562073
   },
   {
    "track": 90,
    "metric": "hh_change_leafon_vs_fall",
-   "open_median_db": 1.8587830066680908,
-   "closed_median_db": 1.393835186958313,
-   "auc_closed_gt_open": 0.47745469212532043
+   "open_median_db": 0.8772602081298828,
+   "closed_median_db": 0.7036608457565308,
+   "auc_closed_gt_open": 0.48830267786979675
   },
   {
    "track": 90,
    "metric": "hv_leafoff_fall",
-   "open_median_db": -16.486589431762695,
-   "closed_median_db": -12.316621780395508,
-   "auc_closed_gt_open": 0.6671651005744934
-  },
-  {
-   "track": 90,
-   "metric": "hv_winter",
-   "open_median_db": -18.034801483154297,
-   "closed_median_db": -14.038368225097656,
-   "auc_closed_gt_open": 0.6708306670188904
+   "open_median_db": -14.382708549499512,
+   "closed_median_db": -10.55767822265625,
+   "auc_closed_gt_open": 0.695868968963623
   },
   {
    "track": 90,
    "metric": "hv_leafon",
-   "open_median_db": -12.784363746643066,
-   "closed_median_db": -10.004537582397461,
-   "auc_closed_gt_open": 0.718256950378418
+   "open_median_db": -12.691032409667969,
+   "closed_median_db": -10.008678436279297,
+   "auc_closed_gt_open": 0.712007999420166
   },
   {
    "track": 90,
    "metric": "hv_change_leafon_vs_fall",
-   "open_median_db": 2.71347713470459,
-   "closed_median_db": 2.477142333984375,
-   "auc_closed_gt_open": 0.4884239733219147
-  },
-  {
-   "track": 162,
-   "metric": "hh_leafoff_fall",
-   "open_median_db": -15.761552810668945,
-   "closed_median_db": -11.715009689331055,
-   "auc_closed_gt_open": 0.687615692615509
-  },
-  {
-   "track": 162,
-   "metric": "hh_winter",
-   "open_median_db": -17.347415924072266,
-   "closed_median_db": -12.641670227050781,
-   "auc_closed_gt_open": 0.6984113454818726
-  },
-  {
-   "track": 162,
-   "metric": "hv_leafoff_fall",
-   "open_median_db": -20.739070892333984,
-   "closed_median_db": -17.268503189086914,
-   "auc_closed_gt_open": 0.6880192160606384
-  },
-  {
-   "track": 162,
-   "metric": "hv_winter",
-   "open_median_db": -22.702470779418945,
-   "closed_median_db": -18.465110778808594,
-   "auc_closed_gt_open": 0.6926012635231018
+   "open_median_db": 0.7613897323608398,
+   "closed_median_db": 0.5827836990356445,
+   "auc_closed_gt_open": 0.48740339279174805
   }
  ],
  "results": [
@@ -257,97 +167,73 @@
    "features": "pit",
    "metric": "hh_leafoff_fall",
    "n": 36,
-   "median_feature_minus_ring_db": 0.12277802079916,
-   "median_decoy_minus_ring_db": -0.17649954557418823,
-   "median_excess_db": 0.377119705080986,
-   "excess_ci_lo": -0.02621348202228546,
-   "excess_ci_hi": 0.7718745744787157,
-   "auc_feature_gt_decoy": 0.6387345790863037,
-   "wilcoxon_p_excess": 0.017530999641167
-  },
-  {
-   "features": "pit",
-   "metric": "hh_winter",
-   "n": 36,
-   "median_feature_minus_ring_db": 0.01952548697590828,
-   "median_decoy_minus_ring_db": -0.2245132476091385,
-   "median_excess_db": 0.5086531713604927,
-   "excess_ci_lo": -0.11880829185247421,
-   "excess_ci_hi": 0.9077687785029411,
-   "auc_feature_gt_decoy": 0.6226851940155029,
-   "wilcoxon_p_excess": 0.02190131341922097
+   "median_feature_minus_ring_db": 0.17836952209472656,
+   "median_decoy_minus_ring_db": -0.2850358486175537,
+   "median_excess_db": 0.7456161975860596,
+   "excess_ci_lo": 0.4551889896392822,
+   "excess_ci_hi": 1.3068589568138123,
+   "auc_feature_gt_decoy": 0.6365740740740741,
+   "wilcoxon_p_excess": 0.0011259853781666607
   },
   {
    "features": "pit",
    "metric": "hh_leafon",
    "n": 36,
-   "median_feature_minus_ring_db": 0.10065221786499023,
-   "median_decoy_minus_ring_db": -0.2953500747680664,
-   "median_excess_db": 0.28357771039009094,
-   "excess_ci_lo": -0.014177083969116211,
-   "excess_ci_hi": 0.7636332213878632,
-   "auc_feature_gt_decoy": 0.587037037037037,
-   "wilcoxon_p_excess": 0.047779093438293785
+   "median_feature_minus_ring_db": 0.11187601089477539,
+   "median_decoy_minus_ring_db": -0.35860395431518555,
+   "median_excess_db": 0.42932629585266113,
+   "excess_ci_lo": -0.07197976112365723,
+   "excess_ci_hi": 0.825263261795044,
+   "auc_feature_gt_decoy": 0.6131172839506173,
+   "wilcoxon_p_excess": 0.009022970451042056
   },
   {
    "features": "pit",
    "metric": "hh_change_leafon_vs_fall",
    "n": 36,
-   "median_feature_minus_ring_db": -0.19481956958770752,
-   "median_decoy_minus_ring_db": 0.07763099670410156,
-   "median_excess_db": -0.35560762882232666,
-   "excess_ci_lo": -1.097348302602768,
-   "excess_ci_hi": 0.2330993413925171,
-   "auc_feature_gt_decoy": 0.4169753086419753,
-   "wilcoxon_p_excess": 0.13066144444746897
+   "median_feature_minus_ring_db": -0.30711621046066284,
+   "median_decoy_minus_ring_db": -0.20046621561050415,
+   "median_excess_db": -0.46255046129226685,
+   "excess_ci_lo": -0.8135833740234375,
+   "excess_ci_hi": 0.2796797752380371,
+   "auc_feature_gt_decoy": 0.43765432098765433,
+   "wilcoxon_p_excess": 0.37916652829153463
   },
   {
    "features": "pit",
    "metric": "hv_leafoff_fall",
    "n": 36,
-   "median_feature_minus_ring_db": 0.2130427360534668,
-   "median_decoy_minus_ring_db": -0.2987004891037941,
-   "median_excess_db": 0.5101088732481003,
-   "excess_ci_lo": 0.16158262640237808,
-   "excess_ci_hi": 0.9106352925300598,
-   "auc_feature_gt_decoy": 0.6334876418113708,
-   "wilcoxon_p_excess": 0.005692560313036665
-  },
-  {
-   "features": "pit",
-   "metric": "hv_winter",
-   "n": 36,
-   "median_feature_minus_ring_db": -0.009191037155687809,
-   "median_decoy_minus_ring_db": -0.264925479888916,
-   "median_excess_db": 0.3024570243433118,
-   "excess_ci_lo": 0.046967193484306335,
-   "excess_ci_hi": 0.46890735626220703,
-   "auc_feature_gt_decoy": 0.5768518447875977,
-   "wilcoxon_p_excess": 0.11150411100243218
+   "median_feature_minus_ring_db": 0.30790281295776367,
+   "median_decoy_minus_ring_db": -0.3916051387786865,
+   "median_excess_db": 0.5145549774169922,
+   "excess_ci_lo": 0.26649904251098633,
+   "excess_ci_hi": 0.7176327496766942,
+   "auc_feature_gt_decoy": 0.6072530864197531,
+   "wilcoxon_p_excess": 0.04422121457173489
   },
   {
    "features": "pit",
    "metric": "hv_leafon",
    "n": 36,
-   "median_feature_minus_ring_db": -0.06586742401123047,
-   "median_decoy_minus_ring_db": -0.19815468788146973,
-   "median_excess_db": 0.18200337886810303,
-   "excess_ci_lo": -0.08840513229370117,
-   "excess_ci_hi": 0.5350632667541504,
-   "auc_feature_gt_decoy": 0.5938271604938271,
-   "wilcoxon_p_excess": 0.07973560818936676
+   "median_feature_minus_ring_db": -0.05801892280578613,
+   "median_decoy_minus_ring_db": -0.07519972324371338,
+   "median_excess_db": 0.18404603004455566,
+   "excess_ci_lo": -0.052243214845657346,
+   "excess_ci_hi": 0.3891119956970215,
+   "auc_feature_gt_decoy": 0.5632716049382716,
+   "wilcoxon_p_excess": 0.1919942139647901
   },
   {
    "features": "pit",
    "metric": "hv_change_leafon_vs_fall",
    "n": 36,
-   "median_feature_minus_ring_db": -0.015425443649291992,
-   "median_decoy_minus_ring_db": -0.06903219223022461,
-   "median_excess_db": -0.12990200519561768,
-   "excess_ci_lo": -0.8246617317199707,
-   "excess_ci_hi": 0.5164787769317627,
-   "auc_feature_gt_decoy": 0.45632716049382716,
-   "wilcoxon_p_excess": 0.6921731745242141
+   "median_feature_minus_ring_db": -0.08640193939208984,
+   "median_decoy_minus_ring_db": 0.21548032760620117,
+   "median_excess_db": -0.31752240657806396,
+   "excess_ci_lo": -0.6795426934957504,
+   "excess_ci_hi": 0.0069070219993544,
+   "auc_feature_gt_decoy": 0.45416666666666666,
+   "wilcoxon_p_excess": 0.37916652829153463
   }
  ]
 }

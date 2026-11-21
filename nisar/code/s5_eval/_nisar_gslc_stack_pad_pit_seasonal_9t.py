@@ -22,8 +22,9 @@ to `nisar/derived/9t/nisar_gslc_5m/`, plus its index CSV. Complex HH and HV at a
 2026-07-22 track 026D has none.
 
 Seasons:
-  * leaf-off fall: 2025-10-01 .. 2025-11-30 (beta collection)
-  * winter:        2025-12-01 .. 2026-01-31 (beta; snow and frozen ground likely)
+  * leaf-off fall: 2026-10-21 .. 2026-11-30 (standard collection; after leaf drop in western PA)
+  Since 2026-11-19 amplitude uses June 2026 onward only (user decision). The beta fall 2025 and
+  winter windows were dropped on 2026-11-20. Early October 2026 (leaves turning) is in neither season.
   * leaf-on:       2026-06-01 .. 2026-09-30 (provisional collection)
 
 The beta and provisional collections were processed by different software
@@ -102,8 +103,7 @@ OUT = A.RESULTS
 FIG = OUT / "figures"
 CRS = "EPSG:32617"
 
-SEASONS = {"leafoff_fall": ("2025-10-01", "2025-11-30"),
-           "winter": ("2025-12-01", "2026-01-31"),
+SEASONS = {"leafoff_fall": ("2026-10-21", "2026-11-30"),
            "leafon": ("2026-06-01", "2026-09-30")}
 PAD_CORE_M, PAD_RING, PAD_EXCL = 3.0, (20.0, 60.0), 10.0
 PIT_RING, PIT_EXCL = (10.0, 30.0), 5.0
@@ -154,7 +154,7 @@ def load_stack():
 
 # Short raster names: polarization, season, track. Values are season-mean dB, as delivered
 # (no shift to the lidar); the change raster is summer mean minus fall mean, in dB.
-RASTER_METRIC_NAME = {"leafoff_fall": "fall_2025", "winter": "winter_2025_26",
+RASTER_METRIC_NAME = {"leafoff_fall": "fall_2026",
                       "leafon": "summer_2026", "change_leafon_vs_fall": "change_summer_minus_fall"}
 
 

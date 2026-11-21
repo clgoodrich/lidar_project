@@ -1,0 +1,234 @@
+           date   collection  track direction  frame
+0    2025-10-28         beta    162         A     22
+1    2025-10-28         beta    162         A     23
+2    2025-10-28         beta    162         A     24
+3    2025-11-04         beta     90         A     21
+4    2025-11-04         beta     90         A     22
+5    2025-11-04         beta     90         A     23
+6    2025-11-09         beta    162         A     22
+7    2025-11-09         beta    162         A     23
+8    2025-11-09         beta    162         A     24
+9    2025-11-12         beta     26         D     67
+10   2025-11-12         beta     26         D     68
+11   2025-11-12         beta     26         D     69
+12   2025-11-21         beta    162         A     22
+13   2025-11-21         beta    162         A     23
+14   2025-11-21         beta    162         A     24
+15   2025-12-03         beta    162         A     22
+16   2025-12-03         beta    162         A     23
+17   2025-12-03         beta    162         A     24
+18   2025-12-18         beta     26         D     67
+19   2025-12-18         beta     26         D     68
+20   2025-12-18         beta     26         D     69
+21   2025-12-30         beta     26         D     67
+22   2025-12-30         beta     26         D     68
+23   2025-12-30         beta     26         D     69
+24   2026-01-03  provisional     90         A     23
+25   2026-01-08         beta    162         A     22
+26   2026-01-08         beta    162         A     23
+27   2026-01-08         beta    162         A     24
+28   2026-01-08  provisional    162         A     24
+29   2026-01-15         beta     90         A     21
+30   2026-01-15         beta     90         A     22
+31   2026-01-15         beta     90         A     23
+32   2026-01-15  provisional     90         A     23
+33   2026-01-20         beta    162         A     22
+34   2026-01-20         beta    162         A     23
+35   2026-01-20         beta    162         A     24
+36   2026-01-20  provisional    162         A     24
+37   2026-02-01  provisional    162         A     24
+38   2026-02-08  provisional     90         A     23
+39   2026-02-13  provisional    162         A     24
+40   2026-02-20  provisional     90         A     23
+41   2026-02-25  provisional    162         A     24
+42   2026-03-04  provisional     90         A     23
+43   2026-03-09  provisional    162         A     24
+44   2026-03-16  provisional     90         A     23
+45   2026-03-21  provisional    162         A     24
+46   2026-04-02  provisional    162         A     24
+47   2026-04-09  provisional     90         A     23
+48   2026-04-21  provisional     90         A     23
+49   2026-04-26  provisional    162         A     24
+50   2026-05-03  provisional     90         A     23
+51   2026-05-08  provisional    162         A     24
+52   2026-05-15  provisional     90         A     23
+53   2026-05-20  provisional    162         A     24
+54   2026-05-27  provisional     90         A     23
+55   2026-06-01  provisional    162         A     24
+56   2026-06-08  provisional     90         A     23
+57   2026-06-13  provisional    162         A     24
+58   2026-06-20  provisional     90         A     21
+59   2026-06-20  provisional     90         A     22
+60   2026-06-20  provisional     90         A     23
+61   2026-06-25  provisional    162         A     22
+62   2026-06-25  provisional    162         A     23
+63   2026-06-25  provisional    162         A     24
+64   2026-06-28  provisional     26         D     67
+65   2026-06-28  provisional     26         D     68
+66   2026-06-28  provisional     26         D     69
+67   2026-07-02  provisional     90         A     21
+68   2026-07-02  provisional     90         A     22
+69   2026-07-02  provisional     90         A     23
+70   2026-07-07  provisional    162         A     22
+71   2026-07-07  provisional    162         A     23
+72   2026-07-07  provisional    162         A     24
+73   2026-07-14  provisional     90         A     21
+74   2026-07-14  provisional     90         A     22
+75   2026-07-14  provisional     90         A     23
+76   2026-07-19  provisional    162         A     22
+77   2026-07-19  provisional    162         A     23
+78   2026-07-19  provisional    162         A     24
+79   2026-07-22  provisional     26         D     67
+80   2026-07-26  provisional     90         A     21
+81   2026-07-26  provisional     90         A     22
+82   2026-07-26  provisional     90         A     23
+83   2026-08-12  provisional    162         A     22
+84   2026-08-12  provisional    162         A     23
+85   2026-08-12  provisional    162         A     24
+86   2026-08-15  provisional     26         D     67
+87   2026-08-15  provisional     26         D     68
+88   2026-08-15  provisional     26         D     69
+89   2026-08-19  provisional     90         A     21
+90   2026-08-19  provisional     90         A     22
+91   2026-08-19  provisional     90         A     23
+92   2026-08-24  provisional    162         A     22
+93   2026-08-24  provisional    162         A     23
+94   2026-08-24  provisional    162         A     24
+95   2026-08-27  provisional     26         D     67
+96   2026-08-27  provisional     26         D     68
+97   2026-08-27  provisional     26         D     69
+98   2026-08-31  provisional     90         A     21
+99   2026-08-31  provisional     90         A     22
+100  2026-08-31  provisional     90         A     23
+101  2026-09-05  provisional    162         A     22
+102  2026-09-05  provisional    162         A     22
+103  2026-09-05  provisional    162         A     23
+104  2026-09-05  provisional    162         A     23
+105  2026-09-05  provisional    162         A     24
+106  2026-09-05  provisional    162         A     24
+107  2026-09-08  provisional     26         D     67
+108  2026-09-08  provisional     26         D     68
+109  2026-09-08  provisional     26         D     69
+110  2026-09-12  provisional     90         A     21
+111  2026-09-12  provisional     90         A     22
+112  2026-09-12  provisional     90         A     23
+113  2026-09-17  provisional    162         A     22
+114  2026-09-17  provisional    162         A     23
+115  2026-09-17  provisional    162         A     24
+116  2026-09-20  provisional     26         D     67
+117  2026-09-20  provisional     26         D     68
+118  2026-09-20  provisional     26         D     69
+119  2026-09-24  provisional     90         A     21
+120  2026-09-24  provisional     90         A     22
+121  2026-09-24  provisional     90         A     23
+122  2026-09-29  provisional    162         A     22
+123  2026-09-29  provisional    162         A     23
+124  2026-09-29  provisional    162         A     24
+125  2026-10-02  provisional     26         D     67
+126  2026-10-02  provisional     26         D     68
+127  2026-10-02  provisional     26         D     69
+128  2026-10-06  provisional     90         A     21
+129  2026-10-06  provisional     90         A     22
+130  2026-10-06  provisional     90         A     23
+131  2026-10-11  provisional    162         A     22
+132  2026-10-11  provisional    162         A     23
+133  2026-10-11  provisional    162         A     24
+134  2026-10-14  provisional     26         D     67
+135  2026-10-14  provisional     26         D     68
+136  2026-10-14  provisional     26         D     69
+137  2026-10-18  provisional     90         A     21
+138  2026-10-18  provisional     90         A     22
+139  2026-10-18  provisional     90         A     23
+140  2026-10-23     standard    162         A     22
+141  2026-10-23     standard    162         A     23
+142  2026-10-23     standard    162         A     24
+143  2026-10-26     standard     26         D     67
+144  2026-10-26     standard     26         D     68
+145  2026-10-26     standard     26         D     69
+146  2026-10-30     standard     90         A     21
+147  2026-10-30     standard     90         A     22
+148  2026-10-30     standard     90         A     23
+149  2026-11-04     standard    162         A     22
+150  2026-11-04     standard    162         A     23
+151  2026-11-04     standard    162         A     24
+152  2026-11-07     standard     26         D     67
+153  2026-11-07     standard     26         D     68
+154  2026-11-07     standard     26         D     69
+155  2026-11-11     standard     90         A     21
+156  2026-11-11     standard     90         A     22
+157  2026-11-11     standard     90         A     23
+158  2026-11-16     standard    162         A     22
+159  2026-11-16     standard    162         A     23
+160  2026-11-16     standard    162         A     24
+window (EPSG:32617) (np.float64(613295.0), np.float64(4589800.0), np.float64(618200.0), np.float64(4594705.0))
+skip nisar_gslc_hh_hv_complex_20251028_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20251104_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20251109_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20251112_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20251121_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20251203_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20251218_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20251230_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260103_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260108_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260115_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260120_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260208_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260220_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260304_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260316_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260409_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260421_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260503_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260515_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260527_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260608_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260620_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260625_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260628_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260702_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260707_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260714_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260719_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260722_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260726_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260812_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260815_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260819_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260824_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260827_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260831_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260905_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260908_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260912_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260917_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260920_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260924_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20260929_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20261002_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20261006_t090A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20261011_t162A_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20261014_t026D_613590_5m.tif
+skip nisar_gslc_hh_hv_complex_20261018_t090A_613590_5m.tif
+  NISAR_L2_PR_GSLC_033_162_A_022_4005_DHDH_A_20261023T101514_2... valid 0.000 (14 s)
+  NISAR_L2_PR_GSLC_033_162_A_023_4005_DHDH_A_20261023T101550_2... valid 0.000 (48 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261023_t162A_613590_5m.tif
+  NISAR_L2_PR_GSLC_034_026_D_067_4005_DHDH_A_20261026T001648_2... valid 0.000 (31 s)
+  NISAR_L2_PR_GSLC_034_026_D_068_4005_DHDH_A_20261026T001722_2... valid 1.000 (44 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261026_t026D_613590_5m.tif
+  NISAR_L2_PR_GSLC_034_090_A_022_4005_DHDH_A_20261030T102336_2... valid 1.000 (41 s)
+  NISAR_L2_PR_GSLC_034_090_A_023_4005_DHDH_A_20261030T102410_2... valid 0.000 (37 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261030_t090A_613590_5m.tif
+  NISAR_L2_PR_GSLC_034_162_A_022_4005_DHDH_A_20261104T101514_2... valid 0.000 (13 s)
+  NISAR_L2_PR_GSLC_034_162_A_023_4005_DHDH_A_20261104T101550_2... valid 0.000 (46 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261104_t162A_613590_5m.tif
+  NISAR_L2_PR_GSLC_035_026_D_067_4005_DHDH_A_20261107T001649_2... valid 0.000 (24 s)
+  NISAR_L2_PR_GSLC_035_026_D_068_4005_DHDH_A_20261107T001722_2... valid 1.000 (45 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261107_t026D_613590_5m.tif
+  NISAR_L2_PR_GSLC_035_090_A_022_4005_DHDH_A_20261111T102336_2... valid 1.000 (41 s)
+  NISAR_L2_PR_GSLC_035_090_A_023_4005_DHDH_A_20261111T102410_2... valid 0.000 (34 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261111_t090A_613590_5m.tif
+  NISAR_L2_PR_GSLC_035_162_A_022_4005_DHDH_A_20261116T101515_2... valid 0.000 (14 s)
+  NISAR_L2_PR_GSLC_035_162_A_023_4005_DHDH_A_20261116T101551_2... valid 0.000 (44 s)
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_gslc_5m\nisar_gslc_hh_hv_complex_20261116_t162A_613590_5m.tif
+index C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_gslc_5m\nisar_gslc_window_index_613590_5m.csv

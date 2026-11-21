@@ -8,6 +8,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-20 Seasonal pit and pad tests rerun on post-June dates (fall = 2026-10-21 to 11-30)
+
+- Stack rebuilt with 7 new standard dates (9t) and 4 RSLC dates (613590). Residual offsets after re-alignment at most about 1 m.
+- Seasons fixed before results: summer 2026-06-01 to 09-30, fall 2026-10-21 to 11-30. Early October excluded. Beta windows dropped.
+- 9t pits (506): summer HV +0.175 dB (CI 0.106 to 0.272, p<0.001), replicates the earlier +0.19. Fall HH +0.027 (p 0.99), the beta +0.25 does not replicate. Fall HV +0.128 (CI 0.022 to 0.272, p 0.06).
+- 9t pads (645): darker than decoys in fall, HH -0.115 and HV -0.115 (p<0.001). Summer-minus-fall change +0.14 HH, +0.10 HV (p<0.001). Summer at chance. New, rests on 2 to 3 fall dates per track.
+- 613590 pits (36, tracks 26 and 90): fall HH +0.75 (CI 0.46 to 1.31, p 0.001), fall HV +0.52 (p 0.04). Small n. 613590 pads 0 with rings and decoys.
+
 ## 2026-11-20 New NISAR collection found: dates through 2026-11-16 were being missed
 
 - From 2026-10-23 NASA publishes GSLC and RSLC in new standard collections (NISAR_L2_GSLC_V1, NISAR_L1_RSLC_V1), not the PROVISIONAL ones.

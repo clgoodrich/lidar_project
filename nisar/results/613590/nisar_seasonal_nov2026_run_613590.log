@@ -1,0 +1,33 @@
+area 613590_slc
+dropping nisar_slc_lidar_20260908_t026D_613590.tif: valid fraction below 0.5 or a bad granule
+season           leafoff_fall  leafon
+track direction                      
+26    D                     2       4
+90    A                     2       8
+track 26: rho0 0.069, best 0.105 at (+20,-10) -> as delivered
+track 90: rho0 0.165, best 0.230 at (-20,-10) -> as delivered
+    track                    metric  open_median_db  closed_median_db  auc_closed_gt_open
+0      26           hh_leafoff_fall          -8.166            -5.734               0.635
+1      26                 hh_leafon          -6.833            -5.075               0.629
+2      26  hh_change_leafon_vs_fall           1.649             0.765               0.441
+3      26           hv_leafoff_fall         -13.809           -10.660               0.672
+4      26                 hv_leafon         -11.593           -10.095               0.632
+5      26  hv_change_leafon_vs_fall           2.285             0.583               0.401
+6      90           hh_leafoff_fall          -8.407            -5.318               0.666
+7      90                 hh_leafon          -6.974            -4.620               0.689
+8      90  hh_change_leafon_vs_fall           0.877             0.704               0.488
+9      90           hv_leafoff_fall         -14.383           -10.558               0.696
+10     90                 hv_leafon         -12.691           -10.009               0.712
+11     90  hv_change_leafon_vs_fall           0.761             0.583               0.487
+tile median leaf-on minus leaf-off (dB): {(26, 'hh'): 0.8227992057800293, (26, 'hv'): 0.7516088485717773, (90, 'hh'): 0.7163233757019043, (90, 'hv'): 0.6165084838867188}
+pad: 0 features with rings and decoys
+pit: 36 features with rings and decoys
+  features                    metric   n  median_feature_minus_ring_db  median_decoy_minus_ring_db  median_excess_db  excess_ci_lo  excess_ci_hi  auc_feature_gt_decoy  wilcoxon_p_excess
+0      pit           hh_leafoff_fall  36                         0.178                      -0.285             0.746         0.455         1.307                 0.637              0.001
+1      pit                 hh_leafon  36                         0.112                      -0.359             0.429        -0.072         0.825                 0.613              0.009
+2      pit  hh_change_leafon_vs_fall  36                        -0.307                      -0.200            -0.463        -0.814         0.280                 0.438              0.379
+3      pit           hv_leafoff_fall  36                         0.308                      -0.392             0.515         0.266         0.718                 0.607              0.044
+4      pit                 hv_leafon  36                        -0.058                      -0.075             0.184        -0.052         0.389                 0.563              0.192
+5      pit  hv_change_leafon_vs_fall  36                        -0.086                       0.215            -0.318        -0.680         0.007                 0.454              0.379
+wrote 12 rasters to C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\613590\nisar_slc_lidar_5m
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\results\613590\figures\nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change_613590_slc_5m.png
