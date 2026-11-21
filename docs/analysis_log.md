@@ -8,6 +8,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-20 New NISAR collection found: dates through 2026-11-16 were being missed
+
+- From 2026-10-23 NASA publishes GSLC and RSLC in new standard collections (NISAR_L2_GSLC_V1, NISAR_L1_RSLC_V1), not the PROVISIONAL ones.
+- Our fetchers searched only BETA and PROVISIONAL, so the stack stopped at 2026-10-18.
+- Over 9t there are 7 new GSLC dates: 10-23 (t162), 10-26 (t26), 10-30 (t90), 11-04 (t162), 11-07 (t26), 11-11 (t90), 11-16 (t162). RSLC also has 11-19.
+- Both fetchers now include the V1 collections. New rows are labelled collection=standard. Fetch running for 9t and 613590.
+
 ## 2026-11-20 Process doc and PDF updated to the provisional-only amplitude rule
 
 - Fall HH pit contrast marked beta and out of scope. Summer HV +0.19 dB stands. Confound, date counts and next-steps rows updated. PDF regenerated.

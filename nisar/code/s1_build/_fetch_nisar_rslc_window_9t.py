@@ -47,7 +47,7 @@ import _fetch_nisar_gslc_window_9t as gfetch  # noqa: E402
 A = gfetch.A                              # --area picks 9t, 613590 or mkf
 OUT = A.RSLC
 GINDEX = A.GSLC / f"nisar_gslc_window_index_{A.TAG}_5m.csv"
-COLLECTIONS = ["NISAR_L1_RSLC_BETA_V1", "NISAR_L1_RSLC_PROVISIONAL_V1"]
+COLLECTIONS = ["NISAR_L1_RSLC_BETA_V1", "NISAR_L1_RSLC_PROVISIONAL_V1", "NISAR_L1_RSLC_V1"]  # V1: standard collection, from 2026-10-23
 ROOT_GRP = "science/LSAR/RSLC"
 MARGIN_M = 200.0
 FIT_M = 3000.0

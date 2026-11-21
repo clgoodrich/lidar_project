@@ -62,7 +62,7 @@ from _common import path_for  # noqa: E402
 import _nisar_area as A  # noqa: E402  (--area picks 9t, 613590 or mkf)
 
 CMR = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
-COLLECTIONS = ["NISAR_L2_GSLC_BETA_V1", "NISAR_L2_GSLC_PROVISIONAL_V1"]
+COLLECTIONS = ["NISAR_L2_GSLC_BETA_V1", "NISAR_L2_GSLC_PROVISIONAL_V1", "NISAR_L2_GSLC_V1"]  # V1: standard collection, from 2026-10-23
 BBOX = (-79.5687, 41.4797, -79.5139, 41.5195) if A.TAG == "9t" else A.bounds("EPSG:4326")  # W S E N
 OUT = A.GSLC
 CRS = "EPSG:32617"
@@ -101,7 +101,7 @@ def query() -> pd.DataFrame:
             t = u["GranuleUR"].split("_")
             # NISAR_L2_PR_GSLC_<cycle>_<track>_<dir>_<frame>_<mode>_<pols>_...
             rows.append(dict(granule=u["GranuleUR"], url=url,
-                             collection="beta" if "BETA" in sn else "provisional",
+                             collection="beta" if "BETA" in sn else ("provisional" if "PROVISIONAL" in sn else "standard"),
                              cycle=int(t[4]), track=int(t[5]), direction=t[6], frame=int(t[7]),
                              date=u["TemporalExtent"]["RangeDateTime"]["BeginningDateTime"][:10]))
     return pd.DataFrame(rows).sort_values(["date", "track", "frame"]).reset_index(drop=True)
