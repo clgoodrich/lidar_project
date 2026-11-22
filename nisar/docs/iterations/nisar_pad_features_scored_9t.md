@@ -1,5 +1,7 @@
 # NISAR pad-feature products and scoring (9t)
 
+> **Archive note (2026-11-15).** The prediction-scoring scripts and result files named below moved to `nisar/archive/prediction/`. That work is outside the present objective. See `nisar/archive/prediction/README.md`.
+
 > **SUPERSEDED 2026-10-26.** The headline numbers in this doc come from the first-pass pipeline (GSLC stack, unbuffered CV, unequal pixel counts, block-assignment bug, no coordinate or rich-lidar control). The corrected re-run is in `nisar/docs/iterations/nisar_corrected_rescoring_9t.md`: all NISAR 0.635 (decoys anywhere) and 0.476 (local decoys), against map x/y 0.815 and a rich lidar baseline 0.917. Read this doc for the method and the leak history, not for the results.
 
 ## Goal
@@ -93,6 +95,6 @@ python notebooks/wellsight_v2/s5_eval/_weather_prism_daily_9t.py
 python nisar/code/s5_eval/_nisar_features_vs_flatness_9t.py
 for p in dualpol texture spatial amp_trend temporal events geometry los_motion coherence subaperture rain_freeze road_context; do python nisar/code/s5_eval/_nisar_feat_${p}_9t.py; done
 NISAR_STACK=slc python nisar/code/s5_eval/_nisar_feat_height_resid_9t.py   # then rename the file to nisar_feat_heightresid_9t_5m.tif if it carries _slc
-python nisar/code/s5_eval/_nisar_feat_score_9t.py && python nisar/code/s5_eval/_nisar_feat_model_9t.py
+python nisar/code/s5_eval/_nisar_feat_score_9t.py && python nisar/archive/prediction/code/_nisar_feat_model_9t.py
 CORE_SHRINK_M=15 ROAD_NEAR=1 python nisar/code/s5_eval/_nisar_feat_score_9t.py   # and the model with the same variables
 ```

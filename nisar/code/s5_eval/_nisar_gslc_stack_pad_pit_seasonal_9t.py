@@ -480,31 +480,32 @@ def main() -> int:
              key=lambda t: counts.xs(t, level="track")["leafoff_fall"].sum())
     d0 = idx[idx.track == t0].direction.iat[0]
     L = layers[t0]
-    fig, ax = plt.subplots(2, 2, figsize=(16, 13))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    import _nisar_fig_style as S
+    S.apply()
+    fig, ax = plt.subplots(2, 2, figsize=(7.2, 6.4), gridspec_kw=dict(height_ratios=[1, 0.9]))
     ext = (tf.c, tf.c + shape[1] * 5, tf.f - shape[0] * 5, tf.f)
     img = db(L["hh_leafon"]).reshape(shape)
     lo, hi = np.nanpercentile(img[in_tile], [2, 98])
     ax[0, 0].imshow(img, extent=ext, cmap="gray", vmin=lo, vmax=hi, interpolation="nearest")
     pads.boundary.plot(ax=ax[0, 0], color=FEAT_C, lw=0.5)
     n_on = int(counts.loc[(t0, d0), "leafon"])
-    ax[0, 0].set_title(f"HH brightness, mean of {n_on} leaf-on dates, track {t0}{d0}, 5 m\n"
-                       "annotated pads outlined", loc="left", fontsize=11)
+    S.panel(ax[0, 0], "a", f"HH, summer mean ({n_on} dates), track {t0}{d0}. Pads outlined")
     ch = (db(L["hv_leafon"]) - db(L["hv_leafoff_fall"])).reshape(shape)
     ch = ch - tile_median_change[(int(t0), "hv")]
     im = ax[0, 1].imshow(ch, extent=ext, cmap="PuOr", vmin=-4, vmax=4, interpolation="nearest")
     pads.boundary.plot(ax=ax[0, 1], color=INK, lw=0.4)
-    fig.colorbar(im, ax=ax[0, 1], fraction=0.04, pad=0.02).set_label("HV leaf-on minus leaf-off fall, relative to tile median (dB)")
-    ax[0, 1].set_title(f"Seasonal change in HV, track {t0}{d0}\npurple = brighter in summer",
-                       loc="left", fontsize=11)
+    fig.colorbar(im, ax=ax[0, 1], fraction=0.046, pad=0.02).set_label("HV summer minus fall,\nrelative to tile median (dB)")
+    S.panel(ax[0, 1], "b", f"HV summer minus fall, track {t0}{d0}")
     for a in ax[0]:
-        a.set_xticks([]); a.set_yticks([])
+        S.map_axes(a)
         a.set_xlim(ext[0] + 200, ext[1] - 200); a.set_ylim(ext[2] + 200, ext[3] - 200)
 
     shown = ["hh_leafon", "hv_leafon", "hh_leafoff_fall", "hv_leafoff_fall",
              "hh_change_leafon_vs_fall", "hv_change_leafon_vs_fall"]
-    label = {"leafon": "leaf-on", "leafoff_fall": "leaf-off\nfall", "change_leafon_vs_fall": "seasonal\nchange"}
+    label = {"leafon": "summer", "leafoff_fall": "fall", "change_leafon_vs_fall": "summer\n− fall"}
 
-    def panel(a, kind, title):
+    def panel(a, letter, kind, title):
         df = per_feature[kind]
         if df.empty:
             a.text(0.5, 0.5, f"no annotated {kind}s in {A.TAG}", ha="center", va="center", transform=a.transAxes)
@@ -514,28 +515,26 @@ def main() -> int:
             for off, col, mk, vals in ((-0.18, FEAT_C, "o", df[f"{m}_feature"]),
                                        (0.18, RING_C, "s", df[f"{m}_decoy_median"])):
                 v = vals.dropna().to_numpy()
-                a.scatter(i + off + rng.uniform(-0.1, 0.1, len(v)), v, s=4, color=col, marker=mk,
-                          alpha=0.3, lw=0)
+                a.scatter(i + off + rng.uniform(-0.1, 0.1, len(v)), v, s=1.5, color=col, marker=mk,
+                          alpha=0.25, lw=0)
                 q = np.percentile(v, [25, 50, 75])
                 a.errorbar(i + off, q[1], yerr=[[q[1] - q[0]], [q[2] - q[1]]], fmt=mk, color=INK,
-                           mfc=col, ms=8, capsize=4)
-        a.axhline(0, color=INK, ls="--", lw=0.8)
+                           mfc=col, ms=4.5, capsize=2.5, elinewidth=0.8, mew=0.6)
+        a.axhline(0, color=S.GREY, ls="--", lw=0.6)
         a.set_xticks(range(len(shown)))
-        a.set_xticklabels([m[:2].upper() + "\n" + label[m[3:]] for m in shown], fontsize=10)
-        a.set_ylabel("minus its own ring (dB), mean over tracks")
-        a.set_ylim(-6, 6)
-        a.set_title(title, loc="left", fontsize=11)
-        a.scatter([], [], color=FEAT_C, marker="o", label=f"annotated {kind}s")
-        a.scatter([], [], color=RING_C, marker="s", label="decoys: same shape on background")
-        a.legend(frameon=False, fontsize=9, loc="lower left")
+        a.set_xticklabels([m[:2].upper() + "\n" + label[m[3:]] for m in shown], fontsize=8)
+        a.set_ylabel("Feature minus its ring (dB)")
+        a.set_ylim(-3, 3)
+        S.panel(a, letter, title)
+        a.scatter([], [], color=FEAT_C, marker="o", label=f"Mapped {kind}s")
+        a.scatter([], [], color=RING_C, marker="s", label="Control spots")
+        a.legend(loc="lower left")
 
-    panel(ax[1, 0], "pad", f"{len(per_feature['pad'])} pads and their decoys, each against its own "
-                           "20-60 m ring\nmarkers are medians, bars IQR")
-    panel(ax[1, 1], "pit", f"{len(per_feature['pit'])} pits and their decoys, each against its own "
-                           "10-30 m ring\nmarkers are medians, bars IQR")
+    panel(ax[1, 0], "c", "pad", f"Pads (n = {len(per_feature['pad'])}), 20–60 m ring")
+    panel(ax[1, 1], "d", "pit", f"Pits (n = {len(per_feature['pit'])}), 10–30 m ring")
     fig.tight_layout()
     fp = FIG / f"nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change{sfx}_{A.TAG}_5m.png"
-    fig.savefig(fp, dpi=160)
+    fig.savefig(fp, dpi=300, bbox_inches="tight")
     print(f"wrote {fp}")
     return 0
 

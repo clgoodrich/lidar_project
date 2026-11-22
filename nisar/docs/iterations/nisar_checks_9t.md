@@ -1,5 +1,7 @@
 # NISAR outstanding checks, run on 9t and 613590 (2026-10-27)
 
+> **Archive note (2026-11-15).** The prediction-scoring scripts and result files named below moved to `nisar/archive/prediction/`. That work is outside the present objective. See `nisar/archive/prediction/README.md`.
+
 This closes the list in `docs/iterations/BACKLOG.md` ("NISAR outstanding checks after the 2026-10-26 reviews"). It follows `nisar_corrected_rescoring_9t.md`. The headline did not change. **NISAR does not add to lidar on this tile, in any design tested.** Several checks also sharpen what NISAR does and does not see.
 
 ## Summary by backlog item
@@ -102,7 +104,7 @@ The pre-registration, `nisar_heldout_613590_prereg.md`, was committed before thi
 - Prediction 3 (rich lidar above 0.80): held, 0.881.
 - Missing on 613590: `amp`, `coherence`, `rainfreeze` (no weather file for that tile) and `subaperture` (script is 9t-only). They were removed from both sides.
 - Only 6 usable dates on track 162 there, against 14 on 9t. NISAR alone has a wide interval (0.47 to 0.82).
-- Files: `nisar/results/613590/nisar_pit_heldout_auc_613590_slc.csv`, `nisar_pit_heldout_summary_613590_slc.json`. Products: `nisar/derived/613590/nisar_features_5m/` (git-ignored). Build log: `nisar/results/613590/nisar_feature_products_run_613590_slc.log`.
+- Files: `nisar/archive/prediction/results/613590/nisar_pit_heldout_auc_613590_slc.csv`, `nisar_pit_heldout_summary_613590_slc.json`. Products: `nisar/derived/613590/nisar_features_5m/` (git-ignored). Build log: `nisar/results/613590/nisar_feature_products_run_613590_slc.log`.
 
 ## 6. Repeated cross-validation and cluster-aware tests (`_nisar_feat_repeat_9t.py`)
 

@@ -16,6 +16,7 @@ Greys are neutral context only and are always labelled. Every coloured category 
 Writes nisar/docs/figures/<name>.png
   python nisar/code/s7_analysis/_nisar_process_figures.py
 """
+import sys
 from pathlib import Path
 
 import matplotlib.dates as mdates
@@ -27,14 +28,11 @@ from matplotlib.patches import Patch, Rectangle
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = ROOT / "nisar" / "docs" / "figures"
-BLUE, ORANGE, RED = "#1F5FA8", "#D97706", "#A31515"
-K, GREY, LIGHT = "black", "#6B7280", "#E5E7EB"
-plt.rcParams.update({"font.family": "serif", "font.serif": ["Times New Roman", "DejaVu Serif"], "font.size": 9,
-                     "mathtext.fontset": "stix", "axes.linewidth": 0.8, "axes.edgecolor": K, "axes.labelcolor": K,
-                     "xtick.direction": "in", "ytick.direction": "in", "xtick.top": True, "ytick.right": True,
-                     "xtick.color": K, "ytick.color": K, "legend.frameon": True, "legend.edgecolor": K,
-                     "legend.fancybox": False, "legend.framealpha": 1, "figure.facecolor": "white",
-                     "axes.facecolor": "white", "savefig.facecolor": "white"})
+sys.path.insert(0, str(ROOT / "nisar" / "code"))
+import _nisar_fig_style as S  # noqa: E402  (shared formal style)
+S.apply()
+BLUE, ORANGE, RED = S.BLUE, S.ORANGE, S.RED
+K, GREY, LIGHT = S.K, S.GREY, S.LIGHT
 
 
 def save(fig, name):

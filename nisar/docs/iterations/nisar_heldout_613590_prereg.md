@@ -1,5 +1,7 @@
 # NISAR frozen held-out test on 613590, pre-registration (2026-10-27)
 
+> **Archive note (2026-11-15).** The prediction-scoring scripts and result files named below moved to `nisar/archive/prediction/`. That work is outside the present objective. See `nisar/archive/prediction/README.md`.
+
 This file was written and committed before any 613590 sample was scored. Its purpose is to fix the model, the test set, the predictions and the decision rule in advance.
 
 > **Correction 2026-11-09 (outside review).** The sentence above is too broad. This file (commit a8a38c0, 2026-10-27 09:33) preceded this classifier's results (30cccb8, 12:21 the same day), but earlier October tests had already scored 613590 pits. Read it as pre-registration of this classifier experiment only. The authoritative interval is the block bootstrap from the saved predictions: gain -0.016744, 95% -0.054676 to +0.019843 (lidar 0.881404). The outside re-analysis bounds below (+0.015 to +0.018) could not be reproduced from saved files and are documented only.
@@ -37,7 +39,7 @@ Does a NISAR model trained on 9t transfer to a different tile, and does it add t
 ## Procedure
 
 1. `NISAR_AREA=613590 NISAR_STACK=slc TARGET=pit python nisar/code/s5_eval/_nisar_feat_score_9t.py` writes the 613590 samples.
-2. `python nisar/code/s5_eval/_nisar_feat_heldout_9t.py` trains on 9t and scores 613590.
+2. `python nisar/archive/prediction/code/_nisar_feat_heldout_9t.py` trains on 9t and scores 613590.
 3. One run. A technical failure may be fixed and re-run. No change of model, band set or decoy design after seeing a score.
 
 Results go to `nisar/docs/iterations/nisar_checks_9t.md`.

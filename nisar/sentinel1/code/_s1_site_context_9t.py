@@ -32,6 +32,9 @@ from matplotlib.patches import Rectangle
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import _s1_metal_cfar_9t as M  # noqa: E402
+sys.path.insert(0, str(HERE.parents[1] / "code"))
+import _nisar_fig_style as S  # noqa: E402
+S.apply()
 
 ROOT = M.ROOT
 AREA = "9t"
@@ -79,7 +82,7 @@ def main():
     roads = clip(gpd.read_file(ANN / "roads.shp"))
 
     def marks(ax, s1=False):
-        for g, kw in ((pads, dict(color=INK, linewidth=1.0)), (pits, dict(color=BLUE, linewidth=1.8))):
+        for g, kw in ((pads, dict(color=INK, linewidth=1.0)), (pits, dict(color=BLUE, linewidth=1.0))):
             if len(g):
                 gg = g.to_crs(32617) if s1 else g
                 gg.boundary.plot(ax=ax, **kw)
@@ -91,30 +94,30 @@ def main():
             for i, (cx, cy) in enumerate(cs):
                 if not s1:
                     cx, cy = to_l.transform(cx, cy)
-                ax.add_patch(Rectangle((cx - 2.5, cy - 2.5), 5, 5, fill=False, edgecolor=BLUE, linewidth=1.8,
+                ax.add_patch(Rectangle((cx - 2.5, cy - 2.5), 5, 5, fill=False, edgecolor=BLUE, linewidth=1.0,
                                        linestyle=TRACK_LS[t], zorder=5, label=None if i else f"NISAR PS pixel, track {t}"))
-        pts = [(wells, dict(marker="^", s=110, facecolor="white", edgecolor=INK, linewidths=1.3, label="DEP well"))]
+        pts = [(wells, dict(marker="^", s=40, facecolor="white", edgecolor=INK, linewidths=0.9, label="DEP well"))]
         for g, kw in pts:
             gx, gy = g.geometry.x.values, g.geometry.y.values
             if s1 and len(g):
                 gx, gy = to_s1.transform(gx, gy)
             ax.scatter(gx, gy, zorder=5, **kw)
-        ax.scatter([x if s1 else xx], [y if s1 else yy], marker="+", s=350, color=ORANGE, linewidths=3, zorder=6,
+        ax.scatter([x if s1 else xx], [y if s1 else yy], marker="+", s=120, color=ORANGE, linewidths=1.6, zorder=6,
                    label=name)
 
-    fig, axs = plt.subplots(1, 3, figsize=(18, 6.4))
+    fig, axs = plt.subplots(1, 3, figsize=(10, 3.6))
     with rasterio.open(RRIM) as r:
         img = r.read(window=from_bounds(xx - H, yy - H, xx + H, yy + H, r.transform)).transpose(1, 2, 0)
     axs[0].imshow(img, extent=(xx - H, xx + H, yy - H, yy + H))
     marks(axs[0])
-    axs[0].set_title("Lidar RRIM, 0.5 m (pits blue, pads charcoal, roads white)", fontsize=10)
+    S.panel(axs[0], "a", "Lidar RRIM, 0.5 m")
     with rasterio.open(CHM) as r:
         c = r.read(1, window=from_bounds(xx - H, yy - H, xx + H, yy + H, r.transform)).astype(float)
     c[c < -100] = np.nan
     im = axs[1].imshow(c, extent=(xx - H, xx + H, yy - H, yy + H), cmap="Greens", vmin=0, vmax=25)
-    plt.colorbar(im, ax=axs[1], fraction=0.046, label="canopy height (m)")
+    plt.colorbar(im, ax=axs[1], fraction=0.046, label="Canopy height (m)")
     marks(axs[1])
-    axs[1].set_title("Lidar canopy height, 1 m", fontsize=10)
+    S.panel(axs[1], "b", "Lidar canopy height, 1 m")
 
     dates, tf, mean_i, _ = M.load()
     scr = M.cfar_scr(mean_i, M.water_mask(mean_i))
@@ -125,24 +128,23 @@ def main():
     X1, Y0 = tf * (c1, r1)
     im = axs[2].imshow(10 * np.log10(scr[r0:r1, c0:c1]), extent=(X0, X1, Y0, Y1), cmap="gray", vmin=-4, vmax=6,
                        interpolation="nearest")
-    plt.colorbar(im, ax=axs[2], fraction=0.046, label=f"dB vs surroundings (CFAR cutoff 4.7)")
+    plt.colorbar(im, ax=axs[2], fraction=0.046, label="Brightness vs surroundings (dB)")
     marks(axs[2], s1=True)
     axs[2].set_xlim(x - H, x + H); axs[2].set_ylim(y - H, y + H)
-    axs[2].set_title(f"Sentinel-1 track 77, {len(dates)} dates: brightness vs surroundings", fontsize=10)
+    S.panel(axs[2], "c", f"Sentinel-1 track 77, {len(dates)} dates")
     for a in axs[:2]:
         a.set_xlim(xx - H, xx + H); a.set_ylim(yy - H, yy + H)
     for a in axs:
         a.set_xticks([]); a.set_yticks([])
     L = 50 if H >= 60 else 20
     axs[0].plot([xx - H + 0.1 * H, xx - H + 0.1 * H + L], [yy - H + 0.1 * H] * 2, color="white", lw=3)
-    axs[0].text(xx - H + 0.1 * H + L / 2, yy - H + 0.14 * H, f"{L} m", color="white", ha="center", fontsize=9)
+    axs[0].text(xx - H + 0.1 * H + L / 2, yy - H + 0.14 * H, f"{L} m", color="white", ha="center", fontsize=7)
     axs[0].plot([], [], color="white", linewidth=1.6, path_effects=[pe.Stroke(linewidth=3.4, foreground=INK), pe.Normal()],
                 label="road annotations")
-    axs[0].legend(loc="upper right", fontsize=8, framealpha=0.9)
-    fig.suptitle(f"{name} ({lat:.6f}, {lon:.6f}), {2 * H:.0f} m box, north up", fontsize=12)
+    axs[0].legend(loc="upper right", fontsize=6.5)
     fig.tight_layout()
     out = OUT / f"s1_site_{name}_{AREA}.png"
-    fig.savefig(out, dpi=120)
+    fig.savefig(out, dpi=300, bbox_inches="tight")
     print(out)
 
 

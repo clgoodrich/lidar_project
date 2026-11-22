@@ -1,5 +1,7 @@
 # NISAR feature study, corrected and re-scored (9t, 2026-10-26)
 
+> **Archive note (2026-11-15).** The prediction-scoring scripts and result files named below moved to `nisar/archive/prediction/`. That work is outside the present objective. See `nisar/archive/prediction/README.md`.
+
 > Update 2026-10-27: `skew7` and `kurt7` were fixed and every design re-scored. All numbers below moved by 0.005 or less (pads, decoys anywhere: all NISAR 0.640; local decoys 0.479; pits 0.829; placebo 0.482, 0.527, 0.495). The follow-up checks are in `nisar_checks_9t.md`. Most of the limits listed at the end of this doc are addressed there.
 
 This doc **supersedes the headline numbers** in `nisar_pad_features_scored_9t.md` and `nisar_pit_features_scored_9t.md`. Those docs keep their first-pass numbers, marked as superseded.
@@ -58,7 +60,7 @@ Re-scoring the **old GSLC samples** with only the new CV (buffer and fold-local 
 | Pads, decoys anywhere, all NISAR | 0.815 | 0.699 | 0.635 |
 | Pads, local 1,500 m decoys, all NISAR | 0.713 | 0.587 | 0.476 |
 
-The new CV accounts for about half to two thirds of the drop (64% and 53%). The corrected data (SLC stack, bad date removed, per-pad pixel counts, block fix) accounts for the rest. Files: `nisar/results/9t/nisar_pad_model_auc_by_set_9t_oldsamples_newcv.csv` and `..._9t_local1500_oldsamples_newcv.csv`. The old-samples runs still carry the block bug in their group labels, so they are a bound, not a clean attribution.
+The new CV accounts for about half to two thirds of the drop (64% and 53%). The corrected data (SLC stack, bad date removed, per-pad pixel counts, block fix) accounts for the rest. Files: `nisar/archive/prediction/results/9t/nisar_pad_model_auc_by_set_9t_oldsamples_newcv.csv` and `..._9t_local1500_oldsamples_newcv.csv`. The old-samples runs still carry the block bug in their group labels, so they are a bound, not a clean attribution.
 
 ### Other corrected results
 
@@ -92,7 +94,7 @@ The new CV accounts for about half to two thirds of the drop (64% and 53%). The 
 
 ## Files
 
-- Corrected results: `nisar/results/9t/nisar_pad_model_auc_by_set_9t_slc.csv`, `nisar_pad_model_auc_by_set_9t_slc_local1500.csv`, `nisar_pit_model_auc_by_set_9t_slc.csv`, with `..._summary_...json` beside each.
+- Corrected results: `nisar/archive/prediction/results/9t/nisar_pad_model_auc_by_set_9t_slc.csv`, `nisar_pad_model_auc_by_set_9t_slc_local1500.csv`, `nisar_pit_model_auc_by_set_9t_slc.csv`, with `..._summary_...json` beside each.
 - Ablations and twins: `nisar_{pad,pit}_ablation_auc_9t_slc[_local1500].csv`, `nisar_{pad,pit}_hhhv_{pairs,models}_9t_slc[_local1500].csv`.
 - Single-band: `nisar_{pad,pit}_feature_auc_per_band_9t_slc[_local1500].csv`.
 - Samples (git-ignored): `nisar/derived/9t/nisar_features_5m/nisar_{pad,pit}_samples_9t_slc[_local1500].npz`.
@@ -107,7 +109,7 @@ for p in dualpol texture spatial amp_trend temporal events geometry los_motion c
 python nisar/code/s5_eval/_nisar_features_vs_flatness_9t.py
 # sub-aperture: run once without NISAR_STACK, then copy nisar_feat_subaperture_9t_5m.tif to ..._9t_slc_5m.tif
 python nisar/code/s5_eval/_nisar_feat_score_9t.py     # LOCAL_M=1500 for the local design, TARGET=pit for pits
-python nisar/code/s5_eval/_nisar_feat_model_9t.py
-python nisar/code/s5_eval/_nisar_feat_ablate_9t.py
-python nisar/code/s5_eval/_nisar_feat_hhhv_9t.py
+python nisar/archive/prediction/code/_nisar_feat_model_9t.py
+python nisar/archive/prediction/code/_nisar_feat_ablate_9t.py
+python nisar/archive/prediction/code/_nisar_feat_hhhv_9t.py
 ```

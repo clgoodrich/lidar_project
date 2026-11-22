@@ -1,5 +1,7 @@
 # NISAR pit-feature scoring (9t)
 
+> **Archive note (2026-11-15).** The prediction-scoring scripts and result files named below moved to `nisar/archive/prediction/`. That work is outside the present objective. See `nisar/archive/prediction/README.md`.
+
 > **SUPERSEDED 2026-10-26.** The headline numbers in this doc come from the first-pass pipeline (GSLC stack, unbuffered CV, unequal pixel counts, block-assignment bug, no coordinate or rich-lidar control). The corrected re-run is in `nisar/docs/iterations/nisar_corrected_rescoring_9t.md`: all NISAR 0.635 (decoys anywhere) and 0.476 (local decoys), against map x/y 0.815 and a rich lidar baseline 0.917. Read this doc for the method and the leak history, not for the results.
 
 ## Goal
@@ -9,7 +11,7 @@ Same test as for pads (`nisar/docs/iterations/nisar_pad_features_scored_9t.md`),
 - Positives: 723 `pit_outside` rim polygons (median 197 m2, about 8 pixels at 5 m). 495 usable, 488 with matched decoys. Value = median of the up to 9 pixels nearest the centre (no core shrink).
 - Decoys: 9-pixel discs (radius 1.5 px), 10 per pit, at least 100 m from any pad, pit, road or DEP well, cover within 0.05 and slope within 1 degree. Same 351 bands, same model, same block CV, same placebo.
 - Extra split: the 88 pits at least 50 m from any pad (`auc_farpad`), since pits beside a pad inherit the pad's signature.
-- Run: `TARGET=pit python nisar/code/s5_eval/_nisar_feat_score_9t.py` then `TARGET=pit python nisar/code/s5_eval/_nisar_feat_model_9t.py`.
+- Run: `TARGET=pit python nisar/code/s5_eval/_nisar_feat_score_9t.py` then `TARGET=pit python nisar/archive/prediction/code/_nisar_feat_model_9t.py`.
 
 ## Results
 - Single bands: 198 of 348 pass q < 0.05. Strongest matched AUCs 0.74-0.75: local contrast (`spatial:sd15_hh_t090` 0.752, `sd11_hh_t090` 0.741) and dual-pol volume measures (`dualpol:rfdi_t162` 0.741, RVI 0.259 mirrored: pits show less volume scattering). Dual-pol had no signal for pads and is the strongest group for pits.
@@ -30,7 +32,7 @@ Same test as for pads (`nisar/docs/iterations/nisar_pad_features_scored_9t.md`),
 - `MATCH_ROUGH=1`: decoy roughness within 0.25 of the target-roughness sd. 467 of 495 pits matched.
 - Model: baseline 0.853, all NISAR 0.911, SAR only 0.882, NISAR + baseline 0.959, placebo 0.464. Gain over baseline 0.058 (gate passes), SAR-only gain 0.029 (below gate). The baseline stayed high, so lidar separates pits by more than roughness.
 - Ablation (`_nisar_feat_ablate_9t.py`): dropping geometry costs 0.024-0.029, spatial 0.010, every other group nothing. HH-only 0.851, HV-only 0.830, ascending-only 0.872-0.878, descending-only 0.79.
-- Files: `nisar/results/9t/nisar_pit_model_auc_by_set_9t_roughmatch.csv`, `nisar_pit_ablation_auc_9t[_roughmatch].csv`.
+- Files: `nisar/archive/prediction/results/9t/nisar_pit_model_auc_by_set_9t_roughmatch.csv`, `nisar_pit_ablation_auc_9t[_roughmatch].csv`.
 
 ## Interpretation
 - The lidar baseline alone separates pits at 0.86, because pits are depressions and roughness is not matched between pits and decoys. NISAR beats it by only 0.052 (gate 0.05, barely passed), and 0.886 without geometry is below the gate.

@@ -1,5 +1,7 @@
 # Can NISAR separate the pit detector's true positives from its false positives? (9t, 2026-10-20)
 
+> **Archive note (2026-11-15).** The prediction-scoring scripts and result files named below moved to `nisar/archive/prediction/`. That work is outside the present objective. See `nisar/archive/prediction/README.md`.
+
 ## Goal
 
 Find a use for the NISAR stack that helps the lidar work. The pit detector (U-Net v2) has 104
@@ -19,7 +21,7 @@ between the two groups, it can screen false positives at no cost.
 
 ## Method
 
-Script: `nisar/code/s5_eval/_nisar_pit_fp_screen_9t.py`.
+Script: `nisar/archive/prediction/code/_nisar_pit_fp_screen_9t.py`.
 - AUC of each metric for TP against FP, with a label-permutation p (5,000 shuffles, two-sided).
 - The detector's own score as a scale reference.
 - Repeated stratified 5-fold CV (20 repeats) of a logistic regression, score alone against score
@@ -29,7 +31,7 @@ Script: `nisar/code/s5_eval/_nisar_pit_fp_screen_9t.py`.
 
 ## Results
 
-`nisar/results/9t/nisar_pit_fp_screen_auc_9t_slc.csv`,
+`nisar/archive/prediction/results/9t/nisar_pit_fp_screen_auc_9t_slc.csv`,
 `nisar_pit_fp_screen_summary_9t_slc.json`, `nisar_pit_fp_screen_per_detection_9t_slc.csv`.
 
 | Metric | AUC (TP over FP) | Permutation p |
@@ -60,5 +62,5 @@ Adding NISAR made the model slightly worse.
 ## Reproduce
 
 ```
-python nisar/code/s5_eval/_nisar_pit_fp_screen_9t.py --slc
+python nisar/archive/prediction/code/_nisar_pit_fp_screen_9t.py --slc
 ```

@@ -211,8 +211,8 @@ The seven follow-up checks are run (section 5). What remains:
 - Methods and file list: `nisar/docs/NISAR_METHODS.md`
 - All check tables: `nisar/docs/iterations/nisar_checks_9t.md`
 - Follow-up checks, all tables and reproduce commands: `nisar/docs/iterations/nisar_followup_checks_9t.md`
-- Follow-up results: `nisar/results/9t/nisar_pad_weak_lidar_auc_9t_slc_cv5_iso_tau0p50.csv`, `nisar_pad_radar_vs_optical_auc_9t_slc.csv`, `nisar_pad_distance_bands_auc_9t_slc.csv`, `nisar_pit_fixed_subset_auc_9t_slc.csv`, `nisar_vs_optical_heldout_r2_9t_slc.csv`, `nisar_registration_points_shift_9t_slc.csv`
-- Follow-up scripts: `nisar/code/s5_eval/_nisar_weak_lidar_9t.py`, `_nisar_radar_vs_optical_pads_9t.py`, `_nisar_pad_distance_bands_9t.py`, `_nisar_pit_fixed_subset_9t.py`, `_nisar_vs_optical_heldout_9t.py`, `_nisar_hvflat_9t.py`, `_nisar_registration_points_9t.py`
+- Follow-up results: `nisar/archive/prediction/results/9t/nisar_pad_weak_lidar_auc_9t_slc_cv5_iso_tau0p50.csv`, `nisar_pad_radar_vs_optical_auc_9t_slc.csv`, `nisar_pad_distance_bands_auc_9t_slc.csv`, `nisar_pit_fixed_subset_auc_9t_slc.csv`, `nisar_vs_optical_heldout_r2_9t_slc.csv`, `nisar_registration_points_shift_9t_slc.csv`
+- Follow-up scripts: `nisar/archive/prediction/code/_nisar_weak_lidar_9t.py`, `_nisar_radar_vs_optical_pads_9t.py`, `_nisar_pad_distance_bands_9t.py`, `_nisar_pit_fixed_subset_9t.py`, `_nisar_vs_optical_heldout_9t.py`, `_nisar_hvflat_9t.py`, `_nisar_registration_points_9t.py`
 - Held-out pre-registration: `nisar/docs/iterations/nisar_heldout_613590_prereg.md`
 - Radar against canopy and terrain: `nisar/results/9t/nisar_vs_canopy_corr_9t_slc.csv`
 - Radar against optical: `nisar/results/9t/nisar_vs_optical_corr_9t_slc.csv`

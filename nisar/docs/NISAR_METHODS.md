@@ -373,16 +373,16 @@ NISAR_STACK=slc python nisar/code/s5_eval/_nisar_feat_height_resid_9t.py
 
 # scoring and model (env variables select the design)
 python nisar/code/s5_eval/_nisar_feat_score_9t.py
-python nisar/code/s5_eval/_nisar_feat_model_9t.py
+python nisar/archive/prediction/code/_nisar_feat_model_9t.py
 ROAD_NEAR=1 ...                 # decoys 30-100 m from a road
 CORE_SHRINK_M=15 ...            # large pads only
 LOCAL_M=1500 ...                # decoys in the pad's neighbourhood
 TARGET=pit [MATCH_ROUGH=1] ...  # pits instead of pads
 
 # extra tests (same environment variables as the run they read)
-python nisar/code/s5_eval/_nisar_feat_ablate_9t.py
-python nisar/code/s5_eval/_nisar_feat_hhhv_9t.py
-python nisar/code/s5_eval/_nisar_feat_fusion_9t.py   # needs pad_xy in the samples file
+python nisar/archive/prediction/code/_nisar_feat_ablate_9t.py
+python nisar/archive/prediction/code/_nisar_feat_hhhv_9t.py
+python nisar/archive/prediction/code/_nisar_feat_fusion_9t.py   # needs pad_xy in the samples file
 ```
 
 The scripts use a fixed seed (20261026). The samples file must come from the same environment variables as the script that reads it.

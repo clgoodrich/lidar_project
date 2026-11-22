@@ -1,5 +1,7 @@
 # PCA of the NISAR feature bands, 9t
 
+> **Archive note (2026-11-15).** The prediction-scoring scripts and result files named below moved to `nisar/archive/prediction/`. That work is outside the present objective. See `nisar/archive/prediction/README.md`.
+
 **Date:** 2026-11-15
 **Status:** done
 **Script:** `nisar/code/s5_eval/_nisar_feat_pca_9t.py`
@@ -62,10 +64,10 @@ It does not test whether fewer bands would change the NISAR-plus-lidar gain.
 
 ## Held-out sweep over the number of components (2026-11-15)
 
-**Script:** `nisar/code/s5_eval/_nisar_feat_pca_sweep_heldout_9t.py`
+**Script:** `nisar/archive/prediction/code/_nisar_feat_pca_sweep_heldout_9t.py`
 Exploratory. Run after the pre-registered 613590 test and not part of it.
 
-Same frozen design as `nisar/code/s5_eval/_nisar_feat_heldout_9t.py`. Train on the 9t pit samples (5,379 rows), score the 613590 pit samples (396 rows, 36 pits).
+Same frozen design as `nisar/archive/prediction/code/_nisar_feat_heldout_9t.py`. Train on the 9t pit samples (5,379 rows), score the 613590 pit samples (396 rows, 36 pits).
 The NISAR bands are replaced by their first k components. The PCA is fitted on the 9t training rows only, then applied to 613590.
 278 of the 293 shared bands survive the missing-value rule and zero-variance filter. The rich lidar baseline is 26 bands.
 The run reproduces the saved result: all 293 bands plus rich lidar scores 0.865, gain -0.017 (-0.055 to +0.020).
@@ -87,5 +89,5 @@ The run reproduces the saved result: all 293 bands plus rich lidar scores 0.865,
 - The gain gets worse as components are added. With 127 the interval excludes zero on the negative side. That is what fitting noise looks like.
 - Only 36 pits, eight component counts, and the counts were chosen after the fact. Read the pattern, not any one row.
 
-Files: `nisar/results/613590/nisar_pit_heldout_pca_sweep_613590_slc.csv` and `.json`.
-Reproduce: `python nisar/code/s5_eval/_nisar_feat_pca_sweep_heldout_9t.py --slc`
+Files: `nisar/archive/prediction/results/613590/nisar_pit_heldout_pca_sweep_613590_slc.csv` and `.json`.
+Reproduce: `python nisar/archive/prediction/code/_nisar_feat_pca_sweep_heldout_9t.py --slc`

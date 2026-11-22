@@ -10,6 +10,7 @@ Method  60,000 random pixels. Drop bands with over 20% missing (the scorer's rul
 Run from the repo root: python nisar/code/s5_eval/_nisar_feat_pca_9t.py
 """
 import json
+import sys
 import re
 from pathlib import Path
 
@@ -116,30 +117,38 @@ json.dump(summary, open(RES / "nisar_feat_pca_summary_9t_slc.json", "w"), indent
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import _nisar_fig_style as S  # noqa: E402
+S.apply()
 BLUE, ORANGE, GREY = "#1F5FA8", "#D97706", "#8E959B"
-fig, ax = plt.subplots(1, 2, figsize=(11, 4.2))
+fig, ax = plt.subplots(1, 3, figsize=(10, 3.0), gridspec_kw=dict(width_ratios=[1, 1, 1.2]))
 k = min(60, len(frac))
 ax[0].bar(range(1, k + 1), frac[:k] * 100, color=BLUE)
-ax[0].set_xlabel("principal component")
-ax[0].set_ylabel("share of variance (%)")
-ax[0].set_title("Variance in each component", fontsize=10)
-a2 = ax[0].twinx()
-a2.plot(range(1, k + 1), cum[:k] * 100, color=ORANGE, marker="o", ms=3)
-a2.set_ylabel("cumulative (%)")
+ax[0].set_xlabel("Principal component")
+ax[0].set_ylabel("Share of variance (%)")
+S.panel(ax[0], "a", "Variance in each component")
+a2 = ax[1]   # cumulative share on its own axes (one y-scale per panel)
+a2.plot(range(1, len(cum) + 1), cum * 100, color=ORANGE, lw=1.2)
 for t, ls in ((0.9, "--"), (0.99, ":")):
-    a2.axhline(t * 100, color=GREY, ls=ls, lw=1)
+    n_t = int(np.searchsorted(cum, t) + 1)
+    a2.axhline(t * 100, color=GREY, ls=ls, lw=0.8)
+    a2.text(len(cum), t * 100 - 1, f"{t:.0%} at {n_t} components", ha="right", va="top", fontsize=7)
+a2.set_xlabel("Number of components")
+a2.set_ylabel("Cumulative share of variance (%)")
+a2.set_ylim(0, 102)
+S.panel(a2, "b", "Cumulative variance")
 sub = sh[(sh.kind == "group") & (sh.pc <= 5)].pivot(index="label", columns="pc", values="share_of_pc")
 sub = sub.loc[sub.mean(1).sort_values(ascending=False).index]
-im = ax[1].imshow(sub.values, cmap="Blues", aspect="auto")
-ax[1].set_yticks(range(len(sub)))
-ax[1].set_yticklabels(sub.index, fontsize=8)
-ax[1].set_xticks(range(5))
-ax[1].set_xticklabels([f"PC{i}" for i in range(1, 6)])
+im = ax[2].imshow(sub.values, cmap="Blues", aspect="auto")
+ax[2].set_yticks(range(len(sub)))
+ax[2].set_yticklabels(sub.index, fontsize=8)
+ax[2].set_xticks(range(5))
+ax[2].set_xticklabels([f"PC{i}" for i in range(1, 6)])
 for r in range(sub.shape[0]):
     for c in range(5):
-        ax[1].text(c, r, f"{sub.values[r, c] * 100:.0f}", ha="center", va="center", fontsize=7)
-ax[1].set_title("Where each component's weight sits (% by product)", fontsize=10)
+        ax[2].text(c, r, f"{sub.values[r, c] * 100:.0f}", ha="center", va="center", fontsize=7)
+S.panel(ax[2], "c", "Weight of each product per component (%)")
 fig.tight_layout()
 (RES / "figures").mkdir(exist_ok=True)
-fig.savefig(RES / "figures" / "nisar_feat_pca_9t_slc.png", dpi=150)
+fig.savefig(RES / "figures" / "nisar_feat_pca_9t_slc.png", dpi=300, bbox_inches="tight")
 print("done")

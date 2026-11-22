@@ -1,5 +1,7 @@
 # NISAR follow-up checks after two outside reviews of nisar/docs/NISAR_FINDINGS.md (2026-10-27)
 
+> **Archive note (2026-11-15).** The prediction-scoring scripts and result files named below moved to `nisar/archive/prediction/`. That work is outside the present objective. See `nisar/archive/prediction/README.md`.
+
 Goal. Run the seven checks the reviews asked for, one after the other. They follow `nisar_checks_9t.md`. Scope was "run them, do not go beyond". Area 9t, lidar-placed SLC stack (`NISAR_STACK=slc`), 5 m grid, EPSG:32617, unless stated.
 
 ## Summary
@@ -18,7 +20,7 @@ Reading note. Scores in checks 1, 2, 3, 5 and the HV-flat run are AUCs of probab
 
 ## 1. Radar where lidar is weak
 
-Script `nisar/code/s5_eval/_nisar_weak_lidar_9t.py`. Models are rich lidar, all NISAR, NISAR + rich lidar, and a control with the NISAR rows shuffled across samples ("permuted"). A subset chosen for low lidar score makes any added model look better by regression to the mean, so the gain that counts is the combined gain minus the permuted gain. Five repeats, 500 m block bootstrap.
+Script `nisar/archive/prediction/code/_nisar_weak_lidar_9t.py`. Models are rich lidar, all NISAR, NISAR + rich lidar, and a control with the NISAR rows shuffled across samples ("permuted"). A subset chosen for low lidar score makes any added model look better by regression to the mean, so the gain that counts is the combined gain minus the permuted gain. Five repeats, 500 m block bootstrap.
 
 "U-Net missed" means no out-of-fold candidate at probability 0.5 overlaps the pad at IoU 0.3 (47 of 633, 7.4%, close to the 0.87 to 0.92 recall of the U-Net CV). The first attempt used probability 0.3. At 0.3 neighbouring pads merge into one blob and fall below IoU 0.3, so 30% looked missed. That definition was wrong and is kept only in `nisar_pad_weak_lidar_auc_9t_slc_cv5_iso_tau0p30.csv`.
 
