@@ -85,6 +85,40 @@ def fig_dates():
     save(fig, "nisar_dates_on_hand.png")
 
 
+def fig_dates_postjune():
+    """Dates actually used (2026-06-01 onward), for slides. Pre-June dates are not shown at all."""
+    d = pd.concat([pd.read_csv(ROOT / "nisar" / "derived" / a / "nisar_gslc_5m" / f"nisar_gslc_window_index_{a}_5m.csv")
+                   .assign(area=a) for a in ("9t", "613590")])
+    d["t"] = pd.to_datetime(d.date)
+    bad_dates = {(pd.Timestamp(x), t) for x, t in (("2026-07-22", 26), ("2026-09-08", 26))}
+    d = d[(d.t >= pd.Timestamp("2026-06-01")) & (d.valid_fraction >= 0.5)]
+    d = d[[(t, k) not in bad_dates for t, k in zip(d.t, d.track)]]
+    lanes = [("9t", 26), ("9t", 90), ("9t", 162), ("613590", 26), ("613590", 90)]
+    fig, ax = plt.subplots(figsize=(7.2, 2.6))
+    for a, b, lab in (("2026-06-01", "2026-09-30", "Summer"), ("2026-10-21", "2026-11-30", "Fall")):
+        ax.axvspan(pd.Timestamp(a), pd.Timestamp(b), color=LIGHT, alpha=0.6, lw=0, zorder=0)
+        ax.text(pd.Timestamp(a) + (pd.Timestamp(b) - pd.Timestamp(a)) / 2, len(lanes) + 0.45, lab,
+                ha="center", va="center", fontsize=7.5)
+    labels = []
+    for i, (area, trk) in enumerate(lanes):
+        y = len(lanes) - i
+        s_ = d[(d.area == area) & (d.track == trk)]
+        mk = "v" if trk == 26 else "o"
+        ax.scatter(s_.t, [y] * len(s_), marker=mk, s=18, c=BLUE if trk == 26 else ORANGE, zorder=3)
+        labels.append(f"{area}, track {trk} {'desc.' if trk == 26 else 'asc.'} (n = {len(s_)})")
+    ax.axhline(2.5, color=K, lw=0.5)
+    ax.set_yticks(range(len(lanes), 0, -1), labels)
+    ax.set_ylim(0.4, len(lanes) + 0.8)
+    ax.set_xlim(pd.Timestamp("2026-06-05"), pd.Timestamp("2026-12-05"))
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    ax.set_xlabel("Acquisition date")
+    ax.legend(handles=[Line2D([], [], marker="v", ls="", c=BLUE, label="Descending pass"),
+                       Line2D([], [], marker="o", ls="", c=ORANGE, label="Ascending pass")],
+              loc="upper center", bbox_to_anchor=(0.5, 1.22), ncol=2, fontsize=7.5)
+    save(fig, "nisar_dates_postjune.png")
+
+
 def fig_excess():
     fig, ax = plt.subplots(figsize=(5.0, 2.0))
     ax.axvline(0, color=GREY, lw=0.6, ls="--")
@@ -191,5 +225,5 @@ def fig_waffle():
 
 
 if __name__ == "__main__":
-    for f in (fig_dates, fig_excess, fig_ps, fig_cross_section, fig_ladder, fig_waffle):
+    for f in (fig_dates, fig_dates_postjune, fig_excess, fig_ps, fig_cross_section, fig_ladder, fig_waffle):
         f()
