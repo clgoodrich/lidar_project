@@ -93,8 +93,8 @@ def fig_dates_postjune():
     bad_dates = {(pd.Timestamp(x), t) for x, t in (("2026-07-22", 26), ("2026-09-08", 26))}
     d = d[(d.t >= pd.Timestamp("2026-06-01")) & (d.valid_fraction >= 0.5)]
     d = d[[(t, k) not in bad_dates for t, k in zip(d.t, d.track)]]
-    lanes = [("9t", 26), ("9t", 90), ("9t", 162), ("613590", 26), ("613590", 90)]
-    fig, ax = plt.subplots(figsize=(7.2, 2.6))
+    lanes = [("9t", 26), ("9t", 90), ("9t", 162)]   # 2026-11-23: present scope is 9t only
+    fig, ax = plt.subplots(figsize=(7.2, 2.0))
     for a, b, lab in (("2026-06-01", "2026-09-30", "Summer"), ("2026-10-21", "2026-11-30", "Fall")):
         ax.axvspan(pd.Timestamp(a), pd.Timestamp(b), color=LIGHT, alpha=0.6, lw=0, zorder=0)
         ax.text(pd.Timestamp(a) + (pd.Timestamp(b) - pd.Timestamp(a)) / 2, len(lanes) + 0.45, lab,
@@ -105,8 +105,7 @@ def fig_dates_postjune():
         s_ = d[(d.area == area) & (d.track == trk)]
         mk = "v" if trk == 26 else "o"
         ax.scatter(s_.t, [y] * len(s_), marker=mk, s=18, c=BLUE if trk == 26 else ORANGE, zorder=3)
-        labels.append(f"{area}, track {trk} {'desc.' if trk == 26 else 'asc.'} (n = {len(s_)})")
-    ax.axhline(2.5, color=K, lw=0.5)
+        labels.append(f"Track {trk} {'desc.' if trk == 26 else 'asc.'} (n = {len(s_)})")
     ax.set_yticks(range(len(lanes), 0, -1), labels)
     ax.set_ylim(0.4, len(lanes) + 0.8)
     ax.set_xlim(pd.Timestamp("2026-06-05"), pd.Timestamp("2026-12-05"))
