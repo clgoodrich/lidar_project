@@ -72,7 +72,7 @@ Risk 1. Images not on the lidar ground. A leftover offset of a few metres moves 
 
 Risk 2. Too few dates. The dispersion rule was designed for about 30 dates. 9t has 8 to 12 per track, so speckle passes more often. Noticed when the measured pass fraction is high or candidates spread across open fields. Instead: require a candidate on two tracks, raise the cutoff, add dates as NASA releases them.
 
-Risk 3. Bright terrain mistaken for a target. Slopes facing the radar are bright and can look steady. Noticed when candidates follow slope aspect and appear on one look direction only. Instead: keep only candidates seen on two tracks, and mask slopes in layover or shadow.
+Risk 3. No steel to see, or no view of it through the trees. Casings on plugged wells are often cut off or buried. Where steel stands, the canopy may still blur or block its echo. L-band passes through leaves better than shorter waves, but that does not prove it reaches a casing under 9t's canopy. Noticed when the known building passes but pits pass no more often than control spots. Also noticed when candidates appear only at open pits and never under canopy. The building sits in the open, so it shows the screen works, not that the radar sees through trees. Instead: compare by DEP status, since active wells keep pumpjacks and tanks. Compare open pits with canopied pits. Check whether the November leaf-off dates show steel that summer hides.
 
 Question to expect. Which step is most likely to fail at your site? Placement, because a pit or casing is only a pixel or two wide and a few metres of offset moves it out of the hit radius.
 

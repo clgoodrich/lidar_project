@@ -10,6 +10,9 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-24 — Slide notes: Risk 3 matches the design deck
+- Risk 3 rewritten to match nisar_checkpoint_slides_design_9t.pptx (no steel left to see), widened to cover whether L-band sees through the canopy at all. PDF rebuilt.
+
 ## 2026-11-24 — Slide notes: Ferretti reference page
 - Added a last page to nisar/writeup/nisar_checkpoint_slide_notes_9t.md summarising Ferretti 2001 Sec. III-C. PDF rebuilt (6 pages). Docx not rebuilt, Word has it open.
 
