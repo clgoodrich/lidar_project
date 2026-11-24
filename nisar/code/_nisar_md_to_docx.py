@@ -105,7 +105,9 @@ def convert(md_path, out):
             if not ln:
                 i += 1
                 continue
-            if ln.startswith("# "):
+            if ln.strip() == "<!-- pagebreak -->":
+                doc.add_page_break()
+            elif ln.startswith("# "):
                 doc.add_paragraph(ln[2:], style="Title")
             elif ln.startswith("## "):
                 doc.add_paragraph(ln[3:], style="Heading 1")
