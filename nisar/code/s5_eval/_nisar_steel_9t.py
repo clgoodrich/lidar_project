@@ -16,7 +16,7 @@ Thresholds (2026-11-23):
     on 9t, post-June, is 2.2-2.4 dB per track, so the cutoff is 6.5-7.2 dB. Three SD is the usual
     outlier rule (about 0.13% one-sided for a normal tail). The old fixed 6 dB was 2.5-2.8 SD.
   * R_M 6 m. Error budget on the radar side: a target anywhere in a 5 m pixel is at most 3.5 m from
-    the pixel centre, plus 2.5 m placement against the lidar (46 of 48 blocks, lidar simulation
+    the pixel centre, plus 2.5 m placement against the lidar (47 of 48 blocks, lidar simulation
     check). The old 15 m dated from before lidar placement, when tracks agreed only to about 15 m.
     DEP coordinate error is not in the budget. It cannot be measured here, and nearest-feature
     distance is not positional accuracy (docs/iterations/LEADERBOARD.md).
@@ -69,10 +69,15 @@ DA_MAX, BRIGHT_SD, R_M, BG_M = 0.25, 3.0, 6.0, 250.0
 BRIGHT_DB = {}   # per-track cutoff in dB, filled by sbt_maps
 N_DECOY, SEED = 5, 20261007
 PROV = "--prov" in sys.argv
+if "--bg-m" in sys.argv:          # 2026-11-23 sensitivity switch: background window, m; outputs tagged
+    _i = sys.argv.index("--bg-m"); BG_M = float(sys.argv[_i + 1]); del sys.argv[_i:_i + 2]
+    BG_TAG = f"_bg{int(BG_M)}"
+else:
+    BG_TAG = ""
 if PROV:
     sys.argv.remove("--prov")
 AMP_FROM = "2026-06-01" if PROV else None
-OTAG = AREA.TAG + ("_prov" if PROV else "")   # output tag
+OTAG = AREA.TAG + ("_prov" if PROV else "") + BG_TAG   # output tag
 GROUPS = {"active": ["Active"], "plugged": ["Plugged OG Well", "DEP Plugged"],
           "abandoned": ["DEP Abandoned List", "DEP Orphan List", "Abandoned"],
           "not_drilled": ["Operator Reported Not Drilled", "Proposed But Never Materialized"]}

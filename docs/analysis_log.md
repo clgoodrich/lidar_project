@@ -8,6 +8,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+
+## 2026-11-23 — Checkpoint slide notes: every screen number now says where it comes from
+
+- `nisar/writeup/nisar_checkpoint_slide_notes_9t.md`, slides 1 and 3. Added the origin of 6.5 to 7.2 dB (3 × robust SD of 2.2 to 2.4 dB per track), the 2.5 m gate (half a pixel, a plan rule), dispersion 0.25 (Ferretti 2001; speckle gives 0.52; designed for about 30 dates), and 0.13%.
+- Why: the user asked where each number came from, and the notes did not say.
+- Correction: 0.13% is the bell-curve tail above 3 SD and covers the brightness rule only. Radar dB is skewed. Risk 2 no longer treats 0.13% as the expected pass rate. The real rate must be measured on 9t.
+- The block count is 47 of 48 (`nisar/results/9t/nisar_lidar_sim_match_summary_coregabs_k010_9t.json`). The steel script docstring said 46. Fixed.
+- New `nisar/writeup/_make_slide_notes_docx.py` builds the .docx from the .md. The old .docx was a stale wells version.
+
 ## 2026-11-23 Process doc and PDF rewritten: post-June, 9t only, 5 control spots
 
 - nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md rewritten from the post-June 9t reruns. PDF regenerated.
