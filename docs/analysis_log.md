@@ -9,6 +9,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+
+## 2026-11-24 — Checkpoint slide notes as an easy-to-read PDF
+
+- `nisar/writeup/nisar_checkpoint_slide_notes_9t.pdf` (5 pages), built by `nisar/writeup/_make_slide_notes_pdf.py` from the .md.
+- Why: the user wanted a readable copy. Each slide starts a page. Lead-ins such as "Step 2." are in bold. Lists render as bullets.
+- Content is unchanged. The four open fixes (48 = 16 blocks × 3 tracks, the unsourced 20-date figure, the coarse 10% canopy step, the building's origin) are not applied yet.
+
 ## 2026-11-23 — Checkpoint slide notes: every screen number now says where it comes from
 
 - `nisar/writeup/nisar_checkpoint_slide_notes_9t.md`, slides 1 and 3. Added the origin of 6.5 to 7.2 dB (3 × robust SD of 2.2 to 2.4 dB per track), the 2.5 m gate (half a pixel, a plan rule), dispersion 0.25 (Ferretti 2001; speckle gives 0.52; designed for about 30 dates), and 0.13%.
