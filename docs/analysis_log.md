@@ -10,6 +10,9 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-24 — Slide notes slide 3 match the design deck
+- Slides are fixed. Notes now follow nisar_checkpoint_slides_design_9t.pptx slide 3: ring and control spots defined (from _nisar_steel_9t.py: 5 per well, 150-600 m, canopy band +-0.15), Step 5 = wells vs control spots, Fisher exact by DEP status, never-drilled as negative control. Risk 1-3 "noticed" text matches the slide. 0.13% kept with its caveat.
+
 ## 2026-11-24 — Slide notes: Risk 3 matches the design deck
 - Risk 3 rewritten to match nisar_checkpoint_slides_design_9t.pptx (no steel left to see), widened to cover whether L-band sees through the canopy at all. PDF rebuilt.
 
