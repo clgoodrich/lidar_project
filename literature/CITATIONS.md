@@ -470,6 +470,7 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Citation:** Ferretti, A., Prati, C., & Rocca, F. (2001). "Permanent scatterers in SAR interferometry." *IEEE Transactions on Geoscience and Remote Sensing* 39(1), 8–20. doi:10.1109/36.898661.
 - **About:** Points that keep a stable echo over a long SAR stack. They are picked by the amplitude dispersion index D_A = std / mean of amplitude, with D_A < 0.25.
 - **Used for:** The steel test at DEP wells in 9t. A steady bright target is D_A < 0.25 and at least 6 dB above its surroundings.
+- **Scope of the citation (2026-11-23):** only the D_A < 0.25 cutoff comes from this paper. The brightness cutoff (3 robust SD of brightness above the 250 m median, per track; was a fixed 6 dB) and the 6 m hit radius (pixel half-diagonal 3.5 m plus 2.5 m placement; was 15 m) are our own, set in `nisar/code/s5_eval/_nisar_steel_9t.py`.
 - **Generated:** `nisar/code/s5_eval/_nisar_steel_9t.py`; `nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md`; `nisar/results/9t/nisar_steel_summary_9t.json`.
 - **Also used (2026-11-13):** D_A < 0.25 steadiness test in the Sentinel-1 small-metal CFAR experiment. Generated `nisar/sentinel1/code/_s1_metal_cfar_9t.py`; `nisar/sentinel1/docs/s1_metal_cfar_9t.md`; `nisar/sentinel1/results/9t/s1_metal_cfar_summary_fullyear_9t613590.json`.
 - **Source:** https://doi.org/10.1109/36.898661 — cite-only (paywalled IEEE).

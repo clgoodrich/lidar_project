@@ -8,6 +8,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-23 Persistent-scatterer thresholds given sources and reasons (9t)
+
+- D_A < 0.25 kept, cited to Ferretti, Prati and Rocca 2001. Only this value comes from the literature.
+- Brightness cutoff changed from a fixed 6 dB to 3 robust SD (1.4826 x MAD) of brightness above the 250 m median, per track. On 9t post-June the SD is 2.2-2.4 dB, so cutoffs are 6.5-7.2 dB. The old 6 dB was 2.5-2.8 SD and had no recorded reason.
+- Hit radius changed from 15 m to 6 m: 3.5 m pixel half-diagonal plus 2.5 m placement against the lidar. 15 m dated from before lidar placement. DEP coordinate error is not in the budget and cannot be measured here. Bright-target merge and near radii follow (6 m).
+- Steel and bright-target tests rerun on 9t --slc. Steady bright pixels now 0.13%, 0.13% and 0.05% of valid pixels on tracks 26, 90 and 162.
+- Earlier on 2026-11-23: DATE_FLOOR 2026-06-01 enforced in nisar/code/_nisar_area.py usable(); position fix and all 9t tests rerun post-June; scope set to 9t only.
+
 ## 2026-11-21 All in-use NISAR figures moved to the formal format
 
 - New shared style nisar/code/_nisar_fig_style.py (serif, boxed axes, inward ticks, framed legends, panel letters instead of titles, 300 dpi, lost/found palette). Used by the process, seasonal, site-context and PCA scripts.

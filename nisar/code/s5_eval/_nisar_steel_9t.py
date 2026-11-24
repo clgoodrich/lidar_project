@@ -8,7 +8,18 @@ whole stack is a persistent-scatterer candidate (Ferretti et al. 2001).
 Per track (one viewing geometry), from the HH amplitude A of every date:
   * amplitude dispersion D_A = std(A) / mean(A). Ferretti et al. 2001 keep D_A < 0.25.
   * brightness above local background = mean HH dB minus the 250 m median of mean HH dB.
-  * a pixel is a steady bright target (SBT) on a track when D_A < DA_MAX and brightness >= BRIGHT_DB.
+  * a pixel is a steady bright target (SBT) on a track when D_A < DA_MAX and brightness >= the
+    track's cutoff, BRIGHT_SD robust standard deviations of brightness over the valid tile.
+Thresholds (2026-11-23):
+  * DA_MAX 0.25, Ferretti, Prati and Rocca (2001), IEEE TGRS 39(1):8-20. Pure speckle sits near 0.52.
+  * BRIGHT_SD 3. Brightness above the 250 m median is centred on 0 dB. Its robust SD (1.4826 x MAD)
+    on 9t, post-June, is 2.2-2.4 dB per track, so the cutoff is 6.5-7.2 dB. Three SD is the usual
+    outlier rule (about 0.13% one-sided for a normal tail). The old fixed 6 dB was 2.5-2.8 SD.
+  * R_M 6 m. Error budget on the radar side: a target anywhere in a 5 m pixel is at most 3.5 m from
+    the pixel centre, plus 2.5 m placement against the lidar (46 of 48 blocks, lidar simulation
+    check). The old 15 m dated from before lidar placement, when tracks agreed only to about 15 m.
+    DEP coordinate error is not in the budget. It cannot be measured here, and nearest-feature
+    distance is not positional accuracy (docs/iterations/LEADERBOARD.md).
 The well score is the number of tracks (0-3) with an SBT within R_M of the well point.
 
 Groups from the DEP April 2026 export (data/_source/reference/dep_wells/venango_wells_all.gpkg):
@@ -54,7 +65,8 @@ OUT, FIG, CRS, ANN = st.OUT, st.FIG, st.CRS, st.ANN
 AREA = st.A   # area picked with --area (9t, 613590 or mkf)
 DER = st.SRC
 WELLS = AREA.WELLS
-DA_MAX, BRIGHT_DB, R_M, BG_M = 0.25, 6.0, 15.0, 250.0
+DA_MAX, BRIGHT_SD, R_M, BG_M = 0.25, 3.0, 6.0, 250.0
+BRIGHT_DB = {}   # per-track cutoff in dB, filled by sbt_maps
 N_DECOY, SEED = 5, 20261007
 PROV = "--prov" in sys.argv
 if PROV:
@@ -91,7 +103,10 @@ def sbt_maps(idx, stack, shape):
         k = int(BG_M / 5) | 1
         bg = median_filter(np.where(ok, mdb, np.nanmedian(mdb)), size=k)
         bright = mdb - bg
-        sbt = ok & (da < DA_MAX) & (bright >= BRIGHT_DB)
+        b = bright[ok & np.isfinite(bright)]
+        cut = BRIGHT_SD * 1.4826 * float(np.median(np.abs(b - np.median(b))))
+        BRIGHT_DB[int(t)] = round(cut, 3)
+        sbt = ok & (da < DA_MAX) & (bright >= cut)
         out[int(t)] = dict(sbt=sbt, da=da, bright=bright, bg=bg, n=len(g), ok=ok)
         print(f"track {t}: {len(g)} dates, SBT pixels {sbt.sum()} ({sbt[ok].mean():.4%} of valid)")
     return out
@@ -232,7 +247,7 @@ def main():
     w_out.to_file(OUT / f"{stem}_wells_{OTAG}.gpkg", layer="dep_wells_sbt", driver="GPKG")
     res.to_csv(OUT / f"{stem}_by_status_{OTAG}.csv", index=False)
     by_cov.to_csv(OUT / f"{stem}_by_canopy_{OTAG}.csv", index=False)
-    summ = dict(params=dict(da_max=DA_MAX, bright_db=BRIGHT_DB, radius_m=R_M, background_m=BG_M,
+    summ = dict(params=dict(da_max=DA_MAX, bright_sd=BRIGHT_SD, bright_db_by_track=BRIGHT_DB, radius_m=R_M, background_m=BG_M,
                             n_decoy=N_DECOY, seed=SEED),
                 tracks={str(t): dict(n_dates=int(m["n"]), sbt_pixels=int(m["sbt"].sum())) for t, m in maps.items()},
                 by_status=rows, by_status_and_canopy=by_cov.to_dict("records"), registration=reg,
@@ -266,7 +281,7 @@ def main():
     ax[1].invert_yaxis()
     ax[1].set_title("Active-well hit rate vs shift", fontsize=11)
     plt.colorbar(im, ax=ax[1], fraction=0.046)
-    fig.suptitle(f"NISAR HH steady bright targets (D_A < {DA_MAX}, ≥ {BRIGHT_DB:.0f} dB above 250 m background), {OTAG}",
+    fig.suptitle(f"NISAR HH steady bright targets (D_A < {DA_MAX}, ≥ {BRIGHT_SD:.0f} SD above 250 m background), {OTAG}",
                  fontsize=11)
     fig.tight_layout()
     fig.savefig(FIG / f"{stem}_hit_rate_by_status_{OTAG}.png", dpi=150)

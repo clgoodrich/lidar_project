@@ -331,6 +331,8 @@ def write_stack(heights, coreg=False, absolute=False):
     trk = pd.read_csv(TRACK_OFFSETS).set_index("track") if absolute else None
     rows = []
     for rrow in ri.itertuples():
+        if str(rrow.date) < gfetch.A.DATE_FLOOR:
+            continue   # 2026-11-23: pre-June dates are never used for any result, so they are not placed at all
         key = rrow.file.replace("nisar_rslc_window_", "").replace(f"_{TAG}.h5", "")
         name = f"nisar_slc_{tag}_{key}_{TAG}.tif"
         grow = gi[(gi.date == rrow.date) & (gi.track == rrow.track)].iloc[0]
@@ -445,6 +447,8 @@ def track_offsets(check="_coreg_k010"):
     idx = gfetch.A.usable(pd.read_csv(OUTD / f"nisar_slc_lidar_index_{TAG}.csv"))
     rows = []
     for t, g in sh.groupby("track"):
+        if not (idx.track == t).any():
+            continue   # no usable (post-June) date on this track, e.g. 613590 track 162
         l = los[str(int(t))]
         away = -np.array([l["east"], l["north"]]) / np.hypot(l["east"], l["north"])
         back = np.array([-away[1], away[0]])          # the check's along_m axis

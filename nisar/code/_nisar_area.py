@@ -84,10 +84,17 @@ WELLS = _DEP / ("oil_gas_locations.gpkg" if TAG in ("mkf", "warren") else "venan
 BAD_DATES = {("2026-07-22", 26), ("2026-09-08", 26)}
 
 
+# User rule, 2026-11-19 and 2026-11-23: nothing before June 2026 may be used for any finding or result.
+# Why: the beta dates (Oct 2025 to Jan 2026) came from older, uncalibrated processing, and every
+# fall and winter date was beta, so season and processing level could not be told apart.
+# Applied here so every script that picks dates through usable() or usable_stack() obeys it.
+DATE_FLOOR = "2026-06-01"
+
+
 def usable(idx):
-    """Rows of a NISAR window index worth using: at least half valid and not in BAD_DATES."""
+    """Rows of a NISAR window index worth using: on or after DATE_FLOOR, at least half valid, not in BAD_DATES."""
     bad = idx.apply(lambda r: (str(r.date), int(r.track)) in BAD_DATES, axis=1)
-    return idx[(idx.valid_fraction >= 0.5) & ~bad]
+    return idx[(idx.date.astype(str) >= DATE_FLOOR) & (idx.valid_fraction >= 0.5) & ~bad]
 
 
 def usable_stack(idx):

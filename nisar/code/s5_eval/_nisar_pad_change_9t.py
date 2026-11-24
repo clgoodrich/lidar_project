@@ -195,9 +195,11 @@ def main():
               open(OUT / f"{stem}_summary_{AREA.TAG}.json", "w"), indent=2, default=float)
 
     # figure 1: anomaly distributions, pads vs decoys, per season
-    fig, ax = plt.subplots(1, 2, figsize=(11, 4.2), sharey=True)
+    seasons = [s for s in ("snowfree", "winter") if s in thr]   # 2026-11-23: post-June dates only, so no winter
+    fig, ax = plt.subplots(1, len(seasons), figsize=(4.2 * len(seasons), 3.2), sharey=True, squeeze=False)
+    ax = ax[0]
     bins = np.linspace(-0.4, 0.4, 61)
-    for a, s in zip(ax, ["snowfree", "winter"]):
+    for a, s in zip(ax, seasons):
         g = df[df.season == s]
         a.hist(g[g.kind == "decoy"].anomaly.dropna(), bins, density=True, color=DEC_C, alpha=0.8, label="decoys")
         a.hist(g[g.kind == "pad"].anomaly.dropna(), bins, density=True, histtype="step", lw=2, color=PAD_C, label="pads")

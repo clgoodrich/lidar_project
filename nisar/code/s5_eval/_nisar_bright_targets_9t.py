@@ -40,8 +40,8 @@ from _common import read_layer  # noqa: E402
 
 OUT, CRS, ANN, WELLS = steel.OUT, steel.CRS, steel.ANN, steel.WELLS
 AREA = steel.AREA
-MERGE_M = 15.0
-NEAR_M = 15.0   # "at" a well, pad or road
+MERGE_M = 6.0    # 2026-11-23: tracks now agree to about 1 m after lidar placement; 6 m = the steel test's R_M budget
+NEAR_M = 6.0    # "at" a well, pad or road; same radius budget as the steel test (2026-11-23)
 N_RANDOM = 20000
 
 
@@ -142,7 +142,7 @@ def main():
 
     stem = "nisar_bright_targets"
     g.to_file(OUT / f"{stem}_points_{steel.OTAG}.gpkg", layer="candidate_bright_targets", driver="GPKG")
-    summary = dict(params=dict(da_max=steel.DA_MAX, bright_db=steel.BRIGHT_DB, bg_m=steel.BG_M,
+    summary = dict(params=dict(da_max=steel.DA_MAX, bright_sd=steel.BRIGHT_SD, bright_db_by_track=steel.BRIGHT_DB, bg_m=steel.BG_M,
                                merge_m=MERGE_M, near_m=NEAR_M),
                    dates_per_track=n_dates, track_points=int(len(p)), targets=int(len(g)),
                    by_n_tracks=g.n_tracks.value_counts().sort_index().to_dict(),
