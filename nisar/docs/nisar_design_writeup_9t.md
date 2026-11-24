@@ -43,9 +43,9 @@ Geometry at 9t.
 
 These are all the NISAR tracks over 9t. Ascending and descending passes see each slope from opposite sides, so a feature in shadow on one can show on the other. Each track has its own geometry and calibration, so every measure is made per track and combined only per site.
 
-Dates. 2026-06-20 to 2026-11-16, 12-day revisit, 32 acquisitions. Dates before 2026-06-01 are excluded. The October 2025 to January 2026 images were beta processing with different calibration, and every fall date fell in it, so season and processing could not be told apart. June 1 is the boundary between the two processing levels. Two dates on track 26 are dropped: 2026-07-22 has no valid pixels, and 2026-09-08 matches no other date of its track at any shift. A window is used when at least half its pixels are valid, so that each date covers most of the tile.
+Dates. 2026-06-20 to 2026-11-16, 12-day revisit, 32 acquisitions. Dates before 2026-06-01 are excluded. The October 2025 to January 2026 images were beta processing with different calibration, and every fall date fell in it, so season and processing could not be told apart. June 1 is the boundary between the two processing levels. Two dates on track 26 are dropped: 2026-07-22 has no valid pixels, and 2026-09-08 matches no other date of its track at any shift. A window is used when at least half its pixels are valid (first pass), so that each date covers most of the tile.
 
-Seasons. Summer is 1 June to 30 September. Fall is 21 October to 30 November. Sentinel-2 vegetation index over closed forest on the tile reached 97% of its summer level by 1 June and stayed above 88% through 4 October 2026, so the summer window is full leaf. The last Sentinel-2 scene rated full leaf was 17 October, so fall starts at the first NISAR date after it. Clouds hid late October, so full leaf-off is not confirmed. Early October is in neither window because the canopy is changing. Both windows were fixed before any test used the new dates.
+Seasons. Summer is 1 June to 30 September. Fall is 21 October to 30 November. Sentinel-2 vegetation index over closed forest on the tile reached 97% of its summer level by 1 June and stayed above 88% through 4 October 2026, so the summer window is full leaf. The last Sentinel-2 scene rated full leaf was 17 October, so fall starts at the first NISAR date after it. The window was first set from the general timing of leaf drop and checked against Sentinel-2 afterward. Clouds hid late October, so full leaf-off is not confirmed. Early October is in neither window because the canopy is changing. Both windows were fixed before any test used the new dates.
 
 ![Dates used on tile 9t](figures/nisar_dates_postjune.png)
 
@@ -59,8 +59,8 @@ Sources. NASA ASF DAAC through ASF Vertex, collections NISAR_L2_GSLC_PROVISIONAL
 |---|---|---|
 | 1. Fetch windows over 9t | NASA CMR search, h5py, fsspec | Search every NISAR collection. New dates moved to a new collection name on 2026-10-23 |
 | 2. Place each image on the lidar ground | Own geocoder in Python, from RSLC | Echo height set at the lidar ground plus 10% of canopy height. Of the heights tested (0, 10, 25, 50%), 10% matched a lidar simulation best |
-| 3. Check placement against the lidar | Simulated brightness from lidar slope, cross-correlated in 48 blocks | A block passes within 2.5 m, half a pixel |
-| 4. Season means per track | numpy | Power averaged before conversion to dB, because brightness is skewed and averaging dB biases small areas dark. A pixel needs valid values on half the season's dates |
+| 3. Check placement against the lidar | Simulated brightness from lidar slope, cross-correlated in 48 blocks | A block passes within 2.5 m, half a pixel (first pass) |
+| 4. Season means per track | numpy | Power averaged before conversion to dB, because brightness is skewed and averaging dB biases small areas dark. A pixel needs valid values on half the season's dates (first pass) |
 | 5. Feature minus ring minus control spots | rasterio, geopandas | Ring 10 to 30 m around pits and 20 to 60 m around pads. Five control spots 150 to 600 m away |
 | 6. Persistent-scatterer screen | numpy, scipy | Dispersion under 0.25, brightness 3 SD above the 250 m median, hit radius 6 m |
 | 7. Coherence change at pads | Back-to-back pairs up to 24 days apart, 5 × 5 window | Event when a drop exceeds 99% of control-spot pairs |
@@ -69,19 +69,19 @@ Sources. NASA ASF DAAC through ASF Vertex, collections NISAR_L2_GSLC_PROVISIONAL
 
 Placement. NASA's GSLC places pixels with an elevation model that sits partway up the canopy in forest. Against the lidar this put features 8 to 12 m off, on all three tracks, always away from the satellite, and more so under taller canopy. That pattern is what a too-high elevation model produces. Re-placing each image on lidar heights removes it. To know the result is on the lidar ground, the lidar is used to simulate radar brightness from slope facing the satellite, and that simulation is cross-correlated with each image in 48 blocks. After placement, 47 of 48 blocks agree within 2.5 m, and the median block offset is 1.0 to 1.4 m per track. This check is not independent, because the same simulation fixed each track's offset. Section 4 gives the independent checks.
 
-Reasons for the remaining values.
+Reasons for the remaining values. Some values were set when the code was first written and no reason was recorded. These are marked first pass. Their reason below was worked out afterward and is not a test of the choice.
 
-- Ring. The inner edge clears the feature by two pixels, so placement error of 2.5 m cannot put feature pixels in the ring. The outer edge stays within about one feature width, so the ring shares the feature's slope and forest. Pads are 40 to 100 m across, so their ring is wider. Ring pixels stay 5 m (pits) or 10 m (pads) clear of other features and roads, one and two pixels.
-- Control spots. 150 m clears the feature's own 60 m ring with margin. 600 m keeps the spot on the same tile and terrain type. Five spots per site keeps the run to hours. A 40-spot run tests that results do not depend on which spots were drawn.
+- Ring (first pass). The inner edge clears the feature by two pixels, so placement error of 2.5 m cannot put feature pixels in the ring. The outer edge stays within about one feature width, so the ring shares the feature's slope and forest. Pads are 40 to 100 m across, so their ring is wider. Ring pixels stay 5 m (pits) or 10 m (pads) clear of other features and roads, one and two pixels.
+- Control spots (distance first pass). 150 m clears the feature's own 60 m ring with margin. 600 m keeps the spot on the same tile and terrain type. Five spots per site keeps the run to hours. A 40-spot run was added because five-spot results moved with the random draw. It tests that results do not depend on which spots were drawn.
 - Dispersion under 0.25. From Ferretti, Prati and Rocca [4]. Pure speckle sits near 0.52.
-- 3 SD. Brightness above the 250 m median is centred on 0 dB. Its robust standard deviation (1.4826 × the median absolute deviation, which ignores a few bright targets) is 2.2 to 2.4 dB per track. Three SD is the usual outlier rule and leaves about 0.13% of pixels by chance under a normal tail. On 9t this is 6.5 to 7.2 dB.
-- 250 m background. Fifty pixels, more than twice the largest pad, so a pad cannot set its own background, and smaller than the valley-side slopes that change brightness.
-- 6 m hit radius. A target anywhere in a 5 m pixel is at most 3.5 m from its centre. Placement adds up to 2.5 m. Error in DEP well coordinates cannot be measured here and is not included.
-- 5 × 5 window, 25 looks. Coherence estimates are biased upward with few looks. Twenty-five looks keeps that bias small [5] while staying near pad size.
-- 24 days. Two revisits. Longer pairs lose coherence under forest regardless of disturbance.
-- 99% of control-spot pairs. A false-alarm rate of 1%, so the expected count of events by chance is known directly from the control spots.
-- Coherence mask 0.45. At 0.45 with 25 looks, one pair's phase noise is about 0.28 radians, about 5 mm, the same scale as the pit noise used in section 1.
-- 1 km low-pass. Atmospheric delay varies over kilometres. Pits and pads are under 100 m, so removing variation longer than 1 km removes weather and keeps the targets.
+- 3 SD (set from the tile on 23 November, replacing a fixed 6 dB with no recorded reason). Brightness above the 250 m median is centred on 0 dB. Its robust standard deviation (1.4826 × the median absolute deviation, which ignores a few bright targets) is 2.2 to 2.4 dB per track. Three SD is the usual outlier rule and leaves about 0.13% of pixels by chance under a normal tail. On 9t this is 6.5 to 7.2 dB.
+- 250 m background (first pass). Fifty pixels, more than twice the largest pad, so a pad cannot set its own background, and smaller than the valley-side slopes that change brightness.
+- 6 m hit radius (set on 23 November, replacing 15 m, which dated from before lidar placement). A target anywhere in a 5 m pixel is at most 3.5 m from its centre. Placement adds up to 2.5 m. Error in DEP well coordinates cannot be measured here and is not included.
+- 5 × 5 window, 25 looks (first pass, citation added afterward). Coherence estimates are biased upward with few looks. Twenty-five looks keeps that bias small [5] while staying near pad size.
+- 24 days (first pass). Two revisits. Longer pairs lose coherence under forest regardless of disturbance.
+- 99% of control-spot pairs (first pass). A false-alarm rate of 1%, so the expected count of events by chance is known directly from the control spots.
+- Coherence mask 0.45 (first pass, noise computed afterward). At 0.45 with 25 looks, one pair's phase noise is about 0.28 radians, about 5 mm, the same scale as the pit noise used in section 1.
+- 1 km low-pass (first pass). Atmospheric delay varies over kilometres. Pits and pads are under 100 m, so removing variation longer than 1 km removes weather and keeps the targets.
 
 ## 4. How I would check the result
 
