@@ -26,18 +26,18 @@ DATES_FIG = HERE.parent / "docs" / "figures" / "nisar_dates_postjune.png"
 
 
 def slide1(s) -> None:
-    header(s, 1, "At known well sites on tile 9t, does NISAR show a repeatable contrast at pads, pits or steel "
-                 "that differs from nearby ground with no well?")
+    header(s, 1, "On tile 9t, which pixels does NISAR show as persistent scatterers, and do they sit at oil "
+                 "and gas wells more often than at nearby ground with no well?")
     picture_in(s, "Rectangle 7", HERE / "figures/nisar_site_map_9t.png")
     tf = shape(s, "TextBox 8").text_frame
     drop_eg(tf)
     ps = tf.paragraphs
     set_para(ps[1], "Tile 9t, Venango County, PA. 4.5 km square of hardwood forest. 506 pits and 650 pads mapped "
                     "from lidar (645 pads usable for tests), 1,068 DEP wells.")
-    set_para(ps[3], "Pits and pads 0.1 to 0.5 dB against their surroundings. Steel 6.5 to 7.2 dB above background. "
-                    "A coherence drop past the 1% tail of control spots. Motion over 12 mm in 12 days.")
-    set_para(ps[5], "A 24 cm L-band wave reaches the ground under leaves. Pits and pads change slope and roughness, "
-                    "steel gives a steady echo, and work on a pad breaks coherence.")
+    set_para(ps[3], "A pixel 6.5 to 7.2 dB above the ground within 250 m, with amplitude varying under 25% of its "
+                    "mean over dates, within 6 m of a well. Chance hit rate about 1.9% over three tracks.")
+    set_para(ps[5], "Casing, pumpjacks and tanks are steel, a strong and steady reflector. Forest echoes change "
+                    "between passes. A 24 cm L-band wave passes through leaves.")
     notes(s, "About 1 minute 40 seconds. The question is narrow on purpose. At sites we already know, does the radar "
              "show anything repeatable? A marker that does not show at a known well cannot find an unknown one, so "
              "prediction waits on this answer. A well pad is the cleared, graded ground around a well. A pit is the "
@@ -77,12 +77,12 @@ def slide3(s) -> None:
               "Tool: h5py, own geocoder     Key choice: echo at lidar ground plus 10% of canopy height"),
              ("2   Tie dates and tracks to the lidar",
               "Tool: lidar backscatter simulation     Key choice: 2.5 m gate per block"),
-             ("3   Feature minus ring, minus five control spots",
-              "Tool: numpy, geopandas     Key choice: ring 10-30 m pits, 20-60 m pads; power averaged before dB"),
+             ("3   Amplitude statistics per track over all post-June dates",
+              "Tool: numpy     Key choice: HH, mean power and amplitude dispersion (SD over mean)"),
              ("4   Persistent-scatterer screen for steel",
               "Tool: numpy, scipy     Key choice: dispersion < 0.25, 3 SD above 250 m median, 6 m radius"),
-             ("5   Coherence and motion, then pool sites",
-              "Tool: interferograms, scipy     Key choice: 1% control-spot tail; Wilcoxon on the per-site excess")]
+             ("5   Compare wells with control spots",
+              "Tool: scipy     Key choice: Fisher's exact test by DEP status; never-drilled permits as negative control")]
     for k, (a, b) in enumerate(steps):
         ps = shape(s, f"Rounded Rectangle {7 + k}").text_frame.paragraphs
         set_para(ps[0], a)
@@ -93,9 +93,9 @@ def slide3(s) -> None:
              ("Too few dates: 8 to 12 per track, where the steadiness rule assumes about 30",
               "Steady pixels exceed the 0.13% expected by chance, or flood open fields",
               "Require two tracks, raise the cutoff, add dates as released"),
-             ("Signal smaller than the noise",
-              "Intervals span zero, or shift with the control-spot draw",
-              "40 control spots per site, matched on canopy and slope")]
+             ("No steel left to see: casings on plugged wells are often cut or buried",
+              "A known building passes, but wells match the control-spot rate",
+              "Compare by DEP status; active wells keep pumpjacks and tanks")]
     tbl = shape(s, "Table 13").table
     for i, row in enumerate(risks, start=1):
         for j, t in enumerate(row):
