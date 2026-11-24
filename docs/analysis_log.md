@@ -5,6 +5,17 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-24 — Backups on F and J; 33.8 GB offloaded from C; 0.25 m RRIM pilot
+
+- **Backups.** C was 98% full (20 GB free). Before moving anything, both drives were mirrored with the repo policy from `tools/backup_to_E.bat` (robocopy /E /XO /XJ /FFT, never /MIR).
+  - `F:\Colton\_BACKUPS\lidar_project_MIRROR\` was last run 2026-10-29. Updated: 55,510 files, 8,473 copied (36.6 GB), 0 failed.
+  - `J:\Colton\_BACKUPS\lidar_project_MIRROR\` is new: 55,510 files, 103.6 GB, 0 failed.
+- **Offload.** `tools/offload_untracked.py` moved untracked files only from six folders no current script reads: `PLanet/`, `data/9t/models/_retired/`, `data/9t/models/_arch_compare/`, `nisar/derived/613590/`, `nisar/derived/mkf/`, `share_9t_annotations_rrim/`. 9,284 files, 33.8 GB, to `F:\lidar_project_offload\` at the same paths. Size check 0 mismatches before delete. Tracked files stay, so git is unchanged. C now 55 GB free.
+  - Why these: no script reads them (grep), 613590 and mkf are out of NISAR scope (9t only).
+  - Kept: `data/9t/derived/05/` (paths.toml `nine_t`), `smrf05/` (4 pit scripts read it), `data/_source/` (steel and GCOV scripts), `nisar/derived/9t/`.
+  - Per-file list `docs/offload_manifest_20261124.csv`. Folder rows in `docs/MOVES.csv`, phase `offload`. Not undoable by `apply_moves.py`. Copy back by hand.
+- **0.25 m RRIM pilot.** `notebooks/wellsight_v2/s1_build/_rrim_upsample_9t.py --pilot`. 0.5 m DEM cubic-spline upsampled 2x, slope and openness (25 m) recomputed, same RRIM colours as `_make_rrim.py`. NW 500 m corner only, `data/9t/derived/025/rrim_openness_9t_025_pilot.tif`. |D| 98th pct 4.26 deg on the corner. 55 s per 1000 px source tile, so the full tile is about 75 min. Full run stopped on request. Adds no information below about 1 m. 1 cm and 10 cm discussed and not built.
+
 
 
 
