@@ -10,6 +10,9 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-24 — Slide notes: Ferretti reference page
+- Added a last page to nisar/writeup/nisar_checkpoint_slide_notes_9t.md summarising Ferretti 2001 Sec. III-C. PDF rebuilt (6 pages). Docx not rebuilt, Word has it open.
+
 ## 2026-11-24 — Ferretti 2001 PDF read
 - User added `literature/papers/ferretti2001.pdf`. Read Sec. III-C. CITATIONS.md entry now points to the local copy and the section.
 - Confirmed: 0.25 is "typically 0.25", given without derivation. Fig. 1 simulates 34 dates. Speckle value ~0.5 is stated in the paper.

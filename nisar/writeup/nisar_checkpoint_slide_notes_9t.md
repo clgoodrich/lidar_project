@@ -75,3 +75,24 @@ Risk 2. Too few dates. The dispersion rule was designed for about 30 dates. 9t h
 Risk 3. Bright terrain mistaken for a target. Slopes facing the radar are bright and can look steady. Noticed when candidates follow slope aspect and appear on one look direction only. Instead: keep only candidates seen on two tracks, and mask slopes in layover or shadow.
 
 Question to expect. Which step is most likely to fail at your site? Placement, because a pit or casing is only a pixel or two wide and a few metres of offset moves it out of the hit radius.
+
+<!-- pagebreak -->
+
+# Reference notes. Ferretti, Prati and Rocca (2001)
+
+The paper. Ferretti, A., Prati, C. and Rocca, F. (2001). Permanent scatterers in SAR interferometry. IEEE Transactions on Geoscience and Remote Sensing 39(1), 8 to 20. The relevant part is Section III-C, PS Candidates Selection, pages 11 and 12.
+
+The problem. A persistent scatterer is defined by steady phase. Phase can only be judged after the atmosphere, elevation errors and motion are removed. The authors needed a way to pick candidates before that.
+
+The idea. Amplitude is almost insensitive to atmosphere, elevation error and motion. For a strong target over weak noise, the spread of amplitude over dates matches the spread of phase. So amplitude dispersion, the standard deviation over the mean, stands in for phase stability.
+
+The cutoff. Pixels are kept when dispersion is under a threshold, "typically 0.25". The paper does not derive 0.25. A simulation with 34 dates shows dispersion tracks phase closely at small values. Pure speckle gives about 0.5.
+
+The conditions.
+- About 30 or more images. The simulation and the real test both use 34.
+- Images radiometrically corrected so dates are comparable. This is why we use post-June dates only.
+- Accuracy depends on the number of images. The selection is a first pass, not a final list.
+
+The test. 34 ERS images over Ancona, Italy, spanning more than five years. Sea and vegetation sat above 0.5. Stable targets went as low as 0.11. About 500 pixels passed 0.25.
+
+What it means for 9t. We have 8 to 12 dates per track, below the paper's 30. Our dispersion values are noisier, and speckle passes 0.25 more often. That is Risk 2 on slide 3.
