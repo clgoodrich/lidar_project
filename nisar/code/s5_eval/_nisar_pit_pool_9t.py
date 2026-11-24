@@ -11,7 +11,7 @@ Pool = flat share >= 0.5 and (intensity ratio <= 0.7 or density ratio <= 0.5). T
 set before looking at the radar and reported with the results; pad 303's pit is the visual reference.
 
 Radar: per-pit excess (feature minus decoy median, dB) from the seasonal stack,
-nisar/results/<area>/nisar_gslc_stack_pit_vs_ring_and_decoys_per_feature_swap40_<area>_slc_5m.csv.
+nisar/results/<area>/nisar_gslc_stack_pit_vs_ring_and_decoys_per_feature_<area>_slc_5m.csv (5 control spots per pit).
 Pool vs other pits: Mann-Whitney U per metric, and a permutation of the pool label (5000).
 
 Writes nisar/results/<area>/nisar_pit_pool_{per_pit,radar}_<area>.csv, nisar_pit_pool_<area>.gpkg,
@@ -80,7 +80,8 @@ def main():
     P["pool"] = (P.flat_share >= FLAT_MIN) & ((P.int_ratio <= INT_MAX) | (P.den_ratio <= DEN_MAX).fillna(False))
     print(f"{A.TAG}: {len(outer)} outer pits, {len(P)} with an inner rim and lidar stats, {int(P.pool.sum())} pool pits", flush=True)
 
-    rad = pd.read_csv(RES / f"nisar_gslc_stack_pit_vs_ring_and_decoys_per_feature_swap40_{A.TAG}_slc_5m.csv")
+    # 2026-11-23: reads the default 5-control-spot run (user decision); the 40-control run is a stability check
+    rad = pd.read_csv(RES / f"nisar_gslc_stack_pit_vs_ring_and_decoys_per_feature_{A.TAG}_slc_5m.csv")
     mets = [c[:-8] for c in rad.columns if c.endswith("_feature")]
     for m in mets:
         rad[m] = rad[m + "_feature"] - rad[m + "_decoy_median"]

@@ -1,396 +1,280 @@
 # The NISAR work in plain language
 
-Written 2026-11-15. Rewritten 2026-11-18 around the marker objective. Updated 2026-11-21 for the provisional-only amplitude rule and the November 2026 dates.
-Each step says what we did and why we did it.
-This is the one document to read if you want the whole story.
-It adds no new analysis. Every number comes from the files listed at the end.
+Written 2026-11-15. Rewritten 2026-11-23 for three rules now in force.
+- Only NISAR dates from 2026-06-01 onward are used for any result.
+- Only tile 9t is in scope.
+- Every persistent-scatterer threshold has a stated source.
 
-## 1. Objective and short version
+Each step says what we did and why we did it. Every number comes from the files listed in section 12.
+Earlier versions of this document are in git history.
 
-**Objective.** At known sites, find out whether NISAR shows a repeatable marker tied to a well pad, pit or surface equipment.
-We compare each mapped feature with its own surroundings and with nearby non-well spots.
+## 1. Objective
+
+At known sites on tile 9t, find out whether NISAR shows a repeatable marker tied to a well pad, pit or surface equipment.
+We compare each mapped feature with its own surroundings and with nearby spots that hold no mapped feature.
 The outcome is the strength and consistency of a measured contrast.
 Prediction, candidate ranking and discovery are outside the present scope.
 
-**Short version.**
-- We found two small leads and several markers that did not hold up.
-- The strongest lead is a small brightness contrast at 506 mapped pits in summer HV. It is not yet tied to well sites in particular.
-- A new lead is that pads look darker than control spots after leaf drop. It rests on 2 or 3 fall dates per track.
-- A weaker lead is slightly more loss of signal stability at pads between passes.
-- Steel, water and motion gave no marker.
-- Pits holding a pool on their floor look no different to the radar from other pits (section 7).
-- A Sentinel-1 C-band cross-check found no pit signal in coherence, motion or steady bright targets.
-- NISAR did see a building clearly. So the measurement works on real structures.
-- Earlier classifier and candidate-ranking work is archived (section 11).
+*Why known sites first.* A marker that does not show where we know a well sits cannot help find unknown ones.
 
-## 2. The markers we examined
+*Why radar at all.* Lidar finds pits and pads under the canopy, but it is flown once. NISAR passes every 12 days at no cost. Its L-band wave (24 cm) passes through leaves better than shorter radar.
 
-| Potential marker | What was measured | Reading |
-|---|---|---|
-| **Pit brightness** | Across 506 mapped pits, the pit-to-ring contrast beat the control-to-ring contrast by **0.18 dB in summer 2026 HV** (95% interval 0.11 to 0.27, p < 0.001). Fall 2026 HH gave +0.03 dB (p 0.99). Fall 2026 HV gave +0.13 dB (p 0.06). | **Strongest lead, summer only.** It repeated from +0.19 dB on the earlier date set. A +0.25 dB fall HH result from beta 2025 dates did not repeat on 2026 leaf-off dates. In summer the pits were 0.07 dB brighter than their rings and control spots 0.15 dB darker. |
-| **Pad coherence loss** | Across 649 pads, **169 snow-free coherence-loss events against 136.4 expected** from control spots (p 0.001). | **Weaker lead.** Pads lost signal stability slightly more often. No dated well activity explains it. Vegetation, traffic and weather are plausible. Winter shows no excess (13 against 13.1). |
-| **Pad brightness** | Across 645 pads, fall 2026 was **0.12 dB darker** than control spots in both HH and HV (p < 0.001). Summer was at chance. Pads also changed more between summer and fall than control spots (+0.14 dB HH, +0.10 dB HV, p < 0.001). | **New lead, leaf-off only.** Earlier fall and summer pad contrasts were within 0.01 dB of zero. Those used beta fall dates. The new fall window has 2 or 3 dates per track. |
-| **Steel** | Steady bright targets near DEP wells (section 6). | No marker. Wells hit at chance. |
-| **Water** | 8 wet and 5 dry reference pits. Then 23 lidar-found pool pits against 477 other pits (section 7). | No marker. Wet and dry overlap. Pool pits match other pits. |
-| **Motion** | Pit interferograms and slope motion at wells. | No marker. 0 of 15 coherent wells flagged after correction. |
+## 2. The data
 
-**Limits that apply to every row**
-- Control spots were the same shape as the feature, moved 150 to 600 m onto background. They were not matched on canopy, slope or road access. Part of the pit excess may come from that.
-- The contrasts are small. The largest interval upper end is 0.27 dB.
-- Fall 2026 rests on 2 dates on tracks 26 and 90 and 3 dates on track 162 (section 3).
-- Amplitude work uses provisional dates only (June 2026 onward). Beta dates are out of scope for amplitude. Calibration offsets between tracks remain.
-- Position is inferred from lidar and not surveyed (section 4).
-
-## 3. The data
-
-| Item | What we used |
+| Item | What we use |
 |---|---|
 | Satellite | NISAR L-band, HH and HV polarisation, 5 m grid |
-| Tracks | 26 (descending), 90 and 162 (ascending) |
-| Main area | Tile 9t, Venango County, 4.5 km square |
-| Second area | Tile 613590, Venango County |
-| Extra areas | Warren and McKean, for early checks |
-| Truth | Pit and pad outlines you drew from lidar, inner pit rims, and Pennsylvania DEP well records |
-| Cross-check | Sentinel-1 C-band (5.5 cm), from NASA's OPERA archive |
+| Area | Tile 9t, Venango County, 4.5 km square |
+| Truth | 506 pits and 645 pads drawn from lidar, inner pit rims, Pennsylvania DEP well records |
+| Dates | 2026-06-20 to 2026-11-16 |
 
-**The dates on hand (2026-11-21).** A date counts when at least half the window holds valid pixels.
+**Tracks over 9t.**
 
-| Track | Pass | 9t | 613590 |
-|---|---|---|---|
-| 26 | descending | 12 dates. Beta 2025-11-12, 12-18, 12-30. Provisional 2026-06-28, 08-15, 08-27, 09-08, 09-20, 10-02, 10-14. Standard 10-26, 11-07 | Same 12 |
-| 90 | ascending | 14 dates. Beta 2025-11-04, 2026-01-15. Provisional 06-20 to 10-18 (10 dates). Standard 10-30, 11-11 | Same 14 |
-| 162 | ascending | 18 dates. Beta 2025-10-28 to 2026-01-20 (6 dates). Provisional 06-25 to 10-11 (9 dates). Standard 10-23, 11-04, 11-16 | **6 dates**. Beta only. The 2026 images hold no valid pixels over the tile |
+| Track | Pass | Radar looks toward | Angle from vertical | Usable dates |
+|---|---|---|---|---|
+| 26 | Descending | East | 41° | 8 |
+| 90 | Ascending | West | 39° | 12 |
+| 162 | Ascending | West | 47° | 12 |
 
-- 2026-09-08 on track 26 is a bad granule and is never used. 2026-07-22 on track 26 has no valid pixels.
-- Nothing is usable between 2026-01-20 and 2026-06-20. Section 3a explains why.
-- **Three processing levels.** Beta covers Oct 2025 to Jan 2026. Provisional covers Jun to Oct 2026. From 2026-10-23 NASA publishes new dates in a standard collection.
-- **Why we nearly missed the November dates.** Our download searched only the beta and provisional collections. The standard collection started on 2026-10-23 under a new name. We found it on 2026-11-20 by searching every NISAR collection over the tile. Both downloaders now search it.
+*Why these tracks.* They are every NISAR track that covers 9t. We did not pick among them.
 
-## 3b. Which dates amplitude uses, and why (decided 2026-11-19 and 2026-11-20)
+*Why both directions.* A slope facing the radar looks bright and the same slope seen from the other side looks dark. A pit edge or pad cut can hide from one side and show from the other.
 
-**Rule.** Brightness (amplitude) work uses only dates from 2026-06-01 onward.
+*Why two ascending tracks.* Their angles differ by 8°. The steeper one passes through more canopy. More tracks also give more dates.
 
-**Why.**
-- Beta images were processed by older software and are not fully calibrated.
-- Before the rule, every fall and winter date was beta and every summer date was provisional. A summer-versus-fall difference could come from processing, not from season.
-- Using one processing level removes that doubt for brightness.
-- The cost is fewer dates per track. We accept that and state it with each result.
+**Which dates, and why.**
+- Only dates from 2026-06-01 onward are used. The rule is enforced in code (`DATE_FLOOR` in `nisar/code/_nisar_area.py`), so no script can pick an earlier date.
+- *Why.* The October 2025 to January 2026 beta images came from older software and are not fully calibrated. Every fall and winter date was beta and every summer date was not. A seasonal difference could come from processing instead of season.
+- NASA labels dates from June to October 2026 provisional. From 2026-10-23 it publishes them in a standard collection under a new name. Our downloads search both.
+- Two dates are never used. 2026-07-22 on track 26 has no valid pixels. 2026-09-08 on track 26 sits far from where the rest of its track puts the ground.
+- Nothing usable exists between January and June 2026. The raw data is released, but processed images of our frames are not.
 
-**Season windows.** Summer is 2026-06-01 to 09-30. Fall is 2026-10-21 to 11-30.
+**Seasons.** Summer runs 2026-06-01 to 09-30. Fall runs 2026-10-21 to 11-30.
 
-**Why these windows.**
-- In western Pennsylvania the leaves turn in early October and drop in late October.
-- Fall should mean leaf-off, because that is when L-band sees the ground best.
-- Early October is half-leafed, so it is left out of both seasons. Mixing it in would blur the contrast.
-- The windows were set before looking at any result from the new dates. That keeps the choice from being tuned to the answer.
+| Track | Summer dates | Fall dates |
+|---|---|---|
+| 26 | 4 | 2 |
+| 90 | 8 | 2 |
+| 162 | 8 | 3 |
 
-**Why the standard dates count with provisional.** They come from the same tracks and frames and the same mature processor. They lined up with the provisional stack to within about 1 m after re-alignment.
+*Why these windows.* Leaves in western Pennsylvania turn in early October and drop in late October. Fall should mean leaf-off, when L-band sees the ground best. Early October is half-leafed, so it is in neither season.
+*Why set them first.* The windows were fixed before any result from the new dates was seen. That keeps the choice from being tuned to the answer.
 
-- NASA plans validated reprocessing of the older dates in 2027.
+## 3. Amplitude and phase
 
-## 3a. The spring 2026 gap (checked 2026-11-15)
+**Amplitude** is how strong the echo is, in dB. It depends on roughness, slope, moisture and metal.
+It drives the pit and pad brightness tests, the steel test and the water test.
+*Why.* A pit or pad changes the surface, so amplitude is where a marker would show first.
 
-The satellite did record over 9t and 613590 in spring 2026. The raw data is released. Processed images of our frames are not, so we cannot use it yet.
-- **Raw data exists.** NASA's archive lists raw Level 0 files (RRSD) for spring passes on tracks 90 and 162, for example 2026-04-09, 2026-04-21, 2026-05-27 and 2026-06-08. Each raw pass is about 60 GB and covers our areas.
-- **Raw data cannot be clipped.** It is echo data, not an image. Each image pixel is built from echoes spread over kilometres of flight path. Using it means downloading the whole file and focusing it ourselves with ISCE3, NASA's open-source processor.
-- **Processed spring images exist only for the neighbouring frame.** The April 9 GSLC on track 90 is frame 23. Its south edge sits about 12 km north of 9t. Track 162's spring files are frame 24. Our clipped windows from those files held no valid pixels over 9t or 613590.
-- **The frames over us are not out yet.** Frame 22 on track 90 and frame 23 on track 162 return no processed files between 2026-01-21 and 2026-06-19.
-- **One new date did arrive.** 2026-10-18 on track 90 was added for both areas.
-- **The fetch was widened.** `nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py` now also searches by track and neighbouring frame. A rerun will pick up the covering frames when NASA releases them.
+**Phase** is where in its cycle the wave returns. Between two dates on one track it measures tiny changes in distance.
+It drives the coherence test at pads and the motion tests.
+*Why.* Work on a pad scrambles the surface between passes. A settling pit or slope would move.
 
-| Option | Cost |
-|---|---|
-| Wait for NASA's processed frames | None. Rerun the fetch from time to time |
-| Focus raw passes ourselves | About 60 GB and several hours per pass, about 1.2 TB for the spring. Raw access returned HTTP 403 in October and has not been retested |
+Phase only compares dates on the same track. Under deciduous forest L-band phase can lose stability within 12 days. That is why most tests are built on amplitude.
 
 ## 4. The process, step by step
 
-**Step 1. Get the data.** We cut small windows from huge NASA files with range reads. Each window was about 9 MB from a file of 22.6 GB.
-*Why.* A whole frame is 22.6 GB and our tile is a small part of it. Reading only the needed chunks makes every date affordable to fetch.
+**Step 1. Get the data.** We cut a small window around 9t from each NASA file with range reads. A window is tens of megabytes from a file of 22.6 GB.
+*Why.* Reading only the needed chunks makes every date affordable to fetch.
 
-**Step 2. Fix the position.** We inferred that NASA's product sat about 8 to 12 m off the lidar. That is about two radar pixels, which matters for a pit.
-*Why.* A pit is a few pixels across. A two-pixel error would measure the rim or the forest instead of the pit.
-We never checked this against a surveyed point. Four things point to a real error.
-- The shift points away from the satellite on all three tracks.
-- All three geometries give the same height error, 8 to 10 m.
-- The shift grows with canopy height (correlation 0.55 to 0.62).
-- Our fix matched the predicted shift (correlation 0.82 to 0.90).
+**Step 2. Place the radar on the lidar ground.** NASA's images sat 8 to 12 m off the lidar.
+The cause is the elevation model NASA used, which sits partway up the canopy in forest.
+We wrote our own geocoder and placed each image on the lidar ground plus 10% of canopy height.
+The 10% came from testing 0, 10, 25 and 50%. We then solved the leftover shift for each date and each track.
+On post-June dates, 47 of 48 blocks on 9t now agree with a lidar simulation to within 2.5 m. The median block offset is 1.0 to 1.4 m per track.
+*Why.* A pit is only a few 5 m pixels across. At 8 to 12 m a test measures the rim or the forest.
+*Limit.* The check uses a simulation that also set the track offsets. It is not a surveyed point.
 
-The cause is the elevation model NASA used. It sits partway up the canopy in forest.
-We wrote our own geocoder, swapped in lidar heights, and solved the leftover shifts for each date and track.
-We also tested where the radar echo sits. We put it at 0, 10, 25 and 50% of canopy height above the ground.
-The best fit was 10%, about 1 to 2 m above the ground. A canopy-top surface was not run.
-After this, 46 of 48 blocks on 9t agreed with a lidar simulation to within 2.5 m. With bare earth it was 40 of 48. On 613590 it was 31 of 48.
-This is agreement with a simulation that also set the track offsets. It is not an independent check of position.
+**We did not build a NISAR elevation model.** The lidar is the reference the radar is placed on. Radar heights are never made.
+*Why.* A radar elevation model needs repeat-pass phase. The orbit's short baselines, fast phase loss under forest and water vapour would give metres of error. Lidar already resolves pits and pads to about 10 cm.
 
-**We did not build a NISAR elevation model.** The lidar DEM is the reference the radar is placed on. Radar heights are never made.
-A NISAR DEM would need repeat-pass interferometry. Three things work against it here.
-- The orbit repeats in a tight tube. Short baselines give poor height sensitivity.
-- L-band phase loses stability under deciduous forest in 12 days.
-- Water vapour adds phase errors larger than a weak height signal.
-The expected result is metres of error in the open and noise under trees. Lidar resolves pits and pads to about 10 cm.
-It could be run as an experiment, scored against lidar. The first step would be to read the real baselines from the products.
+**Step 3. Keep the tracks apart while measuring.** One run handles all three tracks. Each site's contrast is measured on each track separately. The three are then combined per site, and each track is also reported on its own.
+*Why.* Each track has its own viewing direction, angle and calibration. Blending them would mix those differences into the result. Phase only works within a track.
 
-**Step 3. Handle the three tracks.** A track is a fixed, repeating orbit path with its own viewing direction and angle.
-We placed all three on the same lidar grid and computed every measure per track. We never merged them into one image.
-*Why.* Each track sees the ground from a different side and has its own calibration. Merging would mix those differences into the result.
-Section 4a explains why.
+**Step 4. Measure each site against its ring and against control spots.**
+- Take the feature's brightness minus a ring around it. Pads use a 20 to 60 m ring and pits a 10 to 30 m ring.
+- Do the same at five control spots of the same shape, 150 to 600 m away, with no mapped feature.
+- The excess is the feature's contrast minus the median of its control spots.
+- A Wilcoxon signed-rank test on the per-site excess gives the p-value. A bootstrap over sites gives the 95% interval.
 
-**Step 4. Measure contrasts at known sites.** For each pit or pad we compared the feature with a ring around it.
-We then compared that contrast with five control spots of the same shape, 150 to 600 m away. The difference is the excess.
-Control spots are a comparison baseline. They show the contrast any patch of ground gives, so the excess is what the feature adds. They are not training data for a model. Scripts and file names still call them decoys.
-A swap test shuffles feature and control labels to get a p-value.
-*Why the ring.* Brightness changes with slope, canopy and track. Comparing a pit with its own surroundings cancels most of that.
-*Why control spots.* Any patch of ground differs a little from its ring by chance. Control spots show how big that chance difference is.
-*Why the swap test.* It gives a p-value without assuming the contrasts follow a bell curve.
+*Why the ring.* Brightness changes with slope, canopy and track. A site's own surroundings cancel most of that.
+*Why control spots.* Any patch differs a little from its ring by chance. Control spots show how big that chance difference is.
+*Why Wilcoxon.* It assumes no bell curve, which suits small, noisy radar contrasts.
+*Limit.* With 5 control spots per site, results can shift with which spots are drawn. On 613590 in October a p-value moved from 0.001 to 0.13 with the random seed. A 40-control-spot run with a swap test is the stability check. It is a next step, not part of these numbers.
+*Why pool hundreds of sites.* One site is lost in speckle, the grain in radar images. No one can judge a pad by eye.
 
-**Step 5. Build bands.** We also computed 346 radar bands for each site, for screening. Section 4b says where the count comes from.
-We tried four speckle filters. Speckle is the grainy noise in radar images.
-*Why.* We did not know in advance which measure would carry a marker. Screening many measures at once was cheaper than testing them one by one.
+**Step 5. Invite review.** Two outside reviews and one adversarial review checked the work. The 8 to 12 m placement error came out of that.
+*Why.* Small radar contrasts are easy to fool yourself with.
 
-**Step 6. Invite review.** Two outside reviews and one adversarial review checked the work.
-They found real mistakes. We fixed them and reran the tests. Section 9 lists them.
-*Why.* Small radar contrasts are easy to fool yourself with. Outside eyes catch errors we were too close to see.
+## 5. The tests
 
-**Step 7. Cross-check with a second radar.** We repeated the main ideas with Sentinel-1 C-band, using your pit outlines (section 8).
-*Why.* A real ground marker should show on a second, independent radar. A signal on one satellite only could be a processing artefact.
+Each test traces to a physical reason, stated before the test was run.
 
-## 4a. Amplitude, phase and the three tracks
-
-**Amplitude** is how bright each pixel is, in dB, for HH and HV.
-Most of the bands come from it. Brightness, texture, dual-pol ratios, seasonal trend, outliers and terrain-flattened brightness are all amplitude.
-The pit and pad brightness contrasts rest on amplitude.
-
-**Phase** was used in three places.
-- Interferograms at pits. One date times the conjugate of the next date on the same track. Phase noise was about 7.5 mm per pit per pair, so motion would need to exceed about 15 mm in 12 days.
-- Coherence, which is how stable the signal is between dates. It fed the pad coherence-loss test.
-- The line-of-sight motion and height-residual bands. The Sentinel-1 interferograms used phase the same way.
-
-Persistent-scatterer analysis has two steps. Step 1 picks pixels whose brightness barely changes over dates (amplitude dispersion under 0.25, Ferretti et al. 2001). Step 2 fits motion and height from the phase at only those pixels.
-We ran step 1. It is the steady-target screen in section 6, and it found almost no persistent scatterers at wells.
-We did not run step 2. With no scatterers at wells there is nothing to measure there. It also needs about 20 or more dates on one track, and we have 6 to 13 post-June dates per track.
-
-**Why the tracks cannot be merged**
-- Brightness depends on viewing direction. A slope facing the satellite is bright and the same slope seen from the other side is dark.
-- Calibration differs by track. Per-track HV summer-versus-fall offsets range from +1.9 to +4.2 dB, which points to calibration and not season.
-- Phase only works within a track. A different track has a different line of sight, so there is no valid subtraction.
-- Dates do not line up between tracks. Seasonal change is measured inside one track, where terrain and angle cancel.
-
-**What the tracks gave us**
-- More dates. 44 on 9t in total, against at most 18 on one track.
-- Cross-checks. A bright spot seen on all three tracks is not noise. The building in section 10 was one.
-
-**What the tracks did to the data**
-- Each track is thin. Every measure rests on a handful of dates per season.
-- Each track now has 2 or 3 leaf-off dates (late Oct to Nov 2026). That is thin but clean.
-- Cross-track contrasts rest on one descending track. We cannot tell a real direction effect from track 26's own calibration.
-- Motion is measured along one line of sight only.
-
-## 4b. Where the band count comes from, and what PCA says
-
-**The count is arithmetic.** We wrote 13 scripts, each producing a handful of measures, and ran most of them once per track.
-
-| Product | Bands | Product | Bands |
+| Test | Signal | Compared against | Why it could show |
 |---|---|---|---|
-| Amplitude statistics | 32 | Line-of-sight motion | 12 |
-| Amplitude trend and season | 42 | Rain and freeze | 22 |
-| Coherence | 43 | Spatial | 63 |
-| Dual-pol | 21 | Sub-aperture | 15 |
-| Events | 15 | Temporal | 43 |
-| Geometry | 14 | Texture | 15 |
-| Height residual | 9 | | |
+| Pit brightness | Amplitude | Ring and control spots, summer and fall, HH and HV | A pit changes slope, soil and canopy gaps at pixel scale |
+| Pad brightness | Amplitude | Same | A graded pad scatters differently from forest floor |
+| Pad coherence | Phase | Control spots, each pair of back-to-back dates | Work on a pad scrambles the surface |
+| Steel (persistent scatterers) | Amplitude | Control spots | Casing and tanks give strong, steady echoes |
+| Pool pits | Amplitude | Other pits | Calm water reflects radar away |
+| Pit motion | Phase | Ring and control spots | A settling pit would move |
+| Slope motion | Phase | The second ascending track | Slow creep can shear a casing |
 
-These sum to 346. 337 survive a filter that drops bands with over 20% missing values.
+*Why polarisation.* HH favours ground and structures. HV favours canopy volume. Comparing them separates the two.
 
-**The 32 amplitude statistics.** The list came from one idea, that a pad is unnaturally flat.
-So we took brightness (mean HH, mean HV, HV minus HH), its spread over dates, amplitude dispersion, and HH coherence at three date gaps with its decay.
-That is 10 measures per track, 30 in all, plus 2 brightness differences between tracks.
-Nothing says 32 is the right number. It is where the list ended.
+## 6. Results on 9t, post-June dates
 
-**PCA (2026-11-15).** Principal component analysis finds the independent directions in a set of measurements.
-We ran it on 60,000 random pixels of tile 9t, using 334 bands that varied.
-- The first component holds only 6.9% of the variance.
-- 26 components cover half the variance. 127 cover 90% and 212 cover 99%.
-- The effective dimension is about 56.
+### Pit and pad brightness
 
-So the bands are redundant, but less than we expected. There are roughly 100 to 130 real directions.
-Component 1 is overall brightness across all tracks. Component 2 is local texture on the ascending tracks. Component 3 is brightness on track 26 alone.
-The sample is tile-wide, so forest dominates. PCA finds variance, not usefulness.
-Files are `nisar/results/9t/nisar_feat_pca_*_9t_slc.*` and `nisar/results/9t/figures/nisar_feat_pca_9t_slc.png`. The script is `nisar/code/s5_eval/_nisar_feat_pca_9t.py`.
+| Feature | Measure | Excess (dB) | 95% interval | p |
+|---|---|---|---|---|
+| Pits (506) | Summer HV | **+0.18** | +0.09 to +0.26 | <0.001 |
+| Pits | Summer HH | +0.03 | −0.06 to +0.14 | 0.09 |
+| Pits | Fall HH | +0.01 | −0.08 to +0.11 | 0.90 |
+| Pits | Fall HV | +0.14 | +0.02 to +0.25 | 0.08 |
+| Pits | Summer minus fall, HH | +0.12 | −0.00 to +0.22 | 0.06 |
+| Pads (645) | Fall HH | **−0.13** | −0.21 to −0.02 | <0.001 |
+| Pads | Fall HV | **−0.11** | −0.17 to −0.06 | <0.001 |
+| Pads | Summer HH | +0.02 | −0.03 to +0.06 | 0.77 |
+| Pads | Summer minus fall, HH | +0.15 | +0.09 to +0.19 | <0.001 |
+| Pads | Summer minus fall, HV | +0.11 | +0.05 to +0.15 | <0.001 |
 
-## 5. What each marker idea showed
+- Pits are slightly brighter than their control spots in summer HV. Fall shows no clear pit contrast.
+- Pads are slightly darker than their control spots in fall, after leaf drop. Summer shows no pad contrast.
+- Fall rests on 2 or 3 dates per track.
+- Hollows with no well have not been compared yet. A pit contrast may mark depressions, not wells.
 
-| Idea | Result | How we know |
+### Pad coherence
+
+For each pair of back-to-back dates, a pad's coherence minus its ring, minus that pad's own median over pairs.
+A pair is an event when the drop is one only 1% of control-spot pairs reach.
+
+| Pad pairs | Events | Expected from control spots | Swap-test p |
+|---|---|---|---|
+| 18,172 | 211 | 181.9 | 0.022 |
+
+Pads lose coherence slightly more often than control spots. No dated well activity is available to explain it. Vegetation, traffic and weather are plausible.
+There is no winter season. All post-June pairs are snow-free.
+
+### Steel (persistent-scatterer selection)
+
+Persistent-scatterer analysis has two steps. Step 1 picks pixels whose brightness barely changes over dates. Step 2 reads motion from the phase at those pixels. We ran step 1.
+
+| Rule | Value | Source |
 |---|---|---|
-| Steel is bright | No | Section 6. |
-| A pad is a scar | A new lead, leaf-off only | A 0.3 dB darkening seen early vanished after the position fix. On fall 2026 leaf-off dates pads are 0.12 dB darker than control spots. Summer is at chance. |
-| Pits change with season | A lead, summer only | +0.18 dB HV in summer 2026. Fall 2026 HH +0.03 dB, so the beta fall result did not repeat. Between-season change was not conclusive. Speckle filtering shrinks the contrasts. |
-| Pads lose stability | A weaker lead | 169 events against 136.4 expected. |
-| Old wells move | No | Pit coherence excess +0.0001. None of 282 wells flagged for slope motion held up. |
-| Wet pits are dark | No | Wet and dry overlap (+1.58 against +1.74 dB). Pool pits match other pits (section 7). |
+| Steadiness (spread over mean of brightness) | under 0.25 | Ferretti, Prati and Rocca 2001. Pure speckle sits near 0.52 |
+| Brightness above the 250 m median | at least 3 robust SD per track | The usual outlier rule. 1 SD is 2.2 to 2.4 dB, so 6.5 to 7.2 dB |
+| Hit radius | 6 m | 3.5 m pixel half-diagonal plus 2.5 m placement |
 
-What the radar responds to. HV follows optical greenness far more than lidar canopy height (R squared 0.52 against 0.04).
-In closed forest most raw HV is terrain lighting. Adding simulated terrain gain lifts the explained share from 0.07 to 0.57.
+*Why 3 SD.* Brightness above the 250 m median is centred on 0 dB. Three robust SD (1.4826 × median absolute deviation) leaves about 0.13% of pixels by chance under a normal curve. A fixed 6 dB had no recorded reason.
+*Why 6 m.* That is what the radar side can deliver. Error in DEP well coordinates is not included because it cannot be measured here.
 
-## 6. Steady bright targets (persistent-scatterer selection, step 1)
+Steady bright pixels are 0.13%, 0.13% and 0.05% of valid pixels on tracks 26, 90 and 162.
 
-**Idea.** Casing, pumpjacks and tanks are steel. Steel gives strong echoes that stay the same between passes. Forest echoes flicker.
-A steady bright target is a persistent scatterer. This section is the selection step of persistent-scatterer analysis. The phase step (section 4a) was not run.
+| Well group | Wells | Hit, any track | Control spots | p |
+|---|---|---|---|---|
+| Active | 617 | 1.3% | 1.8% | 0.49 |
+| Plugged | 271 | 0.4% | 0.9% | 0.71 |
+| Abandoned | 174 | 1.1% | 1.2% | 1.00 |
 
-**Method.**
-- Per track, amplitude dispersion is the spread of HH brightness over dates divided by its mean. Forest pixels sit near 0.5.
-- A steady bright target scores below 0.25 and is at least 6 dB brighter than the median within 250 m.
-- A well is hit when a target sits within 15 m.
-- Each well gets 5 control spots 150 to 600 m away with the same canopy cover. Never-drilled permits are a negative control.
+Wells sit at chance. No well has a steady bright pixel on two or more tracks.
+*Limit.* The steadiness cutoff was designed for about 30 dates. 9t has 8 to 12 per track, so speckle passes more often than in the original method.
+*Step 2* needs about 20 or more dates on one track. It waits on new dates.
 
-**Results.**
+**A check with a known answer.** You marked a building at 41.502787, -79.519712.
+On post-June dates a steady bright pixel sits 2.5 m from the point on track 162. A target seen on two tracks sits 9 m away.
+A building is far bigger than a wellhead, so this does not show the test would catch small steel.
 
-| Test | Wells | Comparison | Reading |
-|---|---|---|---|
-| NISAR, 9t | 1 to 2% hit | 0.3 to 1% at control spots | Wells about 0.1 dB brighter, active and abandoned alike. Steadiness does not separate them (AUC 0.47 to 0.50). |
-| NISAR, Warren (684 wells) | 3.9% hit | 5.2% at random spots | At chance (p 0.75). Under canopy 2.2% against 5.3%. |
-| Sentinel-1, 9t and 613590 | 2 of 9 steady targets near active wells (34 m, 82 m), outside the hit zone | The other 7 sit on the river floodplain | Same as random ground |
-| NISAR provisional dates only (June to October 2026), 9t and 613590 | 23 to 26% hit at 9t, 16 to 21% at 613590 | 20 to 24% at control spots | At chance. Steadiness AUC 0.49 to 0.53. Limited by date count, see below. |
-| Registration from steady targets | Best 2.4% at one shift | 1.6% median | No clear peak. Cannot fix position. |
+### Pool pits
 
-**Limitation of the provisional-only run (2026-11-20).**
-- Amplitude work uses provisional dates only. That leaves 6 to 10 dates per track.
-- Amplitude dispersion from so few dates is noisy. Speckle falls below 0.25 by chance.
-- The screen passes 0.14 to 0.62% of pixels. Most of these are noise in open fields.
-- The method was designed for about 30 or more dates. This is a limit of the data on hand.
-- The result is reported as is. The screen stays in the analysis with this limit stated.
+A pool pit has at least half its floor flat and weak lidar returns, set before looking at the radar.
+500 pits have an inner rim and lidar statistics. 23 are pool pits, including pad 303's pit.
 
-**Why it likely fails here.**
-- A wellhead is 1 to 3 m. A 5 m pixel also holds trees and ground.
-- 8 to 15 dates give a noisy steadiness estimate. Only 0.004 to 0.03% of pixels qualified.
-- Plugged and orphaned wells often have the casing cut off or buried.
+| Measure | Pool pits (median excess, dB) | Other pits | Difference | Permutation p |
+|---|---|---|---|---|
+| Summer HH | +0.22 | +0.03 | +0.19 | 0.46 |
+| Summer HV | +0.34 | +0.17 | +0.17 | 0.48 |
+| Fall HH | +0.27 | +0.01 | +0.26 | 0.35 |
+| Fall HV | +0.38 | +0.11 | +0.27 | 0.38 |
 
-**Caveats.**
-- The 9t NISAR run predates the 2026-10-26 bad-date fix and used NASA's placement, not the lidar-placed stack. It needs a rerun with `--slc`.
-- 613590 has no NISAR steel test. Track 162 there has only 6 dates.
+No measure separates pool pits from other pits (all p above 0.19). With 23 pool pits, a difference of a few tenths of a dB cannot be told from chance.
+The lidar is from 2019, so a pool then may not be a pool now.
 
-## 7. Marker sites and pool pits (2026-11-15 to 11-18)
-
-**Four sites from an outside read (Codex).** Pads 303, 316 and 993 on 9t, and pit 718 on 613590.
-We drew lidar and radar side by side for each.
-
-| Site | What lidar shows | What radar shows | Reading |
-|---|---|---|---|
-| Pad 303 | A pit inside the pad with a pool on its floor | No steady NISAR pixel | The pool is a lidar feature |
-| Pad 316 | Not in your pad outlines | Bright along the road | Best explained by the road |
-| Pad 993 | Next to a pit, along a roadway | Bright along the road | Best explained by the road. Picked as an extreme, so expect some chance |
-| Pit 718 | Under canopy, about 7 radar pixels | Nothing clear | Too small and covered to read |
-
-**Pool pits.** You saw a pool in pad 303's pit and at other pits. We found such pits from lidar and asked whether radar treats them differently.
-- The test compares the floor inside each inner rim with a ring 3 to 10 m outside the outer rim.
-- A pool pit has at least half its floor flat (slope under 2 degrees) and weak lidar returns. Weak means ground intensity at most 0.7 of the ring, or point density at most half. Water absorbs the lidar pulse.
-- Thresholds were set before looking at the radar. Pad 303's pit was the visual reference.
-
-| Area | Pits tested | Pool pits | Radar difference, pool against other pits |
-|---|---|---|---|
-| 9t | 500 | 23, including pad 303's pit | None. Largest +0.41 dB HV in fall (p 0.25). All 8 measures p above 0.2 |
-| 613590 | 36 (the pits with radar contrasts) | 0 | Not testable |
-
-So pools show in lidar but give NISAR no consistent signal. The lidar is from 2019, so a pool then may not be a pool now.
-613590 now has 155 inner rims. Only 36 have radar contrasts.
-
-## 8. The Sentinel-1 cross-check (November 2026)
-
-We asked whether a shorter wavelength (C-band) and a long record (2017 to 2026) would show what NISAR could not.
-We used OPERA Sentinel-1 products, which are already aligned for interferometry.
+### Motion
 
 | Test | Result |
 |---|---|
-| Interferograms of pits, Oct-Nov 2025, April 2025 and 2026, every April 2017 to 2026 | No pit signal. April 2025 on 9t showed -1.18 mm (p 0.003). It did not return in other years. Pooled it was -0.06 mm (range -0.31 to +0.12). |
-| Coherence at pits against control spots | A small +0.011 on 9t. It traces to how control spots were drawn and to open ground. 613590 shows none. |
-| Small-metal bright-spot detector (CFAR) at wells | Wells 0.26% against 0.44% for random ground. |
-| Same detector at 666 annotated pits | Pits 0.15% against control spots 0.60%. |
-| Steadiest pixel at pits | Same as control spots (0.385 against 0.380 in April). |
-| X-band (finer, 3 cm) | None free over our areas. The nearest Umbra scenes are about 86 km away. |
+| Pit interferograms, 28 pairs | Pit motion against ring −0.24 mm HH (95% interval −0.43 to −0.02). A single pair's noise is about 5.6 mm. |
+| Slope motion, tracks 90 and 162 | Agreement r = 0.33 (0.20 to 0.45) across all slopes. Track 162 is coherent over only 39% of the tile. |
 
-Bright pixels near pits mean rough or open disturbed ground. They do not mean steel.
+A pit would have to move far more than a millimetre to stand out from 5 to 7 mm of noise per pair.
 
-## 9. Mistakes we caught
+## 7. Mistakes we caught
 
 - Early pad and pit scores were inflated. Control spots differed from targets in more than location.
-- Two statistics (`skew7`, `kurt7`) were not true window moments. After the fix the headline moved by 0.005 or less.
-- In the optical test we masked thin cirrus, which removed most of September. We also subtracted a reflectance offset these scenes do not use. Both were fixed.
-- We guessed the radar "follows the terrain", then that it "looks like trees". Neither held up.
-- We read a ground-elevation effect in closed forest as stand type. It was terrain lighting.
-- The first Sentinel-1 interferogram counted pixels outside the burst as zero motion. Dropping them fixed it.
-- The first bright-spot run put most hits on river banks. A water mask fixed it.
-- We first said the spring 2026 files lacked footprints. They have footprints and miss our areas.
-- The process PDF once failed to update because it was open. The render script now checks.
+- NASA's placement was 8 to 12 m off. Fixing it removed an early pad darkening and an abandoned-well lead.
+- Two statistics were not true window moments. The fix moved the headline by 0.005 or less.
+- A fall pit contrast of +0.25 dB came from beta dates. It does not repeat on post-June dates.
+- The hit radius of 15 m dated from before lidar placement. It is now 6 m.
+- The download searched only the beta and provisional collections and missed late October and November. Both downloaders now search the standard collection.
 
-An adversarial review on 2026-11-09 found ten problems. We fixed most the same day.
-Position is still not independently confirmed.
+## 8. Limitations
 
-## 10. A check with a known answer
+- 8 to 12 usable dates per track, and 2 or 3 fall dates.
+- Placement is not checked against a surveyed point.
+- Control spots are not matched on canopy, slope or road access.
+- L-band phase can lose stability under leaves within 12 days.
+- The 2019 lidar may not show the ground as it is now.
 
-On 2026-11-13 you picked a spot (41.502787, -79.519712) and later told us it was a building.
-- NISAR showed three pixels bright on all three tracks. The strongest was 17.7 dB above its surroundings. Its steadiness was 0.09, well under 0.25.
-- Sentinel-1 showed a bright streak just south-south-east of the point.
-So the steady-target test fires on a real structure. A null at pits is about the pits.
-A building is far bigger than a wellhead. This does not show the test would catch small steel.
+## 9. What we need
 
-## 11. What this tells us, and what was archived
+- More dates as NASA releases them, December onward.
+- Surveyed points or corner reflectors on 9t to check placement.
+- Hollows with no well, mapped from the 9t lidar.
 
-It tells us
-- NISAR shows at most small, hard-to-attribute contrasts at pits and pads.
-- A dark pad signature appears after leaf drop. It needs more fall dates to confirm.
-- Steel, water and motion are not confirmed markers here.
+## 10. Next steps
 
-It does not tell us
-- That the pit contrast belongs to well sites. Non-well depressions have not been compared.
-- Anything about the validated products. Those arrive in 2027.
-- Anything about sites changed since 2019. The outlines come from lidar.
-
-**Archived on 2026-11-15.** Earlier work trained classifiers to tell sites from decoy spots used as training negatives, set a +0.05 pass mark and swept the number of bands.
-That is prediction, outside the present objective. 17 scripts and 98 result files were moved to `nisar/archive/prediction/`.
-The earlier version of this document is `nisar/archive/prediction/NISAR_PROCESS_AND_OUTCOMES_prediction_version_20261115.md`.
-Nothing was deleted. The moves are logged in `docs/MOVES.csv` under `nisar_prediction_archive`.
-For the record, the held-out pit test on 613590 gave -0.017 against lidar alone (95% interval -0.055 to +0.020). No component count changed that.
-
-## 12. Next steps
-
-| Step | Needs |
+| Step | Why |
 |---|---|
-| Rerun pit and pad contrasts with control spots matched on canopy, slope and road access | Desk work |
-| Compare pits with non-well depressions | Desk work. Tells a well marker from a depression marker |
-| Add December 2026 dates to the fall pad test | NASA releases. Rerun the fetch |
-| Pool cue on all 155 inner rims in 613590 | Desk work, lidar only |
-| Independent position check | Surveyed structures or corner reflectors |
-| Spring scenes | NASA's processed frames, or focusing raw passes (section 3a) |
-| Beta against provisional confound | Removed for amplitude by using provisional only (2026-11-19) |
-| Fine X-band | A paid scene from Umbra, Capella or ICEYE |
+| Match control spots on canopy, slope and roads | Removes the largest known doubt about the excess |
+| Compare pits with hollows that have no well | Tells a well marker from a depression marker |
+| Run the 40-control-spot stability check on the brightness tests | 5 control spots per site can shift with the draw |
+| Rerun every test as new dates arrive | More fall dates for the pad result, and enough dates for persistent-scatterer step 2 |
+| Possible: a Sentinel-1 cross-check at 9t pits | A real ground marker should show on an independent radar |
+| Rebuild the 346 radar bands and their PCA on post-June dates | The earlier bands used beta dates and are withdrawn |
 
-## 13. Where to find the evidence
+## 11. Withdrawn from earlier versions
+
+These used dates before June 2026 or areas outside 9t, so they are no longer findings.
+- The fall HH pit contrast (+0.25 dB) and its interval.
+- Winter pad brightness and winter coherence.
+- The 8 wet and 5 dry reference pits. No script exists to redo them on post-June dates.
+- The 346-band PCA. The bands were built on all dates.
+- Tile 613590, Warren and McKean results.
+- The Sentinel-1 cross-check. It used dates from 2017 to 2026. Redoing it is a possible next step.
+
+## 12. Where to find the evidence
 
 | Need | File |
 |---|---|
-| Start page | `nisar/README.md` |
-| Full findings and tables | `nisar/docs/NISAR_FINDINGS.md` |
-| How each number was made | `nisar/docs/NISAR_METHODS.md` |
-| One write-up per experiment | `nisar/docs/iterations/` |
-| Seasonal pit and pad contrasts | `nisar/results/9t/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_swap40_9t_slc_5m.csv` |
-| Steady targets | `nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md`, `nisar/docs/iterations/nisar_bright_targets_wells_warren.md` |
-| Pool pits | `nisar/results/9t/nisar_pit_pool_radar_9t.csv`, `nisar/results/kml/nisar_pit_pool_9t.kml` |
-| Marker site KMLs | `nisar/results/kml/nisar_marker_sites_9t.kml`, `nisar/results/kml/nisar_marker_sites_613590.kml` |
-| Site figures | `nisar/sentinel1/results/9t/sites/`, `nisar/sentinel1/results/613590/sites/` |
-| Inner pit rim KMLs | `qgis/annotations/kml/pit_inside_9t.kml`, `qgis/annotations/kml/pit_inside_613590.kml` |
-| Date indexes | `nisar/derived/<area>/nisar_gslc_5m/nisar_gslc_window_index_<area>_5m.csv` |
-| Independent review | `nisar/reviews/nisar_adversarial_20261109/REPORT.md` |
-| Sentinel-1 write-ups | `nisar/sentinel1/docs/s1_ifg_pits_9t.md`, `nisar/sentinel1/docs/s1_metal_cfar_9t.md` |
-| Archived prediction work | `nisar/archive/prediction/` |
-| Figures for this document | `nisar/docs/figures/`, made by `nisar/code/s7_analysis/_nisar_process_figures.py` |
+| Date rule | `nisar/code/_nisar_area.py` (`DATE_FLOOR`) |
+| Placement check | `nisar/results/9t/nisar_lidar_sim_match_summary_coregabs_k010_9t.json` |
+| Pit and pad brightness | `nisar/results/9t/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_9t_slc_5m.csv` |
+| Pad coherence | `nisar/results/9t/nisar_pad_change_by_season_9t_slc.csv` |
+| Steel | `nisar/results/9t/nisar_steel_summary_9t_slc.json`, `nisar/code/s5_eval/_nisar_steel_9t.py` |
+| Steady bright targets | `nisar/results/9t/nisar_bright_targets_summary_9t_slc.json` |
+| Pool pits | `nisar/results/9t/nisar_pit_pool_radar_9t.csv` |
+| Pit interferograms | `nisar/results/9t/nisar_gslc_interferogram_pits_vs_decoys_win3_9t_slc_5m_summary.json` |
+| Slope motion | `nisar/results/9t/nisar_slope_motion_summary_9t_slc.json` |
+| Citation | `literature/CITATIONS.md`, Ferretti, Prati and Rocca 2001 |
+| Figures | `nisar/docs/figures/` |
+| Run log | `docs/analysis_log.md` |
 
 Glossary.
-
-- **L-band, C-band, X-band.** Radar wavelengths of about 24 cm, 5.5 cm and 3 cm. Longer waves pass through leaves more easily.
-- **HH, HV.** Transmit and receive polarisations. HV responds to volume scattering such as canopy.
+- **HH, HV.** Transmit and receive polarisations. HV responds to canopy volume.
 - **Speckle.** Grainy noise from many small reflectors inside one pixel.
 - **Coherence.** How similar the signal is between two dates. High means a stable surface.
-- **Control spot.** A spot of the same shape as the feature, 150 to 600 m away on background. It is a comparison baseline, not training data. Code and file names call it a decoy.
+- **Control spot.** A spot of the same shape as the feature, 150 to 600 m away on background. A comparison, not training data. Code calls it a decoy.
 - **Excess.** Feature-minus-ring contrast, minus the same for control spots.
-- **CFAR.** A bright-spot detector that sets its threshold from the local background.
-- **Steadiness (D_A).** Spread of a pixel's brightness over dates divided by its mean. Under 0.25 is steady. Pure speckle is about 0.53.
+- **Steadiness.** Spread of a pixel's brightness over dates divided by its mean.
+- **Robust SD.** 1.4826 × the median absolute deviation. It equals the standard deviation for a normal curve and ignores a few extreme pixels.

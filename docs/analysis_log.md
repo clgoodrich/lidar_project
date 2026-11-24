@@ -8,6 +8,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-23 Process doc and PDF rewritten: post-June, 9t only, 5 control spots
+
+- nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md rewritten from the post-June 9t reruns. PDF regenerated.
+- Brightness numbers use the default 5-control-spot run (user decision). The 40-control swap run was stopped. It exists because 5-spot p-values moved with the seed on 613590 (2026-10-19); it is listed as a stability check to run.
+- Pool pits rerun against the 5-control output (_nisar_pit_pool_9t.py now reads it): 23 of 500 pits, no measure separates them (p above 0.19).
+- Withdrawn: fall HH +0.25 dB, winter results, 8 wet / 5 dry pits, 346-band PCA, 613590/Warren/McKean, Sentinel-1 (possible next step).
+- Post-June placement check: 47 of 48 blocks within 2.5 m. Building point: steady bright pixel 2.5 m away on track 162 only.
+
 ## 2026-11-23 Persistent-scatterer thresholds given sources and reasons (9t)
 
 - D_A < 0.25 kept, cited to Ferretti, Prati and Rocca 2001. Only this value comes from the literature.

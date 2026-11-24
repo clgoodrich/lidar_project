@@ -122,10 +122,10 @@ def fig_excess():
     fig, ax = plt.subplots(figsize=(5.0, 2.0))
     ax.axvline(0, color=GREY, lw=0.6, ls="--")
     # 9t, summer 2026 HV, lidar-placed stack, nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_swap40_9t_slc_5m.csv
-    ax.plot(-0.150, 1, "s", ms=6, c=ORANGE)
-    ax.plot(0.067, 2, "o", ms=6, c=BLUE)
-    ax.annotate("", xy=(0.067, 1.5), xytext=(-0.150, 1.5), arrowprops=dict(arrowstyle="<->", lw=0.8))
-    ax.text(-0.04, 1.58, "median per-pit excess +0.18 dB\n95% interval 0.11 to 0.27, $p$ < 0.001",
+    ax.plot(-0.149, 1, "s", ms=6, c=ORANGE)
+    ax.plot(0.062, 2, "o", ms=6, c=BLUE)
+    ax.annotate("", xy=(0.062, 1.5), xytext=(-0.149, 1.5), arrowprops=dict(arrowstyle="<->", lw=0.8))
+    ax.text(-0.04, 1.58, "median per-pit excess +0.18 dB\n95% interval 0.09 to 0.26, $p$ < 0.001",
             ha="center", va="bottom", fontsize=7.5)
     ax.set_yticks([1, 2], ["Control spots", "Pits (n = 506)"])
     ax.set_ylim(0.5, 2.6)
