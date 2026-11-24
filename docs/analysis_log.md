@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-24 — ASF search: no NISAR GSLC covers 9t from February to May 2026
+
+- **Question.** Can the final project use January to May 2026 NISAR dates over 9t?
+- **Search.** CMR, all three GSLC collections (BETA_V1, PROVISIONAL_V1, V1; no others exist). By the 9t box, by track/frame pattern with neighbours, and footprints tested against the 9t box with shapely.
+- **Result.** Only 3 granules from 1 Jan to 31 May 2026 touch 9t: beta, 8 Jan and 20 Jan (track 162 frame 23), 15 Jan (track 90 frame 22). All 3 are already on disk.
+  - Track 162 frame 24 provisional, Feb to May (9 dates): footprint south edge near 43.0 N, about 165 km north of 9t. Not usable.
+  - Track 26: nothing over 9t before 28 June.
+  - **Correction.** The 11 track 90 frame-23 provisional files on disk for 3 Jan to 8 Jun (`nisar/derived/9t/nisar_gslc_5m/*_t090A_9t_5m.tif`) are 0% valid. Their footprint misses 9t. They were fetched by the frame safety net and hold no data. Earlier today I told the user track 90 had a full February to May record. That was wrong.
+- **Meaning.** The gap is in acquisition or processing over 9t, not in access. No calibration choice can recover it. Spring 2026 over 9t can only come from another sensor (Sentinel-1 track 77) or from NASA processing these frames later.
+
 ## 2026-11-24 — Backups on F and J; 33.8 GB offloaded from C; 0.25 m RRIM pilot
 
 - **Backups.** C was 98% full (20 GB free). Before moving anything, both drives were mirrored with the repo policy from `tools/backup_to_E.bat` (robocopy /E /XO /XJ /FFT, never /MIR).
