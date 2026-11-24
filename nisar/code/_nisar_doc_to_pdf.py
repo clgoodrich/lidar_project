@@ -9,7 +9,7 @@ import markdown
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = (Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / "nisar" / "docs" / "NISAR_PROCESS_AND_OUTCOMES.md")
-OUT = SRC.with_suffix(".pdf")
+OUT = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else SRC.with_suffix(".pdf")
 BROWSERS = [r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
             r"C:\Program Files\Google\Chrome\Application\chrome.exe"]
 CSS = """

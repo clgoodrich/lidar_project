@@ -87,12 +87,12 @@ def slide3(s) -> None:
         ps = shape(s, f"Rounded Rectangle {7 + k}").text_frame.paragraphs
         set_para(ps[0], a)
         set_para(ps[1], b)
-    risks = [("Too few dates: 8 to 12 per track, where the steadiness rule assumes about 30",
-              "Steady pixels flood open fields, past the 3 SD expectation",
+    risks = [("Images not on the lidar ground: NASA's elevation model sits in the canopy, so pixels shift 8 to 12 m",
+              "Lidar-simulated brightness misaligned by over 2.5 m in a block, or a known building off its spot",
+              "Re-solve offsets per track, set corner reflectors, widen the hit radius by the offset"),
+             ("Too few dates: 8 to 12 per track, where the steadiness rule assumes about 30",
+              "Steady pixels exceed the 0.13% expected by chance, or flood open fields",
               "Require two tracks, raise the cutoff, add dates as released"),
-             ("Decorrelation under deciduous canopy and wet snow",
-              "Coherence under 0.45 over most of a track",
-              "Short pairs, coherence mask, lean on backscatter"),
              ("Signal smaller than the noise",
               "Intervals span zero, or shift with the control-spot draw",
               "40 control spots per site, matched on canopy and slope")]
@@ -107,7 +107,7 @@ def slide3(s) -> None:
              "Control spots, copies of the outline 150 to 600 m away, show what chance gives. The steadiness cutoff "
              "is from Ferretti, Prati and Rocca 2001. The brightness rule is 3 robust standard deviations of the "
              "tile itself. The 6 m radius is half a pixel diagonal plus placement error. Tracks are measured apart "
-             "and combined per site. Of the risks, too few dates is the one most likely to bite.")
+             "and combined per site. Placement is the first risk because a pit is only a few pixels wide. It is checked by simulating radar brightness from the lidar and matching it block by block: 47 of 48 blocks agree within 2.5 m. That check shares the simulation used to fit the offsets, so a known building and, ideally, corner reflectors give the independent test.")
 
 
 def main() -> None:
