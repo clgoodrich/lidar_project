@@ -70,7 +70,7 @@ def slide2(s) -> None:
 
 
 def slide3(s) -> None:
-    header(s, 3, "Each pit is checked for a persistent-scatterer candidate, per track, on images placed "
+    header(s, 3, "Each site is measured against its ring and against control spots, per track, on images placed "
                  "on the lidar ground.")
     steps = [("1   Fetch windows over 9t and place them on the lidar ground",
               "Tool: h5py, own geocoder     Key choice: echo at lidar ground plus 10% of canopy height"),
@@ -80,21 +80,21 @@ def slide3(s) -> None:
               "Tool: numpy     Key choice: HH, mean power and amplitude dispersion (SD over mean)"),
              ("4   Persistent-scatterer screen for steel",
               "Tool: numpy, scipy     Key choice: dispersion < 0.25, 3 SD above 250 m median, 6 m radius"),
-             ("5   Flag pits with a candidate",
-              "Tool: geopandas     Key choice: candidate inside or within 6 m of the pit outline, per track")]
+             ("5   Compare wells with control spots",
+              "Tool: scipy     Key choice: Fisher's exact test by DEP status; never-drilled permits as negative control")]
     for k, (a, b) in enumerate(steps):
         ps = shape(s, f"Rounded Rectangle {7 + k}").text_frame.paragraphs
         set_para(ps[0], a)
         set_para(ps[1], b)
     risks = [("Images not on the lidar ground: NASA's elevation model sits in the canopy, so pixels shift 8 to 12 m",
               "Lidar-simulated brightness misaligned by over 2.5 m in a block, or a known building off its spot",
-              "Re-solve offsets per track, set corner reflectors, widen the radius by the offset"),
+              "Re-solve offsets per track, set corner reflectors, widen the hit radius by the offset"),
              ("Too few dates: 8 to 12 per track, where the steadiness rule assumes about 30",
               "Steady pixels exceed the 0.13% expected by chance, or flood open fields",
               "Require two tracks, raise the cutoff, add dates as released"),
-             ("Bright terrain mistaken for a target: slopes facing the radar",
-              "Candidates follow slope aspect and appear on one look direction only",
-              "Keep only candidates seen on two tracks; mask layover and shadow")]
+             ("No steel left to see: casings on plugged wells are often cut or buried",
+              "A known building passes, but wells match the control-spot rate",
+              "Compare by DEP status; active wells keep pumpjacks and tanks")]
     tbl = shape(s, "Table 13").table
     for i, row in enumerate(risks, start=1):
         for j, t in enumerate(row):
@@ -102,10 +102,11 @@ def slide3(s) -> None:
             drop_eg(tf)
             set_para(tf.paragraphs[0], t)
     notes(s, "About 1 minute 40 seconds. NASA's images sat 8 to 12 m off the lidar, which is two pixels at a pit, so "
-             "every image is placed on the lidar ground first. Placement is checked by simulating radar brightness from "
-             "the lidar and matching it block by block: 47 of 48 blocks agree within 2.5 m. The 6 m radius is half a pixel "
-             "diagonal, 3.5 m, plus 2.5 m placement. Tracks are screened separately, and a candidate seen on two tracks "
-             "is unlikely to be noise or bright terrain.")
+             "every image is placed on the lidar ground first. The ring cancels slope, canopy and viewing angle. "
+             "Control spots, copies of the outline 150 to 600 m away, show what chance gives. The steadiness cutoff "
+             "is from Ferretti, Prati and Rocca 2001. The brightness rule is 3 robust standard deviations of the "
+             "tile itself. The 6 m radius is half a pixel diagonal plus placement error. Tracks are measured apart "
+             "and combined per site. Placement is the first risk because a pit is only a few pixels wide. It is checked by simulating radar brightness from the lidar and matching it block by block: 47 of 48 blocks agree within 2.5 m. That check shares the simulation used to fit the offsets, so a known building and, ideally, corner reflectors give the independent test.")
 
 
 def main() -> None:
