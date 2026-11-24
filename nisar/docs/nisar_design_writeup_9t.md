@@ -121,7 +121,7 @@ Every step runs per track. Tracks are combined only after each site's contrast i
 
 [To be written after December 1.]
 
-**AI disclosure.** [One line stating where AI assistance shaped the work.]
+**AI disclosure.** Claude (Anthropic) wrote and ran much of the processing code, produced the figures, and drafted the text of the slides and this write-up from my direction; I set the question, site, band and constraints, reviewed every step, and the design decisions are mine.
 
 ## References
 
