@@ -473,7 +473,7 @@ All of these drive `notebooks/wellsight_v2/s5_eval/_cv5_pr_calibration_pit_pad_9
 - **Scope of the citation (2026-11-23):** only the D_A < 0.25 cutoff comes from this paper. The brightness cutoff (3 robust SD of brightness above the 250 m median, per track; was a fixed 6 dB) and the 6 m hit radius (pixel half-diagonal 3.5 m plus 2.5 m placement; was 15 m) are our own, set in `nisar/code/s5_eval/_nisar_steel_9t.py`.
 - **Generated:** `nisar/code/s5_eval/_nisar_steel_9t.py`; `nisar/docs/iterations/nisar_wells_steel_pads_slopes_9t.md`; `nisar/results/9t/nisar_steel_summary_9t.json`.
 - **Also used (2026-11-13):** D_A < 0.25 steadiness test in the Sentinel-1 small-metal CFAR experiment. Generated `nisar/sentinel1/code/_s1_metal_cfar_9t.py`; `nisar/sentinel1/docs/s1_metal_cfar_9t.md`; `nisar/sentinel1/results/9t/s1_metal_cfar_summary_fullyear_9t613590.json`.
-- **Source:** https://doi.org/10.1109/36.898661 — cite-only (paywalled IEEE).
+- **Source:** https://doi.org/10.1109/36.898661 — local copy `literature/papers/ferretti2001.pdf` (added by the user 2026-11-24). Relevant part: Sec. III-C "PS Candidates Selection", pp. 11–12, Eqs. 14–16, Fig. 1; Ancona test p. 13, Fig. 4 (34 ERS images, ~500 candidates).
 
 ### Berardino et al. 2002 — small-baseline InSAR time series
 - **Citation:** Berardino, P., Fornaro, G., Lanari, R., & Sansosti, E. (2002). "A new algorithm for surface deformation monitoring based on small baseline differential SAR interferograms." *IEEE Transactions on Geoscience and Remote Sensing* 40(11), 2375–2383. doi:10.1109/TGRS.2002.803792.

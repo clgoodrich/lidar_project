@@ -10,6 +10,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 
 
+## 2026-11-24 — Ferretti 2001 PDF read
+- User added `literature/papers/ferretti2001.pdf`. Read Sec. III-C. CITATIONS.md entry now points to the local copy and the section.
+- Confirmed: 0.25 is "typically 0.25", given without derivation. Fig. 1 simulates 34 dates. Speckle value ~0.5 is stated in the paper.
+
 ## 2026-11-24 — Checkpoint slide notes as an easy-to-read PDF
 
 - `nisar/writeup/nisar_checkpoint_slide_notes_9t.pdf` (5 pages), built by `nisar/writeup/_make_slide_notes_pdf.py` from the .md.
