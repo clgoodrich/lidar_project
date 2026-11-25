@@ -5,6 +5,16 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-25 — Write-up revised after outside review; DEP well coordinates measured against lidar pads
+
+- Review of `nisar/docs/nisar_technical_writeup_9t.md` checked point by point. Verdicts in its section 12.
+- **Corrected.** The HV pit sentence had the physics backwards (a canopy gap lowers L-band HV). S-band removed (no NISAR S-band over Pennsylvania; not checked against the observation plan).
+- **Added.** beta0 not gamma0; clutter and target-strength arithmetic; HH/HV only, no VV; moving pumpjacks; 3x3 coherence window; soil-moisture phase caveat.
+- **Already handled, now stated.** Lidar NAVD88 to ellipsoid via Geoid12B before geocoding. Rings kept clear of neighbouring pads, pits and roads. Swap test permutes whole series within each pad unit.
+- **New measurement.** Distance from 1,068 DEP wells on 9t to the nearest of 650 lidar pads: 25% inside a pad, 35% within 15 m, median 36 m to pad edge, 55% beyond 30 m. Active 33% inside, median 29 m. Plugged 18%, 43 m. Abandoned 10%, 47 m. Mixes coordinate error with wells that have no visible pad. Either way it is far larger than the 6 m hit radius, so the steel test measured DEP points, not wellheads.
+  - Output `nisar/results/9t/nisar_dep_well_pad_distance_9t.gpkg` (DEP points with distance to pad edge). Run inline from the steel script's own loaders.
+- **Next step promoted.** Run the steel screen per lidar pad polygon.
+
 ## 2026-11-25 — Technical write-up of the 9t NISAR work
 
 - New `nisar/docs/nisar_technical_writeup_9t.md`: question, study area, data and access, methods, findings, interpretation, errors caught, limits, next steps, withdrawn results, evidence.

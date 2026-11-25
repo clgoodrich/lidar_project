@@ -1,7 +1,7 @@
 # NISAR L-band at known oil and gas wells, tile 9t: technical write-up
 
-Written 2026-11-25. Covers all NISAR work on tile 9t that uses dates from 2026-06-01 onward.
-Every number comes from the result files listed in section 12. Earlier versions of the results, which used beta dates or other tiles, are withdrawn (section 10).
+Written 2026-11-25, revised the same day after an outside review (section 12). Covers all NISAR work on tile 9t that uses dates from 2026-06-01 onward.
+Every number comes from the result files listed in section 13. Earlier versions of the results, which used beta dates or other tiles, are withdrawn (section 10).
 
 ---
 
@@ -77,7 +77,7 @@ The work measures contrasts at known sites. It does not predict, rank or discove
 
 - NASA's images sat 8 to 12 m off the lidar on all three tracks. The offset always pointed away from the satellite and grew under taller canopy.
 - That pattern is what a too-high elevation model produces. NASA's elevation model sits partway up the canopy in forest.
-- A new geocoder placed each image on the lidar ground plus 10% of canopy height. Heights of 0, 10, 25 and 50% were tested, and 10% matched best.
+- A new geocoder placed each image on the lidar ground plus 10% of canopy height. Lidar heights were converted from NAVD88 to WGS84 ellipsoid height with NOAA Geoid12B first, so no geoid offset (about −33 m here) is left for the cross-correlation to absorb. Heights of 0, 10, 25 and 50% were tested, and 10% matched best.
 - The remaining shift was solved for each date and track. Radar brightness was simulated from lidar slope facing the satellite, and the simulation was cross-correlated with each image in 48 blocks (16 blocks × 3 tracks).
 - Pass rule: a block agrees within 2.5 m, half a 5 m pixel, so a target stays in its own pixel. The rule was set in the plan, not fitted.
 - Result: 47 of 48 blocks pass. The median block offset is 1.0 to 1.4 m per track.
@@ -126,11 +126,13 @@ Persistent-scatterer analysis has two steps. Step 1 picks steady, bright pixels.
 |---|---|---|---|
 | Pad coherence | Phase, back-to-back date pairs | Control spots | Work on a pad scrambles the surface |
 | Pool pits | Amplitude | Other pits | Calm water reflects radar away |
-| Pit motion | Interferometric phase | Ring and control spots | A settling pit would move |
+| Pit motion | Interferometric phase, 3 × 3 window (15 m, 9 looks) | Ring and control spots | A settling pit would move |
 | Slope motion | Phase on two ascending tracks | Each other | Slow creep can shear a casing |
 
 - **Pool pits** were defined from lidar before looking at the radar: at least half the floor flat, with weak lidar returns.
-- **Pad coherence events** are pairs whose drop is reached by only 1% of control-spot pairs. A swap test gives the p-value.
+- **Pad coherence events** are pairs whose drop is reached by only 1% of control-spot pairs. A swap test gives the p-value. Each unit is one pad and its five control spots, as whole time series over the same date pairs. Each permutation picks which series is the pad, so shared dates and repeated pads sit inside the null. Spatial correlation between neighbouring pads is not modelled.
+- **Coherence window.** Coherence and phase use a 3 × 3 window, 15 m and 9 looks. That is wider than most pits, so pit phase mixes with rim and forest. A 9-look estimator is biased upward, to about 0.3 for pure noise.
+- **Rings exclude neighbours.** Pad rings stay 10 m clear of other pads. Pit rings stay 5 m clear of every pit and road.
 
 ## 5. Findings
 
@@ -163,8 +165,9 @@ Persistent-scatterer analysis has two steps. Step 1 picks steady, bright pixels.
 | Pads | Summer HH | +0.02 | −0.03 to +0.06 | 0.77 |
 | Pads | Summer minus fall, HH | +0.15 | +0.09 to +0.19 | <0.001 |
 
-- Pits are slightly brighter than control spots in summer HV. HV responds to canopy volume, so this may be the canopy gap over a pit rather than the pit itself.
-- Pads are slightly darker than control spots in fall, after leaf drop.
+- Pits are slightly brighter than control spots in summer HV. A clean canopy gap would lower HV, because L-band HV rises with canopy volume, so a gap does not explain it. More likely causes: shrub regrowth or rough canopy edges around old pits, depolarising bounce between pit banks and trunks, or the radar-facing pit wall (next point).
+- **No terrain flattening.** GSLC brightness is β0: terrain-corrected in position, not in brightness. A flat pad inside a sloped ring, or a pit with a facing wall and a shadowed wall, differs in local incidence angle, and that alone changes brightness. The ring cancels the broad slope, not the feature's own micro-topography. Lidar-based radiometric terrain correction (γ0) has not been applied.
+- Pads are slightly darker than control spots in fall, after leaf drop. That fits the physics. Once leaves drop, trunks in the ring give strong trunk-ground double bounce in HH, while a cleared flat pad has no trunks and reflects away. Comparing gravel active pads with overgrown plugged pads would test this.
 - All contrasts are a few tenths of a dB. That is far below what one site can show against speckle.
 - Fall rests on 2 or 3 dates per track.
 - Hollows with no well have not been compared, so a pit contrast may mark depressions in general, not wells.
@@ -190,10 +193,14 @@ Pads lose coherence slightly more often than background. No dated well activity 
 
 - At 8 to 12 dates per track, NISAR L-band shows no well-linked persistent scatterer on 9t. Wells match the chance rate in every DEP status, in the open and under canopy.
 - The screen itself works: it finds the building, and its pass rate matches the expected chance level.
-- So the null result means one of three things, and the data cannot yet say which:
-  1. **No steel to see.** Plugged casings are cut or buried. Active wellheads may be too small at 5 m.
-  2. **No view through the trees.** Canopy blurs or blocks the echo. The building, in the open, cannot test this.
-  3. **Too few dates.** The 0.25 cutoff was designed for about 30 dates. With 8 to 12, speckle passes more often and real targets fail more often.
+- **The steel test measured DEP points, not wellheads.** Only 25% of DEP wells on 9t fall inside a lidar-mapped pad, and the median distance to the nearest pad edge is 36 m (section 12). A 6 m circle around the DEP point misses most wellheads even if they are bright.
+- Two further causes follow from radar physics and would apply even in the open:
+  1. **Too weak against clutter.** A 5 × 5 m forest pixel at about −8 dB holds about +6 dBsm of clutter. Passing the 6.5 to 7.2 dB rule needs a target of roughly +13 to +16 dBsm, about a 1.5 to 2 m corner reflector or a tank battery. A 15 to 20 cm casing standing 1 m high does not reach that unless it forms a clean corner with flat ground facing the radar. The building does.
+  2. **Wrong polarisation for a pipe.** NISAR collects HH and HV over North America, not VV. A vertical pipe couples strongly with VV and weakly with HH.
+- Three more causes the data cannot yet separate:
+  3. **No steel to see.** Plugged casings are cut or buried. Pumpjacks move between passes, which raises their dispersion. Active wells scored slightly below control spots (1.3% against 1.8%).
+  4. **No view through the trees.** The building, in the open, cannot test this. Leaf drop can also fail a real under-canopy target: it brightens 2 to 3 dB in fall and so looks unsteady.
+  5. **Too few dates.** The 0.25 cutoff was designed for about 30 dates.
 - The pit and pad brightness contrasts are real but tiny. They are useful as pooled evidence, not as a per-site marker.
 
 ## 7. Errors caught and corrected
@@ -217,17 +224,25 @@ Two outside reviews and one adversarial review checked the work. The 8 to 12 m p
 - Five control spots per site can shift results with the random draw. A 40-spot stability check has not been run.
 - L-band phase can lose stability under leaves within 12 days.
 - The 2019 lidar may not show the ground as it is now.
-- DEP well-coordinate error is not included in the hit radius, because it cannot be measured here.
+- DEP well-coordinate error is not included in the 6 m hit radius. Measured against lidar pads, it is far larger than 6 m (section 12).
+- Brightness is β0, not terrain-flattened γ0.
+- No VV polarisation over North America.
 
 ## 9. Next steps
 
 | Step | Why |
 |---|---|
 | Treat the screen as exploratory: rank pixels on brightness and steadiness instead of fixed cutoffs | No dB threshold needs to be set in advance |
+| **Run the steel screen per lidar pad polygon, with a small buffer**, instead of a 6 m circle on DEP points | Removes DEP coordinate error, the largest known cause of misses |
+| Lidar-based radiometric terrain correction (γ0) | Stops micro-topography leaking into pit and pad brightness |
+| Steadiness from leaf-on dates only | Stops leaf drop failing real under-canopy targets |
+| Report the brightness and steadiness pass rates separately | The 0.13% combined rate should not be compared with the bell-curve figure for brightness alone |
+| Azimuth sub-look coherence on the RSLCs | Steel stays coherent across sub-looks within one image while forest decorrelates. Needs no long stack and is unaffected by leaf drop |
+| HH/HV ratio and HH-HV coherence | Cancels shared calibration shifts and suppresses forest volume |
+| 10 to 15 open-sky buildings, bridge abutments or towers, kept out of the offset fit | An independent placement check without corner reflectors |
 | Relative calibration: match each date's histogram, within a track, to a reference date over stable pixels | Calibration constants cancel, so other datasets can join |
-| Add the October 2025 to January 2026 beta dates after relative calibration, checked on the building | Up to 15 more dates, closer to Ferretti's 30 |
+| Add the October 2025 to January 2026 beta dates after relative calibration | Up to 15 more dates. Matching will not fix beta cross-track banding or mask offsets, so accept them only if the median dispersion of stable background pixels does not rise, as well as the building check |
 | Sentinel-1 track 77 (C-band) on the same screen | Covers spring 2026 and gives an independent sensor |
-| NISAR S-band through ISRO's Bhoonidhi portal (not yet verified) | Same satellite and dates, shorter wave |
 | Rerun on reprocessed early-2026 L-band when ASF releases it (expected 2027) | Fills the spring gap. The pipeline reruns unchanged |
 | Compare wells in the open with wells under canopy, and check November leaf-off dates | Tests whether the radar sees through trees |
 | Compare pits with hollows that have no well | Tells a well marker from a depression marker |
@@ -257,7 +272,47 @@ These used dates before June 2026 or areas outside 9t, so they are no longer fin
 - **Excess.** Feature-minus-ring contrast, minus the same for control spots.
 - **Range request.** An HTTPS request for one byte range of a file instead of the whole file.
 
-## 12. Evidence and references
+## 12. Review response, 2026-11-25
+
+An outside review of this write-up raised the points below. Each was checked against the code and data.
+
+| Point | Verdict | Action |
+|---|---|---|
+| Brightness is β0, not terrain-flattened | Correct | Stated in 5.2 and 8. γ0 added to next steps |
+| A canopy gap would lower HV, not raise it | Correct. The earlier wording was backwards | 5.2 rewritten |
+| Fall pad darkening fits trunk-ground double bounce | Agreed | Added to 5.2, with a test |
+| Clutter and target-strength arithmetic | Agreed | Added to section 6 |
+| No VV over North America, and a vertical pipe favours VV | Agreed | Added to sections 6 and 8 |
+| Moving pumpjacks raise dispersion | Agreed | Added to section 6 |
+| 6 m radius is smaller than DEP coordinate error | **Correct, and now measured** (below) | Sections 6 and 8. Pad-polygon screen is the first next step |
+| No NISAR S-band over Pennsylvania | Accepted. ISRO's S-band plan targets India and selected sites. Not checked against the observation plan | S-band removed from next steps |
+| Leaf drop fails real under-canopy targets | Agreed | Leaf-on-only steadiness in next steps |
+| Report the two pass rates separately | Agreed | In next steps |
+| Rings may include neighbouring infrastructure | Already handled. Pad rings stay 10 m clear of other pads, pit rings 5 m clear of pits and roads | Stated in 4.6 |
+| Swap test ignores shared dates | Partly handled. Whole series over the same date pairs are swapped within each pad unit. Spatial correlation between pads is not modelled | Stated in 4.6 |
+| 3 × 3 coherence window, and its bias | Correct | Stated in 4.6 |
+| Sub-millimetre pit phase may be soil moisture | Agreed | Noted below |
+| Lidar heights not converted to ellipsoid | Already handled, with Geoid12B | Stated in 4.1 |
+| Beta histogram matching will not fix banding | Agreed | Beta next step now needs a stable-background dispersion check |
+
+**DEP coordinate check, new.** Distance from each of the 1,068 DEP wells on 9t to the nearest of the 650 lidar-mapped pads:
+
+| Group | Wells | Inside a pad | Within 15 m of a pad | Median distance to pad edge |
+|---|---|---|---|---|
+| All | 1,068 | 25% | 35% | 36 m |
+| Active | 616 | 33% | 42% | 29 m |
+| Plugged | 271 | 18% | 31% | 43 m |
+| DEP abandoned list | 151 | 10% | 18% | 47 m |
+| DEP orphan list | 20 | 20% | 25% | 38 m |
+| Never drilled | 10 | 10% | 20% | 91 m |
+
+- 55% of DEP points sit more than 30 m from any mapped pad.
+- This mixes two things. Some DEP points are misplaced, and some wells have no visible pad, especially old or abandoned ones. But even active wells, which should have pads, sit a median 29 m away. Coordinate error alone is far larger than 6 m.
+- So the steel result in 5.1 tests DEP points, not wellheads. It stands as reported, but it cannot show that wellheads lack persistent scatterers.
+
+**Pit motion caveat.** A −0.24 mm pit-against-ring phase difference is within what soil moisture and penetration-depth changes produce at L-band (De Zan et al., 2014). It is also within residual topographic phase from pit depth against ring canopy height. It is not evidence of subsidence.
+
+## 13. Evidence and references
 
 | Need | File |
 |---|---|
@@ -270,6 +325,7 @@ These used dates before June 2026 or areas outside 9t, so they are no longer fin
 | Pool pits | `nisar/results/9t/nisar_pit_pool_radar_9t.csv` |
 | Pit interferograms | `nisar/results/9t/nisar_gslc_interferogram_pits_vs_decoys_win3_9t_slc_5m_summary.json` |
 | Slope motion | `nisar/results/9t/nisar_slope_motion_summary_9t_slc.json` |
+| DEP well distance to pads | `nisar/results/9t/nisar_dep_well_pad_distance_9t.gpkg` |
 | Data availability search | `docs/analysis_log.md`, entry of 2026-11-24 |
 | Process document | `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md` |
 | Citations | `literature/CITATIONS.md` |
@@ -278,5 +334,6 @@ References:
 - Ferretti, A., Prati, C. and Rocca, F. (2001). Permanent scatterers in SAR interferometry. *IEEE Transactions on Geoscience and Remote Sensing* 39(1), 8–20. Local copy `literature/papers/ferretti2001.pdf`.
 - NASA ASF DAAC. NISAR Data User Guide, Available NISAR Data. https://nisar-docs.asf.alaska.edu/availability-overview/
 - NASA Earthdata. NISAR L-band data released. https://www.earthdata.nasa.gov/news/nisar-l-band-data-released-expanding-record-surface-changes
+- De Zan, F., Parizzi, A., Prats-Iraola, P. and López-Dekker, P. (2014). A SAR interferometric model for soil moisture. *IEEE Transactions on Geoscience and Remote Sensing* 52(1), 418–425. Cite-only.
 - USGS 3DEP, PA_WesternPA_2019_D20 lidar.
 - Pennsylvania DEP, oil and gas well records, April 2026 export.
