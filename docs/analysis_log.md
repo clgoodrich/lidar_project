@@ -5,6 +5,11 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-25 — Technical write-up of the 9t NISAR work
+
+- New `nisar/docs/nisar_technical_writeup_9t.md`: question, study area, data and access, methods, findings, interpretation, errors caught, limits, next steps, withdrawn results, evidence.
+- Numbers from `nisar/docs/NISAR_PROCESS_AND_OUTCOMES.md` (2026-11-23) and `nisar/results/9t/nisar_steel_summary_9t_slc.json`. Adds: the 2026-11-24 data-availability search and ASF release status, the 27 Jul to 10 Aug instrument gap, the open/canopy steel split, the never-drilled negative control, and the relative-calibration next steps.
+
 ## 2026-11-25 — 15-minute talk built (v20)
 
 - **Decision.** Cut the 45-minute v19 deck to 16 slides: setup, methodology, results. Data QA, corn rows, annotation inventory, derivative tour and backups removed.
