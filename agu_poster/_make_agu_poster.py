@@ -39,7 +39,7 @@ OUT_WIRE = HERE / "agu_poster_wireframe_44in.pptx"
 OUT_MOCK = HERE / "agu_poster_filled_44in.pptx"
 OUT_OUTLINE = HERE / "agu_poster_outline_44in.pptx"
 PAGE = 44.0
-WHITE, GREY = RGBColor(0xFF, 0xFF, 0xFF), RGBColor(0x6B, 0x6B, 0x6B)
+WHITE, GREY = RGBColor(0xFF, 0xFF, 0xFF), RGBColor(0x2B, 0x2F, 0x36)
 INK = RGBColor(0x2B, 0x2F, 0x36)         # charcoal body text
 UH_RED = RGBColor(0xC0, 0x00, 0x00)
 FIG_FILL = RGBColor(0xF2, 0xF2, 0xF2)
@@ -58,7 +58,7 @@ LOWER = BODY_TOP + 3.6 + HERO_H + 0.9     # top of the col 2 / col 3 sections un
 HEAD_PT, BODY_PT, CAP_PT = 54, 44, 32
 HEAD_H = 1.05              # one-line statement heading at 54 pt
 LINE = BODY_PT * 1.2 / 72  # body line height, in
-CHARS = 50                 # body characters per line across one column at 44 pt (Calibri, measured)
+CHARS = 40                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TITLE = "Detecting orphaned oil and gas wells under forest canopy with airborne lidar and U-Nets"
 TAKEAWAY = "Airborne lidar finds 9 in 10 old well pits and pads under forest canopy"
@@ -80,15 +80,13 @@ CAPS = {
               "satellite base map. North is up. Source: Pennsylvania DEP records."),
     "optical": ("Figure 2.", "Aerial photograph (left) and a lidar relief image with the trees removed (right) of "
                 "the same ground in study tile 9t."),
-    "channels": ("Figure 3.", "Seven terrain layers around one pit. Relief (25 m, 5 m), slope, position, openness (+, \u2212), roughness."),
-    "signs": ("Figure 4.", "Hand-drawn labels on hillshade. A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
-    "hero": ("Figure 5.", "Model predictions on one test block of tile 9t, 750 m by 375 m, 100 m scale bar. "
-             "Filled shapes are model output and outlines are hand-drawn labels. The block was withheld from "
-             "training. Insets show a found pit (1), a missed pit (2) and a detection with no label (3)."),
-    "setup": ("Figure 6.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
-    "valid": ("Figure 7.", "Spatial cross-validation. The tile is cut into 375 m blocks. In each test set the blue "
-              "blocks are held out and the grey blocks are used for training. White blocks are unused."),
-    "results": ("Figure 8.", "Precision-recall curves for held-out pits and pads, five test sets pooled, match "
+    "signs": ("Figure 3.", "Hand-drawn labels on hillshade. A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
+    "hero": ("Figure 4.", "Model output (filled) and hand-drawn labels (lines) on lidar hillshade, one test block of tile 9t withheld from training. "
+             "Coordinates in metres, EPSG:6346. (b) Found pit. (c) Missed pit. (d) Model pit with no hand-drawn label. "
+             "Scale bars: 100 m in (a), 10 m in (b) to (d)."),
+    "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
+    "valid": ("Figure 6.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
+    "results": ("Figure 7.", "Precision-recall curves for held-out pits and pads, five test sets pooled, match "
                 "rule IoU 0.3. AP is average precision."),
 }
 
@@ -96,14 +94,13 @@ SECTIONS = [
     ("Forests hide old wells from air photos", C1, BODY_TOP, [
         ("fig", "intro", 3.9, "Map of Pennsylvania documented orphan wells"),
         ("text", "Orphan wells have no owner left to plug them and can leak methane and brine. "
-                 "Pennsylvania lists thousands. Many more were never recorded.|Old wells have been "
-                 "read from lidar by eye (Sams et al.; Saint-Vincent et al. 2021). Can a model do it?"),
+                 "Pennsylvania lists thousands. Many more were never recorded.|Old wells have been read "
+                 "from lidar by eye (Sams et al.; Saint-Vincent et al. 2021). Can a model do it?"),
     ]),
     ("Lidar sees the ground under the trees", C1, None, [
         ("fig", "optical", 2.6, "Air photo and lidar of the same ground"),
-        ("text", "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020. We build a 0.5 m "
-                 "bare-earth model and seven terrain layers."),
-        ("fig", "channels", 2.2, "Seven-channel strip of one pit"),
+        ("text", "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020. We build a 0.5 m bare-earth model "
+                 "and seven terrain layers. They are relief at two scales, slope, position, openness and roughness."),
     ]),
     ("A well leaves a pit, a pad and a road", C1, None, [
         ("fig", "signs", 3.6, "Pit, pad, road on hillshade"),
@@ -111,25 +108,24 @@ SECTIONS = [
     ("One U-Net per sign", C2, LOWER, [
         ("fig", "setup", 3.0, "Pipeline diagram"),
         ("text", "A U-Net labels every pixel. Each sign gets its own model, which outputs a probability map. "
-                 "Pixels above a cutoff become outlines. The road model also learns drainage, the feature "
-                 "it most often confuses with road."),
+                 "Pixels above a cutoff become outlines. The road model also learns drainage, which it "
+                 "often confuses with road."),
     ]),
     ("Tested on blocks the model never saw", C2, None, [
         ("fig", "valid", 2.3, "Five test sets of 375 m blocks"),
-        ("text", "The tile is cut into 375 m blocks in five test sets. Each set (blue) is scored by a model "
-                 "trained without it. A detection counts when it overlaps a hand outline enough (IoU 0.3). "
-                 "Roads use their own held-out set of 735 segments."),
+        ("text", "Each set is scored by a model trained without it. A detection counts when it overlaps a "
+                 "hand outline (IoU 0.3). Roads use their own held-out set of 735 segments."),
     ]),
     ("Most found. Pads are the weak spot", C3, LOWER, [
-        ("table", None, 3.3, None),
+        ("table", None, 3.0, None),
         ("fig", "results", 3.2, "Precision-recall curves, pits and pads"),
-        ("text", "Recall is high for all three signs. Precision is lower, and lowest for pads. Pad edges are loose, so "
-                 "only 77% of pads match at IoU 0.5. Some unmatched detections may be real features we have not drawn."),
+        ("text", "Recall is high for all three signs. Precision is lower, lowest for pads. Pad edges are "
+                 "loose, so only 77% match at IoU 0.5. Some extra detections may be real features we have "
+                 "not drawn."),
     ]),
     ("What this means", C3, None, [
         ("text", "Lidar can screen large areas for unrecorded wells. Pits are the most reliable sign.|"
-                 "Limits. One survey block. Labels are our own reading of the ground. No site has been "
-                 "visited.|Next we add survey blocks and check sites in the field."),
+                 "Limits. One survey block, our own labels, no field visits.|Next: more survey blocks and field checks."),
     ]),
 ]
 # Results table: ann712 CV5, F2 threshold per fold, IoU 0.3 (docs/iterations/LEADERBOARD.md, 2026-09-17).
@@ -138,7 +134,7 @@ TABLE = [("", "Recall", "Precision", "IoU 0.5 recall"),
          ("Pits", "93%", "63%", "82%"),
          ("Pads", "91%", "59%", "77%"),
          ("Roads", "98%", "—", "—")]
-TABLE_NOTE = "Table 1. Held-out results, tile 9t (pits 503, pads 650, roads 735 segments). Recall and precision at IoU 0.3, F2 cutoff. Roads are scored by segments recovered."
+TABLE_NOTE = "Table 1. Held-out results, tile 9t. Recall and precision at IoU 0.3, F2 cutoff. Roads are scored by segments recovered."
 # --outline: stand-in text per section, (heading, [one entry per text block]). Space is kept at the real
 # text's height so the layout matches the mockup.
 OUTLINE = [
@@ -187,11 +183,11 @@ def text_box(slide, x, y, w, h, text, size, color, bold=False, italic=False, ali
         if lead and i == 0:
             r0 = p.add_run()
             r0.text = lead + " "
-            r0.font.size, r0.font.bold, r0.font.italic, r0.font.name = Pt(size), True, False, "Calibri"
+            r0.font.size, r0.font.bold, r0.font.italic, r0.font.name = Pt(size), False, False, "Georgia"
             r0.font.color.rgb = color
         r = p.add_run()
         r.text = line
-        r.font.size, r.font.bold, r.font.italic, r.font.name = Pt(size), bold, italic, "Calibri"
+        r.font.size, r.font.bold, r.font.italic, r.font.name = Pt(size), False, italic, "Georgia"
         r.font.color.rgb = color
     return tb
 
@@ -282,7 +278,7 @@ def main() -> None:
     for si, (head, x, y, blocks) in enumerate(SECTIONS):
         stand_texts = iter(OUTLINE[si][1])
         y = col_end[x] + 0.7 if y is None else y      # stack under the previous section in the column
-        text_box(s, x, y, CW, HEAD_H, OUTLINE[si][0] if outline else head, HEAD_PT, UH_RED, bold=True, anchor=MSO_ANCHOR.BOTTOM)
+        text_box(s, x, y, CW, HEAD_H, OUTLINE[si][0] if outline else head, HEAD_PT, INK, anchor=MSO_ANCHOR.BOTTOM)
         words += len(head.split())
         rule_y = y + HEAD_H + 0.12
         rect(x, rule_y, CW, 0.05, UH_RED)
@@ -308,7 +304,7 @@ def main() -> None:
                 text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 1.4,
                          "[Table note: define each column]" if outline else TABLE_NOTE[9:], 28, GREY,
                          lead=None if outline else "Table 1.")
-                top += h + 0.55
+                top += h + 0.3
             else:
                 th = text_height(key_or_text)
                 text_box(s, x, top, CW, th + 0.2, next(stand_texts) if outline else key_or_text, BODY_PT,
@@ -322,7 +318,7 @@ def main() -> None:
     # footer
     for head, x, w, note in (("References", X0, 19.0, "Ramachandran et al. 2024, Nat. Commun. 15, 7036. Saint-Vincent et al. 2021, J. Environ. Manage. 280, 111856. Sams et al., NETL, LiDAR mapping of 1860s oil fields, Pioneer Run (OSTI 1569995). USGS 3D Elevation Program"),
                              ("Acknowledgements", X0 + 19.8, 14.0, "Lidar from the USGS 3D Elevation Program, project PA_WesternPA_2019_D20. Well records from the Pennsylvania Department of Environmental Protection. Funding: [to add].")):
-        text_box(s, x, FOOT_TOP - 0.1, w, 0.8, head, 40, UH_RED, bold=True)
+        text_box(s, x, FOOT_TOP - 0.1, w, 0.8, head, 40, INK)
         rect(x, FOOT_TOP + 0.75, w, 0.05, UH_RED)
         ref = head == "References"
         if outline:

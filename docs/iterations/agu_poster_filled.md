@@ -17,6 +17,12 @@ Replace draft text with final text, and give every figure a numbered caption in 
 - Precision-recall figure now uses Precision and Recall axes and prints average precision on the curves.
 - Pennsylvania map replaced by a cropped version with a redrawn 100 km scale bar and a north arrow. The old export had its scale bar and legend cut off by the crop.
 
+## Revision 2026-11-25, style pass
+- All poster text and all in-figure text set in Georgia. No bold, one text colour (charcoal) outside the header band.
+- Figure 4 (map) rebuilt as a standard multi-panel figure. Panel (a) has easting and northing axes in EPSG:6346, a plain scale bar and a north arrow. Panels (b) to (d) are 50 m details with letters and 10 m scale bars. The legend is a framed box with line and fill symbols. The explanatory text that sat beside the insets moved into the caption.
+- Processing chain redrawn as a plain flow chart, square boxes with thin outlines and no fills.
+- The seven-layer thumbnail strip was removed. Its labels were too small to read at poster distance, and the layers are named in the text. Figures were renumbered 1 to 7.
+
 ## Numbers checked against source (2026-11-25)
 | Sign | n | Recall (IoU 0.3) | Precision | IoU 0.5 recall | AP (IoU 0.3) |
 |---|---|---|---|---|---|

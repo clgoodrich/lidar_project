@@ -26,6 +26,7 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 - **Numbers.** Re-derived from the per-fold CSVs. Pits 467 of 503, precision 0.633, IoU 0.5 recall 0.823. Pads 593 of 650, 0.587, 0.774. AP 0.818 and 0.745 from the summary JSON.
 - **Output.** `agu_poster/agu_poster_filled_44in.pptx`. Write-up: `docs/iterations/agu_poster_filled.md`.
 - **Open.** Co-authors, funding, QR target, aerial photo credit.
+- **Style pass (same day).** Georgia everywhere, no bold, one text colour. Map figure rebuilt as a standard multi-panel map. Layer strip removed.
 
 ## 2026-11-25 — 15-minute talk built (v20)
 

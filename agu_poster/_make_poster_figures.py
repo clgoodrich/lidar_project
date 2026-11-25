@@ -58,7 +58,7 @@ DECK = ROOT / "RemoteSensing_option2.pptx"
 PIT, PAD, ROAD = "#eb6834", "#2a78d6", "#1baf7a"
 INK, MUTED, HELD, OTHER = "#2B2F36", "#6B6B6B", "#2a78d6", "#D9D9D9"
 DPI = 200
-plt.rcParams.update({"font.family": "Calibri", "font.size": 32, "axes.edgecolor": MUTED,
+plt.rcParams.update({"font.family": "Georgia", "font.size": 32, "axes.edgecolor": MUTED,
                      "axes.labelcolor": INK, "xtick.color": INK, "ytick.color": INK})
 HALO = [pe.withStroke(linewidth=6, foreground="white")]
 
@@ -195,62 +195,78 @@ def classify(mask, truth, bounds):
 
 
 def fig_hero():
+    """Classic multi-panel map. (a) one held-out block with coordinate axes, (b-d) 50 m details, framed legend."""
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
     pits_rim, pads = ann("pit_outside"), ann("plat")
-    # the most feature-rich window that holds at least one found pit, one missed pit and one false alarm
     for b in pick_window()[:25]:
         pit_m, pad_m, cover = oof(b)
         x0, y0, x1, y1 = b
-        m = 30  # keep the insets off the edge
+        m = 30
         hits, miss, fa = classify(pit_m, pits_rim.cx[x0 + m:x1 - m, y0 + m:y1 - m], b)
         fa = [f for f in fa if x0 + m < f[0] < x1 - m and y0 + m < f[1] < y1 - m]
         if hits and miss and fa:
             break
-    fig = plt.figure(figsize=(27.6, 9.4), dpi=DPI)
-    ax = fig.add_axes([0.0, 0.10, 0.62, 0.90])
+    fig = plt.figure(figsize=(27.6, 8.2), dpi=DPI)
+    ax = fig.add_axes([0.085, 0.15, 0.49, 0.83])
     show_hs(ax, b)
-    overlay(ax, pad_m & cover, b, PAD, 0.30)
-    overlay(ax, pit_m & cover, b, PIT, 0.95)
-    outline(ax, pads, b, PAD, 3, "--")
-    outline(ax, pits_rim, b, PIT, 3)
-    bare(ax, b)
-    scalebar(ax, b, 100, "100 m")
+    overlay(ax, pad_m & cover, b, PAD, 0.28)
+    overlay(ax, pit_m & cover, b, PIT, 0.75)
+    for g, col, ls in ((pads, PAD, "--"), (pits_rim, PIT, "-")):
+        gg = g.cx[x0:x1, y0:y1]
+        if len(gg):
+            gg.boundary.plot(ax=ax, color=col, linewidth=2.2, linestyle=ls)
+    ax.set_xlim(x0, x1); ax.set_ylim(y0, y1)
+    ax.set_xticks(np.arange(np.ceil(x0 / 250) * 250, x1 + 1, 250))
+    ax.set_yticks(np.arange(np.ceil(y0 / 100) * 100 + 100, y1 + 1, 100))
+    ax.ticklabel_format(useOffset=False, style="plain")
+    ax.tick_params(labelsize=28, length=8, width=1.5)
+    ax.set_xlabel("Easting (m), EPSG:6346", fontsize=30)
+    ax.set_ylabel("Northing (m)", fontsize=30)
+    for s in ax.spines.values():
+        s.set_linewidth(1.5); s.set_color(INK)
+    # plain scale bar and north arrow, drawn on the map
+    bx, by = x0 + 30, y0 + 28
+    ax.plot([bx, bx + 100], [by, by], color="white", lw=11, solid_capstyle="butt")
+    ax.plot([bx, bx + 100], [by, by], color="black", lw=6, solid_capstyle="butt")
+    ax.text(bx + 50, by + 10, "100 m", ha="center", va="bottom", fontsize=26, color="white", path_effects=[pe.withStroke(linewidth=5, foreground="black")])
+    ax.annotate("", xy=(x1 - 30, y1 - 40), xytext=(x1 - 30, y1 - 78),
+                arrowprops=dict(arrowstyle="-|>", color="white", lw=3, mutation_scale=28))
+    ax.text(x1 - 30, y1 - 6, "N", ha="center", va="top", fontsize=28, color="white", path_effects=[pe.withStroke(linewidth=5, foreground="black")])
+    ax.text(0.012, 0.97, "(a)", transform=ax.transAxes, va="top", fontsize=34, color="black", path_effects=HALO)
+    # detail windows
     picks = []
-    g = max(hits, key=lambda g: g.area)
-    picks.append(("Found", "The model's pit (solid) sits inside|the hand-drawn rim.", g.centroid.x, g.centroid.y))
-    g = miss[0]
-    picks.append(("Missed", "A hand-drawn pit with no|model pit inside it.", g.centroid.x, g.centroid.y))
-    f = max(fa, key=lambda t: t[2])
-    picks.append(("Not in our labels", "The model marked a pit we never|drew. It may be one we overlooked.",
-                  f[0], f[1]))
+    g = max(hits, key=lambda g: g.area); picks.append(("b", g.centroid.x, g.centroid.y))
+    g = miss[0]; picks.append(("c", g.centroid.x, g.centroid.y))
+    f = max(fa, key=lambda t_: t_[2]); picks.append(("d", f[0], f[1]))
     half = 25
-    for i, (lab, expl, cx, cy) in enumerate(picks):
+    for i, (lab, cx, cy) in enumerate(picks):
         ib = (cx - half, cy - half, cx + half, cy + half)
-        ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec="white", lw=7))
-        ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec=INK, lw=3.5))
-        ax.text(ib[0], ib[3] + 4, str(i + 1), fontsize=36, fontweight="bold", color=INK, path_effects=HALO)
-        y0 = 1 - (i + 1) * 0.333 + 0.02
-        ia = fig.add_axes([0.632, y0, 0.115, 0.30])
+        ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec="black", lw=2.5))
+        ax.text(ib[2] + 6, ib[3], lab, fontsize=32, color="black", va="top", path_effects=HALO)
+        side = 0.30
+        ia = fig.add_axes([0.610, 0.68 - i * 0.325 + 0.02, side * 8.2 / 27.6, side])
         pm, _, _ = oof(ib)
         show_hs(ia, ib)
-        overlay(ia, pm, ib, PIT, 0.95)          # insets are about pits, so pads are outline only
-        outline(ia, pads, ib, PAD, 3, "--")
-        outline(ia, pits_rim, ib, PIT, 5)
-        bare(ia, ib)
-        fig.text(0.758, y0 + 0.22, f"{i + 1}  {lab}", fontsize=34, fontweight="bold", color=INK, va="center")
-        fig.text(0.758, y0 + 0.10, expl.replace("|", chr(10)), fontsize=28, color=INK, va="center", linespacing=1.15)
-    # legend, direct and in words
-    lx = 0.0
-    for txt, col, kind in (("Pit found by model", PIT, "fill"), ("Pit drawn by hand", PIT, "line"),
-                           ("Pad found by model", PAD, "fill"), ("Pad drawn by hand", PAD, "dash")):
-        y = 0.045
-        if kind == "fill":
-            fig.patches.append(Rectangle((lx, y - 0.016), 0.014, 0.032, transform=fig.transFigure, color=col,
-                                         alpha=0.95 if col == PIT else 0.45))
-        else:
-            fig.lines.append(plt.Line2D([lx, lx + 0.014], [y, y], transform=fig.transFigure, color=col, lw=5,
-                                        ls="--" if kind == "dash" else "-"))
-        fig.text(lx + 0.019, y, txt, fontsize=28, va="center", color=INK)
-        lx += 0.158
+        overlay(ia, pm, ib, PIT, 0.75)
+        for gdf, col, ls in ((pads, PAD, "--"), (pits_rim, PIT, "-")):
+            gg = gdf.cx[ib[0]:ib[2], ib[1]:ib[3]]
+            if len(gg):
+                gg.boundary.plot(ax=ia, color=col, linewidth=2.5, linestyle=ls)
+        ia.set_xlim(ib[0], ib[2]); ia.set_ylim(ib[1], ib[3]); ia.set_xticks([]); ia.set_yticks([])
+        for s in ia.spines.values():
+            s.set_linewidth(1.5); s.set_color("black")
+        ia.text(0.04, 0.96, f"({lab})", transform=ia.transAxes, va="top", fontsize=30, color="black", path_effects=HALO)
+        ia.plot([ib[0] + 4, ib[0] + 14], [ib[1] + 4, ib[1] + 4], color="black", lw=5, solid_capstyle="butt")
+        ia.text(ib[0] + 16, ib[1] + 3, "10 m", fontsize=22, color="black", va="bottom", path_effects=HALO)
+    handles = [Patch(fc=PIT, ec="none", alpha=0.75, label="Pit, model output"),
+               Line2D([0], [0], color=PIT, lw=3, label="Pit, hand-drawn"),
+               Patch(fc=PAD, ec="none", alpha=0.28, label="Pad, model output"),
+               Line2D([0], [0], color=PAD, lw=3, ls="--", label="Pad, hand-drawn")]
+    lg = fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.705, 0.98), fontsize=30, frameon=True,
+                    fancybox=False, edgecolor="black", framealpha=1.0, borderpad=0.8, labelspacing=0.9,
+                    handlelength=2.2)
+    lg.get_frame().set_linewidth(1.5)
     fig.savefig(OUT / "poster_hero_heldout_9t.png", dpi=DPI)
     plt.close(fig)
     return b, len(hits), len(miss), len(fa)
@@ -300,7 +316,7 @@ def fig_gallery():
             else:
                 outline(ax, gdf, b, col, 4, ls)
             bare(ax, b)
-            ax.text(0.04, 0.95, lab, transform=ax.transAxes, va="top", fontsize=34, fontweight="bold", color=INK, path_effects=HALO)
+            ax.text(0.04, 0.95, lab, transform=ax.transAxes, va="top", fontsize=34, fontweight="normal", color=INK, path_effects=HALO)
             ax.text(0.04, 0.05, f"{2 * half} m", transform=ax.transAxes, fontsize=24, color=INK, path_effects=HALO)
     fig.savefig(OUT / "poster_signs_gallery_9t.png", dpi=DPI)
     plt.close(fig)
@@ -310,13 +326,13 @@ def fig_folds():
     pf = block_fold("pit")
     allb = gpd.read_file(D05 / "pit_blocks_9t.gpkg", layer="blocks")
     fig, axs = plt.subplots(1, 5, figsize=(13.47, 2.9), dpi=DPI)
-    fig.subplots_adjust(left=0, right=1, top=0.80, bottom=0, wspace=0.06)
+    fig.subplots_adjust(left=0, right=1, top=0.72, bottom=0, wspace=0.06)
     for k, ax in enumerate(axs):
         allb.plot(ax=ax, color="white", edgecolor=OTHER, lw=0.8)
         pf[pf.fold != k].plot(ax=ax, color=OTHER, edgecolor="white", lw=0.8)
         pf[pf.fold == k].plot(ax=ax, color=HELD, edgecolor="white", lw=0.8)
         ax.set_axis_off()
-        ax.set_title(f"Test {k + 1}", fontsize=28, color=INK)
+        ax.set_title(f"Test {k + 1}", fontsize=26, color=INK, pad=14)
     fig.savefig(OUT / "poster_cv_folds_pit_9t.png", dpi=DPI)
     plt.close(fig)
 
@@ -334,10 +350,10 @@ def fig_pipeline():
         for i, s in enumerate(row):
             x = 0.05 + (i if r == 0 else 3 - i) * (w + gap)
             hi = s.startswith("U-Net")  # the model step is the one shaded box
-            ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02,rounding_size=0.15",
-                                        fc="#DCE8F8" if hi else "#F2F2F2", ec="none"))
+            ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="square,pad=0.0",
+                                        fc="white", ec=INK, lw=2.5))
             ax.text(x + w / 2, y + h / 2, s, ha="center",
-                    va="center", fontsize=32, color=INK, fontweight="bold" if hi else "normal", linespacing=1.0)
+                    va="center", fontsize=32, color=INK, fontweight="normal", linespacing=1.0)
             if prev is not None:
                 px, py = prev
                 if py == y and x > px:
@@ -363,7 +379,7 @@ def fig_pr():
         ax.plot(s.recall, s.precision, color=col, lw=5)
         i = int(len(s) * (0.80 if name == "pit" else 0.62))
         ax.text(s.recall.iloc[i], s.precision.iloc[i] + (0.05 if name == "pit" else -0.24), lab, color=INK, fontsize=34,
-                fontweight="bold", ha="center", path_effects=HALO)
+                fontweight="normal", ha="center", path_effects=HALO)
     ax.set_xlim(0, 1); ax.set_ylim(0, 1.02); ax.set_yticks([0, 0.5, 1]); ax.set_xticks([0, 0.25, 0.5, 0.75, 1])
     ax.set_xlabel("Recall"); ax.set_ylabel("Precision")
     ax.grid(color="#E6E6E6", lw=1.5); ax.spines[["top", "right"]].set_visible(False)
@@ -379,7 +395,7 @@ def fig_optical():
     fig.subplots_adjust(left=0, right=1, top=1, bottom=0, wspace=0.03)
     for ax, im, t in zip(axs, ims, ("Air photo", "Lidar, trees removed")):
         ax.imshow(im, aspect="auto"); ax.set_axis_off()
-        ax.text(0.03, 0.94, t, transform=ax.transAxes, va="top", fontsize=30, fontweight="bold", color=INK, path_effects=HALO)
+        ax.text(0.03, 0.94, t, transform=ax.transAxes, va="top", fontsize=30, fontweight="normal", color=INK, path_effects=HALO)
     fig.savefig(OUT / "poster_optical_vs_lidar_9t.png", dpi=DPI)
     plt.close(fig)
 
