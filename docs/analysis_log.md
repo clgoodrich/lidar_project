@@ -5,6 +5,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-25 — 15-minute talk built (v20)
+
+- **Decision.** Cut the 45-minute v19 deck to 16 slides: setup, methodology, results. Data QA, corn rows, annotation inventory, derivative tour and backups removed.
+- **Method.** Slide subset copied from v19 by `docs/presentation/v20_15min/_build_v20_15min_from_v19.py`. No numbers changed.
+- **Output.** `docs/presentation/v20_15min/WellSight_Presentation v20 15min.pptx`. Write-up: `docs/iterations/talk_15min_v20.md`.
+- **Open.** Pipeline-overview picture may still show data QA. Notes not trimmed. Not rehearsed.
+
+---
+
 ## 2026-11-24 — ASF search: no NISAR GSLC covers 9t from February to May 2026
 
 - **Question.** Can the final project use January to May 2026 NISAR dates over 9t?
