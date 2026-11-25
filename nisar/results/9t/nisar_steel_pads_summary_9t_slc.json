@@ -1,0 +1,301 @@
+{
+  "params": {
+    "buffer_m": 5.0,
+    "n_ctrl": 5,
+    "seed": 20261125,
+    "da_max": 0.25,
+    "bright_sd": 3.0,
+    "bg_m": 250.0,
+    "ctrl_shift_m": [
+      150,
+      600
+    ],
+    "ctrl_clear_of_wells_m": 60,
+    "ctrl_clear_of_pads_m": 30,
+    "canopy_match": 0.15
+  },
+  "pass_rates": {
+    "all_post_june": {
+      "26": {
+        "n_dates": 8,
+        "cut_db": 7.217,
+        "bright_pass": 0.0036,
+        "steady_pass": 0.04587,
+        "both_pass": 0.00132
+      },
+      "90": {
+        "n_dates": 12,
+        "cut_db": 7.016,
+        "bright_pass": 0.00449,
+        "steady_pass": 0.01856,
+        "both_pass": 0.00134
+      },
+      "162": {
+        "n_dates": 12,
+        "cut_db": 6.484,
+        "bright_pass": 0.00403,
+        "steady_pass": 0.01026,
+        "both_pass": 0.00053
+      }
+    },
+    "summer_leaf_on": {
+      "26": {
+        "n_dates": 4,
+        "cut_db": 8.952,
+        "bright_pass": 0.00133,
+        "steady_pass": 0.22028,
+        "both_pass": 0.001
+      },
+      "90": {
+        "n_dates": 8,
+        "cut_db": 7.872,
+        "bright_pass": 0.00294,
+        "steady_pass": 0.0653,
+        "both_pass": 0.00155
+      },
+      "162": {
+        "n_dates": 8,
+        "cut_db": 7.25,
+        "bright_pass": 0.00293,
+        "steady_pass": 0.04129,
+        "both_pass": 0.00084
+      }
+    }
+  },
+  "tests": [
+    {
+      "dates": "all_post_june",
+      "cls": "all",
+      "n_pads": 649,
+      "n_ctrl": 2702,
+      "pads_hit_any": 0.2,
+      "ctrl_hit_any": 0.187,
+      "odds_any": 1.09,
+      "p_any": 0.43,
+      "pads_hit_2plus": 0.028,
+      "ctrl_hit_2plus": 0.022,
+      "p_2plus": 0.39
+    },
+    {
+      "dates": "all_post_june",
+      "cls": "cover_cls=canopy",
+      "n_pads": 589,
+      "n_ctrl": 2507,
+      "pads_hit_any": 0.199,
+      "ctrl_hit_any": 0.187,
+      "odds_any": 1.08,
+      "p_any": 0.52,
+      "pads_hit_2plus": 0.022,
+      "ctrl_hit_2plus": 0.02,
+      "p_2plus": 0.75
+    },
+    {
+      "dates": "all_post_june",
+      "cls": "cover_cls=open",
+      "n_pads": 60,
+      "n_ctrl": 195,
+      "pads_hit_any": 0.217,
+      "ctrl_hit_any": 0.185,
+      "odds_any": 1.22,
+      "p_any": 0.58,
+      "pads_hit_2plus": 0.083,
+      "ctrl_hit_2plus": 0.046,
+      "p_2plus": 0.33
+    },
+    {
+      "dates": "all_post_june",
+      "cls": "size_cls=large",
+      "n_pads": 216,
+      "n_ctrl": 816,
+      "pads_hit_any": 0.208,
+      "ctrl_hit_any": 0.218,
+      "odds_any": 0.94,
+      "p_any": 0.78,
+      "pads_hit_2plus": 0.046,
+      "ctrl_hit_2plus": 0.022,
+      "p_2plus": 0.06
+    },
+    {
+      "dates": "all_post_june",
+      "cls": "size_cls=mid",
+      "n_pads": 216,
+      "n_ctrl": 895,
+      "pads_hit_any": 0.231,
+      "ctrl_hit_any": 0.18,
+      "odds_any": 1.37,
+      "p_any": 0.1,
+      "pads_hit_2plus": 0.023,
+      "ctrl_hit_2plus": 0.026,
+      "p_2plus": 1.0
+    },
+    {
+      "dates": "all_post_june",
+      "cls": "size_cls=small",
+      "n_pads": 217,
+      "n_ctrl": 991,
+      "pads_hit_any": 0.161,
+      "ctrl_hit_any": 0.166,
+      "odds_any": 0.96,
+      "p_any": 0.92,
+      "pads_hit_2plus": 0.014,
+      "ctrl_hit_2plus": 0.019,
+      "p_2plus": 0.78
+    },
+    {
+      "dates": "all_post_june",
+      "cls": "status_cls=active",
+      "n_pads": 230,
+      "n_ctrl": 842,
+      "pads_hit_any": 0.191,
+      "ctrl_hit_any": 0.152,
+      "odds_any": 1.32,
+      "p_any": 0.16,
+      "pads_hit_2plus": 0.026,
+      "ctrl_hit_2plus": 0.019,
+      "p_2plus": 0.44
+    },
+    {
+      "dates": "all_post_june",
+      "cls": "status_cls=no_dep_well",
+      "n_pads": 344,
+      "n_ctrl": 1558,
+      "pads_hit_any": 0.206,
+      "ctrl_hit_any": 0.206,
+      "odds_any": 1.0,
+      "p_any": 1.0,
+      "pads_hit_2plus": 0.035,
+      "ctrl_hit_2plus": 0.026,
+      "p_2plus": 0.36
+    },
+    {
+      "dates": "all_post_june",
+      "cls": "status_cls=plugged_or_abandoned",
+      "n_pads": 75,
+      "n_ctrl": 302,
+      "pads_hit_any": 0.2,
+      "ctrl_hit_any": 0.182,
+      "odds_any": 1.12,
+      "p_any": 0.74,
+      "pads_hit_2plus": 0.0,
+      "ctrl_hit_2plus": 0.013,
+      "p_2plus": 0.59
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "all",
+      "n_pads": 649,
+      "n_ctrl": 2707,
+      "pads_hit_any": 0.225,
+      "ctrl_hit_any": 0.21,
+      "odds_any": 1.09,
+      "p_any": 0.39,
+      "pads_hit_2plus": 0.042,
+      "ctrl_hit_2plus": 0.034,
+      "p_2plus": 0.34
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "cover_cls=canopy",
+      "n_pads": 589,
+      "n_ctrl": 2495,
+      "pads_hit_any": 0.222,
+      "ctrl_hit_any": 0.212,
+      "odds_any": 1.07,
+      "p_any": 0.58,
+      "pads_hit_2plus": 0.036,
+      "ctrl_hit_2plus": 0.034,
+      "p_2plus": 0.8
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "cover_cls=open",
+      "n_pads": 60,
+      "n_ctrl": 212,
+      "pads_hit_any": 0.25,
+      "ctrl_hit_any": 0.189,
+      "odds_any": 1.43,
+      "p_any": 0.36,
+      "pads_hit_2plus": 0.1,
+      "ctrl_hit_2plus": 0.038,
+      "p_2plus": 0.09
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "size_cls=large",
+      "n_pads": 216,
+      "n_ctrl": 836,
+      "pads_hit_any": 0.296,
+      "ctrl_hit_any": 0.233,
+      "odds_any": 1.38,
+      "p_any": 0.063,
+      "pads_hit_2plus": 0.06,
+      "ctrl_hit_2plus": 0.043,
+      "p_2plus": 0.28
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "size_cls=mid",
+      "n_pads": 216,
+      "n_ctrl": 877,
+      "pads_hit_any": 0.204,
+      "ctrl_hit_any": 0.219,
+      "odds_any": 0.91,
+      "p_any": 0.71,
+      "pads_hit_2plus": 0.042,
+      "ctrl_hit_2plus": 0.032,
+      "p_2plus": 0.53
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "size_cls=small",
+      "n_pads": 217,
+      "n_ctrl": 994,
+      "pads_hit_any": 0.175,
+      "ctrl_hit_any": 0.182,
+      "odds_any": 0.95,
+      "p_any": 0.85,
+      "pads_hit_2plus": 0.023,
+      "ctrl_hit_2plus": 0.028,
+      "p_2plus": 0.82
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "status_cls=active",
+      "n_pads": 230,
+      "n_ctrl": 859,
+      "pads_hit_any": 0.2,
+      "ctrl_hit_any": 0.173,
+      "odds_any": 1.19,
+      "p_any": 0.38,
+      "pads_hit_2plus": 0.057,
+      "ctrl_hit_2plus": 0.04,
+      "p_2plus": 0.27
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "status_cls=no_dep_well",
+      "n_pads": 344,
+      "n_ctrl": 1548,
+      "pads_hit_any": 0.224,
+      "ctrl_hit_any": 0.222,
+      "odds_any": 1.01,
+      "p_any": 0.94,
+      "pads_hit_2plus": 0.038,
+      "ctrl_hit_2plus": 0.032,
+      "p_2plus": 0.61
+    },
+    {
+      "dates": "summer_leaf_on",
+      "cls": "status_cls=plugged_or_abandoned",
+      "n_pads": 75,
+      "n_ctrl": 300,
+      "pads_hit_any": 0.307,
+      "ctrl_hit_any": 0.253,
+      "odds_any": 1.3,
+      "p_any": 0.38,
+      "pads_hit_2plus": 0.013,
+      "ctrl_hit_2plus": 0.03,
+      "p_2plus": 0.69
+    }
+  ]
+}

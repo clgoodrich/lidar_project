@@ -5,6 +5,18 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-25 — Steel screen at lidar pads; top targets on NAIP; review follow-ups
+
+- **Pad-polygon steel test.** `nisar/code/s5_eval/_nisar_steel_pads_9t.py --slc`. Same SBT pixels as the published steel test (cutoffs 7.217 / 7.016 / 6.484 dB confirmed). Site = lidar pad + 5 m. 5 same-shape control polygons per pad, shifted 150-600 m, 60 m from DEP wells, 30 m from pads, canopy within 0.15. Seed 20261125.
+  - All post-June: 649 pads hit 20.0%, controls 18.7%, p 0.43. 2+ tracks 2.8% vs 2.2%.
+  - Summer only: 22.5% vs 21.0%, p 0.39.
+  - No subgroup (open/canopy, size tercile, DEP status inside) differs at p < 0.05. Leads: active-well pads 19.1% vs 15.2% (p 0.16); large pads 2+ tracks 4.6% vs 2.2% (p 0.06).
+  - First run loaded NASA's GSLC placement by mistake (no `--slc`; cutoffs 6.4-6.7 dB). Caught by the SBT count mismatch with the published summary. Output deleted, rerun on the lidar-placed stack.
+- **Separate pass rates.** Brightness 0.36-0.45% of valid pixels, steadiness 1.0-4.6%, both 0.05-0.13%. Independence would give < 0.02%, so bright pixels are 4-8x steadier than chance. The 0.13% bell-curve comparison was misleading.
+- **Top 40 targets on NAIP.** `nisar/code/s7_analysis/_nisar_naip_chips_9t.py`, NAIP 2022-06-19 0.6 m from Planetary Computer (newest over 9t). Visual classes: 9 buildings, 8 metal yards, 2 oilfield (tanks on lined pad; small structure by a DEP well), 1 possible, 6 forested valley walls, 10 forest, 4 open. Classes `nisar/results/9t/nisar_top_targets_naip_classes_9t.csv`.
+- **Hardware set not built.** 60 open pads inspected. Equipment visible on 3-4. Most lidar-open pads are under crowns in 2022 leaf-on photos. Needs leaf-off imagery or a field visit.
+- Write-up `nisar/docs/nisar_technical_writeup_9t.md` gains 5.1a, 5.1b, DEP status and unmapped-well caveats, and a rewritten section 6.
+
 ## 2026-11-25 — Write-up revised after outside review; DEP well coordinates measured against lidar pads
 
 - Review of `nisar/docs/nisar_technical_writeup_9t.md` checked point by point. Verdicts in its section 12.

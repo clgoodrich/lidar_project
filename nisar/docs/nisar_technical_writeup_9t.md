@@ -147,10 +147,58 @@ Persistent-scatterer analysis has two steps. Step 1 picks steady, bright pixels.
 
 - Steady bright pixels make up 0.13%, 0.13% and 0.05% of valid pixels on tracks 26, 90 and 162. That is close to the 0.13% a bell curve predicts for the brightness rule alone.
 - No well has a steady bright pixel on two or more tracks.
-- Active wells, which keep pumpjacks and tanks, do no better than plugged ones.
+- Active wells do no better than plugged ones. This comparison trusts DEP status, which may be stale. Stripper or idle wells can be listed active, and plugged wells can keep tanks or rusted hardware.
+- Control spots stay 60 m from mapped wells and 30 m from mapped pads. Undocumented historic wells can still fall in the control pool, which would push any contrast toward zero.
 - **Open against canopy.** Splitting at 30% canopy cover changes nothing. Under canopy, plugged and abandoned wells have zero hits. In the open, abandoned wells hit 2.9% against 1.5% at control spots, on 69 wells, which is about two wells.
 - **Brightness alone.** Abandoned wells are slightly brighter than their control spots (AUC 0.55, p = 0.031). It is one of several comparisons, and the steadiness rule does not support it, so it is a lead, not a finding.
 - **The building passes.** A steady bright pixel sits 2.5 m from it on track 162. A target seen on two tracks sits 9 m away. But the building is in the open and far larger than a wellhead. It shows the screen works, not that L-band sees a casing through trees.
+
+### 5.1a Steel at lidar pads instead of DEP points (2026-11-25)
+
+The same steady-bright pixels, tested against lidar pad polygons. Each pad has a 5 m buffer. Each has 5 control polygons of its own shape, shifted 150 to 600 m, at least 60 m from any DEP well and 30 m from any pad, with canopy cover within 0.15. A pad is hit when any steady bright pixel falls inside it. Same shape and size, so pad area gives no advantage.
+
+| Dates | Pads | Pads hit, any track | Controls hit | p (Fisher) | Pads hit, 2+ tracks | Controls, 2+ tracks |
+|---|---|---|---|---|---|---|
+| All post-June | 649 | 20.0% | 18.7% | 0.43 | 2.8% | 2.2% |
+| Summer only (leaf-on) | 649 | 22.5% | 21.0% | 0.39 | 4.2% | 3.4% |
+
+| Subgroup, all post-June | Pads | Pads hit | Controls hit | p |
+|---|---|---|---|---|
+| Open (cover < 0.30) | 60 | 21.7% | 18.5% | 0.58 |
+| Canopy | 589 | 19.9% | 18.7% | 0.52 |
+| Large third | 216 | 20.8% | 21.8% | 0.78 |
+| Active DEP well inside | 230 | 19.1% | 15.2% | 0.16 |
+| Plugged or abandoned only | 75 | 20.0% | 18.2% | 0.74 |
+| No DEP well inside | 344 | 20.6% | 20.6% | 1.00 |
+
+- With DEP coordinate error removed, pads still sit at chance. No subgroup differs at p < 0.05 on the main measure.
+- The leaf-on run, which leaf drop cannot penalise, gives the same answer.
+- The strongest leans are small: pads with an active DEP well (19.1% against 15.2%) and large pads on 2+ tracks (4.6% against 2.2%, p = 0.06). They are leads for a larger sample, not findings.
+- File: `nisar/results/9t/nisar_steel_pads_summary_9t_slc.json`, per pad `nisar_steel_pads_sites_9t_slc.gpkg`.
+
+**The two rules on their own.** Brightness passes 0.36 to 0.45% of valid pixels per track, about three times the 0.13% a bell curve gives, because radar brightness in dB is right-skewed. Steadiness passes 1.0 to 4.6%. Both together pass 0.05 to 0.13%. If the rules were independent, both together would pass under 0.02%. The observed rate is 4 to 8 times that, so bright pixels are steadier than chance. Real stable targets exist on 9t. They are just not at wells or pads.
+
+### 5.1b What the steady bright targets are (2026-11-25)
+
+The 40 strongest targets (all on 2 or 3 tracks, ranked by brightness) were inspected on NAIP aerial photos (June 2022, 0.6 m) and the lidar relief map.
+
+| What sits at the target | Targets |
+|---|---|
+| Houses and outbuildings | 9 |
+| Metal yards: stacked pipe, equipment, trailers | 8 |
+| Oilfield equipment (tanks on a lined pad; a small structure beside a DEP well) | 2 |
+| Possible object at a clearing edge | 1 |
+| Forested valley walls, nothing visible | 6 |
+| Forest, nothing visible | 10 |
+| Open ground or road, nothing visible | 4 |
+
+- Half the strongest targets are built metal or buildings. NISAR finds hard targets well when they are large.
+- Only 2 of 40 are oilfield equipment. Both are larger than a wellhead.
+- Six sit on forested valley walls with nothing visible. That fits brightness without terrain flattening (β0) on slopes facing the radar.
+- Several targets fall in the same pipe yard, so the 40 are fewer distinct places than they look.
+- Classification is by eye, by the analyst. Files: `nisar/results/9t/nisar_top_targets_naip_classes_9t.csv`, chips `nisar/results/9t/figures/nisar_naip_chips_targets_p1_9t.png` to `_p4_9t.png`.
+
+**A verified hardware set could not be built from NAIP.** All 60 open pads were inspected (`nisar_naip_chips_open_pads_p1_9t.png` to `_p6_9t.png`). Only 3 or 4 show any equipment. Most "open" pads, open in the 2019 lidar, are under tree crowns in June 2022 photos. Leaf-on imagery hides the ground, and the newest NAIP over 9t is 2022. A hardware set needs leaf-off photos (PASDA or Google Earth history) or a field visit.
 
 ### 5.2 Pit and pad brightness
 
@@ -191,9 +239,10 @@ Pads lose coherence slightly more often than background. No dated well activity 
 
 ## 6. Interpretation
 
-- At 8 to 12 dates per track, NISAR L-band shows no well-linked persistent scatterer on 9t. Wells match the chance rate in every DEP status, in the open and under canopy.
-- The screen itself works: it finds the building, and its pass rate matches the expected chance level.
-- **The steel test measured DEP points, not wellheads.** Only 25% of DEP wells on 9t fall inside a lidar-mapped pad, and the median distance to the nearest pad edge is 36 m (section 12). A 6 m circle around the DEP point misses most wellheads even if they are bright.
+- At 8 to 12 dates per track, NISAR L-band shows no well-linked persistent scatterer on 9t.
+- **DEP error comes first.** DEP points sit a median 36 m from the nearest lidar pad (section 12), and DEP status may be stale. So the DEP-point test (5.1) only shows that steady bright pixels do not fall within 6 m of DEP catalogue points.
+- **The pad test removes DEP error and still finds chance** (5.1a). Lidar pads hold steady bright pixels no more often than same-shaped background, on all dates and on leaf-on dates.
+- **The screen works on large hard targets** (5.1b). Half the strongest targets are buildings and metal yards. Only 2 of 40 are oilfield equipment, both larger than a wellhead.
 - Two further causes follow from radar physics and would apply even in the open:
   1. **Too weak against clutter.** A 5 × 5 m forest pixel at about −8 dB holds about +6 dBsm of clutter. Passing the 6.5 to 7.2 dB rule needs a target of roughly +13 to +16 dBsm, about a 1.5 to 2 m corner reflector or a tank battery. A 15 to 20 cm casing standing 1 m high does not reach that unless it forms a clean corner with flat ground facing the radar. The building does.
   2. **Wrong polarisation for a pipe.** NISAR collects HH and HV over North America, not VV. A vertical pipe couples strongly with VV and weakly with HH.
@@ -233,7 +282,10 @@ Two outside reviews and one adversarial review checked the work. The 8 to 12 m p
 | Step | Why |
 |---|---|
 | Treat the screen as exploratory: rank pixels on brightness and steadiness instead of fixed cutoffs | No dB threshold needs to be set in advance |
-| **Run the steel screen per lidar pad polygon, with a small buffer**, instead of a 6 m circle on DEP points | Removes DEP coordinate error, the largest known cause of misses |
+| Done 2026-11-25: steel screen per lidar pad polygon | Pads at chance (5.1a) |
+| Done 2026-11-25: separate pass rates and leaf-on-only run | Same answer (5.1a) |
+| Done 2026-11-25: inspect the top 40 targets on NAIP | Buildings and metal yards, 2 oilfield (5.1b) |
+| Verified hardware and empty pad sets from leaf-off photos or a field visit | Leaf-on NAIP 2022 shows equipment on only 3 or 4 of 60 open pads |
 | Lidar-based radiometric terrain correction (γ0) | Stops micro-topography leaking into pit and pad brightness |
 | Steadiness from leaf-on dates only | Stops leaf drop failing real under-canopy targets |
 | Report the brightness and steadiness pass rates separately | The 0.13% combined rate should not be compared with the bell-curve figure for brightness alone |
