@@ -358,15 +358,16 @@ def fig_pr():
     d = d[d.tau == 0.3]
     fig, ax = plt.subplots(figsize=(13.47, 4.0), dpi=DPI)
     fig.subplots_adjust(left=0.13, right=0.97, top=0.95, bottom=0.30)
-    for name, col, lab in (("pit", PIT, "Pits"), ("pad", PAD, "Pads")):
+    for name, col, lab in (("pit", PIT, "Pits, AP 0.82"), ("pad", PAD, "Pads, AP 0.75")):
         s = d[d.model == name].sort_values("rank")
         ax.plot(s.recall, s.precision, color=col, lw=5)
         i = int(len(s) * (0.80 if name == "pit" else 0.62))
-        ax.text(s.recall.iloc[i], s.precision.iloc[i] + (0.05 if name == "pit" else -0.11), lab, color=INK, fontsize=34,
+        ax.text(s.recall.iloc[i], s.precision.iloc[i] + (0.05 if name == "pit" else -0.24), lab, color=INK, fontsize=34,
                 fontweight="bold", ha="center", path_effects=HALO)
     ax.set_xlim(0, 1); ax.set_ylim(0, 1.02); ax.set_yticks([0, 0.5, 1]); ax.set_xticks([0, 0.25, 0.5, 0.75, 1])
-    ax.set_xlabel("Found (share of hand-drawn features)"); ax.set_ylabel("Correct")
+    ax.set_xlabel("Recall"); ax.set_ylabel("Precision")
     ax.grid(color="#E6E6E6", lw=1.5); ax.spines[["top", "right"]].set_visible(False)
+    ax.tick_params(axis="x", pad=14)
     fig.savefig(OUT / "poster_pr_curves_heldout_9t.png", dpi=DPI)
     plt.close(fig)
 
