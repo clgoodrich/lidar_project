@@ -91,7 +91,7 @@ CAPS = {
 
 SECTIONS = [
     ("Introduction", C1, BODY_TOP, [
-        ("fig", "intro", 3.2, "Map of Pennsylvania documented orphan wells"),
+        ("fig", "intro", 4.2, "Map of Pennsylvania documented orphan wells"),
         ("text", "Orphan wells have no owner left to plug them and can leak methane and brine. "
                  "Pennsylvania lists thousands. Many more were never recorded.|Satellite pad detection recovers about "
                  "half the pads in Appalachia (Ramachandran et al. 2024). Old wells have been read from lidar by eye "
@@ -100,19 +100,18 @@ SECTIONS = [
                  "We ask whether a U-Net can find them automatically and how well it generalises to ground it has not seen."),
     ]),
     ("Study area and data", C1, None, [
-        ("fig", "optical", 2.2, "Air photo and lidar of the same ground"),
+        ("fig", "optical", 2.8, "Air photo and lidar of the same ground"),
         ("text", "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020 over a 4.5 km square tile (9t). Ground returns are "
                  "gridded to a 0.5 m bare-earth model. Seven terrain layers are derived from it. They are local relief "
                  "at 25 m and 5 m, slope, topographic position, positive and negative openness, and roughness. "
                  "Each layer is standardised with training-set means and standard deviations before it enters the network."),
     ]),
     ("Well signatures", C1, None, [
-        ("fig", "signs", 3.0, "Pit, pad, road on RRIM"),
+        ("fig", "signs", 4.0, "Pit, pad, road on RRIM"),
     ]),
     ("Methods", C2, LOWER, [
-        ("fig", "setup", 2.3, "Pipeline diagram"),
-        ("text", "Each sign gets its own four-level U-Net (base width 32, about 8 million parameters, batch normalisation) "
-                 "that takes the seven layers and returns a per-pixel class probability.|"
+        ("fig", "setup", 2.5, "Pipeline diagram"),
+        ("text", "Each sign gets its own four-level U-Net (base width 32, about 8 million parameters) that maps the seven layers to class probabilities.|"
                  "The pit model has three classes, background, pit floor and rim. Training minimises focal "
                  "cross-entropy (gamma 2) with class weights of 0.05 for background and 0.475 for each pit class, "
                  "which offsets the rarity of well pixels. Pads use two classes with weights 0.15 and 0.85.|"
@@ -124,20 +123,19 @@ SECTIONS = [
                  "Road weight is 0.72. Probabilities above the cutoff are vectorised to outlines."),
     ]),
     ("Validation", C2, None, [
-        ("fig", "valid", 1.4, "Five test sets of 375 m blocks"),
-        ("text", "The tile is split by block, never by well, so a jittered patch cannot reach into a held-out block.|"
+        ("fig", "valid", 2.0, "Five test sets of 375 m blocks"),
+        ("text", "The tile is split by block, never by well, so a jittered patch cannot reach into a held-out block. "
                  "An inner validation set (20% of the remaining blocks) picks the best epoch and the cutoff. "
                  "The cutoff maximises F2, which weights recall four times as heavily as precision, because a missed "
                  "well costs more than a false alarm. The held-out fold never influences either choice."),
     ]),
     ("Results", C3, LOWER, [
-        ("table", None, 3.0, None),
-        ("fig", "results", 2.6, "Precision-recall curves, pits and pads"),
+        ("table", None, 3.6, None),
+        ("fig", "results", 2.9, "Precision-recall curves, pits and pads"),
         ("text", "At the F2 cutoff the pit model recovers 467 of 503 pits (92.8%) and the pad model 593 of 650 pads (91.2%). "
                  "Threshold-free average precision at IoU 0.3 is 0.82 for pits (95% bootstrap interval 0.78 to 0.86) "
                  "and 0.75 for pads (0.70 to 0.79).|"
-                 "Precision is 0.63 for pits and 0.59 for pads. The F2 cutoff trades precision for recall by design. "
-                 "Some unmatched detections may be real features we have not drawn.|"
+                 "Precision is 0.63 and 0.59 by design of the F2 cutoff. Some unmatched detections may be real features we have not drawn.|"
                  "Pad recall falls from 91% to 77% when the match rule tightens from IoU 0.3 to 0.5. The model "
                  "finds the pads but their boundaries are loose. Pit outlines are tighter, with 82% matching at 0.5."),
     ]),
@@ -325,7 +323,7 @@ def main() -> None:
                 text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 1.4,
                          "[Table note: define each column]" if outline else TABLE_NOTE[9:], 28, GREY,
                          lead=None if outline else "Table 1.")
-                top += h + 0.3
+                top += h + 1.0
             else:
                 th = text_height(key_or_text)
                 text_box(s, x, top, CW, th + 0.2, next(stand_texts) if outline else key_or_text, BODY_PT,
