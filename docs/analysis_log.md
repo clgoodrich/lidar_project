@@ -1,5 +1,7 @@
 # Analysis Log — WellSight
 
+- 2026-11-26: AGU poster Figures 3 and 4 rebuilt on the RRIM base with magenta, yellow and white overlays (see docs/iterations/agu_poster_filled.md).
+
 Append-only record of every processing decision, parameter choice, and run
 result. Newest entries at the top. Per `Claude.md` reporting rule.
 

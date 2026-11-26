@@ -56,6 +56,8 @@ PR = ROOT / "data/9t/results/operating_point/pr_froc_curve_points_ranked_candida
 DECK = ROOT / "RemoteSensing_option2.pptx"
 
 PIT, PAD, ROAD = "#eb6834", "#2a78d6", "#1baf7a"
+# Map overlays sit on the red-tinted RRIM, so they use magenta, yellow and white, which separate from the teal and brown RRIM.
+MPIT, MPAD, MROAD = "#FF1FB4", "#FFE000", "#FFFFFF"
 INK, MUTED, HELD, OTHER = "#2B2F36", "#6B6B6B", "#2a78d6", "#D9D9D9"
 DPI = 200
 plt.rcParams.update({"font.family": "Georgia", "font.size": 32, "axes.edgecolor": MUTED,
@@ -116,10 +118,11 @@ def hs(bounds):
 
 
 def show_hs(ax, bounds):
-    a = hs(bounds)
-    lo, hi = np.nanpercentile(a, [1, 99])
-    ax.imshow(a, cmap="gray", vmin=lo, vmax=hi, extent=(bounds[0], bounds[2], bounds[1], bounds[3]),
-              interpolation="bilinear")
+    """Red Relief Image Map (RGB) as the base image."""
+    with rasterio.open(D05 / "rrim_openness_9t_05.tif") as r:
+        w = from_bounds(*bounds, r.transform)
+        a = np.moveaxis(r.read(window=w, boundless=True, fill_value=0), 0, -1)
+    ax.imshow(a, extent=(bounds[0], bounds[2], bounds[1], bounds[3]), interpolation="bilinear")
 
 
 def overlay(ax, mask, bounds, color, alpha=0.55):
@@ -210,9 +213,9 @@ def fig_hero():
     fig = plt.figure(figsize=(27.6, 8.2), dpi=DPI)
     ax = fig.add_axes([0.085, 0.15, 0.49, 0.83])
     show_hs(ax, b)
-    overlay(ax, pad_m & cover, b, PAD, 0.28)
-    overlay(ax, pit_m & cover, b, PIT, 0.75)
-    for g, col, ls in ((pads, PAD, "--"), (pits_rim, PIT, "-")):
+    overlay(ax, pad_m & cover, b, MPAD, 0.28)
+    overlay(ax, pit_m & cover, b, MPIT, 0.75)
+    for g, col, ls in ((pads, MPAD, "--"), (pits_rim, MPIT, "-")):
         gg = g.cx[x0:x1, y0:y1]
         if len(gg):
             gg.boundary.plot(ax=ax, color=col, linewidth=2.2, linestyle=ls)
@@ -248,8 +251,8 @@ def fig_hero():
         ia = fig.add_axes([0.610, 0.68 - i * 0.325 + 0.02, side * 8.2 / 27.6, side])
         pm, _, _ = oof(ib)
         show_hs(ia, ib)
-        overlay(ia, pm, ib, PIT, 0.75)
-        for gdf, col, ls in ((pads, PAD, "--"), (pits_rim, PIT, "-")):
+        overlay(ia, pm, ib, MPIT, 0.75)
+        for gdf, col, ls in ((pads, MPAD, "--"), (pits_rim, MPIT, "-")):
             gg = gdf.cx[ib[0]:ib[2], ib[1]:ib[3]]
             if len(gg):
                 gg.boundary.plot(ax=ia, color=col, linewidth=2.5, linestyle=ls)
@@ -259,10 +262,10 @@ def fig_hero():
         ia.text(0.04, 0.96, f"({lab})", transform=ia.transAxes, va="top", fontsize=30, color="black", path_effects=HALO)
         ia.plot([ib[0] + 4, ib[0] + 14], [ib[1] + 4, ib[1] + 4], color="black", lw=5, solid_capstyle="butt")
         ia.text(ib[0] + 16, ib[1] + 3, "10 m", fontsize=22, color="black", va="bottom", path_effects=HALO)
-    handles = [Patch(fc=PIT, ec="none", alpha=0.75, label="Pit, model output"),
-               Line2D([0], [0], color=PIT, lw=3, label="Pit, hand-drawn"),
-               Patch(fc=PAD, ec="none", alpha=0.28, label="Pad, model output"),
-               Line2D([0], [0], color=PAD, lw=3, ls="--", label="Pad, hand-drawn")]
+    handles = [Patch(fc=MPIT, ec="none", alpha=0.75, label="Pit, model output"),
+               Line2D([0], [0], color=MPIT, lw=3, label="Pit, hand-drawn"),
+               Patch(fc=MPAD, ec="none", alpha=0.28, label="Pad, model output"),
+               Line2D([0], [0], color=MPAD, lw=3, ls="--", label="Pad, hand-drawn")]
     lg = fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.705, 0.98), fontsize=30, frameon=True,
                     fancybox=False, edgecolor="black", framealpha=1.0, borderpad=0.8, labelspacing=0.9,
                     handlelength=2.2)
@@ -299,7 +302,7 @@ def fig_gallery():
     fig, axs = plt.subplots(1, 3, figsize=(13.47, 4.4), dpi=DPI)
     fig.subplots_adjust(left=0, right=1, top=1, bottom=0, wspace=0.04)
     keep = {"Pit": 0, "Pad": 1, "Road": 1}   # one example per sign, from the same seeded draw as before
-    rows = (("Pit", pits, PIT, 30, "-"), ("Pad", pads, PAD, 90, "--"), ("Road", roads, ROAD, 90, "-"))
+    rows = (("Pit", pits, MPIT, 30, "-"), ("Pad", pads, MPAD, 90, "--"), ("Road", roads, MROAD, 90, "-"))
     for r, (lab, gdf, col, half, ls) in enumerate(rows):
         big = gdf[gdf.length > 120] if lab == "Road" else gdf[gdf.area > gdf.area.quantile(0.4)]
         for c, idx in enumerate(rng.choice(len(big), 3, replace=False)):

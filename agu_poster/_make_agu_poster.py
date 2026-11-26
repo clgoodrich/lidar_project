@@ -80,10 +80,9 @@ CAPS = {
               "satellite base map. North is up. Source: Pennsylvania DEP records."),
     "optical": ("Figure 2.", "Aerial photograph (left) and a lidar relief image with the trees removed (right) of "
                 "the same ground in study tile 9t."),
-    "signs": ("Figure 3.", "Hand-drawn labels on hillshade. A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
-    "hero": ("Figure 4.", "Model output (filled) and hand-drawn labels (lines) on lidar hillshade, one test block of tile 9t withheld from training. "
-             "Coordinates in metres, EPSG:6346. (b) Found pit. (c) Missed pit. (d) Model pit with no hand-drawn label. "
-             "Scale bars: 100 m in (a), 10 m in (b) to (d)."),
+    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. Pits are magenta, pads yellow and roads white. A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
+    "hero": ("Figure 4.", "Model output (filled) and hand labels (lines) on a red relief image map, a test block of tile 9t. "
+             "(b) Found pit. (c) Missed pit. (d) Model pit with no hand label. Bars: 100 m in (a), 10 m in (b) to (d)."),
     "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
     "valid": ("Figure 6.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
     "results": ("Figure 7.", "Precision-recall curves for held-out pits and pads, five test sets pooled, match "
@@ -103,7 +102,7 @@ SECTIONS = [
                  "and seven terrain layers. They are relief at two scales, slope, position, openness and roughness."),
     ]),
     ("A well leaves a pit, a pad and a road", C1, None, [
-        ("fig", "signs", 3.6, "Pit, pad, road on hillshade"),
+        ("fig", "signs", 3.6, "Pit, pad, road on RRIM"),
     ]),
     ("One U-Net per sign", C2, LOWER, [
         ("fig", "setup", 3.0, "Pipeline diagram"),
