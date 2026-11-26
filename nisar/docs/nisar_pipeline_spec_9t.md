@@ -1,0 +1,242 @@
+# NISAR 9t pipeline spec (LLM-readable)
+
+Dense reference. Terse. Companion to `nisar/docs/nisar_technical_writeup_9t.md` (narrative + interpretation). Written 2026-11-26. Repo root = `C:\Users\colto\Documents\GitHub\lidar_project`. All paths repo-relative.
+
+## 0. Scope / rules
+- Question: do known O&G wells on tile 9t hold a NISAR persistent scatterer (PS step 1 only; no motion inversion)?
+- Area: 9t only. Other areas (613590, mkf, warren) exist in code, out of scope.
+- Date rule: only acquisitions >= 2026-06-01. `DATE_FLOOR` in `nisar/code/_nisar_area.py`; applied by `usable()`. Reason: Oct 2025–Jan 2026 are beta (older processor, different calibration), season/processing confounded.
+- `BAD_DATES = {("2026-07-22",26), ("2026-09-08",26)}`: match no other date of the track at any shift.
+- `usable()`: date >= floor AND valid_fraction >= 0.5 AND not in BAD_DATES.
+- Stack choice: `--slc` flag (or env `NISAR_STACK=slc`) = lidar-placed stack (published). Default `gslc` = NASA placement (8–12 m off; not used for findings). Outputs tagged `_9t_slc` vs `_9t`.
+- Area choice: `--area <tag>` or env `NISAR_AREA`, default 9t.
+- Output CRS everywhere: EPSG:32617 (WGS84 UTM 17N), 5 m grid.
+
+## 1. Study area
+- Tile 9t, Venango Co., PA. ~4.5 km square. Centre ~41.50 N, 79.54 W.
+- BBOX WGS84 (W,S,E,N): -79.5687, 41.4797, -79.5139, 41.5195.
+- Radar window: 981 x 981 px at 5 m, first centre x=619297.5, y=4597702.5 (EPSG:32617). Lidar-covered core = rows/cols 41:941 (900 x 900).
+- Terrain: Appalachian Plateau, forested, incised valleys, ~150 yr drilling.
+
+## 2. Data sources
+
+### 2.1 NISAR L-band (primary)
+| Field | Value |
+|---|---|
+| Mission | NASA-ISRO NISAR, L-SAR |
+| Frequency | centre 1.239 GHz (λ = 0.2420 m), frequencyA |
+| Range bandwidth | 40 MHz |
+| Polarisations | HH, HV (DHDH mode). No VV over North America |
+| L2 product | GSLC (geocoded SLC), 5 m posting, complex64, β0 radiometry (not γ0/RTC) |
+| L1 product | RSLC (zero-Doppler radar geometry, ~54,700 x 53,000 samples) — used for re-geocoding |
+| Collections (CMR short_name) | NISAR_L2_GSLC_BETA_V1, NISAR_L2_GSLC_PROVISIONAL_V1, NISAR_L2_GSLC_V1 (standard, from 2026-10-23) |
+| Catalogue | CMR `https://cmr.earthdata.nasa.gov/search/granules.umm_json` (no auth) |
+| Host | ASF DAAC `https://nisar.asf.earthdatacloud.nasa.gov/...` → 303 → signed CloudFront URL → S3 `sds-n-cumulus-prod-nisar-products`, us-west-2 |
+| Auth | Earthdata Login via `~/_netrc` (never printed) |
+| File | HDF5, ~22.6 GB/frame, 512x512 chunks, gzip |
+| HDF5 grid path | `science/LSAR/GSLC/grids/frequencyA/` → `HH`, `HV`, `mask`, `xCoordinates`, `yCoordinates`, `xCoordinateSpacing`, `projection`, `rangeBandwidth`, `centerFrequency` |
+| Granule name | `NISAR_L2_PR_GSLC_<cycle>_<track>_<dir>_<frame>_<mode>_<pols>_<dir>_<start>_<end>_<proc>_...` |
+| Granule example | `NISAR_L2_PR_GSLC_023_090_A_022_4005_DHDH_A_20260620T102339_20260620T102414_P05023_N_F_J_001` |
+| Repeat | 12 days per track |
+
+Tracks over 9t (all tracks; none excluded):
+| Track | Dir | Look | Inc. | Frame | Cycles | Dates used (post-floor, after BAD_DATES) |
+|---|---|---|---|---|---|---|
+| 26 | D | East | ~41° | 68 | 24–35 | 06-28, 08-15, 08-27, 09-20, 10-02, 10-14, 10-26, 11-07 (8; 09-08 dropped) |
+| 90 | A | West | ~39° | 22 | 23–35 | 06-20, 07-02, 07-14, 07-26, 08-19, 08-31, 09-12, 09-24, 10-06, 10-18, 10-30, 11-11 (12) |
+| 162 | A | West | ~47° | 23 | 23–35 | 06-25, 07-07, 07-19, 08-12, 08-24, 09-05, 09-17, 09-29, 10-11, 10-23, 11-04, 11-16 (12) |
+- Total 32 dates, 2026-06-20 → 2026-11-16. Collections provisional + standard. valid_fraction 1.0 on all used.
+- Availability: public L-band starts 2026-06-17. Feb–May 2026 over 9t not released (2027 reprocessing). Only 3 Jan beta granules exist pre-June, all on disk, excluded.
+- Instrument gap 2026-07-27 → 08-10 (ASF). Matches hole 07-26 → 08-12.
+- 11 empty track-90 files (2026-01-03 → 06-08), neighbouring frame ~12 km N, 0% valid. Never used.
+
+### 2.2 Lidar
+- USGS 3DEP PA_WesternPA_2019_D20, QL2, ~4.8 pts/m². NAD83(2011) UTM 17N, NAVD88 (Geoid12B).
+- Products used: 1 m DEM, slope, hillshade, CHM (`A.lidar(name)` → `data/9t/derived/1m/<name>_9t_1m.tif`); 0.5 m RRIM `data/9t/derived/05/rrim_openness_9t_05.tif`.
+- Canopy cover: fraction of CHM > threshold per 5 m cell (`canopy_cover()` in `_nisar_gslc_stack_pad_pit_seasonal_9t.py`). Open = cover < 0.30.
+
+### 2.3 Annotations (truth)
+- `qgis/annotations/annotations_proj.gpkg` (via `path_for("truth")`). Layers: `plat` (pads, 650; dissolved by `pad_id`), `pit_outside` (pits, 506), `roads`.
+- Drawn from 2019 lidar. Annotators did not see DEP.
+
+### 2.4 DEP wells
+- `data/_source/reference/dep_wells/venango_wells_all.gpkg`, PA DEP export 2026-04. Column `WELL_STATU`.
+- 1,068 wells in 9t: 617 active, 271 plugged, 174 abandoned/orphan, 10 not drilled (some tables 616/151/20 after splitting abandoned vs orphan list).
+- Groups: active=[Active]; plugged=[Plugged OG Well, DEP Plugged]; abandoned=[DEP Abandoned List, DEP Orphan List, Abandoned]; not_drilled=[Operator Reported Not Drilled, Proposed But Never Materialized] (negative control).
+- Coordinate quality vs lidar pads: 25% inside a pad, 35% within 15 m, median 36 m to pad edge, 55% > 30 m. Active median 29 m. File `nisar/results/9t/nisar_dep_well_pad_distance_9t.gpkg`.
+
+### 2.5 NAIP
+- 2022-06-19, 0.6 m RGB(N), leaf-on, newest NAIP over 9t. NAD83 UTM 17N.
+- Planetary Computer STAC `https://planetarycomputer.microsoft.com/api/stac/v1/search`, collection `naip`, anonymous SAS token `.../api/sas/v1/token/naip`, read via `/vsicurl/`.
+
+### 2.6 Other
+- NISAR DEM v1.2 tile `nisar/derived/9t/nisar_dem/DEM_N41_00_W080_00_C01.tif` (ellipsoid heights; used only for V1 reproduction check).
+
+## 3. Pipeline (stage → script → outputs)
+
+### S1a GSLC window fetch — `nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py`
+1. CMR query each collection, `bounding_box`=BBOX, `page_size`=200; also by track/dir/frame + neighbour frames. Drop `_QA_STATS.h5`.
+2. `window_bounds()`: area bounds (EPSG:32617) ± `MARGIN_M`=200 m, snapped outward to 5 m.
+3. `signed_url()`: requests GET with redirects → final CloudFront URL (valid ~1 h; resolved per file).
+4. `read_window()`: fsspec http, `block_size` 8 MiB, `cache_type="blockcache"`, aiohttp timeout total 600 s / sock_read 120 s. h5py opens remote file. Index-slice x/yCoordinates (pixel centres strictly inside window). Read `mask`, `HH`, `HV` slices only → ~40 MB/pol/date instead of 22.6 GB.
+5. Invalid = mask 0 or 255 → NaN. valid_fraction recorded.
+6. UTM18 granules (McKean only) nearest-neighbour warped to UTM17 (`to_utm17`; keeps complex samples whole).
+7. Two frames same date → keep higher valid coverage.
+- Out: `nisar/derived/9t/nisar_gslc_5m/*.tif` (2 bands complex64 HH, HV) + `nisar_gslc_window_index_9t_5m.csv`. Rasters gitignored, index tracked.
+- Run: `python nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py [--list]`.
+
+### S1b RSLC window fetch — `nisar/code/s1_build/_fetch_nisar_rslc_window_9t.py`
+- One RSLC per held GSLC (match cycle/track/frame, version). Window from RSLC `metadata/geolocationGrid`: per-height-layer plane fit (nodes within 3 km) inverse → time/range box + PAD.
+- Saves HDF5: `/HH`, `/HV`, `/row0`, `/col0`, `/zeroDopplerTime`, `/slantRange`, cut `/geolocationGrid`, whole `/orbit`, `/attitude`, `/processingInformation/parameters`, `/identification`.
+- Out: `nisar/derived/9t/nisar_rslc_window/nisar_rslc_window_<date>_t<trk><dir>_9t.h5` + `nisar_rslc_window_index_9t.csv`. ~1 min/granule.
+
+### S1c Lidar re-geocode — `nisar/code/s1_build/_nisar_regeocode_lidar_9t.py`
+- Why: NASA GSLC 8–12 m off lidar on all tracks, away from satellite, grows with canopy → NASA DEM sits in canopy.
+- Per output pixel: x,y → lon,lat → height → ECEF → zero-Doppler time + slant range from orbit → timing corrections (`.../processingInformation/timingCorrections/frequencyA`) → fractional RSLC row/col → 8-tap sinc interp, azimuth Doppler carrier removed/restored → range phase flattening.
+- `CONV = dict(corr=("iono",), carrier=True, sign=+1, dem="isce_spline", dem_half_pixel=0.5)` (from V1 sweep).
+- Heights: lidar bare earth NAVD88 → WGS84 ellipsoid via Geoid12B (~−33 m) + κ × CHM. κ tested 0, 0.10, 0.25, 0.50 → 0.10 best.
+- V1 check: `--heights nisar_dem` must reproduce NASA GSLC first.
+- Coreg: per-date offsets within track (`--estimate-offsets`, `--coreg`), then per-track absolute offset to lidar (`--track-offsets _coreg_k010`, `--absolute`).
+- Out: `nisar/derived/9t/nisar_slc_lidar_5m/nisar_slc_lidar_<date>_t<trk><dir>_9t.tif` + `nisar_slc_lidar_index_9t.csv` (cols: file,date,collection,cycle,track,direction,frame,granule,x_first_centre,y_first_centre,spacing_m,ncols,nrows,range_bandwidth_hz,centre_frequency_hz,valid_fraction,native_epsg,rslc,heights,lidar_fill_share,nasa_minus_used_height_median_m,coreg,coreg_slant_m,coreg_az_s,absolute,track_slant_m,track_az_s,bad_granule,seconds). Offsets: `nisar/results/9t/nisar_slc_date_offsets_9t.csv`, `nisar_slc_track_offsets_9t.csv`.
+- lidar_fill_share 0.158 (cells outside lidar filled). nasa_minus_used_height median 6.43 m.
+
+### S1d Placement check — `nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py`
+- Simulate brightness from lidar slope facing radar (+ κ CHM), high-pass dB, NCC vs each track's mean HH dB.
+- `MAX_LAG`=30 m, `BG_M`=250, `NBLK`=4 (4x4=16 blocks/track, ~1.1 km), `GATE_M`=2.5 (half pixel, pre-set).
+- Result: 47/48 blocks pass; median block offset 1.0–1.4 m per track. Not independent (same sim set offsets). No surveyed point / corner reflector.
+- Out: `nisar/results/9t/nisar_lidar_sim_match_summary_coregabs_k010_9t.json`, figs `nisar_lidar_sim_match_coregabs_k010_9t.png`.
+- Run: `python nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py --stack lidar --kappa 0.1`.
+
+### S5a Steel / PS screen — `nisar/code/s5_eval/_nisar_steel_9t.py --slc`
+- Per track, HH amplitude A over dates:
+  - D_A = std(A)/mean(A). `DA_MAX`=0.25 (Ferretti 2001; speckle ~0.52).
+  - mean dB = 10log10(mean A²); background = median filter, size `int(BG_M/5)|1` = 51 px (`BG_M`=250 m); bright = mdb − bg.
+  - cut = `BRIGHT_SD`(3) × 1.4826 × MAD(bright). Cuts: t26 7.217, t90 7.016, t162 6.484 dB.
+  - SBT = ok & D_A < 0.25 & bright >= cut.
+- Hit: SBT within `R_M`=6 m (3.5 m pixel half-diagonal + 2.5 m placement) of well point, via max filter, circular footprint. Score = #tracks 0–3.
+- Decoys: `N_DECOY`=5/well, 150–600 m, >= 60 m from wells & pads, canopy within ±0.15. `SEED`=20261007.
+- Stats: Fisher exact per group; Mann-Whitney / AUC on continuous brightness; registration sweep −20..+20 m.
+- Flags: `--prov`, `--bg-m 125|500` (sensitivity).
+- Out: `nisar/results/9t/nisar_steel_summary_9t_slc.json`, `nisar_steel_by_canopy_9t_slc.csv`, fig `nisar_steel_hit_rate_by_status_9t_slc.png`.
+
+### S5b Steel at lidar pads — `nisar/code/s5_eval/_nisar_steel_pads_9t.py --slc`
+- Reuses `S.sbt_maps`, `S.ifg.load_complex()`, `S.st.canopy_cover`.
+- Site = pad + `BUF_M`=5 m. Hit = any SBT pixel centre inside (`geometry_mask` on window).
+- Controls: pad shape translated 150–600 m random direction, all pixels in `away` (>= 60 m wells, >= 30 m pads, valid), canopy within 0.15. `N_CTRL`=5, max 400 tries, `SEED`=20261125.
+- Classes: cover_cls (open <0.30), size_cls (area tercile), status_cls (active / plugged_or_abandoned / no_dep_well).
+- Runs: all_post_june; summer_leaf_on (months 6–9).
+- Also: per-track brightness-only, steadiness-only, both pass rates.
+- Out: `nisar/results/9t/nisar_steel_pads_summary_9t_slc.json`, `nisar_steel_pads_sites_9t_slc.gpkg`.
+
+### S5c Bright targets — `nisar/code/s5_eval/_nisar_bright_targets_9t.py --slc`
+- SBT pixels → points per track; merge across tracks within `MERGE_M`=6 m; context within `NEAR_M`=6 m (well/pad/road); `N_RANDOM`=20000 random points baseline.
+- Out: `nisar/results/9t/nisar_bright_targets_points_9t_slc.gpkg`, `nisar_bright_targets_summary_9t_slc.json`.
+
+### S5d Pad/pit brightness by season — `nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py --slc`
+- Seasons: summer 06-01→09-30; leafoff_fall 10-21→11-30. Early Oct excluded. Fixed before results.
+- Ring: pads 20–60 m (10 m clear of other pads); pits 10–30 m (5 m clear of pits, roads).
+- Controls (placebo): `N_PLACEBO`=5, `DECOY_R`=150–600 m.
+- Excess = feature−ring minus median(control−ring). Wilcoxon signed-rank; bootstrap 95% CI over sites.
+- Registration sweep `SHIFTS` −20..20 step 5, `REG_MIN_RHO`=0.10.
+- Out: `nisar/results/9t/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_9t_slc_5m.csv`, fig `nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change_9t_slc_5m.png`; sensitivity figs `_sens_*`, `_swap40_*`.
+
+### S5e Pad coherence events — `nisar/code/s5_eval/_nisar_pad_change_9t.py --slc`
+- Back-to-back pairs, 3x3 window (15 m, 9 looks; noise-floor coherence ~0.3). Event = drop exceeded by only 1% of control pairs (fa 0.01).
+- Swap test: unit = pad + its 5 controls, whole series over same pairs; `N_PERM`=5000. Spatial correlation not modelled.
+- Out: `nisar/results/9t/nisar_pad_change_by_season_9t_slc.csv`, `nisar_pad_change_events_9t*.gpkg`, figs `nisar_pad_change_anomaly_hist_9t_slc.png`, `nisar_pad_change_top_events_9t_slc.png`.
+
+### S5f Pit interferograms — `nisar/code/s5_eval/_nisar_gslc_interferogram_pits_9t.py --slc`
+- Pairs Δt <= `MAX_DT_DAYS`=24, `WIN`=3, `MIN_VALID_SHARE`=0.5. mm/rad = λ/(4π)×1000 ≈ 19.26.
+- Out: `nisar/results/9t/nisar_gslc_interferogram_pits_vs_decoys_win3_9t_slc_5m_summary.json`, fig `..._by_pair_hh.png`.
+
+### S5g Pool pits — `nisar/code/s5_eval/_nisar_pit_pool_9t.py`
+- Pool = >= half floor flat + weak lidar returns (defined before radar). 23/500.
+- Out: `nisar/results/9t/nisar_pit_pool_radar_9t.csv`.
+
+### S5h Slope motion — `nisar/code/s5_eval/_nisar_slope_motion_9t.py --slc`
+- Multilook, long-wave removal, slope bins <5, 5–15, >=15°, block bootstrap r between tracks 90 and 162.
+- Out: `nisar/results/9t/nisar_slope_motion_summary_9t_slc.json`, fig `nisar_slope_motion_maps_9t_slc.png`.
+
+### S7 NAIP chips — `nisar/code/s7_analysis/_nisar_naip_chips_9t.py`
+- 80 m chips (`HALF`=40), NAIP top / RRIM bottom, 10 per page. Top 40 targets (sort n_tracks, bright_db desc) + all open pads (cover < 0.30, 60).
+- Out: `nisar/results/9t/figures/nisar_naip_chips_targets_p1..4_9t.png`, `nisar_naip_chips_open_pads_p1..6_9t.png`, `nisar/results/9t/nisar_naip_chips_index_9t.csv`. Manual classes `nisar/results/9t/nisar_top_targets_naip_classes_9t.csv`.
+
+### S7 Pad-test figure — `nisar/code/s7_analysis/_nisar_steel_pads_fig_9t.py`
+- Out: `nisar/results/9t/figures/nisar_steel_pads_hit_rate_9t_slc.png`.
+
+### Shared modules
+- `nisar/code/_nisar_area.py`: area/stack selection, paths, DATE_FLOOR, BAD_DATES, `usable()`, `lidar()`, `bounds()`, `wells()`.
+- `nisar/code/_nisar_fig_style.py`: `apply()`, `save()`, `map_axes()`, BLUE/ORANGE.
+- `notebooks/wellsight_v2/_common.py`: `path_for()`, `read_layer()`.
+- `nisar/code/nisar_reflectors/`: contracts, measurements, persistence, quality, validation, provenance helpers.
+
+## 4. Results (numbers)
+
+Steel at DEP points (6 m, any track):
+| Group | n | wells | decoys | p |
+|---|---|---|---|---|
+| active | 617 | 1.3% | 1.8% | 0.49 |
+| plugged | 271 | 0.4% | 0.9% | 0.71 |
+| abandoned | 174 | 1.1% | 1.2% | 1.00 |
+| not_drilled | 10 | 0% | 4.0% | 1.00 |
+- 0 wells hit on 2+ tracks. Open abandoned 2.9% vs 1.5% (n=69, ~2 wells). Brightness-only abandoned AUC 0.55 p=0.031 (lead). Building check 41.502787,-79.519712: SBT 2.5 m on t162.
+
+Steel at lidar pads:
+| Dates | pads | pads hit | ctrl hit | p | pads 2+ | ctrl 2+ |
+|---|---|---|---|---|---|---|
+| all post-June | 649 | 20.0% | 18.7% | 0.43 | 2.8% | 2.2% |
+| summer | 649 | 22.5% | 21.0% | 0.39 | 4.2% | 3.4% |
+- Subgroups none p<0.05. Active-well pads 19.1 vs 15.2 (p 0.16). Large pads 2+ tracks 4.6 vs 2.2 (p 0.06).
+
+Rule pass rates (share of valid px): brightness 0.36–0.45%; steadiness 1.0–4.6%; both 0.05–0.13% (t26 0.13, t90 0.13, t162 0.05). Independence predicts <0.02% → 4–8x enrichment.
+
+Top 40 targets (visual, NAIP+RRIM): building 9, metal_yard 8, oilfield 2 (T24 tanks on lined pad; T20 structure by DEP well), possible 1 (T10), terrain 6, forest 10, open_ground 4. Open pads with visible equipment: 3–4 of 60 (P5, P55, P57, ?P14).
+
+Pad/pit brightness excess (dB, 95% CI, p): pits summer HV +0.18 (+0.09,+0.26) <0.001; pits summer HH +0.03 ns; pits fall HV +0.14 p 0.08; pads fall HH −0.13 (−0.21,−0.02) <0.001; pads fall HV −0.11 <0.001; pads summer−fall HH +0.15 <0.001.
+
+Pad coherence: 18,172 pairs, 211 events vs 181.9 expected, swap p 0.022.
+Pool pits: +0.17–0.27 dB, all p >= 0.35.
+Pit motion: −0.24 mm (−0.43,−0.02) over 28 pairs; per-pair noise ~5.6 mm; within soil-moisture phase (De Zan 2014).
+Slope motion: t90 vs t162 r=0.33 (0.20–0.45); t162 coherent over 39% of tile.
+
+## 5. Known limits
+- 8–12 dates/track; D_A 0.25 designed for ~30. 2–3 fall dates.
+- β0 not γ0: micro-topography leaks into brightness; 6 valley-wall targets.
+- HH/HV only; vertical pipe couples to VV.
+- Clutter: 5x5 m forest px ~−8 dB ≈ +6 dBsm; passing needs ~+13–16 dBsm target (1.5–2 m trihedral / tank battery).
+- DEP coords error >> 6 m; DEP status stale.
+- Placement check not independent.
+- 2019 lidar, 2022 leaf-on NAIP.
+- Undocumented wells may sit in control pools (biases toward null).
+
+## 6. Errors fixed (history)
+- NASA placement 8–12 m → lidar re-geocode.
+- Hit radius 15 m → 6 m after placement.
+- Downloader missed standard collection → all 3 searched.
+- Beta-date fall pit +0.25 dB withdrawn.
+- First pad run used gslc stack (cuts 6.4–6.7 dB); caught by SBT count mismatch; rerun `--slc`.
+- No valid-fraction skip in fetch (11 empty files); not yet patched.
+
+## 7. Withdrawn
+Fall HH pit +0.25 dB; winter pad brightness/coherence; 8 wet/5 dry pits; 346-band feature set + PCA; 613590/Warren/McKean; Sentinel-1 2017–2026 cross-check.
+
+## 8. Open next steps
+Leaf-off hardware set (PASDA / field); γ0 RTC from lidar; azimuth sub-look coherence on RSLC; HH/HV ratio + HH-HV coherence; open-sky buildings/towers as independent placement check; within-track histogram matching + beta dates gated by stable-background D_A; Sentinel-1 track 77; rerun on 2027 reprocessed spring L-band; pits vs well-less hollows; PS step 2 needs >= ~20 dates/track.
+
+## 9. Figures (current, lidar-placed stack)
+All under `nisar/results/9t/figures/`:
+- `nisar_steel_pads_hit_rate_9t_slc.png` — pads vs controls + rule pass rates (new 2026-11-26)
+- `nisar_steel_hit_rate_by_status_9t_slc.png` — DEP-point steel test by status
+- `nisar_naip_chips_targets_p1_9t.png` … `_p4_9t.png` — top 40 targets
+- `nisar_naip_chips_open_pads_p1_9t.png` … `_p6_9t.png` — 60 open pads
+- `nisar_lidar_sim_match_coregabs_k010_9t.png` — placement check
+- `nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change_9t_slc_5m.png` — pad/pit brightness
+- `nisar_pad_change_anomaly_hist_9t_slc.png`, `nisar_pad_change_top_events_9t_slc.png` — coherence
+- `nisar_gslc_interferogram_pits_vs_decoys_win3_9t_slc_5m_by_pair_hh.png` — pit phase
+- `nisar_slope_motion_maps_9t_slc.png` — slope motion
+
+## 10. References
+- Ferretti, Prati, Rocca 2001, IEEE TGRS 39(1):8–20 (`literature/papers/ferretti2001.pdf`).
+- De Zan et al. 2014, IEEE TGRS 52(1):418–425 (cite-only).
+- ASF NISAR Data User Guide, availability: https://nisar-docs.asf.alaska.edu/availability-overview/
+- USGS 3DEP PA_WesternPA_2019_D20. PA DEP well export 2026-04. USDA NAIP 2022 via Microsoft Planetary Computer.

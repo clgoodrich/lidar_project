@@ -7,6 +7,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — NISAR 9t pipeline spec + pad-test figure
+- New `nisar/docs/nisar_pipeline_spec_9t.md`: terse LLM-readable spec (sources, product params, dates per track, every stage, constants, outputs, numbers).
+- New `nisar/code/s7_analysis/_nisar_steel_pads_fig_9t.py` → `nisar/results/9t/figures/nisar_steel_pads_hit_rate_9t_slc.png` (pads #1F5FA8 vs controls grey hatched; no red/green).
+
 ## 2026-11-25 — Steel screen at lidar pads; top targets on NAIP; review follow-ups
 
 - **Pad-polygon steel test.** `nisar/code/s5_eval/_nisar_steel_pads_9t.py --slc`. Same SBT pixels as the published steel test (cutoffs 7.217 / 7.016 / 6.484 dB confirmed). Site = lidar pad + 5 m. 5 same-shape control polygons per pad, shifted 150-600 m, 60 m from DEP wells, 30 m from pads, canopy within 0.15. Seed 20261125.
