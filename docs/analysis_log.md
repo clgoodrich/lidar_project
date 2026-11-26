@@ -7,6 +7,9 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — NISAR 9t full appendix (code + metadata)
+- New generator `nisar/code/s7_analysis/_nisar_pipeline_appendix_9t.py` → `nisar/docs/nisar_pipeline_appendix_9t.md` (1.0 MB): used-granule index, excluded windows, RSLC HDF5 identification/orbit/attitude/parameters/geolocation/timing per granule, processor run config once, GSLC+SLC GeoTIFF profiles, lidar raster metadata, vector schemas, DEP status counts, run order, verbatim result JSON/CSV, full source of 19 scripts. Checked: no credentials.
+
 ## 2026-11-26 — NISAR 9t pipeline spec + pad-test figure
 - New `nisar/docs/nisar_pipeline_spec_9t.md`: terse LLM-readable spec (sources, product params, dates per track, every stage, constants, outputs, numbers).
 - New `nisar/code/s7_analysis/_nisar_steel_pads_fig_9t.py` → `nisar/results/9t/figures/nisar_steel_pads_hit_rate_9t_slc.png` (pads #1F5FA8 vs controls grey hatched; no red/green).
