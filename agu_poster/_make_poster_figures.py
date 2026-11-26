@@ -125,6 +125,29 @@ def show_hs(ax, bounds):
     ax.imshow(a, extent=(bounds[0], bounds[2], bounds[1], bounds[3]), interpolation="bilinear")
 
 
+def sci_scalebar(ax, x, y, length, fs=22, nseg=2):
+    """Standard map scale bar: alternating black and white blocks with ticks 0 and full length beneath, on a tight white box.
+    (x, y) is the lower-left corner of the bar in data units."""
+    x0, x1 = ax.get_xlim(); y0, y1 = ax.get_ylim()
+    fig = ax.figure
+    w_in = ax.get_position().width * fig.get_figwidth()
+    h_in = ax.get_position().height * fig.get_figheight()
+    ux, uy = (x1 - x0) / w_in / 72, (y1 - y0) / h_in / 72      # data units per point
+    bar_h = 7 * fs / 22 * uy * 2.2
+    lab = f"{length:g} m"
+    half_lab = 0.5 * len(lab) * fs * 0.55 * ux
+    pad = 4 * ux
+    top = y + bar_h + 3 * uy
+    bot = y - 3 * uy - fs * 1.15 * uy - 3 * uy
+    left, right = x - 0.5 * fs * 0.55 * ux - pad, x + length + half_lab + pad
+    ax.add_patch(Rectangle((left, bot), right - left, top - bot, fc="white", ec="none", alpha=0.88, zorder=5))
+    seg = length / nseg
+    for i in range(nseg):
+        ax.add_patch(Rectangle((x + i * seg, y), seg, bar_h, fc="black" if i % 2 == 0 else "white", ec="black", lw=1.5, zorder=6))
+    ax.text(x, y - 3 * uy, "0", ha="center", va="top", fontsize=fs, color="black", zorder=7)
+    ax.text(x + length, y - 3 * uy, lab, ha="center", va="top", fontsize=fs, color="black", zorder=7)
+
+
 def overlay(ax, mask, bounds, color, alpha=0.55):
     rgba = np.zeros(mask.shape + (4,))
     rgba[mask] = matplotlib.colors.to_rgba(color, alpha)
@@ -228,11 +251,8 @@ def fig_hero():
     ax.set_ylabel("Northing (m)", fontsize=30)
     for s in ax.spines.values():
         s.set_linewidth(1.5); s.set_color(INK)
-    # plain scale bar and north arrow, drawn on the map
-    bx, by = x0 + 30, y0 + 28
-    ax.plot([bx, bx + 100], [by, by], color="white", lw=11, solid_capstyle="butt")
-    ax.plot([bx, bx + 100], [by, by], color="black", lw=6, solid_capstyle="butt")
-    ax.text(bx + 50, by + 10, "100 m", ha="center", va="bottom", fontsize=26, color="white", path_effects=[pe.withStroke(linewidth=5, foreground="black")])
+    # standard scale bar and north arrow, drawn on the map
+    sci_scalebar(ax, x0 + 255, y1 - 78, 100, fs=26, nseg=2)
     ax.annotate("", xy=(x1 - 30, y1 - 40), xytext=(x1 - 30, y1 - 78),
                 arrowprops=dict(arrowstyle="-|>", color="white", lw=3, mutation_scale=28))
     ax.text(x1 - 30, y1 - 6, "N", ha="center", va="top", fontsize=28, color="white", path_effects=[pe.withStroke(linewidth=5, foreground="black")])
@@ -260,8 +280,7 @@ def fig_hero():
         for s in ia.spines.values():
             s.set_linewidth(1.5); s.set_color("black")
         ia.text(0.04, 0.96, f"({lab})", transform=ia.transAxes, va="top", fontsize=30, color="black", path_effects=HALO)
-        ia.plot([ib[0] + 4, ib[0] + 14], [ib[1] + 4, ib[1] + 4], color="black", lw=5, solid_capstyle="butt")
-        ia.text(ib[0] + 16, ib[1] + 3, "10 m", fontsize=22, color="black", va="bottom", path_effects=HALO)
+        sci_scalebar(ia, ib[0] + 5, ib[1] + 9, 10, fs=18, nseg=2)
     handles = [Patch(fc=MPIT, ec="none", alpha=0.75, label="Pit, model output"),
                Line2D([0], [0], color=MPIT, lw=3, label="Pit, hand-drawn"),
                Patch(fc=MPAD, ec="none", alpha=0.28, label="Pad, model output"),
@@ -319,8 +338,9 @@ def fig_gallery():
             else:
                 outline(ax, gdf, b, col, 4, ls)
             bare(ax, b)
-            ax.text(0.04, 0.95, lab, transform=ax.transAxes, va="top", fontsize=34, fontweight="normal", color=INK, path_effects=HALO)
-            ax.text(0.04, 0.05, f"{2 * half} m", transform=ax.transAxes, fontsize=24, color=INK, path_effects=HALO)
+            L = 20 if lab == "Pit" else 50
+            ax.set_xlim(b[0], b[2]); ax.set_ylim(b[1], b[3])
+            sci_scalebar(ax, b[0] + 0.08 * 2 * half, b[1] + 0.13 * 2 * half, L, fs=24)
     fig.savefig(OUT / "poster_signs_gallery_9t.png", dpi=DPI)
     plt.close(fig)
 
@@ -396,9 +416,8 @@ def fig_optical():
         ims = [Image.open(io.BytesIO(z.read(f"ppt/media/image{i}.png"))).convert("RGB") for i in (2, 3)]
     fig, axs = plt.subplots(1, 2, figsize=(13.47, 3.25), dpi=DPI)
     fig.subplots_adjust(left=0, right=1, top=1, bottom=0, wspace=0.03)
-    for ax, im, t in zip(axs, ims, ("Air photo", "Lidar, trees removed")):
+    for ax, im in zip(axs, ims):
         ax.imshow(im, aspect="auto"); ax.set_axis_off()
-        ax.text(0.03, 0.94, t, transform=ax.transAxes, va="top", fontsize=30, fontweight="normal", color=INK, path_effects=HALO)
     fig.savefig(OUT / "poster_optical_vs_lidar_9t.png", dpi=DPI)
     plt.close(fig)
 

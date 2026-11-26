@@ -61,7 +61,7 @@ LINE = BODY_PT * 1.2 / 72  # body line height, in
 CHARS = 40                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TITLE = "Detecting orphaned oil and gas wells under forest canopy with airborne lidar and U-Nets"
-TAKEAWAY = "Airborne lidar finds 9 in 10 old well pits and pads under forest canopy"
+TAKEAWAY = "Airborne lidar detects 93% of well pits and 91% of well pads under forest canopy"
 
 FIG_FILES = {
     "intro": FIGS / "poster_pa_wells_locator.png",
@@ -80,7 +80,7 @@ CAPS = {
               "satellite base map. North is up. Source: Pennsylvania DEP records."),
     "optical": ("Figure 2.", "Aerial photograph (left) and a lidar relief image with the trees removed (right) of "
                 "the same ground in study tile 9t."),
-    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. Pits are blue, pads yellow and roads white. A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
+    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. From left to right: pit (blue), pad (yellow) and road (white). A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
     "hero": ("Figure 4.", "Model output (filled) and hand labels (lines) on a red relief image map, a test block of tile 9t. "
              "(b) Found pit. (c) Missed pit. (d) Model pit with no hand label. Bars: 100 m in (a), 10 m in (b) to (d)."),
     "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
@@ -90,39 +90,39 @@ CAPS = {
 }
 
 SECTIONS = [
-    ("Forests hide old wells from air photos", C1, BODY_TOP, [
+    ("Introduction", C1, BODY_TOP, [
         ("fig", "intro", 3.9, "Map of Pennsylvania documented orphan wells"),
         ("text", "Orphan wells have no owner left to plug them and can leak methane and brine. "
                  "Pennsylvania lists thousands. Many more were never recorded.|Old wells have been read "
                  "from lidar by eye (Sams et al.; Saint-Vincent et al. 2021). Can a model do it?"),
     ]),
-    ("Lidar sees the ground under the trees", C1, None, [
+    ("Study area and data", C1, None, [
         ("fig", "optical", 2.6, "Air photo and lidar of the same ground"),
         ("text", "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020. We build a 0.5 m bare-earth model "
                  "and seven terrain layers. They are relief at two scales, slope, position, openness and roughness."),
     ]),
-    ("A well leaves a pit, a pad and a road", C1, None, [
+    ("Well signatures", C1, None, [
         ("fig", "signs", 3.6, "Pit, pad, road on RRIM"),
     ]),
-    ("One U-Net per sign", C2, LOWER, [
+    ("Methods", C2, LOWER, [
         ("fig", "setup", 3.0, "Pipeline diagram"),
         ("text", "A U-Net labels every pixel. Each sign gets its own model, which outputs a probability map. "
                  "Pixels above a cutoff become outlines. The road model also learns drainage, which it "
                  "often confuses with road."),
     ]),
-    ("Tested on blocks the model never saw", C2, None, [
+    ("Validation", C2, None, [
         ("fig", "valid", 2.3, "Five test sets of 375 m blocks"),
         ("text", "Each set is scored by a model trained without it. A detection counts when it overlaps a "
                  "hand outline (IoU 0.3). Roads use their own held-out set of 735 segments."),
     ]),
-    ("Most found. Pads are the weak spot", C3, LOWER, [
+    ("Results", C3, LOWER, [
         ("table", None, 3.0, None),
         ("fig", "results", 3.2, "Precision-recall curves, pits and pads"),
         ("text", "Recall is high for all three signs. Precision is lower, lowest for pads. Pad edges are "
                  "loose, so only 77% match at IoU 0.5. Some extra detections may be real features we have "
                  "not drawn."),
     ]),
-    ("What this means", C3, None, [
+    ("Conclusions", C3, None, [
         ("text", "Lidar can screen large areas for unrecorded wells. Pits are the most reliable sign.|"
                  "Limits. One survey block, our own labels, no field visits.|Next: more survey blocks and field checks."),
     ]),
