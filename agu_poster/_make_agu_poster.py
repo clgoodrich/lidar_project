@@ -52,13 +52,13 @@ C1, C2, C3 = X0, X0 + CW + GAP, X0 + 2 * (CW + GAP)
 HEAD = (0.8, 5.6)          # header band top, height (the one solid block of UH red)
 BODY_TOP, BODY_BOT = 7.2, 40.0
 FOOT_TOP, FOOT_BOT = 40.9, 43.2
-HERO_H = 8.2               # hero figure height, figure is 27.6 x 9.4 in
+HERO_H = 6.9               # hero figure height, figure is 27.6 x 9.4 in
 LOWER = BODY_TOP + 3.6 + HERO_H + 0.9     # top of the col 2 / col 3 sections under the hero
 
-HEAD_PT, BODY_PT, CAP_PT = 54, 44, 32
+HEAD_PT, BODY_PT, CAP_PT = 50, 30, 26
 HEAD_H = 1.05              # one-line statement heading at 54 pt
 LINE = BODY_PT * 1.2 / 72  # body line height, in
-CHARS = 40                 # body characters per line across one column at 44 pt (Calibri, measured)
+CHARS = 68                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TITLE = "Detecting orphaned oil and gas wells under forest canopy with airborne lidar and U-Nets"
 TAKEAWAY = "Airborne lidar detects 93% of well pits and 91% of well pads under forest canopy"
@@ -86,45 +86,67 @@ CAPS = {
     "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
     "valid": ("Figure 6.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
     "results": ("Figure 7.", "Precision-recall curves for held-out pits and pads, five test sets pooled, match "
-                "rule IoU 0.3. AP is average precision."),
+                "rule IoU 0.3 (a detection matches a hand outline when intersection over union is at least 0.3). AP is average precision."),
 }
 
 SECTIONS = [
     ("Introduction", C1, BODY_TOP, [
-        ("fig", "intro", 3.9, "Map of Pennsylvania documented orphan wells"),
+        ("fig", "intro", 3.2, "Map of Pennsylvania documented orphan wells"),
         ("text", "Orphan wells have no owner left to plug them and can leak methane and brine. "
-                 "Pennsylvania lists thousands. Many more were never recorded.|Old wells have been read "
-                 "from lidar by eye (Sams et al.; Saint-Vincent et al. 2021). Can a model do it?"),
+                 "Pennsylvania lists thousands. Many more were never recorded.|Satellite pad detection recovers about "
+                 "half the pads in Appalachia (Ramachandran et al. 2024). Old wells have been read from lidar by eye "
+                 "(Sams et al.; Saint-Vincent et al. 2021).|Leaf-off lidar returns reach the ground through "
+                 "deciduous canopy, so the pit, pad and access road that every well leaves can be mapped directly. "
+                 "We ask whether a U-Net can find them automatically and how well it generalises to ground it has not seen."),
     ]),
     ("Study area and data", C1, None, [
-        ("fig", "optical", 2.6, "Air photo and lidar of the same ground"),
-        ("text", "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020. We build a 0.5 m bare-earth model "
-                 "and seven terrain layers. They are relief at two scales, slope, position, openness and roughness."),
+        ("fig", "optical", 2.2, "Air photo and lidar of the same ground"),
+        ("text", "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020 over a 4.5 km square tile (9t). Ground returns are "
+                 "gridded to a 0.5 m bare-earth model. Seven terrain layers are derived from it. They are local relief "
+                 "at 25 m and 5 m, slope, topographic position, positive and negative openness, and roughness. "
+                 "Each layer is standardised with training-set means and standard deviations before it enters the network."),
     ]),
     ("Well signatures", C1, None, [
-        ("fig", "signs", 3.6, "Pit, pad, road on RRIM"),
+        ("fig", "signs", 3.0, "Pit, pad, road on RRIM"),
     ]),
     ("Methods", C2, LOWER, [
-        ("fig", "setup", 3.0, "Pipeline diagram"),
-        ("text", "A U-Net labels every pixel. Each sign gets its own model, which outputs a probability map. "
-                 "Pixels above a cutoff become outlines. The road model also learns drainage, which it "
-                 "often confuses with road."),
+        ("fig", "setup", 2.3, "Pipeline diagram"),
+        ("text", "Each sign gets its own four-level U-Net (base width 32, about 8 million parameters, batch normalisation) "
+                 "that takes the seven layers and returns a per-pixel class probability.|"
+                 "The pit model has three classes, background, pit floor and rim. Training minimises focal "
+                 "cross-entropy (gamma 2) with class weights of 0.05 for background and 0.475 for each pit class, "
+                 "which offsets the rarity of well pixels. Pads use two classes with weights 0.15 and 0.85.|"
+                 "Patches are 128 m (pits) and 192 m (pads), centred on a label with random offsets of 30 m and 40 m. "
+                 "We apply random 90-degree rotations and flips. Optimiser is AdamW, learning rate 1e-3, weight decay "
+                 "1e-4, cosine schedule, 40 epochs, batch 16.|"
+                 "Roads are modelled at 1 m with three classes, background, road and drainage. Drainage "
+                 "channels resemble roads in relief, so they are an explicit negative class. "
+                 "Road weight is 0.72. Probabilities above the cutoff are vectorised to outlines."),
     ]),
     ("Validation", C2, None, [
-        ("fig", "valid", 2.3, "Five test sets of 375 m blocks"),
-        ("text", "Each set is scored by a model trained without it. A detection counts when it overlaps a "
-                 "hand outline (IoU 0.3). Roads use their own held-out set of 735 segments."),
+        ("fig", "valid", 1.4, "Five test sets of 375 m blocks"),
+        ("text", "The tile is split by block, never by well, so a jittered patch cannot reach into a held-out block.|"
+                 "An inner validation set (20% of the remaining blocks) picks the best epoch and the cutoff. "
+                 "The cutoff maximises F2, which weights recall four times as heavily as precision, because a missed "
+                 "well costs more than a false alarm. The held-out fold never influences either choice."),
     ]),
     ("Results", C3, LOWER, [
         ("table", None, 3.0, None),
-        ("fig", "results", 3.2, "Precision-recall curves, pits and pads"),
-        ("text", "Recall is high for all three signs. Precision is lower, lowest for pads. Pad edges are "
-                 "loose, so only 77% match at IoU 0.5. Some extra detections may be real features we have "
-                 "not drawn."),
+        ("fig", "results", 2.6, "Precision-recall curves, pits and pads"),
+        ("text", "At the F2 cutoff the pit model recovers 467 of 503 pits (92.8%) and the pad model 593 of 650 pads (91.2%). "
+                 "Threshold-free average precision at IoU 0.3 is 0.82 for pits (95% bootstrap interval 0.78 to 0.86) "
+                 "and 0.75 for pads (0.70 to 0.79).|"
+                 "Precision is 0.63 for pits and 0.59 for pads. The F2 cutoff trades precision for recall by design. "
+                 "Some unmatched detections may be real features we have not drawn.|"
+                 "Pad recall falls from 91% to 77% when the match rule tightens from IoU 0.3 to 0.5. The model "
+                 "finds the pads but their boundaries are loose. Pit outlines are tighter, with 82% matching at 0.5."),
     ]),
     ("Conclusions", C3, None, [
-        ("text", "Lidar can screen large areas for unrecorded wells. Pits are the most reliable sign.|"
-                 "Limits. One survey block, our own labels, no field visits.|Next: more survey blocks and field checks."),
+        ("text", "Terrain layers from leaf-off lidar let a small U-Net recover more than 90% of labelled pits and pads in "
+                 "blocks it never saw. Pits are the most reliable sign, with the best average precision and the tightest outlines.|"
+                 "Limits. One 4.5 km tile. Labels are our own reading of the relief, made without the DEP well records. "
+                 "Precision is below 0.65 and no site has been visited, so unmatched detections stay candidates.|"
+                 "Next. Test on a second survey block, then check detections in the field."),
     ]),
 ]
 # Results table: ann712 CV5, F2 threshold per fold, IoU 0.3 (docs/iterations/LEADERBOARD.md, 2026-09-17).
@@ -286,7 +308,7 @@ def main() -> None:
                                             b[3] if len(b) > 3 else None) for b in blocks]:
             if kind == "fig":
                 ch = figure(key_or_text, x, top, CW, h, note)
-                top += h + ch + 0.35
+                top += h + ch + 0.1
             elif kind == "table":                       # recall and precision per sign, numbers large
                 rh = (h - 0.6) / len(TABLE)
                 cws = [3.2] + [(CW - 3.2) / 3] * 3
@@ -309,9 +331,9 @@ def main() -> None:
                 text_box(s, x, top, CW, th + 0.2, next(stand_texts) if outline else key_or_text, BODY_PT,
                          GREY if outline else INK, italic=outline)
                 words += len(key_or_text.replace("|", " ").split())
-                top += th + 0.45
-        col_end[x] = top - 0.45
-        if top - 0.45 > BODY_BOT + 0.05:
+                top += th + 0.3
+        col_end[x] = top - 0.3
+        if top - 0.3 > BODY_BOT + 0.05:
             print(f"WARNING: section '{head}' runs to y {top:.1f} in, past the body bottom {BODY_BOT}")
 
     # footer

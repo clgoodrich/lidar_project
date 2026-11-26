@@ -52,3 +52,10 @@ Figures 3 and 4 now sit on the red relief image map (`data/9t/derived/05/rrim_op
 ## Revision 2026-11-26, labels, scale bars and headings
 
 Text removed from Figures 2 and 3 (the panel names now sit in the captions). All scale bars in Figures 3 and 4 use one standard form, `sci_scalebar()` in `agu_poster/_make_poster_figures.py`: alternating black and white blocks, ticks at 0 and full length, black text on a small white box. Figure 2 has no scale bar because the pixel size of the source images (from `RemoteSensing_option2.pptx`) is not recorded. Section headings are now Introduction, Study area and data, Well signatures, Methods, Validation, Results, Conclusions. The main-finding line states the numbers: 93% of pits and 91% of pads.
+
+## Revision 2026-11-26, technical text
+- Methods now states the model and training: four-level U-Net (base 32, about 8 M parameters, batch norm), focal cross-entropy (gamma 2), class weights 0.05/0.475/0.475 (pits) and 0.15/0.85 (pads), 128 m and 192 m patches with 30 m and 40 m jitter, D4 augmentation, AdamW lr 1e-3, wd 1e-4, cosine, 40 epochs, batch 16. Roads: 1 m, road/drainage/background, road weight 0.72. Source: `notebooks/wellsight_v2/s3_train/_pit_unet_cv5.py`, `_pad_unet_cv5.py`, `docs/iterations/road_unet_1m_recall.md`.
+- Validation states block split, inner validation set (20% of remaining blocks) for epoch and cutoff, and the F2 objective.
+- Results gives counts (467/503, 593/650), AP with bootstrap intervals, and the IoU 0.3 to 0.5 drop.
+- Body text 30 pt, captions 26 pt, to fit. Figure heights reduced.
+- Not checked: the pit class names (floor, rim) are read from `pit_inside`/`pit_outside` in the CV doc.
