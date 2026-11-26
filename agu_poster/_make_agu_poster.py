@@ -131,13 +131,13 @@ SECTIONS = [
     ]),
     ("Results", C3, LOWER, [
         ("table", None, 3.6, None),
-        ("fig", "results", 2.9, "Precision-recall curves, pits and pads"),
         ("text", "At the F2 cutoff the pit model recovers 467 of 503 pits (92.8%) and the pad model 593 of 650 pads (91.2%). "
                  "Threshold-free average precision at IoU 0.3 is 0.82 for pits (95% bootstrap interval 0.78 to 0.86) "
                  "and 0.75 for pads (0.70 to 0.79).|"
                  "Precision is 0.63 and 0.59 by design of the F2 cutoff. Some unmatched detections may be real features we have not drawn.|"
                  "Pad recall falls from 91% to 77% when the match rule tightens from IoU 0.3 to 0.5. The model "
-                 "finds the pads but their boundaries are loose. Pit outlines are tighter, with 82% matching at 0.5."),
+                 "finds the pads, but where a pad ends and a wide road begins is an arbitrary line, so pad outlines "
+                 "differ from ours at the edges. Pit outlines are tighter, with 82% matching at 0.5."),
     ]),
     ("Conclusions", C3, None, [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net recover more than 90% of labelled pits and pads in "
@@ -153,7 +153,7 @@ TABLE = [("", "Recall", "Precision", "IoU 0.5 recall"),
          ("Pits", "93%", "63%", "82%"),
          ("Pads", "91%", "59%", "77%"),
          ("Roads", "98%", "—", "—")]
-TABLE_NOTE = "Table 1. Held-out results, tile 9t. Recall and precision at IoU 0.3, F2 cutoff. Roads are scored by segments recovered."
+TABLE_NOTE = "Table 1. Held-out results, tile 9t. Recall and precision at IoU 0.3, F2 cutoff. A detection matches a hand outline when intersection over union (IoU) is at least 0.3. Roads are scored by segments recovered."
 # --outline: stand-in text per section, (heading, [one entry per text block]). Space is kept at the real
 # text's height so the layout matches the mockup.
 OUTLINE = [
@@ -323,7 +323,7 @@ def main() -> None:
                 text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 1.4,
                          "[Table note: define each column]" if outline else TABLE_NOTE[9:], 28, GREY,
                          lead=None if outline else "Table 1.")
-                top += h + 1.0
+                top += h + 1.3
             else:
                 th = text_height(key_or_text)
                 text_box(s, x, top, CW, th + 0.2, next(stand_texts) if outline else key_or_text, BODY_PT,

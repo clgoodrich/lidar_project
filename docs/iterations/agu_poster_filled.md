@@ -59,3 +59,5 @@ Text removed from Figures 2 and 3 (the panel names now sit in the captions). All
 - Results gives counts (467/503, 593/650), AP with bootstrap intervals, and the IoU 0.3 to 0.5 drop.
 - Body text 30 pt, captions 26 pt, to fit. Figure heights reduced.
 - Not checked: the pit class names (floor, rim) are read from `pit_inside`/`pit_outside` in the CV doc.
+
+- 2026-11-26: Figure 7 (precision-recall plot) removed from the poster. AP and its intervals stay in the Results text. IoU definition moved into the Table 1 note. Results text says pad recall at IoU 0.5 drops because the pad/wide-road boundary is arbitrary.
