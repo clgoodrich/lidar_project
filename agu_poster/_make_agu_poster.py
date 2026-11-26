@@ -80,7 +80,7 @@ CAPS = {
               "satellite base map. North is up. Source: Pennsylvania DEP records."),
     "optical": ("Figure 2.", "Aerial photograph (left) and a lidar relief image with the trees removed (right) of "
                 "the same ground in study tile 9t."),
-    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. Pits are magenta, pads yellow and roads white. A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
+    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. Pits are blue, pads yellow and roads white. A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
     "hero": ("Figure 4.", "Model output (filled) and hand labels (lines) on a red relief image map, a test block of tile 9t. "
              "(b) Found pit. (c) Missed pit. (d) Model pit with no hand label. Bars: 100 m in (a), 10 m in (b) to (d)."),
     "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),

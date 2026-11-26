@@ -56,8 +56,8 @@ PR = ROOT / "data/9t/results/operating_point/pr_froc_curve_points_ranked_candida
 DECK = ROOT / "RemoteSensing_option2.pptx"
 
 PIT, PAD, ROAD = "#eb6834", "#2a78d6", "#1baf7a"
-# Map overlays sit on the red-tinted RRIM, so they use magenta, yellow and white, which separate from the teal and brown RRIM.
-MPIT, MPAD, MROAD = "#FF1FB4", "#FFE000", "#FFFFFF"
+# Map overlays sit on the red-tinted RRIM, so they use blue, yellow and white, which separate from the teal and brown RRIM.
+MPIT, MPAD, MROAD = "#1A3CFF", "#FFE000", "#FFFFFF"
 INK, MUTED, HELD, OTHER = "#2B2F36", "#6B6B6B", "#2a78d6", "#D9D9D9"
 DPI = 200
 plt.rcParams.update({"font.family": "Georgia", "font.size": 32, "axes.edgecolor": MUTED,

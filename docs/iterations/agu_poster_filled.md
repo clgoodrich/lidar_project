@@ -47,4 +47,4 @@ Output: `agu_poster/agu_poster_filled_44in.pptx` (about 22 MB, under the 100 MB 
 
 ## Revision 2026-11-26, RRIM base image
 
-Figures 3 and 4 now sit on the red relief image map (`data/9t/derived/05/rrim_openness_9t_05.tif`) instead of the hillshade. The RRIM is teal and brown, so the overlays changed to magenta (pits), yellow (pads) and white (roads). They are set as `MPIT`, `MPAD` and `MROAD` in `agu_poster/_make_poster_figures.py`. The PR curve and fold figures keep the old palette. The Figure 3 and 4 captions name the base image and the colours. The Figure 4 caption was cut to two lines. Not yet run through the colourblind validator.
+Figures 3 and 4 now sit on the red relief image map (`data/9t/derived/05/rrim_openness_9t_05.tif`) instead of the hillshade. The RRIM is teal and brown, so the overlays changed to blue (pits), yellow (pads) and white (roads). They are set as `MPIT`, `MPAD` and `MROAD` in `agu_poster/_make_poster_figures.py`. The PR curve and fold figures keep the old palette. The Figure 3 and 4 captions name the base image and the colours. The Figure 4 caption was cut to two lines. Not yet run through the colourblind validator.
