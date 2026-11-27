@@ -7,6 +7,19 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-27 — Pit-sized dip export for review (9t)
+- All lidar dips with floor 10-300 m2, outline 75-500 m2, labelled by what they touch.
+- 666 dips: drawn_pit 340, near_well 125, near_pad 32, near_road 79, hollow 90. With the 30 m2 floor: 158 / 52 / 8 / 32 / 34.
+- Files: nisar/code/s5_eval/_nisar_dips_export_9t.py, nisar/derived/9t/nisar_dips_by_category_9t.gpkg
+
+## 2026-11-27 — Hollow detector vs drawn pits (9t)
+- Why: check that the hollows (pit-shaped dips away from pits) are a fair comparison for the pits.
+- Same fill and 0.2 m depth, no exclusions, scored per drawn pit (506 of 723 inside the DEM).
+- 395 pits (78%) hold a dip deeper than 0.2 m. Only 158 (31%) pass the hollow size rules.
+- 237 fail because the dip floor is under 30 m2. Median pit dip floor 25 m2, median max depth 0.40 m.
+- Reading: the 30 m2 floor minimum excludes most real pits, so the hollows are larger dips than a typical pit. Not like-for-like.
+- Files: nisar/code/s5_eval/_nisar_hollows_pit_overlap_9t.py, nisar/results/9t/v2/nisar_hollows_pit_overlap_9t.csv
+
 ## 2026-11-27 — NISAR 9t: Branch 2 secondary analysis (full record in docs/iterations/nisar_branch2_secondary_9t.md)
 - Steel at pads, slope+canopy matched controls, 469 complete sets: raw any-track 19.6% vs 14.1% (swap p 0.0009), terrain-flattened 12.6% vs 10.1% (p 0.065); HH/HV, composite and sub-look scores AUC ~0.5. Raw excess is mostly terrain.
 - Pad coherence, matched decoys: 205 vs 182, p 0.056 (was 0.007); active share 46%.
