@@ -107,7 +107,7 @@ SECTIONS = [
     ]),
     ("Transfer to an unseen tile", C1, None, [
         ("text", "Tile 613590 shares no ground with 9t. All five fold models run on it with the 9t cutoffs and 9t normalisation, nothing retuned. "
-                 "Pit recall is in Results. Pads are not scored there because none are drawn."),
+                 "Pit recall is in Results. Pads are not scored there yet: the 32 pads drawn in that tile since the last label export are not in the scored set."),
         ("fig", "transfer", 4.6, "Predictions on tile 613590"),
     ]),
     ("Methods", C2, LOWER, [

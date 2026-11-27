@@ -49,7 +49,7 @@ Other lidar held (McKean QL1 `PA_Northcentral_2019_B19`, Warren, Permian) is out
 | `pit_inside` | MultiPolygon | 712 | 503 | 153 | pit floor. median 29.1 m2 (p10 15.3, p90 50.8). cols id, pit_inside_id, pad_id |
 | `pit_outside` | Polygon | 723 | 506 | 36 | pit rim outline. median 196.7 m2. cols matched_pit_id, pad_id |
 | `pit_wall` | MultiPolygon | 586 | 503 | 36 | rim ring (outside minus inside). Used as class 2 in the pit label raster |
-| `plat` | MultiPolygon | 995 | 650 | 0 | pad. median 1343 m2 (p10 667, p90 2357). cols pad_id, area_m2, n_pits, n_roads |
+| `plat` | MultiPolygon | 995 | 650 | 0 (but `pad.shp`, saved 2026-10-28, has 1085 rows incl. 32 in 613590 and 90 pads not in `plat`; not yet exported or scored) | pad. median 1343 m2 (p10 667, p90 2357). cols pad_id, area_m2, n_pits, n_roads |
 | `roads` | LineString | 3690 | 1358 | 1490 | median 104 m. col `src` (e.g. `613590_review_r2`, `613590_added_r2`) |
 | `not_roads` | LineString | 112 | 61 | 0 | decoys |
 | `drainage` | LineString | 1791 | 1791 | 0 | 9t only, extracted from DEM then hand-reviewed. cols klass, seg_len_m, xdrop_m |
