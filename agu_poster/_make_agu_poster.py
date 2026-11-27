@@ -111,10 +111,10 @@ SECTIONS = [
     ("Transfer to an unseen area", C1, None, [
         ("text", "Tile B shares no ground with Area A. All five fold models run on it with Area A cutoffs and nothing retuned. "
                  "It is the tile with the most hand-drawn pads in that region (86 pads, 62 pits). Scores are in Results."),
-        ("fig", "transfer", 3.4, "Predictions on Tile B"),
+        ("fig", "transfer", 3.6, "Predictions on Tile B"),
     ]),
     ("Methods", C2, LOWER, [
-        ("spec", None, 2.1, None),
+        ("spec", None, 1.7, None),
         ("text", "One plain four-level U-Net per sign, 7.8 million parameters, standardised inputs. Focal cross-entropy (gamma 2), "
                  "random flips and rotations, AdamW at 1e-3, cosine schedule, 40 epochs, batch 16. Drainage is an explicit negative class "
                  "for roads. Probabilities above the cutoff are vectorised.|"
@@ -134,7 +134,7 @@ SECTIONS = [
                  "Next. Field-check candidates and test on McKean lidar."),
     ]),
     ("Results", C3, LOWER, [
-        ("table", None, 3.0, None),
+        ("table", None, 3.9, None),
         ("fig", "errors", 4.5, "Found, missed, unlabelled"),
         ("text", "On Tile B the five-model ensemble finds 98% of the 62 drawn pits and 88% of the 86 drawn pads (61 and 76).|"
                  "Recall at IoU 0.5 is 94% for pits and 67% for pads. Where a pad ends and a wide road begins is an arbitrary line, "
@@ -147,12 +147,13 @@ SECTIONS = [
 ]
 # Results table: ann712 CV5, F2 threshold per fold, IoU 0.3 (docs/iterations/LEADERBOARD.md, 2026-09-17).
 # Roads: recall_clean at thr 0.20 on 735 held-out segments; road precision is not object-scored, so it is left blank.
-TABLE = [("", "Recall", "Precision", "IoU 0.5 recall", "Ground flagged"),
+TABLE = [("", "Recall", "Precision", "IoU 0.5 recall", "Flagged"),
          ("Pits", "98%", "≥52%", "94%", "0.14%"),
          ("Pads", "88%", "≥54%", "67%", "11%")]
 TABLE_NOTE = ("Table 1. Results on Tile B, unseen in training: five-model ensemble, IoU 0.3 and F2 cutoff unless stated. A detection matches a hand outline "
               "when intersection over union (IoU) is at least 0.3. Ground flagged is the share of Tile B above the cutoff. "
               "Precision is a lower bound, because the tile may not be fully drawn.")
+SPEC_NOTE = ("Model settings for each sign: cell size, training patch width, network classes and focal loss weight of each class.")
 SPEC = [("Sign", "Grid, patch", "Classes", "Focal weights"),
         ("Pits", "0.5 m, 128 m", "background, floor, rim", "0.05, 0.475, 0.475"),
         ("Pads", "0.5 m, 192 m", "background, pad", "0.15, 0.85"),
@@ -257,6 +258,46 @@ def main() -> None:
         r.shadow.inherit = False
         return r
 
+    def real_table(x, y, rows, widths, rh, big_pt, head_pt):
+        """A real PowerPoint table: no fill, no bold, rules under the header and under the last row."""
+        from pptx.oxml.ns import qn
+        from lxml import etree
+        gf = s.shapes.add_table(len(rows), len(rows[0]), Inches(x), Inches(y), Inches(sum(widths)), Inches(rh * len(rows)))
+        tbl = gf.table
+        tblPr = tbl._tbl.tblPr
+        for k in ("firstRow", "bandRow"):
+            tblPr.set(k, "0")
+        sid = tblPr.find(qn("a:tableStyleId"))
+        if sid is None:
+            sid = etree.SubElement(tblPr, qn("a:tableStyleId"))
+        sid.text = "{2D5ABB26-0587-4C30-8999-92F81FD0307C}"      # No Style, No Grid
+        for c, w in enumerate(widths):
+            tbl.columns[c].width = Inches(w)
+        for r, row in enumerate(rows):
+            tbl.rows[r].height = Inches(rh)
+            for c, cell in enumerate(row):
+                ce = tbl.cell(r, c)
+                ce.fill.background()
+                ce.vertical_anchor = MSO_ANCHOR.MIDDLE
+                ce.margin_left = ce.margin_right = Inches(0.08)
+                ce.margin_top = ce.margin_bottom = 0
+                tf = ce.text_frame
+                tf.word_wrap = True
+                para = tf.paragraphs[0]
+                para.alignment = PP_ALIGN.LEFT if (c == 0 or len(rows[0]) == 4) else PP_ALIGN.CENTER
+                run = para.add_run()
+                run.text = cell
+                run.font.size = Pt(head_pt if r == 0 else big_pt)
+                run.font.bold, run.font.name = False, "Georgia"
+                run.font.color.rgb = GREY if r == 0 else INK
+                if r in (0, len(rows) - 1):
+                    tcPr = ce._tc.get_or_add_tcPr()
+                    ln = etree.SubElement(tcPr, qn("a:lnB"), w="19050")
+                    sf = etree.SubElement(ln, qn("a:solidFill"))
+                    etree.SubElement(sf, qn("a:srgbClr"), val="808080")
+                    tcPr.insert(0, ln)
+        return gf
+
     def figure(key, x, y, w, h, note, size=36):
         """Place the figure, then its numbered caption. Returns the caption height in inches."""
         figure_img(key, x, y, w, h, note, size)
@@ -314,34 +355,19 @@ def main() -> None:
                     rect(x, top + 0.12, CW, 0.025, RULE)
                     top += 0.45
             elif kind == "spec":
-                rh = h / len(SPEC)
-                swd = [1.5, 3.0, 4.9, CW - 9.4]
-                for r, row in enumerate(SPEC):
-                    cx = x
-                    for c, cell in enumerate(row):
-                        text_box(s, cx, top + r * rh, swd[c], rh, cell, 26, INK if r else GREY, anchor=MSO_ANCHOR.MIDDLE)
-                        cx += swd[c]
-                    if r == 0:
-                        rect(x, top + rh - 0.02, CW, 0.03, RULE)
-                top += h + 0.3
-            elif kind == "table":                       # recall and precision per sign, numbers large
-                rh = (h - 0.6) / len(TABLE)
-                nc = len(TABLE[0])
-                cws = [2.3] + [(CW - 2.3) / (nc - 1)] * (nc - 1)
-                for r, row in enumerate(OUTLINE_TABLE if outline else TABLE):
-                    cx = x
-                    for c, cell in enumerate(row):
-                        big = r > 0 and c > 0
-                        text_box(s, cx, top + r * rh, cws[c], rh, cell, 44 if big else 28,
-                                 INK if (big or c == 0) else GREY, bold=big or c == 0,
-                                 align=PP_ALIGN.LEFT if c == 0 else PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-                        cx += cws[c]
-                    if r == 0:
-                        rect(x, top + rh - 0.02, CW, 0.03, RULE)
-                text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 2.4,
-                         "[Table note: define each column]" if outline else TABLE_NOTE[9:], 24, GREY,
+                real_table(x, top, SPEC, [1.5, 3.0, 4.9, CW - 9.4], h / len(SPEC), 24, 24)
+                text_box(s, x, top + h + 0.15, CW, 1.2,
+                         "[Table note: define each column]" if outline else SPEC_NOTE, 24, GREY,
                          lead=None if outline else "Table 1.")
-                top += h + 1.7
+                top += h + 0.9
+            elif kind == "table":
+                nc = len(TABLE[0])
+                rh = (h - 0.9) / len(TABLE)
+                real_table(x, top, OUTLINE_TABLE if outline else TABLE, [2.3] + [(CW - 2.3) / (nc - 1)] * (nc - 1), rh, 40, 28)
+                text_box(s, x, top + h + 0.2, CW, 2.4,
+                         "[Table note: define each column]" if outline else TABLE_NOTE[9:], 24, GREY,
+                         lead=None if outline else "Table 2.")
+                top += h + 1.9
             else:
                 th = text_height(key_or_text)
                 text_box(s, x, top, CW, th + 0.2, next(stand_texts) if outline else key_or_text, BODY_PT,
