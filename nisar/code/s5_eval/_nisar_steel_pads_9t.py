@@ -42,6 +42,10 @@ import _nisar_steel_9t as S  # noqa: E402
 
 BUF_M, N_CTRL, SEED = 5.0, 5, 20261125
 OUT = S.OUT
+if "--v2" in sys.argv:  # Branch 2 (secondary analysis): new versions go to results/<area>/v2, baseline untouched
+    sys.argv.remove("--v2")
+    OUT = OUT / "v2"
+    OUT.mkdir(parents=True, exist_ok=True)
 
 
 def pix(geom, tf, shape):

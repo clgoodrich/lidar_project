@@ -42,6 +42,10 @@ st = ifg.st
 from _common import read_layer  # noqa: E402
 
 OUT, FIG, CRS, ANN = st.OUT, st.FIG, st.CRS, st.ANN
+if "--v2" in sys.argv:  # Branch 2 (secondary analysis): new versions go to results/<area>/v2, baseline untouched
+    sys.argv.remove("--v2")
+    OUT, FIG = OUT / "v2", OUT / "v2" / "figures"
+    OUT.mkdir(parents=True, exist_ok=True)
 AREA = st.A   # area picked with --area (9t, 613590 or mkf)
 WELLS = AREA.WELLS
 WIN, CORE_M, RING, N_DECOY, FA_RATE, SEED = 5, 5.0, (20.0, 60.0), 5, 0.01, 20261007

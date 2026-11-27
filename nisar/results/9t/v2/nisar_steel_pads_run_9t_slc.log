@@ -1,0 +1,28 @@
+track 26: 8 dates, SBT pixels 1180 (0.1226% of valid)
+track 90: 12 dates, SBT pixels 1168 (0.1214% of valid)
+track 162: 12 dates, SBT pixels 450 (0.0468% of valid)
+all_post_june 649 pads, 2676 controls
+track 26: 4 dates, SBT pixels 837 (0.0870% of valid)
+track 90: 8 dates, SBT pixels 1276 (0.1326% of valid)
+track 162: 8 dates, SBT pixels 707 (0.0735% of valid)
+summer_leaf_on 649 pads, 2688 controls
+         dates                             cls  n_pads  n_ctrl  pads_hit_any  ctrl_hit_any  odds_any  p_any  pads_hit_2plus  ctrl_hit_2plus  p_2plus
+ all_post_june                             all     649    2676         0.193         0.166      1.20 0.1200           0.025           0.020    0.440
+ all_post_june                cover_cls=canopy     589    2473         0.188         0.167      1.15 0.2200           0.020           0.019    0.740
+ all_post_june                  cover_cls=open      60     203         0.233         0.153      1.69 0.1700           0.067           0.034    0.280
+ all_post_june                  size_cls=large     216     832         0.208         0.184      1.17 0.4400           0.042           0.019    0.075
+ all_post_june                    size_cls=mid     216     865         0.213         0.170      1.32 0.1600           0.019           0.020    1.000
+ all_post_june                  size_cls=small     217     979         0.157         0.148      1.07 0.7500           0.014           0.020    0.780
+ all_post_june               status_cls=active     230     839         0.187         0.128      1.57 0.0250           0.026           0.015    0.270
+ all_post_june          status_cls=no_dep_well     344    1536         0.201         0.182      1.13 0.4400           0.029           0.021    0.420
+ all_post_june status_cls=plugged_or_abandoned      75     301         0.173         0.196      0.86 0.7400           0.000           0.023    0.350
+summer_leaf_on                             all     649    2688         0.199         0.168      1.23 0.0740           0.029           0.025    0.580
+summer_leaf_on                cover_cls=canopy     589    2472         0.194         0.169      1.18 0.1600           0.024           0.025    0.880
+summer_leaf_on                  cover_cls=open      60     216         0.250         0.157      1.78 0.1300           0.083           0.023    0.043
+summer_leaf_on                  size_cls=large     216     811         0.264         0.181      1.62 0.0094           0.042           0.030    0.390
+summer_leaf_on                    size_cls=mid     216     881         0.181         0.173      1.06 0.7600           0.023           0.024    1.000
+summer_leaf_on                  size_cls=small     217     996         0.152         0.154      0.99 1.0000           0.023           0.023    1.000
+summer_leaf_on               status_cls=active     230     833         0.174         0.174      1.00 1.0000           0.035           0.030    0.670
+summer_leaf_on          status_cls=no_dep_well     344    1546         0.203         0.169      1.25 0.1400           0.029           0.023    0.440
+summer_leaf_on status_cls=plugged_or_abandoned      75     309         0.253         0.146      1.99 0.0370           0.013           0.026    1.000
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\results\9t\v2\nisar_steel_pads_summary_9t_slc.json

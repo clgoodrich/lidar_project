@@ -7,6 +7,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — NISAR 9t: Branch 2 outputs folder; pad reruns
+- Branch 2 results now go to `nisar/results/9t/v2/` (flag `--v2` on `_nisar_steel_pads_9t.py` and `_nisar_pad_change_9t.py`). Baseline files are not touched.
+- Reran both pad tests with the pad_id dissolve. Outputs identical to the baseline (steel summary JSON equal; coherence 220 vs 182.0, swap p 0.007). Reason: pad_id is unique per polygon (995 of 995), so the dissolve merges nothing. The plan's "dissolve bug" is not real. The 649 vs 644 gap comes from tile coverage, not split pads.
+
 ## 2026-11-26 — NISAR 9t: secondary analysis started (two-branch plan)
 - Status against the pasted plan: datum fix, D_A ddof=1 and per-date scaling, pixel floor, seasonal n_decoys, slope look-direction comment, processor-step test, coherence split by active wells, and spec errata (geocoder kappa 0, coherence 5x5 / 2000 perms) were already done in the 26 Nov rerun (commit 75b244c). That rerun overwrote the *_9t_slc results in place, so Branch 1's frozen baseline exists only in git at ad621b9.
 - Equipment pads P5/P55/P57/P14 already reported (spec 4, write-up 5.2): P5 2 tracks, P55 1, P57 0, P14 0.
