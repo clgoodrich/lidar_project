@@ -7,6 +7,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — NISAR 9t: pad fall darkening tested date by date
+- New `nisar/code/s5_eval/_nisar_pad_season_per_date_9t.py` -> `nisar/results/9t/nisar_pad_season_per_date_9t_slc.csv`, `..._summary_9t_slc.json`. Pad-minus-ring minus decoy, per date (32 dates, 644 pads, 5 decoys).
+- Why: the pad-level p (<0.001) treats 644 pads as independent, but all share 7 fall dates. The date is the real unit.
+- Pre-set fall (Oct 23-Nov 16, 7 dates) vs summer (20): HH p 0.23, HV p 0.014. Not robust at the date level in HH.
+- Pattern: summer dates scatter ±0.08 dB (SD). Sep 29-Nov 4: 10 of 10 HH dates negative, median -0.29 dB, on all 3 tracks and both processor versions (6 P05023, 4 P05036). Nov 7-16: +0.41, +0.08, +0.08. Window chosen after seeing the data (MW p 4e-5 is descriptive only).
+- Reading: darkening tracks the leaf-fall period, not the processor switch; gone by mid-November. Needs a second autumn to confirm.
+
 ## 2026-11-26 — NISAR 9t: findings rewritten on rerun numbers
 - `nisar/docs/nisar_technical_writeup_9t.md` sections 5 and 6 rewritten (5.1 DEP points, 5.2 pads, 5.3 targets, 5.4 brightness, 5.5 coherence, 5.6 processor step, 5.7 pool pits, 5.8 motion); sections 7 and 8 gained the review fixes and limits. `nisar/docs/nisar_pipeline_spec_9t.md` section 4 rewritten to match.
 - Main changes in reading: pads sit 2-3 points above controls, never significant, low power; slope signal is atmosphere, not creep; processor step is a flat gain. Pool pits and pit motion not rerun (stated).

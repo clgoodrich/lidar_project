@@ -1,0 +1,146 @@
+{
+ "hh": {
+  "n_fall_dates": 7,
+  "n_summer_dates": 20,
+  "fall_median": -0.211,
+  "summer_median": -0.003,
+  "fall_negative": 4,
+  "summer_negative": 10,
+  "mannwhitney_fall_lt_summer_p": 0.2320000450435233,
+  "per_track": {
+   "26": {
+    "summer_min": 0.004,
+    "summer_max": 0.136,
+    "summer_median": 0.044,
+    "fall": [
+     -0.211,
+     0.412
+    ],
+    "fall_below_all_summer": 1,
+    "n_fall": 2
+   },
+   "90": {
+    "summer_min": -0.121,
+    "summer_max": 0.063,
+    "summer_median": -0.08349999999999999,
+    "fall": [
+     -0.407,
+     0.076
+    ],
+    "fall_below_all_summer": 1,
+    "n_fall": 2
+   },
+   "162": {
+    "summer_min": -0.339,
+    "summer_max": 0.132,
+    "summer_median": 0.003999999999999999,
+    "fall": [
+     -0.358,
+     -0.296,
+     0.078
+    ],
+    "fall_below_all_summer": 1,
+    "n_fall": 3
+   }
+  },
+  "transition_dates": [
+   {
+    "date": "2026-10-02",
+    "track": 26,
+    "excess_db": -0.1
+   },
+   {
+    "date": "2026-10-06",
+    "track": 90,
+    "excess_db": -0.294
+   },
+   {
+    "date": "2026-10-11",
+    "track": 162,
+    "excess_db": -0.277
+   },
+   {
+    "date": "2026-10-14",
+    "track": 26,
+    "excess_db": -0.215
+   },
+   {
+    "date": "2026-10-18",
+    "track": 90,
+    "excess_db": -0.021
+   }
+  ]
+ },
+ "hv": {
+  "n_fall_dates": 7,
+  "n_summer_dates": 20,
+  "fall_median": -0.101,
+  "summer_median": 0.0055,
+  "fall_negative": 5,
+  "summer_negative": 10,
+  "mannwhitney_fall_lt_summer_p": 0.014402806691333835,
+  "per_track": {
+   "26": {
+    "summer_min": -0.045,
+    "summer_max": 0.115,
+    "summer_median": 0.06,
+    "fall": [
+     0.003,
+     0.094
+    ],
+    "fall_below_all_summer": 0,
+    "n_fall": 2
+   },
+   "90": {
+    "summer_min": -0.095,
+    "summer_max": 0.119,
+    "summer_median": 0.0055,
+    "fall": [
+     -0.115,
+     -0.057
+    ],
+    "fall_below_all_summer": 1,
+    "n_fall": 2
+   },
+   "162": {
+    "summer_min": -0.107,
+    "summer_max": 0.084,
+    "summer_median": -0.037500000000000006,
+    "fall": [
+     -0.179,
+     -0.219,
+     -0.101
+    ],
+    "fall_below_all_summer": 2,
+    "n_fall": 3
+   }
+  },
+  "transition_dates": [
+   {
+    "date": "2026-10-02",
+    "track": 26,
+    "excess_db": -0.006
+   },
+   {
+    "date": "2026-10-06",
+    "track": 90,
+    "excess_db": -0.182
+   },
+   {
+    "date": "2026-10-11",
+    "track": 162,
+    "excess_db": -0.112
+   },
+   {
+    "date": "2026-10-14",
+    "track": 26,
+    "excess_db": -0.114
+   },
+   {
+    "date": "2026-10-18",
+    "track": 90,
+    "excess_db": -0.075
+   }
+  ]
+ }
+}
