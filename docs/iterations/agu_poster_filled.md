@@ -80,3 +80,5 @@ Later on 2026-11-26: Figure 5 replaced by grey-scale probability maps, `agu_post
 - Text cut to about 600 body words. Methods is a spec table plus short text. No bold, per the earlier instruction.
 
 Naming 2026-11-27: on the poster tile 9t is "Area A" (tile block 17TPF619593, 619500-624000 E, 4593000-4597500 N) and tile 613590 is "Area B" (17TPF613590, 613500-618000 E, 4590000-4594500 N). Official names are the 1.5 km USGS tile files USGS_LPC_PA_WesternPA_2019_D20_17TPF<XXXYYY>, project PA_WesternPA_2019_D20. Repo and scripts keep 9t and 613590.
+
+Prior work added 2026-11-27: Gorantla et al. 2024 (NETL AGU poster) and Sams et al. 2018 (NETL Pioneer Run poster) now in the Introduction and References. CITATIONS.md years corrected (Sams 2018, Gorantla 2024).

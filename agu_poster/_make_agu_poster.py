@@ -82,8 +82,8 @@ CAPS = {
     "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. From left to right: pit (blue), pad (yellow) and road (white). "
               "A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. Panels are 60, 180 and 180 m wide."),
     "valid": ("Figure 5.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
-    "transfer": ("Figure 4.", "Area B, 1.5 km west of Area A and unseen in training (400 m window, mean of the five fold models). "
-                 "(a) Relief map with hand outlines. (b) Pit probability. (c) Pad probability, black 0 to white 1."),
+    "transfer": ("Figure 4.", "Area B, 1.5 km west of Area A, unseen in training (400 m, mean of five fold models). "
+                 "(a) Relief map, hand outlines. (b) Pit and (c) pad probability."),
     "errors": ("Figure 6.", "Three 50 m windows from a held-out block of Area A. (a) Found pit. (b) Missed pit. "
                "(c) Model pit with no hand label, which counts against precision. Bars 10 m."),
 }
@@ -91,12 +91,15 @@ CAPS = {
 
 SECTIONS = [
     ("Why orphan wells stay hidden", C1, BODY_TOP, [
-        ("fig", "intro", 4.2, "Map of Pennsylvania documented orphan wells"),
+        ("fig", "intro", 3.2, "Map of Pennsylvania documented orphan wells"),
         ("text", "Hazard. Thousands of undocumented wells in western Pennsylvania can leak methane and brine.|"
-                 "Why current data fall short. Canopy hides about half of the pads from satellites (Ramachandran et al. 2024). "
-                 "Legacy well coordinates can be tens to hundreds of metres off.|"
-                 "Approach. Map the pit, pad and access road that every well leaves, directly from leaf-off USGS 3DEP lidar, "
-                 "and ask how well a U-Net does it on ground it has not seen."),
+                 "Why current data fall short. Canopy hides about half of the pads from satellites (Ramachandran et al. 2024), "
+                 "and legacy well coordinates can be off by tens to hundreds of metres.|"
+                 "Prior lidar work. NETL traces trails and access roads to well sites from free state lidar across Pennsylvania, New York, "
+                 "Kentucky, West Virginia and Ohio (Gorantla et al. 2024). A 2017 drone survey of 1860s wells at Pioneer Run "
+                 "found an open well bore from an unnatural depression in the relief image (Sams et al. 2018).|"
+                 "Approach. Map the pit, pad and access road that every well leaves, from leaf-off USGS 3DEP lidar, "
+                 "with trained U-Nets, and test on ground they have not seen."),
     ]),
     ("Lidar data and terrain layers", C1, None, [
         ("fig", "signs", 4.0, "Pit, pad, road on RRIM"),
@@ -107,8 +110,8 @@ SECTIONS = [
     ]),
     ("Transfer to an unseen area", C1, None, [
         ("text", "Area B shares no ground with Area A. All five fold models run on it with Area A cutoffs, nothing retuned. "
-                 "Pit recall is in Results. Pads are not scored there yet: the 32 pads drawn in Area B since the last label export are not in the scored set."),
-        ("fig", "transfer", 4.1, "Predictions on Area B"),
+                 "Pit recall is in Results. Pads are not scored there yet (32 drawn since the last label export)."),
+        ("fig", "transfer", 3.5, "Predictions on Area B"),
     ]),
     ("Methods", C2, LOWER, [
         ("spec", None, 2.3, None),
@@ -347,7 +350,7 @@ def main() -> None:
             print(f"WARNING: section '{head}' runs to y {top:.1f} in, past the body bottom {BODY_BOT}")
 
     # footer
-    for head, x, w, note in (("References", X0, 19.0, "Ramachandran et al. 2024, Nat. Commun. 15, 7036. Saint-Vincent et al. 2021, J. Environ. Manage. 280, 111856. Sams et al., NETL, LiDAR mapping of 1860s oil fields, Pioneer Run (OSTI 1569995). USGS 3D Elevation Program"),
+    for head, x, w, note in (("References", X0, 19.0, "Ramachandran et al. 2024, Nat. Commun. 15, 7036. Saint-Vincent et al. 2021, J. Environ. Manage. 280, 111856. Gorantla, Sams, Reeder & Pekney 2024, Extended application of state LiDAR datasets in locating orphaned wells in the Appalachian region, NETL poster, AGU Fall Meeting. Sams, Mundia-Howe, Veloski & Hammack 2018, LiDAR mapping of 1860s oil fields along Pioneer Run, Oil Creek State Park, PA, NETL poster (OSTI 1569995). USGS 3D Elevation Program"),
                              ("Acknowledgements", X0 + 19.8, 14.0, "Lidar from the USGS 3D Elevation Program, project PA_WesternPA_2019_D20. Well records from the Pennsylvania Department of Environmental Protection. Funding: [to add].")):
         text_box(s, x, FOOT_TOP - 0.1, w, 0.8, head, 40, INK)
         rect(x, FOOT_TOP + 0.75, w, 0.05, UH_RED)

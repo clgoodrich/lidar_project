@@ -62,9 +62,9 @@ is the source of record.
 | Elkan | 2001 | Cost-sensitive decision threshold p* = C_FP/(C_FP+C_FN) | **Adopted** — cost-ratio policy in the Phase 3 sweep | `notebooks/wellsight_v2/s5_eval/_operating_point_policy_sweep_pit_pad_9t.py`; `data/9t/results/operating_point/policy_sweep_cost_budget_conformal_fbeta_heldout_cv5_iou0p30_pit_pad_9t.csv` | ✓ `elkan_2001_foundations_cost_sensitive_learning.pdf` |
 | Ramachandran et al. | 2024 | Well pads from satellite imagery, Permian and Denver | Optical comparison, poster intro | `agu_poster/_make_agu_poster.py` | ✓ `ramachandran_2024_well_pads_satellite_dl.pdf` |
 | Saint-Vincent et al. | 2021 | Oil Creek abandoned wells, records plus lidar | Prior work, poster | `agu_poster/_make_agu_poster.py` | ✓ `data/_source/reference/literature/saint_vincent_2021_oil_creek_state_park.pdf` |
-| Sams et al. (NETL poster) | ~2019 | Pioneer Run drone lidar, 1860s oil field | Prior work, poster | `agu_poster/_make_agu_poster.py` | ✓ `data/_source/reference/literature/saint_vincent_2019_pioneer_run_lidar_conference.pdf` |
+| Sams, Mundia-Howe, Veloski & Hammack (NETL poster) | 2018 (PDF made 2018-01-19, drone flight May 2017) | Pioneer Run drone lidar, 1860s oil field; open well bore found from an unnatural depression in the relief image | Prior work, poster intro and References | `agu_poster/_make_agu_poster.py` | ✓ `data/_source/reference/literature/saint_vincent_2019_pioneer_run_lidar_conference.pdf` |
 | Reeder et al. (NETL) | 2023? | Procedure for locating wells | Background | none | ✓ `data/_source/reference/literature/netl_2023_reeder_procedure_locating_wells.pdf` |
-| Gorantla et al. (NETL AGU) | 2024? | State lidar for orphaned wells | Prior work | none | ✓ `data/_source/reference/literature/netl_2024_gorantla_state_lidar_orphan_wells_agu.pdf` |
+| Gorantla, Sams, Reeder & Pekney (NETL, AGU Fall Meeting, PDF made 2024-12-17) | 2024 | State lidar DEM and hillshade workflow tracing trails and access roads to well sites across PA, NY, KY, WV, OH | Prior work, poster intro and References | `agu_poster/_make_agu_poster.py` | ✓ `data/_source/reference/literature/netl_2024_gorantla_state_lidar_orphan_wells_agu.pdf` |
 | Saint-Vincent et al. | 2020 | Records plus aeromagnetic surveys | Background | none | ✓ `data/_source/reference/literature/saint_vincent_2020_database_aeromagnetic.pdf` |
 
 ---
