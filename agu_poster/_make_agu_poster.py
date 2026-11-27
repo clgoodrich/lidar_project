@@ -82,7 +82,7 @@ CAPS = {
     "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. From left to right: pit (blue), pad (yellow) and road (white). "
               "A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. Panels are 60, 180 and 180 m wide."),
     "valid": ("Figure 5.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
-    "transfer": ("Figure 4.", "Northern 750 m of tile 17TPF616591 in Area B, unseen in training. (a) Red relief image map with hand-drawn pads (yellow dashed) "
+    "transfer": ("Figure 4.", "Northern 750 m of Tile B, unseen in training. (a) Red relief image map with hand-drawn pads (yellow dashed) "
                  "and pits (blue). (b) Pads and pits predicted by the five fold models at the Area A cutoffs. Bar 250 m."),
     "errors": ("Figure 6.", "Three 50 m windows from a held-out block of Area A. (a) Found pit. (b) Missed pit. "
                "(c) Model pit with no hand label, which counts against precision. Bars 10 m."),
@@ -103,15 +103,15 @@ SECTIONS = [
     ]),
     ("Lidar data and terrain layers", C1, None, [
         ("fig", "signs", 3.3, "Pit, pad, road on RRIM"),
-        ("text", "USGS 3DEP lidar, project PA_WesternPA_2019_D20, flown leaf-off Nov 2019 to Mar 2020, about 2.6 ground points per m2. We use two 4.5 km squares of 1.5 km tiles: Area A (tile block 17TPF619593), which holds all training and cross-validation, and Area B (17TPF613590), used only for transfer.|"
+        ("text", "USGS 3DEP lidar, project PA_WesternPA_2019_D20, flown leaf-off Nov 2019 to Mar 2020, about 2.6 ground points per m2. Area A (4.5 km square, tile block 17TPF619593) holds all training and cross-validation. Tile B (1.5 km, tile 17TPF616591, 1.5 km west of Area A) is used only for testing.|"
                  "Ground returns are triangulated (Delaunay) and gridded to a 0.5 m bare-earth model. Seven layers are derived: relief in 12.5 m "
                  "and 2.5 m windows, slope, topographic position, positive and negative openness, and roughness.|"
                  "We outlined 503 pits and 650 pads by hand in Area A (712 and 995 across all areas), without the DEP well records."),
     ]),
     ("Transfer to an unseen area", C1, None, [
-        ("text", "Area B shares no ground with Area A. All five fold models run on tile 17TPF616591, the Area B tile with the most hand-drawn pads "
-                 "(86 pads, 62 pits), with Area A cutoffs and nothing retuned. Scores are in Results."),
-        ("fig", "transfer", 3.4, "Predictions on tile 616591"),
+        ("text", "Tile B shares no ground with Area A. All five fold models run on it with Area A cutoffs and nothing retuned. "
+                 "It is the tile with the most hand-drawn pads in that region (86 pads, 62 pits). Scores are in Results."),
+        ("fig", "transfer", 3.4, "Predictions on Tile B"),
     ]),
     ("Methods", C2, LOWER, [
         ("spec", None, 2.1, None),
@@ -129,7 +129,7 @@ SECTIONS = [
     ]),
     ("Conclusions", C2, None, [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net find more than 90% of labelled pits and pads in blocks it never saw, "
-                 "and 98% of pits and 88% of pads on an unseen tile in Area B.|"
+                 "and 98% of pits and 88% of pads on the unseen Tile B.|"
                  "Limits. One survey, one annotator, no field visits.|"
                  "Next. Field-check candidates and test on McKean lidar."),
     ]),
@@ -140,7 +140,7 @@ SECTIONS = [
                  "(95% bootstrap interval 0.78 to 0.86) and 0.75 for pads (0.70 to 0.79).|"
                  "Pad recall falls to 77% at IoU 0.5. Where a pad ends and a wide road begins is an arbitrary line, so pad edges differ from ours "
                  "even when the pad is found. Precision is a lower bound, since some unmatched detections may be real features we did not draw.|"
-                 "On tile 616591 the five-model ensemble recovers 98% of the 62 pits and 88% of the 86 pads drawn. "
+                 "On Tile B the five-model ensemble recovers 98% of the 62 pits and 88% of the 86 pads drawn. "
                  "That tile may not be fully drawn, so its precision, at least 52% and 54%, is a lower bound.|"
                  "Pits are the best target: highest average precision, sharpest outlines and the smallest search area."),
     ]),
@@ -151,11 +151,11 @@ TABLE = [("", "Recall", "Precision", "IoU 0.5 recall", "Ground flagged"),
          ("Pits", "93%", "63%", "82%", "0.13%"),
          ("Pads", "91%", "59%", "77%", "10%"),
          ("Roads\u2020", "98%", "\u2014", "\u2014", "5.0%"),
-         ("Pits, tile B‡", "98%", "≥52%", "94%", "0.14%"),
-         ("Pads, tile B‡", "88%", "≥54%", "67%", "11%")]
+         ("Pits, Tile B‡", "98%", "≥52%", "94%", "0.14%"),
+         ("Pads, Tile B‡", "88%", "≥54%", "67%", "11%")]
 TABLE_NOTE = ("Table 1. Held-out results, Area A, IoU 0.3 and F2 cutoff. A detection matches a hand outline when intersection over union (IoU) "
               "is at least 0.3. Ground flagged is the share of ground above the cutoff. \u2020Roads: 40 m chunks fully held out, single-split model, "
-              "probability 0.20. \u2021Tile 17TPF616591 in Area B, unseen in training, five-model ensemble. Precision is a lower bound because the tile may not be fully drawn.")
+              "probability 0.20. \u2021Tile B, unseen in training, five-model ensemble. Precision is a lower bound because the tile may not be fully drawn.")
 SPEC = [("Sign", "Grid, patch", "Classes", "Focal weights"),
         ("Pits", "0.5 m, 128 m", "background, floor, rim", "0.05, 0.475, 0.475"),
         ("Pads", "0.5 m, 192 m", "background, pad", "0.15, 0.85"),
