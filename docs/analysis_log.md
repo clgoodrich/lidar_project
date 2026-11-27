@@ -7,6 +7,14 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — NISAR 9t: secondary analysis started (two-branch plan)
+- Status against the pasted plan: datum fix, D_A ddof=1 and per-date scaling, pixel floor, seasonal n_decoys, slope look-direction comment, processor-step test, coherence split by active wells, and spec errata (geocoder kappa 0, coherence 5x5 / 2000 perms) were already done in the 26 Nov rerun (commit 75b244c). That rerun overwrote the *_9t_slc results in place, so Branch 1's frozen baseline exists only in git at ad621b9.
+- Equipment pads P5/P55/P57/P14 already reported (spec 4, write-up 5.2): P5 2 tracks, P55 1, P57 0, P14 0.
+- New `nisar/code/s5_eval/_nisar_building_geoloc_9t.py` -> `nisar/results/9t/nisar_building_geoloc_per_building_9t_slc.csv`, `nisar/results/9t/nisar_building_geoloc_summary_9t_slc.json`. Radar peak vs lidar wall (left-looking: t26 lights the west wall, t90/t162 the east wall).
+- Result: only 1 of the 9 NAIP buildings (T4) is inside the 9t lidar tile. The other 8 lie south or east of it, where the radar is placed on NASA's DEM, so they cannot test the lidar placement. T4: ascending peaks 1.7 m from the east wall, but 9 m off north-south; descending peak 30 m from the west wall (not the building). One building settles nothing. A real check needs lidar for the adjacent tiles or a reflector.
+- Code fixes, not yet rerun: `nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py` skips windows with valid_fraction 0; `nisar/code/s5_eval/_nisar_steel_pads_9t.py` and `nisar/code/s5_eval/_nisar_pad_change_9t.py` dissolve plat by pad_id (649 parts -> 644 pads, as in the seasonal test). The rerun was held back because it would overwrite the current pad results. Current pad result files predate this fix.
+- `_nisar_pit_pool_9t.py` "_slc_slc" bug: not present. A.TAG is the area ("9t"), so the hardcoded "_slc_5m" reads the right file.
+
 ## 2026-11-26 — NISAR 9t: 10-minute talk deck updated to rerun findings
 
 - Deck: claude.ai artifact "NISAR Markers at Well Sites", version 40. Now 11 slides.

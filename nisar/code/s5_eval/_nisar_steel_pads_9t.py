@@ -95,7 +95,8 @@ def main():
 
     x0, y1 = tf.c, tf.f
     x1, y0 = x0 + shape[1] * 5, y1 - shape[0] * 5
-    pads = S.read_layer(S.ANN, "plat").pipe(S.AREA.to_radar).cx[x0:x1, y0:y1].reset_index(drop=True)
+    pads = S.read_layer(S.ANN, "plat").pipe(S.AREA.to_radar).dissolve(by="pad_id", as_index=False)  # one site per pad, as in the seasonal test
+    pads = pads.cx[x0:x1, y0:y1].reset_index(drop=True)
     wells = gpd.read_file(S.WELLS).pipe(S.AREA.to_radar).cx[x0 - 100:x1 + 100, y0 - 100:y1 + 100]
     grp = {v: k for k, vs in S.GROUPS.items() for v in vs}
     wells["group"] = wells.WELL_STATU.map(grp)

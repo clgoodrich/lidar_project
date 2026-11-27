@@ -219,8 +219,8 @@ def main() -> int:
             print(f"  {g.granule[:60]}... valid {w['meta']['valid_fraction']:.3f} ({time.time()-t:.0f} s)")
             if best is None or w["meta"]["valid_fraction"] > best[1]["meta"]["valid_fraction"]:
                 best = (g, w)
-        if best is None:
-            continue
+        if best is None or best[1]["meta"]["valid_fraction"] == 0:
+            continue  # no granule reaches the window: writing it would leave an empty frame file
         g, w = best
         m = w["meta"]
         tf = from_origin(m["x_first_centre"] - m["spacing_m"] / 2, m["y_first_centre"] + m["spacing_m"] / 2,

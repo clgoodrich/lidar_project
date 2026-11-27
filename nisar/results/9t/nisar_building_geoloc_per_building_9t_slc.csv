@@ -1,0 +1,15 @@
+chip,status,frame,track,lit_wall,area_m2,height_m,width_ew_m,near_m,peak_db,err_ew_m,err_ns_m,err_ew_centroid_m
+T2,outside lidar tile or no patch,,,,,,,,,,,
+T3,outside lidar tile or no patch,,,,,,,,,,,
+T4,ok,shifted,26.0,west,645.0,15.0,32.0,0.2,22.4,30.3,2.49,14.29
+T4,ok,shifted,90.0,east,645.0,15.0,32.0,0.2,6.0,-1.7,-8.8,14.29
+T4,ok,shifted,162.0,east,645.0,15.0,32.0,0.2,4.5,-1.7,-9.12,14.29
+T4,ok,no_shift,26.0,west,645.0,15.0,32.0,0.2,22.4,29.5,3.5,13.49
+T4,ok,no_shift,90.0,east,645.0,15.0,32.0,0.2,6.0,-2.5,-7.79,13.49
+T4,ok,no_shift,162.0,east,645.0,15.0,32.0,0.2,4.5,-2.5,-8.11,13.49
+T5,outside lidar tile or no patch,,,,,,,,,,,
+T6,outside lidar tile or no patch,,,,,,,,,,,
+T12,outside lidar tile or no patch,,,,,,,,,,,
+T16,outside lidar tile or no patch,,,,,,,,,,,
+T18,outside lidar tile or no patch,,,,,,,,,,,
+T25,outside lidar tile or no patch,,,,,,,,,,,

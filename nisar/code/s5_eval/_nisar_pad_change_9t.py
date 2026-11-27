@@ -109,7 +109,7 @@ def main():
     in_tile = np.isfinite(cover)
     ok_flat = in_tile.ravel()
 
-    pads = read_layer(ANN, "plat").pipe(AREA.to_radar).reset_index(drop=True)
+    pads = read_layer(ANN, "plat").pipe(AREA.to_radar).dissolve(by="pad_id", as_index=False)  # one site per pad
     pits = read_layer(ANN, "pit_outside").pipe(AREA.to_radar)
     roads = read_layer(ANN, "roads").pipe(AREA.to_radar)
     feat = rasterize([(g, 1) for g in pd.concat([pads.buffer(20), pits.buffer(20), roads.buffer(20)])],

@@ -1,0 +1,78 @@
+{
+ "params": {
+  "search_m": 15.0,
+  "ndsm_min_m": 2.5,
+  "pixel_m": 5.0,
+  "lit_wall": {
+   "26": "west",
+   "90": "east",
+   "162": "east"
+  }
+ },
+ "n_buildings": 9,
+ "n_in_lidar": 1,
+ "skipped": [
+  "T2",
+  "T3",
+  "T5",
+  "T6",
+  "T12",
+  "T16",
+  "T18",
+  "T25"
+ ],
+ "summary": {
+  "no_shift_t26.0": {
+   "n": 1,
+   "median_err_ew_m": 29.5,
+   "median_err_ns_m": 3.5,
+   "median_abs_ew_m": 29.5,
+   "median_abs_ns_m": 3.5
+  },
+  "no_shift_t90.0": {
+   "n": 1,
+   "median_err_ew_m": -2.5,
+   "median_err_ns_m": -7.79,
+   "median_abs_ew_m": 2.5,
+   "median_abs_ns_m": 7.79
+  },
+  "no_shift_t162.0": {
+   "n": 1,
+   "median_err_ew_m": -2.5,
+   "median_err_ns_m": -8.11,
+   "median_abs_ew_m": 2.5,
+   "median_abs_ns_m": 8.11
+  },
+  "shifted_t26.0": {
+   "n": 1,
+   "median_err_ew_m": 30.3,
+   "median_err_ns_m": 2.49,
+   "median_abs_ew_m": 30.3,
+   "median_abs_ns_m": 2.49
+  },
+  "shifted_t90.0": {
+   "n": 1,
+   "median_err_ew_m": -1.7,
+   "median_err_ns_m": -8.8,
+   "median_abs_ew_m": 1.7,
+   "median_abs_ns_m": 8.8
+  },
+  "shifted_t162.0": {
+   "n": 1,
+   "median_err_ew_m": -1.7,
+   "median_err_ns_m": -9.12,
+   "median_abs_ew_m": 1.7,
+   "median_abs_ns_m": 9.12
+  },
+  "no_shift_all": {
+   "n": 3,
+   "rms_ew_m": 17.15,
+   "rms_ns_m": 6.8
+  },
+  "shifted_all": {
+   "n": 3,
+   "rms_ew_m": 17.55,
+   "rms_ns_m": 7.46
+  }
+ }
+}
