@@ -1,0 +1,35 @@
+{
+  "tile_bounds_epsg6346": [
+    616500.0,
+    4591500.0,
+    618000.0,
+    4593000.0
+  ],
+  "annotation_files": "qgis/annotations/{pad,pit_inside}.shp (2026-11-27)",
+  "tasks": {
+    "pit": {
+      "per_fold_mean_recall_iou30": 0.9612903225806452,
+      "per_fold_sd_recall_iou30": 0.021878483816533154,
+      "ensemble": {
+        "thr": 0.41,
+        "n_gt": 62,
+        "n_pred": 118,
+        "recall_iou30": 0.9838709677419355,
+        "recall_iou50": 0.9354838709677419,
+        "precision_iou30_lower_bound": 0.5169491525423728
+      }
+    },
+    "pad": {
+      "per_fold_mean_recall_iou30": 0.8627906976744185,
+      "per_fold_sd_recall_iou30": 0.013560353243826262,
+      "ensemble": {
+        "thr": 0.54,
+        "n_gt": 86,
+        "n_pred": 142,
+        "recall_iou30": 0.8837209302325582,
+        "recall_iou50": 0.6744186046511628,
+        "precision_iou30_lower_bound": 0.5352112676056338
+      }
+    }
+  }
+}

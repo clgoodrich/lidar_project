@@ -679,11 +679,13 @@ def fig_hero4(b=None):
     axs[0].imshow(air, extent=ext, interpolation="bilinear")
     show_rrim_9(axs[1], b)
     im = axs[2].imshow(pad_p, cmap="gray", vmin=0, vmax=1, extent=ext, interpolation="nearest")
-    axs[3].imshow(pit_p, cmap="gray", vmin=0, vmax=1, extent=ext, interpolation="nearest")
+    from matplotlib.colors import PowerNorm
+    pn = PowerNorm(gamma=1.0, vmin=0, vmax=0.5)
+    im2 = axs[3].imshow(pit_p, cmap="gray", norm=pn, extent=ext, interpolation="nearest")
     for g, ax, col, ls in ((pad_h, axs[2], MPAD, "--"), (pit_h, axs[3], MPIT, "-")):
         gg = g.cx[x0:x1, y0:y1]
         if len(gg):
-            gg.boundary.plot(ax=ax, color=col, linewidth=2.0, linestyle=ls)
+            gg.boundary.plot(ax=ax, color=col, linewidth=2.0 if ls == "--" else 0.9, linestyle=ls)
     for i, ax in enumerate(axs):
         ax.set_xlim(x0, x1)
         ax.set_ylim(y0, y1)
@@ -700,10 +702,11 @@ def fig_hero4(b=None):
     sci_scalebar(axs[1], x0 + 20, y0 + 52, 100, fs=20, nseg=2)
     axs[1].annotate("", xy=(x1 - 25, y1 - 22), xytext=(x1 - 25, y1 - 75), arrowprops=dict(arrowstyle="-|>", color="white", lw=3, mutation_scale=30))
     axs[1].text(x1 - 25, y1 - 82, "N", ha="center", va="top", fontsize=28, color="white", path_effects=[pe.withStroke(linewidth=5, foreground="black")])
-    cax = fig.add_axes([(left + 2 * (side + gap) + 0.6) / W, 0.95 / H, (2 * side + gap - 1.2) / W, 0.22 / H])
-    cb = fig.colorbar(im, cax=cax, orientation="horizontal", ticks=[0, 0.5, 1])
-    cb.ax.tick_params(labelsize=22, length=6)
-    cb.set_label("Probability", fontsize=24, labelpad=4)
+    for i, (imx, lab) in ((2, (im, "Pad probability")), (3, (im2, "Pit probability, square-root-like stretch"))):
+        cax = fig.add_axes([(left + i * (side + gap) + 0.4) / W, 0.95 / H, (side - 0.8) / W, 0.22 / H])
+        cb = fig.colorbar(imx, cax=cax, orientation="horizontal", ticks=[0, 0.25, 0.5] if i == 3 else [0, 0.5, 1], extend="max" if i == 3 else "neither")
+        cb.ax.tick_params(labelsize=22, length=6)
+        cb.set_label(lab if i == 2 else "Pit probability (white at 0.5 and above)", fontsize=22, labelpad=4)
     fig.savefig(OUT / "poster_hero4_9t.png", dpi=DPI)
     plt.close(fig)
     return b
