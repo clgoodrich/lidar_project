@@ -66,7 +66,7 @@ TAKEAWAY = "Airborne lidar finds 93% of well pits under forest canopy while flag
 FIG_FILES = {
     "intro": FIGS / "poster_pa_wells_locator.png",
     "signs": FIGS / "poster_signs_gallery_9t.png",
-    "hero": FIGS / "poster_hero4_9t.png",
+    "hero": FIGS / "poster_hero_tileB.png",
     "valid": FIGS / "poster_cv_folds_pit_9t.png",
     "transfer": FIGS / "poster_pred_tile616591.png",
     "errors": FIGS / "poster_errors_9t.png",
@@ -74,9 +74,9 @@ FIG_FILES = {
 
 # Numbered captions in reading order. Scale and data source are stated for every map.
 CAPS = {
-    "hero": ("Figure 1.", "One 400 m window of Area A, from models that never saw these blocks. (a) Leaf-on aerial photograph (NAIP, June 2022). "
+    "hero": ("Figure 1.", "One 400 m window of Tile B, unseen in training. (a) Leaf-off aerial photograph (Planet, 10 April 2023, 3 m). "
              "(b) Red relief image map from bare-earth lidar. (c) Pad probability with hand-drawn pads (yellow dashed). "
-             "(d) Pit probability with hand-drawn pits (blue). Probability runs from black 0 to white 1. Bar 100 m, north up."),
+             "(d) Pit probability with hand-drawn pits (blue), shown from black 0 to white 0.5. Mean of the five fold models. Bar 100 m, north up."),
     "intro": ("Figure 2.", "Documented orphan and abandoned wells (yellow points) in western Pennsylvania, on a "
               "satellite base map. North is up. Source: Pennsylvania DEP records."),
     "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. From left to right: pit (blue), pad (yellow) and road (white). "
