@@ -78,3 +78,5 @@ Later on 2026-11-26: Figure 5 replaced by grey-scale probability maps, `agu_post
 - Error strip `figures/poster_errors_9t.png` (found, missed, unlabelled, F2 cutoff) moved to Results. 613590 figure `figures/poster_prob_maps_613590.png` now shows the Hann-blended mean of the five fold models and sits in column 1.
 - Table 1 gains "ground flagged": 0.13% pits, 10% pads (computed from out-of-fold rasters at F2 cutoffs over 1,547 ha), 5.0% roads (older single-split). Takeaway changed to pits recall with 0.13% flagged.
 - Text cut to about 600 body words. Methods is a spec table plus short text. No bold, per the earlier instruction.
+
+Naming 2026-11-27: on the poster tile 9t is "Area A" (tile block 17TPF619593, 619500-624000 E, 4593000-4597500 N) and tile 613590 is "Area B" (17TPF613590, 613500-618000 E, 4590000-4594500 N). Official names are the 1.5 km USGS tile files USGS_LPC_PA_WesternPA_2019_D20_17TPF<XXXYYY>, project PA_WesternPA_2019_D20. Repo and scripts keep 9t and 613590.

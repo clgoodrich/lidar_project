@@ -74,7 +74,7 @@ FIG_FILES = {
 
 # Numbered captions in reading order. Scale and data source are stated for every map.
 CAPS = {
-    "hero": ("Figure 1.", "One 400 m window of tile 9t, from models that never saw these blocks. (a) Leaf-on aerial photograph (NAIP, June 2022). "
+    "hero": ("Figure 1.", "One 400 m window of Area A, from models that never saw these blocks. (a) Leaf-on aerial photograph (NAIP, June 2022). "
              "(b) Red relief image map from bare-earth lidar. (c) Pad probability with hand-drawn pads (yellow dashed). "
              "(d) Pit probability with hand-drawn pits (blue). Probability runs from black 0 to white 1. Bar 100 m, north up."),
     "intro": ("Figure 2.", "Documented orphan and abandoned wells (yellow points) in western Pennsylvania, on a "
@@ -82,9 +82,9 @@ CAPS = {
     "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. From left to right: pit (blue), pad (yellow) and road (white). "
               "A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. Panels are 60, 180 and 180 m wide."),
     "valid": ("Figure 5.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
-    "transfer": ("Figure 4.", "Tile 613590, 1.5 km west of 9t and unseen in training (400 m window, mean of the five fold models). "
+    "transfer": ("Figure 4.", "Area B, 1.5 km west of Area A and unseen in training (400 m window, mean of the five fold models). "
                  "(a) Relief map with hand outlines. (b) Pit probability. (c) Pad probability, black 0 to white 1."),
-    "errors": ("Figure 6.", "Three 50 m windows from a held-out block of tile 9t. (a) Found pit. (b) Missed pit. "
+    "errors": ("Figure 6.", "Three 50 m windows from a held-out block of Area A. (a) Found pit. (b) Missed pit. "
                "(c) Model pit with no hand label, which counts against precision. Bars 10 m."),
 }
 
@@ -100,15 +100,15 @@ SECTIONS = [
     ]),
     ("Lidar data and terrain layers", C1, None, [
         ("fig", "signs", 4.0, "Pit, pad, road on RRIM"),
-        ("text", "USGS 3DEP lidar, project PA_WesternPA_2019_D20, flown leaf-off Nov 2019 to Mar 2020, about 2.6 ground points per m2.|"
+        ("text", "USGS 3DEP lidar, project PA_WesternPA_2019_D20, flown leaf-off Nov 2019 to Mar 2020, about 2.6 ground points per m2. We use two 4.5 km squares of 1.5 km tiles: Area A (tile block 17TPF619593), which holds all training and cross-validation, and Area B (17TPF613590), used only for transfer.|"
                  "Ground returns are triangulated (Delaunay) and gridded to a 0.5 m bare-earth model. Seven layers are derived: relief in 12.5 m "
                  "and 2.5 m windows, slope, topographic position, positive and negative openness, and roughness.|"
-                 "We outlined 503 pits and 650 pads by hand in tile 9t (712 and 995 across all tiles), without the DEP well records."),
+                 "We outlined 503 pits and 650 pads by hand in Area A (712 and 995 across all areas), without the DEP well records."),
     ]),
-    ("Transfer to an unseen tile", C1, None, [
-        ("text", "Tile 613590 shares no ground with 9t. All five fold models run on it with the 9t cutoffs and 9t normalisation, nothing retuned. "
-                 "Pit recall is in Results. Pads are not scored there yet: the 32 pads drawn in that tile since the last label export are not in the scored set."),
-        ("fig", "transfer", 4.6, "Predictions on tile 613590"),
+    ("Transfer to an unseen area", C1, None, [
+        ("text", "Area B shares no ground with Area A. All five fold models run on it with Area A cutoffs, nothing retuned. "
+                 "Pit recall is in Results. Pads are not scored there yet: the 32 pads drawn in Area B since the last label export are not in the scored set."),
+        ("fig", "transfer", 4.1, "Predictions on Area B"),
     ]),
     ("Methods", C2, LOWER, [
         ("spec", None, 2.3, None),
@@ -126,7 +126,7 @@ SECTIONS = [
     ]),
     ("Conclusions", C2, None, [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net find more than 90% of labelled pits and pads in blocks it never saw, "
-                 "and 91% of pits on a separate tile.|"
+                 "and 91% of pits in Area B.|"
                  "Limits. One survey, one annotator, precision below 0.65, no field visits.|"
                  "Next. Field-check candidates, combine pit, pad and road co-occurrence to cut false alarms, and test on McKean lidar."),
     ]),
@@ -137,8 +137,8 @@ SECTIONS = [
                  "(95% bootstrap interval 0.78 to 0.86) and 0.75 for pads (0.70 to 0.79).|"
                  "Pad recall falls to 77% at IoU 0.5. Where a pad ends and a wide road begins is an arbitrary line, so pad edges differ from ours "
                  "even when the pad is found. Precision is a lower bound, since some unmatched detections may be real features we did not draw.|"
-                 "On tile 613590 the pit models recover 91% of the 153 pits drawn there (standard deviation 4.5 points over the five models), "
-                 "against 93% on 9t. About 30% of that tile is undrawn, so precision is not scored.|"
+                 "On Area B the pit models recover 91% of the 153 pits drawn there (standard deviation 4.5 points over the five models), "
+                 "against 93% on Area A. About 30% of that area is undrawn, so precision is not scored.|"
                  "Pits are the best target: highest average precision, sharpest outlines and the smallest search area."),
     ]),
 ]
@@ -148,9 +148,9 @@ TABLE = [("", "Recall", "Precision", "IoU 0.5 recall", "Ground flagged"),
          ("Pits", "93%", "63%", "82%", "0.13%"),
          ("Pads", "91%", "59%", "77%", "10%"),
          ("Roads\u2020", "98%", "\u2014", "\u2014", "5.0%")]
-TABLE_NOTE = ("Table 1. Held-out results, tile 9t, IoU 0.3 and F2 cutoff unless stated. A detection matches a hand outline when intersection over union (IoU) "
+TABLE_NOTE = ("Table 1. Held-out results, Area A, IoU 0.3 and F2 cutoff unless stated. A detection matches a hand outline when intersection over union (IoU) "
               "is at least 0.3. Ground flagged is the share of scored ground above the cutoff. \u2020Roads: 40 m chunks whose whole road was held out, "
-              "single-split model, probability 0.20, no precision. On tile 613590, roads drawn there and unseen in training reach completeness 0.76 and correctness 0.83 at probability 0.50.")
+              "single-split model, probability 0.20, no precision. On Area B, roads drawn there and unseen in training reach completeness 0.76 and correctness 0.83 at probability 0.50.")
 SPEC = [("Sign", "Grid, patch", "Classes", "Focal weights"),
         ("Pits", "0.5 m, 128 m", "background, floor, rim", "0.05, 0.475, 0.475"),
         ("Pads", "0.5 m, 192 m", "background, pad", "0.15, 0.85"),
