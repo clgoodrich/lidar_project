@@ -91,7 +91,7 @@ CAPS = {
 
 SECTIONS = [
     ("Why orphan wells stay hidden", C1, BODY_TOP, [
-        ("fig", "intro", 3.2, "Map of Pennsylvania documented orphan wells"),
+        ("fig", "intro", 2.8, "Map of Pennsylvania documented orphan wells"),
         ("text", "Hazard. Thousands of undocumented wells in western Pennsylvania can leak methane and brine.|"
                  "Why current data fall short. Canopy hides about half of the pads from satellites (Ramachandran et al. 2024), "
                  "and legacy well coordinates can be off by tens to hundreds of metres.|"
@@ -102,7 +102,7 @@ SECTIONS = [
                  "with trained U-Nets, and test on ground they have not seen."),
     ]),
     ("Lidar data and terrain layers", C1, None, [
-        ("fig", "signs", 4.0, "Pit, pad, road on RRIM"),
+        ("fig", "signs", 3.5, "Pit, pad, road on RRIM"),
         ("text", "USGS 3DEP lidar, project PA_WesternPA_2019_D20, flown leaf-off Nov 2019 to Mar 2020, about 2.6 ground points per m2. We use two 4.5 km squares of 1.5 km tiles: Area A (tile block 17TPF619593), which holds all training and cross-validation, and Area B (17TPF613590), used only for transfer.|"
                  "Ground returns are triangulated (Delaunay) and gridded to a 0.5 m bare-earth model. Seven layers are derived: relief in 12.5 m "
                  "and 2.5 m windows, slope, topographic position, positive and negative openness, and roughness.|"
@@ -111,10 +111,10 @@ SECTIONS = [
     ("Transfer to an unseen area", C1, None, [
         ("text", "Area B shares no ground with Area A. All five fold models run on it with Area A cutoffs, nothing retuned. "
                  "Pit recall is in Results. Pads are not scored there yet (32 drawn since the last label export)."),
-        ("fig", "transfer", 3.5, "Predictions on Area B"),
+        ("fig", "transfer", 3.2, "Predictions on Area B"),
     ]),
     ("Methods", C2, LOWER, [
-        ("spec", None, 2.3, None),
+        ("spec", None, 2.1, None),
         ("text", "One plain four-level U-Net per sign, 7.8 million parameters, standardised inputs. Focal cross-entropy (gamma 2), "
                  "random flips and rotations, AdamW at 1e-3, cosine schedule, 40 epochs, batch 16. Drainage is an explicit negative class "
                  "for roads. Probabilities above the cutoff are vectorised.|"
@@ -122,7 +122,7 @@ SECTIONS = [
                  "so data and labels limit accuracy, not architecture."),
     ]),
     ("Validation and transfer", C2, None, [
-        ("fig", "valid", 2.0, "Five test sets of 375 m blocks"),
+        ("fig", "valid", 1.8, "Five test sets of 375 m blocks"),
         ("text", "Five-fold cross-validation on 375 m blocks, split by block and never by well, so a jittered patch cannot reach a held-out block.|"
                  "An inner validation set picks the epoch and the F2 cutoff, which weights recall four times as heavily as precision. "
                  "The held-out fold never tunes either."),
@@ -131,7 +131,7 @@ SECTIONS = [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net find more than 90% of labelled pits and pads in blocks it never saw, "
                  "and 91% of pits in Area B.|"
                  "Limits. One survey, one annotator, precision below 0.65, no field visits.|"
-                 "Next. Field-check candidates, combine pit, pad and road co-occurrence to cut false alarms, and test on McKean lidar."),
+                 "Next. Field-check candidates, combine pit, pad and road co-occurrence, and test on McKean lidar."),
     ]),
     ("Results", C3, LOWER, [
         ("table", None, 3.6, None),
@@ -305,11 +305,15 @@ def main() -> None:
         rule_y = y + HEAD_H + 0.12
         rect(x, rule_y, CW, 0.05, UH_RED)
         top = rule_y + 0.4
-        for kind, key_or_text, h, note in [(b[0], b[1], b[2] if len(b) > 2 else None,
-                                            b[3] if len(b) > 3 else None) for b in blocks]:
+        nxt = [b[0] for b in blocks][1:] + [None]
+        for bi, (kind, key_or_text, h, note) in enumerate([(b[0], b[1], b[2] if len(b) > 2 else None,
+                                                            b[3] if len(b) > 3 else None) for b in blocks]):
             if kind == "fig":
                 ch = figure(key_or_text, x, top, CW, h, note)
                 top += h + ch + 0.1
+                if nxt[bi] == "text" and not outline:      # a thin rule and a clear gap set the caption apart from the body text
+                    rect(x, top + 0.12, CW, 0.025, RULE)
+                    top += 0.45
             elif kind == "spec":
                 rh = h / len(SPEC)
                 swd = [1.5, 3.0, 4.9, CW - 9.4]
