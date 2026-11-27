@@ -836,3 +836,20 @@ Background reading. PDFs in `data/_source/reference/related_work/methane/` (git-
 ### Cite-only
 - Kang, M., Christian, S., Celia, M. A., et al. (2016). Identification and characterization of high methane-emitting abandoned oil and gas wells. *PNAS* 113(48), 13636–13641. https://doi.org/10.1073/pnas.1605913113
 - Helicopter methane and magnetometry survey of abandoned wells in Pennsylvania. *Carbon Management* (2018). Title and authors not verified. https://doaj.org/article/19b6a93c3adb460588244582734700b0
+
+### Ronneberger, Fischer & Brox 2015 — U-Net
+- **Citation:** Ronneberger, O., Fischer, P., and Brox, T. (2015). "U-Net: Convolutional Networks for Biomedical Image Segmentation." *MICCAI 2015, Lecture Notes in Computer Science* 9351: 234-241.
+- **About:** The encoder-decoder segmentation network with skip connections.
+- **Used for:** The four-level U-Net behind every pit, pad and road model, cited on the AGU poster Methods section.
+- **Generated:** `agu_poster/_make_agu_poster.py`; `agu_poster/agu_poster_filled_44in.pptx`.
+- **Source:** https://arxiv.org/abs/1505.04597 — cite-only (no local copy retained).
+
+### Lin, Goyal, Girshick, He & Dollar 2017 — Focal loss
+- **Citation:** Lin, T.-Y., Goyal, P., Girshick, R., He, K., and Dollar, P. (2017). "Focal Loss for Dense Object Detection." *Proc. IEEE ICCV*: 2980-2988.
+- **About:** Down-weights easy examples so rare classes such as pits train well.
+- **Used for:** Focal cross-entropy (gamma 2) in all models, cited on the AGU poster Methods section.
+- **Generated:** `agu_poster/_make_agu_poster.py`; `agu_poster/agu_poster_filled_44in.pptx`.
+- **Source:** https://arxiv.org/abs/1708.02002 — cite-only (no local copy retained).
+
+### Poster credits added 2026-11-27
+- USGS 2020 (3DEP Lidar Base Specification, Tech. Methods 11-B4), Chiba et al. 2008 and Yokoyama et al. 2002 are now cited in the poster text and reference list. Planet Labs PBC PlanetScope scene 20230410_154649_17_2490 is credited in the Acknowledgements.

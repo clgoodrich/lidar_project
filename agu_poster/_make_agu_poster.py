@@ -79,7 +79,7 @@ CAPS = {
              "(d) Pit probability with hand-drawn pits (blue), shown from black 0 to white 0.5. Mean of the five fold models. Bar 100 m, north up."),
     "intro": ("Figure 2.", "Documented orphan and abandoned wells (yellow points) in western Pennsylvania, on a "
               "satellite base map. North is up. Source: Pennsylvania DEP records."),
-    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. From left to right: pit (blue), pad (yellow) and road (white). "
+    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map (Chiba et al. 2008). From left to right: pit (blue), pad (yellow) and road (white). "
               "A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. Panels are 60, 180 and 180 m wide."),
     "valid": ("Figure 5.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
     "transfer": ("Figure 4.", "Northern 750 m of Tile B, unseen in training. (a) Red relief image map with hand-drawn pads (yellow dashed) "
@@ -101,21 +101,21 @@ SECTIONS = [
                  "Approach. Map the pit, pad and access road that every well leaves, from leaf-off USGS 3DEP lidar, "
                  "with trained U-Nets, and test on ground they have not seen."),
     ]),
-    ("Lidar data and terrain layers", C1, None, [
-        ("fig", "signs", 3.3, "Pit, pad, road on RRIM"),
-        ("text", "USGS 3DEP lidar, project PA_WesternPA_2019_D20, flown leaf-off Nov 2019 to Mar 2020, about 2.6 ground points per m2. Area A (4.5 km square, tile block 17TPF619593) holds all training and cross-validation. Tile B (1.5 km, tile 17TPF616591, 1.5 km west of Area A) is used only for testing.|"
+    ("Data", C1, None, [
+        ("fig", "signs", 3.0, "Pit, pad, road on RRIM"),
+        ("text", "USGS 3DEP lidar (USGS 2020), project PA_WesternPA_2019_D20, flown leaf-off Nov 2019 to Mar 2020, about 2.6 ground points per m2. Area A (4.5 km square, tile block 17TPF619593) holds all training and cross-validation. Tile B (1.5 km, tile 17TPF616591, 1.5 km west of Area A) is used only for testing.|"
                  "Ground returns are triangulated (Delaunay) and gridded to a 0.5 m bare-earth model. Seven layers are derived: relief in 12.5 m "
-                 "and 2.5 m windows, slope, topographic position, positive and negative openness, and roughness.|"
+                 "and 2.5 m windows, slope, topographic position, positive and negative openness (Yokoyama et al. 2002), and roughness.|"
                  "We outlined 503 pits and 650 pads by hand in Area A (712 and 995 across all areas), without the DEP well records."),
     ]),
-    ("Transfer to an unseen area", C1, None, [
+    ("Testing Area", C1, None, [
         ("text", "Tile B shares no ground with Area A. All five fold models run on it with Area A cutoffs and nothing retuned. "
                  "It is the tile with the most hand-drawn pads in that region (86 pads, 62 pits). Scores are in Results."),
-        ("fig", "transfer", 3.6, "Predictions on Tile B"),
+        ("fig", "transfer", 2.9, "Predictions on Tile B"),
     ]),
     ("Methods", C2, LOWER, [
         ("spec", None, 1.7, None),
-        ("text", "One four-level U-Net per sign, 7.8 million parameters, focal cross-entropy (gamma 2), flips and rotations, AdamW at 1e-3, 40 epochs, batch 16. "
+        ("text", "One four-level U-Net (Ronneberger et al. 2015) per sign, 7.8 million parameters, focal cross-entropy (Lin et al. 2017, gamma 2), flips and rotations, AdamW at 1e-3, 40 epochs, batch 16. "
                  "Roads carry drainage as a negative class.|"
                  "A 26 million parameter U-Net++ scored no better on pits (pixel IoU 0.561 against 0.559), so data and labels limit accuracy."),
     ]),
@@ -376,20 +376,25 @@ def main() -> None:
             print(f"WARNING: section '{head}' runs to y {top:.1f} in, past the body bottom {BODY_BOT}")
 
     # footer
-    for head, x, w, note in (("References", X0, 19.0, "Ramachandran et al. 2024, Nat. Commun. 15, 7036. Saint-Vincent et al. 2021, J. Environ. Manage. 280, 111856. Gorantla, Sams, Reeder & Pekney 2024, Extended application of state LiDAR datasets in locating orphaned wells in the Appalachian region, NETL poster, AGU Fall Meeting. Sams, Mundia-Howe, Veloski & Hammack 2018, LiDAR mapping of 1860s oil fields along Pioneer Run, Oil Creek State Park, PA, NETL poster (OSTI 1569995). USGS 3D Elevation Program"),
-                             ("Acknowledgements", X0 + 19.8, 14.0, "Lidar from the USGS 3D Elevation Program, project PA_WesternPA_2019_D20. Well records from the Pennsylvania Department of Environmental Protection. Funding: [to add].")):
+    REFS = ("Chiba, Kaneta & Suzuki 2008, Red Relief Image Map, Int. Arch. Photogramm. Remote Sens. 37(B2), 1071-1076. "
+            "Gorantla, Sams, Reeder & Pekney 2024, Extended application of state LiDAR datasets in locating orphaned wells in the Appalachian region, NETL poster, AGU Fall Meeting. "
+            "Lin, Goyal, Girshick, He & Dollar 2017, Focal loss for dense object detection, ICCV, 2980-2988. "
+            "Ramachandran et al. 2024, Nat. Commun. 15, 7036. "
+            "Ronneberger, Fischer & Brox 2015, U-Net, MICCAI, LNCS 9351, 234-241. "
+            "Sams, Mundia-Howe, Veloski & Hammack 2018, LiDAR mapping of 1860s oil fields along Pioneer Run, Oil Creek State Park, PA, NETL poster (OSTI 1569995). "
+            "Saint-Vincent et al. 2021, J. Environ. Manage. 280, 111856. "
+            "USGS 2020, 3D Elevation Program Lidar Base Specification, Tech. Methods 11-B4. "
+            "Yokoyama, Shirasawa & Pike 2002, Visualizing topography by openness, Photogramm. Eng. Remote Sens. 68(3), 257-265.")
+    ACK = ("Lidar from the USGS 3D Elevation Program, project PA_WesternPA_2019_D20. Well records from the Pennsylvania Department of Environmental Protection. "
+           "Aerial photograph in Figure 1: Planet Labs PBC, PlanetScope scene 20230410_154649_17_2490, 10 April 2023.")
+    RW = 26.0
+    for head, x, w, note in (("References", X0, RW, REFS), ("Acknowledgements", X0 + RW + 0.8, X1 - X0 - RW - 0.8, ACK)):
         text_box(s, x, FOOT_TOP - 0.1, w, 0.8, head, 40, INK)
         rect(x, FOOT_TOP + 0.75, w, 0.05, UH_RED)
         ref = head == "References"
         if outline:
-            note = "[References here]" if ref else "[Funding and data credits here]"
-        text_box(s, x, FOOT_TOP + 1.0, w, FOOT_BOT - FOOT_TOP - 0.95, note, 24 if ref else 28,
-                 INK if ref else GREY, italic=not ref)
-    text_box(s, X1 - 8.6, FOOT_TOP + 0.4, 5.9, 1.6, "Full methods, data and code", 32, INK,
-             align=PP_ALIGN.RIGHT, anchor=MSO_ANCHOR.MIDDLE)
-    rect(X1 - 2.3, FOOT_TOP, 2.3, 2.3, FIG_FILL)
-    text_box(s, X1 - 2.3, FOOT_TOP, 2.3, 2.3, "QR", 28, GREY, italic=True, align=PP_ALIGN.CENTER,
-             anchor=MSO_ANCHOR.MIDDLE)
+            note = "[References here]" if ref else "[Data credits here]"
+        text_box(s, x, FOOT_TOP + 1.0, w, FOOT_BOT - FOOT_TOP - 0.95, note, 20 if ref else 24, INK)
 
     out = OUT_OUTLINE if outline else OUT_MOCK if mock else OUT_WIRE
     prs.save(str(out))
