@@ -7,6 +7,10 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — NISAR 9t: findings rewritten on rerun numbers
+- `nisar/docs/nisar_technical_writeup_9t.md` sections 5 and 6 rewritten (5.1 DEP points, 5.2 pads, 5.3 targets, 5.4 brightness, 5.5 coherence, 5.6 processor step, 5.7 pool pits, 5.8 motion); sections 7 and 8 gained the review fixes and limits. `nisar/docs/nisar_pipeline_spec_9t.md` section 4 rewritten to match.
+- Main changes in reading: pads sit 2-3 points above controls, never significant, low power; slope signal is atmosphere, not creep; processor step is a flat gain. Pool pits and pit motion not rerun (stated).
+
 ## 2026-11-26 — NISAR 9t: fixes from outside review, reruns
 - Datum: vectors were ~1.29 m off the radar grid (PROJ null NAD83(2011)→WGS84). New `nisar/code/_nisar_area.py` `to_radar()` (6346→6319→7912 @2026.7→32617, shift −0.80 E +1.01 N). Used in steel, steel-pads, bright-targets, seasonal, pad-change.
 - D_A: ddof=1 and per-date scaling to track median amplitude. Pixel index floor. Seasonal JSON `n_decoys` fixed. Slope comment fixed (NISAR is left-looking; result now read as troposphere, not creep).

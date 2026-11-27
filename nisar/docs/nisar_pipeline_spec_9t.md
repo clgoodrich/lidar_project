@@ -171,34 +171,36 @@ Tracks over 9t (all tracks; none excluded):
 - `notebooks/wellsight_v2/_common.py`: `path_for()`, `read_layer()`.
 - `nisar/code/nisar_reflectors/`: contracts, measurements, persistence, quality, validation, provenance helpers.
 
-## 4. Results (numbers)
+## 4. Results (numbers; 2026-11-26 rerun with datum fix, D_A ddof=1 + per-date scaling)
 
 Steel at DEP points (6 m, any track):
 | Group | n | wells | decoys | p |
 |---|---|---|---|---|
-| active | 617 | 1.3% | 1.8% | 0.49 |
-| plugged | 271 | 0.4% | 0.9% | 0.71 |
-| abandoned | 174 | 1.1% | 1.2% | 1.00 |
-| not_drilled | 10 | 0% | 4.0% | 1.00 |
-- 0 wells hit on 2+ tracks. Open abandoned 2.9% vs 1.5% (n=69, ~2 wells). Brightness-only abandoned AUC 0.57 p=0.003 (lead; one of many comparisons). Building check 41.502787,-79.519712: SBT 2.5 m on t162.
+| active | 618 | 1.5% | 1.6% | 0.86 |
+| plugged | 271 | 0.4% | 1.4% | 0.23 |
+| abandoned | 173 | 1.7% | 0.7% | 0.18 |
+| not_drilled | 10 | 0% | 0% | 1.00 |
+- 2+ tracks: 1 plugged well, 0 others. Open abandoned 4.1% vs 1.1% (n=74, ~3 wells). Canopy plugged/abandoned 0 hits. Brightness-only abandoned AUC 0.57 p=0.003 (lead; one of many comparisons). Building check 41.502787,-79.519712: SBT 2.5 m on t162.
 
 Steel at lidar pads:
 | Dates | pads | pads hit | ctrl hit | p | pads 2+ | ctrl 2+ |
 |---|---|---|---|---|---|---|
 | all post-June | 649 | 19.3% | 16.6% | 0.12 | 2.5% | 2.0% |
-| summer | 649 | 22.5% | 21.0% | 0.39 | 4.2% | 3.4% |
-- Subgroups none p<0.05. Active-well pads 19.1 vs 15.2 (p 0.16). Large pads 2+ tracks 4.6 vs 2.2 (p 0.06).
+| summer | 649 | 19.9% | 16.8% | 0.074 | 2.9% | 2.5% |
+- 4 of 36 comparisons p<0.05 (~2 by chance), none survives Bonferroni (0.0014): active all-dates any 18.7 vs 12.8 (p 0.025); large summer any 26.4 vs 18.1 (p 0.009); plugged/abandoned summer any 25.3 vs 14.6 (p 0.037); open summer 2+ 8.3 vs 2.3 (p 0.043). Active lead vanishes in summer (17.4 vs 17.4).
+- Control hit rate ~17% → low power; cannot resolve a 3–6% hardware rate. Equipment pads: P5 hit 2 tracks, P55 1, P57 0, P14 0.
 
-Rule pass rates (share of valid px): brightness 0.36–0.45%; steadiness 1.0–4.6%; both 0.05–0.13% (t26 0.13, t90 0.13, t162 0.05). Independence predicts <0.02% → 4–8x enrichment.
+Rule pass rates (share of valid px): brightness 0.36–0.46%; steadiness 0.8–3.5%; both 0.05–0.12% (t26 0.12, t90 0.12, t162 0.05). Independence predicts <0.02%.
 
-Top 40 targets (visual, NAIP+RRIM): building 9, metal_yard 8, oilfield 2 (T24 tanks on lined pad; T20 structure by DEP well), possible 1 (T10), terrain 6, forest 10, open_ground 4. Open pads with visible equipment: 3–4 of 60 (P5, P55, P57, ?P14).
+Top 40 targets (visual, NAIP+RRIM, done before rerun; cutoffs moved <0.04 dB): building 9, metal_yard 8, oilfield 2 (T24 tanks on lined pad; T20 structure by DEP well), possible 1 (T10), terrain 6, forest 10, open_ground 4. Open pads with visible equipment: 3–4 of 60 (P5, P55, P57, ?P14).
 
-Pad/pit brightness excess (dB, 95% CI, p): pits summer HV +0.18 (+0.09,+0.26) <0.001; pits summer HH +0.03 ns; pits fall HV +0.14 p 0.08; pads fall HH −0.13 (−0.21,−0.02) <0.001; pads fall HV −0.11 <0.001; pads summer−fall HH +0.15 <0.001.
+Pad/pit brightness excess (dB, 95% CI, p): pits summer HV +0.16 (+0.07,+0.23) <0.001; pits summer HH +0.10 (+0.00,+0.21) 0.031; pits fall HH +0.05 ns; pits fall HV +0.06 ns; pads (644) fall HH −0.15 (−0.23,−0.07) <0.001; pads fall HV −0.13 (−0.19,−0.07) <0.001; pads summer HH +0.01 ns; pads summer−fall HH +0.14 (+0.08,+0.18) <0.001. Decoys unmatched on canopy/slope.
 
-Pad coherence: 18,200 pairs, 220 events vs 182.0 expected, swap p 0.007. 46% of events fall on pads with an active DEP well, against 35% of pads. Decoys are not matched on canopy or slope.
-Pool pits: +0.17–0.27 dB, all p >= 0.35.
-Pit motion: −0.24 mm (−0.43,−0.02) over 28 pairs; per-pair noise ~5.6 mm; within soil-moisture phase (De Zan 2014).
-Slope motion: t90 vs t162 r=0.33 (0.20–0.45); t162 coherent over 39% of tile.
+Pad coherence: 18,200 pairs, 220 events vs 182.0 expected, swap p 0.007. 46% of events on active-well pads vs 35% of pads. Decoys unmatched on canopy/slope.
+Processor step P05023→P05036 (excess over prior same-version 12-day step, HH): t26 −0.38, t162 −0.27 dB; equal open/forest → scalar. t90 masked by dark Oct 18 date.
+Pool pits: +0.17–0.27 dB, all p >= 0.35 (not rerun).
+Pit motion: −0.24 mm (−0.43,−0.02) over 28 pairs; per-pair noise ~5.6 mm; within soil-moisture phase (De Zan 2014) (not rerun).
+Slope motion: t90 vs t162 r=0.33 (0.20–0.45); t162 coherent over 39% of tile. Steep slopes east −5.9 mm (n 50), west −8.1 (n 3), N/S −8.0 (n 7): one sign on all aspects → troposphere/phase centre, not creep (NISAR left-looking; creep would flip sign).
 
 ## 5. Known limits
 - 8–12 dates/track; D_A 0.25 designed for ~30. 2–3 fall dates.
