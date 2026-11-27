@@ -120,7 +120,7 @@ SECTIONS = [
                  "A 26 million parameter U-Net++ scored no better on pits (pixel IoU 0.561 against 0.559), so data and labels limit accuracy."),
     ]),
     ("Validation and transfer", C2, None, [
-        ("fig", "valid", 2.9, "Five test sets of 375 m blocks"),
+        ("fig", "valid", 2.55, "Five test sets of 375 m blocks"),
         ("text", "Five-fold cross-validation on 375 m blocks, split by block and never by well. An inner validation set picks the epoch and the F2 cutoff, "
                  "which weights recall four times as heavily as precision. The held-out fold never tunes either."),
     ]),
@@ -128,7 +128,7 @@ SECTIONS = [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net find more than 90% of labelled pits and pads in blocks it never saw, "
                  "and 98% of pits and 88% of pads on the unseen Tile B.|"
                  "Limits. One survey, one annotator, no field visits.|"
-                 "Next. Field-check the candidates on the ground, extend the method to other oil and gas fields, starting with McKean, and tie detections to measured methane emissions."),
+                 "Next. Field-check candidates, extend the method to other oil and gas fields, and tie detections to methane emissions."),
     ]),
     ("Results", C3, LOWER, [
         ("table", None, 3.9, None),
