@@ -61,3 +61,10 @@ Text removed from Figures 2 and 3 (the panel names now sit in the captions). All
 - Not checked: the pit class names (floor, rim) are read from `pit_inside`/`pit_outside` in the CV doc.
 
 - 2026-11-26: Figure 7 (precision-recall plot) removed from the poster. AP and its intervals stay in the Results text. IoU definition moved into the Table 1 note. Results text says pad recall at IoU 0.5 drops because the pad/wide-road boundary is arbitrary.
+
+## 2026-11-26 revision: larger hero, transfer figure on tile 613590
+
+- Hero (Figure 4) window cropped to 750 x 312 m (aspect 2.4) so panel (a) fills about 62% of the figure width. Details b to d moved to a column beside it.
+- New Figure 5, `agu_poster/figures/poster_transfer_613590.png`. The 9t-trained pit and pad models run unchanged on tile 613590 (pit and pad training scripts do not read 613590). Predictions are the argmax class-1 masks in `data/613590/derived/inference_05/{pit,pad}_argmax_613590_05.tif`, drawn on `rrim_openness_613590_05.tif`. Hand outlines come from `pit_inside` and `plat`. Annotation covers about 70% of that tile and only 36 rims against 153 floors (`data/613590/results/annotation_coverage_613590_vs_9t.json`), so no precision or recall is given.
+- Removed the processing-chain diagram (old Figure 5) to make room. Body text 28 pt, `CHARS` 74. Figures renumbered 1 to 5.
+- Script: `agu_poster/_make_poster_figures.py` (`fig_transfer`), `agu_poster/_make_agu_poster.py`.

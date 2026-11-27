@@ -52,13 +52,13 @@ C1, C2, C3 = X0, X0 + CW + GAP, X0 + 2 * (CW + GAP)
 HEAD = (0.8, 5.6)          # header band top, height (the one solid block of UH red)
 BODY_TOP, BODY_BOT = 7.2, 40.0
 FOOT_TOP, FOOT_BOT = 40.9, 43.2
-HERO_H = 6.9               # hero figure height, figure is 27.6 x 9.4 in
+HERO_H = 8.2               # hero figure height, figure is 27.6 x 9.4 in
 LOWER = BODY_TOP + 3.6 + HERO_H + 0.9     # top of the col 2 / col 3 sections under the hero
 
-HEAD_PT, BODY_PT, CAP_PT = 50, 30, 26
+HEAD_PT, BODY_PT, CAP_PT = 50, 28, 24
 HEAD_H = 1.05              # one-line statement heading at 54 pt
 LINE = BODY_PT * 1.2 / 72  # body line height, in
-CHARS = 68                 # body characters per line across one column at 44 pt (Calibri, measured)
+CHARS = 74                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TITLE = "Detecting orphaned oil and gas wells under forest canopy with airborne lidar and U-Nets"
 TAKEAWAY = "Airborne lidar detects 93% of well pits and 91% of well pads under forest canopy"
@@ -71,7 +71,7 @@ FIG_FILES = {
     "hero": FIGS / "poster_hero_heldout_9t.png",
     "setup": FIGS / "poster_pipeline_diagram.png",
     "valid": FIGS / "poster_cv_folds_pit_9t.png",
-    "results": FIGS / "poster_pr_curves_heldout_9t.png",
+    "transfer": FIGS / "poster_transfer_613590.png",
 }
 
 # Numbered captions in reading order. Scale and data source are stated for every map.
@@ -85,8 +85,7 @@ CAPS = {
              "(b) Found pit. (c) Missed pit. (d) Model pit with no hand label. Bars: 100 m in (a), 10 m in (b) to (d)."),
     "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
     "valid": ("Figure 6.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
-    "results": ("Figure 7.", "Precision-recall curves for held-out pits and pads, five test sets pooled, match "
-                "rule IoU 0.3 (a detection matches a hand outline when intersection over union is at least 0.3). AP is average precision."),
+    "transfer": ("Figure 5.", "Pit and pad models trained on tile 9t, run unchanged on tile 613590, on a red relief image map. (b) Pit and pad found. (c) Model pit with no hand label. Bars: 100 m in (a), 20 m in (b) and (c)."),
 }
 
 SECTIONS = [
@@ -110,8 +109,7 @@ SECTIONS = [
         ("fig", "signs", 4.0, "Pit, pad, road on RRIM"),
     ]),
     ("Methods", C2, LOWER, [
-        ("fig", "setup", 2.5, "Pipeline diagram"),
-        ("text", "Each sign gets its own four-level U-Net (base width 32, about 8 million parameters) that maps the seven layers to class probabilities.|"
+                ("text", "Each sign gets its own four-level U-Net (base width 32, about 8 million parameters) that maps the seven layers to class probabilities.|"
                  "The pit model has three classes, background, pit floor and rim. Training minimises focal "
                  "cross-entropy (gamma 2) with class weights of 0.05 for background and 0.475 for each pit class, "
                  "which offsets the rarity of well pixels. Pads use two classes with weights 0.15 and 0.85.|"
@@ -123,28 +121,30 @@ SECTIONS = [
                  "Road weight is 0.72. Probabilities above the cutoff are vectorised to outlines."),
     ]),
     ("Validation", C2, None, [
-        ("fig", "valid", 2.0, "Five test sets of 375 m blocks"),
         ("text", "The tile is split by block, never by well, so a jittered patch cannot reach into a held-out block. "
                  "An inner validation set (20% of the remaining blocks) picks the best epoch and the cutoff. "
                  "The cutoff maximises F2, which weights recall four times as heavily as precision, because a missed "
-                 "well costs more than a false alarm. The held-out fold never influences either choice."),
+                 "well costs more than a false alarm. The held-out fold never influences either choice. We hold out five sets of 375 m blocks in turn."),
+        ("fig", "transfer", 5.0, "Predictions on tile 613590"),
     ]),
     ("Results", C3, LOWER, [
-        ("table", None, 3.6, None),
+        ("table", None, 3.2, None),
         ("text", "At the F2 cutoff the pit model recovers 467 of 503 pits (92.8%) and the pad model 593 of 650 pads (91.2%). "
                  "Threshold-free average precision at IoU 0.3 is 0.82 for pits (95% bootstrap interval 0.78 to 0.86) "
                  "and 0.75 for pads (0.70 to 0.79).|"
-                 "Precision is 0.63 and 0.59 by design of the F2 cutoff. Some unmatched detections may be real features we have not drawn.|"
                  "Pad recall falls from 91% to 77% when the match rule tightens from IoU 0.3 to 0.5. The model "
                  "finds the pads, but where a pad ends and a wide road begins is an arbitrary line, so pad outlines "
-                 "differ from ours at the edges. Pit outlines are tighter, with 82% matching at 0.5."),
+                 "differ from ours at the edges. Pit outlines are tighter, with 82% matching at 0.5. Precision is 0.63 and 0.59 by design of the F2 cutoff, and some unmatched detections may be real features we have not drawn.|"
+                 "Applied unchanged to tile 613590, which neither model saw in training, the networks outline pads along "
+                 "the access roads and place pits inside them (Figure 5). We drew only part of that tile, so precision "
+                 "cannot be scored there."),
     ]),
     ("Conclusions", C3, None, [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net recover more than 90% of labelled pits and pads in "
                  "blocks it never saw. Pits are the most reliable sign, with the best average precision and the tightest outlines.|"
                  "Limits. One 4.5 km tile. Labels are our own reading of the relief, made without the DEP well records. "
                  "Precision is below 0.65 and no site has been visited, so unmatched detections stay candidates.|"
-                 "Next. Test on a second survey block, then check detections in the field."),
+                 "Next. Score a second labelled tile, then check detections in the field."),
     ]),
 ]
 # Results table: ann712 CV5, F2 threshold per fold, IoU 0.3 (docs/iterations/LEADERBOARD.md, 2026-09-17).

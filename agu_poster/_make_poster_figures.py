@@ -226,6 +226,7 @@ def fig_hero():
     from matplotlib.patches import Patch
     pits_rim, pads = ann("pit_outside"), ann("plat")
     for b in pick_window()[:25]:
+        b = (b[0], b[1] + 31, b[2], b[3] - 32)      # 750 x 312 m, aspect 2.4, fills the wide panel
         pit_m, pad_m, cover = oof(b)
         x0, y0, x1, y1 = b
         m = 30
@@ -234,7 +235,7 @@ def fig_hero():
         if hits and miss and fa:
             break
     fig = plt.figure(figsize=(27.6, 8.2), dpi=DPI)
-    ax = fig.add_axes([0.085, 0.15, 0.49, 0.83])
+    ax = fig.add_axes([0.075, 0.15, 0.62, 0.83])
     show_hs(ax, b)
     overlay(ax, pad_m & cover, b, MPAD, 0.28)
     overlay(ax, pit_m & cover, b, MPIT, 0.75)
@@ -268,7 +269,7 @@ def fig_hero():
         ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec="black", lw=2.5))
         ax.text(ib[2] + 6, ib[3], lab, fontsize=32, color="black", va="top", path_effects=HALO)
         side = 0.30
-        ia = fig.add_axes([0.610, 0.68 - i * 0.325 + 0.02, side * 8.2 / 27.6, side])
+        ia = fig.add_axes([0.715, 0.68 - i * 0.325 + 0.02, side * 8.2 / 27.6, side])
         pm, _, _ = oof(ib)
         show_hs(ia, ib)
         overlay(ia, pm, ib, MPIT, 0.75)
@@ -285,7 +286,7 @@ def fig_hero():
                Line2D([0], [0], color=MPIT, lw=3, label="Pit, hand-drawn"),
                Patch(fc=MPAD, ec="none", alpha=0.28, label="Pad, model output"),
                Line2D([0], [0], color=MPAD, lw=3, ls="--", label="Pad, hand-drawn")]
-    lg = fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.705, 0.98), fontsize=30, frameon=True,
+    lg = fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.815, 0.98), fontsize=26, frameon=True,
                     fancybox=False, edgecolor="black", framealpha=1.0, borderpad=0.8, labelspacing=0.9,
                     handlelength=2.2)
     lg.get_frame().set_linewidth(1.5)
@@ -422,10 +423,95 @@ def fig_optical():
     plt.close(fig)
 
 
+D613 = ROOT / "data/613590/derived"
+
+
+def show_rrim_613(ax, b):
+    with rasterio.open(D613 / "05/rrim_openness_613590_05.tif") as r:
+        w = from_bounds(*b, r.transform)
+        a = np.moveaxis(r.read(window=w, boundless=True, fill_value=0), 0, -1)
+    ax.imshow(a, extent=(b[0], b[2], b[1], b[3]), interpolation="bilinear")
+
+
+def fig_transfer():
+    """Tile 613590: the 9t-trained pit and pad models run on a tile they never saw. Predictions with hand outlines where drawn."""
+    inf = D613 / "inference_05"
+    full = (613500, 4590000, 618000, 4594500)
+    pit_h, pad_h = ann("pit_inside"), ann("plat")
+    W, H = 660, 420
+    best = None
+    for x0 in range(613500, 618000 - W, 60):
+        for y0 in range(4590000, 4594500 - H, 60):
+            b = (x0, y0, x0 + W, y0 + H)
+            n = len(pit_h.cx[b[0]:b[2], b[1]:b[3]]) + len(pad_h.cx[b[0]:b[2], b[1]:b[3]])
+            if best is None or n > best[0]:
+                best = (n, b)
+    b = best[1]
+    pit_m = read(inf / "pit_argmax_613590_05.tif", b) == 1
+    pad_m = read(inf / "pad_argmax_613590_05.tif", b) == 1
+    hits, miss, fa = classify(pit_m, pit_h.cx[b[0]:b[2], b[1]:b[3]], b)
+    fa = [f for f in fa if b[0] + 40 < f[0] < b[2] - 40 and b[1] + 40 < f[1] < b[3] - 40]
+    fig = plt.figure(figsize=(13.47, 5.0), dpi=DPI)
+    ax = fig.add_axes([0.105, 0.16, 0.50, 0.82])
+    show_rrim_613(ax, b)
+    overlay(ax, pad_m, b, MPAD, 0.30)
+    overlay(ax, pit_m, b, MPIT, 0.80)
+    for g, col, ls in ((pad_h, MPAD, "--"), (pit_h, MPIT, "-")):
+        gg = g.cx[b[0]:b[2], b[1]:b[3]]
+        if len(gg):
+            gg.boundary.plot(ax=ax, color=col, linewidth=1.6, linestyle=ls)
+    ax.set_xlim(b[0], b[2]); ax.set_ylim(b[1], b[3])
+    ax.set_xticks(np.arange(np.ceil(b[0] / 200) * 200, b[2] + 1, 200))
+    ax.set_yticks(np.arange(np.ceil(b[1] / 200) * 200, b[3] + 1, 200))
+    ax.ticklabel_format(useOffset=False, style="plain")
+    ax.tick_params(labelsize=17, length=6, width=1.2)
+    ax.set_xlabel("Easting (m), EPSG:6346", fontsize=19)
+    ax.set_ylabel("Northing (m)", fontsize=19)
+    ax.text(0.015, 0.975, "(a)", transform=ax.transAxes, va="top", fontsize=24, color="black", path_effects=HALO)
+    sci_scalebar(ax, b[2] - 190, b[1] + 60, 100, fs=16, nseg=2)
+    picks = []
+    if hits: picks.append(("b", max(hits, key=lambda g: g.area).centroid))
+    if fa:
+        f = max(fa, key=lambda t_: t_[2]); picks.append(("c", type("P", (), {"x": f[0], "y": f[1]})))
+    half = 40
+    for i, (lab, c) in enumerate(picks):
+        ib = (c.x - half, c.y - half, c.x + half, c.y + half)
+        ax.add_patch(Rectangle((ib[0], ib[1]), 2 * half, 2 * half, fill=False, ec="black", lw=2))
+        ax.text(ib[2] + 6, ib[3], lab, fontsize=22, color="black", va="top", path_effects=HALO)
+        side = 0.34
+        ia = fig.add_axes([0.635 + i * 0.185, 0.50, 0.175, 0.175 * 13.47 / 5.0])
+        show_rrim_613(ia, ib)
+        pm = read(inf / "pit_argmax_613590_05.tif", ib) == 1
+        pd_ = read(inf / "pad_argmax_613590_05.tif", ib) == 1
+        overlay(ia, pd_, ib, MPAD, 0.30); overlay(ia, pm, ib, MPIT, 0.80)
+        for gdf, col, ls in ((pad_h, MPAD, "--"), (pit_h, MPIT, "-")):
+            gg = gdf.cx[ib[0]:ib[2], ib[1]:ib[3]]
+            if len(gg):
+                gg.boundary.plot(ax=ia, color=col, linewidth=2, linestyle=ls)
+        ia.set_xlim(ib[0], ib[2]); ia.set_ylim(ib[1], ib[3]); ia.set_xticks([]); ia.set_yticks([])
+        for s in ia.spines.values():
+            s.set_linewidth(1.2); s.set_color("black")
+        ia.text(0.05, 0.95, f"({lab})", transform=ia.transAxes, va="top", fontsize=20, color="black", path_effects=HALO)
+        sci_scalebar(ia, ib[0] + 6, ib[1] + 14, 20, fs=11, nseg=2)
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    handles = [Patch(fc=MPIT, ec="none", alpha=0.8, label="Pit, model output"),
+               Line2D([0], [0], color=MPIT, lw=2.5, label="Pit, hand-drawn"),
+               Patch(fc=MPAD, ec="none", alpha=0.3, label="Pad, model output"),
+               Line2D([0], [0], color=MPAD, lw=2.5, ls="--", label="Pad, hand-drawn")]
+    lg = fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.635, 0.44), fontsize=17, frameon=True,
+                    fancybox=False, edgecolor="black", framealpha=1.0, borderpad=0.7, labelspacing=0.7)
+    lg.get_frame().set_linewidth(1.2)
+    fig.savefig(OUT / "poster_transfer_613590.png", dpi=DPI)
+    plt.close(fig)
+    return b, len(hits), len(miss), len(fa)
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     for f in (fig_channels, fig_gallery, fig_folds, fig_pipeline, fig_pr, fig_optical):
         f(); print(f.__name__)
+    print("transfer window, hits, misses, unlabelled:", fig_transfer())
     print("hero window, hits, misses, false alarms:", fig_hero())
 
 
