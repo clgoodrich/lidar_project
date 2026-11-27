@@ -12,7 +12,7 @@ The expected signals are small. A pit or pad should differ from its surroundings
 
 ## 2. Study Area and Data
 
-Tile 9t is a 4.5 km lidar tile in Venango County with steep forested slopes and incised valleys. Annotators mapped 506 pits and about 645 pads from the lidar. Well records come from the Pennsylvania DEP.
+Tile 9t is a 4.5 km lidar tile in Venango County with steep forested slopes and incised valleys. Annotators mapped 506 pits and 650 pads from the lidar. Well records come from the Pennsylvania DEP.
 
 NISAR geocoded single-look complex images came from the NASA ASF archive, in HH and HV at 5 m spacing. Three tracks cover the tile (Table 1). NISAR looks left, so the descending track views slopes from the east and the ascending tracks view them from the west. We used every track because a slope that is bright from one side is dark from the other.
 
@@ -76,7 +76,7 @@ The fitted offsets averaged 2.88 m against a predicted dry delay of 2.97 m (0.73
 
 ## 5. Discussion
 
-Without slope matching and terrain correction, a terrain effect would have been reported as steel. But only 469 of about 645 pads had five matched control spots, and the dropped pads are likely the steepest. Terrain correction could dim hardware against a cut bank, but not hardware on the flat bench.
+Without slope matching and terrain correction, a terrain effect would have been reported as steel. But only 469 of 650 pads had five matched control spots, and the dropped pads are likely the steepest. Terrain correction could dim hardware against a cut bank, but not hardware on the flat bench.
 
 The sub-look result is weak evidence. Its tile median (0.35 to 0.43) sat above the 0.3 expected for pure speckle, so the half-images were probably not fully independent. Matching and hollow thresholds were set before results were seen, but other values could move the borderline p-values. Site-level p-values treat sites as independent, so the date-level test is the one to quote for the pad effect.
 
