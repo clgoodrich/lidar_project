@@ -7,6 +7,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — NISAR 9t: pad darkening vs local weather
+- New `nisar/code/s5_eval/_nisar_pad_weather_9t.py`. NOAA GHCN-Daily (public API): Pleasantville 3.4 SSW, Titusville WW, Tionesta 2 SE Lake, Franklin co-op (rain, median of 4), Franklin airport (temperature). Outputs `nisar/results/9t/nisar_pad_weather_per_date_9t.csv`, raw `nisar/results/9t/nisar_pad_weather_noaa_daily_9t.csv`, figure `nisar/results/9t/figures/nisar_pad_weather_per_date_9t.png`.
+- Rain the night before brightens pads against ring: Spearman +0.63 (n 32); summer alone +0.65 (n 19); summer wet (>=1 mm) median +0.06 vs dry -0.05 dB, p 0.004.
+- Sep 29-Nov 4 was a dry spell: 10 of 10 dates under 1 mm the night before. Nov 7 (2.7 mm, 10 mm over 3 days) gives +0.41 dB.
+- Dry fall dates are still darker than dry summer dates: -0.29 vs -0.05 dB, p 0.0004 (10 vs 12 dates). So the fall darkening holds after rain is accounted for, but it is half rain, half season. Window still chosen after looking.
+
 ## 2026-11-26 — NISAR 9t: pad fall darkening tested date by date
 - New `nisar/code/s5_eval/_nisar_pad_season_per_date_9t.py` -> `nisar/results/9t/nisar_pad_season_per_date_9t_slc.csv`, `..._summary_9t_slc.json`. Pad-minus-ring minus decoy, per date (32 dates, 644 pads, 5 decoys).
 - Why: the pad-level p (<0.001) treats 644 pads as independent, but all share 7 fall dates. The date is the real unit.
