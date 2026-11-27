@@ -167,12 +167,13 @@ Pads were not scored on 613590 (no pad annotation inside it). Drawn set may be b
 ## 9. AGU poster (44 x 44 in) as built
 
 Built by `agu_poster/_make_poster_figures.py` (figures) and `agu_poster/_make_agu_poster.py --mockup` (python-pptx layout), render-checked through PowerPoint COM export. All text Georgia, no bold or colour variation in body. Outputs `agu_poster/agu_poster_filled_44in.pptx`, `.pdf`, `agu_poster_filled_preview.png`, figures in `agu_poster/figures/`. Revision notes `docs/iterations/agu_poster_filled.md`.
-Figures: 1 PA well locator, 2 aerial vs lidar pair, 3 hand labels (pit 60 m, pad 180 m, road 180 m panels), 4 hero held-out map of 9t (out-of-fold predictions, 750 x 312 m window, hit/miss/unlabelled details), 5 grey-scale probability maps on 613590 (400 m window, from `pit/unet_v2` and `pad/unet` single-split models, not the CV5 models), Table 1.
-Poster facts fixed 2026-11-26 after writing this brief: Study-area text now says relief in 12.5 m and 2.5 m windows (it said 25 m and 5 m, which are cell counts). Results now quotes the 613590 pit transfer recall (91%, sd 4.5 points, 153 drawn pits). Figure 5 caption says "U-Nets trained on tile 9t".
+Revised 2026-11-27 (v1 kept as `agu_poster/agu_poster_filled_44in_v1_20261126.*`). Figures: 1 hero four-panel strip across the top (leaf-on NAIP 2022-06-19 aerial, RRIM, pad probability, pit probability, one 400 m window of 9t, out-of-fold, Hann-blended), 2 PA well locator, 3 hand labels (pit 60 m, pad 180 m, road 180 m panels), 4 tile 613590 window (RRIM with hand outlines, pit and pad probability as the Hann-blended mean of the five fold models), 5 CV block grid, 6 error strip (found pit, missed pit, unlabelled model pit, 50 m), Table 1 with a "ground flagged" column.
+New numbers on the poster, all recomputed 2026-11-27 from the out-of-fold rasters at the F2 cutoffs: share of scored ground (1,547 ha of the 2,025 ha tile has both pit and pad out-of-fold coverage) above the cutoff is 0.13% for pits and 10.1% for pads. Road 5.0% is the older single-split value (thr 0.20, 1,220 chunks). The 0.21% in LEADERBOARD is a different, older evaluation (127 rims, thr 0.20, recall 0.992) and must not be paired with the 93% recall.
+`_dl.predict_array` (new, Hann-weighted sliding window on an in-memory array) removes patch seams. `predict_full_tile` is unchanged, so no existing raster or score moved. Seams remain only where adjacent blocks belong to different folds (different models), visible in the hero pad panel.
+Poster facts fixed 2026-11-26: relief windows are 12.5 m and 2.5 m (cells, not metres). Results quote the 613590 pit transfer recall (91%, sd 4.5 points, 153 drawn pits).
 Still open on the poster:
-- Roads are "segments" on the poster. They are 40 m chunks, scored at threshold 0.20 with no precision.
-- Figure 5 shows the older single-split models while Table 1 and the transfer recall come from the CV5 models.
-- Co-authors, funding, QR target and the Figure 2 aerial credit. Figure 2 has no scale bar. Colourblind all-pairs validator not run on the blue/yellow/white overlay.
+- Roads are 40 m chunks at threshold 0.20 with no precision. Table footnote says so.
+- Co-authors, funding, QR target, Figure 3 and Figure 1 aerial credit (NAIP/USDA). Colourblind all-pairs validator not run on the blue/yellow/white overlay. Body text is not bold by instruction (2026-11 session), so a review suggestion to fix `bold=False` was not applied.
 
 ## 10. Where things are
 

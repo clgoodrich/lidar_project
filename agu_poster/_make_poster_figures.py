@@ -520,8 +520,9 @@ def fig_probmaps():
             if best is None or n > best[0]:
                 best = (n, b)
     b = best[1]
-    pp = read(inf / "pit_prob_floor_613590_05.tif", b)
-    dp = read(inf / "pad_prob_613590_05.tif", b)
+    f613 = inf / "features_613590_05.tif"
+    pp = prob_ensemble("pit", b, f613)
+    dp = prob_ensemble("pad", b, f613)
     fig, axs = plt.subplots(1, 3, figsize=(13.47, 4.9), dpi=DPI)
     fig.subplots_adjust(left=0.105, right=0.985, top=0.97, bottom=0.25, wspace=0.07)
     ext = (b[0], b[2], b[1], b[3])
@@ -552,13 +553,210 @@ def fig_probmaps():
     return b, float(pp.max()), float(dp.max())
 
 
+# ---------------------------------------------------------------------------
+# 2026-11-27: four-panel hero (aerial, RRIM, pad probability, pit probability), Hann-blended
+import sys as _sys
+_sys.path.insert(0, str(ROOT / "notebooks/wellsight_v2"))
+import torch  # noqa: E402
+from _dl import DEVICE, UNet, predict_array  # noqa: E402
+import requests  # noqa: E402
+from pyproj import Transformer  # noqa: E402
+
+FEAT9 = D05 / "features_pit_9t_05.tif"
+TASKS_CV = {"pit": ("pit/unet_cv5", 3, 256, 128), "pad": ("pad/unet_cv5", 2, 384, 192)}
+_MODEL_CACHE = {}
+PADM = 96.0
+
+
+def _load_fold_model(task, k):
+    key = (task, k)
+    if key not in _MODEL_CACHE:
+        sub, ncls, _, _ = TASKS_CV[task]
+        ck = torch.load(MOD / sub / f"fold{k}" / "best.pt", map_location=DEVICE, weights_only=False)
+        m = UNet(in_ch=len(ck["channels"]), n_classes=ncls, base=32).to(DEVICE)
+        m.load_state_dict(ck["state_dict"])
+        m.eval()
+        _MODEL_CACHE[key] = (m, np.asarray(ck["mu"], np.float32), np.asarray(ck["sd"], np.float32))
+    return _MODEL_CACHE[key]
+
+
+def read_feats(path, bounds):
+    """Seven-channel stack over bounds plus PADM metres of context each side, 0.5 m."""
+    pb = (bounds[0] - PADM, bounds[1] - PADM, bounds[2] + PADM, bounds[3] + PADM)
+    with rasterio.open(path) as r:
+        w = from_bounds(*pb, r.transform)
+        a = r.read(window=w, boundless=True, fill_value=np.nan).astype(np.float32)
+    return a
+
+
+def crop_ctx(arr):
+    i = int(round(PADM / 0.5))
+    return arr[..., i:-i, i:-i]
+
+
+def prob_heldout(task, bounds):
+    """Out-of-fold class-1 probability over bounds on 9t: each pixel from the model that never saw its block. Hann blended."""
+    feats = read_feats(FEAT9, bounds)
+    tr, shape = grid(bounds)
+    bf = block_fold(task)
+    fold = rasterize(((g, int(f)) for g, f in zip(bf.geometry, bf.fold)), shape, transform=tr, fill=-1)
+    _, ncls, patch, ov = TASKS_CV[task]
+    out = np.full(shape, np.nan, np.float32)
+    for k in sorted(set(np.unique(fold)) - {-1}):
+        m, mu, sd = _load_fold_model(task, k)
+        p = crop_ctx(predict_array(m, feats, mu, sd, patch=patch, overlap=ov, n_classes=ncls, hann=True)[1])
+        out[fold == k] = p[fold == k]
+    return out
+
+
+def prob_ensemble(task, bounds, feat_path):
+    """Mean of the five fold models, Hann blended. For a tile none of them saw."""
+    feats = read_feats(feat_path, bounds)
+    _, ncls, patch, ov = TASKS_CV[task]
+    acc = 0
+    for k in range(5):
+        m, mu, sd = _load_fold_model(task, k)
+        acc = acc + predict_array(m, feats, mu, sd, patch=patch, overlap=ov, n_classes=ncls, hann=True)[1]
+    return crop_ctx(acc / 5.0)
+
+
+def naip(bounds, year="20220619"):
+    """NAIP leaf-on aerial over bounds (EPSG:6346) from Planetary Computer, windowed read. Returns RGB uint8."""
+    stac = "https://planetarycomputer.microsoft.com/api/stac/v1"
+    cx, cy = (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2
+    ll = gpd.GeoSeries(gpd.points_from_xy([cx], [cy]), crs=6346).to_crs(4326).iloc[0]
+    items = requests.post(f"{stac}/search", json={"collections": ["naip"], "intersects": {"type": "Point", "coordinates": [ll.x, ll.y]}, "limit": 20}, timeout=60).json()["features"]
+    by = {f["properties"]["datetime"][:10].replace("-", ""): f for f in items}
+    f = by[year]
+    href = requests.get("https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + f["assets"]["image"]["href"], timeout=60).json()["href"]
+    with rasterio.open(href) as s:
+        t = Transformer.from_crs(6346, s.crs, always_xy=True)
+        x0, y0 = t.transform(bounds[0], bounds[1])
+        x1, y1 = t.transform(bounds[2], bounds[3])
+        win = from_bounds(min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1), transform=s.transform)
+        a = s.read([1, 2, 3], window=win, boundless=True, fill_value=0)
+    return np.moveaxis(a, 0, -1)
+
+
+def pick_window4(S=400):
+    """S x S window on a 50 m step with held-out coverage for both tasks everywhere, most annotated pits and pads."""
+    from shapely.geometry import box
+    pbk, dbk = block_fold("pit"), block_fold("pad")
+    pits, pads = ann("pit_inside"), ann("plat")
+    best = []
+    for x0 in range(619500, 624000 - S + 1, 50):
+        for y0 in range(4593000, 4597500 - S + 1, 50):
+            bb = box(x0, y0, x0 + S, y0 + S)
+            if pbk.geometry.intersection(bb).area.sum() < 0.999 * bb.area or dbk.geometry.intersection(bb).area.sum() < 0.999 * bb.area:
+                continue
+            npit = len(pits.cx[x0:x0 + S, y0:y0 + S])
+            npad = len(pads.cx[x0:x0 + S, y0:y0 + S])
+            if npit >= 6 and npad >= 3:
+                best.append((npit + npad, (x0, y0, x0 + S, y0 + S)))
+    best.sort(reverse=True)
+    return [b for _, b in best]
+
+
+def show_rrim_9(ax, b):
+    with rasterio.open(D05 / "rrim_openness_9t_05.tif") as r:
+        w = from_bounds(*b, r.transform)
+        a = np.moveaxis(r.read(window=w, boundless=True, fill_value=0), 0, -1)
+    ax.imshow(a, extent=(b[0], b[2], b[1], b[3]), interpolation="bilinear")
+
+
+def fig_hero4(b=None):
+    pit_h, pad_h = ann("pit_inside"), ann("plat")
+    b = b or pick_window4()[0]
+    x0, y0, x1, y1 = b
+    pit_p = prob_heldout("pit", b)
+    pad_p = prob_heldout("pad", b)
+    air = naip(b)
+    W, H = 27.6, 8.0
+    fig = plt.figure(figsize=(W, H), dpi=DPI)
+    side, gap, left, bottom = 6.05, 0.33, 1.95, 1.75
+    axs = [fig.add_axes([(left + i * (side + gap)) / W, bottom / H, side / W, side / H]) for i in range(4)]
+    ext = (x0, x1, y0, y1)
+    axs[0].imshow(air, extent=ext, interpolation="bilinear")
+    show_rrim_9(axs[1], b)
+    im = axs[2].imshow(pad_p, cmap="gray", vmin=0, vmax=1, extent=ext, interpolation="nearest")
+    axs[3].imshow(pit_p, cmap="gray", vmin=0, vmax=1, extent=ext, interpolation="nearest")
+    for g, ax, col, ls in ((pad_h, axs[2], MPAD, "--"), (pit_h, axs[3], MPIT, "-")):
+        gg = g.cx[x0:x1, y0:y1]
+        if len(gg):
+            gg.boundary.plot(ax=ax, color=col, linewidth=2.0, linestyle=ls)
+    for i, ax in enumerate(axs):
+        ax.set_xlim(x0, x1)
+        ax.set_ylim(y0, y1)
+        ax.set_xticks([x0 + 100, x0 + 300])
+        ax.set_yticks([y0 + 100, y0 + 300] if i == 0 else [])
+        ax.ticklabel_format(useOffset=False, style="plain")
+        ax.tick_params(labelsize=22, length=7, width=1.5)
+        for s in ax.spines.values():
+            s.set_linewidth(1.5)
+            s.set_color("black")
+        ax.text(0.03, 0.97, "(" + "abcd"[i] + ")", transform=ax.transAxes, va="top", fontsize=34, color="black", path_effects=HALO)
+    fig.text(0.40 / W, (bottom + side / 2) / H, "Northing (m)", rotation=90, va="center", ha="center", fontsize=24)
+    fig.text((left + side + gap / 2) / W, 0.80 / H, "Easting (m), EPSG:6346", ha="center", fontsize=24)
+    sci_scalebar(axs[1], x0 + 20, y0 + 52, 100, fs=20, nseg=2)
+    axs[1].annotate("", xy=(x1 - 25, y1 - 22), xytext=(x1 - 25, y1 - 75), arrowprops=dict(arrowstyle="-|>", color="white", lw=3, mutation_scale=30))
+    axs[1].text(x1 - 25, y1 - 82, "N", ha="center", va="top", fontsize=28, color="white", path_effects=[pe.withStroke(linewidth=5, foreground="black")])
+    cax = fig.add_axes([(left + 2 * (side + gap) + 0.6) / W, 0.95 / H, (2 * side + gap - 1.2) / W, 0.22 / H])
+    cb = fig.colorbar(im, cax=cax, orientation="horizontal", ticks=[0, 0.5, 1])
+    cb.ax.tick_params(labelsize=22, length=6)
+    cb.set_label("Probability", fontsize=24, labelpad=4)
+    fig.savefig(OUT / "poster_hero4_9t.png", dpi=DPI)
+    plt.close(fig)
+    return b
+
+
+def fig_errors():
+    """Found pit, missed pit, model pit with no hand label: three 50 m windows from one held-out window, F2 cutoff."""
+    pits_rim, pads = ann("pit_outside"), ann("plat")
+    pit_h = ann("pit_inside")
+    for bw in pick_window()[:25]:
+        b = (bw[0], bw[1] + 31, bw[2], bw[3] - 32)
+        pit_m, pad_m, cover = oof(b)
+        x0, y0, x1, y1 = b
+        m = 30
+        hits, miss, fa = classify(pit_m, pits_rim.cx[x0 + m:x1 - m, y0 + m:y1 - m], b)
+        fa = [f for f in fa if x0 + m < f[0] < x1 - m and y0 + m < f[1] < y1 - m]
+        if hits and miss and fa:
+            break
+    f = max(fa, key=lambda t_: t_[2])
+    picks = [max(hits, key=lambda g: g.area).centroid, miss[0].centroid, type("P", (), {"x": f[0], "y": f[1]})]
+    fig, axs = plt.subplots(1, 3, figsize=(13.47, 4.7), dpi=DPI)
+    fig.subplots_adjust(left=0.01, right=0.99, top=0.99, bottom=0.01, wspace=0.03)
+    half = 25
+    for i, (ax, c) in enumerate(zip(axs, picks)):
+        ib = (c.x - half, c.y - half, c.x + half, c.y + half)
+        show_hs(ax, ib)
+        pm, _, _ = oof(ib)
+        overlay(ax, pm, ib, MPIT, 0.75)
+        for gdf, col, ls in ((pads, MPAD, "--"), (pit_h, MPIT, "-")):
+            gg = gdf.cx[ib[0]:ib[2], ib[1]:ib[3]]
+            if len(gg):
+                gg.boundary.plot(ax=ax, color=col, linewidth=2.5, linestyle=ls)
+        ax.set_xlim(ib[0], ib[2])
+        ax.set_ylim(ib[1], ib[3])
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for s in ax.spines.values():
+            s.set_linewidth(1.5)
+            s.set_color("black")
+        ax.text(0.04, 0.96, "(" + "abc"[i] + ")", transform=ax.transAxes, va="top", fontsize=30, color="black", path_effects=HALO)
+        sci_scalebar(ax, ib[0] + 3, ib[1] + 7, 10, fs=17, nseg=2)
+    fig.savefig(OUT / "poster_errors_9t.png", dpi=DPI)
+    plt.close(fig)
+    return b, len(hits), len(miss), len(fa)
+
+
 def main():
     OUT.mkdir(exist_ok=True)
-    for f in (fig_channels, fig_gallery, fig_folds, fig_pipeline, fig_pr, fig_optical):
+    for f in (fig_gallery, fig_folds, fig_optical):
         f(); print(f.__name__)
-    print("prob maps window, max pit, max pad:", fig_probmaps())
-    print("transfer window, hits, misses, unlabelled:", fig_transfer())
-    print("hero window, hits, misses, false alarms:", fig_hero())
+    print("hero4 window:", fig_hero4())
+    print("errors window, hits, misses, unlabelled:", fig_errors())
+    print("transfer 613590 window, max pit, max pad:", fig_probmaps())
 
 
 if __name__ == "__main__":

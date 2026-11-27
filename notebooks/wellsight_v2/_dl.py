@@ -36,7 +36,7 @@ __all__ = [
     "UNet", "FocalCE",
     "load_stats", "normalize",
     "CenteredPatchSampler", "random_d4",
-    "run_epoch", "train_loop", "predict_full_tile",
+    "run_epoch", "train_loop", "predict_full_tile", "predict_array",
 ]
 
 DEVICE: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -468,3 +468,60 @@ def predict_full_tile(
     prob /= count
     argmax = prob.argmax(0).astype(np.uint8)
     return prob, argmax, profile
+
+
+def predict_array(
+    model: nn.Module,
+    feat: np.ndarray,
+    mu: np.ndarray,
+    sd: np.ndarray,
+    *,
+    patch: int,
+    overlap: int,
+    n_classes: int,
+    batch: int = 16,
+    hann: bool = True,
+) -> np.ndarray:
+    """Sliding-window inference on an in-memory (C, H, W) array. Returns softmax (n_classes, H, W).
+
+    ``hann=True`` weights each patch by a 2-D Hann window so patch edges, where the network has least context,
+    contribute almost nothing. This removes the square seams that plain averaging (``predict_full_tile``) leaves
+    where patches meet. Added 2026-11-27 for poster figures. ``predict_full_tile`` is unchanged, so every existing
+    probability raster and score is unaffected.
+    """
+    C, H, W = feat.shape
+    if overlap >= patch:
+        raise ValueError(f"overlap ({overlap}) must be < patch ({patch})")
+    if H < patch or W < patch:
+        feat = np.pad(feat, ((0, 0), (0, max(0, patch - H)), (0, max(0, patch - W))), mode="constant", constant_values=np.nan)
+        Hp, Wp = feat.shape[1:]
+    else:
+        Hp, Wp = H, W
+    step = patch - overlap
+
+    def _starts(extent: int) -> list[int]:
+        xs = list(range(0, max(extent - patch + 1, 1), step))
+        if xs[-1] != extent - patch:
+            xs.append(extent - patch)
+        return sorted(set(xs))
+
+    one = np.hanning(patch + 2)[1:-1].astype(np.float32)
+    wgt = np.outer(one, one) if hann else np.ones((patch, patch), np.float32)
+    wgt = np.maximum(wgt, 1e-3)
+    prob = np.zeros((n_classes, Hp, Wp), np.float32)
+    den = np.zeros((Hp, Wp), np.float32)
+    x_all = normalize(feat.astype(np.float32), mu, sd)
+    model.to(DEVICE)
+    model.eval()
+    pos = [(r, c) for r in _starts(Hp) for c in _starts(Wp)]
+    use_amp = DEVICE.type == "cuda"
+    for i in range(0, len(pos), batch):
+        chunk = pos[i:i + batch]
+        x = torch.from_numpy(np.stack([x_all[:, r:r + patch, c:c + patch] for r, c in chunk])).to(DEVICE)
+        with torch.no_grad(), _amp_ctx(use_amp):
+            p = torch.softmax(model(x), 1).float().cpu().numpy()
+        for arr, (r, c) in zip(p, chunk):
+            prob[:, r:r + patch, c:c + patch] += arr * wgt
+            den[r:r + patch, c:c + patch] += wgt
+    prob /= np.maximum(den, 1e-6)
+    return prob[:, :H, :W]

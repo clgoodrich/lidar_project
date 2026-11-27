@@ -70,3 +70,11 @@ Text removed from Figures 2 and 3 (the panel names now sit in the captions). All
 - Script: `agu_poster/_make_poster_figures.py` (`fig_transfer`), `agu_poster/_make_agu_poster.py`.
 
 Later on 2026-11-26: Figure 5 replaced by grey-scale probability maps, `agu_poster/figures/poster_prob_maps_613590.png`. Three 400 m panels of tile 613590: relief image with hand outlines, pit probability (`pit_prob_floor_613590_05.tif`), pad probability (`pad_prob_613590_05.tif`), linear grey scale 0 to 1, not rescaled. Pad probability shows faint square seams where inference patches meet. Maker: `fig_probmaps` in `agu_poster/_make_poster_figures.py`. `poster_transfer_613590.png` is kept but not placed.
+
+## 2026-11-27 revision: four-panel hero (aerial, RRIM, pad probability, pit probability)
+
+- v1 saved first: `agu_poster/agu_poster_filled_44in_v1_20261126.{pptx,pdf}`, preview `agu_poster_filled_preview_v1_20261126.png`, scripts `_make_agu_poster_v1_20261126.py`, `_make_poster_figures_v1_20261126.py`.
+- Hero is now `agu_poster/figures/poster_hero4_9t.png`: 400 m window at (620200, 4594550), chosen as the window with held-out coverage for both tasks and the most drawn pits and pads (at least 6 and 3). Aerial is NAIP 2022-06-19 (0.6 m, Planetary Computer). Probability maps are out-of-fold: each pixel from the fold model that never saw its block, Hann blended with `_dl.predict_array`. Hand outlines sit on (c) and (d).
+- Error strip `figures/poster_errors_9t.png` (found, missed, unlabelled, F2 cutoff) moved to Results. 613590 figure `figures/poster_prob_maps_613590.png` now shows the Hann-blended mean of the five fold models and sits in column 1.
+- Table 1 gains "ground flagged": 0.13% pits, 10% pads (computed from out-of-fold rasters at F2 cutoffs over 1,547 ha), 5.0% roads (older single-split). Takeaway changed to pits recall with 0.13% flagged.
+- Text cut to about 600 body words. Methods is a spec table plus short text. No bold, per the earlier instruction.

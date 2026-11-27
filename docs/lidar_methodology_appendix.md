@@ -928,7 +928,7 @@ __all__ = [
     "UNet", "FocalCE",
     "load_stats", "normalize",
     "CenteredPatchSampler", "random_d4",
-    "run_epoch", "train_loop", "predict_full_tile",
+    "run_epoch", "train_loop", "predict_full_tile", "predict_array",
 ]
 
 DEVICE: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -1360,6 +1360,63 @@ def predict_full_tile(
     prob /= count
     argmax = prob.argmax(0).astype(np.uint8)
     return prob, argmax, profile
+
+
+def predict_array(
+    model: nn.Module,
+    feat: np.ndarray,
+    mu: np.ndarray,
+    sd: np.ndarray,
+    *,
+    patch: int,
+    overlap: int,
+    n_classes: int,
+    batch: int = 16,
+    hann: bool = True,
+) -> np.ndarray:
+    """Sliding-window inference on an in-memory (C, H, W) array. Returns softmax (n_classes, H, W).
+
+    ``hann=True`` weights each patch by a 2-D Hann window so patch edges, where the network has least context,
+    contribute almost nothing. This removes the square seams that plain averaging (``predict_full_tile``) leaves
+    where patches meet. Added 2026-11-27 for poster figures. ``predict_full_tile`` is unchanged, so every existing
+    probability raster and score is unaffected.
+    """
+    C, H, W = feat.shape
+    if overlap >= patch:
+        raise ValueError(f"overlap ({overlap}) must be < patch ({patch})")
+    if H < patch or W < patch:
+        feat = np.pad(feat, ((0, 0), (0, max(0, patch - H)), (0, max(0, patch - W))), mode="constant", constant_values=np.nan)
+        Hp, Wp = feat.shape[1:]
+    else:
+        Hp, Wp = H, W
+    step = patch - overlap
+
+    def _starts(extent: int) -> list[int]:
+        xs = list(range(0, max(extent - patch + 1, 1), step))
+        if xs[-1] != extent - patch:
+            xs.append(extent - patch)
+        return sorted(set(xs))
+
+    one = np.hanning(patch + 2)[1:-1].astype(np.float32)
+    wgt = np.outer(one, one) if hann else np.ones((patch, patch), np.float32)
+    wgt = np.maximum(wgt, 1e-3)
+    prob = np.zeros((n_classes, Hp, Wp), np.float32)
+    den = np.zeros((Hp, Wp), np.float32)
+    x_all = normalize(feat.astype(np.float32), mu, sd)
+    model.to(DEVICE)
+    model.eval()
+    pos = [(r, c) for r in _starts(Hp) for c in _starts(Wp)]
+    use_amp = DEVICE.type == "cuda"
+    for i in range(0, len(pos), batch):
+        chunk = pos[i:i + batch]
+        x = torch.from_numpy(np.stack([x_all[:, r:r + patch, c:c + patch] for r, c in chunk])).to(DEVICE)
+        with torch.no_grad(), _amp_ctx(use_amp):
+            p = torch.softmax(model(x), 1).float().cpu().numpy()
+        for arr, (r, c) in zip(p, chunk):
+            prob[:, r:r + patch, c:c + patch] += arr * wgt
+            den[r:r + patch, c:c + patch] += wgt
+    prob /= np.maximum(den, 1e-6)
+    return prob[:, :H, :W]
 
 ```
 ### notebooks/wellsight_v2/s1_build/_build_derivatives.py
@@ -8140,8 +8197,9 @@ def fig_probmaps():
             if best is None or n > best[0]:
                 best = (n, b)
     b = best[1]
-    pp = read(inf / "pit_prob_floor_613590_05.tif", b)
-    dp = read(inf / "pad_prob_613590_05.tif", b)
+    f613 = inf / "features_613590_05.tif"
+    pp = prob_ensemble("pit", b, f613)
+    dp = prob_ensemble("pad", b, f613)
     fig, axs = plt.subplots(1, 3, figsize=(13.47, 4.9), dpi=DPI)
     fig.subplots_adjust(left=0.105, right=0.985, top=0.97, bottom=0.25, wspace=0.07)
     ext = (b[0], b[2], b[1], b[3])
@@ -8172,13 +8230,210 @@ def fig_probmaps():
     return b, float(pp.max()), float(dp.max())
 
 
+# ---------------------------------------------------------------------------
+# 2026-11-27: four-panel hero (aerial, RRIM, pad probability, pit probability), Hann-blended
+import sys as _sys
+_sys.path.insert(0, str(ROOT / "notebooks/wellsight_v2"))
+import torch  # noqa: E402
+from _dl import DEVICE, UNet, predict_array  # noqa: E402
+import requests  # noqa: E402
+from pyproj import Transformer  # noqa: E402
+
+FEAT9 = D05 / "features_pit_9t_05.tif"
+TASKS_CV = {"pit": ("pit/unet_cv5", 3, 256, 128), "pad": ("pad/unet_cv5", 2, 384, 192)}
+_MODEL_CACHE = {}
+PADM = 96.0
+
+
+def _load_fold_model(task, k):
+    key = (task, k)
+    if key not in _MODEL_CACHE:
+        sub, ncls, _, _ = TASKS_CV[task]
+        ck = torch.load(MOD / sub / f"fold{k}" / "best.pt", map_location=DEVICE, weights_only=False)
+        m = UNet(in_ch=len(ck["channels"]), n_classes=ncls, base=32).to(DEVICE)
+        m.load_state_dict(ck["state_dict"])
+        m.eval()
+        _MODEL_CACHE[key] = (m, np.asarray(ck["mu"], np.float32), np.asarray(ck["sd"], np.float32))
+    return _MODEL_CACHE[key]
+
+
+def read_feats(path, bounds):
+    """Seven-channel stack over bounds plus PADM metres of context each side, 0.5 m."""
+    pb = (bounds[0] - PADM, bounds[1] - PADM, bounds[2] + PADM, bounds[3] + PADM)
+    with rasterio.open(path) as r:
+        w = from_bounds(*pb, r.transform)
+        a = r.read(window=w, boundless=True, fill_value=np.nan).astype(np.float32)
+    return a
+
+
+def crop_ctx(arr):
+    i = int(round(PADM / 0.5))
+    return arr[..., i:-i, i:-i]
+
+
+def prob_heldout(task, bounds):
+    """Out-of-fold class-1 probability over bounds on 9t: each pixel from the model that never saw its block. Hann blended."""
+    feats = read_feats(FEAT9, bounds)
+    tr, shape = grid(bounds)
+    bf = block_fold(task)
+    fold = rasterize(((g, int(f)) for g, f in zip(bf.geometry, bf.fold)), shape, transform=tr, fill=-1)
+    _, ncls, patch, ov = TASKS_CV[task]
+    out = np.full(shape, np.nan, np.float32)
+    for k in sorted(set(np.unique(fold)) - {-1}):
+        m, mu, sd = _load_fold_model(task, k)
+        p = crop_ctx(predict_array(m, feats, mu, sd, patch=patch, overlap=ov, n_classes=ncls, hann=True)[1])
+        out[fold == k] = p[fold == k]
+    return out
+
+
+def prob_ensemble(task, bounds, feat_path):
+    """Mean of the five fold models, Hann blended. For a tile none of them saw."""
+    feats = read_feats(feat_path, bounds)
+    _, ncls, patch, ov = TASKS_CV[task]
+    acc = 0
+    for k in range(5):
+        m, mu, sd = _load_fold_model(task, k)
+        acc = acc + predict_array(m, feats, mu, sd, patch=patch, overlap=ov, n_classes=ncls, hann=True)[1]
+    return crop_ctx(acc / 5.0)
+
+
+def naip(bounds, year="20220619"):
+    """NAIP leaf-on aerial over bounds (EPSG:6346) from Planetary Computer, windowed read. Returns RGB uint8."""
+    stac = "https://planetarycomputer.microsoft.com/api/stac/v1"
+    cx, cy = (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2
+    ll = gpd.GeoSeries(gpd.points_from_xy([cx], [cy]), crs=6346).to_crs(4326).iloc[0]
+    items = requests.post(f"{stac}/search", json={"collections": ["naip"], "intersects": {"type": "Point", "coordinates": [ll.x, ll.y]}, "limit": 20}, timeout=60).json()["features"]
+    by = {f["properties"]["datetime"][:10].replace("-", ""): f for f in items}
+    f = by[year]
+    href = requests.get("https://planetarycomputer.microsoft.com/api/sas/v1/sign?href=" + f["assets"]["image"]["href"], timeout=60).json()["href"]
+    with rasterio.open(href) as s:
+        t = Transformer.from_crs(6346, s.crs, always_xy=True)
+        x0, y0 = t.transform(bounds[0], bounds[1])
+        x1, y1 = t.transform(bounds[2], bounds[3])
+        win = from_bounds(min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1), transform=s.transform)
+        a = s.read([1, 2, 3], window=win, boundless=True, fill_value=0)
+    return np.moveaxis(a, 0, -1)
+
+
+def pick_window4(S=400):
+    """S x S window on a 50 m step with held-out coverage for both tasks everywhere, most annotated pits and pads."""
+    from shapely.geometry import box
+    pbk, dbk = block_fold("pit"), block_fold("pad")
+    pits, pads = ann("pit_inside"), ann("plat")
+    best = []
+    for x0 in range(619500, 624000 - S + 1, 50):
+        for y0 in range(4593000, 4597500 - S + 1, 50):
+            bb = box(x0, y0, x0 + S, y0 + S)
+            if pbk.geometry.intersection(bb).area.sum() < 0.999 * bb.area or dbk.geometry.intersection(bb).area.sum() < 0.999 * bb.area:
+                continue
+            npit = len(pits.cx[x0:x0 + S, y0:y0 + S])
+            npad = len(pads.cx[x0:x0 + S, y0:y0 + S])
+            if npit >= 6 and npad >= 3:
+                best.append((npit + npad, (x0, y0, x0 + S, y0 + S)))
+    best.sort(reverse=True)
+    return [b for _, b in best]
+
+
+def show_rrim_9(ax, b):
+    with rasterio.open(D05 / "rrim_openness_9t_05.tif") as r:
+        w = from_bounds(*b, r.transform)
+        a = np.moveaxis(r.read(window=w, boundless=True, fill_value=0), 0, -1)
+    ax.imshow(a, extent=(b[0], b[2], b[1], b[3]), interpolation="bilinear")
+
+
+def fig_hero4(b=None):
+    pit_h, pad_h = ann("pit_inside"), ann("plat")
+    b = b or pick_window4()[0]
+    x0, y0, x1, y1 = b
+    pit_p = prob_heldout("pit", b)
+    pad_p = prob_heldout("pad", b)
+    air = naip(b)
+    W, H = 27.6, 8.0
+    fig = plt.figure(figsize=(W, H), dpi=DPI)
+    side, gap, left, bottom = 6.05, 0.33, 1.95, 1.75
+    axs = [fig.add_axes([(left + i * (side + gap)) / W, bottom / H, side / W, side / H]) for i in range(4)]
+    ext = (x0, x1, y0, y1)
+    axs[0].imshow(air, extent=ext, interpolation="bilinear")
+    show_rrim_9(axs[1], b)
+    im = axs[2].imshow(pad_p, cmap="gray", vmin=0, vmax=1, extent=ext, interpolation="nearest")
+    axs[3].imshow(pit_p, cmap="gray", vmin=0, vmax=1, extent=ext, interpolation="nearest")
+    for g, ax, col, ls in ((pad_h, axs[2], MPAD, "--"), (pit_h, axs[3], MPIT, "-")):
+        gg = g.cx[x0:x1, y0:y1]
+        if len(gg):
+            gg.boundary.plot(ax=ax, color=col, linewidth=2.0, linestyle=ls)
+    for i, ax in enumerate(axs):
+        ax.set_xlim(x0, x1)
+        ax.set_ylim(y0, y1)
+        ax.set_xticks([x0 + 100, x0 + 300])
+        ax.set_yticks([y0 + 100, y0 + 300] if i == 0 else [])
+        ax.ticklabel_format(useOffset=False, style="plain")
+        ax.tick_params(labelsize=22, length=7, width=1.5)
+        for s in ax.spines.values():
+            s.set_linewidth(1.5)
+            s.set_color("black")
+        ax.text(0.03, 0.97, "(" + "abcd"[i] + ")", transform=ax.transAxes, va="top", fontsize=34, color="black", path_effects=HALO)
+    fig.text(0.40 / W, (bottom + side / 2) / H, "Northing (m)", rotation=90, va="center", ha="center", fontsize=24)
+    fig.text((left + side + gap / 2) / W, 0.80 / H, "Easting (m), EPSG:6346", ha="center", fontsize=24)
+    sci_scalebar(axs[1], x0 + 20, y0 + 52, 100, fs=20, nseg=2)
+    axs[1].annotate("", xy=(x1 - 25, y1 - 22), xytext=(x1 - 25, y1 - 75), arrowprops=dict(arrowstyle="-|>", color="white", lw=3, mutation_scale=30))
+    axs[1].text(x1 - 25, y1 - 82, "N", ha="center", va="top", fontsize=28, color="white", path_effects=[pe.withStroke(linewidth=5, foreground="black")])
+    cax = fig.add_axes([(left + 2 * (side + gap) + 0.6) / W, 0.95 / H, (2 * side + gap - 1.2) / W, 0.22 / H])
+    cb = fig.colorbar(im, cax=cax, orientation="horizontal", ticks=[0, 0.5, 1])
+    cb.ax.tick_params(labelsize=22, length=6)
+    cb.set_label("Probability", fontsize=24, labelpad=4)
+    fig.savefig(OUT / "poster_hero4_9t.png", dpi=DPI)
+    plt.close(fig)
+    return b
+
+
+def fig_errors():
+    """Found pit, missed pit, model pit with no hand label: three 50 m windows from one held-out window, F2 cutoff."""
+    pits_rim, pads = ann("pit_outside"), ann("plat")
+    pit_h = ann("pit_inside")
+    for bw in pick_window()[:25]:
+        b = (bw[0], bw[1] + 31, bw[2], bw[3] - 32)
+        pit_m, pad_m, cover = oof(b)
+        x0, y0, x1, y1 = b
+        m = 30
+        hits, miss, fa = classify(pit_m, pits_rim.cx[x0 + m:x1 - m, y0 + m:y1 - m], b)
+        fa = [f for f in fa if x0 + m < f[0] < x1 - m and y0 + m < f[1] < y1 - m]
+        if hits and miss and fa:
+            break
+    f = max(fa, key=lambda t_: t_[2])
+    picks = [max(hits, key=lambda g: g.area).centroid, miss[0].centroid, type("P", (), {"x": f[0], "y": f[1]})]
+    fig, axs = plt.subplots(1, 3, figsize=(13.47, 4.7), dpi=DPI)
+    fig.subplots_adjust(left=0.01, right=0.99, top=0.99, bottom=0.01, wspace=0.03)
+    half = 25
+    for i, (ax, c) in enumerate(zip(axs, picks)):
+        ib = (c.x - half, c.y - half, c.x + half, c.y + half)
+        show_hs(ax, ib)
+        pm, _, _ = oof(ib)
+        overlay(ax, pm, ib, MPIT, 0.75)
+        for gdf, col, ls in ((pads, MPAD, "--"), (pit_h, MPIT, "-")):
+            gg = gdf.cx[ib[0]:ib[2], ib[1]:ib[3]]
+            if len(gg):
+                gg.boundary.plot(ax=ax, color=col, linewidth=2.5, linestyle=ls)
+        ax.set_xlim(ib[0], ib[2])
+        ax.set_ylim(ib[1], ib[3])
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for s in ax.spines.values():
+            s.set_linewidth(1.5)
+            s.set_color("black")
+        ax.text(0.04, 0.96, "(" + "abc"[i] + ")", transform=ax.transAxes, va="top", fontsize=30, color="black", path_effects=HALO)
+        sci_scalebar(ax, ib[0] + 3, ib[1] + 7, 10, fs=17, nseg=2)
+    fig.savefig(OUT / "poster_errors_9t.png", dpi=DPI)
+    plt.close(fig)
+    return b, len(hits), len(miss), len(fa)
+
+
 def main():
     OUT.mkdir(exist_ok=True)
-    for f in (fig_channels, fig_gallery, fig_folds, fig_pipeline, fig_pr, fig_optical):
+    for f in (fig_gallery, fig_folds, fig_optical):
         f(); print(f.__name__)
-    print("prob maps window, max pit, max pad:", fig_probmaps())
-    print("transfer window, hits, misses, unlabelled:", fig_transfer())
-    print("hero window, hits, misses, false alarms:", fig_hero())
+    print("hero4 window:", fig_hero4())
+    print("errors window, hits, misses, unlabelled:", fig_errors())
+    print("transfer 613590 window, max pit, max pad:", fig_probmaps())
 
 
 if __name__ == "__main__":
@@ -8241,7 +8496,7 @@ C1, C2, C3 = X0, X0 + CW + GAP, X0 + 2 * (CW + GAP)
 HEAD = (0.8, 5.6)          # header band top, height (the one solid block of UH red)
 BODY_TOP, BODY_BOT = 7.2, 40.0
 FOOT_TOP, FOOT_BOT = 40.9, 43.2
-HERO_H = 8.2               # hero figure height, figure is 27.6 x 9.4 in
+HERO_H = 8.0               # hero figure height, figure is 27.6 x 9.4 in
 LOWER = BODY_TOP + 3.6 + HERO_H + 0.9     # top of the col 2 / col 3 sections under the hero
 
 HEAD_PT, BODY_PT, CAP_PT = 50, 28, 24
@@ -8250,100 +8505,100 @@ LINE = BODY_PT * 1.2 / 72  # body line height, in
 CHARS = 74                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TITLE = "Detecting orphaned oil and gas wells under forest canopy with airborne lidar and U-Nets"
-TAKEAWAY = "Airborne lidar detects 93% of well pits and 91% of well pads under forest canopy"
+TAKEAWAY = "Airborne lidar finds 93% of well pits under forest canopy while flagging 0.13% of the ground"
 
 FIG_FILES = {
     "intro": FIGS / "poster_pa_wells_locator.png",
-    "optical": FIGS / "poster_optical_vs_lidar_9t.png",
-    "channels": FIGS / "poster_channels_one_pit_9t.png",
     "signs": FIGS / "poster_signs_gallery_9t.png",
-    "hero": FIGS / "poster_hero_heldout_9t.png",
-    "setup": FIGS / "poster_pipeline_diagram.png",
+    "hero": FIGS / "poster_hero4_9t.png",
     "valid": FIGS / "poster_cv_folds_pit_9t.png",
     "transfer": FIGS / "poster_prob_maps_613590.png",
+    "errors": FIGS / "poster_errors_9t.png",
 }
 
 # Numbered captions in reading order. Scale and data source are stated for every map.
 CAPS = {
-    "intro": ("Figure 1.", "Documented orphan and abandoned wells (yellow points) in western Pennsylvania, on a "
+    "hero": ("Figure 1.", "One 400 m window of tile 9t, from models that never saw these blocks. (a) Leaf-on aerial photograph (NAIP, June 2022). "
+             "(b) Red relief image map from bare-earth lidar. (c) Pad probability with hand-drawn pads (yellow dashed). "
+             "(d) Pit probability with hand-drawn pits (blue). Probability runs from black 0 to white 1. Bar 100 m, north up."),
+    "intro": ("Figure 2.", "Documented orphan and abandoned wells (yellow points) in western Pennsylvania, on a "
               "satellite base map. North is up. Source: Pennsylvania DEP records."),
-    "optical": ("Figure 2.", "Aerial photograph (left) and a lidar relief image with the trees removed (right) of "
-                "the same ground in study tile 9t."),
-    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. From left to right: pit (blue), pad (yellow) and road (white). A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. We outlined 712 pits and 995 pads. Panels are 60, 180 and 180 m wide."),
-    "hero": ("Figure 4.", "Model output (filled) and hand labels (lines) on a red relief image map, a test block of tile 9t. "
-             "(b) Found pit. (c) Missed pit. (d) Model pit with no hand label. Bars: 100 m in (a), 10 m in (b) to (d)."),
-    "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
-    "valid": ("Figure 6.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
-    "transfer": ("Figure 5.", "Model output on tile 613590, a tile the models were not trained on (400 m window). (a) Red relief image map with hand outlines, pit (blue) and pad (yellow dashed). (b) Pit probability and (c) pad probability from U-Nets trained on tile 9t, black 0 to white 1."),
+    "signs": ("Figure 3.", "Hand-drawn labels on a red relief image map. From left to right: pit (blue), pad (yellow) and road (white). "
+              "A pit is a bowl with a raised rim, a pad is the flat work area and a road is the track to it. Panels are 60, 180 and 180 m wide."),
+    "valid": ("Figure 5.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
+    "transfer": ("Figure 4.", "Tile 613590, 1.5 km west of 9t and unseen in training (400 m window, mean of the five fold models). "
+                 "(a) Relief map with hand outlines. (b) Pit probability. (c) Pad probability, black 0 to white 1."),
+    "errors": ("Figure 6.", "Three 50 m windows from a held-out block of tile 9t. (a) Found pit. (b) Missed pit. "
+               "(c) Model pit with no hand label, which counts against precision. Bars 10 m."),
 }
 
+
 SECTIONS = [
-    ("Introduction", C1, BODY_TOP, [
+    ("Why orphan wells stay hidden", C1, BODY_TOP, [
         ("fig", "intro", 4.2, "Map of Pennsylvania documented orphan wells"),
-        ("text", "Orphan wells have no owner left to plug them and can leak methane and brine. "
-                 "Pennsylvania lists thousands. Many more were never recorded.|Satellite pad detection recovers about "
-                 "half the pads in Appalachia (Ramachandran et al. 2024). Old wells have been read from lidar by eye "
-                 "(Sams et al.; Saint-Vincent et al. 2021).|Leaf-off lidar returns reach the ground through "
-                 "deciduous canopy, so the pit, pad and access road that every well leaves can be mapped directly. "
-                 "We ask whether a U-Net can find them automatically and how well it generalises to ground it has not seen."),
+        ("text", "Hazard. Thousands of undocumented wells in western Pennsylvania can leak methane and brine.|"
+                 "Why current data fall short. Canopy hides about half of the pads from satellites (Ramachandran et al. 2024). "
+                 "Legacy well coordinates can be tens to hundreds of metres off.|"
+                 "Approach. Map the pit, pad and access road that every well leaves, directly from leaf-off USGS 3DEP lidar, "
+                 "and ask how well a U-Net does it on ground it has not seen."),
     ]),
-    ("Study area and data", C1, None, [
-        ("fig", "optical", 2.8, "Air photo and lidar of the same ground"),
-        ("text", "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020 over a 4.5 km square tile (9t). Ground returns are "
-                 "gridded to a 0.5 m bare-earth model. Seven terrain layers are derived from it. They are local relief "
-                 "in 12.5 m and 2.5 m windows, slope, topographic position, positive and negative openness, and roughness. "
-                 "Each layer is standardised with training-set means and standard deviations before it enters the network."),
-    ]),
-    ("Well signatures", C1, None, [
+    ("Lidar data and terrain layers", C1, None, [
         ("fig", "signs", 4.0, "Pit, pad, road on RRIM"),
+        ("text", "USGS 3DEP lidar, project PA_WesternPA_2019_D20, flown leaf-off Nov 2019 to Mar 2020, about 2.6 ground points per m2.|"
+                 "Ground returns are triangulated (Delaunay) and gridded to a 0.5 m bare-earth model. Seven layers are derived: relief in 12.5 m "
+                 "and 2.5 m windows, slope, topographic position, positive and negative openness, and roughness.|"
+                 "We outlined 503 pits and 650 pads by hand in tile 9t (712 and 995 across all tiles), without the DEP well records."),
+    ]),
+    ("Transfer to an unseen tile", C1, None, [
+        ("text", "Tile 613590 shares no ground with 9t. All five fold models run on it with the 9t cutoffs and 9t normalisation, nothing retuned. "
+                 "Pit recall is in Results. Pads are not scored there because none are drawn."),
+        ("fig", "transfer", 4.6, "Predictions on tile 613590"),
     ]),
     ("Methods", C2, LOWER, [
-                ("text", "Each sign gets its own four-level U-Net (base width 32, about 8 million parameters) that maps the seven layers to class probabilities.|"
-                 "The pit model has three classes, background, pit floor and rim. Training minimises focal "
-                 "cross-entropy (gamma 2) with class weights of 0.05 for background and 0.475 for each pit class, "
-                 "which offsets the rarity of well pixels. Pads use two classes with weights 0.15 and 0.85.|"
-                 "Patches are 128 m (pits) and 192 m (pads), centred on a label with random offsets of 30 m and 40 m. "
-                 "We apply random 90-degree rotations and flips. Optimiser is AdamW, learning rate 1e-3, weight decay "
-                 "1e-4, cosine schedule, 40 epochs, batch 16.|"
-                 "Roads are modelled at 1 m with three classes, background, road and drainage. Drainage "
-                 "channels resemble roads in relief, so they are an explicit negative class. "
-                 "Road weight is 0.72. Probabilities above the cutoff are vectorised to outlines."),
+        ("spec", None, 2.3, None),
+        ("text", "One plain four-level U-Net per sign, 7.8 million parameters, standardised inputs. Focal cross-entropy (gamma 2), "
+                 "random flips and rotations, AdamW at 1e-3, cosine schedule, 40 epochs, batch 16. Drainage is an explicit negative class "
+                 "for roads. Probabilities above the cutoff are vectorised.|"
+                 "A 26 million parameter U-Net++ with a pretrained encoder scored no better on pits (pixel IoU 0.561 against 0.559), "
+                 "so data and labels limit accuracy, not architecture."),
     ]),
-    ("Validation", C2, None, [
-        ("text", "The tile is split by block, never by well, so a jittered patch cannot reach into a held-out block. "
-                 "An inner validation set (20% of the remaining blocks) picks the best epoch and the cutoff. "
-                 "The cutoff maximises F2, which weights recall four times as heavily as precision, because a missed "
-                 "well costs more than a false alarm. The held-out fold never influences either choice. We hold out five sets of 375 m blocks in turn."),
-        ("fig", "transfer", 5.0, "Predictions on tile 613590"),
+    ("Validation and transfer", C2, None, [
+        ("fig", "valid", 2.0, "Five test sets of 375 m blocks"),
+        ("text", "Five-fold cross-validation on 375 m blocks, split by block and never by well, so a jittered patch cannot reach a held-out block.|"
+                 "An inner validation set picks the epoch and the F2 cutoff, which weights recall four times as heavily as precision. "
+                 "The held-out fold never tunes either."),
+    ]),
+    ("Conclusions", C2, None, [
+        ("text", "Terrain layers from leaf-off lidar let a small U-Net find more than 90% of labelled pits and pads in blocks it never saw, "
+                 "and 91% of pits on a separate tile.|"
+                 "Limits. One survey, one annotator, precision below 0.65, no field visits.|"
+                 "Next. Field-check candidates, combine pit, pad and road co-occurrence to cut false alarms, and test on McKean lidar."),
     ]),
     ("Results", C3, LOWER, [
-        ("table", None, 3.2, None),
-        ("text", "At the F2 cutoff the pit model recovers 467 of 503 pits (92.8%) and the pad model 593 of 650 pads (91.2%). "
-                 "Threshold-free average precision at IoU 0.3 is 0.82 for pits (95% bootstrap interval 0.78 to 0.86) "
-                 "and 0.75 for pads (0.70 to 0.79).|"
-                 "Pad recall falls from 91% to 77% when the match rule tightens from IoU 0.3 to 0.5. The model "
-                 "finds the pads, but where a pad ends and a wide road begins is an arbitrary line, so pad outlines "
-                 "differ from ours at the edges. Pit outlines are tighter, with 82% matching at 0.5. Precision is 0.63 and 0.59 by design of the F2 cutoff, and some unmatched detections may be real features we have not drawn.|"
-                 "Applied unchanged to tile 613590, which neither model saw in training, the networks outline pads along "
-                 "the access roads and give each pit a sharp probability peak (Figure 5). Scored on the 153 pits we drew there, the five "
-                 "fold models recover 91% at IoU 0.3 (standard deviation 4.5 points), against 93% on held-out 9t blocks. "
-                 "Only part of that tile is drawn, so precision cannot be scored."),
-    ]),
-    ("Conclusions", C3, None, [
-        ("text", "Terrain layers from leaf-off lidar let a small U-Net recover more than 90% of labelled pits and pads in "
-                 "blocks it never saw. Pits are the most reliable sign, with the best average precision and the tightest outlines.|"
-                 "Limits. One 4.5 km tile. Labels are our own reading of the relief, made without the DEP well records. "
-                 "Precision is below 0.65 and no site has been visited, so unmatched detections stay candidates.|"
-                 "Next. Score a second labelled tile, then check detections in the field."),
+        ("table", None, 3.6, None),
+        ("fig", "errors", 4.5, "Found, missed, unlabelled"),
+        ("text", "Pits and pads are found at 93% and 91% (467 of 503, 593 of 650). Threshold-free average precision at IoU 0.3 is 0.82 for pits "
+                 "(95% bootstrap interval 0.78 to 0.86) and 0.75 for pads (0.70 to 0.79).|"
+                 "Pad recall falls to 77% at IoU 0.5. Where a pad ends and a wide road begins is an arbitrary line, so pad edges differ from ours "
+                 "even when the pad is found. Precision is a lower bound, since some unmatched detections may be real features we did not draw.|"
+                 "On tile 613590 the pit models recover 91% of the 153 pits drawn there (standard deviation 4.5 points over the five models), "
+                 "against 93% on 9t. About 30% of that tile is undrawn, so precision is not scored.|"
+                 "Pits are the best target: highest average precision, sharpest outlines and the smallest search area."),
     ]),
 ]
 # Results table: ann712 CV5, F2 threshold per fold, IoU 0.3 (docs/iterations/LEADERBOARD.md, 2026-09-17).
 # Roads: recall_clean at thr 0.20 on 735 held-out segments; road precision is not object-scored, so it is left blank.
-TABLE = [("", "Recall", "Precision", "IoU 0.5 recall"),
-         ("Pits", "93%", "63%", "82%"),
-         ("Pads", "91%", "59%", "77%"),
-         ("Roads", "98%", "—", "—")]
-TABLE_NOTE = "Table 1. Held-out results, tile 9t. Recall and precision at IoU 0.3, F2 cutoff. A detection matches a hand outline when intersection over union (IoU) is at least 0.3. Roads are scored by segments recovered."
+TABLE = [("", "Recall", "Precision", "IoU 0.5 recall", "Ground flagged"),
+         ("Pits", "93%", "63%", "82%", "0.13%"),
+         ("Pads", "91%", "59%", "77%", "10%"),
+         ("Roads\u2020", "98%", "\u2014", "\u2014", "5.0%")]
+TABLE_NOTE = ("Table 1. Held-out results, tile 9t, IoU 0.3 and F2 cutoff unless stated. A detection matches a hand outline when intersection over union (IoU) "
+              "is at least 0.3. Ground flagged is the share of scored ground above the cutoff. \u2020Roads: 40 m chunks whose whole road was held out, "
+              "single-split model, probability 0.20, no precision. On tile 613590, roads drawn there and unseen in training reach completeness 0.76 and correctness 0.83 at probability 0.50.")
+SPEC = [("Sign", "Grid, patch", "Classes", "Focal weights"),
+        ("Pits", "0.5 m, 128 m", "background, floor, rim", "0.05, 0.475, 0.475"),
+        ("Pads", "0.5 m, 192 m", "background, pad", "0.15, 0.85"),
+        ("Roads", "1 m, 256 m", "background, road, drainage", "0.10, 0.72, 0.25")]
 # --outline: stand-in text per section, (heading, [one entry per text block]). Space is kept at the real
 # text's height so the layout matches the mockup.
 OUTLINE = [
@@ -8357,7 +8612,7 @@ OUTLINE = [
     ("[Heading: main result]", ["[Results: what the numbers say, where it is weak and why]"]),
     ("[Heading: implications]", ["[Implications here]|[Limits here]|[Next steps here]"]),
 ]
-OUTLINE_TABLE = [("", "Recall", "Precision", "IoU 0.5 recall")] + [(r[0], "[xx%]", "[xx%]", "[xx%]") for r in TABLE[1:]]
+OUTLINE_TABLE = [TABLE[0]] + [(r[0], "[xx%]", "[xx%]", "[xx%]", "[xx%]") for r in TABLE[1:]]
 
 HERO_CAPTION = CAPS["hero"][1]
 
@@ -8476,8 +8731,7 @@ def main() -> None:
     text_box(s, C2, BODY_TOP, X1 - C2, 3.2, "[Main finding in one sentence]" if outline else TAKEAWAY, 84, INK, bold=True, anchor=MSO_ANCHOR.MIDDLE)
     hero_y = BODY_TOP + 3.4
     figure_img("hero", C2, hero_y, X1 - C2, HERO_H,
-           "Hero figure. One held-out block. Hillshade base, hand annotation as outlines, model output "
-           "filled. Zoom insets: a hit, a miss, an unlabelled detection", 40)
+           "Hero figure. Aerial, relief map, pad probability, pit probability, one 400 m window", 40)
     text_box(s, C2, hero_y + HERO_H + 0.05, X1 - C2, 0.6,
              "[Hero caption: what the map shows and where]" if outline else CAPS["hero"][1], CAP_PT, GREY,
              lead=None if outline else CAPS["hero"][0])
@@ -8497,23 +8751,35 @@ def main() -> None:
             if kind == "fig":
                 ch = figure(key_or_text, x, top, CW, h, note)
                 top += h + ch + 0.1
+            elif kind == "spec":
+                rh = h / len(SPEC)
+                swd = [1.5, 3.0, 4.9, CW - 9.4]
+                for r, row in enumerate(SPEC):
+                    cx = x
+                    for c, cell in enumerate(row):
+                        text_box(s, cx, top + r * rh, swd[c], rh, cell, 26, INK if r else GREY, anchor=MSO_ANCHOR.MIDDLE)
+                        cx += swd[c]
+                    if r == 0:
+                        rect(x, top + rh - 0.02, CW, 0.03, RULE)
+                top += h + 0.3
             elif kind == "table":                       # recall and precision per sign, numbers large
                 rh = (h - 0.6) / len(TABLE)
-                cws = [3.2] + [(CW - 3.2) / 3] * 3
+                nc = len(TABLE[0])
+                cws = [2.3] + [(CW - 2.3) / (nc - 1)] * (nc - 1)
                 for r, row in enumerate(OUTLINE_TABLE if outline else TABLE):
                     cx = x
                     for c, cell in enumerate(row):
                         big = r > 0 and c > 0
-                        text_box(s, cx, top + r * rh, cws[c], rh, cell, 48 if big else 38,
+                        text_box(s, cx, top + r * rh, cws[c], rh, cell, 44 if big else 28,
                                  INK if (big or c == 0) else GREY, bold=big or c == 0,
                                  align=PP_ALIGN.LEFT if c == 0 else PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
                         cx += cws[c]
                     if r == 0:
                         rect(x, top + rh - 0.02, CW, 0.03, RULE)
-                text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 1.4,
-                         "[Table note: define each column]" if outline else TABLE_NOTE[9:], 28, GREY,
+                text_box(s, x, top + len(TABLE) * rh + 0.05, CW, 2.4,
+                         "[Table note: define each column]" if outline else TABLE_NOTE[9:], 24, GREY,
                          lead=None if outline else "Table 1.")
-                top += h + 1.3
+                top += h + 1.7
             else:
                 th = text_height(key_or_text)
                 text_box(s, x, top, CW, th + 0.2, next(stand_texts) if outline else key_or_text, BODY_PT,
