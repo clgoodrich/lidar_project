@@ -7,6 +7,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-27 — Pit-sized hollows radar test (9t)
+- 90 hollows (floor 10 m2, 40 m from wells, 20 m from pits/pads/roads), matched decoys, 89 scored.
+- Summer HV +0.09 dB, CI -0.29 to +0.41, p 0.48 (pits +0.16, CI +0.09 to +0.23). Summer HH +0.14, p 0.41.
+- Reading: still not settled; 9t lacks enough well-free pit-sized dips.
+- File: nisar/results/9t/v2/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_hollows_floor10_matched_9t_slc_5m.csv
+
 ## 2026-11-27 — Pit-sized dip export for review (9t)
 - All lidar dips with floor 10-300 m2, outline 75-500 m2, labelled by what they touch.
 - 666 dips: drawn_pit 340, near_well 125, near_pad 32, near_road 79, hollow 90. With the 30 m2 floor: 158 / 52 / 8 / 32 / 34.

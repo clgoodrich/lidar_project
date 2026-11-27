@@ -1,0 +1,376 @@
+{
+ "n_dates_by_track_season": [
+  {
+   "track": 26,
+   "direction": "D",
+   "season": "leafoff_fall",
+   "n": 2
+  },
+  {
+   "track": 26,
+   "direction": "D",
+   "season": "leafon",
+   "n": 4
+  },
+  {
+   "track": 90,
+   "direction": "A",
+   "season": "leafoff_fall",
+   "n": 2
+  },
+  {
+   "track": 90,
+   "direction": "A",
+   "season": "leafon",
+   "n": 8
+  },
+  {
+   "track": 162,
+   "direction": "A",
+   "season": "leafoff_fall",
+   "n": 3
+  },
+  {
+   "track": 162,
+   "direction": "A",
+   "season": "leafon",
+   "n": 8
+  }
+ ],
+ "registration": [
+  {
+   "track": 26,
+   "rho_unshifted": 0.04234681748776015,
+   "best_dx": 20,
+   "best_dy": -10,
+   "rho_best": 0.06340162435841368,
+   "peak_inside_search": false,
+   "applied": false
+  },
+  {
+   "track": 90,
+   "rho_unshifted": 0.015508359988845217,
+   "best_dx": -20,
+   "best_dy": -10,
+   "rho_best": 0.04145161596856403,
+   "peak_inside_search": false,
+   "applied": false
+  },
+  {
+   "track": 162,
+   "rho_unshifted": 0.003016405565423293,
+   "best_dx": -20,
+   "best_dy": -10,
+   "rho_best": 0.05270571145020993,
+   "peak_inside_search": false,
+   "applied": false
+  }
+ ],
+ "shift_applied_m": {
+  "26": [
+   0.0,
+   0.0
+  ],
+  "90": [
+   0.0,
+   0.0
+  ],
+  "162": [
+   0.0,
+   0.0
+  ]
+ },
+ "seasons": {
+  "leafoff_fall": [
+   "2026-10-21",
+   "2026-11-30"
+  ],
+  "leafon": [
+   "2026-06-01",
+   "2026-09-30"
+  ]
+ },
+ "n_decoys": 5,
+ "tile_median_change_leafon_minus_fall_db": {
+  "26_hh": 0.8463220596313477,
+  "26_hv": 0.8951196670532227,
+  "90_hh": 0.8128373622894287,
+  "90_hv": 0.7501468658447266,
+  "162_hh": 0.8603715896606445,
+  "162_hv": 0.843958854675293
+ },
+ "control": [
+  {
+   "track": 26,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -6.362359046936035,
+   "closed_median_db": -5.917522430419922,
+   "auc_closed_gt_open": 0.534855306148529
+  },
+  {
+   "track": 26,
+   "metric": "hh_leafon",
+   "open_median_db": -5.500448226928711,
+   "closed_median_db": -5.112380504608154,
+   "auc_closed_gt_open": 0.5355105400085449
+  },
+  {
+   "track": 26,
+   "metric": "hh_change_leafon_vs_fall",
+   "open_median_db": 0.8769237995147705,
+   "closed_median_db": 0.8374819159507751,
+   "auc_closed_gt_open": 0.4965311586856842
+  },
+  {
+   "track": 26,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -11.460724830627441,
+   "closed_median_db": -10.890044212341309,
+   "auc_closed_gt_open": 0.5449021458625793
+  },
+  {
+   "track": 26,
+   "metric": "hv_leafon",
+   "open_median_db": -10.450770378112793,
+   "closed_median_db": -10.125788688659668,
+   "auc_closed_gt_open": 0.5380117893218994
+  },
+  {
+   "track": 26,
+   "metric": "hv_change_leafon_vs_fall",
+   "open_median_db": 1.0946049690246582,
+   "closed_median_db": 0.8130197525024414,
+   "auc_closed_gt_open": 0.48123499751091003
+  },
+  {
+   "track": 90,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -5.607187271118164,
+   "closed_median_db": -5.7697529792785645,
+   "auc_closed_gt_open": 0.49691900610923767
+  },
+  {
+   "track": 90,
+   "metric": "hh_leafon",
+   "open_median_db": -4.833651542663574,
+   "closed_median_db": -4.974147796630859,
+   "auc_closed_gt_open": 0.4989617168903351
+  },
+  {
+   "track": 90,
+   "metric": "hh_change_leafon_vs_fall",
+   "open_median_db": 0.7834067344665527,
+   "closed_median_db": 0.8419904708862305,
+   "auc_closed_gt_open": 0.5014447569847107
+  },
+  {
+   "track": 90,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -11.182610511779785,
+   "closed_median_db": -11.064159393310547,
+   "auc_closed_gt_open": 0.5159580111503601
+  },
+  {
+   "track": 90,
+   "metric": "hv_leafon",
+   "open_median_db": -10.341084480285645,
+   "closed_median_db": -10.323927879333496,
+   "auc_closed_gt_open": 0.5175585150718689
+  },
+  {
+   "track": 90,
+   "metric": "hv_change_leafon_vs_fall",
+   "open_median_db": 0.7791604995727539,
+   "closed_median_db": 0.718297004699707,
+   "auc_closed_gt_open": 0.4979076385498047
+  },
+  {
+   "track": 162,
+   "metric": "hh_leafoff_fall",
+   "open_median_db": -6.864321708679199,
+   "closed_median_db": -6.846607208251953,
+   "auc_closed_gt_open": 0.5073569416999817
+  },
+  {
+   "track": 162,
+   "metric": "hh_leafon",
+   "open_median_db": -5.900139808654785,
+   "closed_median_db": -5.9450578689575195,
+   "auc_closed_gt_open": 0.5096083879470825
+  },
+  {
+   "track": 162,
+   "metric": "hh_change_leafon_vs_fall",
+   "open_median_db": 0.8011398315429688,
+   "closed_median_db": 0.8686888217926025,
+   "auc_closed_gt_open": 0.5050347447395325
+  },
+  {
+   "track": 162,
+   "metric": "hv_leafoff_fall",
+   "open_median_db": -11.862100601196289,
+   "closed_median_db": -11.734150886535645,
+   "auc_closed_gt_open": 0.5196025967597961
+  },
+  {
+   "track": 162,
+   "metric": "hv_leafon",
+   "open_median_db": -10.798771858215332,
+   "closed_median_db": -10.813865661621094,
+   "auc_closed_gt_open": 0.5129815340042114
+  },
+  {
+   "track": 162,
+   "metric": "hv_change_leafon_vs_fall",
+   "open_median_db": 0.8018794059753418,
+   "closed_median_db": 0.8896677494049072,
+   "auc_closed_gt_open": 0.5078974962234497
+  }
+ ],
+ "results": [
+  {
+   "features": "pad",
+   "metric": "hh_leafoff_fall",
+   "n": 636,
+   "median_feature_minus_ring_db": -0.21354037523269653,
+   "median_decoy_minus_ring_db": -0.060074787586927414,
+   "median_excess_db": -0.13635011576116085,
+   "excess_ci_lo": -0.1934884539106861,
+   "excess_ci_hi": -0.06921133399009705,
+   "auc_feature_gt_decoy": 0.4401038885116577,
+   "wilcoxon_p_excess": 2.0935536105663984e-05
+  },
+  {
+   "features": "pad",
+   "metric": "hh_leafon",
+   "n": 636,
+   "median_feature_minus_ring_db": -0.04180213063955307,
+   "median_decoy_minus_ring_db": -0.06006896495819092,
+   "median_excess_db": 0.024976445361971855,
+   "excess_ci_lo": -0.03332701325416565,
+   "excess_ci_hi": 0.0787807758897543,
+   "auc_feature_gt_decoy": 0.5126553773880005,
+   "wilcoxon_p_excess": 0.2411047839155026
+  },
+  {
+   "features": "pad",
+   "metric": "hh_change_leafon_vs_fall",
+   "n": 636,
+   "median_feature_minus_ring_db": 0.18687927722930908,
+   "median_decoy_minus_ring_db": -0.0011181036825291812,
+   "median_excess_db": 0.12091931025497615,
+   "excess_ci_lo": 0.0650012506172061,
+   "excess_ci_hi": 0.1886628987966103,
+   "auc_feature_gt_decoy": 0.5882090926170349,
+   "wilcoxon_p_excess": 8.214611843797478e-10
+  },
+  {
+   "features": "pad",
+   "metric": "hv_leafoff_fall",
+   "n": 636,
+   "median_feature_minus_ring_db": -0.14145278930664062,
+   "median_decoy_minus_ring_db": -0.06328392028808594,
+   "median_excess_db": -0.09015242382884026,
+   "excess_ci_lo": -0.14945698641240596,
+   "excess_ci_hi": -0.023662082850933075,
+   "auc_feature_gt_decoy": 0.4553745985031128,
+   "wilcoxon_p_excess": 0.000334208922737687
+  },
+  {
+   "features": "pad",
+   "metric": "hv_leafon",
+   "n": 636,
+   "median_feature_minus_ring_db": -0.01060358714312315,
+   "median_decoy_minus_ring_db": -0.03867276385426521,
+   "median_excess_db": 0.021346886816900223,
+   "excess_ci_lo": -0.01866118609905243,
+   "excess_ci_hi": 0.05104668810963631,
+   "auc_feature_gt_decoy": 0.5146651864051819,
+   "wilcoxon_p_excess": 0.3711182089022079
+  },
+  {
+   "features": "pad",
+   "metric": "hv_change_leafon_vs_fall",
+   "n": 636,
+   "median_feature_minus_ring_db": 0.13750045001506805,
+   "median_decoy_minus_ring_db": 0.020322004333138466,
+   "median_excess_db": 0.07747770100831985,
+   "excess_ci_lo": 0.031137600541114807,
+   "excess_ci_hi": 0.13710706131532785,
+   "auc_feature_gt_decoy": 0.5638524889945984,
+   "wilcoxon_p_excess": 1.1092025307449561e-06
+  },
+  {
+   "features": "pit",
+   "metric": "hh_leafoff_fall",
+   "n": 89,
+   "median_feature_minus_ring_db": -0.17642855644226074,
+   "median_decoy_minus_ring_db": -0.37706851959228516,
+   "median_excess_db": 0.11287927627563477,
+   "excess_ci_lo": -0.22453534603118896,
+   "excess_ci_hi": 0.47826941311359406,
+   "auc_feature_gt_decoy": 0.536831796169281,
+   "wilcoxon_p_excess": 0.5598850251803824
+  },
+  {
+   "features": "pit",
+   "metric": "hh_leafon",
+   "n": 89,
+   "median_feature_minus_ring_db": -0.1901802271604538,
+   "median_decoy_minus_ring_db": -0.3894317150115967,
+   "median_excess_db": 0.13543939590454102,
+   "excess_ci_lo": -0.1441657580435276,
+   "excess_ci_hi": 0.46127327680585717,
+   "auc_feature_gt_decoy": 0.5387601852416992,
+   "wilcoxon_p_excess": 0.4050802507898902
+  },
+  {
+   "features": "pit",
+   "metric": "hh_change_leafon_vs_fall",
+   "n": 89,
+   "median_feature_minus_ring_db": 0.036676883697509766,
+   "median_decoy_minus_ring_db": 0.11476127058267593,
+   "median_excess_db": -0.03645479679107666,
+   "excess_ci_lo": -0.2718256264925003,
+   "excess_ci_hi": 0.21796926856040955,
+   "auc_feature_gt_decoy": 0.4818347692489624,
+   "wilcoxon_p_excess": 0.8587448291879515
+  },
+  {
+   "features": "pit",
+   "metric": "hv_leafoff_fall",
+   "n": 89,
+   "median_feature_minus_ring_db": -0.45239195227622986,
+   "median_decoy_minus_ring_db": -0.4161122739315033,
+   "median_excess_db": -0.1650935709476471,
+   "excess_ci_lo": -0.5869064927101135,
+   "excess_ci_hi": 0.312088318169117,
+   "auc_feature_gt_decoy": 0.483480304479599,
+   "wilcoxon_p_excess": 0.2596760655239829
+  },
+  {
+   "features": "pit",
+   "metric": "hv_leafon",
+   "n": 89,
+   "median_feature_minus_ring_db": -0.05588531494140625,
+   "median_decoy_minus_ring_db": -0.2332804948091507,
+   "median_excess_db": 0.09496274590492249,
+   "excess_ci_lo": -0.2862324621528387,
+   "excess_ci_hi": 0.4093014393001795,
+   "auc_feature_gt_decoy": 0.5359319448471069,
+   "wilcoxon_p_excess": 0.4752677748734929
+  },
+  {
+   "features": "pit",
+   "metric": "hv_change_leafon_vs_fall",
+   "n": 89,
+   "median_feature_minus_ring_db": 0.5453982353210449,
+   "median_decoy_minus_ring_db": 0.17905299365520477,
+   "median_excess_db": 0.3432561457157135,
+   "excess_ci_lo": -0.046737343072891235,
+   "excess_ci_hi": 0.6879046708345413,
+   "auc_feature_gt_decoy": 0.5608206987380981,
+   "wilcoxon_p_excess": 0.06960110473574711
+  }
+ ]
+}

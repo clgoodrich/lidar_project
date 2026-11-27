@@ -80,6 +80,10 @@ Branch 1 (baseline) files in `nisar/results/9t/` are not touched. Branch 2 outpu
 - Reading: hollows do not show the pit HV excess, but 34 hollows give a CI that still contains +0.16. Not settled. Most closed depressions of pit size on 9t are the drawn pits, so a bigger hollow set needs another tile.
 - Results: `nisar/results/9t/v2/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_hollows_matched_9t_slc_5m.csv` (the "pit" rows are the hollows).
 - Files: `nisar/code/s5_eval/_nisar_hollows_9t.py`, `nisar/derived/9t/nisar_hollows_polygons_9t.gpkg`.
+- Check (27 Nov): the same dip finder finds 395 of 506 drawn pits (in the DEM), but only 158 pass the 30 m2 floor. Median pit dip floor is 25 m2. So the 34 hollows were larger than a typical pit. `nisar/results/9t/v2/nisar_hollows_pit_overlap_9t.csv`.
+- Rerun with floor 10 m2 (pit-sized): 90 hollows (89 scored). Summer HV +0.09 dB, 95% CI -0.29 to +0.41, p 0.48. Pits +0.16 (CI +0.09 to +0.23).
+- Reading: still not settled. The hollow CI contains both 0 and the pit value. 9t has too few well-free pit-sized dips to answer this.
+- Files: `nisar/code/s5_eval/_nisar_dips_export_9t.py`, `nisar/derived/9t/nisar_dips_by_category_9t.gpkg`, `nisar/derived/9t/nisar_hollows_floor10_polygons_9t.gpkg`, `nisar/results/9t/v2/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_hollows_floor10_matched_9t_slc_5m.csv`.
 
 ## Overall reading (for the write-up)
 
@@ -105,4 +109,6 @@ python nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py --slc --v2 --
 python nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py --slc --v2 --match
 python nisar/code/s5_eval/_nisar_hollows_9t.py
 python nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py --slc --v2 --match --pits-file nisar/derived/9t/nisar_hollows_polygons_9t.gpkg --tag hollows
+python nisar/code/s5_eval/_nisar_dips_export_9t.py
+python nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py --slc --v2 --match --pits-file nisar/derived/9t/nisar_hollows_floor10_polygons_9t.gpkg --tag hollows_floor10
 ```

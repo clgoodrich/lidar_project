@@ -12,6 +12,7 @@ Method
 
 Output
   nisar/derived/9t/nisar_dips_by_category_9t.gpkg   (EPSG:6346, layer "dips")
+  nisar/derived/9t/nisar_hollows_floor10_polygons_9t.gpkg   (hollows also 20 m from drawn pits)
 
 Run
   python nisar/code/s5_eval/_nisar_dips_export_9t.py
@@ -33,6 +34,7 @@ sys.path.insert(0, str(HERE))
 h = importlib.import_module("_nisar_hollows_9t")
 st, A = h.st, h.A
 OUT = A.NISAR_DERIVED / "nisar_dips_by_category_9t.gpkg"
+HOLLOWS = A.NISAR_DERIVED / "nisar_hollows_floor10_polygons_9t.gpkg"  # pit-sized hollows for the radar test
 FLOOR_MIN = 10
 
 
@@ -69,6 +71,12 @@ def main():
     d["outline_m2"] = d.area.round(1)
     d.insert(0, "dip_id", np.arange(len(d)))
     d.to_file(OUT, layer="dips", driver="GPKG")
+    pits20 = st.read_layer(st.ANN, "pit_outside").to_crs(crs).buffer(20).union_all()
+    hol = d[(d.category == "hollow") & ~d.intersects(pits20)].copy()  # same 20 m pit gap as the first hollow run
+    hol["hollow_id"] = np.arange(len(hol))
+    hol["area_m2"] = hol.outline_m2
+    hol[["hollow_id", "area_m2", "floor_m2", "max_depth_m", "geometry"]].to_file(HOLLOWS, driver="GPKG")
+    print(f"{len(hol)} hollows (20 m from pits) -> {HOLLOWS}")
     print(d.category.value_counts().to_dict(), "| floor>=30:", d.groupby("category").floor_ge30.sum().to_dict())
     print("->", OUT)
 
