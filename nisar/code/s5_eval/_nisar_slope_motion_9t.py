@@ -178,9 +178,13 @@ def main():
     spread = pd.DataFrame(spread)
     print(spread.to_string())
 
-    # aspect test on steep slopes. Ascending, right-looking: the radar looks east from the west.
-    # Downslope creep on a west-facing slope moves toward the satellite (positive), on an
-    # east-facing slope away from it (negative). North- and south-facing creep is mostly unseen.
+    # aspect test on steep slopes. NISAR is LEFT-looking (RSLC identification/lookDirection = 'Left');
+    # on ascending tracks 090 and 162 the target-to-sensor vector points east (losUnitVectorX +0.60,
+    # +0.69), so the radar sits east and looks west. Fixed 2026-11-26 (was "right-looking").
+    # Downslope creep on an east-facing slope moves toward the satellite (positive), on a
+    # west-facing slope away from it (negative). Real creep must flip sign between the two;
+    # one sign on every aspect points to a stratified troposphere or a phase-centre shift.
+    # North- and south-facing creep is mostly unseen.
     with rasterio.open(DEM) as r:
         dem = np.full(shp25, np.nan, np.float32)
         reproject(r.read(1, masked=True).filled(np.nan).astype(np.float32), dem, src_transform=r.transform,

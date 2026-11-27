@@ -112,13 +112,13 @@ def main():
 
     x0, y1 = tf.c, tf.f
     x1, y0 = x0 + shape[1] * 5, y1 - shape[0] * 5
-    w = gpd.read_file(WELLS).to_crs(CRS).cx[x0 - 500:x1 + 500, y0 - 500:y1 + 500].reset_index(drop=True)
+    w = gpd.read_file(WELLS).pipe(AREA.to_radar).cx[x0 - 500:x1 + 500, y0 - 500:y1 + 500].reset_index(drop=True)
     d, j = cKDTree(np.c_[w.geometry.x, w.geometry.y]).query(np.c_[g.geometry.x, g.geometry.y])
     g["well_dist_m"] = d.round(1)
     g["well_permit"] = w.PERMIT_NUM.values[j]
     g["well_status"] = w.WELL_STATU.values[j]
-    pads = read_layer(ANN, "plat").to_crs(CRS).union_all()
-    roads = read_layer(ANN, "roads").to_crs(CRS).union_all()
+    pads = read_layer(ANN, "plat").pipe(AREA.to_radar).union_all()
+    roads = read_layer(ANN, "roads").pipe(AREA.to_radar).union_all()
     g["pad_dist_m"] = g.geometry.distance(pads).round(1)
     g["road_dist_m"] = g.geometry.distance(roads).round(1)
 

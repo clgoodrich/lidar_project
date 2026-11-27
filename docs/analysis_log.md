@@ -7,6 +7,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — NISAR 9t: fixes from outside review, reruns
+- Datum: vectors were ~1.29 m off the radar grid (PROJ null NAD83(2011)→WGS84). New `nisar/code/_nisar_area.py` `to_radar()` (6346→6319→7912 @2026.7→32617, shift −0.80 E +1.01 N). Used in steel, steel-pads, bright-targets, seasonal, pad-change.
+- D_A: ddof=1 and per-date scaling to track median amplitude. Pixel index floor. Seasonal JSON `n_decoys` fixed. Slope comment fixed (NISAR is left-looking; result now read as troposphere, not creep).
+- Processor step: new `nisar/code/s5_eval/_nisar_processor_step_9t.py` → `nisar/results/9t/nisar_processor_step_summary_9t_slc.json`. P05023→P05036 excess step t26 HH −0.38, t162 −0.27 dB, same on open and forest (scalar). t90 Oct 18 is a dark outlier date.
+- Reruns: SBT pixels 1274/1292/507 → 1180/1168/450. Pads any track 19.3% vs controls 16.6%, p 0.12 (was 20.0/18.7, 0.43). 4 of 36 pad comparisons p<0.05; none survives Bonferroni. Abandoned brightness AUC 0.57 p 0.003 (was 0.55, 0.031). Pad coherence 220 vs 182.0, swap p 0.007 (was 211, 0.022); 46% of events on active-well pads vs 35% of pads.
+- Docs: spec κ (geocoder is bare earth), pad-coherence 5x5 / 2000 perms, limits and errors updated; write-up tables updated.
+
 ## 2026-11-26 — Lidar methodology brief and appendix; poster Figure 5 probability maps
 - New `docs/lidar_methodology_brief.md` (terse, for another LLM) and generated `docs/lidar_methodology_appendix.md` (0.4 MB: tile index, raster profiles, checkpoint contents, annotation schemas, fold tables, result files verbatim, run order, full source of 27 scripts). Generator `notebooks/wellsight_v2/s7_analysis/_lidar_methodology_appendix.py`.
 - Found while writing: LRM and roughness windows are in cells, so `lrm_25` is 12.5 m and `lrm_5` 2.5 m at 0.5 m (poster said 25 m and 5 m, fixed). `roughness_11` is roughness_5. Pit CV5 transfer to 613590 already scored: F2 recall 0.911 (sd 0.045) on 153 drawn floors vs 0.928 on 9t. Now quoted on the poster.

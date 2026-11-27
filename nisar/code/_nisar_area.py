@@ -122,3 +122,30 @@ def wells(crs: str = "EPSG:32617", pad_m: float = 0.0):
     x0, y0, x1, y1 = bounds(crs)
     w = gpd.read_file(WELLS).to_crs(crs)
     return w.cx[x0 - pad_m:x1 + pad_m, y0 - pad_m:y1 + pad_m].reset_index(drop=True)
+
+
+RADAR_EPOCH = 2026.7   # mid-stack decimal year for the NAD83(2011) -> ITRF2014 step
+
+
+def radar_shift(x: float, y: float) -> tuple[float, float]:
+    """(dx, dy) in m that moves a NAD83(2011) UTM 17N point onto the radar grid. Set 2026-11-26.
+
+    The radar grid is WGS84 / UTM 17N, with WGS84 taken as ITRF2014, the same as the re-geocoder.
+    PROJ's plain EPSG:6346 -> EPSG:32617 route is a null transform, so it leaves about 1.2 m out.
+    Route: 6346 -> 6319 (3-D) -> 7912 at RADAR_EPOCH -> 32617. Uniform to mm across one tile.
+    """
+    from pyproj import Transformer
+    lon, lat = Transformer.from_crs("EPSG:6346", "EPSG:6318", always_xy=True).transform(x, y)
+    lo, la, _, _ = Transformer.from_crs("EPSG:6319", "EPSG:7912", always_xy=True).transform(
+        lon, lat, 0.0, RADAR_EPOCH)
+    X, Y = Transformer.from_crs("EPSG:4326", "EPSG:32617", always_xy=True).transform(lo, la)
+    return X - x, Y - y
+
+
+def to_radar(gdf):
+    """Reproject a vector layer onto the radar grid with the NAD83(2011) -> ITRF2014 shift."""
+    g = gdf.to_crs("EPSG:6346")
+    x0, y0, x1, y1 = g.total_bounds
+    dx, dy = radar_shift((x0 + x1) / 2, (y0 + y1) / 2)
+    g = g.set_geometry(g.geometry.translate(dx, dy))
+    return g.set_crs("EPSG:32617", allow_override=True)

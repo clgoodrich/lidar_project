@@ -26,7 +26,7 @@ from _common import path_for  # noqa: E402
 
 OUT = N / "docs" / "nisar_pipeline_appendix_9t.md"
 SCRIPTS = [
-    "nisar/code/_nisar_area.py", "nisar/code/_nisar_fig_style.py", "notebooks/wellsight_v2/_common.py",
+    "nisar/code/_nisar_area.py", "nisar/code/s5_eval/_nisar_processor_step_9t.py", "nisar/code/_nisar_fig_style.py", "notebooks/wellsight_v2/_common.py",
     "nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py", "nisar/code/s1_build/_fetch_nisar_rslc_window_9t.py",
     "nisar/code/s1_build/_nisar_geometry.py", "nisar/code/s1_build/_nisar_regeocode_lidar_9t.py",
     "nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py", "nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py",
@@ -37,7 +37,7 @@ SCRIPTS = [
     "nisar/code/s7_analysis/_nisar_steel_pads_fig_9t.py", "nisar/code/s7_analysis/_nisar_pipeline_appendix_9t.py",
 ]
 RESULTS = [
-    "nisar_lidar_sim_match_summary_coregabs_k010_9t.json", "nisar_steel_summary_9t_slc.json",
+    "nisar_processor_step_summary_9t_slc.json", "nisar_lidar_sim_match_summary_coregabs_k010_9t.json", "nisar_steel_summary_9t_slc.json",
     "nisar_steel_pads_summary_9t_slc.json", "nisar_bright_targets_summary_9t_slc.json",
     "nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_9t_slc_5m.json", "nisar_pad_change_summary_9t_slc.json",
     "nisar_gslc_interferogram_pits_vs_decoys_win3_9t_slc_5m_summary.json", "nisar_slope_motion_summary_9t_slc.json",
@@ -61,6 +61,7 @@ RUN = [
     "python nisar/code/s5_eval/_nisar_steel_pads_9t.py --slc",
     "python nisar/code/s5_eval/_nisar_bright_targets_9t.py --slc",
     "python nisar/code/s5_eval/_nisar_pad_change_9t.py --slc",
+    "python nisar/code/s5_eval/_nisar_processor_step_9t.py --slc",
     "python nisar/code/s5_eval/_nisar_pit_pool_9t.py",
     "python nisar/code/s5_eval/_nisar_slope_motion_9t.py --slc",
     "python nisar/code/s7_analysis/_nisar_naip_chips_9t.py",

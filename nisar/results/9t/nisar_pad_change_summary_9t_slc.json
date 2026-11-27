@@ -10,37 +10,24 @@
     "fa_rate": 0.01,
     "seed": 20261007
   },
-  "n_pads_used": 649,
-  "n_pairs": 23,
+  "n_pads_used": 650,
+  "n_pairs": 28,
   "by_season": [
     {
       "season": "snowfree",
-      "threshold": -0.18,
-      "n_pad_pairs": 13629,
-      "pad_events": 169,
-      "expected_from_decoys": 136.4,
+      "threshold": -0.192,
+      "n_pad_pairs": 18200,
+      "pad_events": 220,
+      "expected_from_decoys": 182.0,
       "decoy_rate": 0.01,
-      "p_naive_binomial": 0.0037,
-      "p_swap_test": 0.0009995002498750624,
-      "excess_rate": 0.0024,
-      "excess_rate_null_95": 0.0012,
-      "n_units": 649
-    },
-    {
-      "season": "winter",
-      "threshold": -0.175,
-      "n_pad_pairs": 1298,
-      "pad_events": 13,
-      "expected_from_decoys": 13.1,
-      "decoy_rate": 0.0101,
-      "p_naive_binomial": 0.55,
-      "p_swap_test": 0.5102448775612194,
-      "excess_rate": -0.0001,
-      "excess_rate_null_95": 0.0045,
-      "n_units": 649
+      "p_naive_binomial": 0.0033,
+      "p_swap_test": 0.0069965017491254375,
+      "excess_rate": 0.0021,
+      "excess_rate_null_95": 0.0013,
+      "n_units": 650
     }
   ],
-  "pads_with_2plus_events": 29,
+  "pads_with_2plus_events": 42,
   "plugged_121_39189_pad": null,
   "plugged_121_39189_pad_events": null
 }

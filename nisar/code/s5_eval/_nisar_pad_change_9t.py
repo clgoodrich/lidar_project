@@ -109,9 +109,9 @@ def main():
     in_tile = np.isfinite(cover)
     ok_flat = in_tile.ravel()
 
-    pads = read_layer(ANN, "plat").to_crs(CRS).reset_index(drop=True)
-    pits = read_layer(ANN, "pit_outside").to_crs(CRS)
-    roads = read_layer(ANN, "roads").to_crs(CRS)
+    pads = read_layer(ANN, "plat").pipe(AREA.to_radar).reset_index(drop=True)
+    pits = read_layer(ANN, "pit_outside").pipe(AREA.to_radar)
+    roads = read_layer(ANN, "roads").pipe(AREA.to_radar)
     feat = rasterize([(g, 1) for g in pd.concat([pads.buffer(20), pits.buffer(20), roads.buffer(20)])],
                      out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
     bg_flat = (in_tile & ~feat).ravel()
@@ -126,7 +126,7 @@ def main():
         sets.append((i, core, rg, dec))
     print(f"{len(sets)} of {len(pads)} pads usable inside the window")
 
-    wells = gpd.read_file(WELLS).to_crs(CRS)
+    wells = gpd.read_file(WELLS).pipe(AREA.to_radar)
     j = gpd.sjoin(wells[["PERMIT_NUM", "WELL_STATU", "DATE_PLUGG", "geometry"]],
                   gpd.GeoDataFrame(geometry=pads.buffer(10), crs=CRS).reset_index(names="pad"), predicate="within")
     wells_on = j.groupby("pad").agg(n_dep_wells=("PERMIT_NUM", "size"),

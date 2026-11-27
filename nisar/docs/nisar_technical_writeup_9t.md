@@ -77,7 +77,7 @@ The work measures contrasts at known sites. It does not predict, rank or discove
 
 - NASA's images sat 8 to 12 m off the lidar on all three tracks. The offset always pointed away from the satellite and grew under taller canopy.
 - That pattern is what a too-high elevation model produces. NASA's elevation model sits partway up the canopy in forest.
-- A new geocoder placed each image on the lidar ground plus 10% of canopy height. Lidar heights were converted from NAVD88 to WGS84 ellipsoid height with NOAA Geoid12B first, so no geoid offset (about −33 m here) is left for the cross-correlation to absorb. Heights of 0, 10, 25 and 50% were tested, and 10% matched best.
+- A new geocoder placed each image on the lidar bare-earth ground (no canopy term; the 10% canopy setting is used only in the brightness-simulation check). Lidar heights were converted from NAVD88 to WGS84 ellipsoid height with NOAA Geoid12B first, so no geoid offset (about −33 m here) is left for the cross-correlation to absorb. Heights of 0, 10, 25 and 50% were tested, and 10% matched best.
 - The remaining shift was solved for each date and track. Radar brightness was simulated from lidar slope facing the satellite, and the simulation was cross-correlated with each image in 48 blocks (16 blocks × 3 tracks).
 - Pass rule: a block agrees within 2.5 m, half a 5 m pixel, so a target stays in its own pixel. The rule was set in the plan, not fitted.
 - Result: 47 of 48 blocks pass. The median block offset is 1.0 to 1.4 m per track.
@@ -131,7 +131,7 @@ Persistent-scatterer analysis has two steps. Step 1 picks steady, bright pixels.
 
 - **Pool pits** were defined from lidar before looking at the radar: at least half the floor flat, with weak lidar returns.
 - **Pad coherence events** are pairs whose drop is reached by only 1% of control-spot pairs. A swap test gives the p-value. Each unit is one pad and its five control spots, as whole time series over the same date pairs. Each permutation picks which series is the pad, so shared dates and repeated pads sit inside the null. Spatial correlation between neighbouring pads is not modelled.
-- **Coherence window.** Coherence and phase use a 3 × 3 window, 15 m and 9 looks. That is wider than most pits, so pit phase mixes with rim and forest. A 9-look estimator is biased upward, to about 0.3 for pure noise.
+- **Coherence window.** Pit coherence and phase use a 3 × 3 window, 15 m and 9 looks. That is wider than most pits, so pit phase mixes with rim and forest. A 9-look estimator is biased upward, to about 0.3 for pure noise. Pad coherence uses a 5 × 5 window, 25 m and 25 looks, with 2000 swap permutations.
 - **Rings exclude neighbours.** Pad rings stay 10 m clear of other pads. Pit rings stay 5 m clear of every pit and road.
 
 ## 5. Findings
@@ -150,7 +150,7 @@ Persistent-scatterer analysis has two steps. Step 1 picks steady, bright pixels.
 - Active wells do no better than plugged ones. This comparison trusts DEP status, which may be stale. Stripper or idle wells can be listed active, and plugged wells can keep tanks or rusted hardware.
 - Control spots stay 60 m from mapped wells and 30 m from mapped pads. Undocumented historic wells can still fall in the control pool, which would push any contrast toward zero.
 - **Open against canopy.** Splitting at 30% canopy cover changes nothing. Under canopy, plugged and abandoned wells have zero hits. In the open, abandoned wells hit 2.9% against 1.5% at control spots, on 69 wells, which is about two wells.
-- **Brightness alone.** Abandoned wells are slightly brighter than their control spots (AUC 0.55, p = 0.031). It is one of several comparisons, and the steadiness rule does not support it, so it is a lead, not a finding.
+- **Brightness alone.** Abandoned wells are slightly brighter than their control spots (AUC 0.57, p = 0.003). It is one of several comparisons, and the steadiness rule does not support it, so it is a lead, not a finding.
 - **The building passes.** A steady bright pixel sits 2.5 m from it on track 162. A target seen on two tracks sits 9 m away. But the building is in the open and far larger than a wellhead. It shows the screen works, not that L-band sees a casing through trees.
 
 ### 5.1a Steel at lidar pads instead of DEP points (2026-11-25)
@@ -159,17 +159,20 @@ The same steady-bright pixels, tested against lidar pad polygons. Each pad has a
 
 | Dates | Pads | Pads hit, any track | Controls hit | p (Fisher) | Pads hit, 2+ tracks | Controls, 2+ tracks |
 |---|---|---|---|---|---|---|
-| All post-June | 649 | 20.0% | 18.7% | 0.43 | 2.8% | 2.2% |
-| Summer only (leaf-on) | 649 | 22.5% | 21.0% | 0.39 | 4.2% | 3.4% |
+| All post-June | 649 | 19.3% | 16.6% | 0.12 | 2.5% | 2.0% |
+| Summer only (leaf-on) | 649 | 19.9% | 16.8% | 0.074 | 2.9% | 2.5% |
 
 | Subgroup, all post-June | Pads | Pads hit | Controls hit | p |
 |---|---|---|---|---|
-| Open (cover < 0.30) | 60 | 21.7% | 18.5% | 0.58 |
-| Canopy | 589 | 19.9% | 18.7% | 0.52 |
-| Large third | 216 | 20.8% | 21.8% | 0.78 |
-| Active DEP well inside | 230 | 19.1% | 15.2% | 0.16 |
-| Plugged or abandoned only | 75 | 20.0% | 18.2% | 0.74 |
-| No DEP well inside | 344 | 20.6% | 20.6% | 1.00 |
+| Open (cover < 0.30) | 60 | 23.3% | 15.3% | 0.17 |
+| Canopy | 589 | 18.8% | 16.7% | 0.22 |
+| Large third | 216 | 20.8% | 18.4% | 0.44 |
+| Active DEP well inside | 230 | 18.7% | 12.8% | 0.025 |
+| Plugged or abandoned only | 75 | 17.3% | 19.6% | 0.74 |
+| No DEP well inside | 344 | 20.1% | 18.2% | 0.44 |
+
+Rerun 2026-11-26 after fixes: vector layers now shifted onto the radar datum (NAD83(2011) → ITRF2014, about 1.3 m), D_A uses N−1 and per-date amplitude scaling. Of 36 pad comparisons, 4 have p < 0.05 (about 2 expected by chance). None survives a Bonferroni correction (smallest p 0.0094 against a cutoff of 0.0014). Controls still hit about 17% of the time, so this test cannot detect hardware on the ~5% of pads that carry it.
+
 
 - With DEP coordinate error removed, pads still sit at chance. No subgroup differs at p < 0.05 on the main measure.
 - The leaf-on run, which leaf drop cannot penalise, gives the same answer.
@@ -224,7 +227,7 @@ The 40 strongest targets (all on 2 or 3 tracks, ranked by brightness) were inspe
 
 | Pad date pairs | Events | Expected from control spots | Swap-test p |
 |---|---|---|---|
-| 18,172 | 211 | 181.9 | 0.022 |
+| 18,200 | 220 | 182.0 | 0.007 |
 
 Pads lose coherence slightly more often than background. No dated well activity exists to explain it. Vegetation, traffic and weather are all plausible.
 

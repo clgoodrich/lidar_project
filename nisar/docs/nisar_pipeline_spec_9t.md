@@ -95,7 +95,7 @@ Tracks over 9t (all tracks; none excluded):
 - Why: NASA GSLC 8–12 m off lidar on all tracks, away from satellite, grows with canopy → NASA DEM sits in canopy.
 - Per output pixel: x,y → lon,lat → height → ECEF → zero-Doppler time + slant range from orbit → timing corrections (`.../processingInformation/timingCorrections/frequencyA`) → fractional RSLC row/col → 8-tap sinc interp, azimuth Doppler carrier removed/restored → range phase flattening.
 - `CONV = dict(corr=("iono",), carrier=True, sign=+1, dem="isce_spline", dem_half_pixel=0.5)` (from V1 sweep).
-- Heights: lidar bare earth NAVD88 → WGS84 ellipsoid via Geoid12B (~−33 m) + κ × CHM. κ tested 0, 0.10, 0.25, 0.50 → 0.10 best.
+- Heights: lidar bare earth NAVD88 → WGS84 ellipsoid via Geoid12B (~−33 m). The re-geocoder uses bare earth only (κ = 0; `lidar_heights()` never loads the CHM). κ × CHM (tested 0, 0.10, 0.25, 0.50; 0.10 best) is used only in the simulation match below. Corrected 2026-11-26.
 - V1 check: `--heights nisar_dem` must reproduce NASA GSLC first.
 - Coreg: per-date offsets within track (`--estimate-offsets`, `--coreg`), then per-track absolute offset to lidar (`--track-offsets _coreg_k010`, `--absolute`).
 - Out: `nisar/derived/9t/nisar_slc_lidar_5m/nisar_slc_lidar_<date>_t<trk><dir>_9t.tif` + `nisar_slc_lidar_index_9t.csv` (cols: file,date,collection,cycle,track,direction,frame,granule,x_first_centre,y_first_centre,spacing_m,ncols,nrows,range_bandwidth_hz,centre_frequency_hz,valid_fraction,native_epsg,rslc,heights,lidar_fill_share,nasa_minus_used_height_median_m,coreg,coreg_slant_m,coreg_az_s,absolute,track_slant_m,track_az_s,bad_granule,seconds). Offsets: `nisar/results/9t/nisar_slc_date_offsets_9t.csv`, `nisar_slc_track_offsets_9t.csv`.
@@ -112,7 +112,7 @@ Tracks over 9t (all tracks; none excluded):
 - Per track, HH amplitude A over dates:
   - D_A = std(A)/mean(A). `DA_MAX`=0.25 (Ferretti 2001; speckle ~0.52).
   - mean dB = 10log10(mean A²); background = median filter, size `int(BG_M/5)|1` = 51 px (`BG_M`=250 m); bright = mdb − bg.
-  - cut = `BRIGHT_SD`(3) × 1.4826 × MAD(bright). Cuts: t26 7.217, t90 7.016, t162 6.484 dB.
+  - cut = `BRIGHT_SD`(3) × 1.4826 × MAD(bright). Cuts (2026-11-26 rerun): t26 7.178, t90 7.001, t162 6.474 dB. D_A uses ddof=1 after scaling each date to the track's median tile amplitude.
   - SBT = ok & D_A < 0.25 & bright >= cut.
 - Hit: SBT within `R_M`=6 m (3.5 m pixel half-diagonal + 2.5 m placement) of well point, via max filter, circular footprint. Score = #tracks 0–3.
 - Decoys: `N_DECOY`=5/well, 150–600 m, >= 60 m from wells & pads, canopy within ±0.15. `SEED`=20261007.
@@ -142,8 +142,8 @@ Tracks over 9t (all tracks; none excluded):
 - Out: `nisar/results/9t/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_9t_slc_5m.csv`, fig `nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change_9t_slc_5m.png`; sensitivity figs `_sens_*`, `_swap40_*`.
 
 ### S5e Pad coherence events — `nisar/code/s5_eval/_nisar_pad_change_9t.py --slc`
-- Back-to-back pairs, 3x3 window (15 m, 9 looks; noise-floor coherence ~0.3). Event = drop exceeded by only 1% of control pairs (fa 0.01).
-- Swap test: unit = pad + its 5 controls, whole series over same pairs; `N_PERM`=5000. Spatial correlation not modelled.
+- Back-to-back pairs, 5x5 window (`WIN`=5; 25 m, 25 looks). Event = drop exceeded by only 1% of control pairs (fa 0.01).
+- Swap test: unit = pad + its 5 controls, whole series over same pairs; `N_PERM`=2000. Spatial correlation not modelled.
 - Out: `nisar/results/9t/nisar_pad_change_by_season_9t_slc.csv`, `nisar_pad_change_events_9t*.gpkg`, figs `nisar_pad_change_anomaly_hist_9t_slc.png`, `nisar_pad_change_top_events_9t_slc.png`.
 
 ### S5f Pit interferograms — `nisar/code/s5_eval/_nisar_gslc_interferogram_pits_9t.py --slc`
@@ -180,12 +180,12 @@ Steel at DEP points (6 m, any track):
 | plugged | 271 | 0.4% | 0.9% | 0.71 |
 | abandoned | 174 | 1.1% | 1.2% | 1.00 |
 | not_drilled | 10 | 0% | 4.0% | 1.00 |
-- 0 wells hit on 2+ tracks. Open abandoned 2.9% vs 1.5% (n=69, ~2 wells). Brightness-only abandoned AUC 0.55 p=0.031 (lead). Building check 41.502787,-79.519712: SBT 2.5 m on t162.
+- 0 wells hit on 2+ tracks. Open abandoned 2.9% vs 1.5% (n=69, ~2 wells). Brightness-only abandoned AUC 0.57 p=0.003 (lead; one of many comparisons). Building check 41.502787,-79.519712: SBT 2.5 m on t162.
 
 Steel at lidar pads:
 | Dates | pads | pads hit | ctrl hit | p | pads 2+ | ctrl 2+ |
 |---|---|---|---|---|---|---|
-| all post-June | 649 | 20.0% | 18.7% | 0.43 | 2.8% | 2.2% |
+| all post-June | 649 | 19.3% | 16.6% | 0.12 | 2.5% | 2.0% |
 | summer | 649 | 22.5% | 21.0% | 0.39 | 4.2% | 3.4% |
 - Subgroups none p<0.05. Active-well pads 19.1 vs 15.2 (p 0.16). Large pads 2+ tracks 4.6 vs 2.2 (p 0.06).
 
@@ -195,7 +195,7 @@ Top 40 targets (visual, NAIP+RRIM): building 9, metal_yard 8, oilfield 2 (T24 ta
 
 Pad/pit brightness excess (dB, 95% CI, p): pits summer HV +0.18 (+0.09,+0.26) <0.001; pits summer HH +0.03 ns; pits fall HV +0.14 p 0.08; pads fall HH −0.13 (−0.21,−0.02) <0.001; pads fall HV −0.11 <0.001; pads summer−fall HH +0.15 <0.001.
 
-Pad coherence: 18,172 pairs, 211 events vs 181.9 expected, swap p 0.022.
+Pad coherence: 18,200 pairs, 220 events vs 182.0 expected, swap p 0.007. 46% of events fall on pads with an active DEP well, against 35% of pads. Decoys are not matched on canopy or slope.
 Pool pits: +0.17–0.27 dB, all p >= 0.35.
 Pit motion: −0.24 mm (−0.43,−0.02) over 28 pairs; per-pair noise ~5.6 mm; within soil-moisture phase (De Zan 2014).
 Slope motion: t90 vs t162 r=0.33 (0.20–0.45); t162 coherent over 39% of tile.
@@ -209,6 +209,9 @@ Slope motion: t90 vs t162 r=0.33 (0.20–0.45); t162 coherent over 39% of tile.
 - Placement check not independent.
 - 2019 lidar, 2022 leaf-on NAIP.
 - Undocumented wells may sit in control pools (biases toward null).
+- Processor version is confounded with season: 2026-06-20..10-18 all P05023 (provisional), 10-23..11-16 all P05036 (standard). Measured step (`_nisar_processor_step_9t.py`, excess over prior same-version 12-day step): t26 HH −0.38, t162 HH −0.27 dB, equal on open and closed ground → scalar gain; cancels in feature-minus-ring contrasts, removed from D_A by per-date scaling. t90 Oct 18 is itself a dark outlier (−1.0 dB vs Oct 6), so its +2.7 dB "step" is that date, not the version.
+- Pad controls hit ~17% (per-pixel SBT false alarms × ~70 px per pad); test cannot resolve a 3–6% hardware rate. Controls pooled across pads (unequal yield, 3.3–4.6 per pad); decoys not matched on canopy/slope.
+- Slope motion: one sign on every aspect (west −8.1, east −5.9, N/S −8.0 mm). With the correct left-looking geometry, creep should flip sign east vs west, so this is most likely stratified troposphere or phase-centre change, not creep. Only 257 px pass the coherence rule.
 
 ## 6. Errors fixed (history)
 - NASA placement 8–12 m → lidar re-geocode.
@@ -217,6 +220,8 @@ Slope motion: t90 vs t162 r=0.33 (0.20–0.45); t162 coherent over 39% of tile.
 - Beta-date fall pit +0.25 dB withdrawn.
 - First pad run used gslc stack (cuts 6.4–6.7 dB); caught by SBT count mismatch; rerun `--slc`.
 - No valid-fraction skip in fetch (11 empty files); not yet patched.
+- 2026-11-26 (outside review): vector layers were moved with `.to_crs("EPSG:32617")`, a PROJ null transform from NAD83(2011), leaving them ~1.29 m (−0.80 E, +1.01 N) off the radar grid. Now `_nisar_area.to_radar()` via ITRF2014 at epoch 2026.7, in steel, steel-pads, bright-targets, seasonal, pad-change.
+- 2026-11-26: D_A used `std(ddof=0)` (−7% at N=8) → ddof=1 + per-date median scaling. Pixel index truncation → floor. Seasonal JSON wrote `n_decoys`=5 regardless of `--decoys`. Slope script comment said right-looking (NISAR is left). Docs said geocoder uses κ=0.10 (code is bare earth), pad-coherence 3x3/5000 perms (code 5x5/2000).
 
 ## 7. Withdrawn
 Fall HH pit +0.25 dB; winter pad brightness/coherence; 8 wet/5 dry pits; 346-band feature set + PCA; 613590/Warren/McKean; Sentinel-1 2017–2026 cross-check.

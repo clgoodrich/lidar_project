@@ -3055,7 +3055,7 @@ WELL_STATU counts inside 9t lidar bounds:
 
 - `nisar/results/9t/nisar_steel_pads_sites_9t_slc.gpkg`: 649 rows, columns ['site', 'id', 'pad_id', 'area_m2', 'n_pits', 'n_roads', 'n_not_roads', 'cover', 'area', 'n_dep', 'status_cls', 't26', 't90', 't162', 'cover_cls', 'size_cls', 'geometry']
 
-- `nisar/results/9t/nisar_bright_targets_points_9t_slc.gpkg`: 2221 rows, columns ['target_id', 'n_tracks', 'tracks', 'bright_db', 'da_min', 'n_px', 'canopy_cover', 'well_dist_m', 'well_permit', 'well_status', 'pad_dist_m', 'road_dist_m', 'context', 'geometry']
+- `nisar/results/9t/nisar_bright_targets_points_9t_slc.gpkg`: 2043 rows, columns ['target_id', 'n_tracks', 'tracks', 'bright_db', 'da_min', 'n_px', 'canopy_cover', 'well_dist_m', 'well_permit', 'well_status', 'pad_dist_m', 'road_dist_m', 'context', 'geometry']
 
 - `nisar/results/9t/nisar_dep_well_pad_distance_9t.gpkg`: 1068 rows, columns ['PERMIT_NUM', 'WELL_STATU', 'SPUD_DATE', 'd', 'geometry']
 
@@ -3077,6 +3077,7 @@ python nisar/code/s5_eval/_nisar_steel_9t.py --slc
 python nisar/code/s5_eval/_nisar_steel_pads_9t.py --slc
 python nisar/code/s5_eval/_nisar_bright_targets_9t.py --slc
 python nisar/code/s5_eval/_nisar_pad_change_9t.py --slc
+python nisar/code/s5_eval/_nisar_processor_step_9t.py --slc
 python nisar/code/s5_eval/_nisar_pit_pool_9t.py
 python nisar/code/s5_eval/_nisar_slope_motion_9t.py --slc
 python nisar/code/s7_analysis/_nisar_naip_chips_9t.py
@@ -3087,6 +3088,248 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
 
 ## 7. Result files (verbatim)
 
+### nisar/results/9t/nisar_processor_step_summary_9t_slc.json
+```json
+{
+ "pairs": {
+  "162": [
+   "2026-09-29",
+   "2026-10-11",
+   "2026-10-23"
+  ],
+  "26": [
+   "2026-10-02",
+   "2026-10-14",
+   "2026-10-26"
+  ],
+  "90": [
+   "2026-10-06",
+   "2026-10-18",
+   "2026-10-30"
+  ]
+ },
+ "steps": [
+  {
+   "track": 162,
+   "pol": "HH",
+   "step": "baseline_same_version",
+   "dates": "2026-09-29->2026-10-11",
+   "median_db_all": -0.031,
+   "n_all": 962361,
+   "median_db_open_lt0p10": -0.019,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": -0.049,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": 0.473,
+   "n_buildings": 9
+  },
+  {
+   "track": 162,
+   "pol": "HH",
+   "step": "across_versions",
+   "dates": "2026-10-11->2026-10-23",
+   "median_db_all": -0.296,
+   "n_all": 962361,
+   "median_db_open_lt0p10": -0.294,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": -0.304,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": -0.105,
+   "n_buildings": 9
+  },
+  {
+   "track": 162,
+   "pol": "HV",
+   "step": "baseline_same_version",
+   "dates": "2026-09-29->2026-10-11",
+   "median_db_all": -0.087,
+   "n_all": 962361,
+   "median_db_open_lt0p10": -0.046,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": -0.131,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": -0.655,
+   "n_buildings": 9
+  },
+  {
+   "track": 162,
+   "pol": "HV",
+   "step": "across_versions",
+   "dates": "2026-10-11->2026-10-23",
+   "median_db_all": -0.19,
+   "n_all": 962361,
+   "median_db_open_lt0p10": -0.212,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": -0.197,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": -0.348,
+   "n_buildings": 9
+  },
+  {
+   "track": 26,
+   "pol": "HH",
+   "step": "baseline_same_version",
+   "dates": "2026-10-02->2026-10-14",
+   "median_db_all": 0.134,
+   "n_all": 962361,
+   "median_db_open_lt0p10": 0.141,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": 0.127,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": 1.146,
+   "n_buildings": 9
+  },
+  {
+   "track": 26,
+   "pol": "HH",
+   "step": "across_versions",
+   "dates": "2026-10-14->2026-10-26",
+   "median_db_all": -0.248,
+   "n_all": 962361,
+   "median_db_open_lt0p10": -0.25,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": -0.266,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": 0.25,
+   "n_buildings": 9
+  },
+  {
+   "track": 26,
+   "pol": "HV",
+   "step": "baseline_same_version",
+   "dates": "2026-10-02->2026-10-14",
+   "median_db_all": 0.156,
+   "n_all": 962361,
+   "median_db_open_lt0p10": 0.142,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": 0.144,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": -0.78,
+   "n_buildings": 9
+  },
+  {
+   "track": 26,
+   "pol": "HV",
+   "step": "across_versions",
+   "dates": "2026-10-14->2026-10-26",
+   "median_db_all": -0.362,
+   "n_all": 962361,
+   "median_db_open_lt0p10": -0.412,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": -0.34,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": -0.956,
+   "n_buildings": 9
+  },
+  {
+   "track": 90,
+   "pol": "HH",
+   "step": "baseline_same_version",
+   "dates": "2026-10-06->2026-10-18",
+   "median_db_all": -1.03,
+   "n_all": 962361,
+   "median_db_open_lt0p10": -1.119,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": -0.978,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": -0.403,
+   "n_buildings": 9
+  },
+  {
+   "track": 90,
+   "pol": "HH",
+   "step": "across_versions",
+   "dates": "2026-10-18->2026-10-30",
+   "median_db_all": 1.692,
+   "n_all": 962361,
+   "median_db_open_lt0p10": 1.779,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": 1.648,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": 0.194,
+   "n_buildings": 9
+  },
+  {
+   "track": 90,
+   "pol": "HV",
+   "step": "baseline_same_version",
+   "dates": "2026-10-06->2026-10-18",
+   "median_db_all": -1.41,
+   "n_all": 962361,
+   "median_db_open_lt0p10": -1.546,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": -1.361,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": 0.177,
+   "n_buildings": 9
+  },
+  {
+   "track": 90,
+   "pol": "HV",
+   "step": "across_versions",
+   "dates": "2026-10-18->2026-10-30",
+   "median_db_all": 2.323,
+   "n_all": 962361,
+   "median_db_open_lt0p10": 2.404,
+   "n_open_lt0p10": 187030,
+   "median_db_closed_gt0p70": 2.309,
+   "n_closed_gt0p70": 370125,
+   "median_db_buildings": 1.148,
+   "n_buildings": 9
+  }
+ ],
+ "excess": [
+  {
+   "track": 26,
+   "pol": "HH",
+   "excess_db_all": -0.382,
+   "excess_db_open_lt0p10": -0.391,
+   "excess_db_closed_gt0p70": -0.393,
+   "excess_db_buildings": -0.896
+  },
+  {
+   "track": 26,
+   "pol": "HV",
+   "excess_db_all": -0.518,
+   "excess_db_open_lt0p10": -0.554,
+   "excess_db_closed_gt0p70": -0.484,
+   "excess_db_buildings": -0.176
+  },
+  {
+   "track": 90,
+   "pol": "HH",
+   "excess_db_all": 2.722,
+   "excess_db_open_lt0p10": 2.898,
+   "excess_db_closed_gt0p70": 2.626,
+   "excess_db_buildings": 0.597
+  },
+  {
+   "track": 90,
+   "pol": "HV",
+   "excess_db_all": 3.733,
+   "excess_db_open_lt0p10": 3.95,
+   "excess_db_closed_gt0p70": 3.67,
+   "excess_db_buildings": 0.971
+  },
+  {
+   "track": 162,
+   "pol": "HH",
+   "excess_db_all": -0.265,
+   "excess_db_open_lt0p10": -0.275,
+   "excess_db_closed_gt0p70": -0.255,
+   "excess_db_buildings": -0.578
+  },
+  {
+   "track": 162,
+   "pol": "HV",
+   "excess_db_all": -0.103,
+   "excess_db_open_lt0p10": -0.166,
+   "excess_db_closed_gt0p70": -0.066,
+   "excess_db_buildings": 0.307
+  }
+ ]
+}
+```
 ### nisar/results/9t/nisar_lidar_sim_match_summary_coregabs_k010_9t.json
 ```json
 {
@@ -3202,9 +3445,9 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
     "da_max": 0.25,
     "bright_sd": 3.0,
     "bright_db_by_track": {
-      "26": 7.217,
-      "90": 7.016,
-      "162": 6.484
+      "26": 7.178,
+      "90": 7.001,
+      "162": 6.474
     },
     "radius_m": 6.0,
     "background_m": 250.0,
@@ -3214,176 +3457,167 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
   "tracks": {
     "26": {
       "n_dates": 8,
-      "sbt_pixels": 1274
+      "sbt_pixels": 1180
     },
     "90": {
       "n_dates": 12,
-      "sbt_pixels": 1292
+      "sbt_pixels": 1168
     },
     "162": {
       "n_dates": 12,
-      "sbt_pixels": 507
+      "sbt_pixels": 450
     }
   },
   "by_status": [
     {
       "group": "active",
-      "n_wells": 617,
-      "n_decoys": 3018,
+      "n_wells": 618,
+      "n_decoys": 2989,
       "canopy_cover_median": 0.5199999809265137,
-      "wells_sbt_any_track": 0.013,
-      "decoys_sbt_any_track": 0.018,
-      "odds_ratio_any": 0.73,
-      "p_any": 0.49,
+      "wells_sbt_any_track": 0.015,
+      "decoys_sbt_any_track": 0.016,
+      "odds_ratio_any": 0.89,
+      "p_any": 0.86,
       "wells_sbt_2plus_tracks": 0.0,
-      "decoys_sbt_2plus_tracks": 0.001,
+      "decoys_sbt_2plus_tracks": 0.002,
       "odds_ratio_2plus": 0.0,
-      "p_2plus": 1.0,
+      "p_2plus": 0.6,
       "auc_brightness_wells_gt_decoys": 0.515,
-      "auc_steadiness_wells_gt_decoys": 0.504,
-      "p_brightness": 0.25,
-      "bright_max_db_median_wells": 2.48,
-      "bright_max_db_median_decoys": 2.39
+      "auc_steadiness_wells_gt_decoys": 0.497,
+      "p_brightness": 0.23,
+      "bright_max_db_median_wells": 2.42,
+      "bright_max_db_median_decoys": 2.36
     },
     {
       "group": "plugged",
       "n_wells": 271,
-      "n_decoys": 1324,
-      "canopy_cover_median": 0.4000000059604645,
+      "n_decoys": 1315,
+      "canopy_cover_median": 0.4399999976158142,
       "wells_sbt_any_track": 0.004,
-      "decoys_sbt_any_track": 0.009,
-      "odds_ratio_any": 0.4,
-      "p_any": 0.71,
-      "wells_sbt_2plus_tracks": 0.0,
-      "decoys_sbt_2plus_tracks": 0.0,
-      "odds_ratio_2plus": NaN,
-      "p_2plus": 1.0,
-      "auc_brightness_wells_gt_decoys": 0.515,
-      "auc_steadiness_wells_gt_decoys": 0.472,
-      "p_brightness": 0.42,
-      "bright_max_db_median_wells": 2.47,
-      "bright_max_db_median_decoys": 2.43
+      "decoys_sbt_any_track": 0.014,
+      "odds_ratio_any": 0.25,
+      "p_any": 0.23,
+      "wells_sbt_2plus_tracks": 0.004,
+      "decoys_sbt_2plus_tracks": 0.001,
+      "odds_ratio_2plus": 4.87,
+      "p_2plus": 0.31,
+      "auc_brightness_wells_gt_decoys": 0.512,
+      "auc_steadiness_wells_gt_decoys": 0.489,
+      "p_brightness": 0.54,
+      "bright_max_db_median_wells": 2.46,
+      "bright_max_db_median_decoys": 2.39
     },
     {
       "group": "abandoned",
-      "n_wells": 174,
-      "n_decoys": 863,
-      "canopy_cover_median": 0.5199999809265137,
-      "wells_sbt_any_track": 0.011,
-      "decoys_sbt_any_track": 0.012,
-      "odds_ratio_any": 0.99,
-      "p_any": 1.0,
+      "n_wells": 173,
+      "n_decoys": 860,
+      "canopy_cover_median": 0.47999998927116394,
+      "wells_sbt_any_track": 0.017,
+      "decoys_sbt_any_track": 0.007,
+      "odds_ratio_any": 2.51,
+      "p_any": 0.18,
       "wells_sbt_2plus_tracks": 0.0,
       "decoys_sbt_2plus_tracks": 0.0,
       "odds_ratio_2plus": NaN,
       "p_2plus": 1.0,
-      "auc_brightness_wells_gt_decoys": 0.552,
-      "auc_steadiness_wells_gt_decoys": 0.511,
-      "p_brightness": 0.031,
-      "bright_max_db_median_wells": 2.49,
+      "auc_brightness_wells_gt_decoys": 0.572,
+      "auc_steadiness_wells_gt_decoys": 0.52,
+      "p_brightness": 0.0029,
+      "bright_max_db_median_wells": 2.63,
       "bright_max_db_median_decoys": 2.39
     },
     {
       "group": "not_drilled",
       "n_wells": 10,
-      "n_decoys": 50,
-      "canopy_cover_median": 0.2800000011920929,
+      "n_decoys": 46,
+      "canopy_cover_median": 0.47999998927116394,
       "wells_sbt_any_track": 0.0,
-      "decoys_sbt_any_track": 0.04,
-      "odds_ratio_any": 0.0,
+      "decoys_sbt_any_track": 0.0,
+      "odds_ratio_any": NaN,
       "p_any": 1.0,
       "wells_sbt_2plus_tracks": 0.0,
       "decoys_sbt_2plus_tracks": 0.0,
       "odds_ratio_2plus": NaN,
       "p_2plus": 1.0,
-      "auc_brightness_wells_gt_decoys": 0.372,
-      "auc_steadiness_wells_gt_decoys": 0.502,
-      "p_brightness": 0.21,
-      "bright_max_db_median_wells": 1.15,
-      "bright_max_db_median_decoys": 2.43
+      "auc_brightness_wells_gt_decoys": 0.533,
+      "auc_steadiness_wells_gt_decoys": 0.4,
+      "p_brightness": 0.76,
+      "bright_max_db_median_wells": 2.42,
+      "bright_max_db_median_decoys": 2.09
     }
   ],
   "by_status_and_canopy": [
     {
       "cover": "open_cover_lt0p30",
       "group": "active",
-      "n_wells": 232,
-      "wells_sbt_any_track": 0.009,
-      "decoys_sbt_any_track": 0.017,
-      "auc_brightness": 0.519,
-      "auc_steadiness": 0.494
+      "n_wells": 239,
+      "wells_sbt_any_track": 0.013,
+      "decoys_sbt_any_track": 0.019,
+      "auc_brightness": 0.526,
+      "auc_steadiness": 0.507
     },
     {
       "cover": "open_cover_lt0p30",
       "group": "plugged",
-      "n_wells": 112,
+      "n_wells": 117,
       "wells_sbt_any_track": 0.009,
-      "decoys_sbt_any_track": 0.015,
-      "auc_brightness": 0.507,
-      "auc_steadiness": 0.444
+      "decoys_sbt_any_track": 0.012,
+      "auc_brightness": 0.499,
+      "auc_steadiness": 0.493
     },
     {
       "cover": "open_cover_lt0p30",
       "group": "abandoned",
-      "n_wells": 69,
-      "wells_sbt_any_track": 0.029,
-      "decoys_sbt_any_track": 0.015,
-      "auc_brightness": 0.529,
-      "auc_steadiness": 0.488
-    },
-    {
-      "cover": "open_cover_lt0p30",
-      "group": "not_drilled",
-      "n_wells": 5,
-      "wells_sbt_any_track": 0.0,
-      "decoys_sbt_any_track": 0.04,
-      "auc_brightness": 0.384,
-      "auc_steadiness": 0.464
-    },
-    {
-      "cover": "canopy_cover_ge0p30",
-      "group": "active",
-      "n_wells": 385,
-      "wells_sbt_any_track": 0.016,
-      "decoys_sbt_any_track": 0.018,
-      "auc_brightness": 0.512,
+      "n_wells": 74,
+      "wells_sbt_any_track": 0.041,
+      "decoys_sbt_any_track": 0.011,
+      "auc_brightness": 0.578,
       "auc_steadiness": 0.511
     },
     {
       "cover": "canopy_cover_ge0p30",
+      "group": "active",
+      "n_wells": 379,
+      "wells_sbt_any_track": 0.016,
+      "decoys_sbt_any_track": 0.015,
+      "auc_brightness": 0.508,
+      "auc_steadiness": 0.491
+    },
+    {
+      "cover": "canopy_cover_ge0p30",
       "group": "plugged",
-      "n_wells": 159,
+      "n_wells": 154,
       "wells_sbt_any_track": 0.0,
-      "decoys_sbt_any_track": 0.005,
+      "decoys_sbt_any_track": 0.016,
       "auc_brightness": 0.521,
-      "auc_steadiness": 0.493
+      "auc_steadiness": 0.486
     },
     {
       "cover": "canopy_cover_ge0p30",
       "group": "abandoned",
-      "n_wells": 105,
+      "n_wells": 99,
       "wells_sbt_any_track": 0.0,
-      "decoys_sbt_any_track": 0.01,
-      "auc_brightness": 0.566,
-      "auc_steadiness": 0.521
+      "decoys_sbt_any_track": 0.004,
+      "auc_brightness": 0.567,
+      "auc_steadiness": 0.525
     },
     {
       "cover": "canopy_cover_ge0p30",
       "group": "not_drilled",
-      "n_wells": 5,
+      "n_wells": 6,
       "wells_sbt_any_track": 0.0,
-      "decoys_sbt_any_track": 0.04,
-      "auc_brightness": 0.352,
-      "auc_steadiness": 0.576
+      "decoys_sbt_any_track": 0.0,
+      "auc_brightness": 0.586,
+      "auc_steadiness": 0.537
     }
   ],
   "registration": {
     "best_shift_m": [
       20,
-      15
+      -5
     ],
-    "best_hit_rate": 0.028,
-    "zero_shift_hit_rate": 0.013,
+    "best_hit_rate": 0.023,
+    "zero_shift_hit_rate": 0.015,
     "median_hit_rate_over_shifts": 0.015
   },
   "registration_grid_rows_dy_cols_dx": {
@@ -3400,102 +3634,102 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
     ],
     "hit_rate": [
       [
-        0.015,
-        0.016,
-        0.015,
         0.011,
-        0.016,
-        0.016,
-        0.019,
-        0.016,
-        0.019
-      ],
-      [
-        0.015,
         0.018,
-        0.016,
-        0.015,
+        0.01,
         0.008,
         0.018,
-        0.015,
         0.018,
-        0.011
-      ],
-      [
-        0.01,
-        0.021,
-        0.011,
-        0.015,
-        0.016,
-        0.01,
-        0.015,
-        0.013,
+        0.018,
+        0.018,
         0.018
       ],
       [
-        0.015,
         0.016,
-        0.019,
-        0.011,
-        0.011,
-        0.015,
-        0.015,
-        0.018,
-        0.019
-      ],
-      [
-        0.008,
-        0.021,
         0.016,
-        0.023,
         0.013,
-        0.018,
-        0.021,
-        0.019,
-        0.021
-      ],
-      [
-        0.013,
-        0.015,
-        0.021,
         0.011,
-        0.018,
-        0.013,
+        0.006,
+        0.016,
+        0.011,
         0.015,
-        0.013,
-        0.019
+        0.013
       ],
       [
         0.01,
-        0.019,
+        0.021,
+        0.011,
+        0.013,
+        0.011,
+        0.006,
         0.01,
         0.015,
-        0.011,
+        0.016
+      ],
+      [
+        0.016,
+        0.021,
+        0.018,
         0.015,
-        0.008,
+        0.015,
+        0.013,
+        0.011,
         0.018,
         0.023
       ],
       [
-        0.023,
-        0.019,
-        0.013,
-        0.01,
-        0.011,
-        0.011,
-        0.021,
-        0.019,
-        0.028
+        0.015,
+        0.018,
+        0.016,
+        0.018,
+        0.015,
+        0.015,
+        0.016,
+        0.016,
+        0.019
       ],
       [
-        0.024,
-        0.026,
+        0.016,
+        0.016,
+        0.013,
+        0.011,
+        0.015,
+        0.015,
+        0.01,
+        0.013,
+        0.015
+      ],
+      [
+        0.015,
+        0.018,
+        0.011,
         0.011,
         0.013,
-        0.019,
+        0.015,
+        0.01,
+        0.011,
+        0.019
+      ],
+      [
         0.015,
         0.013,
-        0.021,
+        0.01,
+        0.013,
+        0.008,
+        0.013,
+        0.013,
+        0.018,
+        0.019
+      ],
+      [
+        0.019,
+        0.015,
+        0.008,
+        0.013,
+        0.019,
+        0.011,
+        0.018,
+        0.019,
         0.018
       ]
     ]
@@ -3524,47 +3758,47 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
     "all_post_june": {
       "26": {
         "n_dates": 8,
-        "cut_db": 7.217,
+        "cut_db": 7.178,
         "bright_pass": 0.0036,
-        "steady_pass": 0.04587,
-        "both_pass": 0.00132
+        "steady_pass": 0.03485,
+        "both_pass": 0.00123
       },
       "90": {
         "n_dates": 12,
-        "cut_db": 7.016,
-        "bright_pass": 0.00449,
-        "steady_pass": 0.01856,
-        "both_pass": 0.00134
+        "cut_db": 7.001,
+        "bright_pass": 0.00456,
+        "steady_pass": 0.01471,
+        "both_pass": 0.00121
       },
       "162": {
         "n_dates": 12,
-        "cut_db": 6.484,
-        "bright_pass": 0.00403,
-        "steady_pass": 0.01026,
-        "both_pass": 0.00053
+        "cut_db": 6.474,
+        "bright_pass": 0.00399,
+        "steady_pass": 0.00768,
+        "both_pass": 0.00047
       }
     },
     "summer_leaf_on": {
       "26": {
         "n_dates": 4,
-        "cut_db": 8.952,
-        "bright_pass": 0.00133,
-        "steady_pass": 0.22028,
-        "both_pass": 0.001
+        "cut_db": 8.953,
+        "bright_pass": 0.00135,
+        "steady_pass": 0.15809,
+        "both_pass": 0.00087
       },
       "90": {
         "n_dates": 8,
-        "cut_db": 7.872,
+        "cut_db": 7.878,
         "bright_pass": 0.00294,
-        "steady_pass": 0.0653,
-        "both_pass": 0.00155
+        "steady_pass": 0.04789,
+        "both_pass": 0.00133
       },
       "162": {
         "n_dates": 8,
-        "cut_db": 7.25,
-        "bright_pass": 0.00293,
-        "steady_pass": 0.04129,
-        "both_pass": 0.00084
+        "cut_db": 7.234,
+        "bright_pass": 0.00292,
+        "steady_pass": 0.02948,
+        "both_pass": 0.00073
       }
     }
   },
@@ -3573,235 +3807,235 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
       "dates": "all_post_june",
       "cls": "all",
       "n_pads": 649,
-      "n_ctrl": 2702,
-      "pads_hit_any": 0.2,
-      "ctrl_hit_any": 0.187,
-      "odds_any": 1.09,
-      "p_any": 0.43,
-      "pads_hit_2plus": 0.028,
-      "ctrl_hit_2plus": 0.022,
-      "p_2plus": 0.39
+      "n_ctrl": 2676,
+      "pads_hit_any": 0.193,
+      "ctrl_hit_any": 0.166,
+      "odds_any": 1.2,
+      "p_any": 0.12,
+      "pads_hit_2plus": 0.025,
+      "ctrl_hit_2plus": 0.02,
+      "p_2plus": 0.44
     },
     {
       "dates": "all_post_june",
       "cls": "cover_cls=canopy",
       "n_pads": 589,
-      "n_ctrl": 2507,
-      "pads_hit_any": 0.199,
-      "ctrl_hit_any": 0.187,
-      "odds_any": 1.08,
-      "p_any": 0.52,
-      "pads_hit_2plus": 0.022,
-      "ctrl_hit_2plus": 0.02,
-      "p_2plus": 0.75
+      "n_ctrl": 2473,
+      "pads_hit_any": 0.188,
+      "ctrl_hit_any": 0.167,
+      "odds_any": 1.15,
+      "p_any": 0.22,
+      "pads_hit_2plus": 0.02,
+      "ctrl_hit_2plus": 0.019,
+      "p_2plus": 0.74
     },
     {
       "dates": "all_post_june",
       "cls": "cover_cls=open",
       "n_pads": 60,
-      "n_ctrl": 195,
-      "pads_hit_any": 0.217,
-      "ctrl_hit_any": 0.185,
-      "odds_any": 1.22,
-      "p_any": 0.58,
-      "pads_hit_2plus": 0.083,
-      "ctrl_hit_2plus": 0.046,
-      "p_2plus": 0.33
+      "n_ctrl": 203,
+      "pads_hit_any": 0.233,
+      "ctrl_hit_any": 0.153,
+      "odds_any": 1.69,
+      "p_any": 0.17,
+      "pads_hit_2plus": 0.067,
+      "ctrl_hit_2plus": 0.034,
+      "p_2plus": 0.28
     },
     {
       "dates": "all_post_june",
       "cls": "size_cls=large",
       "n_pads": 216,
-      "n_ctrl": 816,
+      "n_ctrl": 832,
       "pads_hit_any": 0.208,
-      "ctrl_hit_any": 0.218,
-      "odds_any": 0.94,
-      "p_any": 0.78,
-      "pads_hit_2plus": 0.046,
-      "ctrl_hit_2plus": 0.022,
-      "p_2plus": 0.06
+      "ctrl_hit_any": 0.184,
+      "odds_any": 1.17,
+      "p_any": 0.44,
+      "pads_hit_2plus": 0.042,
+      "ctrl_hit_2plus": 0.019,
+      "p_2plus": 0.075
     },
     {
       "dates": "all_post_june",
       "cls": "size_cls=mid",
       "n_pads": 216,
-      "n_ctrl": 895,
-      "pads_hit_any": 0.231,
-      "ctrl_hit_any": 0.18,
-      "odds_any": 1.37,
-      "p_any": 0.1,
-      "pads_hit_2plus": 0.023,
-      "ctrl_hit_2plus": 0.026,
+      "n_ctrl": 865,
+      "pads_hit_any": 0.213,
+      "ctrl_hit_any": 0.17,
+      "odds_any": 1.32,
+      "p_any": 0.16,
+      "pads_hit_2plus": 0.019,
+      "ctrl_hit_2plus": 0.02,
       "p_2plus": 1.0
     },
     {
       "dates": "all_post_june",
       "cls": "size_cls=small",
       "n_pads": 217,
-      "n_ctrl": 991,
-      "pads_hit_any": 0.161,
-      "ctrl_hit_any": 0.166,
-      "odds_any": 0.96,
-      "p_any": 0.92,
+      "n_ctrl": 979,
+      "pads_hit_any": 0.157,
+      "ctrl_hit_any": 0.148,
+      "odds_any": 1.07,
+      "p_any": 0.75,
       "pads_hit_2plus": 0.014,
-      "ctrl_hit_2plus": 0.019,
+      "ctrl_hit_2plus": 0.02,
       "p_2plus": 0.78
     },
     {
       "dates": "all_post_june",
       "cls": "status_cls=active",
       "n_pads": 230,
-      "n_ctrl": 842,
-      "pads_hit_any": 0.191,
-      "ctrl_hit_any": 0.152,
-      "odds_any": 1.32,
-      "p_any": 0.16,
+      "n_ctrl": 839,
+      "pads_hit_any": 0.187,
+      "ctrl_hit_any": 0.128,
+      "odds_any": 1.57,
+      "p_any": 0.025,
       "pads_hit_2plus": 0.026,
-      "ctrl_hit_2plus": 0.019,
-      "p_2plus": 0.44
+      "ctrl_hit_2plus": 0.015,
+      "p_2plus": 0.27
     },
     {
       "dates": "all_post_june",
       "cls": "status_cls=no_dep_well",
       "n_pads": 344,
-      "n_ctrl": 1558,
-      "pads_hit_any": 0.206,
-      "ctrl_hit_any": 0.206,
-      "odds_any": 1.0,
-      "p_any": 1.0,
-      "pads_hit_2plus": 0.035,
-      "ctrl_hit_2plus": 0.026,
-      "p_2plus": 0.36
+      "n_ctrl": 1536,
+      "pads_hit_any": 0.201,
+      "ctrl_hit_any": 0.182,
+      "odds_any": 1.13,
+      "p_any": 0.44,
+      "pads_hit_2plus": 0.029,
+      "ctrl_hit_2plus": 0.021,
+      "p_2plus": 0.42
     },
     {
       "dates": "all_post_june",
       "cls": "status_cls=plugged_or_abandoned",
       "n_pads": 75,
-      "n_ctrl": 302,
-      "pads_hit_any": 0.2,
-      "ctrl_hit_any": 0.182,
-      "odds_any": 1.12,
+      "n_ctrl": 301,
+      "pads_hit_any": 0.173,
+      "ctrl_hit_any": 0.196,
+      "odds_any": 0.86,
       "p_any": 0.74,
       "pads_hit_2plus": 0.0,
-      "ctrl_hit_2plus": 0.013,
-      "p_2plus": 0.59
+      "ctrl_hit_2plus": 0.023,
+      "p_2plus": 0.35
     },
     {
       "dates": "summer_leaf_on",
       "cls": "all",
       "n_pads": 649,
-      "n_ctrl": 2707,
-      "pads_hit_any": 0.225,
-      "ctrl_hit_any": 0.21,
-      "odds_any": 1.09,
-      "p_any": 0.39,
-      "pads_hit_2plus": 0.042,
-      "ctrl_hit_2plus": 0.034,
-      "p_2plus": 0.34
+      "n_ctrl": 2688,
+      "pads_hit_any": 0.199,
+      "ctrl_hit_any": 0.168,
+      "odds_any": 1.23,
+      "p_any": 0.074,
+      "pads_hit_2plus": 0.029,
+      "ctrl_hit_2plus": 0.025,
+      "p_2plus": 0.58
     },
     {
       "dates": "summer_leaf_on",
       "cls": "cover_cls=canopy",
       "n_pads": 589,
-      "n_ctrl": 2495,
-      "pads_hit_any": 0.222,
-      "ctrl_hit_any": 0.212,
-      "odds_any": 1.07,
-      "p_any": 0.58,
-      "pads_hit_2plus": 0.036,
-      "ctrl_hit_2plus": 0.034,
-      "p_2plus": 0.8
+      "n_ctrl": 2472,
+      "pads_hit_any": 0.194,
+      "ctrl_hit_any": 0.169,
+      "odds_any": 1.18,
+      "p_any": 0.16,
+      "pads_hit_2plus": 0.024,
+      "ctrl_hit_2plus": 0.025,
+      "p_2plus": 0.88
     },
     {
       "dates": "summer_leaf_on",
       "cls": "cover_cls=open",
       "n_pads": 60,
-      "n_ctrl": 212,
+      "n_ctrl": 216,
       "pads_hit_any": 0.25,
-      "ctrl_hit_any": 0.189,
-      "odds_any": 1.43,
-      "p_any": 0.36,
-      "pads_hit_2plus": 0.1,
-      "ctrl_hit_2plus": 0.038,
-      "p_2plus": 0.09
+      "ctrl_hit_any": 0.157,
+      "odds_any": 1.78,
+      "p_any": 0.13,
+      "pads_hit_2plus": 0.083,
+      "ctrl_hit_2plus": 0.023,
+      "p_2plus": 0.043
     },
     {
       "dates": "summer_leaf_on",
       "cls": "size_cls=large",
       "n_pads": 216,
-      "n_ctrl": 836,
-      "pads_hit_any": 0.296,
-      "ctrl_hit_any": 0.233,
-      "odds_any": 1.38,
-      "p_any": 0.063,
-      "pads_hit_2plus": 0.06,
-      "ctrl_hit_2plus": 0.043,
-      "p_2plus": 0.28
+      "n_ctrl": 811,
+      "pads_hit_any": 0.264,
+      "ctrl_hit_any": 0.181,
+      "odds_any": 1.62,
+      "p_any": 0.0094,
+      "pads_hit_2plus": 0.042,
+      "ctrl_hit_2plus": 0.03,
+      "p_2plus": 0.39
     },
     {
       "dates": "summer_leaf_on",
       "cls": "size_cls=mid",
       "n_pads": 216,
-      "n_ctrl": 877,
-      "pads_hit_any": 0.204,
-      "ctrl_hit_any": 0.219,
-      "odds_any": 0.91,
-      "p_any": 0.71,
-      "pads_hit_2plus": 0.042,
-      "ctrl_hit_2plus": 0.032,
-      "p_2plus": 0.53
+      "n_ctrl": 881,
+      "pads_hit_any": 0.181,
+      "ctrl_hit_any": 0.173,
+      "odds_any": 1.06,
+      "p_any": 0.76,
+      "pads_hit_2plus": 0.023,
+      "ctrl_hit_2plus": 0.024,
+      "p_2plus": 1.0
     },
     {
       "dates": "summer_leaf_on",
       "cls": "size_cls=small",
       "n_pads": 217,
-      "n_ctrl": 994,
-      "pads_hit_any": 0.175,
-      "ctrl_hit_any": 0.182,
-      "odds_any": 0.95,
-      "p_any": 0.85,
+      "n_ctrl": 996,
+      "pads_hit_any": 0.152,
+      "ctrl_hit_any": 0.154,
+      "odds_any": 0.99,
+      "p_any": 1.0,
       "pads_hit_2plus": 0.023,
-      "ctrl_hit_2plus": 0.028,
-      "p_2plus": 0.82
+      "ctrl_hit_2plus": 0.023,
+      "p_2plus": 1.0
     },
     {
       "dates": "summer_leaf_on",
       "cls": "status_cls=active",
       "n_pads": 230,
-      "n_ctrl": 859,
-      "pads_hit_any": 0.2,
-      "ctrl_hit_any": 0.173,
-      "odds_any": 1.19,
-      "p_any": 0.38,
-      "pads_hit_2plus": 0.057,
-      "ctrl_hit_2plus": 0.04,
-      "p_2plus": 0.27
+      "n_ctrl": 833,
+      "pads_hit_any": 0.174,
+      "ctrl_hit_any": 0.174,
+      "odds_any": 1.0,
+      "p_any": 1.0,
+      "pads_hit_2plus": 0.035,
+      "ctrl_hit_2plus": 0.03,
+      "p_2plus": 0.67
     },
     {
       "dates": "summer_leaf_on",
       "cls": "status_cls=no_dep_well",
       "n_pads": 344,
-      "n_ctrl": 1548,
-      "pads_hit_any": 0.224,
-      "ctrl_hit_any": 0.222,
-      "odds_any": 1.01,
-      "p_any": 0.94,
-      "pads_hit_2plus": 0.038,
-      "ctrl_hit_2plus": 0.032,
-      "p_2plus": 0.61
+      "n_ctrl": 1546,
+      "pads_hit_any": 0.203,
+      "ctrl_hit_any": 0.169,
+      "odds_any": 1.25,
+      "p_any": 0.14,
+      "pads_hit_2plus": 0.029,
+      "ctrl_hit_2plus": 0.023,
+      "p_2plus": 0.44
     },
     {
       "dates": "summer_leaf_on",
       "cls": "status_cls=plugged_or_abandoned",
       "n_pads": 75,
-      "n_ctrl": 300,
-      "pads_hit_any": 0.307,
-      "ctrl_hit_any": 0.253,
-      "odds_any": 1.3,
-      "p_any": 0.38,
+      "n_ctrl": 309,
+      "pads_hit_any": 0.253,
+      "ctrl_hit_any": 0.146,
+      "odds_any": 1.99,
+      "p_any": 0.037,
       "pads_hit_2plus": 0.013,
-      "ctrl_hit_2plus": 0.03,
-      "p_2plus": 0.69
+      "ctrl_hit_2plus": 0.026,
+      "p_2plus": 1.0
     }
   ]
 }
@@ -3813,9 +4047,9 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
     "da_max": 0.25,
     "bright_sd": 3.0,
     "bright_db_by_track": {
-      "26": 7.217,
-      "90": 7.016,
-      "162": 6.484
+      "26": 7.178,
+      "90": 7.001,
+      "162": 6.474
     },
     "bg_m": 250.0,
     "merge_m": 6.0,
@@ -3826,35 +4060,35 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
     "90": 12,
     "162": 12
   },
-  "track_points": 2290,
-  "targets": 2221,
+  "track_points": 2100,
+  "targets": 2043,
   "by_n_tracks": {
-    "1": 2155,
-    "2": 63,
-    "3": 3
+    "1": 1988,
+    "2": 53,
+    "3": 2
   },
   "by_context": {
-    "elsewhere": 1788,
-    "on_road": 253,
-    "on_pad": 165,
-    "at_well": 15
+    "elsewhere": 1646,
+    "on_road": 224,
+    "on_pad": 159,
+    "at_well": 14
   },
   "share_by_context_in_lidar": {
-    "elsewhere": 0.766,
-    "on_road": 0.138,
-    "on_pad": 0.09,
+    "elsewhere": 0.769,
+    "on_road": 0.132,
+    "on_pad": 0.093,
     "at_well": 0.006
   },
   "share_by_context_random_spots": {
-    "elsewhere": 0.804,
-    "on_road": 0.099,
+    "elsewhere": 0.803,
+    "on_road": 0.1,
     "on_pad": 0.09,
     "at_well": 0.007
   },
   "by_context_2plus_tracks": {
-    "elsewhere": 56,
-    "on_road": 5,
-    "on_pad": 5
+    "elsewhere": 48,
+    "on_road": 4,
+    "on_pad": 3
   }
 }
 ```
@@ -3965,274 +4199,274 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
   {
    "track": 26,
    "metric": "hh_leafoff_fall",
-   "open_median_db": -6.3188958168029785,
-   "closed_median_db": -5.866619110107422,
-   "auc_closed_gt_open": 0.5363332629203796
+   "open_median_db": -6.314657211303711,
+   "closed_median_db": -5.949084281921387,
+   "auc_closed_gt_open": 0.5290930867195129
   },
   {
    "track": 26,
    "metric": "hh_leafon",
-   "open_median_db": -5.495800018310547,
-   "closed_median_db": -5.069671630859375,
-   "auc_closed_gt_open": 0.5372526049613953
+   "open_median_db": -5.518631935119629,
+   "closed_median_db": -5.090364456176758,
+   "auc_closed_gt_open": 0.539895236492157
   },
   {
    "track": 26,
    "metric": "hh_change_leafon_vs_fall",
-   "open_median_db": 0.8929629921913147,
-   "closed_median_db": 0.795452356338501,
-   "auc_closed_gt_open": 0.49297308921813965
+   "open_median_db": 0.8646382093429565,
+   "closed_median_db": 0.8164337277412415,
+   "auc_closed_gt_open": 0.49530258774757385
   },
   {
    "track": 26,
    "metric": "hv_leafoff_fall",
-   "open_median_db": -11.47415542602539,
-   "closed_median_db": -10.81668472290039,
-   "auc_closed_gt_open": 0.5519281029701233
+   "open_median_db": -11.443094253540039,
+   "closed_median_db": -10.846805572509766,
+   "auc_closed_gt_open": 0.5489938855171204
   },
   {
    "track": 26,
    "metric": "hv_leafon",
-   "open_median_db": -10.477960586547852,
-   "closed_median_db": -10.066089630126953,
-   "auc_closed_gt_open": 0.5428029298782349
+   "open_median_db": -10.462770462036133,
+   "closed_median_db": -10.036901473999023,
+   "auc_closed_gt_open": 0.5459311604499817
   },
   {
    "track": 26,
    "metric": "hv_change_leafon_vs_fall",
-   "open_median_db": 1.102510690689087,
-   "closed_median_db": 0.8049046993255615,
-   "auc_closed_gt_open": 0.4790516495704651
+   "open_median_db": 1.157184362411499,
+   "closed_median_db": 0.8185019493103027,
+   "auc_closed_gt_open": 0.47913306951522827
   },
   {
    "track": 90,
    "metric": "hh_leafoff_fall",
-   "open_median_db": -5.583754539489746,
-   "closed_median_db": -5.782883167266846,
-   "auc_closed_gt_open": 0.4965362846851349
+   "open_median_db": -5.625923156738281,
+   "closed_median_db": -5.705285549163818,
+   "auc_closed_gt_open": 0.5019964575767517
   },
   {
    "track": 90,
    "metric": "hh_leafon",
-   "open_median_db": -4.813488960266113,
-   "closed_median_db": -4.955358505249023,
-   "auc_closed_gt_open": 0.49815356731414795
+   "open_median_db": -4.806432723999023,
+   "closed_median_db": -4.93641471862793,
+   "auc_closed_gt_open": 0.4988284409046173
   },
   {
    "track": 90,
    "metric": "hh_change_leafon_vs_fall",
-   "open_median_db": 0.7174957990646362,
-   "closed_median_db": 0.8010028600692749,
-   "auc_closed_gt_open": 0.5060513019561768
+   "open_median_db": 0.7330300807952881,
+   "closed_median_db": 0.8228118419647217,
+   "auc_closed_gt_open": 0.504170835018158
   },
   {
    "track": 90,
    "metric": "hv_leafoff_fall",
-   "open_median_db": -11.201082229614258,
-   "closed_median_db": -11.028645515441895,
-   "auc_closed_gt_open": 0.5191712975502014
+   "open_median_db": -11.208379745483398,
+   "closed_median_db": -11.066864967346191,
+   "auc_closed_gt_open": 0.5173932313919067
   },
   {
    "track": 90,
    "metric": "hv_leafon",
-   "open_median_db": -10.366253852844238,
-   "closed_median_db": -10.35137939453125,
-   "auc_closed_gt_open": 0.517185389995575
+   "open_median_db": -10.327692031860352,
+   "closed_median_db": -10.297384262084961,
+   "auc_closed_gt_open": 0.5178198218345642
   },
   {
    "track": 90,
    "metric": "hv_change_leafon_vs_fall",
-   "open_median_db": 0.8085918426513672,
-   "closed_median_db": 0.7003402709960938,
-   "auc_closed_gt_open": 0.4962063729763031
+   "open_median_db": 0.7319674491882324,
+   "closed_median_db": 0.8182129859924316,
+   "auc_closed_gt_open": 0.5038930177688599
   },
   {
    "track": 162,
    "metric": "hh_leafoff_fall",
-   "open_median_db": -6.84567928314209,
-   "closed_median_db": -6.891607284545898,
-   "auc_closed_gt_open": 0.5031185746192932
+   "open_median_db": -6.823579788208008,
+   "closed_median_db": -6.8819427490234375,
+   "auc_closed_gt_open": 0.504160463809967
   },
   {
    "track": 162,
    "metric": "hh_leafon",
-   "open_median_db": -5.876707553863525,
-   "closed_median_db": -5.926862716674805,
-   "auc_closed_gt_open": 0.5097113847732544
+   "open_median_db": -5.894026756286621,
+   "closed_median_db": -5.954811096191406,
+   "auc_closed_gt_open": 0.5071161389350891
   },
   {
    "track": 162,
    "metric": "hh_change_leafon_vs_fall",
-   "open_median_db": 0.8311178684234619,
-   "closed_median_db": 0.8458342552185059,
-   "auc_closed_gt_open": 0.5027600526809692
+   "open_median_db": 0.7487695217132568,
+   "closed_median_db": 0.8831183910369873,
+   "auc_closed_gt_open": 0.5079812407493591
   },
   {
    "track": 162,
    "metric": "hv_leafoff_fall",
-   "open_median_db": -11.841365814208984,
-   "closed_median_db": -11.71644401550293,
-   "auc_closed_gt_open": 0.515618622303009
+   "open_median_db": -11.805950164794922,
+   "closed_median_db": -11.717708587646484,
+   "auc_closed_gt_open": 0.5155661702156067
   },
   {
    "track": 162,
    "metric": "hv_leafon",
-   "open_median_db": -10.775344848632812,
-   "closed_median_db": -10.778660774230957,
-   "auc_closed_gt_open": 0.5140807032585144
+   "open_median_db": -10.79062271118164,
+   "closed_median_db": -10.764630317687988,
+   "auc_closed_gt_open": 0.5162613987922668
   },
   {
    "track": 162,
    "metric": "hv_change_leafon_vs_fall",
-   "open_median_db": 0.8337764739990234,
-   "closed_median_db": 0.8247671127319336,
-   "auc_closed_gt_open": 0.5011714696884155
+   "open_median_db": 0.8512935638427734,
+   "closed_median_db": 0.835547924041748,
+   "auc_closed_gt_open": 0.500474750995636
   }
  ],
  "results": [
   {
    "features": "pad",
    "metric": "hh_leafoff_fall",
-   "n": 645,
-   "median_feature_minus_ring_db": -0.21743495762348175,
-   "median_decoy_minus_ring_db": -0.10305666923522949,
-   "median_excess_db": -0.12768511474132538,
-   "excess_ci_lo": -0.20745010524988175,
-   "excess_ci_hi": -0.023448780179023743,
-   "auc_feature_gt_decoy": 0.45069611072540283,
-   "wilcoxon_p_excess": 0.00023588262163172076
+   "n": 644,
+   "median_feature_minus_ring_db": -0.20953848958015442,
+   "median_decoy_minus_ring_db": -0.06885063648223877,
+   "median_excess_db": -0.15330876410007477,
+   "excess_ci_lo": -0.23357821255922318,
+   "excess_ci_hi": -0.06705236062407494,
+   "auc_feature_gt_decoy": 0.4517305791378021,
+   "wilcoxon_p_excess": 1.778010527005197e-05
   },
   {
    "features": "pad",
    "metric": "hh_leafon",
-   "n": 645,
-   "median_feature_minus_ring_db": -0.059966642409563065,
-   "median_decoy_minus_ring_db": -0.05158686637878418,
-   "median_excess_db": 0.015835564583539963,
-   "excess_ci_lo": -0.033119283616542816,
-   "excess_ci_hi": 0.0582779236137867,
-   "auc_feature_gt_decoy": 0.5081110596656799,
-   "wilcoxon_p_excess": 0.7691416372967265
+   "n": 644,
+   "median_feature_minus_ring_db": -0.04047060012817383,
+   "median_decoy_minus_ring_db": -0.05810304544866085,
+   "median_excess_db": 0.006140712648630142,
+   "excess_ci_lo": -0.032097941264510155,
+   "excess_ci_hi": 0.05782719375565648,
+   "auc_feature_gt_decoy": 0.5079273581504822,
+   "wilcoxon_p_excess": 0.7633672037704254
   },
   {
    "features": "pad",
    "metric": "hh_change_leafon_vs_fall",
-   "n": 645,
-   "median_feature_minus_ring_db": 0.17508570849895477,
-   "median_decoy_minus_ring_db": 0.018337726593017578,
-   "median_excess_db": 0.14464418590068817,
-   "excess_ci_lo": 0.08637595176696777,
-   "excess_ci_hi": 0.19255313277244568,
-   "auc_feature_gt_decoy": 0.5774705410003662,
-   "wilcoxon_p_excess": 4.102903972168581e-09
+   "n": 644,
+   "median_feature_minus_ring_db": 0.18459710478782654,
+   "median_decoy_minus_ring_db": 0.0268707275390625,
+   "median_excess_db": 0.13506381213665009,
+   "excess_ci_lo": 0.08336792513728142,
+   "excess_ci_hi": 0.18430993445217606,
+   "auc_feature_gt_decoy": 0.5716800689697266,
+   "wilcoxon_p_excess": 1.985486694294039e-08
   },
   {
    "features": "pad",
    "metric": "hv_leafoff_fall",
-   "n": 645,
-   "median_feature_minus_ring_db": -0.15198643505573273,
-   "median_decoy_minus_ring_db": -0.04682763293385506,
-   "median_excess_db": -0.10928025841712952,
-   "excess_ci_lo": -0.16653664410114288,
-   "excess_ci_hi": -0.05808481574058533,
-   "auc_feature_gt_decoy": 0.44352295994758606,
-   "wilcoxon_p_excess": 1.8013104732602706e-05
+   "n": 644,
+   "median_feature_minus_ring_db": -0.14265520870685577,
+   "median_decoy_minus_ring_db": -0.04018601030111313,
+   "median_excess_db": -0.13146750256419182,
+   "excess_ci_lo": -0.1918770670890808,
+   "excess_ci_hi": -0.06770038604736328,
+   "auc_feature_gt_decoy": 0.44281747937202454,
+   "wilcoxon_p_excess": 9.66734342723269e-07
   },
   {
    "features": "pad",
    "metric": "hv_leafon",
-   "n": 645,
-   "median_feature_minus_ring_db": -0.02075735665857792,
-   "median_decoy_minus_ring_db": -0.01844818890094757,
-   "median_excess_db": 0.023778915405273438,
-   "excess_ci_lo": -0.03910859441384673,
-   "excess_ci_hi": 0.07334549725055695,
-   "auc_feature_gt_decoy": 0.4974636137485504,
-   "wilcoxon_p_excess": 0.923351228819415
+   "n": 644,
+   "median_feature_minus_ring_db": -0.01060358714312315,
+   "median_decoy_minus_ring_db": -0.02356831170618534,
+   "median_excess_db": 0.01570018380880356,
+   "excess_ci_lo": -0.03166627883911133,
+   "excess_ci_hi": 0.06928173825144768,
+   "auc_feature_gt_decoy": 0.49917638301849365,
+   "wilcoxon_p_excess": 0.8262209715056891
   },
   {
    "features": "pad",
    "metric": "hv_change_leafon_vs_fall",
-   "n": 645,
-   "median_feature_minus_ring_db": 0.14012177288532257,
-   "median_decoy_minus_ring_db": 0.03861172869801521,
-   "median_excess_db": 0.10479004681110382,
-   "excess_ci_lo": 0.047029176144860685,
-   "excess_ci_hi": 0.1543382419738917,
-   "auc_feature_gt_decoy": 0.5612600445747375,
-   "wilcoxon_p_excess": 2.9191594926614086e-06
+   "n": 644,
+   "median_feature_minus_ring_db": 0.14005939662456512,
+   "median_decoy_minus_ring_db": 0.012184937484562397,
+   "median_excess_db": 0.11936315149068832,
+   "excess_ci_lo": 0.036004627123475075,
+   "excess_ci_hi": 0.19123680144548416,
+   "auc_feature_gt_decoy": 0.5668886303901672,
+   "wilcoxon_p_excess": 1.7200289377983046e-07
   },
   {
    "features": "pit",
    "metric": "hh_leafoff_fall",
    "n": 506,
-   "median_feature_minus_ring_db": -0.35361969470977783,
-   "median_decoy_minus_ring_db": -0.22927641868591309,
-   "median_excess_db": 0.010798532515764236,
-   "excess_ci_lo": -0.08029638100415468,
-   "excess_ci_hi": 0.11274051666259766,
-   "auc_feature_gt_decoy": 0.49551641941070557,
-   "wilcoxon_p_excess": 0.8995199269468662
+   "median_feature_minus_ring_db": -0.3332306742668152,
+   "median_decoy_minus_ring_db": -0.3069768697023392,
+   "median_excess_db": 0.04826502501964569,
+   "excess_ci_lo": -0.05267522484064102,
+   "excess_ci_hi": 0.20409230142831802,
+   "auc_feature_gt_decoy": 0.5138910412788391,
+   "wilcoxon_p_excess": 0.2985869876088477
   },
   {
    "features": "pit",
    "metric": "hh_leafon",
    "n": 506,
-   "median_feature_minus_ring_db": -0.11169348657131195,
-   "median_decoy_minus_ring_db": -0.16198712587356567,
-   "median_excess_db": 0.03395190741866827,
-   "excess_ci_lo": -0.060908027738332746,
-   "excess_ci_hi": 0.14058542251586914,
-   "auc_feature_gt_decoy": 0.5273066759109497,
-   "wilcoxon_p_excess": 0.0891630447225643
+   "median_feature_minus_ring_db": -0.13737642765045166,
+   "median_decoy_minus_ring_db": -0.18392682075500488,
+   "median_excess_db": 0.09877142310142517,
+   "excess_ci_lo": 0.0008353739976882935,
+   "excess_ci_hi": 0.20757171455770723,
+   "auc_feature_gt_decoy": 0.5293293595314026,
+   "wilcoxon_p_excess": 0.030684536973127546
   },
   {
    "features": "pit",
    "metric": "hh_change_leafon_vs_fall",
    "n": 506,
-   "median_feature_minus_ring_db": 0.19953139126300812,
-   "median_decoy_minus_ring_db": 0.1035386510193348,
-   "median_excess_db": 0.11467067152261734,
-   "excess_ci_lo": -0.0015367945656180352,
-   "excess_ci_hi": 0.21909568086266518,
-   "auc_feature_gt_decoy": 0.527355968952179,
-   "wilcoxon_p_excess": 0.06203309641297899
+   "median_feature_minus_ring_db": 0.15623758733272552,
+   "median_decoy_minus_ring_db": 0.1209232397377491,
+   "median_excess_db": 0.04635826125741005,
+   "excess_ci_lo": -0.1250437054783106,
+   "excess_ci_hi": 0.14890952644345784,
+   "auc_feature_gt_decoy": 0.5121351480484009,
+   "wilcoxon_p_excess": 0.4295443506516977
   },
   {
    "features": "pit",
    "metric": "hv_leafoff_fall",
    "n": 506,
-   "median_feature_minus_ring_db": -0.20784704387187958,
-   "median_decoy_minus_ring_db": -0.25316715240478516,
-   "median_excess_db": 0.1440979540348053,
-   "excess_ci_lo": 0.016458511352539062,
-   "excess_ci_hi": 0.2471128001925535,
-   "auc_feature_gt_decoy": 0.5242300033569336,
-   "wilcoxon_p_excess": 0.08176230964598413
+   "median_feature_minus_ring_db": -0.15162619948387146,
+   "median_decoy_minus_ring_db": -0.25104714930057526,
+   "median_excess_db": 0.05975341913290322,
+   "excess_ci_lo": -0.047984445467591286,
+   "excess_ci_hi": 0.23649054765701294,
+   "auc_feature_gt_decoy": 0.5298513770103455,
+   "wilcoxon_p_excess": 0.12026639597831383
   },
   {
    "features": "pit",
    "metric": "hv_leafon",
    "n": 506,
-   "median_feature_minus_ring_db": 0.06229464337229729,
-   "median_decoy_minus_ring_db": -0.14918677508831024,
-   "median_excess_db": 0.17703405022621155,
-   "excess_ci_lo": 0.09289376437664032,
-   "excess_ci_hi": 0.26206018030643463,
-   "auc_feature_gt_decoy": 0.5598766803741455,
-   "wilcoxon_p_excess": 0.00013555296718720396
+   "median_feature_minus_ring_db": 0.08672777563333511,
+   "median_decoy_minus_ring_db": -0.10450665280222893,
+   "median_excess_db": 0.15970802307128906,
+   "excess_ci_lo": 0.06556732952594757,
+   "excess_ci_hi": 0.22800954077392802,
+   "auc_feature_gt_decoy": 0.5573380589485168,
+   "wilcoxon_p_excess": 0.0008180058291816433
   },
   {
    "features": "pit",
    "metric": "hv_change_leafon_vs_fall",
    "n": 506,
-   "median_feature_minus_ring_db": 0.21726147830486298,
-   "median_decoy_minus_ring_db": 0.11287005990743637,
-   "median_excess_db": 0.11135513335466385,
-   "excess_ci_lo": -0.008201776817440986,
-   "excess_ci_hi": 0.21738632768392563,
-   "auc_feature_gt_decoy": 0.5232188105583191,
-   "wilcoxon_p_excess": 0.08479218759638557
+   "median_feature_minus_ring_db": 0.211918905377388,
+   "median_decoy_minus_ring_db": 0.1436106413602829,
+   "median_excess_db": 0.13938648998737335,
+   "excess_ci_lo": 0.004717513918876648,
+   "excess_ci_hi": 0.23423132300376892,
+   "auc_feature_gt_decoy": 0.5152460932731628,
+   "wilcoxon_p_excess": 0.1592840510292043
   }
  ]
 }
@@ -4251,24 +4485,24 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
     "fa_rate": 0.01,
     "seed": 20261007
   },
-  "n_pads_used": 649,
+  "n_pads_used": 650,
   "n_pairs": 28,
   "by_season": [
     {
       "season": "snowfree",
       "threshold": -0.192,
-      "n_pad_pairs": 18172,
-      "pad_events": 211,
-      "expected_from_decoys": 181.9,
+      "n_pad_pairs": 18200,
+      "pad_events": 220,
+      "expected_from_decoys": 182.0,
       "decoy_rate": 0.01,
-      "p_naive_binomial": 0.018,
-      "p_swap_test": 0.021989005497251374,
-      "excess_rate": 0.0016,
+      "p_naive_binomial": 0.0033,
+      "p_swap_test": 0.0069965017491254375,
+      "excess_rate": 0.0021,
       "excess_rate_null_95": 0.0013,
-      "n_units": 649
+      "n_units": 650
     }
   ],
-  "pads_with_2plus_events": 40,
+  "pads_with_2plus_events": 42,
   "plugged_121_39189_pad": null,
   "plugged_121_39189_pad_events": null
 }
@@ -4544,20 +4778,19 @@ Environment: Python 3.13; h5py, fsspec + aiohttp, requests, rasterio/GDAL, geopa
 ### nisar/results/9t/nisar_steel_by_canopy_9t_slc.csv
 ```csv
 cover,group,n_wells,wells_sbt_any_track,decoys_sbt_any_track,auc_brightness,auc_steadiness
-open_cover_lt0p30,active,232,0.009,0.017,0.519,0.494
-open_cover_lt0p30,plugged,112,0.009,0.015,0.507,0.444
-open_cover_lt0p30,abandoned,69,0.029,0.015,0.529,0.488
-open_cover_lt0p30,not_drilled,5,0.0,0.04,0.384,0.464
-canopy_cover_ge0p30,active,385,0.016,0.018,0.512,0.511
-canopy_cover_ge0p30,plugged,159,0.0,0.005,0.521,0.493
-canopy_cover_ge0p30,abandoned,105,0.0,0.01,0.566,0.521
-canopy_cover_ge0p30,not_drilled,5,0.0,0.04,0.352,0.576
+open_cover_lt0p30,active,239,0.013,0.019,0.526,0.507
+open_cover_lt0p30,plugged,117,0.009,0.012,0.499,0.493
+open_cover_lt0p30,abandoned,74,0.041,0.011,0.578,0.511
+canopy_cover_ge0p30,active,379,0.016,0.015,0.508,0.491
+canopy_cover_ge0p30,plugged,154,0.0,0.016,0.521,0.486
+canopy_cover_ge0p30,abandoned,99,0.0,0.004,0.567,0.525
+canopy_cover_ge0p30,not_drilled,6,0.0,0.0,0.586,0.537
 
 ```
 ### nisar/results/9t/nisar_pad_change_by_season_9t_slc.csv
 ```csv
 season,threshold,n_pad_pairs,pad_events,expected_from_decoys,decoy_rate,p_naive_binomial,p_swap_test,excess_rate,excess_rate_null_95,n_units
-snowfree,-0.192,18172,211,181.9,0.01,0.018,0.021989005497251374,0.0016,0.0013,649
+snowfree,-0.192,18200,220,182.0,0.01,0.0033,0.0069965017491254375,0.0021,0.0013,650
 
 ```
 ### nisar/results/9t/nisar_pit_pool_radar_9t.csv
@@ -4789,6 +5022,116 @@ def wells(crs: str = "EPSG:32617", pad_m: float = 0.0):
     x0, y0, x1, y1 = bounds(crs)
     w = gpd.read_file(WELLS).to_crs(crs)
     return w.cx[x0 - pad_m:x1 + pad_m, y0 - pad_m:y1 + pad_m].reset_index(drop=True)
+
+
+RADAR_EPOCH = 2026.7   # mid-stack decimal year for the NAD83(2011) -> ITRF2014 step
+
+
+def radar_shift(x: float, y: float) -> tuple[float, float]:
+    """(dx, dy) in m that moves a NAD83(2011) UTM 17N point onto the radar grid. Set 2026-11-26.
+
+    The radar grid is WGS84 / UTM 17N, with WGS84 taken as ITRF2014, the same as the re-geocoder.
+    PROJ's plain EPSG:6346 -> EPSG:32617 route is a null transform, so it leaves about 1.2 m out.
+    Route: 6346 -> 6319 (3-D) -> 7912 at RADAR_EPOCH -> 32617. Uniform to mm across one tile.
+    """
+    from pyproj import Transformer
+    lon, lat = Transformer.from_crs("EPSG:6346", "EPSG:6318", always_xy=True).transform(x, y)
+    lo, la, _, _ = Transformer.from_crs("EPSG:6319", "EPSG:7912", always_xy=True).transform(
+        lon, lat, 0.0, RADAR_EPOCH)
+    X, Y = Transformer.from_crs("EPSG:4326", "EPSG:32617", always_xy=True).transform(lo, la)
+    return X - x, Y - y
+
+
+def to_radar(gdf):
+    """Reproject a vector layer onto the radar grid with the NAD83(2011) -> ITRF2014 shift."""
+    g = gdf.to_crs("EPSG:6346")
+    x0, y0, x1, y1 = g.total_bounds
+    dx, dy = radar_shift((x0 + x1) / 2, (y0 + y1) / 2)
+    g = g.set_geometry(g.geometry.translate(dx, dy))
+    return g.set_crs("EPSG:32617", allow_override=True)
+
+```
+### nisar/code/s5_eval/_nisar_processor_step_9t.py
+```python
+"""Radiometric step between NISAR processor versions P05023 and P05036, 9t. Set 2026-11-26.
+
+Why
+  Every date to 2026-10-18 is provisional P05023. Every date from 2026-10-23 is standard P05036
+  (new absolute calibration, RX-factor change). That is the same week as leaf drop, so a season
+  contrast could carry a processor step. Each track has one date on each side, 12 days apart:
+  162 Oct 11 -> Oct 23, 026 Oct 14 -> Oct 26, 090 Oct 18 -> Oct 30.
+  The baseline is the prior same-version 12-day step: Sep 29 -> Oct 11, Oct 2 -> Oct 14,
+  Oct 6 -> Oct 18. The excess over the baseline estimates the processor step.
+
+Measures (HH and HV, median of per-pixel dB change)
+  all valid pixels, open ground (canopy cover < 0.10), closed forest (> 0.70), and the peak
+  pixel within 10 m of the 9 NAIP-confirmed buildings (point-like, leaf-insensitive).
+
+Output
+  nisar/results/9t/nisar_processor_step_summary_9t_slc.json
+
+Run
+  python nisar/code/s5_eval/_nisar_processor_step_9t.py --slc
+"""
+import importlib
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+from scipy.ndimage import maximum_filter
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+ifg = importlib.import_module("_nisar_gslc_interferogram_pits_9t")
+st = ifg.st
+OUT = st.OUT
+PAIRS = {162: ("2026-09-29", "2026-10-11", "2026-10-23"),
+         26: ("2026-10-02", "2026-10-14", "2026-10-26"),
+         90: ("2026-10-06", "2026-10-18", "2026-10-30")}
+
+
+def main():
+    idx, stack, tf, shape = ifg.load_complex()
+    cover = st.canopy_cover(tf, shape)
+    b = pd.read_csv(OUT / "nisar_top_targets_naip_classes_9t.csv")
+    b = b[b["class"] == "building"]
+    col = ((b.x.values - tf.c) / tf.a // 1).astype(int)
+    row = ((b.y.values - tf.f) / tf.e // 1).astype(int)
+    fp = np.ones((5, 5), bool)
+    res = []
+    for t, (d0, d1, d2) in PAIRS.items():
+        f = {d: idx[(idx.track == t) & (idx.date.astype(str) == d)].file.iloc[0] for d in (d0, d1, d2)}
+        for bi, pol in enumerate(("HH", "HV")):
+            db = {d: 10 * np.log10(np.abs(stack[f[d]][bi]).astype(np.float64) ** 2) for d in f}
+            ok = np.all([np.isfinite(v) for v in db.values()], axis=0)
+            pk = {d: maximum_filter(np.where(ok, v, -99), footprint=fp)[row, col] for d, v in db.items()}
+            for lab, a, c in (("baseline_same_version", d0, d1), ("across_versions", d1, d2)):
+                dd = db[c] - db[a]
+                r = dict(track=t, pol=pol, step=lab, dates=f"{a}->{c}")
+                for k, m in (("all", ok), ("open_lt0p10", ok & (cover < 0.10)), ("closed_gt0p70", ok & (cover > 0.70))):
+                    r[f"median_db_{k}"] = round(float(np.median(dd[m])), 3)
+                    r[f"n_{k}"] = int(m.sum())
+                r["median_db_buildings"] = round(float(np.median(pk[c] - pk[a])), 3)
+                r["n_buildings"] = len(b)
+                res.append(r)
+    df = pd.DataFrame(res)
+    print(df.to_string())
+    ex = []
+    for (t, pol), g in df.groupby(["track", "pol"]):
+        g = g.set_index("step")
+        ex.append(dict(track=int(t), pol=pol, **{k.replace("median_db_", "excess_db_"): round(
+            g.loc["across_versions", k] - g.loc["baseline_same_version", k], 3)
+            for k in g.columns if k.startswith("median_db_")}))
+    print(pd.DataFrame(ex).to_string())
+    p = OUT / "nisar_processor_step_summary_9t_slc.json"
+    p.write_text(json.dumps(dict(pairs={int(k): v for k, v in PAIRS.items()}, steps=res, excess=ex), indent=1))
+    print("wrote", p)
+
+
+if __name__ == "__main__":
+    main()
 
 ```
 ### nisar/code/_nisar_fig_style.py
@@ -7533,9 +7876,9 @@ def main() -> int:
         metrics[f"{p}_change_leafon_vs_fall"] = (f"{p}_leafon", f"{p}_leafoff_fall")
 
     # ---- geometry ---------------------------------------------------------------------
-    pads = read_layer(ANN, "plat").to_crs(CRS)[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
-    pits = read_layer(ANN, "pit_outside").to_crs(CRS).reset_index(drop=True)
-    roads = read_layer(ANN, "roads").to_crs(CRS)
+    pads = read_layer(ANN, "plat").pipe(A.to_radar)[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
+    pits = read_layer(ANN, "pit_outside").pipe(A.to_radar).reset_index(drop=True)
+    roads = read_layer(ANN, "roads").pipe(A.to_radar)
     feat_zone = rasterize([(g, 1) for g in pd.concat([pads.buffer(20), pits.buffer(20), roads.buffer(20)])],
                           out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
     ok_flat = in_tile.ravel()
@@ -7647,7 +7990,7 @@ def main() -> int:
     (OUT / f"nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season{sfx}_{A.TAG}_5m.json").write_text(json.dumps(dict(
         n_dates_by_track_season=counts.stack().rename("n").reset_index().to_dict("records"),
         registration=reg, shift_applied_m={int(k): v for k, v in shift_of.items()},
-        seasons=SEASONS, n_decoys=N_PLACEBO,
+        seasons=SEASONS, n_decoys=n_decoys,
         tile_median_change_leafon_minus_fall_db={f"{k[0]}_{k[1]}": v for k, v in tile_median_change.items()}, control=control.to_dict("records"),
         results=results), indent=1, default=str))
 
@@ -8173,8 +8516,12 @@ def sbt_maps(idx, stack, shape):
     for t, g in idx.groupby("track"):
         A = np.stack([np.abs(stack[f][0]) for f in g.file]).astype(np.float32)
         ok = np.all(np.isfinite(A) & (A > 0), axis=0)
+        # 2026-11-26: scale each date to the track's common tile-median amplitude, so a
+        # calibration step between processor versions (P05023 -> P05036) does not inflate D_A.
+        med = np.array([np.median(a[ok]) for a in A], np.float32)
+        A *= (np.median(med) / med)[:, None, None]
         mA = A.mean(0)
-        da = A.std(0) / np.where(mA > 0, mA, np.nan)
+        da = A.std(0, ddof=1) / np.where(mA > 0, mA, np.nan)   # 2026-11-26: N-1, was N
         mdb = 10 * np.log10(np.where(ok, (A ** 2).mean(0), np.nan))
         k = int(BG_M / 5) | 1
         bg = median_filter(np.where(ok, mdb, np.nanmedian(mdb)), size=k)
@@ -8193,8 +8540,8 @@ def hits(maps, pts, tf, shape, dx=0.0, dy=0.0):
     r = int(np.ceil(R_M / 5))
     yy, xx = np.mgrid[-r:r + 1, -r:r + 1]
     fp = (xx ** 2 + yy ** 2) * 25 <= R_M ** 2
-    col = ((pts.x.values - dx - tf.c) / tf.a).astype(int)
-    row = ((pts.y.values - dy - tf.f) / tf.e).astype(int)
+    col = ((pts.x.values - dx - tf.c) / tf.a // 1).astype(int)
+    row = ((pts.y.values - dy - tf.f) / tf.e // 1).astype(int)
     inb = (row >= 0) & (row < shape[0]) & (col >= 0) & (col < shape[1])
     n = np.zeros(len(pts), int)
     for m in maps.values():
@@ -8209,8 +8556,8 @@ def local_scores(maps, pts, tf, shape):
     r = int(np.ceil(R_M / 5))
     yy, xx = np.mgrid[-r:r + 1, -r:r + 1]
     fp = (xx ** 2 + yy ** 2) * 25 <= R_M ** 2
-    col = ((pts.x.values - tf.c) / tf.a).astype(int)
-    row = ((pts.y.values - tf.f) / tf.e).astype(int)
+    col = ((pts.x.values - tf.c) / tf.a // 1).astype(int)
+    row = ((pts.y.values - tf.f) / tf.e // 1).astype(int)
     b, d = [], []
     for m in maps.values():
         b.append(maximum_filter(np.nan_to_num(m["bright"], nan=-99), footprint=fp)[row, col])
@@ -8228,20 +8575,20 @@ def main():
 
     x0, y1 = tf.c, tf.f
     x1, y0 = x0 + shape[1] * 5, y1 - shape[0] * 5
-    w = gpd.read_file(WELLS).to_crs(CRS).cx[x0 + R_M:x1 - R_M, y0 + R_M:y1 - R_M].copy()
+    w = gpd.read_file(WELLS).pipe(AREA.to_radar).cx[x0 + R_M:x1 - R_M, y0 + R_M:y1 - R_M].copy()
     w["group"] = None
     for k, v in GROUPS.items():
         w.loc[w.WELL_STATU.isin(v), "group"] = k
     w = w[w.group.notna()].reset_index(drop=True)
-    col = ((w.geometry.x - tf.c) / tf.a).astype(int)
-    row = ((w.geometry.y - tf.f) / tf.e).astype(int)
+    col = ((w.geometry.x - tf.c) / tf.a // 1).astype(int)
+    row = ((w.geometry.y - tf.f) / tf.e // 1).astype(int)
     w = w[valid[row, col]].reset_index(drop=True)
-    w["cover"] = cover[((w.geometry.y - tf.f) / tf.e).astype(int), ((w.geometry.x - tf.c) / tf.a).astype(int)]
+    w["cover"] = cover[((w.geometry.y - tf.f) / tf.e // 1).astype(int), ((w.geometry.x - tf.c) / tf.a // 1).astype(int)]
     print(w.group.value_counts().to_string())
 
     # decoys: away from every DEP well (any status) and every annotated pad, matched on canopy
-    allw = gpd.read_file(WELLS).to_crs(CRS).cx[x0 - 100:x1 + 100, y0 - 100:y1 + 100]
-    pads = read_layer(ANN, "plat").to_crs(CRS)
+    allw = gpd.read_file(WELLS).pipe(AREA.to_radar).cx[x0 - 100:x1 + 100, y0 - 100:y1 + 100]
+    pads = read_layer(ANN, "plat").pipe(AREA.to_radar)
     away = rasterize([(g, 1) for g in list(allw.buffer(60)) + list(pads.buffer(30))],
                      out_shape=shape, transform=tf, fill=0, dtype="uint8") == 0
     away &= valid
@@ -8467,8 +8814,8 @@ def main():
 
     x0, y1 = tf.c, tf.f
     x1, y0 = x0 + shape[1] * 5, y1 - shape[0] * 5
-    pads = S.read_layer(S.ANN, "plat").to_crs(S.CRS).cx[x0:x1, y0:y1].reset_index(drop=True)
-    wells = gpd.read_file(S.WELLS).to_crs(S.CRS).cx[x0 - 100:x1 + 100, y0 - 100:y1 + 100]
+    pads = S.read_layer(S.ANN, "plat").pipe(S.AREA.to_radar).cx[x0:x1, y0:y1].reset_index(drop=True)
+    wells = gpd.read_file(S.WELLS).pipe(S.AREA.to_radar).cx[x0 - 100:x1 + 100, y0 - 100:y1 + 100]
     grp = {v: k for k, vs in S.GROUPS.items() for v in vs}
     wells["group"] = wells.WELL_STATU.map(grp)
 
@@ -8651,13 +8998,13 @@ def main():
 
     x0, y1 = tf.c, tf.f
     x1, y0 = x0 + shape[1] * 5, y1 - shape[0] * 5
-    w = gpd.read_file(WELLS).to_crs(CRS).cx[x0 - 500:x1 + 500, y0 - 500:y1 + 500].reset_index(drop=True)
+    w = gpd.read_file(WELLS).pipe(AREA.to_radar).cx[x0 - 500:x1 + 500, y0 - 500:y1 + 500].reset_index(drop=True)
     d, j = cKDTree(np.c_[w.geometry.x, w.geometry.y]).query(np.c_[g.geometry.x, g.geometry.y])
     g["well_dist_m"] = d.round(1)
     g["well_permit"] = w.PERMIT_NUM.values[j]
     g["well_status"] = w.WELL_STATU.values[j]
-    pads = read_layer(ANN, "plat").to_crs(CRS).union_all()
-    roads = read_layer(ANN, "roads").to_crs(CRS).union_all()
+    pads = read_layer(ANN, "plat").pipe(AREA.to_radar).union_all()
+    roads = read_layer(ANN, "roads").pipe(AREA.to_radar).union_all()
     g["pad_dist_m"] = g.geometry.distance(pads).round(1)
     g["road_dist_m"] = g.geometry.distance(roads).round(1)
 
@@ -8811,9 +9158,9 @@ def main():
     in_tile = np.isfinite(cover)
     ok_flat = in_tile.ravel()
 
-    pads = read_layer(ANN, "plat").to_crs(CRS).reset_index(drop=True)
-    pits = read_layer(ANN, "pit_outside").to_crs(CRS)
-    roads = read_layer(ANN, "roads").to_crs(CRS)
+    pads = read_layer(ANN, "plat").pipe(AREA.to_radar).reset_index(drop=True)
+    pits = read_layer(ANN, "pit_outside").pipe(AREA.to_radar)
+    roads = read_layer(ANN, "roads").pipe(AREA.to_radar)
     feat = rasterize([(g, 1) for g in pd.concat([pads.buffer(20), pits.buffer(20), roads.buffer(20)])],
                      out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
     bg_flat = (in_tile & ~feat).ravel()
@@ -8828,7 +9175,7 @@ def main():
         sets.append((i, core, rg, dec))
     print(f"{len(sets)} of {len(pads)} pads usable inside the window")
 
-    wells = gpd.read_file(WELLS).to_crs(CRS)
+    wells = gpd.read_file(WELLS).pipe(AREA.to_radar)
     j = gpd.sjoin(wells[["PERMIT_NUM", "WELL_STATU", "DATE_PLUGG", "geometry"]],
                   gpd.GeoDataFrame(geometry=pads.buffer(10), crs=CRS).reset_index(names="pad"), predicate="within")
     wells_on = j.groupby("pad").agg(n_dep_wells=("PERMIT_NUM", "size"),
@@ -9259,9 +9606,13 @@ def main():
     spread = pd.DataFrame(spread)
     print(spread.to_string())
 
-    # aspect test on steep slopes. Ascending, right-looking: the radar looks east from the west.
-    # Downslope creep on a west-facing slope moves toward the satellite (positive), on an
-    # east-facing slope away from it (negative). North- and south-facing creep is mostly unseen.
+    # aspect test on steep slopes. NISAR is LEFT-looking (RSLC identification/lookDirection = 'Left');
+    # on ascending tracks 090 and 162 the target-to-sensor vector points east (losUnitVectorX +0.60,
+    # +0.69), so the radar sits east and looks west. Fixed 2026-11-26 (was "right-looking").
+    # Downslope creep on an east-facing slope moves toward the satellite (positive), on a
+    # west-facing slope away from it (negative). Real creep must flip sign between the two;
+    # one sign on every aspect points to a stratified troposphere or a phase-centre shift.
+    # North- and south-facing creep is mostly unseen.
     with rasterio.open(DEM) as r:
         dem = np.full(shp25, np.nan, np.float32)
         reproject(r.read(1, masked=True).filled(np.nan).astype(np.float32), dem, src_transform=r.transform,
@@ -9629,7 +9980,7 @@ from _common import path_for  # noqa: E402
 
 OUT = N / "docs" / "nisar_pipeline_appendix_9t.md"
 SCRIPTS = [
-    "nisar/code/_nisar_area.py", "nisar/code/_nisar_fig_style.py", "notebooks/wellsight_v2/_common.py",
+    "nisar/code/_nisar_area.py", "nisar/code/s5_eval/_nisar_processor_step_9t.py", "nisar/code/_nisar_fig_style.py", "notebooks/wellsight_v2/_common.py",
     "nisar/code/s1_build/_fetch_nisar_gslc_window_9t.py", "nisar/code/s1_build/_fetch_nisar_rslc_window_9t.py",
     "nisar/code/s1_build/_nisar_geometry.py", "nisar/code/s1_build/_nisar_regeocode_lidar_9t.py",
     "nisar/code/s5_eval/_nisar_lidar_sim_match_9t.py", "nisar/code/s5_eval/_nisar_gslc_stack_pad_pit_seasonal_9t.py",
@@ -9640,7 +9991,7 @@ SCRIPTS = [
     "nisar/code/s7_analysis/_nisar_steel_pads_fig_9t.py", "nisar/code/s7_analysis/_nisar_pipeline_appendix_9t.py",
 ]
 RESULTS = [
-    "nisar_lidar_sim_match_summary_coregabs_k010_9t.json", "nisar_steel_summary_9t_slc.json",
+    "nisar_processor_step_summary_9t_slc.json", "nisar_lidar_sim_match_summary_coregabs_k010_9t.json", "nisar_steel_summary_9t_slc.json",
     "nisar_steel_pads_summary_9t_slc.json", "nisar_bright_targets_summary_9t_slc.json",
     "nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_9t_slc_5m.json", "nisar_pad_change_summary_9t_slc.json",
     "nisar_gslc_interferogram_pits_vs_decoys_win3_9t_slc_5m_summary.json", "nisar_slope_motion_summary_9t_slc.json",
@@ -9664,6 +10015,7 @@ RUN = [
     "python nisar/code/s5_eval/_nisar_steel_pads_9t.py --slc",
     "python nisar/code/s5_eval/_nisar_bright_targets_9t.py --slc",
     "python nisar/code/s5_eval/_nisar_pad_change_9t.py --slc",
+    "python nisar/code/s5_eval/_nisar_processor_step_9t.py --slc",
     "python nisar/code/s5_eval/_nisar_pit_pool_9t.py",
     "python nisar/code/s5_eval/_nisar_slope_motion_9t.py --slc",
     "python nisar/code/s7_analysis/_nisar_naip_chips_9t.py",

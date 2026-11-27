@@ -102,8 +102,12 @@ def sbt_maps(idx, stack, shape):
     for t, g in idx.groupby("track"):
         A = np.stack([np.abs(stack[f][0]) for f in g.file]).astype(np.float32)
         ok = np.all(np.isfinite(A) & (A > 0), axis=0)
+        # 2026-11-26: scale each date to the track's common tile-median amplitude, so a
+        # calibration step between processor versions (P05023 -> P05036) does not inflate D_A.
+        med = np.array([np.median(a[ok]) for a in A], np.float32)
+        A *= (np.median(med) / med)[:, None, None]
         mA = A.mean(0)
-        da = A.std(0) / np.where(mA > 0, mA, np.nan)
+        da = A.std(0, ddof=1) / np.where(mA > 0, mA, np.nan)   # 2026-11-26: N-1, was N
         mdb = 10 * np.log10(np.where(ok, (A ** 2).mean(0), np.nan))
         k = int(BG_M / 5) | 1
         bg = median_filter(np.where(ok, mdb, np.nanmedian(mdb)), size=k)
@@ -122,8 +126,8 @@ def hits(maps, pts, tf, shape, dx=0.0, dy=0.0):
     r = int(np.ceil(R_M / 5))
     yy, xx = np.mgrid[-r:r + 1, -r:r + 1]
     fp = (xx ** 2 + yy ** 2) * 25 <= R_M ** 2
-    col = ((pts.x.values - dx - tf.c) / tf.a).astype(int)
-    row = ((pts.y.values - dy - tf.f) / tf.e).astype(int)
+    col = ((pts.x.values - dx - tf.c) / tf.a // 1).astype(int)
+    row = ((pts.y.values - dy - tf.f) / tf.e // 1).astype(int)
     inb = (row >= 0) & (row < shape[0]) & (col >= 0) & (col < shape[1])
     n = np.zeros(len(pts), int)
     for m in maps.values():
@@ -138,8 +142,8 @@ def local_scores(maps, pts, tf, shape):
     r = int(np.ceil(R_M / 5))
     yy, xx = np.mgrid[-r:r + 1, -r:r + 1]
     fp = (xx ** 2 + yy ** 2) * 25 <= R_M ** 2
-    col = ((pts.x.values - tf.c) / tf.a).astype(int)
-    row = ((pts.y.values - tf.f) / tf.e).astype(int)
+    col = ((pts.x.values - tf.c) / tf.a // 1).astype(int)
+    row = ((pts.y.values - tf.f) / tf.e // 1).astype(int)
     b, d = [], []
     for m in maps.values():
         b.append(maximum_filter(np.nan_to_num(m["bright"], nan=-99), footprint=fp)[row, col])
@@ -157,20 +161,20 @@ def main():
 
     x0, y1 = tf.c, tf.f
     x1, y0 = x0 + shape[1] * 5, y1 - shape[0] * 5
-    w = gpd.read_file(WELLS).to_crs(CRS).cx[x0 + R_M:x1 - R_M, y0 + R_M:y1 - R_M].copy()
+    w = gpd.read_file(WELLS).pipe(AREA.to_radar).cx[x0 + R_M:x1 - R_M, y0 + R_M:y1 - R_M].copy()
     w["group"] = None
     for k, v in GROUPS.items():
         w.loc[w.WELL_STATU.isin(v), "group"] = k
     w = w[w.group.notna()].reset_index(drop=True)
-    col = ((w.geometry.x - tf.c) / tf.a).astype(int)
-    row = ((w.geometry.y - tf.f) / tf.e).astype(int)
+    col = ((w.geometry.x - tf.c) / tf.a // 1).astype(int)
+    row = ((w.geometry.y - tf.f) / tf.e // 1).astype(int)
     w = w[valid[row, col]].reset_index(drop=True)
-    w["cover"] = cover[((w.geometry.y - tf.f) / tf.e).astype(int), ((w.geometry.x - tf.c) / tf.a).astype(int)]
+    w["cover"] = cover[((w.geometry.y - tf.f) / tf.e // 1).astype(int), ((w.geometry.x - tf.c) / tf.a // 1).astype(int)]
     print(w.group.value_counts().to_string())
 
     # decoys: away from every DEP well (any status) and every annotated pad, matched on canopy
-    allw = gpd.read_file(WELLS).to_crs(CRS).cx[x0 - 100:x1 + 100, y0 - 100:y1 + 100]
-    pads = read_layer(ANN, "plat").to_crs(CRS)
+    allw = gpd.read_file(WELLS).pipe(AREA.to_radar).cx[x0 - 100:x1 + 100, y0 - 100:y1 + 100]
+    pads = read_layer(ANN, "plat").pipe(AREA.to_radar)
     away = rasterize([(g, 1) for g in list(allw.buffer(60)) + list(pads.buffer(30))],
                      out_shape=shape, transform=tf, fill=0, dtype="uint8") == 0
     away &= valid

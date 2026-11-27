@@ -107,6 +107,7 @@ SEASONS = {"leafoff_fall": ("2026-10-21", "2026-11-30"),
            "leafon": ("2026-06-01", "2026-09-30")}
 PAD_CORE_M, PAD_RING, PAD_EXCL = 3.0, (20.0, 60.0), 10.0
 PIT_RING, PIT_EXCL = (10.0, 30.0), 5.0
+DECOY_R = (150.0, 600.0)   # control-spot distance range, m
 SHIFTS = range(-20, 21, 5)
 REG_MIN_RHO = 0.10   # below this the canopy correlation is too weak to locate a shift
 N_PLACEBO = 5
@@ -222,7 +223,7 @@ def placebo_sets(geom, core_m, ring, excl, tf, shape, ok_flat, bg_flat, rng, k, 
     for _ in range(tries):
         if len(out) == k:
             break
-        a, r = rng.uniform(0, 2 * np.pi), rng.uniform(150, 600)
+        a, r = rng.uniform(0, 2 * np.pi), rng.uniform(*DECOY_R)
         g = translate(geom, r * np.cos(a), r * np.sin(a))
         core = pixel_index(g.buffer(-core_m) if core_m else g, tf, shape)
         if len(core) == 0 or not bg_flat[core].all():
@@ -283,11 +284,23 @@ def main() -> int:
     ap.add_argument("--force-best-shift", action="store_true")
     ap.add_argument("--decoys", type=int, default=N_PLACEBO,
                     help="decoys per feature; above the default, adds a swap test and writes _swapK outputs only")
+    # 2026-11-23 sensitivity switches: change one setting and tag the outputs; defaults are unchanged
+    ap.add_argument("--pit-ring", type=float, nargs=2, metavar=("IN", "OUT"))
+    ap.add_argument("--pad-ring", type=float, nargs=2, metavar=("IN", "OUT"))
+    ap.add_argument("--decoy-r", type=float, nargs=2, metavar=("MIN", "MAX"))
+    ap.add_argument("--tag", default="", help="extra output suffix for a sensitivity run")
     args = ap.parse_args()
+    global PIT_RING, PAD_RING, DECOY_R
+    if args.pit_ring:
+        PIT_RING = tuple(args.pit_ring)
+    if args.pad_ring:
+        PAD_RING = tuple(args.pad_ring)
+    if args.decoy_r:
+        DECOY_R = tuple(args.decoy_r)
     force = args.force_best_shift
     n_decoys = args.decoys
     swap = n_decoys != N_PLACEBO
-    sfx = ("_forcedshift" if force else "") + (f"_swap{n_decoys}" if swap else "")
+    sfx = ("_forcedshift" if force else "") + (f"_swap{n_decoys}" if swap else "") + (f"_{args.tag}" if args.tag else "")
     FIG.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(SEED)
     print(f"area {A.TAG}")
@@ -355,9 +368,9 @@ def main() -> int:
         metrics[f"{p}_change_leafon_vs_fall"] = (f"{p}_leafon", f"{p}_leafoff_fall")
 
     # ---- geometry ---------------------------------------------------------------------
-    pads = read_layer(ANN, "plat").to_crs(CRS)[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
-    pits = read_layer(ANN, "pit_outside").to_crs(CRS).reset_index(drop=True)
-    roads = read_layer(ANN, "roads").to_crs(CRS)
+    pads = read_layer(ANN, "plat").pipe(A.to_radar)[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
+    pits = read_layer(ANN, "pit_outside").pipe(A.to_radar).reset_index(drop=True)
+    roads = read_layer(ANN, "roads").pipe(A.to_radar)
     feat_zone = rasterize([(g, 1) for g in pd.concat([pads.buffer(20), pits.buffer(20), roads.buffer(20)])],
                           out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
     ok_flat = in_tile.ravel()
@@ -449,7 +462,7 @@ def main() -> int:
     prof = dict(driver="GTiff", height=shape[0], width=shape[1], count=1, dtype="float32",
                 crs=CRS, transform=tf, nodata=np.nan, compress="deflate")
     n_written = 0
-    for t in ([] if force or swap else tracks):
+    for t in ([] if force or swap or args.tag else tracks):   # sensitivity runs do not overwrite the rasters
         d = idx[idx.track == t].direction.iat[0]
         # rasters stay as delivered even when the statistics use a lidar shift
         tag = "asdelivered"
@@ -469,7 +482,7 @@ def main() -> int:
     (OUT / f"nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season{sfx}_{A.TAG}_5m.json").write_text(json.dumps(dict(
         n_dates_by_track_season=counts.stack().rename("n").reset_index().to_dict("records"),
         registration=reg, shift_applied_m={int(k): v for k, v in shift_of.items()},
-        seasons=SEASONS, n_decoys=N_PLACEBO,
+        seasons=SEASONS, n_decoys=n_decoys,
         tile_median_change_leafon_minus_fall_db={f"{k[0]}_{k[1]}": v for k, v in tile_median_change.items()}, control=control.to_dict("records"),
         results=results), indent=1, default=str))
 
