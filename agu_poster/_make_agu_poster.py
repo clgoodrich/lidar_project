@@ -61,7 +61,7 @@ LINE = BODY_PT * 1.2 / 72  # body line height, in
 CHARS = 74                 # body characters per line across one column at 44 pt (Calibri, measured)
 
 TITLE = "Detecting orphaned oil and gas wells under forest canopy with airborne lidar and U-Nets"
-TAKEAWAY = "Airborne lidar finds 93% of well pits under forest canopy while flagging 0.13% of the ground"
+TAKEAWAY = "Airborne lidar finds 98% of well pits under forest canopy while flagging 0.14% of the ground"
 
 FIG_FILES = {
     "intro": FIGS / "poster_pa_wells_locator.png",
@@ -134,28 +134,25 @@ SECTIONS = [
                  "Next. Field-check candidates and test on McKean lidar."),
     ]),
     ("Results", C3, LOWER, [
-        ("table", None, 4.3, None),
+        ("table", None, 3.0, None),
         ("fig", "errors", 4.5, "Found, missed, unlabelled"),
-        ("text", "Pits and pads are found at 93% and 91% (467 of 503, 593 of 650). Threshold-free average precision at IoU 0.3 is 0.82 for pits "
-                 "(95% bootstrap interval 0.78 to 0.86) and 0.75 for pads (0.70 to 0.79).|"
-                 "Pad recall falls to 77% at IoU 0.5. Where a pad ends and a wide road begins is an arbitrary line, so pad edges differ from ours "
-                 "even when the pad is found. Precision is a lower bound, since some unmatched detections may be real features we did not draw.|"
-                 "On Tile B the five-model ensemble recovers 98% of the 62 pits and 88% of the 86 pads drawn. "
-                 "That tile may not be fully drawn, so its precision, at least 52% and 54%, is a lower bound.|"
-                 "Pits are the best target: highest average precision, sharpest outlines and the smallest search area."),
+        ("text", "On Tile B the five-model ensemble finds 98% of the 62 drawn pits and 88% of the 86 drawn pads (61 and 76).|"
+                 "Recall at IoU 0.5 is 94% for pits and 67% for pads. Where a pad ends and a wide road begins is an arbitrary line, "
+                 "so pad edges differ from ours even when the pad is found.|"
+                 "Precision is at least 52% for pits and 54% for pads. Tile B may not be fully drawn, so some unmatched detections may be real features we did not draw.|"
+                 "In cross-validation on Area A, with every block held out once, recall was 93% for pits and 91% for pads. "
+                 "Average precision at IoU 0.3 was 0.82 and 0.75.|"
+                 "Pits are the best target: sharpest outlines and the smallest search area."),
     ]),
 ]
 # Results table: ann712 CV5, F2 threshold per fold, IoU 0.3 (docs/iterations/LEADERBOARD.md, 2026-09-17).
 # Roads: recall_clean at thr 0.20 on 735 held-out segments; road precision is not object-scored, so it is left blank.
 TABLE = [("", "Recall", "Precision", "IoU 0.5 recall", "Ground flagged"),
-         ("Pits", "93%", "63%", "82%", "0.13%"),
-         ("Pads", "91%", "59%", "77%", "10%"),
-         ("Roads\u2020", "98%", "\u2014", "\u2014", "5.0%"),
-         ("Pits, Tile B‡", "98%", "≥52%", "94%", "0.14%"),
-         ("Pads, Tile B‡", "88%", "≥54%", "67%", "11%")]
-TABLE_NOTE = ("Table 1. Held-out results, Area A, IoU 0.3 and F2 cutoff. A detection matches a hand outline when intersection over union (IoU) "
-              "is at least 0.3. Ground flagged is the share of ground above the cutoff. \u2020Roads: 40 m chunks fully held out, single-split model, "
-              "probability 0.20. \u2021Tile B, unseen in training, five-model ensemble. Precision is a lower bound because the tile may not be fully drawn.")
+         ("Pits", "98%", "≥52%", "94%", "0.14%"),
+         ("Pads", "88%", "≥54%", "67%", "11%")]
+TABLE_NOTE = ("Table 1. Results on Tile B, unseen in training: five-model ensemble, IoU 0.3 and F2 cutoff unless stated. A detection matches a hand outline "
+              "when intersection over union (IoU) is at least 0.3. Ground flagged is the share of Tile B above the cutoff. "
+              "Precision is a lower bound, because the tile may not be fully drawn.")
 SPEC = [("Sign", "Grid, patch", "Classes", "Focal weights"),
         ("Pits", "0.5 m, 128 m", "background, floor, rim", "0.05, 0.475, 0.475"),
         ("Pads", "0.5 m, 192 m", "background, pad", "0.15, 0.85"),
