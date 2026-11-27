@@ -7,6 +7,11 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-27 - Three-page NISAR write-up (9t)
+- Baseline vs stricter controls, styled on the SAOCOM and Urban LiDAR reports in docs/related/.
+- Source md, docx built by script, PDF exported from Word (3 pages, about 1,500 words, 2 tables).
+- Files: nisar/writeup/nisar_secondary_writeup_9t.md, .docx, .pdf; nisar/writeup/_make_secondary_writeup_docx.py
+
 ## 2026-11-27 — Pit-sized hollows radar test (9t)
 - 90 hollows (floor 10 m2, 40 m from wells, 20 m from pits/pads/roads), matched decoys, 89 scored.
 - Summer HV +0.09 dB, CI -0.29 to +0.41, p 0.48 (pits +0.16, CI +0.09 to +0.23). Summer HH +0.14, p 0.41.
