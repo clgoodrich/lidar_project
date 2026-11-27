@@ -71,7 +71,7 @@ FIG_FILES = {
     "hero": FIGS / "poster_hero_heldout_9t.png",
     "setup": FIGS / "poster_pipeline_diagram.png",
     "valid": FIGS / "poster_cv_folds_pit_9t.png",
-    "transfer": FIGS / "poster_transfer_613590.png",
+    "transfer": FIGS / "poster_prob_maps_613590.png",
 }
 
 # Numbered captions in reading order. Scale and data source are stated for every map.
@@ -85,7 +85,7 @@ CAPS = {
              "(b) Found pit. (c) Missed pit. (d) Model pit with no hand label. Bars: 100 m in (a), 10 m in (b) to (d)."),
     "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
     "valid": ("Figure 6.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
-    "transfer": ("Figure 5.", "Pit and pad models trained on tile 9t, run unchanged on tile 613590, on a red relief image map. (b) Pit and pad found. (c) Model pit with no hand label. Bars: 100 m in (a), 20 m in (b) and (c)."),
+    "transfer": ("Figure 5.", "Model output on tile 613590, a tile the models were not trained on (400 m window). (a) Red relief image map with hand outlines, pit (blue) and pad (yellow dashed). (b) Pit probability and (c) pad probability from the tile 9t models, black 0 to white 1."),
 }
 
 SECTIONS = [
@@ -136,7 +136,7 @@ SECTIONS = [
                  "finds the pads, but where a pad ends and a wide road begins is an arbitrary line, so pad outlines "
                  "differ from ours at the edges. Pit outlines are tighter, with 82% matching at 0.5. Precision is 0.63 and 0.59 by design of the F2 cutoff, and some unmatched detections may be real features we have not drawn.|"
                  "Applied unchanged to tile 613590, which neither model saw in training, the networks outline pads along "
-                 "the access roads and place pits inside them (Figure 5). We drew only part of that tile, so precision "
+                 "the access roads and give each pit a sharp probability peak (Figure 5). We drew only part of that tile, so precision "
                  "cannot be scored there."),
     ]),
     ("Conclusions", C3, None, [

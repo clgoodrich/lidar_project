@@ -507,10 +507,56 @@ def fig_transfer():
     return b, len(hits), len(miss), len(fa)
 
 
+def fig_probmaps():
+    """Tile 613590, 400 m window: (a) relief image with hand outlines, (b) pit and (c) pad probability, grey scale 0 to 1."""
+    inf = D613 / "inference_05"
+    pit_h, pad_h = ann("pit_inside"), ann("plat")
+    S = 400
+    best = None
+    for x0 in range(613500, 618000 - S, 50):
+        for y0 in range(4590000, 4594500 - S, 50):
+            b = (x0, y0, x0 + S, y0 + S)
+            n = len(pit_h.cx[b[0]:b[2], b[1]:b[3]]) + len(pad_h.cx[b[0]:b[2], b[1]:b[3]])
+            if best is None or n > best[0]:
+                best = (n, b)
+    b = best[1]
+    pp = read(inf / "pit_prob_floor_613590_05.tif", b)
+    dp = read(inf / "pad_prob_613590_05.tif", b)
+    fig, axs = plt.subplots(1, 3, figsize=(13.47, 4.9), dpi=DPI)
+    fig.subplots_adjust(left=0.105, right=0.985, top=0.97, bottom=0.25, wspace=0.07)
+    ext = (b[0], b[2], b[1], b[3])
+    show_rrim_613(axs[0], b)
+    for g, col, ls in ((pad_h, MPAD, "--"), (pit_h, MPIT, "-")):
+        gg = g.cx[b[0]:b[2], b[1]:b[3]]
+        if len(gg):
+            gg.boundary.plot(ax=axs[0], color=col, linewidth=2.0, linestyle=ls)
+    im = axs[1].imshow(pp, cmap="gray", vmin=0, vmax=1, extent=ext, interpolation="nearest")
+    axs[2].imshow(dp, cmap="gray", vmin=0, vmax=1, extent=ext, interpolation="nearest")
+    for i, (ax, lab) in enumerate(zip(axs, "abc")):
+        ax.set_xlim(b[0], b[2]); ax.set_ylim(b[1], b[3])
+        ax.set_xticks([b[0] + 100, b[0] + 300]); ax.set_yticks([])
+        ax.ticklabel_format(useOffset=False, style="plain")
+        ax.tick_params(labelsize=15, length=5, width=1.2)
+        for s in ax.spines.values():
+            s.set_linewidth(1.2); s.set_color("black")
+        ax.text(0.03, 0.97, f"({lab})", transform=ax.transAxes, va="top", fontsize=22, color="black", path_effects=HALO)
+    axs[0].set_yticks([b[1] + 100, b[1] + 300]); axs[0].set_ylabel("Northing (m)", fontsize=16)
+    axs[0].tick_params(axis="y", labelsize=15)
+    axs[1].set_xlabel("Easting (m), EPSG:6346", fontsize=17)
+    sci_scalebar(axs[0], b[0] + 20, b[1] + 55, 100, fs=13, nseg=2)
+    cax = fig.add_axes([0.76, 0.135, 0.22, 0.03])
+    cb = fig.colorbar(im, cax=cax, orientation="horizontal", ticks=[0, 0.5, 1])
+    cb.ax.tick_params(labelsize=14, length=4); cb.set_label("Probability", fontsize=15, labelpad=2)
+    fig.savefig(OUT / "poster_prob_maps_613590.png", dpi=DPI)
+    plt.close(fig)
+    return b, float(pp.max()), float(dp.max())
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     for f in (fig_channels, fig_gallery, fig_folds, fig_pipeline, fig_pr, fig_optical):
         f(); print(f.__name__)
+    print("prob maps window, max pit, max pad:", fig_probmaps())
     print("transfer window, hits, misses, unlabelled:", fig_transfer())
     print("hero window, hits, misses, false alarms:", fig_hero())
 
