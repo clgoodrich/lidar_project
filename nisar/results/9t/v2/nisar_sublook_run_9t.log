@@ -1,0 +1,35 @@
+20260620_t090A {'band_lo': -0.4101, 'band_hi': 0.4068, 'centre': 0.0037}
+20260625_t162A {'band_lo': -0.4119, 'band_hi': 0.4093, 'centre': -0.0005}
+20260628_t026D {'band_lo': -0.4099, 'band_hi': 0.4066, 'centre': 0.006}
+20260702_t090A {'band_lo': -0.4101, 'band_hi': 0.4061, 'centre': 0.0015}
+20260707_t162A {'band_lo': -0.4117, 'band_hi': 0.4084, 'centre': -0.0007}
+20260714_t090A {'band_lo': -0.4107, 'band_hi': 0.4042, 'centre': -0.0076}
+20260719_t162A {'band_lo': -0.4117, 'band_hi': 0.4084, 'centre': -0.0011}
+20260726_t090A {'band_lo': -0.4101, 'band_hi': 0.4061, 'centre': -0.0006}
+20260812_t162A {'band_lo': -0.4113, 'band_hi': 0.4093, 'centre': 0.0004}
+20260815_t026D {'band_lo': -0.4106, 'band_hi': 0.4066, 'centre': -0.001}
+20260819_t090A {'band_lo': -0.4107, 'band_hi': 0.4055, 'centre': -0.0011}
+20260824_t162A {'band_lo': -0.4117, 'band_hi': 0.4084, 'centre': -0.0018}
+20260827_t026D {'band_lo': -0.4099, 'band_hi': 0.4079, 'centre': 0.0038}
+20260831_t090A {'band_lo': -0.4101, 'band_hi': 0.4048, 'centre': -0.0032}
+20260912_t090A {'band_lo': -0.4107, 'band_hi': 0.4061, 'centre': -0.0007}
+20260917_t162A {'band_lo': -0.4117, 'band_hi': 0.4097, 'centre': -0.0012}
+20260920_t026D {'band_lo': -0.4099, 'band_hi': 0.4046, 'centre': -0.0056}
+20260924_t090A {'band_lo': -0.4107, 'band_hi': 0.4042, 'centre': -0.0045}
+20260929_t162A {'band_lo': -0.4119, 'band_hi': 0.408, 'centre': -0.0068}
+20261002_t026D {'band_lo': -0.4093, 'band_hi': 0.4066, 'centre': 0.0059}
+20261006_t090A {'band_lo': -0.4101, 'band_hi': 0.4048, 'centre': -0.0049}
+20260905_t162A {'band_lo': -0.4123, 'band_hi': 0.4078, 'centre': -0.0037}
+20261011_t162A {'band_lo': -0.4117, 'band_hi': 0.4078, 'centre': -0.0046}
+20261014_t026D {'band_lo': -0.4099, 'band_hi': 0.4079, 'centre': 0.0083}
+20261018_t090A {'band_lo': -0.4107, 'band_hi': 0.4042, 'centre': -0.0054}
+20261023_t162A {'band_lo': -0.4117, 'band_hi': 0.4078, 'centre': -0.0062}
+20261026_t026D {'band_lo': -0.4102, 'band_hi': 0.4069, 'centre': 0.0062}
+20261030_t090A {'band_lo': -0.4114, 'band_hi': 0.4035, 'centre': -0.0086}
+20261104_t162A {'band_lo': -0.4117, 'band_hi': 0.4078, 'centre': -0.0067}
+20261107_t026D {'band_lo': -0.4093, 'band_hi': 0.4073, 'centre': 0.004}
+20261111_t090A {'band_lo': -0.4107, 'band_hi': 0.4042, 'centre': -0.0097}
+20261116_t162A {'band_lo': -0.4119, 'band_hi': 0.4074, 'centre': -0.0073}
+90 {'n_dates': 12, 'median': 0.395, 'p99': 0.808, 'share_gt_0p8': 0.0117, 'file': 'C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\nisar\\derived\\9t\\v2\\nisar_sublook_coherence_t090_9t.tif'}
+162 {'n_dates': 12, 'median': 0.347, 'p99': 0.758, 'share_gt_0p8': 0.0041, 'file': 'C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\nisar\\derived\\9t\\v2\\nisar_sublook_coherence_t162_9t.tif'}
+26 {'n_dates': 8, 'median': 0.425, 'p99': 0.838, 'share_gt_0p8': 0.0219, 'file': 'C:\\Users\\colto\\Documents\\GitHub\\lidar_project\\nisar\\derived\\9t\\v2\\nisar_sublook_coherence_t026_9t.tif'}

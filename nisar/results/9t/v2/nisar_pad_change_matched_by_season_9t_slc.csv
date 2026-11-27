@@ -1,0 +1,2 @@
+season,threshold,n_pad_pairs,pad_events,expected_from_decoys,decoy_rate,p_naive_binomial,p_swap_test,excess_rate,excess_rate_null_95,n_units
+snowfree,-0.195,18200,205,182.0,0.01,0.049,0.05647176411794103,0.0013,0.0013,650

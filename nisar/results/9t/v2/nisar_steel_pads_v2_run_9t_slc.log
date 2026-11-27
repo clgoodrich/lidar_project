@@ -1,0 +1,26 @@
+26 {'n_dates': 8, 'cut_raw_db': 7.18, 'cut_flat_db': 7.56, 'ratio_p90_db': 9.0, 'pass_raw': 0.00123, 'pass_flat': 0.00071, 'pass_pol': 0.00059, 'valid_flat_share': 0.841}
+90 {'n_dates': 12, 'cut_raw_db': 7.0, 'cut_flat_db': 7.31, 'ratio_p90_db': 9.0, 'pass_raw': 0.00121, 'pass_flat': 0.00066, 'pass_pol': 0.0006, 'valid_flat_share': 0.841}
+162 {'n_dates': 12, 'cut_raw_db': 6.47, 'cut_flat_db': 6.78, 'ratio_p90_db': 8.14, 'pass_raw': 0.00047, 'pass_flat': 0.00034, 'pass_pol': 0.00029, 'valid_flat_share': 0.841}
+469 complete pad sets
+  variant track  kind  n_sets  pads  ctrls   p_swap  cmh_chi2   p_cmh   auc  base_share  top20_pad_share  top50_pad_share  top100_pad_share  n_tests  bonferroni_pass
+      raw    26   hit     469 0.094  0.060 0.004650      7.45 0.00633   NaN         NaN              NaN              NaN               NaN       20            False
+      raw    90   hit     469 0.096  0.061 0.004800      7.68 0.00559   NaN         NaN              NaN              NaN               NaN       20            False
+      raw   162   hit     469 0.026  0.041 0.970651      2.61 0.10600   NaN         NaN              NaN              NaN               NaN       20            False
+      raw   any   hit     469 0.196  0.141 0.000900      9.28 0.00232   NaN         NaN              NaN              NaN               NaN       20             True
+     flat    26   hit     469 0.064  0.046 0.067247      2.55 0.11100   NaN         NaN              NaN              NaN               NaN       20            False
+     flat    90   hit     469 0.062  0.035 0.006850      7.16 0.00744   NaN         NaN              NaN              NaN               NaN       20            False
+     flat   162   hit     469 0.019  0.037 0.987151      3.66 0.05570   NaN         NaN              NaN              NaN               NaN       20            False
+     flat   any   hit     469 0.126  0.101 0.064547      2.46 0.11700   NaN         NaN              NaN              NaN               NaN       20            False
+      pol    26   hit     469 0.062  0.043 0.046098      3.29 0.06950   NaN         NaN              NaN              NaN               NaN       20            False
+      pol    90   hit     469 0.055  0.033 0.013999      5.68 0.01720   NaN         NaN              NaN              NaN               NaN       20            False
+      pol   162   hit     469 0.017  0.037 0.993950      4.65 0.03100   NaN         NaN              NaN              NaN               NaN       20            False
+      pol   any   hit     469 0.117  0.096 0.095695      1.91 0.16700   NaN         NaN              NaN              NaN               NaN       20            False
+composite    26 score     469 6.176  6.213 0.288000       NaN     NaN 0.505       0.167             0.35             0.22              0.22       20            False
+composite    90 score     469 6.436  6.510 0.616000       NaN     NaN 0.484       0.167             0.20             0.28              0.19       20            False
+composite   162 score     469 6.221  6.430 0.987000       NaN     NaN 0.466       0.167             0.20             0.14              0.16       20            False
+composite  mean score     469 6.348  6.447 0.740000       NaN     NaN 0.480       0.167             0.10             0.12              0.24       20            False
+  sublook    26 score     469 0.843  0.836 0.022200       NaN     NaN 0.528       0.167             0.05             0.20              0.18       20            False
+  sublook    90 score     469 0.810  0.809 0.880000       NaN     NaN 0.489       0.167             0.05             0.08              0.17       20            False
+  sublook   162 score     469 0.765  0.766 0.403000       NaN     NaN 0.500       0.167             0.35             0.26              0.20       20            False
+  sublook  mean score     469 0.803  0.802 0.261000       NaN     NaN 0.505       0.167             0.15             0.14              0.16       20            False
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\results\9t\v2

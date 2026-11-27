@@ -46,6 +46,9 @@ if "--v2" in sys.argv:  # Branch 2 (secondary analysis): new versions go to resu
     sys.argv.remove("--v2")
     OUT, FIG = OUT / "v2", OUT / "v2" / "figures"
     OUT.mkdir(parents=True, exist_ok=True)
+MATCH = "--match" in sys.argv  # 2026-11-27 Branch 2: decoys matched on canopy and lidar slope
+if MATCH:
+    sys.argv.remove("--match")
 AREA = st.A   # area picked with --area (9t, 613590 or mkf)
 WELLS = AREA.WELLS
 WIN, CORE_M, RING, N_DECOY, FA_RATE, SEED = 5, 5.0, (20.0, 60.0), 5, 0.01, 20261007
@@ -110,6 +113,8 @@ def main():
     idx, stack, tf, shape = ifg.load_complex()
     pairs = ifg.pairs_of(idx)
     cover = st.canopy_cover(tf, shape)
+    if MATCH:
+        st.MATCH = dict(cover=cover.ravel(), slope=st.slope_grid(tf, shape).ravel())
     in_tile = np.isfinite(cover)
     ok_flat = in_tile.ravel()
 
@@ -126,7 +131,7 @@ def main():
         core, rg = st.pixel_sets(g, CORE_M, RING, excl, tf, shape, ok_flat)
         if len(core) < 4 or len(rg) < 20:
             continue
-        dec = st.placebo_sets(g, CORE_M, RING, excl, tf, shape, ok_flat, bg_flat, rng, N_DECOY)
+        dec = st.placebo_sets(g, CORE_M, RING, excl, tf, shape, ok_flat, bg_flat, rng, N_DECOY, tries=300 if MATCH else 60)
         sets.append((i, core, rg, dec))
     print(f"{len(sets)} of {len(pads)} pads usable inside the window")
 
@@ -185,7 +190,7 @@ def main():
     plug = j[j.PERMIT_NUM == "121-39189"]
     plug_pad = int(plug["pad"].iloc[0]) if len(plug) else None
 
-    stem = "nisar_pad_change"
+    stem = "nisar_pad_change" + ("_matched" if MATCH else "")
     df.to_csv(OUT / f"{stem}_per_pair_{AREA.TAG}.csv", index=False)
     res.to_csv(OUT / f"{stem}_by_season_{AREA.TAG}.csv", index=False)
     gdf = gpd.GeoDataFrame(ev.drop(columns=["kind", "copy", "flag"]), geometry=pads.geometry.values[ev["pad"].astype(int)], crs=CRS)

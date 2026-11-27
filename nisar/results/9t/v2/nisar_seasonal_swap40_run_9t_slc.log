@@ -1,0 +1,47 @@
+area 9t_slc
+dropping nisar_slc_lidar_20260908_t026D_9t.tif: valid fraction below 0.5 or a bad granule
+season           leafoff_fall  leafon
+track direction                      
+26    D                     2       4
+90    A                     2       8
+162   A                     3       8
+track 26: rho0 0.042, best 0.063 at (+20,-10) -> as delivered
+track 90: rho0 0.016, best 0.041 at (-20,-10) -> as delivered
+track 162: rho0 0.003, best 0.053 at (-20,-10) -> as delivered
+    track                    metric  open_median_db  closed_median_db  auc_closed_gt_open
+0      26           hh_leafoff_fall          -6.315            -5.949               0.529
+1      26                 hh_leafon          -5.519            -5.090               0.540
+2      26  hh_change_leafon_vs_fall           0.865             0.816               0.495
+3      26           hv_leafoff_fall         -11.443           -10.847               0.549
+4      26                 hv_leafon         -10.463           -10.037               0.546
+5      26  hv_change_leafon_vs_fall           1.157             0.819               0.479
+6      90           hh_leafoff_fall          -5.626            -5.705               0.502
+7      90                 hh_leafon          -4.806            -4.936               0.499
+8      90  hh_change_leafon_vs_fall           0.733             0.823               0.504
+9      90           hv_leafoff_fall         -11.208           -11.067               0.517
+10     90                 hv_leafon         -10.328           -10.297               0.518
+11     90  hv_change_leafon_vs_fall           0.732             0.818               0.504
+12    162           hh_leafoff_fall          -6.824            -6.882               0.504
+13    162                 hh_leafon          -5.894            -5.955               0.507
+14    162  hh_change_leafon_vs_fall           0.749             0.883               0.508
+15    162           hv_leafoff_fall         -11.806           -11.718               0.516
+16    162                 hv_leafon         -10.791           -10.765               0.516
+17    162  hv_change_leafon_vs_fall           0.851             0.836               0.500
+tile median leaf-on minus leaf-off (dB): {(26, 'hh'): 0.8463220596313477, (26, 'hv'): 0.8951196670532227, (90, 'hh'): 0.8128373622894287, (90, 'hv'): 0.7501468658447266, (162, 'hh'): 0.8603715896606445, (162, 'hv'): 0.843958854675293}
+pad: 650 features with rings and decoys
+pit: 506 features with rings and decoys
+   features                    metric    n  median_feature_minus_ring_db  median_decoy_minus_ring_db  median_excess_db  excess_ci_lo  excess_ci_hi  auc_feature_gt_decoy  wilcoxon_p_excess  swap_n  swap_observed  swap_p_two_sided  swap_null_lo  swap_null_hi
+0       pad           hh_leafoff_fall  650                        -0.210                      -0.084            -0.126        -0.173        -0.055                 0.451              0.000     650         -0.126             0.000        -0.058         0.059
+1       pad                 hh_leafon  650                        -0.040                      -0.049             0.028        -0.023         0.077                 0.511              0.462     650          0.028             0.201        -0.043         0.043
+2       pad  hh_change_leafon_vs_fall  650                         0.182                       0.013             0.170         0.103         0.211                 0.578              0.000     650          0.170             0.000        -0.043         0.045
+3       pad           hv_leafoff_fall  650                        -0.143                      -0.033            -0.105        -0.162        -0.071                 0.444              0.000     650         -0.105             0.000        -0.052         0.056
+4       pad                 hv_leafon  650                        -0.011                      -0.015             0.011        -0.025         0.043                 0.500              0.839     650          0.011             0.592        -0.040         0.040
+5       pad  hv_change_leafon_vs_fall  650                         0.138                       0.024             0.106         0.053         0.163                 0.563              0.000     650          0.106             0.000        -0.045         0.043
+6       pit           hh_leafoff_fall  506                        -0.333                      -0.304             0.008        -0.139         0.138                 0.512              0.330     506          0.008             0.897        -0.118         0.124
+7       pit                 hh_leafon  506                        -0.137                      -0.184             0.034        -0.094         0.137                 0.526              0.091     506          0.034             0.451        -0.086         0.086
+8       pit  hh_change_leafon_vs_fall  506                         0.156                       0.123             0.053        -0.113         0.136                 0.510              0.468     506          0.053             0.398        -0.117         0.118
+9       pit           hv_leafoff_fall  506                        -0.152                      -0.240             0.106         0.006         0.182                 0.531              0.049     506          0.106             0.062        -0.109         0.111
+10      pit                 hv_leafon  506                         0.087                      -0.124             0.207         0.133         0.276                 0.558              0.000     506          0.207             0.000        -0.076         0.075
+11      pit  hv_change_leafon_vs_fall  506                         0.212                       0.136             0.075        -0.060         0.186                 0.513              0.340     506          0.075             0.156        -0.107         0.107
+wrote 0 rasters to C:\Users\colto\Documents\GitHub\lidar_project\nisar\derived\9t\nisar_slc_lidar_5m
+wrote C:\Users\colto\Documents\GitHub\lidar_project\nisar\results\9t\v2\figures\nisar_gslc_stack_pad_pit_vs_decoy_leafon_leafoff_seasonal_change_swap40_9t_slc_5m.png

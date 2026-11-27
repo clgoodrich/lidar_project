@@ -7,6 +7,15 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-27 — NISAR 9t: Branch 2 secondary analysis (full record in docs/iterations/nisar_branch2_secondary_9t.md)
+- Steel at pads, slope+canopy matched controls, 469 complete sets: raw any-track 19.6% vs 14.1% (swap p 0.0009), terrain-flattened 12.6% vs 10.1% (p 0.065); HH/HV, composite and sub-look scores AUC ~0.5. Raw excess is mostly terrain.
+- Pad coherence, matched decoys: 205 vs 182, p 0.056 (was 0.007); active share 46%.
+- Seasonal: pads fall HH −0.13 (40 decoys) / −0.12 (matched); pits summer HV +0.21 / +0.16 (p 0.004). Both hold.
+- Hollows (34, well-free): summer HV −0.09 dB, CI −0.30 to +0.77. Not settled.
+- Troposphere: dry delay 2.97 m vs fitted offsets 2.88 m mean, residual RMS 0.73 m.
+- Sub-look coherence rasters: tile median 0.35–0.43; buildings 0.81–0.89 vs forest targets 0.78–0.86.
+- Code: `--v2`, `--match`, `--pits-file` options on seasonal and pad-change scripts (defaults unchanged); new `_nisar_steel_pads_v2_9t.py`, `_nisar_sublook_9t.py`, `_nisar_hollows_9t.py`, `_nisar_tropo_offset_check_9t.py`.
+
 ## 2026-11-26 — NISAR 9t: Branch 2 outputs folder; pad reruns
 - Branch 2 results now go to `nisar/results/9t/v2/` (flag `--v2` on `_nisar_steel_pads_9t.py` and `_nisar_pad_change_9t.py`). Baseline files are not touched.
 - Reran both pad tests with the pad_id dissolve. Outputs identical to the baseline (steel summary JSON equal; coherence 220 vs 182.0, swap p 0.007). Reason: pad_id is unique per polygon (995 of 995), so the dissolve merges nothing. The plan's "dissolve bug" is not real. The 649 vs 644 gap comes from tile coverage, not split pads.

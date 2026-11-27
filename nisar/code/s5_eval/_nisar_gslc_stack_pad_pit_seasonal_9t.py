@@ -217,16 +217,49 @@ def pixel_sets(geom, core_m, ring, excl, tf, shape, ok_flat):
     return core[ok_flat[core]], rg[ok_flat[rg]]
 
 
+# 2026-11-27 Branch 2: optional decoy matching on canopy cover and lidar slope (off by default,
+# so baseline runs are unchanged). Set by --match: dict(cover=flat array, slope=flat array).
+MATCH = None
+MATCH_COVER, MATCH_SLOPE = 0.15, 5.0
+
+
+def slope_grid(tf, shape):
+    """Mean lidar slope (deg) per 5 m radar pixel, lidar frame moved onto the radar grid."""
+    sp = Path(str(CHM).replace("chm_", "slope_"))
+    dx, dy = A.radar_shift(tf.c + shape[1] * 2.5, tf.f - shape[0] * 2.5)
+    with rasterio.open(sp) as r:
+        a = r.read(1, masked=True)
+        src = np.where(a.mask, np.nan, a.filled(0)).astype(np.float32)
+        dst = np.full(shape, np.nan, np.float32)
+        t = rasterio.Affine(tf.a, 0, tf.c - dx, 0, tf.e, tf.f - dy)
+        reproject(src, dst, src_transform=r.transform, src_crs=r.crs, src_nodata=np.nan,
+                  dst_transform=t, dst_crs=r.crs, dst_nodata=np.nan, resampling=Resampling.average)
+    return dst
+
+
+def _match_ok(core, ref):
+    if MATCH is None:
+        return True
+    c, s_ = np.nanmean(MATCH["cover"][core]), np.nanmean(MATCH["slope"][core])
+    return abs(c - ref[0]) <= MATCH_COVER and abs(s_ - ref[1]) <= MATCH_SLOPE
+
+
 def placebo_sets(geom, core_m, ring, excl, tf, shape, ok_flat, bg_flat, rng, k, tries=60):
     """Up to k copies of geom moved 150-600 m onto background, each with its own ring."""
     out = []
+    ref = None
+    if MATCH is not None:
+        fc = pixel_index(geom.buffer(-core_m) if core_m else geom, tf, shape)
+        if len(fc) == 0:
+            return out
+        ref = (np.nanmean(MATCH["cover"][fc]), np.nanmean(MATCH["slope"][fc]))
     for _ in range(tries):
         if len(out) == k:
             break
         a, r = rng.uniform(0, 2 * np.pi), rng.uniform(*DECOY_R)
         g = translate(geom, r * np.cos(a), r * np.sin(a))
         core = pixel_index(g.buffer(-core_m) if core_m else g, tf, shape)
-        if len(core) == 0 or not bg_flat[core].all():
+        if len(core) == 0 or not bg_flat[core].all() or not _match_ok(core, ref):
             continue
         rg = pixel_index(ring_geom(g, ring, excl), tf, shape)
         rg = rg[ok_flat[rg]]
@@ -289,8 +322,14 @@ def main() -> int:
     ap.add_argument("--pad-ring", type=float, nargs=2, metavar=("IN", "OUT"))
     ap.add_argument("--decoy-r", type=float, nargs=2, metavar=("MIN", "MAX"))
     ap.add_argument("--tag", default="", help="extra output suffix for a sensitivity run")
+    ap.add_argument("--match", action="store_true", help="2026-11-27: decoys matched on canopy and slope; _matched outputs")
+    ap.add_argument("--pits-file", default="", help="2026-11-27: outlines scored in place of pit_outside; use with --tag")
+    ap.add_argument("--v2", action="store_true", help="2026-11-27: write to results/<area>/v2 (Branch 2)")
     args = ap.parse_args()
-    global PIT_RING, PAD_RING, DECOY_R
+    global PIT_RING, PAD_RING, DECOY_R, OUT, FIG, MATCH
+    if args.v2:
+        OUT, FIG = OUT / "v2", OUT / "v2" / "figures"
+        OUT.mkdir(parents=True, exist_ok=True)
     if args.pit_ring:
         PIT_RING = tuple(args.pit_ring)
     if args.pad_ring:
@@ -300,7 +339,7 @@ def main() -> int:
     force = args.force_best_shift
     n_decoys = args.decoys
     swap = n_decoys != N_PLACEBO
-    sfx = ("_forcedshift" if force else "") + (f"_swap{n_decoys}" if swap else "") + (f"_{args.tag}" if args.tag else "")
+    sfx = ("_forcedshift" if force else "") + (f"_swap{n_decoys}" if swap else "") + (f"_{args.tag}" if args.tag else "") + ("_matched" if args.match else "")
     FIG.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(SEED)
     print(f"area {A.TAG}")
@@ -322,6 +361,8 @@ def main() -> int:
     tracks = sorted(idx.track.unique())
     cover = canopy_cover(tf, shape)
     in_tile = np.isfinite(cover)
+    if args.match:
+        MATCH = dict(cover=cover.ravel(), slope=slope_grid(tf, shape).ravel())
 
     # ---- registration per track ------------------------------------------------------
     reg, shift_of = [], {}
@@ -369,7 +410,11 @@ def main() -> int:
 
     # ---- geometry ---------------------------------------------------------------------
     pads = read_layer(ANN, "plat").pipe(A.to_radar)[["pad_id", "geometry"]].dissolve(by="pad_id").reset_index()
-    pits = read_layer(ANN, "pit_outside").pipe(A.to_radar).reset_index(drop=True)
+    if args.pits_file:  # 2026-11-27 Branch 2: score another outline set (e.g. natural hollows) as "pits"
+        import geopandas as gpd
+        pits = gpd.read_file(args.pits_file).pipe(A.to_radar).reset_index(drop=True)
+    else:
+        pits = read_layer(ANN, "pit_outside").pipe(A.to_radar).reset_index(drop=True)
     roads = read_layer(ANN, "roads").pipe(A.to_radar)
     feat_zone = rasterize([(g, 1) for g in pd.concat([pads.buffer(20), pits.buffer(20), roads.buffer(20)])],
                           out_shape=shape, transform=tf, fill=0, dtype="uint8").astype(bool)
@@ -416,7 +461,7 @@ def main() -> int:
             core, rg = pixel_sets(g, core_m, ring, excl, tf, shape, ok_flat)
             if len(core) == 0 or len(rg) < 10:
                 continue
-            pls = placebo_sets(g, core_m, ring, excl, tf, shape, ok_flat, bg_flat, rng, n_decoys, tries=12 * n_decoys)
+            pls = placebo_sets(g, core_m, ring, excl, tf, shape, ok_flat, bg_flat, rng, n_decoys, tries=(60 if MATCH is not None else 12) * n_decoys)
             if not pls:
                 continue
             row = dict(id=fid, n_core=len(core), n_ring=len(rg), n_decoys=len(pls))
