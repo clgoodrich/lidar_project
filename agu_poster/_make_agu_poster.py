@@ -120,7 +120,7 @@ SECTIONS = [
                  "A 26 million parameter U-Net++ scored no better on pits (pixel IoU 0.561 against 0.559), so data and labels limit accuracy."),
     ]),
     ("Validation and transfer", C2, None, [
-        ("fig", "valid", 2.55, "Five test sets of 375 m blocks"),
+        ("fig", "valid", 2.2, "Five test sets of 375 m blocks"),
         ("text", "Five-fold cross-validation on 375 m blocks, split by block and never by well. An inner validation set picks the epoch and the F2 cutoff, "
                  "which weights recall four times as heavily as precision. The held-out fold never tunes either."),
     ]),
