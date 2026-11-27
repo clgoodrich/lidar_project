@@ -128,7 +128,7 @@ SECTIONS = [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net find more than 90% of labelled pits and pads in blocks it never saw, "
                  "and 98% of pits and 88% of pads on the unseen Tile B.|"
                  "Limits. One survey, one annotator, no field visits.|"
-                 "Next. Field-check candidates and test on McKean lidar."),
+                 "Next. Field-check the candidates on the ground, extend the method to other oil and gas fields, starting with McKean, and tie detections to measured methane emissions."),
     ]),
     ("Results", C3, LOWER, [
         ("table", None, 3.9, None),
