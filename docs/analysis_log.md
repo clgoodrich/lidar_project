@@ -7,6 +7,12 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-27 - Canopy penetration added to deck and write-up (9t)
+- Why: the user asked whether L-band reaches the ground and how leaf-on vs leaf-off differs.
+- Evidence used, all from existing results: surface-height test (0/10/25/50% of canopy, 10% best); open vs closed canopy AUC 0.50-0.56; HV seasonal change vs canopy AUC 0.48-0.52 (nisar_gslc_stack_open_vs_closed_canopy_control_by_track_*). No direct penetration measurement.
+- Correction: the geocoder uses bare ground only (technical write-up erratum 26 Nov). Slide 7 diagram alt text and notes said ground plus 10%; fixed.
+- Deck now 12 slides (new slide 4). Write-up gains a Data subsection, still 3 pages.
+
 ## 2026-11-27 - Three-page NISAR write-up (9t)
 - Baseline vs stricter controls, styled on the SAOCOM and Urban LiDAR reports in docs/related/.
 - Source md, docx built by script, PDF exported from Word (3 pages, about 1,500 words, 2 tables).

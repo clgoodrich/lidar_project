@@ -22,7 +22,9 @@ Table 1: NISAR tracks over tile 9t
 | 90 | Ascending | West | 39° | 12 |
 | 162 | Ascending | West | 47° | 12 |
 
-One wrinkle came from NASA itself. A processor change on 23 October made every later image 0.3 to 0.4 dB darker. It hit forest and open ground equally, so comparing each site with its own surroundings cancels it out.
+### Can the Radar See the Ground?
+
+Before anything else, we had to know whether the signal reaches the ground under this forest at all. We never measured penetration directly, but three things in our data point the same way. When we lined the radar up against the lidar terrain, the hills and valleys matched best with the reflecting surface placed at about a tenth of canopy height, which is roughly 2 meters up in these stands. Ground under closed canopy is also barely brighter than open ground (AUC 0.50 to 0.56, where 0.5 means no difference). Likewise, dropping the leaves in fall barely changed anything (AUC 0.48 to 0.52). This fits the physics. Leaves are a few centimeters across, so the 24-centimeter wave passes them, while trunks and branches scatter it all year. In simple terms, the radar does see the ground, but every pixel also carries trunk echo that dilutes a small change on the surface.
 
 ## Methodology
 
@@ -40,11 +42,9 @@ For steel we used the persistent scatterer approach of Ferretti et al. (2001). A
 
 The first full run gave us four results worth chasing. Pads seemed to hold slightly more steel than the control spots, pads lost coherence more often than chance, pads were darker in fall, and pits were brighter in summer. The pad results looked promising, but they made us suspicious of our control spots. A well pad is a flat bench cut into the side of a hill. Our control spots were matched to the pads on canopy cover but not on slope, and slope alone changes how bright the radar sees the ground.
 
-So we rebuilt the test in three ways. First, we re-picked the control spots to match each pad on both canopy and slope. Second, we used the lidar terrain to predict how brightly each pixel is lit by the radar and divided that out, which removes the bright faces of hills. Third, we scored each track on its own. Real steel should look bright from every direction, whereas a terrain effect should flip depending on which way the radar is looking.
+So we rebuilt the test in three ways. First, we re-picked the control spots to match each pad on both canopy and slope. Second, we used the lidar terrain to predict how brightly each pixel is lit by the radar and divided that out, which removes the bright faces of hills. Third, we scored each track on its own. Real steel should look bright from every direction, whereas a terrain effect should flip depending on which way the radar is looking. We also tried two filters meant to separate steel from bright forest.
 
-We also tried two filters meant to separate steel from bright forest, one using the HH to HV ratio and one checking whether a pixel looks the same in two halves of the radar signal.
-
-The pit result raised its own question. Pits might be brighter in summer simply because they are dips that hold moisture, regardless of any well. To check this we searched the lidar for natural hollows of the same size and depth that sit well away from any well, pit, pad, or road. The same search picks up 340 of our 506 mapped pits, so the shapes are comparable. It turned up 90 hollows that fit.
+The pit result raised its own question. Pits might be brighter in summer simply because they are dips that hold moisture, regardless of any well. To check this we searched the lidar for natural hollows of the same size and depth that sit well away from any well, pit, pad, or road. It turned up 90 hollows that fit.
 
 ## Results
 
@@ -61,7 +61,7 @@ Table 2: First run versus stricter controls
 
 The steel result is the clearest example of why the extra controls mattered. Matching on slope actually made the pads look better at first. Once the bright hillsides were removed, though, most of the gap closed. Steel sitting on the flat part of a pad would have survived that correction, so what we had been seeing was the lit slope beside the pad. Track 162 sealed it with fewer hits on pads than on control spots.
 
-Pad coherence went from our strongest lead to borderline. The two seasonal effects held up under every version of the controls.
+Pad coherence fell to borderline, while both seasonal effects held.
 
 The hollows landed between zero and the pit value, with a range wide enough to include both. In simple terms, the test could not tell us whether the pit signal is about wells or about dips. On a tile this size there are just not enough well-free hollows to answer it.
 
@@ -69,11 +69,11 @@ The hollows landed between zero and the pit value, with a range wide enough to i
 
 ### What Did Not Work
 
-Steel detection did not work at pads or at DEP wells, and neither steel filter found anything. The building check we hoped would confirm our placement also failed, since 8 of the 9 buildings we could use sit outside the lidar coverage. Our placement is still unconfirmed by any independent point.
+Steel detection did not work at pads or at DEP wells, and neither steel filter found anything. The building check we hoped would confirm our placement also failed, since 8 of the 9 buildings we could use sit outside the lidar coverage.
 
 ### Limitations
 
-Matching on slope came at a cost. Only 469 of the 650 pads had five matched control spots, and the ones that dropped out are likely the steepest. The terrain correction assumes bare ground, so hardware right up against a cut bank could have been dimmed along with the slope. Most importantly, nothing here has been checked against hardware on the ground. We can say pads and pits differ from chance, but we cannot point to a pad and say it has a pumpjack on it.
+Matching on slope came at a cost. Only 469 of the 650 pads had five matched control spots, and the ones that dropped out are likely the steepest. Most importantly, nothing here has been checked against hardware on the ground. We can say pads and pits differ from chance, but we cannot point to a pad and say it has a pumpjack on it.
 
 ## Future Work
 
@@ -85,4 +85,4 @@ NISAR does not see well hardware on tile 9t. What first looked like steel at pad
 
 ## References
 
-Ferretti, A., Prati, C., & Rocca, F. (2001). Permanent scatterers in SAR interferometry. IEEE Transactions on Geoscience and Remote Sensing, 39(1), 8–20.
+Ferretti, A., Prati, C., & Rocca, F. (2001). Permanent scatterers in SAR interferometry. IEEE TGRS, 39(1), 8–20.
