@@ -246,6 +246,37 @@ The 40 strongest targets were inspected on NAIP aerial photos (June 2022, 0.6 m)
 - **Control spots are unmatched.** They are not matched on canopy or slope, and pads are flatter and more open than random forest. Part of each contrast may come from land cover, not well sites.
 - All contrasts are a few tenths of a dB, far below what one site can show against speckle. Fall rests on 2 or 3 dates per track.
 - Hollows with no well have not been compared.
+
+**Date by date, and against rain (added 2026-11-26).**
+
+The p-values above treat 644 pads as independent. But every pad shares the same few fall dates, so one wet date moves them all together. For a season effect the real sample is the number of dates. Each of the 32 dates was scored on its own: pad minus ring, beyond the decoys, HH.
+
+| Dates | n | Median (dB) | Note |
+|---|---|---|---|
+| Summer | 19 | −0.00 | Dates scatter ±0.08 dB (SD) |
+| Sep 29 – Nov 4 | 10 | −0.29 | All 10 negative; all 3 tracks; 6 on the old processor version, 4 on the new |
+| Nov 7 – 16 | 3 | +0.08 | Nov 7 is +0.41 |
+| Late fall as defined in advance (Oct 23 – Nov 16) vs summer | 7 vs 20 | | HH p 0.23, HV p 0.014 |
+
+- Within one date, pad-to-pad uncertainty is about ±0.1 dB. The swing between dates is larger. So date-level effects dominate.
+- The darkening runs across the processor switch, so it is not the switch.
+- Rain was taken from NOAA daily records at four nearby gauges (Pleasantville, Titusville, Tionesta, Franklin; median of the four).
+
+| Rain check | Result |
+|---|---|
+| Rain the night before vs per-date excess, all dates | Spearman +0.63 (n 32) |
+| Same, summer only | +0.65 (n 19) |
+| Summer wet (≥ 1 mm) vs dry | +0.06 vs −0.05 dB, p 0.004 |
+| Sep 29 – Nov 4 | All 10 dates under 1 mm the night before (a dry spell) |
+| Nov 7 | 2.7 mm that night, 10 mm over 3 days |
+| Dry fall vs dry summer | −0.29 vs −0.05 dB, p 0.0004 (10 vs 12 dates) |
+
+- **Wet ground brightens pads against forest.** Bare pad soil wets at once and reflects more at L-band. The forest signal is mostly trunks and canopy. This holds within summer, so it is not a season effect.
+- **The clean Sep–Nov darkening ran through a dry spell.** The Nov 7 reversal is a rain date.
+- **With rain held equal, fall pads are still darker** by about 0.24 dB. That remainder fits trunk-ground double bounce in the leafless ring. The pattern is roughly half wetness, half season.
+- **Limits:** few dates, and the Sep 29 – Nov 4 window was picked after looking, so its p-values describe rather than prove. Nov 11 and Nov 16 are dry or near-dry yet slightly positive. Gauges are a few km away and report daily, not at pass time.
+- **Test:** predict dark pads on dry dates in Sep–Nov 2027, then check. Until then, rain the night before should be a covariate in every brightness test.
+- Files: `nisar/results/9t/nisar_pad_season_per_date_9t_slc.csv`, `nisar/results/9t/nisar_pad_weather_per_date_9t.csv`, figure `nisar/results/9t/figures/nisar_pad_weather_per_date_9t.png`.
 - File: `nisar/results/9t/nisar_gslc_stack_pad_pit_vs_decoy_summary_by_season_9t_slc_5m.json`.
 
 ### 5.5 Pad coherence
@@ -304,6 +335,7 @@ The 40 strongest targets were inspected on NAIP aerial photos (June 2022, 0.6 m)
   3. *No steel left.* Plugged casings are cut or buried. Pumpjacks move between passes.
   4. *Trees block the view.* Leaf drop can also make a real target under canopy look unsteady.
   5. *Too few dates.* The 0.25 cutoff was designed for about 30.
+- **Pad fall darkening is half wet ground, half season** (5.4). Rain the night before brightens pads. On dry dates fall pads are still darker than summer pads. One autumn of dates cannot confirm it.
 - **Pit and pad brightness** contrasts are small but consistent (5.4). They may partly reflect land cover, since control spots are unmatched. Use them as pooled evidence, not a per-site marker.
 - **Pad coherence** shows a small excess, weighted toward active-well pads (5.5). It is the strongest pad-level signal. It needs matched controls and dated activity records before it means more.
 - **Slope motion** is atmosphere or scattering change, not creep (5.8).

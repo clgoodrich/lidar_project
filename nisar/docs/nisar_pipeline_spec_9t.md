@@ -195,6 +195,8 @@ Rule pass rates (share of valid px): brightness 0.36–0.46%; steadiness 0.8–3
 Top 40 targets (visual, NAIP+RRIM, done before rerun; cutoffs moved <0.04 dB): building 9, metal_yard 8, oilfield 2 (T24 tanks on lined pad; T20 structure by DEP well), possible 1 (T10), terrain 6, forest 10, open_ground 4. Open pads with visible equipment: 3–4 of 60 (P5, P55, P57, ?P14).
 
 Pad/pit brightness excess (dB, 95% CI, p): pits summer HV +0.16 (+0.07,+0.23) <0.001; pits summer HH +0.10 (+0.00,+0.21) 0.031; pits fall HH +0.05 ns; pits fall HV +0.06 ns; pads (644) fall HH −0.15 (−0.23,−0.07) <0.001; pads fall HV −0.13 (−0.19,−0.07) <0.001; pads summer HH +0.01 ns; pads summer−fall HH +0.14 (+0.08,+0.18) <0.001. Decoys unmatched on canopy/slope.
+Per date (pad−ring−decoy, HH; `_nisar_pad_season_per_date_9t.py`): summer median −0.00 (SD 0.08, n 19); Sep 29–Nov 4 all 10 negative, median −0.29 (both processor versions); Nov 7–16 +0.41/+0.08/+0.08. Pre-set fall vs summer HH p 0.23, HV p 0.014.
+Weather (`_nisar_pad_weather_9t.py`, NOAA GHCN-D, 4 gauges): rain night-before vs excess ρ +0.63 (n 32), summer-only +0.65; summer wet vs dry +0.06 vs −0.05 p 0.004; Sep 29–Nov 4 all dry; Nov 7 wet. Dry fall vs dry summer −0.29 vs −0.05 p 0.0004 (post-hoc window). Reading: ~half wetness, ~half season. Rain must be a covariate.
 
 Pad coherence: 18,200 pairs, 220 events vs 182.0 expected, swap p 0.007. 46% of events on active-well pads vs 35% of pads. Decoys unmatched on canopy/slope.
 Processor step P05023→P05036 (excess over prior same-version 12-day step, HH): t26 −0.38, t162 −0.27 dB; equal open/forest → scalar. t90 masked by dark Oct 18 date.
