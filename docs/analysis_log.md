@@ -7,6 +7,13 @@ result. Newest entries at the top. Per `Claude.md` reporting rule.
 
 ---
 
+## 2026-11-26 — Lidar methodology brief and appendix; poster Figure 5 probability maps
+- New `docs/lidar_methodology_brief.md` (terse, for another LLM) and generated `docs/lidar_methodology_appendix.md` (0.4 MB: tile index, raster profiles, checkpoint contents, annotation schemas, fold tables, result files verbatim, run order, full source of 27 scripts). Generator `notebooks/wellsight_v2/s7_analysis/_lidar_methodology_appendix.py`.
+- Found while writing: LRM and roughness windows are in cells, so `lrm_25` is 12.5 m and `lrm_5` 2.5 m at 0.5 m (poster said 25 m and 5 m, fixed). `roughness_11` is roughness_5. Pit CV5 transfer to 613590 already scored: F2 recall 0.911 (sd 0.045) on 153 drawn floors vs 0.928 on 9t. Now quoted on the poster.
+- Poster Figure 5 is now grey-scale pit and pad probability on 613590 (`agu_poster/figures/poster_prob_maps_613590.png`), from the older single-split models. Hero enlarged. Pipeline diagram dropped.
+
+---
+
 ## 2026-11-26 — NISAR 9t full appendix (code + metadata)
 - New generator `nisar/code/s7_analysis/_nisar_pipeline_appendix_9t.py` → `nisar/docs/nisar_pipeline_appendix_9t.md` (1.0 MB): used-granule index, excluded windows, RSLC HDF5 identification/orbit/attitude/parameters/geolocation/timing per granule, processor run config once, GSLC+SLC GeoTIFF profiles, lidar raster metadata, vector schemas, DEP status counts, run order, verbatim result JSON/CSV, full source of 19 scripts. Checked: no credentials.
 

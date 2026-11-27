@@ -85,7 +85,7 @@ CAPS = {
              "(b) Found pit. (c) Missed pit. (d) Model pit with no hand label. Bars: 100 m in (a), 10 m in (b) to (d)."),
     "setup": ("Figure 5.", "Processing chain. One U-Net is trained for each of pits, pads and roads."),
     "valid": ("Figure 6.", "Spatial cross-validation on 375 m blocks. Blue blocks are held out, grey blocks train the model, white blocks are unused."),
-    "transfer": ("Figure 5.", "Model output on tile 613590, a tile the models were not trained on (400 m window). (a) Red relief image map with hand outlines, pit (blue) and pad (yellow dashed). (b) Pit probability and (c) pad probability from the tile 9t models, black 0 to white 1."),
+    "transfer": ("Figure 5.", "Model output on tile 613590, a tile the models were not trained on (400 m window). (a) Red relief image map with hand outlines, pit (blue) and pad (yellow dashed). (b) Pit probability and (c) pad probability from U-Nets trained on tile 9t, black 0 to white 1."),
 }
 
 SECTIONS = [
@@ -102,7 +102,7 @@ SECTIONS = [
         ("fig", "optical", 2.8, "Air photo and lidar of the same ground"),
         ("text", "USGS 3DEP lidar, flown leaf-off Nov 2019 to Mar 2020 over a 4.5 km square tile (9t). Ground returns are "
                  "gridded to a 0.5 m bare-earth model. Seven terrain layers are derived from it. They are local relief "
-                 "at 25 m and 5 m, slope, topographic position, positive and negative openness, and roughness. "
+                 "in 12.5 m and 2.5 m windows, slope, topographic position, positive and negative openness, and roughness. "
                  "Each layer is standardised with training-set means and standard deviations before it enters the network."),
     ]),
     ("Well signatures", C1, None, [
@@ -136,8 +136,9 @@ SECTIONS = [
                  "finds the pads, but where a pad ends and a wide road begins is an arbitrary line, so pad outlines "
                  "differ from ours at the edges. Pit outlines are tighter, with 82% matching at 0.5. Precision is 0.63 and 0.59 by design of the F2 cutoff, and some unmatched detections may be real features we have not drawn.|"
                  "Applied unchanged to tile 613590, which neither model saw in training, the networks outline pads along "
-                 "the access roads and give each pit a sharp probability peak (Figure 5). We drew only part of that tile, so precision "
-                 "cannot be scored there."),
+                 "the access roads and give each pit a sharp probability peak (Figure 5). Scored on the 153 pits we drew there, the five "
+                 "fold models recover 91% at IoU 0.3 (standard deviation 4.5 points), against 93% on held-out 9t blocks. "
+                 "Only part of that tile is drawn, so precision cannot be scored."),
     ]),
     ("Conclusions", C3, None, [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net recover more than 90% of labelled pits and pads in "
