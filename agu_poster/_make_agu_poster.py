@@ -115,17 +115,14 @@ SECTIONS = [
     ]),
     ("Methods", C2, LOWER, [
         ("spec", None, 1.7, None),
-        ("text", "One plain four-level U-Net per sign, 7.8 million parameters, standardised inputs. Focal cross-entropy (gamma 2), "
-                 "random flips and rotations, AdamW at 1e-3, cosine schedule, 40 epochs, batch 16. Drainage is an explicit negative class "
-                 "for roads. Probabilities above the cutoff are vectorised.|"
-                 "A 26 million parameter U-Net++ with a pretrained encoder scored no better on pits (pixel IoU 0.561 against 0.559), "
-                 "so data and labels limit accuracy, not architecture."),
+        ("text", "One four-level U-Net per sign, 7.8 million parameters, focal cross-entropy (gamma 2), flips and rotations, AdamW at 1e-3, 40 epochs, batch 16. "
+                 "Roads carry drainage as a negative class.|"
+                 "A 26 million parameter U-Net++ scored no better on pits (pixel IoU 0.561 against 0.559), so data and labels limit accuracy."),
     ]),
     ("Validation and transfer", C2, None, [
-        ("fig", "valid", 1.5, "Five test sets of 375 m blocks"),
-        ("text", "Five-fold cross-validation on 375 m blocks, split by block and never by well, so a jittered patch cannot reach a held-out block.|"
-                 "An inner validation set picks the epoch and the F2 cutoff, which weights recall four times as heavily as precision. "
-                 "The held-out fold never tunes either."),
+        ("fig", "valid", 2.9, "Five test sets of 375 m blocks"),
+        ("text", "Five-fold cross-validation on 375 m blocks, split by block and never by well. An inner validation set picks the epoch and the F2 cutoff, "
+                 "which weights recall four times as heavily as precision. The held-out fold never tunes either."),
     ]),
     ("Conclusions", C2, None, [
         ("text", "Terrain layers from leaf-off lidar let a small U-Net find more than 90% of labelled pits and pads in blocks it never saw, "
@@ -339,7 +336,7 @@ def main() -> None:
     col_end = {C1: BODY_TOP - 0.7, C2: LOWER - 0.7, C3: LOWER - 0.7}
     for si, (head, x, y, blocks) in enumerate(SECTIONS):
         stand_texts = iter(OUTLINE[si][1])
-        y = col_end[x] + 0.7 if y is None else y      # stack under the previous section in the column
+        y = col_end[x] + 0.45 if y is None else y      # stack under the previous section in the column
         text_box(s, x, y, CW, HEAD_H, OUTLINE[si][0] if outline else head, HEAD_PT, INK, anchor=MSO_ANCHOR.BOTTOM)
         words += len(head.split())
         rule_y = y + HEAD_H + 0.12
@@ -359,7 +356,7 @@ def main() -> None:
                 text_box(s, x, top + h + 0.15, CW, 1.2,
                          "[Table note: define each column]" if outline else SPEC_NOTE, 24, GREY,
                          lead=None if outline else "Table 1.")
-                top += h + 0.9
+                top += h + 1.1
             elif kind == "table":
                 nc = len(TABLE[0])
                 rh = (h - 0.9) / len(TABLE)
